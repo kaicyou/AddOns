@@ -1,0 +1,30 @@
+﻿## Interface: 60200
+## Title: Phoenix|cff7fff7fStyle|r - Dragon Soul
+## Title-ruRU: Phoenix|cff7fff7fStyle|r - Душа Дракона
+## Author: Shurshik
+## Notes: PhoenixStyle DragonSoul Module
+## Notes-ruRU: Модуль PhoenixStyle - Душа Дракона
+## Dependencies: PhoenixStyle
+## LoadOnDemand: 1
+## SavedVariablesPerCharacter: psraidoptionsont3,psraidoptionschatt3,psicctekver_3,psgiveuslogs
+Localization\localization-enEN.lua
+Localization\localization-ruRU.lua
+Localization\localization-deDE.lua
+Localization\localization-frFR.lua
+Localization\localization-esES.lua
+Localization\localization-esMX.lua
+Localization\localization-koKR.lua
+Localization\localization-zhTW.lua
+Localization\localization-zhCN.lua
+Localization\localization-ptBR.lua
+PhoenixStyleMod_DragonSoul.lua
+PhoenixStyleMod_DragonSoul.xml
+Damage_show.lua
+Hagara.lua
+MadnessofDeathwing.lua
+Morchok.lua
+SpineofDeathwing.lua
+Ultraxion.lua
+WarmasterBlackhorn.lua
+Yorsahj.lua
+Zonozz.lua

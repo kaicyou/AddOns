@@ -1,0 +1,9 @@
+﻿## Interface: 60200
+## Title: Phoenix|cff7fff7fStyle|r - Cataclysm loader
+## Title-ruRU: Phoenix|cff7fff7fStyle|r - Загрузчик Катаклизма
+## Author: Shurshik
+## URL: http://phoenixstyle.com
+## Dependencies: PhoenixStyle
+## LoadOnDemand: 0
+## SavedVariables: 
+PhoenixStyle_Loader_Cata.lua

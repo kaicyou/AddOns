@@ -1,0 +1,22 @@
+------------------------------------------------------------------------
+r514 | allara | 2016-05-11 17:39:43 +0000 (Wed, 11 May 2016) | 1 line
+Changed paths:
+   A /tags/r513-release (from /trunk:513)
+
+Tagging as r513-release
+------------------------------------------------------------------------
+r513 | allara | 2016-05-11 17:39:29 +0000 (Wed, 11 May 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Options_Defaults.lua
+
+- [#182] Reins of the Infinite Timereaver: Added Yor, the optional boss in Mana-Tombs
+- [#175] Rarity's progress bar(s) will now be turned off turning pet battles
+------------------------------------------------------------------------
+r511 | allara | 2016-04-19 17:50:16 +0000 (Tue, 19 Apr 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Options_Defaults.lua
+
+- Added Timewalker difficulty to three mounts that were currently restricted to Heroic only (not all of these may have TW instances, but it doesn't hurt to flag it anyway)
+------------------------------------------------------------------------

@@ -1,0 +1,46 @@
+﻿## Interface: 60200
+#@non-debug@
+## Title: Atlas |r|cFF0099FF[Scenarios]|r
+## Title-deDE: Atlas |r|cFF0099FF[Szenarien]|r
+## Title-esES: Atlas |r|cFF0099FF[Scenarios]|r
+## Title-esMX: Atlas |r|cFF0099FF[Scenarios]|r
+## Title-frFR: Atlas |r|cFF0099FF[Scenarios]|r
+## Title-itIT: Atlas |r|cFF0099FF[Scenarios]|r
+## Title-koKR: Atlas |r|cFF0099FF[Scenarios]|r
+## Title-ptBR: Atlas |r|cFF0099FF[Scenarios]|r
+## Title-ruRU: Atlas |r|cFF0099FF[Сценарии]|r
+## Title-zhCN: Atlas |r|cFF0099FF[场景战役]|r
+## Title-zhTW: |r|cFF0099FF[地圖]|rAtlas 情境地圖
+## Notes: Scenarios Maps
+## Notes-deDE: Szenariokarten
+## Notes-esES: Mapas de gestas
+## Notes-esMX: Mapas de gestas
+## Notes-frFR: Scenarios Maps
+## Notes-itIT: Scenarios Maps
+## Notes-koKR: Scenarios Maps
+## Notes-ptBR: Scenarios Maps
+## Notes-ruRU: Карты сценариев
+## Notes-zhCN: 场景战役地图
+## Notes-zhTW: Atlas 史詩情境事件模式地圖插件
+#@end-non-debug@
+#@debug@
+# ## Title: Atlas |r|cFF0099FF[Scenarios]|r
+# ## Title-zhTW: |r|cFF0099FF[地圖]|rAtlas 情境地圖
+# ## Notes: Scenarios Maps
+# ## Notes-zhTW: Atlas 史詩情境事件模式地圖插件
+#@end-debug@
+## Version: 1.32.05
+## Author: arith, Dynaletik, dubcat, Resike
+## X-Date: 2016-07-07T12:59:41Z
+## X-Email: atlas.addon at gmail.com
+## X-Website: http://www.atlasmod.com
+## X-Category: Map
+## RequiredDeps: Atlas
+## X-Curse-Packaged-Version: v1.32.05
+## X-Curse-Project-Name: Atlas Scenarios
+## X-Curse-Project-ID: atlas-scenarios
+## X-Curse-Repository-ID: wow/atlas-scenarios/mainline
+
+Atlas_ScenariosDB.lua
+Locale\Locales.xml
+Atlas_Scenarios.lua

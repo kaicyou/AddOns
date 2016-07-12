@@ -1,0 +1,14 @@
+## Interface: 60000
+## Title: SpellStealer
+## Author: Blinddate (Thrall)
+## Version: 1.85
+## SavedVariables: SSAnnounce, SSGrowup
+## Notes: Creates a small movable frame listing stealable buffs from your target.
+## X-Curse-Packaged-Version: V1.85
+## X-Curse-Project-Name: SpellStealer
+## X-Curse-Project-ID: spellstealer
+## X-Curse-Repository-ID: wow/spellstealer/mainline
+
+
+SpellStealer.xml
+

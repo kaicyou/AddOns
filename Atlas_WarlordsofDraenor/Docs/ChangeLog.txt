@@ -1,0 +1,38 @@
+$Id: ChangeLog.txt 19 2016-05-19 13:31:07Z arith $
+Atlas, a World of Warcraft instance map browser
+Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+
+==============
+= Change Log =
+==============
+
+v1.32.05 (May 19, 2016)
+-----------------------
+- Correct the expansion name in TOC 
+
+v1.32.04 (May 19, 2016)
+-----------------------
+- Fixed the wrong DB file linking in TOC due to name correction (again...)
+
+v1.32.03 (May 19, 2016)
+-----------------------
+- Fixed the wrong DB file linking in TOC due to name correction
+
+v1.32.02 (May 12, 2016)
+-----------------------
+- Changed module addon folder to be Atlas_WarlordsofDraenor.
+  Old folder will need to be removed manually.
+
+v1.32.01 (May 11, 2016)
+-----------------------
+- Moved map db info from core Atlas to this module for better maintenance
+- Change module name from Atlas_WorldofDraenor to Atlas_WorldlordsofDraenor, 
+  old version and folder will need to be removed
+- Changed module addon folder to be Atlas_WorldlordsofDraenor.
+  Old folder will need to be removed manually.
+
+v1.32.00 (Jul. 13, 2015)
+-----------------------
+- Splitted from Atlas core addon
+- Maps added: 
+    - Hellfire Citadel

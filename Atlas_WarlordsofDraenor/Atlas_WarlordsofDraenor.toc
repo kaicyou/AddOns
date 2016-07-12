@@ -1,0 +1,18 @@
+﻿## Interface: 60200
+## Title: Atlas |r|cFF0099FF[Warlords of Draenor]|r
+## Title-zhTW: |r|cFF0099FF[地圖]|rAtlas 德拉諾之霸
+## Notes: Warlords of Draenor Dungeon Maps
+## Notes-zhTW: 德拉諾之霸副本地圖模組
+## Version: 1.32.05
+## Author: arith, Dynaletik, dubcat
+## X-Date: May 19, 2016
+## X-Email: atlas.addon@gmail.com
+## X-Website: http://www.atlasmod.com
+## X-Category: Map
+## RequiredDeps: Atlas
+## X-Curse-Packaged-Version: v1.32.05
+## X-Curse-Project-Name: Atlas Warlords of Draenor
+## X-Curse-Project-ID: atlas-worldofdraenor
+## X-Curse-Repository-ID: wow/atlas-worldofdraenor/mainline
+
+Atlas_WarlordsofDraenor_DB.lua

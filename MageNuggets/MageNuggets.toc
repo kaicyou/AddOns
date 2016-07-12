@@ -1,0 +1,12 @@
+## Interface: 60200
+## Title: Mage Nuggets
+## Author: B-Buck (Bbuck - Eredar)
+## Version: 4.5.3
+## Notes: Mage Nuggets is a mage utility with many useful nuggets to make the lives of mages easier.
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariablesPerCharacter: MageNuggets,MageNuggets_Frames
+embeds.xml
+Localization\MNLocale-enUS.lua
+mnoptions.xml
+magenuggets.xml

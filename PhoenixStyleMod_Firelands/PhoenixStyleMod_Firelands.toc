@@ -1,0 +1,29 @@
+﻿## Interface: 60200
+## Title: Phoenix|cff7fff7fStyle|r - Firelands
+## Title-ruRU: Phoenix|cff7fff7fStyle|r - Огненные просторы
+## Author: Shurshik
+## Notes: PhoenixStyle Firelands Module
+## Notes-ruRU: Модуль PhoenixStyle - Огненные просторы
+## Dependencies: PhoenixStyle
+## LoadOnDemand: 1
+## SavedVariablesPerCharacter: psraidoptionsont2,psraidoptionschatt2,psicctekver_2,psgiveuslogs
+Localization\localization-enEN.lua
+Localization\localization-ruRU.lua
+Localization\localization-deDE.lua
+Localization\localization-frFR.lua
+Localization\localization-esES.lua
+Localization\localization-esMX.lua
+Localization\localization-koKR.lua
+Localization\localization-zhTW.lua
+Localization\localization-zhCN.lua
+Localization\localization-ptBR.lua
+PhoenixStyleMod_Firelands.lua
+PhoenixStyleMod_Firelands.xml
+Damage_show.lua
+Beth'tilac.lua
+LordRhyolith.lua
+Alysrazor.lua
+Shannox.lua
+Baleroc.lua
+MajordomoStaghelm.lua
+Ragnaros.lua

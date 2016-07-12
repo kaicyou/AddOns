@@ -1,0 +1,11 @@
+## Interface: 60200
+## Title: Mage Nuggets Stat Monitor
+## Author: B-Buck (Bbuck - Eredar)
+## Version: 1.0
+## Notes: Displays stats on a customizable window
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariablesPerCharacter: mageNuggetsStatMonitor
+embeds.xml
+MageNuggetsStatMonitor.xml
+MNStatMonitoOptions.xml

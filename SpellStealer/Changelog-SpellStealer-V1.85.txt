@@ -1,0 +1,12 @@
+tag V1.85
+48680b89c291ed26353089a66bdaa9efbe7fcbe2
+Conundrum4000 <kovarid@gmail.com>
+2014-10-19 01:49:44 -0400
+
+Tagging as v1.85
+
+
+--------------------
+
+Conundrum4000:
+	- Fixed bug in 6.0. Added seconds display for stealable-buffs that are falling off less than 60 seconds from now.

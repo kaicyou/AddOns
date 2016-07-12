@@ -1,0 +1,221 @@
+2016-07-04  Tercio  <Tercio>
+
+[a486abcc6a5e] [tip]
+* API.lua, IskarAssist.lua, Loot.lua, OptionsAnchor.lua, OptionsPanel.lua, RaidAssist.lua, Templates.lua, plugins/aurabank.lua:
+
+- few updates on the new project.
+
+
+2016-06-28  Tercio  <Tercio>
+
+[899650e760cf]
+* IskarAssist.lua, IskarAssist.toc, plugins/addonscheck.lua, plugins/attendance.lua, plugins/aurabank.lua, plugins/aurachecker.lua, plugins/battleres.lua, plugins/bislist.lua, plugins/cooldowns.lua, plugins/invite.lua, plugins/meters.lua, plugins/notes.lua, plugins/playercheck.lua, plugins/raidbislist.lua, plugins/raidgroups.lua, plugins/raidschedule.lua:
+
+- updates and fixes.
+
+
+2016-06-16  Tercio  <Tercio>
+
+[e96ae4b68d95]
+* plugins/readycheck.lua, plugins/toolbar.lua:
+
+- testing two more plugins for the raid leader assist project.
+
+
+2016-06-13  Tercio  <Tercio>
+
+[a9b64ea396d6]
+* API.lua, plugins/addonscheck.lua:
+
+tagging release
+
+
+2016-05-16  Tercio  <Tercio>
+
+[75270d7781b2]
+* IskarAssist.lua, plugins/addonscheck.lua:
+
+- fixed a background color on addon check plugin.
+
+
+2016-05-09  Tercio  <Tercio>
+
+[0eb6c456a8c4]
+* IskarAssist.lua, IskarAssist.toc, plugins/addonscheck.lua:
+
+- Updates for the Legion assist project.
+
+
+2016-05-06  Tercio  <Tercio>
+
+[2d06a7ccac59]
+* IskarAssist.lua, IskarAssist.toc, media/world_markers_icons.tga, plugins/toolbar.lua:
+
+- uploading new pluing to test purposes.
+
+
+2016-04-23  Tercio  <Tercio>
+
+[64ede574aff4]
+* API.lua, IskarAssist.lua, IskarAssist.toc, plugins/bislist.lua, plugins/cooldowns.lua, plugins/raidbislist.lua, plugins/raidgroups.lua, plugins/readycheck.lua:
+
+- fixes.
+
+
+2016-04-14  Tercio  <Tercio>
+
+[72c9b751ec4f]
+* IskarAssist.lua, plugins/attendance.lua, plugins/playercheck.lua:
+
+- updates on the assist project.
+
+
+2016-04-11  Tercio  <Tercio>
+
+[ace75c15d495]
+* IskarAssist.lua, plugins/cooldowns.lua:
+
+- more tweaks on cooldowns plugins.
+
+
+2016-04-07  Tercio  <Tercio>
+
+[5545ee2bb378]
+* IskarAssist.lua:
+
+- small fix.
+
+
+[c0be85779b18]
+* plugins/notes.lua:
+
+- small fix.
+
+
+[c040dabc4d1a]
+* API.lua, IskarAssist.lua, plugins/notes.lua:
+
+- small fixes.
+
+
+2016-03-31  Tercio  <Tercio>
+
+[a77889cbcf50]
+* IskarAssist.toc, indent.lua, plugins/cooldowns.lua, plugins/notes.lua:
+
+- few changes on the notepad plugin for the new project.
+
+
+2016-03-30  Tercio  <Tercio>
+
+[51dc71d59257]
+* API.lua, IskarAssist.lua, plugins/playercheck.lua:
+
+- playercheck plugin updated.
+
+
+2016-03-27  Tercio  <Tercio>
+
+[d83901e0382f]
+* IskarAssist.lua, plugins/notes.lua:
+
+- Version ++
+- few improvements on the notepad plugin.
+
+
+2016-03-25  Tercio  <Tercio>
+
+[ec83df15bf80]
+* IskarAssist.lua:
+
+- Raid assignments plugin got fixed.
+- Attendance plugin also got fixed.
+
+
+[de93810971f5]
+* IskarAssist.lua, OptionsPanel.lua, plugins/attendance.lua, plugins/bislist.lua, plugins/boards.lua, plugins/cooldowns.lua, plugins/meters.lua, plugins/notes.lua, plugins/playercheck.lua, plugins/raidbislist.lua:
+
+- Raid assignments plugin got fixed.
+- Attendance plugin also got fixed.
+
+
+2016-03-11  Tercioo  <Tercioo>
+
+[3cde19438231]
+* IskarAssist.lua, OptionsPanel.lua, Templates.lua, plugins/bislist.lua, plugins/playercheck.lua, plugins/raidbislist.lua, plugins/raidschedule.lua:
+
+- more update for iskar/raid assist
+
+
+2016-03-10  Tercioo  <Tercioo>
+
+[6f00ef49c713]
+* plugins/raidbislist.lua:
+
+- fixed more bugs on the latest update.
+
+
+[e95d18be546e]
+* IskarAssist.lua:
+
+- player check disabled.
+
+
+[3e834c7c108f]
+* OptionsPanel.lua, Templates.lua:
+
+-trying to weakup the packpager, 2nd attempt.
+
+
+[b6f475d797af]
+* IskarAssist.lua:
+
+-trying to weakup the packpager.
+
+
+[1ba57cb633ab]
+* IskarAssist.lua:
+
+- player check disabled.
+
+
+[5877ec0a2a47]
+* IskarAssist.lua:
+
+- player check disabled.
+
+
+[4fb281fb0f61]
+* plugins/playercheck.lua:
+
+- player check disabled.
+
+
+[b69647565574]
+* API.lua, OptionsPanel.lua, RaidAssist.lua, plugins/boards.lua, plugins/invite.lua, plugins/meters.lua, plugins/notes.lua:
+
+- more development on the iskar/raid assist project.
+
+
+2016-03-09  Tercioo  <Tercioo>
+
+[41a84d4953b4]
+* RaidAssist.lua:
+
+- slash command changed from /ra to /raa
+
+
+[f2d498e15bea]
+* IskarAssist.lua, IskarAssist.toc, OptionsPanel.lua, RaidAssist.lua, media/plugin_icons.tga, plugins/attendance.lua, plugins/battleres.lua, plugins/bislist.lua, plugins/boards.lua, plugins/cooldowns.lua, plugins/invite.lua, plugins/meters.lua, plugins/notes.lua, plugins/playercheck.lua, plugins/raidbislist.lua:
+
+- more production on the raid assist plugin.
+
+
+2016-03-06  Tercioo  <Tercioo>
+
+[2d893d0ad090]
+* IskarAssist.toc, Libs/AceSerializer-3.0/AceSerializer-3.0.lua, Libs/DF/slider.lua, locales/enUS.lua, plugins/attendance.lua, plugins/cooldowns.lua, plugins/invite.lua, plugins/notes.lua:
+
+- fixed an issue with a feature under development.
+
+

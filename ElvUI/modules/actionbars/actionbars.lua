@@ -11,6 +11,11 @@ local format, gsub, split, strfind = string.format, string.gsub, string.split, s
 --WoW API / Variables
 local hooksecurefunc = hooksecurefunc
 local CreateFrame = CreateFrame
+local UnitHealth = UnitHealth
+local UnitHealthMax = UnitHealthMax
+local UnitCastingInfo = UnitCastingInfo
+local UnitChannelInfo = UnitChannelInfo
+local UnitAffectingCombat = UnitAffectingCombat
 local UnitExists = UnitExists
 local UnitOnTaxi = UnitOnTaxi
 local VehicleExit = VehicleExit
@@ -38,6 +43,10 @@ local GetCVarBool, SetCVar = GetCVarBool, SetCVar
 local C_PetBattlesIsInBattle = C_PetBattles.IsInBattle
 local NUM_ACTIONBAR_BUTTONS = NUM_ACTIONBAR_BUTTONS
 local LE_ACTIONBAR_STATE_MAIN = LE_ACTIONBAR_STATE_MAIN
+local BOTTOMLEFT_ACTIONBAR_PAGE = BOTTOMLEFT_ACTIONBAR_PAGE
+local BOTTOMRIGHT_ACTIONBAR_PAGE = BOTTOMRIGHT_ACTIONBAR_PAGE
+local RIGHT_ACTIONBAR_PAGE = RIGHT_ACTIONBAR_PAGE
+local LEFT_ACTIONBAR_PAGE = LEFT_ACTIONBAR_PAGE
 
 --Global variables that we don't cache, list them here for mikk's FindGlobals script
 -- GLOBALS: LeaveVehicleButton, Minimap, SpellFlyout, SpellFlyoutHorizontalBackground
@@ -53,7 +62,9 @@ local LE_ACTIONBAR_STATE_MAIN = LE_ACTIONBAR_STATE_MAIN
 -- GLOBALS: InterfaceOptionsActionBarsPanelLockActionBars
 -- GLOBALS: InterfaceOptionsActionBarsPanelPickupActionKeyDropDown
 -- GLOBALS: InterfaceOptionsStatusTextPanelXP
--- GLOBALS: PlayerTalentFrame, SpellFlyoutBackgroundEnd
+-- GLOBALS: PlayerTalentFrame, SpellFlyoutBackgroundEnd, UIParent
+-- GLOBALS: VIEWABLE_ACTION_BAR_PAGES, SHOW_MULTI_ACTIONBAR_1, SHOW_MULTI_ACTIONBAR_2
+-- GLOBALS: SHOW_MULTI_ACTIONBAR_3, SHOW_MULTI_ACTIONBAR_4
 
 local Sticky = LibStub("LibSimpleSticky-1.0");
 local _LOCK
@@ -256,6 +267,57 @@ function AB:PositionAndSizeBar(barName)
 		bar:Show()
 		RegisterStateDriver(bar, "visibility", self.db[barName].visibility); -- this is ghetto
 		RegisterStateDriver(bar, "page", page);
+		bar:SetAttribute("page", page)
+
+		RegisterStateDriver(bar.vehicleFix, "vehicleFix", "[vehicleui] 1;0")
+		bar.vehicleFix:SetAttribute("_onstate-vehicleFix", [[
+			local bar = self:GetParent()
+			local ParsedText = SecureCmdOptionParse(self:GetParent():GetAttribute("page"))
+
+			if newstate == 1 then
+				if(HasVehicleActionBar()) then
+					bar:SetAttribute("state", 12)
+					bar:ChildUpdate("state", 12)
+					self:GetFrameRef("MainMenuBarArtFrame"):SetAttribute("actionpage", 12) --Update MainMenuBarArtFrame too. See http://www.tukui.org/forums/topic.php?id=35332
+				else
+					if HasTempShapeshiftActionBar() and self:GetAttribute("hasTempBar") then
+						ParsedText = GetTempShapeshiftBarIndex() or ParsedText
+					end
+
+					if ParsedText ~= 0 then
+						bar:SetAttribute("state", ParsedText)
+						bar:ChildUpdate("state", ParsedText)
+						self:GetFrameRef("MainMenuBarArtFrame"):SetAttribute("actionpage", ParsedText)
+					else
+						local newCondition = bar:GetAttribute("newCondition")
+						if newCondition then
+							newstate = SecureCmdOptionParse(newCondition)
+							bar:SetAttribute("state", newstate)
+							bar:ChildUpdate("state", newstate)
+							self:GetFrameRef("MainMenuBarArtFrame"):SetAttribute("actionpage", newstate)
+						end
+					end
+				end
+			else
+				if HasTempShapeshiftActionBar() and self:GetAttribute("hasTempBar") then
+					ParsedText = GetTempShapeshiftBarIndex() or ParsedText
+				end
+
+				if ParsedText ~= 0 then
+					bar:SetAttribute("state", ParsedText)
+					bar:ChildUpdate("state", ParsedText)
+					self:GetFrameRef("MainMenuBarArtFrame"):SetAttribute("actionpage", ParsedText)
+				else
+					local newCondition = bar:GetAttribute("newCondition")
+					if newCondition then
+						newstate = SecureCmdOptionParse(newCondition)
+						bar:SetAttribute("state", newstate)
+						bar:ChildUpdate("state", newstate)
+						self:GetFrameRef("MainMenuBarArtFrame"):SetAttribute("actionpage", newstate)
+					end
+				end
+			end
+		]]);	
 
 		if not bar.initialized then
 			bar.initialized = true;
@@ -276,6 +338,10 @@ end
 
 function AB:CreateBar(id)
 	local bar = CreateFrame('Frame', 'ElvUI_Bar'..id, E.UIParent, 'SecureHandlerStateTemplate');
+	bar.vehicleFix = CreateFrame("Frame", nil, bar, "SecureHandlerStateTemplate")
+	bar:SetFrameRef("MainMenuBarArtFrame", MainMenuBarArtFrame)
+	bar.vehicleFix:SetFrameRef("MainMenuBarArtFrame", MainMenuBarArtFrame)
+	
 	local point, anchor, attachTo, x, y = split(',', self['barDefaults']['bar'..id].position)
 	bar:Point(point, anchor, attachTo, x, y)
 	bar.id = id
@@ -318,24 +384,26 @@ function AB:CreateBar(id)
 		bar:SetAttribute("hasTempBar", false)
 	end
 
+
 	bar:SetAttribute("_onstate-page", [[
 		if HasTempShapeshiftActionBar() and self:GetAttribute("hasTempBar") then
 			newstate = GetTempShapeshiftBarIndex() or newstate
 		end
-
+		
 		if newstate ~= 0 then
 			self:SetAttribute("state", newstate)
 			control:ChildUpdate("state", newstate)
+			self:GetFrameRef("MainMenuBarArtFrame"):SetAttribute("actionpage", newstate) --Update MainMenuBarArtFrame too. See http://www.tukui.org/forums/topic.php?id=35332
 		else
 			local newCondition = self:GetAttribute("newCondition")
 			if newCondition then
 				newstate = SecureCmdOptionParse(newCondition)
 				self:SetAttribute("state", newstate)
 				control:ChildUpdate("state", newstate)
+				self:GetFrameRef("MainMenuBarArtFrame"):SetAttribute("actionpage", newstate)
 			end
 		end
 	]]);
-
 
 	self["handledBars"]['bar'..id] = bar;
 	E:CreateMover(bar, 'ElvAB_'..id, L["Bar "]..id, nil, nil, nil,'ALL,ACTIONBARS')
@@ -349,7 +417,7 @@ function AB:PLAYER_REGEN_ENABLED()
 end
 
 local function Vehicle_OnEvent(self, event)
-	if ( CanExitVehicle() and ActionBarController_GetCurrentActionBarState() == LE_ACTIONBAR_STATE_MAIN ) and not E.db.general.minimap.icons.vehicleLeave.hide then
+	if ( CanExitVehicle() ) and not E.db.general.minimap.icons.vehicleLeave.hide then
 		self:Show()
 		self:GetNormalTexture():SetVertexColor(1, 1, 1)
 		self:EnableMouse(true)
@@ -445,9 +513,9 @@ end
 
 function AB:UpdateBar1Paging()
 	if self.db.bar6.enabled then
-		E.ActionBars.barDefaults.bar1.conditions = format("[vehicleui] %d; [possessbar] %d; [overridebar] %d; [shapeshift] 13; [form,noform] 0; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6;", GetVehicleBarIndex(), GetVehicleBarIndex(), GetOverrideBarIndex())
+		E.ActionBars.barDefaults.bar1.conditions = format("[possessbar] %d; [overridebar] %d; [shapeshift] 13; [form,noform] 0; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6;", GetVehicleBarIndex(), GetOverrideBarIndex())
 	else
-		E.ActionBars.barDefaults.bar1.conditions = format("[vehicleui] %d; [possessbar] %d; [overridebar] %d; [shapeshift] 13; [form,noform] 0; [bar:2] 2; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6;", GetVehicleBarIndex(), GetVehicleBarIndex(), GetOverrideBarIndex())
+		E.ActionBars.barDefaults.bar1.conditions = format("[possessbar] %d; [overridebar] %d; [shapeshift] 13; [form,noform] 0; [bar:2] 2; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6;", GetVehicleBarIndex(), GetOverrideBarIndex())
 	end
 
 	if (E.private.actionbar.enable ~= true or InCombatLockdown()) or not self.isInitialized then return; end
@@ -722,11 +790,8 @@ function AB:DisableBlizzard()
 		_G['MultiCastActionButton'..i]:SetAttribute("statehidden", true)
 	end
 
-	--MainMenuBarArtFrame:GetAttribute("actionpage") will not update unless ActionBarController gets to update
-	--I don't think there will be any unwanted side effects from keeping it active
-	--This is in reference to 2nd part of http://www.tukui.org/forums/topic.php?id=35332
-	-- ActionBarController:UnregisterAllEvents()
-	-- ActionBarController:RegisterEvent('UPDATE_EXTRA_ACTIONBAR')
+	ActionBarController:UnregisterAllEvents()
+	ActionBarController:RegisterEvent('UPDATE_EXTRA_ACTIONBAR')
 
 	MainMenuBar:EnableMouse(false)
 	MainMenuBar:SetAlpha(0)
@@ -1055,7 +1120,7 @@ function AB:Initialize()
 
 	--We handle actionbar lock for regular bars, but the lock on PetBar needs to be handled by WoW so make some necessary updates
 	SetCVar('lockActionBars', (self.db.lockActionBars == true and 1 or 0))
-	LOCK_ACTIONBAR = (value == true and "1" or "0")
+	LOCK_ACTIONBAR = (self.db.lockActionBars == true and "1" or "0")
 
 	SpellFlyout:HookScript("OnShow", SetupFlyoutButton)
 end

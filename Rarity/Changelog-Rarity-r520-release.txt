@@ -1,0 +1,72 @@
+------------------------------------------------------------------------
+r521 | allara | 2016-07-18 07:09:42 +0000 (Mon, 18 Jul 2016) | 1 line
+Changed paths:
+   A /tags/r520-release (from /trunk:520)
+
+Tagging as r520-release
+------------------------------------------------------------------------
+r520 | allara | 2016-07-14 19:14:23 +0000 (Thu, 14 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- Added additional waypoint data (thanks Urtgard!)
+------------------------------------------------------------------------
+r519 | allara | 2016-07-11 18:19:50 +0000 (Mon, 11 Jul 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- Moved all the new toys in 7.x to the Legion category
+- Added Felsteel Annihilator, Ironhoof Destroyer
+------------------------------------------------------------------------
+r518 | allara | 2016-07-11 17:20:50 +0000 (Mon, 11 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Options_Defaults.lua
+
+- Temporarily removed Living Infernal Core because the live (6.x) client erroneously returns attempt counts for its statistics
+------------------------------------------------------------------------
+r517 | allara | 2016-07-11 05:52:20 +0000 (Mon, 11 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Options_Defaults.lua
+
+- Fix a typo
+------------------------------------------------------------------------
+r516 | allara | 2016-07-10 19:41:18 +0000 (Sun, 10 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- Added Sting Ray Pup, Brinedeep Bottom-Feeder, Fathom Dweller, Living Infernal Core
+------------------------------------------------------------------------
+r515 | allara | 2016-07-06 23:38:47 +0000 (Wed, 06 Jul 2016) | 16 lines
+Changed paths:
+   M /trunk/Core.lua
+   A /trunk/Icons/legion.blp
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+   M /trunk/Rarity.toc
+
+LEGION SUPPORT:
+
+- [#190] 7.0 compatibility (also works on pre-7.0 clients)
+- [#184] Added various toy conversions in 7.0: Goren "Log" Roller, Sassy Imp, Battle Horn, Eternal Warrior's Sigil, Aqua Jewel, Salyin Battle Banner, Hardened Shell, Essence of the Breeze, Helpful Wikky's Whistle, Bottled Tornado, Ash-Covered Horn, Chain Pet Leash
+- [#180] Added defeat detection and waypoint data for Glittering Arcane Crystal, Vibrating Arcane Crystal, Warm Arcane Crystal
+- [#177] Rarity now uses the LOOT_READY event instead of LOOT_OPENED to detect loot; this should reduce or eliminate Rarity's interaction with other loot add-ons
+- [#166] Added Land Shark, Sea Calf
+- All items that require a group in Mists of Pandaria are now considered soloable
+- Reduced the group size required for items found in Warlords of Draenor
+- Added a Legion expansion category (not used yet)
+- Added support for Seal of Inevitable Fate and Seal of Broken Fate
+- Added new Archaeology races and corrected the race IDs for Fossilized Raptor and Scepter of Azj'Aqir
+- Added new fishing and mining nodes
+- Added support for the kill achievements Adventurer of Azsuna, Adventurer of Highmountain, Adventurer of Stormheim, Adventurer of Suramar, Adventurer of Val'sharah
+
+While this build does work on live (6.x) clients, it is intended primarily for users on the Legion beta test or 7.0.x PTR.
+------------------------------------------------------------------------

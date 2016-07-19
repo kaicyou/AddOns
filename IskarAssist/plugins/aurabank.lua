@@ -205,7 +205,7 @@ function AuraBank.BuildOptions (frame)
 				C_Timer.After (3, AuraBankAurasFrameInstallScroll.UpdateScroll)
 			end)
 		else
-			AuraBank:Msg ("WeakAuras not installed or disabled.")
+			AuraBank:Msg ("WeakAuras not installed or enabled.")
 		end
 	end
 	
@@ -220,7 +220,7 @@ function AuraBank.BuildOptions (frame)
 		local aura = AuraBank.Bank [AuraBank.CurrentBoss] [auraIndex]
 		
 		local waName = aura.wa_name
-		if (waName) then
+		if (waName and WeakAuras) then
 			if (not WeakAuras.OptionsFrame) then
 				WeakAuras.OpenOptions()
 			else
@@ -285,7 +285,7 @@ function AuraBank.BuildOptions (frame)
 				f.Desc:SetText (data.desc)
 				f.Author:SetText (data.author)
 				f.spellid = data.spellid
-				if (WeakAuras.GetData (data.wa_name)) then
+				if (WeakAuras and WeakAuras.GetData (data.wa_name)) then
 					f:SetBackdropColor (unpack (backdropColorHaveAura))
 					f.HaveAura = true
 				else

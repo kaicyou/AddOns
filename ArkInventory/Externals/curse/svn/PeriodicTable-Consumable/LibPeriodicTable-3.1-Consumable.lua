@@ -1,7 +1,7 @@
 -- (c) 2007 Nymbia.  see LGPLv2.1.txt for full details.
 --DO NOT MAKE CHANGES TO THIS FILE BEFORE READING THE WIKI PAGE REGARDING CHANGING THESE FILES
 if not LibStub("LibPeriodicTable-3.1", true) then error("PT3 must be loaded before data") end
-LibStub("LibPeriodicTable-3.1"):AddData("Consumable", gsub("$Rev: 497 $", "(%d+)", function(n) return n+90000 end), {
+LibStub("LibPeriodicTable-3.1"):AddData("Consumable", gsub("$Rev: 512 $", "(%d+)", function(n) return n+90000 end), {
 	["Consumable.Anti-Venom"]="6452:25,6453:35,13462:60,2633:60,19440:60,12586:60,9030:60,3386:60,31437:70,25550:70",
 	["Consumable.Bandage.Basic"]="1251:120,2581:204,3530:287,3531:539,6450:720,6451:1152,8544:1440,8545:2352,14529:2944,14530:3336,21990:3600,21991:4072,34721:4536,34722:5480,53049:6368,53050:6864,53051:7352,72985:8400,72986:9600,111603:54400",
 	["Consumable.Bandage.Battleground.Alterac Valley"]="19307:4320",
@@ -59,7 +59,7 @@ LibStub("LibPeriodicTable-3.1"):AddData("Consumable", gsub("$Rev: 497 $", "(%d+)
 	["Consumable.Buff.Health.Flask"]="13510:400,22851:500,32898:500,46379:1300",
 	["Consumable.Buff.Health.Self"]="2458:27,23444:70,3825:120,32062:250,22837:700,22797:2000",
 	["Consumable.Buff.Other.Flask"]="13506",
-	["Consumable.Buff.Other.Self"]="3387,3823,3828,5634,6372,8529,8956,9233,9154,9172,9197,10592,13506,22823,43090,43094,43134,43141,43462,43470,43472,43473",
+	["Consumable.Buff.Other.Self"]="3387,3823,3828,5634,6372,8529,8956,9233,9154,9172,9197,10592,13506,22823,43090,43094,43134,43141,43462,43470,43472,43473,128475,128482",
 	["Consumable.Buff.Rage.Self"]="31451:10,5631:30,5633:45,13442:45",
 	["Consumable.Buff.Regen Health.Self"]="3382:2,3388:6,32062:10,3826:12,20004:20",
 	["Consumable.Buff.Regen Mana.Flask"]="32596:8,22853:25,32899:25",

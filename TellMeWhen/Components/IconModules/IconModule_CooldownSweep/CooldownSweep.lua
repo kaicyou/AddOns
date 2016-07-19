@@ -38,88 +38,71 @@ TMW:RegisterDatabaseDefaults{
 }
 
 CooldownSweep:RegisterConfigPanel_ConstructorFunc(200, "TellMeWhen_TimerSettings", function(self)
-	self.Header:SetText(L["CONFIGPANEL_TIMER_HEADER"])
+	self:SetTitle(L["CONFIGPANEL_TIMER_HEADER"])
 	
-	TMW.IE:BuildSimpleCheckSettingFrame(self, {
+	self:BuildSimpleCheckSettingFrame({
 		numPerRow = 2,
-		{
-			setting = "ShowTimer",
-			title = L["ICONMENU_SHOWTIMER"],
-			tooltip = L["ICONMENU_SHOWTIMER_DESC"],
-		},
-		{
-			setting = "ShowTimerText",
-			title = L["ICONMENU_SHOWTIMERTEXT"],
-			tooltip = L["ICONMENU_SHOWTIMERTEXT_DESC"],
-		},
-		{
-			setting = "InvertTimer",
-			title = L["ICONMENU_INVERTTIMER"],
-			tooltip = L["ICONMENU_INVERTTIMER_DESC"],
-			disabled = function(self)
-				return not TMW.CI.ics.ShowTimer
-			end,
-		},
-		{
-			setting = "ClockGCD",
-			title = L["ICONMENU_ALLOWGCD"],
-			tooltip = L["ICONMENU_ALLOWGCD_DESC"],
-			disabled = function(self)
-				return not TMW.CI.ics.ShowTimer and not TMW.CI.ics.ShowTimerText and not TMW.CI.ics.ShowTimerTextnoOCC
-			end,
-			hidden = function(self)
-				return TMW.CI.icon.typeData.hasNoGCD
-			end,
-		},
-		{
-			setting = "ShowTimerTextnoOCC",
-			title = L["ICONMENU_SHOWTIMERTEXT_NOOCC"],
-			tooltip = L["ICONMENU_SHOWTIMERTEXT_NOOCC_DESC"],
-			hidden = function()
-				return not IsAddOnLoaded("ElvUI")
-			end,
-			disabled = function(self)
-				return not TMW.CI.ics.ShowTimer
-			end,
-		},
+		function(check)
+			check:SetTexts(L["ICONMENU_SHOWTIMER"], L["ICONMENU_SHOWTIMER_DESC"])
+			check:SetSetting("ShowTimer")
+		end,
+		function(check)
+			check:SetTexts(L["ICONMENU_SHOWTIMERTEXT"], L["ICONMENU_SHOWTIMERTEXT_DESC"])
+			check:SetSetting("ShowTimerText")
+		end,
+		function(check)
+			check:SetTexts(L["ICONMENU_INVERTTIMER"], L["ICONMENU_INVERTTIMER_DESC"])
+			check:SetSetting("InvertTimer")
+
+			check:CScriptAdd("ReloadRequested", function()
+				check:SetEnabled(TMW.CI.ics.ShowTimer)
+			end)
+		end,
+		function(check)
+			check:SetTexts(L["ICONMENU_ALLOWGCD"], L["ICONMENU_ALLOWGCD_DESC"])
+			check:SetSetting("ClockGCD")
+
+			check:CScriptAdd("ReloadRequested", function()
+				check:SetShown(not TMW.CI.icon.typeData.hasNoGCD)
+
+				check:SetEnabled(TMW.CI.ics.ShowTimer or TMW.CI.ics.ShowTimerText or TMW.CI.ics.ShowTimerTextnoOCC)
+			end)
+		end,
+		function(check)
+			check:SetTexts(L["ICONMENU_SHOWTIMERTEXT_NOOCC"], L["ICONMENU_SHOWTIMERTEXT_NOOCC_DESC"])
+			check:SetSetting("ShowTimerTextnoOCC")
+
+			check:CScriptAdd("ReloadRequested", function()				
+				check:SetShown(IsAddOnLoaded("ElvUI"))
+
+				check:SetEnabled(TMW.CI.ics.ShowTimer)
+			end)
+		end,
 	})
 
-	local function CheckHidden()
-		if not self.ShowTimerTextnoOCC:IsShown() then
-			self:SetHeight(60)
-		else
-			self:SetHeight(90)
-		end
-	end
-
-	self.ShowTimerTextnoOCC:HookScript("OnShow", CheckHidden)
-	self.ShowTimerTextnoOCC:HookScript("OnHide", CheckHidden)
+	self:SetAutoAdjustHeight(true)
 end)
 
-TMW:RegisterCallback("TMW_OPTIONS_LOADED", function()
-	TMW.OptionsTable.args.main.args.checks.args.DrawEdge = {
-		name = TMW.L["UIPANEL_DRAWEDGE"],
-		desc = TMW.L["UIPANEL_DRAWEDGE_DESC"],
-		type = "toggle",
-		order = 60,
-	}
+CooldownSweep:RegisterConfigPanel_ConstructorFunc(8, "TellMeWhen_TimerSettings_Main", function(self)
+	self:SetTitle(L["DOMAIN_PROFILE"] .. ": " ..  L["CONFIGPANEL_TIMER_HEADER"])
+	
+	self:BuildSimpleCheckSettingFrame({
+		numPerRow = 1,
+		function(check)
+			check:SetTexts(L["UIPANEL_DRAWEDGE"], L["UIPANEL_DRAWEDGE_DESC"])
+			check:SetSetting("DrawEdge")
+		end,
+		function(check)
+			check:SetTexts(L["UIPANEL_FORCEDISABLEBLIZZ"], L["UIPANEL_FORCEDISABLEBLIZZ_DESC"])
+			check:SetSetting("ForceNoBlizzCC")
+		end,
+		function(check)
+			check:SetTexts(L["UIPANEL_HIDEBLIZZCDBLING"], L["UIPANEL_HIDEBLIZZCDBLING_DESC"])
+			check:SetSetting("HideBlizzCDBling")
+		end,
+	})
+end):SetPanelSet("profile")
 
-	TMW.OptionsTable.args.main.args.checks.args.ForceNoBlizzCC = {
-		name = TMW.L["UIPANEL_FORCEDISABLEBLIZZ"],
-		desc = TMW.L["UIPANEL_FORCEDISABLEBLIZZ_DESC"],
-		width = "double",
-		type = "toggle",
-		order = 61,
-	}
-
-	TMW.OptionsTable.args.main.args.checks.args.HideBlizzCDBling = {
-		name = TMW.L["UIPANEL_HIDEBLIZZCDBLING"],
-		desc = TMW.L["UIPANEL_HIDEBLIZZCDBLING_DESC"],
-		width = "double",
-		type = "toggle",
-		order = 62,
-	}
-end)
 
 TMW:RegisterUpgrade(60436, {
 	icon = function(self, ics)
@@ -249,6 +232,7 @@ end
 function CooldownSweep:UpdateCooldown()
 	local cd = self.cooldown
 	local duration = cd.duration
+	local icon = self.icon
 	
 	if duration > 0 then
 		if ElvUI then
@@ -286,8 +270,10 @@ function CooldownSweep:UpdateCooldown()
 
 		cd:SetCooldown(cd.start, duration)
 		cd:Show()
-	else
+	elseif icon.attributes.realAlpha == 0 or icon.group:GetEffectiveAlpha() == 0 then
 		cd:Hide()
+	else
+		cd:SetCooldown(0, 0)
 	end
 end
 
@@ -327,3 +313,8 @@ function CooldownSweep:REVERSE(icon, reverse)
 	self.cooldown:SetReverse(reverse)
 end
 CooldownSweep:SetDataListner("REVERSE")
+
+function CooldownSweep:REALALPHA(icon, realAlpha)
+	self:UpdateCooldown()
+end
+CooldownSweep:SetDataListner("REALALPHA")

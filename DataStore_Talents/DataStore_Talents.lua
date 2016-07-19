@@ -21,13 +21,8 @@ local MSG_TALENTS_TRANSFER					= 2	-- .. and send the data
 -- TODO: 
 	-- add support for hunter pets' talent trees
 
-local NUM_GLYPH_SLOTS = 6
-
 local AddonDB_Defaults = {
 	global = {
-		Reference = {
-			GlyphNames = {},		-- ex: Arcane Barrage
-		},
 		Guilds = {
 			['*'] = {			-- ["Account.Realm.Name"] 
 				Members = {
@@ -46,8 +41,6 @@ local AddonDB_Defaults = {
 				Class = nil,				-- englishClass
 				PointsSpent = nil,		-- "51,5,15 ...	" 	3 numbers for primary spec, 3 for secondary, comma separated
 				TalentTrees = {},
-				Glyphs = {},				-- socketed glyphs
-				GlyphList = {},			-- full list of glyphs
 			}
 		}
 	}
@@ -61,7 +54,6 @@ local ReferenceDB_Defaults = {
 			Order = nil,
 			Version = nil,					-- build number under which this class ref was saved
 			Locale = nil,					-- locale under which this class ref was saved
-			Glyphs = {},
 			Trees = {
 				['*'] = {					-- tree name
 					icon = nil,
@@ -214,112 +206,10 @@ local function ScanTalentReference(ref)
 	-- end
 end
 
-local function ScanGlyphSockets()
-	-- GLYPHTYPE_MAJOR = 1;
-	-- GLYPHTYPE_MINOR = 2;
-
-	--		1
-	--	3		5
-	--	6		4
-	--		2
-
-	local level = UnitLevel("player")
-	if not level or level < 15 then return end		-- don't scan anything for low level characters
-	
-	local glyphs = addon.ThisCharacter.Glyphs
-	wipe(glyphs)
-	
-	-- local enabled, glyphType, spell, glyphID, tooltipIndex
-	-- local link, index
-	-- local attrib
-
-	-- for specNum = 1, GetNumSpecGroups() do
-		-- for i = 1, NUM_GLYPH_SLOTS do
-			-- index = ((specNum - 1) * NUM_GLYPH_SLOTS) + i
-	      
-		   -- enabled, glyphType, tooltipIndex, spell = GetGlyphSocketInfo(i, specNum)
-			
-			-- bit 0 : enabled
-			-- bits 1-2 : glyphType
-			-- bits 3-19 : spellID (yes, 17 bits, not 16, just in case spell ids go beyond 65k)
-			-- bits 20-22 : tooltip index. So far only 0, 1, 2, but let's use 3 bits to play it safe.
-			-- bits 23- : glyphID
-			-- deprecated: icon : returned by GetSpellInfo()
-			
-			-- attrib = enabled or 0
-			-- attrib = attrib + LeftShift(glyphType or 0, 1)
-			-- if spell then
-				-- attrib = attrib + LeftShift(spell, 3)
-			-- end
-
-			-- attrib = attrib + LeftShift(tooltipIndex, 20)
-			
-			-- if enabled then
-				-- link = GetGlyphLink(i, specNum)
-				-- if link then
-					-- glyphID = link:match("glyph:(%d+)")
-					-- if glyphID then
-						-- attrib = attrib + LeftShift(glyphID, 23)
-					-- end
-				-- end
-			-- end
-			
-			-- if attrib > 0 then
-				-- glyphs[index] = attrib
-			-- end
-		-- end
-	-- end
-	
-	addon.ThisCharacter.lastUpdate = time()
-end
-
-local function ScanGlyphList()
-	ToggleGlyphFilter(7)		-- this will attempt to open all categories
-	if GetNumGlyphs() == 2 then	-- if 1 was closed, all we be closed after toggling the filter, and there will be exactly 3 lines (the headers)
-		ToggleGlyphFilter(7)			-- so toggle again to make sure all categories are expanded
-	end
-	
-	local NamesRef = addon.db.global.Reference.GlyphNames
-	local glyphs = addon.ThisCharacter.GlyphList
-	wipe(glyphs)
-	
-	local attrib
-	for index = 1, GetNumGlyphs() do
-		local name, group, isKnown, _, glyphID = GetGlyphInfo(index)
-		
-		-- bit 0 : isHeader
-		-- bits 1-2 : group (value = 1 2 or 3)
-		-- bit 3: isKnown
-		-- bits 4- : glyphID
-		
-		if name == "header" then
-			attrib = 1
-			isKnown = 1
-			glyphID = 0
-		else
-		
-			-- if not addon.GlyphIDToSpellID[glyphID] then
-				-- DEFAULT_CHAT_FRAME:AddMessage("glyph id " .. glyphID .. " missing : " .. name)
-			-- end
-		
-			attrib = 0
-			isKnown = (isKnown == true) and 1 or 0
-			NamesRef[glyphID] = name
-		end
-		
-		attrib = attrib + LeftShift(group, 1)
-		attrib = attrib + LeftShift(isKnown, 3)
-		attrib = attrib + LeftShift(glyphID, 4)
-		
-		glyphs[index] = attrib
-	end
-end
 
 -- *** Event Handlers ***
 local function OnPlayerAlive()
 	ScanTalents()
-	ScanGlyphList()
-	ScanGlyphSockets()
 	
 	local _, class = UnitClass("player")		-- we need the englishClass
 	local ref = addon.ref.global[class]
@@ -442,102 +332,6 @@ local function _GetTalentPrereqs(class, tree, index)
 	end
 end
 
-local function _GetGlyphSocketInfo(character, specNum, index)
-	index = ((specNum - 1) * NUM_GLYPH_SLOTS) + index		-- 4th glyph = 4 for spec 1, 13 for spec 2
-	local glyph = character.Glyphs[index]
-	if not glyph then return 0 end
-		
-	-- bit 0 : enabled
-	-- bits 1-2 : glyphType
-	-- bits 3-19 : spellID (yes, 17 bits, not 16, just in case spell ids go beyond 65k)
-	-- bits 20-22 : tooltip index. So far only 0, 1, 2, but let's use 3 bits to play it safe.
-	-- bits 23- : glyphID
-	
-	local enabled = bAnd(glyph, 1)
-	local glyphType = bAnd(RightShift(glyph, 1), 3)
-	local spell = bAnd(RightShift(glyph, 3), 131071)	-- 17 bits mask
-	local tooltipIndex = bAnd(RightShift(glyph, 20), 7)
-	local glyphID = RightShift(glyph, 23)
-	local _, _, icon = GetSpellInfo(spell)
-
-	return enabled, glyphType, spell, icon, glyphID, tooltipIndex
-end
-	
-local function _GetGlyphLink(glyphID)
-	local spellID = addon.GlyphIDToSpellID[glyphID]
-	if spellID then
-		local name = GetSpellInfo(spellID)
-		if name then
-			return format("|cff66bbff|Hglyph:%s|h[%s]|h|r", glyphID, name)
-		end
-	end
-end
-
-local function _GetNumGlyphs(character)
-	-- returns the number of glyphs in the full list
-	return #character.GlyphList
-end
-
-local function _GetGlyphInfo(character, index)
-	-- return info about an entry in the glyph list
-	local glyph = character.GlyphList[index]
-	if not glyph then return end
-	
-	-- bit 0 : isHeader
-	-- bits 1-2 : group (value = 1 2 or 3)
-	-- bit 3: isKnown
-	-- bits 4- : spellID
-	
-	local isHeader = bAnd(glyph, 1)
-	isHeader = (isHeader == 1) and true or nil
-	
-	local group = bAnd(RightShift(glyph, 1), 3)
-	local isKnown = bAnd(RightShift(glyph, 3), 1)
-	isKnown = (isKnown == 1) and true or nil
-	
-	local glyphID = RightShift(glyph, 4)
-	
-	return isHeader, isKnown, group, glyphID
-end
-
-local function _GetGlyphInfoByID(glyphID)
-	local NamesRef = addon.db.global.Reference.GlyphNames
-
-	local spellID = addon.GlyphIDToSpellID[glyphID]
-	local name, rank, icon, link
-	if spellID then
-		name, rank, icon = GetSpellInfo(spellID)
-		
-		if name then
-			link = format("|cff66bbff|Hglyph:%s|h[%s]|h|r", glyphID, name)
-		end
-	end
-	
-	-- name, icon, link
-	return NamesRef[glyphID], icon or "", link
-end
-
-local function _IsGlyphKnown(character, itemID)
-	--[[	3 possible outcome
-		1) return nil, nil : doesn't know the glyph, can't learn it
-		2) return nil, true : doesn't know the glyph, but can learn it (same class)
-		3) return true, true : knows the glyph
-	--]]
-	
-	local glyphID = addon.ItemIDToGlyphID[itemID]
-	if not glyphID then return end
-	
-	local id
-	for index, glyph in ipairs(character.GlyphList) do
-		id = RightShift(glyph, 4)
-
-		if id == glyphID then
-			local isKnown = bAnd(RightShift(glyph, 3), 1)
-			return (isKnown == 1) and true or nil, true
-		end
-	end
-end
-
 local sentRequests		-- recently sent requests
 
 local function _RequestGuildMemberTalents(member)
@@ -628,12 +422,6 @@ local PublicMethods = {
 	GetActiveTalents = _GetActiveTalents,
 	GetNumPointsSpent = _GetNumPointsSpent,
 	GetTalentPrereqs = _GetTalentPrereqs,
-	GetGlyphSocketInfo = _GetGlyphSocketInfo,
-	GetGlyphLink = _GetGlyphLink,
-	GetNumGlyphs = _GetNumGlyphs,
-	GetGlyphInfo = _GetGlyphInfo,
-	GetGlyphInfoByID = _GetGlyphInfoByID,
-	IsGlyphKnown = _IsGlyphKnown,
 	RequestGuildMemberTalents = _RequestGuildMemberTalents,
 	GetGuildMemberTalentRank = _GetGuildMemberTalentRank,
 	GetGuildMemberNumPointsSpent = _GetGuildMemberNumPointsSpent,
@@ -698,10 +486,6 @@ function addon:OnInitialize()
 	
 	DataStore:SetCharacterBasedMethod("GetTalentRank")
 	DataStore:SetCharacterBasedMethod("GetActiveTalents")
-	DataStore:SetCharacterBasedMethod("GetGlyphSocketInfo")
-	DataStore:SetCharacterBasedMethod("GetNumGlyphs")
-	DataStore:SetCharacterBasedMethod("GetGlyphInfo")
-	DataStore:SetCharacterBasedMethod("IsGlyphKnown")
 	
 	DataStore:SetGuildBasedMethod("GetGuildMemberTalentRank")
 	DataStore:SetGuildBasedMethod("GetGuildMemberNumPointsSpent")
@@ -713,17 +497,9 @@ end
 function addon:OnEnable()
 	addon:RegisterEvent("PLAYER_ALIVE", OnPlayerAlive)
 	addon:RegisterEvent("PLAYER_TALENT_UPDATE", ScanTalents)
-	addon:RegisterEvent("GLYPH_ADDED", ScanGlyphSockets)
-	addon:RegisterEvent("GLYPH_REMOVED", ScanGlyphSockets)
-	addon:RegisterEvent("GLYPH_UPDATED", ScanGlyphSockets)
-	addon:RegisterEvent("USE_GLYPH", ScanGlyphList)
 end
 
 function addon:OnDisable()
 	addon:UnregisterEvent("PLAYER_ALIVE")
 	addon:UnregisterEvent("PLAYER_TALENT_UPDATE")
-	addon:UnregisterEvent("GLYPH_ADDED")
-	addon:UnregisterEvent("GLYPH_REMOVED")
-	addon:UnregisterEvent("GLYPH_UPDATED")
-	-- addon:UnregisterEvent("USE_GLYPH")
 end

@@ -1,10 +1,10 @@
--- $Id: Atlas_OutdoorRaids-zhTW.lua 4 2015-07-06 14:31:55Z arith $
+-- $Id: Atlas_OutdoorRaids-zhTW.lua 13 2016-07-19 13:56:42Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2015 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 	This file is part of Atlas.
 
@@ -25,31 +25,33 @@
 --]]
 
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
-local AL = AceLocale:NewLocale("Atlas_OutdoorRaids", "zhTW", false);
--- Localize file must set above to false, for example:
---    local AL = AceLocale:NewLocale("Atlas_OutdoorRaids", "deDE", false);
+local L = AceLocale:NewLocale("Atlas_OutdoorRaids", "zhTW", false);
 
-if AL then
-	AL["Ancient Skull Pile"] = "古老的顱骨堆";
-	AL["Darkscreecher Akkarai"] = "黑暗尖叫者阿卡萊";
-	AL["Draenor World Bosses"] = "德拉諾世界首領";
-	AL["Gezzarak the Huntress"] = "女獵人吉札拉";
-	AL["Grella <Skyguard Quartermaster>"] = "葛瑞拉 <禦天者軍需官>";
-	AL["Hazzik"] = "海茲克";
-	AL["Hazzik's Package"] = "海茲克的包裹";
-	AL["Karrog"] = "凱羅格";
-	AL["Outdoor Raid Encounters"] = "戶外首領地圖";
-	AL["Pandaria World Bosses"] = "潘達利亞世界首領";
-	AL["Sahaak <Keeper of Scrolls>"] = "撒哈克 <卷軸看守者>";
-	AL["Severin <Skyguard Medic>"] = "瑟弗林 <禦天者醫療員>";
-	AL["Skull Pile"] = "顱骨堆";
-	AL["Sky Commander Adaris"] = "天空指揮官艾德瑞斯";
-	AL["Sky Sergeant Doryn"] = "天空士官多林";
-	AL["Skyguard Handler Deesak"] = "禦天者管理者迪塞克";
-	AL["Skyguard Prisoner"] = "禦天者囚犯";
-	AL["Talonpriest Ishaal"] = "魔爪祭司艾夏歐";
-	AL["Talonpriest Skizzik"] = "魔爪祭司史奇吉克";
-	AL["Talonpriest Zellek"] = "魔爪祭司札列克";
-	AL["Terokk"] = "泰洛克";
-	AL["Vakkiz the Windrager"] = "『風怒者』瓦奇茲";
+if L then
+
+L["Ancient Skull Pile"] = "古老的顱骨堆"
+L["Darkscreecher Akkarai"] = "黑暗尖叫者阿卡萊"
+L["Draenor World Bosses"] = "德拉諾世界首領"
+L["Gezzarak the Huntress"] = "女獵人吉札拉"
+L["Grella <Skyguard Quartermaster>"] = "葛瑞拉 <禦天者軍需官>"
+L["Hazzik"] = "海茲克"
+L["Hazzik's Package"] = "海茲克的包裹"
+L["Karrog"] = "凱羅格"
+L["Outdoor Raid Encounters"] = "戶外首領地圖"
+L["Pandaria World Bosses"] = "潘達利亞世界首領"
+L["Sahaak <Keeper of Scrolls>"] = "撒哈克 <卷軸看守者>"
+L["Severin <Skyguard Medic>"] = "瑟弗林 <禦天者醫療員>"
+L["Skull Pile"] = "顱骨堆"
+L["Sky Commander Adaris"] = "天空指揮官艾德瑞斯"
+L["Skyguard Handler Deesak"] = "禦天者管理者迪塞克"
+L["Skyguard Prisoner"] = "禦天者囚犯"
+L["Sky Sergeant Doryn"] = "天空士官多林"
+L["Talonpriest Ishaal"] = "魔爪祭司艾夏歐"
+L["Talonpriest Skizzik"] = "魔爪祭司史奇吉克"
+L["Talonpriest Zellek"] = "魔爪祭司札列克"
+L["Terokk"] = "泰洛克"
+L["Vakkiz the Windrager"] = "『風怒者』瓦奇茲"
+L["ToC/Description"] = "Atlas 戶外首領地圖插件" -- Needs review
+L["ToC/Title"] = "|r|cFF0099FF[地圖]|rAtlas 戶外首領地圖"
+
 end

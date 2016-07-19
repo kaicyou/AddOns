@@ -8,6 +8,8 @@ if (not DF) then
 end
 
 local DATABASE = "RADataBase"
+local FOLDERPATH = "IskarAssist"
+local _
 
 -- já existe uma versão do raidassist instaldo.
 if (_G.RaidAssist) then
@@ -59,6 +61,7 @@ local options_table = {
 }
 
 local RA = DF:CreateAddOn ("RaidAssist", DATABASE, default_config, options_table)
+RA.InstallDir = FOLDERPATH
 
 do
 	local serialize = LibStub ("AceSerializer-3.0")

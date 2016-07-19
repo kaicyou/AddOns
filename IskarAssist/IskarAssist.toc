@@ -1,8 +1,8 @@
-## Interface: 60200
+## Interface: 70000
 ## Title: Iskar Assist
 ## Notes: Helps with the Encounter against Iskar on Hellfire Citadel.
 ## SavedVariables: IskarAssistDB, RADataBase
-## X-Curse-Packaged-Version: r86
+## X-Curse-Packaged-Version: r90
 ## X-Curse-Project-Name: Iskar Assist
 ## X-Curse-Project-ID: iskar-assist
 ## X-Curse-Repository-ID: wow/iskar-assist/mainline

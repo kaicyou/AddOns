@@ -1,0 +1,14 @@
+------------------------------------------------------------------------
+r69 | thaoky | 2016-07-18 16:08:44 +0000 (Mon, 18 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/DataStore_Crafts.lua
+   M /trunk/DataStore_Crafts.toc
+
+7.0 Compatibility Release
+------------------------------------------------------------------------
+r68 | thaoky | 2015-08-17 16:19:31 +0000 (Mon, 17 Aug 2015) | 1 line
+Changed paths:
+   M /trunk/DataStore_Crafts.toc
+
+TOC Update
+------------------------------------------------------------------------

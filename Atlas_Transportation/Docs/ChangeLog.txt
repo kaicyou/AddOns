@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 23 2016-07-01 10:20:35Z arith $
+$Id: ChangeLog.txt 25 2016-07-19 13:55:09Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,15 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.33.00 (Jul. 19, 2016)
+------------------------
+- Toc updated to support WoW Legion pre-patch (7.0.3)
+- Added LibBabble-Faction lib to replace the faction looking-up with AtlasIngameLocales's GetFactionInfoByID
+- Replace punctuations by using Atlas' localization
+- Translation update:
+  - Simplified Chinese (ananhaid)
+  - German (pas06)
 
 v1.32.06 (Jul. 01, 2016)
 ------------------------

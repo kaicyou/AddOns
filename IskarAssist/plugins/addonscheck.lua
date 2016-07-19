@@ -120,6 +120,13 @@ function AddonsCheck.BuildOptions (frame)
 	end
 	frame.FirstRun = true
 
+	local WelcomeLabel = AddonsCheck:CreateLabel (frame, "This tool tells the raid leader who is using mandatory raid addons.\n\nSelect which addons you want to check on 'Add AddOn' button.\nClick on Sync to see the results.")
+	WelcomeLabel:SetPoint ("center", RaidAssistOptionsPanel, "center", 0, 75)
+	WelcomeLabel.align = "center"
+	AddonsCheck:SetFontSize (WelcomeLabel, 14)
+	AddonsCheck:SetFontColor (WelcomeLabel, "silver")
+	
+	
 	local fillPanel = AddonsCheck:CreateFillPanel (frame:GetParent(), {}, 790, 460, false, false, false, {rowheight = 16}, _, "RAAddOnsCheckFP")
 	--fillPanel:SetPoint ("topleft", frame, "topleft", -10, -35)
 	fillPanel:SetPoint ("topleft", frame, "topleft", 0, -30)
@@ -170,6 +177,7 @@ function AddonsCheck.BuildOptions (frame)
 	
 	--Sync Button
 	local sync_func = function()
+		WelcomeLabel:Hide()
 		AddonsCheck.ManageAddOnsFrame:Hide()
 		fillPanel:Show()
 		frame.button_add.text = "Add AddOn"

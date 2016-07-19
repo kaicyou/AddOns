@@ -1,6 +1,11 @@
-﻿-- (c) 2009-2014, all rights reserved.
--- $Revision: 1325 $
--- $Date: 2015-05-06 11:14:27 +1000 (Wed, 06 May 2015) $
+﻿--[[
+
+License: All Rights Reserved, (c) 2009-2016
+
+$Revision: 1559 $
+$Date: 2016-07-19 21:24:22 +1000 (Tue, 19 Jul 2016) $
+
+]]--
 
 
 local _G = _G
@@ -42,11 +47,11 @@ function ArkInventoryRules.OnInitialize( )
 	-- scrap: http://wow.curse.com/downloads/wow-addons/details/scrap.aspx
 	if IsAddOnLoaded( "Scrap" ) then
 		
-		ArkInventory.Output( string.format( "%s: Scrap %s", ArkInventory.Localise["CONFIG_RULES"], ArkInventory.Localise["ENABLED"] ) )
+		ArkInventory.Output( string.format( "%s: Scrap %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
 		
 		if IsAddOnLoaded( "Scrap_Merchant" ) then
 			if Scrap.ToggleJunk then
-				ArkInventory.Output( string.format( "%s: Scrap Merchant %s", ArkInventory.Localise["CONFIG_RULES"], ArkInventory.Localise["ENABLED"] ) )
+				ArkInventory.Output( string.format( "%s: Scrap Merchant %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
 				ArkInventory.MySecureHook( Scrap, "ToggleJunk", ArkInventoryRules.ItemCacheClear )
 			end
 		end
@@ -56,7 +61,7 @@ function ArkInventoryRules.OnInitialize( )
 	-- selljunk: http://wow.curse.com/downloads/wow-addons/details/sell-junk.aspx
 	if IsAddOnLoaded( "SellJunk" ) then
 		if SellJunk.Add and SellJunk.Rem then
-			ArkInventory.Output( string.format( "%s: SellJunk %s", ArkInventory.Localise["CONFIG_RULES"], ArkInventory.Localise["ENABLED"] ) )
+			ArkInventory.Output( string.format( "%s: SellJunk %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
 			ArkInventory.MySecureHook( SellJunk, "Add", ArkInventoryRules.ItemCacheClear )
 			ArkInventory.MySecureHook( SellJunk, "Rem", ArkInventoryRules.ItemCacheClear )
 		end
@@ -65,7 +70,7 @@ function ArkInventoryRules.OnInitialize( )
 	-- reagent restocker: http://wow.curse.com/downloads/wow-addons/details/reagent_restocker.aspx
 	if IsAddOnLoaded( "ReagentRestocker" ) then
 		if ReagentRestocker.addItemToSellingList and ReagentRestocker.deleteItem then
-			ArkInventory.Output( string.format( "%s: ReagentRestocker %s", ArkInventory.Localise["CONFIG_RULES"], ArkInventory.Localise["ENABLED"] ) )
+			ArkInventory.Output( string.format( "%s: ReagentRestocker %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
 			ArkInventory.MySecureHook( ReagentRestocker, "addItemToSellingList", ArkInventoryRules.ItemCacheClear )
 			ArkInventory.MySecureHook( ReagentRestocker, "deleteItem", ArkInventoryRules.ItemCacheClear )
 		end
@@ -75,29 +80,24 @@ end
 
 function ArkInventoryRules.OnEnable( )
 	
-	-- update all rules, set enabled and format correctly, first bag open will validate them
+	-- update all rules, set non damaged and format correctly, first use of each rule will validate them
+	--LEGION TODO
+	
 	local cat = ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule]
 	for k, v in pairs( cat.data ) do
-		if v.used then
-			v.enabled = ArkInventory.db.profile.option.rule[k]
-			ArkInventoryRules.EntryEdit( k, v )
-		else
-			--ArkInventory.Output( "wiping rule ", k )
-			ArkInventoryRules.EntryRemove( k )
-		end
+		v.damaged = false
 	end
 	
 	if not IsAddOnLoaded( "Outfitter" ) then
 		ArkInventory.Global.Rules.Enabled = true
 	end
 	
-	ArkInventory.MediaSetFontFrame( ARKINV_Rules )
+	ArkInventory.MediaFrameDefaultFontSet( ARKINV_Rules )
 	
 	ArkInventory.ItemCacheClear( )
 	ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
 	
-	
-	ArkInventory.Output( string.format( "%s %s", ArkInventory.Localise["CONFIG_RULES"], ArkInventory.Localise["ENABLED"] ) )
+	ArkInventory.Output( string.format( "%s %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
 	
 end
 
@@ -114,7 +114,7 @@ function ArkInventoryRules.OutfitterInitialize( ... )
 	
 	if Outfitter:IsInitialized( ) then
 		
-		ArkInventory.Output( string.format( "%s: Outfitter %s", ArkInventory.Localise["CONFIG_RULES"], ArkInventory.Localise["ENABLED"] ) )
+		ArkInventory.Output( string.format( "%s: Outfitter %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
 		
 		Outfitter:RegisterOutfitEvent( "ADD_OUTFIT", ArkInventoryRules.ItemCacheClear )
 		Outfitter:RegisterOutfitEvent( "DELETE_OUTFIT", ArkInventoryRules.ItemCacheClear )
@@ -141,30 +141,15 @@ function ArkInventoryRules.OnDisable( )
 	ArkInventory.ItemCacheClear( )
 	ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
 	
-	ArkInventory.Output( string.format( "%s %s", ArkInventory.Localise["CONFIG_RULES"], ArkInventory.Localise["DISABLED"] ) )
-	
-end
-
-function ArkInventoryRules.ItemAdd( rulenum, h )
-
-	local r = ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[rulenum]
-	if not r then
-		return
-	end
-	
-	local id = ArkInventory.ObjectIDInternal( h )
-	
-	r.formula = string.format( "%s or id( %s )", r.formula, id )
-	r["enabled"] = ArkInventory.db.profile.option.rule[rulenum]
-	
-	ArkInventoryRules.EntryEdit( rulenum, r )
+	ArkInventory.Output( string.format( "%s %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["DISABLED"] ) )
 	
 end
 
 function ArkInventoryRules.AppliesToItem( rid, i )
-
-	local ra = ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[rid]
-	local rp = ArkInventory.db.profile.option.rule[rid]
+	
+	local ra = ArkInventory.ConfigInternalCategoryRuleGet( rid )
+	local player = ArkInventory.LocationPlayerGet( i.loc_id )
+	local rp = player.catset.category.active[ArkInventory.Const.Category.Type.Rule][rid]
 	
 	if not i or not rp or not ra or not ra.used or ra.damaged then
 		return false, nil
@@ -191,6 +176,7 @@ function ArkInventoryRules.AppliesToItem( rid, i )
 	end
 	
 end
+
 
 function ArkInventoryRules.System.soulbound( )
 	return not not ArkInventoryRules.Object.sb
@@ -254,26 +240,26 @@ function ArkInventoryRules.System.type( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"], fn ), 0 )
 	end
 	
-	local e = string.lower( select( 8, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) ) )
+	local e1, _, _, _, _, _, _, e2 = select( 8, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) )
 	
-	if e ~= "" then
+	for ax = 1, ac do
 		
-		for ax = 1, ac do
-			
-			local arg = select( ax, ... )
-			
-			if not arg then
-				error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NIL"], fn, ax ), 0 )
-			end
-			
-			if type( arg ) ~= "string" then
-				error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, ax, ArkInventory.Localise["STRING"] ), 0 )
-			end
-			
-			if e == string.lower( string.trim( arg ) ) then
+		local arg = select( ax, ... )
+		
+		if not arg then
+			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NIL"], fn, ax ), 0 )
+		end
+		
+		if type( arg ) == "number" then
+			if e1 and e1 == arg then
 				return true
 			end
-			
+		elseif type( arg ) == "string" then
+			if e2 and string.lower( string.trim( e2 ) ) == string.lower( string.trim( arg ) ) then
+				return true
+			end
+		else
+			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, ax, string.format( "%s or %s", ArkInventory.Localise["STRING"], ArkInventory.Localise["NUMBER"] ) ), 0 )
 		end
 		
 	end
@@ -296,26 +282,26 @@ function ArkInventoryRules.System.subtype( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"], fn ), 0 )
 	end
 	
-	local e = string.lower( select( 9, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) ) )
+	local e1, _, _, _, _, _, _, e2 = select( 9, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) )
 	
-	if e ~= "" then
+	for ax = 1, ac do
 		
-		for ax = 1, ac do
-			
-			local arg = select( ax, ... )
-			
-			if not arg then
-				error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NIL"], fn, ax ), 0 )
-			end
-			
-			if type( arg ) ~= "string" then
-				error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, ax, ArkInventory.Localise["STRING"] ), 0 )
-			end
-			
-			if e == string.lower( string.trim( arg ) ) then
+		local arg = select( ax, ... )
+		
+		if not arg then
+			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NIL"], fn, ax ), 0 )
+		end
+		
+		if type( arg ) == "number" then
+			if e1 and e1 == arg then
 				return true
 			end
-			
+		elseif type( arg ) == "string" then
+			if e2 and string.lower( string.trim( e2 ) ) == string.lower( string.trim( arg ) ) then
+				return true
+			end
+		else
+			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, ax, string.format( "%s or %s", ArkInventory.Localise["STRING"], ArkInventory.Localise["NUMBER"] ) ), 0 )
 		end
 		
 	end
@@ -330,7 +316,7 @@ function ArkInventoryRules.System.equip( ... )
 		return false
 	end
 	
-	local e = string.trim( select( 11, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) ) )
+	local e = string.trim( ArkInventory.ObjectInfoEquipLoc( ArkInventoryRules.Object.h ) )
 	if string.len( e ) > 1 then
 		e = _G[e]
 	end
@@ -547,6 +533,46 @@ function ArkInventoryRules.System.itemleveluse( ... )
 	
 end
 
+function ArkInventoryRules.System.itemfamily( ... )
+	
+	if not ArkInventoryRules.Object.h or ArkInventoryRules.Object.class ~= "item" then
+		return false
+	end
+	
+	local fn = "itemfamily"
+	
+	local ac = select( '#', ... )
+	
+	if ac == 0 then
+		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"], fn ), 0 )
+	end
+	
+	local itemloc = select( 11, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) )
+	
+	for ax = 1, ac do
+		
+		local arg = select( ax, ... )
+		
+		if type( arg ) ~= "number" then
+			
+			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, ax, ArkInventory.Localise["NUMBER"] ), 0 )
+			
+		elseif itemloc ~= "INVTYPE_BAG" then
+			
+			local it = GetItemFamily( ArkInventoryRules.Object.h )
+			
+			if bit.band( it, arg ) > 0 then
+				return true
+			end
+			
+		end
+		
+	end
+	
+	return false
+	
+end
+
 function ArkInventoryRules.System.periodictable( ... )
 	
 	if not ArkInventoryRules.Object.h or ArkInventoryRules.Object.class ~= "item" then
@@ -667,6 +693,10 @@ end
 function ArkInventoryRules.System.outfit( ... )
 	
 	if not ArkInventoryRules.Object.h or ArkInventoryRules.Object.class ~= "item" then
+		return false
+	end
+	
+	if ArkInventoryRules.Object.loc_id and ArkInventory.Global.Location[ArkInventoryRules.Object.loc_id].isOffline then
 		return false
 	end
 	
@@ -903,7 +933,7 @@ function ArkInventoryRules.System.vendorpriceunder( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, 1, ArkInventory.Localise["NUMBER"] ), 0 )
 	end
 	
-	return ArkInventoryRules.System.vendorprice( 1, t )
+	return ArkInventoryRules.System.vendorprice( 1, arg1 )
 	
 end
 
@@ -925,7 +955,7 @@ function ArkInventoryRules.System.vendorpriceover( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, 1, ArkInventory.Localise["NUMBER"] ), 0 )
 	end
 	
-	return ArkInventoryRules.System.vendorprice( 0, t )
+	return ArkInventoryRules.System.vendorprice( 0, arg1 )
 	
 end
 
@@ -952,19 +982,19 @@ function ArkInventoryRules.System.vendorprice( opt, t )
 		local v = tonumber( t )
 		if type( v ) == "number" then
 		
-			if opt == 1 then
+			if opt == 0 then
 				
-				--ArkInventory.Output( "[", count, "] x [", ArkInventoryRules.Object.h, "] = [", price, "], under=[", v, "]" )
-				
-				if price <= v then
-					return true
-				end
-				
-			else
-			
 				--ArkInventory.Output( "[", count, "] x [", ArkInventoryRules.Object.h, "] = [", price, "], over=[", v, "]" )
 			
 				if price >= v then
+					return true
+				end
+				
+			elseif opt == 1 then
+			
+				--ArkInventory.Output( "[", count, "] x [", ArkInventoryRules.Object.h, "] = [", price, "], under=[", v, "]" )
+				
+				if price <= v then
 					return true
 				end
 				
@@ -1314,6 +1344,163 @@ function ArkInventoryRules.System.mounttype( ... )
 	
 end
 
+function ArkInventoryRules.System.bonus( ... )
+	
+	if not ArkInventoryRules.Object.h or ArkInventoryRules.Object.class ~= "item" then
+		return false
+	end
+	
+	local fn = "bonus"
+	
+	local ac = select( '#', ... )
+	
+	local bid = ArkInventory.ObjectInfoBonusId( ArkInventoryRules.Object.h )
+	
+	if not bid then
+		return
+	end
+	
+	if ac == 0 then
+		return true
+	end
+	
+	for ax = 1, ac do
+		
+		local arg = select( ax, ... )
+		
+		if type( arg ) ~= "number" then
+			
+			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, ax, ArkInventory.Localise["NUMBER"] ), 0 )
+			
+		else
+			
+			if bid[arg] then
+				return true
+			end
+			
+		end
+		
+	end
+	
+	return false
+	
+end
+
+--[[
+	
+	tsmgroup( ) = in any group
+	tsmgroup( "test" ) = is in a group named test
+	tsmgroup( "test1", "test2" ) = is in a group named either test1 or test2
+	tsmgroup( "test->*" ) = is in a group named test or any of its subgroups
+	tsmgroup( "test->sub1" ) = is in a group named test->sub1
+
+]]--
+
+function ArkInventoryRules.System.tsmgroup( ... )
+	
+	-- always check for a hyperlink and that it's an item
+	if not ArkInventoryRules.Object.h or ArkInventoryRules.Object.class ~= "item" then
+		return false
+	end
+	
+	local fn = "tsmgroup"
+	
+	if not IsAddOnLoaded( "TradeSkillMaster" ) then
+		return false
+	end
+	
+	-- full item string
+	local itemString = TSMAPI.Item:ToItemString( ArkInventoryRules.Object.h )
+	
+	if not itemString then
+		return false
+	end
+	
+	local group = TSMAPI.Groups:FormatPath( TSMAPI.Groups:GetPath( itemString ) )
+	
+	if not group then
+		
+		-- full item was not in any group, check base item
+		itemString = TSMAPI.Item:ToBaseItemString( ArkInventoryRules.Object.h )
+		
+		if not itemString then
+			return false
+		end
+		
+		group = TSMAPI.Groups:FormatPath( TSMAPI.Groups:GetPath( itemString ) )
+		
+		if not group then
+			return false
+		end
+		
+	end
+	
+	local ac = select( '#', ... )
+	
+	if ( ac == 0 ) then
+		-- no groupnames listed, so any group is ok
+		return true
+	end
+	
+	local arg
+	
+	-- loop through listed groupnames
+	for ax = 1, ac do
+		
+		arg = select( ax, ... )
+		
+		if not arg then
+			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NIL"], fn, ax ), 0 )
+		end
+		
+		if type( arg ) ~= "string" then
+			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, ax, ArkInventory.Localise["STRING"] ), 0 )
+		end
+		
+		arg = string.trim( arg )
+		
+		if string.sub( arg, -1 ) == "*" then
+			
+			-- wildcard match, remove the wildcard
+			arg = string.sub( arg, 1, -2 )
+			
+			if string.len( arg ) == 0 then
+				-- match anything
+				return true
+			end
+			
+			-- if arg is group->* then specifically check parent group
+			if string.sub( arg, -2 ) == "->" and string.lower( string.sub( arg, 1, -3 ) ) == string.lower( group ) then
+				return true
+			end
+			
+			-- check for match
+			if string.lower( arg ) == string.lower( string.sub( group, 1, string.len( arg ) ) ) then
+				return true
+			end
+			
+		else
+			
+			-- exact match
+			
+			if string.len( arg ) == 0 then
+				error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_INVALID"], fn, ax ), 0 )
+			else
+				if string.lower( arg ) == string.lower( group ) then
+					return true
+				end
+			end
+			
+		end
+		
+	end
+	
+	return false
+	
+end
+
+
+
 
 ArkInventoryRules.Environment = {
 	
@@ -1352,6 +1539,8 @@ ArkInventoryRules.Environment = {
 	ireq = ArkInventoryRules.System.itemleveluse,
 	uselevel = ArkInventoryRules.System.itemleveluse,
 	
+	bonus = ArkInventoryRules.System.bonus,
+	
 	clr = ArkInventoryRules.System.characterlevelrange,
 	
 	vpu = ArkInventoryRules.System.vendorpriceunder,
@@ -1381,9 +1570,13 @@ ArkInventoryRules.Environment = {
 	mounttype = ArkInventoryRules.System.mounttype,
 	mtype = ArkInventoryRules.System.mounttype,
 	
+	itemfamily = ArkInventoryRules.System.itemfamily,
+	family = ArkInventoryRules.System.itemfamily,
+	
 	-- 3rd party addons requried for the following functions to work
 	
 	trash = ArkInventoryRules.System.trash,
+	tsmgroup = ArkInventoryRules.System.tsmgroup,
 	
 }
 
@@ -1415,23 +1608,13 @@ function ArkInventoryRules.Frame_Rules_Table_Sort_Build( frame )
 	
 	local x
 	
-	--enabled
+	--damaged
 	x = _G[f .. "_T1"]
 	x:ClearAllPoints( )
 	x:SetWidth( 32 )
 	x:SetPoint( "TOP", 0, 0 )
 	x:SetPoint( "BOTTOM", 0, 0 )
 	x:SetPoint( "LEFT", 15, 0 )
-	x:SetText( ArkInventory.Localise["RULE_LIST_ENABLED"] )
-	x:Show( )
-
-	--damaged
-	x = _G[f .. "_T2"]
-	x:ClearAllPoints( )
-	x:SetWidth( 32 )
-	x:SetPoint( "TOP", 0, 0 )
-	x:SetPoint( "BOTTOM", 0, 0 )
-	x:SetPoint( "LEFT", f .. "_T1", "RIGHT", 5, 0 )
 	x:SetText( ArkInventory.Localise["RULE_LIST_DAMAGED"] )
 	x:Show( )
 	
@@ -1439,7 +1622,7 @@ function ArkInventoryRules.Frame_Rules_Table_Sort_Build( frame )
 	x = _G[f .. "_C1"]
 	x:ClearAllPoints( )
 	x:SetWidth( 50 )
-	x:SetPoint( "LEFT", f .. "_T2", "RIGHT", 5, 0 )
+	x:SetPoint( "LEFT", f .. "_T1", "RIGHT", 5, 0 )
 	x:SetPoint( "TOP", 0, 0 )
 	x:SetPoint( "BOTTOM", 0, 0 )
 	x:SetText( ArkInventory.Localise["RULE_LIST_ID"] )
@@ -1474,27 +1657,19 @@ function ArkInventoryRules.Frame_Rules_Table_Row_Build( frame )
 	local x
 	local sz = 18
 	
-	--enabled
+	--damaged
 	x = _G[f .. "T1"]
 	x:ClearAllPoints( )
 	x:SetWidth( sz )
 	x:SetHeight( sz )
 	x:SetPoint( "LEFT", 17, 0 )
 	x:Show( )
-
-	--damaged
-	x = _G[f .. "T2"]
-	x:ClearAllPoints( )
-	x:SetWidth( sz )
-	x:SetHeight( sz )
-	x:SetPoint( "LEFT", f .. "T1", "RIGHT", 19, 0 )
-	x:Show( )
 	
 	-- id
 	x = _G[f .. "C1"]
 	x:ClearAllPoints( )
 	x:SetWidth( 50 )
-	x:SetPoint( "LEFT", f .. "T2", "RIGHT", 12, 0 )
+	x:SetPoint( "LEFT", f .. "T1", "RIGHT", 12, 0 )
 	x:SetPoint( "TOP", 0, 0 )
 	x:SetPoint( "BOTTOM", 0, 0 )
 	x:SetTextColor( 1, 1, 1, 1 )
@@ -1568,33 +1743,7 @@ function ArkInventoryRules.Frame_Rules_Table_Row_OnClick( frame )
 	end
 	
 	
-	if IsShiftKeyDown( ) then
-	
-		-- shift click - enable/disable the rule
-		id = tonumber( _G[f .. "Id"]:GetText( ) )
-		if id > 0 then
-		
-			if ArkInventory.db.profile.option.rule[id] then
-				
-				ArkInventory.db.profile.option.rule[id] = false
-				ArkInventory.ItemCacheClear( )
-				ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
-				
-			else
-				
-				d = ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[id]
-				d["enabled"] = true
-				ArkInventoryRules.EntryEdit( id, d )
-				
-			end
-			
-		end
-	
-		ArkInventoryRules.Frame_Rules_Table_Refresh( frame )
-		
-	else
-	
-		-- normal click - show/hide selected background
+		-- show/hide selected background
 	
 		if cs ~= "-1" then
 			_G[parent .. "Row" .. cs .. "Selected"]:Hide( )
@@ -1612,8 +1761,6 @@ function ArkInventoryRules.Frame_Rules_Table_Row_OnClick( frame )
 	
 		_G[f .. "Selected"]:Show( )
 		
-	end
-
 end
 
 function ArkInventoryRules.Frame_Rules_Table_Reset( f )
@@ -1676,7 +1823,7 @@ function ArkInventoryRules.Frame_Rules_Table_Refresh( frame )
 			end
 		end
 		
-		if not ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[k].used then
+		if not d.used then
 			ignore = true
 		end
 		
@@ -1685,7 +1832,14 @@ function ArkInventoryRules.Frame_Rules_Table_Refresh( frame )
 		end
 		
 		if not ignore then
-			tt[#tt + 1] = { ["sorted"]=format( "%04i %04i", d.order or 0, k ), ["id"]=k, ["enabled"]=ArkInventory.db.profile.option.rule[k] or false, ["order"]=d.order or 0, ["name"]=d.name or "", ["formula"]=d.formula or "", ["damaged"]=d.damaged or false }
+			tt[#tt + 1] = {
+				["sorted"] = format( "%04i %04i", d.order or 0, k ),
+				["id"] = k,
+				["order"] = d.order or 0,
+				["name"] = d.name or "",
+				["formula"] = d.formula or "",
+				["damaged"] = d.damaged or false,
+			}
 			tc = tc + 1
 		end
 
@@ -1714,29 +1868,23 @@ function ArkInventoryRules.Frame_Rules_Table_Refresh( frame )
 			c = ""
 			r = tt[lineplusoffset]
 			
-			_G[linename .. "Id"]:SetText( r.id )
+			_G[linename .. "Id"]:SetText( string.format( "%04i", r.id ) )
 
-			if r.enabled then
-				ArkInventory.SetTexture( _G[linename .. "T1"], "Interface\\Icons\\Spell_ChargePositive" )
+			if r.damaged then
+				ArkInventory.SetTexture( _G[linename .. "T1"], ArkInventory.Const.Texture.No )
 			else
-				ArkInventory.SetTexture( _G[linename .. "T1"], "Interface\\Icons\\Spell_ChargeNegative" )
+				ArkInventory.SetTexture( _G[linename .. "T1"], true, 0, 0, 0, 0 )
 			end
 			
-			if r.damaged then
-				ArkInventory.SetTexture( _G[linename .. "T2"], "Interface\\Icons\\Spell_Shadow_DeathCoil" )
-			else
-				ArkInventory.SetTexture( _G[linename .. "T2"], true, 0, 0, 0, 0 )
-			end
-
-			_G[linename .. "C1"]:SetText( r.id )
-
+			_G[linename .. "C1"]:SetText( string.format( "%04i", r.id ) )
+			
 			c = string.format( r.order )
 			_G[linename .. "C2"]:SetText( c )
-
+			
 			c = r.name
 			if not c then c = "<not set>" end
 			_G[linename .. "C3"]:SetText( c )
-
+			
 			_G[linename]:Show( )
 			
 			-- show selected if id is scrolled into view
@@ -1746,7 +1894,7 @@ function ArkInventoryRules.Frame_Rules_Table_Refresh( frame )
 			end
 			
 		else
-		
+			
 			_G[linename .. "Id"]:SetText( "-1" )
 			_G[linename]:Hide( )
 			
@@ -1760,22 +1908,22 @@ function ArkInventoryRules.Frame_Rules_Paint( )
 	local frame = ARKINV_Rules
 	
 	-- frameStrata
-	if frame:GetFrameStrata( ) ~= ArkInventory.db.profile.option.frameStrata then
-		frame:SetFrameStrata( ArkInventory.db.profile.option.frameStrata )
+	if frame:GetFrameStrata( ) ~= ArkInventory.db.global.option.ui.rules.strata then
+		frame:SetFrameStrata( ArkInventory.db.global.option.ui.rules.strata )
 	end
 	
 	-- title
 	obj = _G[frame:GetName( ) .. "TitleWho"]
 	if obj then
-		t = string.format( "%s: %s %s", ArkInventory.Localise["CONFIG_RULES"], ArkInventory.Const.Program.Name, ArkInventory.Global.Version )
+		t = string.format( "%s: %s %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Const.Program.Name, ArkInventory.Global.Version )
 		obj:SetText( t )
 	end
 	
 	-- font
-	ArkInventory.MediaSetFontFrame( frame )
+	ArkInventory.MediaFrameDefaultFontSet( frame )
 	
 	-- scale
-	frame:SetScale( ArkInventory.db.profile.option.ui.rules.scale or 1 )
+	frame:SetScale( ArkInventory.db.global.option.ui.rules.scale or 1 )
 	
 	local style, file, size, offset, scale, colour
 	
@@ -1784,9 +1932,9 @@ function ArkInventoryRules.Frame_Rules_Paint( )
 		-- background
 		local obj = _G[z:GetName( ) .. "Background"]
 		if obj then
-			style = ArkInventory.db.profile.option.ui.rules.background.style or ArkInventory.Const.Texture.BackgroundDefault
+			style = ArkInventory.db.global.option.ui.rules.background.style or ArkInventory.Const.Texture.BackgroundDefault
 			if style == ArkInventory.Const.Texture.BackgroundDefault then
-				colour = ArkInventory.db.profile.option.ui.rules.background.colour
+				colour = ArkInventory.db.global.option.ui.rules.background.colour
 				ArkInventory.SetTexture( obj, true, colour.r, colour.g, colour.b, colour.a )
 			else
 				file = ArkInventory.Lib.SharedMedia:Fetch( ArkInventory.Lib.SharedMedia.MediaType.BACKGROUND, style )
@@ -1795,12 +1943,12 @@ function ArkInventoryRules.Frame_Rules_Paint( )
 		end
 		
 		-- border
-		style = ArkInventory.db.profile.option.ui.rules.border.style or ArkInventory.Const.Texture.BorderDefault
+		style = ArkInventory.db.global.option.ui.rules.border.style or ArkInventory.Const.Texture.BorderDefault
 		file = ArkInventory.Lib.SharedMedia:Fetch( ArkInventory.Lib.SharedMedia.MediaType.BORDER, style )
-		size = ArkInventory.db.profile.option.ui.rules.border.size or ArkInventory.Const.Texture.Border[ArkInventory.Const.Texture.BorderDefault].size
-		offset = ArkInventory.db.profile.option.ui.rules.border.offset or ArkInventory.Const.Texture.Border[ArkInventory.Const.Texture.BorderDefault].offset
-		scale = ArkInventory.db.profile.option.ui.rules.border.scale or 1
-		colour = ArkInventory.db.profile.option.ui.rules.border.colour or { }
+		size = ArkInventory.db.global.option.ui.rules.border.size or ArkInventory.Const.Texture.Border[ArkInventory.Const.Texture.BorderDefault].size
+		offset = ArkInventory.db.global.option.ui.rules.border.offset or ArkInventory.Const.Texture.Border[ArkInventory.Const.Texture.BorderDefault].offset
+		scale = ArkInventory.db.global.option.ui.rules.border.scale or 1
+		colour = ArkInventory.db.global.option.ui.rules.border.colour or { }
 		
 		ArkInventoryRules.Frame_Rules_Paint_Border( z, file, size, offset, scale, colour.r, colour.g, colour.b, 1 )
 		
@@ -1815,7 +1963,7 @@ function ArkInventoryRules.Frame_Rules_Paint_Border( frame, ... )
 	if frame:GetName( ) then
 		local obj = _G[frame:GetName( ) .. "ArkBorder"]
 		if obj then
-			if ArkInventory.db.profile.option.ui.rules.border.style ~= ArkInventory.Const.Texture.BorderNone then
+			if ArkInventory.db.global.option.ui.rules.border.style ~= ArkInventory.Const.Texture.BorderNone then
 				ArkInventory.Frame_Border_Paint( obj, false, ... )
 				obj:Show( )
 			else
@@ -1843,9 +1991,9 @@ function ArkInventoryRules.EntryFormat( data )
 		zOrder = 9999
 	end
 	
-	local zName = ""
+	local zName = "<NEW>"
 	zName = string.trim( tostring( data.name or zName ) )
-
+	
 	local zFormula = "false"
 	zFormula = tostring( data.formula or zFormula )
 	--zFormula = string.trim( tostring( data.formula or zFormula ) )
@@ -1853,39 +2001,27 @@ function ArkInventoryRules.EntryFormat( data )
 	--zFormula = string.gsub( zFormula, "[\n]", " " ) -- replace new line with space
 	--zFormula = string.gsub( zFormula, "%s+", " " ) -- replace multiple spaces with a single space
 	
-	data.used = true
+	data.used = "Y"
 	data.damaged = false
 	data.order = zOrder
 	data.name = zName
 	data.formula = zFormula
-	data.compiled = nil  -- purge old data
 	
+	-- purge old data
+	data.compiled = nil
+	data.enabled = nil
 	
-	if data.enabled then
-		data.enabled = true
-	else
-		data.enabled = false
-	end
-
 	return data
 	
 end
 
 function ArkInventoryRules.EntryUpdate( rid, data )
-
+	
 	local rid = tonumber( rid )
 	ArkInventoryRules.EntryFormat( data )
-
-	-- enable/disable the rule at the profile level
-	if data.enabled then
-		ArkInventory.db.profile.option.rule[rid] = true
-	else
-		ArkInventory.db.profile.option.rule[rid] = nil
-	end
-	data.enabled = nil
 	
-	-- save the rule data at the account level
-	ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[rid].used = true
+	-- save the rule data at the global level
+	ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[rid].used = "Y"
 	for k, v in pairs( data ) do
 		ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[rid][k] = v
 	end
@@ -1959,45 +2095,18 @@ function ArkInventoryRules.EntryIsValid( rid, data )
 	
 end
 
-function ArkInventoryRules.EntryExists( rid )
-	
-	if not rid then
-		error( "passed argument is nil" )
-	end
-	
-	if ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[tonumber( rid )].used then
-		return true
-	else
-		return false
-	end
-
-end
-
 function ArkInventoryRules.EntryAdd( data )
 	
-	local t = ArkInventory.Const.Category.Type.Rule
-	local v = ArkInventory.db.global.option.category[t]
-	
-	local n = ArkInventory.CategoryGetNext( v )
-	
-	if n == -1 then
-		return false, "rules limit reached"
-	end
-	
-	if n == -2 then
-		return false, "your data was recently upgraded, a ui reload is required before you can add a rule"
-	end
-	
-	
-	local ok, msg = ArkInventoryRules.EntryIsValid( v.next, data )
+	local ok, msg = ArkInventoryRules.EntryIsValid( "<NEW>", data )
 	if not ok then
-		--message( msg )
 		return false, msg
 	end
 	
-	ArkInventoryRules.EntryUpdate( v.next, data )
-	
-	return v.next
+	local p, rule = ArkInventory.ConfigInternalCategoryRuleAdd( "new" )
+	if p then
+		ArkInventoryRules.EntryUpdate( p, data )
+		return true
+	end
 	
 end
 
@@ -2021,9 +2130,8 @@ function ArkInventoryRules.EntryRemove( rid )
 	end
 	
 	local rid = tonumber( rid )
-	table.wipe( ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[rid] )
-	ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[rid].used = false
-
+	ArkInventory.ConfigInternalCategoryRuleDelete( rid )
+	
 	ArkInventory.ItemCacheClear( )
 	ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
 	
@@ -2051,34 +2159,27 @@ function ArkInventoryRules.Frame_Rules_Button_Modify( frame, t )
 	local v
 	
 	if k ~= "-1" then
-		local d = ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[tonumber( k )]
-		d["enabled"] = ArkInventory.db.profile.option.rule[tonumber( k )]
+		local d = ArkInventory.ConfigInternalCategoryRuleGet( tonumber( k ) )
 		_G[fmd .. "Id"]:SetText( k )
-		_G[fmd .. "Enabled"]:SetChecked( d.enabled )
 		_G[fmd .. "Order"]:SetText( d.order or "" )
 		_G[fmd .. "Description"]:SetText( d.name or "" )
 		_G[fmd .. "ScrollFormula"]:SetText( d.formula or "" )
 	else
 		_G[fmd .. "Id"]:SetText( "<NEW>" )
-		_G[fmd .. "Enabled"]:SetChecked( true )
 		_G[fmd .. "Order"]:SetText( "100" )
 		_G[fmd .. "Description"]:SetText( "" )
 		_G[fmd .. "ScrollFormula"]:SetText( "false" )
 	end
 
 	_G[fmd .. "IdLabel"]:SetText( ArkInventory.Localise["RULE"] .. ":"  )
-	_G[fmd .. "EnabledLabel"]:SetText( ArkInventory.Localise["ENABLED"] .. ":"  )
 	_G[fmd .. "OrderLabel"]:SetText( ArkInventory.Localise["ORDER"] .. ":"  )
 	_G[fmd .. "DescriptionLabel"]:SetText( ArkInventory.Localise["DESCRIPTION"] .. ":"  )
 	_G[fmd .. "FormulaLabel"]:SetText( ArkInventory.Localise["RULE_FORMULA"] .. ":" )
 	
-	_G[fmd .. "Enabled"]:Show( )
 	_G[fmd .. "Order"]:Show( )
 	_G[fmd .. "Description"]:Show( )
 	_G[fmd .. "ScrollFormula"]:Show( )
 
-	_G[fmd .. "EnabledReadOnly"]:SetChecked( _G[fmd .. "Enabled"]:GetChecked( ) )
-	_G[fmd .. "EnabledReadOnly"]:Hide( )
 	_G[fmd .. "OrderReadOnly"]:SetText( _G[fmd .. "Order"]:GetText( ) )
 	_G[fmd .. "OrderReadOnly"]:Hide( )
 	_G[fmd .. "DescriptionReadOnly"]:SetText( _G[fmd .. "Description"]:GetText( ) )
@@ -2091,10 +2192,6 @@ function ArkInventoryRules.Frame_Rules_Button_Modify( frame, t )
 		if k == "-1" then return end
 
 		_G[fmt .. "Text"]:SetText( string.upper( ArkInventory.Localise["REMOVE"] ) )
-
-		_G[fmd .. "Enabled"]:Hide( )
-		_G[fmd .. "EnabledReadOnly"]:Disable( )
-		_G[fmd .. "EnabledReadOnly"]:Show( )
 
 		_G[fmd .. "Order"]:Hide( )
 		_G[fmd .. "OrderReadOnly"]:Show( )
@@ -2132,35 +2229,40 @@ function ArkInventoryRules.Frame_Rules_Button_Modify_Ok( frame )
 	local fmd = fm .. "Data"
 	
 	local d = { }
-	d["enabled"] = _G[fmd .. "Enabled"]:GetChecked( )
 	d["order"] = _G[fmd .. "Order"]:GetText( )
 	d["name"] = _G[fmd .. "Description"]:GetText( )
 	d["formula"] = _G[fmd .. "ScrollFormula"]:GetText( )
-
+	
 	local k = _G[fmd .. "Id"]:GetText( )
-
+	
 	f = frame:GetParent( ):GetParent( ):GetParent( ):GetName( )
 	fm = frame:GetParent( ):GetParent( ):GetName( )
 	
 	local t = _G[fm .. "Type"]:GetText( )
-
+	
 	if t =="A" then
 		local ok, ec = ArkInventoryRules.EntryAdd( d )
 		if not ok then
-			ArkInventory.OutputError( ec )
+			if ec then
+				ArkInventory.OutputError( ec )
+			end
 			return
 		end
 		_G[f .. "ViewTableSelectedId"]:SetText( "-1" )
 	elseif t == "E" then
 		local ok, ec = ArkInventoryRules.EntryEdit( k, d )
 		if not ok then
-			ArkInventory.OutputError( ec )
+			if ec then
+				ArkInventory.OutputError( ec )
+			end
 			return
 		end
 	elseif t == "R" then
 		local ok, ec = ArkInventoryRules.EntryRemove( k )
 		if not ok then
-			ArkInventory.OutputError( ec )
+			if ec then
+				ArkInventory.OutputError( ec )
+			end
 			return
 		end
 		_G[f .. "ViewTableSelectedId"]:SetText( "-1" )
@@ -2168,10 +2270,10 @@ function ArkInventoryRules.Frame_Rules_Button_Modify_Ok( frame )
 		ArkInventory.OutputError( "OOPS: Uncoded value [", t, "] at ArkInventoryRules.Frame_Rules_Button_Modify_Ok" )
 		return
 	end
-
+	
 	_G[fm]:Hide( )
 	_G[f .. "View"]:Show( )
-
+	
 end
 
 function ArkInventoryRules.Frame_Rules_Button_Modify_Cancel( frame )

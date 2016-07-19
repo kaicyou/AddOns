@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas_Scenarios-enUS.lua 18 2016-07-07 12:40:58Z arith $
+﻿-- $Id: Atlas_Scenarios-enUS.lua 22 2016-07-19 13:56:02Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -64,9 +64,6 @@ L["Defeat Cloudbender Kobo"] = "Defeat Cloudbender Kobo"
 L["Defeat Maki Waterblade"] = "Defeat Maki Waterblade"
 L["Defeat Satay Byu"] = "Defeat Satay Byu"
 L["Defence Point"] = "Defence Point"
-L["Defend against each of the Legion's assaults on Azeroth during the Legion pre-launch events."] = "Defend against each of the Legion's assaults on Azeroth during the Legion pre-launch events."
-L["Defend against the Burning Legion by completing an invasion during the Legion pre-launch events."] = "Defend against the Burning Legion by completing an invasion during the Legion pre-launch events."
-L["Defender of Azeroth: Legion Invasions"] = "Defender of Azeroth: Legion Invasions"
 L["Demon Invasion"] = "Demon Invasion"
 L["Den Mother Moof"] = "Den Mother Moof"
 L["Docking"] = "Docking"
@@ -133,7 +130,6 @@ L["Stage 4"] = "Stage 4"
 L["Stage 5"] = "Stage 5"
 L["Stage 6"] = "Stage 6"
 L["Stage 7"] = "Stage 7"
-L["Stand Against the Legion"] = "Stand Against the Legion"
 L["Steal Explosives"] = "Steal Explosives"
 L["Sully \"The Pickle\" McLeary"] = "Sully \"The Pickle\" McLeary"
 L["Supply Crates"] = "Supply Crates"

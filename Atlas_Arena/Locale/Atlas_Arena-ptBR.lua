@@ -59,7 +59,7 @@ L["Wodin the Troll-Servant"] = "Wodin der Trolldiener"
 L["Xazi Smolderpipe <Arena Vendor>"] = "Xazi Rauchpfeife <Arenaverkäuferin>"
 L["Yggdras"] = "Yggdras"
 L["Zom Bocom <Apprentice Arena Vendor>"] = "Zom Bocom <Arenaverkäuferlehrling>"
--- L["ToC/Description"] = ""
--- L["ToC/Title"] = ""
+L["ToC/Description"] = "Eine Atlas-Erweiterung, die Arenakarten hinzufügt."
+L["ToC/Title"] = "Atlas |r|cFF0099FF[Arena]|r"
 
 end

@@ -172,13 +172,13 @@ TMW:RegisterCallback("TMW_DB_PRE_DEFAULT_UPGRADES", function()
 end)
 
 
-TMW:RegisterCallback("TMW_UPGRADE_REQUESTED", function(event, type, version, ...)
+TMW:RegisterCallback("TMW_UPGRADE_PERFORMED", function(event, type, upgradeData, ...)
 	if type == "icon" then
 		local ics, gs, iconID = ...
 		
 		-- Delegate the upgrade to eventSettings.
 		for eventID, eventSettings in TMW:InNLengthTable(ics.Events) do
-			TMW:DoUpgrade("iconEventHandler", version, eventSettings, eventID, ics)
+			TMW:Upgrade("iconEventHandler", upgradeData, eventSettings, eventID, ics)
 		end
 	end
 end)
@@ -339,10 +339,11 @@ end
 
 	
 TMW:RegisterCallback("TMW_ICON_SETUP_PRE", function(_, icon)
-	wipe(icon.EventHandlersSet)
+	if not TMW.Locked then
+		return
+	end
 	
 	-- Setup all of an icon's events.
-
 	wipe(icon.EventHandlersSet)
 
 	for _, eventSettings in TMW:InNLengthTable(icon.Events) do
@@ -431,10 +432,10 @@ conditions are passing (EventHandler_WhileConditions_Repetitive)
 if TMW.C.IconType then
 	error("Bad load order! TMW.C.IconType shouldn't exist at this point!")
 end
-TMW:RegisterCallback("TMW_CLASS_NEW", function(event, class)
+TMW:RegisterSelfDestructingCallback("TMW_CLASS_NEW", function(event, class)
 	-- Register the WCSP event on IconType itself.
-	-- God, this is a awful hack.
-	-- TODO: Make this not a hack.
+	-- This allows it to be available to all icon types, 
+	-- since it is independent of all modules.
 	if class.className == "IconType" then
 		class:RegisterIconEvent(2, "WCSP", {
 			category = L["EVENT_CATEGORY_CONDITION"],
@@ -446,7 +447,7 @@ TMW:RegisterCallback("TMW_CLASS_NEW", function(event, class)
 			}
 		})
 
-		TMW:UnregisterThisCallback()
+		return true -- Signal callback destruction
 	end
 end)
 
@@ -649,7 +650,7 @@ do
 
 		useDynamicTab = true,
 		ShouldShowTab = function(self)
-			local button = TellMeWhen_IconEditor.Events.EventSettingsContainer.IconEventWhileCondition
+			local button = TellMeWhen_IconEditor.Pages.Events.EventSettingsContainer.IconEventWhileCondition
 			
 			return button and button:IsShown()
 		end,

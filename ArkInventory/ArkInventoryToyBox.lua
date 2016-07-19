@@ -27,7 +27,7 @@ ArkInventory.Toybox = {
 
 function ArkInventory.Toybox.OnHide( )
 	filter.ignore = false
-	ArkInventory:SendMessage( "LISTEN_TOYBOX_RELOAD_BUCKET", "RESCAN" )
+	ArkInventory:SendMessage( "EVENT_ARKINV_TOYBOX_RELOAD_BUCKET", "RESCAN" )
 end
 
 function ArkInventory.Toybox.FilterClear( )
@@ -209,21 +209,32 @@ end
 
 
 
-function ArkInventory:LISTEN_TOYBOX_RELOAD( event, item, new )
+function ArkInventory:EVENT_WOW_COLLECTION_TOY_RELOAD( event, item, new )
 	
-	--ArkInventory.Output( "LISTEN_TOYBOX_RELOAD( ", event, " )" )
+	--ArkInventory.Output( "EVENT_WOW_COLLECTION_TOY_RELOAD( ", event, " )" )
 	
 	if new then
 		filter.ignore = false
 	end
 	
-	ArkInventory:SendMessage( "LISTEN_TOYBOX_RELOAD_BUCKET", event )
+	ArkInventory:SendMessage( "EVENT_ARKINV_TOYBOX_RELOAD_BUCKET", event )
 	
 end
 
-function ArkInventory:LISTEN_TOYBOX_RELOAD_BUCKET( events )
+function ArkInventory:EVENT_ARKINV_TOYBOX_RELOAD_BUCKET( events )
 	
-	--ArkInventory.Output( "LISTEN_TOYBOX_RELOAD_BUCKET( ", events, " )" )
+	--ArkInventory.Output( "EVENT_ARKINV_TOYBOX_RELOAD_BUCKET( ", events, " )" )
+	
+	loc_id = ArkInventory.Const.Location.Toybox
+	
+	if not ArkInventory:IsEnabled( ) then
+		return
+	end
+	
+	if not ArkInventory.LocationIsMonitored( loc_id ) then
+		--ArkInventory.Output( "IGNORED (NOT MONITORED)" )
+		return
+	end
 	
 	if ToyBox:IsVisible( ) then
 		--ArkInventory.Output( "IGNORED (COLLECTION OPEN)" )
@@ -239,10 +250,3 @@ function ArkInventory:LISTEN_TOYBOX_RELOAD_BUCKET( events )
 	ArkInventory.Toybox.Scan( )
 	
 end
-
-
-
-
--- runtime
-ToyBox:HookScript( "OnHide", ArkInventory.Toybox.OnHide )
---ArkInventory.Toybox.FilterSave( )

@@ -1,10 +1,10 @@
-﻿-- $Id: Atlas_OutdoorRaids-deDE.lua 4 2015-07-06 14:31:55Z arith $
+﻿-- $Id: Atlas_OutdoorRaids-deDE.lua 13 2016-07-19 13:56:42Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2015 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 	This file is part of Atlas.
 
@@ -25,31 +25,32 @@
 --]]
 
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
-local AL = AceLocale:NewLocale("Atlas_OutdoorRaids", "deDE", false);
--- Localize file must set above to false, for example:
---    local AL = AceLocale:NewLocale("Atlas_OutdoorRaids", "deDE", false);
+local L = AceLocale:NewLocale("Atlas_OutdoorRaids", "deDE", false);
 
-if AL then
-	AL["Ancient Skull Pile"] = "Uralter Schädelhaufen";
-	AL["Darkscreecher Akkarai"] = "Dunkelkreischer Akkarai";
-	AL["Draenor World Bosses"] = "Draenor Weltbosse";
-	AL["Gezzarak the Huntress"] = "Gezzarak die Jägerin";
-	AL["Grella <Skyguard Quartermaster>"] = "Grella <Rüstmeister der Himmelswache>";
-	AL["Hazzik"] = "Hazzik";
-	AL["Hazzik's Package"] = "Hazziks Päckchen";
-	AL["Karrog"] = "Karrog";
-	AL["Outdoor Raid Encounters"] = "Außenweltschlachtzüge";
-	AL["Pandaria World Bosses"] = "Pandaria Weltbosse";
-	AL["Sahaak <Keeper of Scrolls>"] = "Sahaak <Hüter der Schriftrollen>";
-	AL["Severin <Skyguard Medic>"] = "Severin <Sanitäter der Himmelswache>";
-	AL["Skull Pile"] = "Schädelhaufen";
-	AL["Sky Commander Adaris"] = "Himmelskommandant Adaris";
-	AL["Sky Sergeant Doryn"] = "Himmelsoffizier Doryn";
-	AL["Skyguard Handler Deesak"] = "Deesak der Tierführer der Himmelswache";
-	AL["Skyguard Prisoner"] = "Gefangene Himmelswache";
-	AL["Talonpriest Ishaal"] = "Krallenpriester Ishaal";
-	AL["Talonpriest Skizzik"] = "Krallenpriester Skizzik";
-	AL["Talonpriest Zellek"] = "Krallenpriester Zellek";
-	AL["Terokk"] = "Terokk";
-	AL["Vakkiz the Windrager"] = "Vakkiz der Windzürner";
+if L then
+L["Ancient Skull Pile"] = "Uralter Schädelhaufen"
+L["Darkscreecher Akkarai"] = "Dunkelkreischer Akkarai"
+L["Draenor World Bosses"] = "Draenor Weltbosse"
+L["Gezzarak the Huntress"] = "Gezzarak die Jägerin"
+L["Grella <Skyguard Quartermaster>"] = "Grella <Rüstmeister der Himmelswache>"
+L["Hazzik"] = "Hazzik"
+L["Hazzik's Package"] = "Hazziks Päckchen"
+L["Karrog"] = "Karrog"
+L["Outdoor Raid Encounters"] = "Außenweltschlachtzüge"
+L["Pandaria World Bosses"] = "Pandaria Weltbosse"
+L["Sahaak <Keeper of Scrolls>"] = "Sahaak <Hüter der Schriftrollen>"
+L["Severin <Skyguard Medic>"] = "Severin <Sanitäter der Himmelswache>"
+L["Skull Pile"] = "Schädelhaufen"
+L["Sky Commander Adaris"] = "Himmelskommandant Adaris"
+L["Skyguard Handler Deesak"] = "Deesak der Tierführer der Himmelswache"
+L["Skyguard Prisoner"] = "Gefangene Himmelswache"
+L["Sky Sergeant Doryn"] = "Himmelsoffizier Doryn"
+L["Talonpriest Ishaal"] = "Krallenpriester Ishaal"
+L["Talonpriest Skizzik"] = "Krallenpriester Skizzik"
+L["Talonpriest Zellek"] = "Krallenpriester Zellek"
+L["Terokk"] = "Terokk"
+L["Vakkiz the Windrager"] = "Vakkiz der Windzürner"
+L["ToC/Description"] = "Karten der Standorte der Außenweltschlachtzüge"
+L["ToC/Title"] = "Atlas |r|cFF0099FF[Außenweltschlachtzüge]|r"
+
 end

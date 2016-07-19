@@ -10,12 +10,10 @@
 local function PawnUseThisLocalization()
 PawnLocal =
 {
-	AsteriskTooltipLine = "|TInterface\\AddOns\\Pawn\\Textures\\Question:0|t Efectos al equipar no incluidos en el valor. ",
 	AverageItemLevelIgnoringRarityTooltipLine = "Nivel medio de objeto",
 	BackupCommand = "backup",
 	BaseValueWord = "base",
 	CopyScaleEnterName = "Introduce un nombre para tu nueva escala, una copia de %s:",
-	CorrectGemsValueCalculationMessage = "   -- Las gemas correctas valdrán: %g",
 	DebugOffCommand = "debug off",
 	DebugOnCommand = "debug on",
 	DecimalSeparator = ",",
@@ -28,9 +26,8 @@ PawnLocal =
 	FailedToGetItemLinkMessage = "   No se ha podido obtener el enlace al objeto desde el tooltip. Esto puede ser debido a un conflicto entre accesorios.",
 	FailedToGetUnenchantedItemMessage = "   No se han podido obtener los valores base del objeto. Esto puede ser debido a un conflicto entre accesorios.",
 	FoundStatMessage = "   %d %s",
-	GemColorList1 = "%d %s",
-	GemColorList2 = "%d %s or %s",
-	GemColorList3 = "%d de cualquier color",
+	GemList2 = "%s or %s", -- Requires localization
+	GemListMany = "%d possibilities (click the Pawn button for details)", -- Requires localization
 	GenericGemLink = "|Hitem:%d|h[Gema %d]|h",
 	GenericGemName = "(Gema %d)",
 	HiddenScalesHeader = "Otras escalas",
@@ -83,12 +80,9 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 	VisibleScalesHeader = "Escalas de %s",
 	Stats = {
 		AgilityInfo = "Agilidad.  Aumenta el poder de ataque en algunas clases.",
-		Ap = "Poder de ataque",
-		ApInfo = "Poder de ataque.  La mayoría de los objetos no lo otorgan directamente.  No incluye el poder de ataque que recibirás de la Fuerza o Agilidad.",
 		ArmorInfo = "Armadura base.  No incluye la armadura extra recibida de los objetos especificos de tanque.",
 		ArmorTypes = "Tipos de armadura",
 		AvoidanceInfo = "Eludir.  Reduce el daño que recibes de ataques de área de efecto.",
-		BonusArmorInfo = "Bonus de armadura.  No incluye el valor de armadura base en toda la armadura.  Éste número debe ser siempre al menos tan alto como el valor de Armadura.  (Parar y Esquivar son tratados como Bonus de Armadura en objetos de bajo nivel",
 		Cloth = "Tela",
 		ClothInfo = "Puntos que asignar si el objeto es de Tela.",
 		Crit = "Crit",
@@ -104,20 +98,10 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		Mail = "Malla",
 		MailInfo = "Puntos que asignar si el objeto es de malla.",
 		MasteryInfo = "Maestría.  Mejora un bonus único para tu especialización.",
-		MetaSocket = "Meta ranura",
-		MetaSocketInfo = "Una meta ranura, esté vacía o llena.  Asigna puntos extra a yelmos que tienen un meta ranura aquí para compensar los efectos especiales de las meta gemas.",
 		MinorStats = "Estadísticas menores",
 		MovementSpeedInfo = "Velocidad de movimiento.  Hace que tu personaje corra más rápido.",
-		MultistrikeInfo = "Multigolpe.  Aumenta la probabilidad de que tus efectos de daño y sanación golpeen dos veces adicionales, con efectividad reducida.",
 		Plate = "Placas",
 		PlateInfo = "Puntos que asignar si el objeto es de Placas.",
-		PrimaryStats = "Estadísticas Principales",
-		PvPPower = "Poder JcJ",
-		PvPPowerInfo = "Poder JcJ.  Hace que tus habilidades causen más daño a otros jugadores (pero no criaturas), y que tus hechizos de sanación curen más en algunas situaciones JcJ.",
-		PvPResilience = "Temple JcJ",
-		PvPResilienceInfo = "Temple JcJ.  Reduce el daño que recibes de los ataques de otros jugadores.",
-		PvPStats = "Estadísticas JcJ",
-		SecondaryStats = "Estadísticas Secundarias",
 		Shield = "Escudo",
 		ShieldInfo = "Puntos que asignar si el objeto es un Escudo",
 		Sockets = "Ranuras",
@@ -127,9 +111,6 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		SpeedBaselineIs = "|cffffffffVelocidad base|r es:",
 		SpeedInfo = "Velocidad de arma, en segundos por golpe.  (Si prefieres armas rápidas, éste número a de ser negativo.  Ver también: \"velocidad base\" en la sección \"Atributos especiales de arma\".)",
 		SpeedIs = "1 segundo |cffffffffswing speed|r vale:",
-		SpellPower = "Poder con hechizos",
-		SpellPowerInfo = "Poder con hechizos.  Presente en las armas de taumaturgo.  Aumenta el daño y la curación de tus hechizos.  No incluye el poder con hechizos que recibes del Intelecto.",
-		SpiritInfo = "Espíritu.  Aumenta la regeneración de mana.",
 		StaminaInfo = "Aguante.  Aumenta tu vida.",
 		StrengthInfo = "Fuerza.  Aumenta el poder de ataque de algunas clases.",
 		VersatilityInfo = "Versatilidad.  Aumenta el daño infligido para personajes DPS, la sanación realizada para personajes sanadores, y reduce el daño recibido para personajes tanque.",
@@ -219,6 +200,8 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		WeaponTypeStaffInfo = "Puntos que asignar si el objeto es una vara.",
 		WeaponTypeWand = "Varita",
 		WeaponTypeWandInfo = "Puntos que asignar si el objeto es una varita.",
+		WeaponTypeWarglaive = "Guja de Guerra",
+		WeaponTypeWarglaiveInfo = "Points to be assigned if the item is a warglaive.", -- Requires localization
 	},
 	TooltipParsing = {
 		Agility = "^%+?([-%d%.,]+) agilidad$",
@@ -229,7 +212,6 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		Avoidance = "^%+([%d%.,]+) elusión$",
 		Axe = "^Hacha$",
 		BagSlots = "^%d+ casillas .+$",
-		BonusArmor = "^%+([%d%.,]+) bonus de armadura$",
 		Bow = "^Arco$",
 		ChanceOnHit = "Probabilidad al acertar:",
 		Charges = "^.+ cargas?$",
@@ -262,6 +244,7 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		Gun = "^Arma de fuego$",
 		Haste = "^%+?([%d%.,]+) celeridad$",
 		Haste2 = "^UNUSED$",
+		HaventCollectedAppearance = "^You haven't collected this appearance$", -- Requires localization
 		HeirloomLevelRange = "^Requiere un nivel entre %d+ y (%d+)",
 		HeirloomXpBoost = "^Equipar: La experiencia obtenida",
 		HeirloomXpBoost2 = "^UNUSED$",
@@ -283,6 +266,7 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		Mastery2 = "^UNUSED$",
 		MetaGemRequirements = "|cff%x%x%x%x%x%xRequiere",
 		MovementSpeed = "^%+([%d%.,]+) velocidad$",
+		MultiStatHeading = "^Multiple Stats$", -- Requires localization
 		MultiStatSeparator1 = "y",
 		Multistrike = "^%+([%d%.,]+) multigolpe$",
 		NormalizationEnchant = "^Encantado: (.*)$",
@@ -316,11 +300,13 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		TemporaryBuffSeconds = "^.+%(%d+ seg%)$",
 		Thunderforged = "^Forjas del Trueno$",
 		Timeless = "^Sin tiempo$",
+		Titanforged = "^Titanforged$", -- Requires localization
 		UpgradeLevel = "^Nivel de Mejora:",
 		Use = "Usar:",
 		Versatility = "^%+([%d%.,]+) versatilidad$",
 		Wand = "^Varita$",
 		Warforged = "^Forjas de la guerra$",
+		Warglaives = "^Gujas de Guerra$", -- Needs review
 		WeaponDamage = "^([%d%.,]+) %- ([%d%.,]+) p. de daño$",
 		WeaponDamageArcane = "^%+?([%d%.,]+) %- ([%d%.,]+) p. de daño de Arcano$",
 		WeaponDamageArcaneExact = "^%+?([%d%.,]+) p. de daño de Arcano$",
@@ -353,7 +339,6 @@ Valores de atributos de Wowhead usados con permiso—porfavor dirigir el feedbac
 		CompareEquipped = "Equipado",
 		CompareGemTotalValue = "Valor de gemas",
 		CompareHeader = "Compara objetos usando %s",
-		CompareMetaSockets = "Ranuras meta",
 		CompareOtherHeader = "Otro",
 		CompareSlotEmpty = "(vacío)",
 		CompareSocketBonus = "Bonus de ranura",
@@ -363,7 +348,6 @@ Valores de atributos de Wowhead usados con permiso—porfavor dirigir el feedbac
 		CompareSwapTooltip = "Cambia el objeto de la izquierda por el de la derecha.",
 		CompareTab = "Comparar",
 		CompareVersus = "—vs.—",
-		CompareWelcomeLeft = "Primero, selecciona una escala de la lista de la izquierda.",
 		CompareWelcomeRight = [=[Despues, coloca un objeto en ésta caja. 
 
 Puedes compararlo contra tus objetos existentes usando los iconos en la esquina inferior izquierda.]=],
@@ -465,6 +449,8 @@ Usa ésta característica si crees que Pawn está haciendo malas sugerencias de 
 		OptionsSocketingAdvisorTooltip = "Cuando se añaden gemas a un objeto, Pawn mostrará un popup sugiriendo las gemas que puedes añadir al objeto para maximizar su poder.  (Para ver la lista completa de sugerencias de gemas para cada color, ve a la pestaña de Gemas, donde además podrás personalizar la calidad de las gemas que usar.)",
 		OptionsTab = "Opciones",
 		OptionsTooltipHeader = "Opciones de Tooltips",
+		OptionsTooltipSpecIcon = "Show spec icons", -- Requires localization
+		OptionsTooltipSpecIconTooltip = "Enable this option to show spec icons next to scale names on tooltips.", -- Requires localization
 		OptionsTooltipUpgradesOnly = "Muestra sólo mejoras",
 		OptionsTooltipUpgradesOnlyTooltip = [=[Ésta es la opción más simple.  Sólo muestra porcentajes de mejora para objetos que son una mejora de tu equipamiento actual, y indica cuales de tus objetos son los mejores para cada escala.  No muestra nada en absoluto para los objetos inferiores. 
 
@@ -490,7 +476,21 @@ Fuego:  156.7|r]=],
 Si está seleccionado, podrás estar usando un arma de dos manos y aún asi ver armas de una mano claramente inferiores como mejoras si son mejores que la última arma de una mano mejor (o segunda mejor) que tuviste, porque Pawn está buscando mejoras de forma independiente para ambos sets de armas.
 
 Si está deseleccionado, equipar un arma de dos manos evitará que Pawn te muestre mejoras para armas de una mano y vice-versa.]=],
+		OptionsUpgradeTrackingHeader = "Upgrade comparisons:", -- Requires localization
+		OptionsUpgradeTrackingOff = "Versus equipped gear (recommended)", -- Requires localization
+		OptionsUpgradeTrackingOffTooltip = "Pawn will show you items that are an upgrade compared to the items that you currently have equipped.", -- Requires localization
+		OptionsUpgradeTrackingOn = "Track for each scale (advanced)", -- Requires localization
+		OptionsUpgradeTrackingOnTooltip = "(For advanced users.)  Pawn will try to track the best items that you've equipped, independently for each scale that you have enabled, and show you items that are an upgrade compared to those.", -- Requires localization
 		OptionsWelcome = "Configura Pawn a tu gusto.  Los cambios se mostrarán de forma inmediata.",
+		ScaleAutoOff = "Manual", -- Requires localization
+		ScaleAutoOff2 = "Let me manage scales.", -- Requires localization
+		ScaleAutoOffTooltip = "Pawn will let you manually choose which scales to use for its calculations, allowing you to enable more than one scale at a time, add custom scales, and more.", -- Requires localization
+		ScaleAutoOn = "Automatic", -- Requires localization
+		ScaleAutoOn2 = "Just show my current spec.", -- Requires localization
+		ScaleAutoOnTooltip = "Pawn will automatically show your current specialization in item tooltips, and use that to make recommendations and suggest upgrades.", -- Requires localization
+		ScaleAutoWelcome = [=[Pawn will show suggestions for your current specialization.
+
+If you'd rather manage things on your own, just click Manual below.]=], -- Requires localization
 		ScaleChangeColor = "Cambiar color",
 		ScaleChangeColorTooltip = "Cambia el color en el que aparecen el nombre y el valor de ésta escala en los tooltips de objetos.",
 		ScaleCopy = "Copiar",
@@ -511,6 +511,7 @@ This ¡el comando no se puede deshacer!]=],
 		ScaleRename = "Renombrar",
 		ScaleRenameTooltip = "Renombra ésta escala.",
 		ScaleSelectorHeader = "Selecciona una escala:",
+		ScaleSelectorShowingSuggestionsFor = "Showing suggestions for", -- Requires localization
 		ScaleSelectorShowScale = "Muestra ésta escala en tooltips",
 		ScaleSelectorShowScaleTooltip = [=[Cuando esta opción está activada, los valores de ésta escala se mostrarán en los tooltips de objetos de éste personaje.  Cada escala se puede mostrar para uno de tus personajes, varios personajes, o ningún personaje. 
 
@@ -543,42 +544,8 @@ Para más información sobre éstas opciones, consulta el archivo leeme.]=],
 		ValuesWelcomeReadOnly = "La escala que has seleccionado no se puede modificar.  Para cambiar estos valores, ve a la pestaña de Escala y haz una copia de ésta escala o crea una escala nueva.",
 	},
 	Wowhead = {
-		DeathKnightBloodTank = "CM: sangre",
-		DeathKnightFrostDps = "CM: escarcha",
-		DeathKnightUnholyDps = "CM: profano",
-		DruidBalance = "Druida: balance",
-		DruidFeralDps = "Druida: feral",
-		DruidFeralTank = "Druida: guardián",
-		DruidRestoration = "Druida: restauración",
-		HunterBeastMastery = "Cazador: maestría en bestias",
-		HunterMarksman = "Cazador: puntería",
-		HunterSurvival = "Cazador: supervivencia",
-		MageArcane = "Mago: arcano",
-		MageFire = "Mago: fuego",
-		MageFrost = "Mago: escarcha",
-		MonkBrewmaster = "Monje: maestro cervecero",
-		MonkMistweaver = "Monje: tejedor de nieblas",
-		MonkWindwalker = "Monje: caminante del viento",
-		PaladinHoly = "Paladín: sagrado",
-		PaladinRetribution = "Paladín: reprensión",
-		PaladinTank = "Paladín: protección",
-		PriestDiscipline = "Sacerdote: disciplina",
-		PriestHoly = "Sacerdote: sagrado",
-		PriestShadow = "Sacerdote: sombras",
 		Provider = "Escalas Wowhead",
 		ProviderStarter = "Escalas por defecto",
-		RogueAssassination = "Pícaro: asesinato",
-		RogueCombat = "Pícaro: combate",
-		RogueSubtlety = "Pícaro: sutileza",
-		ShamanElemental = "Chaman: elemental",
-		ShamanEnhancement = "Chaman: mejora",
-		ShamanRestoration = "Chaman: restauración",
-		WarlockAffliction = "Brujo: aflicción",
-		WarlockDemonology = "Brujo: demonología",
-		WarlockDestruction = "Brujo: destrucción",
-		WarriorArms = "Guerrero: armas",
-		WarriorFury = "Guerrero: furia",
-		WarriorTank = "Guerrero: protección",
 	},
 }
 end 

@@ -49,14 +49,28 @@ Animations:RegisterEventDefaults{
 	Thickness	  	= 2,
 	Fade	  		= true,
 	Infinite  		= false,
-	r_anim	  		= 1,
-	g_anim	  		= 0,
-	b_anim	  		= 0,
-	a_anim	  		= 0.5,
+	AnimColor	  	= "7fff0000",
+	Alpha		= 0.5,
 	Image			= "",
 	AnchorTo		= "IconModule_SelfIcon",
 }
 
+TMW:RegisterUpgrade(80003, {
+	iconEventHandler = function(self, eventSettings)
+		eventSettings.AnimColor = TMW:RGBAToString(
+			eventSettings.r_anim or 1,
+			eventSettings.g_anim or 0,
+			eventSettings.b_anim or 0,
+			eventSettings.a_anim or 0.5)
+
+		eventSettings.Alpha = eventSettings.a_anim or 0.5
+
+		eventSettings.r_anim = nil
+		eventSettings.g_anim = nil
+		eventSettings.b_anim = nil
+		eventSettings.a_anim = nil
+	end,
+})
 TMW:RegisterUpgrade(61224, {
 	iconEventHandler = function(self, eventSettings)
 		if eventSettings.Size_anim ~= 0 then
@@ -168,7 +182,7 @@ local function GetAnchorOrWarn(icon, anchorTo)
 	local frame = _G[name]
 	
 	if not frame then
-		TMW.Warn(L["ANIM_ANCHOR_NOT_FOUND"]:format(name))
+		TMW:Warn(L["ANIM_ANCHOR_NOT_FOUND"]:format(name))
 		if TMW.debug then
 			TMW:Error(L["ANIM_ANCHOR_NOT_FOUND"]:format(name))
 		end
@@ -270,6 +284,7 @@ Animations:RegisterEventHandlerDataNonSpecific(11, "SCREENFLASH", {
 			UIParent.TMWFlashAnim = TMW.Classes.AnimatedObject:New()
 		end
 
+		local c = TMW:StringToCachedRGBATable(eventSettings.AnimColor)
 		UIParent.TMWFlashAnim:Animations_Start{
 			eventSettings = eventSettings,
 			Start = TMW.time,
@@ -277,10 +292,10 @@ Animations:RegisterEventHandlerDataNonSpecific(11, "SCREENFLASH", {
 
 			Period = Period,
 			Fade = eventSettings.Fade,
-			Alpha = eventSettings.a_anim,
-			r = eventSettings.r_anim,
-			g = eventSettings.g_anim,
-			b = eventSettings.b_anim,
+			Alpha = c.a,
+			r = c.r,
+			g = c.g,
+			b = c.b,
 		}
 	end,
 	
@@ -321,7 +336,7 @@ Animations:RegisterEventHandlerDataNonSpecific(11, "SCREENFLASH", {
 		end
 
 		animation_flasher:Show()
-		animation_flasher:SetTexture(table.r, table.g, table.b, 1)
+		animation_flasher:SetColorTexture(table.r, table.g, table.b, 1)
 	end,
 	OnStop = function(TMWFlashAnim, table)
 		TMWFlashAnim.animation_flasher:Hide()
@@ -395,6 +410,7 @@ Animations:RegisterEventHandlerDataNonSpecific(30, "ICONFLASH", {
 			end
 		end
 
+		local c = TMW:StringToCachedRGBATable(eventSettings.AnimColor)
 		icon:Animations_Start{
 			eventSettings = eventSettings,
 			Start = TMW.time,
@@ -402,10 +418,10 @@ Animations:RegisterEventHandlerDataNonSpecific(30, "ICONFLASH", {
 
 			Period = Period,
 			Fade = eventSettings.Fade,
-			Alpha = eventSettings.a_anim,
-			r = eventSettings.r_anim,
-			g = eventSettings.g_anim,
-			b = eventSettings.b_anim,
+			Alpha = c.a,
+			r = c.r,
+			g = c.g,
+			b = c.b,
 			
 			AnchorTo = eventSettings.AnchorTo,
 		}
@@ -447,7 +463,7 @@ Animations:RegisterEventHandlerDataNonSpecific(30, "ICONFLASH", {
 		animation_flasher:SetAllPoints(GetAnchorOrWarn(icon, table.AnchorTo))
 
 		animation_flasher:Show()
-		animation_flasher:SetTexture(table.r, table.g, table.b, 1)
+		animation_flasher:SetColorTexture(table.r, table.g, table.b, 1)
 	end,
 	OnStop = function(icon, table)
 		icon.animation_flasher:Hide()
@@ -483,6 +499,7 @@ Animations:RegisterEventHandlerDataNonSpecific(70, "ICONBORDER", {
 			end
 		end
 
+		local c = TMW:StringToCachedRGBATable(eventSettings.AnimColor)
 		icon:Animations_Start{
 			eventSettings = eventSettings,
 			Start = TMW.time,
@@ -490,10 +507,10 @@ Animations:RegisterEventHandlerDataNonSpecific(70, "ICONBORDER", {
 
 			Period = Period,
 			Fade = eventSettings.Fade,
-			Alpha = eventSettings.a_anim,
-			r = eventSettings.r_anim,
-			g = eventSettings.g_anim,
-			b = eventSettings.b_anim,
+			Alpha = c.a,
+			r = c.r,
+			g = c.g,
+			b = c.b,
 			Thickness = eventSettings.Thickness,
 			Size = eventSettings.Size_anim,
 			
@@ -563,7 +580,7 @@ Animations:RegisterEventHandlerDataNonSpecific(70, "ICONBORDER", {
 		for _, pos in TMW:Vararg("TOP", "BOTTOM", "LEFT", "RIGHT") do
 			local tex = animation_border[pos]
 
-			tex:SetTexture(table.r, table.g, table.b, 1)
+			tex:SetColorTexture(table.r, table.g, table.b, 1)
 			tex:SetSize(table.Thickness, table.Thickness)
 		end
 	end,
@@ -608,10 +625,10 @@ Animations:RegisterEventHandlerDataNonSpecific(80, "ICONOVERLAYIMG", {
 
 			Period = Period,
 			Fade = eventSettings.Fade,
-			Alpha = eventSettings.a_anim,
+			Alpha = eventSettings.Alpha,
 			SizeX = eventSettings.SizeX,
 			SizeY = eventSettings.SizeY,
-			Image = TMW:GetTexturePathFromSetting(eventSettings.Image),
+			Image = TMW.COMMON.Textures:GetTexturePathFromSetting(eventSettings.Image),
 			
 			AnchorTo = eventSettings.AnchorTo,
 		}

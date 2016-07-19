@@ -1,0 +1,15 @@
+------------------------------------------------------------------------
+r52 | thaoky | 2016-07-18 16:12:10 +0000 (Mon, 18 Jul 2016) | 1 line
+Changed paths:
+   D /trunk/Data
+   M /trunk/DataStore_Talents.lua
+   M /trunk/DataStore_Talents.toc
+
+7.0 Compatibility Release
+------------------------------------------------------------------------
+r51 | thaoky | 2015-08-17 16:22:44 +0000 (Mon, 17 Aug 2015) | 1 line
+Changed paths:
+   M /trunk/DataStore_Talents.toc
+
+TOC Update
+------------------------------------------------------------------------

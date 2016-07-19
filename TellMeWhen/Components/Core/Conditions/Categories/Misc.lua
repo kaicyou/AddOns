@@ -52,6 +52,8 @@ ConditionCategory:RegisterCondition(1,	 "ICON", {
 		[0] = L["CONDITIONPANEL_ICON_SHOWN"],
 		[1] = L["CONDITIONPANEL_ICON_HIDDEN"],
 	},
+	levelChecks = true,
+	
 	isicon = true,
 	nooperator = true,
 	unit = false,
@@ -150,10 +152,9 @@ ConditionCategory:RegisterCondition(1.3,	"ICONHIDDENTME", {
 ConditionCategory:RegisterCondition(3,	 "MOUSEOVER", {
 	text = L["MOUSEOVERCONDITION"],
 	tooltip = L["MOUSEOVERCONDITION_DESC"],
-	min = 0,
-	max = 1,
-	formatter = TMW.C.Formatter.BOOL,
-	nooperator = true,
+	
+	bool = true,
+
 	unit = false,
 	icon = "Interface\\Icons\\Ability_Marksmanship",
 	tcoords = CNDT.COMMON.standardtcoords,
@@ -236,11 +237,13 @@ ConditionCategory:RegisterSpacer(19.5)
 ConditionCategory:RegisterCondition(21,	 "QUESTCOMPLETE", {
 	text = L["CONDITION_QUESTCOMPLETE"],
 	tooltip = L["CONDITION_QUESTCOMPLETE_DESC"],
-	min = 0,
-	max = 1,
-	formatter = TMW.C.Formatter.BOOL,
-	nooperator = true,
-	name = function(editbox) TMW:TT(editbox, "CONDITION_QUESTCOMPLETE", "CONDITION_QUESTCOMPLETE_EB_DESC") editbox.label = L["QUESTIDTOCHECK"] end,
+
+	bool = true,
+	
+	name = function(editbox)
+		editbox:SetTexts(L["CONDITION_QUESTCOMPLETE"], L["CONDITION_QUESTCOMPLETE_EB_DESC"])
+		editbox:SetLabel(L["QUESTIDTOCHECK"])
+	end,
 	unit = false,
 	icon = "Interface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon",
 	Env = {
@@ -279,7 +282,10 @@ ConditionCategory:RegisterCondition(30,	 "MACRO", {
 	max = 1,
 	nooperator = true,
 	noslide = true,
-	name = function(editbox) TMW:TT(editbox, "MACROCONDITION", "MACROCONDITION_EB_DESC") editbox.label = L["MACROTOEVAL"] end,
+	name = function(editbox)
+		editbox:SetTexts(L["MACROCONDITION"], L["MACROCONDITION_EB_DESC"])
+		editbox:SetLabel(L["MACROTOEVAL"])
+	end,
 	unit = false,
 	icon = "Interface\\Icons\\inv_misc_punchcards_yellow",
 	tcoords = CNDT.COMMON.standardtcoords,
@@ -302,7 +308,10 @@ ConditionCategory:RegisterCondition(31,	 "LUA", {
 	max = 1,
 	nooperator = true,
 	noslide = true,
-	name = function(editbox) TMW:TT(editbox, "LUACONDITION", "LUACONDITION_DESC") editbox.label = L["CODETOEXE"] end,
+	name = function(editbox)
+		editbox:SetTexts(L["LUACONDITION"], L["LUACONDITION_DESC"])
+		editbox:SetLabel(L["CODETOEXE"])
+	end,
 	unit = false,
 	icon = "Interface\\Icons\\INV_Misc_Gear_01",
 	tcoords = CNDT.COMMON.standardtcoords,

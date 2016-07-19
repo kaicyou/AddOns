@@ -1,10 +1,10 @@
-﻿-- $Id: Atlas_DungeonLocs-frFR.lua 10 2016-05-17 05:34:59Z arith $
+﻿-- $Id: Atlas_DungeonLocs-frFR.lua 12 2016-07-13 09:16:38Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2015 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 	This file is part of Atlas.
 
@@ -25,14 +25,15 @@
 --]]
 
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
-local AL = AceLocale:NewLocale("Atlas_DungeonLocs", "frFR", false);
--- Localize file must set above to false, for example:
---    local AL = AceLocale:NewLocale("Atlas_DungeonLocs", "deDE", false);
-if AL then
-	--Common
-	AL["Blue"] = "Bleu "; -- Espace pour le blanc avant une double ponctuation française
-	AL["Dungeon Locations"] = "Emplacements des instances";
-	AL["Green"] = "Vert "; -- Espace pour le blanc avant une double ponctuation française
-	AL["Instances"] = "Instances";
-	AL["White"] = "Blanc "; -- Espace pour le blanc avant une double ponctuation française
+local L = AceLocale:NewLocale("Atlas_DungeonLocs", "frFR", false);
+
+if L then
+L["Blue"] = "Bleu"
+L["Dungeon Locations"] = "Emplacements des instances"
+L["Green"] = "Vert"
+L["Instances"] = "Instances"
+L["White"] = "Blanc"
+L["ToC/Description"] = "Emplacements des instances" -- Needs review
+-- L["ToC/Title"] = ""
+
 end

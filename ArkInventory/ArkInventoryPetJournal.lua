@@ -55,36 +55,36 @@ function ArkInventory.PetJournal.FilterSetSearch( s )
 end
 
 function ArkInventory.PetJournal.FilterGetCollected( )
-	return not C_PetJournal.IsFlagFiltered( LE_PET_JOURNAL_FLAG_COLLECTED )
+	return not C_PetJournal.IsFilterChecked( LE_PET_JOURNAL_FILTER_COLLECTED )
 end
 
 function ArkInventory.PetJournal.FilterSetCollected( value )
-	C_PetJournal.SetFlagFilter( LE_PET_JOURNAL_FLAG_COLLECTED, value )
+	C_PetJournal.SetFilterChecked( LE_PET_JOURNAL_FLAG_COLLECTED, value )
 end
 
 function ArkInventory.PetJournal.FilterGetUncollected( )
-	return not C_PetJournal.IsFlagFiltered( LE_PET_JOURNAL_FLAG_NOT_COLLECTED )
+	return not C_PetJournal.IsFilterChecked( LE_PET_JOURNAL_FILTER_NOT_COLLECTED )
 end
 
 function ArkInventory.PetJournal.FilterSetUncollected( value )
-	C_PetJournal.SetFlagFilter( LE_PET_JOURNAL_FLAG_NOT_COLLECTED, value )
+	C_PetJournal.SetFilterChecked( LE_PET_JOURNAL_FILTER_NOT_COLLECTED, value )
 end
 
 function ArkInventory.PetJournal.FilterGetSource( t )
 	assert( type( t ) == "table", "parameter is not a table" )
 	for i = 1, ArkInventory.PetJournal.FilterGetSourceTypes( ) do
-		t[i] = not C_PetJournal.IsPetSourceFiltered( i )
+		t[i] = not C_PetJournal.IsPetSourceChecked( i )
 	end
 end
 
 function ArkInventory.PetJournal.FilterSetSource( t )
 	if type( t ) == "table" then
 		for i = 1, ArkInventory.PetJournal.FilterGetSourceTypes( ) do
-			C_PetJournal.SetPetSourceFilter( i, t[i] )
+			C_PetJournal.SetPetSourceChecked( i, t[i] )
 		end
 	elseif type( t ) == "boolean" then
 		for i = 1, ArkInventory.PetJournal.FilterGetSourceTypes( ) do
-			C_PetJournal.SetPetSourceFilter( i, t )
+			C_PetJournal.SetPetSourceChecked( i, t )
 		end
 	else
 		assert( false, "parameter is not a table or boolean" )
@@ -94,7 +94,7 @@ end
 function ArkInventory.PetJournal.FilterGetFamily( t )
 	assert( type( t ) == "table", "parameter is not a table" )
 	for i = 1, ArkInventory.PetJournal.FilterGetFamilyTypes( ) do
-		t[i] = not C_PetJournal.IsPetTypeFiltered( i )
+		t[i] = not C_PetJournal.IsPetTypeChecked( i )
 	end
 end
 
@@ -116,7 +116,7 @@ end
 
 function ArkInventory.PetJournal.OnHide( )
 	filter.ignore = false
-	ArkInventory:SendMessage( "LISTEN_PETJOURNAL_RELOAD_BUCKET", "RESCAN" )
+	ArkInventory:SendMessage( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET", "RESCAN" )
 end
 
 function ArkInventory.PetJournal.FilterActionClear( )
@@ -135,7 +135,7 @@ function ArkInventory.PetJournal.FilterActionClear( )
 	--PetJournal:RegisterEvent( "PET_JOURNAL_LIST_UPDATE" )
 	
 end
-	
+
 function ArkInventory.PetJournal.FilterActionBackup( )
 	
 	--ArkInventory.Output( "PetJournal.FilterActionBackup" )
@@ -332,7 +332,7 @@ function ArkInventory.PetJournal.Scan( )
 	
 	--ArkInventory.Output( "Pets: Start Scan" )
 	
-	if ( ArkInventory.Global.Mode.Combat ) then
+	if ArkInventory.Global.Mode.Combat then
 		-- set to scan when leaving combat
 		ArkInventory.Global.LeaveCombatRun.PetJournal = true
 		return
@@ -340,7 +340,7 @@ function ArkInventory.PetJournal.Scan( )
 	
 	if not ArkInventory.PetJournal.JournalIsUnlocked( ) then
 		-- journal not ready, come back later
-		ArkInventory:SendMessage( "LISTEN_PETJOURNAL_RELOAD_BUCKET", "RESCAN" )
+		ArkInventory:SendMessage( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET", "RESCAN" )
 	end
 	
 	local pj = ArkInventory.PetJournal.data
@@ -386,7 +386,7 @@ function ArkInventory.PetJournal.Scan( )
 		local sd = ArkInventory.PetJournal.ScanSpecies( speciesID )
 		if not sd then
 			ArkInventory.PetJournal.FilterActionRestore( )
-			ArkInventory:SendMessage( "LISTEN_PETJOURNAL_RELOAD_BUCKET", "RESCAN" )
+			ArkInventory:SendMessage( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET", "RESCAN" )
 			return false
 		end
 
@@ -403,7 +403,7 @@ function ArkInventory.PetJournal.Scan( )
 			if not pd then
 				--ArkInventory.Output( "* pet journal not ready at ", i, " / ", guid )
 				ArkInventory.PetJournal.FilterActionRestore( )
-				ArkInventory:SendMessage( "LISTEN_PETJOURNAL_RELOAD_BUCKET", "RESCAN" )
+				ArkInventory:SendMessage( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET", "RESCAN" )
 				return false
 			end
 			if not update and upd then
@@ -648,18 +648,18 @@ function ArkInventory.PetJournal.AttackList( speciesID, level )
 	
 	for i, abilityType in ipairs( sd.abilityType ) do
 		if ( sd.abilityLevel[i] <= level ) and ( PET_WEAK[abilityType] ~= sd.weak ) then
---			ArkInventory.Output( ArkInventory.PetJournal.PetTypeName( abilityType ), " ability weak against ", ArkInventory.PetJournal.PetTypeName( PET_WEAK[abilityType] ) )
+			--ArkInventory.Output( ArkInventory.PetJournal.PetTypeName( abilityType ), " ability weak against ", ArkInventory.PetJournal.PetTypeName( PET_WEAK[abilityType] ) )
 			weak[PET_WEAK[abilityType]] = true
 		end
 	end
 	
---	ArkInventory.Output( "-- -- -- -- -- -- --" )
+	--ArkInventory.Output( "-- -- -- -- -- -- --" )
 
 	for i, abilityType in ipairs( sd.abilityType ) do
 		
 		if ( sd.abilityLevel[i] <= level ) and ( PET_STRONG[abilityType] ~= PET_STRONG[sd.petType] ) then
 			
---			ArkInventory.Output( ArkInventory.PetJournal.PetTypeName( abilityType ), " ability strong against ", ArkInventory.PetJournal.PetTypeName( PET_STRONG[abilityType] ) )
+			--ArkInventory.Output( ArkInventory.PetJournal.PetTypeName( abilityType ), " ability strong against ", ArkInventory.PetJournal.PetTypeName( PET_STRONG[abilityType] ) )
 			
 			weak[PET_STRONG[abilityType]] = nil
 			strong[PET_STRONG[abilityType]] = true
@@ -672,13 +672,13 @@ function ArkInventory.PetJournal.AttackList( speciesID, level )
 		end
 	end
 	
---	ArkInventory.Output( "-- -- -- -- -- -- --" )
+	--ArkInventory.Output( "-- -- -- -- -- -- --" )
 	
 	
 	local info = ArkInventory.PetJournal.PetTypeName( PET_WEAK[sd.petType] )
 	local pos = 1
 	for abilityType in pairs( weak ) do
---		ArkInventory.Output( "weak ", ArkInventory.PetJournal.PetTypeName( abilityType ) )
+		--ArkInventory.Output( "weak ", ArkInventory.PetJournal.PetTypeName( abilityType ) )
 		if ( pos == 1 ) then
 			info = string.format( "%s or %s", info, ArkInventory.PetJournal.PetTypeName( abilityType ) )
 			pos = pos + 1
@@ -691,7 +691,7 @@ function ArkInventory.PetJournal.AttackList( speciesID, level )
 	info = ArkInventory.PetJournal.PetTypeName( PET_STRONG[sd.petType] )
 	pos = 1
 	for abilityType in pairs( strong ) do
---		ArkInventory.Output( "strong ", ArkInventory.PetJournal.PetTypeName( abilityType ) )
+		--ArkInventory.Output( "strong ", ArkInventory.PetJournal.PetTypeName( abilityType ) )
 		
 		if ( pos == 1 ) then
 			info = string.format( ArkInventory.Localise["BATTLEPET_OPPONENT_FORMAT_ABILITY1"], info, ArkInventory.PetJournal.PetTypeName( abilityType ) )
@@ -761,16 +761,18 @@ function ArkInventory.PetJournal.PetBattleHelp( speciesID, level )
 		weak[strong[x]] = nil
 	end
 	
---	ArkInventory.Output( "-- -- -- -- -- -- --" )
---	ArkInventory.Output( "name = ", enemy.name )
---	ArkInventory.Output( "level = ", level )
+--[[
+	ArkInventory.Output( "-- -- -- -- -- -- --" )
+	ArkInventory.Output( "name = ", enemy.name )
+	ArkInventory.Output( "level = ", level )
 	
---	for x in pairs( strong ) do
---		ArkInventory.Output( "strong = ", ArkInventory.PetJournal.PetTypeName( x ) )
---	end
---	for x in pairs( weak ) do
---		ArkInventory.Output( "weak = ", ArkInventory.PetJournal.PetTypeName( x ) )
---	end
+	for x in pairs( strong ) do
+		ArkInventory.Output( "strong = ", ArkInventory.PetJournal.PetTypeName( x ) )
+	end
+	for x in pairs( weak ) do
+		ArkInventory.Output( "weak = ", ArkInventory.PetJournal.PetTypeName( x ) )
+	end
+]]--
 	
 	local result, count, bad, good, modifier
 	local species = { }
@@ -873,7 +875,7 @@ function ArkInventory.PetJournal.PetBattleHelp( speciesID, level )
 				-- within 5 levels
 				-- pets where the enemy attacks are not strong
 				
-	--			ArkInventory.Output( "checking ", pd.link )
+				--ArkInventory.Output( "checking ", pd.link )
 				
 				bad = false
 				good = false
@@ -946,10 +948,10 @@ function ArkInventory.PetJournal.PetBattleHelp( speciesID, level )
 end
 
 
-function ArkInventory:LISTEN_PET_BATTLE_OPENING_DONE( event, ... )
+function ArkInventory:EVENT_WOW_BATTLEPET_OPENING_DONE( event, ... )
 	
-	--ArkInventory.Output( "LISTEN_PET_BATTLE_OPENING_DONE" )
-	-- /run ArkInventory:LISTEN_PET_BATTLE_OPENING_DONE( "MANUAL" )
+	--ArkInventory.Output( "EVENT_WOW_BATTLEPET_OPENING_DONE" )
+	-- /run ArkInventory:EVENT_WOW_BATTLEPET_OPENING_DONE( "MANUAL" )
 	if not ArkInventory.db.global.option.message.battlepet.opponent then return end
 	
 	ArkInventory.PetJournal.Scan( )
@@ -1107,33 +1109,44 @@ function ArkInventory:LISTEN_BATTLEPET_UPDATE( )
 	
 end
 
-function ArkInventory:LISTEN_PETJOURNAL_RELOAD( event, ... )
+function ArkInventory:EVENT_WOW_COLLECTION_PET_RELOAD( event, ... )
 	
-	--ArkInventory.Output( "LISTEN_PETJOURNAL_RELOAD( ", event, " )" )
+	--ArkInventory.Output( "EVENT_WOW_COLLECTION_PET_RELOAD( ", event, " )" )
 	--ArkInventory.Output( event )
 	
 	if ( event == "PET_JOURNAL_LIST_UPDATE" ) then
 		
-		ArkInventory:SendMessage( "LISTEN_PETJOURNAL_RELOAD_BUCKET", event )
+		ArkInventory:SendMessage( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET", event )
 		
 	elseif ( event == "COMPANION_UPDATE" ) then
 		
 		local c = ...
 		if ( c == "CRITTER" ) then
-			ArkInventory:SendMessage( "LISTEN_PETJOURNAL_RELOAD_BUCKET", event )
+			ArkInventory:SendMessage( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET", event )
 		end
 		
 	else
 		
-		ArkInventory:SendMessage( "LISTEN_PETJOURNAL_RELOAD_BUCKET", event )
+		ArkInventory:SendMessage( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET", event )
 		
 	end
 	
 end
 
-function ArkInventory:LISTEN_PETJOURNAL_RELOAD_BUCKET( events )
+function ArkInventory:EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET( events )
 	
-	--ArkInventory.Output( "LISTEN_PETJOURNAL_RELOAD_BUCKET( ", events, " )" )
+	--ArkInventory.Output( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET( ", events, " )" )
+	
+	loc_id = ArkInventory.Const.Location.Pet
+	
+	if not ArkInventory:IsEnabled( ) then
+		return
+	end
+	
+	if not ArkInventory.LocationIsMonitored( loc_id ) then
+		--ArkInventory.Output( "IGNORED (NOT MONITORED)" )
+		return
+	end
 	
 	if PetJournal:IsVisible( ) then
 		--ArkInventory.Output( "IGNORED (PET JOURNAL OPEN)" )
@@ -1149,20 +1162,6 @@ function ArkInventory:LISTEN_PETJOURNAL_RELOAD_BUCKET( events )
 	ArkInventory.PetJournal.Scan( )
 	
 end
-
-
-
-
--- runtime
-PetJournal:HookScript( "OnHide", ArkInventory.PetJournal.OnHide )
---CollectionsJournal:HookScript( "OnHide", ArkInventory.PetJournal.OnHide )
-
---PetJournalParent:Show( )
---PetJournalParent:Hide( )
-
-
-
-
 
 -- unit guid, from mmouseover = Creature-[unknown]-[serverID]-[instanceID]-[zoneUID]-[creatureID]-[spawnUID]
 -- caged battletpet (item) = battlepet:

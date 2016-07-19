@@ -3,11 +3,47 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="6.2.6"
 
 TMW.CHANGELOG = [==[
+===v8.0.2===
+====Bug Fixes====
+* Fixed attempt to index field 'typeData' (a nil value) error
+
+===v8.0.1===
+====Bug Fixes====
+* Fixed Maelstrom condition - correct maximum is 150.
+
+===v8.0.0===
+====Breaking Changes====
+* There is a small chance you will need to reconfigure the spec settings on all your groups.
+* Most of your old color settings were lost.
+
+* You can no longer scale the Icon Editor by default. You can turn this back on in the General options.
+
+* Each of the pairs of Opacity and Shown Icon Sorting methods have been merged.
+
+* The Update Order settings have been removed.
+** Try replacing usages of the Expand sub-metas setting with Group Controller meta icons if you experience issues.
+
+====General====
+* Full support for Legion. Get out there and kill some demons!
+* All TellMeWhen configuration is now done in the icon editor.
+
+* Color configuration has been completely revamped. It is now done on each icon.
+** Duration Requirements, Stack Requirements, and Conditions Failed opacities now use Opactiy & Color settings.
+** Out of Range & Out Of Power settings now use Opactiy & Color settings.
+** You can also set a custom texture for each of your Opacity & Color settings.
+
+* Combat Log Source and Destination units may now have unit conditions when filtered by unitID.
+* New conditions have been added for:
+** Checking your current location.
+** Checking your last spell cast (for Windwalker Monk mastery).
+** The old buff/debuff Tooltip Number conditions have returned as well.
+* And much, much more! Dig in to check it all out!
+
 ===v7.4.0===
 * Bar and Vertical Bar groups now have several new options:
-** Show/Hide Icon - A better alternative to using "none" as a custom texture.
-** Flip Icon - Swaps the side of the bar that the icon is on.
-** Bar & Icon Borders - Beautify your bars!
+** Show/Hide Icon
+** Flip Icon
+** Bar & Icon Borders
 
 ===v7.3.5===
 ====Bug Fixes====

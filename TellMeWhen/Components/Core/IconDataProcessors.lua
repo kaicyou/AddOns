@@ -42,19 +42,42 @@ end
 
 
 
--- ALPHA: "alpha"
+-- STATE: "state"
 do
-	local Processor = TMW.Classes.IconDataProcessor:New("ALPHA", "alpha")
+	local Processor = TMW.Classes.IconDataProcessor:New("STATE", "state")
+	Processor:DeclareUpValue("stateDataNone", {Alpha = 0, Color = "ffffffff", Texture=""})
 	Processor.dontInherit = true
+	Processor:RegisterAsStateArbitrator(100, nil, false, function(icon, panelInfo)
+		return panelInfo.supplementalData
+	end)
 
-	TMW.IconAlphaManager:AddHandler(100, "ALPHA")
 	-- Processor:CompileFunctionSegment(t) is default.
 
-	TMW:RegisterCallback("TMW_ICON_SETUP_POST", function(event, icon)
-		if not TMW.Locked then
-			icon:SetInfo("alpha", 0)
-		end
+	function Processor:CompileFunctionSegment(t)
+		-- GLOBALS: state
+		t[#t+1] = [[
+		--if state ~= nil then
+			local stateData = type(state) == 'table' and state or (state == 0 and stateDataNone or icon.States[state])
+			if attributes.state ~= stateData then
+				attributes.state = stateData
+
+				TMW:Fire(STATE.changedEvent, icon, stateData, state)
+				doFireIconUpdated = true
+			end
+		--end
+		--]]
+	end
+
+	TMW:RegisterCallback("TMW_ICON_SETUP_PRE", function(event, icon)
+		icon:SetInfo("state", 0)
 	end)
+end
+
+
+-- CALCULATEDSTATE: "calculatedState"
+do
+	local Processor = TMW.Classes.IconDataProcessor:New("CALCULATEDSTATE", "calculatedState")
+	Processor.dontInherit = true
 end
 
 
@@ -65,8 +88,31 @@ end
 -- ALPHAOVERRIDE: "alphaOverride"
 do
 	local Processor = TMW.Classes.IconDataProcessor:New("ALPHAOVERRIDE", "alphaOverride")
-	TMW.IconAlphaManager:AddHandler(0, "ALPHAOVERRIDE", true)
+	Processor:RegisterAsStateArbitrator(0, nil, true)
 	Processor.dontInherit = true
+
+	Processor:DeclareUpValue("alphaOverrideStates", setmetatable({}, {
+		__index = function(self, k)
+			if not k then return nil end
+			self[k] = {Alpha = k, Color = "ffffffff", Texture=""}
+			return self[k]
+		end
+	}))
+
+	-- Processor:CompileFunctionSegment(t) is default.
+
+	function Processor:CompileFunctionSegment(t)
+		-- GLOBALS: alphaOverride
+		t[#t+1] = [[
+			local stateData = type(alphaOverride) == 'table' and alphaOverride or alphaOverrideStates[alphaOverride]
+			if attributes.alphaOverride ~= stateData then
+				attributes.alphaOverride = stateData
+
+				TMW:Fire(STATE.changedEvent, icon, stateData, alphaOverride)
+				doFireIconUpdated = true
+			end
+		--]]
+	end
 end
 
 
@@ -92,8 +138,11 @@ do
 		text = L["SOUND_EVENT_ONHIDE"],
 		desc = L["SOUND_EVENT_ONHIDE_DESC"],
 		settings = {
-			OnlyShown = "FORCEDISABLED",
+			OnlyShown = false,
 		},
+		applyDefaultsToSetting = function(EventSettings)
+			EventSettings.OnlyShown = false
+		end,
 	})
 	Processor:RegisterIconEvent(13, "OnAlphaInc", {
 		category = L["EVENT_CATEGORY_VISIBILITY"],
@@ -161,6 +210,40 @@ do
 		--]]
 	end
 
+
+	TMW:RegisterCallback("TMW_INITIALIZE", function()
+		local IconPosition_Sortable = TMW.C.GroupModule_IconPosition_Sortable
+		if IconPosition_Sortable then
+			IconPosition_Sortable:RegisterIconSorter("alpha", {
+				DefaultOrder = -1,
+				[1] = L["UIPANEL_GROUPSORT_alpha_1"],
+				[-1] = L["UIPANEL_GROUPSORT_alpha_-1"],
+			}, function(iconA, iconB, attributesA, attributesB, order)
+				local a, b = attributesA.realAlpha, attributesB.realAlpha
+				if a ~= b then
+					return a*order < b*order
+				end
+			end)
+
+			IconPosition_Sortable:RegisterIconSorter("shown", {
+				DefaultOrder = -1,
+				[1] = L["UIPANEL_GROUPSORT_shown_1"],
+				[-1] = L["UIPANEL_GROUPSORT_shown_-1"],
+			}, function(iconA, iconB, attributesA, attributesB, order)
+				local a, b = (attributesA.shown and attributesA.realAlpha > 0) and 1 or 0, (attributesB.shown and attributesB.realAlpha > 0) and 1 or 0
+				if a ~= b then
+					return a*order < b*order
+				end
+			end)
+
+			IconPosition_Sortable:RegisterIconSortPreset(L["UIPANEL_GROUP_QUICKSORT_SHOWN"], {
+				{ Method = "shown", Order = -1 },
+				{ Method = "id", Order = 1 }
+			})
+		end
+	end)
+
+	
 	Processor:RegisterDogTag("TMW", "IsShown", {	
 		code = function(icon)
 			icon = TMW.GUIDToOwner[icon]
@@ -247,8 +330,14 @@ do
 		settings = {
 			Operator = true,
 			Value = true,
-			CndtJustPassed = "FORCE",
-			PassingCndt = "FORCE",
+			CndtJustPassed = function(check)
+				check:Disable()
+				check:SetAlpha(1)
+			end,
+			PassingCndt = function(check)
+				check:Disable()
+				check:SetAlpha(1)
+			end,
 		},
 		blacklistedOperators = {
 			["~="] = true,
@@ -392,6 +481,34 @@ do
 	end)
 
 
+	TMW:RegisterCallback("TMW_INITIALIZE", function()
+		local IconPosition_Sortable = TMW.C.GroupModule_IconPosition_Sortable
+		if IconPosition_Sortable then
+			IconPosition_Sortable:RegisterIconSorter("duration", {
+				DefaultOrder = 1,
+				[1] = L["UIPANEL_GROUPSORT_duration_1"],
+				[-1] = L["UIPANEL_GROUPSORT_duration_-1"],
+			}, function(iconA, iconB, attributesA, attributesB, order)
+				local time = TMW.time
+				
+				local durationA = attributesA.duration
+				local durationB = attributesB.duration
+
+				durationA = iconA:OnGCD(durationA) and 0 or durationA - (time - attributesA.start)
+				durationB = iconB:OnGCD(durationB) and 0 or durationB - (time - attributesB.start)
+
+				if durationA ~= durationB then
+					return durationA*order < durationB*order
+				end
+			end)
+
+			IconPosition_Sortable:RegisterIconSortPreset(L["UIPANEL_GROUP_QUICKSORT_DURATION"], {
+				{ Method = "shown", Order = -1 },
+				{ Method = "duration", Order = 1 },
+				{ Method = "id", Order = 1 }
+			})
+		end
+	end)
 
 
 
@@ -433,40 +550,6 @@ do
 		end
 	end)
 end
-
-
-
-
-
-
--- NOMANA: "noMana"
-do
-	local Processor = TMW.Classes.IconDataProcessor:New("NOMANA", "noMana")
-	-- Processor:CompileFunctionSegment(t) is default.
-
-	TMW:RegisterCallback("TMW_ICON_SETUP_POST", function(event, icon)
-		if not TMW.Locked then
-			icon:SetInfo("noMana", nil)
-		end
-	end)
-end
-
-
-
-
-
-
--- INRANGE: "inRange"
-do
-	local Processor = TMW.Classes.IconDataProcessor:New("INRANGE", "inRange")
-
-	TMW:RegisterCallback("TMW_ICON_SETUP_POST", function(event, icon)
-		if not TMW.Locked then
-			icon:SetInfo("inRange", nil)
-		end
-	end)
-end
-
 
 
 
@@ -602,6 +685,37 @@ do
 		icon:SetInfo("value, maxValue, valueColor", nil, nil, nil)
 	end)
 		
+
+	TMW:RegisterCallback("TMW_INITIALIZE", function()
+		local IconPosition_Sortable = TMW.C.GroupModule_IconPosition_Sortable
+		if IconPosition_Sortable then
+			IconPosition_Sortable:RegisterIconSorter("value", {
+				DefaultOrder = -1,
+				[1] = L["UIPANEL_GROUPSORT_value_1"],
+				[-1] = L["UIPANEL_GROUPSORT_value_-1"],
+			}, function(iconA, iconB, attributesA, attributesB, order)
+				local a, b = attributesA.value, attributesB.value
+				if a ~= b then
+					return a*order < b*order
+				end
+			end)
+
+			IconPosition_Sortable:RegisterIconSorter("valuep", {
+				DefaultOrder = -1,
+				[1] = L["UIPANEL_GROUPSORT_valuep_1"],
+				[-1] = L["UIPANEL_GROUPSORT_valuep_-1"],
+			}, function(iconA, iconB, attributesA, attributesB, order)
+				if attributesA.maxValue == 0 or attributesB.maxValue == 0 then
+					return false
+				end
+				local a, b = attributesA.value / attributesA.maxValue, attributesB.value / attributesB.maxValue
+				if a ~= b then
+					return a*order < b*order
+				end
+			end)
+		end
+	end)
+
 	Processor:RegisterDogTag("TMW", "Value", {
 		code = function(icon)
 			icon = TMW.GUIDToOwner[icon]
@@ -699,6 +813,22 @@ do
 		example = '[Stacks] => "9"; [Stacks(icon="TMW:icon:1I7MnrXDCz8T")] => "3"',
 		category = L["ICON"],
 	})
+
+	TMW:RegisterCallback("TMW_INITIALIZE", function()
+		local IconPosition_Sortable = TMW.C.GroupModule_IconPosition_Sortable
+		if IconPosition_Sortable then
+			IconPosition_Sortable:RegisterIconSorter("stacks", {
+				DefaultOrder = -1,
+				[1] = L["UIPANEL_GROUPSORT_stacks_1"],
+				[-1] = L["UIPANEL_GROUPSORT_stacks_-1"],
+			}, function(iconA, iconB, attributesA, attributesB, order)
+				local a, b = attributesA.stack or 0, attributesB.stack or 0
+				if a ~= b then
+					return a*order < b*order
+				end
+			end)
+		end
+	end)
 
 	TMW:RegisterCallback("TMW_ICON_SETUP_POST", function(event, icon)
 		if not TMW.Locked then

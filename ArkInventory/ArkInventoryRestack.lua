@@ -52,7 +52,7 @@ local function RestackBagCheck( loc_id, bag_id )
 	local numSlots = GetContainerNumSlots( bag_id )
 	local freeSlots, bagType = GetContainerNumFreeSlots( bag_id )
 	
-	if bagType == nil then
+	if ( loc_id == ArkInventory.Const.Location.Bank and not ArkInventory.Global.Mode.Bank ) or ( loc_id == ArkInventory.Const.Location.Vault and not ArkInventory.Global.Mode.Vault ) then
 		-- no longer at location, abort
 		abort = loc_id
 	end
@@ -76,7 +76,7 @@ local function FindStack( loc_id, cl, cb, bp, cs, id )
 	
 	for _, bag_id in ipairs( ArkInventory.Global.Location[loc_id].Bags ) do
 		
-		if not ArkInventory.Global.Me.bagoptions[loc_id][bag_id].restack.ignore then
+		if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
 			
 			for slot_id = GetContainerNumSlots( bag_id ), 1, -1 do
 				
@@ -219,7 +219,7 @@ local function FindPartialStack( loc_id, cl, cb, bp, cs, id )
 		
 		for zz, bag_id in ipairs( ArkInventory.Global.Location[loc_id].Bags ) do
 			
-			if not ArkInventory.Global.Me.bagoptions[loc_id][bag_id].restack.ignore then
+			if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
 				
 				for slot_id = GetContainerNumSlots( bag_id ), 1, -1 do
 					
@@ -325,7 +325,7 @@ local function FindProfessionItem( loc_id, cl, cb, bp, cs, ct )
 			return abort, recheck, false
 		end
 		
-		if not ArkInventory.Global.Me.bagoptions[loc_id][bag_id].restack.ignore then
+		if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
 			
 			if bt == 0 then
 				
@@ -432,7 +432,7 @@ local function FindCraftingItem( loc_id, cl, cb, bp, cs )
 			return abort, recheck, false
 		end
 		
-		if not ArkInventory.Global.Me.bagoptions[loc_id][bag_id].restack.ignore then
+		if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
 			
 			if bt == 0 and bag_id ~= REAGENTBANK_CONTAINER then
 				-- do not steal from profession bags or the reagent bank
@@ -511,7 +511,7 @@ local function CompactBags( loc_id )
 	
 	for zz, bag_id in ipairs( ArkInventory.Global.Location[loc_id].Bags ) do
 		
-		if not ArkInventory.Global.Me.bagoptions[loc_id][bag_id].restack.ignore then
+		if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
 			
 			--ArkInventory.Output( "CompactBags( ", loc_id, ".", bag_id, " )" )
 			
@@ -538,6 +538,8 @@ local function CompactBags( loc_id )
 					
 				else
 					
+					--ArkInventory.Output( "unlocked> ", loc_id, ".", bag_id, ".", slot_id )
+					
 					local h = GetContainerItemLink( bag_id, slot_id )
 					
 					if h then
@@ -553,13 +555,13 @@ local function CompactBags( loc_id )
 							
 							local ab, rc, ok, pb, ps = FindPartialStack( loc_id, loc_id, bag_id, zz, slot_id, item_id )
 							
+							if rc then
+								recheck = true
+							end
+							
 							if ab then
 								abort = loc_id
 								return abort, recheck
-							end
-							
-							if rc then
-								recheck = true
 							end
 							
 							if ok then
@@ -684,7 +686,7 @@ local function ConsolidateBag( loc_id, bag_id, bag_pos )
 	local abort = false
 	local recheck = false
 	
-	if not ArkInventory.Global.Me.bagoptions[loc_id][bag_id].restack.ignore then
+	if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
 		
 		--ArkInventory.Output( "ConsolidateBag( ", loc_id, ".", bag_id, " )" )
 		
@@ -778,7 +780,7 @@ local function Consolidate( loc_id )
 	-- fill up profession bags with profession items
 	for zz, bag_id in ipairs( ArkInventory.Global.Location[loc_id].Bags ) do
 		
-		if not ArkInventory.Global.Me.bagoptions[loc_id][bag_id].restack.ignore then
+		if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
 			
 			local ab, bt, count = RestackBagCheck( loc_id, bag_id )
 			
@@ -816,7 +818,7 @@ local function Consolidate( loc_id )
 			
 			local bag_id = REAGENTBANK_CONTAINER
 			
-			if not ArkInventory.Global.Me.bagoptions[loc_id][bag_id].restack.ignore then
+			if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
 				
 				if RestackBagCheck( loc_id, bag_id ) then
 					abort = loc_id
@@ -844,7 +846,7 @@ local function Consolidate( loc_id )
 			
 			for zz, bag_id in ipairs( ArkInventory.Global.Location[loc_id].Bags ) do
 				
-				if not ArkInventory.Global.Me.bagoptions[loc_id][bag_id].restack.ignore then
+				if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
 					
 					local ab, bt = RestackBagCheck( loc_id, bag_id )
 					
@@ -957,7 +959,7 @@ local function RestackRun( loc_id )
 					end
 					
 					local bag_id = ArkInventory.Global.Location[loc_id].tabReagent
-					if not ArkInventory.Global.Me.bagoptions[loc_id][bag_id].restack.ignore then
+					if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
 						SortReagentBankBags( )
 --						coroutine.yield( )
 					end

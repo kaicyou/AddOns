@@ -1,4 +1,4 @@
--- $Id: AtlasMapsAssociation.lua 6 2016-04-25 11:36:42Z arith $
+-- $Id: AtlasMapsAssociation.lua 42 2016-07-15 08:11:19Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -24,7 +24,6 @@
 
 --]]
 
-local AL = LibStub("AceLocale-3.0"):GetLocale("Atlas");
 local BZ = Atlas_GetLocaleLibBabble("LibBabble-SubZone-3.0");
 
 --[[
@@ -221,13 +220,17 @@ Atlas_SubZoneData = {
 		},
 		-- HellfireD
 		["HellfireD"] = {
-			BZ["The Black Gate"],
-		},
-		-- HellfireE
-		["HellfireE"] = {
 			BZ["Grommash's Torment"],
 			BZ["The Felborne Breach"],
 			BZ["Halls of the Sargerei"],
+		},
+		-- HellfireE
+		["HellfireE"] = {
+			BZ["Destructor's Rise"],
+		},
+		-- HellfireF
+		["HellfireF"] = {
+			BZ["The Black Gate"],
 		},
 	},
 	-- Highmaul
@@ -674,11 +677,12 @@ Atlas_MapSeries = {
 	["BlackTempleStart"] = 			{"BlackTempleStart", "BlackTempleBasement", "BlackTempleTop" };
 	["BlackTempleBasement"] = 		{"BlackTempleStart", "BlackTempleBasement", "BlackTempleTop" };
 	["BlackTempleTop"] = 			{"BlackTempleStart", "BlackTempleBasement", "BlackTempleTop" };
-	["HellfireA"] = 			{"HellfireA", "HellfireB", "HellfireC", "HellfireD", "HellfireE" };
-	["HellfireB"] = 			{"HellfireA", "HellfireB", "HellfireC", "HellfireD", "HellfireE" };
-	["HellfireC"] = 			{"HellfireA", "HellfireB", "HellfireC", "HellfireD", "HellfireE" };
-	["HellfireD"] = 			{"HellfireA", "HellfireB", "HellfireC", "HellfireD", "HellfireE" };
-	["HellfireE"] = 			{"HellfireA", "HellfireB", "HellfireC", "HellfireD", "HellfireE" };
+	["HellfireA"] = 			{"HellfireA", "HellfireB", "HellfireC", "HellfireD", "HellfireE", "HellfireF" };
+	["HellfireB"] = 			{"HellfireA", "HellfireB", "HellfireC", "HellfireD", "HellfireE", "HellfireF" };
+	["HellfireC"] = 			{"HellfireA", "HellfireB", "HellfireC", "HellfireD", "HellfireE", "HellfireF" };
+	["HellfireD"] = 			{"HellfireA", "HellfireB", "HellfireC", "HellfireD", "HellfireE", "HellfireF" };
+	["HellfireE"] = 			{"HellfireA", "HellfireB", "HellfireC", "HellfireD", "HellfireE", "HellfireF" };
+	["HellfireF"] = 			{"HellfireA", "HellfireB", "HellfireC", "HellfireD", "HellfireE", "HellfireF" };
 	["HighmaulA"] = 			{"HighmaulA", "HighmaulB" };
 	["HighmaulB"] = 			{"HighmaulA", "HighmaulB" };
 	["ShadoPanMonasteryA"] = 		{"ShadoPanMonasteryA", "ShadoPanMonasteryB" };
@@ -716,6 +720,7 @@ Atlas_SubZoneAssoc = {
 	["HellfireC"] = 			BZ["Hellfire Citadel"];
 	["HellfireD"] = 			BZ["Hellfire Citadel"];
 	["HellfireE"] = 			BZ["Hellfire Citadel"];
+	["HellfireF"] = 			BZ["Hellfire Citadel"];
 	["HighmaulA"] =				BZ["Highmaul"];
 	["HighmaulB"] =				BZ["Highmaul"];
 	["IcecrownCitadelA"] =			BZ["Icecrown Citadel"];

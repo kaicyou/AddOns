@@ -35,6 +35,35 @@ local StatusBarTexture
 local TimerBar = TMW:NewClass("IconModule_TimerBar", "IconModule", "UpdateTableManager")
 TimerBar:UpdateTable_Set(BarsToUpdate)
 
+
+local settings = {
+	TimerBar_StartColor    = "ffff0000",
+	TimerBar_MiddleColor   = "ffffff00",
+	TimerBar_CompleteColor = "ff00ff00",
+	TimerBar_EnableColors  = false,
+}
+
+-- Icon defaults
+TimerBar:RegisterIconDefaults(settings)
+
+-- Group defaults
+TMW:MergeDefaultsTables(settings, TMW.Group_Defaults)
+
+-- Global defaults (global doesn't have the Enable_Colors setting)
+settings.TimerBar_EnableColors = nil
+TMW:MergeDefaultsTables(settings, TMW.Defaults.global)
+
+
+TimerBar:RegisterConfigPanel_XMLTemplate(52, "TellMeWhen_TimerBar_GroupColors")
+	:SetPanelSet("group")
+	:SetColumnIndex(1)
+
+
+TimerBar:RegisterConfigPanel_XMLTemplate(52, "TellMeWhen_TimerBar_GlobalColors")
+	:SetPanelSet("global")
+
+
+
 TimerBar:RegisterAnchorableFrame("TimerBar")
 
 function TimerBar:OnNewInstance(icon)	
@@ -46,8 +75,6 @@ function TimerBar:OnNewInstance(icon)
 	
 	self.Max = 1
 	bar:SetMinMaxValues(0, self.Max)
-	
-	self:SetColors(TMW.Types[""].CBS, TMW.Types[""].CBM, TMW.Types[""].CBC)
 	
 	self.start = 0
 	self.duration = 0
@@ -173,9 +200,9 @@ function TimerBar:SetCooldown(start, duration)
 end
 
 function TimerBar:SetColors(startColor, halfColor, completeColor)
-	self.startColor = startColor
-	self.halfColor = halfColor
-	self.completeColor = completeColor
+	self.startColor    = startColor and TMW:StringToCachedRGBATable(startColor)
+	self.halfColor     = halfColor and TMW:StringToCachedRGBATable(halfColor)
+	self.completeColor = completeColor and TMW:StringToCachedRGBATable(completeColor)
 end
 
 function TimerBar:DURATION(icon, start, duration)

@@ -1,10 +1,10 @@
--- $Id: Atlas_DungeonLocs-zhCN.lua 10 2016-05-17 05:34:59Z arith $
+-- $Id: Atlas_DungeonLocs-zhCN.lua 12 2016-07-13 09:16:38Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2015 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 	This file is part of Atlas.
 
@@ -28,14 +28,15 @@
 -- Maintained by DiabloHu, arith, Ananhaid
 
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
-local AL = AceLocale:NewLocale("Atlas_DungeonLocs", "zhCN", false);
--- Localize file must set above to false, for example:
---    local AL = AceLocale:NewLocale("Atlas_DungeonLocs", "deDE", false);
-if AL then
-	--Common
-	AL["Blue"] = "蓝色";
-	AL["Dungeon Locations"] = "副本区域";
-	AL["Green"] = "绿色";
-	AL["Instances"] = "副本";
-	AL["White"] = "白色";
+local L = AceLocale:NewLocale("Atlas_DungeonLocs", "zhCN", false);
+
+if L then
+L["Blue"] = "蓝色"
+L["Dungeon Locations"] = "副本区域"
+L["Green"] = "绿色"
+L["Instances"] = "副本"
+L["White"] = "白色"
+L["ToC/Description"] = "副本位置地图"
+L["ToC/Title"] = "Atlas |r|cFF0099FF[副本位置]|r"
+
 end

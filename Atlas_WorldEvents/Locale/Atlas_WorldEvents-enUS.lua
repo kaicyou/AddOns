@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas_WorldEvents-enUS.lua 85 2016-07-06 15:08:55Z arith $
+﻿-- $Id: Atlas_WorldEvents-enUS.lua 88 2016-07-19 09:22:52Z arith $
 --[[
 
 	Atlas World Events, a World of Warcraft map browser for world events
@@ -396,4 +396,11 @@ if L then
 	L["(Inside the fortress)"] = "(Inside the fortress)"; -- The Elder Bluewolf is inside the Wintergrasp Fortress
 
 	L["Quest: Elune's Blessing"] = "Quest: Elune's Blessing";
+
+	-- ----------------------------------------------------------------------
+	-- Tanaan Junger Hunter
+	-- ----------------------------------------------------------------------
+	L["Jungle Hunter"] = "Jungle Hunter";
+	L["Jungle Stalker"] = "Jungle Stalker";
+	L["Defeat rare creatures in Tanaan Jungle"] = "Defeat rare creatures in Tanaan Jungle";
 end

@@ -1,4 +1,4 @@
--- $Id: AtlasJournalEncounter.lua 6 2016-04-25 11:36:42Z arith $
+-- $Id: AtlasJournalEncounter.lua 48 2016-07-19 14:03:11Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -26,8 +26,8 @@
 
 -- Atlas JournalEncounter Integration
 
-local AtlasLocale = LibStub("AceLocale-3.0"):GetLocale("Atlas");
-local BabbleBoss = Atlas_GetLocaleLibBabble("LibBabble-Boss-3.0");
+local L = LibStub("AceLocale-3.0"):GetLocale("Atlas");
+local BB = Atlas_GetLocaleLibBabble("LibBabble-Boss-3.0");
 
 function Atlas_JournalEncounter_InstanceButton_OnClick(frame)
 	local zoneID = ATLAS_DROPDOWNS[AtlasOptions.AtlasType][AtlasOptions.AtlasZone];
@@ -68,7 +68,7 @@ function Atlas_JournalEncounter_InstanceButton_OnEnter(frame)
 			GameTooltip:SetText(name);
 			GameTooltipTextLeft1:SetTextColor(1, 1, 1);
 			GameTooltip:AddLine(description, nil, nil, nil, true);
-			GameTooltip:AddLine(AtlasLocale["Click to open Dungeon Journal window."], 0.5, 0.5, 1, true);
+			GameTooltip:AddLine(L["Click to open Dungeon Journal window."], 0.5, 0.5, 1, true);
 			GameTooltip:Show();
 		end
 	else
@@ -84,20 +84,32 @@ end
 -- ------------------------------------------------------------
 function Atlas_GetBossName(bossname, encounterID, creatureIndex)
 	if (encounterID) then
+		local encounter;
 		if (creatureIndex) then
 			if (EJ_GetCreatureInfo(creatureIndex, encounterID)) then
 				local _;
-				_, bossname = EJ_GetCreatureInfo(creatureIndex, encounterID);
+				_, encounter = EJ_GetCreatureInfo(creatureIndex, encounterID);
 			end
 		else 
 			if (EJ_GetEncounterInfo(encounterID)) then
-				bossname, _, _, _, link = EJ_GetEncounterInfo(encounterID);
+				encounter, _, _, _, link = EJ_GetEncounterInfo(encounterID);
 			end
 		end
-	elseif (bossname and BabbleBoss[bossname]) then
-		bossname = BabbleBoss[bossname];
-	elseif (bossname and AtlasLocale[bossname]) then
-		bossname = AtlasLocale[bossname];
+		if (encounter == nil) then
+			if (bossname and BB[bossname]) then
+				bossname = BB[bossname];
+			elseif (bossname and L[bossname]) then
+				bossname = L[bossname];
+			else
+				--bossname = bossname;
+			end
+		else
+			bossname = encounter;
+		end
+	elseif (bossname and BB[bossname]) then
+		bossname = BB[bossname];
+	elseif (bossname and L[bossname]) then
+		bossname = L[bossname];
 	else
 		--bossname = bossname;
 	end

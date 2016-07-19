@@ -1,15 +1,15 @@
-﻿## Interface: 60200
-## X-Curse-Packaged-Version: 3.05.12
+﻿## Interface: 70000
+## X-Curse-Packaged-Version: 3.06.06
 ## X-Curse-Project-Name: ArkInventory
 ## X-Curse-Project-ID: ark-inventory
 ## X-Curse-Repository-ID: wow/ark-inventory/mainline
 
-## Title: ArkInventory
-## Title-zhCN: [背包]ArkInventory 整合背包银行
+## Title: Ark Inventory
+## Title-zhCN: [背包]Ark Inventory 整合背包银行
 ## Author: Arkayenro - Khaz'goroth
 ## Email: arkayenro at gmail dot com
-## Version: 30512
-## X-ReleaseType:
+## Version: 30606
+## X-ReleaseType: 
 ## SavedVariables: ARKINVDB
 
 ## Notes: Allows you to view all items from all your characters on the same account, when-ever and where-ever you want.
@@ -20,38 +20,34 @@
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: delayed
 
-## RequiredDeps: Blizzard_GuildBankUI, Blizzard_VoidStorageUI, Blizzard_Collections, Blizzard_TradeSkillUI
-
 ## OptionalDeps: Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0, LibDataBroker-1.1, LibDialog-1.0, Masque, BattlePetBreedID
 ## X-Embeds: Ace3, AceGUI-3.0-SharedMediaWidgets, LibPeriodicTable-3.1, LibSharedMedia-3.0, LibDataBroker-1.1, LibDialog-1.0
 
 ## X-Category: Inventory
-## X-Website: http://arkinventory.googlecode.com
-
+## X-Website: https://github.com/arkayenro/arkinventory
 
 #@no-lib-strip@
 ArkInventoryExternals.xml
 #@end-no-lib-strip@
+ArkInventoryExternals.lua
 
-Libs\ArkDewdrop\ArkDewdrop-3.0.lua
+Libs\ArkDewdrop\ArkDewdrop.lua
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 
+ArkInventoryConst.lua
 
 Locale\locale.xml
 
-ArkInventoryExternals.lua
-
-
 ArkInventory.lua
+
 ArkInventoryCompanion.lua
 
 ArkInventoryStorage.lua
 ArkInventoryRestack.lua
-ArkInventoryUpgrades.lua
 ArkInventoryMenu.lua
 ArkInventoryRules.lua
 ArkInventorySearch.lua
-ArkInventorySync.lua
+ArkInventoryUpgrades.lua
 
 ArkInventoryPetJournal.lua
 ArkInventoryMountJournal.lua
@@ -61,8 +57,9 @@ ArkInventoryTooltip.lua
 ArkInventoryMoney.lua
 ArkInventoryMedia.lua
 
+ArkInventoryJunk.lua
+
 ArkInventory.xml
-ArkInventorySearch.xml
 
 ArkInventoryConfig.lua
 ArkInventoryLDB.lua

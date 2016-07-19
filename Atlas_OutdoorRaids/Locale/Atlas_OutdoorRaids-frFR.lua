@@ -1,10 +1,10 @@
- -- $Id: Atlas_OutdoorRaids-frFR.lua 4 2015-07-06 14:31:55Z arith $
+ -- $Id: Atlas_OutdoorRaids-frFR.lua 13 2016-07-19 13:56:42Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2015 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 	This file is part of Atlas.
 
@@ -25,31 +25,32 @@
 --]]
 
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
-local AL = AceLocale:NewLocale("Atlas_OutdoorRaids", "frFR", false);
--- Localize file must set above to false, for example:
---    local AL = AceLocale:NewLocale("Atlas_OutdoorRaids", "deDE", false);
+local L = AceLocale:NewLocale("Atlas_OutdoorRaids", "frFR", false);
 
-if AL then
-	AL["Ancient Skull Pile"] = "Ancienne pile de crânes";
-	AL["Darkscreecher Akkarai"] = "Akkarai le Hurle-sombre";
-	AL["Draenor World Bosses"] = "Boss de Monde de Draenor";
-	AL["Gezzarak the Huntress"] = "Gezzarak la Chasseresse";
-	AL["Grella <Skyguard Quartermaster>"] = "Grella <Intendante de la Garde-ciel>";
-	AL["Hazzik"] = "Hazzik";
-	AL["Hazzik's Package"] = "Paquet d'Hazzik";
-	AL["Karrog"] = "Karrog";
-	AL["Outdoor Raid Encounters"] = "Rencontres de raids extérieurs";
-	AL["Pandaria World Bosses"] = "Boss de Monde de Pandarie";
-	AL["Sahaak <Keeper of Scrolls>"] = "Sahaak <Gardiens des parchemins>";
-	AL["Severin <Skyguard Medic>"] = "Séverin <Infirmier de la Garde-ciel>";
-	AL["Skull Pile"] = "Pile de crânes";
-	AL["Sky Commander Adaris"] = "Commandant Adaris de la Garde-ciel";
-	AL["Sky Sergeant Doryn"] = "Sergent Doryn de la Garde-ciel";
-	AL["Skyguard Handler Deesak"] = "Dresseur Deesak de la Garde-ciel";
-	AL["Skyguard Prisoner"] = "Prisonnier de la Garde-ciel";
-	AL["Talonpriest Ishaal"] = "Prêtre de la serre Ishaal";
-	AL["Talonpriest Skizzik"] = "Prêtre de la serre Skizzik";
-	AL["Talonpriest Zellek"] = "Prêtre de la serre Zellek";
-	AL["Terokk"] = "Terokk";
-	AL["Vakkiz the Windrager"] = "Vakkiz le Ragevent";
+if L then
+L["Ancient Skull Pile"] = "Ancienne pile de crânes"
+L["Darkscreecher Akkarai"] = "Akkarai le Hurle-sombre"
+L["Draenor World Bosses"] = "Boss de Monde de Draenor"
+L["Gezzarak the Huntress"] = "Gezzarak la Chasseresse"
+L["Grella <Skyguard Quartermaster>"] = "Grella <Intendante de la Garde-ciel>"
+L["Hazzik"] = "Hazzik"
+L["Hazzik's Package"] = "Paquet d'Hazzik"
+L["Karrog"] = "Karrog"
+L["Outdoor Raid Encounters"] = "Rencontres de raids extérieurs"
+L["Pandaria World Bosses"] = "Boss de Monde de Pandarie"
+L["Sahaak <Keeper of Scrolls>"] = "Sahaak <Gardiens des parchemins>"
+L["Severin <Skyguard Medic>"] = "Séverin <Infirmier de la Garde-ciel>"
+L["Skull Pile"] = "Pile de crânes"
+L["Sky Commander Adaris"] = "Commandant Adaris de la Garde-ciel"
+L["Skyguard Handler Deesak"] = "Dresseur Deesak de la Garde-ciel"
+L["Skyguard Prisoner"] = "Prisonnier de la Garde-ciel"
+L["Sky Sergeant Doryn"] = "Sergent Doryn de la Garde-ciel"
+L["Talonpriest Ishaal"] = "Prêtre de la serre Ishaal"
+L["Talonpriest Skizzik"] = "Prêtre de la serre Skizzik"
+L["Talonpriest Zellek"] = "Prêtre de la serre Zellek"
+L["Terokk"] = "Terokk"
+L["Vakkiz the Windrager"] = "Vakkiz le Ragevent"
+L["ToC/Description"] = "Rencontres de Raid" -- Needs review
+-- L["ToC/Title"] = ""
+
 end

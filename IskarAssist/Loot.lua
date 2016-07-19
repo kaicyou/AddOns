@@ -1,4 +1,5 @@
 local RA = RaidAssist
+local _
 
 if (_G.RaidAssistLoadDeny) then
 	return

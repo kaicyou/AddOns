@@ -1122,23 +1122,6 @@ function SpoilsOfPandaria:onEvent(event,unitID,_,_,_,spellID)
 	end
 end
 
-if ExRT.is7 then
-	function SpoilsOfPandaria:onEvent(event,unitID,_,_,spellLine)
-		local unitType,_,serverID,instanceID,zoneUID,spellID,spawnID = strsplit("-", spellLine or "")
-		spellID = tonumber(spellID or 0) or 0
-	  	if unitID:find("^raid%d+$") and spellID == 144229 then
-			local name = ExRT.F.UnitCombatlogname(unitID)	
-			if name then
-				local px, py = GetPlayerMapPosition(unitID)
-				local room = SpoilsOfPandaria.findroom2(px, py)
-				local color = ExRT.F.classColorByGUID(UnitGUID(unitID))
-				local ctime_ = ExRT.F.GetEncounterTime() or 0
-				print(format("%d:%02d",ctime_/60,ctime_%60).." |c"..color..name.."|r ".. L.BossmodsSpoilsofPandariaOpensBox .." "..SpoilsOfPandaria.roomNames[room])
-			end
-		end
-	end
-end
-
 function SpoilsOfPandaria:Load()
 	if SpoilsOfPandaria.mainframe then return end
 	SpoilsOfPandaria.mainframe = CreateFrame("Frame","ExRTBossmodsSpoilsOfPandaria",UIParent)

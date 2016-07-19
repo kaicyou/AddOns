@@ -222,15 +222,18 @@ Notepad.OnInstall = function (plugin)
 	local anim5 = animation:CreateAnimation ("Alpha")
 	
 	anim1:SetOrder (1)
-	anim1:SetChange (-1)
+	anim1:SetFromAlpha (1)
+	anim1:SetToAlpha (0)
 	anim1:SetDuration (0.0)
 	
 	anim4:SetOrder (2)
-	anim4:SetChange (1)
+	anim4:SetFromAlpha (0)
+	anim4:SetToAlpha (1)
 	anim4:SetDuration (0.2)
 	
 	anim5:SetOrder (3)
-	anim5:SetChange (-1)
+	anim5:SetFromAlpha (1)
+	anim5:SetToAlpha (0)
 	anim5:SetDuration (3)
 
 	animation:SetScript ("OnFinished", function (self)
@@ -968,12 +971,18 @@ function Notepad.BuildOptions (frame)
 	
 	local create_button = Notepad:CreateButton (main_frame, Notepad.CreateNewNotepad, buttons_width, 20, "New", _, _, _, "button_create", _, _, Notepad:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Notepad:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 	create_button:SetPoint ("topleft", main_frame, "topleft", 10 , -90)
-	create_button:SetIcon ([[Interface\AddOns\IskarAssist\media\plus]], 10, 10, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 3, 1, 0)
+	create_button:SetIcon ("Interface\\AddOns\\" .. RA.InstallDir .. "\\media\\plus", 10, 10, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 3, 1, 0)
+	create_button.widget.texture_disabled:SetTexture ([[Interface\Tooltips\UI-Tooltip-Background]])
+	create_button.widget.texture_disabled:SetVertexColor (0, 0, 0)
+	create_button.widget.texture_disabled:SetAlpha (.5)
 	
 	--delete note "Erase"
 	local erase_button =  Notepad:CreateButton (main_frame, Notepad.DeleteCurrentNote, buttons_width, 20, "Erase Note", _, _, _, "button_erase", _, _, Notepad:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Notepad:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 	erase_button:SetPoint ("topleft", main_frame, "topleft", 90 , -90)
 	erase_button:SetIcon ([[Interface\BUTTONS\UI-StopButton]], 14, 14, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 2, 1, 0)
+	erase_button.widget.texture_disabled:SetTexture ([[Interface\Tooltips\UI-Tooltip-Background]])
+	erase_button.widget.texture_disabled:SetVertexColor (0, 0, 0)
+	erase_button.widget.texture_disabled:SetAlpha (.5)
 	
 	local ww = 100
 	
@@ -981,21 +990,33 @@ function Notepad.BuildOptions (frame)
 	local clear_button =  Notepad:CreateButton (main_frame, clear_editbox, ww, 20, "Clear Text", _, _, _, "button_clear", _, _, Notepad:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Notepad:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 	--clear_button:SetPoint ("topleft", main_frame, "topleft", 310 , buttons_y)
 	clear_button:SetIcon ([[Interface\Glues\LOGIN\Glues-CheckBox-Check]])
+	clear_button.widget.texture_disabled:SetTexture ([[Interface\Tooltips\UI-Tooltip-Background]])
+	clear_button.widget.texture_disabled:SetVertexColor (0, 0, 0)
+	clear_button.widget.texture_disabled:SetAlpha (.5)
 	
 	--save "Save"
 	local save_button =  Notepad:CreateButton (main_frame, save_changes, ww, 20, "Save", _, _, _, "button_save", _, _, Notepad:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Notepad:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 	--save_button:SetPoint ("topleft", main_frame, "topleft", 390, buttons_y)
 	--save_button:SetIcon ([[Interface\AddOns\IskarAssist\media\save]], 10, 10, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 4, 1, 0)
 	save_button:SetIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 16, 16, "overlay", {0, 1, 0, 28/32}, {1, 1, 1}, 2, 1, 0)
+	save_button.widget.texture_disabled:SetTexture ([[Interface\Tooltips\UI-Tooltip-Background]])
+	save_button.widget.texture_disabled:SetVertexColor (0, 0, 0)
+	save_button.widget.texture_disabled:SetAlpha (.5)
 	
 	--save and send "Send"
 	local save2_button =  Notepad:CreateButton (main_frame, save_changes_and_send, ww, 20, "Send", _, _, _, "button_save2", _, _, Notepad:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Notepad:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 	--save2_button:SetPoint ("topleft", main_frame, "topleft", 470 , buttons_y)
 	save2_button:SetIcon ([[Interface\BUTTONS\JumpUpArrow]], 14, 12, "overlay", {0, 1, 0, 32/32}, {1, 1, 1}, 2, 1, 0)
+	save2_button.widget.texture_disabled:SetTexture ([[Interface\Tooltips\UI-Tooltip-Background]])
+	save2_button.widget.texture_disabled:SetVertexColor (0, 0, 0)
+	save2_button.widget.texture_disabled:SetAlpha (.5)
 	
 	--cancel edition "Done"
 	local cancel_button =  Notepad:CreateButton (main_frame, save_changes_and_close, ww, 20, "Done", _, _, _, "button_cancel", _, _, Notepad:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Notepad:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 	cancel_button:SetIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 16, 16, "overlay", {0, 1, 0, 28/32}, {1, 0.8, 0}, 2, 1, 0)
+	cancel_button.widget.texture_disabled:SetTexture ([[Interface\Tooltips\UI-Tooltip-Background]])
+	cancel_button.widget.texture_disabled:SetVertexColor (0, 0, 0)
+	cancel_button.widget.texture_disabled:SetAlpha (.5)
 	
 	--set points
 	cancel_button:SetPoint ("topleft", main_frame, "topleft", 528 , buttons_y)

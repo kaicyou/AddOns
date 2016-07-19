@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
     
-    Decursive (v 2.7.4.4) add-on for World of Warcraft UI
+    Decursive (v 2.7.4.5) add-on for World of Warcraft UI
     Copyright (C) 2006-2014 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2015-01-25T21:31:39Z
+    This file was last updated on 2016-05-29T23:56:42Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -518,6 +518,8 @@ local function BadLocalTest (localtest)
     D:Print(L[localtest]);
 end
 
+-- /run LibStub("AceAddon-3.0"):GetAddon("Decursive"):MakeError()
+
 function D:MakeError(something)
 
     local testlocal = "test local";
@@ -800,4 +802,4 @@ do
 end
 
 
-T._LoadedFiles["Dcr_utils.lua"] = "2.7.4.4";
+T._LoadedFiles["Dcr_utils.lua"] = "2.7.4.5";

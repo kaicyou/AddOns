@@ -1,4 +1,4 @@
-﻿-- $Id: LibBabble.lua 6 2016-04-25 11:36:42Z arith $
+﻿-- $Id: LibBabble.lua 48 2016-07-19 14:03:11Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -42,5 +42,5 @@ function Atlas_GetLocaleLibBabble(typ)
 			rettab[k] = v;
 		end
 	end
-	return rettab
+	return rettab;
 end

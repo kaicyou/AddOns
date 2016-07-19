@@ -1,10 +1,19 @@
-$Id: ChangeLog.txt 20 2016-07-07 12:59:41Z arith $
+$Id: ChangeLog.txt 22 2016-07-19 13:56:02Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2012 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 ==============
 = Change Log =
 ==============
+
+v1.33.00 (Jul. 19, 2016)
+------------------------
+- Toc updated to support WoW Legion pre-patch (7.0.3)
+- Minor fix to Demon Invasion to move the zone text to 2nd line
+- Localize the Demon Invasion's achivement info by using GetAchievementInfo()
+- Replace punctuations by using Atlas' localization
+- Translation update:
+  - Simplified Chinese (ananhaid)
 
 v1.32.05 (Jul. 07, 2016)
 ------------------------

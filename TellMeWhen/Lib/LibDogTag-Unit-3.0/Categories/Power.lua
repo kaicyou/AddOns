@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + tonumber(("$Revision: 266 $"):match("%d+")) or 0
+local MINOR_VERSION = 90000 + (tonumber(("20160719143049"):match("%d+")) or 33333333333333)
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -15,6 +15,7 @@ local L = DogTag_Unit.L
 
 -- Parnic: support for Cataclysm; UNIT_MANA et al changed to UNIT_(MAX)POWER
 local wow_400 = select(4, GetBuildInfo()) >= 40000
+local wow_700 = select(4, GetBuildInfo()) >= 70000
 local mpEvents = "UNIT_MANA#$unit;UNIT_RAGE#$unit;UNIT_FOCUS#$unit;UNIT_ENERGY#$unit;UNIT_RUNIC_POWER#$unit;UNIT_MAXMANA#$unit;UNIT_MAXRAGE#$unit;UNIT_MAXFOCUS#$unit;UNIT_MAXENERGY#$unit;UNIT_MAXRUNIC_POWER#$unit;UNIT_DISPLAYPOWER#$unit"
 if wow_400 then
 	mpEvents = "UNIT_POWER#$unit;UNIT_MAXPOWER#$unit;UNIT_DISPLAYPOWER#$unit"
@@ -75,6 +76,65 @@ DogTag:AddTag("Unit", "FractionalMP", {
 })
 
 
+DogTag:AddTag("Unit", "Mana", {
+	code = function(unit)
+		return UnitPower(unit, SPELL_POWER_MANA)
+	end,
+	arg = {
+		'unit', 'string;undef', 'player'
+	},
+	ret = "number",
+	events = mpEvents .. ";FastPower#$unit",
+	doc = L["Return the current mana of unit, regardless of their current power type"],
+	example = ('[Mana] => "%d"'):format(UnitPowerMax("player", SPELL_POWER_MANA)*.632),
+	category = L["Power"]
+})
+
+DogTag:AddTag("Unit", "MaxMana", {
+	code = function(unit)
+		return UnitPowerMax(unit, SPELL_POWER_MANA)
+	end,
+	arg = {
+		'unit', 'string;undef', 'player'
+	},
+	ret = "number",
+	events = mpEvents,
+	doc = L["Return the maximum mana of unit, regardless of their current power type"],
+	example = ('[MaxMana] => "%d"'):format(UnitPowerMax("player", SPELL_POWER_MANA)),
+	category = L["Power"]
+})
+
+DogTag:AddTag("Unit", "PercentMana", {
+	alias = "[Mana(unit=unit) / MaxMana(unit=unit) * 100]:Round(1)",
+	arg = {
+		'unit', 'string;undef', 'player'
+	},
+	doc = L["Return the percentage mana of unit, regardless of their current power type"],
+	example = '[PercentMana] => "63.2"; [PercentMana:Percent] => "63.2%"',
+	category = L["Power"]
+})
+
+DogTag:AddTag("Unit", "MissingMana", {
+	alias = "MaxMana(unit=unit) - Mana(unit=unit)",
+	arg = {
+		'unit', 'string;undef', 'player'
+	},
+	doc = L["Return the missing mana of unit, regardless of their current power type"],
+	example = ('[MissingMana] => "%d"'):format(UnitPowerMax("player", SPELL_POWER_MANA)*.368),
+	category = L["Power"]
+})
+
+DogTag:AddTag("Unit", "FractionalMana", {
+	alias = "Concatenate(Mana(unit=unit), '/', MaxMana(unit=unit))",
+	arg = {
+		'unit', 'string;undef', 'player'
+	},
+	doc = L["Return the current and maximum mana of unit, regardless of their current power type"],
+	example = ('[FractionalMana] => "%d/%d"'):format(UnitPowerMax("player", SPELL_POWER_MANA)*.632, UnitPowerMax("player", SPELL_POWER_MANA)),
+	category = L["Power"]
+})
+
+
 DogTag:AddTag("Unit", "AltP", {
 	code = UnitPower,
 	arg = {
@@ -128,6 +188,38 @@ DogTag:AddTag("Unit", "FractionalAltP", {
 	},
 	doc = L["Return the current and maximum alternate power of unit"],
 	example = ('[FractionalAltP] => "%d/%d"'):format(UnitPowerMax("player",ALTERNATE_POWER_INDEX)*.632, UnitPowerMax("player",ALTERNATE_POWER_INDEX)),
+	category = L["Power"]
+})
+
+DogTag:AddTag("Unit", "Stagger", {
+	code = UnitStagger,
+	arg = {
+		'unit', 'string;undef', 'player',
+	},
+	ret = "number",
+	events = mpEvents .. ";FastPower#$unit",
+	doc = L["Return the current stagger amount of unit"],
+	example = ('[Stagger] => "%d"'):format(UnitStagger("player")),
+	category = L["Power"]
+})
+
+DogTag:AddTag("Unit", "PercentStagger", {
+	alias = "(Stagger(unit=unit) / MaxHP(unit=unit) * 100):Round",
+	arg = {
+		'unit', 'string;undef', 'player',
+	},
+	doc = L["Return the current stagger amount of unit"],
+	example = ('[Stagger] => "%d"'):format(UnitStagger("player")),
+	category = L["Power"]
+})
+
+DogTag:AddTag("Unit", "FractionalStagger", {
+	alias = "Concatenate(Stagger(unit=unit), '/', MaxHP(unit=unit))",
+	arg = {
+		'unit', 'string;undef', 'player',
+	},
+	doc = L["Return the current stagger amount of unit"],
+	example = ('[Stagger] => "%d"'):format(UnitStagger("player")),
 	category = L["Power"]
 })
 
@@ -222,6 +314,29 @@ if RUNIC_POWER then
 	})
 end
 
+if wow_700 then
+	DogTag:AddTag("Unit", "RunesAvailable", {
+		code = function(unit)
+			local numAvailable = 0
+			for i = 1, UnitPowerMax(unit, SPELL_POWER_RUNES) do
+				local _, _, available = GetRuneCooldown(i)
+				if available then
+					numAvailable = numAvailable + 1
+				end
+			end
+			return numAvailable
+		end,
+		arg = {
+			'unit', 'string;undef', 'player',
+		},
+		ret = "number",
+		events = "RUNE_POWER_UPDATE",
+		doc = L["Return the current number of runes available for unit"],
+		example = ('[RunesAvailable] => "2"'),
+		category = L["Power"]
+	})
+end
+
 DogTag:AddTag("Unit", "IsMaxMP", {
 	alias = "Boolean(MP(unit=unit) = MaxMP(unit=unit))",
 	arg = {
@@ -306,44 +421,6 @@ local specialPowers = {
 		eventPowerIdentifier = "SOUL_SHARDS",
 	},
 	{
-		class = "WARLOCK",
-		tag = "SoulShardParts",
-		arg2 = SPELL_POWER_SOUL_SHARDS,
-		arg3 = true,
-		eventPowerIdentifier = "SOUL_SHARDS",
-	},
-	{
-		class = "WARLOCK",
-		tag = "BurningEmbers",
-		arg2 = SPELL_POWER_BURNING_EMBERS,
-		eventPowerIdentifier = "BURNING_EMBERS",
-	},
-	{
-		class = "WARLOCK",
-		tag = "BurningEmberParts",
-		arg2 = SPELL_POWER_BURNING_EMBERS,
-		arg3 = true,
-		eventPowerIdentifier = "BURNING_EMBERS",
-	},
-	{
-		class = "WARLOCK",
-		tag = "DemonicFury",
-		arg2 = SPELL_POWER_DEMONIC_FURY,
-		eventPowerIdentifier = "DEMONIC_FURY",
-	},
-	{
-		class = "PRIEST",
-		tag = "ShadowOrbs",
-		arg2 = SPELL_POWER_SHADOW_ORBS,
-		eventPowerIdentifier = "SHADOW_ORBS",
-	},
-	{
-		class = "DRUID",
-		tag = "EclipsePower",
-		arg2 = SPELL_POWER_ECLIPSE,
-		eventPowerIdentifier = "ECLIPSE",
-	},
-	{
 		class = "PALADIN",
 		tag = "HolyPower",
 		arg2 = SPELL_POWER_HOLY_POWER,
@@ -356,19 +433,73 @@ local specialPowers = {
 		eventPowerIdentifier = wow_501 and "CHI" or "LIGHT_FORCE",
 	},
 }
+if not wow_700 then -- Parnic: shadow orbs are no more in 7.0
+	specialPowers[#specialPowers + 1] =
+	{
+		class = "PRIEST",
+		tag = "ShadowOrbs",
+		arg2 = SPELL_POWER_SHADOW_ORBS,
+		eventPowerIdentifier = "SHADOW_ORBS",
+	}
+	specialPowers[#specialPowers + 1] =
+	{
+		class = "WARLOCK",
+		tag = "BurningEmbers",
+		arg2 = SPELL_POWER_BURNING_EMBERS,
+		eventPowerIdentifier = "BURNING_EMBERS",
+	}
+	specialPowers[#specialPowers + 1] =
+	{
+		class = "WARLOCK",
+		tag = "BurningEmberParts",
+		arg2 = SPELL_POWER_BURNING_EMBERS,
+		arg3 = true,
+		eventPowerIdentifier = "BURNING_EMBERS",
+	}
+	specialPowers[#specialPowers + 1] =
+	{
+		class = "WARLOCK",
+		tag = "DemonicFury",
+		arg2 = SPELL_POWER_DEMONIC_FURY,
+		eventPowerIdentifier = "DEMONIC_FURY",
+	}
+	specialPowers[#specialPowers + 1] =
+	{
+		class = "WARLOCK",
+		tag = "SoulShardParts",
+		arg2 = SPELL_POWER_SOUL_SHARDS,
+		arg3 = true,
+		eventPowerIdentifier = "SOUL_SHARDS",
+	}
+	specialPowers[#specialPowers + 1] =
+	{
+		class = "DRUID",
+		tag = "EclipsePower",
+		arg2 = SPELL_POWER_ECLIPSE,
+		eventPowerIdentifier = "ECLIPSE",
+	}
+else
+	specialPowers[#specialPowers + 1] =
+	{
+		class = "MAGE",
+		tag = "ArcaneCharges",
+		arg2 = SPELL_POWER_ARCANE_CHARGES,
+		eventPowerIdentifier = "ARCANE_CHARGES",
+	}
+end
 for _, data in pairs(specialPowers) do
 	local class = data.class
 	local tag = data.tag
 	local arg2 = data.arg2
 	local arg3 = data.arg3
-	
-	local _, pclass = UnitClass("player") 
-	
+
+	local _, pclass = UnitClass("player")
+
 	--local category = class == pclass and L["Power"] or nil
 	--local noDoc = class ~= pclass
-	
+
 	local specialPowerEvents = "UNIT_POWER#player#" .. data.eventPowerIdentifier .. ";UNIT_MAXPOWER#player#" .. data.eventPowerIdentifier .. ";UNIT_DISPLAYPOWER#player"
-	
+
 	DogTag:AddTag("Unit", tag, {
 		code = function()
 			return UnitPower("player", arg2, arg3)
@@ -419,7 +550,7 @@ for _, data in pairs(specialPowers) do
 		example = class == pclass and ('[Fractional' .. tag .. '] => "%d/%d"'):format(UnitPowerMax("player",arg2, arg3)*.632, UnitPowerMax("player",arg2, arg3)) or nil,
 		category = category,
 	})
-	
+
 	]]
 
 	end

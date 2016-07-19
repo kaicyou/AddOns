@@ -154,7 +154,7 @@ function RaidAchFilter:Initialize()
 		function (self, value) self:GetParent():SetVerticalScroll(value) end) 
 	local scrTex = scrBar:CreateTexture(nil, "BACKGROUND") 
 	scrTex:SetAllPoints(scrBar) 
-	scrTex:SetTexture(0, 0, 0, 0.5) 
+	scrTex:SetColorTexture(0, 0, 0, 0.5) 
 	fra.scrollbar = scrBar 
 	scrFra:EnableMouseWheel(true)
 	scrFra:SetScript("OnMouseWheel",
@@ -261,6 +261,9 @@ function RaidAchFilter:Initialize()
 				info.text = "Warlords of Draenor"
 				info.value = "submenua4"
 				UIDropDownMenu_AddButton(info, level)
+				info.text = "Legion"
+				info.value = "submenua5"
+				UIDropDownMenu_AddButton(info, level)
 			elseif UIDROPDOWNMENU_MENU_VALUE == "topmenu2" then
 				info.text = "Lich King"
 				info.value = "submenub1"
@@ -274,8 +277,11 @@ function RaidAchFilter:Initialize()
 				info.text = "Warlords of Draenor"
 				info.value = "submenub4"
 				UIDropDownMenu_AddButton(info, level)
+				info.text = "Legion"
+				info.value = "submenub5"
+				UIDropDownMenu_AddButton(info, level)
 			elseif UIDROPDOWNMENU_MENU_VALUE == "topmenu3" then
-				for i = 74, 86 do --Scenarios!
+				for i = 86, 100 do --Scenarios!
 				  info.value = i
 				  info.checked = false
 				  info.hasArrow = false
@@ -329,9 +335,19 @@ function RaidAchFilter:Initialize()
 				  end
 				  UIDropDownMenu_AddButton(info, level)
 				end
+			elseif UIDROPDOWNMENU_MENU_VALUE == "submenua5" then
+				for i = 27, 28 do
+				  info.value = i
+				  info.checked = false
+				  info.text = RAFdb.MapName[i]
+				  info.func = function() 
+					RaidAchFilter:ShowAch(i); ToggleDropDownMenu(1, nil, dropDown);
+				  end
+				  UIDropDownMenu_AddButton(info, level)
+				end
 			-- Dungeons!
 			elseif UIDROPDOWNMENU_MENU_VALUE == "submenub1" then
-				for i = 27, 42 do
+				for i = 29, 44 do
 					  info.value = i
 					  info.checked = false
 					  info.text = RAFdb.MapName[i]
@@ -341,7 +357,7 @@ function RaidAchFilter:Initialize()
 					  UIDropDownMenu_AddButton(info, level)
 				end
 			elseif UIDROPDOWNMENU_MENU_VALUE == "submenub2" then
-				for i = 43, 56 do
+				for i = 45, 58 do
 					  info.value = i
 					  info.checked = false
 					  info.text = RAFdb.MapName[i]
@@ -351,7 +367,7 @@ function RaidAchFilter:Initialize()
 					  UIDropDownMenu_AddButton(info, level)
 				end
 			elseif UIDROPDOWNMENU_MENU_VALUE == "submenub3" then
-				for i = 57, 65 do
+				for i = 59, 67 do
 					  info.value = i
 					  info.checked = false
 					  info.text = RAFdb.MapName[i]
@@ -361,7 +377,17 @@ function RaidAchFilter:Initialize()
 					  UIDropDownMenu_AddButton(info, level)
 				end
 			elseif UIDROPDOWNMENU_MENU_VALUE == "submenub4" then
-				for i = 66, 73 do
+				for i = 68, 75 do
+					  info.value = i
+					  info.checked = false
+					  info.text = RAFdb.MapName[i]
+					  info.func = function() 
+					    RaidAchFilter:ShowAch(i); ToggleDropDownMenu(1, nil, dropDown);
+					  end
+					  UIDropDownMenu_AddButton(info, level)
+				end
+			elseif UIDROPDOWNMENU_MENU_VALUE == "submenub5" then
+				for i = 76, 85 do
 					  info.value = i
 					  info.checked = false
 					  info.text = RAFdb.MapName[i]
@@ -453,7 +479,7 @@ function RaidAchFilter:AchAdd(fraID, ach_ID, indent_num)
 	achDesc:SetText(Description)
 	fra:Show()
 	if Completed == true then 
-		if ( bit.band(Flags, ACHIEVEMENT_FLAGS_ACCOUNT) == ACHIEVEMENT_FLAGS_ACCOUNT ) then
+		if Flags and ( bit.band(Flags, ACHIEVEMENT_FLAGS_ACCOUNT) == ACHIEVEMENT_FLAGS_ACCOUNT ) then
 			fra.header:SetTexture("Interface\\AchievementFrame\\AccountLevel-AchievementHeader", "OVERLAY")
 			fra.header:SetTexCoord(0, 1, 0, 0.375) --Account-wide completed
 			fra:SetBackdropBorderColor(0.129, 0.671, 0.875, 1)
@@ -521,7 +547,7 @@ function RaidAchFilter:AchAdd(fraID, ach_ID, indent_num)
 			GameTooltip:Hide()
 		end)
 	else
-		if ( bit.band(Flags, ACHIEVEMENT_FLAGS_ACCOUNT) == ACHIEVEMENT_FLAGS_ACCOUNT ) then
+		if Flags and ( bit.band(Flags, ACHIEVEMENT_FLAGS_ACCOUNT) == ACHIEVEMENT_FLAGS_ACCOUNT ) then
 			fra.header:SetTexture("Interface\\AchievementFrame\\AccountLevel-AchievementHeader")
 			fra.header:SetTexCoord(0, 1, 0.40625, 0.78125) --Account-wide incomplete
 		else

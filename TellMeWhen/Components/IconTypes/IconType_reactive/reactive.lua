@@ -30,15 +30,17 @@ Type.name = L["ICONMENU_REACTIVE"]
 Type.desc = L["ICONMENU_REACTIVE_DESC"]
 Type.menuIcon = "Interface\\Icons\\ability_warrior_revenge"
 
+local STATE_USABLE           = TMW.CONST.STATE.DEFAULT_SHOW
+local STATE_UNUSABLE         = TMW.CONST.STATE.DEFAULT_HIDE
+local STATE_UNUSABLE_NORANGE = TMW.CONST.STATE.DEFAULT_NORANGE
+local STATE_UNUSABLE_NOMANA  = TMW.CONST.STATE.DEFAULT_NOMANA
 
 -- AUTOMATICALLY GENERATED: UsesAttributes
-Type:UsesAttributes("noMana")
+Type:UsesAttributes("state")
 Type:UsesAttributes("spell")
 Type:UsesAttributes("charges, maxCharges")
-Type:UsesAttributes("inRange")
-Type:UsesAttributes("stack, stackText")
 Type:UsesAttributes("start, duration")
-Type:UsesAttributes("alpha")
+Type:UsesAttributes("stack, stackText")
 Type:UsesAttributes("texture")
 -- END AUTOMATICALLY GENERATED: UsesAttributes
 
@@ -73,49 +75,48 @@ Type:RegisterConfigPanel_XMLTemplate(100, "TellMeWhen_ChooseName", {
 	text = L["CHOOSENAME_DIALOG"] .. "\r\n\r\n" .. L["CHOOSENAME_DIALOG_PETABILITIES"],
 })
 
-Type:RegisterConfigPanel_XMLTemplate(165, "TellMeWhen_WhenChecks", {
-	text = L["ICONMENU_SHOWWHEN"],
-	[0x2] = { text = "|cFF00FF00" .. L["ICONMENU_USABLE"], 			},
-	[0x1] = { text = "|cFFFF0000" .. L["ICONMENU_UNUSABLE"], 		},
+Type:RegisterConfigPanel_XMLTemplate(165, "TellMeWhen_IconStates", {
+	[STATE_USABLE]           = { text = "|cFF00FF00" .. L["ICONMENU_READY"],   },
+	[STATE_UNUSABLE]         = { text = "|cFFFF0000" .. L["ICONMENU_NOTREADY"], },
+	[STATE_UNUSABLE_NORANGE] = { text = "|cFFFFff00" .. L["ICONMENU_OORANGE"], requires = "RangeCheck" },
+	[STATE_UNUSABLE_NOMANA]  = { text = "|cFFFFff00" .. L["ICONMENU_OOPOWER"], requires = "ManaCheck" },
 })
 
 Type:RegisterConfigPanel_ConstructorFunc(150, "TellMeWhen_ReactiveSettings", function(self)
-	self.Header:SetText(Type.name)
-	TMW.IE:BuildSimpleCheckSettingFrame(self, {
-		{
-			setting = "UseActvtnOverlay",
-			title = L["ICONMENU_USEACTIVATIONOVERLAY"],
-			tooltip = L["ICONMENU_USEACTIVATIONOVERLAY_DESC"],
-		},
-		{
-			setting = "IgnoreNomana",
-			title = L["ICONMENU_IGNORENOMANA"],
-			tooltip = L["ICONMENU_IGNORENOMANA_DESC"],
-		},
-		{
-			setting = "CooldownCheck",
-			title = L["ICONMENU_COOLDOWNCHECK"],
-			tooltip = L["ICONMENU_COOLDOWNCHECK_DESC"],
-		},
-		{
-			setting = "RangeCheck",
-			title = L["ICONMENU_RANGECHECK"],
-			tooltip = L["ICONMENU_RANGECHECK_DESC"],
-		},
-		{
-			setting = "ManaCheck",
-			title = L["ICONMENU_MANACHECK"],
-			tooltip = L["ICONMENU_MANACHECK_DESC"],
-		},
-		pclass == "DEATHKNIGHT" and {
-			setting = "IgnoreRunes",
-			title = L["ICONMENU_IGNORERUNES"],
-			tooltip = L["ICONMENU_IGNORERUNES_DESC"],
-			disabledtooltip = L["ICONMENU_IGNORERUNES_DESC_DISABLED"],
-			disabled = function(self)
-				return not TMW.CI.ics.CooldownCheck
-			end,
-		},
+	self:SetTitle(Type.name)
+	self:BuildSimpleCheckSettingFrame({
+		function(check)
+			check:SetTexts(L["ICONMENU_USEACTIVATIONOVERLAY"], L["ICONMENU_USEACTIVATIONOVERLAY_DESC"])
+			check:SetSetting("UseActvtnOverlay")
+		end,
+		function(check)
+			check:SetTexts(L["ICONMENU_IGNORENOMANA"], L["ICONMENU_IGNORENOMANA_DESC"])
+			check:SetSetting("IgnoreNomana")
+		end,
+		function(check)
+			check:SetTexts(L["ICONMENU_RANGECHECK"], L["ICONMENU_RANGECHECK_DESC"])
+			check:SetSetting("RangeCheck")
+		end,
+		function(check)
+			check:SetTexts(L["ICONMENU_MANACHECK"], L["ICONMENU_MANACHECK_DESC"])
+			check:SetSetting("ManaCheck")
+		end,
+		function(check)
+			check:SetTexts(L["ICONMENU_COOLDOWNCHECK"], L["ICONMENU_COOLDOWNCHECK_DESC"])
+			check:SetSetting("CooldownCheck")
+		end,
+		pclass == "DEATHKNIGHT" and function(check)
+			check:SetSetting("IgnoreRunes")
+
+			check:CScriptAdd("ReloadRequested", function()
+				check:SetEnabled(TMW.CI.ics.CooldownCheck)
+				if TMW.CI.ics.CooldownCheck then
+					check:SetTexts(L["ICONMENU_IGNORERUNES"], L["ICONMENU_IGNORERUNES_DESC"])
+				else
+					check:SetTexts(L["ICONMENU_IGNORERUNES"], L["ICONMENU_IGNORERUNES_DESC_DISABLED"])
+				end
+			end)
+		end,
 	})
 end)
 
@@ -193,15 +194,13 @@ local function Reactive_OnUpdate(icon, time)
 
 			usable = forceUsable or usable
 			if usable and not CD and not nomana and inrange then --usable
-				icon:SetInfo("alpha; texture; start, duration; charges, maxCharges; stack, stackText; spell; inRange; noMana",
-					icon.Alpha,
+				icon:SetInfo("state; texture; start, duration; charges, maxCharges; stack, stackText; spell",
+					STATE_USABLE,
 					GetSpellTexture(iName),
 					start, duration,
 					charges, maxCharges,
 					stack, stack,
-					iName,
-					inrange,
-					nomana			
+					iName		
 				)
 				return
 			end
@@ -245,18 +244,16 @@ local function Reactive_OnUpdate(icon, time)
 	end
 	
 	if duration then
-		icon:SetInfo("alpha; texture; start, duration; charges, maxCharges; stack, stackText; spell; inRange; noMana",
-			icon.UnAlpha,
+		icon:SetInfo("state; texture; start, duration; charges, maxCharges; stack, stackText; spell",
+			not inrange and STATE_UNUSABLE_NORANGE or nomana and STATE_DEFAULT_NOMANA or STATE_UNUSABLE,
 			icon.FirstTexture,
 			start, duration,
 			charges, maxCharges,
 			stack, stack,
-			NameFirst,
-			inrange,
-			nomana
+			NameFirst
 		)
 	else
-		icon:SetInfo("alpha", 0)
+		icon:SetInfo("state", 0)
 	end
 end
 

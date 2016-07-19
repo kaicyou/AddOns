@@ -1,7 +1,7 @@
-## Interface: 60200
-## X-Max-Interface: 60200
+## Interface: 70000
+## X-Max-Interface: 70000
 ## X-Min-Interface: 60000
-## X-Curse-Packaged-Version: 2.7.4.4
+## X-Curse-Packaged-Version: 2.7.4.5
 ## X-Curse-Project-Name: Decursive
 ## X-Curse-Project-ID: decursive
 ## X-Curse-Repository-ID: wow/decursive/mainline
@@ -22,7 +22,7 @@
 
 ## SavedVariables: DecursiveDB
 
-## Version: 2.7.4.4
+## Version: 2.7.4.5
 ## Author: John Wellesz
 
 ## X-License: All Rights Reserved
@@ -36,7 +36,7 @@
 
 ## X-Embeds: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber
 
-## X-ReleaseDate: "2015-09-08T21:54:19Z"
+## X-ReleaseDate: "2016-07-19T23:19:02Z"
 ## X-Category: Combat
 ## X-Website: http://www.2072productions.com/to/decursive.php
 ## X-Credits: Sylvin (Full french translation), Peter Sun, Ananhaid (ZhTW and zhCN translation), Fenlis, Chkid (koKR translation), Hemathio, Swix, Athariel, StingerSoft (Russian Translation), Freydis88, Floyddotnet, Vilogity, Dessa, Farook (German translation)

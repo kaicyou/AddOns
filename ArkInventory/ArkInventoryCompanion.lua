@@ -489,7 +489,13 @@ local TempData = { -- temporary table for item to spell translations.
 -- spell 73630 Great Exarch's Elekk
 -- spell 89520 Goblin Mini Hotrod
 
+
+
 -- pets (only the ones that come from items)
+
+-- source companion spells; http://www.wowhead.com/spells/companions?filter=112;19890;0
+
+-- xxxxx 1.11.1
 [4401]={cid=2671}, -- Mechanical Squirrel Box / Mechanical Squirrel
 [8485]={cid=7385}, -- Cat Carrier (Bombay) / Bombay Cat
 [8486]={cid=7384}, -- Cat Carrier (Cornish Rex) / Cornish Rex Cat
@@ -503,14 +509,14 @@ local TempData = { -- temporary table for item to spell translations.
 [8495]={cid=7389}, -- Parrot Cage (Senegal) / Senegal
 [8496]={cid=7390}, -- Parrot Cage (Cockatiel) / Cockatiel
 [8497]={cid=7560}, -- Rabbit Crate (Snowshoe) / Snowshoe Rabbit
-[8498]={cid=7545}, -- Tiny Emerald Whelpling / Emerald Whelpling
+[8498]={cid=7545}, -- Emerald Whelpling
 [8499]={cid=7544}, -- Tiny Crimson Whelpling / Crimson Whelpling
 [8500]={cid=7553}, -- Great Horned Owl
 [8501]={cid=7555}, -- Hawk Owl
 [10360]={cid=7565}, -- Black Kingsnake
 [10361]={cid=7562}, -- Brown Snake
 [10392]={cid=7567}, -- Crimson Snake
-[10393]={cid=7395}, -- Cockroach
+[10393]={cid=7395}, -- Undercity Cockroach
 [10394]={cid=14421}, -- Prairie Dog Whistle / Brown Prairie Dog
 [10398]={cid=8376}, -- Mechanical Chicken
 [10822]={cid=7543}, -- Dark Whelpling
@@ -523,123 +529,141 @@ local TempData = { -- temporary table for item to spell translations.
 [11826]={cid=9657}, -- Lil' Smoky
 [12264]={cid=10259}, -- Worg Carrier / Worg Pup
 [12529]={cid=10598}, -- Smolderweb Carrier / Smolderweb Hatchling
-[13582]={cid=11327}, -- Zergling Leash
+[13582]={cid=11327}, -- Zergling Leash / Zergling
 [13583]={cid=11325}, -- Panda Collar / Panda Cub
 [13584]={cid=11326}, -- Diablo Stone / Mini Diablo
-[15048]={cid=16548}, -- Piglet's Collar / Mr. Wiggles
 [15996]={cid=12419}, -- Lifelike Mechanical Toad / Lifelike Toad
-[18964]={cid=23429}, -- Turtle Egg (Loggerhead) / Loggerhead Snapjaw
-[19054]={cid=14756}, -- Red Dragon Orb / Tiny Red Dragon
-[19055]={cid=14755}, -- Green Dragon Orb / Tiny Green Dragon
 [19450]={cid=14878}, -- A Jubling's Tiny Home / Jubling
-[19462]={cid=14878}, -- Unhatched Jubling Egg
+[19462]={cid=14878}, -- Unhatched Jubling Egg > A Jubling's Tiny Home
 [20371]={cid=15186}, -- Blue Murloc Egg / Murky
 [20769]={cid=15429}, -- Disgusting Oozeling
-[21168]={cid=15661}, -- Baby Shark
 [21277]={cid=15699}, -- Tranquil Mechanical Yeti
 [21301]={cid=15698}, -- Green Helper Box / Father Winter's Helper
 [21305]={cid=15705}, -- Red Helper Box / Winter's Little Helper
 [21308]={cid=15706}, -- Jingling Bell / Winter Reindeer
 [21309]={cid=15710}, -- Snowman Kit / Tiny Snowman
-[22114]={cid=16069}, -- Pink Murloc Egg / Gurky
--- item 22200 Silver Shafted Arrow
 [22235]={cid=16085}, -- Truesilver Shafted Arrow / Peddlefeet
-[22781]={cid=16456}, -- Polar Bear Collar / Poley
 [23002]={cid=16547}, -- Turtle Box / Speedy
+[23007]={cid=16548}, -- Piglet's Collar / Mr. Wiggles
 [23015]={cid=16549}, -- Rat Cage / Whiskers the Rat
 [23083]={cid=16701}, -- Captured Flame / Spirit of Summer
-[23712]={cid=17254}, -- White Tiger Cub
+
+-- xxxxx 1.12.1
+[19054]={cid=14756}, -- Red Dragon Orb / Tiny Red Dragon
+[19055]={cid=14755}, -- Green Dragon Orb / Tiny Green Dragon
+[18964]={cid=23429}, -- Turtle Egg (Loggerhead) / Loggerhead Snapjaw
+[118675]={cid=7546}, -- Time-Locked Box / Bronze Whelpling
+
+-- xxxxx 2.0.0
 [23713]={cid=17255}, -- Hippogryph Hatchling
-[25535]={cid=18381}, -- Netherwhelp's Collar
+
+-- xxxxx 2.0.1
+[29903]={cid=21008}, -- Yellow Moth Egg
 [27445]={cid=18839}, -- Magical Crawdad Box
 [29363]={cid=20408}, -- Mana Wyrmling
 [29364]={cid=20472}, -- Brown Rabbit Crate
 [29901]={cid=21010}, -- Blue Moth Egg
 [29902]={cid=21009}, -- Red Moth Egg
-[29903]={cid=21008}, -- Yellow Moth Egg
+[32588]={cid=23234}, -- Banana Charm / Bananas
 [29904]={cid=21018}, -- White Moth Egg
 [29953]={cid=21055}, -- Golden Dragonhawk Hatchling
 [29956]={cid=21064}, -- Red Dragonhawk Hatchling
 [29957]={cid=21063}, -- Silver Dragonhawk Hatchling
 [29958]={cid=21056}, -- Blue Dragonhawk Hatchling
-[29960]={cid=21076}, -- Captured Firefly
-[30360]={cid=15358}, -- Lurky's Egg
 [31760]={cid=22445}, -- Miniwing
-[32233]={cid=22943}, -- Wolpertinger's Tankard
-[32498]={cid=23198}, -- Fortune Coin / Lucky
-[32588]={cid=23234}, -- Banana Charm / Bananas
+
+-- xxxxx 2.1.0
+[22114]={cid=16069}, -- Pink Murloc Egg / Gurky
+[25535]={cid=18381}, -- Netherwhelp's Collar
+[30360]={cid=15358}, -- Lurky's Egg
 [32616]={cid=23258}, -- Egbert's Egg
 [32617]={cid=23231}, -- Sleepy Willy
 [32622]={cid=23266}, -- Elekk Training Collar / Peanut
+[29960]={cid=21076}, -- Captured Firefly
+
+-- xxxxx 2.2.2
+[32233]={cid=22943}, -- Wolpertinger's Tankard
 [33154]={cid=23909}, -- Sinister Squashling
-[33816]={cid=24388}, -- Toothy's Bucket
-[33818]={cid=24389}, -- Muckbreath's Bucket
+
+-- xxxxx 2.3.0
+[34493]={cid=25110}, -- Dragon Kite
 [33993]={cid=24480}, -- Mojo
 [34425]={cid=24968}, -- Clockwork Rocket Bot
 [34478]={cid=25062}, -- Tiny Sporebat
 [34492]={cid=25109}, -- Rocket Chicken
-[34493]={cid=25110}, -- Dragon Kite
-[34518]={cid=25146}, -- Golden Pig Coin
-[34519]={cid=25147}, -- Silver Pig Coin
 [34535]={cid=7547}, -- Azure Whelpling
-[34955]={cid=25706}, -- Scorched Stone / Scorchling
--- item 35227 Goblin Weather Machine - Prototype 01-B
+
+-- xxxxx 2.4.0
+[33816]={cid=24388}, -- Toothy's Bucket
+[33818]={cid=24389}, -- Muckbreath's Bucket
 [35349]={cid=26050}, -- Snarly's Bucket
 [35350]={cid=26056}, -- Chuck's Bucket
 [35504]={cid=26119}, -- Phoenix Hatchling
-[37297]={cid=27217}, -- Gold Medallion / Spirit of Competition
-[37298]={cid=27346}, -- Competitor's Souvenir / Essence of Competition
--- item 37460 Rope Pet Leash
+[23712]={cid=17254}, -- White Tiger Cub
+
+-- xxxxx 2.4.2
 [38050]={cid=27914}, -- Soul-Trader Beacon / Ethereal Soul-Trader
+[32498]={cid=23198}, -- Fortune Coin / Lucky
+[34955]={cid=25706}, -- Scorched Stone / Scorchling
 [38628]={cid=28470}, -- Nether Ray Fry
-[38658]={cid=28513}, -- Vampiric Batling
-[39286]={cid=28883}, -- Frosty's Collar
 [39656]={cid=29089}, -- Tyrael's Hilt / Mini Tyrael
-[39896]={cid=32589}, -- Tickbird Hatchling
-[39898]={cid=32591}, -- Cobra Hatchling
-[39899]={cid=32590}, -- White Tickbird Hatchling
-[39973]={cid=29147}, -- Ghostly Skull
+
+-- xxxxx 2.4.3
+[37297]={cid=27217}, -- Gold Medallion / Spirit of Competition
+
+-- xxxxx 3.0.1
+[21168]={cid=15661}, -- Baby Shark
 [40653]={cid=23274}, -- Reeking Pet Carrier / Stinker
-[41133]={cid=29726}, -- Unhatched Mr. Chilly
+
+-- xxxxx 3.0.2
+[38658]={cid=28513}, -- Vampiric Batling
+[39973]={cid=29147}, -- Ghostly Skull
 [43698]={cid=31575}, -- Giant Sewer Rat
-[44721]={cid=32592}, -- Proto-Drake Whelp
 [44723]={cid=32595}, -- Nurtured Penguin Egg / Pengu
+[39896]={cid=32589}, -- Tickbird Hatchling
+[39899]={cid=32590}, -- White Tickbird Hatchling
+[44721]={cid=32592}, -- Proto-Drake Whelp
+
+-- xxxxx 3.0.3
+[39286]={cid=28883}, -- Frosty's Collar
 [44738]={cid=32643}, -- Kirin Tor Familiar
-[44794]={cid=32791}, -- Spring Rabbit's Foot
-[44810]={cid=32818}, -- Turkey Cage / Plump Turkey
+[39898]={cid=32591}, -- Cobra Hatchling
 [44819]={cid=32841}, -- Baby Blizzard Bear
--- item 44820 Red Ribbon Pet Leash
-[44822]={cid=7561}, -- Albino Snake
+
+-- xxxxx 3.0.8
 [44841]={cid=32939}, -- Little Fawn's Salt Lick
-[44965]={cid=33188}, -- Teldrassil Sproutling
+
+-- xxxxx 3.1.0
+[44983]={cid=33226}, -- Strand Crawler
+[44794]={cid=32791}, -- Spring Rabbit's Foot
 [44970]={cid=33194}, -- Dun Morogh Cub
 [44971]={cid=33197}, -- Tirisfal Batling
 [44973]={cid=33198}, -- Durotar Scorpion
 [44974]={cid=33200}, -- Elwynn Lamb
 [44980]={cid=33219}, -- Mulgore Hatchling
 [44982]={cid=33227}, -- Enchanted Broom
-[44983]={cid=33226}, -- Strand Crawler
+[44965]={cid=33188}, -- Teldrassil Sproutling
 [44984]={cid=33205}, -- Ammen Vale Lashling
 [44998]={cid=33238}, -- Argent Squire
 [45002]={cid=33274}, -- Mechanopeep
 [45022]={cid=33239}, -- Argent Gruntling
--- item 45057 Wind-Up Train Wrecker
-[45180]={cid=33578}, -- Murkimus' Little Spear / Murkimus the Gladiator
 [45606]={cid=33810}, -- Sen'jin Fetish
-[45942]={cid=34031}, -- XS-001 Constructor Bot
-[46325]={cid=34278}, -- Withers
--- item 46396 Wolvar Orphan Whistle
--- item 46397 Oracle Orphan Whistle
-[46398]={cid=34364}, -- Calico Cat
+[44822]={cid=7561}, -- Albino Snake
+
+-- xxxxx 3.1.2
+[45180]={cid=33578}, -- Murkimus' Little Spear / Murkimus the Gladiator
+
+-- xxxxx 3.1.3
+[46767]={cid=34587}, -- Warbot Ignition Key / Warbot
+
+-- xxxxx 3.2.0
+[48112]={cid=35396}, -- Darting Hatchling
 [46544]={cid=33529}, -- Curious Wolvar Pup
-[46545]={cid=33530}, -- Curious Oracle Hatchling
 [46707]={cid=24753}, -- Pint-Sized Pink Pachyderm
-[46767]={cid=34587}, -- Warbot Ignition Key
 [46802]={cid=34694}, -- Heavy Murloc Egg / Grunty
 [46820]={cid=34724}, -- Shimmering Wyrmling
 [46821]={cid=34724}, -- Shimmering Wyrmling
--- item 46831 Macabre Marionette
-[48112]={cid=35396}, -- Darting Hatchling
+[46545]={cid=33530}, -- Curious Oracle Hatchling
 [48114]={cid=35395}, -- Deviate Hatchling
 [48116]={cid=35400}, -- Gundrak Hatchling
 [48118]={cid=35387}, -- Leaping Hatchling
@@ -647,303 +671,531 @@ local TempData = { -- temporary table for item to spell translations.
 [48122]={cid=35397}, -- Ravasaur Hatchling
 [48124]={cid=35398}, -- Razormaw Hatchling
 [48126]={cid=35394}, -- Razzashi Hatchling
+
+-- xxxxx 3.2.2
 [49287]={cid=36482}, -- Tuskarr Kite
+[41133]={cid=29726}, -- Unhatched Mr. Chilly
+[44810]={cid=32818}, -- Turkey Cage / Plump Turkey
 [49343]={cid=36511}, -- Spectral Tiger Cub
-[49362]={cid=36607}, -- Onyxian Whelpling
-[49646]={cid=36871}, -- Core Hound Pup
-[49662]={cid=36908}, -- Gryphon Hatchling
-[49663]={cid=36909}, -- Wind Rider Cub
 [49665]={cid=36911}, -- Pandaren Monk
 [49693]={cid=36979}, -- Lil' Phylactery / Lil' K.T.
+[46831]={cid=34770}, -- Macabre Marionette
+[49362]={cid=36607}, -- Onyxian Whelpling
+
+-- xxxxx 3.3.0
+[34518]={cid=25146}, -- Golden Pig Coin
+[34519]={cid=25147}, -- Silver Pig Coin
+[37298]={cid=27346}, -- Competitor's Souvenir / Essence of Competition
+[49646]={cid=36871}, -- Core Hound Pup
 [49912]={cid=37865}, -- Perky Pug
+[22781]={cid=16456}, -- Polar Bear Collar / Poley
+[46398]={cid=34364}, -- Cat Carrier (Calico Cat) / Calico Cat
+
+-- xxxxx 3.3.2
+[49662]={cid=36908}, -- Gryphon Hatchling
+[49663]={cid=36909}, -- Wind Rider Cub
 [50446]={cid=38374}, -- Toxic Wasteling
-[53641]={cid=40198}, -- Ice Chip / Frigid Frostling
+
+-- xxxxx 3.3.3
 [54436]={cid=40295}, -- Blue Clockwork Rocket Bot
-[54810]={cid=40624}, -- Celestial Dragon
+[53641]={cid=40198}, -- Ice Chip / Frigid Frostling
 [54847]={cid=40703}, -- Lil' XT
+
+[54810]={cid=40624}, -- Celestial Dragon
+
+-- xxxxx 3.3.5
 [56806]={cid=42078}, -- Mini Thor
-[59597]={cid=43800}, -- Personal World Destroyer
-[60216]={cid=43916}, -- De-Weaponized Mechanical Companion
-[60847]={cid=45128}, -- Crawling Claw
-[60869]={cid=45247}, -- Pebble
-[60955]={cid=45340}, -- Fossilized Hatchling
-[62540]={cid=46896}, -- Lil' Deathwing
-[62769]={cid=47169}, -- Hardboiled Egg / Eat the Egg
-[63138]={cid=47944}, -- Dark Phoenix Hatchling
-[63355]={cid=48107}, -- Rustberg Gull / Rustberg Seagull
+[45942]={cid=34031}, -- XS-001 Constructor Bot
+
+-- xxxxx 4.0.1
+[67418]={cid=51122}, -- Smoldering Murloc Egg / Deathy
+
+-- xxxxx 4.0.3
 [63398]={cid=48242}, -- Armadillo Pup
+[65661]={cid=42177}, -- Blue Mini Jouster
+[66075]={cid=51634}, -- Bubbles
 [64372]={cid=48609}, -- Clockwork Gnome
+[60847]={cid=45128}, -- Crawling Claw
+[63138]={cid=47944}, -- Dark Phoenix Hatchling
+[60216]={cid=43916}, -- De-Weaponized Mechanical Companion
+[62769]={cid=47169}, -- Hardboiled Egg / Eat the Egg
+[67282]={cid=50722}, -- Elementium Geode
+[67274]={cid=46898}, -- Enchanted Lantern
+[60955]={cid=45340}, -- Fossilized Hatchling
 [64403]={cid=48641}, -- Fox Kit
-[64494]={cid=48982}, -- Tiny Shale Spider
-[64996]={cid=48107}, -- Rustberg Gull / Rustberg Seagull
-[65361]={cid=49586}, -- Guild Page
-[65362]={cid=49588}, -- Guild Page
+[65662]={cid=42183}, -- Gold Mini Jouster
 [65363]={cid=49587}, -- Guild Herald
 [65364]={cid=49590}, -- Guild Herald
-[65661]={cid=42177}, -- Blue Mini Jouster
-[65662]={cid=42183}, -- Gold Mini Jouster
-[66067]={cid=51090}, -- Brazie's Sunflower Seeds / Singing Sunflower
-[66070]={cid=51636}, -- Lizzy
-[66073]={cid=51635}, -- Little Snail
-[66075]={cid=51634}, -- Bubbles
-[66076]={cid=50586}, -- Mr. Grubbs
-[66080]={cid=51632}, -- Tiny Flamefly
+[65361]={cid=49586}, -- Guild Page
+[65362]={cid=49588}, -- Guild Page
 [67128]={cid=50468}, -- Landro's Lil' XT
-[67274]={cid=46898}, -- Enchanted Lantern
-[67275]={cid=50545}, -- Magic Lamp
-[67282]={cid=50722}, -- Elementium Geode
-[67418]={cid=51122}, -- Smoldering Murloc Egg / Deathy
--- item 67600 Lil' Alexstrasza
+[62540]={cid=46896}, -- Lil' Deathwing
 [67601]={cid=51600}, -- Lil' Ragnaros
--- item 68384 Moonkin Egg / Container
 [68385]={cid=51600}, -- Lil' Ragnaros
+[66070]={cid=51636}, -- Lizzy
+[67275]={cid=50545}, -- Magic Lamp
 [68618]={cid=51601}, -- Moonkin Hatchling
 [68619]={cid=51649}, -- Moonkin Hatchling
-[68833]={cid=52226}, -- Panther Cub
+[66076]={cid=50586}, -- Mr. Grubbs
+[60869]={cid=45247}, -- Pebble
+[59597]={cid=43800}, -- Personal World Destroyer
+[63355]={cid=48107}, -- Rustberg Gull / Rustberg Seagull
+[64996]={cid=48107}, -- Rustberg Gull / Rustberg Seagull
+[66073]={cid=51635}, -- Snail Shell / Scooter the Snail
+[66067]={cid=51090}, -- Brazie's Sunflower Seeds / Singing Sunflower
+[66080]={cid=51632}, -- Tiny Flamefly
+[64494]={cid=48982}, -- Tiny Shale Spider
+[46325]={cid=34278}, -- Withers
+[67600]={cid=nil}, -- Lil' Alexstrasza (removed from game)
+
+-- xxxxx 4.1.0
+[70099]={cid=53623}, -- Cenarion Hatchling
+[69847]={cid=53283}, -- Guardian Cub
+[72068]={cid=53283}, -- Guardian Cub
 [68840]={cid=52343}, -- Landro's Lichling
-[68841]={cid=52344}, -- Nightsaber Cub
-[69239]={cid=52831}, -- Winterspring Cub
+["S93461"]={cid=50384}, -- Landro's Lil' XT
 [69251]={cid=52894}, -- Lashtail Hatchling
 [69648]={cid=53048}, -- Legs
+[68841]={cid=52344}, -- Nightsaber Cub
+[68833]={cid=52226}, -- Panther Cub
 [69821]={cid=53225}, -- Pterrordax Hatchling
 [69824]={cid=53232}, -- Voodoo Figurine
-[69847]={cid=53283}, -- Guardian Cub
-[70099]={cid=53623}, -- Cenarion Hatchling
-[70140]={cid=53658}, -- Hyjal Bear Cub
+[69239]={cid=52831}, -- Winterspring Cub
+
+-- xxxxx 4.2.0
+[71076]={cid=54128}, -- Creepy Crate
 [70160]={cid=53661}, -- Crimson Lasher
 [70908]={cid=53884}, -- Feline Familiar
+[70140]={cid=53658}, -- Hyjal Bear Cub
 [71033]={cid=54027}, -- Lil' Tarecgosa
-[71076]={cid=54128}, -- The Creepy Crate
-[71140]={cid=54227}, -- Nuts' Acorn
+
+-- 14107 4.2.0
+[71140]={cid=54227}, -- Nuts' Acorn / Nuts
+
+-- 14179 4.2.0
 [71387]={cid=54374}, -- Brilliant Kaliri
-[71624]={cid=54383}, -- Purple Puffer
+
+-- 14199 4.2.0
 [71726]={cid=54438}, -- Murkablo
+
+-- 14265 4.2.0
 [72042]={cid=54539}, -- Alliance Balloon
 [72045]={cid=54541}, -- Horde Balloon
-[72068]={cid=53283}, -- Guardian Cub
-[72134]={cid=54730}, -- Grell Moss / Gregarious Grell
-[72153]={cid=54745}, -- Sand Scarab
+
+-- 15005 4.3.0
 [73762]={cid=55187}, -- Darkmoon Balloon
-[73764]={cid=54491}, -- Darkmoon Monkey
-[73765]={cid=54487}, -- Darkmoon Turtle
-[73797]={cid=55215}, -- Lump of Coal / Lumpy
-[73903]={cid=55356}, -- Darkmoon Tonk
-[73905]={cid=55367}, -- Darkmoon Zeppelin
-[73905]={cid=55367}, -- Darkmoon Zeppelin
-[73953]={cid=55386}, -- Sea Pony
-[74610]={cid=55571}, -- Lunar Lantern
-[74611]={cid=55574}, -- Festival Lantern
 [74981]={cid=56031}, -- Darkmoon Cub
-[75040]={cid=55187}, -- Flimsy Darkmoon Balloon / Darkmoon Balloon
+[73764]={cid=54491}, -- Darkmoon Monkey
+[73903]={cid=55356}, -- Darkmoon Tonk
+[73765]={cid=54487}, -- Darkmoon Turtle
+[73905]={cid=55367}, -- Darkmoon Zeppelin
+[74611]={cid=55574}, -- Festival Lantern
 [76062]={cid=56266}, -- Fetish Shaman's Spear / Fetish Shaman
+[72134]={cid=54730}, -- Grell Moss / Gregarious Grell
+[73797]={cid=55215}, -- Lump of Coal / Lumpy
+[74610]={cid=55571}, -- Lunar Lantern
+[71624]={cid=54383}, -- Purple Puffer
+[72153]={cid=54745}, -- Sand Scarab
+[73953]={cid=55386}, -- Sea Pony
 [78916]={cid=58163}, -- Soul of the Aspects
+[75040]={cid=55187}, -- Flimsy Darkmoon Balloon / Darkmoon Balloon
+
+-- 15211 4.3.2
 [79744]={cid=59020}, -- Eye of the Legion
-[80008]={cid=59358}, -- Darkmoon Rabbit
-[82774]={cid=61877}, -- Jade Owl
-[82775]={cid=61883}, -- Sapphire Cub
-[84105]={cid=62829}, -- Fishy
-[85220]={cid=63365}, -- Terrible Turnip
-[85222]={cid=63370}, -- Red Cricket
-[85447]={cid=63559}, -- Tiny Goldfish
-[85513]={cid=65313}, -- Thundering Serpent Hatchling
-[85578]={cid=63621}, -- Feral Vermling
-[85871]={cid=63832}, -- Lucky Quilen Cub
-[86562]={cid=64632}, -- Hopling
-[86563]={cid=64633}, -- Hollow Reed / Aqua Strider
-[86564]={cid=64634}, -- Imbued Jade Fragment / Grinder
-[87526]={cid=64899}, -- Mechanical Pandaren Dragonling
-[88147]={cid=64232}, -- Singing Cricket Cage
-[88148]={cid=65314}, -- Jade Crane Chick
-[89367]={cid=66105}, -- Yu'lon Kite
-[89368]={cid=66104}, -- Chi-ji Kite
-[89587]={cid=61086}, -- Porcupette
-[89686]={cid=66450}, -- Jade Tentacle
-[89736]={cid=66491}, -- Venus
-[90173]={cid=66950}, -- Pandaren Water Spirit
-[90177]={cid=66984}, -- Baneling
--- spell 66520 Jade Tiger
--- spell 75936 Murkimus the Gladiator
--- spell 89929 Rumbling Rockling
--- spell 89930 Swirling Stormling
--- spell 89931 Whirling Waveling
--- spell 93461 Landro's Lil' XT
--- spell 123212 Shore Crawler
--- spell 123214 Gilnean Raven
-[90173]={cid=66950}, -- Pandaren Water Spirit
-[90177]={cid=66984}, -- Baneling
+
+-- xxxxx 5.0.1
+["S66520"]={cid=34930}, -- Jade Tiger
+["S89929"]={cid=48376}, -- Rumbling Rockling
+["S89930"]={cid=48377}, -- Swirling Stormling
+["S89931"]={cid=48378}, -- Whirling Waveling
+
+-- xxxxx 5.0.4
 [90897]={cid=48641}, -- Fox Kit
+[90898]={cid=48641}, -- Fox Kit
+
+-- 15890 5.0.4
+[86563]={cid=64633}, -- Hollow Reed / Aqua Strider
+[89368]={cid=66104}, -- Chi-ji Kite
+[80008]={cid=59358}, -- Darkmoon Rabbit
+[85578]={cid=63621}, -- Feral Vermling
+[84105]={cid=62829}, -- Fishy
+["S123214"]={cid=63098}, -- Gilnean Raven
+[86564]={cid=64634}, -- Imbued Jade Fragment / Grinder
+[86562]={cid=64632}, -- Hopling
+[88148]={cid=65314}, -- Jade Crane Chick
+[82774]={cid=61877}, -- Jade Owl
+[89686]={cid=66450}, -- Jade Tentacle
+[85871]={cid=63832}, -- Lucky Quilen Cub
+[87526]={cid=64899}, -- Mechanical Pandaren Dragonling
+[89587]={cid=61086}, -- Porcupette
+[85222]={cid=63370}, -- Red Cricket
+[82775]={cid=61883}, -- Sapphire Cub
+["S123212"]={cid=63097}, -- Shore Crawler
+[88147]={cid=64232}, -- Singing Cricket Cage / Singing Cricket
+[85220]={cid=63365}, -- Terrible Turnip
+[85513]={cid=65313}, -- Thundering Serpent Hatchling
+[85447]={cid=63559}, -- Tiny Goldfish
+[89736]={cid=66491}, -- Venus
+[89367]={cid=66105}, -- Yu'lon Kite
+
+-- 16016 5.0.4
+[90177]={cid=66984}, -- Baneling
+[90173]={cid=66950}, -- Pandaren Water Spirit
+[90953]={cid=68502}, -- Spectral Cub
+
+-- 16309 5.1.0
+[93040]={cid=68659}, -- Anubisath Idol
+[93035]={cid=68666}, -- Core of Hardened Ash / Ashtone Core
+[93038]={cid=68662}, -- Whistle of Chromatic Bone / Chrominius
+[92707]={cid=68267}, -- Cinder Kitten
+[93025]={cid=68601}, -- Clock'em
+[93034]={cid=68664}, -- Blazing Rune / Corefire Imp
+[91040]={cid=67332}, -- Darkmoon Eye
+[91031]={cid=67329}, -- Darkmoon Glowfly
+[91003]={cid=67319}, -- Darkmoon Hatchling
+[93037]={cid=68663}, -- Blackwing Banner / Death Talon Whelpguard
+[93032]={cid=68657}, -- Blighted Spore / Fungal Abomination
+[93030]={cid=68656}, -- Dusty Clutch of Eggs / Giant Bone Spider
+[93033]={cid=68665}, -- Mark of Flame / Harbinger of Flame
 [90900]={cid=67230}, -- Imperial Moth
 [90902]={cid=67233}, -- Imperial Silkworm
-[90953]={cid=68502}, -- Spectral Cub
-[91003]={cid=67319}, -- Darkmoon Hatchling
-[91031]={cid=67329}, -- Darkmoon Glowfly
-[91040]={cid=67332}, -- Darkmoon Eye
-[92707]={cid=68267}, -- Cinder Kitten
-[92798]={cid=68466}, -- Pandaren Fire Spirit
+[93041]={cid=68658}, -- Jewel of Maddening Whispers / Mini Mindslayer
+[93031]={cid=68655}, -- Mr. Bigglesworth
 [92799]={cid=68467}, -- Pandaren Air Spirit
 [92800]={cid=68468}, -- Pandaren Earth Spirit
-[93025]={cid=68601}, -- Clock'em
+[92798]={cid=68466}, -- Pandaren Fire Spirit
 [93029]={cid=68654}, -- Gluth's Bone / Stitched Pup
-[93030]={cid=68656}, -- Dusty Clutch of Eggs / Giant Bone Spider
-[93031]={cid=68655}, -- Mr. Bigglesworth
-[93032]={cid=68657}, -- Blighted Spore / Fungal Abomination
-[93033]={cid=68665}, -- Mark of Flame / Harbinger of Flame
-[93034]={cid=68664}, -- Blazing Rune / Corefire Imp
-[93035]={cid=68666}, -- Core of Hardened Ash / Ashstone Core
 [93036]={cid=68661}, -- Unscathed Egg / Untamed Hatchling
-[93037]={cid=68663}, -- Blackwing Banner / Death Talon Whelpguard
-[93038]={cid=68662}, -- Whistle of Chromatic Bone / Chrominius
 [93039]={cid=68660}, -- Viscidus Globule
-[93040]={cid=68659}, -- Anubisath Idol
-[93041]={cid=68658}, -- Jewel of Maddening Whispers / Mini Mindslayer
+
+-- xxxxx 5.2.0
+[95621]={cid=34587}, -- Warbot Ignition Key / Warbot
+
+-- 16408 5.2.0
 [93669]={cid=69208}, -- Gusting Grimoire
-[94025]={cid=69649}, -- Red Panda
-[94124]={cid=69778}, -- Sunreaver Micro-Sentry
 [94125]={cid=69748}, -- Living Sandling
-[94126]={cid=69796}, -- Zandalari Kneebiter
+[94025]={cid=69649}, -- Red Panda
+
+-- 16446 5.2.0
+[94210]={cid=69892}, -- Mountain Panda
+[94209]={cid=69893}, -- Snowy Panda
 [94152]={cid=69820}, -- Son of Animus
 [94190]={cid=69848}, -- Spectral Porcupette
+[94191]={cid=69849}, -- Stunted Direhorn
 [94208]={cid=69891}, -- Sunfur Panda
-[94209]={cid=69893}, -- Snowy Panda
-[94210]={cid=69892}, -- Mountain Panda
+[94124]={cid=69778}, -- Sunreaver Micro-Sentry
+[94126]={cid=69796}, -- Zandalari Kneebiter
+
+-- 16467 5.2.0
 [94573]={cid=70154}, -- Direhorn Runt
-[94574]={cid=70083}, -- Pygmy Direhorn
-[94595]={cid=70098}, -- Spawn of G'nathus
 [94835]={cid=70144}, -- Ji-Kun Hatchling
 [94903]={cid=70082}, -- Pierre
-[94932]={cid=70257}, -- Tiny Red Carp
+[94574]={cid=70083}, -- Pygmy Direhorn
+[94595]={cid=70098}, -- Spawn of G'nathus
+
+-- 16486 5.2.0
 [94933]={cid=70258}, -- Tiny Blue Carp
 [94934]={cid=70259}, -- Tiny Green Carp
+[94932]={cid=70257}, -- Tiny Red Carp
 [94935]={cid=70260}, -- Tiny White Carp
+
+-- 16503 5.2.0
 [95422]={cid=70451}, -- Zandalari Anklerender
 [95423]={cid=70452}, -- Zandalari Footslasher
 [95424]={cid=70453}, -- Zandalari Toenibbler
-[95621]={cid=34587}, -- Warbot Ignition Key / Warbot
+
+-- xxxxx 5.3.0
+[98550]={cid=71488}, -- Blossoming Ancient
+[97554]={cid=71019}, -- Dripping Strider Egg / Coilfang Stalker
+[97551]={cid=71033}, -- Satyr Charm / Fiendish Imp
+[97961]={cid=71201}, -- Half-Empty Food Container / Filthling
+[97821]={cid=71159}, -- Gahz'rooki's Summoning Stone / Gahz'rooki
+[97556]={cid=71021}, -- Crystal of the Void / Lesser Voidcaller
 [97548]={cid=71014}, -- Spiky Collar / Lil' Bad Wolf
+[97959]={cid=71199}, -- Quivering Blob / Living Fluid
 [97549]={cid=71015}, -- Instant Arcane Sanctum Security Kit / Menagerie Custodian
 [97550]={cid=71016}, -- Netherspace Portal-Stone / Netherspace Abyssal
-[97551]={cid=71033}, -- Satyr Charm / Fiendish Imp
-[97552]={cid=71017}, -- Shell of Tide-Calling / Tideskipper
-[97553]={cid=71018}, -- Tainted Core / Tainted Waveling
-[97554]={cid=71019}, -- Dripping Strider Egg / Coilfang Stalker
-[97555]={cid=71020}, -- Tiny Fel Engine Key / Pocket Reaver
-[97556]={cid=71021}, -- Crystal of the Void / Lesser Voidcaller
 [97557]={cid=71022}, -- Brilliant Phoenix Hawk Feather / Phoenix Hawk Hatchling
+[97555]={cid=71020}, -- Tiny Fel Engine Key / Pocket Reaver
+[97553]={cid=71018}, -- Tainted Core / Tainted Waveling
+[97552]={cid=71017}, -- Shell of Tide-Calling / Tideskipper
 [97558]={cid=71023}, -- Tito's Basket / Tito
-[97821]={cid=71159}, -- Gahz'rooki's Summoning Stone / Gahz'rooki
-[97959]={cid=71199}, -- Quivering Blob / Living Fluid
 [97960]={cid=71200}, -- Dark Quivering Blob / Viscous Horror
-[97961]={cid=71201}, -- Half-Empty Food Container / Filthling
-[98550]={cid=71488}, -- Blossoming Ancient
-[100905]={cid=71693}, -- Rascal-Bot
-[104156]={cid=73533}, -- Ashleaf Spriteling
-[104157]={cid=73534}, -- Azure Crane Chick
-[104158]={cid=73352}, -- Blackfuse Bombling
-[104202]={cid=73668}, -- Bonkers
-[106240]={cid=74402}, -- Alterac Brandy / Alterac Brew-Pup
-[116439]={cid=85872}, -- Blazing Cindercrawler
-[117354]={cid=86420}, -- Ancient Nest Guardian
-[118516]={cid=88807}, -- Argi
-[118599]={cid=83584}, -- Autumnal Sproutling
-[119148]={cid=85281}, -- Indentured Albino River Calf / Albino River Calf
-[119434]={cid=77021}, -- Albino Chimaeraling
-[119146]={cid=85014}, -- Bone Wasp
-[116403]={cid=85846}, -- Frightened Bush Chicken / Bush Chicken
-[102145]={cid=72462}, -- Chi-Chi, Hatchling of Chi-Ji
-[110721]={cid=79039}, -- Crazy Carrot
-[118106]={cid=86716}, -- Crimson Spore
-[116801]={cid=86061}, -- Cursed Birman
-[104160]={cid=73532}, -- Dandelion Frolicker
-[104161]={cid=73364}, -- Death Adder Hatchling
-[118709]={cid=88103}, -- Doom Bloom
-[115282]={cid=84885}, -- Draenei Micro Defender
-[119142]={cid=84885}, -- Draenei Micro Defender
-[109014]={cid=77137}, -- Dread Hatchling
-[104162]={cid=73350}, -- Droplet of Y'Shaarj
-[113216]={cid=82464}, -- Elekk Plushie
-[118921]={cid=88222}, -- Everbloom Peachick
-[119170]={cid=88490}, -- Eye of Observation
-[118578]={cid=87704}, -- Firewing
-[119149]={cid=83583}, -- Captured Forest Sproutling
-[117380]={cid=86422}, -- Frostwolf Ghostpup
-[119141]={cid=87111}, -- Frostwolf Pup
-[117564]={cid=85387}, -- Fruit Hunter
-[113623]={cid=83817}, -- Spectral Bell / Ghastly Kid
-[104163]={cid=73351}, -- Gooey Sha-ling
-[118517]={cid=88805}, -- Grommloc
-[104291]={cid=73730}, -- Swarmling of Gu'chi / Gu'chi Swarmling
-[104169]={cid=73359}, -- Gulp Froglet
-[104295]={cid=73732}, -- Harmonious Porcupette
-[118574]={cid=87669}, -- Hatespark the Tiny
-[119048]={cid=76873}, -- Hogs
-[118207]={cid=86879}, -- Hydraling
-[111660]={cid=77221}, -- Iron Starlette
-[104307]={cid=73738}, -- Jadefire Spirit
-[104164]={cid=73355}, -- Jademist Dancer
-[120051]={cid=88574}, -- Kaliri Hatchling
-[118597]={cid=83589}, -- Kelp Sproutling
-[117404]={cid=86445}, -- Land Shark
-[117528]={cid=86532}, -- Lanticore Spawnling
-[112057]={cid=80329}, -- Lifelike Mechanical Frostboar
-[103670]={cid=73011}, -- Lil' Bling
-[110684]={cid=78895}, -- Leftovers / Lil' Leftovers
-[116155]={cid=85710}, -- Lovebird Hatchling
+
+-- 16965 5.3.0
+[100870]={cid=71655}, -- Murkimus' Tyrannical Spear / Zeradar
+[128423]={cid=71655}, -- Zeradar
+
+-- 17056 5.4.0
+["S143732"]={cid=71700}, -- Crafty
 [101570]={cid=72160}, -- Moon Moon
+[100905]={cid=71693}, -- Rascal-Bot
+
+-- 17903 5.4.0
+[102145]={cid=72462}, -- Chi-Chi, Hatchling of Chi-Ji
+[102147]={cid=72463}, -- Yu'la, Broodling of Yu'lon
 [101771]={cid=71942}, -- Xu-Fu, Cub of Xuen
 [102146]={cid=72464}, -- Zao, Calfling of Niuzao
-[102147]={cid=72463}, -- Yu'la, Broodling of Yu'lon
-[103637]={cid=73688}, -- Vengeful Porcupette
-[104159]={cid=73356}, -- Ruby Droplet
+
+-- 17169 5.4.0
+[103670]={cid=73011}, -- Lil' Bling
+
+-- 17205 5.4.0
+[104156]={cid=73533}, -- Ashleaf Spriteling
+["S148068"]={cid=73542}, -- Ashwing Moth
+[104157]={cid=73534}, -- Azure Crane Chick
+[104158]={cid=73352}, -- Blackfuse Bombling
+[104160]={cid=73532}, -- Dandelion Frolicker
+[104161]={cid=73364}, -- Death Adder Hatchling
+[104162]={cid=73350}, -- Droplet of Y'Shaarj
+["S148069"]={cid=73543}, -- Flamering Moth
+[104163]={cid=73351}, -- Gooey Sha-ling
+[104169]={cid=73359}, -- Gulp Froglet
+[104164]={cid=73355}, -- Jademist Dancer
 [104165]={cid=73354}, -- Kovok
 [104166]={cid=73357}, -- Ominous Flame
+[104159]={cid=73356}, -- Ruby Droplet
 [104167]={cid=73367}, -- Skunky Alemental
+["S148065"]={cid=73368}, -- Skywisp Moth
 [104168]={cid=73366}, -- Spineclaw Crab
+
+-- 17227 5.4.0
+[104202]={cid=73668}, -- Bonkers
+[104291]={cid=73730}, -- Swarmling of Gu'chi / Gu'chi Swarmling
+[104295]={cid=73732}, -- Harmonious Porcupette
+[104307]={cid=73738}, -- Jadefire Spirit
 [104317]={cid=73741}, -- Rotten Helper Box / Rotten Little Helper
+[103637]={cid=73688}, -- Vengeful Porcupette
+
+-- 17247 5.4.0
 [104332]={cid=73809}, -- Sky Lantern
 [104333]={cid=73809}, -- Sky Lantern
+
+-- 17481 5.4.1
+[106240]={cid=74402}, -- Alterac Brandy / Alterac Brew-Pup
 [106244]={cid=74405}, -- Murkalot's Flail / Murkalot
+
+-- 17645 5.4.2
 [106256]={cid=74413}, -- Treasure Goblin's Pack / Treasure Goblin
+
+-- 17807 5.4.7
+[109014]={cid=77137}, -- Dread Hatchling
+
+-- 18125 6.0.1
+[110721]={cid=79039}, -- Crazy Carrot
+[111660]={cid=77221}, -- Iron Starlette
+[110684]={cid=78895}, -- Leftovers / Lil' Leftovers
 [111402]={cid=79410}, -- Mechanical Axebeak
-[111866]={cid=80101}, -- Royal Peacock
-[112699]={cid=81431}, -- Teroclaw Hatchling
-[113554]={cid=83562}, -- Zomstrok
 [113558]={cid=78421}, -- Weebomination
-[114834]={cid=84330}, -- Meadowstomper Calf
-[114919]={cid=84441}, -- Sea Calf
-[115301]={cid=84915}, -- Molten Corgi
-[115483]={cid=85284}, -- Sky-Bo
-[116064]={cid=85527}, -- Syd the Squid
-[116258]={cid=85773}, -- Mystical Spring Bouquet
-[116402]={cid=85231}, -- Stonegrinder
-[116756]={cid=85994}, -- Stout Alemental
-[116804]={cid=86067}, -- Widget the Departed
-[116815]={cid=86081}, -- Netherspawn, Spawn of Netherspawn
-[118101]={cid=86715}, -- Zangar Spore
-[118104]={cid=86717}, -- Umbrafen Spore
-[118105]={cid=86718}, -- Seaborne Spore
-[118518]={cid=88814}, -- ZZ02 / Unused
-[118577]={cid=87705}, -- Stormwing
+
+-- 18179 6.0.1
+[111866]={cid=80101}, -- Royal Peacock / Royal Peachick
+
+-- 18297 6.0.1
+[112057]={cid=80329}, -- Lifelike Mechanical Frostboar
+[112699]={cid=81431}, -- Teroclaw Hatchling
+
+-- 18379 6.0.1
+[113216]={cid=82464}, -- Elekk Plushie
+
+-- 18443 6.0.1
+[118599]={cid=83584}, -- Autumnal Sproutling
+[119149]={cid=83583}, -- Captured Forest Sproutling
+[118600]={cid=83583}, -- Forest Sproutling
+[118597]={cid=83589}, -- Kelp Sproutling
 [118595]={cid=83594}, -- Nightshade Sproutling
 [118596]={cid=83592}, -- Sassy Sproutling
 [118598]={cid=83588}, -- Sun Sproutling
-[118600]={cid=83583}, -- Forest Sproutling
-[118919]={cid=85667}, -- Red Goren Egg / Ore Eater
-[118923]={cid=88225}, -- Sentinel's Companion
-[119112]={cid=88401}, -- Son of Sethe
-[119143]={cid=88401}, -- Son of Sethe
-[119150]={cid=88452}, -- Sky Fry
-[119328]={cid=84853}, -- Soul of the Forge
-[119431]={cid=88692}, -- Servant of Demidos
-[119467]={cid=88300}, -- Puddle Terror
-[119468]={cid=88367}, -- Sunfire Kaliri
-[120050]={cid=88573}, -- Veilwatcher Hatchling
-[120121]={cid=88830}, -- Trunks
-[120309]={cid=87257}, -- Glass of Warm Milk / Pygmy Cow
-[118675]={cid=7546}, -- Time-Locked Box / Bronze Whelpling
--- pets up to patch 6.0.2
+[113554]={cid=83562}, -- Zomstrok
 
+-- 18471 6.0.1
+[113623]={cid=83817}, -- Spectral Bell / Ghastly Kid
+
+-- 18505 6.0.1
+[114968]={cid=84521}, -- Deathwatch Hatchling
+[114834]={cid=84330}, -- Meadowstomper Calf
+[114919]={cid=84441}, -- Sea Calf
+
+-- 18522 6.0.1
+[119148]={cid=85281}, -- Indentured Albino River Calf / Albino River Calf
+[119146]={cid=85014}, -- Bone Wasp
+[115282]={cid=84885}, -- Draenei Micro Defender
+[119142]={cid=84885}, -- Draenei Micro Defender
+[118709]={cid=88103}, -- Doom Bloom
+[119170]={cid=88490}, -- Eye of Observation
+[118578]={cid=87704}, -- Firewing
+[117380]={cid=86422}, -- Frostwolf Ghostpup
+[119141]={cid=87111}, -- Frostwolf Pup
+[117564]={cid=85387}, -- Fruit Hunter
+[118574]={cid=87669}, -- Hatespark the Tiny
+[123862]={cid=76873}, -- Hogs' Studded Collar / Hogs
+[118207]={cid=86879}, -- Hydraling
+["S170270"]={cid=86447}, -- Ikky
+[118741]={cid=88134}, -- Mechanical Scorpid
+[115301]={cid=84915}, -- Molten Corgi
+[116815]={cid=86081}, -- Netherspawn, Spawn of Netherspawn
+[118919]={cid=85667}, -- Red Goren Egg / Ore Eater
+[119467]={cid=88300}, -- Puddle Terror
+["S170290"]={cid=87257}, -- Pygmy Cow (BSG) / Pygmy Cow
+["S170284"]={cid=87257}, -- Pygmy Cow (G4BC) / Pygmy Cow
+[119431]={cid=88692}, -- Servant of Demidos
+[119150]={cid=88452}, -- Sky Fry
+[115483]={cid=85284}, -- Sky-Bo
+[119143]={cid=88401}, -- Son of Sethe
+[119112]={cid=88401}, -- Son of Sethe
+[119328]={cid=84853}, -- Soul of the Forge
+[116402]={cid=85231}, -- Stonegrinder
+[118577]={cid=87705}, -- Stormwing
+[120050]={cid=88573}, -- Veilwatcher Hatchling
+
+-- 18566 6.0.1
+[116403]={cid=85846}, -- Frightened Bush Chicken / Bush Chicken
+[116155]={cid=85710}, -- Lovebird Hatchling
+[116258]={cid=85773}, -- Mystical Spring Bouquet
+[116064]={cid=85527}, -- Syd the Squid
+
+-- 18594 6.0.1
+[117354]={cid=86420}, -- Ancient Nest Guardian
+[116439]={cid=85872}, -- Blazing Cindercrawler
+[116801]={cid=86061}, -- Cursed Birman
+[116756]={cid=85994}, -- Stout Alemental
+[116804]={cid=86067}, -- Widget the Departed
+
+-- 18663 6.0.1
+[118107]={cid=86719}, -- Brilliant Spore
 [118106]={cid=86716}, -- Crimson Spore
+[117404]={cid=86445}, -- Land Shark
+[117528]={cid=86532}, -- Lanticore Spawnling
+[118105]={cid=86718}, -- Seaborne Spore
 [118104]={cid=86717}, -- Umbrafen Spore
+[118101]={cid=86715}, -- Zangar Spore
+
+-- 18738 6.0.1
+[118921]={cid=88222}, -- Everbloom Peachick
+[118923]={cid=88225}, -- Sentinel's Companion
+
+-- xxxxx 6.0.2
+[119468]={cid=88367}, -- Sunfire Kaliri
+
+-- 18764 6.0.2
+[119434]={cid=77021}, -- Albino Chimaeraling
+[118516]={cid=88807}, -- Argi
+[122532]={cid=88577}, -- Bone Serpent
+[118517]={cid=88805}, -- Grommloc
+[120051]={cid=88574}, -- Kaliri Hatchling
+["S177220"]={cid=93432}, -- Nethaera's Light
+[120309]={cid=87257}, -- Glass of Warm Milk / Pygmy Cow
+[122534]={cid=91407}, -- Slithershock Elver
+[120121]={cid=88830}, -- Trunks
+[122533]={cid=91408}, -- Young Talbuk
+
+-- 19445 6.1.0
+[122106]={cid=90202}, -- Shard of Supremus / Abyssius
+[122114]={cid=90213}, -- Void Collar / Chaos Pup
+[122107]={cid=90203}, -- Fragment of Anger
+[122109]={cid=90205}, -- Fragment of Desire
+[122108]={cid=90204}, -- Fragment of Suffering
+[122477]={cid=91226}, -- My Special Pet / Graves
+["S181086"]={cid=91226}, -- Graves
+[122105]={cid=90200}, -- Grotesque Statue / Grotesque
+[122112]={cid=90208}, -- Hyjal Wisp
+[122116]={cid=90215}, -- Holy Chime / K'ute
+[122104]={cid=90201}, -- Leviathan Egg / Leviathan Hatchling
+[122125]={cid=90345}, -- Race MiniZep Controller / Race MiniZep
+[122110]={cid=90206}, -- Sultry Grimoire / Sister of Temptation
+[122111]={cid=90207}, -- Smelly Gravestone / Stinkrot
+[122113]={cid=90212}, -- Sunblade Rune of Activation / Sunblade Micro-Defender
+[122115]={cid=90214}, -- Servant's Bell / Wretched Servant
+
+-- 19890 6.2.0
+[127704]={cid=88514}, -- Bloodthorn Hatchling
+[126925]={cid=93814}, -- Blorp's Bubble / Blorp
+[127748]={cid=93143}, -- Cinder Pup
+[127703]={cid=88415}, -- Dusty Sporewing
+[129205]={cid=91823}, -- A Tiny Infernal Collar / Fel Pup
+[126926]={cid=93808}, -- Translucent Shell / Ghostshell Crab
+[127701]={cid=88575}, -- Glowing Sporebat
+[127705]={cid=93142}, -- Lost Netherpup
+[127753]={cid=93483}, -- Nightmare Bell
+
+-- 19906 6.2.0
+[127749]={cid=94623}, -- Corrupted Nest Guardian
+[127754]={cid=93352}, -- Periwinkle Calf
+
+-- 19934 6.2.0
+[127868]={cid=94927}, -- Crusher
+[127856]={cid=94867}, -- Left Shark
+
+-- 19973 6.2.0
+[128309]={cid=95572}, -- Shard of Cyrukh
+
+-- 20061 6.2.0
+[128478]={cid=96123}, -- Blazing Firehawk
+[128477]={cid=96126}, -- Savage Cub
+
+-- 20271 6.2.1
+[129217]={cid=98237}, -- Warm Arcane Crystal / Empowered Manafiend
+[129218]={cid=98238}, -- Glittering Arcane Crystal / Empyreal Manafiend
+[129216]={cid=98236}, -- Vibrating Arcane Crystal / Energized Manafiend
+
+-- 20395 6.2.2
+[128770]={cid=97229}, -- Grumpling
+[128426]={cid=95841}, -- Nibbles
+[128424]={cid=85283}, -- Brightpaw
+[128427]={cid=85009}, -- Murkidan
+
+-- 20716 6.2.3
+[134047]={cid=103159}, -- Baby Winston
+
+-- xxxxx 7.0.1
+[136910]={cid=99425}, -- Alarm-o-Bot
+[128690]={cid=96649}, -- Ashmaw Cub
+
+-- 21071 7.0.1
+[136919]={cid=106152}, -- Baby Elderhorn
+[136923]={cid=106270}, -- Celestial Calf
+[136925]={cid=106283}, -- Corgi Pup
+[136924]={cid=106278}, -- Felbat Pup
+[136920]={cid=106181}, -- Sunborne Val'kyr
+[132519]={cid=106210}, -- Trigger
+[136922]={cid=106232}, -- Wyrmy Tunkins
+
+-- 21108 7.0.3
+[137298]={cid=107206}, -- Zoom
+
+-- 21384 7.0.3
+[138810]={cid=109216}, -- Sting Ray Pup
+
+-- 21491 7.0.3
+[139775]={cid=111202}, -- Alliance Enthusiast
+
+-- 21570 7.0.3
+[140320]={cid=112144}, -- Corgnelius
+[140316]={cid=112132}, -- Firebat Pup
+[139776]={cid=111296}, -- Horde Fanatic
+[140261]={cid=111984}, -- Hungering Claw
+[140323]={cid=112167}, -- Lagan
+[139791]={cid=111421}, -- Lurking Owl Kitten
+[136903]={cid=112015}, -- Nightmare Whelpling
+[139789]={cid=111425}, -- Transmutant
+[139790]={cid=111423}, -- Untethered Wyrmling
+
+-- 21655 7.0.3
+[140934]={cid=113136}, -- Benax
+[140672]={cid=112728}, -- Court Scribe
+[140741]={cid=112798}, -- Nightmare Lasher
+[140761]={cid=112945}, -- Nightmare Treant
+[130154]={cid=108568}, -- Pygmy Owl
+
+-- 21691 7.0.3
+[141316]={cid=113440}, -- Squirky
+
+-- 21737 7.0.3
+[141352]={cid=113855}, -- Rescued Fawn
+[141348]={cid=113827}, -- Wonderous Wisdomball
+
+-- 21796 7.0.3
+[141530]={cid=114063}, -- Snowfang
 
 }
 
@@ -961,7 +1213,7 @@ local function importCompanionCrossRefTable( )
 		
 		if ( type( item ) == "number" ) then
 			
-			key1 = string.format( "item:%s", item )
+			key1 = ArkInventory.ObjectIDCount( string.format( "item:%s", item ) )
 			-- item to alternative
 			
 			if ( data.cid ) and ( type( data.cid ) == "number" ) then
@@ -969,7 +1221,7 @@ local function importCompanionCrossRefTable( )
 				speciesID = ArkInventory.PetJournal.GetSpeciesIDForCreatureID( data.cid )
 				if speciesID then
 					
-					key2 = string.format( "battlepet:%s", speciesID )
+					key2 = ArkInventory.ObjectIDCount( string.format( "battlepet:%s", speciesID ) )
 					if not ArkInventory.Const.ItemCrossReference[key1] then
 						ArkInventory.Const.ItemCrossReference[key1] = { }
 					end
@@ -993,7 +1245,7 @@ local function importCompanionCrossRefTable( )
 			
 			if ( data.sid ) and ( type( data.sid ) == "number" ) then
 				
-				key2 = string.format( "spell:%s", data.sid )
+				key2 = ArkInventory.ObjectIDCount( string.format( "spell:%s", data.sid ) )
 				
 				if not ArkInventory.Const.ItemCrossReference[key1] then
 					ArkInventory.Const.ItemCrossReference[key1] = { }

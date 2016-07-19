@@ -225,7 +225,7 @@ function Lib_UIDropDownMenu_CreateFrames(level, index)
 		LIB_UIDROPDOWNMENU_MAXLEVELS = LIB_UIDROPDOWNMENU_MAXLEVELS + 1;
 		local newList = CreateFrame("Button", "Lib_DropDownList"..LIB_UIDROPDOWNMENU_MAXLEVELS, nil, "Lib_UIDropDownListTemplate");
 		newList:SetFrameStrata("FULLSCREEN_DIALOG");
-		newList:SetToplevel(1);
+		newList:SetToplevel(true);
 		newList:Hide();
 		newList:SetID(LIB_UIDROPDOWNMENU_MAXLEVELS);
 		newList:SetWidth(180)
@@ -284,13 +284,13 @@ function Lib_UIDropDownMenu_AddButton(info, level)
 	
 	-- If not clickable then disable the button and set it white
 	if ( info.notClickable ) then
-		info.disabled = 1;
+		info.disabled = true;
 		button:SetDisabledFontObject(GameFontHighlightSmallLeft);
 	end
 
 	-- Set the text color and disable it if its a title
 	if ( info.isTitle ) then
-		info.disabled = 1;
+		info.disabled = true;
 		button:SetDisabledFontObject(GameFontNormalSmallLeft);
 	end
 	

@@ -482,7 +482,9 @@ function Invite.BuildOptions (frame)
 		
 		--create button (confirm) // edit button is 'save'
 		local create_button = RA:CreateButton (panel, Invite.create_or_edit_preset, 160, 20, "Create Preset", _, _, _, "button_create_preset", _, _, Invite:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Invite:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
-		--create_button:SetIcon ([[Interface\AddOns\IskarAssist\media\plus]], 12, 12, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 2, 1, 0)
+		create_button.widget.texture_disabled:SetTexture ([[Interface\Tooltips\UI-Tooltip-Background]])
+		create_button.widget.texture_disabled:SetVertexColor (0, 0, 0)
+		create_button.widget.texture_disabled:SetAlpha (.5)
 		
 		create_button:SetPoint ("topleft", panel, "topleft", 10 , -375)
 	
@@ -590,7 +592,7 @@ function Invite.BuildOptions (frame)
 		welcome_text2:SetPoint ("topleft", main_frame, "topleft", x_start, -145)
 		
 		local create_button = RA:CreateButton (main_frame, Invite.create_new_preset, 160, 20, "Create Preset", _, _, _, _, _, _, Invite:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Invite:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
-		create_button:SetIcon ([[Interface\AddOns\IskarAssist\media\plus]], 10, 10, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 3, 1, 0)
+		create_button:SetIcon ("Interface\\AddOns\\" .. RA.InstallDir .. "\\media\\plus", 10, 10, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 3, 1, 0)
 		create_button:SetPoint ("topleft", main_frame, "topleft", x_start , -165)
 		
 		--> edit dropdown
@@ -692,7 +694,7 @@ function Invite.BuildOptions (frame)
 		end
 		local button_add_keyword = RA:CreateButton (main_frame, add_key_word_func, 60, 18, "Add", _, _, _, _, _, _, Invite:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Invite:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 		button_add_keyword:SetPoint ("left", editbox_add_keyword, "right", 2, 0)
-		button_add_keyword:SetIcon ([[Interface\AddOns\IskarAssist\media\plus]], 10, 10, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 3, 1, 0)
+		button_add_keyword:SetIcon ("Interface\\AddOns\\" .. RA.InstallDir .. "\\media\\plus", 10, 10, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 3, 1, 0)
 		
 		--remove
 		local dropdown_keyword_erase_fill = function()

@@ -10,14 +10,10 @@
 local function PawnUseThisLocalization()
 PawnLocal =
 {
-	AsteriskTooltipLine = "|TInterface\\AddOns\\Pawn\\Textures\\Question:0|t 特殊效果不包含在數值中",
 	AverageItemLevelIgnoringRarityTooltipLine = "平均物品等級",
 	BackupCommand = "備份",
 	BaseValueWord = "基礎",
-	CogwheelName = "榫輪",
 	CopyScaleEnterName = "將 %s 的備份命名為:",
-	CorrectGemsValueCalculationMessage = "   -- 正確的寶石價值為: %g",
-	CrystalOfFearName = "晶化恐懼",
 	DebugOffCommand = "關閉除錯",
 	DebugOnCommand = "開啟除錯",
 	DecimalSeparator = ".", -- Needs review
@@ -30,9 +26,8 @@ PawnLocal =
 	FailedToGetItemLinkMessage = "   從提示欄獲取物品連接失敗.  這可能緣於一次模組衝突.",
 	FailedToGetUnenchantedItemMessage = "   獲取基本物品數值失敗.  這可能緣於一次模組衝突.",
 	FoundStatMessage = "   %d %s",
-	GemColorList1 = "%d %s",
-	GemColorList2 = "%d %s 或 %s",
-	GemColorList3 = "%d 個任何顏色",
+	GemList2 = "%s or %s", -- Requires localization
+	GemListMany = "%d possibilities (click the Pawn button for details)", -- Requires localization
 	GenericGemLink = "|Hitem:%d|h[寶石 %d]|h",
 	GenericGemName = "(寶石 %d)",
 	HiddenScalesHeader = "其它權重",
@@ -59,12 +54,13 @@ PawnLocal =
 	TooltipBestAnnotation = "%s  |cff8ec3e6(最佳)|r",
 	TooltipBestAnnotationSimple = "%s  最佳",
 	TooltipBigUpgradeAnnotation = "%s  |TInterface\\AddOns\\Pawn\\Textures\\UpgradeArrow:0|t|cff00ff00 提升%s|r",
+	TooltipDowngradeAnnotation = "%s  |TInterface\\AddOns\\Pawn\\Textures\\UpgradeArrow:0|t|cff00ff00-%.0f%% downgrade%s|r", -- Requires localization
 	TooltipSecondBestAnnotation = "%s  |cff8ec3e6(次佳)|r",
 	TooltipSecondBestAnnotationSimple = "%s  次佳",
 	TooltipUpgradeAnnotation = "%s  |TInterface\\AddOns\\Pawn\\Textures\\UpgradeArrow:0|t|cff00ff00+%.0f%% 提升%s|r",
-	TooltipUpgradeNeedsEnhancementsAnnotation = "%s  |TInterface\\AddOns\\Pawn\\Textures\\UpgradeArrow:0|t|cff00ff00+%.0f%% 提升%s|r",
 	TooltipUpgradeFor1H = " 對於單手來說",
 	TooltipUpgradeFor2H = " 對於雙手來說",
+	TooltipUpgradeNeedsEnhancementsAnnotation = "%s  |TInterface\\AddOns\\Pawn\\Textures\\UpgradeArrow:0|t|cff00ff00+%.0f%% 提升%s|r", -- Needs review
 	TooltipVersusLine = "%s|n  vs. |c%s%s|r",
 	TotalValueMessage = "   ---- 總計: %g",
 	UnenchantedStatsHeader = "(基本值)",
@@ -83,12 +79,9 @@ PawnLocal =
 	VisibleScalesHeader = "%s的權重",
 	Stats = {
 		AgilityInfo = "主要屬性, 敏捷.",
-		Ap = "攻擊強度",
-		ApInfo = "攻擊強度: 不直接存在於大多數物品上。 不包括從力量或敏捷上獲取的攻擊強度。",
 		ArmorInfo = "基本護甲值，不包含坦克裝備的 \"額外護甲值\" 屬性",
 		ArmorTypes = "裝甲類型",
 		AvoidanceInfo = "迴避: 降低所受範圍傷害",
-		BonusArmorInfo = "額外護甲值: 提高護甲值",
 		Cloth = "布甲",
 		ClothInfo = "此物若為布甲，則增計多少分數。",
 		Crit = "致命一擊",
@@ -105,20 +98,10 @@ PawnLocal =
 		Mail = "鎖甲",
 		MailInfo = "此物若為鎖甲，則增計多少分數。",
 		MasteryInfo = "精通: 提高你主天賦的特有加成。",
-		MetaSocket = "變換插槽",
-		MetaSocketInfo = "變換插槽，無論是否已有鑲嵌，增計多少分數。",
 		MinorStats = "其他",
 		MovementSpeedInfo = "移動速度: 提高你角色的移動速度",
-		MultistrikeInfo = "雙擊: 傷害或治療法術有兩次機會觸發額外攻擊/治療，對目標造成各30%的傷害或治療量",
 		Plate = "鎧甲",
 		PlateInfo = "此物若為鎧甲，則增計多少分數。",
-		PrimaryStats = "主要屬性",
-		PvPPower = "PvP強度",
-		PvPPowerInfo = "PvP強度: 讓你的技能對其他玩家造成更多傷害；你的治療技能對其他玩家造成更多治療(在某些PvP狀況下)",
-		PvPResilience = "Pvp韌性",
-		PvPResilienceInfo = "PvP韌性: 減輕其他玩家對你的傷害",
-		PvPStats = "PvP屬性",
-		SecondaryStats = "次要屬性",
 		Shield = "盾牌",
 		ShieldInfo = "此物若為盾牌，則增計多少分數。",
 		Sockets = "插槽",
@@ -129,9 +112,6 @@ PawnLocal =
 		SpeedInfo = [=[武器速度: 每秒攻擊次數。
 如果你偏好快速武器，此數應為負值。並請參閱 "特定武器屬性" 的 "速度基線" 部份。]=],
 		SpeedIs = "1 |cffffffff武器速度|r 價值:",
-		SpellPower = "法術能量",
-		SpellPowerInfo = "法術能量: 存在於法系武器上，增加法術傷害及治療效果；不包含從智力屬性獲得的法能加成。",
-		SpiritInfo = "主要屬性, 精神.",
 		StaminaInfo = "主要屬性, 耐力.",
 		StrengthInfo = "主要屬性, 力量.",
 		VersatilityInfo = "臨機應變: 增加角色造成的傷害及治療，減少角色受到的傷害",
@@ -221,6 +201,8 @@ PawnLocal =
 		WeaponTypeStaffInfo = "此物若為法杖，則增計多少分數。",
 		WeaponTypeWand = "魔杖",
 		WeaponTypeWandInfo = "此物若為魔杖，則增計多少分數。",
+		WeaponTypeWarglaive = "Warglaive", -- Requires localization
+		WeaponTypeWarglaiveInfo = "Points to be assigned if the item is a warglaive.", -- Requires localization
 	},
 	TooltipParsing = {
 		Agility = "^%+?([-%d%.,]+)敏捷$",
@@ -231,8 +213,6 @@ PawnLocal =
 		Avoidance = "^%+([%d%.,]+)迴避$",
 		Axe = "^斧$",
 		BagSlots = "^%d+格容器$",
-		BladesEdgeMountains = "^劍刃山脈$",
-		BonusArmor = "^%+([%d%.,]+)額外護甲值$",
 		Bow = "^弓$",
 		ChanceOnHit = "擊中時可能: ",
 		Charges = "^.+次?$",
@@ -265,6 +245,7 @@ PawnLocal =
 		Gun = "^槍械$",
 		Haste = "^%+?([%d%.,]+)加速$",
 		Haste2 = "^裝備: 提高([%d%.,]+)點加速。$",
+		HaventCollectedAppearance = "^You haven't collected this appearance$", -- Requires localization
 		HeirloomLevelRange = "^需要等級(%d+)至(%d+)%((%d+)%)",
 		HeirloomXpBoost = "^裝備: .*獲得的經驗值提高%d+%%。",
 		HeirloomXpBoost2 = "^UNUSED$",
@@ -286,10 +267,10 @@ PawnLocal =
 		Mastery2 = "^裝備: 提高([%d%.,]+)點精通。$",
 		MetaGemRequirements = "|cff%x%x%x%x%x%x需求", -- Needs review
 		MovementSpeed = "^%+([%d%.,]+)速度$",
+		MultiStatHeading = "^Multiple Stats$", -- Requires localization
 		MultiStatSeparator1 = "和",
 		Multistrike = "^%+([%d%.,]+)雙擊$",
 		NormalizationEnchant = "^附魔:(.*)$",
-		OnlyFitsInMetaGemSlot = "^\"只適用於變換寶石插槽。\"$",
 		Parry = "^%+?([%d%.,]+)招架$",
 		Parry2 = "^裝備: 提高([%d%.,]+)點招架等級。$", -- Needs review
 		Pattern = "圖樣: ", -- Needs review
@@ -306,8 +287,6 @@ PawnLocal =
 		Scope = "^瞄準鏡%(%+([%d%.,]+)傷害%)$", -- Needs review
 		ScopeCrit = "^瞄準鏡%(%+([%d%.,]+)致命一擊%)$",
 		ScopeRangedCrit = "^%+?([%d%.,]+)遠程致命一擊$",
-		Season = "^第%d+季",
-		ShadowmoonValley = "^影月谷$",
 		Shield = "^盾牌$",
 		SocketBonusPrefix = "插槽加成:",
 		Speed = "^速度 ([%d%.,]+)$",
@@ -318,16 +297,17 @@ PawnLocal =
 		Stamina = "^%+?([-%d%.,]+)耐力$",
 		Strength = "^%+?([-%d%.,]+)力量$",
 		Sword = "^劍$",
-		TempestKeep = "^風暴要塞$",
 		TemporaryBuffMinutes = "^.+%(%d+ 分%)$", -- Needs review
 		TemporaryBuffSeconds = "^.+%(%d+ 秒%)$", -- Needs review
 		Thunderforged = "^雷霆鎔鑄$",
 		Timeless = "^永恆之島$",
+		Titanforged = "^Titanforged$", -- Requires localization
 		UpgradeLevel = "^Upgrade Level:", -- Needs review
 		Use = "使用: ",
 		Versatility = "^%+([%d%.,]+)臨機應變$",
 		Wand = "^魔杖$",
 		Warforged = "^戰鑄$",
+		Warglaives = "^Warglaives$", -- Requires localization
 		WeaponDamage = "^([%d%.,]+)%-([%d%.,]+)點傷害$",
 		WeaponDamageArcane = "^%+?([%d%.,]+)%-([%d%.,]+)點秘法傷害$",
 		WeaponDamageArcaneExact = "^%+?([%d%.,]+)點秘法傷害$",
@@ -357,14 +337,11 @@ PawnLocal =
 我們會依其資料更新。]=],
 		CompareClearItems = "清除",
 		CompareClearItemsTooltip = "移除兩件比較中的物品.",
-		CompareCogwheelSockets = "榫輪插槽",
 		CompareColoredSockets = "有色插槽",
 		CompareEquipped = "已裝備",
 		CompareGemTotalValue = "寶石總值",
 		CompareHeader = "用 %s 進行比較",
-		CompareMetaSockets = "變換插槽",
 		CompareOtherHeader = "其他",
-		CompareShaTouchedSockets = "煞化",
 		CompareSlotEmpty = "(空)",
 		CompareSocketBonus = "插槽加成",
 		CompareSocketsHeader = "插槽",
@@ -373,8 +350,6 @@ PawnLocal =
 		CompareSwapTooltip = "將兩邊物品對調.",
 		CompareTab = "比較",
 		CompareVersus = "—vs.—",
-		CompareWelcomeLeft = [=[首先,
-從列表左邊選擇一個權重.]=],
 		CompareWelcomeRight = [=[然後,
 將一個物品放入此欄.
 Pawn會與你身上的裝備比較]=],
@@ -455,12 +430,12 @@ Pawn會與你身上的裝備比較]=],
 若選擇忽略，Pawn 仍會顯示寶石建議，但插槽將不列入物品的分數計算，因此有插槽的物品出現時，不再比一般物品容易出現升級建議。
 
 若不選取此項目，Pawn 會一律將插槽並列入物品計分(視為插入最佳寶石)]=],
-		OptionsIgnoreItemUpgradesCheck = "Ignore valor and baleful upgrades",
+		OptionsIgnoreItemUpgradesCheck = "Ignore valor and baleful upgrades", -- Requires localization
 		OptionsIgnoreItemUpgradesCheckTooltip = [=[Enable this option to have Pawn ignore the potential for Valor upgrades and Empowered Baleful items when calculating item values.
 
 If checked, Pawn will treat upgradeable items as they are and will not assume that you would use Valor and Empowered Apexis Fragments to improve the item when determining whether an item is better than what you currently have.
 
-If unchecked, Pawn will treat those items assuming that you would maximize their potential with Valor and Empowered Apexis Fragments.  This could cause a level 650 baleful item to appear as a significant upgrade over a level 670 item from Blackrock Foundry, since the baleful item could potentially be improved to level 705 through valor and Apexis.]=],
+If unchecked, Pawn will treat those items assuming that you would maximize their potential with Valor and Empowered Apexis Fragments.  This could cause a level 650 baleful item to appear as a significant upgrade over a level 670 item from Blackrock Foundry, since the baleful item could potentially be improved to level 705 through valor and Apexis.]=], -- Requires localization
 		OptionsInventoryIcon = "顯示物品圖標",
 		OptionsInventoryIconTooltip = "開啟此選項以在物品連結視窗旁顯示物品圖標",
 		OptionsItemIDs = "顯示物品ID",
@@ -487,6 +462,8 @@ WoW中所有的物件都有個ID，通常只有寫插件的人才需要這些資
 若要檢視各色寶石建議，請使用 Pawn 的寶石頁面，也可設定要使用的寶石等級]=],
 		OptionsTab = "設定",
 		OptionsTooltipHeader = "物品提示設定",
+		OptionsTooltipSpecIcon = "Show spec icons", -- Requires localization
+		OptionsTooltipSpecIconTooltip = "Enable this option to show spec icons next to scale names on tooltips.", -- Requires localization
 		OptionsTooltipUpgradesOnly = "只顯示升級比例",
 		OptionsTooltipUpgradesOnlyTooltip = [=[
 這是最簡易的選項，在物品提示中只顯示升級比例。
@@ -515,7 +492,21 @@ WoW中所有的物件都有個ID，通常只有寫插件的人才需要這些資
 若開啟此選項，當你裝備雙手武器時，Pawn 仍會根據你上次使用的最佳單手武器，對新的單手武器作出升級建議。
 
 若關閉此選項，當你裝備雙手武器時，Pawn 即不會對單手武器作升級建議，反之亦然。]=],
+		OptionsUpgradeTrackingHeader = "Upgrade comparisons:", -- Requires localization
+		OptionsUpgradeTrackingOff = "Versus equipped gear (recommended)", -- Requires localization
+		OptionsUpgradeTrackingOffTooltip = "Pawn will show you items that are an upgrade compared to the items that you currently have equipped.", -- Requires localization
+		OptionsUpgradeTrackingOn = "Track for each scale (advanced)", -- Requires localization
+		OptionsUpgradeTrackingOnTooltip = "(For advanced users.)  Pawn will try to track the best items that you've equipped, independently for each scale that you have enabled, and show you items that are an upgrade compared to those.", -- Requires localization
 		OptionsWelcome = "按照你的偏好設定 Pawn. 更動會馬上生效.",
+		ScaleAutoOff = "Manual", -- Requires localization
+		ScaleAutoOff2 = "Let me manage scales.", -- Requires localization
+		ScaleAutoOffTooltip = "Pawn will let you manually choose which scales to use for its calculations, allowing you to enable more than one scale at a time, add custom scales, and more.", -- Requires localization
+		ScaleAutoOn = "Automatic", -- Requires localization
+		ScaleAutoOn2 = "Just show my current spec.", -- Requires localization
+		ScaleAutoOnTooltip = "Pawn will automatically show your current specialization in item tooltips, and use that to make recommendations and suggest upgrades.", -- Requires localization
+		ScaleAutoWelcome = [=[Pawn will show suggestions for your current specialization.
+
+If you'd rather manage things on your own, just click Manual below.]=], -- Requires localization
 		ScaleChangeColor = "調整顏色",
 		ScaleChangeColorTooltip = "調整物品提示欄中權重名稱和數值的顏色.",
 		ScaleCopy = "複製",
@@ -535,6 +526,7 @@ WoW中所有的物件都有個ID，通常只有寫插件的人才需要這些資
 		ScaleRename = "重新命名",
 		ScaleRenameTooltip = "重新命名這個權重.",
 		ScaleSelectorHeader = "選擇一個權重:",
+		ScaleSelectorShowingSuggestionsFor = "Showing suggestions for", -- Requires localization
 		ScaleSelectorShowScale = "在提示欄中顯示權重",
 		ScaleSelectorShowScaleTooltip = "當選取時，此權重值將顯示在此角色的物品提示欄中。每個權重可以顯示在一個、多個，或無角色中。",
 		ScaleShareHeader = "分享",
@@ -568,42 +560,8 @@ WoW中所有的物件都有個ID，通常只有寫插件的人才需要這些資
 若你想改變這些分數，請至權重頁面複製或創建一個新權重。]=],
 	},
 	Wowhead = {
-		DeathKnightBloodTank = "死騎: 血魄",
-		DeathKnightFrostDps = "死騎: 冰霜",
-		DeathKnightUnholyDps = "死騎: 穢邪",
-		DruidBalance = "德魯伊: 平衡",
-		DruidFeralDps = "德魯伊: 野性",
-		DruidFeralTank = "德魯伊: 守護",
-		DruidRestoration = "德魯伊: 恢復",
-		HunterBeastMastery = "獵人: 野獸",
-		HunterMarksman = "獵人: 射擊",
-		HunterSurvival = "獵人: 生存",
-		MageArcane = "法師: 秘法",
-		MageFire = "法師: 火焰",
-		MageFrost = "法師: 冰霜",
-		MonkBrewmaster = "武僧: 釀酒",
-		MonkMistweaver = "武僧: 織霧",
-		MonkWindwalker = "武僧: 御風",
-		PaladinHoly = "聖騎: 神聖",
-		PaladinRetribution = "聖騎: 懲戒",
-		PaladinTank = "聖騎: 防護",
-		PriestDiscipline = "牧師: 戒律",
-		PriestHoly = "牧師: 神聖",
-		PriestShadow = "牧師: 暗影",
 		Provider = "Wowhead 權重",
 		ProviderStarter = "預設權重",
-		RogueAssassination = "盜賊: 刺殺",
-		RogueCombat = "盜賊: 戰鬥",
-		RogueSubtlety = "盜賊: 敏銳",
-		ShamanElemental = "薩滿: 元素",
-		ShamanEnhancement = "薩滿: 增強",
-		ShamanRestoration = "薩滿: 恢復",
-		WarlockAffliction = "術士: 痛苦",
-		WarlockDemonology = "術士: 惡魔",
-		WarlockDestruction = "術士: 毀滅",
-		WarriorArms = "戰士: 武器",
-		WarriorFury = "戰士: 狂怒",
-		WarriorTank = "戰士: 防護",
 	},
 }
 end

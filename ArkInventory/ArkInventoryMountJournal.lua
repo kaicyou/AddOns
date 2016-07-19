@@ -10,113 +10,18 @@ local C_MountJournal = _G.C_MountJournal
 
 local PLAYER_MOUNT_LEVEL = 20
 
-local filter = {
-	ignore = false,
---	searchBox = nil,
---	collected = true,
---	uncollected = true,
---	source = { },
-}
-
 local journal = {
 	total = 0, -- number of total mounts
 	owned = 0, -- number of owned mounts
-	cache = { }, -- [index] = { }
+	cache = { }, -- [id] = { }
 	types = { }, -- [spell] = value
 }
 
 ArkInventory.MountJournal = { }
 
--- map the basic filter functions, blizzard change them around so this way you just change this and youre done
-function ArkInventory.MountJournal.FilterGetSearch( )
-	return MountJournal.searchBox:GetText( )
-end
-
-function ArkInventory.MountJournal.FilterSetSearch( s )
-	MountJournal.searchBox:SetText( s )
-end
-
-function ArkInventory.MountJournal.FilterGetCollected( )
-	return C_MountJournal.GetCollectedFilterSetting( LE_MOUNT_JOURNAL_FILTER_COLLECTED )
-end
-
-function ArkInventory.MountJournal.FilterSetCollected( value )
-	C_MountJournal.SetCollectedFilterSetting( LE_MOUNT_JOURNAL_FILTER_COLLECTED, value )
-end
-
-function ArkInventory.MountJournal.FilterGetUncollected( )
-	return C_MountJournal.GetCollectedFilterSetting( LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED )
-end
-
-function ArkInventory.MountJournal.FilterSetUncollected( value )
-	C_MountJournal.SetCollectedFilterSetting( LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED, value )
-end
-
-function ArkInventory.MountJournal.FilterGetSource( t )
-	assert( type( t ) == "table", "parameter is not a table" )
-	for i = 1, ArkInventory.PetJournal.FilterGetSourceTypes( ) do
-		t[i] = MountJournal.filterTypes[i]
-	end
-end
-
-function ArkInventory.MountJournal.FilterSetSource( t )
-	if type( t ) == "table" then
-		for i = 1, ArkInventory.PetJournal.FilterGetSourceTypes( ) do
-			MountJournal.filterTypes[i] = t[i]
-		end
-	elseif type( t ) == "boolean" then
-		for i = 1, ArkInventory.PetJournal.FilterGetSourceTypes( ) do
-			MountJournal.filterTypes[i] = t
-		end
-	else
-		assert( false, "parameter is not a table or boolean" )
-	end
-end
-
-
-function ArkInventory.MountJournal.FilterActionClear( )
-	
-	filter.ignore = true
-	
-	ArkInventory.MountJournal.FilterSetSearch( "" )
-	ArkInventory.MountJournal.FilterSetCollected( true )
-	ArkInventory.MountJournal.FilterSetUncollected( true )
-	ArkInventory.MountJournal.FilterSetSource( true )
-	
-end
-	
-function ArkInventory.MountJournal.FilterActionBackup( )
-	
-	if filter.ignore then
-		--ArkInventory.Output( "FilterActionBackup - ignore" )
-		return
-	end
-	
-	filter.search = ArkInventory.MountJournal.FilterGetSearch( )
-	filter.collected = ArkInventory.MountJournal.FilterGetCollected( )
-	filter.uncollected = ArkInventory.MountJournal.FilterGetUncollected( )
-	ArkInventory.MountJournal.FilterGetSource( filter.source )
-	
-end
-
-function ArkInventory.MountJournal.FilterActionRestore( )
-	
-	filter.ignore = true
-	
-	ArkInventory.MountJournal.FilterSetSearch( filter.search )
-	ArkInventory.MountJournal.FilterSetCollected( filter.collected )
-	ArkInventory.MountJournal.FilterSetUncollected( filter.uncollected )
-	ArkInventory.MountJournal.FilterSetSource( filter.source )
-	
-end
-
-
 function ArkInventory.MountJournal.OnHide( )
-	filter.ignore = false
-	ArkInventory:SendMessage( "LISTEN_MOUNTJOURNAL_RELOAD_BUCKET", "RESCAN" )
+	ArkInventory:SendMessage( "EVENT_ARKINV_MOUNTJOURNAL_RELOAD_BUCKET", "RESCAN" )
 end
-
-
 
 
 function ArkInventory.MountJournal.JournalIsReady( )
@@ -127,9 +32,9 @@ function ArkInventory.MountJournal.GetCount( )
 	return journal.owned, journal.total
 end
 
-function ArkInventory.MountJournal.GetMount( index )
-	if type( index ) == "number" then
-		return journal.cache[index]
+function ArkInventory.MountJournal.GetMount( id )
+	if type( id ) == "number" then
+		return journal.cache[id]
 	end
 end
 
@@ -142,7 +47,6 @@ function ArkInventory.MountJournal.GetMountBySpell( spell )
 end
 
 
-
 function ArkInventory.MountJournal.Iterate( )
 	return ArkInventory.spairs( journal.cache, function( a, b ) return ( journal.cache[a].name or "" ) < ( journal.cache[b].name or "" ) end )
 end
@@ -153,7 +57,7 @@ end
 
 function ArkInventory.MountJournal.Summon( id )
 	local obj = ArkInventory.MountJournal.GetMount( id )
-	C_MountJournal.Summon( obj.index )
+	C_MountJournal.SummonByID( obj.index )
 end
 
 function ArkInventory.MountJournal.GetFavorite( id )
@@ -171,7 +75,7 @@ end
 function ArkInventory.MountJournal.IsUsable( id )
 	local obj = ArkInventory.MountJournal.GetMount( id )
 	-- and yes its still buggy and returning true when you cant actually use the mount
-	return ( select( 5, C_MountJournal.GetMountInfo( obj.index ) ) )
+	return ( select( 5, C_MountJournal.GetMountInfoByID( obj.index ) ) )
 end
 
 function ArkInventory.MountJournal.SkillLevel( )
@@ -187,19 +91,19 @@ function ArkInventory.MountJournal.SkillLevel( )
 		
 		if GetSpellInfo( ( GetSpellInfo( 90265 ) ) ) then -- master
 			skill = 300
---			ArkInventory.Output( "riding skill = ", skill, " / master" )
+			--ArkInventory.Output( "riding skill = ", skill, " / master" )
 		elseif GetSpellInfo( ( GetSpellInfo( 34091 ) ) ) then -- artisan
 			skill = 300
---			ArkInventory.Output( "riding skill = ", skill, " / artisan" )
+			--ArkInventory.Output( "riding skill = ", skill, " / artisan" )
 		elseif GetSpellInfo( ( GetSpellInfo( 34090 ) ) ) then -- expert
 			skill = 225
---			ArkInventory.Output( "riding skill = ", skill, " / expert" )
+			--ArkInventory.Output( "riding skill = ", skill, " / expert" )
 		elseif GetSpellInfo( ( GetSpellInfo( 33391 ) ) ) then -- journeyman
 			skill = 150
---			ArkInventory.Output( "riding skill = ", skill, " / journeyman" )
+			--ArkInventory.Output( "riding skill = ", skill, " / journeyman" )
 		elseif GetSpellInfo( ( GetSpellInfo( 33388 ) ) ) then -- apprentice
 			skill = 75
---			ArkInventory.Output( "riding skill = ", skill, " / apprentice" )
+			--ArkInventory.Output( "riding skill = ", skill, " / apprentice" )
 		end
 		
 	end
@@ -218,13 +122,9 @@ function ArkInventory.MountJournal.Scan( )
 		return
 	end
 	
-	--ArkInventory.MountJournal.FilterActionBackup( )
-	--ArkInventory.MountJournal.FilterActionClear( )
-	
 	local total = C_MountJournal.GetNumMounts( )
 	
 	if total == 0 then
-		--ArkInventory.MountJournal.FilterActionRestore( )
 		return
 	end
 	
@@ -234,14 +134,14 @@ function ArkInventory.MountJournal.Scan( )
 		journal.total = total
 		update = true
 	end
-		
+	
 	journal.owned = 0
 	
 	local c = journal.cache
 	
-	for i = 1, total do
+	for _, i in pairs( C_MountJournal.GetMountIDs( ) ) do
 		
-		local name, spell, icon, active, cansummon, source, fav, factionSpecific, faction, hide, owned = C_MountJournal.GetMountInfo( i )
+		local name, spell, icon, active, cansummon, source, fav, factionSpecific, faction, hide, owned, id = C_MountJournal.GetMountInfoByID( i )
 		
 		if not hide then
 			
@@ -257,7 +157,7 @@ function ArkInventory.MountJournal.Scan( )
 		
 			if not c[i] then
 				
-				local display, description, source, self, mt = C_MountJournal.GetMountInfoExtra( i )
+				local display, description, source, self, mt = C_MountJournal.GetMountInfoExtraByID( i )
 				
 				c[i] = {
 					index = i,
@@ -305,8 +205,6 @@ function ArkInventory.MountJournal.Scan( )
 		
 	end
 	
-	--ArkInventory.MountJournal.FilterActionRestore( )
-	
 	--ArkInventory.MountJournal.ApplyUserCorrections( )
 	
 	if update then
@@ -347,37 +245,34 @@ function ArkInventory.MountJournal.ApplyUserCorrections( )
 end
 
 
-function ArkInventory:LISTEN_MOUNTJOURNAL_RELOAD( event )
+function ArkInventory:EVENT_WOW_COLLECTION_MOUNT_RELOAD( event )
 	
 	if ( event ~= "COMPANION_UPDATE" ) then
-		ArkInventory:SendMessage( "LISTEN_MOUNTJOURNAL_RELOAD_BUCKET", event )
+		ArkInventory:SendMessage( "EVENT_ARKINV_MOUNTJOURNAL_RELOAD_BUCKET", event )
 	end
 	
 end
 
-function ArkInventory:LISTEN_MOUNTJOURNAL_RELOAD_BUCKET( events )
+function ArkInventory:EVENT_ARKINV_MOUNTJOURNAL_RELOAD_BUCKET( events )
 	
-	--ArkInventory.Output( "LISTEN_MOUNTJOURNAL_RELOAD_BUCKET( ", events, " )" )
+	--ArkInventory.Output( "EVENT_ARKINV_MOUNTJOURNAL_RELOAD_BUCKET( ", events, " )" )
 	
-	if MountJournal:IsVisible( ) then
-		--ArkInventory.Output( "IGNORED (cache OPEN)" )
+	loc_id = ArkInventory.Const.Location.Mount
+	
+	if not ArkInventory:IsEnabled( ) then
 		return
 	end
 	
-	if filter.ignore then
-		--ArkInventory.Output( "IGNORED (FILTER CHANGED BY ME)" )
-		filter.ignore = false
+	if not ArkInventory.LocationIsMonitored( loc_id ) then
+		--ArkInventory.Output( "IGNORED (NOT MONITORED)" )
+		return
+	end
+	
+	if MountJournal and MountJournal:IsVisible( ) then
+		--ArkInventory.Output( "IGNORED (MOUNT JOURNAL OPEN)" )
 		return
 	end
 	
 	ArkInventory.MountJournal.Scan( )
 	
 end
-
-
-
-
--- runtime
-MountJournal:HookScript( "OnHide", ArkInventory.MountJournal.OnHide )
---CollectionsJournal:HookScript( "OnHide", ArkInventory.MountJournal.OnHide )
---ArkInventory.MountJournal.FilterActionBackup( )

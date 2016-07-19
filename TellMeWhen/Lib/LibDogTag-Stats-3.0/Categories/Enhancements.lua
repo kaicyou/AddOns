@@ -51,6 +51,7 @@ DogTag:AddTag("Stats", "Haste", {
 })
 
 
+if GetMultistrike then
 DogTag:AddTag("Stats", "Multistrike", {
 	code = GetMultistrike,
 	ret = "number",
@@ -59,6 +60,7 @@ DogTag:AddTag("Stats", "Multistrike", {
 	example = '[Multistrike:Round(1)] => "17.2"; [Multistrike:Round(1):Percent] => "17.2%"',
 	category = L["Enhancements"],
 })
+end
 
 DogTag:AddTag("Stats", "Leech", {
 	code = GetLifesteal,

@@ -557,7 +557,7 @@ function RaidSchedule.BuildOptions (frame)
 	end
 	
 	local new_schedule_button = RA:CreateButton (panel, create_new, 180, 20, "Create New Core Schedule", _, _, _, "new_schedule_button", _, _, RaidSchedule:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), RaidSchedule:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
-	new_schedule_button:SetIcon ([[Interface\AddOns\IskarAssist\media\plus]], 10, 10, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 4, 1, 0)
+	new_schedule_button:SetIcon ("Interface\\AddOns\\" .. RA.InstallDir .. "\\media\\plus", 10, 10, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 4, 1, 0)
 	
 	local x = 470
 	local y = 0

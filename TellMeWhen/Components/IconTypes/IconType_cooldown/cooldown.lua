@@ -38,15 +38,17 @@ Type.name = L["ICONMENU_SPELLCOOLDOWN"]
 Type.desc = L["ICONMENU_SPELLCOOLDOWN_DESC"]
 Type.menuIcon = "Interface\\Icons\\spell_holy_divineintervention"
 
+local STATE_USABLE           = TMW.CONST.STATE.DEFAULT_SHOW
+local STATE_UNUSABLE         = TMW.CONST.STATE.DEFAULT_HIDE
+local STATE_UNUSABLE_NORANGE = TMW.CONST.STATE.DEFAULT_NORANGE
+local STATE_UNUSABLE_NOMANA  = TMW.CONST.STATE.DEFAULT_NOMANA
 
 -- AUTOMATICALLY GENERATED: UsesAttributes
+Type:UsesAttributes("state")
 Type:UsesAttributes("spell")
 Type:UsesAttributes("charges, maxCharges")
-Type:UsesAttributes("start, duration")
-Type:UsesAttributes("alpha")
-Type:UsesAttributes("noMana")
-Type:UsesAttributes("inRange")
 Type:UsesAttributes("reverse")
+Type:UsesAttributes("start, duration")
 Type:UsesAttributes("stack, stackText")
 Type:UsesAttributes("texture")
 -- END AUTOMATICALLY GENERATED: UsesAttributes
@@ -67,14 +69,20 @@ Type:RegisterIconDefaults{
 	IgnoreRunes				= false,
 }
 
+TMW:RegisterUpgrade(80004, {
+	icon = function(self, ics)
+		-- Multistate cooldown icon type has been removed (no longer needed)
+		-- We added a flag to icon settings that used to be multistate cooldowns in case an emergency rollback was needed.
+		-- It never ended up being needed, so now we can remove this flag.
+		ics.wasmscd = nil
+	end,
+})
 TMW:RegisterUpgrade(72022, {
 	icon = function(self, ics)
 		-- Multistate cooldown icon type has been removed (no longer needed)
 		if ics.Type == "multistate" then
 			ics.Type = "cooldown"
 			ics.IgnoreRunes = false -- mscd icons didnt have this setting. Make sure it is disabled.
-			ics.wasmscd = true -- flag this so we can undo this change if we need to. TODO: remove this flag from all icons when we're sure this is an OK change.
-			-- also TODO: remove static formats and localization strings for things that were used for mscd.
 		end
 	end,
 })
@@ -84,30 +92,28 @@ Type:RegisterConfigPanel_XMLTemplate(100, "TellMeWhen_ChooseName", {
 	text = L["CHOOSENAME_DIALOG"] .. "\r\n\r\n" .. L["CHOOSENAME_DIALOG_PETABILITIES"],
 })
 
-Type:RegisterConfigPanel_XMLTemplate(165, "TellMeWhen_WhenChecks", {
-	text = L["ICONMENU_SHOWWHEN"],
-	[0x2] = { text = "|cFF00FF00" .. L["ICONMENU_USABLE"],			},
-	[0x1] = { text = "|cFFFF0000" .. L["ICONMENU_UNUSABLE"],		},
+Type:RegisterConfigPanel_XMLTemplate(165, "TellMeWhen_IconStates", {
+	[STATE_USABLE]           = { text = "|cFF00FF00" .. L["ICONMENU_READY"],   },
+	[STATE_UNUSABLE]         = { text = "|cFFFF0000" .. L["ICONMENU_NOTREADY"], },
+	[STATE_UNUSABLE_NORANGE] = { text = "|cFFFFff00" .. L["ICONMENU_OORANGE"], requires = "RangeCheck" },
+	[STATE_UNUSABLE_NOMANA]  = { text = "|cFFFFff00" .. L["ICONMENU_OOPOWER"], requires = "ManaCheck" },
 })
 
 Type:RegisterConfigPanel_ConstructorFunc(150, "TellMeWhen_CooldownSettings", function(self)
-	self.Header:SetText(Type.name)
-	TMW.IE:BuildSimpleCheckSettingFrame(self, {
-		{
-			setting = "RangeCheck",
-			title = L["ICONMENU_RANGECHECK"],
-			tooltip = L["ICONMENU_RANGECHECK_DESC"],
-		},
-		{
-			setting = "ManaCheck",
-			title = L["ICONMENU_MANACHECK"],
-			tooltip = L["ICONMENU_MANACHECK_DESC"],
-		},
-		pclass == "DEATHKNIGHT" and {
-			setting = "IgnoreRunes",
-			title = L["ICONMENU_IGNORERUNES"],
-			tooltip = L["ICONMENU_IGNORERUNES_DESC"],
-		},
+	self:SetTitle(Type.name)
+	self:BuildSimpleCheckSettingFrame({
+		function(check)
+			check:SetTexts(L["ICONMENU_RANGECHECK"], L["ICONMENU_RANGECHECK_DESC"])
+			check:SetSetting("RangeCheck")
+		end,
+		function(check)
+			check:SetTexts(L["ICONMENU_MANACHECK"], L["ICONMENU_MANACHECK_DESC"])
+			check:SetSetting("ManaCheck")
+		end,
+		pclass == "DEATHKNIGHT" and function(check)
+			check:SetTexts(L["ICONMENU_IGNORERUNES"], L["ICONMENU_IGNORERUNES_DESC"])
+			check:SetSetting("IgnoreRunes")
+		end,
 	})
 end)
 
@@ -142,23 +148,20 @@ local function AutoShot_OnUpdate(icon, time)
 
 	if ready and inrange then
 		icon:SetInfo(
-			"alpha; start, duration; spell; inRange",
-			icon.Alpha,
+			"state; start, duration; spell",
+			STATE_USABLE,
 			0, 0,
-			NameString,
-			inrange
+			NameString
 		)
 	else
 		icon:SetInfo(
-			"alpha; start, duration; spell; inRange",
-			icon.UnAlpha,
+			"state; start, duration; spell",
+			not inrange and STATE_UNUSABLE_NORANGE or STATE_UNUSABLE,
 			icon.asStart, asDuration,
-			NameString,
-			inrange
+			NameString
 		)
 	end
 end
-
 
 local usableData = {}
 local unusableData = {}
@@ -166,6 +169,8 @@ local function SpellCooldown_OnUpdate(icon, time)
 	-- Upvalue things that will be referenced a lot in our loops.
 	local IgnoreRunes, RangeCheck, ManaCheck, NameArray, NameStringArray =
 	icon.IgnoreRunes, icon.RangeCheck, icon.ManaCheck, icon.Spells.Array, icon.Spells.StringArray
+
+	local usableAlpha = icon.States[STATE_USABLE].Alpha
 
 	local usableFound, unusableFound
 
@@ -218,10 +223,8 @@ local function SpellCooldown_OnUpdate(icon, time)
 			if inrange and not nomana and (duration == 0 or (charges and charges > 0) or OnGCD(duration)) then --usable
 				if not usableFound then
 					wipe(usableData)
-					usableData.alpha = icon.Alpha
+					usableData.state = STATE_USABLE
 					usableData.tex = GetSpellTexture(iName)
-					usableData.inrange = inrange
-					usableData.nomana = nomana
 					usableData.iName = iName
 					usableData.stack = stack
 					usableData.charges = charges
@@ -231,16 +234,14 @@ local function SpellCooldown_OnUpdate(icon, time)
 					
 					usableFound = true
 					
-					if icon.Alpha > 0 then
+					if usableAlpha > 0 then
 						break
 					end
 				end
 			elseif not unusableFound then
 				wipe(unusableData)
-				unusableData.alpha = icon.UnAlpha
+				unusableData.state = not inrange and STATE_UNUSABLE_NORANGE or nomana and STATE_UNUSABLE_NOMANA or STATE_UNUSABLE
 				unusableData.tex = GetSpellTexture(iName)
-				unusableData.inrange = inrange
-				unusableData.nomana = nomana
 				unusableData.iName = iName
 				unusableData.stack = stack
 				unusableData.charges = charges
@@ -250,7 +251,7 @@ local function SpellCooldown_OnUpdate(icon, time)
 				
 				unusableFound = true
 				
-				if icon.Alpha == 0 then
+				if usableAlpha == 0 then
 					break
 				end
 			end
@@ -258,29 +259,26 @@ local function SpellCooldown_OnUpdate(icon, time)
 	end
 	
 	local dataToUse
-	if usableFound and icon.Alpha > 0 then
+	if usableFound and usableAlpha > 0 then
 		dataToUse = usableData
 	elseif unusableFound then
 		dataToUse = unusableData
 	elseif usableFound then
-		usableData.Alpha = 0
 		dataToUse = usableData
 	end
 	
 	if dataToUse then
 		icon:SetInfo(
-			"alpha; texture; start, duration; charges, maxCharges; stack, stackText; spell; inRange; noMana",
-			dataToUse.alpha,
+			"state; texture; start, duration; charges, maxCharges; stack, stackText; spell",
+			dataToUse.state,
 			dataToUse.tex,
 			dataToUse.start, dataToUse.duration,
 			dataToUse.charges, dataToUse.maxCharges,
 			dataToUse.stack, dataToUse.stack,
-			dataToUse.iName,
-			dataToUse.inrange,
-			dataToUse.nomana
+			dataToUse.iName
 		)
 	else
-		icon:SetInfo("alpha", 0)
+		icon:SetInfo("state", 0)
 	end
 end
 

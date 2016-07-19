@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 37 2016-07-01 07:49:58Z arith $
+$Id: ChangeLog.txt 48 2016-07-19 14:03:11Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,46 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.33.00 (Jul. 19, 2016)
+------------------------
+- Toc updated to support WoW Legion pre-patch (7.0.3)
+- Code changes to support WoW Legion
+  - texture:SetTexture(r, g, b, a) changes into texture:SetColorTexture(r, g, b, a)
+- Adjusted map info layout to split recommended level into individual line
+- Added instance's mythic info
+- Instance's level info will be showing with difficulty color based on your current 
+  level against the instance's level
+- Added Siege of Niuzao Temple's heroic info
+- Added Warlords of Draenor instances' mythic info
+- Added instance and boss info for the following old ones:
+  - Ruins of Ahn'Qiraj, Temple of Ahn'Qiraj, Blackwing Lair, The Molten Core, 
+    Black Temple, Serpentshrine Cavern, Hyjal Summit, Gruul's Lair, Magtheridon's Lair, 
+    Karazhan, Sunwell Plateau, Tempest Keep, Icecrown Citadel, Naxxramas, 
+    The Obsidian Sanctum, Onyxia's Lair, The Ruby Sanctum, The Eye of Eternity, 
+    Trial of the Crusader, Ulduar, Vault of Archavon
+- Removed the faction section in AtlasIngameLocales
+- Translation update:
+  - Simplified Chinese (ananhaid)
+  - German (pas06)
+- Libraries update: LibBabble-Boss-3.0, LibBabble-Faction-3.0, LibBabble-SubZone-3.0
+- Enhanced Atlas_GetBossName() to get better localization result
+- Legion instance maps will be released in the later stage, hopefully before the official launch on Sep. 1st, 2016.
+
+
+v1.32.10 (Jul. 15, 2016)
+------------------------
+- Added LibBabble-Faction lib to replace the faction looking-up with AtlasIngameLocales's 
+  GetFactionInfoByID.
+  The faction section in AtlasIngameLocales will be removed in later release
+- Re-ordered Hellfire Citadel map series. 
+  - Archimonde is now in the last map
+  - Added Mannoroth and Hellfire Assault
+- Added symbols' definition so that localization is more flexible when presenting symbols 
+  (punctuations) in other languages
+- Bug fix: map series button is now working again
+  (Lib_ToggleDropDownMenu should be used after introducing NoTaint_UIDropDownMenu)
+
 
 v1.32.09 (Jul. 01, 2016)
 ------------------------

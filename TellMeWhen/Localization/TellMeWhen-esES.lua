@@ -14,8 +14,6 @@ L["ALLOWCOMM"] = "Permitir compartir en el juego"
 L["ALLOWCOMM_DESC"] = "Permitir a otros usuarios de TellMeWhen enviarle datos. "
 L["ALLOWVERSIONWARN"] = "Notificar de nueva versión"
 L["ALPHA"] = "Alfa" -- Needs review
-L["ALWAYSSUBLINKS"] = "Siempre Sustituir Enlaces"
-L["ALWAYSSUBLINKS_DESC"] = "Por defecto, los enlaces de hechizo/objeto sólo serán sustituidos en las salidas de eventos de texto. Marque este ajuste para provocar que los enlaces sean sustituidos en cualquier sitio, incluyendo texto de enlace/etiqueta de icono."
 L["ANCHORTO"] = "Anclar a"
 L["ANIM_ACTVTNGLOW"] = "Icono: Borde de Activación"
 L["ANIM_ACTVTNGLOW_DESC"] = "Muestra el borde de activación de hechizo de Blizzard en el icono. "
@@ -96,7 +94,6 @@ L["AURA"] = "Aura"
 L["BACK_IE"] = "Atrás"
 L["BACK_IE_DESC"] = "Carga el último icono que fue editado (%s |T%s:0|t)." -- Needs review
 L["Bleeding"] = "Sangrando"
-L["BonusStamina"] = "Aguante Aumentado"
 L["BOTTOM"] = "Abajo"
 L["BOTTOMLEFT"] = "Abajo Izquierda"
 L["BOTTOMRIGHT"] = "Abajo Derecha"
@@ -119,9 +116,6 @@ L["CHAT_MSG_CHANNEL"] = "Canal de Chat"
 L["CHAT_MSG_CHANNEL_DESC"] = "Dirigirá la salida a un canal de chat, como Comercio, o a un canal personalizado al que se ha unido."
 L["CHAT_MSG_SMART"] = "Canal Inteligente"
 L["CHAT_MSG_SMART_DESC"] = "Dirigirá la salida al canal Campo de Batalla, Banda, Grupo o Decir - lo que sea apropiado. "
-L["CHECKORDER"] = "Actualizar Orden"
-L["CHECKORDER_GROUPDESC"] = "Establece el orden en que los grupos serán actualizados. Esto sólo es de importancia si está usando la característica de meta iconos para comprobar sub-metas. "
-L["CHECKORDER_ICONDESC"] = "Establece el orden en que los iconos dentro de este grupo serán actualizados. Esto sólo es de importancia si está usando la característica de meta iconos para comprobar sub-metas. "
 L["CHOOSEICON"] = "Eliga un icono a comprobar"
 L["CHOOSEICON_DESC"] = [=[|cff7fffffClick|r para elegir un icono/grupo.
 |cff7fffffClick-Izquierdo y arrastrar|r para reordenar.
@@ -129,8 +123,6 @@ L["CHOOSEICON_DESC"] = [=[|cff7fffffClick|r para elegir un icono/grupo.
 L["CHOOSENAME_DIALOG"] = [=[Introduzca el Nombre o ID de lo que quiera que vigile este icono. Puede añadir múltiples entradas (cualquier combinación de nombres, IDs y equivalentes) separándolas con punto y coma (;)
 
 Haga |cff7fffffShift-click|r en hechizos/objetos/enlaces de chat o arrastre hechizos/objetos para insertarlos en esta caja de texto.]=] -- Needs review
-L["CHOOSENAME_DIALOG_DDDEFAULT"] = "Conjuntos de Hechizos/Tipos de Disipación Predefinidos"
-L["CHOOSENAME_DIALOG_MSCD"] = "Introduzca el Nombre o ID de lo que quiere que este icono compruebe. Sólo el primer hechizo/objeto será comprobado - Las listas delimitadas por punto y coma no son válidas para este tipo de icono. "
 L["CHOOSENAME_DIALOG_PETABILITIES"] = "Se deben usar IDs de hechizo para las |cFFFF5959HABILIDADES DE MASCOTA|r "
 L["CLEU_"] = "Cualquier evento"
 L["CLEU_CAT_AURA"] = "Ventajas/Desventajas"
@@ -320,14 +312,9 @@ L["CNDT_TOTEMNAME"] = "Nombre(s) de Tótem(s)"
 L["CNDT_TOTEMNAME_DESC"] = [=[Deje en blanco para seguir cualquier tótem del tipo seleccionado. 
 
 Introduzca un nombre de tótem, o una lista de nombres separados por punto y coma, para sólo comprobar ciertos tótems. ]=]
-L["CODESNIPPET_ADD"] = "Crear nuevo Snippet"
 L["CODESNIPPET_CODE"] = "Código Lua a Ejecutar"
-L["CODESNIPPET_CODE_DESC"] = "Establece el código Lua que será ejecutado por este snippet cuandeo TellMeWhen se inicialice. "
 L["CODESNIPPET_DELETE"] = "Borrar Snippet"
 L["CODESNIPPET_DELETE_CONFIRM"] = "¿Está seguro de que quiere borrar el snippet de código %q?"
-L["CODESNIPPET_DELETE_DESC"] = [=[Pulse para borrar este snippet de código. 
-
-Mantenga pulsado |cff7fffffCtrl|r para saltar la confirmación. ]=]
 L["CODESNIPPET_GLOBAL"] = "Snippets Globales"
 L["CODESNIPPET_ORDER"] = "Orden de Ejecución"
 L["CODESNIPPET_ORDER_DESC"] = [=[Establece el ordene en que se debería ejecutar este snippet en relación a otros snippets. 
@@ -341,11 +328,6 @@ L["CODESNIPPET_RENAME_DESC"] = [=[Elija un nombre para este snippet de modo que 
 
 Los nombres no tienen que ser únicos. ]=]
 L["CODESNIPPET_RUNNOW"] = "Ejecutar Snippet Ahora"
-L["CODESNIPPET_RUNNOW_CONFIRM"] = [=[¿Está seguro de que quiere ejecutar el snippet %s de nuevo?
-
-(Ya ha sido ejecutado al menos una vez en esta sesión)
-
-Puede mantener pulsado |cff7fffffCtrl|r mientras pulsa el botón %s para saltar esta confirmación. ]=]
 L["CODESNIPPET_RUNNOW_DESC"] = [=[Pulse para ejecutar este snippet de código. 
 
 Mantenga pulsado |cff7fffffCtrl|r para saltar la confirmación si el snippet ya ha sido ejecutado. ]=]
@@ -364,78 +346,15 @@ L["CODESNIPPETS_IMPORT_PROFILE"] = "Nuevo Snippet de Perfil"
 L["CODESNIPPETS_IMPORT_PROFILE_DESC"] = "Importa el snippet como un snippet específico de perfil. "
 L["CODESNIPPETS_TITLE"] = "Snippets Lua (Avanzado)"
 L["CODETOEXE"] = "Código a Ejecutar"
-L["COLOR_CBC"] = "Barra de tiempo de reutilización - Completa"
-L["COLOR_CBC_DESC"] = "Color de la barra superpuesta de tiempo de reutilización/duración cuando el tiempo de reutilización/duración se ha completado. "
-L["COLOR_CBS"] = "Barra de tiempo de reutilización - Inicio"
-L["COLOR_CBS_DESC"] = "Color de la barra superpuesta de tiempo de reutilización/duración cuando el tiempo de reutilización/duración acaba de empezar"
-L["COLOR_COA"] = "Contando, Temporizador Oculto, Mostrar Siempre"
-L["COLOR_COA_DESC"] = [=[Color del icono cuando: 
-
-El temporizador está activo (inutilizable/presente),
-%q está deshabilitado, 
-Ambos ajustes %q están marcados]=]
-L["COLOR_COLOR"] = "Color"
-L["COLOR_COS"] = "Contando, Temporizador Oculto, Mostrar A Veces"
-L["COLOR_COS_DESC"] = [=[Color del icono cuando: 
-
-El temporizador está activo (inutilizable/presente),
-%q está deshabilitado, 
-Ambos ajustes %q no están marcados]=] -- Needs review
-L["COLOR_CTA"] = "Contando, Temporizador Mostrado, Mostrar Siempre"
-L["COLOR_CTA_DESC"] = [=[Color del icono cuando: 
-
-El temporizador está activo (inutilizable/presente),
-%q está habilitado, 
-Ambos ajustes %q están marcados]=]
-L["COLOR_CTS"] = "Contando, Temporizador Mostrado, Mostrar A Veces"
-L["COLOR_CTS_DESC"] = [=[Color del icono cuando: 
-
-El temporizador está activo (inutilizable/presente),
-%q está habilitado, 
-Ambos ajustes %q no están marcados]=] -- Needs review
-L["COLOR_DEFAULT"] = "*Colores Globales*"
-L["COLOR_DESATURATE"] = "Gris"
-L["COLOR_DESATURATE_DESC"] = "Marcar para desaturar  el icono cuando se use este color, eliminando todo el color y dejando el icono en escala de grises. "
-L["COLOR_HEADER"] = [=[Estos colores se usarán para iconos %s si sus ajustes %q están marcados. 
-
-Blanco sólido no produce cambios en la textura. Negro sólido hará que la textura sea negro sólido. Cualquier gris o color entre medias teñirá el icono. ]=]
-L["COLOR_HEADER_DEFAULT"] = [=[Estos colores se usarán para cualquier tipo de icono que no los sobreescriba en sus ajustes de color de tipo. 
-
-Blanco sólido no produce cambios en la textura. Negro sólido hará que la textura sea negro sólido. Cualquier gris o color entre medias teñirá el icono. ]=]
-L["COLOR_IGNORE_GCD"] = "Los colores ignoran el GCD"
-L["COLOR_IGNORE_GCD_DESC"] = "Marcar esto evitará que los colores de los iconos cambien simplemente por el tiempo de reutilización global. "
 L["COLOR_MSQ_COLOR"] = "Colorear borde Masque"
 L["COLOR_MSQ_COLOR_DESC"] = "Marcar esto hará que el borde de una piel de Masque (si la piel que está usando tiene un borde) sea coloreado."
 L["COLOR_MSQ_ONLY"] = "Sólo colorear borde de Masque"
 L["COLOR_MSQ_ONLY_DESC"] = "Marcar esto hará que SOLO el borde de una piel de Masque (si la piel que está usando tiene un borde) sea coloreado. Los iconos NO serán coloreados"
-L["COLOR_NA"] = "Terminado, Mostrar Siempre"
-L["COLOR_NA_DESC"] = [=[Color del icono cuando: 
-
-El temporizador ha finalizado (utilizable/ausente),
-Ambos ajustes %q están marcados]=]
-L["COLORNAMES"] = "Nombres Coloreados por Clase"
-L["COLORNAMES_DESC"] = "Marque para intentar colorear los nombres de las unidades en displays de texto y manejadores de eventos de icono de texto."
-L["COLOR_NS"] = "Finalizado, Mostrar A Veces"
-L["COLOR_NS_DESC"] = [=[Color del icono cuando: 
-
-El temporizador está finalizado (utilizable/ausente),
-Ambos ajustes %q no están marcados]=] -- Needs review
-L["COLOR_OOM"] = "Sin Maná"
-L["COLOR_OOM_DESC"] = "Color del icono cuando carezca de poder para usar una habilidad. "
-L["COLOR_OOR"] = "Fuera de Alcance"
-L["COLOR_OOR_DESC"] = "Color del icono cuando no está dentro del alcance para usar una habilidad. "
-L["COLOR_OORM"] = "Fuera de Alcance y Sin Maná"
-L["COLOR_OORM_DESC"] = "Color del icono cuando carezca de poder y no esté dentro del alcance para usar una habilidad."
-L["COLOR_OVERRIDEDEFAULT"] = "Usar"
-L["COLOR_OVERRIDEDEFAULT_DESC"] = "Marque esto para sobreescribir el ajuste *Colores Globales\" y usar éste en su lugar"
-L["COLOR_RESET_DESC"] = "Restablecer este ajuste a sus valores por defecto"
 L["COMPARISON"] = "Comparación"
 L["CONDITIONALPHA_METAICON"] = "Condiciones No Cumplidas"
 L["CONDITIONALPHA_METAICON_DESC"] = [=[Esta opacidad se usará cuando las condiciones no se cumplan. 
 
 Las condiciones se pueden configurar en la pestaña %q.]=]
-L["CONDITIONORMETA_CHECKINGINVALID"] = "Advertencia! Grupo %d, Icono %d está comprobando un icono inválido (Grupo %d, Icono %d)"
-L["CONDITIONORMETA_CHECKINGINVALID_GROUP"] = "Advertencia! Grupo %d está comprobando un icono inválido (Grupo %d, Icono %d)"
 L["CONDITIONPANEL_ABSOLUTE"] = "Absoluto"
 L["CONDITIONPANEL_ADD"] = "Añadir una condición"
 L["CONDITIONPANEL_ADD2"] = "Pulse para añadir una condición"
@@ -524,7 +443,6 @@ L["CONDITIONPANEL_OR"] = "O"
 L["CONDITIONPANEL_PERCENT"] = "Porcentaje"
 L["CONDITIONPANEL_PETMODE"] = "Modo de ataque de la mascota"
 L["CONDITIONPANEL_PETSPEC"] = "Especialización de mascota"
-L["CONDITIONPANEL_PETTREE"] = "Árbol de talentos de mascota"
 L["CONDITIONPANEL_POWER"] = "Recurso Primario"
 L["CONDITIONPANEL_POWER_DESC"] = "Comprobará energía si la unidad es un druida en forma de gato, ira si la unidad es un guerrero, etc"
 L["CONDITIONPANEL_PVPFLAG"] = "Unidad está Marcada JcJ"
@@ -568,7 +486,6 @@ L["CONDITION_TIMEOFDAY_DESC"] = [=[Esta condición comprueba la hora actual del 
 
 La hora comprobada es su hora local, basada en el reloj de su ordenador. No comprueba la hora del servidor. ]=]
 L["CONDITION_TIMERS_FAIL_DESC"] = "Duración del temporizador a establecer en el icono cuando las condiciones empiezan a no cumplirse"
-L["CONDITION_TIMERS_HEADER"] = "Temporizadores"
 L["CONDITION_TIMERS_SUCCEED_DESC"] = "Duración del temporizador a establecer en el icono cuando las condiciones empiezan a cumplirse"
 L["CONDITION_WEEKDAY"] = "Día de la semana"
 L["CONDITION_WEEKDAY_DESC"] = [=[Comprueba el día de la semana actual. 
@@ -585,20 +502,6 @@ L["CONFIGPANEL_TIMERBAR_BARDISPLAY_HEADER"] = "Barra de temporizador"
 L["CONFIGPANEL_TIMER_HEADER"] = "Barrido de Temporizador"
 L["COPYGROUP"] = "Copiar Grupo"
 L["COPYPOSSCALE"] = "Copiar posición/escala" -- Needs review
-L["CREATURETYPE_1"] = "Bestia"
-L["CREATURETYPE_10"] = "Sin especificar"
-L["CREATURETYPE_11"] = "Tótem"
-L["CREATURETYPE_12"] = "Mascota mansa"
-L["CREATURETYPE_13"] = "Nube de gas"
-L["CREATURETYPE_14"] = "Mascota salvaje"
-L["CREATURETYPE_2"] = "Dragonante"
-L["CREATURETYPE_3"] = "Demonio"
-L["CREATURETYPE_4"] = "Elemental"
-L["CREATURETYPE_5"] = "Gigante"
-L["CREATURETYPE_6"] = "No-muerto"
-L["CREATURETYPE_7"] = "Humanoide"
-L["CREATURETYPE_8"] = "Alimaña"
-L["CREATURETYPE_9"] = "Mecánico"
 L["CrowdControl"] = "Control de Masas"
 L["Curse"] = "Maldición"
 L["DamageBuffs"] = "Ventajas de Daño"
@@ -631,7 +534,6 @@ L["DT_DOC_Unit"] = "Devuelve la unidad o el nombre de la unidad que el icono est
 L["DURATION"] = "Duración"
 L["DURATIONALPHA_DESC"] = "Establece el nivel de opacidad con que el icono debería mostrarse cuando estos requisitos de duración no se cumplan." -- Needs review
 L["DURATIONPANEL_TITLE2"] = "Requisitos de Duración"
-L["DURATIONPERC"] = "Porcentaje de duración"
 L["EARTH"] = "Tierra"
 L["ECLIPSE_DIRECTION"] = "Dirección de Eclipse"
 L["elite"] = "Élite"
@@ -652,20 +554,8 @@ No se encontró %s.
 Desea reiniciar WoW ahora?]=]
 L["ERROR_MISSINGFILE_REQFILE"] = "Un fichero requerido"
 L["ERROR_NO_LOCKTOGGLE_IN_LOCKDOWN"] = "No se puede desbloquear TellMeWhen estando en combate si la opción %q no está activada (escriba '/tmw options')."
-L["ERROR_NOTINITIALIZED_INTERFACEPANEL_EXPLANATION"] = [=[Parece que TellMeWhen no ha conseguido inicializarse
-
-Debido a esto, TellMeWhen no podrá funcionar, y usted no podrá configurar ninguno de sus ajustes. 
-
-Si vio un mensaje al conectarse que decía que se necesitaba un reinicio completo de WoW para usar TMW, por favor hágalo.
-
-Si no vio ese mensaje, por favor permita errores de Lua (%s > %s > %s) si no lo ha hecho ya, recargue su UI, e informe de cualquier error que reciba en un ticket en http://wow.curseforge.com/addons/tellmewhen/create-ticket/
-
-Disculpe las molestias, pero este es un caso inusual, y cualquier información sobre ello que pueda proporcionar ayudará a que se corrija cuanto antes!
-
-Gracias por utilizar TellMeWhen!]=] -- Needs review
 L["ERROR_NOTINITIALIZED_NO_ACTION"] = "TellMeWhen no puede ejecutar esa acción si el addon no pudo inicializarse!"
 L["ERROR_NOTINITIALIZED_NO_LOAD"] = "TellmeWhen_Opciones no se puede cargar si TellMeWhen no se pudo inicializar!"
-L["ERROR_NOTLOADED_ERROR"] = "TellMeWhen no se pudo cargar! ¿Le falta alguna librería requerida? "
 L["ERRORS_FRAME"] = "Marco de Errores"
 L["ERRORS_FRAME_DESC"] = "Dirige la salida al marco estándar de errores que normalmente muestra mensajes como %q"
 L["EVENTCONDITIONS"] = "Condiciones de evento"
@@ -683,13 +573,6 @@ L["EVENTS_HANDLERS_GLOBAL_DESC"] = [=[|cff7fffffClick|r para opciones del maneja
 L["EVENTS_HANDLERS_HEADER"] = "Manejadores de Evento del Icono" -- Needs review
 L["EVENTS_HANDLERS_PLAY"] = "Probar Evento" -- Needs review
 L["EVENTS_HANDLERS_PLAY_DESC"] = "|cff7fffffClick|r para probar el manejador de evento" -- Needs review
-L["EVENTS_INSTRUCTIONS"] = [=[En esta pestaña puede configurar funciones extra para este icono con efectos como sonidos, animaciones, y salidas de texto. 
-
-Todos estos efectos son activados por un evento de su elección. La mayoría de los eventos se activan en respuesta a un cambio en el estado del icono, pero también hay otros eventos. 
-
-Para empezar a configurar estos efectos, pinche el botón de la izquierda y elija la combinación de evento y efecto que desearía. 
-
-Los ajustes para el evento y el efecto aparecerán entonces, y podrá configurarlos como desee. ]=] -- Needs review
 L["EVENTS_SETTINGS_CNDTJUSTPASSED"] = "Y acaba de empezar a cumplirse"
 L["EVENTS_SETTINGS_CNDTJUSTPASSED_DESC"] = "Evita que el evento sea manejado a menos que la condición configurada más arriba acabe de empezar a cumplirse. " -- Needs review
 L["EVENTS_SETTINGS_HEADER"] = "Ajustes de Eventos" -- Needs review
@@ -734,8 +617,6 @@ L["GENERIC_NUMREQ_CHECK_DESC"] = "Marque para habilitar y configurar el %s"
 L["GENERICTOTEM"] = "Tótem %d"
 L["GLYPHTOCHECK"] = "Glifo a Comprobar"
 L["GROUP"] = "Grupo" -- Needs review
-L["GROUPADDONSETTINGS"] = "Ajustes de Grupo"
-L["GROUPADDONSETTINGS_DESC"] = "Configura ajustes para este grupo, otros grupos, y todos los otros ajustes generales de accesorio. "
 L["GROUPCONDITIONS"] = "Condiciones de Grupo"
 L["GROUPCONDITIONS_DESC"] = "Configura condiciones que le permiten ajustes finos sobre cuándo se muestra este grupo. "
 L["GROUPICON"] = "Grupo: %s, Icono: %s"
@@ -779,9 +660,6 @@ Nombre del Hechizo: Duración
 P.Ej. "%s: 10"
 
 Insertar desde la lista de sugerencias añade automáticamente la duración desde el tooltip.]=]
-L["HELP_MS_NOFOUND"] = [=[La habilidad %q no se pudo encontrar en sus barras de acción. 
-
-Asegúrese de que la habilidad está en sus barras de acción, en su estado por defecto, y que no es sólo una macro que está poniendo el hechizo en sus barras de acción. De otro modo, este icono no funcionará adecuadamente. ]=]
 L["HELP_NOUNIT"] = "Debe introducir una unidad!"
 L["HELP_NOUNITS"] = "Debe introducir al menos una unidad!"
 L["HELP_POCKETWATCH"] = [=[|TInterface\Icons\INV_Misc_PocketWatch_01:20|t -- La textura del reloj de bolsillo.
@@ -830,8 +708,6 @@ L["ICONMENU_BUFFDEBUFF_DESC"] = "Sigue ventajas y/o desventajas"
 L["ICONMENU_BUFFTYPE"] = "Ventaja o Desventaja"
 L["ICONMENU_CAST"] = "Lanzamiento de Hechizo"
 L["ICONMENU_CAST_DESC"] = "Controla lanzamientos y canalizaciones de hechizos."
-L["ICONMENU_CASTS"] = "Lanzamientos de Hechizo"
-L["ICONMENU_CASTSHOWWHEN"] = "Muestra cuando un lanzamiento es"
 L["ICONMENU_CHECKNEXT"] = "Expandir sub-metas"
 L["ICONMENU_CHECKNEXT_DESC"] = [=[Marcar esta casilla provocará que este icono expanda todos los iconos en cualquier meta icono que pueda estar comprobando en cualquier nivel en vez de sólo comprobar sub-meta iconos como si fueran cualquier otro icono normal. 
 
@@ -840,16 +716,12 @@ L["ICONMENU_CHECKREFRESH"] = "Atender a refrescos"
 L["ICONMENU_CHECKREFRESH_DESC"] = [=[El registro de combate de Blizzard es muy imperfecto por lo que se refiere a refrescos de hechizo y miedo (u otros hechizos que se rompen tras cierta cantidad de daño). El registro de combate dirá que el hechizo se refrescó cuando el daño es aplicado, incluso si técnicamente no fue así. Desmarque esta casilla para deshabilitar la escucha de refrescos de hechizo, pero tenga en cuenta que los refrescos legítimos serán ignorados también. 
 
 Se recomienda dejarlo marcado si los rendimientos decrecientes que está buscando no se rompen tras cierta cantidad de daño. ]=]
-L["ICONMENU_CHOOSENAME2"] = "Elija hechizo(s) a comprobar"
-L["ICONMENU_CHOOSENAME_ITEMSLOT2"] = "Elija objeto(s) a comprobar"
 L["ICONMENU_CHOOSENAME_ITEMSLOT_DESC"] = [=[Introduzca el Nombre, ID, o ranura de equipamiento que quiere que compruebe este icono. Puede añadir múltiples entradas (cualquier combinación de nombres, IDs y ranuras de equipamiento) separándolas con punto y coma (;). 
 
 Las ranuras de equipamiento son índices numéricos que corresponden con un objeto equipado. Si cambia el objeto equipado en esa ranura, el icono reflejará esto. 
 
 Pulse |cff7fffffMayus-click|r en objetos y enlaces de chat o arrastre objetos para insertarlos en este cuadro de edición. ]=]
-L["ICONMENU_CHOOSENAME_MULTISTATE"] = "Elija hechizo a comprobar"
 L["ICONMENU_CHOOSENAME_ORBLANK"] = "|cff7fffffO|r deje en blanco para comprobarlo todo"
-L["ICONMENU_CHOOSENAME_WPNENCH"] = "Elija encantamiento(s) a comprobar"
 L["ICONMENU_CHOOSENAME_WPNENCH_DESC"] = [=[Introduzca los nombres de los encantamientos de arma que quiere que vigile este icono. Puede añadir múltiples entradas separándolas con punto y coma (;).
 
 |cFFFF5959IMPORTANTE|r: Los nombres de encantamientos deben introducirse exactamente como aparecen en el tooltip del arma mientras el encantamiento está activo (p.ej "%s", no "%s")]=]
@@ -863,13 +735,11 @@ L["ICONMENU_CLEU_NOREFRESH_DESC"] = "Marque para hacer que el icono ignore los e
 L["ICONMENU_CNDTIC"] = "Icono de Condición"
 L["ICONMENU_CNDTIC_DESC"] = "Sigue el estado de condiciones. "
 L["ICONMENU_CNDTIC_ICONMENUTOOLTIP"] = "(%d |4Condición:Condiciones;)"
-L["ICONMENU_CNDTSHOWWHEN"] = "Mostrar cuando condiciones"
 L["ICONMENU_COMPONENTICONS"] = "Iconos y Grupos Componentes"
 L["ICONMENU_COOLDOWNCHECK"] = "Comprobación de tiempo de reutilización"
 L["ICONMENU_COOLDOWNCHECK_DESC"] = "Marque esto para hacer que el icono se considere inusable si está en tiempo de reutilización"
 L["ICONMENU_COPYHERE"] = "Copiar aquí"
 L["ICONMENU_COUNTING"] = "Temporizador corriendo"
-L["ICONMENU_COUNTING_DESC"] = "Muestra el icono cuando el temporizador del icono está activo"
 L["ICONMENU_CUSTOMTEX"] = "Textura Personalizada"
 L["ICONMENU_CUSTOMTEX_DESC"] = [=[Si quiere sobrescribir la textura mostrada por este icono, introduzca el Nombre o ID del hechizo que tiene la textura que quiere usar. 
 
@@ -949,14 +819,8 @@ L["ICONMENU_META_ICONMENUTOOLTIP"] = "(%d |4Icono:Iconos;)"
 L["ICONMENU_MOUSEOVER"] = "Bajo el ratón"
 L["ICONMENU_MOUSEOVERTARGET"] = "Objetivo de unidad bajo el ratón"
 L["ICONMENU_MOVEHERE"] = "Mover aquí"
-L["ICONMENU_MULTISTATECD"] = "Habilidad Multi-estado"
-L["ICONMENU_MULTISTATECD_DESC"] = [=[Controla una habilidad con múltiples estados. 
-
-Esto debería usarse cuando quiera controlar los múltiples estados y texturas de un tiempo de reutilización como %s o %s]=]
-L["ICONMENU_MUSHROOMS"] = "%s"
-L["ICONMENU_MUSHROOMS_DESC"] = "Sigue un %s."
 L["ICONMENU_NOTCOUNTING"] = "Temporizador no corriendo"
-L["ICONMENU_NOTCOUNTING_DESC"] = "Muestra el icono cuando el temporizador del icono no está activo"
+L["ICONMENU_NOTREADY"] = "No Está Listo"
 L["ICONMENU_OFFS"] = "Desplazamiento"
 L["ICONMENU_ONFAIL"] = "Al Incumplir"
 L["ICONMENU_ONLYBAGS"] = "Sólo si en bolsas"
@@ -974,6 +838,8 @@ L["ICONMENU_ONLYMINE_DESC"] = "Marque esta opción para hacer que este icono só
 L["ICONMENU_ONLYSEEN"] = "Sólo si visto"
 L["ICONMENU_ONLYSEEN_DESC"] = "Marque esto para hacer que el icono sólo muestre un tiempo de reutilización si la unidad lo ha lanzado al menos una vez. Debería marcar esto si está comprobando hechizos de diferentes clases en un solo icono. "
 L["ICONMENU_ONSUCCEED"] = "Al Cumplir"
+L["ICONMENU_OOPOWER"] = "Fuera de Poder"
+L["ICONMENU_OORANGE"] = "Fuera de Rango"
 L["ICONMENU_PETTARGET"] = "Objetivo de la mascota"
 L["ICONMENU_PRESENT"] = "Presente"
 L["ICONMENU_PRESENTONALL"] = "Presente en Todas las Unidades" -- Needs review
@@ -985,7 +851,7 @@ L["ICONMENU_REACTIVE"] = "Habilidad Reactiva"
 L["ICONMENU_REACTIVE_DESC"] = [=[Sigue la usabilidad de habilidades reactivas. 
 
 Habilidades reactivas son cosas como %s, %s y %s - habilidades que sólo se pueden usar cuando se cumplen ciertas condiciones. ]=]
-L["ICONMENU_RUNEOFPOWER_DESC"] = "Sigue las runas del talento %s."
+L["ICONMENU_READY"] = "Listo"
 L["ICONMENU_RUNES"] = "Tiempo de Reutilización de Runa"
 L["ICONMENU_RUNES_CHARGES"] = "Runas inutilizables como cargas"
 L["ICONMENU_RUNES_CHARGES_DESC"] = "Active este ajusta para hacer que el icono trate cualquier runa que está en tiempo de reutilización como una carga extra (mostrado en el deslizador de tiempo de reutilización) cuando el icono esté mostrando una runa utilizable. "
@@ -1009,8 +875,6 @@ L["ICONMENU_SHOWWHENNONE"] = "Mostrar si no hay resultado"
 L["ICONMENU_SHOWWHENNONE_DESC"] = "Marque esto para permitir que el icono se muestre como No Afectado por Rendimiento Decreciente cuando no se detectan rendimientos decrecientes en ninguna unidad. "
 L["ICONMENU_SHOWWHEN_OPACITY_GENERIC_DESC"] = "Establece el nivel de opacidad que debería mostrar el icono en este estado de icono. "
 L["ICONMENU_SHOWWHEN_OPACITYWHEN_WRAP"] = "Opacidad cuando %s|r"
-L["ICONMENU_SHOWWHEN_SHOW_GENERIC_DESC"] = "Establece si este icono debería mostrarse para este estado de icono. "
-L["ICONMENU_SHOWWHEN_SHOWWHEN_WRAP"] = "Mostrar cuando %s|r"
 L["ICONMENU_SORTASC"] = "Duración baja"
 L["ICONMENU_SORTASC_DESC"] = "Marque esta casilla para priorizar y mostrar hechizos con la menor duración."
 L["ICONMENU_SORTASC_META_DESC"] = "Marque esta casilla para priorizar y mostrar iconos con la duración más baja. "
@@ -1112,7 +976,6 @@ L["IMPORT_EXPORT_BUTTON_DESC"] = "Pulse este botón para importar y exportar ico
 L["IMPORT_EXPORT_DESC"] = [=[Pulse el botón a la derecha para importar y exportar iconos, grupos y perfiles. 
 
 Importar a o desde una cadena, o exportar a otro jugador, requerirá el uso de este cuadro de edición. Vea los tooltips en el menú desplegable para más detalles. ]=]
-L["IMPORT_EXPORT_DESC_INLINE"] = "Importar y Exportar perfiles, grupos, iconos a o de cadenas, otros jugadores, otros perfiles, o un backup de sus ajustes. "
 L["IMPORT_FROMBACKUP"] = "Desde Backup"
 L["IMPORT_FROMBACKUP_DESC"] = "Los ajustes restaurados desde este menú quedarán como estaban a las: %s"
 L["IMPORT_FROMBACKUP_WARNING"] = "AJUSTES DE BACKUP: %s"
@@ -1134,11 +997,6 @@ L["INCHEALS"] = "Sanaciones entrantes de la unidad"
 L["INCHEALS_DESC"] = [=[Comprueba la cantidad total de sanación que está entrando a la unidad (tanto sanaciones en el tiempo como lanzamientos en marcha)
 
 Sólo funciona para unidades amigas. Las unidades hostiles informarán siempre que tienen 0 sanaciones entrantes. ]=]
-L["IncreasedAP"] = "Poder de Ataque aumentado"
-L["IncreasedCrit"] = "Probabilidad de Crítico Aumentada"
-L["IncreasedMastery"] = "Maestría Incrementada"
-L["IncreasedSP"] = "Poder con hechizos incrementado"
-L["IncreasedStats"] = "Estadísticas Aumentadas"
 L["INRANGE"] = "Al alcance"
 L["ITEMCOOLDOWN"] = "Tiempo de reutilización de objeto"
 L["ITEMEQUIPPED"] = "Objeto está equipado"
@@ -1147,15 +1005,6 @@ L["ITEMTOCHECK"] = "Objeto a Comprobar"
 L["ITEMTOCOMP1"] = "Primer Objeto a Comparar"
 L["ITEMTOCOMP2"] = "Segundo Objeto a Comparar"
 L["LAYOUTDIRECTION"] = "Dirección de Disposición" -- Needs review
-L["LAYOUTDIRECTION_1"] = "Derecha y luego Abajo"
-L["LAYOUTDIRECTION_2"] = "Izquierda y luego Abajo"
-L["LAYOUTDIRECTION_3"] = "Izquierda y luego Arriba"
-L["LAYOUTDIRECTION_4"] = "Derecha y luego Arriba"
-L["LAYOUTDIRECTION_5"] = "Abajo y luego Derecha"
-L["LAYOUTDIRECTION_6"] = "Abajo luego Izquierda"
-L["LAYOUTDIRECTION_7"] = "Arriba luego Izquierda"
-L["LAYOUTDIRECTION_8"] = "Arriba luego Derecha"
-L["LAYOUTDIRECTION_DESC"] = "Establece la dirección en la que los iconos se dispondrán en el grupo." -- Needs review
 L["LDB_TOOLTIP1"] = "|cff7fffffClick-Izquierdo|r para activar/desactivar los bloqueos de grupo"
 L["LDB_TOOLTIP2"] = "|cff7fffffClick-Derecho|r para mostrar las opciones principales de TMW"
 L["LEFT"] = "Izquierda"
@@ -1196,7 +1045,6 @@ L["!!Main Addon Description"] = "Proporciona notificaciones visuales, auditivas 
 L["MAINASSIST"] = "Asistente Principal"
 L["MAIN_DESC"] = "Contiene las opciones principales para este icono. "
 L["MAINTANK"] = "Tanque Principal"
-L["MAKENEWGROUP"] = "|cff59ff59Crear|r Nuevo Grupo"
 L["MESSAGERECIEVE"] = "%s te ha mandado datos de TellMeWhen! Puedes importar estos datos en TellMeWhen usando el botón %q, ubicado en la parte baja del editor de iconos. "
 L["MESSAGERECIEVE_SHORT"] = "%s te ha mandado datos de TellMeWhen!"
 L["META_ADDICON"] = "Añadir Icono"
@@ -1217,7 +1065,6 @@ L["MOUSEOVERCONDITION_DESC"] = "Esta condición comprueba si su ratón está sob
 L["MOUSEOVER_TOKEN_NOT_FOUND"] = "<Nada bajo el ratón>"
 L["MP5"] = "%d MP5"
 L["MUSHROOM"] = "Champiñón %d"
-L["MUSHROOMS"] = "Champiñones a comprobar"
 L["NEWVERSION"] = "Hay una nueva versión de TellMeWhen disponible: %s"
 L["NONE"] = "Ninguno de estos"
 L["normal"] = "Normal"
@@ -1231,7 +1078,6 @@ L["OUTLINE_MONOCHORME"] = "Monocromo"
 L["OUTLINE_NO"] = "Sin Contorno"
 L["OUTLINE_THICK"] = "Contorno Grueso"
 L["OUTLINE_THIN"] = "Contorno Fino"
-L["OVERWRITEGROUP"] = "|cFFFF5959Sobreescribir|r Grupo: %s"
 L["PARENTHESIS_TYPE_("] = "de apertura"
 L["PARENTHESIS_TYPE_)"] = "de cierre"
 L["PARENTHESIS_WARNING1"] = [=[El número de paréntesis de apertura y cierre no encaja!
@@ -1246,7 +1092,6 @@ L["PET_TYPE_FEROCITY"] = "Ferocidad"
 L["PET_TYPE_TENACITY"] = "Tenacidad"
 L["PLAYER_DESC"] = "(Usted)" -- Needs review
 L["Poison"] = "Veneno"
-L["PRESENCE"] = "Presencia"
 L["PROFILE_LOADED"] = "Perfil cargado: %s"
 L["PvPSpells"] = "Control de Masas JcJ, etc."
 L["QUESTIDTOCHECK"] = "ID de misión a Comprobar"
@@ -1257,8 +1102,6 @@ L["rare"] = "Raro"
 L["rareelite"] = "Élite Raro"
 L["REACTIVECNDT_DESC"] = "Esta condición sólo comprueba el estado reactivo de la habilidad, no el tiempo de reutilización de la misma. "
 L["REDO"] = "Rehacer" -- Needs review
-L["REDO_ICON"] = "Rehacer"
-L["REDO_ICON_DESC"] = "Rehacer el último cambio hecho a la configuración de este icono."
 L["ReducedHealing"] = "Sanación Reducida"
 L["REQFAILED_ALPHA"] = "Opacidad cuando no se cumpla"
 L["RESET_ICON"] = "Restablecer"
@@ -1271,7 +1114,6 @@ L["RIGHT"] = "Derecha"
 L["Rooted"] = "Inmovilizado"
 L["RUNEOFPOWER"] = "Runa %d"
 L["RUNES"] = "Runa(s) a comprobar"
-L["RUNESOFPOWER"] = "Runas a comprobar"
 L["RUNSPEED"] = "Velocidad de Carrera de la Unidad"
 L["SAFESETUP_COMPLETE"] = "Instalación lenta y segura completada. "
 L["SAFESETUP_FAILED"] = "Instalación lenta y segura FALLADA: %s"
@@ -1312,7 +1154,6 @@ L["SOUND_EVENT_DISABLEDFORTYPE_DESC2"] = [=[Este evento no está disponible para
 Esto es probablemente debido a que este evento no esté disponible para el tipo de icono actual (%s).
 
 cff7fffffClick-Derecho|r para cambiar el evento.]=]
-L["SOUND_EVENT_GLOBALDESC"] = "Los eventos se comprueban de arriba abajo en esta lista. Si se activa un evento que reproduce un sonido, ningún evento por debajo de éste reproducirá sonidos. "
 L["SOUND_EVENT_ONALPHADEC"] = "Al Reducir Alfa" -- Needs review
 L["SOUND_EVENT_ONALPHADEC_DESC"] = [=[Este evento se activa cuando la opacidad de un icono se reduce. 
 
@@ -1341,14 +1182,6 @@ L["SOUND_EVENT_ONFINISH"] = "Al Terminar"
 L["SOUND_EVENT_ONFINISH_DESC"] = "Este evento se activa cuando el tiempo de reutilización se vuelve utilizable, la ventaja/desventaja termina, etc."
 L["SOUND_EVENT_ONHIDE"] = "Al Ocultar"
 L["SOUND_EVENT_ONHIDE_DESC"] = "Este evento se activa cuando el icono es ocultado (incluso si %q está marcado)."
-L["SOUND_EVENT_ONICONHIDE"] = "Al Ocultarse Otro Icono"
-L["SOUND_EVENT_ONICONHIDE_DESC"] = [=[Este evento se activa cuando otro icono (no este icono) es ocultado.
-
-Configure el icono que debería ser observado usando los ajustes de evento más abajo.]=]
-L["SOUND_EVENT_ONICONSHOW"] = "Al Mostrarse Otro Icono"
-L["SOUND_EVENT_ONICONSHOW_DESC"] = [=[Este evento se activa cuando otro icono (no este icono) es mostrado.
-
-Configure el icono que debería ser observado usando los ajustes de evento más abajo.]=]
 L["SOUND_EVENT_ONLEFTCLICK"] = "En Click Izquierdo"
 L["SOUND_EVENT_ONLEFTCLICK_DESC"] = "Este evento se activa cuando hace |cff7fffffClick-Izquierdo|r en el icono mientras los iconos están bloqueados. "
 L["SOUND_EVENT_ONRIGHTCLICK"] = "Al hacer Click Derecho"
@@ -1396,8 +1229,6 @@ L["STRATA_LOW"] = "Bajo"
 L["STRATA_MEDIUM"] = "Medio"
 L["STRATA_TOOLTIP"] = "Tooltip"
 L["Stunned"] = "Aturdido"
-L["SUG_ATBEGINING"] = "Sugeridor: Comparar principio"
-L["SUG_ATBEGINING_DESC"] = "Si está marcado, la lista de sugerencias sólo mostrará hechizos que empiecen con el mismo nombre que el hechizo que está siendo introducido. De otro modo, buscará coincidencias con cualquier parte del hechizo. "
 L["SUG_BUFFEQUIVS"] = "Equivalencias de Ventajas"
 L["SUG_CLASSSPELLS"] = "Hechizos de mascota/PJ conocidos"
 L["SUG_DEBUFFEQUIVS"] = "Equivalencias de Desventajas"
@@ -1416,7 +1247,6 @@ L["SUG_INSERT_RIGHT"] = "|cff7fffffClick-Derecho|r"
 L["SUG_INSERT_TAB"] = " o |cff7fffffTab|r"
 L["SUG_INSERTTEXTSUB"] = "%s para insertar etiqueta"
 L["SUG_MISC"] = "Varios"
-L["SUG_MSCDONBARS"] = "Tiempos de reutilización multiestado validos"
 L["SUG_NPCAURAS"] = "Ventajas/Desventajas de PNJs conocidas"
 L["SUG_OTHEREQUIVS"] = "Otras Equivalencias"
 L["SUG_PATTERNMATCH_FISHINGLURE"] = "Cebo de pesca %(%+%d+ habilidad para pescar%)"
@@ -1463,15 +1293,7 @@ L["TEXTLAYOUTS_DEFAULTTEXT_DESC"] = "Edita el texto por defecto que será usado 
 L["TEXTLAYOUTS_DELANCHOR"] = "Borrar anclaje"
 L["TEXTLAYOUTS_DELANCHOR_DESC"] = "Pulse para borrar este anclaje de texto. "
 L["TEXTLAYOUTS_DELETELAYOUT"] = "Borrar Diseño"
-L["TEXTLAYOUTS_DELETELAYOUT_CONFIRM_BASE"] = "Está seguro de que quiere borrar el diseño %q?"
-L["TEXTLAYOUTS_DELETELAYOUT_DESC"] = [=[Pulse para borrar este diseño de texto.
-
-Mantenga pulsado |cff7fffffCtrl|r para saltarse la confirmación.]=]
 L["TEXTLAYOUTS_DELETESTRING"] = "Borrar Display de Texto"
-L["TEXTLAYOUTS_DELETESTRING_DESC"] = [=[Borra este display de texto de este diseño de texto.
-
-Mantenga pulsado |cff7fffffCtrl|r para saltarse la confirmación.]=]
-L["TEXTLAYOUTS_DISABLEDBYSKIN"] = "Este ajuste no se puede cambiar si tiene una piel de Masque establecida para este display de texto."
 L["TEXTLAYOUTS_ERROR_FALLBACK"] = [=[El diseño de texto para este icono no se encontró. Se usará un  diseño por defecto hasta que se encuentre el diseño pretendido, o hasta que se seleccione otro. 
 
 (Borró el diseño? O importó este icono sin importar el diseño que usaba?)]=]
@@ -1480,6 +1302,7 @@ L["TEXTLAYOUTS_FONTSETTINGS"] = "Ajustes de Fuente"
 L["TEXTLAYOUTS_fSTRING"] = "Mostrar %s"
 L["TEXTLAYOUTS_fSTRING2"] = "Mostrar %d: %s"
 L["TEXTLAYOUTS_fSTRING3"] = "Display de Texto: %s"
+L["TEXTLAYOUTS_HEADER_DISPLAY"] = "Display de Texto"
 L["TEXTLAYOUTS_HEADER_LAYOUT"] = "Diseño de Texto"
 L["TEXTLAYOUTS_IMPORT"] = "Importar Diseño de Texto"
 L["TEXTLAYOUTS_IMPORT_CREATENEW"] = "|cff59ff59Crear|r Nuevo"
@@ -1501,9 +1324,7 @@ L["TEXTLAYOUTS_LAYOUTSETTINGS_DESC"] = "Pulse para configurar el diseño de text
 L["TEXTLAYOUTS_NOEDIT_DESC"] = [=[Este diseño de texto es un diseño por defecto que viene estándar con TellMeWhen y no puede ser modificado. 
 
 Si desea modificarlo, por favor clónelo. ]=]
-L["TEXTLAYOUTS_POINT_DESC"] = "El punto del display de texto que será anclado al icono. "
 L["TEXTLAYOUTS_POSITIONSETTINGS"] = "Ajustes de Posición"
-L["TEXTLAYOUTS_RELATIVEPOINT_DESC"] = "El punto del objeto que será anclado a"
 L["TEXTLAYOUTS_RELATIVETO_DESC"] = "El objeto al que el texto será anclado"
 L["TEXTLAYOUTS_RENAME"] = "Renombrar Diseño"
 L["TEXTLAYOUTS_RENAME_DESC"] = "Renombre este diseño a un nombre que describa su función para que pueda identificarlo fácilmente."
@@ -1543,17 +1364,8 @@ L["TOPLEFT"] = "Arriba Izquierda"
 L["TOPRIGHT"] = "Arriba Derecha"
 L["TOTEMS"] = "Tótems a comprobar"
 L["TRUE"] = "Verdadero"
-L["UIPANEL_ADDGROUP"] = "+ Añadir Otro Grupo +"
-L["UIPANEL_ADDGROUP_DESC"] = "El nuevo grupo será asignado al próximo ID de grupo disponible"
-L["UIPANEL_ALLRESET"] = "Restablecer todo"
 L["UIPANEL_ANCHORNUM"] = "Ancla %d"
-L["UIPANEL_BARIGNOREGCD"] = "Las barras ignoran el GCD"
-L["UIPANEL_BARIGNOREGCD_DESC"] = "Si está marcado, las barras de tiempo de reutilización no cambiarán de valor si el tiempo de reutilización activado es un tiempo de reutilización global"
 L["UIPANEL_BARTEXTURE"] = "Textura de barra"
-L["UIPANEL_CLOCKIGNOREGCD"] = "Los Temporizadores Ignoran GCD"
-L["UIPANEL_CLOCKIGNOREGCD_DESC"] = "Si está marcado, los temporizadores y el reloj de tiempo de reutilización no serán activados por un tiempo de reutilización global"
-L["UIPANEL_COLORS"] = "Colores"
-L["UIPANEL_COLORS_DESC"] = "Ajustes que controlan el coloreado/tintado de los iconos basándose en sus atributos."
 L["UIPANEL_COLUMNS"] = "Columnas"
 L["UIPANEL_COMBATCONFIG"] = "Permitir configurar en combate"
 L["UIPANEL_COMBATCONFIG_DESC"] = [=[Active esto para permitir la configuración de TellMeWhen estando en combate. 
@@ -1569,17 +1381,14 @@ L["UIPANEL_DRAWEDGE"] = "Resaltar borde temporizador"
 L["UIPANEL_DRAWEDGE_DESC"] = "Destaca el borde del temporizador de tiempo de reutilización (la animación del reloj) para aumentar la visibilidad"
 L["UIPANEL_EFFTHRESHOLD"] = "Umbral de Eficiencia de Ventaja"
 L["UIPANEL_EFFTHRESHOLD_DESC"] = "Establece el número mínimo de ventajas/desventajas para cambiar a un modo más eficiente de comprobarlas cuando haya un gran número. Considere que una vez que el número de auras comprobadas excede este número, las auras más antiguas serán priorizadas en vez de prioridad basada en el orden en que fueron introducidas. "
-L["UIPANEL_ENABLEGROUP"] = "Habilitar el Grupo"
 L["UIPANEL_FONT_DESC"] = "Elija la fuente a usar por el texto de acumulación en los iconos"
 L["UIPANEL_FONTFACE"] = "Tipografía"
 L["UIPANEL_FONT_JUSTIFY"] = "Justificado" -- Needs review
 L["UIPANEL_FONT_JUSTIFY_DESC"] = "Establece el justificado (Izquierda/Centrado/Derecha) para este display de texto. " -- Needs review
 L["UIPANEL_FONT_OUTLINE"] = "Contorno de Fuente"
-L["UIPANEL_FONT_OUTLINE_DESC"] = "Establece el estilo de contorno para el texto de acumulación en los iconos"
 L["UIPANEL_FONT_SHADOW"] = "Desplazamiento de Sombra"
 L["UIPANEL_FONT_SHADOW_DESC"] = "Cambia la cantidad de desplazamiento de la sombra tras el texto. Establezca a cero para desactivar la sombra. "
 L["UIPANEL_FONT_SIZE"] = "Tamaño de Fuente"
-L["UIPANEL_FONT_SIZE_DESC"] = "Cambia el tamaño de la fuente usada para el texto de acumulación en los iconos. Si se usa Masque y la piel establecida ya tiene definido un tamaño de fuente, este valor será ignorado. "
 L["UIPANEL_FONT_XOFFS"] = "Desplazamiento X"
 L["UIPANEL_FONT_XOFFS_DESC"] = "El desplazamiento del eje x del ancla"
 L["UIPANEL_FONT_YOFFS"] = "Desplazamiento Y"
@@ -1592,41 +1401,23 @@ L["UIPANEL_GROUPALPHA_DESC"] = [=[Establece el nivel de opacidad del grupo enter
 Este ajuste no tiene efecto en la funcionalidad de los propios iconos. Sólo cambia la apariencia del grupo y sus iconos. 
 
 Establezca este ajuste a 0 si quiere ocultar el grupo entero permitiéndole permanecer completamente funcional (semejante al ajuste %q para iconos).]=]
-L["UIPANEL_GROUPMOVEDOWN"] = "Bajar"
-L["UIPANEL_GROUPMOVEDOWN_DESC"] = "Desplaza el ID de grupo de este grupo uno abajo. "
-L["UIPANEL_GROUPMOVEUP"] = "Subir"
-L["UIPANEL_GROUPMOVEUP_DESC"] = "Desplaza el ID de grupo de este grupo uno arriba."
 L["UIPANEL_GROUPNAME"] = "Renombrar Grupo"
 L["UIPANEL_GROUPRESET"] = "Restablecer Posición"
 L["UIPANEL_GROUPS"] = "Grupos"
-L["UIPANEL_GROUPS_DESC"] = "Ajustes para cada grupo en este perfil de TellMeWhen"
 L["UIPANEL_GROUPSORT"] = "Ordenación de Iconos"
 L["UIPANEL_GROUPSORT_alpha"] = "Opacidad" -- Needs review
 L["UIPANEL_GROUPSORT_alpha_DESC"] = "Ordena el grupo por la opacidad de sus iconos." -- Needs review
-L["UIPANEL_GROUPSORT_DESC"] = "Contiene ajustes para ordenar y posicionar iconos dentro de un grupo basándose en sus atributos. "
 L["UIPANEL_GROUPSORT_duration"] = "Duración"
 L["UIPANEL_GROUPSORT_duration_DESC"] = "Ordena el grupo por la duración restante de sus iconos. "
 L["UIPANEL_GROUPSORT_id"] = "ID de Icono"
 L["UIPANEL_GROUPSORT_id_DESC"] = "Ordena el grupo por los números de ID de sus iconos. "
-L["UIPANEL_GROUPSORT_METHODDISABLED_DESC"] = "|TInterface\\AddOns\\TellMeWhen\\Textures\\Alert:0:2|tEste método de ordenación está deshabilitado porque un método más arriba está ordenando por ID de icono, así que nunca se llegará a usar este método en la ordenación."
-L["UIPANEL_GROUPSORT_METHODNAME"] = "Prioridad de Ordenación de Icono %d"
-L["UIPANEL_GROUPSORT_METHODNAME_DESC"] = "Esto será usado como la prioridad número %d al ordenar iconos para posicionarlos dentro de un grupo. "
 L["UIPANEL_GROUPSORT_shown"] = "Mostrado" -- Needs review
 L["UIPANEL_GROUPSORT_shown_DESC"] = "Ordena el grupo según si el icono es mostrado o no." -- Needs review
-L["UIPANEL_GROUPSORT_SORTASCENDING"] = "Ascendente"
-L["UIPANEL_GROUPSORT_SORTASCENDING_DESC"] = "Marque para ordenar este atributo de menor a mayor valor. "
-L["UIPANEL_GROUPSORT_SORTDESCENDING"] = "Descendente"
-L["UIPANEL_GROUPSORT_SORTDESCENDING_DESC"] = "Marque para ordenar este atributo de mayor a menor valor. "
 L["UIPANEL_GROUPSORT_stacks"] = "Acumulaciones"
 L["UIPANEL_GROUPSORT_stacks_DESC"] = "Ordena el grupo por las acumulaciones de cada icono. "
-L["UIPANEL_GROUPSORT_visiblealpha"] = "Opacidad (Respeta %s)"
-L["UIPANEL_GROUPSORT_visiblealpha_DESC"] = "Ordena el grupo por la opacidad de sus iconos, usando la opacidad con la que el icono es visible realmente. "
-L["UIPANEL_GROUPSORT_visibleshown"] = "Mostrado (Respeta %s)"
-L["UIPANEL_GROUPSORT_visibleshown_DESC"] = "Ordena el grupo por si un icono es o no visible para usted. "
 L["UIPANEL_GROUPTYPE"] = "Método de visualización de grupo"
 L["UIPANEL_GROUPTYPE_BAR"] = "Barra"
 L["UIPANEL_GROUPTYPE_BAR_DESC"] = "Muestra los iconos del grupo con barras de progreso adjuntas a los mismos. "
-L["UIPANEL_GROUPTYPE_DESC"] = "Elija cómo desea que se muestren los iconos dentro de este grupo. "
 L["UIPANEL_GROUPTYPE_ICON"] = "Icono"
 L["UIPANEL_GROUPTYPE_ICON_DESC"] = "Muestra los iconos en el grupo usando la visualización tradicional de iconos de TellMeWhen"
 L["UIPANEL_ICONS"] = "Iconos"
@@ -1637,17 +1428,13 @@ L["UIPANEL_LEVEL"] = "Nivel de Marco"
 L["UIPANEL_LOCK"] = "Bloquear Posición"
 L["UIPANEL_LOCK_DESC"] = "Bloquear este grupo, evitando moverlo o cambiarle el tamaño al arrastrar el grupo o la ficha de escala"
 L["UIPANEL_LOCKUNLOCK"] = "Bloquear / Desbloquear AddOn"
-L["UIPANEL_MAIN_DESC"] = "Contiene los ajustes principales para el grupo. "
 L["UIPANEL_MAINOPT"] = "Opciones Principales"
 L["UIPANEL_ONLYINCOMBAT"] = "Mostrar sólo en combate"
 L["UIPANEL_POINT"] = "Punto"
-L["UIPANEL_POINT_DESC"] = "El punto del grupo que será anclado"
 L["UIPANEL_POSITION"] = "Posición"
-L["UIPANEL_POSITION_DESC"] = "Contiene ajustes que controlan la posición del grupo en su pantalla. "
 L["UIPANEL_PRIMARYSPEC"] = "Especialización primaria"
 L["UIPANEL_PTSINTAL"] = "Puntos en talento"
 L["UIPANEL_RELATIVEPOINT"] = "Punto Relativo"
-L["UIPANEL_RELATIVEPOINT_DESC"] = "El punto al que el grupo será anclado. "
 L["UIPANEL_RELATIVETO"] = "Relativo A"
 L["UIPANEL_RELATIVETO_DESC"] = "Escriba /framestack para activar/desactivar un tooltip que contiene una lista de todos los marcos sobre los que está el ratón, y sus nombres, para ponerlos en este diálogo. "
 L["UIPANEL_ROWS"] = "Filas"
@@ -1662,24 +1449,17 @@ Cuando están desbloqueados, puede mover/cambiar el tamaño de grupos de iconos 
 
 También puede escribir /tellmewhen o /tmw para bloquear/desbloquear]=]
 L["UIPANEL_TALENTLEARNED"] = "Talento aprendido"
-L["UIPANEL_TOOLTIP_ALLRESET"] = "Restablecer TODOS LOS AJUSTES de TODOS LOS ICONOS Y GRUPOS, así como cualquier otro ajuste."
 L["UIPANEL_TOOLTIP_COLUMNS"] = "Establecer el número de columnas en este grupo"
-L["UIPANEL_TOOLTIP_ENABLEGROUP"] = "Mostrar y habilitar este grupo"
 L["UIPANEL_TOOLTIP_GROUPRESET"] = "Restablecer la posición y escala de este grupo"
 L["UIPANEL_TOOLTIP_ONLYINCOMBAT"] = "Marcar para que este grupo sólo se muestre en combate"
-L["UIPANEL_TOOLTIP_PRIMARYSPEC"] = "Marcar para mostrar este grupo mientras esté activa su especialización primaria"
 L["UIPANEL_TOOLTIP_ROWS"] = "Establecer el número de filas de este grupo"
-L["UIPANEL_TOOLTIP_SECONDARYSPEC"] = "Marcar para mostrar este grupo mientras esté activa su especialización secundaria"
 L["UIPANEL_TOOLTIP_UPDATEINTERVAL"] = [=[Establece cuán a menudo (en segundos) son comprobados los iconos para mostrar/ocultar, alfa, condiciones, etc
 
 Cero es tan rápido como sea posible. Valores más bajos pueden tener un impacto significativo en la tasa de fotogramas para ordenadores de gama baja.]=] -- Needs review
-L["UIPANEL_TREE"] = "Árbol de Talentos"
 L["UIPANEL_TREE_DESC"] = "Marque para permitir que este grupo se muestre cuando este árbol de talentos esté activo, o desmárquelo para que se oculte cuando no está activo. "
 L["UIPANEL_UPDATEINTERVAL"] = "Intervalo de actualización"
 L["UIPANEL_WARNINVALIDS"] = "Avisar sobre iconos inválidos"
 L["UNDO"] = "Deshacer" -- Needs review
-L["UNDO_ICON"] = "Deshacer"
-L["UNDO_ICON_DESC"] = "Deshacer el último cambio hecho a la configuración de este icono."
 L["UNITCONDITIONS"] = "Condiciones de Unidad"
 L["UNITCONDITIONS_DESC"] = "Click para configurar un conjunto de condiciones que cada unidad tendrá que cumplir para ser comprobada."
 L["UNITCONDITIONS_STATICUNIT"] = "<Unidad de Icono>"

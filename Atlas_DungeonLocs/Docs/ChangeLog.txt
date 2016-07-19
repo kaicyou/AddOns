@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 10 2016-05-17 05:34:59Z arith $
+$Id: ChangeLog.txt 14 2016-07-19 13:57:19Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,19 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.33.00 (Jul. 19, 2016)
+------------------------
+- Toc updated to support WoW Legion pre-patch (7.0.3)
+- Replace punctuations by using Atlas' localization
+
+
+v1.32.02 (Jul. 13, 2016)
+------------------------
+- Added instance locations of Legion - Broken Isles
+- Translation now being managed on curseforge: http://wow.curseforge.com/addons/atlas-dungeon-locations/localization/
+- Added itIT, ptBR, and koKR translation files (placeholder until we get any translation added)
+
 
 v1.32.01 (May 17, 2016)
 -----------------------

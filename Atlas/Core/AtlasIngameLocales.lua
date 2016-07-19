@@ -1,4 +1,4 @@
--- $Id: AtlasIngameLocales.lua 6 2016-04-25 11:36:42Z arith $
+-- $Id: AtlasIngameLocales.lua 48 2016-07-19 14:03:11Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -37,9 +37,15 @@ Atlas_IngameLocales = {
 	["Relic Coffer Key"] = GetItemInfo(11078),
 	["The Eye of Haramad"] = GetItemInfo(32092),
 
+	-- Jul. 14, 2016
+	-- GetFactionInfoByID will only return the faction info for the same faction side to the player. 
+	-- For example, if the player is with Alliance, then s/he won't be able to see the name for "Hellscream's Reach" which is in Horde side
+	-- Therefore, we will be using LibBabble-Faction. 
+	-- We will be removing below faction section in the later release
 	-- ######################################################################
 	-- Factions
 	-- ######################################################################
+	--[[
 	-- Mists of Pandaria
 	["Shado-Pan Assault"] = GetFactionInfoByID(1435),
 	["The August Celestials"] = GetFactionInfoByID(1341),
@@ -79,6 +85,7 @@ Atlas_IngameLocales = {
 	["The Defilers"] = GetFactionInfoByID(510),
 	["The League of Arathor"] = GetFactionInfoByID(509),
 	["Warsong Outriders"] = GetFactionInfoByID(889),
+	]]
 }
 
 do

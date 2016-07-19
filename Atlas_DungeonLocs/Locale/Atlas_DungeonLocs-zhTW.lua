@@ -1,10 +1,10 @@
--- $Id: Atlas_DungeonLocs-zhTW.lua 10 2016-05-17 05:34:59Z arith $
+-- $Id: Atlas_DungeonLocs-zhTW.lua 12 2016-07-13 09:16:38Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2015 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 	This file is part of Atlas.
 
@@ -25,14 +25,16 @@
 --]]
 
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
-local AL = AceLocale:NewLocale("Atlas_DungeonLocs", "zhTW", false);
--- Localize file must set above to false, for example:
---    local AL = AceLocale:NewLocale("Atlas_DungeonLocs", "deDE", false);
-if AL then
-	--Common
-	AL["Blue"] = "藍";
-	AL["Dungeon Locations"] = "地下城位置";
-	AL["Green"] = "綠";
-	AL["Instances"] = "副本";
-	AL["White"] = "白";
+local L = AceLocale:NewLocale("Atlas_DungeonLocs", "zhTW", false);
+
+if L then
+
+L["Blue"] = "藍"
+L["Dungeon Locations"] = "副本位置"
+L["Green"] = "綠"
+L["Instances"] = "副本"
+L["White"] = "白"
+L["ToC/Description"] = "Atlas 副本位置地圖插件，顯示各個副本、團隊副本所在位置"
+L["ToC/Title"] = "|r|cFF0099FF[地圖]|rAtlas 副本位置地圖"
+
 end

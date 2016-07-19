@@ -1,4 +1,4 @@
-<!-- $Id: Atlas.xml 22 2016-05-16 17:06:45Z arith $ -->
+<!-- $Id: Atlas.xml 48 2016-07-19 14:03:11Z arith $ -->
 <!--
 
 	Atlas, a World of Warcraft instance map browser
@@ -245,12 +245,12 @@
 			</Button>
 			<ScrollFrame name="AtlasScrollBar" inherits="FauxScrollFrameTemplate">
 				<Size>
-					<AbsDimension x="351" y="367" />
+					<AbsDimension x="351" y="352" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="530" y="-186"/>
+							<AbsDimension x="530" y="-201"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -348,9 +348,38 @@
 					<AbsDimension x="300" y="15" />
 				</Size>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="AtlasText_ZoneName" relativePoint="TOPLEFT">
+					<Anchor point="TOPLEFT" relativeTo="AtlasText_Location" relativePoint="TOPLEFT">
 						<Offset>
-							<AbsDimension x="0" y="-35"/>
+							<AbsDimension x="0" y="-15"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parent_Text" inherits="GameFontNormal" justifyH="LEFT">
+							<Size>
+								<AbsDimension x="300" y="15"/>
+							</Size>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnUpdate>
+						AtlasEntryTemplate_OnUpdate(self);
+					</OnUpdate>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Frame>
+			<Frame name="AtlasText_RecommendedRange">
+				<Size>
+					<AbsDimension x="300" y="15" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="AtlasText_LevelRange" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-15"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -377,9 +406,9 @@
 					<AbsDimension x="300" y="15" />
 				</Size>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="AtlasText_ZoneName" relativePoint="TOPLEFT">
+					<Anchor point="TOPLEFT" relativeTo="AtlasText_RecommendedRange" relativePoint="TOPLEFT">
 						<Offset>
-							<AbsDimension x="0" y="-50"/>
+							<AbsDimension x="0" y="-15"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -406,9 +435,9 @@
 					<AbsDimension x="300" y="15" />
 				</Size>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="AtlasText_ZoneName" relativePoint="TOPLEFT">
+					<Anchor point="TOPLEFT" relativeTo="AtlasText_MinLevel" relativePoint="TOPLEFT">
 						<Offset>
-							<AbsDimension x="0" y="-65"/>
+							<AbsDimension x="0" y="-15"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -437,7 +466,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT" relativeTo="AtlasFrame" relativePoint="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-17" y="-149"/>
+							<AbsDimension x="-17" y="-164"/>
 						</Offset>
 					</Anchor>
 				</Anchors>

@@ -10,12 +10,10 @@
 local function PawnUseThisLocalization()
 PawnLocal =
 {
-	AsteriskTooltipLine = "|TInterface\\AddOns\\Pawn\\Textures\\Question:0|t 特殊效果不包含在数值中。",
 	AverageItemLevelIgnoringRarityTooltipLine = "平均物品等级",
 	BackupCommand = "备份",
 	BaseValueWord = "基础",
 	CopyScaleEnterName = "为你的新比重起个名字,  %s 的备份名称为:",
-	CorrectGemsValueCalculationMessage = "   -- 正确有价值的宝石: %g",
 	DebugOffCommand = "侦错 关",
 	DebugOnCommand = "侦错 开",
 	DecimalSeparator = ".",
@@ -28,9 +26,8 @@ PawnLocal =
 	FailedToGetItemLinkMessage = "从提示栏获取物品连接失败，这可能缘于一次模组冲突。",
 	FailedToGetUnenchantedItemMessage = "获取基本物品数值失败，这可能缘于一次模组冲突。",
 	FoundStatMessage = "   %d %s",
-	GemColorList1 = "%d %s",
-	GemColorList2 = "%d %s or %s",
-	GemColorList3 = "任何颜色中的 %d ",
+	GemList2 = "%s or %s", -- Requires localization
+	GemListMany = "%d possibilities (click the Pawn button for details)", -- Requires localization
 	GenericGemLink = "|Hitem:%d|h[宝石 %d]|h",
 	GenericGemName = "(宝石 %d)",
 	HiddenScalesHeader = "其它比重",
@@ -81,12 +78,9 @@ PawnLocal =
 	VisibleScalesHeader = "%s的比重",
 	Stats = {
 		AgilityInfo = "敏捷，为敏捷型职业增加攻击强度。",
-		Ap = "攻击强度",
-		ApInfo = "攻击强度，现在不会直接出现在装备属性中，不包括从力量、敏捷获得的攻击强度。",
 		ArmorInfo = "基础护甲值。 不包含额外护甲（一般是绿色文字颜色）和部分职业使用技能等增加的额外护甲。",
 		ArmorTypes = "护甲类型",
 		AvoidanceInfo = "闪避，范围效果法术的伤害降低。",
-		BonusArmorInfo = "护甲加成，不包括所有的护甲基础值。",
 		Cloth = "布甲",
 		ClothInfo = "物品类型为布甲。",
 		Crit = "爆击",
@@ -102,20 +96,10 @@ PawnLocal =
 		Mail = "锁甲",
 		MailInfo = "物品类型为锁甲。",
 		MasteryInfo = "精通等级，从你投入点数最多的天赋树中获得的奖励。",
-		MetaSocket = "多彩:特效",
-		MetaSocketInfo = "多彩插槽，不管宝石是否镶嵌，只计算多彩宝石触发后的特效价值。",
 		MinorStats = "副属性",
 		MovementSpeedInfo = "移动速度，使你的角色跑得更快。",
-		MultistrikeInfo = "溅射，你的攻击和治疗技能都有几率对每个目标造成相当于普通伤害或治疗30%的额外伤害或治疗。",
 		Plate = "板甲",
 		PlateInfo = "物品类型为板甲。",
-		PrimaryStats = "基础属性",
-		PvPPower = "PvP强度",
-		PvPPowerInfo = "PvP强度. 使你的能力，给其他玩家（但不包括生物）造成更多的伤害，并在某些PVP的情况下，你的治疗法术治疗其他玩家。",
-		PvPResilience = "PvP韧性",
-		PvPResilienceInfo = "PvP韧性. 减少您受到的损害从其他玩家的攻击。",
-		PvPStats = "PvP属性",
-		SecondaryStats = "强化副性",
 		Shield = "盾牌",
 		ShieldInfo = "物品类型为盾牌。",
 		Sockets = "插槽",
@@ -125,9 +109,6 @@ PawnLocal =
 		SpeedBaselineIs = "|cffffffff速度基线|r:",
 		SpeedInfo = "武器攻击速度，武器挥动时间间隔。(如果你喜欢快速武器，此数字应该为负数。前往 \"特殊武器属性\" 中的 \"速度基线\" 部分。)",
 		SpeedIs = "1 |cffffffff攻击速度|r 价值：",
-		SpellPower = "法术强度",
-		SpellPowerInfo = "法术强度。出现在法系职业的部分武器上，增加你的法术伤害或者治疗效果，不包括从智力获得的法术强度。",
-		SpiritInfo = "精神，为治疗职业增加法力恢复速度。",
 		StaminaInfo = "耐力，增加你的生命值上限。",
 		StrengthInfo = "力量，为力量型职业增加攻击强度。",
 		VersatilityInfo = "全能，造成的伤害和治疗提高效果，并降低收到的伤害。",
@@ -217,6 +198,8 @@ PawnLocal =
 		WeaponTypeStaffInfo = "物品类型为法杖。",
 		WeaponTypeWand = "魔杖",
 		WeaponTypeWandInfo = "物品类型为魔杖。",
+		WeaponTypeWarglaive = "Warglaive", -- Requires localization
+		WeaponTypeWarglaiveInfo = "Points to be assigned if the item is a warglaive.", -- Requires localization
 	},
 	TooltipParsing = {
 		Agility = "^%+?([-%d%.,]+) 敏捷$",
@@ -227,7 +210,6 @@ PawnLocal =
 		Avoidance = "^%+([%d%.,]+) 闪避$",
 		Axe = "^斧$",
 		BagSlots = "^%d+格容器 .+$",
-		BonusArmor = "^%+([%d%.,]+) 护甲加成$",
 		Bow = "^弓$",
 		ChanceOnHit = "击中时可能：",
 		Charges = "^.+ Charges?$",
@@ -260,6 +242,7 @@ PawnLocal =
 		Gun = "^枪械$",
 		Haste = "^%+?([%d%.,]+) 急速$",
 		Haste2 = "^UNUSED$",
+		HaventCollectedAppearance = "^You haven't collected this appearance$", -- Requires localization
 		HeirloomLevelRange = "^需要等级 %d+ 到 (%d+)",
 		HeirloomXpBoost = "^装备： 获得的经验值提高",
 		HeirloomXpBoost2 = "^UNUSED$",
@@ -281,6 +264,7 @@ PawnLocal =
 		Mastery2 = "^UNUSED$",
 		MetaGemRequirements = "|cff%x%x%x%x%x%x需要",
 		MovementSpeed = "^%+([%d%.,]+) 加速$",
+		MultiStatHeading = "^Multiple Stats$", -- Requires localization
 		MultiStatSeparator1 = "和",
 		Multistrike = "^%+([%d%.,]+) 溅射$",
 		NormalizationEnchant = "^附魔：(.*)$",
@@ -314,11 +298,13 @@ PawnLocal =
 		TemporaryBuffSeconds = "^.+%(%d+ 秒%)$",
 		Thunderforged = "雷霆",
 		Timeless = "永恒",
+		Titanforged = "^Titanforged$", -- Requires localization
 		UpgradeLevel = "^升级：",
 		Use = "使用：",
 		Versatility = "^%+([%d%.,]+) 全能$",
 		Wand = "^魔杖$",
 		Warforged = "战火",
+		Warglaives = "^Warglaives$", -- Requires localization
 		WeaponDamage = "^([%d%.,]+) %- ([%d%.,]+)点伤害$",
 		WeaponDamageArcane = "^%+?([%d%.,]+) %- ([%d%.,]+)点奥术伤害$",
 		WeaponDamageArcaneExact = "^%+?([%d%.,]+) 点奥术伤害$",
@@ -340,20 +326,19 @@ PawnLocal =
 		AboutHeader = "关于 Pawn",
 		AboutReadme = "新手？看看“准备开始”标签。",
 		AboutTab = "关于",
-		AboutTranslation = "简中汉化：巴拉巴拉土豆精#5188",
+		AboutTranslation = "简中汉化：五十五颗土豆#5630",
 		AboutVersion = "版本 %s",
 		AboutWebsite = [=[想要更多作者Vger的插件，请访问vgermods.com。
 
 默认的评分尺度的统计与设定来自于Wowhead。
 
-简中汉化：巴拉巴拉土豆精#5188   |   NGA论坛ID：bigbamboo]=],
+简中汉化：五十五颗土豆#5630   |   NGA论坛ID：bigbamboo  如果有汉化问题反馈请联系我]=],
 		CompareClearItems = "清除",
 		CompareClearItemsTooltip = "移除两件对照的物品.",
 		CompareColoredSockets = "彩色插槽",
 		CompareEquipped = "已装备",
 		CompareGemTotalValue = "宝石的价值",
 		CompareHeader = "用 %s 进行对比",
-		CompareMetaSockets = "多彩插槽",
 		CompareOtherHeader = "其他",
 		CompareSlotEmpty = "(空)",
 		CompareSocketBonus = "镶孔奖励",
@@ -363,7 +348,6 @@ PawnLocal =
 		CompareSwapTooltip = "将两边物品对调.",
 		CompareTab = "比较",
 		CompareVersus = "—vs.—",
-		CompareWelcomeLeft = "首先, 从列表左边选择一个比重.",
 		CompareWelcomeRight = [=[然后, 将一个物品放入此栏.
 
 Pawn 会将它与你装备的物品进行对比.]=],
@@ -459,6 +443,8 @@ Pawn插件默认已经参考Wowhead给所有职业的专精建立了标准评分
 		OptionsSocketingAdvisorTooltip = "当你打开宝石镶嵌窗口的时候，根据你设置里选择的方式，在窗口下方提示你，插什么宝石是最适合你的评分选择。",
 		OptionsTab = "设置",
 		OptionsTooltipHeader = "提示栏设置",
+		OptionsTooltipSpecIcon = "Show spec icons", -- Requires localization
+		OptionsTooltipSpecIconTooltip = "Enable this option to show spec icons next to scale names on tooltips.", -- Requires localization
 		OptionsTooltipUpgradesOnly = "只显示升级",
 		OptionsTooltipUpgradesOnlyTooltip = [=[只显示哪件装备对你来说是比较好的，不显示评分数值的提升。例如：
 
@@ -484,7 +470,21 @@ Pawn插件默认已经参考Wowhead给所有职业的专精建立了标准评分
 如果选中，你依旧可以看到分开的提升数值提示，最好的双手武器，最好的双持武器。
 
 如果不选中，你只能看到针对于你已经装备的武器的提升。（译者注：建议选上。）]=],
+		OptionsUpgradeTrackingHeader = "Upgrade comparisons:", -- Requires localization
+		OptionsUpgradeTrackingOff = "Versus equipped gear (recommended)", -- Requires localization
+		OptionsUpgradeTrackingOffTooltip = "Pawn will show you items that are an upgrade compared to the items that you currently have equipped.", -- Requires localization
+		OptionsUpgradeTrackingOn = "Track for each scale (advanced)", -- Requires localization
+		OptionsUpgradeTrackingOnTooltip = "(For advanced users.)  Pawn will try to track the best items that you've equipped, independently for each scale that you have enabled, and show you items that are an upgrade compared to those.", -- Requires localization
 		OptionsWelcome = "按照你的偏好配置 Pawn.  更改会马上生效.",
+		ScaleAutoOff = "Manual", -- Requires localization
+		ScaleAutoOff2 = "Let me manage scales.", -- Requires localization
+		ScaleAutoOffTooltip = "Pawn will let you manually choose which scales to use for its calculations, allowing you to enable more than one scale at a time, add custom scales, and more.", -- Requires localization
+		ScaleAutoOn = "Automatic", -- Requires localization
+		ScaleAutoOn2 = "Just show my current spec.", -- Requires localization
+		ScaleAutoOnTooltip = "Pawn will automatically show your current specialization in item tooltips, and use that to make recommendations and suggest upgrades.", -- Requires localization
+		ScaleAutoWelcome = [=[Pawn will show suggestions for your current specialization.
+
+If you'd rather manage things on your own, just click Manual below.]=], -- Requires localization
 		ScaleChangeColor = "调整顏色",
 		ScaleChangeColorTooltip = "调整物品提示栏中比重名称和数值的顏色.",
 		ScaleCopy = "复制",
@@ -505,6 +505,7 @@ Pawn插件默认已经参考Wowhead给所有职业的专精建立了标准评分
 		ScaleRename = "重命名",
 		ScaleRenameTooltip = "为这个比重重命名.",
 		ScaleSelectorHeader = "选择一个比重:",
+		ScaleSelectorShowingSuggestionsFor = "Showing suggestions for", -- Requires localization
 		ScaleSelectorShowScale = "在提示栏中显示比重",
 		ScaleSelectorShowScaleTooltip = "当这个选项被选中时，此比重值将显示在此角色的物品工具提示上。每个比重可以显示在一个角色，多个角色，或没有角色。",
 		ScaleShareHeader = "共享你的比重",
@@ -533,42 +534,8 @@ Pawn插件默认已经参考Wowhead给所有职业的专精建立了标准评分
 		ValuesWelcomeReadOnly = "已被选择的该比重不能被更改.若你想改变这些数值,请去比重页面并生成一份该比重的备份或者啟动一个新比重.",
 	},
 	Wowhead = {
-		DeathKnightBloodTank = "死亡骑士:鲜血",
-		DeathKnightFrostDps = "死亡骑士:冰霜",
-		DeathKnightUnholyDps = "死亡骑士:邪恶",
-		DruidBalance = "德鲁伊:平衡",
-		DruidFeralDps = "德鲁伊:猎豹",
-		DruidFeralTank = "德鲁伊:熊",
-		DruidRestoration = "德鲁伊:恢复",
-		HunterBeastMastery = "猎人:野兽控制",
-		HunterMarksman = "猎人:射击",
-		HunterSurvival = "猎人:生存",
-		MageArcane = "法师:奥术",
-		MageFire = "法师:火焰",
-		MageFrost = "法师:冰霜",
-		MonkBrewmaster = "武僧：酒仙",
-		MonkMistweaver = "武僧：织雾者",
-		MonkWindwalker = "武僧：风行",
-		PaladinHoly = "圣骑士:神圣",
-		PaladinRetribution = "圣骑士:惩戒",
-		PaladinTank = "圣骑士:防护",
-		PriestDiscipline = "牧师:戒律",
-		PriestHoly = "牧师:神圣",
-		PriestShadow = "牧师:暗影",
 		Provider = "Wowhead 尺度标准",
 		ProviderStarter = "各职业标准比重：",
-		RogueAssassination = "潜行者:刺杀",
-		RogueCombat = "潜行者:战斗",
-		RogueSubtlety = "潜行者:敏锐",
-		ShamanElemental = "萨满祭司:元素",
-		ShamanEnhancement = "萨满祭司:增强",
-		ShamanRestoration = "萨满祭司:恢复",
-		WarlockAffliction = "术士:痛苦",
-		WarlockDemonology = "术士:恶魔学识",
-		WarlockDestruction = "术士:毁灭",
-		WarriorArms = "战士:武器",
-		WarriorFury = "战士:狂怒",
-		WarriorTank = "战士:防御",
 	},
 }
 end

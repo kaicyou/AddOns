@@ -1,4 +1,4 @@
--- $Id: Atlas.lua 37 2016-07-01 07:49:58Z arith $
+-- $Id: Atlas.lua 48 2016-07-19 14:03:11Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -33,7 +33,7 @@ local select = _G.select
 local type = _G.type
 
 
-local AL = LibStub("AceLocale-3.0"):GetLocale("Atlas");
+local L = LibStub("AceLocale-3.0"):GetLocale("Atlas");
 local BZ = Atlas_GetLocaleLibBabble("LibBabble-SubZone-3.0");
 local LibDialog = LibStub("LibDialog-1.0");
 
@@ -50,7 +50,7 @@ end
 ATLAS_VERSION = GetAddOnMetadata("Atlas", "Version");
 ATLAS_DROPDOWNS = {};
 ATLAS_INST_ENT_DROPDOWN = {};
-ATLAS_NUM_LINES = 24;
+ATLAS_NUM_LINES = 23;
 ATLAS_CUR_LINES = 0;
 ATLAS_SCROLL_LIST = {};
 ATLAS_DATA = {};
@@ -177,26 +177,25 @@ local function Process_Deprecated()
 	local Deprecated_List = {
 		-- Most recent (working) versions of known modules at time of release
 		-- Atlas Modules
-		{ "Atlas_WorldofDraenor", 	"1.32.05" }, -- temporary keep this entry as we need to notify people who have not yet removed the old version's folder
-		{ "Atlas_WorldlordsofDraenor", 	"1.32.05" }, -- temporary keep this entry as we need to notify people who have not yet removed the old version's folder
-		{ "Atlas_WarlordsofDraenor", 	"1.32.05" }, -- This is the correct module name
-		{ "Atlas_MistsofPandaria",	"1.32.01" },
-		{ "Atlas_Cataclysm", 		"1.32.01" },
-		{ "Atlas_WrathoftheLichKing", 	"1.32.01" },
-		{ "Atlas_BurningCrusade", 	"1.32.02" },
-		{ "Atlas_ClassicWoW", 		"1.32.01" },
+		--{ "Atlas_Legion",	 	"1.33.00" },
+		{ "Atlas_WarlordsofDraenor", 	"1.33.00" },
+		{ "Atlas_MistsofPandaria",	"1.33.00" },
+		{ "Atlas_Cataclysm", 		"1.33.00" },
+		{ "Atlas_WrathoftheLichKing", 	"1.33.00" },
+		{ "Atlas_BurningCrusade", 	"1.33.00" },
+		{ "Atlas_ClassicWoW", 		"1.33.00" },
 		-- Atlas Plugins
-		{ "Atlas_Battlegrounds", 	"1.32.00" },
-		{ "Atlas_DungeonLocs", 		"1.32.00" },
-		{ "Atlas_OutdoorRaids", 	"1.32.01" },
-		{ "Atlas_Transportation", 	"1.32.00" },
-		{ "Atlas_Scenarios", 		"1.32.00" },
+		{ "Atlas_Battlegrounds", 	"1.33.00" },
+		{ "Atlas_DungeonLocs", 		"1.33.00" },
+		{ "Atlas_OutdoorRaids", 	"1.33.00" },
+		{ "Atlas_Transportation", 	"1.33.00" },
+		{ "Atlas_Scenarios", 		"1.33.00" },
 		-- 3rd parties plugins
-		{ "AtlasQuest", 		"4.9.6" }, 	-- updated Feb. 16, 2016
+		{ "AtlasQuest", 		"4.9.7" }, 	-- updated May 15, 2016
+		{ "Atlas_Arena", 		"1.06.00" }, 	-- updated Jul. 19, 2016
+		{ "Atlas_WorldEvents", 		"3.15" }, 	-- updated Jul. 19, 2016
 		-- remove AtlasLoot as it did not rely on Atlas since its v8 release
 --		{ "AtlasLoot", 			"7.07.03" }, 	-- updated Jul. 19, 2014 -- this version is still with WoW 5.4.x
-		{ "Atlas_Arena", 		"1.5.05" }, 	-- updated Oct. 15, 2014
-		{ "Atlas_WorldEvents", 		"3.09" }, 	-- updated Oct. 28, 2014
 		--{ "AtlasMajorCities", 	"v1.5.3" }, 	-- updated November 15, 2010; -- comment out because this plugin is no longer maintained
 		--{ "AtlasWorld", 		"3.3.5.25" }, 	-- updated July 14, 2010 -- comment out because this plugin is no longer maintained
 	};
@@ -367,7 +366,7 @@ local function Atlas_Check_Modules()
 		end
 
 		LibDialog:Register("DetectMissing", {
-			text = AL["ATLAS_MISSING_MODULE"].."\n|cff6666ff"..textList.."|r\n\n"..AL["ATLAS_INFO_12200"],
+			text = L["ATLAS_MISSING_MODULE"].."\n|cff6666ff"..textList.."|r\n\n"..L["ATLAS_INFO_12200"],
 			buttons = {
 				{
 					text = ATLAS_DEP_OK,
@@ -639,6 +638,10 @@ function Atlas_MapRefresh()
 	local base = data[zoneID];
 	local minLevel, maxLevel, minRecLevel, maxRecLevel, maxPlayers;
 	local minLevelH, maxLevelH, minRecLevelH, maxRecLevelH, maxPlayersH;
+	local minLevelM, maxLevelM, minRecLevelM, maxRecLevelM, maxPlayersM;
+	local _RED = "|cffcc3333";
+	local WHIT = "|cffffffff";
+	local colortag, dungeon_difficulty;
 	
 	if (base.DungeonID) then
 		-- name, typeID, subtypeID, minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, expansionLevel, groupID, textureFilename, difficulty, maxPlayers, description, isHoliday = GetLFGDungeonInfo(base.DungeonID);
@@ -663,11 +666,21 @@ function Atlas_MapRefresh()
 			maxRecLevelH = maxRecLevel;
 		end
 	end
+	if (base.DungeonMythicID) then
+		-- nameH, typeIDH, subtypeIDH, minLevelH, maxLevelH, recLevelH, minRecLevelH, maxRecLevelH, expansionLevelH, groupIDH, textureFilenameH, difficultyH, maxPlayersH, descriptionH, isHolidayH = GetLFGDungeonInfo(base.DungeonHeroicID);
+		_, _, _, minLevelM, maxLevelM, _, minRecLevelM, maxRecLevelM, _, _, _, _, maxPlayersM = GetLFGDungeonInfo(base.DungeonMythicID);
+
+		if (minRecLevelM == 0) then
+			minRecLevelM = minRecLevel;
+		end
+		if (maxRecLevelM == 0) then
+			maxRecLevelM = maxRecLevel;
+		end
+	end
 	
 	-- Zone Name Acronym
 	local tName = base.ZoneName[1];
 	if (AtlasOptions.AtlasAcronyms and base.Acronym ~= nil) then
-		local _RED = "|cffcc3333";
 		tName = tName.._RED.." ["..base.Acronym.."]";
 	end
 	AtlasText_ZoneName_Text:SetText(tName);
@@ -675,46 +688,109 @@ function Atlas_MapRefresh()
 	-- Map Location
 	local tLoc = "";
 	if (base.Location) then
-		tLoc = ATLAS_STRING_LOCATION..AL["Colon"]..base.Location[1];
+		tLoc = ATLAS_STRING_LOCATION..L["Colon"]..WHIT..base.Location[1];
 	end
 	AtlasText_Location_Text:SetText(tLoc);
 
 	-- Map Level Range
 	local tLR = "";
 	if (base.DungeonID) then 
-		local tmp_LR = ATLAS_STRING_LEVELRANGE..AL["Colon"]..minLevel.."-"..maxLevel;
-		local tmp_RLR = ATLAS_STRING_RECLEVELRANGE..AL["Colon"]..minRecLevel.."-"..maxRecLevel;
-		if (base.DungeonHeroicID) then
-			tmp_LR = tmp_LR.." / "..minLevelH.."-"..maxLevelH;
-			tmp_RLR = tmp_RLR.." / "..minRecLevelH.."-"..maxRecLevelH;
+		local tmp_LR = ATLAS_STRING_LEVELRANGE..L["Colon"];
+		dungeon_difficulty = Atlas_DungeonDifficulty(minLevel);
+		colortag = string.format("|cff%02x%02x%02x", dungeon_difficulty.r * 255, dungeon_difficulty.g * 255, dungeon_difficulty.b * 255);
+		if (minLevel ~= maxLevel) then
+			tmp_LR = tmp_LR..colortag..minLevel.."-"..maxLevel;
+		else
+			tmp_LR = tmp_LR..colortag..minLevel;
 		end
-		tLR = tmp_LR.."; "..tmp_RLR;
+		if (base.DungeonHeroicID) then
+			dungeon_difficulty = Atlas_DungeonDifficulty(minLevelH);
+			colortag = string.format("|cff%02x%02x%02x", dungeon_difficulty.r * 255, dungeon_difficulty.g * 255, dungeon_difficulty.b * 255);
+			if (minLevelH ~= maxLevelH) then
+				tmp_LR = tmp_LR..L["Slash"]..colortag..minLevelH.."-"..maxLevelH..L["Heroic_Symbol"];
+			else
+				tmp_LR = tmp_LR..L["Slash"]..colortag..minLevelH..L["Heroic_Symbol"];
+			end
+		end
+		if (base.DungeonMythicID) then
+			dungeon_difficulty = Atlas_DungeonDifficulty(minLevelM);
+			colortag = string.format("|cff%02x%02x%02x", dungeon_difficulty.r * 255, dungeon_difficulty.g * 255, dungeon_difficulty.b * 255);
+			if (minLevelM ~= maxLevelM) then
+				tmp_LR = tmp_LR..L["Slash"]..colortag..minLevelM.."-"..maxLevelM..L["Mythic_Symbol"];
+			else
+				tmp_LR = tmp_LR..L["Slash"]..colortag..minLevelM..L["Mythic_Symbol"];
+			end
+		end
+		tLR = tmp_LR;
 	elseif (base.LevelRange) then
-		tLR = ATLAS_STRING_LEVELRANGE..AL["Colon"]..base.LevelRange;
+		tLR = ATLAS_STRING_LEVELRANGE..L["Colon"]..WHIT..base.LevelRange;
 	end
 	AtlasText_LevelRange_Text:SetText(tLR);
 
+	-- Map RecommendedLevel Range
+	local tRLR = "";
+	if (base.DungeonID) then 
+		dungeon_difficulty = Atlas_DungeonDifficulty(minRecLevel);
+		colortag = string.format("|cff%02x%02x%02x", dungeon_difficulty.r * 255, dungeon_difficulty.g * 255, dungeon_difficulty.b * 255);
+		local tmp_RLR = ATLAS_STRING_RECLEVELRANGE..L["Colon"];
+		if (minRecLevel ~= maxRecLevel) then
+			tmp_RLR = tmp_RLR..colortag..minRecLevel.."-"..maxRecLevel;
+		else
+			tmp_RLR = tmp_RLR..colortag..minRecLevel;
+		end
+		if (base.DungeonHeroicID) then
+			dungeon_difficulty = Atlas_DungeonDifficulty(minRecLevelH);
+			colortag = string.format("|cff%02x%02x%02x", dungeon_difficulty.r * 255, dungeon_difficulty.g * 255, dungeon_difficulty.b * 255);
+			if (minRecLevelH ~= maxRecLevelH) then
+				tmp_RLR = tmp_RLR..L["Slash"]..colortag..minRecLevelH.."-"..maxRecLevelH..L["Heroic_Symbol"];
+			else
+				tmp_RLR = tmp_RLR..L["Slash"]..colortag..minRecLevelH..L["Heroic_Symbol"];
+			end
+		end
+		if (base.DungeonMythicID) then
+			dungeon_difficulty = Atlas_DungeonDifficulty(minRecLevelM);
+			colortag = string.format("|cff%02x%02x%02x", dungeon_difficulty.r * 255, dungeon_difficulty.g * 255, dungeon_difficulty.b * 255);
+			if (minRecLevelM ~= maxRecLevelM) then
+				tmp_RLR = tmp_RLR..L["Slash"]..colortag..minRecLevelM.."-"..maxRecLevelM..L["Mythic_Symbol"];
+			else
+				tmp_RLR = tmp_RLR..L["Slash"]..colortag..minRecLevelM..L["Mythic_Symbol"];
+			end
+		end
+		tRLR = tmp_RLR;
+	elseif (base.LevelRange) then
+		tRLR = ATLAS_STRING_RECLEVELRANGE..L["Colon"]..WHIT..base.LevelRange;
+	end
+	AtlasText_RecommendedRange_Text:SetText(tRLR);
 	-- Map's Minimum Level
 	local tML = "";
 	if (base.DungeonID) then 
-		tML = ATLAS_STRING_MINLEVEL..AL["Colon"]..minLevel;
+		dungeon_difficulty = Atlas_DungeonDifficulty(minLevel);
+		colortag = string.format("|cff%02x%02x%02x", dungeon_difficulty.r * 255, dungeon_difficulty.g * 255, dungeon_difficulty.b * 255);
+		tML = ATLAS_STRING_MINLEVEL..L["Colon"]..colortag..minLevel;
 		if (base.DungeonHeroicID) then
-			tML = tML.." / "..minLevelH;
+			dungeon_difficulty = Atlas_DungeonDifficulty(minLevelH);
+			colortag = string.format("|cff%02x%02x%02x", dungeon_difficulty.r * 255, dungeon_difficulty.g * 255, dungeon_difficulty.b * 255);
+			tML = tML..L["Slash"]..colortag..minLevelH..L["Heroic_Symbol"];
+		end
+		if (base.DungeonMythicID) then
+			dungeon_difficulty = Atlas_DungeonDifficulty(minLevelM);
+			colortag = string.format("|cff%02x%02x%02x", dungeon_difficulty.r * 255, dungeon_difficulty.g * 255, dungeon_difficulty.b * 255);
+			tML = tML..L["Slash"]..colortag..minLevelM..L["Mythic_Symbol"];
 		end
 	elseif (base.MinLevel) then
-		tML = ATLAS_STRING_MINLEVEL..AL["Colon"]..base.MinLevel;
+		tML = ATLAS_STRING_MINLEVEL..L["Colon"]..WHIT..base.MinLevel;
 	end
 	AtlasText_MinLevel_Text:SetText(tML);
 
 	-- Player Limit
 	local tPL = "";
 	if (base.DungeonID and maxPlayers ~= 0) then 
-		tPL = ATLAS_STRING_PLAYERLIMIT..AL["Colon"]..maxPlayers;
+		tPL = ATLAS_STRING_PLAYERLIMIT..L["Colon"]..WHIT..maxPlayers;
 		if (base.DungeonHeroicID and maxPlayers ~= maxPlayersH) then
 			tPL = tPL.." / "..maxPlayersH;
 		end
 	elseif (base.PlayerLimit) then
-		tPL = ATLAS_STRING_PLAYERLIMIT..AL["Colon"]..base.PlayerLimit;
+		tPL = ATLAS_STRING_PLAYERLIMIT..L["Colon"]..WHIT..base.PlayerLimit;
 	end
 	AtlasText_PlayerLimit_Text:SetText(tPL);
 
@@ -773,8 +849,10 @@ function Atlas_MapRefresh()
 		local loadable = select(4, GetAddOnInfo(base.Module));
 		local enabled = GetAddOnEnableState(nil, base.Module)
 		if (enabled == 0) or (not loadable) then
-			AtlasMap:SetTexture(0, 0, 0);
-			AtlasMap_Text:SetText(AL["MapsNotFound"].."\n\n"..AL["PossibleMissingModule"].."\n|cff6666ff"..base.Module);
+			-- AtlasMap:SetTexture(0, 0, 0);
+			-- Legion changes: texture:SetTexture(r, g, b, a) changes into texture:SetColorTexture(r, g, b, a)
+			AtlasMap:SetColorTexture(0, 0, 0, 0.9); 
+			AtlasMap_Text:SetText(L["MapsNotFound"].."\n\n"..L["PossibleMissingModule"].."\n|cff6666ff"..base.Module);
 			if (not AtlasMap_Text:IsShown()) then
 				AtlasMap_Text:Show();
 			end
@@ -932,7 +1010,7 @@ function AtlasSwitchButton_OnClick()
 		AtlasSwitchDD_Set(1);
 	else
 		-- More than one link, so it's dropdown menu time
-		ToggleDropDownMenu(1, nil, AtlasSwitchDD, "AtlasSwitchButton", 0, 0);
+		Lib_ToggleDropDownMenu(1, nil, AtlasSwitchDD, "AtlasSwitchButton", 0, 0);
 	end
 end
 
@@ -1013,7 +1091,7 @@ end
 
 -- Calculate the dungeon difficulty based on the dungeon's level and player's level
 -- Codes adopted from FastQuest_Classic
-local function Atlas_DungeonDifficulty(minRecLevel)
+function Atlas_DungeonDifficulty(minRecLevel)
 	local lDiff = minRecLevel - UnitLevel("player");
 	local color;
 	if (lDiff >= 0) then

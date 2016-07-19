@@ -294,9 +294,16 @@ local function GetTranslations( )
 	return ok
 end
 
+
+
+
+if ArkInventory.Const.TOC < 70000 then
+	ArkInventory.OutputError( ArkInventory.Localise["TOC_FAIL"] )
+	return
+end
+
 frame:SetScript( "OnUpdate",
 	function( self, elapsed )
-		
 		self.loop = self.loop or 0
 		self.timer = ( self.timer or 0 ) + elapsed
 		
@@ -344,7 +351,7 @@ frame:SetScript( "OnUpdate",
 				else
 					
 					for k in pairs( updateTable ) do
-						ArkInventory.Output( k )
+						ArkInventory.Output( "failed: ", k )
 					end
 					
 					ArkInventory.OutputWarning( lang, " translations failed to load. You may experience issues with item categorisation and menu text." )
@@ -378,3 +385,9 @@ function ArkInventory.TranslateTryAgain( )
 	frame.timer = 0
 	frame:Show( )
 end
+
+
+-- LEGION TODO - check for anything useful in these
+--/run ArkInventory.Output( ITEM_CLASS_IDS  )
+--GetItemClassInfo( classID )
+--GetItemSubClassInfo( classID, subClassID )

@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 6 2016-05-11 10:06:15Z arith $
+$Id: ChangeLog.txt 8 2016-07-19 14:01:06Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,14 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.33.00 (Jul. 19, 2016)
+------------------------
+- Toc updated to support WoW Legion pre-patch (7.0.3)
+- Updated boss info for the following ones:
+  - Icecrown Citadel, Naxxramas, The Obsidian Sanctum, Onyxia's Lair, The Ruby Sanctum, 
+    The Eye of Eternity, Trial of the Crusader, Ulduar, Vault of Archavon
+
 
 v1.32.01 (May 11, 2016)
 -----------------------

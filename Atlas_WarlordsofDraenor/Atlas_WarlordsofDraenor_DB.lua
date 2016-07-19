@@ -1,4 +1,4 @@
--- $Id: Atlas_WarlordsofDraenor_DB.lua 12 2016-05-12 04:35:37Z arith $
+-- $Id: Atlas_WarlordsofDraenor_DB.lua 23 2016-07-15 08:12:08Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -82,34 +82,37 @@ local myDB = {
 		{ "B", 10002, 463, 419};
 	};
 	HellfireA = {
-		{ 1, 1425, 155, 255}; -- Iron Reaver
+		{ 1, 1426, 276, 233}; -- Hellfire Assault
+		{ 2, 1425, 155, 255}; -- Iron Reaver
 		{ "A", 10001, 369, 227}; 
 		{ "B", 10002, 118, 257};
 	};
 	HellfireB = {
-		{ 2, 1372, 142, 184 };	-- Gorefiend
-		{ 3, 1396, 239, 334 };	-- Kilrogg Deadeye
-		{ 4, 1432, 319, 428 };	-- Hellfire High Council
+		{ 3, 1372, 142, 184 };	-- Gorefiend
+		{ 4, 1396, 239, 334 };	-- Kilrogg Deadeye
+		{ 5, 1432, 319, 428 };	-- Hellfire High Council
 		{ "B", 10001, 448, 190};
 		{ "C", 10001, 325, 7};
 	};
 	HellfireC = {
-		{ 5, 1392, 279, 247 }; -- Kormrok
+		{ 6, 1392, 279, 247 }; -- Kormrok
 		{ "C", 10001, 322, 346}; 
 	};
-	HellfireD = { 
-		{ 6, 1438, 290, 265 }; -- Archimonde
-		{ "D", 10001, 121, 261}; 
-	};
-	HellfireE = {
-		{ 6, 1433, 103, 196 };	-- Shadow-Lord Iskar
-		{ 7, 1391, 138, 51 };	-- Fel Lord Zakuun
-		{ 8, 1447, 355, 132 };	-- Xhul'horac
-		{ 9, 1427, 259, 350 };	-- Socrethar the Eternal
-		{ 10, 1394, 124, 345 };	-- Tyrant Velhari
---		{ 12, 1395, nil, nil };	-- Mannoroth
+	HellfireD = {
+		{ 7, 1433, 103, 196 };	-- Shadow-Lord Iskar
+		{ 8, 1391, 138, 51 };	-- Fel Lord Zakuun
+		{ 9, 1447, 355, 132 };	-- Xhul'horac
+		{ 10, 1427, 259, 350 };	-- Socrethar the Eternal
+		{ 11, 1394, 124, 345 };	-- Tyrant Velhari
 		{ "B", 10001, 184, 156};
 		{ "C", 10001, 184, 192};
+	};
+	HellfireE = {
+		{ 12, 1395, 240, 243 };	-- Mannoroth
+	};
+	HellfireF = { 
+		{ 13, 1438, 297, 262 }; -- Archimonde
+		{ "D", 10001, 121, 261}; 
 	};
 	HighmaulA = {
 		{ 1, 1128, 347, 430 }; -- Kargath Bladefist

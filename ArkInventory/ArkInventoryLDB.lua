@@ -97,7 +97,7 @@ function ArkInventory.LDB.Tracking_Currency:Update( )
 			local h = GetCurrencyListLink( j )
 			local osd = ArkInventory.ObjectStringDecode( h )
 			local id = osd[2]
-			if ArkInventory.Global.Me.ldb.tracking.currency.tracked[id] then
+			if ArkInventory.Global.Me.data.ldb.tracking.currency.tracked[id] then
 				self.text = string.format( "%s  |T%s:0|t %d", self.text, icon or ArkInventory.Const.Texture.Missing, count or 0 )
 				hasText = true
 			end
@@ -150,7 +150,7 @@ function ArkInventory.LDB.Tracking_Currency:OnTooltipShow( )
 			local osd = ArkInventory.ObjectStringDecode( h )
 			local id = osd[2]
 			
-			if ArkInventory.Global.Me.ldb.tracking.currency.tracked[id] then
+			if ArkInventory.Global.Me.data.ldb.tracking.currency.tracked[id] then
 				self:AddDoubleLine( name, count, 0, 1, 0, 0, 1, 0 )
 			else
 				self:AddDoubleLine( name, count, 1, 1, 1, 1, 1, 1 )
@@ -171,7 +171,7 @@ function ArkInventory.LDB.Tracking_Item:Update( )
 	local hasText = false
 	
 	for k in ArkInventory.spairs( ArkInventory.db.global.option.tracking.items )  do
-		if ArkInventory.Global.Me.ldb.tracking.item.tracked[k] then
+		if ArkInventory.Global.Me.data.ldb.tracking.item.tracked[k] then
 			local count = GetItemCount( k, true )
 --[[
 			if ( k == 6265 ) then
@@ -216,7 +216,7 @@ function ArkInventory.LDB.Tracking_Item:OnTooltipShow( )
 ]]--
 		local name = GetItemInfo( k )
 		
-		local checked = ArkInventory.Global.Me.ldb.tracking.item.tracked[k]
+		local checked = ArkInventory.Global.Me.data.ldb.tracking.item.tracked[k]
 		
 		if checked then
 			self:AddDoubleLine( name, count, 0, 1, 0, 0, 1, 0 )
@@ -242,7 +242,7 @@ function ArkInventory.LDB.Pets:Update( )
 		return
 	end
 	
-	local selected = ArkInventory.Global.Me.ldb.pets.selected
+	local selected = ArkInventory.Global.Me.data.ldb.pets.selected
 	local count = ArkInventory.Table.Elements( selected )
 	
 	if count == 0 then
@@ -284,7 +284,7 @@ function ArkInventory.LDB.Pets:OnTooltipShow( )
 		return
 	end
 	
-	local selected = ArkInventory.Global.Me.ldb.pets.selected
+	local selected = ArkInventory.Global.Me.data.ldb.pets.selected
 	local count = ArkInventory.Table.Elements( selected )
 	local selectedCount = 0
 	for k, v in pairs( selected ) do
@@ -349,7 +349,7 @@ function ArkInventory.LDB.Pets:OnClick( button )
 	else
 		
 		if ArkInventory.MountJournal.GetCount( ) == 0 then
-			ArkInventory.Output( "you don't own any pets" )
+			ArkInventory.Output( string.format( ArkInventory.Localise["NONE_OWNED"], "pets" ) )
 			return
 		end
 		
@@ -358,7 +358,7 @@ function ArkInventory.LDB.Pets:OnClick( button )
 		--ArkInventory.Output( #companionTable, " usable pets" )
 		
 		if #companionTable == 0 then
-			ArkInventory.Output( "no usable pets" )
+			ArkInventory.Output( string.format( ArkInventory.Localise["NONE_USABLE"], "pets" ) )
 		elseif #companionTable == 1 then
 			ArkInventory.PetJournal.Summon( companionTable[1] )
 		else
@@ -374,7 +374,7 @@ function ArkInventory.LDB.Pets.Cleanup( )
 	if ArkInventory.PetJournal.JournalIsReady( ) then
 		
 		-- check for and remove any selected companions we no longer have (theyve either been caged or released)
-		local selected = ArkInventory.Global.Me.ldb.pets.selected
+		local selected = ArkInventory.Global.Me.data.ldb.pets.selected
 		for k, v in pairs( selected ) do
 			if v ~= nil and not ArkInventory.PetJournal.GetPet( k ) then
 				selected[k] = nil
@@ -383,7 +383,7 @@ function ArkInventory.LDB.Pets.Cleanup( )
 		end
 		
 		-- if all companions are selected then deselect them all
-		local selected = ArkInventory.Global.Me.ldb.pets.selected
+		local selected = ArkInventory.Global.Me.data.ldb.pets.selected
 		local n1 = ArkInventory.PetJournal.GetCount( )
 		local n2 = ArkInventory.Table.Elements( selected )
 		
@@ -425,7 +425,7 @@ function ArkInventory.LDB.Mounts:Update( useMapZone )
 		return
 	end
 	
-	local selected = ArkInventory.Global.Me.ldb.mounts[mountType].selected
+	local selected = ArkInventory.Global.Me.data.ldb.mounts[mountType].selected
 	local count = ArkInventory.Table.Elements( selected )
 	
 	if count == 0 then
@@ -479,7 +479,7 @@ function ArkInventory.LDB.Mounts:OnTooltipShow( ... )
 			
 		else
 	
-			local selected = ArkInventory.Global.Me.ldb.mounts[mountType].selected
+			local selected = ArkInventory.Global.Me.data.ldb.mounts[mountType].selected
 			local count = ArkInventory.Table.Elements( selected )
 			local selectedCount = 0
 			for k, v in pairs( selected ) do
@@ -533,13 +533,14 @@ function ArkInventory.LDB.Mounts:OnClick( button )
 	else
 		
 		if UnitInVehicle( "player" ) or IsIndoors( ) or not IsOutdoors( ) or not ArkInventory.MountJournal.JournalIsReady( ) or ArkInventory.MountJournal.SkillLevel( ) == 0 then
+			-- not even going to try
 			return
 		end
 		
 		if IsMounted( ) then
 			
 			if IsFlying( ) then
-				if ( not ArkInventory.Global.Me.ldb.mounts.a.dismount ) then
+				if ( not ArkInventory.Global.Me.data.ldb.mounts.a.dismount ) then
 					ArkInventory.OutputWarning( ArkInventory.Localise["LDB_MOUNTS_FLYING_DISMOUNT_WARNING"] )
 					return
 				end
@@ -552,8 +553,12 @@ function ArkInventory.LDB.Mounts:OnClick( button )
 		end
 		
 		if IsFlying( ) then
-			-- in flight but not mounted, most likely is druid flight form and we cant cancel shapeshift via code
+			
+			-- all known shapeshift forms should have been cancelled at this point, and any current mount dismissed so no idea how youre still flying. it could be druid flight form and server lag.
+			-- whatever it is i can't do anything about it so i'm going to just exit.
+			
 			return
+			
 		end
 		
 		if ArkInventory.MountJournal.GetCount( ) == 0 then
@@ -603,7 +608,7 @@ function ArkInventory.LDB.Mounts.Cleanup( )
 		for mountType in pairs( ArkInventory.Const.MountTypes ) do
 			if mountType ~= "x" then
 			
-				local selected = ArkInventory.Global.Me.ldb.mounts[mountType].selected
+				local selected = ArkInventory.Global.Me.data.ldb.mounts[mountType].selected
 				
 				for spell, value in pairs( selected ) do
 					local md = ArkInventory.MountJournal.GetMountBySpell( spell )
@@ -624,7 +629,7 @@ function ArkInventory.LDB.Mounts.Cleanup( )
 	for mountType in pairs( ArkInventory.Const.MountTypes ) do
 		if mountType ~= "x" then
 			
-			local selected = ArkInventory.Global.Me.ldb.mounts[mountType].selected
+			local selected = ArkInventory.Global.Me.data.ldb.mounts[mountType].selected
 			local n1 = ArkInventory.LDB.Mounts.GetTotal( mountType )
 			local n2 = ArkInventory.Table.Elements( selected )
 			
@@ -704,7 +709,7 @@ function ArkInventory.LDB.Mounts.IsFlyable( useMapZone )
 					
 					if not completed then
 						
---						ArkInventory.Output( "draenor but you dont have the pathfinder achievement )
+						--ArkInventory.Output( "draenor but you dont have the pathfinder achievement )
 						ArkInventory.IsFlyable = false
 						
 					end
@@ -752,12 +757,12 @@ function ArkInventory.LDB.Mounts.BuildList( ignoreActive, mountType )
 	if n == 0 then return end
 	
 	local selected = { }
-	for k, v in pairs( ArkInventory.Global.Me.ldb.mounts[mountType].selected ) do
+	for k, v in pairs( ArkInventory.Global.Me.data.ldb.mounts[mountType].selected ) do
 		selected[k] = v
 	end
 	
-	if mountType == "l" and ArkInventory.Global.Me.ldb.mounts.l.useflying then
-		for k, v in pairs( ArkInventory.Global.Me.ldb.mounts["a"].selected ) do
+	if mountType == "l" and ArkInventory.Global.Me.data.ldb.mounts.l.useflying then
+		for k, v in pairs( ArkInventory.Global.Me.data.ldb.mounts["a"].selected ) do
 			selected[k] = v
 		end
 	end
@@ -787,7 +792,7 @@ function ArkInventory.LDB.Mounts.BuildList( ignoreActive, mountType )
 				-- dont use stored value here, check the current value
 				local usable = ArkInventory.MountJournal.IsUsable( md.index )
 				
-				if usable and ( md.mt == ArkInventory.Const.MountTypes[mountType] or ( mountType == "l" and ArkInventory.Global.Me.ldb.mounts.l.useflying and md.mt == ArkInventory.Const.MountTypes["a"] ) ) then
+				if usable and ( md.mt == ArkInventory.Const.MountTypes[mountType] or ( mountType == "l" and ArkInventory.Global.Me.data.ldb.mounts.l.useflying and md.mt == ArkInventory.Const.MountTypes["a"] ) ) then
 					-- usable = true
 				else
 					usable = false
@@ -816,10 +821,10 @@ function ArkInventory.LDB.Pets.BuildList( ignoreActive )
 	end
 	
 	local n = ArkInventory.PetJournal.GetCount( )
---	ArkInventory.Output( "pet count = ", n )
+	--ArkInventory.Output( "pet count = ", n )
 	if n == 0 then return end
 	
-	local selected = ArkInventory.Global.Me.ldb.pets.selected
+	local selected = ArkInventory.Global.Me.data.ldb.pets.selected
 	local selectedCount = 0
 	for k, v in pairs( selected ) do
 		if v == true then
@@ -831,7 +836,7 @@ function ArkInventory.LDB.Pets.BuildList( ignoreActive )
 		ignoreActive = true
 	end
 	
---	ArkInventory.Output( "count = ", selectedCount, ", selected = ", selected )
+	--ArkInventory.Output( "count = ", selectedCount, ", selected = ", selected )
 	
 	local count = 0
 	local _, _, activePet = ArkInventory.PetJournal.GetCurrent( )

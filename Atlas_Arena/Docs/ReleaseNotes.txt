@@ -5,10 +5,15 @@ Copyright 2010 ~ 2016 Arith Hsu
 = Change Log =
 ==============
 
+* 1.06.00 (2016/07/19)
+    - TOC update to support WoW 7.0.3
+    - Replace punctuations by using Atlas' localization
+    - Update level info
+
 * 1.5.08 (2016/07/06)
-- Added itIT, esMX, and ptBR translation files (placeholder until we get any translation added)
-- Translation update:
-  - German (pas06)
+    - Added itIT, esMX, and ptBR translation files (placeholder until we get any translation added)
+    - Translation update:
+        - German (pas06)
 
 * 1.5.07 (2015/07/13)
     - TOC update to support WoW 6.2

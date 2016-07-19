@@ -214,6 +214,18 @@ function AuraCheck.BuildOptions (frame)
 		aurasFrame:SetPoint (unpack (framesPoint))
 		aurasFrame:SetSize (unpack (framesSize))
 		
+		local NoAuraLabel = AuraCheck:CreateLabel (aurasFrame, "Select an weakaura on the right scroll box.\nClick on 'Check Aura', to start querying the raid.\nClick on 'Share Aura' to send the aura to all raid memebers.\n\n\n\nRaid members need to install 'Raid Assist' or 'Iskar Assist' addon.")
+		NoAuraLabel:SetPoint ("center", RaidAssistOptionsPanel, "center", 0, 75)
+		NoAuraLabel.align = "center"
+		AuraCheck:SetFontSize (NoAuraLabel, 14)
+		AuraCheck:SetFontColor (NoAuraLabel, "silver")
+		
+		local ResultInfoLabel = AuraCheck:CreateLabel (aurasFrame, "Result:\n|cFFFF0000guild|r: is not from the same guild\n|cFFFFFF00ok|r: refused but already has the aura installed\n|cFFFF0000declined|r: the user declined the aura\n|cFF55FF55ok|r: the user accepted or already have the aura\n|cFFFF5555-|r: the user DO NOT have the aura\n|cFFFF5555NO WA|r: the user DO NOT have weakauras installed\n|cFF888888?|r: waiting the answer from the raid member\n|cFFFF0000offline|r: the raid member is offline")
+		ResultInfoLabel:SetPoint ("center", RaidAssistOptionsPanel, "center", 0, -100)
+		ResultInfoLabel.align = "left"
+		AuraCheck:SetFontSize (ResultInfoLabel, 14)
+		AuraCheck:SetFontColor (ResultInfoLabel, "silver")
+		
 		--fillpanel - auras panel
 		local fillPanel = AuraCheck:CreateFillPanel (aurasFrame, {}, 590, 400, false, false, false, {rowheight = 13}, _, "AuraCheckerAurasFrameFillPanel")
 		fillPanel:SetPoint ("topleft", aurasFrame, "topleft", 0, 0)
@@ -355,6 +367,10 @@ function AuraCheck.BuildOptions (frame)
 		AuraCheck.last_data_request = 0
 		
 		local checkAuraFunc = function()
+		
+			NoAuraLabel:Hide()
+			ResultInfoLabel:Hide()
+		
 			--get the selected aura
 			local auraSelected = auraScroll.CurrentAuraSelected
 			if (auraSelected == "" or auraSelected == "-none-") then
@@ -412,6 +428,10 @@ function AuraCheck.BuildOptions (frame)
 		end
 		
 		local shareAuraFunc = function()
+		
+			NoAuraLabel:Hide()
+			ResultInfoLabel:Hide()
+		
 			local auraSelected = auraScroll.CurrentAuraSelected
 			if (auraSelected == "" or auraSelected == "-none-") then
 				return AuraCheck:Msg ("you need to select an aura before.")

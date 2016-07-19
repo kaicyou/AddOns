@@ -171,7 +171,7 @@ function ArkInventory.TooltipSetBattlepet( tooltip, h, i )
 	
 	local sd = ArkInventory.PetJournal.GetSpeciesInfo( speciesID )
 	if not sd then
-		ArkInventory.Output( "no species data found for ", speciesID, " / ", name )
+		--ArkInventory.OutputWarning( "no species data found for ", speciesID, " / ", name )
 		return
 	end
 	
@@ -295,13 +295,13 @@ end
 
 function ArkInventory.TooltipHookSetUnit( ... )
 	
-	if ( ArkInventory:IsEnabled( ) ) and ( ArkInventory.db.global.option.tooltip.battlepet.mouseover.enable ) then
+	if ArkInventory:IsEnabled( ) and ArkInventory.db.global.option.tooltip.battlepet.mouseover.enable then
 		
 		local tooltip = ...
 		
 		local _, unit = tooltip:GetUnit( )
 		
-		if ( unit ) and ( UnitIsWildBattlePet( unit ) or UnitIsOtherPlayersBattlePet( unit ) or UnitIsBattlePetCompanion( unit ) ) then
+		if unit and ( UnitIsWildBattlePet( unit ) or UnitIsOtherPlayersBattlePet( unit ) or UnitIsBattlePetCompanion( unit ) ) then
 			
 			local speciesID = UnitBattlePetSpeciesID( unit )
 			
@@ -601,16 +601,34 @@ end
 
 function ArkInventory.TooltipHookSetMerchantCostItem( ... )
 	
-	local tooltip, arg1, arg2 = ...
+	local tooltip, slot, index = ...
 	
 	if not tooltip then return end
 	
-	local icon, amount, h, name, v1, v2, v3, v4, v5 = GetMerchantItemCostItem( arg1, arg2 )
+	local currencies = { GetMerchantCurrencies( ) }
+	--ArkInventory.Output( slot, " / ", index, " / ", currencies )
+	
+	if currencies[index] then
+		local h = GetCurrencyLink( currencies[index] )
+		
+		if h then
+			ArkInventory.TooltipHook( tooltip, h )
+		end
+		
+	end
+	
+end
+
+function ArkInventory.TooltipHookSetCurrencyByID( ... )
+	
+	local tooltip, id = ...
+	
+	if not tooltip then return end
+	
+	local h = GetCurrencyLink( id )
 	
 	if h then
 		ArkInventory.TooltipHook( tooltip, h )
-	else
-		--ArkInventory.Output( "GetMerchantItemCostItem = ", icon, " / ", amount, " / ", h, " / ", name )
 	end
 	
 end
@@ -628,19 +646,13 @@ function ArkInventory.TooltipHookSetBackpackToken( ... )
 	
 end
 
-function ArkInventory.TooltipHookSetTradeSkillItem( ... )
+function ArkInventory.TooltipHookSetRecipeReagentItem( ... )
 	
 	local tooltip, arg1, arg2 = ...
 	
-	if tooltip and arg1 then
+	if tooltip and arg1 and arg2 then
 		
-		local h
-		
-		if arg2 then
-			h = GetTradeSkillReagentItemLink( arg1,  arg2 )
-		else
-			h = GetTradeSkillItemLink( arg1 )
-		end
+		local h = C_TradeSkillUI.GetRecipeReagentItemLink( arg1, arg2 )
 		
 		ArkInventory.TooltipHook( tooltip, h )
 		
@@ -659,7 +671,8 @@ end
 
 function ArkInventory.TooltipAddItemCount( tooltip, h )
 	
-	local tt = ArkInventory.TooltipObjectCountGet( h, tooltip )
+	local search_id = ArkInventory.ObjectIDCount( h )
+	local tt = ArkInventory.TooltipObjectCountGet( search_id, tooltip )
 	
 	if tt and tt ~= "" then
 		local tc = ArkInventory.db.global.option.tooltip.colour.count
@@ -681,30 +694,28 @@ end
 
 function ArkInventory.TooltipObjectCountGet( search_id, tooltip )
 	
-	local search_id = ArkInventory.ObjectIDCount( search_id )
-	local cp = ArkInventory.Global.Me
+	local player = ArkInventory.PlayerDataGet( )
 	
 	if tooltip then
 		tooltip = tooltip:GetOwner( )
 		if tooltip and tooltip.ARK_Data and tooltip.ARK_Data.loc_id then
-			cp = ArkInventory.LocationPlayerInfoGet( tooltip.ARK_Data.loc_id )
+			player = ArkInventory.LocationPlayerGet( tooltip.ARK_Data.loc_id )
 		end
 	end
 	
-	if not ArkInventory.Global.Cache.ItemCountTooltip[cp.info.player_id] then
-		ArkInventory.Global.Cache.ItemCountTooltip[cp.info.player_id] = { }
+	if not ArkInventory.Global.Cache.ItemCountTooltip[player.data.info.player_id] then
+		ArkInventory.Global.Cache.ItemCountTooltip[player.data.info.player_id] = { }
 	end
 	
-	if ArkInventory.Global.Cache.ItemCountTooltip[cp.info.player_id][search_id] then
-		return ArkInventory.Global.Cache.ItemCountTooltip[cp.info.player_id][search_id]
+	if ArkInventory.Global.Cache.ItemCountTooltip[player.data.info.player_id][search_id] then
+		return ArkInventory.Global.Cache.ItemCountTooltip[player.data.info.player_id][search_id]
 	end
 	
-	
-	local tc = ArkInventory.ObjectCountGet( search_id, cp.info.player_id, ArkInventory.db.global.option.tooltip.me, not ArkInventory.db.global.option.tooltip.add.vault, ArkInventory.db.global.option.tooltip.faction, ArkInventory.db.global.option.tooltip.realm, ArkInventory.db.global.option.tooltip.crossrealm )
+	local tc = ArkInventory.ObjectCountGet( search_id, player.data.info.player_id, ArkInventory.db.global.option.tooltip.me, not ArkInventory.db.global.option.tooltip.add.vault, ArkInventory.db.global.option.tooltip.faction, ArkInventory.db.global.option.tooltip.realm, ArkInventory.db.global.option.tooltip.crossrealm )
 	if tc == nil then
 		--ArkInventory.OutputDebug( "no count data" )
-		ArkInventory.Global.Cache.ItemCountTooltip[cp.info.player_id][search_id] = ""
-		return ArkInventory.Global.Cache.ItemCountTooltip[cp.info.player_id][search_id]
+		ArkInventory.Global.Cache.ItemCountTooltip[player.data.info.player_id][search_id] = ""
+		return ArkInventory.Global.Cache.ItemCountTooltip[player.data.info.player_id][search_id]
 	end
 	
 	local paint = ArkInventory.db.global.option.tooltip.colour.class
@@ -720,12 +731,13 @@ function ArkInventory.TooltipObjectCountGet( search_id, tooltip )
 	
 	local guild_count = 0
 	local guild_entries = { }
+	local pd = { }
 	
 	for pid, td in ArkInventory.spairs( tc ) do
 		
-		local pd = ArkInventory.PlayerInfoGet( pid )
+		ArkInventory.PlayerDataGet( pid, nil, pd )
 			
-			local name = ArkInventory.DisplayName3( pd.info, paint, cp.info )
+			local name = ArkInventory.DisplayName3( pd.data.info, paint, player.data.info )
 			
 			local item_count_character = 0
 			local item_count_guild = 0
@@ -746,7 +758,11 @@ function ArkInventory.TooltipObjectCountGet( search_id, tooltip )
 							end
 							item_count_guild = item_count_guild + lc
 						else
-							location_entries[#location_entries + 1] = string.format( "%s %s%s|r", ArkInventory.Global.Location[l].Name, colour, lc )
+							if ArkInventory.Table.Elements( td.location ) > 1 then
+								location_entries[#location_entries + 1] = string.format( "%s %s%s|r", ArkInventory.Global.Location[l].Name, colour, lc )
+							else
+								location_entries[#location_entries + 1] = string.format( "%s", ArkInventory.Global.Location[l].Name )
+							end
 							item_count_character = item_count_character + lc
 						end
 						
@@ -756,19 +772,19 @@ function ArkInventory.TooltipObjectCountGet( search_id, tooltip )
 				
 				if item_count_character > 0 then
 					
-					local me = ""
-					if not ArkInventory.db.global.option.tooltip.me and pd.info.player_id == cp.info.player_id then
-						me = ArkInventory.db.global.option.tooltip.highlight
+					local hl = ""
+					if not ArkInventory.db.global.option.tooltip.me and pd.data.info.player_id == player.data.info.player_id then
+						hl = ArkInventory.db.global.option.tooltip.highlight
 					end
 					
-					character_entries[#character_entries + 1] = string.format( "%s%s|r: %s%s|r (%s)", me, name, colour, item_count_character, table.concat( location_entries, ", " ) )
+					character_entries[#character_entries + 1] = string.format( "%s%s|r: %s%s|r (%s)", hl, name, colour, BreakUpLargeNumbers( item_count_character ), table.concat( location_entries, ", " ) )
 					character_count = character_count + 1
 					item_count_total = item_count_total + item_count_character
 					
 				end
 				
 				if item_count_guild > 0 then
-					guild_entries[#guild_entries + 1] = string.format( "%s|r: %s%s|r (%s)", name, colour, item_count_guild, table.concat( location_entries, ", " ) )
+					guild_entries[#guild_entries + 1] = string.format( "%s|r: %s%s|r (%s)", name, colour, BreakUpLargeNumbers( item_count_guild ), table.concat( location_entries, ", " ) )
 					guild_count = guild_count + 1
 				end
 				
@@ -780,7 +796,7 @@ function ArkInventory.TooltipObjectCountGet( search_id, tooltip )
 		
 		local c = table.concat( character_entries, "\n" )
 		if character_count > 1 then
-			c = string.format( "%s\n%s: %s%s|r", c, ArkInventory.Localise["TOTAL"], colour, item_count_total )
+			c = string.format( "%s\n%s: %s%s|r", c, ArkInventory.Localise["TOTAL"], colour, BreakUpLargeNumbers( item_count_total ) )
 		end
 		
 		local g = ""
@@ -796,15 +812,15 @@ function ArkInventory.TooltipObjectCountGet( search_id, tooltip )
 			
 		end
 		
-		ArkInventory.Global.Cache.ItemCountTooltip[cp.info.player_id][search_id] = string.format( "%s%s", c, g )
+		ArkInventory.Global.Cache.ItemCountTooltip[player.data.info.player_id][search_id] = string.format( "%s%s", c, g )
 		
 	else
 		
-		ArkInventory.Global.Cache.ItemCountTooltip[cp.info.player_id][search_id] = ""
+		ArkInventory.Global.Cache.ItemCountTooltip[player.data.info.player_id][search_id] = ""
 		
 	end
 	
-	return ArkInventory.Global.Cache.ItemCountTooltip[cp.info.player_id][search_id]
+	return ArkInventory.Global.Cache.ItemCountTooltip[player.data.info.player_id][search_id]
 	
 end
 
@@ -952,7 +968,6 @@ function ArkInventory.TooltipShowCompare( ... )
 		end
 		shoppingTooltip1:SetHyperlink(link);
 		shoppingTooltip1:Show();
-		
 	end
 	
 end

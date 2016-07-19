@@ -1,4 +1,4 @@
- 
+  
 local DF = _G ["DetailsFramework"]
 if (not DF) then
 	print ("|cFFFFAA00Please restart your client to finish update some AddOns.|r")
@@ -34,7 +34,7 @@ local anzu_texture
 local player_class
 local block_backdrop_eye = {bgFile = [[Interface\RaidFrame\Raid-Bar-Hp-Fill]], tile = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0},
 edgeFile = "Interface\\AddOns\\IskarAssist\\border_2", edgeSize = 20}
-local iskar_version = "v0.21"
+local iskar_version = "v0.23"
 
 local iskar_encounter_id = 1788 --iskar
 local iskar_npcid = 90316 --iskar
@@ -1118,7 +1118,7 @@ function IKA:CreateFrames (show_after_cretion)
 			end
 		end
 	end
-
+	
 	local f_anim = CreateFrame ("frame", nil, f)
 	local t = f_anim:CreateTexture (nil, "overlay")
 	t:SetTexCoord (0, 0.78125, 0, 0.66796875)
@@ -1129,13 +1129,12 @@ function IKA:CreateFrames (show_after_cretion)
 	local anim1 = animation:CreateAnimation ("Alpha")
 	local anim2 = animation:CreateAnimation ("Alpha")
 	anim1:SetOrder (1)
-	anim1:SetChange (1)
+	anim1:SetFromAlpha (0)
+	anim1:SetToAlpha (1)
 	anim1:SetDuration (0.1)
-	--SetToAlpha() and SetFromAlpha()
-	--SetFromAlpha() is where you start from.
-	--SetToAlpha() is where you end at.	
 	anim2:SetOrder (2)
-	anim2:SetChange (-1)
+	anim2:SetFromAlpha (1)
+	anim2:SetToAlpha (0)
 	anim2:SetDuration (0.2)
 	
 	animation:SetScript ("OnFinished", function (self)
@@ -1911,6 +1910,87 @@ function IKA:CreateFrames (show_after_cretion)
 	if (show_after_cretion) then
 		f:ShowMe()
 	end
+	
+	if (IskarAssistDB and IskarAssistDB.GotLegionHeadsUp) then
+		return
+	end
+	
+	f.OpenOptionsPanel()
+
+	do
+		local arrowFrame = CreateFrame ("frame", "IskarAssistNewArrow2", RaidAssistOptionsPanel, "GlowBoxTemplate")
+		arrowFrame:SetSize (220, 100)
+		arrowFrame:SetFrameStrata ("TOOLTIP")
+		f.arrowFrame = arrowFrame
+		
+		arrowFrame.Text = arrowFrame:CreateFontString (nil, "overlay", "GameFontHighlightLeft")
+		arrowFrame.Text:SetWidth (200)
+		arrowFrame.Text:SetPoint ("TOPLEFT", 15, -15)
+		arrowFrame.Text:SetSpacing (4)
+		
+		arrowFrame.ArrowRIGHT = arrowFrame:CreateTexture (nil, "artwork", "HelpPlateArrowDOWN")
+		arrowFrame.ArrowRIGHT:Hide()
+		arrowFrame.ArrowRIGHT:SetSize (53, 21)
+		arrowFrame.ArrowRIGHT:SetPoint ("RIGHT", arrowFrame, "LEFT", 3, 0)
+		SetClampedTextureRotation (arrowFrame.ArrowRIGHT, 90)
+		
+		arrowFrame.ArrowGlowRIGHT = arrowFrame:CreateTexture (nil, "border", "HelpPlateArrow-GlowDOWN")
+		arrowFrame.ArrowGlowRIGHT:Hide()
+		arrowFrame.ArrowGlowRIGHT:SetSize (53, 21)
+		arrowFrame.ArrowGlowRIGHT:SetPoint ("RIGHT", arrowFrame, "LEFT", 3, 0)
+		SetClampedTextureRotation (arrowFrame.ArrowGlowRIGHT, 90)
+
+		arrowFrame.CloseButton = CreateFrame ("button", "IskarAssistNewArrow2CloseButton", arrowFrame, "UIPanelCloseButton")
+		arrowFrame.CloseButton:SetSize (20, 20)
+		arrowFrame.CloseButton:SetPoint ("TOPRIGHT", arrowFrame, "TOPRIGHT", 3, 3)
+		
+		arrowFrame:SetScript ("OnShow", function()
+			arrowFrame:SetHeight (arrowFrame.Text:GetHeight()+30)
+		end)
+		
+		arrowFrame.Text:SetText ("Raid Leader, you may want to see the Aura Check & Share plugin.")
+		arrowFrame:SetPoint ("right", RaidAssistOptionsPanel, "left", -20, 175)
+	end
+	do
+		local arrowFrame = CreateFrame ("frame", "IskarAssistNewArrow1", RaidAssistOptionsPanel, "GlowBoxTemplate")
+		arrowFrame:SetSize (220, 100)
+		arrowFrame:SetFrameStrata ("TOOLTIP")
+		f.arrowFrame = arrowFrame
+		
+		arrowFrame.Text = arrowFrame:CreateFontString (nil, "overlay", "GameFontHighlightLeft")
+		arrowFrame.Text:SetWidth (200)
+		arrowFrame.Text:SetPoint ("TOPLEFT", 15, -15)
+		arrowFrame.Text:SetSpacing (4)
+		
+		arrowFrame.ArrowRIGHT = arrowFrame:CreateTexture (nil, "artwork", "HelpPlateArrowDOWN")
+		arrowFrame.ArrowRIGHT:Hide()
+		arrowFrame.ArrowRIGHT:SetSize (53, 21)
+		arrowFrame.ArrowRIGHT:SetPoint ("RIGHT", arrowFrame, "LEFT", 3, 0)
+		SetClampedTextureRotation (arrowFrame.ArrowRIGHT, 90)
+		
+		arrowFrame.ArrowGlowRIGHT = arrowFrame:CreateTexture (nil, "border", "HelpPlateArrow-GlowDOWN")
+		arrowFrame.ArrowGlowRIGHT:Hide()
+		arrowFrame.ArrowGlowRIGHT:SetSize (53, 21)
+		arrowFrame.ArrowGlowRIGHT:SetPoint ("RIGHT", arrowFrame, "LEFT", 3, 0)
+		SetClampedTextureRotation (arrowFrame.ArrowGlowRIGHT, 90)
+		
+		arrowFrame.CloseButton = CreateFrame ("button", "IskarAssistNewArrow1CloseButton", arrowFrame, "UIPanelCloseButton")
+		arrowFrame.CloseButton:SetSize (20, 20)
+		arrowFrame.CloseButton:SetPoint ("TOPRIGHT", arrowFrame, "TOPRIGHT", 3, 3)
+		
+		arrowFrame:SetScript ("OnShow", function()
+			arrowFrame:SetHeight (arrowFrame.Text:GetHeight()+30)
+		end)
+		
+		arrowFrame.Text:SetText ("On Legion, Iskar plugins are being hosted by 'Raid Assist' addon. You can get it on curse client.")
+		arrowFrame:SetPoint ("right", RaidAssistOptionsPanel, "left", -20, 0)
+	end
+	
+	if (IskarAssistDB) then
+		IskarAssistDB.GotLegionHeadsUp = true
+	end
+	
+	--RaidAssist.OpenMainOptionsForPlugin (_G ["RaidAssistAuraCheck"])
 	
 -- end of frame creation
 end

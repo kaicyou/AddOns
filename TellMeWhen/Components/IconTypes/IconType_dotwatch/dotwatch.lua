@@ -45,12 +45,16 @@ Type.usePocketWatch = 1
 Type.unitType = "name"
 Type.canControlGroup = true
 
+local STATE_PRESENT = TMW.CONST.STATE.DEFAULT_SHOW
+local STATE_ABSENT = TMW.CONST.STATE.DEFAULT_HIDE
 
 -- AUTOMATICALLY GENERATED: UsesAttributes
+Type:UsesAttributes("state")
 Type:UsesAttributes("spell")
-Type:UsesAttributes("unit, GUID")
+Type:UsesAttributes("reverse")
+Type:UsesAttributes("stack, stackText")
 Type:UsesAttributes("start, duration")
-Type:UsesAttributes("alpha")
+Type:UsesAttributes("unit, GUID")
 Type:UsesAttributes("texture")
 -- END AUTOMATICALLY GENERATED: UsesAttributes
 
@@ -60,21 +64,18 @@ Type:UsesAttributes("texture")
 
 
 Type:RegisterConfigPanel_XMLTemplate(100, "TellMeWhen_ChooseName", {
-	OnSetup = function(self, panelInfo, supplementalData)
-		self:SetLabels(L["ICONMENU_CHOOSENAME2"], nil)
-	end,
+	title = L["ICONMENU_CHOOSENAME3"],
 
 	SUGType = "buff",
 })
 
-Type:RegisterConfigPanel_XMLTemplate(165, "TellMeWhen_WhenChecks", {
-	text = L["ICONMENU_SHOWWHEN"],
-	[ 0x2 ] = { text = "|cFF00FF00" .. L["ICONMENU_PRESENTONANY"], 	tooltipText = L["ICONMENU_DOTWATCH_AURASFOUND_DESC"],	},
-	[ 0x1 ] = { text = "|cFFFF0000" .. L["ICONMENU_ABSENTONALL"], 	tooltipText = L["ICONMENU_DOTWATCH_NOFOUND_DESC"],	},
+Type:RegisterConfigPanel_XMLTemplate(165, "TellMeWhen_IconStates", {
+	[ STATE_PRESENT ] = { text = "|cFF00FF00" .. L["ICONMENU_PRESENTONANY"], tooltipText = L["ICONMENU_DOTWATCH_AURASFOUND_DESC"], },
+	[ STATE_ABSENT  ] = { text = "|cFFFF0000" .. L["ICONMENU_ABSENTONALL"],  tooltipText = L["ICONMENU_DOTWATCH_NOFOUND_DESC"],    },
 })
 
 Type:RegisterConfigPanel_ConstructorFunc(10, "TellMeWhen_DotwatchSettings", function(self)
-	self.Header:SetText(L["ICONMENU_DOTWATCH_GCREQ"])
+	self:SetTitle(L["ICONMENU_DOTWATCH_GCREQ"])
 
 	self.text = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
 	self.text:SetWordWrap(true)
@@ -86,9 +87,12 @@ Type:RegisterConfigPanel_ConstructorFunc(10, "TellMeWhen_DotwatchSettings", func
 	self:SetScript("OnSizeChanged", function()
 		self:SetHeight(self.text:GetStringHeight() + 20)
 	end)
-	self.ShouldShow = function(self)
-		return not TMW.CI.icon:IsGroupController()
-	end
+
+	self:CScriptAdd("PanelSetup", function()
+		if TMW.CI.icon:IsGroupController() then
+			self:Hide()
+		end
+	end)
 end)
 
 -- Holds all dotwatch icons that we need to update.
@@ -133,6 +137,8 @@ local AllUnits = TMW:GetUnits(nil, [[
 	pet;
 	pettarget;
 	pettargettarget;
+	
+	nameplate1-30;
 
 	arena1-5;
 	arena1-5target;
@@ -431,8 +437,8 @@ end
 local function Dotwatch_OnUpdate_Controller(icon, time)
 
 	-- Upvalue things that will be referenced a lot in our loops.
-	local Alpha, UnAlpha, NameArray =
-	icon.Alpha, icon.UnAlpha, icon.Spells.Array
+	local NameArray = icon.Spells.Array
+	local presentAlpha = icon.States[STATE_PRESENT].Alpha
 		
 	for GUID, auras in pairs(Auras) do
 		local unit = nil
@@ -453,7 +459,7 @@ local function Dotwatch_OnUpdate_Controller(icon, time)
 				local remaining = duration - (time - start)
 
 				if remaining > 0 then
-					if Alpha > 0 and not icon:YieldInfo(true, iName, start, duration, aura.unitName, GUID, Alpha, aura.stacks) then
+					if presentAlpha > 0 and not icon:YieldInfo(true, iName, start, duration, aura.unitName, GUID, aura.stacks) then
 						-- YieldInfo returns true if we need to keep harvesting data. Otherwise, it returns false.
 						return
 					end
@@ -469,10 +475,10 @@ local function Dotwatch_OnUpdate_Controller(icon, time)
 	icon:YieldInfo(false)
 end
 
-function Type:HandleYieldedInfo(icon, iconToSet, name, start, duration, unit, GUID, alpha, stacks)
+function Type:HandleYieldedInfo(icon, iconToSet, name, start, duration, unit, GUID, stacks)
 	if name then
-		iconToSet:SetInfo("alpha; texture; start, duration; spell; unit, GUID; stack, stackText",
-			alpha,
+		iconToSet:SetInfo("state; texture; start, duration; spell; unit, GUID; stack, stackText",
+			STATE_PRESENT,
 			GetSpellTexture(name) or "Interface\\Icons\\INV_Misc_PocketWatch_01",
 			start, duration,
 			name,
@@ -480,8 +486,8 @@ function Type:HandleYieldedInfo(icon, iconToSet, name, start, duration, unit, GU
 			stacks, stacks
 		)
 	else
-		iconToSet:SetInfo("alpha; texture; start, duration; spell; unit, GUID; stack, stackText",
-			icon.UnAlpha,
+		iconToSet:SetInfo("state; texture; start, duration; spell; unit, GUID; stack, stackText",
+			STATE_ABSENT,
 			icon.FirstTexture,
 			0, 0,
 			icon.Spells.First,
@@ -506,7 +512,7 @@ function Type:Setup(icon)
 	Type:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	if not Type.CleanupTimer then
 		Type.CleanupTimer = C_Timer.NewTicker(30, CleanupOldAuras)
-		Type.VerifyTimer = C_Timer.NewTicker(0.001, VerifyAll)
+		TMW:RegisterCallback("TMW_ONUPDATE_TIMECONSTRAINED_PRE", VerifyAll)
 	end
 
 	icon.FirstTexture = GetSpellTexture(icon.Spells.First)
@@ -531,11 +537,11 @@ TMW:RegisterCallback("TMW_GLOBAL_UPDATE", function(event, icon)
 	pGUID = UnitGUID("player")
 
 	Type:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+
+	TMW:UnregisterCallback("TMW_ONUPDATE_TIMECONSTRAINED_PRE", VerifyAll)
 	if Type.CleanupTimer then
 		Type.CleanupTimer:Cancel()
 		Type.CleanupTimer = nil
-		Type.VerifyTimer:Cancel()
-		Type.VerifyTimer = nil
 		CleanupOldAuras()
 	end
 end)

@@ -1,10 +1,10 @@
-﻿-- $Id: Atlas_OutdoorRaids-ruRU.lua 4 2015-07-06 14:31:55Z arith $
+﻿-- $Id: Atlas_OutdoorRaids-ruRU.lua 13 2016-07-19 13:56:42Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2015 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 	This file is part of Atlas.
 
@@ -34,31 +34,32 @@
 --]]
 
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
-local AL = AceLocale:NewLocale("Atlas_OutdoorRaids", "ruRU", false);
--- Localize file must set above to false, for example:
---    local AL = AceLocale:NewLocale("Atlas_OutdoorRaids", "deDE", false);
+local L = AceLocale:NewLocale("Atlas_OutdoorRaids", "ruRU", false);
 
-if AL then
-	AL["Ancient Skull Pile"] = "Груда древних черепов";
-	AL["Darkscreecher Akkarai"] = "Темный Крикун Аккарай";
-	AL["Draenor World Bosses"] = "Боссы Дренора";
-	AL["Gezzarak the Huntress"] = "Геззарак Охотница";
-	AL["Grella <Skyguard Quartermaster>"] = "Грелла <Интендант Стражи небес>";
-	AL["Hazzik"] = "Хаззик";
-	AL["Hazzik's Package"] = " Сверток Хаззика";
-	AL["Karrog"] = "Каррог";
-	AL["Outdoor Raid Encounters"] = "Места внешних рейдовых схваток";
-	AL["Pandaria World Bosses"] = "Pandaria World Bosses";
-	AL["Sahaak <Keeper of Scrolls>"] = "Сахаак <Хранитель Свитков>";
-	AL["Severin <Skyguard Medic>"] = "Северин <Врач Стражи небес>";
-	AL["Skull Pile"] = "Груда черепов";
-	AL["Sky Commander Adaris"] = "Небесный командир Адарис";
-	AL["Sky Sergeant Doryn"] = "Небесный сержант Дорин";
-	AL["Skyguard Handler Deesak"] = "Укротитель Диисак из Стражи Небес";
-	AL["Skyguard Prisoner"] = "Плененный Страж Небес";
-	AL["Talonpriest Ishaal"] = "Жрец Когтя Ишааль";
-	AL["Talonpriest Skizzik"] = "Жрец Когтя Скиззик";
-	AL["Talonpriest Zellek"] = "Жрец Когтя Зеллек";
-	AL["Terokk"] = "Терокк";
-	AL["Vakkiz the Windrager"] = "Ваккиз Ветроярость";
+if L then
+L["Ancient Skull Pile"] = "Груда древних черепов"
+L["Darkscreecher Akkarai"] = "Темный Крикун Аккарай"
+L["Draenor World Bosses"] = "Боссы Дренора"
+L["Gezzarak the Huntress"] = "Геззарак Охотница"
+L["Grella <Skyguard Quartermaster>"] = "Грелла <Интендант Стражи небес>"
+L["Hazzik"] = "Хаззик"
+L["Hazzik's Package"] = " Сверток Хаззика"
+L["Karrog"] = "Каррог"
+L["Outdoor Raid Encounters"] = "Места внешних рейдовых схваток"
+L["Pandaria World Bosses"] = "Pandaria World Bosses"
+L["Sahaak <Keeper of Scrolls>"] = "Сахаак <Хранитель Свитков>"
+L["Severin <Skyguard Medic>"] = "Северин <Врач Стражи небес>"
+L["Skull Pile"] = "Груда черепов"
+L["Sky Commander Adaris"] = "Небесный командир Адарис"
+L["Skyguard Handler Deesak"] = "Укротитель Диисак из Стражи Небес"
+L["Skyguard Prisoner"] = "Плененный Страж Небес"
+L["Sky Sergeant Doryn"] = "Небесный сержант Дорин"
+L["Talonpriest Ishaal"] = "Жрец Когтя Ишааль"
+L["Talonpriest Skizzik"] = "Жрец Когтя Скиззик"
+L["Talonpriest Zellek"] = "Жрец Когтя Зеллек"
+L["Terokk"] = "Терокк"
+L["Vakkiz the Windrager"] = "Ваккиз Ветроярость"
+L["ToC/Description"] = "Места внешних рейдовых схваток" -- Needs review
+L["ToC/Title"] = "Atlas |r|cFF0099FF[Внешние Рейды]|r"
+
 end

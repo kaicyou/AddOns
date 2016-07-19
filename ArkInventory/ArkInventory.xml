@@ -122,13 +122,11 @@
 		<Layers>
 		
 			<Layer level="ARTWORK">
-			
 				<FontString name="$parentLabel" inherits="ARKINV_DataEntryLabelFont">
 					<Anchors>
 						<Anchor point="RIGHT" relativePoint="LEFT" x="-10" y="0" />
 					</Anchors>
 				</FontString>
-				
 			</Layer>
 			
 		</Layers>
@@ -253,7 +251,7 @@
 		
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString name="$parentArkNewText" inherits="ARKINV_NewItemFont" hidden="true" parentKey="ArkNewText">
+				<FontString name="$parentArkAgeText" inherits="ARKINV_NewItemFont" hidden="true" parentKey="ArkAgeText">
 					<Anchors>
 						<Anchor point="TOPLEFT" />
 					</Anchors>
@@ -303,15 +301,35 @@
 		<Scripts>
 			
 			<OnClick>
-				ArkInventory.Frame_Vault_Item_OnClick( self, button, down )
+				ArkInventory.Frame_Item_OnClick( self, button )
 			</OnClick>
 			
 			<OnDragStart>
-				ArkInventory.Frame_Vault_Item_OnClick( self )
+				ArkInventory.Frame_Item_OnClick( self )
 			</OnDragStart>
 			
 			<OnReceiveDrag>
-				ArkInventory.Frame_Vault_Item_OnClick( self )
+				ArkInventory.Frame_Item_OnClick( self )
+			</OnReceiveDrag>
+			
+		</Scripts>
+		
+	</Button>
+
+	<Button virtual="true" name="ARKINV_TemplateButtonMailItem" inherits="ARKINV_TemplateButtonItem" hidden="true">
+		
+		<Scripts>
+			
+			<OnClick>
+				ArkInventory.Frame_Item_OnClick( self, button )
+			</OnClick>
+			
+			<OnDragStart>
+				-- do nothing
+			</OnDragStart>
+			
+			<OnReceiveDrag>
+				-- do nothing
 			</OnReceiveDrag>
 			
 		</Scripts>
@@ -343,7 +361,7 @@
 		<Scripts>
 			
 			<OnClick>
-				ArkInventory.Frame_Item_OnClick_MountJournal( self, button, down )
+				ArkInventory.Frame_Item_OnClick( self, button )
 			</OnClick>
 			
 			<OnDragStart>
@@ -409,7 +427,7 @@
 		<Scripts>
 			
 			<OnClick>
-				ArkInventory.Frame_Item_OnClick_PetJournal( self, button, down )
+				ArkInventory.Frame_Item_OnClick( self, button )
 			</OnClick>
 			
 			<OnDragStart>
@@ -447,7 +465,7 @@
 		<Scripts>
 			
 			<OnClick>
-				ArkInventory.Frame_Item_OnClick_Toybox( self, button )
+				ArkInventory.Frame_Item_OnClick( self, button )
 			</OnClick>
 			
 			<OnDragStart>
@@ -547,13 +565,13 @@
 	</Button>
 	
 	<Button virtual="true" name="ARKINV_TemplateButtonBarEdit" inherits="ARKINV_TemplateButtonItem" hidden="true">
-
+		
 		<Size x="30" y="30" />
 		
 		<Anchors>
 			<Anchor point="TOPLEFT" />
 		</Anchors>
-
+		
 		<Layers>
 			<Layer level="BORDER">
 				<FontString name="$parentEditText" inherits="ARKINV_GameFontNormalHuge" justifyH="CENTER" justifyV="MIDDLE">
@@ -567,9 +585,7 @@
 		<Scripts>
 			
 			<OnLoad>
-				ArkInventory.Frame_Bar_OnLoad( self )
-				SetItemButtonTexture( self, [[Interface\Buttons\WHITE8X8]] )
-				SetItemButtonTextureVertexColor( self, 0.5, 0.1, 0.1, 0.3 )
+				ArkInventory.Frame_Bar_Edit_OnLoad( self )
 			</OnLoad>
 			
 			<OnEnter>
@@ -577,11 +593,11 @@
 			</OnEnter>
 			
 			<OnDragStart>
-				<!-- over-ride template -->
+				ArkInventory.Frame_Bar_Edit_OnDragStart( self )
 			</OnDragStart>
 			
 			<OnReceiveDrag>
-				<!-- over-ride template -->
+				ArkInventory.Frame_Bar_Edit_OnDragReceive( self )
 			</OnReceiveDrag>
 			
 			<OnUpdate>
@@ -592,22 +608,44 @@
 				<!-- over-ride template -->
 			</OnEvent>
 			
-			<OnMouseUp>
-				ArkInventory.MenuBarOpen( self )
-			</OnMouseUp>
-		
 			<OnShow>
 				_G[string.format( "%s%s", self:GetName( ), "EditText" )]:SetText( self:GetID( ) )
 			</OnShow>
 			
 			<OnClick>
-				<!-- over-ride template -->
+				ArkInventory.Frame_Bar_Edit_OnClick( self, button )
 			</OnClick>
-
+			
+			<OnMouseUp>
+				<!-- over-ride template -->
+			</OnMouseUp>
+			
 		</Scripts>
 		
 	</Button>
-
+	
+	<Button virtual="true" name="ARKINV_TemplateButtonBarXfer" hidden="true">
+		
+		<Size x="30" y="30" />
+		
+		<Anchors>
+			<Anchor point="TOPLEFT" />
+		</Anchors>
+		
+		<Scripts>
+			
+			<OnLoad>
+				ArkInventory.Frame_Bar_Xfer_OnLoad( self )
+			</OnLoad>
+			
+			<OnClick>
+				ArkInventory.Frame_Bar_Xfer_OnClick( self, button )
+			</OnClick>
+			
+		</Scripts>
+		
+	</Button>
+	
 	<Button virtual="true" name="ARKINV_TemplateButtonClose" inherits="ARKINV_TemplateButton">
 		<Size x="20" y="20" />
 		<NormalTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Up">
@@ -828,12 +866,18 @@
 		
 		<Frames>
 			<Button name="$parentEdit" inherits="ARKINV_TemplateButtonBarEdit" hidden="true" />
+			<Button name="$parentXfer" inherits="ARKINV_TemplateButtonBarXfer" hidden="true" />
+			
 		</Frames>
 		
 		<Scripts>
 			<OnLoad>
 				ArkInventory.Frame_Bar_OnLoad( self )
 			</OnLoad>
+			<OnShow>
+				ArkInventory.Frame_Bar_Paint( self )
+			</OnShow>
+			
 		</Scripts>
 
 	</Frame>
@@ -864,7 +908,7 @@
 			<Button name="$parentLocation0" inherits="ARKINV_TemplateButtonAction">
 				<Size x="42" y="42" />
 				<Anchors>
-					<Anchor point="TOPLEFT" x="8" y="-8" />
+					<Anchor point="LEFT" x="8" />
 				</Anchors>
 				<Scripts>
 					<OnClick>
@@ -876,9 +920,10 @@
 				</Scripts>
 			</Button>
 			
+			<!-- action button row -->
 			<Button name="$parentClose" inherits="ARKINV_TemplateButtonClose">
 				<Anchors>
-					<Anchor point="TOPRIGHT" x="-8" y="-8" />
+					<Anchor point="TOPRIGHT" x="-10" y="-10" />
 				</Anchors>
 				<Scripts>
 					<OnClick>
@@ -887,8 +932,6 @@
 				</Scripts>
 			</Button>
 			
-			
-			<!-- top action button row -->
 			<Button name="$parentActionButton11" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
 					<Anchor point="RIGHT" relativeTo="$parentClose" relativePoint="LEFT" x="-3" y="0" />
@@ -913,11 +956,9 @@
 				</Anchors>
 			</Button>
 			
-			
-			<!-- bottom action button row -->
 			<Button name="$parentActionButton21" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="TOP" relativeTo="$parentActionButton11" relativePoint="BOTTOM" x="0" y="-2" />
+					<Anchor point="RIGHT" relativeTo="$parentActionButton14" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 			
@@ -946,8 +987,9 @@
 						<FontString name="$parentWho" inherits="ARKINV_GameFontNormalHuge" justifyH="LEFT" text="?">
 							<Anchors>
 								<Anchor point="TOP" relativeTo="$parentLocation0" relativePoint="TOP" />
-								<Anchor point="BOTTOMLEFT" relativeTo="$parentLocation0" relativePoint="BOTTOMRIGHT" />
-								<Anchor point="RIGHT" relativeTo="$parentActionButton24" relativePoint="LEFT" />
+								<Anchor point="LEFT" relativeTo="$parentLocation0" relativePoint="RIGHT" x="10" />
+								<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT" />
+								<Anchor point="BOTTOM" relativeTo="$parentLocation0" relativePoint="BOTTOM" />
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -980,8 +1022,10 @@
 				<Size x="2" y="20" />
 				
 				<Anchors>
-					<Anchor point="LEFT" x="120" y="0" />
+					<Anchor point="LEFT" x="40" />
 					<Anchor point="RIGHT" relativeTo="$parentClear" relativePoint="LEFT" x="-2" y="0" />
+					<Anchor point="TOP" relativeTo="$parent" relativePoint="TOP" />
+					<Anchor point="BOTTOM" relativeTo="$parent" relativePoint="BOTTOM" />
 				</Anchors>
 				
 				<Scripts>
@@ -1124,14 +1168,12 @@
 		
 		<Layers>
 			<Layer level="ARTWORK">
-				
 				<FontString name="$parentEmptyText" inherits="ARKINV_GameFontNormalLarge" justifyH="LEFT" text="NO DATA">
 					<Anchors>
 						<Anchor point="LEFT" x="10" y="0" />
 					</Anchors>
 					<Color r="1" g="1" b="1" a="1" />
 				</FontString>
-				
 			</Layer>
 		</Layers>
 		
@@ -1519,142 +1561,6 @@
 		
 	</Frame>
 	
-	<Button virtual="true" name="ARKINV_TemplateTableRow" mouseEnabled="true" hidden="true">
-	
-		<Size x="1" y="1" />
-		
-		<Anchors>
-			<Anchor point="LEFT" />
-			<Anchor point="RIGHT" x="-20" y="0" />
-		</Anchors>
-		
-		<Layers>
-		
-			<Layer level="OVERLAY">
-			
-				<!-- objects in this layer are rearranged via LUA for each table -->
-				
-				<Texture name="$parentT1" inherits="ARKINV_TextureUnknown" hidden="true" />
-				<Texture name="$parentT2" inherits="ARKINV_TextureUnknown" hidden="true" />
-				<Texture name="$parentT3" inherits="ARKINV_TextureUnknown" hidden="true" />
-				<Texture name="$parentT4" inherits="ARKINV_TextureUnknown" hidden="true" />
-				<Texture name="$parentT5" inherits="ARKINV_TextureUnknown" hidden="true" />
-				
-				<FontString name="$parentC1" inherits="ARKINV_TableRowFont" hidden="true" />
-				<FontString name="$parentC2" inherits="ARKINV_TableRowFont" hidden="true" />
-				<FontString name="$parentC3" inherits="ARKINV_TableRowFont" hidden="true" />
-				<FontString name="$parentC4" inherits="ARKINV_TableRowFont" hidden="true" />
-				<FontString name="$parentC5" inherits="ARKINV_TableRowFont" hidden="true" />
-				
-				<FontString name="$parentData" inherits="ARKINV_TableRowFont" hidden="true" />
-				
-			</Layer>
-			
-			<Layer level="BACKGROUND">
-
-				<FontString name="$parentId" inherits="ARKINV_TableRowFont" hidden="true" />
-			
-				<Texture name="$parentHighlight" inherits="ARKINV_TextureHighlight">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="5" y="0" />
-						<Anchor point="BOTTOMRIGHT" x="-5" y="0" />
-					</Anchors>
-				</Texture>
-
-				<Texture name="$parentSelected" inherits="ARKINV_TextureSelected">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="5" y="0" />
-						<Anchor point="BOTTOMRIGHT" x="-5" y="0" />
-					</Anchors>
-				</Texture>
-
-			</Layer>
-
-		</Layers>
-
-		<Scripts>
-
-			<OnLoad>
-			
-				self:RegisterForClicks( "LeftButtonUp", "RightButtonUp" )
-				
-				function self.ArkTableRowOnClick( button )
-					local obj = _G[self:GetParent( ):GetName( )]
-					if obj and obj["ArkTableRowOnClick"] then
-						obj.ArkTableRowOnClick( self, button )
-					end
-				end
-				
-				function self.ArkTableRowOnEnter( )
-					local obj = _G[self:GetParent( ):GetName( )]
-					if obj and obj["ArkTableRowOnEnter"] then
-						obj.ArkTableRowOnEnter( self )
-					end
-				end
-				
-				function self.ArkTableRowOnLeave( )
-					local obj = _G[self:GetParent( ):GetName( )]
-					if obj and obj["ArkTableRowOnLeave"] then
-						obj.ArkTableRowOnLeave( self )
-					end
-				end
-				
-			</OnLoad>
-
-			<OnEnter>
-				_G[string.format( "%s%s", self:GetName( ), "Highlight" )]:Show( )
-				self.ArkTableRowOnEnter( )
-			</OnEnter>
-
-			<OnLeave>
-				_G[string.format( "%s%s", self:GetName( ), "Highlight" )]:Hide( )
-				self.ArkTableRowOnLeave( )
-			</OnLeave>
-
-			<OnClick>
-				
-				if button == "LeftButton" then
-					
-					PlaySound( "igMainMenuOptionCheckBoxOn" )
-					
-					local f = self:GetName( )
-					--ArkInventory.Output( "OnClick( ", f, ", ", button, " )" )
-					
-					local parent = self:GetParent( ):GetName( )
-					
-					local cs = _G[string.format( parent, "ArkSelectedRow" )]:GetText( )
-					local ns = tostring( self:GetID( ) )
-					
-					if ns == "0" then
-						ArkInventory.Output( "XML [", self:GetName( ), "] has no ID" )
-						return
-					end
-					
-					
-					-- show/hide the "selected" background
-					if cs ~= "-1" then
-						_G[string.format( "%s%s%s%s", parent, "Row", cs, "Selected" )]:Hide( )
-					end
-					
-					if cs == ns then
-						_G[string.format( "%s%s", parent, "ArkSelectedRow" )]:SetText( "-1" )
-						_G[string.format( "%s%s", parent, "ArkSelectedId" )]:SetText( "-1" )
-					else
-						_G[string.format( "%s%s", parent, "ArkSelectedRow" )]:SetText( ns )
-						_G[string.format( "%s%s", parent, "ArkSelectedId" )]:SetText( _G[string.format( "%s%s", f, "Id" )]:GetText( ) )
-						_G[string.format( "%s%s", f, "Selected" )]:Show( )
-					end
-					
-				end
-				
-				self.ArkTableRowOnClick( button )
-				
-			</OnClick>
-			
-		</Scripts>
-		
-	</Button>
-
 	
 <!-- ADDON FRAME STARTS HERE -->
 	

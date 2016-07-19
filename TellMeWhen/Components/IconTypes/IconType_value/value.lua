@@ -34,13 +34,16 @@ Type.hasNoGCD = true
 Type.canControlGroup = true
 Type.menuSpaceBefore = true
 
+local STATE_UNITFOUND = TMW.CONST.STATE.DEFAULT_SHOW
+local STATE_NOUNIT = TMW.CONST.STATE.DEFAULT_HIDE
+
 Type:SetAllowanceForView("icon", false)
 
 
 -- AUTOMATICALLY GENERATED: UsesAttributes
 Type:UsesAttributes("value, maxValue, valueColor")
+Type:UsesAttributes("state")
 Type:UsesAttributes("unit, GUID")
-Type:UsesAttributes("alpha")
 Type:UsesAttributes("texture")
 -- END AUTOMATICALLY GENERATED: UsesAttributes
 
@@ -63,65 +66,64 @@ Type:RegisterConfigPanel_XMLTemplate(105, "TellMeWhen_Unit", {
 	implementsConditions = true,
 })
 
-Type:RegisterConfigPanel_XMLTemplate(165, "TellMeWhen_WhenChecks", {
-	text = L["ICONMENU_SHOWWHEN"],
-	[0x2] = { text = "|cFF00FF00" .. L["ICONMENU_VALUE_HASUNIT"],			},
-	[0x1] = { text = "|cFFFF0000" .. L["ICONMENU_VALUE_NOUNIT"],		},
+Type:RegisterConfigPanel_XMLTemplate(165, "TellMeWhen_IconStates", {
+	[STATE_UNITFOUND] = { text = "|cFF00FF00" .. L["ICONMENU_VALUE_HASUNIT"], },
+	[STATE_NOUNIT]    = { text = "|cFFFF0000" .. L["ICONMENU_VALUE_NOUNIT"],  },
 })
 
 Type:RegisterConfigPanel_ConstructorFunc(100, "TellMeWhen_ValueSettings", function(self)
-	self.Header:SetText(L["ICONMENU_VALUE_POWERTYPE"])
+	self:SetTitle(L["ICONMENU_VALUE_POWERTYPE"])
 
 	local types = {
 		[-2] = L["CONDITIONPANEL_POWER"],
 		[-1] = HEALTH,
 
 	    [SPELL_POWER_MANA] = MANA,
-	    [SPELL_POWER_RAGE] = RAGE,
-	    [SPELL_POWER_FOCUS] = FOCUS,
-	    [SPELL_POWER_ENERGY] = ENERGY,
-	    [4] = L["CONDITIONPANEL_COMBO"],
-	    [SPELL_POWER_RUNES] = RUNES,
-	    [SPELL_POWER_RUNIC_POWER] = RUNIC_POWER,
-	    [SPELL_POWER_SOUL_SHARDS] = SOUL_SHARDS,
-	    [SPELL_POWER_ECLIPSE] = L["ECLIPSE"],
-	    [SPELL_POWER_HOLY_POWER] = HOLY_POWER,
+		[SPELL_POWER_RAGE] = RAGE,
+		[SPELL_POWER_ENERGY] = ENERGY,
+		[SPELL_POWER_COMBO_POINTS] = COMBO_POINTS,
+		[SPELL_POWER_FOCUS] = FOCUS,
+		-- [SPELL_POWER_RUNES] = RUNES,
+		[SPELL_POWER_RUNIC_POWER] = RUNIC_POWER,
+		[SPELL_POWER_SOUL_SHARDS] = SOUL_SHARDS,
+		[SPELL_POWER_HOLY_POWER] = HOLY_POWER,
+		[SPELL_POWER_CHI] = CHI_POWER;
+		[SPELL_POWER_MAELSTROM] = MAELSTROM_POWER,
+		[SPELL_POWER_ARCANE_CHARGES] = ARCANE_CHARGES_POWER,
+		[SPELL_POWER_LUNAR_POWER] = LUNAR_POWER,
+		[SPELL_POWER_INSANITY] = INSANITY_POWER,
+		[SPELL_POWER_FURY] = FURY,
+		[SPELL_POWER_PAIN] = PAIN,
 	    [SPELL_POWER_ALTERNATE_POWER] = L["CONDITIONPANEL_ALTPOWER"],
-	    --[11] = DARK_FORCE,
-	    [SPELL_POWER_CHI] = CHI,
-	    [SPELL_POWER_SHADOW_ORBS] = SHADOW_ORBS,
-	    [SPELL_POWER_BURNING_EMBERS] = BURNING_EMBERS,
-	    [SPELL_POWER_DEMONIC_FURY] = DEMONIC_FURY,
-
-		--[100] = L["CONDITIONPANEL_COMBO"],
 	}
 
-	self.PowerType = TMW.C.Config_DropDownMenu:New("Frame", "$parent", self, "TMW_DropDownMenuTemplate", nil, {
-		title = L["ICONMENU_VALUE_POWERTYPE"],
-		tooltip = L["ICONMENU_VALUE_POWERTYPE_DESC"],
-		clickFunc = function(button, arg1)
-			TMW.CI.ics.PowerType = arg1
-			self.PowerType:SetText(button.value)
-			TMW.IE:Load(1)
-		end,
-		func = function(self)
-			for id, name in TMW:OrderedPairs(types) do
-				local info = TMW.DD:CreateInfo()
-				info.text = name
-				info.func = self.data.clickFunc
-				info.arg1 = id
-				info.checked = info.arg1 == TMW.CI.ics.PowerType
-				TMW.DD:AddButton(info)
-			end
-		end,
-	})
+
+
+	self.PowerType = TMW.C.Config_DropDownMenu:New("Frame", "$parent", self, "TMW_DropDownMenuTemplate")
+
+	self.PowerType:SetTexts(L["ICONMENU_VALUE_POWERTYPE"], L["ICONMENU_VALUE_POWERTYPE_DESC"])
+	local function DropdownOnClick(button, arg1)
+		TMW.CI.ics.PowerType = arg1
+		self.PowerType:SetText(button.value)
+		TMW.IE:LoadIcon(1)
+	end
+	self.PowerType:SetFunction(function(self)
+		for id, name in TMW:OrderedPairs(types) do
+			local info = TMW.DD:CreateInfo()
+			info.text = name
+			info.func = DropdownOnClick
+			info.arg1 = id
+			info.checked = info.arg1 == TMW.CI.ics.PowerType
+			TMW.DD:AddButton(info)
+		end
+	end)
 
 	self:SetHeight(36)
-	self.PowerType:SetDropdownAnchor("TOPRIGHT", self.PowerType.Middle, "BOTTOMRIGHT")
+	-- self.PowerType:SetDropdownAnchor("TOPRIGHT", self.PowerType.Middle, "BOTTOMRIGHT")
 	self.PowerType:SetPoint("TOPLEFT", 5, -5)
 	self.PowerType:SetPoint("RIGHT", -5, 0)
 
-	TMW:RegisterCallback("TMW_CONFIG_ICON_LOADED", function()
+	self:CScriptAdd("ReloadRequested", function()
 		self.PowerType:SetText(types[TMW.CI.ics.PowerType])
 	end)
 end)
@@ -130,9 +132,8 @@ end)
 
 TMW:RegisterUpgrade(72011, {
 	icon = function(self, ics)
-		-- Apparently UnitPower("player", 4) now tracks combo points.
 		if ics.PowerType == 100 then
-			ics.PowerType = 4
+			ics.PowerType = SPELL_POWER_COMBO_POINTS
 		end
 	end,
 })
@@ -144,16 +145,6 @@ for k, v in pairs(PowerBarColor) do
 	v.a = 1
 end
 PowerBarColor[-1] = {{r=1, g=0, b=0, a=1}, {r=1, g=1, b=0, a=1}, {r=0, g=1, b=0, a=1}}
-PowerBarColor[SPELL_POWER_SHADOW_ORBS] = {r=116/255, g= 9/255, b=191/255, a=1}
-PowerBarColor[SPELL_POWER_BURNING_EMBERS] = PowerBarColor["BURNING_EMBERS"]
-PowerBarColor[SPELL_POWER_DEMONIC_FURY] = PowerBarColor["DEMONIC_FURY"]
-PowerBarColor[SPELL_POWER_ECLIPSE].negative.a = 1
-PowerBarColor[SPELL_POWER_ECLIPSE].positive.a = 1
-
-local hasParts = {
-	[SPELL_POWER_SOUL_SHARDS] = true,
-	[SPELL_POWER_BURNING_EMBERS] = true,
-}
 
 local function Value_OnUpdate(icon, time)
 	local PowerType = icon.PowerType
@@ -175,20 +166,7 @@ local function Value_OnUpdate(icon, time)
 					unit = "player"
 				end
 				
-				local hasParts = hasParts[PowerType]
-				value, maxValue, valueColor = UnitPower(unit, PowerType, hasParts), UnitPowerMax(unit, PowerType, hasParts), PowerBarColor[PowerType]
-				if PowerType == SPELL_POWER_ECLIPSE then
-					if GetEclipseDirection() == "none" then
-						value = 0
-					end
-					if value < 0 then
-						valueColor = valueColor.negative
-					else
-						valueColor = valueColor.positive
-					end
-					value = value + 100
-					maxValue = maxValue + 100
-				end
+				value, maxValue, valueColor = UnitPower(unit, PowerType), UnitPowerMax(unit, PowerType), PowerBarColor[PowerType]
 			end
 
 			if not icon:YieldInfo(true, unit, value, maxValue, valueColor) then
@@ -202,14 +180,14 @@ end
 
 function Type:HandleYieldedInfo(icon, iconToSet, unit, value, maxValue, valueColor)
 	if unit then
-		iconToSet:SetInfo("alpha; value, maxValue, valueColor; unit, GUID",
-			icon.Alpha,
+		iconToSet:SetInfo("state; value, maxValue, valueColor; unit, GUID",
+			STATE_UNITFOUND,
 			value, maxValue, valueColor,
 			unit, nil
 		)
 	else
-		iconToSet:SetInfo("alpha; value, maxValue, valueColor; unit, GUID",
-			icon.UnAlpha,
+		iconToSet:SetInfo("state; value, maxValue, valueColor; unit, GUID",
+			STATE_NOUNIT,
 			0, 0, nil,
 			nil, nil
 		)

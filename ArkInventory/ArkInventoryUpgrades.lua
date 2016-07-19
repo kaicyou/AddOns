@@ -8,12 +8,17 @@ local error = _G.error
 local table = _G.table
 
 
-function ArkInventory.CategoryRenumber( cat_old, cat_new )
+local function categoryRenumber( cat_old, cat_new )
 	
 	-- fix hard coded item assignments
-	for k, v in pairs( ArkInventory.db.profile.option.category ) do
-		if v == cat_old then
-			ArkInventory.db.profile.option.category[k] = cat_new
+	
+	if ArkInventory.db.global.option.cateset then
+		for k, v in pairs( ArkInventory.db.global.option.cateset.data ) do
+			for k2, v2 in pairs( v.category.assign ) do
+				if v2 == cat_old then
+					v.category.assign[k2] = cat_new
+				end
+			end
 		end
 	end
 	
@@ -55,7 +60,7 @@ function ArkInventory.DatabaseUpgradePreLoad( )
 						
 						if string.sub( n, 1, 1 ) ~= "!" then
 							
-							local k = string.format( "%s%s%s", n, ArkInventory.Const.PlayerIDTag, r )
+							local k = string.format( "%s%s%s", n, ArkInventory.Const.PlayerIDSep, r )
 							ARKINVDB.global.player.data[k] = v2
 							ARKINVDB.global.player.data[k].location = nil
 							ARKINVDB.global.player.data[k].version = v1.player.version or ArkInventory.Const.Program.Version
@@ -66,7 +71,7 @@ function ArkInventory.DatabaseUpgradePreLoad( )
 							i.player_id = k
 							i.guild_id = nil
 							if i.guild then
-								i.guild_id = string.format( "%s%s%s%s", ArkInventory.Const.GuildTag, i.guild, ArkInventory.Const.PlayerIDTag, r )
+								i.guild_id = string.format( "%s%s%s%s", ArkInventory.Const.GuildTag, i.guild, ArkInventory.Const.PlayerIDSep, r )
 							end
 							i.guild = nil
 							
@@ -112,6 +117,12 @@ end
 function ArkInventory.DatabaseUpgradePostLoad( )
 	
 	--ArkInventory.Output( LIGHTYELLOW_FONT_COLOR_CODE, "DatabaseUpgradePostLoad" )
+	
+	if ArkInventory.Const.TOC < 70000 then
+		-- to stop people from screwing up their data
+		ArkInventory.OutputError( ArkInventory.Localise["TOC_FAIL"] )
+		return
+	end
 	
 	local upgrade_version
 	
@@ -393,17 +404,9 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 			
 			
 				if v.slot.empty then
-					
-					if v.slot.empty.colour then
-						v.changer.freespace.colour.r = v.slot.empty.colour.r or v.changer.freespace.colour.r
-						v.changer.freespace.colour.g = v.slot.empty.colour.g or v.changer.freespace.colour.g
-						v.changer.freespace.colour.g = v.slot.empty.colour.b or v.changer.freespace.colour.b
-						v.slot.empty.colour = nil
-					end
-			
+					v.slot.empty.colour = nil
 					v.slot.empty.display = nil
 					v.slot.empty.show = nil
-					
 				end
 			
 			end
@@ -411,9 +414,6 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 			v.sortorder = nil
 			
 			wipe( v.sort )
-			v.sort.open = false
-			v.sort.instant = false
-			v.sort.default = 0
 			
 		end
 		
@@ -624,42 +624,6 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		end
 	end
 
-	if ArkInventory.db.profile.option.version < upgrade_version then
-		
-		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], ArkInventory.db:GetCurrentProfile( ), upgrade_version ) )
-		
-		ArkInventory.CategoryRenumber( "1!421", "1!410" ) -- arrow > projectile
-		ArkInventory.CategoryRenumber( "1!422", "1!410" ) -- bullet > projectile
-		ArkInventory.CategoryRenumber( "1!311", "1!410" ) -- arrow > projectile
-		ArkInventory.CategoryRenumber( "1!310", "1!410" ) -- bullet > projectile
-		ArkInventory.CategoryRenumber( "1!114", "1!415" ) -- riding > mount
-		
-		
-		ArkInventory.db.profile.option.version = upgrade_version
-		
-	end
-	
-	
-	upgrade_version = 3.0257
-	if ArkInventory.db.profile.option.version < upgrade_version then
-		
-		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], ArkInventory.db:GetCurrentProfile( ), upgrade_version ) )
-		
-		ArkInventory.CategoryRenumber( "1!413", nil ) -- soul shard
-		ArkInventory.CategoryRenumber( "1!304", nil ) -- empty soul shard
-		
-		ArkInventory.CategoryRenumber( "1!310", nil ) -- bullet
-		ArkInventory.CategoryRenumber( "1!311", nil ) -- arrow
-		ArkInventory.CategoryRenumber( "1!410", nil ) -- projectile
-		
-		ArkInventory.CategoryRenumber( "1!508", "1!510" ) -- weapon enchanement > item enchantment
-		ArkInventory.CategoryRenumber( "1!509", "1!510" ) -- armor enchanement > item enchantment
-		
-		
-		ArkInventory.db.profile.option.version = upgrade_version
-		
-	end
-	
 	
 	upgrade_version = 3.0260
 	if ArkInventory.db.profile.option.version < upgrade_version then
@@ -805,8 +769,10 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], ArkInventory.db:GetCurrentProfile( ), upgrade_version ) )
 		
 		for k, v in pairs( ArkInventory.db.profile.option.location ) do
-			v.sort.method = v.sort.default or v.sort.method or 9999
-			v.sort.default = nil
+			if v.sort then
+				v.sort.method = v.sort.default or v.sort.method or 9999
+				v.sort.default = nil
+			end
 		end
 		
 		ArkInventory.db.profile.option.version = upgrade_version
@@ -826,11 +792,13 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], ArkInventory.db:GetCurrentProfile( ), upgrade_version ) )
 		
 		for k, v in pairs( ArkInventory.db.profile.option.location ) do
-			if type( v.slot.empty.first ) == "boolean" then
-				if v.slot.empty.first then
-					v.slot.empty.first = 1
-				else
-					v.slot.empty.first = 0
+			if v.slot and v.slot.empty then
+				if type( v.slot.empty.first ) == "boolean" then
+					if v.slot.empty.first then
+						v.slot.empty.first = 1
+					else
+						v.slot.empty.first = 0
+					end
 				end
 			end
 		end
@@ -859,7 +827,7 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		
 		for k, v in pairs( ArkInventory.db.profile.option.location ) do
 			
-			if v.slot.new.show then
+			if v.slot and v.slot.new and v.slot.new.show then
 				
 				v.slot.age.show = v.slot.new.show
 				v.slot.new.show = nil
@@ -887,20 +855,374 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 	if ArkInventory.db.global.player.version < upgrade_version then
 		ArkInventory.EraseSavedData( nil, nil, true )
 	end
+	
+	
+	-- LEGION
+	
+	upgrade_version = 30602
+	if ArkInventory.db.profile.option.version < upgrade_version then
+		
+		local profilename = ArkInventory.db:GetCurrentProfile( )
+		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], profilename, upgrade_version ) )
+		
+		local temp_use = { }
+		local catset = nil
+		
+		if ArkInventory.db.profile.option.category or ArkInventory.db.profile.option.rule then
+			
+			local id, data = ArkInventory.ConfigInternalCategorysetAdd( ArkInventory.db:GetCurrentProfile( ) )
+			
+			if id then
+				
+				catset = id
+				
+				if ArkInventory.db.profile.option.category then
+					ArkInventory.Table.Merge( ArkInventory.db.profile.option.category, data.category.assign )
+				end
+				ArkInventory.db.profile.option.category = nil
+				
+				if ArkInventory.db.profile.option.rule then
+					ArkInventory.Table.Merge( ArkInventory.db.profile.option.rule, data.category.active[ArkInventory.Const.Category.Type.Rule] )
+				end
+				
+				ArkInventory.db.profile.option.rule = nil
+				
+				for k, v in pairs( ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Custom].data ) do
+					if v.used ~= "N" then
+						data.category.active[ArkInventory.Const.Category.Type.Custom][k] = true
+					end
+				end
+				
+			end
+			
+		end
+		
+		if ArkInventory.db.profile.option.location then
+			
+			for loc_id, loc_data in pairs( ArkInventory.db.profile.option.location ) do
+				
+				if ArkInventory.Global.Location[loc_id] and ArkInventory.Global.Location[loc_id].canView then
+					
+					local n = string.format( "%s - %s", ArkInventory.db:GetCurrentProfile( ), ArkInventory.Global.Location[loc_id].Name or loc_id )
+					
+					loc_data.layout = nil
+					loc_data.theme = nil
+					
+					if loc_data.bar and loc_data.bar.data then
+						for k, v in pairs( loc_data.bar.data ) do
+							if v.sortorder then
+								if not v.sort then
+									v.sort = { }
+								end
+								v.sort.method = v.sortorder
+								v.sortorder = nil
+							end
+						end
+					end
+					
+					if not ArkInventory.Table.Subset( loc_data, ArkInventory.db.global.option.design.data[0] ) then
+						
+						-- move data
+						local id, design = ArkInventory.ConfigInternalDesignAdd( "transfer" )
+						if id then
+							
+							ArkInventory.Output( "transferring profile data to design ", n )
+						
+							ArkInventory.Table.Merge( loc_data, design )
+							
+							design.used = "Y"
+							design.name = string.trim( n )
+							
+							if ArkInventory.db.profile.option.use then
+								
+								for k, v in pairs( ArkInventory.db.profile.option.use ) do
+									if v == loc_id then
+										temp_use[k] = id
+									end
+								end
+								
+								if ArkInventory.db.profile.option.use[loc_id] == nil then
+									temp_use[loc_id] = id
+								end
+								
+							end
+							
+						end
+						
+					end
+					
+				end
+				
+			end
+			
+			ArkInventory.db.profile.option.location = nil
+			
+		end
+		
+		for k1, v1 in pairs( ARKINVDB.profileKeys ) do
+			if v1 == profilename then
+				local player = ArkInventory.PlayerDataGet( k1 )
+				for k2, v2 in pairs( temp_use ) do
+					player.data.option[k2].layout = v2
+					player.data.option[k2].style = v2
+					player.data.option[k2].catset = catset
+				end
+			end
+		end
+		
+		for _, v in pairs( ArkInventory.db.global.option.category ) do
+			for id, x in pairs( v.data ) do
+				if id == 0 then
+					ArkInventory.ConfigInternalCategoryCustomPurge( id )
+				elseif x.used == true then
+					x.used = "Y"
+				elseif v.used == "N" then
+					x.used = "D"
+				end
+			end
+		end
+		
+		for id, v in pairs( ArkInventory.db.global.option.sort.method.data ) do
+			if id == 0 then
+				ArkInventory.ConfigInternalSortMethodPurge( id )
+			elseif v.used == true then
+				v.used = "Y"
+			elseif v.used == "N" then
+				v.used = "D"
+			end
+		end
+		
+		ArkInventory.db.profile.option.use = nil
+		
+		ArkInventory.db.profile.option.version = upgrade_version
+		
+	end
+	
+	if ArkInventory.db.global.player.version < upgrade_version then
+		
+		for _, data in pairs( ArkInventory.db.global.player.data ) do
+			
+			for k, v in pairs( data.monitor or { } ) do
+				data.option[k].monitor = v
+			end
+			data.monitor = nil
+			
+			for k, v in pairs( data.save or { } ) do
+				data.option[k].save = v
+			end
+			data.save = nil
+			
+			for k, v in pairs( data.control or { } ) do
+				data.option[k].override = v
+			end
+			data.control = nil
+			
+			for loc_id, v in pairs( data.bagoptions or { } ) do
+				for bag_id, v2 in pairs( v ) do
+					data.option[loc_id].bag[bag_id] = ArkInventory.Table.Copy( v )
+				end
+			end
+			data.bagoptions = nil
+			
+		end
+		
+		for k, v in pairs( ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Custom].data ) do
+			if v.used == true then
+				v.used = "Y"
+			elseif v.used == "N" then
+				v.used = "D"
+			end
+		end
 
-
+		ArkInventory.db.global.player.version = upgrade_version
+		
+	end
+	
+	
+	upgrade_version = 30603
+	if ArkInventory.db.global.option.version < upgrade_version then
+		
+		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_GLOBAL"], "option", upgrade_version ) )
+		
+		ArkInventory.db.global.option.restack.cleanup = nil
+		
+		ArkInventory.db.global.option.version = upgrade_version
+		
+	end
+	
+	
+	upgrade_version = 30604
+	if ArkInventory.db.profile.option.version < upgrade_version then
+		
+		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], ArkInventory.db:GetCurrentProfile( ), upgrade_version ) )
+		
+		local player = ArkInventory.PlayerDataGet( )
+		
+		if ArkInventory.db.profile.option.category or ArkInventory.db.profile.option.rule then
+			
+			local id, data = ArkInventory.ConfigInternalCategorysetAdd( ArkInventory.db:GetCurrentProfile( ) )
+			
+			if id then
+				
+				catset = id
+				
+				if ArkInventory.db.profile.option.category then
+					ArkInventory.Table.Merge( ArkInventory.db.profile.option.category, data.category.assign )
+				end
+				ArkInventory.db.profile.option.category = nil
+				
+				if ArkInventory.db.profile.option.rule then
+					ArkInventory.Table.Merge( ArkInventory.db.profile.option.rule, data.category.active[ArkInventory.Const.Category.Type.Rule] )
+				end
+				ArkInventory.db.profile.option.rule = nil
+				
+				for k, v in pairs( ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Custom].data ) do
+					if v.used ~= "N" then
+						data.category.active[ArkInventory.Const.Category.Type.Custom][k] = true
+					end
+				end
+				
+			end
+			
+		end
+		
+		if ArkInventory.db.profile.option.layout then
+				for k, v in pairs( ArkInventory.db.profile.option.layout ) do
+				player.option[k].layout = v
+			end
+		end
+		
+		if ArkInventory.db.profile.option.style then
+			for k, v in pairs( ArkInventory.db.profile.option.style ) do
+				player.option[k].style = v
+			end
+		end
+		
+		if ArkInventory.db.profile.option.catset then
+			for k, v in pairs( ArkInventory.db.profile.option.catset ) do
+				player.option[k].catset = v
+			end
+		end
+		
+		ArkInventory.db.profile.option.font = nil
+		ArkInventory.db.profile.option.frameStrata = nil
+		
+		ArkInventory.db.profile.option.version = upgrade_version
+		
+	end
+	
+	if ArkInventory.db.global.option.version < upgrade_version then
+		
+		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_GLOBAL"], "option", upgrade_version ) )
+		
+		for v1, v2 in pairs( ArkInventory.db.global.option.design.data ) do
+			
+			v2.slot.znew = nil
+			
+			for k, v in pairs( v2.slot.data ) do
+				v.name = nil
+				v.type = nil
+				v.long = nil
+				v.emptycolour = nil
+				v.hide = nil
+			end
+			
+			if v2.font.name then
+				v2.font.face = v2.font.name
+				v2.font.name = nil
+			end
+			
+			for v3, v4 in pairs( v2.bar.data ) do
+				if v4.label then
+					v4.name.text = v4.label
+					v4.label = nil
+				end
+			end
+			
+		end
+		
+		for v1, v2 in pairs( ArkInventory.db.global.option.catset.data ) do
+			
+			for k, v in pairs( v2.category ) do
+				if type( v ) ~= "table" then
+					v2.category.active[ArkInventory.Const.Category.Type.Rule][k] = v
+					v2.category[k] = nil
+				end
+			end
+			
+			if v2.rule then
+				
+				for k, v in pairs( v2.rule ) do
+					v2.category.active[ArkInventory.Const.Category.Type.Rule][k] = v
+				end
+				
+				v2.rule = nil
+				
+			end
+			
+		end
+		
+		
+		categoryRenumber( "1!114", "1!415" ) -- riding > SYSTEM_MOUNT
+		categoryRenumber( "1!304", nil ) -- empty soul shard
+		categoryRenumber( "1!310", nil ) -- bullet > projectile
+		categoryRenumber( "1!311", nil ) -- arrow > projectile
+		categoryRenumber( "1!410", nil ) -- projectile
+		categoryRenumber( "1!413", nil ) -- soul shard
+		categoryRenumber( "1!421", nil ) -- arrow > projectile
+		categoryRenumber( "1!422", nil ) -- bullet > projectile
+		
+		categoryRenumber( "1!508", "1!510" ) -- weapon enchantment > TRADEGOODS_ENCHANTMENT
+		categoryRenumber( "1!509", "1!510" ) -- armor enchantment > TRADEGOODS_ENCHANTMENT
+		
+		categoryRenumber( "1!425", "1!426" ) -- TRADEGOODS_DEVICES > CONSUMABLES_EXPLOSIVES_AND_DEVICES
+		categoryRenumber( "1!433", nil ) -- CONSUMABLE_SCROLL
+		categoryRenumber( "1!507", nil ) -- TRADEGOODS_MATERIALS
+		categoryRenumber( "1!510", "1!440" ) -- TRADEGOODS_ENCHANTMENT > SYSTEM_ITEM_ENHANCEMENT
+		
+		ArkInventory.db.global.option.version = upgrade_version
+		
+	end
+	
+	
+	upgrade_version = 30605
+	if ArkInventory.db.profile.option.version < upgrade_version then
+		
+		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], ArkInventory.db:GetCurrentProfile( ), upgrade_version ) )
+		
+		ArkInventory.db.profile.option.ui = nil
+		
+		ArkInventory.db.profile.option.version = upgrade_version
+		
+	end
 	
 	
 	
 	
-	ArkInventory.db.profile.option.category["0:0"] = nil
+	
+	
 	
 	if ArkInventory.db.global.vendor then
 		ArkInventory.db.global.vendor = nil
 	end
 	
+	
 	-- check sort keys
-	ArkInventory.SortingMethodCheck( )
+	ArkInventory.ConfigInternalSortMethodCheck( )
+	
+	
+	-- check for character rename and move old data to new name
+	ArkInventory.Global.Me.data.info.renamecheck = true
+	for k, v in pairs( ArkInventory.db.global.player.data ) do
+		if ArkInventory.Global.Me.data.info.guid and ArkInventory.Global.Me.data.info.guid == v.info.guid and not v.info.renamecheck then
+			ArkInventory.db.global.player.data[ArkInventory.Global.Me.data.info.player_id] = ArkInventory.Table.Copy( v )
+			ArkInventory.Output( "character was renamed from ", v.info.name, " to ", ArkInventory.Global.Me.data.info.name, ", data has been transferred" )
+			ArkInventory.db.global.player.data[v.info.player_id] = ArkInventory.Table.Copy( ArkInventory.db.global.player.data[""] )
+			break
+		end
+	end
+	ArkInventory.Global.Me.data.info.renamecheck = nil
+	
 	
 	-- set versions to current mod version
 	ArkInventory.db.global.option.version = ArkInventory.Const.Program.Version

@@ -1,4 +1,4 @@
--- $Id: Atlas_OutdoorRaids.lua 11 2016-05-13 05:34:36Z arith $
+-- $Id: Atlas_OutdoorRaids.lua 13 2016-07-19 13:56:42Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -25,9 +25,9 @@
 --]]
 
 local BZ = Atlas_GetLocaleLibBabble("LibBabble-SubZone-3.0");
-local AL = LibStub("AceLocale-3.0"):GetLocale("Atlas_OutdoorRaids");
+local BF = Atlas_GetLocaleLibBabble("LibBabble-Faction-3.0");
+local L = LibStub("AceLocale-3.0"):GetLocale("Atlas_OutdoorRaids");
 local ALC = LibStub("AceLocale-3.0"):GetLocale("Atlas");
-local ALIL = Atlas_IngameLocales;
 
 local BLUE = "|cff6666ff";
 local GREN = "|cff66cc33";
@@ -40,7 +40,7 @@ local WHIT = "|cffffffff";
 local YLOW = "|cffcccc33";
 local INDENT = "      ";
 
-local myCategory = AL["Outdoor Raid Encounters"];
+local myCategory = L["Outdoor Raid Encounters"];
 
 local myData = {
 	OR_DoomLordKazzak = {
@@ -62,7 +62,7 @@ local myData = {
 		{ WHIT.."1) "..Atlas_GetBossName("Doomwalker"), 10001 };
 	};
 	OR_Draenor = {
-		ZoneName = { AL["Draenor World Bosses"] };
+		ZoneName = { L["Draenor World Bosses"] };
 		Location = { BZ["Draenor"] };
 		LevelRange = "100+";
 		PlayerLimit = "--";
@@ -76,7 +76,7 @@ local myData = {
 		{ WHIT.." 4) "..Atlas_GetBossName("Supreme Lord Kazzak", 1452) };
 	};
 	OR_Pandaria = {
-		ZoneName = { AL["Pandaria World Bosses"] };
+		ZoneName = { L["Pandaria World Bosses"] };
 		Location = { BZ["Pandaria"] };
 		LevelRange = "90+";
 		PlayerLimit = "--";
@@ -88,7 +88,7 @@ local myData = {
 		{ WHIT..INDENT..Atlas_GetBossName("Galleon", 725, 1) };
 		{ WHIT..INDENT..Atlas_GetBossName("Chief Salyis", 725, 2) };
 		{ WHIT.." 5) "..Atlas_GetBossName("Ordos, Fire-God of the Yaungol", 861) };
-		{ WHIT.." 6) "..ALIL["The August Celestials"] };
+		{ WHIT.." 6) "..BF["The August Celestials"] };
 		{ WHIT..INDENT..Atlas_GetBossName("Chi-Ji, The Red Crane", 857) };
 		{ WHIT..INDENT..Atlas_GetBossName("Niuzao, The Black Ox", 859) };
 		{ WHIT..INDENT..Atlas_GetBossName("Xuen, The White Tiger", 860) };
@@ -100,26 +100,26 @@ local myData = {
 		LevelRange = "70+";
 		PlayerLimit = "40";
 		{ WHIT.."1) "..BZ["Blackwind Landing"], 10001 };
-		{ WHIT..INDENT..AL["Sky Commander Adaris"] };
-		{ WHIT..INDENT..AL["Sky Sergeant Doryn"] };
-		{ WHIT..INDENT..AL["Skyguard Handler Deesak"] };
-		{ WHIT..INDENT..AL["Severin <Skyguard Medic>"] };
-		{ WHIT..INDENT..AL["Grella <Skyguard Quartermaster>"] };
-		{ WHIT..INDENT..AL["Hazzik"] };
-		{ WHIT.."2) "..AL["Ancient Skull Pile"], 10002 };
-		{ WHIT..INDENT..AL["Terokk"].." ("..ALC["Summon"]..")" };
-		{ WHIT.."3) "..AL["Sahaak <Keeper of Scrolls>"], 10003 };
-		{ WHIT.."4) "..AL["Skyguard Prisoner"].." ("..ALC["Random"]..")", 10004 };
-		{ WHIT.."5) "..AL["Talonpriest Ishaal"], 10005 };
-		{ WHIT.."6) "..AL["Talonpriest Skizzik"], 10006 };
-		{ WHIT.."7) "..AL["Talonpriest Zellek"], 10007 };
-		{ WHIT.."8) "..AL["Hazzik's Package"], 10008 };
+		{ WHIT..INDENT..L["Sky Commander Adaris"] };
+		{ WHIT..INDENT..L["Sky Sergeant Doryn"] };
+		{ WHIT..INDENT..L["Skyguard Handler Deesak"] };
+		{ WHIT..INDENT..L["Severin <Skyguard Medic>"] };
+		{ WHIT..INDENT..L["Grella <Skyguard Quartermaster>"] };
+		{ WHIT..INDENT..L["Hazzik"] };
+		{ WHIT.."2) "..L["Ancient Skull Pile"], 10002 };
+		{ WHIT..INDENT..L["Terokk"]..ALC["L-Parenthesis"]..ALC["Summon"]..ALC["R-Parenthesis"] };
+		{ WHIT.."3) "..L["Sahaak <Keeper of Scrolls>"], 10003 };
+		{ WHIT.."4) "..L["Skyguard Prisoner"]..ALC["L-Parenthesis"]..ALC["Random"]..ALC["R-Parenthesis"], 10004 };
+		{ WHIT.."5) "..L["Talonpriest Ishaal"], 10005 };
+		{ WHIT.."6) "..L["Talonpriest Skizzik"], 10006 };
+		{ WHIT.."7) "..L["Talonpriest Zellek"], 10007 };
+		{ WHIT.."8) "..L["Hazzik's Package"], 10008 };
 		{ WHIT.."9) "..ALC["Graveyard"], 10009 };
-		{ GREN.."1') "..AL["Skull Pile"], 10010 };
-		{ GREN..INDENT..AL["Darkscreecher Akkarai"].." ("..ALC["Summon"]..")" };
-		{ GREN..INDENT..AL["Gezzarak the Huntress"].." ("..ALC["Summon"]..")" };
-		{ GREN..INDENT..AL["Karrog"].." ("..ALC["Summon"]..")" };
-		{ GREN..INDENT..AL["Vakkiz the Windrager"].." ("..ALC["Summon"]..")" };
+		{ GREN.."1') "..L["Skull Pile"], 10010 };
+		{ GREN..INDENT..L["Darkscreecher Akkarai"]..ALC["L-Parenthesis"]..ALC["Summon"]..ALC["R-Parenthesis"] };
+		{ GREN..INDENT..L["Gezzarak the Huntress"]..ALC["L-Parenthesis"]..ALC["Summon"]..ALC["R-Parenthesis"] };
+		{ GREN..INDENT..L["Karrog"]..ALC["L-Parenthesis"]..ALC["Summon"]..ALC["R-Parenthesis"] };
+		{ GREN..INDENT..L["Vakkiz the Windrager"]..ALC["L-Parenthesis"]..ALC["Summon"]..ALC["R-Parenthesis"] };
 	};
 };
 

@@ -13,6 +13,26 @@
  
 
 
+*3.06.11 (20-JUL-2016)*
+ * fixed - issue with custom category item assignments not getting converted properly
+ 
+*3.06.10 (20-JUL-2016)*
+ * fixed - cleared translation errors in DE/FR/RU/TW
+
+*3.06.09 (20-JUL-2016)*
+ * fixed - issue with windows not always updating when blueprint settings changed
+ * fixed - serializer issue
+
+*3.06.08 (20-JUL-2016)*
+ * fixed - issue with servers without any cross realm servers
+
+*3.06.07 (20-JUL-2016)*
+ * fixed - issue with servers without any cross realm servers
+ * fixed - issue with warning about duplicate realm data
+ * fixed - issue with window not sorting on open (or instantly)
+ * fixed - issue with outfitter failure causing rules to not enable
+ * fixed - issue with accessing config menu from blizzard interface
+ 
 *3.06.06 (19-JUL-2016)*
  * fixed - issue with serializer library on beta clients
  * fixed - issue with blizzard bank frame still opening when overridden

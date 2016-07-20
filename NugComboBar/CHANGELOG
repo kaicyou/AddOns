@@ -1,3 +1,8 @@
+7.0.2:
+ - Option to disable class frames on player nameplate
+ - Option to disable shadow dance, tidal waves, inferno blast
+ - Souls shards now fade out when out of combat
+
 7.0.1:
  - Fixed Blizzard frames disablers
 

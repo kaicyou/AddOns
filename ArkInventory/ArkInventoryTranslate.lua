@@ -385,9 +385,3 @@ function ArkInventory.TranslateTryAgain( )
 	frame.timer = 0
 	frame:Show( )
 end
-
-
--- LEGION TODO - check for anything useful in these
---/run ArkInventory.Output( ITEM_CLASS_IDS  )
---GetItemClassInfo( classID )
---GetItemSubClassInfo( classID, subClassID )

@@ -297,7 +297,7 @@ if not L then return end
 --	configuration options > auto
 	L["CONFIG_AUTO"] = "自動開關"
 	
-	L["CONFIG_AUTO_OPEN"] = "開啟%1$s %2$s，當你 %3$s"
+--	L["CONFIG_AUTO_OPEN"] = "開啟%1$s %2$s，當你 %3$s"
 	L["CONFIG_AUTO_OPEN_BANK"] = "開啟銀行"
 	L["CONFIG_AUTO_OPEN_VAULT"] = "開啟公會銀行"
 	L["CONFIG_AUTO_OPEN_MAIL"] = "開啟郵箱"
@@ -306,7 +306,7 @@ if not L then return end
 	L["CONFIG_AUTO_OPEN_AUCTION"] = "開啟拍賣視窗"
 --	L["CONFIG_AUTO_OPEN_VOID"] = ""
 	
-	L["CONFIG_AUTO_CLOSE"] = "關閉%1$s %2$s，當你 %3$s"
+--	L["CONFIG_AUTO_CLOSE"] = "關閉%1$s %2$s，當你 %3$s"
 	L["CONFIG_AUTO_CLOSE_BANK"] = "關閉銀行"
 	L["CONFIG_AUTO_CLOSE_VAULT"] = "關閉公會銀行"
 	L["CONFIG_AUTO_CLOSE_MAIL"] = "關閉郵箱"

@@ -6,27 +6,28 @@ local function addRealms( ... )
 	
 	local ac = select( '#', ... )
 	
-	if ac < 2 then
-		ArkInventory.OutputError( "bad code: not enough parameters" )
-		assert( false, "code failure" )
-	end
+	if ac == 0 then return end
 	
+	local system = false
 	local realm
 	local realmTable = { }
 	for ax = 1, ac do
 		realm = select( ax, ... )
-		if type( realm ) ~= "string" then
-			ArkInventory.OutputError( "bad code: parameter ", ax, " is a ", type( realm ), " not a string" )
-			assert( false, "code failure" )
-			return
+		if type( realm ) == "boolean" then
+			system = realm
+		elseif type( realm ) ~= "string" then
+			if not system then
+				ArkInventory.OutputWarning( "bad code: parameter ", ax, " is a ", type( realm ), " not a string, ignoring value" )
+			end
+		else
+			realm = string.gsub( realm, " ", "" )
+			realmTable[realm] = true
 		end
-		realm = string.gsub( realm, " ", "" )
-		realmTable[realm] = true
 	end
 	
 	for k in pairs( realmTable ) do
 		if ConnectedRealms[k] then
-			if string.len( portal ) == 2 then
+			if not system then
 				ArkInventory.OutputWarning( "duplicate connected realm (", portal, ") data found for ", k )
 			else
 				ConnectedRealms[k] = realmTable
@@ -209,6 +210,6 @@ function ArkInventory.IsConnectedRealm( a, b )
 end
 
 -- in case i dont have the data ask blizzard for the realms connected to the current one
-addRealms( unpack( GetAutoCompleteRealms( ) ) )
+addRealms( true, unpack( GetAutoCompleteRealms( ) or { } ) )
 
--- /run ArkInventory.Output( GetAutoCompleteRealms( ) )
+-- /dump unpack( GetAutoCompleteRealms( ) or { } )

@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1560 $
-$Date: 2016-07-19 21:24:31 +1000 (Tue, 19 Jul 2016) $
+$Revision: 1580 $
+$Date: 2016-07-20 20:33:02 +1000 (Wed, 20 Jul 2016) $
 
 ]]--
 
@@ -2539,8 +2539,8 @@ function ArkInventory.LocationPlayerGet( loc_id )
 		assert( false, "code error" )
 	end
 	
-	if player.current and player.previous and player.current == player.previous then
-		-- same character as last time, and not nil
+	if player.current and player.previous and player.current == player.previous and ArkInventory.Global.Location[loc_id].drawState >= ArkInventory.Const.Window.Draw.Refresh then
+		-- same character as last time, and not nil, and nothing has changed with layout
 --		ArkInventory.Output( "Same LocationPlayerGet( ", loc_id, " ) = ", player.current )
 		return player
 	end
@@ -3554,18 +3554,18 @@ end
 function ArkInventory.ItemCategoryGetDefault( i )
 	
 	-- items cache id
-	local id = ArkInventory.ObjectIDCacheCategory( i.loc_id, i.bag_id, i.sb, i.h )
+	local cid = ArkInventory.ObjectIDCacheCategory( i.loc_id, i.bag_id, i.sb, i.h )
 	
 	-- if the value has not been cached yet then get it and cache it
-	if ArkInventory.TranslationsLoaded and not ArkInventory.Global.Cache.Default[id] then
+	if ArkInventory.TranslationsLoaded and not ArkInventory.Global.Cache.Default[cid] then
 		if i.h then
-			ArkInventory.Global.Cache.Default[id] = ArkInventory.ItemCategoryGetDefaultActual( i )
+			ArkInventory.Global.Cache.Default[cid] = ArkInventory.ItemCategoryGetDefaultActual( i )
 		else
-			ArkInventory.Global.Cache.Default[id] = ArkInventory.ItemCategoryGetDefaultEmpty( i.loc_id, i.bag_id )
+			ArkInventory.Global.Cache.Default[cid] = ArkInventory.ItemCategoryGetDefaultEmpty( i.loc_id, i.bag_id )
 		end
 	end
 	
-	return ArkInventory.Global.Cache.Default[id]
+	return ArkInventory.Global.Cache.Default[cid]
 	
 end
 
@@ -3574,12 +3574,7 @@ function ArkInventory.ItemCategoryGetRule( i )
 	
 	-- local debuginfo = { ["m"]=gcinfo( ), ["t"]=GetTime( ) }
 	
-	-- ArkInventory.Output( "ItemCategoryGetRule( ) start" )
-	
-	
-	if not ArkInventory.Global.Rules.Enabled then
-		return
-	end
+	if not ArkInventory.Global.Rules.Enabled then return end
 	
 	-- check rules
 	local t = ArkInventory.Const.Category.Type.Rule
@@ -3618,7 +3613,7 @@ function ArkInventory.ItemCategoryGetPrimary( i )
 	if i.h then -- only items can have a category, empty slots can only be used by rules
 		
 		-- items category cache id
-		local id, player = ArkInventory.ObjectIDCacheCategory( i.loc_id, i.bag_id, i.sb, i.h )
+		local cid, id, player = ArkInventory.ObjectIDCacheCategory( i.loc_id, i.bag_id, i.sb, i.h )
 		
 		-- manually assigned item to a category?
 		if player.catset.category.assign[id] then
@@ -3630,15 +3625,15 @@ function ArkInventory.ItemCategoryGetPrimary( i )
 	if ArkInventory.Global.Rules.Enabled then
 		
 		-- items rule cache id
-		id = ArkInventory.ObjectIDCacheRule( i.loc_id, i.bag_id, i.sb, i.h )
+		cid = ArkInventory.ObjectIDCacheRule( i.loc_id, i.bag_id, i.sb, i.h )
 		
 		-- if the value has already been cached then use it
-		if not ArkInventory.Global.Cache.Rule[id] then
+		if not ArkInventory.Global.Cache.Rule[cid] then
 			-- check for any rule that applies to the item, cache the result, use true for no match (default)
-			ArkInventory.Global.Cache.Rule[id] = ArkInventory.ItemCategoryGetRule( i ) or true
+			ArkInventory.Global.Cache.Rule[cid] = ArkInventory.ItemCategoryGetRule( i ) or true
 		end
 		
-		return ArkInventory.Global.Cache.Rule[id]
+		return ArkInventory.Global.Cache.Rule[cid]
 		
 	end
 	
@@ -3650,7 +3645,7 @@ function ArkInventory.ItemCategorySet( i, cat_id )
 
 	-- set cat_id to nil to reset back to default
 	
-	local id, player = ArkInventory.ObjectIDCacheCategory( i.loc_id, i.bag_id, i.sb, i.h )
+	local cid, id, player = ArkInventory.ObjectIDCacheCategory( i.loc_id, i.bag_id, i.sb, i.h )
 	player.catset.category.assign[id] = cat_id
 	
 end
@@ -3705,7 +3700,7 @@ function ArkInventory.ItemCacheClear( h )
 		
 	else
 		
-		local id
+		local cid
 		
 		--ArkInventory.Output( "clearing cache - ", h )
 		
@@ -3713,11 +3708,11 @@ function ArkInventory.ItemCacheClear( h )
 			for bag_id in pairs( ArkInventory.Global.Location[loc_id].Bags ) do
 				for _, sb in ipairs( ArkInventory.Const.booleantable ) do
 					
-					id = ArkInventory.ObjectIDCacheRule( loc_id, bag_id, sb, h )
-					ArkInventory.Global.Cache.Rule[id] = nil
+					cid = ArkInventory.ObjectIDCacheRule( loc_id, bag_id, sb, h )
+					ArkInventory.Global.Cache.Rule[cid] = nil
 				
-					id = ArkInventory.ObjectIDCacheCategory( loc_id, bag_id, sb, h )
-					ArkInventory.Global.Cache.Default[id] = nil
+					cid = ArkInventory.ObjectIDCacheCategory( loc_id, bag_id, sb, h )
+					ArkInventory.Global.Cache.Default[cid] = nil
 					
 				end
 			end
@@ -4497,7 +4492,9 @@ function ArkInventory.Frame_Main_DrawThreadStart( frame )
 		ArkInventory.ItemCacheClear( )
 	
 		-- instant sort
-		if ArkInventory.db.global.option.sort.when == ArkInventory.Const.SortWhen.Instant then
+		local id = ArkInventory.Global.Me.data.option[loc_id].style
+		local id, style = ArkInventory.LocationDesignGet( id )
+		if style.sort.when == ArkInventory.Const.SortWhen.Instant then
 			ArkInventory.Frame_Main_DrawStatus( loc_id, ArkInventory.Const.Window.Draw.Recalculate )
 		end
 
@@ -4756,7 +4753,9 @@ function ArkInventory.Frame_Main_Show( loc_id, player_id )
 	else
 		
 		-- same player, leave as is, display code will sort it out, unless user wants it to sort
-		if ArkInventory.db.global.option.sort.when == ArkInventory.Const.SortWhen.Open then
+		local id = ArkInventory.Global.Me.data.option[loc_id].style
+		local id, style = ArkInventory.LocationDesignGet( id )
+		if style.sort.when == ArkInventory.Const.SortWhen.Open then
 			ArkInventory.Frame_Main_DrawStatus( loc_id, ArkInventory.Const.Window.Draw.Resort )
 		end
 		

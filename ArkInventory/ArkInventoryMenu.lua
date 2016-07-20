@@ -1239,10 +1239,10 @@ function ArkInventory.MenuItemOpen( frame )
 						
 						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["CATEGORY"], LIGHTYELLOW_FONT_COLOR_CODE, cat0.id ) )
 						
-						local cid = ArkInventory.ObjectIDCacheCategory( i.loc_id, i.bag_id, i.sb, i.h )
+						local cid, id = ArkInventory.ObjectIDCacheCategory( i.loc_id, i.bag_id, i.sb, i.h )
 						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s (%s): %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_CACHE"], ArkInventory.Localise["CATEGORY"], LIGHTYELLOW_FONT_COLOR_CODE, cid ) )
 						
-						cid = ArkInventory.ObjectIDCacheRule( i.loc_id, i.bag_id, i.sb, i.h )
+						cid, id = ArkInventory.ObjectIDCacheRule( i.loc_id, i.bag_id, i.sb, i.h )
 						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s (%s): %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_CACHE"], ArkInventory.Localise["RULE"], LIGHTYELLOW_FONT_COLOR_CODE, cid ) )
 						
 						
@@ -3977,7 +3977,6 @@ function ArkInventory.MenuRestackOpen( frame )
 					
 					if value == "TYPE" then
 						
-						-- LEGION TODO -- match config
 						ArkInventory.Lib.Dewdrop:AddLine(
 							"text", string.format( "%s: %s", ArkInventory.Localise["BLIZZARD"], ArkInventory.Localise["CLEANUP"] ),
 							"tooltipTitle", ArkInventory.Localise["BLIZZARD"],

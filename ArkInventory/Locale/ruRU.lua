@@ -297,7 +297,7 @@ if not L then return end
 --	configuration options > auto
 	L["CONFIG_AUTO"] = "Автоматически открывать/закрывать"
 	
-	L["CONFIG_AUTO_OPEN"] = "Открывать сумку %1$s, когда вы %3$s" -- program, bag, action
+--	L["CONFIG_AUTO_OPEN"] = "Открывать сумку %1$s, когда вы %3$s" -- program, bag, action
 	L["CONFIG_AUTO_OPEN_BANK"] = "открываете банк"
 	L["CONFIG_AUTO_OPEN_VAULT"] = "открываете банк гильдии"
 	L["CONFIG_AUTO_OPEN_MAIL"] = "открываете почту"
@@ -306,7 +306,7 @@ if not L then return end
 	L["CONFIG_AUTO_OPEN_AUCTION"] = "открываете аукцион"
 --	L["CONFIG_AUTO_OPEN_VOID"] = ""
 	
-	L["CONFIG_AUTO_CLOSE"] = "Закрывать сумку %1$s, кода вы %3$s"
+--	L["CONFIG_AUTO_CLOSE"] = "Закрывать сумку %1$s, кода вы %3$s"
 	L["CONFIG_AUTO_CLOSE_BANK"] = "закрываете банк"
 	L["CONFIG_AUTO_CLOSE_VAULT"] = "закрываете банк гильдии"
 	L["CONFIG_AUTO_CLOSE_MAIL"] = "закрываете почту"

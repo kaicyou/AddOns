@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1559 $
-$Date: 2016-07-19 21:24:22 +1000 (Tue, 19 Jul 2016) $
+$Revision: 1571 $
+$Date: 2016-07-20 10:17:36 +1000 (Wed, 20 Jul 2016) $
 
 ]]--
 
@@ -88,16 +88,14 @@ function ArkInventoryRules.OnEnable( )
 		v.damaged = false
 	end
 	
-	if not IsAddOnLoaded( "Outfitter" ) then
-		ArkInventory.Global.Rules.Enabled = true
-	end
-	
 	ArkInventory.MediaFrameDefaultFontSet( ARKINV_Rules )
 	
 	ArkInventory.ItemCacheClear( )
 	ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
 	
 	ArkInventory.Output( string.format( "%s %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+	
+	ArkInventory.Global.Rules.Enabled = true
 	
 end
 
@@ -128,7 +126,7 @@ function ArkInventoryRules.OutfitterInitialize( ... )
 			ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
 		end
 		
-		ArkInventory.Global.Rules.Enabled = true
+		--ArkInventory.Global.Rules.Enabled = true
 		
 	end
 	

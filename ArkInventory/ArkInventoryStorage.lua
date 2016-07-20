@@ -370,7 +370,9 @@ function ArkInventory:EVENT_ARKINV_BAG_UPDATE_BUCKET( bagTable )
 	
  	-- instant sorting enabled
 	for loc_id in pairs( ArkInventory.Global.Location ) do
-		if ArkInventory.db.global.option.sort.when == ArkInventory.Const.SortWhen.Instant then
+		local id = ArkInventory.Global.Me.data.option[loc_id].style
+		local id, style = ArkInventory.LocationDesignGet( id )
+		if style.sort.when == ArkInventory.Const.SortWhen.Instant then
 			ArkInventory.Frame_Main_Generate( loc_id, ArkInventory.Const.Window.Draw.Recalculate )
 		end
 	end
@@ -630,7 +632,9 @@ function ArkInventory:EVENT_ARKINV_VAULT_UPDATE_BUCKET( )
 	ArkInventory.RestackResume( ArkInventory.Const.Location.Vault )
 	
  	-- instant sorting enabled
-	if ArkInventory.db.global.option.sort.when == ArkInventory.Const.SortWhen.Instant then
+	local id = ArkInventory.Global.Me.data.option[loc_id].style
+	local id, style = ArkInventory.LocationDesignGet( id )
+	if style.sort.when == ArkInventory.Const.SortWhen.Instant then
 		ArkInventory.Frame_Main_Generate( loc_id, ArkInventory.Const.Window.Draw.Recalculate )
 	end
 	
@@ -707,7 +711,9 @@ function ArkInventory:EVENT_ARKINV_VOID_UPDATE_BUCKET( )
 	ArkInventory.ScanLocation( loc_id )
 	
  	-- instant sorting enabled
-	if ArkInventory.db.global.option.sort.when == ArkInventory.Const.SortWhen.Instant then
+	local id = ArkInventory.Global.Me.data.option[loc_id].style
+	local id, style = ArkInventory.LocationDesignGet( id )
+	if style.sort.when == ArkInventory.Const.SortWhen.Instant then
 		ArkInventory.Frame_Main_Generate( loc_id, ArkInventory.Const.Window.Draw.Recalculate )
 	end
 	
@@ -1075,10 +1081,11 @@ end
 function ArkInventory:EVENT_ARKINV_BAG_UPDATE_COOLDOWN_BUCKET( arg )
 	
 	for loc_id in pairs( arg ) do
-		local style_id, style = ArkInventory.LocationStyleGet( loc_id )
+		local id = ArkInventory.Global.Me.data.option[loc_id].style
+		local id, style = ArkInventory.LocationDesignGet( id )
 		if style.slot.cooldown.show then
 			if not ArkInventory.Global.Mode.Combat or style.slot.cooldown.combat then
-				if ArkInventory.db.global.option.sort.when ~= ArkInventory.Const.SortWhen.Instant then
+				if style.sort.when ~= ArkInventory.Const.SortWhen.Instant then
 					ArkInventory.Frame_Main_Generate( loc_id, ArkInventory.Const.Window.Draw.Refresh )
 				end
 			end
@@ -3889,29 +3896,33 @@ function ArkInventory.ObjectIDCacheCategory( loc_id, bag_id, sb, h )
 	local set_id = player.data.option[loc_id].catset
 	
 	if class == "item" then
-		r = string.format( "%i:%s:%i:%i", set_id, class, id, soulbound )
+		r = string.format( "%s:%i:%i", class, id, soulbound )
 	elseif class == "empty" then
-		r = string.format( "%i:%s:%i:%i", set_id, class, 0, soulbound )
+		r = string.format( "%s:%i:%i", class, 0, soulbound )
 	elseif class == "spell" then
-		r = string.format( "%i:%s:%i", set_id, class, id )
+		r = string.format( "%s:%i", class, id )
 	elseif class == "battlepet" then
-		r = string.format( "%i:%s:%i:%i", set_id, class, id, soulbound )
+		r = string.format( "%s:%i:%i", class, id, soulbound )
 	elseif class == "currency" then
-		r = string.format( "%i:%s:%i", set_id, class, id )
+		r = string.format( "%s:%i", class, id )
 	elseif class == "copper" then
-		r = string.format( "%i:%s:%i", set_id, class, id )
+		r = string.format( "%s:%i", class, id )
 	else
 		ArkInventory.OutputError( "code failure: unknown object class [", h, "] = [", class, "]" )
 		error( "code failure: unknown object class" )
 	end
 	
-	return r, player
+	local cr = string.format( "%i:%s", set_id, r )
+	
+	return cr, r, player
 	
 end
 
 function ArkInventory.ObjectIDCacheRule( loc_id, bag_id, sb, h )
+	local id = string.format( "%i:%i:%i:%s", loc_id or 0, bag_id or 0, ( sb and 1 ) or 0, ArkInventory.ObjectIDInternal( h ) )
 	local set_id = ArkInventory.LocationCategorysetGet( loc_id )
-	return string.format( "%i:%i:%i:%i:%s", set_id or 9999, loc_id or 0, bag_id or 0, ( sb and 1 ) or 0, ArkInventory.ObjectIDInternal( h ) )
+	local cid = string.format( "%i:%s", set_id or 9999, id )
+	return cid, id
 end
 
 function ArkInventory.ObjectCountClear( search_id, player_id, loc_id )

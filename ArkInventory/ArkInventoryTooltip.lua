@@ -393,7 +393,7 @@ function ArkInventory.TooltipFind( tooltip, TextToFind, IgnoreLeft, IgnoreRight,
 			if obj and obj:IsShown( ) then
 				txt = obj:GetText( )
 				if txt then
-				
+					
 					--ArkInventory.Output( "R[", i, "] = [", txt, "]" )
 					
 					if not CaseSensitive then

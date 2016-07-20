@@ -1,4 +1,4 @@
-﻿## Interface: 60200
+﻿## Interface: 70000
 ## Title: Phoenix|cff7fff7fStyle|r - WoD module, tier 1
 ## Title-ruRU: Phoenix|cff7fff7fStyle|r - модуль WoD, тир 1
 ## Author: Shurshik

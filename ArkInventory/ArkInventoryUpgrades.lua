@@ -1197,6 +1197,28 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 	end
 	
 	
+	upgrade_version = 30611
+	if ArkInventory.db.global.option.version < upgrade_version then
+		
+		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_GLOBAL"], "option", upgrade_version ) )
+		
+		for k1, v1 in pairs( ArkInventory.db.global.option.catset.data ) do
+			
+			for k2, v2 in pairs( v1.category.assign ) do
+				
+				local v = string.match( k2, "^%d+:(.+)$" )
+				if v then
+					v1.category.assign[v] = v2
+					v1.category.assign[k2] = nil
+				end
+				
+			end
+			
+		end
+		
+		ArkInventory.db.global.option.version = upgrade_version
+		
+	end
 	
 	
 	

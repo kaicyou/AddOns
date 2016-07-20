@@ -1,15 +1,16 @@
 local LSM = LibStub("LibSharedMedia-3.0")
 local koKR, ruRU, zhCN, zhTW, western = LSM.LOCALE_BIT_koKR, LSM.LOCALE_BIT_ruRU, LSM.LOCALE_BIT_zhCN, LSM.LOCALE_BIT_zhTW, LSM.LOCALE_BIT_western
+local font = LSM.MediaType.FONT
 
 LSM:Register("background","ElvUI Blank", [[Interface\BUTTONS\WHITE8X8]])
 LSM:Register("border", "ElvUI GlowBorder", [[Interface\AddOns\ElvUI\media\textures\glowTex.tga]])
-LSM:Register("font", "Continuum Medium", [[Interface\AddOns\ElvUI\media\fonts\Continuum_Medium.ttf]])
-LSM:Register("font","Die Die Die!", [[Interface\AddOns\ElvUI\media\fonts\DieDieDie.ttf]])
-LSM:Register("font","Action Man", [[Interface\AddOns\ElvUI\media\fonts\Action_Man.ttf]])
-LSM:Register("font", "Expressway", [[Interface\AddOns\ElvUI\media\fonts\Expressway.ttf]])
-LSM:Register("font","PT Sans Narrow", [[Interface\AddOns\ElvUI\media\fonts\PT_Sans_Narrow.ttf]], ruRU + western)
-LSM:Register("font", "Homespun", [[Interface\AddOns\ElvUI\media\fonts\Homespun.ttf]], ruRU + western)
-LSM:Register(LSM.MediaType.FONT, "MS YaHei", [[Interface\AddOns\ElvUI\media\fonts\MSYH.ttf]], zhCN)
+LSM:Register(font, "Continuum Medium", [[Interface\AddOns\ElvUI\media\fonts\Continuum_Medium.ttf]], zhCN)
+LSM:Register(font,"Die Die Die!", [[Interface\AddOns\ElvUI\media\fonts\DieDieDie.ttf]], zhCN)
+LSM:Register(font,"Action Man", [[Interface\AddOns\ElvUI\media\fonts\Action_Man.ttf]], zhCN)
+LSM:Register(font, "Expressway", [[Interface\AddOns\ElvUI\media\fonts\Expressway.ttf]], zhCN)
+LSM:Register(font,"PT Sans Narrow", [[Interface\AddOns\ElvUI\media\fonts\PT_Sans_Narrow.ttf]], ruRU + western)
+LSM:Register(font, "Homespun", [[Interface\AddOns\ElvUI\media\fonts\Homespun.ttf]], ruRU + western)
+LSM:Register(font, "MS YaHei", [[Interface\AddOns\ElvUI\media\fonts\MSYH.ttf]], zhCN)
 LSM:Register("sound", "Awww Crap", [[Interface\AddOns\ElvUI\media\sounds\awwcrap.ogg]])
 LSM:Register("sound", "BBQ Ass", [[Interface\AddOns\ElvUI\media\sounds\bbqass.ogg]])
 LSM:Register("sound", "Big Yankie Devil", [[Interface\AddOns\ElvUI\media\sounds\yankiebangbang.ogg]])

@@ -4,7 +4,7 @@ if IsAddOnLoaded("PhoenixStyleMod_Firelands") then psiccwipereport_2("wipe", "tr
 if IsAddOnLoaded("PhoenixStyleMod_DragonSoul") then psiccwipereport_3("wipe", "try", nil, "checkforwipe") end
 end
 
-psversionCata=6.221
+psversionCata=7.000
 
 function psoldcheck2()
 if IsAddOnLoaded("PhoenixStyleMod_CataMiniRaids") then psiccwipereport() end

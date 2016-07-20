@@ -297,7 +297,7 @@ if not L then return end
 --	configuration options > auto
 	L["CONFIG_AUTO"] = "automatisches \195\150ffnen/Schlie\195\159en"
 	
-	L["CONFIG_AUTO_OPEN"] = "\195\182ffne %1$s %2$s beim %3$s" -- program, bag
+--	L["CONFIG_AUTO_OPEN"] = "\195\182ffne %1$s %2$s beim %3$s" -- program, bag
 	L["CONFIG_AUTO_OPEN_BANK"] = "\195\150ffnen des Bankfachs"
 	L["CONFIG_AUTO_OPEN_VAULT"] = "\195\150ffnen der Gildenbank"
 	L["CONFIG_AUTO_OPEN_MAIL"] = "\195\150ffnen des Briefkastens"
@@ -306,7 +306,7 @@ if not L then return end
 	L["CONFIG_AUTO_OPEN_AUCTION"] = "Auktionator"
 --	L["CONFIG_AUTO_OPEN_VOID"] = ""
 	
-	L["CONFIG_AUTO_CLOSE"] = "schlie\195\159e %1$s %2$s beim %3$s"
+--	L["CONFIG_AUTO_CLOSE"] = "schlie\195\159e %1$s %2$s beim %3$s"
 	L["CONFIG_AUTO_CLOSE_BANK"] = "Schlie\195\159en des Bankfachs"
 	L["CONFIG_AUTO_CLOSE_VAULT"] = "Schlie\195\159en der Gildenbank"
 	L["CONFIG_AUTO_CLOSE_MAIL"] = "Schlie\195\159en des Briefkastens"

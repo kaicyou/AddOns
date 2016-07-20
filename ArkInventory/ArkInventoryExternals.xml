@@ -16,7 +16,7 @@
 	<Include file="Externals\curse\svn\Ace3-AceEvent\AceEvent-3.0.xml" />
 	<Include file="Externals\curse\svn\Ace3-AceTimer\AceTimer-3.0.xml" />
 	<Include file="Externals\curse\svn\Ace3-AceBucket\AceBucket-3.0.xml" />
-	<Include file="Externals\curse\svn\Ace3-Serializer\AceSerializer-3.0.xml" />
+	<Include file="Externals\curse\svn\Ace3-AceSerializer\AceSerializer-3.0.xml" />
 	
 	<Script file="Externals\curse\svn\PeriodicTable\LibPeriodicTable-3.1.lua" />
 	<Script file="Externals\curse\svn\PeriodicTable-ClassSpell\LibPeriodicTable-3.1-ClassSpell.lua" />

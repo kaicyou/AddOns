@@ -131,14 +131,6 @@ do
                         set = function(info, s) NugComboBar.Commands.hideslowly() end,
                         order = 8,
                     },
-                    togglebliz = {
-                        name = L"Disable Default",
-                        type = "toggle",
-                        desc = L"Hides default combat point (and other) frames",
-                        get = function(info) return NugComboBarDB.disableBlizz end,
-                        set = function(info, s) NugComboBar.Commands.toggleblizz() end,
-                        order = 9,
-                    },
                     secondLayer = {
                         name = L"Second Layer",
                         desc = L"For Anticipation talent",
@@ -169,6 +161,32 @@ do
                         set = function(info, s) NugComboBar.Commands.vertical() end,
                         order = 13,
                     },
+                    resourcesGroup = {
+                        type = "group",
+                        name = "",
+                        guiInline = true,
+                        order = 14,
+                        args = {
+                            togglebliz = {
+                                name = L"Disable Class Frames",
+                                type = "toggle",
+                                width = "double",
+                                desc = L"Hides default class frames on player unit frame",
+                                get = function(info) return NugComboBarDB.disableBlizz end,
+                                set = function(info, s) NugComboBar.Commands.toggleblizz() end,
+                                order = 14,
+                            },
+                            togglebliznp = {
+                                name = L"Disable Nameplate Class Frames ",
+                                type = "toggle",
+                                width = "double",
+                                desc = L"Hides default class frames on player nameplate",
+                                get = function(info) return NugComboBarDB.disableBlizzNP end,
+                                set = function(info, s) NugComboBar.Commands.toggleblizznp() end,
+                                order = 16,
+                            },
+                        },
+                    },
                 }
             },
             classThemes = {
@@ -179,6 +197,38 @@ do
                         get = function(info) return NugComboBarDB.classThemes end,
                         set = function(info, s) NugComboBar.Commands.classthemes() end,
                     },
+            resourcesGroup = {
+                type = "group",
+                name = L"Additional Resources",
+                guiInline = true,
+                order = 2.3,
+                args = {
+                    shadowDance = {
+                        name = "|cff673065"..GetSpellInfo(185313).."|r",
+                        type = 'toggle',
+                        -- width = "double",
+                        order = 1,
+                        get = function(info) return NugComboBarDB.shadowDance end,
+                        set = function(info, s) NugComboBar.Commands.shadowdance() end,
+                    },
+                    tidalWaves = {
+                        name = "|cff4d7cb7"..GetSpellInfo(53390).."|r",
+                        type = 'toggle',
+                        -- width = "double",
+                        order = 2,
+                        get = function(info) return NugComboBarDB.tidalWaves end,
+                        set = function(info, s) NugComboBar.Commands.tidalwaves() end,
+                    },
+                    infernoBlast = {
+                        name = "|cffdb4d15"..GetSpellInfo(188449).."|r",
+                        type = 'toggle',
+                        -- width = "double",
+                        order = 3,
+                        get = function(info) return NugComboBarDB.infernoBlast end,
+                        set = function(info, s) NugComboBar.Commands.infernoblast() end,
+                    },
+                },
+            },
             showColor = {
                 type = "group",
                 name = L"Colors",

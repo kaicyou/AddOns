@@ -1,4 +1,4 @@
-﻿## Interface: 60200
+﻿## Interface: 70000
 ## Title: Phoenix|cff7fff7fStyle|r - Dragon Soul
 ## Title-ruRU: Phoenix|cff7fff7fStyle|r - Душа Дракона
 ## Author: Shurshik

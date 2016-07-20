@@ -1,9 +1,16 @@
 ------------------------------------------------------------------------
-r1370 | resike | 2016-07-01 22:37:13 +0000 (Fri, 01 Jul 2016) | 1 line
+r1372 | resike | 2016-07-20 10:47:03 +0000 (Wed, 20 Jul 2016) | 1 line
 Changed paths:
-   A /tags/v6.2.4d release (from /trunk:1369)
+   A /tags/v7.0.3a release (from /trunk:1371)
 
-Tagging as v6.2.4d release
+Tagging as v7.0.3a release
+------------------------------------------------------------------------
+r1371 | Resike | 2016-07-20 10:45:29 +0000 (Wed, 20 Jul 2016) | 2 lines
+Changed paths:
+   M /trunk/Recount.toc
+
+- Updated to 7.0.3.
+- Toc bump.
 ------------------------------------------------------------------------
 r1369 | Resike | 2016-07-01 22:32:50 +0000 (Fri, 01 Jul 2016) | 1 line
 Changed paths:

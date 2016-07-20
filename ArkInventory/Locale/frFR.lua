@@ -297,7 +297,7 @@ if not L then return end
 --	configuration options > auto
 	L["CONFIG_AUTO"] = "Ouvrir/Fermer automatique"
 	
-	L["CONFIG_AUTO_OPEN"] = "Ouvre le %2$s %1$s quand vous ouvrez %3$s"
+--	L["CONFIG_AUTO_OPEN"] = "Ouvre le %2$s %1$s quand vous ouvrez %3$s"
 	L["CONFIG_AUTO_OPEN_BANK"] = "la banque"
 	L["CONFIG_AUTO_OPEN_VAULT"] = "la banque de guilde"
 	L["CONFIG_AUTO_OPEN_MAIL"] = "une boîte aux lettres"
@@ -306,7 +306,7 @@ if not L then return end
 	L["CONFIG_AUTO_OPEN_AUCTION"] = "un hotel des ventes"
 --	L["CONFIG_AUTO_OPEN_VOID"] = ""
 	
-	L["CONFIG_AUTO_CLOSE"] = "Fermer le %2$s %1$s quand vous fermez %3$s"
+--	L["CONFIG_AUTO_CLOSE"] = "Fermer le %2$s %1$s quand vous fermez %3$s"
 	L["CONFIG_AUTO_CLOSE_BANK"] = "la banque"
 	L["CONFIG_AUTO_CLOSE_VAULT"] = "la banque de guilde"
 	L["CONFIG_AUTO_CLOSE_MAIL"] = "une boîte aux lettres"

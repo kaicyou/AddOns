@@ -1,4 +1,4 @@
-﻿## Interface: 60200
+﻿## Interface: 70000
 ## Title: Phoenix|cff7fff7fStyle|r - Cataclysm loader
 ## Title-ruRU: Phoenix|cff7fff7fStyle|r - Загрузчик Катаклизма
 ## Author: Shurshik

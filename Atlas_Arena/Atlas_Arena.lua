@@ -188,7 +188,6 @@ local myData = {
 		PlayerLimit = "2v2, 3v3, 5v5";
 		{ BLUE.."A) "..L["Start"] };
 	};
-	--[[
 	-- Black Rook Hold Arena
 	BlackRookHoldArena = {
 		ZoneName = { BZ["Black Rook Hold Arena"] };
@@ -205,7 +204,6 @@ local myData = {
 		PlayerLimit = "2v2, 3v3, 5v5";
 		{ BLUE.."A) "..L["Start"] };
 	};
-	]]
 };
 
 

@@ -1,4 +1,10 @@
 ------------------------------------------------------------------------
+r45 | thaoky | 2016-07-20 19:48:34 +0000 (Wed, 20 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/DataStore_Mails.lua
+
+Fixed invalid attachment count during scan.
+------------------------------------------------------------------------
 r44 | thaoky | 2016-07-18 16:09:51 +0000 (Mon, 18 Jul 2016) | 1 line
 Changed paths:
    M /trunk/DataStore_Mails.toc

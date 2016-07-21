@@ -1,4 +1,14 @@
 ------------------------------------------------------------------------
+r167 | thaoky | 2016-07-20 19:50:11 +0000 (Wed, 20 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Frames/TabOptions.lua
+   M /trunk/Modules/Altoholic_Characters/TabCharacters.lua
+   M /trunk/Modules/Altoholic_Summary/AccountSummary.lua
+   M /trunk/changelog.txt
+
+7.0.002 Commit
+------------------------------------------------------------------------
 r166 | thaoky | 2016-07-18 16:18:15 +0000 (Mon, 18 Jul 2016) | 3 lines
 Changed paths:
    M /trunk/Altoholic.lua

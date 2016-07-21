@@ -941,9 +941,9 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 									end
 								end
 								
-								if ArkInventory.db.profile.option.use[loc_id] == nil then
-									temp_use[loc_id] = id
-								end
+							else
+								
+								temp_use[loc_id] = id
 								
 							end
 							

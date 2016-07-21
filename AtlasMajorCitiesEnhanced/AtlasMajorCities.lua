@@ -332,13 +332,6 @@ local function FAMC_OnLoad(self)
 	-- Register AMC with Atlas (put city names and city keys)
 	AtlasMajorCities_RegisterWithAtlas("init");
 
-	-- show status msg if addon loaded
-	local info = ChatTypeInfo["SYSTEM"];
-	if ( DEFAULT_CHAT_FRAME ) then
-		local msg = "AtlasMajorCities loaded";
-		DEFAULT_CHAT_FRAME:AddMessage(msg, info.r, info.g, info.b, info.id);
-	end
-
 	AtlasMajorCities_VariablesLoaded = true;
 end
 

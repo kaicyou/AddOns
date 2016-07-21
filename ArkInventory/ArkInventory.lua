@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1580 $
-$Date: 2016-07-20 20:33:02 +1000 (Wed, 20 Jul 2016) $
+$Revision: 1582 $
+$Date: 2016-07-21 02:08:00 +1000 (Thu, 21 Jul 2016) $
 
 ]]--
 
@@ -5344,6 +5344,7 @@ function ArkInventory.Frame_Container_CalculateContainer( frame )
 	local rcw = 0 -- row current width
 	local rch = 1 -- row current height
 	local rmh = 0 -- row max height
+	local igb = ArkInventory.Global.Mode.Edit and not player.style.bar.showempty -- ignore ghost bars for row width purposes (makes the window get wider in edit mode)
 	
 	local bar = player.blueprint.bar
 	
@@ -5394,7 +5395,8 @@ function ArkInventory.Frame_Container_CalculateContainer( frame )
 					rmh = 0
 					for _, bar_id in ipairs( row.bar ) do
 						
-						rcw = rcw + bar[bar_id].width
+						--rcw = rcw + bar[bar_id].width
+						rcw = rcw + ( igb and bar[bar_id].ghost and 0 or bar[bar_id].width )
 						
 						if bar[bar_id].height > rmh then
 							rmh = bar[bar_id].height

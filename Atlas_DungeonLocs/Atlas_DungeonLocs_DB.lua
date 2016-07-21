@@ -1,4 +1,4 @@
--- $Id: Atlas_DungeonLocs_DB.lua 12 2016-07-13 09:16:38Z arith $
+-- $Id: Atlas_DungeonLocs_DB.lua 16 2016-07-20 16:41:56Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -126,18 +126,18 @@ local myDB = {
 		{ "1'", 10011, 460, 240 }; -- Ashran
 	};
 	DLBrokenIsles = {
-		{ " 1", 10001, 250, 340 }; --Assault on Violet Hold
-		{ " 2", 10002, 156, 375 }; --Vault of the Wardens
-		{ " 3", 10003, 245, 443 }; --Eye of Azshara
-		{ " 4", 10004, 123, 174 }; --Black Rook Hold
-		{ " 5", 10005, 160, 156 }; --The Emerald Nightmare
-		{ " 6", 10006, 166, 146 }; --Darkheart Thicket
-		{ " 7", 10007, 257, 150 }; --Neltharion's Lair
-		{ " 8", 10008, 341, 165 }; --Maw of Souls
-		{ " 9", 10009, 388, 202 }; --Halls of Valor
-		{ "10", 10010, 241, 263 }; --The Arcway
-		{ "11", 10011, 264, 257 }; --Court of Stars
-		{ "12", 10012, 254, 247 }; --The Nighthold
+		{ " 1", 10001, 244, 338 }; --Assault on Violet Hold
+		{ " 2", 10002, 147, 375 }; --Vault of the Wardens
+		{ " 3", 10003, 238, 446 }; --Eye of Azshara
+		{ " 4", 10004, 113, 170 }; --Black Rook Hold
+		{ " 5", 10005, 150, 151 }; --The Emerald Nightmare
+		{ " 6", 10006, 159, 141 }; --Darkheart Thicket
+		{ " 7", 10007, 252, 146 }; --Neltharion's Lair
+		{ " 8", 10008, 339, 162 }; --Maw of Souls
+		{ " 9", 10009, 388, 200 }; --Halls of Valor
+		{ "10", 10010, 237, 261 }; --The Arcway
+		{ "11", 10011, 259, 257 }; --Court of Stars
+		{ "12", 10012, 247, 244 }; --The Nighthold
 	};
 };
 

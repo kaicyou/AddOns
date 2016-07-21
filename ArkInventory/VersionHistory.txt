@@ -13,6 +13,10 @@
  
 
 
+*3.06.12 (21-JUL-2016)*
+ * changed - edit mode should expand the window more sideways and less downwards
+ * fixed - issue with data conversion, if you have a backup from 30512 please restore it and login again
+ 
 *3.06.11 (20-JUL-2016)*
  * fixed - issue with custom category item assignments not getting converted properly
  

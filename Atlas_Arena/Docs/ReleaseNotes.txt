@@ -1,9 +1,15 @@
+$Id: ReleaseNotes.txt 65 2016-07-20 14:01:46Z arith $
 Atlas Arena, a World of Warcraft instance map browser plug-in for Atlas
 Copyright 2010 ~ 2016 Arith Hsu
 
 ==============
 = Change Log =
 ==============
+
+* 1.06.01 (2016/07/20)
+    - Added two new arenas which will be released after Legion's official launch
+        - Black Rook Hold Arena
+	- Ashamane's Fall
 
 * 1.06.00 (2016/07/19)
     - TOC update to support WoW 7.0.3

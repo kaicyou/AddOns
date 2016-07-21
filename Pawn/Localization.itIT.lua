@@ -26,8 +26,8 @@ PawnLocal =
 	FailedToGetItemLinkMessage = "   Errore nel prendere il link dell'oggetto dal tooltip. Questo potrebbe essere per un conflitto di addon.",
 	FailedToGetUnenchantedItemMessage = "   Errore nel prendere il valore base dell'oggetto. Questo potrebbe essere per un conflitto di addon.",
 	FoundStatMessage = "   %d %s",
-	GemList2 = "%s or %s", -- Requires localization
-	GemListMany = "%d possibilities (click the Pawn button for details)", -- Requires localization
+	GemList2 = "%s o %s",
+	GemListMany = "%d possibilità (clicca il bottone Pawn per dettagli)",
 	GenericGemLink = "|Hitem:%d|h[Gemma %d]|h",
 	GenericGemName = "(Gemma %d)",
 	HiddenScalesHeader = "Altri bilanciamenti",
@@ -200,7 +200,7 @@ Per maggiori informazioni su come personalizzare Pawn, per favore leggere il fil
 		WeaponTypeWand = "Bacchetta",
 		WeaponTypeWandInfo = "Punti da assegnare se l'arma è una bacchetta.",
 		WeaponTypeWarglaive = "Glaive della Guerra",
-		WeaponTypeWarglaiveInfo = "Points to be assigned if the item is a warglaive.", -- Requires localization
+		WeaponTypeWarglaiveInfo = "Punti da assegnare se l'oggetto è una Lama da Guerra",
 	},
 	TooltipParsing = {
 		Agility = "^%+?([-%d%.,]+) [Aa]gilità$",
@@ -243,7 +243,7 @@ Per maggiori informazioni su come personalizzare Pawn, per favore leggere il fil
 		Gun = "^Arma da [Ff]uoco$",
 		Haste = "^%+?([%d%.,]+) [Ii]ndice di [Cc]elerità$",
 		Haste2 = "UNUSED",
-		HaventCollectedAppearance = "^You haven't collected this appearance$", -- Requires localization
+		HaventCollectedAppearance = "^Non hai ottenuto questo aspetto$",
 		HeirloomLevelRange = "^Richiede un livello da %d+ a (%d+)",
 		HeirloomXpBoost = "^Equipaggia: Aumenta l'esperienza",
 		HeirloomXpBoost2 = "UNUSED",
@@ -265,7 +265,7 @@ Per maggiori informazioni su come personalizzare Pawn, per favore leggere il fil
 		Mastery2 = "UNUSED",
 		MetaGemRequirements = "|cff%x%x%x%x%x%xRichiede",
 		MovementSpeed = "^%+([%d%.,]+) [Vv]elocità$",
-		MultiStatHeading = "^Multiple Stats$", -- Requires localization
+		MultiStatHeading = "^Statistiche Multiple$",
 		MultiStatSeparator1 = "e",
 		Multistrike = "^%+([%d%.,]+) [Ii]ndice di [Rr]eplicazione$",
 		NormalizationEnchant = "^Incantato: (.*)$",
@@ -299,13 +299,13 @@ Per maggiori informazioni su come personalizzare Pawn, per favore leggere il fil
 		TemporaryBuffSeconds = "^.+%(%d+ sec%)",
 		Thunderforged = "^Tuonoforgiat[oa]$",
 		Timeless = "^Senza Tempo$",
-		Titanforged = "^Titanforged$", -- Requires localization
+		Titanforged = "^Titanforgiato$",
 		UpgradeLevel = "^Aumenta [Ll]ivello:",
 		Use = "Usa:",
 		Versatility = "^%+([%d%.,]+) Indice di [Vv]ersatilità$",
 		Wand = "^Bacchetta$",
 		Warforged = "^Guerraforgiat[oa]$",
-		Warglaives = "^Glaives della Guerra$", -- Needs review
+		Warglaives = "^Lame da Guerra$",
 		WeaponDamage = "^([%d%.,]+) %- ([%d%.,]+) [Dd]ann[oi]$",
 		WeaponDamageArcane = "^%+?([%d%.,]+) %- ([%d%.,]+) [Dd]ann[oi] [Dd]a [Aa]rcano$",
 		WeaponDamageArcaneExact = "^%+?([%d%.,]+) [Dd]ann[oi] [Dd]a [Aa]rcano$",
@@ -448,8 +448,8 @@ Usa questa funzionalità se pensi che Pawn stia fornendo degli scarsi suggerimen
 		OptionsSocketingAdvisorTooltip = "Quando aggiungi gemme ad un oggetto, Pawn mostrerà un popup suggerendo le gemme che puoi aggiungere all'oggetto che massimizzeranno il suo potere. (Per vedere tutta la lista delle gemme suggerite per ogni colore, vedi la scheda Gemme, dove puoi anche personalizzare la qualità delle gemme da usare.)",
 		OptionsTab = "Opzioni",
 		OptionsTooltipHeader = "Opzioni dei tooltip",
-		OptionsTooltipSpecIcon = "Show spec icons", -- Requires localization
-		OptionsTooltipSpecIconTooltip = "Enable this option to show spec icons next to scale names on tooltips.", -- Requires localization
+		OptionsTooltipSpecIcon = "Mostra icona di specializzazione",
+		OptionsTooltipSpecIconTooltip = "Abilita questa opzione per mostrare le icone di specializzazione accanto al nome della formula nei dialoghi.",
 		OptionsTooltipUpgradesOnly = "Mostra solo miglioramenti",
 		OptionsTooltipUpgradesOnlyTooltip = [=[Questa è l'opzione più semplice. Mostra solo la percentuale di miglioramento per gli oggetti che migliorerebbero il tuo attuale equipaggiamento, ed indica quali oggetti sono migliori per ogni formula. Non mostra nulla per oggetti meno potenti.
 
@@ -475,21 +475,21 @@ Fuoco:  156.7|r]=],
 Se attivata, potresti usare un'arma a 2 mani e ancora vedere delle chiaramente inferiori armi ad 1 mano come un miglioramento se queste sono migliori delle precedenti migliori armi ad 1 mano che possedevi, perchè Pawn traccia separatamente i miglioramenti per i due tipi di armi.
 
 Se disattivata, equipaggiando un'arma a 2 mani impedirà a Pawn di mostrare i miglioramenti per oggetti ad una mano e vice versa.]=],
-		OptionsUpgradeTrackingHeader = "Upgrade comparisons:", -- Requires localization
-		OptionsUpgradeTrackingOff = "Versus equipped gear (recommended)", -- Requires localization
-		OptionsUpgradeTrackingOffTooltip = "Pawn will show you items that are an upgrade compared to the items that you currently have equipped.", -- Requires localization
-		OptionsUpgradeTrackingOn = "Track for each scale (advanced)", -- Requires localization
-		OptionsUpgradeTrackingOnTooltip = "(For advanced users.)  Pawn will try to track the best items that you've equipped, independently for each scale that you have enabled, and show you items that are an upgrade compared to those.", -- Requires localization
+		OptionsUpgradeTrackingHeader = "Comparazione miglioramenti:",
+		OptionsUpgradeTrackingOff = "Con equipaggiamento indossato (consigliata)",
+		OptionsUpgradeTrackingOffTooltip = "Pawn ti mostrerà degli oggetti che sono un miglioramento paragonato agli oggetti che stai attualmente equipaggiando.",
+		OptionsUpgradeTrackingOn = "Traccia per ogni formula (opzione avanzata)",
+		OptionsUpgradeTrackingOnTooltip = "(Per gli utenti avanzati) Pawn cercherà di tener traccia degli oggetti migliori che hai equipaggiato, separatamente per ogni formula che hai abilitato, e ti mostrerà gli oggetti che sono un miglioramento paragonati a questi.",
 		OptionsWelcome = "Configura Pawn nella maniera che più ti aggrada. I cambiamenti avranno effetto immediatamente.",
-		ScaleAutoOff = "Manual", -- Requires localization
-		ScaleAutoOff2 = "Let me manage scales.", -- Requires localization
-		ScaleAutoOffTooltip = "Pawn will let you manually choose which scales to use for its calculations, allowing you to enable more than one scale at a time, add custom scales, and more.", -- Requires localization
-		ScaleAutoOn = "Automatic", -- Requires localization
-		ScaleAutoOn2 = "Just show my current spec.", -- Requires localization
-		ScaleAutoOnTooltip = "Pawn will automatically show your current specialization in item tooltips, and use that to make recommendations and suggest upgrades.", -- Requires localization
-		ScaleAutoWelcome = [=[Pawn will show suggestions for your current specialization.
+		ScaleAutoOff = "Manuale",
+		ScaleAutoOff2 = "Lasciami gestire le formule.",
+		ScaleAutoOffTooltip = "Pawn ti lascierà scegliere manualmente quale formula usare per i suoi calcoli, permettendoti di abilitare più di una formula alla volta, aggiungere formule custom, e molto altro.",
+		ScaleAutoOn = "Automatico",
+		ScaleAutoOn2 = "Mostra solo la mia specializzazione corrente.",
+		ScaleAutoOnTooltip = "Pawn mostrerà automaticamente la tua specializzazione corrente nel dialogo degli oggetti, e la userà per consigliare e suggerire miglioramenti.",
+		ScaleAutoWelcome = [=[Pawn mostrerà suggerimenti per la tua specializzazione corrente.
 
-If you'd rather manage things on your own, just click Manual below.]=], -- Requires localization
+Se preferisci gestire le cose da te, clicca semplicemente su Manuale qui sotto.]=],
 		ScaleChangeColor = "Cambia colore",
 		ScaleChangeColorTooltip = "Cambia il colore con cui il nome ed il valore di questa formula appariranno sul tooltip dell'oggetto.",
 		ScaleCopy = "Copia",
@@ -510,7 +510,7 @@ Questo comando non può essere annullato.]=],
 		ScaleRename = "Rinomina",
 		ScaleRenameTooltip = "Rinomina questa formula.",
 		ScaleSelectorHeader = "Seleziona una formula:",
-		ScaleSelectorShowingSuggestionsFor = "Showing suggestions for", -- Requires localization
+		ScaleSelectorShowingSuggestionsFor = "Mostro suggerimenti per",
 		ScaleSelectorShowScale = "Mostra la formula nei tooltip",
 		ScaleSelectorShowScaleTooltip = [=[Quando questa opzione è attivata, i valori per questa formula verranno mostrati nei tooltip degli oggetti per questo personaggio. Ogni formula essere mostrata per uno dei tuoi personaggi, diversi personaggi o nessun personaggio.
 

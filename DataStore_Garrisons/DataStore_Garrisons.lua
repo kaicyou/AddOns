@@ -205,7 +205,7 @@ end
 
 -- *** Scanning functions ***
 local function ScanBuildings()
-	local plots = C_Garrison.GetPlots()
+	local plots = C_Garrison.GetPlots(LE_FOLLOWER_TYPE_GARRISON_6_0)
 
 	-- to avoid deleting previously saved data when the game is not ready to deliver information
 	-- exit if no data is available
@@ -215,7 +215,7 @@ local function ScanBuildings()
 	wipe(buildings)
 	
 	-- Scan Town Hall
-	local level = C_Garrison.GetGarrisonInfo()
+	local level = C_Garrison.GetGarrisonInfo(LE_FOLLOWER_TYPE_GARRISON_6_0)
 	
 	buildings[BUILDING_TOWN_HALL] = { id = 0, rank = level }
 	
@@ -436,8 +436,8 @@ local function ScanAvailableMissions()
 end
 
 local function ScanActiveMissions()
-	local missionsList = C_Garrison.GetInProgressMissions()
-	if not missionsList then return end
+	local missionsList = {}
+	C_Garrison.GetInProgressMissions(missionsList, LE_FOLLOWER_TYPE_GARRISON_6_0)
 	
 	local missions = addon.ThisCharacter.ActiveMissions
 	wipe(missions)

@@ -1,4 +1,10 @@
 ------------------------------------------------------------------------
+r16 | thaoky | 2016-07-20 19:49:34 +0000 (Wed, 20 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/DataStore_Garrisons.lua
+
+Fixed a few calls where LE_FOLLOWER_TYPE_GARRISON_6_0 was missing
+------------------------------------------------------------------------
 r15 | thaoky | 2016-07-18 16:09:13 +0000 (Mon, 18 Jul 2016) | 1 line
 Changed paths:
    M /trunk/DataStore_Garrisons.lua

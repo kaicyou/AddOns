@@ -1,10 +1,23 @@
 ------------------------------------------------------------------------
-r544 | arkayenro | 2016-07-20 10:40:14 +0000 (Wed, 20 Jul 2016) | 3 lines
+r546 | arkayenro | 2016-07-20 16:27:18 +0000 (Wed, 20 Jul 2016) | 4 lines
 Changed paths:
-   A /tags/3.06.11 (from /trunk:543)
+   A /tags/3.06.12 (from /trunk:545)
 
-*3.06.11 (20-JUL-2016)*
- * fixed - issue with custom category item assignments not getting converted properly
+*3.06.12 (21-JUL-2016)*
+ * changed - edit mode should expand the window more sideways and less downwards
+ * fixed - issue with data conversion, if you have a backup from 30512 please restore it and login again
+
+------------------------------------------------------------------------
+r545 | arkayenro | 2016-07-20 16:09:32 +0000 (Wed, 20 Jul 2016) | 4 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryUpgrades.lua
+   M /trunk/VersionHistory.txt
+
+*3.06.12 (21-JUL-2016)*
+ * changed - edit mode should expand the window more sideways and less downwards
+ * fixed - issue with data conversion, if you have a backup from 30512 please restore it and login again
 
 ------------------------------------------------------------------------
 r543 | arkayenro | 2016-07-20 10:36:10 +0000 (Wed, 20 Jul 2016) | 3 lines

@@ -232,11 +232,11 @@ local PawnGemData90Rare =
 local PawnGemData100Uncommon =
 {
 
-{ 115803, "CritRating", 120 }, -- Critical Strike Taladite
-{ 115804, "HasteRating", 120 }, -- Haste Taladite
-{ 115805, "MasteryRating", 120 }, -- Mastery Taladite
-{ 115807, "Versatility", 120 }, -- Versatility Taladite
-{ 115808, "Stamina", 120 }, -- Stamina Taladite
+{ 115803, "CritRating", 35 }, -- Critical Strike Taladite
+{ 115804, "HasteRating", 35 }, -- Haste Taladite
+{ 115805, "MasteryRating", 35 }, -- Mastery Taladite
+{ 115807, "Versatility", 35 }, -- Versatility Taladite
+{ 115808, "Stamina", 35 }, -- Stamina Taladite
 
 }
 
@@ -247,11 +247,11 @@ local PawnGemData100Uncommon =
 local PawnGemData100Rare =
 {
 
-{ 115809, "CritRating", 160 }, -- Greater Critical Strike Taladite
-{ 115811, "HasteRating", 160 }, -- Greater Haste Taladite
-{ 115812, "MasteryRating", 160 }, -- Greater Mastery Taladite
-{ 115814, "Versatility", 160 }, -- Greater Versatility Taladite
-{ 115815, "Stamina", 160 }, -- Greater Stamina Taladite
+{ 115809, "CritRating", 50 }, -- Greater Critical Strike Taladite
+{ 115811, "HasteRating", 50 }, -- Greater Haste Taladite
+{ 115812, "MasteryRating", 50 }, -- Greater Mastery Taladite
+{ 115814, "Versatility", 50 }, -- Greater Versatility Taladite
+{ 115815, "Stamina", 50 }, -- Greater Stamina Taladite
 
 }
 
@@ -262,11 +262,11 @@ local PawnGemData100Rare =
 local PawnGemData100Epic =
 {
 
-{ 127760, "CritRating", 200 }, -- Immaculate Critical Strike Taladite
-{ 127761, "HasteRating", 200 }, -- Immaculate Haste Taladite
-{ 127762, "MasteryRating", 200 }, -- Immaculate Mastery Taladite
-{ 127764, "Versatility", 200 }, -- Immaculate Versatility Taladite
-{ 127765, "Stamina", 200 }, -- Immaculate Stamina Taladite
+{ 127760, "CritRating", 75 }, -- Immaculate Critical Strike Taladite
+{ 127761, "HasteRating", 75 }, -- Immaculate Haste Taladite
+{ 127762, "MasteryRating", 75 }, -- Immaculate Mastery Taladite
+{ 127764, "Versatility", 75 }, -- Immaculate Versatility Taladite
+{ 127765, "Stamina", 75 }, -- Immaculate Stamina Taladite
 
 }
 
@@ -314,7 +314,7 @@ local PawnGemData110Rare =
 PawnGemQualityLevels =
 {
 	{ 850, PawnGemData110Rare }, -- Legion Normal Nighthold and Emerald Nightmare
-	{ 720, PawnGemData110Uncommon }, -- Higher than Mythic Hellfire Citadel gear
+	{ 755, PawnGemData110Uncommon }, -- Higher than Mythic Hellfire Citadel gear
 	{ 695, PawnGemData100Epic }, -- Warlords of Draenor Mythic Blackrock Foundry / Heroic Hellfire Citadel
 	{ 680, PawnGemData100Rare }, -- Warlords of Draenor Mythic Highmaul / Heroic Blackrock Foundry / Raid Finder Hellfire Citadel end bosses
 	{ 600, PawnGemData100Uncommon }, -- Actual gem requirement

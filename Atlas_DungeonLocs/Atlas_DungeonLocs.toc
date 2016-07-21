@@ -29,15 +29,15 @@
 # ## Notes: Dungeon Locations
 # ## Notes-zhTW: Atlas 地下城位置地圖插件，顯示各個地下城 (副本) 所在位置
 #@end-debug@
-## Version: 1.33.00
+## Version: 1.33.01
 ## Author: arith, Dynaletik, dubcat
-## X-Date: 2016-07-19T13:57:19Z
+## X-Date: 2016-07-20T16:42:59Z
 ## X-Credits: Dan Gilbert, Lothaer
 ## X-Email: atlas.addon at gmail.com
 ## X-Website: http://www.atlasmod.com
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v1.33.00
+## X-Curse-Packaged-Version: v1.33.01
 ## X-Curse-Project-Name: Atlas Dungeon Locations
 ## X-Curse-Project-ID: atlas-dungeon-locations
 ## X-Curse-Repository-ID: wow/atlas-dungeon-locations/mainline

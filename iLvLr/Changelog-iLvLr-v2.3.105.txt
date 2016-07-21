@@ -1,0 +1,14 @@
+------------------------------------------------------------------------
+r79 | lownignitus | 2016-07-19 13:46:20 +0000 (Tue, 19 Jul 2016) | 1 line
+Changed paths:
+   A /tags/v2.3.105 (from /trunk:78)
+
+TOC update for prepatch
+------------------------------------------------------------------------
+r78 | lownignitus | 2016-07-19 13:45:44 +0000 (Tue, 19 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/iLvLr.lua
+   M /trunk/iLvLr.toc
+
+TOC update for prepatch
+------------------------------------------------------------------------

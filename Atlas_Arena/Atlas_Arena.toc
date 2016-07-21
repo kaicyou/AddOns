@@ -29,11 +29,11 @@
 # ## Notes: An Atlas Plugin that displays arena maps.
 # ## Notes-zhTW: Atlas 競技場地圖
 #@end-debug@
-## Version: 1.06.00
-## X-Date: 2016-07-19T09:05:47Z
+## Version: 1.06.01
+## X-Date: 2016-07-20T14:01:46Z
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v1.06.00
+## X-Curse-Packaged-Version: v1.06.01
 ## X-Curse-Project-Name: Atlas Arena
 ## X-Curse-Project-ID: atlas_arena
 ## X-Curse-Repository-ID: wow/atlas_arena/mainline

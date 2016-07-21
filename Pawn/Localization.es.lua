@@ -26,8 +26,8 @@ PawnLocal =
 	FailedToGetItemLinkMessage = "   No se ha podido obtener el enlace al objeto desde el tooltip. Esto puede ser debido a un conflicto entre accesorios.",
 	FailedToGetUnenchantedItemMessage = "   No se han podido obtener los valores base del objeto. Esto puede ser debido a un conflicto entre accesorios.",
 	FoundStatMessage = "   %d %s",
-	GemList2 = "%s or %s", -- Requires localization
-	GemListMany = "%d possibilities (click the Pawn button for details)", -- Requires localization
+	GemList2 = "%s o %s",
+	GemListMany = "%d posibilidades (haz click al boton Pawn para ver mas detalles)",
 	GenericGemLink = "|Hitem:%d|h[Gema %d]|h",
 	GenericGemName = "(Gema %d)",
 	HiddenScalesHeader = "Otras escalas",
@@ -201,7 +201,7 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		WeaponTypeWand = "Varita",
 		WeaponTypeWandInfo = "Puntos que asignar si el objeto es una varita.",
 		WeaponTypeWarglaive = "Guja de Guerra",
-		WeaponTypeWarglaiveInfo = "Points to be assigned if the item is a warglaive.", -- Requires localization
+		WeaponTypeWarglaiveInfo = "Puntos que seran asignados si el objetos es una guja de guerra", -- Needs review
 	},
 	TooltipParsing = {
 		Agility = "^%+?([-%d%.,]+) agilidad$",
@@ -244,7 +244,7 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		Gun = "^Arma de fuego$",
 		Haste = "^%+?([%d%.,]+) celeridad$",
 		Haste2 = "^UNUSED$",
-		HaventCollectedAppearance = "^You haven't collected this appearance$", -- Requires localization
+		HaventCollectedAppearance = "^Aun no has recogido este aspecto$", -- Needs review
 		HeirloomLevelRange = "^Requiere un nivel entre %d+ y (%d+)",
 		HeirloomXpBoost = "^Equipar: La experiencia obtenida",
 		HeirloomXpBoost2 = "^UNUSED$",
@@ -266,7 +266,7 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		Mastery2 = "^UNUSED$",
 		MetaGemRequirements = "|cff%x%x%x%x%x%xRequiere",
 		MovementSpeed = "^%+([%d%.,]+) velocidad$",
-		MultiStatHeading = "^Multiple Stats$", -- Requires localization
+		MultiStatHeading = "^Estadisticas multiples$", -- Needs review
 		MultiStatSeparator1 = "y",
 		Multistrike = "^%+([%d%.,]+) multigolpe$",
 		NormalizationEnchant = "^Encantado: (.*)$",
@@ -300,13 +300,13 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		TemporaryBuffSeconds = "^.+%(%d+ seg%)$",
 		Thunderforged = "^Forjas del Trueno$",
 		Timeless = "^Sin tiempo$",
-		Titanforged = "^Titanforged$", -- Requires localization
+		Titanforged = "^Forjadoporlostitanes$", -- Needs review
 		UpgradeLevel = "^Nivel de Mejora:",
 		Use = "Usar:",
 		Versatility = "^%+([%d%.,]+) versatilidad$",
 		Wand = "^Varita$",
 		Warforged = "^Forjas de la guerra$",
-		Warglaives = "^Gujas de Guerra$", -- Needs review
+		Warglaives = "^Gujas de Guerra$",
 		WeaponDamage = "^([%d%.,]+) %- ([%d%.,]+) p. de daño$",
 		WeaponDamageArcane = "^%+?([%d%.,]+) %- ([%d%.,]+) p. de daño de Arcano$",
 		WeaponDamageArcaneExact = "^%+?([%d%.,]+) p. de daño de Arcano$",
@@ -449,8 +449,8 @@ Usa ésta característica si crees que Pawn está haciendo malas sugerencias de 
 		OptionsSocketingAdvisorTooltip = "Cuando se añaden gemas a un objeto, Pawn mostrará un popup sugiriendo las gemas que puedes añadir al objeto para maximizar su poder.  (Para ver la lista completa de sugerencias de gemas para cada color, ve a la pestaña de Gemas, donde además podrás personalizar la calidad de las gemas que usar.)",
 		OptionsTab = "Opciones",
 		OptionsTooltipHeader = "Opciones de Tooltips",
-		OptionsTooltipSpecIcon = "Show spec icons", -- Requires localization
-		OptionsTooltipSpecIconTooltip = "Enable this option to show spec icons next to scale names on tooltips.", -- Requires localization
+		OptionsTooltipSpecIcon = "Mostrar iconos de especializacion",
+		OptionsTooltipSpecIconTooltip = "Activar esta opcion para mostrar iconos de especializacion al lado de los nombres de las escalas en la descripcion emergente", -- Needs review
 		OptionsTooltipUpgradesOnly = "Muestra sólo mejoras",
 		OptionsTooltipUpgradesOnlyTooltip = [=[Ésta es la opción más simple.  Sólo muestra porcentajes de mejora para objetos que son una mejora de tu equipamiento actual, y indica cuales de tus objetos son los mejores para cada escala.  No muestra nada en absoluto para los objetos inferiores. 
 
@@ -476,21 +476,21 @@ Fuego:  156.7|r]=],
 Si está seleccionado, podrás estar usando un arma de dos manos y aún asi ver armas de una mano claramente inferiores como mejoras si son mejores que la última arma de una mano mejor (o segunda mejor) que tuviste, porque Pawn está buscando mejoras de forma independiente para ambos sets de armas.
 
 Si está deseleccionado, equipar un arma de dos manos evitará que Pawn te muestre mejoras para armas de una mano y vice-versa.]=],
-		OptionsUpgradeTrackingHeader = "Upgrade comparisons:", -- Requires localization
-		OptionsUpgradeTrackingOff = "Versus equipped gear (recommended)", -- Requires localization
-		OptionsUpgradeTrackingOffTooltip = "Pawn will show you items that are an upgrade compared to the items that you currently have equipped.", -- Requires localization
-		OptionsUpgradeTrackingOn = "Track for each scale (advanced)", -- Requires localization
-		OptionsUpgradeTrackingOnTooltip = "(For advanced users.)  Pawn will try to track the best items that you've equipped, independently for each scale that you have enabled, and show you items that are an upgrade compared to those.", -- Requires localization
+		OptionsUpgradeTrackingHeader = "Comparacion de mejoras",
+		OptionsUpgradeTrackingOff = "Comparado con el equipo equipado (recomendado)",
+		OptionsUpgradeTrackingOffTooltip = "Pawn mostrara el equipamiento que suponga una mejora respecto al que tengas equipado actualmente", -- Needs review
+		OptionsUpgradeTrackingOn = "Rastrear para cada escala (avanzado)",
+		OptionsUpgradeTrackingOnTooltip = "(Para usuarios avanzados.) Pawn tratara de rastrear el mejor equipamiento que te hayas equipado, independientemente de cada escala que hayas habilitado, y te mostrara el equipamiento que sea una mejora respecto a estos.",
 		OptionsWelcome = "Configura Pawn a tu gusto.  Los cambios se mostrarán de forma inmediata.",
-		ScaleAutoOff = "Manual", -- Requires localization
-		ScaleAutoOff2 = "Let me manage scales.", -- Requires localization
-		ScaleAutoOffTooltip = "Pawn will let you manually choose which scales to use for its calculations, allowing you to enable more than one scale at a time, add custom scales, and more.", -- Requires localization
-		ScaleAutoOn = "Automatic", -- Requires localization
-		ScaleAutoOn2 = "Just show my current spec.", -- Requires localization
-		ScaleAutoOnTooltip = "Pawn will automatically show your current specialization in item tooltips, and use that to make recommendations and suggest upgrades.", -- Requires localization
-		ScaleAutoWelcome = [=[Pawn will show suggestions for your current specialization.
+		ScaleAutoOff = "Manual",
+		ScaleAutoOff2 = "Permitirme manejar las escalas",
+		ScaleAutoOffTooltip = "Pawn te permitira elegir manualmente que escalas usar para sus calculos, haciendo posible activar mas de una escala cada vez, añadir escalas personalizadas, y mas.",
+		ScaleAutoOn = "Automatico",
+		ScaleAutoOn2 = "Solo mostrar mi especializacion actual",
+		ScaleAutoOnTooltip = "Pawn mostrara automaticamente tu especializacion actual en la descripcion emergente del equipamiento, y lo usara para hacer recomendaciones y sugerir mejoras.",
+		ScaleAutoWelcome = [=[Pawn mostrara sugerencias para tu especializacion actual
 
-If you'd rather manage things on your own, just click Manual below.]=], -- Requires localization
+Si prefieres gestionar las cosas por tu cuenta, haz click en el boton Manual de debajo]=],
 		ScaleChangeColor = "Cambiar color",
 		ScaleChangeColorTooltip = "Cambia el color en el que aparecen el nombre y el valor de ésta escala en los tooltips de objetos.",
 		ScaleCopy = "Copiar",
@@ -511,7 +511,7 @@ This ¡el comando no se puede deshacer!]=],
 		ScaleRename = "Renombrar",
 		ScaleRenameTooltip = "Renombra ésta escala.",
 		ScaleSelectorHeader = "Selecciona una escala:",
-		ScaleSelectorShowingSuggestionsFor = "Showing suggestions for", -- Requires localization
+		ScaleSelectorShowingSuggestionsFor = "Mostrando sugerencias para",
 		ScaleSelectorShowScale = "Muestra ésta escala en tooltips",
 		ScaleSelectorShowScaleTooltip = [=[Cuando esta opción está activada, los valores de ésta escala se mostrarán en los tooltips de objetos de éste personaje.  Cada escala se puede mostrar para uno de tus personajes, varios personajes, o ningún personaje. 
 

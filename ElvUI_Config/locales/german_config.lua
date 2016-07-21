@@ -235,7 +235,7 @@ L["Attempt to lock the left and right chat frame positions. Disabling this optio
 L["Below Chat"] = "Unter dem Chat"
 L["Chat EditBox Position"] = "Position der Texteingabeleiste"
 L["Chat History"] = "Chatverlauf"
-L["Class Color Mentions"] = true;
+L["Class Color Mentions"] = "Erwähnung in Klassenfarbe"
 L["Copy Text"] = "Text kopieren"
 L["Display LFG Icons in group chat."] = "LFG Symbole im Gruppenchat anzeigen"
 L["Display the hyperlink tooltip while hovering over a hyperlink."] = "Zeigt den Hyperlink Tooltip beim Überfahren eines Hyperlinks."
@@ -365,7 +365,7 @@ L["Sends your current profile to your target."] = "Sende dein momentanes Profil 
 L["Sends your filter settings to your target."] = "Sende deine Filter Einstellungen an dein Ziel."
 L["Share Current Profile"] = "Teile das momentane Profil"
 L["Share Filters"] = "Teile Filter"
-L["This feature will allow you to transfer, settings to other characters."] = "Dieses Feature erlaubt es dir, Einstellungen an andere Charaktere zu schicken."
+L["This feature will allow you to transfer settings to other characters."] = "Dieses Feature erlaubt es dir Einstellungen an andere Charaktere zu schicken."
 L["You must be targeting a player."] = "Du musst einen Spieler anvisiert haben."
 
 --General

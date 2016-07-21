@@ -1,4 +1,4 @@
--- $Id: Atlas_WarlordsofDraenor_DB.lua 23 2016-07-15 08:12:08Z arith $
+-- $Id: Atlas_WarlordsofDraenor_DB.lua 27 2016-07-21 09:19:07Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -108,7 +108,7 @@ local myDB = {
 		{ "C", 10001, 184, 192};
 	};
 	HellfireE = {
-		{ 12, 1395, 240, 243 };	-- Mannoroth
+		{ 12, 1395, 276, 313 };	-- Mannoroth
 	};
 	HellfireF = { 
 		{ 13, 1438, 297, 262 }; -- Archimonde

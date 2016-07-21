@@ -54,10 +54,12 @@ function ArkInventory.LDB.Bags:OnClick( button )
 	end
 end
 
+local ldb_player = { }
 function ArkInventory.LDB.Bags:Update( )
 	local loc_id = ArkInventory.Const.Location.Bag
 	--ArkInventory.LDB.Bags.icon = ArkInventory.Global.Location[loc_id].Texture
-	self.text = ArkInventory.Frame_Status_Update_Empty( loc_id, ArkInventory.Global.Me, true )
+	ldb_player = ArkInventory.LocationPlayerGet( loc_id, ldb_player )
+	self.text = ArkInventory.Frame_Status_Update_Empty( loc_id, ldb_player, true )
 end
 
 

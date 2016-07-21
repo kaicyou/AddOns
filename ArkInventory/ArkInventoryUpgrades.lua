@@ -147,39 +147,44 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		
 		ArkInventory.db.global.cache = nil
 		
-		for k, v in pairs( ArkInventory.db.profile.option.category ) do
-			if type( v ) == "number" then
-				ArkInventory.db.profile.option.category[k] = ArkInventory.CategoryCodeJoin( ArkInventory.Const.Category.Type.System, abs( v ) )
-			end
-		end
-		
-		local t
-		for _, loc in pairs( ArkInventory.db.profile.option.location ) do
-		
-			t = { }
-			
-			for k, v in pairs( loc.category ) do
-				if type( k ) == "number" then
-					if k < 0 then
-						local id = ArkInventory.CategoryCodeJoin( ArkInventory.Const.Category.Type.System, abs( k ) )
-						t[id] = v
-					else
-						local id = ArkInventory.CategoryCodeJoin( ArkInventory.Const.Category.Type.Rule, k )
-						t[id] = v
-					end
-					loc.category[k] = nil
+		if ArkInventory.db.profile.option.category then
+			for k, v in pairs( ArkInventory.db.profile.option.category ) do
+				if type( v ) == "number" then
+					ArkInventory.db.profile.option.category[k] = ArkInventory.CategoryCodeJoin( ArkInventory.Const.Category.Type.System, abs( v ) )
 				end
 			end
+		end
+		
+		if ArkInventory.db.profile.option.location then
 			
-			for k, v in pairs( t ) do
-				loc.category[k] = v
+			local t
+			for _, loc in pairs( ArkInventory.db.profile.option.location ) do
+			
+				t = { }
+				
+				for k, v in pairs( loc.category ) do
+					if type( k ) == "number" then
+						if k < 0 then
+							local id = ArkInventory.CategoryCodeJoin( ArkInventory.Const.Category.Type.System, abs( k ) )
+							t[id] = v
+						else
+							local id = ArkInventory.CategoryCodeJoin( ArkInventory.Const.Category.Type.Rule, k )
+							t[id] = v
+						end
+						loc.category[k] = nil
+					end
+				end
+				
+				for k, v in pairs( t ) do
+					loc.category[k] = v
+				end
+				
 			end
 			
 		end
 		
-		
 		ArkInventory.db.profile.option.version = upgrade_version
-
+		
 	end
 
 	if ArkInventory.db.global.option.version < upgrade_version then
@@ -310,110 +315,114 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		
 		ArkInventory.OutputWarning( "The sort order for each location has been reset to bag/slot as it couldnt be automatically transferred. You will need to create an equivalent sort method (via the config menu) to what you had and apply that to each location" )
 		
-		for _, v in pairs( ArkInventory.db.profile.option.location or { } ) do
+		if ArkInventory.db.profile.option.location then
 			
-			if v.window then
-			
-				if v.window.border then
-					v.window.border.style = ArkInventory.Const.Texture.BorderDefault
-					v.window.border.size = nil
-					v.window.border.offset = nil
-					v.window.border.scale = 1
-					v.window.border.file = nil
-				end
+			for _, v in pairs( ArkInventory.db.profile.option.location ) do
 				
-				if v.window.colour then
+				if v.window then
 				
-					if v.window.colour.border then
-						v.window.border.colour.r = v.window.colour.border.r  or v.window.border.colour.r
-						v.window.border.colour.g = v.window.colour.border.g or v.window.border.colour.g
-						v.window.border.colour.b = v.window.colour.border.b or v.window.border.colour.b
-						v.window.colour.border = nil
+					if v.window.border then
+						v.window.border.style = ArkInventory.Const.Texture.BorderDefault
+						v.window.border.size = nil
+						v.window.border.offset = nil
+						v.window.border.scale = 1
+						v.window.border.file = nil
 					end
 					
-					if v.window.colour.background then
-						v.window.background.colour.r = v.window.colour.background.r or v.window.background.colour.r
-						v.window.background.colour.g = v.window.colour.background.g or v.window.background.colour.g
-						v.window.background.colour.b = v.window.colour.background.b or v.window.background.colour.b
-						v.window.background.colour.a = v.window.colour.background.a or v.window.background.colour.a
-						v.window.colour.background = nil
+					if v.window.colour then
+					
+						if v.window.colour.border then
+							v.window.border.colour.r = v.window.colour.border.r  or v.window.border.colour.r
+							v.window.border.colour.g = v.window.colour.border.g or v.window.border.colour.g
+							v.window.border.colour.b = v.window.colour.border.b or v.window.border.colour.b
+							v.window.colour.border = nil
+						end
+						
+						if v.window.colour.background then
+							v.window.background.colour.r = v.window.colour.background.r or v.window.background.colour.r
+							v.window.background.colour.g = v.window.colour.background.g or v.window.background.colour.g
+							v.window.background.colour.b = v.window.colour.background.b or v.window.background.colour.b
+							v.window.background.colour.a = v.window.colour.background.a or v.window.background.colour.a
+							v.window.colour.background = nil
+						end
+						
+						if v.window.colour.baghighlight then
+							v.changer.highlight.colour.r = v.window.colour.baghighlight.r or v.changer.highlight.colour.r
+							v.changer.highlight.colour.g = v.window.colour.baghighlight.g or v.changer.highlight.colour.g
+							v.changer.highlight.colour.b = v.window.colour.baghighlight.b or v.changer.highlight.colour.b
+							v.window.colour.baghighlight = nil
+						end
+					
 					end
 					
-					if v.window.colour.baghighlight then
-						v.changer.highlight.colour.r = v.window.colour.baghighlight.r or v.changer.highlight.colour.r
-						v.changer.highlight.colour.g = v.window.colour.baghighlight.g or v.changer.highlight.colour.g
-						v.changer.highlight.colour.b = v.window.colour.baghighlight.b or v.changer.highlight.colour.b
-						v.window.colour.baghighlight = nil
+					v.window.colour = nil
+					
+				end
+				
+				if v.bar then
+					
+					if v.bar.name and v.bar.name.label then
+						for id, label in pairs( v.bar.name.label ) do
+							v.bar.data[id].label = label
+						end
+						v.bar.name.label = nil
+					end
+					
+					if v.bar.border then
+						v.bar.border.style = ArkInventory.Const.Texture.BorderDefault
+						v.bar.border.size = nil
+						v.bar.border.offset = nil
+						v.bar.border.scale = 1
+						v.bar.border.file = nil
+					end
+				
+					if v.bar.colour then
+						
+						if v.bar.colour.border then
+							v.bar.border.colour.r = v.bar.colour.border.r or v.bar.border.colour.r
+							v.bar.border.colour.g = v.bar.colour.border.g or v.bar.border.colour.g
+							v.bar.border.colour.b = v.bar.colour.border.b or v.bar.border.colour.b
+							v.bar.colour.border = nil
+						end
+						
+						if v.bar.colour.background then
+							v.bar.background.colour.r =  v.bar.colour.background.r or v.bar.background.colour.r
+							v.bar.background.colour.g = v.bar.colour.background.g or v.bar.background.colour.g
+							v.bar.background.colour.b = v.bar.colour.background.b or v.bar.background.colour.b
+							v.bar.background.colour.a = v.bar.colour.background.a or v.bar.background.colour.a
+							v.bar.colour.background = nil
+						end
+					
+					end
+					
+					v.bar.colour = nil
+					
+				end
+				
+				if v.slot then
+				
+					if v.slot.border then
+						v.slot.border.style = ArkInventory.Const.Texture.BorderDefault
+						v.slot.border.size = nil
+						v.slot.border.offset = nil
+						v.slot.border.scale = 1
+						v.slot.border.file = nil
+					end
+				
+				
+					if v.slot.empty then
+						v.slot.empty.colour = nil
+						v.slot.empty.display = nil
+						v.slot.empty.show = nil
 					end
 				
 				end
 				
-				v.window.colour = nil
+				v.sortorder = nil
+				
+				wipe( v.sort )
 				
 			end
-			
-			if v.bar then
-				
-				if v.bar.name and v.bar.name.label then
-					for id, label in pairs( v.bar.name.label ) do
-						v.bar.data[id].label = label
-					end
-					v.bar.name.label = nil
-				end
-				
-				if v.bar.border then
-					v.bar.border.style = ArkInventory.Const.Texture.BorderDefault
-					v.bar.border.size = nil
-					v.bar.border.offset = nil
-					v.bar.border.scale = 1
-					v.bar.border.file = nil
-				end
-			
-				if v.bar.colour then
-					
-					if v.bar.colour.border then
-						v.bar.border.colour.r = v.bar.colour.border.r or v.bar.border.colour.r
-						v.bar.border.colour.g = v.bar.colour.border.g or v.bar.border.colour.g
-						v.bar.border.colour.b = v.bar.colour.border.b or v.bar.border.colour.b
-						v.bar.colour.border = nil
-					end
-					
-					if v.bar.colour.background then
-						v.bar.background.colour.r =  v.bar.colour.background.r or v.bar.background.colour.r
-						v.bar.background.colour.g = v.bar.colour.background.g or v.bar.background.colour.g
-						v.bar.background.colour.b = v.bar.colour.background.b or v.bar.background.colour.b
-						v.bar.background.colour.a = v.bar.colour.background.a or v.bar.background.colour.a
-						v.bar.colour.background = nil
-					end
-				
-				end
-				
-				v.bar.colour = nil
-				
-			end
-			
-			if v.slot then
-			
-				if v.slot.border then
-					v.slot.border.style = ArkInventory.Const.Texture.BorderDefault
-					v.slot.border.size = nil
-					v.slot.border.offset = nil
-					v.slot.border.scale = 1
-					v.slot.border.file = nil
-				end
-			
-			
-				if v.slot.empty then
-					v.slot.empty.colour = nil
-					v.slot.empty.display = nil
-					v.slot.empty.show = nil
-				end
-			
-			end
-			
-			v.sortorder = nil
-			
-			wipe( v.sort )
 			
 		end
 		
@@ -556,16 +565,20 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		
 		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], ArkInventory.db:GetCurrentProfile( ), upgrade_version ) )
 		
-		for _, loc in pairs( ArkInventory.db.profile.option.location ) do
+		if ArkInventory.db.profile.option.location then
 			
-			if loc.framehide then
+			for _, loc in pairs( ArkInventory.db.profile.option.location ) do
 				
-				loc.title.hide = not not loc.framehide.header
-				loc.search.hide = not not loc.framehide.search
-				loc.status.hide = not not loc.framehide.status
-				loc.changer.hide = not not loc.framehide.changer
-				
-				loc.framehide = nil
+				if loc.framehide then
+					
+					loc.title.hide = not not loc.framehide.header
+					loc.search.hide = not not loc.framehide.search
+					loc.status.hide = not not loc.framehide.status
+					loc.changer.hide = not not loc.framehide.changer
+					
+					loc.framehide = nil
+					
+				end
 				
 			end
 			
@@ -630,16 +643,20 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		
 		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], ArkInventory.db:GetCurrentProfile( ), upgrade_version ) )
 		
-		for k, v in pairs( ArkInventory.db.profile.option.location ) do
-			if v.anchor and v.anchor[k] then
-				ArkInventory.db.profile.option.anchor[k].point = v.anchor[k].point
-				ArkInventory.db.profile.option.anchor[k].locked = v.anchor[k].locked
-				ArkInventory.db.profile.option.anchor[k].t = v.anchor[k].t
-				ArkInventory.db.profile.option.anchor[k].b = v.anchor[k].b
-				ArkInventory.db.profile.option.anchor[k].l = v.anchor[k].l
-				ArkInventory.db.profile.option.anchor[k].r = v.anchor[k].r
+		if ArkInventory.db.profile.option.location then
+			
+			for k, v in pairs( ArkInventory.db.profile.option.location ) do
+				if v.anchor and v.anchor[k] then
+					ArkInventory.db.profile.option.anchor[k].point = v.anchor[k].point
+					ArkInventory.db.profile.option.anchor[k].locked = v.anchor[k].locked
+					ArkInventory.db.profile.option.anchor[k].t = v.anchor[k].t
+					ArkInventory.db.profile.option.anchor[k].b = v.anchor[k].b
+					ArkInventory.db.profile.option.anchor[k].l = v.anchor[k].l
+					ArkInventory.db.profile.option.anchor[k].r = v.anchor[k].r
+				end
+				v.anchor = nil
 			end
-			v.anchor = nil
+			
 		end
 		
 		
@@ -653,8 +670,10 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		
 		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], ArkInventory.db:GetCurrentProfile( ), upgrade_version ) )
 		
-		for k, v in pairs( ArkInventory.db.profile.option.location ) do
-			v.slot.new.cutoff = v.slot.new.cutoff * 60
+		if ArkInventory.db.profile.option.location then
+			for k, v in pairs( ArkInventory.db.profile.option.location ) do
+				v.slot.new.cutoff = v.slot.new.cutoff * 60
+			end
 		end
 		
 		ArkInventory.db.profile.option.version = upgrade_version
@@ -669,7 +688,6 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		
 		ArkInventory.CategoryRenumber( "1!303", nil ) -- empty key slot
 		ArkInventory.CategoryRenumber( "1!406", nil ) -- key
-		
 		
 		
 		ArkInventory.db.profile.option.version = upgrade_version
@@ -768,10 +786,12 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		
 		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], ArkInventory.db:GetCurrentProfile( ), upgrade_version ) )
 		
-		for k, v in pairs( ArkInventory.db.profile.option.location ) do
-			if v.sort then
-				v.sort.method = v.sort.default or v.sort.method or 9999
-				v.sort.default = nil
+		if ArkInventory.db.profile.option.location then
+			for k, v in pairs( ArkInventory.db.profile.option.location ) do
+				if v.sort then
+					v.sort.method = v.sort.default or v.sort.method or 9999
+					v.sort.default = nil
+				end
 			end
 		end
 		
@@ -791,13 +811,15 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		
 		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], ArkInventory.db:GetCurrentProfile( ), upgrade_version ) )
 		
-		for k, v in pairs( ArkInventory.db.profile.option.location ) do
-			if v.slot and v.slot.empty then
-				if type( v.slot.empty.first ) == "boolean" then
-					if v.slot.empty.first then
-						v.slot.empty.first = 1
-					else
-						v.slot.empty.first = 0
+		if ArkInventory.db.profile.option.location then
+			for k, v in pairs( ArkInventory.db.profile.option.location ) do
+				if v.slot and v.slot.empty then
+					if type( v.slot.empty.first ) == "boolean" then
+						if v.slot.empty.first then
+							v.slot.empty.first = 1
+						else
+							v.slot.empty.first = 0
+						end
 					end
 				end
 			end
@@ -825,26 +847,31 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		
 		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], ArkInventory.db:GetCurrentProfile( ), upgrade_version ) )
 		
-		for k, v in pairs( ArkInventory.db.profile.option.location ) do
+		if ArkInventory.db.profile.option.location then
 			
-			if v.slot and v.slot.new and v.slot.new.show then
+			for k, v in pairs( ArkInventory.db.profile.option.location ) do
 				
-				v.slot.age.show = v.slot.new.show
-				v.slot.new.show = nil
+				if v.slot and v.slot.new and v.slot.new.show then
+					
+					v.slot.age.show = v.slot.new.show
+					v.slot.new.show = nil
+					
+					v.slot.age.cutoff = v.slot.new.cutoff
+					v.slot.new.cutoff = 2
+					
+					if v.slot.new.colour then
+						v.slot.age.colour.r = v.slot.new.colour.r
+						v.slot.age.colour.g = v.slot.new.colour.g
+						v.slot.age.colour.b = v.slot.new.colour.b
+						v.slot.new.colour = nil
+					end
 				
-				v.slot.age.cutoff = v.slot.new.cutoff
-				v.slot.new.cutoff = 2
-				
-				if v.slot.new.colour then
-					v.slot.age.colour.r = v.slot.new.colour.r
-					v.slot.age.colour.g = v.slot.new.colour.g
-					v.slot.age.colour.b = v.slot.new.colour.b
-					v.slot.new.colour = nil
 				end
-			
+				
 			end
 			
 		end
+		
 		
 		ArkInventory.db.profile.option.version = upgrade_version
 		
@@ -941,6 +968,10 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 									end
 								end
 								
+								if ArkInventory.db.profile.option.use[loc_id] == nil then
+									temp_use[loc_id] = id
+								end
+								
 							else
 								
 								temp_use[loc_id] = id
@@ -993,6 +1024,7 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		end
 		
 		ArkInventory.db.profile.option.use = nil
+		
 		
 		ArkInventory.db.profile.option.version = upgrade_version
 		

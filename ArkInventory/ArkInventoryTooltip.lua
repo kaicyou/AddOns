@@ -777,14 +777,14 @@ function ArkInventory.TooltipObjectCountGet( search_id, tooltip )
 						hl = ArkInventory.db.global.option.tooltip.highlight
 					end
 					
-					character_entries[#character_entries + 1] = string.format( "%s%s|r: %s%s|r (%s)", hl, name, colour, BreakUpLargeNumbers( item_count_character ), table.concat( location_entries, ", " ) )
+					character_entries[#character_entries + 1] = string.format( "%s%s|r: %s%s|r (%s)", hl, name, colour, FormatLargeNumber( item_count_character ), table.concat( location_entries, ", " ) )
 					character_count = character_count + 1
 					item_count_total = item_count_total + item_count_character
 					
 				end
 				
 				if item_count_guild > 0 then
-					guild_entries[#guild_entries + 1] = string.format( "%s|r: %s%s|r (%s)", name, colour, BreakUpLargeNumbers( item_count_guild ), table.concat( location_entries, ", " ) )
+					guild_entries[#guild_entries + 1] = string.format( "%s|r: %s%s|r (%s)", name, colour, FormatLargeNumber( item_count_guild ), table.concat( location_entries, ", " ) )
 					guild_count = guild_count + 1
 				end
 				
@@ -796,7 +796,7 @@ function ArkInventory.TooltipObjectCountGet( search_id, tooltip )
 		
 		local c = table.concat( character_entries, "\n" )
 		if character_count > 1 then
-			c = string.format( "%s\n%s: %s%s|r", c, ArkInventory.Localise["TOTAL"], colour, BreakUpLargeNumbers( item_count_total ) )
+			c = string.format( "%s\n%s: %s%s|r", c, ArkInventory.Localise["TOTAL"], colour, FormatLargeNumber( item_count_total ) )
 		end
 		
 		local g = ""

@@ -1,10 +1,14 @@
-$Id: ChangeLog.txt 25 2016-07-19 14:02:22Z arith $
+$Id: ChangeLog.txt 27 2016-07-21 09:19:07Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 ==============
 = Change Log =
 ==============
+
+v1.33.01 (Jul. 21, 2016)
+------------------------
+- Updated Hellfire Citadel mapE where Mannoroth is located.
 
 v1.33.00 (Jul. 19, 2016)
 ------------------------

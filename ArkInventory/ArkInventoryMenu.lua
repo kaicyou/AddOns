@@ -218,7 +218,7 @@ function ArkInventory.MenuBarOpen( frame )
 						ArkInventory.Lib.Dewdrop:AddLine(
 							"text", text,
 							"tooltipTitle", text,
-							"tooltipText", string.format( ArkInventory.Localise["MENU_LOCKED_TEXT"], ArkInventory.Localise["CONFIG_DESIGN_LAYOUT"] )
+							"tooltipText", string.format( ArkInventory.Localise["MENU_LOCKED_TEXT"], string.format( "%s (%s)", ArkInventory.Localise["CONFIG_DESIGN"], ArkInventory.Localise["CONFIG_DESIGN_LAYOUT"] ) )
 						)
 					
 					else
@@ -264,7 +264,7 @@ function ArkInventory.MenuBarOpen( frame )
 						ArkInventory.Lib.Dewdrop:AddLine(
 							"text", text,
 							"tooltipTitle", text,
-							"tooltipText", string.format( ArkInventory.Localise["MENU_LOCKED_TEXT"], ArkInventory.Localise["CONFIG_DESIGN_LAYOUT"] )
+							"tooltipText", string.format( ArkInventory.Localise["MENU_LOCKED_TEXT"], string.format( "%s (%s)", ArkInventory.Localise["CONFIG_DESIGN"], ArkInventory.Localise["CONFIG_DESIGN_LAYOUT"] ) )
 						)
 					
 					else
@@ -359,7 +359,7 @@ function ArkInventory.MenuBarOpen( frame )
 						ArkInventory.Lib.Dewdrop:AddLine(
 							"text", text,
 							"tooltipTitle", text,
-							"tooltipText", string.format( ArkInventory.Localise["MENU_LOCKED_TEXT"], ArkInventory.Localise["CONFIG_DESIGN_LAYOUT"] )
+							"tooltipText", string.format( ArkInventory.Localise["MENU_LOCKED_TEXT"], string.format( "%s (%s)", ArkInventory.Localise["CONFIG_DESIGN"], ArkInventory.Localise["CONFIG_DESIGN_LAYOUT"] ) )
 						)
 					
 					else
@@ -1060,7 +1060,7 @@ function ArkInventory.MenuItemOpen( frame )
 						ArkInventory.Lib.Dewdrop:AddLine(
 							"text", text,
 							"tooltipTitle", text,
-							"tooltipText", string.format( ArkInventory.Localise["MENU_LOCKED_TEXT"], ArkInventory.Localise["CONFIG_DESIGN_LAYOUT"] )
+							"tooltipText", string.format( ArkInventory.Localise["MENU_LOCKED_TEXT"], string.format( "%s (%s)", ArkInventory.Localise["CONFIG_DESIGN"], ArkInventory.Localise["CONFIG_DESIGN_LAYOUT"] ) )
 						)
 					
 					else

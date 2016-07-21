@@ -13,6 +13,17 @@
  
 
 
+*3.06.14 (21-JUL-2016)*
+ * fixed - issue with items manually assigned to a system category not getting placed in the correct bar
+
+*3.06.13 (21-JUL-2016)*
+ * fixed - issue with data conversion due to the last change, if you have a backup from 30512 and your new setup is wrong please restore it and login again
+ * fixed - issue with ldb bag count text
+ * fixed - issue with deleted categories still being assigned to a bar
+ * fixed - issue with upgrade code for older versions
+ * changed - BreakUpLargeNumbers replaced with FormatLargeNumber
+ * fixed - issue with item categorisation
+
 *3.06.12 (21-JUL-2016)*
  * changed - edit mode should expand the window more sideways and less downwards
  * fixed - issue with data conversion, if you have a backup from 30512 please restore it and login again

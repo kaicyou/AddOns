@@ -35,28 +35,54 @@ local raceMetatable = {
 	__index = Race
 }
 
-local DigsiteType = private.DigsiteType
-local CurrencyNameFromRaceID = {
-	[DigsiteType.Dwarf] = _G.GetCurrencyInfo(384),
-	[DigsiteType.Draenei] = _G.GetCurrencyInfo(398),
-	[DigsiteType.Fossil] = _G.GetCurrencyInfo(393),
-	[DigsiteType.Nightelf] = _G.GetCurrencyInfo(394),
-	[DigsiteType.Nerubian] = _G.GetCurrencyInfo(400),
-	[DigsiteType.Orc] = _G.GetCurrencyInfo(397),
-	[DigsiteType.Tolvir] = _G.GetCurrencyInfo(401),
-	[DigsiteType.Troll] = _G.GetCurrencyInfo(385),
-	[DigsiteType.Vrykul] = _G.GetCurrencyInfo(399),
-	[DigsiteType.Mantid] = _G.GetCurrencyInfo(754),
-	[DigsiteType.Pandaren] = _G.GetCurrencyInfo(676),
-	[DigsiteType.Mogu] = _G.GetCurrencyInfo(677),
-	[DigsiteType.Arakkoa] = _G.GetCurrencyInfo(829),
-	[DigsiteType.DraenorClans] = _G.GetCurrencyInfo(821),
-	[DigsiteType.Ogre] = _G.GetCurrencyInfo(828),
-}
+local ArchaeologyRaceID = {	Unknown = 0 } -- Populated in AddRace
+private.ArchaeologyRaceID = ArchaeologyRaceID
+
+local AechaeologyRaceLabelFromID = {} -- Populated in AddRace
+private.AechaeologyRaceLabelFromID = AechaeologyRaceLabelFromID
+
+local CurrencyNameFromRaceID = {} -- Populated in InitializeRaces
+
+local KeystoneIDToRace = {} -- Populated in InitializeRaces
+private.KeystoneIDToRace = KeystoneIDToRace
 
 -----------------------------------------------------------------------
 -- Helpers.
 -----------------------------------------------------------------------
+function private.InitializeRaces()
+	_G.RequestArtifactCompletionHistory()
+
+	for raceID = 1, _G.GetNumArchaeologyRaces() do
+		local race = private.AddRace(raceID)
+		KeystoneIDToRace[race.keystone.ID] = race
+	end
+
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Arakkoa] = _G.GetCurrencyInfo(829)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Demonic] = _G.GetCurrencyInfo(1174)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Draenei] = _G.GetCurrencyInfo(398)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.DraenorClans] = _G.GetCurrencyInfo(821)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Dwarf] = _G.GetCurrencyInfo(384)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Fossil] = _G.GetCurrencyInfo(393)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Highborne] = _G.GetCurrencyInfo(1172)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.HighmountainTauren] = _G.GetCurrencyInfo(1173)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Mantid] = _G.GetCurrencyInfo(754)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Mogu] = _G.GetCurrencyInfo(677)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.NightElf] = _G.GetCurrencyInfo(394)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Nerubian] = _G.GetCurrencyInfo(400)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Ogre] = _G.GetCurrencyInfo(828)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Orc] = _G.GetCurrencyInfo(397)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Pandaren] = _G.GetCurrencyInfo(676)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Tolvir] = _G.GetCurrencyInfo(401)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Troll] = _G.GetCurrencyInfo(385)
+	CurrencyNameFromRaceID[ArchaeologyRaceID.Vrykul] = _G.GetCurrencyInfo(399)
+
+	for raceID, currencyName in pairs(CurrencyNameFromRaceID) do
+		Races[raceID].currencyName = currencyName
+	end
+
+	private.InitializeRaces = nil
+end
+
 function private.AddRace(raceID)
 	local existingRace = Races[raceID]
 	if existingRace then
@@ -66,13 +92,17 @@ function private.AddRace(raceID)
 
 	local raceName, raceTexture, keystoneItemID, fragmentsCollected, _, maxFragments = _G.GetArchaeologyRaceInfo(raceID)
 	local keystoneName, _, _, _, _, _, _, _, _, keystoneTexture, _ = _G.GetItemInfo(keystoneItemID)
+	local raceLabel = raceName:gsub(" ", ""):gsub("'", "")
+
+	ArchaeologyRaceID[raceLabel] = raceID
+	AechaeologyRaceLabelFromID[raceID] = raceLabel
 
 	local race = _G.setmetatable({
 		Artifacts = {},
-		currencyName = CurrencyNameFromRaceID[raceID],
 		currentProject = nil,
 		fragmentsCollected = fragmentsCollected,
 		ID = raceID,
+		label = raceLabel,
 		maxFragments = maxFragments,
 		name = raceName,
 		texture = raceTexture,
@@ -103,15 +133,6 @@ function private.AddRace(raceID)
 
 		race.Artifacts[artifactName:lower()] = artifact
 	end
-
-	for itemID, template in pairs(private.ARTIFACT_TEMPLATES[raceID]) do
-        if not race:AddOrUpdateArtifactFromTemplate(template) then
-			RaceArtifactProcessingQueue[template] = race
-			Archy:RegisterEvent("GET_ITEM_INFO_RECEIVED")
-		end
-	end
-
-	race:UpdateCurrentProject()
 
 	return Races[raceID]
 end

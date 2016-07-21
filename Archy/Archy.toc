@@ -1,8 +1,8 @@
-## Interface: 60200
+## Interface: 70000
 ## Title: Archy - Archaeology Assistant
 ## Title-zhCN: Archy - 考古学助手
 ## Title-zhTW: Archy - 考古學助手
-## Version: 6.2.4.1
+## Version: 7.0.3.4
 ## Notes: Archaeology assistant
 ## Notes-zhCN: 考古学助手
 ## Notes-zhTW: 考古學助手
@@ -11,7 +11,7 @@
 ## X-Category: Archaeology
 ## SavedVariables: ArchyDB
 ## OptionalDeps: Ace3, AceGUI-3.0-SharedMediaWidgets, HereBeDragons-1.0, LibAboutPanel, LibDBIcon-1.0, LibDialog-1.0, LibQTip-1.0, LibSharedMedia-3.0, LibSink-2.0, LibTextDump-1.0, LibToast-1.0, TomTom
-## X-Curse-Packaged-Version: 6.2.4.1
+## X-Curse-Packaged-Version: 7.0.3.4
 ## X-Curse-Project-Name: Archy - Archaeology Assistant
 ## X-Curse-Project-ID: archy
 ## X-Curse-Repository-ID: wow/archy/mainline
@@ -64,8 +64,6 @@ Locale\zhTW.lua
 ## Must be loaded first.
 Constants.lua
 
-Database\Digsites.lua
-Database\Artifacts.lua
 Archy.lua
 Interface.xml
 Interface.lua
@@ -74,4 +72,6 @@ Race.lua
 Tooltip.lua
 Config.lua
 TomTomHandler.lua
+Database\Digsites.lua
+Database\Artifacts.lua
 Bindings.xml

@@ -39,7 +39,6 @@ DatamineTooltip:SetOwner(_G.UIParent, "ANCHOR_NONE")
 -----------------------------------------------------------------------
 -- Constants
 -----------------------------------------------------------------------
-local DIGSITE_TEMPLATES = private.DIGSITE_TEMPLATES
 local MAX_PROFESSION_RANK = _G.GetExpansionLevel() + 4 -- Skip the 4 ranks of vanilla
 local MAX_ARCHAEOLOGY_RANK = _G.PROFESSION_RANKS[MAX_PROFESSION_RANK][1]
 private.MAX_ARCHAEOLOGY_RANK = MAX_ARCHAEOLOGY_RANK
@@ -48,7 +47,6 @@ local GLOBAL_COOLDOWN_TIME = 1.5
 local SECURE_ACTION_BUTTON -- Populated in Archy:OnInitialize()
 local SURVEY_SPELL_ID = 80451
 local CRATE_USE_STRING -- Populate in Archy:OnEnable()
-local DIG_LOCATION_TEXTURE_INDEX = 177
 
 local ZONE_DATA = {}
 private.ZONE_DATA = ZONE_DATA
@@ -85,8 +83,6 @@ _G.BINDING_NAME_DIGSITESARCHY = L["BINDING_NAME_DIGSITES"]
 -----------------------------------------------------------------------
 local continent_digsites = {}
 private.continent_digsites = continent_digsites
-
-local KeystoneIDToRace = {}
 
 local lootedKeystoneRace -- this is to force a refresh after the BAG_UPDATE event
 local digsitesTrackingID -- set in Archy:OnEnable()
@@ -521,13 +517,13 @@ function UpdateAllSites()
 		_G.SetMapZoom(continentID)
 
 		for landmarkIndex = 1, _G.GetNumMapLandmarks() do
-			local landmarkName, _, textureIndex, mapPositionX, mapPositionY = _G.GetMapLandmarkInfo(landmarkIndex)
+			local landmarkType, landmarkName, _, textureIndex, mapPositionX, mapPositionY = _G.GetMapLandmarkInfo(landmarkIndex)
 
-			if textureIndex == DIG_LOCATION_TEXTURE_INDEX and mapPositionX and mapPositionY then
+			if landmarkType == _G.LE_MAP_LANDMARK_TYPE_DIGSITE and mapPositionX and mapPositionY then
 				local siteKey = ("%d:%.6f:%.6f"):format(continentID, mapPositionX, mapPositionY)
 				local mapID, floorID = HereBeDragons:GetMapIDFromCZ(continentID, 0)
 
-				local digsiteTemplate = DIGSITE_TEMPLATES[siteKey]
+				local digsiteTemplate = private.DIGSITE_TEMPLATES[siteKey]
 				if digsiteTemplate then
 					local digsite = private.Digsites[digsiteTemplate.blobID]
 					if not digsite then
@@ -810,15 +806,9 @@ function Archy:OnEnable()
 	TomTomHandler.hasTomTom = (_G.TomTom and _G.TomTom.AddZWaypoint and _G.TomTom.RemoveWaypoint) and true or false
 	TomTomHandler.hasPOIIntegration = TomTomHandler.hasTomTom and (_G.TomTom.profile and _G.TomTom.profile.poi and _G.TomTom.EnableDisablePOIIntegration) and true or false
 
-	-----------------------------------------------------------------------
-	-- Initialize Races
-	-----------------------------------------------------------------------
-	_G.RequestArtifactCompletionHistory()
-
-	for raceID = 1, _G.GetNumArchaeologyRaces() do
-		local race = private.AddRace(raceID)
-		KeystoneIDToRace[race.keystone.ID] = race
-	end
+	private.InitializeRaces()
+	private.InitializeDigsiteTemplates()
+	private.InitializeArtifactTemplates()
 
 	-----------------------------------------------------------------------
 	-- Map stuff.
@@ -962,12 +952,12 @@ local SUBCOMMAND_FUNCS = {
 			_G.SetMapZoom(continentID)
 
 			for landmarkIndex = 1, _G.GetNumMapLandmarks() do
-				local landmarkName, _, textureIndex, mapPositionX, mapPositionY = _G.GetMapLandmarkInfo(landmarkIndex)
+				local landmarkType, landmarkName, _, textureIndex, mapPositionX, mapPositionY, mapLinkID, showInBattleMap = _G.GetMapLandmarkInfo(landmarkIndex)
 
-				if textureIndex == DIG_LOCATION_TEXTURE_INDEX then
+				if landmarkType == _G.LE_MAP_LANDMARK_TYPE_DIGSITE then
 					local siteKey = ("%d:%.6f:%.6f"):format(_G.GetCurrentMapContinent(), mapPositionX, mapPositionY)
 
-					if not DIGSITE_TEMPLATES[siteKey] and not sites[siteKey] then
+					if not private.DIGSITE_TEMPLATES[siteKey] and not sites[siteKey] then
 						Debug(("[\"%s\"] = { blobID = %d, mapID = 0, typeID = DigsiteType.Unknown } -- \"%s\""):format(siteKey, _G.ArcheologyGetVisibleBlobID(landmarkIndex), landmarkName))
 						sites[siteKey] = true
 						found = found + 1
@@ -1110,7 +1100,7 @@ do
 
 			local start, duration, enable = _G.GetItemCooldown(LorewalkersMap.itemID)
 			if start > 0 and duration > 0 then
-				_G.CooldownFrame_SetTimer(loreItemButton.cooldown, start, duration, enable)
+				_G.CooldownFrame_Set(loreItemButton.cooldown, start, duration, enable)
 			end
 		end
 
@@ -1298,7 +1288,7 @@ do
 	end
 
 	local function SetSurveyCooldown(time)
-		_G.CooldownFrame_SetTimer(DistanceIndicatorFrame.surveyButton.cooldown, _G.GetSpellCooldown(SURVEY_SPELL_ID))
+		_G.CooldownFrame_Set(DistanceIndicatorFrame.surveyButton.cooldown, _G.GetSpellCooldown(SURVEY_SPELL_ID))
 	end
 
 	function Archy:ARCHAEOLOGY_SURVEY_CAST(eventName, numFindsCompleted, totalFinds)
@@ -1335,7 +1325,7 @@ do
 				if duration <= GLOBAL_COOLDOWN_TIME then
 					self:ScheduleTimer(SetSurveyCooldown, (start + duration) - now)
 				elseif duration > GLOBAL_COOLDOWN_TIME then
-					_G.CooldownFrame_SetTimer(DistanceIndicatorFrame.surveyButton.cooldown, start, duration, enable)
+					_G.CooldownFrame_Set(DistanceIndicatorFrame.surveyButton.cooldown, start, duration, enable)
 				end
 			end
 		end
@@ -1451,7 +1441,7 @@ do
             return
         end
 
-        local race = KeystoneIDToRace[GetItemIDFromLink(itemLink)]
+        local race = private.KeystoneIDToRace[GetItemIDFromLink(itemLink)]
         if race then
             currentDigsite.stats.keystones = currentDigsite.stats.keystones + 1
             lootedKeystoneRace = race
@@ -1542,7 +1532,7 @@ do
 				if itemLink then
 					local itemID = GetItemIDFromLink(itemLink)
 
-					if itemID and (KeystoneIDToRace[itemID] or QUEST_ITEM_IDS[itemID]) then
+					if itemID and (private.KeystoneIDToRace[itemID] or QUEST_ITEM_IDS[itemID]) then
 						_G.LootSlot(slotID)
 					end
 				end
@@ -1738,7 +1728,7 @@ end
 
 do
 	local function SetLoreItemCooldown(time)
-		_G.CooldownFrame_SetTimer(DistanceIndicatorFrame.loritemButton.cooldown, _G.GetItemCooldown(LorewalkersMap.itemID))
+		_G.CooldownFrame_Set(DistanceIndicatorFrame.loritemButton.cooldown, _G.GetItemCooldown(LorewalkersMap.itemID))
 	end
 
 	function Archy:UNIT_SPELLCAST_SUCCEEDED(event, unit, spell, rank, line_id, spellID)

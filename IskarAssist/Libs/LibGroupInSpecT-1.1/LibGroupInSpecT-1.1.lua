@@ -73,7 +73,7 @@
 --     Returns an array with the set of unit ids for the current group.
 --]]
 
-local MAJOR, MINOR = "LibGroupInSpecT-1.1", tonumber (("$Revision: 79 $"):match ("(%d+)") or 0)
+local MAJOR, MINOR = "LibGroupInSpecT-1.1", tonumber (("$Revision: 80 $"):match ("(%d+)") or 0)
 
 if not LibStub then error(MAJOR.." requires LibStub") end
 local lib = LibStub:NewLibrary (MAJOR, MINOR)
@@ -255,8 +255,9 @@ local warrior_gladiator_stance = GetSpellInfo(156291)
 
 local function HasGladiatorStance (unit, info)
   -- Check for "not the other two level-100 talents" in case talent info isn't ready.
-  local talents = info.talents
-  return talents and (talents[warrior_gladiators_resolve_talent] or (not talents[warrior_anger_management_talent] and not talents[warrior_ravager_talent])) and UnitBuff(unit, warrior_gladiator_stance)
+  --local talents = info.talents
+  --return talents and (talents[warrior_gladiators_resolve_talent] or (not talents[warrior_anger_management_talent] and not talents[warrior_ravager_talent])) and UnitBuff(unit, warrior_gladiator_stance)
+  return false
 end
 
 

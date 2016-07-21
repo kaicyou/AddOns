@@ -428,29 +428,25 @@ function ArkInventory.MoneyText( money, condense )
 	local txtCopper = ""
 	
 	local leading_zero_format = "%d%s"
+	local SILVER_AMOUNT_TEXTURE = SILVER_AMOUNT_TEXTURE
+	local COPPER_AMOUNT_TEXTURE = COPPER_AMOUNT_TEXTURE
 	
 	
-	if numGold > 0 then
-		
-		leading_zero_format = "%02d%s"
+	if money >= COPPER_PER_GOLD then
 		
 		if colorblindMode then
-			txtGold = string.format( "%d%s", BreakUpLargeNumbers( numGold ), GOLD_AMOUNT_SYMBOL )
+			txtGold = string.format( "%d%s", FormatLargeNumber( numGold ), GOLD_AMOUNT_SYMBOL )
 		else
-			txtGold = string.format( GOLD_AMOUNT_TEXTURE_STRING, BreakUpLargeNumbers( numGold ), 0, 0 )
+			txtGold = string.format( GOLD_AMOUNT_TEXTURE_STRING, FormatLargeNumber( numGold ), 0, 0 )
 		end
+		
+		leading_zero_format = "%02d%s"
+		SILVER_AMOUNT_TEXTURE = string.gsub( SILVER_AMOUNT_TEXTURE, "%%d", "%%02d", 1 )
 		
 	end
 	
 	
-	if numSilver > 0 or numGold > 0 then
-		
-		local SILVER_AMOUNT_TEXTURE = SILVER_AMOUNT_TEXTURE
-		
-		if numGold > 0 then
-			leading_zero_format = "%02d%s"
-			SILVER_AMOUNT_TEXTURE = string.gsub( SILVER_AMOUNT_TEXTURE, "%%d", "%%02d", 1 )
-		end
+	if money >= COPPER_PER_SILVER then
 		
 		if colorblindMode then
 			txtSilver = string.format( leading_zero_format, numSilver, SILVER_AMOUNT_SYMBOL )
@@ -459,17 +455,13 @@ function ArkInventory.MoneyText( money, condense )
 			txtSilver = string.format( SILVER_AMOUNT_TEXTURE, numSilver, 0, 0 )
 		end
 		
+		COPPER_AMOUNT_TEXTURE = string.gsub( COPPER_AMOUNT_TEXTURE, "%%d", "%%02d", 1 )
+		
 	end
 	
 	
 --	if numSilver > 0 or numGold > 0 then
 		
-		local COPPER_AMOUNT_TEXTURE = COPPER_AMOUNT_TEXTURE
-		
-		if numSilver > 0 then
-			COPPER_AMOUNT_TEXTURE = string.gsub( COPPER_AMOUNT_TEXTURE, "%%d", "%%02d", 1 )
-		end
-
 		if colorblindMode then
 			txtCopper = string.format( leading_zero_format, numCopper, COPPER_AMOUNT_SYMBOL )
 		else

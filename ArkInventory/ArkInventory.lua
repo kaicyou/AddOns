@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1582 $
-$Date: 2016-07-21 02:08:00 +1000 (Thu, 21 Jul 2016) $
+$Revision: 1589 $
+$Date: 2016-07-21 20:10:05 +1000 (Thu, 21 Jul 2016) $
 
 ]]--
 
@@ -233,8 +233,8 @@ ArkInventory.Const.Category = {
 					["text"] = ArkInventory.Localise["WOW_ITEM_CLASS_TRADEGOODS_COOKING"],
 				},
 				[506] = {
-					["id"] = "TRADEGOODS_METALSTONE",
-					["text"] = ArkInventory.Localise["WOW_ITEM_CLASS_TRADEGOODS_METALSTONE"],
+					["id"] = "TRADEGOODS_METAL_AND_STONE",
+					["text"] = ArkInventory.Localise["WOW_ITEM_CLASS_TRADEGOODS_METAL_AND_STONE"],
 				},
 --				[507] = TRADEGOODS_MATERIALS
 				[512] = {
@@ -1179,7 +1179,8 @@ ArkInventory.Global = { -- globals
 	},
 	
 	Thread = {
-		WhileInCombat = true, -- !!! set back to true when done
+		WhileInCombat = true, 
+--		WhileInCombat = false, -- !!! comment out when done testing
 		Restack = { },
 		Window = { },
 		WindowState = { },
@@ -2529,11 +2530,11 @@ function ArkInventory.PT_ItemInSets( item, setnames )
 	
 end
 
-function ArkInventory.LocationPlayerGet( loc_id )
+function ArkInventory.LocationPlayerGet( loc_id, player )
 	
 	assert( loc_id, "code error: loc_id is missing" )
 	
-	local player = ArkInventory.Global.Location[loc_id].player
+	local player = player or ArkInventory.Global.Location[loc_id].player
 	if not player then
 		ArkInventory.OutputError( "player table missing for location ", loc_id )
 		assert( false, "code error" )
@@ -2930,7 +2931,7 @@ function ArkInventory.CategoryGenerate( )
 			
 			if tn == "RULE" then
 				
-				if v.used == true or v.used == "Y" then
+				if v.used == "Y" then
 					
 					cat_type = ArkInventory.Const.Category.Type.Rule
 					cat_code = k
@@ -2944,7 +2945,7 @@ function ArkInventory.CategoryGenerate( )
 				
 			elseif tn == "CUSTOM" then
 				
-				if v.used == true or v.used == "Y" then
+				if v.used == "Y" then
 					
 					cat_type = ArkInventory.Const.Category.Type.Custom
 					cat_code = k
@@ -3069,7 +3070,7 @@ function ArkInventory.CategoryGetSystemID( cat_name )
 
 	--ArkInventory.Output( "search=[", cat_name, "]" )
 	
-	local cay_name = string.upper( cat_name )
+	local cat_name = string.upper( cat_name )
 	local cat_def
 	
 	for _, v in pairs( ArkInventory.Global.Category ) do
@@ -3240,9 +3241,11 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_ITEM_ENHANCEMENT" )
 	end
 	
+	
 	-- setup tooltip for scanning
 	local blizzard_id = ArkInventory.BagID_Blizzard( i.loc_id, i.bag_id )
 	ArkInventory.TooltipSetItem( ArkInventory.Global.Tooltip.Scan, blizzard_id, i.slot_id )
+	
 	
 	-- toys
 	if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ITEM_TOY_ONUSE, false, true, true ) then
@@ -3265,7 +3268,7 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	
 	if itemType == ArkInventory.Const.ItemClass.TRADEGOODS then
 		
-		local t = { "ELEMENTAL", "CLOTH", "LEATHER", "METALSTONE", "COOKING", "HERB", "ENCHANTING", "JEWELCRAFTING", "ENCHANTMENT" }
+		local t = { "ELEMENTAL", "CLOTH", "LEATHER", "METAL_AND_STONE", "COOKING", "HERB", "ENCHANTING", "JEWELCRAFTING", "ENCHANTMENT" }
 		
 		for _, w in pairs( t ) do
 			if itemSubType == ArkInventory.Const.ItemClass[string.format( "TRADEGOODS_%s", w )] then
@@ -3376,7 +3379,6 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_REAGENT" )
 	end
 	
-	
 	if itemType == ArkInventory.Const.ItemClass.MISC then
 	
 		if itemSubType == ArkInventory.Const.ItemClass.MISC_REAGENT then
@@ -3391,10 +3393,6 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 			return ArkInventory.CategoryGetSystemID( "TRADEGOODS_PARTS" )
 		end
 		
-	end
-	
-	if itemType == ArkInventory.Const.ItemClass.REAGENT then
-		return ArkInventory.CategoryGetSystemID( "SYSTEM_REAGENT" )
 	end
 	
 	-- archeology
@@ -3437,6 +3435,10 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_MISC" )
 	end
 
+	if itemType == ArkInventory.Const.ItemClass.REAGENT then
+		return ArkInventory.CategoryGetSystemID( "SYSTEM_REAGENT" )
+	end
+	
 	
 	return ArkInventory.CategoryGetSystemID( "SYSTEM_DEFAULT" )
 	
@@ -3577,26 +3579,27 @@ function ArkInventory.ItemCategoryGetRule( i )
 	if not ArkInventory.Global.Rules.Enabled then return end
 	
 	-- check rules
-	local t = ArkInventory.Const.Category.Type.Rule
-	local r = ArkInventory.db.global.option.category[t].data
-	for rid in ArkInventory.spairs( r, function(a,b) return ( r[a].order or 0 ) < ( r[b].order or 0 ) end ) do
+	local player = ArkInventory.LocationPlayerGet( i.loc_id )
+	local cat_type = ArkInventory.Const.Category.Type.Rule
+	local r = ArkInventory.db.global.option.category[cat_type].data
+	for cat_code in ArkInventory.spairs( r, function(a,b) return ( r[a].order or 0 ) < ( r[b].order or 0 ) end ) do
 		
-		if r[rid].used then
+		if r[cat_code].used == "Y" and player.catset.category.active[cat_type][cat_code] then -- rule is active in this categoryset?
 			
-			local a, em = ArkInventoryRules.AppliesToItem( rid, i )
-	
+			local a, em = ArkInventoryRules.AppliesToItem( cat_code, i )
+			
 			if em == nil then
-			
+				
 				if a == true then
-					return ArkInventory.CategoryCodeJoin( t, rid )
+					return ArkInventory.CategoryCodeJoin( cat_type, cat_code )
 				end
-			
+				
 			else
 				
 				ArkInventory.OutputWarning( em )
-				ArkInventory.OutputWarning( string.format( ArkInventory.Localise["RULE_DAMAGED"], rid ) )
+				ArkInventory.OutputWarning( string.format( ArkInventory.Localise["RULE_DAMAGED"], cat_code ) )
 				
-				ArkInventory.db.global.option.category[t].data[rid].damaged = true
+				ArkInventory.db.global.option.category[cat_type].data[cat_code].damaged = true
 				
 			end
 			
@@ -3605,7 +3608,7 @@ function ArkInventory.ItemCategoryGetRule( i )
 	end
 	
 	-- ArkInventory.Output( "ItemCategoryGetRule( ) end", debuginfo )
-
+	
 end
 
 function ArkInventory.ItemCategoryGetPrimary( i )
@@ -3615,9 +3618,17 @@ function ArkInventory.ItemCategoryGetPrimary( i )
 		-- items category cache id
 		local cid, id, player = ArkInventory.ObjectIDCacheCategory( i.loc_id, i.bag_id, i.sb, i.h )
 		
-		-- manually assigned item to a category?
-		if player.catset.category.assign[id] then
-			return player.catset.category.assign[id]
+		local cat_id = player.catset.category.assign[id]
+		if cat_id then
+			-- manually assigned item to a category?
+			local cat_type, cat_code = ArkInventory.CategoryCodeSplit( cat_id )
+			if cat_type == 1 then
+				return cat_id
+			elseif player.catset.category.active[cat_type][cat_code] then -- category is active in this categoryset?
+				if ArkInventory.db.global.option.category[cat_type].data[cat_code].used == "Y" then -- category is enabled?
+					return cat_id
+				end
+			end
 		end
 		
 	end
@@ -3646,6 +3657,7 @@ function ArkInventory.ItemCategorySet( i, cat_id )
 	-- set cat_id to nil to reset back to default
 	
 	local cid, id, player = ArkInventory.ObjectIDCacheCategory( i.loc_id, i.bag_id, i.sb, i.h )
+	--ArkInventory.Output( cid, " / ", id, " / ", cat_id, " / ", player.data.info.name )
 	player.catset.category.assign[id] = cat_id
 	
 end
@@ -7912,7 +7924,7 @@ function ArkInventory.Frame_Status_Update_Empty( loc_id, player, ldb )
 			
 			if ldb then
 				
-				if ArkInventory.Global.Me.data.ldb.bags.colour then
+				if player.data.ldb.bags.colour then
 					c = player.style.slot.data[t].colour
 					c = ArkInventory.ColourRGBtoCode( c.r, c.g, c.b )
 				end
@@ -7984,7 +7996,7 @@ function ArkInventory.Frame_Status_Update_Tracking( loc_id )
 			obj.currencyID = currencyID
 			
 			ArkInventory.SetTexture( obj.icon, icon )
-			obj.count:SetText( BreakUpLargeNumbers( amount ) )
+			obj.count:SetText( FormatLargeNumber( amount ) )
 			obj:SetWidth( 2 * obj.icon:GetWidth( ) + obj.count:GetWidth( ) )
 			obj:Show( )
 			

@@ -1,6 +1,6 @@
 --[[
 Name: Sink-2.0
-Revision: $Rev: 110 $
+Revision: $Rev: 113 $
 Author(s): Funkydude
 Description: Library that handles chat output.
 Dependencies: LibStub, SharedMedia-3.0 (optional)
@@ -18,7 +18,7 @@ If you derive from the library or change it in any way, you are required to cont
 -- Sink-2.0
 
 local SINK20 = "LibSink-2.0"
-local SINK20_MINOR = 90102
+local SINK20_MINOR = 90103
 
 local sink = LibStub:NewLibrary(SINK20, SINK20_MINOR)
 if not sink then return end
@@ -658,7 +658,7 @@ do
 		assert(type(hasSticky) == "boolean" or hasSticky == nil)
 
 		if sinks[shortName] or sink.handlers[shortName] then
-			error("There's already a sink by the short name %q.", shortName)
+			error(format("There's already a sink by the short name %q.", shortName))
 		end
 		sinks[shortName] = {name, desc}
 		-- Save it for library upgrades.

@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1554 $
-$Date: 2016-07-18 18:49:14 +1000 (Mon, 18 Jul 2016) $
+$Revision: 1585 $
+$Date: 2016-07-21 17:51:53 +1000 (Thu, 21 Jul 2016) $
 
 ]]--
 
@@ -2246,7 +2246,7 @@ function ArkInventory.ConfigInternalSortMethod( )
 			type = "execute",
 			width = "half",
 			func = function( )
-				ArkInventory.ConfigInternalStyle( )
+				ArkInventory.ConfigInternalSortMethod( )
 			end,
 		},
 	}

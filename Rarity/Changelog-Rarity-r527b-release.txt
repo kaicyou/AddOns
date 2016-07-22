@@ -1,9 +1,31 @@
 ------------------------------------------------------------------------
-r521 | allara | 2016-07-18 07:09:42 +0000 (Mon, 18 Jul 2016) | 1 line
+r529 | allara | 2016-07-21 17:29:51 +0000 (Thu, 21 Jul 2016) | 1 line
 Changed paths:
-   A /tags/r520-release (from /trunk:520)
+   A /tags/r527b-release (from /trunk:528)
 
-Tagging as r520-release
+Tagging as r527b-release
+------------------------------------------------------------------------
+r527 | allara | 2016-07-21 17:01:26 +0000 (Thu, 21 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Modules/Options/Rarity_Options.toc
+
+- Options module TOC update for 7.0
+------------------------------------------------------------------------
+r524 | allara | 2016-07-21 06:33:49 +0000 (Thu, 21 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- Remove the extra texture debug messages (sorry!)
+------------------------------------------------------------------------
+r522 | allara | 2016-07-20 19:53:19 +0000 (Wed, 20 Jul 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- Re-enabled Living Infernal Core
+- Fixed a missing localization entry for Orb of the Sin'dorei
 ------------------------------------------------------------------------
 r520 | allara | 2016-07-14 19:14:23 +0000 (Thu, 14 Jul 2016) | 1 line
 Changed paths:

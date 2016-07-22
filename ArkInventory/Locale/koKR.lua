@@ -120,6 +120,8 @@ if not L then return end
 --	actions menu
 --	L["MENU_ACTION"] = ""
 	L["MENU_ACTION_REFRESH_TEXT"] = "창을 갱신합니다."
+--	L["MENU_ACTION_REFRESH_CLEAR_CACHE"] = ""
+--	L["MENU_ACTION_REFRESH_CLEAR_CACHE_TEXT"] = ""
 	L["MENU_ACTION_RELOAD_TEXT"] = "창을 재시작 합니다.  장비 세트에 아이템 변경시 사용하세요."
 	L["MENU_ACTION_EDITMODE"] = "편집 모드 전환"
 	L["MENU_ACTION_EDITMODE_TEXT"] = "아이템 레이아웃을 설정 할 수 있도록 편집 모드를 전환합니다."

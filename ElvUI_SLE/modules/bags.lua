@@ -2,6 +2,7 @@ local SLE, T, E, L, V, P, G = unpack(select(2, ...))
 local SB = SLE:NewModule("Bags", 'AceHook-3.0')
 local Pr
 local B = E:GetModule('Bags')
+--GLOBALS: hooksecurefunc
 local _G = _G
 local REAGENTBANK_CONTAINER = REAGENTBANK_CONTAINER
 local C_NewItems = C_NewItems

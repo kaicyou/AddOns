@@ -40,23 +40,30 @@ local L = WeakAuras.L
 -- GLOBALS: SLASH_WEAKAURAS1 SLASH_WEAKAURAS2 SlashCmdList GTFO UNKNOWNOBJECT C_PetBattles
 
 local queueshowooc;
-function WeakAuras.OpenOptions(msg)
+
+function WeakAuras.LoadOptions(msg)
   if not(IsAddOnLoaded("WeakAurasOptions")) then
     if InCombatLockdown() then
       -- inform the user and queue ooc
       print("|cff9900FF".."WeakAuras Options"..FONT_COLOR_CODE_CLOSE.." will finish loading after combat.")
       queueshowooc = msg or "";
       WeakAuras.frames["Addon Initialization Handler"]:RegisterEvent("PLAYER_REGEN_ENABLED")
-      return;
+      return false;
     else
       local loaded, reason = LoadAddOn("WeakAurasOptions");
       if not(loaded) then
         print("|cff9900FF".."WeakAuras Options"..FONT_COLOR_CODE_CLOSE.." could not be loaded: "..RED_FONT_COLOR_CODE.._G["ADDON_"..reason]);
-        return;
+        return false;
       end
     end
   end
-  WeakAuras.ToggleOptions(msg);
+  return true;
+end
+
+function WeakAuras.OpenOptions(msg)
+  if (WeakAuras.LoadOptions(msg)) then
+    WeakAuras.ToggleOptions(msg);
+  end
 end
 
 SLASH_WEAKAURAS1, SLASH_WEAKAURAS2 = "/weakauras", "/wa";
@@ -1820,6 +1827,7 @@ function WeakAuras.pAdd(data)
     triggerState[id].activeTriggerMode = data.activeTriggerMode or 0;
     triggerState[id].triggerLogicFunc = triggerLogicFunc;
     triggerState[id].triggers = {};
+    triggerState[id].triggerCount = 0;
 
     WeakAuras.LoadEncounterInitScripts(id)
 
@@ -2948,14 +2956,7 @@ function WeakAuras.FixGroupChildrenOrder()
         for i=1, #data.controlledChildren do
           local childRegion = WeakAuras.regions[data.controlledChildren[i]] and WeakAuras.regions[data.controlledChildren[i]].region;
           if(childRegion) then
-            if frameLevel >= 100 then
-              frameLevel = 100
-            else
-              frameLevel = frameLevel + 1
-            end
-            -- Try to fix #358 with info from http://wow.curseforge.com/addons/droodfocus/tickets/14
-            -- by setting SetFrameLevel() twice.
-            childRegion:SetFrameLevel(frameLevel);
+            frameLevel = frameLevel + 1
             childRegion:SetFrameLevel(frameLevel);
           end
         end

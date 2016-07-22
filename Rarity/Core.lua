@@ -1,5 +1,5 @@
 Rarity = LibStub("AceAddon-3.0"):NewAddon("Rarity", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "LibSink-2.0", "AceBucket-3.0", "LibBars-1.0")
-Rarity.MINOR_VERSION = tonumber(("$Revision: 520 $"):match("%d+"))
+Rarity.MINOR_VERSION = tonumber(("$Revision: 527 $"):match("%d+"))
 local FORCE_PROFILE_RESET_BEFORE_REVISION = 1 -- Set this to one higher than the Revision on the line above this
 local L = LibStub("AceLocale-3.0"):GetLocale("Rarity")
 local R = Rarity
@@ -2273,6 +2273,7 @@ do
 			self.bar = self.barGroup:NewCounterBar("Track", text, chance, 100, itemTexture or [[Interface\Icons\spell_nature_forceofnature]])
 		else
 			self.bar:SetIcon(itemTexture or [[Interface\Icons\spell_nature_forceofnature]])
+			--Rarity:Print(itemTexture or "no texture")
 			self.bar:SetLabel(text)
 			self.bar:SetValue(chance, 100)
 		end
@@ -2979,6 +2980,7 @@ do
 										-- Add the item to the tooltip
 										local catIcon = ""
 										if Rarity.db.profile.showCategoryIcons and v.cat and Rarity.catIcons[v.cat] then catIcon = [[|TInterface\AddOns\Rarity\Icons\]]..Rarity.catIcons[v.cat]..".blp:0:4|t " end
+										--Rarity:Print(itemTexture or "no texture")
 										line = tooltip:AddLine(icon, catIcon..(itemTexture and "|T"..itemTexture..":0|t " or "")..(itemLink or v.name or L["Unknown"]), attempts, likelihood, Rarity.db.profile.showTimeColumn and time or nil, Rarity.db.profile.showLuckinessColumn and lucky or nil, Rarity.db.profile.showZoneColumn and colorize(zoneText, zoneColor) or nil, status)
 										tooltip:SetLineScript(line, "OnMouseUp", onClickItem, v)
 										tooltip:SetLineScript(line, "OnEnter", showSubTooltip, v)

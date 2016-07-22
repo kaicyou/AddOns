@@ -120,6 +120,8 @@ if not L then return end
 --	actions menu
 	L["MENU_ACTION"] = "动作设置"
 	L["MENU_ACTION_REFRESH_TEXT"] = "更新及排序窗口内容"
+--	L["MENU_ACTION_REFRESH_CLEAR_CACHE"] = ""
+--	L["MENU_ACTION_REFRESH_CLEAR_CACHE_TEXT"] = ""
 	L["MENU_ACTION_RELOAD_TEXT"] = "重载窗口，当你使用换装软件时使用"
 	L["MENU_ACTION_EDITMODE"] = "开启编辑模式"
 	L["MENU_ACTION_EDITMODE_TEXT"] = "切换编辑模式，让你指定分组及调整样式"

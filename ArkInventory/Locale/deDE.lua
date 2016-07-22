@@ -120,6 +120,8 @@ if not L then return end
 --	actions menu
 	L["MENU_ACTION"] = "Aktionen"
 	L["MENU_ACTION_REFRESH_TEXT"] = "aktualisiert das Fenster"
+--	L["MENU_ACTION_REFRESH_CLEAR_CACHE"] = ""
+--	L["MENU_ACTION_REFRESH_CLEAR_CACHE_TEXT"] = ""
 	L["MENU_ACTION_RELOAD_TEXT"] = "l\195\164dt das Fenster neu (zu verwenden nachdem man Gegenst\195\164nde in den Ausr\195\188stungs-Sets ver\195\164ndert hat)"
 	L["MENU_ACTION_EDITMODE"] = "Bearbeitungs-Modus"
 	L["MENU_ACTION_EDITMODE_TEXT"] = "schaltet den Bearbeitungs-Modus ein oder aus (nur im Bearbeitungs-Modus kann man Leisten, Sortierung etc. ver\195\164ndern)"

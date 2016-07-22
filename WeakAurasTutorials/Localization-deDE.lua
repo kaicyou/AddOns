@@ -90,7 +90,7 @@ L["Group Auras 8/10 Text"] = "Aktivieren der %s Einstellung für eine Gruppen Au
 L["Home"] = "Startseite"
 -- L["Inverse"] = ""
 -- L["Left Text"] = ""
--- L["Model"] = ""
+L["Model"] = "Modell"
 L["Multi-target Auras: 10/10"] = "Mehrfachziel-Auren: 10/10"
 L["Multi-target Auras 10/10 Text"] = [=[|cFFFF0000Auto-Klonen|r ist für Mehrfachziel-Auren standardmäßig aktiviert.
 
@@ -111,7 +111,7 @@ L["New in 1.4 Text2"] = "Lege zunächst eine neue Anzeige zu Demonstrationszweck
 -- L["Options/Trigger"] = ""
 L["Player Class"] = "Spielerklasse"
 -- L["Play Sound"] = ""
--- L["Preset"] = ""
+L["Preset"] = "Vorlage"
 L["Previous"] = "Zurück"
 L["Progress Bar"] = "Fortschrittsleiste"
 -- L["Show all matches (Auto-clone)"] = ""
@@ -119,7 +119,7 @@ L["Progress Bar"] = "Fortschrittsleiste"
 -- L["Sound"] = ""
 -- L["Specific Unit"] = ""
 L["Status"] = "Status"
--- L["Tooltip on Mouseover"] = ""
+L["Tooltip on Mouseover"] = "Tooltip bei Mausberührung"
 L["Trigger Options: 1/4"] = "Auslöseroptionen: 1/4"
 L["Trigger Options 1/4 Text"] = [=[Zusätzlich zu \"Mehrfachziel\" gibt es eine neue Option für die Einheiteneinstellung: Konkrete Einheit.
 

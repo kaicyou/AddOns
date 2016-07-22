@@ -120,6 +120,8 @@ if not L then return end
 --	actions menu
 --	L["MENU_ACTION"] = ""
 --	L["MENU_ACTION_REFRESH_TEXT"] = ""
+--	L["MENU_ACTION_REFRESH_CLEAR_CACHE"] = ""
+--	L["MENU_ACTION_REFRESH_CLEAR_CACHE_TEXT"] = ""
 --	L["MENU_ACTION_RELOAD_TEXT"] = ""
 	L["MENU_ACTION_EDITMODE"] = "Activar Modo de Edici\195\179n"
 --	L["MENU_ACTION_EDITMODE_TEXT"] = ""

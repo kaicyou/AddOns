@@ -120,6 +120,8 @@ if not L then return end
 --	actions menu
 	L["MENU_ACTION"] = "功能"
 	L["MENU_ACTION_REFRESH_TEXT"] = "更新及排序視窗內容"
+--	L["MENU_ACTION_REFRESH_CLEAR_CACHE"] = ""
+--	L["MENU_ACTION_REFRESH_CLEAR_CACHE_TEXT"] = ""
 	L["MENU_ACTION_RELOAD_TEXT"] = "重載視窗，當你使用換裝軟體時使用"
 	L["MENU_ACTION_EDITMODE"] = "開啟編輯模式"
 	L["MENU_ACTION_EDITMODE_TEXT"] = "切換編輯模式，讓你指定分組及調整樣式"

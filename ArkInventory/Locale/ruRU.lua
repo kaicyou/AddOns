@@ -120,6 +120,8 @@ if not L then return end
 --	actions menu
 	L["MENU_ACTION"] = "Действия"
 	L["MENU_ACTION_REFRESH_TEXT"] = "обновляет окно"
+--	L["MENU_ACTION_REFRESH_CLEAR_CACHE"] = ""
+--	L["MENU_ACTION_REFRESH_CLEAR_CACHE_TEXT"] = ""
 	L["MENU_ACTION_RELOAD_TEXT"] = "перезагрузить окно. Используйти это действие, когда вы меняете сеты аутфита"
 	L["MENU_ACTION_EDITMODE"] = "Режим редактирования"
 	L["MENU_ACTION_EDITMODE_TEXT"] = "включает и выключает режим редактирования для изменения настроек наборов ячеек."

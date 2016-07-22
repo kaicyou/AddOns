@@ -120,6 +120,8 @@ if not L then return end
 --	actions menu
 --	L["MENU_ACTION"] = ""
 	L["MENU_ACTION_REFRESH_TEXT"] = "Réactualiser la fenêtre"
+--	L["MENU_ACTION_REFRESH_CLEAR_CACHE"] = ""
+--	L["MENU_ACTION_REFRESH_CLEAR_CACHE_TEXT"] = ""
 	L["MENU_ACTION_RELOAD_TEXT"] = "Recharger la fenêtre."
 	L["MENU_ACTION_EDITMODE"] = "Mode édition"
 	L["MENU_ACTION_EDITMODE_TEXT"] = "Basculer en mode édition, ce qui vous permet de changer la catégorie des objets"

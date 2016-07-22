@@ -801,6 +801,7 @@ local function LoadSkin()
 		"Advanced_MaxFPSBKCheckBox",
 		"Advanced_UseUIScale",
 		"Advanced_ShowHDModels",
+		"Advanced_DesktopGamma",
 		--Network
 		"NetworkOptionsPanelAdvancedCombatLogging",
 		-- Audio
@@ -954,10 +955,14 @@ local function LoadSkin()
 		"Graphics_EnvironmentalDetailSlider",
 		"Graphics_GroundClutterSlider",
 		"RaidGraphics_Quality",
+		"RaidGraphics_EnvironmentalDetailSlider",
+		"RaidGraphics_GroundClutterSlider",
+		"RaidGraphics_ViewDistanceSlider",
 		"Advanced_UIScaleSlider",
 		"Advanced_MaxFPSSlider",
 		"Advanced_MaxFPSBKSlider",
 		"Advanced_RenderScaleSlider",
+		"Advanced_GammaSlider",
 		"AudioOptionsSoundPanelMasterVolume",
 		"AudioOptionsSoundPanelSoundVolume",
 		"AudioOptionsSoundPanelMusicVolume",

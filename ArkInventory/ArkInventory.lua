@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1589 $
-$Date: 2016-07-21 20:10:05 +1000 (Thu, 21 Jul 2016) $
+$Revision: 1590 $
+$Date: 2016-07-22 00:42:11 +1000 (Fri, 22 Jul 2016) $
 
 ]]--
 
@@ -1589,6 +1589,11 @@ ArkInventory.Const.DatabaseDefaults.global = {
 						["method"] = 9995,
 					},
 				},
+				[1000] = {
+					["system"] = false,
+					["used"] = "Y",
+					["name"] = ArkInventory.Localise["DEFAULT"],
+				},
 			},
 			["min"] = 1000,
 			["next"] = 1000,
@@ -1637,6 +1642,11 @@ ArkInventory.Const.DatabaseDefaults.global = {
 				},
 				[9999] = {
 					["system"] = true,
+					["used"] = "Y",
+					["name"] = ArkInventory.Localise["DEFAULT"],
+				},
+				[1000] = {
+					["system"] = false,
 					["used"] = "Y",
 					["name"] = ArkInventory.Localise["DEFAULT"],
 				},
@@ -1960,9 +1970,9 @@ ArkInventory.Const.DatabaseDefaults.global = {
 								},
 							},
 						},
-						["style"] = 9999,
-						["layout"] = 9999,
-						["catset"] = 9999,
+						["style"] = 1000,
+						["layout"] = 1000,
+						["catset"] = 1000,
 					},
 					[ArkInventory.Const.Location.Bag] = {
 						["notify"] = true,
@@ -1975,8 +1985,6 @@ ArkInventory.Const.DatabaseDefaults.global = {
 					[ArkInventory.Const.Location.Vault] = {
 						["notify"] = true,
 						["override"] = true,
-						["style"] = 9998,
-						["layout"] = 9998,
 					},
 				},
 				
@@ -7240,8 +7248,6 @@ function ArkInventory.Frame_Item_OnEnter( frame )
 	
 	if i.h then
 		
-		ArkInventory.GameTooltipSetPosition( frame )
-		
 		if ArkInventory.Global.Location[loc_id].isOffline then
 			
 			ArkInventory.GameTooltipSetHyperlink( frame, i.h )
@@ -7258,6 +7264,7 @@ function ArkInventory.Frame_Item_OnEnter( frame )
 			
 		elseif loc_id == ArkInventory.Const.Location.Pet then
 			
+			ArkInventory.GameTooltipSetPosition( frame )
 			ArkInventory.TooltipSetBattlepet( GameTooltip, i.h, i )
 			CursorUpdate( frame )
 			return
@@ -7273,6 +7280,7 @@ function ArkInventory.Frame_Item_OnEnter( frame )
 			
 		elseif loc_id == ArkInventory.Const.Location.Toybox then
 			
+			ArkInventory.GameTooltipSetPosition( frame )
 			GameTooltip:SetToyByItemID( i.item )
 			
 		elseif loc_id == ArkInventory.Const.Location.Heirloom then
@@ -9332,25 +9340,24 @@ function ArkInventory.ToggleEditMode( )
 end
 
 function ArkInventory.GameTooltipSetPosition( frame, bottom )
-
-	local x, a
-	x = frame:GetLeft( ) + ( frame:GetRight( ) - frame:GetLeft( ) ) / 2
+	
+	GameTooltip:SetOwner( frame, "ANCHOR_NONE" )
+	
+	local anchorFromLeft = frame:GetLeft( ) + ( frame:GetRight( ) - frame:GetLeft( ) ) / 2 < GetScreenWidth( ) / 2
 	
 	if bottom then
-		if ( x >= ( GetScreenWidth( ) / 2 ) ) then
-			a = "ANCHOR_BOTTOMLEFT"
+		if anchorFromLeft then
+			GameTooltip:SetAnchorType( "ANCHOR_BOTTOMRIGHT" )
 		else
-			a = "ANCHOR_BOTTOMRIGHT"
+			GameTooltip:SetAnchorType( "ANCHOR_BOTTOMLEFT" )
 		end
 	else
-		if ( x >= ( GetScreenWidth( ) / 2 ) ) then
-			a = "ANCHOR_LEFT"
+		if anchorFromLeft then
+			GameTooltip:SetAnchorType( "ANCHOR_RIGHT" )
 		else
-			a = "ANCHOR_RIGHT"
+			GameTooltip:SetAnchorType( "ANCHOR_LEFT" )
 		end
 	end
-	
-	GameTooltip:SetOwner( frame, a )
 	
 end
 

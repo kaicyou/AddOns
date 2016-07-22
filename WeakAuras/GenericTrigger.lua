@@ -1288,10 +1288,12 @@ do
   function WeakAuras.CheckCooldownReady()
     CheckGCD();
 
+    local runeDuration = -100;
     for id, _ in pairs(runes) do
       local startTime, duration = GetRuneCooldown(id);
       startTime = startTime or 0;
       duration = duration or 0;
+      runeDuration = duration > 0 and duration;
       local time = GetTime();
 
       if(not startTime or startTime == 0) then
@@ -1337,6 +1339,7 @@ do
       local charges, maxCharges, startTime, duration = GetSpellCharges(id);
       if (charges == nil) then -- charges is nil if the spell has no charges
         startTime, duration = GetSpellCooldown(id);
+        charges = GetSpellCount(id);
       elseif (charges == maxCharges) then
         startTime, duration = 0, 0;
       end
@@ -1362,7 +1365,7 @@ do
           spellCdDurs[id] = duration;
           spellCdExps[id] = endTime;
           spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
-          if (spellsRune[id] and duration ~= 10) then
+          if (spellsRune[id] and abs(duration - runeDuration) > 0.001 ) then
             spellCdDursRune[id] = duration;
             spellCdExpsRune[id] = endTime;
           end
@@ -1378,7 +1381,7 @@ do
           if (maxCharges == nil or charges + 1 == maxCharges) then
             spellCdHandles[id] = timer:ScheduleTimer(SpellCooldownFinished, endTime - time, id);
           end
-          if (spellsRune[id] and duration ~= 10) then
+          if (spellsRune[id] and abs(duration - runeDuration) > 0.001 ) then
             spellCdDursRune[id] = duration;
             spellCdExpsRune[id] = endTime;
           end
@@ -1392,6 +1395,9 @@ do
             timer:CancelTimer(spellCdHandles[id]);
           end
           SpellCooldownFinished(id);
+        end
+        if (chargesChanged) then
+          WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
         end
       end
     end
@@ -1480,6 +1486,9 @@ do
 
     if (ignoreRunes) then
       spellsRune[id] = true;
+      for i = 1, 6 do
+        WeakAuras.WatchRuneCooldown(i);
+      end
     end
 
     if not(spells[id]) then
@@ -1766,8 +1775,8 @@ do
       local expirationTime = now + duration;
 
       local newBar;
-      bars[spellId] = bars[spellId] or {};
-      local bar = bars[spellId];
+      bars[text] = bars[text] or {};
+      local bar = bars[text];
       bar.addon = addon;
       bar.spellId = spellId;
       bar.text = text;
@@ -1785,11 +1794,9 @@ do
       end
     elseif (event == "BigWigs_StopBar") then
       local addon, text = ...
-      for key, bar in pairs(bars) do
-        if (key == text) then
-          bars[key] = nil;
-          WeakAuras.ScanEvents("BigWigs_StopBar", key);
-        end
+      if(bars[text]) then
+        WeakAuras.ScanEvents("BigWigs_StopBar", text);
+        bars[text] = nil;
       end
     elseif (event == "BigWigs_StopBars"
             or event == "BigWigs_OnBossDisable"

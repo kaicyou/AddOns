@@ -4145,6 +4145,14 @@ function ArkInventory.MenuRefreshOpen( frame )
 							ArkInventory.ToggleShowHiddenItems( )
 						end
 					)
+					ArkInventory.Lib.Dewdrop:AddLine(
+						"text", string.format( "%s: %s", ArkInventory.Localise["ITEMS"], ArkInventory.Localise["MENU_ACTION_REFRESH_CLEAR_CACHE"] ),
+						"tooltipTitle", ArkInventory.Localise["MENU_ACTION_REFRESH_CLEAR_CACHE_TEXT"],
+						"closeWhenClicked", true,
+						"func", function( )
+							ArkInventory.ItemCacheClear( )
+						end
+					)
 					
 					
 					

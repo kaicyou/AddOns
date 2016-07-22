@@ -120,6 +120,8 @@ if not L then return end
 --	actions menu
 	L["MENU_ACTION"] = "Actions"
 	L["MENU_ACTION_REFRESH_TEXT"] = "refreshes the window"
+	L["MENU_ACTION_REFRESH_CLEAR_CACHE"] = "Clear Category Cache"
+	L["MENU_ACTION_REFRESH_CLEAR_CACHE_TEXT"] = "clears all cached category assignments"
 	L["MENU_ACTION_RELOAD_TEXT"] = "reloads the window. use when you change items in outfit sets"
 	L["MENU_ACTION_EDITMODE"] = "Edit Mode"
 	L["MENU_ACTION_EDITMODE_TEXT"] = "toggles edit mode on and off so you can customise item layout"

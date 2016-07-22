@@ -11,7 +11,7 @@
 #@end-no-lib-strip@
 #@no-lib-strip@
 #@end-no-lib-strip@
-## X-Curse-Packaged-Version: r520-release
+## X-Curse-Packaged-Version: r527b-release
 ## X-Curse-Project-Name: Rarity
 ## X-Curse-Project-ID: rarity
 ## X-Curse-Repository-ID: wow/rarity/mainline

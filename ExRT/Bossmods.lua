@@ -3994,7 +3994,7 @@ function Archimonde:Load()
 	frame.back:SetColorTexture(.7,.7,.7,.4)
 	frame.back:SetAllPoints()
 	
-	frame.player = frame:CreateTexture(nil, "ARTWORK")
+	frame.player = frame:CreateTexture(nil, "OVERLAY")
 	frame.player:SetSize(32,32)
 	frame.player:SetPoint("CENTER",0,0)
 	frame.player:SetTexture("Interface\\MINIMAP\\MinimapArrow")
@@ -4034,7 +4034,7 @@ function Archimonde:Load()
 		function SetLine(i,fX,fY,tX,tY,c)
 			local line = frame.lines[i]
 			if not line then
-				line = frame:CreateTexture(nil, "BACKGROUND")
+				line = frame:CreateTexture(nil, "BORDER", nil, 5)
 				frame.lines[i] = line
 				line:SetTexture("Interface\\AddOns\\ExRT\\media\\line"..(VExRT.Bossmods.ArchimondeLineSize or 12).."px")
 				line:SetSize(256,256)
@@ -4063,6 +4063,14 @@ function Archimonde:Load()
 			c = c or 1
 			local color_list = LINES_COLORS[c]
 			line:SetVertexColor(color_list.r, color_list.g, color_list.b, color_list.a)
+			
+			if c == 2 then
+				line:SetDrawLayer("BORDER", 6)
+			elseif c == 3 then
+				line:SetDrawLayer("BORDER", 5)
+			else
+				line:SetDrawLayer("BORDER", 4)
+			end
 			line:Show()
 		end
 	end
@@ -4107,7 +4115,7 @@ function Archimonde:Load()
 	local function SetCircle(i,pX,pY,c,moreAlpha)
 		local circle = frame.circles[i]
 		if not circle then
-			circle = frame:CreateTexture(nil, "BACKGROUND")
+			circle = frame:CreateTexture(nil, "BACKGROUND", nil, 4)
 			frame.circles[i] = circle
 			circle:SetTexture("Interface\\AddOns\\ExRT\\media\\circle256")
 		end
@@ -4167,6 +4175,15 @@ function Archimonde:Load()
 			alpha = .25
 		end
 		circle:SetVertexColor(color_list.r, color_list.g, color_list.b, alpha)
+		
+		if c == 3 then
+			circle:SetDrawLayer("BORDER", 3)
+		elseif c == 1 then
+			circle:SetDrawLayer("BORDER", 2)
+		else
+			circle:SetDrawLayer("BORDER", 1)
+		end
+		
 		circle:Show()
 	end
 	
@@ -4771,7 +4788,7 @@ function ArchimondeInfernals:Load()
 		return
 	end
 	
-	local infernalMaxHP = 2893432
+	local infernalMaxHP = 2893432 / 2
 	local infernalHellfireCD = 15
 	
 	local SIZE_WIDTH,SIZE_HEIGHT = 220,36	--250,40
@@ -4993,7 +5010,7 @@ function ArchimondeInfernals:Load()
 		end
 		
 		if difficultyID == 16 then
-			infernalMaxHP = 2893432
+			infernalMaxHP = 2893432 / 2
 			infernalHellfireCD = 15
 		elseif difficultyID == 15 then
 			--[[
@@ -5006,7 +5023,7 @@ function ArchimondeInfernals:Load()
 				95005
 			]]
 			
-			infernalMaxHP = 904735 + 95005 * (instanceGroupSize - 10)
+			infernalMaxHP = (904735 + 95005 * (instanceGroupSize - 10)) / 2
 			infernalHellfireCD = 31
 		elseif difficultyID == 14 then
 			--[[
@@ -5016,11 +5033,11 @@ function ArchimondeInfernals:Load()
 				76000
 			]]
 			
-			infernalMaxHP = 723811 + 76000 * (instanceGroupSize - 10)
+			infernalMaxHP = (723811 + 76000 * (instanceGroupSize - 10)) / 2
 			infernalHellfireCD = 31
 		elseif difficultyID == 7 then
 			--LFR, 16:23 26.08.2015, too hard for idiots, nerfs inc?
-			infernalMaxHP = 1397855	
+			infernalMaxHP = 1397855	 / 2	
 			infernalHellfireCD = 46
 		end
 	end
@@ -5172,7 +5189,7 @@ function Gorefiend:Load()
 	
 	local SIZE_WIDTH,SIZE_HEIGHT = 170,24
 	
-	local soulMaxHP = 1047180
+	local soulMaxHP = 523590
 	
 	local soulsFrames = {}
 	local function HideAllFrames()
@@ -5634,7 +5651,7 @@ function Gorefiend2:Load()
 	
 	local SIZE_WIDTH,SIZE_HEIGHT = 140,20
 	
-	local soulMaxHP = 1047180
+	local soulMaxHP = 523590
 	
 	local soulsFrames = {}
 	

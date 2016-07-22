@@ -89,6 +89,8 @@ module.db.spellsCoins = {
 	[188969] = L.RaidLootT18HCBoss12,	-- T18x12
 	[188970] = L.RaidLootT18HCBoss13,	-- T18x13
 
+	[188971] = L.bossName[1801],		-- World Boss
+
 	[177510] = L.RaidLootBFBoss1,	-- T17x2x1
 	[177511] = L.RaidLootBFBoss2,	-- T17x2x2
 	[177517] = L.RaidLootBFBoss3,	-- T17x2x3
@@ -189,7 +191,7 @@ function module.main:ADDON_LOADED()
 	VExRT.Coins = VExRT.Coins or {}
 	VExRT.Coins.list = VExRT.Coins.list or {}
 	
-	module:RegisterEvents('ENCOUNTER_END','ENCOUNTER_START')
+	module:RegisterEvents('ENCOUNTER_END','ENCOUNTER_START','BOSS_KILL')
 	
 	module.db.bonusLootChat = deformat(LOOT_ITEM_BONUS_ROLL)
 	module.db.bonusLootChatSelf = deformat(LOOT_ITEM_BONUS_ROLL_SELF)
@@ -200,6 +202,7 @@ do
 		module.db.endCoinTimer = nil
 		module:UnregisterEvents('UNIT_SPELLCAST_SUCCEEDED','CHAT_MSG_LOOT')
 	end
+	local BossKillTimer = nil
 	function module.main:ENCOUNTER_END(encounterID,encounterName,difficultyID,groupSize,success)
 		if success == 1 then
 			module:RegisterEvents('CHAT_MSG_LOOT','UNIT_SPELLCAST_SUCCEEDED')
@@ -208,6 +211,9 @@ do
 		if encounterID == 1594 then
 			module:UnregisterEvents('CHAT_MSG_MONSTER_YELL')
 		end	
+	end
+	function module.main:BOSS_KILL(encounterID)
+		ExRT.F.Timer(module.main.ENCOUNTER_END, .5, module.main, encounterID, 0, 0, 0, 1, true)
 	end
 end
 
@@ -266,24 +272,6 @@ do
 				if VExRT.Coins.ShowMessage then
 					local msg = L.CoinsMessage
 					print( msg:format( "|c"..ExRT.F.classColor( className or "?" )..name.."|r" ) )
-				end
-			end
-		end
-	end
-	if ExRT.is7 then
-		function module.main:UNIT_SPELLCAST_SUCCEEDED(unitID,_,_,spellLine)
-			local unitType,_,serverID,instanceID,zoneUID,spellID,spawnID = strsplit("-", spellLine or "")
-			spellID = tonumber(spellID or 0) or 0
-			if module_db_spellsCoins[spellID] and unitID:find("^raid%d+$") then
-				local name = ExRT.F.UnitCombatlogname(unitID)
-				if name then
-					local _,className,class = UnitClass(unitID)
-					VExRT.Coins.list[#VExRT.Coins.list + 1] = ExRT.F.tohex(class or 0,1)..spellID..name..time()
-					
-					if VExRT.Coins.ShowMessage then
-						local msg = L.CoinsMessage
-						print( msg:format( "|c"..ExRT.F.classColor( className or "?" )..name.."|r" ) )
-					end
 				end
 			end
 		end

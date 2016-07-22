@@ -619,7 +619,7 @@ function module.options:Load()
 	local function IsItemHasNotGem(link)
 		if link then
 			local gem = link:match("item:%d+:[0-9%-]*:([0-9%-]*):")
-			if gem == "0" then
+			if gem == "0" or gem == "" then
 				return true
 			end
 		end
@@ -630,13 +630,13 @@ function module.options:Load()
 			local ench,gem = link:match("item:%d+:([0-9%-]*):([0-9%-]*):")
 			if ench and gem then
 				local isTop = true
-				if ench ~= "0" then
+				if ench ~= "0" and ench ~= "" then
 					ench = tonumber(ench)
 					if not module.db.topEnchGems[ench] then
 						isTop = false
 					end
 				end
-				if gem ~= "0" then
+				if gem ~= "0" and gem ~= "" then
 					gem = tonumber(gem)
 					if not module.db.topEnchGems[gem] then
 						isTop = false
@@ -650,13 +650,13 @@ function module.options:Load()
 	local function IsValorUpgraded(link)
 		if link then
 			local isUpgraded = true
-			local upgradeType,linkRest = link:match("item:%d+:[0-9%-]*:[0-9%-]*:[0-9%-]*:[0-9%-]*:[0-9%-]*:[0-9%-]*:[0-9%-]*:[0-9%-]*:[0-9%-]*:([0-9%-]*):[0-9%-]*:([%d:]+)")
-			if upgradeType and linkRest then --linkRest contains (a variable amount of) bonus IDs and the upgrade ID at the end
-				if upgradeType == "4" then -- this item can be upgraded with valor points
-					local upgradeID = linkRest:match(":(%d+)$")
-					if upgradeID ~= "531" then -- 529 is 0/2, 530 is 1/2, 531 is 2/2
-						isUpgraded = false
-					end
+			
+			local _,itemID,enchant,gem1,gem2,gem3,gem4,suffixID,uniqueID,level,specializationID,upgradeType,instanceDifficultyID,numBonusIDs,restLink = strsplit(":",link,15)
+			
+			if upgradeType == "4" and restLink then
+				local upgradeID = select((tonumber(numBonusIDs or "0") or 0) + 1,strsplit(":",restLink))
+				if upgradeID ~= "531" then -- 529 is 0/2, 530 is 1/2, 531 is 2/2
+					isUpgraded = false
 				end
 			end
 			return isUpgraded

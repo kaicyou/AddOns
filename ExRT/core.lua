@@ -1,13 +1,22 @@
---	17:24 19.07.2016
+--	14:15 22.07.2016
 
 --[[
+3705
+* Fixed blinking textures for archimonde radar
+* Fixed health value for souls on gorefiend
+* Fixed health value for infernals on archimonde
+* Raid Cooldowns: "fast setup" lists updated for 7.0 spells
+* Bonus loot: fixed recording
+* Raid check: fixed food report
+* Inspeci Viewer: fixed a lot bugs
+
 3700
 7.0 Legion Update
 
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3700
+ExRT.V = 3705
 ExRT.T = "R"
 ExRT.is7 = false		--> Legion (7.x) Client
 

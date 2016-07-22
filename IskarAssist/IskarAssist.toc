@@ -2,7 +2,7 @@
 ## Title: Iskar Assist
 ## Notes: Helps with the Encounter against Iskar on Hellfire Citadel.
 ## SavedVariables: IskarAssistDB, RADataBase
-## X-Curse-Packaged-Version: r91
+## X-Curse-Packaged-Version: r94
 ## X-Curse-Project-Name: Iskar Assist
 ## X-Curse-Project-ID: iskar-assist
 ## X-Curse-Repository-ID: wow/iskar-assist/mainline

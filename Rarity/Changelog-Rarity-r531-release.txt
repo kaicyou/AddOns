@@ -1,9 +1,26 @@
 ------------------------------------------------------------------------
-r529 | allara | 2016-07-21 17:29:51 +0000 (Thu, 21 Jul 2016) | 1 line
+r532 | allara | 2016-07-22 16:48:25 +0000 (Fri, 22 Jul 2016) | 1 line
 Changed paths:
-   A /tags/r527b-release (from /trunk:528)
+   A /tags/r531-release (from /trunk:531)
 
-Tagging as r527b-release
+Tagging as r531-release
+------------------------------------------------------------------------
+r531 | allara | 2016-07-21 23:41:53 +0000 (Thu, 21 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+
+- Rarity's achievement alert when you obtain an item should now function properly in WoW 7.0
+------------------------------------------------------------------------
+r530 | allara | 2016-07-21 22:55:30 +0000 (Thu, 21 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/Core.lua
+   A /trunk/Libs/LibBars-1.0
+   A /trunk/Libs/LibBars-1.0/LibBars-1.0.lua
+   A /trunk/Libs/LibBars-1.0/lib.xml
+
+- Updated LibBars-1.0 in this package with a bug fix for WoW 7.x. GetItemInfo() returns texture IDs instead of image paths now. LibBars:SetIcon should no longer detect an ID and try to route it through GetSpellInfo to obtain the filename, as that is no longer necessary and does not work for item textures. Note to no-libs users: Rarity now contains a custom copy of LibBars-1.0 which manifests itself as r24 in order to force an upgrade in case you have the library installed externally. The version on WowAce does not work properly in WoW 7.0.
 ------------------------------------------------------------------------
 r527 | allara | 2016-07-21 17:01:26 +0000 (Thu, 21 Jul 2016) | 1 line
 Changed paths:

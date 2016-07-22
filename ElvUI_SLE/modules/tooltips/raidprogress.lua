@@ -1,20 +1,17 @@
 ﻿local SLE, T, E, L, V, P, G = unpack(select(2, ...))
 local RP = SLE:NewModule("RaidProgress", "AceHook-3.0", "AceEvent-3.0")
 local TT = E:GetModule('Tooltip');
---GLOBALS: hooksecurefunc
+--GLOBALS: hooksecurefunc, AchievementFrame_DisplayComparison
 local MAX_PLAYER_LEVEL = MAX_PLAYER_LEVEL
 local _G = _G
-local sub = string.sub
+local utf8sub = string.utf8sub
 local ClearAchievementComparisonUnit = ClearAchievementComparisonUnit
-local AchievementFrame_DisplayComparison = AchievementFrame_DisplayComparison
 local SetAchievementComparisonUnit = SetAchievementComparisonUnit
 local HideUIPanel = HideUIPanel
 
 RP.Cache = {}
 RP.playerGUID = UnitGUID("player")
 RP.highestKill = 0
-
-
 
 RP.bosses = {
 	{ -- HFC
@@ -80,10 +77,10 @@ RP.modes = {
 		PLAYER_DIFFICULTY3,
 	},
 	["SHORT"] = {
-		sub(PLAYER_DIFFICULTY6, 1 , 1),
-		sub(PLAYER_DIFFICULTY2, 1 , 1),
-		sub(PLAYER_DIFFICULTY1, 1 , 1),
-		sub(PLAYER_DIFFICULTY3, 1 , 1),
+		utf8sub (PLAYER_DIFFICULTY6, 1 , 1),
+		utf8sub (PLAYER_DIFFICULTY2, 1 , 1),
+		utf8sub (PLAYER_DIFFICULTY1, 1 , 1),
+		utf8sub (PLAYER_DIFFICULTY3, 1 , 1),
 	},
 }
 

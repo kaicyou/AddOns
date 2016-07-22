@@ -345,7 +345,7 @@ local function GetFood(checkType)
 			for i=1,40 do
 				local _,spellId,stats
 				if ExRT.is7 then
-					_,_,_,_,_,_,_,_,_,_,spellId,_,_,_,_,stats = UnitAura(name, i,"HELPFUL")
+					_,_,_,_,_,_,_,_,_,_,spellId,_,_,_,_,_,stats = UnitAura(name, i,"HELPFUL")
 				else
 					_,_,_,_,_,_,_,_,_,_,spellId,_,_,_,stats = UnitAura(name, i,"HELPFUL")
 				end

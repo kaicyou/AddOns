@@ -1,6 +1,26 @@
+2016-07-22  Tercio  <Tercio>
+
+[b4ae0b8df71b] [tip]
+* Libs/DF/fw.lua, Libs/DF/normal_bar.lua, plugins/cooldowns.lua:
+
+- cooldown plugin update.
+
+
+[db39440a12d9]
+* IskarAssist.lua, plugins/boards.lua, plugins/meters.lua:
+
+- sync between repos. something went wrong last time.
+
+
+[682b6268d31b]
+* plugins/boards.lua, plugins/meters.lua:
+
+a
+
+
 2016-07-20  Tercio  <Tercio>
 
-[c6fda2ac4940] [tip]
+[c6fda2ac4940]
 * Libs/DF/fw.lua, Libs/LibGroupInSpecT-1.1/LibGroupInSpecT-1.1.lua:
 
 - framework and library update.
@@ -203,23 +223,5 @@ tagging release
 * OptionsPanel.lua, Templates.lua:
 
 -trying to weakup the packpager, 2nd attempt.
-
-
-[b6f475d797af]
-* IskarAssist.lua:
-
--trying to weakup the packpager.
-
-
-[1ba57cb633ab]
-* IskarAssist.lua:
-
-- player check disabled.
-
-
-[5877ec0a2a47]
-* IskarAssist.lua:
-
-- player check disabled.
 
 

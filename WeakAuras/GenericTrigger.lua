@@ -1293,7 +1293,7 @@ do
       local startTime, duration = GetRuneCooldown(id);
       startTime = startTime or 0;
       duration = duration or 0;
-      runeDuration = duration > 0 and duration;
+      runeDuration = duration > 0 and duration or runeDuration
       local time = GetTime();
 
       if(not startTime or startTime == 0) then
@@ -1351,12 +1351,7 @@ do
       local chargesChanged = spellCharges[id] ~= charges;
       spellCharges[id] = charges;
 
-      -- GCD
-      if (duration == WeakAuras.gcdDuration()) then
-        duration = 0;
-      end
-
-      if(duration > 0) then
+      if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
         -- On non-GCD cooldown
         local endTime = startTime + duration;
 
@@ -1389,12 +1384,14 @@ do
         end
       else
         if(spellCdExps[id]) then
-          -- CheckCooldownReady caught the spell cooldown before the timer callback
-          -- This happens if a proc resets the cooldown
-          if(spellCdHandles[id]) then
-            timer:CancelTimer(spellCdHandles[id]);
+          if (duration == WeakAuras.gcdDuration() and spellCdDurs[id] > duration or duration == 0) then
+           -- CheckCooldownReady caught the spell cooldown before the timer callback
+           -- This happens if a proc resets the cooldown
+            if(spellCdHandles[id]) then
+              timer:CancelTimer(spellCdHandles[id]);
+            end
+            SpellCooldownFinished(id);
           end
-          SpellCooldownFinished(id);
         end
         if (chargesChanged) then
           WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);

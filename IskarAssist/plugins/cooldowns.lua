@@ -78,7 +78,11 @@ local TrackingSpells = {}
 
 local get_unit_name = function (unitid)
 	local name = GetUnitName (unitid, true)
-	return Ambiguate (name, "none")
+	if (name) then
+		return Ambiguate (name, "none")
+	else
+		return ""
+	end
 end
 
 --[=[
@@ -800,8 +804,10 @@ end
 local player_health_event = function (event, unit)
 	local health = UnitHealth (unit)
 	local name = get_unit_name (unit)
-	
-	if (health < 2) then
+	if (not health) then
+		print (unit, UnitName(unit))
+	end
+	if (health and health < 2) then
 		if (not Cooldowns.Deaths [name]) then
 			--> player just died
 			local _, _, class_number = UnitClass (unit)
@@ -946,7 +952,7 @@ local sort_ascending = function (n1, n2)
 	return n1 < n2
 end
 
-function Cooldowns.OnEndBarTimer (bar)
+function Cooldowns.OnEndBarTimer (widget, bar)
 	bar.div_timer:Hide() --spark
 	--print ("===> BAR TIMER IS OVER")
 	return true

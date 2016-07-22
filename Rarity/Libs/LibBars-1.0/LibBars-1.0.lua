@@ -1,5 +1,5 @@
 local MAJOR = "LibBars-1.0"
-local MINOR = 90000 + tonumber(("$Revision: 22 $"):match("%d+"))
+local MINOR = 90000 + tonumber(("$Revision: 24 $"):match("%d+")) -- Rarity changed this version to 24 to force an upgrade
 
 local lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end -- No Upgrade needed.
@@ -1129,9 +1129,10 @@ end
 
 function barPrototype:SetIcon(icon)
 	if icon then
-		if type(icon) == "number" then
-			icon = select(3, GetSpellInfo(icon))
-		end
+		-- Starting in Legion (WoW 7.x), SetTexture can accept texture IDs directly. This translation via GetSpellInfo does not work any longer, especially since GetItemInfo now returns a texture ID.
+		--if type(icon) == "number" then
+		--	icon = select(3, GetSpellInfo(icon))
+		--end
 		self.icon:SetTexture(icon)
 		if self.showIcon then
 			self.icon:Show()

@@ -1,7 +1,7 @@
 -- Decimal Check
 	
 	local _, private = ...
-	private.defaults.dejacharacterstatsShowDecimalsChecked = {
+	private.defaults.dcsdefaults.dejacharacterstatsShowDecimalsChecked = {
 		SetChecked = true,
 	}	
 
@@ -397,25 +397,25 @@ local DCS_DecimalCheck = CreateFrame("CheckButton", "DCS_DecimalCheck", DejaChar
 	
 	DCS_DecimalCheck:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-		local checked = private.db.dejacharacterstatsShowDecimalsChecked
+		local checked = private.db.dcsdefaults.dejacharacterstatsShowDecimalsChecked
 			self:SetChecked(checked.SetChecked)
 			if self:GetChecked(true) then
 				DCS_DecimalsShow()
-				private.db.dejacharacterstatsShowDecimalsChecked.SetChecked = true
+				private.db.dcsdefaults.dejacharacterstatsShowDecimalsChecked.SetChecked = true
 			else
 				DCS_DecimalsHide()
-				private.db.dejacharacterstatsShowDecimalsChecked.SetChecked = false
+				private.db.dcsdefaults.dejacharacterstatsShowDecimalsChecked.SetChecked = false
 			end
 		end
 	end)
 
 	DCS_DecimalCheck:SetScript("OnClick", function(self,event,arg1) 
-		local checked = private.db.dejacharacterstatsShowDecimalsChecked
+		local checked = private.db.dcsdefaults.dejacharacterstatsShowDecimalsChecked
 		if self:GetChecked(true) then
 			DCS_DecimalsShow()
-			private.db.dejacharacterstatsShowDecimalsChecked.SetChecked = true
+			private.db.dcsdefaults.dejacharacterstatsShowDecimalsChecked.SetChecked = true
 		else
 			DCS_DecimalsHide()
-			private.db.dejacharacterstatsShowDecimalsChecked.SetChecked = false
+			private.db.dcsdefaults.dejacharacterstatsShowDecimalsChecked.SetChecked = false
 		end
 	end)

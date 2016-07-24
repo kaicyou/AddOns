@@ -162,7 +162,7 @@ local function SkinButton(Button)
 			_G["QueueStatusMinimapButton"]:HookScript('OnUpdate', function(self)
 				_G["QueueStatusMinimapButtonIcon"]:SetFrameLevel(_G["QueueStatusMinimapButton"]:GetFrameLevel() + 1)
 			end)
-			local Frame = CreateFrame('Frame', "QueueDummyFrame", SMB.bar)
+			local Frame = CreateFrame('Frame', "QueueDummyFrame", E.private.sle.minimap.mapicons.barenable and SMB.bar or Minimap)
 			Frame:SetTemplate()
 			Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
 			Frame.Icon:SetInside()
@@ -204,7 +204,7 @@ local function SkinButton(Button)
 				self:SetPoint(_G["QueueStatusMinimapButton"]:GetPoint())
 			end)
 		elseif Name == 'MiniMapMailFrame' then
-			local Frame = CreateFrame('Frame', 'MailDummyFrame', SMB.bar)
+			local Frame = CreateFrame('Frame', 'MailDummyFrame', E.private.sle.minimap.mapicons.barenable and SMB.bar or Minimap)
 			Frame:Size(E.db.sle.minimap.mapicons.iconsize)
 			Frame:SetTemplate()
 			Frame.Icon = Frame:CreateTexture(nil, 'ARTWORK')
@@ -238,6 +238,7 @@ local function SkinButton(Button)
 end
 
 function SMB:SkinMinimapButtons()
+	if not E.private.sle.minimap.mapicons.enable then return end
 	for i = 1, _G["Minimap"]:GetNumChildren() do
 		local object = T.select(i, _G["Minimap"]:GetChildren())
 		if object then

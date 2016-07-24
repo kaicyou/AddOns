@@ -1,12 +1,11 @@
-﻿ 
- 
+﻿
+
  mageNuggetsStatMonitor = {
     spellpower = true;
     attackpower = true;
     crit = true;
     haste = true;
     mastery = true;
-    multistrike = true;
     leech = true;
     versatility = true;
     spirit = true;
@@ -42,12 +41,6 @@
     masteryValueR = 1;
     masteryValueG = 1;
     masteryValueB = 1;
-    multistrikeR = 1;
-    multistrikeG = 1;
-    multistrikeB = 1;
-    multistrikeValueR = 1;
-    multistirkeValueG = 1;
-    multistrikeValueB = 1;
     versatilityR = 1;
     versatilityG = 1;
     versatilityB = 1;
@@ -96,10 +89,10 @@
 }
 
 function MNStatMonitorOptions_OnLoad(self)
-    self:RegisterEvent("ADDON_LOADED") 
+    self:RegisterEvent("ADDON_LOADED")
     self:RegisterEvent("PLAYER_REGEN_DISABLED")
     self:RegisterEvent("PLAYER_REGEN_ENABLED")
-    
+
     local MageNugStatMonitorOptions = CreateFrame("FRAME", "MageNugStatMonitorOptions", InterfaceOptionsFrame)
     MageNugStatMonitorOptions.name = "MN Stat Monitor"
     InterfaceOptions_AddCategory(MageNugStatMonitorOptions)
@@ -120,16 +113,16 @@ function MNStatMonitorOptions_OnEvent(this, event, ...)
                 MageNugSP_Frame:Show();
             end
         end
-    elseif (event == "PLAYER_REGEN_ENABLED") then       
+    elseif (event == "PLAYER_REGEN_ENABLED") then
         if(mageNuggetsStatMonitor.spCombatToggle == true) then
             MageNugSP_Frame:Hide();
         end
-    elseif (event == "PLAYER_REGEN_DISABLED") then       
+    elseif (event == "PLAYER_REGEN_DISABLED") then
         MageNugSP_Frame:Show();
-    end  
+    end
 end
 
-function loadMNStatMonitorOptionsFrames() 
+function loadMNStatMonitorOptionsFrames()
     if (mageNuggetsStatMonitor.spCombatToggle == nil)then
         mageNuggetsStatMonitor.spCombatToggle = false;
     end
@@ -164,7 +157,7 @@ function loadMNStatMonitorOptionsFrames()
     else
         MageNugStatMonOptionMenu_CheckButtonLockFrame:SetChecked(false);
     end
-    
+
     if (mageNuggetsStatMonitor.clickthru == nil) then
         mageNuggetsStatMonitor.clickthru = false;
     end
@@ -175,14 +168,14 @@ function loadMNStatMonitorOptionsFrames()
         MageNugStatMonOptionMenu_CheckButtonClickThroughFrame:SetChecked(false);
         MageNugSP_Frame:EnableMouse(true);
     end
-    
+
 end
 
 function MNStatMonitorLockFramesToggle()
     local isChecked = MageNugStatMonOptionMenu_CheckButtonLockFrame:GetChecked();
     if (isChecked == true) then
         mageNuggetsStatMonitor.lockFrames = true;
-    else  
+    else
         mageNuggetsStatMonitor.lockFrames = false;
     end
 end
@@ -211,14 +204,14 @@ end
 
 function  MageNugSpMonitorSize()
     local tempInt = MageNugStatMonOptionMenu_SPSizeSlider:GetValue()
-    
+
     if not MageNugStatMonOptionMenu_SPSizeSlider._onsetting then
         MageNugStatMonOptionMenu_SPSizeSlider._onsetting = true;
         MageNugStatMonOptionMenu_SPSizeSlider:SetValue(MageNugStatMonOptionMenu_SPSizeSlider:GetValue());
         tempInt = MageNugStatMonOptionMenu_SPSizeSlider:GetValue();
         MageNugStatMonOptionMenu_SPSizeSlider._onsetting = false;
-    else return end  
-    
+    else return end
+
     if (tempInt == 0) then
         MageNugSP_Frame:SetScale(0.7);
         mageNuggetsStatMonitor.spMonitorSize = 0;
@@ -374,24 +367,6 @@ function loadStatMonitorColors()
     if(mageNuggetsStatMonitor.masteryValueB == nil)then
         mageNuggetsStatMonitor.masteryValueB = 1;
     end
-    if(mageNuggetsStatMonitor.multistrikeR == nil)then
-        mageNuggetsStatMonitor.multistrikeR = 1;
-    end
-    if(mageNuggetsStatMonitor.multistrikeG == nil)then
-        mageNuggetsStatMonitor.multistrikeG = 1;
-    end
-    if(mageNuggetsStatMonitor.multistrikeB == nil)then
-        mageNuggetsStatMonitor.multistrikeB = 1;
-    end
-    if(mageNuggetsStatMonitor.multistrikeValueR == nil)then
-        mageNuggetsStatMonitor.multistrikeValueR = 1;
-    end
-    if(mageNuggetsStatMonitor.multistrikeValueG == nil)then
-        mageNuggetsStatMonitor.multistrikeValueG = 1;
-    end
-    if(mageNuggetsStatMonitor.multistrikeValueB == nil)then
-        mageNuggetsStatMonitor.multistrikeValueB = 1;
-    end
     if(mageNuggetsStatMonitor.leechR == nil)then
         mageNuggetsStatMonitor.leechR = 1;
     end
@@ -510,10 +485,6 @@ function statMonitorColorSelect()
         mageNuggetsStatMonitor.masteryR, mageNuggetsStatMonitor.masteryG, mageNuggetsStatMonitor.masteryB = MageNugSP_ColorPickerFrameColorSelect:GetColorRGB();
     elseif(currentStatColor == 10) then
        mageNuggetsStatMonitor.masteryValueR, mageNuggetsStatMonitor.masteryValueG, mageNuggetsStatMonitor.masteryValueB = MageNugSP_ColorPickerFrameColorSelect:GetColorRGB();
-    elseif(currentStatColor == 11) then
-        mageNuggetsStatMonitor.multistrikeR, mageNuggetsStatMonitor.multistrikeG, mageNuggetsStatMonitor.multistrikeB = MageNugSP_ColorPickerFrameColorSelect:GetColorRGB();
-    elseif(currentStatColor == 12) then
-        mageNuggetsStatMonitor.multistrikeValueR, mageNuggetsStatMonitor.multistrikeValueG, mageNuggetsStatMonitor.multistrikeValueB = MageNugSP_ColorPickerFrameColorSelect:GetColorRGB();
     elseif(currentStatColor == 13) then
         mageNuggetsStatMonitor.leechR, mageNuggetsStatMonitor.leechG, mageNuggetsStatMonitor.leechB = MageNugSP_ColorPickerFrameColorSelect:GetColorRGB();
     elseif(currentStatColor == 14) then
@@ -559,50 +530,50 @@ function BorderTypeSlider()
     local tempInt = MageNugStatMonOptionFrame_BorderSlider:GetValue()
     tempInt = roundZero(tempInt);
     if (tempInt == 0) then
-         MageNugSP_Frame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
-                                    edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-                                    tile = true, tileSize = 16, edgeSize = 16, 
+         MageNugSP_Frame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+                                    edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+                                    tile = true, tileSize = 16, edgeSize = 16,
                                     insets = { left = 4, right = 4, top = 4, bottom = 4 }});
         MageNugSP_Frame:SetBackdropColor(mageNuggetsStatMonitor.backdropR,mageNuggetsStatMonitor.backdropG,mageNuggetsStatMonitor.backdropB,mageNuggetsStatMonitor.backdropA)
         mageNuggetsStatMonitor.borderStyle = 0;
     elseif (tempInt == 1) then
-         MageNugSP_Frame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
-                                    edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-                                    tile = true, tileSize = 16, edgeSize = 8, 
+         MageNugSP_Frame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+                                    edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+                                    tile = true, tileSize = 16, edgeSize = 8,
                                     insets = { left = 1, right = 1, top = 1, bottom = 1 }});
         MageNugSP_Frame:SetBackdropColor(mageNuggetsStatMonitor.backdropR,mageNuggetsStatMonitor.backdropG,mageNuggetsStatMonitor.backdropB,mageNuggetsStatMonitor.backdropA)
         mageNuggetsStatMonitor.borderStyle = 1;
     elseif (tempInt == 2) then
         MageNugSP_Frame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",
                                     edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
-                                    tile = true, tileSize = 16, edgeSize = 16, 
+                                    tile = true, tileSize = 16, edgeSize = 16,
                                     insets = { left = 4, right = 4, top = 4, bottom = 4 }});
         MageNugSP_Frame:SetBackdropColor(mageNuggetsStatMonitor.backdropR,mageNuggetsStatMonitor.backdropG,mageNuggetsStatMonitor.backdropB,mageNuggetsStatMonitor.backdropA)
         mageNuggetsStatMonitor.borderStyle = 2;
     elseif (tempInt == 3) then
         MageNugSP_Frame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",
                                     edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
-                                    tile = true, tileSize = 16, edgeSize = 8, 
+                                    tile = true, tileSize = 16, edgeSize = 8,
                                     insets = { left = 1, right = 1, top = 1, bottom = 1 }});
         MageNugSP_Frame:SetBackdropColor(mageNuggetsStatMonitor.backdropR,mageNuggetsStatMonitor.backdropG,mageNuggetsStatMonitor.backdropB,mageNuggetsStatMonitor.backdropA)
         mageNuggetsStatMonitor.borderStyle = 3;
     elseif (tempInt == 4) then
         MageNugSP_Frame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",
                                     edgeFile = "Interface/DialogFrame/UI-DialogBox-Gold-Border",
-                                    tile = true, tileSize = 16, edgeSize = 16, 
+                                    tile = true, tileSize = 16, edgeSize = 16,
                                     insets = { left = 4, right = 4, top = 4, bottom = 4 }});
         MageNugSP_Frame:SetBackdropColor(mageNuggetsStatMonitor.backdropR,mageNuggetsStatMonitor.backdropG,mageNuggetsStatMonitor.backdropB,mageNuggetsStatMonitor.backdropA)
         mageNuggetsStatMonitor.borderStyle = 4;
     elseif (tempInt == 5) then
         MageNugSP_Frame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",
                                     edgeFile = "Interface/DialogFrame/UI-DialogBox-Gold-Border",
-                                    tile = true, tileSize = 16, edgeSize = 8, 
+                                    tile = true, tileSize = 16, edgeSize = 8,
                                     insets = { left = 1, right = 1, top = 1, bottom = 1 }});
         MageNugSP_Frame:SetBackdropColor(mageNuggetsStatMonitor.backdropR,mageNuggetsStatMonitor.backdropG,mageNuggetsStatMonitor.backdropB,mageNuggetsStatMonitor.backdropA)
         mageNuggetsStatMonitor.borderStyle = 5;
     elseif (tempInt == 6) then
         MageNugSP_Frame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-                                    tile = true, tileSize = 16, edgeSize = 16, 
+                                    tile = true, tileSize = 16, edgeSize = 16,
                                     insets = { left = 4, right = 4, top = 4, bottom = 4 }});
         MageNugSP_Frame:SetBackdropColor(mageNuggetsStatMonitor.backdropR,mageNuggetsStatMonitor.backdropG,mageNuggetsStatMonitor.backdropB,mageNuggetsStatMonitor.backdropA)
         mageNuggetsStatMonitor.borderStyle = 6;
@@ -660,4 +631,3 @@ end
 function MNRecallFrames()
     MageNugSP_Frame:SetClampedToScreen(true);
 end
-

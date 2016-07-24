@@ -7,19 +7,18 @@ local statMonitorLoadTimer = 0;
 
 
 
-function MageNuggetsSP_OnUpdate(self, elapsed) 
+function MageNuggetsSP_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
- if (self.TimeSinceLastUpdate > 0.3) then   
-    
+ if (self.TimeSinceLastUpdate > 0.3) then
+
     local spellpower = GetSpellBonusDamage(3)
     local attackpower, posBuff, negBuff = UnitAttackPower("player");
     local crit = roundStat(GetSpellCritChance(3));
     local haste = roundStat(UnitSpellHaste("player"));
     local mastery = roundStat(GetMasteryEffect());
-    local multistrike = roundStat(GetMultistrike());
     local leech = roundStat(GetLifesteal());
     local versatility = roundStat(GetCombatRatingBonus(29));
-    local base, stat, posBuff, negBuff = UnitStat("player",5);
+    local base, stat, posBuff, negBuff = UnitStat("player",3);
     local spirit = stat;
     local baseRegen, castingRegen = GetManaRegen()
     local manaregen = roundZero(castingRegen*5);
@@ -28,7 +27,7 @@ function MageNuggetsSP_OnUpdate(self, elapsed)
     local readout = {};
     local stats = {};
     local bonusSpellDamage = 0;
- 
+
     local i = 1;
     local buffName, rank, _, count, _, _, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
         while buffName do
@@ -41,7 +40,7 @@ function MageNuggetsSP_OnUpdate(self, elapsed)
             i = i + 1;
             buffName, rank, _, count, _, _, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
     end
-  
+
     if(mageNuggetsStatMonitor.spellpower == true)then
         statCount = statCount + 1;
         readout[statCount] = "Power";
@@ -69,11 +68,6 @@ function MageNuggetsSP_OnUpdate(self, elapsed)
         statCount = statCount + 1;
         readout[statCount] = "Mastery";
         stats[statCount] = mastery;
-    end
-    if(mageNuggetsStatMonitor.multistrike == true)then
-        statCount = statCount + 1;
-        readout[statCount] = "Multi";
-        stats[statCount] = multistrike;
     end
     if(mageNuggetsStatMonitor.leech == true)then
         statCount = statCount + 1;
@@ -126,7 +120,7 @@ function MageNuggetsSP_OnUpdate(self, elapsed)
     end
     for j in pairs (stats) do
         stats[j] = nil
-    end    
+    end
     if statMonitorLoadTimer < 4 then
         statMonitorLoadTimer = statMonitorLoadTimer + 1;
         setStatMonitorHeight(statCount);
@@ -135,16 +129,16 @@ function MageNuggetsSP_OnUpdate(self, elapsed)
     statCount = 0;
     self.TimeSinceLastUpdate = 0;
    end
-end   
+end
 
 
-function setStatMonitorHeight(statCount) 
+function setStatMonitorHeight(statCount)
     if(statCount==0)then
-        MageNugSP_Frame:SetHeight(20);    
+        MageNugSP_Frame:SetHeight(20);
     elseif(statCount==1)then
         MageNugSP_Frame:SetHeight(20);
     elseif(statCount==2)then
-        MageNugSP_Frame:SetHeight(30);    
+        MageNugSP_Frame:SetHeight(30);
     elseif(statCount==3)then
         MageNugSP_Frame:SetHeight(40);
     elseif(statCount==4)then
@@ -198,12 +192,6 @@ function mageNuggetsStatMonitorToggle(statType)
         else
             mageNuggetsStatMonitor.mastery = false;
         end
-    elseif(statType == "multistrike") then
-        if (mageNuggetsStatMonitor.multistrike == false) then
-            mageNuggetsStatMonitor.multistrike = true;
-        else
-            mageNuggetsStatMonitor.multistrike = false;
-        end
     elseif(statType == "leech") then
         if (mageNuggetsStatMonitor.leech == false) then
             mageNuggetsStatMonitor.leech = true;
@@ -239,12 +227,12 @@ function mageNuggetsStatMonitorToggle(statType)
     dressStatMonitorText();
 end
 
-function roundStat(value) 
-    return math.floor(value*math.pow(10,2)+0.5) / math.pow(10,2) 
+function roundStat(value)
+    return math.floor(value*math.pow(10,2)+0.5) / math.pow(10,2)
 end
 
 function roundZero(inputNum)
-    return math.floor(inputNum*math.pow(10,0)+0.5) / math.pow(10,0) 
+    return math.floor(inputNum*math.pow(10,0)+0.5) / math.pow(10,0)
 end
 
 function setStatMonitorStats()
@@ -256,7 +244,7 @@ function setStatMonitorStats()
     else
         MageNugSP_SpellPowerCheckButton:SetChecked(false);
     end
-    
+
     if (mageNuggetsStatMonitor.attackpower == nil)then
         mageNuggetsStatMonitor.attackpower = true
     end
@@ -265,7 +253,7 @@ function setStatMonitorStats()
     else
         MageNugSP_AttackPowerCheckButton:SetChecked(false);
     end
-    
+
     if (mageNuggetsStatMonitor.crit == nil)then
         mageNuggetsStatMonitor.crit = true
     end
@@ -274,7 +262,7 @@ function setStatMonitorStats()
     else
         MageNugSP_CritCheckButton:SetChecked(false);
     end
-    
+
     if (mageNuggetsStatMonitor.haste == nil)then
         mageNuggetsStatMonitor.haste = true
     end
@@ -283,7 +271,7 @@ function setStatMonitorStats()
     else
         MageNugSP_HasteCheckButton:SetChecked(false);
     end
-    
+
     if (mageNuggetsStatMonitor.mastery == nil)then
         mageNuggetsStatMonitor.mastery = true
     end
@@ -292,16 +280,7 @@ function setStatMonitorStats()
     else
         MageNugSP_MasteryCheckButton:SetChecked(false);
     end
-    
-    if (mageNuggetsStatMonitor.multistrike == nil)then
-        mageNuggetsStatMonitor.multistrike = true
-    end
-    if (mageNuggetsStatMonitor.multistrike == true) then
-        MageNugSP_MultistrikeCheckButton:SetChecked(true);
-    else
-        MageNugSP_MultistrikeCheckButton:SetChecked(false);
-    end
-    
+
     if (mageNuggetsStatMonitor.leech == nil)then
         mageNuggetsStatMonitor.leech = true
     end
@@ -310,7 +289,7 @@ function setStatMonitorStats()
     else
         MageNugSP_LeechCheckButton:SetChecked(false);
     end
-    
+
     if (mageNuggetsStatMonitor.versatility == nil)then
         mageNuggetsStatMonitor.versatility = true
     end
@@ -319,7 +298,7 @@ function setStatMonitorStats()
     else
         MageNugSP_VersatilityCheckButton:SetChecked(false);
     end
-    
+
     if (mageNuggetsStatMonitor.spirit == nil)then
         mageNuggetsStatMonitor.spirit = true
     end
@@ -328,7 +307,7 @@ function setStatMonitorStats()
     else
         MageNugSP_SpiritCheckButton:SetChecked(false);
     end
-    
+
     if (mageNuggetsStatMonitor.manaregen == nil)then
         mageNuggetsStatMonitor.manaregen = true
     end
@@ -337,7 +316,7 @@ function setStatMonitorStats()
     else
         MageNugSP_ManaRegenCheckButton:SetChecked(false);
     end
-    
+
     if (mageNuggetsStatMonitor.armor == nil)then
         mageNuggetsStatMonitor.armor = true
     end
@@ -376,11 +355,6 @@ function dressStatMonitorText()
         statCount = statCount + 1;
         _G["MageNugSP_FrameText"..statCount]:SetTextColor(mageNuggetsStatMonitor.masteryR,mageNuggetsStatMonitor.masteryG,mageNuggetsStatMonitor.masteryB,1);
         _G["MageNugSP_FrameValueText"..statCount]:SetTextColor(mageNuggetsStatMonitor.masteryValueR,mageNuggetsStatMonitor.masteryValueG,mageNuggetsStatMonitor.masteryValueB,1);
-    end
-    if(mageNuggetsStatMonitor.multistrike == true) then
-        statCount = statCount + 1;
-        _G["MageNugSP_FrameText"..statCount]:SetTextColor(mageNuggetsStatMonitor.multistrikeR,mageNuggetsStatMonitor.multistrikeG,mageNuggetsStatMonitor.multistrikeB,1);
-        _G["MageNugSP_FrameValueText"..statCount]:SetTextColor(mageNuggetsStatMonitor.multistrikeValueR,mageNuggetsStatMonitor.multistrikeValueG,mageNuggetsStatMonitor.multistrikeValueB,1);
     end
     if(mageNuggetsStatMonitor.leech == true) then
         statCount = statCount + 1;

@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1571 $
-$Date: 2016-07-20 10:17:36 +1000 (Wed, 20 Jul 2016) $
+$Revision: 1634 $
+$Date: 2016-07-23 15:28:45 +1000 (Sat, 23 Jul 2016) $
 
 ]]--
 
@@ -149,7 +149,7 @@ function ArkInventoryRules.AppliesToItem( rid, i )
 	local player = ArkInventory.LocationPlayerGet( i.loc_id )
 	local rp = player.catset.category.active[ArkInventory.Const.Category.Type.Rule][rid]
 	
-	if not i or not rp or not ra or not ra.used or ra.damaged then
+	if not i or not rp or not ra or ra.used ~= "Y" or ra.damaged then
 		return false, nil
 	end
 	
@@ -1821,7 +1821,7 @@ function ArkInventoryRules.Frame_Rules_Table_Refresh( frame )
 			end
 		end
 		
-		if not d.used then
+		if d.used ~= "Y" then
 			ignore = true
 		end
 		

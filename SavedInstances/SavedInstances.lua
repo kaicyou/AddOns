@@ -14,7 +14,7 @@ local maxdiff = 23 -- max number of instance difficulties
 local maxcol = 4 -- max columns per player+instance
 
 addon.svnrev = {}
-addon.svnrev["SavedInstances.lua"] = tonumber(("$Revision: 506 $"):match("%d+"))
+addon.svnrev["SavedInstances.lua"] = tonumber(("$Revision: 515 $"):match("%d+"))
 
 -- local (optimal) references to provided functions
 local table, math, bit, string, pairs, ipairs, unpack, strsplit, time, type, wipe, tonumber, select, strsub = 
@@ -71,8 +71,8 @@ local scantt = CreateFrame("GameTooltip", "SavedInstancesScanTooltip", UIParent,
 local currency = { 
   --395, -- Justice Points 
   1191, -- Valor Points
-  392, -- Honor Points
-  390, -- Conquest Points
+  --392, -- Honor Points
+  --390, -- Conquest Points
   738, -- Lesser Charm of Good Fortune
   697, -- Elder Charm of Good Fortune
   752, -- Mogu Rune of Fate
@@ -88,6 +88,8 @@ local currency = {
   823, -- Apexis Crystal
   824, -- Garrison Resources
   1101,-- Oil
+  1155,-- Ancient Mana
+  1220,-- Order Resources
   994, -- Seal of Tempered Fate
   1129,-- Seal of Inevitable Fate
   1166,-- Timewarped Badge 
@@ -129,6 +131,15 @@ addon.LFRInstances = {
   [984] = { total=3, base=7,  parent=989, altid=nil, remap={ 7, 8,  11 } }, -- Hellfire3: Bastion of Shadows
   [985] = { total=3, base=10, parent=989, altid=nil, remap={ 9, 10, 12 } }, -- Hellfire4: Destructor's Rise
   [986] = { total=1, base=13, parent=989, altid=nil }, -- Hellfire5: Black Gate
+
+  [1287] ={ total=3, base=1,  parent=1350,altid=nil }, -- EN1: Darkbough
+  [1288] ={ total=3, base=4,  parent=1350,altid=nil }, -- EN2: Tormented Guardians
+  [1289] ={ total=1, base=7,  parent=1350,altid=nil }, -- EN3: Rift of Aln
+
+  [1290] ={ total=3, base=1,  parent=1353,altid=nil }, -- NH1: Arcing Aqueducts
+  [1291] ={ total=3, base=4,  parent=1353,altid=nil }, -- NH2: Royal Athenaeum 
+  [1292] ={ total=3, base=7,  parent=1353,altid=nil }, -- NH3: Nightspire
+  [1293] ={ total=1, base=10, parent=1353,altid=nil }, -- NH4: Betrayer's Rise
 }
 local tmp = {}
 for id, info in pairs(addon.LFRInstances) do
@@ -525,10 +536,12 @@ vars.defaultDB = {
 		Currency823 = true,  -- Apexis Crystal
   		Currency824 = true,  -- Garrison Resources
 		Currency1101= true,  -- Oil
-		Currency994 = true,  -- Seal of Tempered Fate
-		Currency1129= true,  -- Seal of Inevitable Fate
+		Currency994 = false, -- Seal of Tempered Fate
+		Currency1129= false, -- Seal of Inevitable Fate
+		Currency1155= true,  -- Ancient Mana
 		Currency1166= true,  -- Timewarped Badge
 		Currency1191= true,  -- Valor Points
+		Currency1220= true,  -- Order Resources
 		CurrencyMax = false,
 		CurrencyEarned = true,
 	},
@@ -700,6 +713,7 @@ function addon:GetNextDailyResetTime()
      resettime > 24*3600+30 then -- can also be wrong near reset in an instance
     return nil
   end
+ if false then -- this should no longer be a problem after the 7.0 reset time changes
   -- ticket 177/191: GetQuestResetTime() is wrong for Oceanic+Brazilian characters in PST instances
   local serverHour, serverMinute = GetGameTime()
   local serverResetTime = (serverHour*3600 + serverMinute*60 + resettime) % 86400 -- GetGameTime of the reported reset
@@ -715,6 +729,7 @@ function addon:GetNextDailyResetTime()
      end
      debug("Adjusting GetQuestResetTime() discrepancy of %d seconds (%d hours). Reset in %d seconds", diff, diffhours, resettime)
   end
+ end
   return time() + resettime
 end
 
@@ -755,8 +770,11 @@ function addon:GetNextWeeklyResetTime()
     local region = addon:GetRegion()
     if not region then return nil end
     addon.resetDays = {}
+    addon.resetDays.DLHoffset = 0
     if region == "US" then
       addon.resetDays["2"] = true -- tuesday
+      -- ensure oceanic servers over the dateline still reset on tues UTC (wed 1/2 AM server)
+      addon.resetDays.DLHoffset = -3 
     elseif region == "EU" then
       addon.resetDays["3"] = true -- wednesday
     elseif region == "CN" or region == "KR" or region == "TW" then -- XXX: codes unconfirmed
@@ -765,7 +783,7 @@ function addon:GetNextWeeklyResetTime()
       addon.resetDays["2"] = true -- tuesday?
     end
   end
-  local offset = addon:GetServerOffset() * 3600
+  local offset = (addon:GetServerOffset() + addon.resetDays.DLHoffset) * 3600
   local nightlyReset = addon:GetNextDailyResetTime()
   if not nightlyReset then return nil end
   --while date("%A",nightlyReset+offset) ~= WEEKDAY_TUESDAY do 
@@ -837,6 +855,7 @@ addon.transInstance = {
   -- lockout hyperlink id = LFDID
   [543] = 188, 	-- Hellfire Citadel: Ramparts
   [540] = 189, 	-- Hellfire Citadel: Shattered Halls : deDE
+  [542] = 187,  -- Hellfire Citadel: Blood Furnace esES
   [534] = 195, 	-- The Battle for Mount Hyjal
   [509] = 160, 	-- Ruins of Ahn'Qiraj
   [557] = 179,  -- Auchindoun: Mana-Tombs : ticket 72 zhTW
@@ -2489,7 +2508,7 @@ function core:OnEnable()
 	self:RegisterEvent("CHAT_MSG_LOOT", "CheckSystemMessage")
 	self:RegisterBucketEvent("CURRENCY_DISPLAY_UPDATE", 0.25, function() addon:UpdateCurrency() end)
 	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-	self:RegisterBucketEvent("TRADE_SKILL_UPDATE", 1)
+	self:RegisterBucketEvent("TRADE_SKILL_LIST_UPDATE", 1)
 	self:RegisterBucketEvent("PLAYER_ENTERING_WORLD", 1, RequestRaidInfo)
 	self:RegisterBucketEvent("LFG_LOCK_INFO_RECEIVED", 1, RequestRaidInfo)
 	self:RegisterEvent("BONUS_ROLL_RESULT", "BonusRollResult")
@@ -4392,7 +4411,7 @@ function core:record_skill(spellID, expires)
 end
 
 function core:TradeSkillRescan(spellid)
-  local scan = core:TRADE_SKILL_UPDATE()
+  local scan = core:TRADE_SKILL_LIST_UPDATE()
   if TradeSkillFrame and TradeSkillFrame.filterTbl and 
      (scan == 0 or not addon.seencds or not addon.seencds[spellid]) then 
     -- scan failed, probably because the skill is hidden - try again
@@ -4403,7 +4422,7 @@ function core:TradeSkillRescan(spellid)
     SetTradeSkillCategoryFilter(-1)
     SetTradeSkillInvSlotFilter(-1, 1, 1)
     ExpandTradeSkillSubClass(0)
-      local rescan = core:TRADE_SKILL_UPDATE()
+      local rescan = core:TRADE_SKILL_LIST_UPDATE()
       debug("Rescan: "..(rescan==scan and "Failed" or "Success"))
     TradeSkillOnlyShowMakeable(addon.filtertmp.hasMaterials);
     TradeSkillOnlyShowSkillUps(addon.filtertmp.hasSkillUp);
@@ -4412,14 +4431,12 @@ function core:TradeSkillRescan(spellid)
   end
 end
 
-function core:TRADE_SKILL_UPDATE()
+function core:TRADE_SKILL_LIST_UPDATE()
  local cnt = 0
- if IsTradeSkillLinked() or IsTradeSkillGuild() then return end
- for i = 1, GetNumTradeSkills() do
-   local link = GetTradeSkillRecipeLink(i)
-   local spellid = link and tonumber(link:match("\124Henchant:(%d+)\124h"))
-   if spellid then
-     local cd, daily = GetTradeSkillCooldown(i)
+ if C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild() then return end
+ local recipeids = C_TradeSkillUI.GetFilteredRecipeIDs()
+ for _, spellid in ipairs(recipeids) do
+     local cd, daily = C_TradeSkillUI.GetRecipeCooldown(spellid)
      if cd and daily -- GetTradeSkillCooldown often returns WRONG answers for daily cds
        and not tonumber(trade_spells[spellid]) then -- daily flag incorrectly set for some multi-day cds (Northrend Alchemy Research)
        cd = addon:GetNextDailySkillResetTime()
@@ -4434,7 +4451,6 @@ function core:TRADE_SKILL_UPDATE()
        addon.seencds[spellid] = true
        cnt = cnt + 1
      end
-   end
  end
  return cnt
 end

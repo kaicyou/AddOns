@@ -14,7 +14,7 @@ local function DCS_ExpandCheck_OnLeave(self)
  end
  
 local _, private = ...
-	private.defaults.dejacharacterstatsExpandChecked = {
+	private.defaults.dcsdefaults.dejacharacterstatsExpandChecked = {
 		ExpandSetChecked = true,
 }
 local DCS_ExpandCheck = CreateFrame("Button", "DCS_ExpandCheck", PaperDollFrame)
@@ -28,7 +28,7 @@ DCS_ExpandCheck:SetScript("OnEnter", DCS_ExpandCheck_OnEnter)
 DCS_ExpandCheck:SetScript("OnLeave", DCS_ExpandCheck_OnLeave)
 		 
 DCS_ExpandCheck:SetScript("OnMouseDown", function (self, button, up)
-	checked = private.db.dejacharacterstatsExpandChecked.ExpandSetChecked
+	checked = private.db.dcsdefaults.dejacharacterstatsExpandChecked.ExpandSetChecked
 	if checked == true then
 		DCS_ExpandCheck:SetPushedTexture("Interface\\BUTTONS\\UI-SpellbookIcon-PrevPage-Down")
 		DCS_ExpandCheck:SetNormalTexture("Interface\\BUTTONS\\UI-SpellbookIcon-PrevPage-Down")
@@ -39,18 +39,18 @@ DCS_ExpandCheck:SetScript("OnMouseDown", function (self, button, up)
 end)
 
 DCS_ExpandCheck:SetScript("OnMouseUp", function (self, button, up)
-	checked = private.db.dejacharacterstatsExpandChecked.ExpandSetChecked
+	checked = private.db.dcsdefaults.dejacharacterstatsExpandChecked.ExpandSetChecked
 	if checked == true then
 	--	print(checked)
 		CharacterFrame_Collapse()
 		DCS_ExpandCheck:SetNormalTexture("Interface\\BUTTONS\\UI-SpellbookIcon-NextPage-Up")
-		private.db.dejacharacterstatsExpandChecked.ExpandSetChecked = false
+		private.db.dcsdefaults.dejacharacterstatsExpandChecked.ExpandSetChecked = false
 		DCS_tooltipText = 'Show Character Stats' --Creates a tooltip on mouseover.
 	else
 	--	print(checked)
 		CharacterFrame_Expand()
 		DCS_ExpandCheck:SetNormalTexture("Interface\\BUTTONS\\UI-SpellbookIcon-PrevPage-Up")
-		private.db.dejacharacterstatsExpandChecked.ExpandSetChecked = true
+		private.db.dcsdefaults.dejacharacterstatsExpandChecked.ExpandSetChecked = true
 		DCS_tooltipText = 'Hide Character Stats' --Creates a tooltip on mouseover.
 	end
 	DCS_ExpandCheck_OnEnter()
@@ -70,7 +70,7 @@ PaperDollFrame:SetScript("OnShow", function(self, event, arg1)
 	PaperDollSidebarTabs:Show()
 	PaperDollFrame_UpdateInventoryFixupComplete(self)
 
-	checked = private.db.dejacharacterstatsExpandChecked.ExpandSetChecked
+	checked = private.db.dcsdefaults.dejacharacterstatsExpandChecked.ExpandSetChecked
 	if checked == true then
 	--	print(checked)
 		CharacterFrame_Expand()

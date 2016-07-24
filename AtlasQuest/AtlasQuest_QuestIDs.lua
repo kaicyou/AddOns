@@ -2365,8 +2365,7 @@ Inst146Quest3_QuestID = "37232"
 Inst146Quest4_QuestID = "37154"
 Inst146Quest5_QuestID = "37233"
 Inst146Quest6_QuestID = "35993"
-Inst146Quest7_QuestID = "37271"
-Inst146Quest8_QuestID = "37796"
+Inst146Quest7_QuestID = "37796"
 
 Inst146Quest1_HORDE_QuestID = "37146"
 Inst146Quest2_HORDE_QuestID = "37156"
@@ -2374,8 +2373,7 @@ Inst146Quest3_HORDE_QuestID = "37232"
 Inst146Quest4_HORDE_QuestID = "37154"
 Inst146Quest5_HORDE_QuestID = "37233"
 Inst146Quest6_HORDE_QuestID = "35993"
-Inst146Quest7_HORDE_QuestID = "37259"
-Inst146Quest8_HORDE_QuestID = "37780"
+Inst146Quest7_HORDE_QuestID = "37780"
 
 
 AQ_37146_Level = "96"
@@ -2384,8 +2382,6 @@ AQ_37232_Level = "100"
 AQ_37154_Level = "100"
 AQ_37233_Level = "100"
 AQ_35993_Level = "100"
-AQ_37271_Level = "100"
-AQ_37259_Level = "100"
 AQ_37796_Level = "100"
 AQ_37780_Level = "100"
 
@@ -2400,8 +2396,7 @@ Inst147Quest4_QuestID = "37159"
 Inst147Quest5_QuestID = "37158"
 Inst147Quest6_QuestID = "37234"
 Inst147Quest7_QuestID = "37235"
-Inst147Quest8_QuestID = "37277"
-Inst147Quest9_QuestID = "37791"
+Inst147Quest8_QuestID = "37791"
 
 Inst147Quest1_HORDE_QuestID = "36316"
 Inst147Quest2_HORDE_QuestID = "36157"
@@ -2410,8 +2405,7 @@ Inst147Quest4_HORDE_QuestID = "37159"
 Inst147Quest5_HORDE_QuestID = "37158"
 Inst147Quest6_HORDE_QuestID = "37234"
 Inst147Quest7_HORDE_QuestID = "37235"
-Inst147Quest8_HORDE_QuestID = "37264"
-Inst147Quest9_HORDE_QuestID = "37785"
+Inst147Quest8_HORDE_QuestID = "37785"
 
 
 AQ_36316_Level = "97"
@@ -2421,8 +2415,6 @@ AQ_37159_Level = "100"
 AQ_37158_Level = "100"
 AQ_37234_Level = "100"
 AQ_37235_Level = "100"
-AQ_37277_Level = "100"
-AQ_37264_Level = "100"
 AQ_37791_Level = "100"
 AQ_37785_Level = "100"
 
@@ -2436,8 +2428,7 @@ Inst148Quest3_QuestID = "37228"
 Inst148Quest4_QuestID = "37153"
 Inst148Quest5_QuestID = "37229"
 Inst148Quest6_QuestID = "35990"
-Inst148Quest7_QuestID = "37272"
-Inst148Quest8_QuestID = "37795"
+Inst148Quest7_QuestID = "37795"
 
 Inst148Quest1_HORDE_QuestID = "37142"
 Inst148Quest2_HORDE_QuestID = "37152"
@@ -2445,8 +2436,7 @@ Inst148Quest3_HORDE_QuestID = "37228"
 Inst148Quest4_HORDE_QuestID = "37153"
 Inst148Quest5_HORDE_QuestID = "37229"
 Inst148Quest6_HORDE_QuestID = "35990"
-Inst148Quest7_HORDE_QuestID = "37260"
-Inst148Quest8_HORDE_QuestID = "37781"
+Inst148Quest7_HORDE_QuestID = "37781"
 
 
 AQ_37142_Level = "92"
@@ -2455,8 +2445,6 @@ AQ_37228_Level = "100"
 AQ_37153_Level = "100"
 AQ_37229_Level = "100"
 AQ_35990_Level = "100"
-AQ_37272_Level = "100"
-AQ_37260_Level = "100"
 AQ_37795_Level = "100"
 AQ_37781_Level = "100"
 
@@ -2469,16 +2457,14 @@ Inst149Quest2_QuestID = "37157"
 Inst149Quest3_QuestID = "37230"
 Inst149Quest4_QuestID = "37155"
 Inst149Quest5_QuestID = "37231"
-Inst149Quest6_QuestID = "37274"
-Inst149Quest7_QuestID = "37793"
+Inst149Quest6_QuestID = "37793"
 
 Inst149Quest1_HORDE_QuestID = "37145"
 Inst149Quest2_HORDE_QuestID = "37157"
 Inst149Quest3_HORDE_QuestID = "37230"
 Inst149Quest4_HORDE_QuestID = "37155"
 Inst149Quest5_HORDE_QuestID = "37231"
-Inst149Quest6_HORDE_QuestID = "37262"
-Inst149Quest7_HORDE_QuestID = "37783"
+Inst149Quest6_HORDE_QuestID = "37783"
 
 
 AQ_37145_Level = "94"
@@ -2486,8 +2472,6 @@ AQ_37157_Level = "100"
 AQ_37230_Level = "100"
 AQ_37155_Level = "100"
 AQ_37231_Level = "100"
-AQ_37274_Level = "100"
-AQ_37262_Level = "100"
 AQ_37793_Level = "100"
 AQ_37783_Level = "100"
 
@@ -2503,8 +2487,7 @@ Inst150Quest5_QuestID = "37165"
 Inst150Quest6_QuestID = "37240"
 Inst150Quest7_QuestID = "36813"
 Inst150Quest8_QuestID = "35992"
-Inst150Quest9_QuestID = "37278"
-Inst150Quest10_QuestID = "37790"
+Inst150Quest9_QuestID = "37790"
 
 Inst150Quest1_HORDE_QuestID = "37150"
 Inst150Quest2_HORDE_QuestID = "37227"
@@ -2514,8 +2497,7 @@ Inst150Quest5_HORDE_QuestID = "37165"
 Inst150Quest6_HORDE_QuestID = "37240"
 Inst150Quest7_HORDE_QuestID = "36813"
 Inst150Quest8_HORDE_QuestID = "35992"
-Inst150Quest9_HORDE_QuestID = "37265"
-Inst150Quest10_HORDE_QuestID = "37786"
+Inst150Quest9_HORDE_QuestID = "37786"
 
 
 AQ_37150_Level = "100"
@@ -2526,8 +2508,6 @@ AQ_37165_Level = "100"
 AQ_37240_Level = "100"
 AQ_36813_Level = "100"
 AQ_35992_Level = "100"
-AQ_37278_Level = "100"
-AQ_37265_Level = "100"
 AQ_37790_Level = "100"
 AQ_37786_Level = "100"
 
@@ -2542,8 +2522,7 @@ Inst151Quest4_QuestID = "37242"
 Inst151Quest5_QuestID = "37151"
 Inst151Quest6_QuestID = "37209"
 Inst151Quest7_QuestID = "35991"
-Inst151Quest8_QuestID = "37273"
-Inst151Quest9_QuestID = "37794"
+Inst151Quest8_QuestID = "37794"
 
 Inst151Quest1_HORDE_QuestID = "37160"
 Inst151Quest2_HORDE_QuestID = "37243"
@@ -2552,8 +2531,7 @@ Inst151Quest4_HORDE_QuestID = "37242"
 Inst151Quest5_HORDE_QuestID = "37151"
 Inst151Quest6_HORDE_QuestID = "37209"
 Inst151Quest7_HORDE_QuestID = "35991"
-Inst151Quest8_HORDE_QuestID = "37261"
-Inst151Quest9_HORDE_QuestID = "37782"
+Inst151Quest8_HORDE_QuestID = "37782"
 
 
 AQ_37160_Level = "100"
@@ -2563,8 +2541,6 @@ AQ_37242_Level = "100"
 AQ_37151_Level = "100"
 AQ_37209_Level = "100"
 AQ_35991_Level = "100"
-AQ_37273_Level = "100"
-AQ_37261_Level = "100"
 AQ_37794_Level = "100"
 AQ_37782_Level = "100"
 
@@ -2578,8 +2554,7 @@ Inst152Quest3_QuestID = "37163"
 Inst152Quest4_QuestID = "37238"
 Inst152Quest5_QuestID = "37164"
 Inst152Quest6_QuestID = "37239"
-Inst152Quest7_QuestID = "37275"
-Inst152Quest8_QuestID = "37792"
+Inst152Quest7_QuestID = "37792"
 
 Inst152Quest1_HORDE_QuestID = "37149"
 Inst152Quest2_HORDE_QuestID = "37245"
@@ -2587,8 +2562,7 @@ Inst152Quest3_HORDE_QuestID = "37163"
 Inst152Quest4_HORDE_QuestID = "37238"
 Inst152Quest5_HORDE_QuestID = "37164"
 Inst152Quest6_HORDE_QuestID = "37239"
-Inst152Quest7_HORDE_QuestID = "37263"
-Inst152Quest8_HORDE_QuestID = "37784"
+Inst152Quest7_HORDE_QuestID = "37784"
 
 
 AQ_37149_Level = "100"
@@ -2597,8 +2571,6 @@ AQ_37163_Level = "100"
 AQ_37238_Level = "100"
 AQ_37164_Level = "100"
 AQ_37239_Level = "100"
-AQ_37275_Level = "100"
-AQ_37263_Level = "100"
 AQ_37792_Level = "100"
 AQ_37784_Level = "100"
 
@@ -2613,8 +2585,7 @@ Inst153Quest4_QuestID = "37236"
 Inst153Quest5_QuestID = "37162"
 Inst153Quest6_QuestID = "37237"
 Inst153Quest7_QuestID = "37179"
-Inst153Quest8_QuestID = "37279"
-Inst153Quest9_QuestID = "37789"
+Inst153Quest8_QuestID = "37789"
 
 Inst153Quest1_HORDE_QuestID = "37148"
 Inst153Quest2_HORDE_QuestID = "37244"
@@ -2623,8 +2594,7 @@ Inst153Quest4_HORDE_QuestID = "37236"
 Inst153Quest5_HORDE_QuestID = "37162"
 Inst153Quest6_HORDE_QuestID = "37237"
 Inst153Quest7_HORDE_QuestID = "37179"
-Inst153Quest8_HORDE_QuestID = "37266"
-Inst153Quest9_HORDE_QuestID = "37787"
+Inst153Quest8_HORDE_QuestID = "37787"
 
 
 AQ_37148_Level = "100"
@@ -2634,8 +2604,6 @@ AQ_37236_Level = "100"
 AQ_37162_Level = "100"
 AQ_37237_Level = "100"
 AQ_37179_Level = "100"
-AQ_37279_Level = "100"
-AQ_37266_Level = "100"
 AQ_37789_Level = "100"
 AQ_37787_Level = "100"
 
@@ -2746,6 +2714,339 @@ AQ_39232_Level = "100"
 AQ_39499_Level = "100"
 AQ_39500_Level = "100"
 AQ_39501_Level = "100"
+
+
+
+--------------- INST157 - Assault on Violet Hold ---------------
+
+Inst157Quest1_QuestID = "43557"
+Inst157Quest1_Level = "110"
+Inst157Quest1_Attain = "110"
+
+Inst157Quest2_QuestID = "44258"
+Inst157Quest2_Level = "110"
+Inst157Quest2_Attain = "110"
+
+Inst157Quest3_QuestID = "44259"
+Inst157Quest3_Level = "110"
+Inst157Quest3_Attain = "110"
+
+
+Inst157Quest1_HORDE_QuestID = "43557"
+Inst157Quest1_HORDE_Level = "110"
+Inst157Quest1_HORDE_Attain = "110"
+
+Inst157Quest2_HORDE_QuestID = "44258"
+Inst157Quest2_HORDE_Level = "110"
+Inst157Quest2_HORDE_Attain = "110"
+
+Inst157Quest3_HORDE_QuestID = "44259"
+Inst157Quest3_HORDE_Level = "110"
+Inst157Quest3_HORDE_Attain = "110"
+
+
+
+AQ_43557_Level = "110"
+AQ_44258_Level = "110"
+AQ_44259_Level = "110"
+
+
+
+--------------- INST158 - Black Rook Hold ---------------
+
+Inst158Quest1_QuestID = "43545"
+Inst158Quest1_Level = "110"
+Inst158Quest1_Attain = "110"
+
+Inst158Quest2_QuestID = "44276"
+Inst158Quest2_Level = "110"
+Inst158Quest2_Attain = "110"
+
+Inst158Quest3_QuestID = "44277"
+Inst158Quest3_Level = "110"
+Inst158Quest3_Attain = "110"
+
+
+Inst158Quest1_HORDE_QuestID = "43545"
+Inst158Quest1_HORDE_Level = "110"
+Inst158Quest1_HORDE_Attain = "110"
+
+Inst158Quest2_HORDE_QuestID = "44276"
+Inst158Quest2_HORDE_Level = "110"
+Inst158Quest2_HORDE_Attain = "110"
+
+Inst158Quest3_HORDE_QuestID = "44277"
+Inst158Quest3_HORDE_Level = "110"
+Inst158Quest3_HORDE_Attain = "110"
+
+
+
+AQ_43545_Level = "110"
+AQ_44276_Level = "110"
+AQ_44277_Level = "110"
+
+
+
+--------------- INST159 - Court of Stars ---------------
+
+Inst159Quest1_QuestID = "43550"
+Inst159Quest1_Level = "110"
+Inst159Quest1_Attain = "110"
+
+Inst159Quest2_QuestID = "44274"
+Inst159Quest2_Level = "110"
+Inst159Quest2_Attain = "110"
+
+Inst159Quest3_QuestID = "44275"
+Inst159Quest3_Level = "110"
+Inst159Quest3_Attain = "110"
+
+
+Inst159Quest1_HORDE_QuestID = "43550"
+Inst159Quest1_HORDE_Level = "110"
+Inst159Quest1_HORDE_Attain = "110"
+
+Inst159Quest2_HORDE_QuestID = "44274"
+Inst159Quest2_HORDE_Level = "110"
+Inst159Quest2_HORDE_Attain = "110"
+
+Inst159Quest3_HORDE_QuestID = "44275"
+Inst159Quest3_HORDE_Level = "110"
+Inst159Quest3_HORDE_Attain = "110"
+
+
+
+AQ_43550_Level = "110"
+AQ_44274_Level = "110"
+AQ_44275_Level = "110"
+
+
+
+--------------- INST160 - Darkheart Thicket ---------------
+
+Inst160Quest1_QuestID = "43551"
+Inst160Quest1_Level = "110"
+Inst160Quest1_Attain = "110"
+
+Inst160Quest2_QuestID = "44272"
+Inst160Quest2_Level = "110"
+Inst160Quest2_Attain = "110"
+
+Inst160Quest3_QuestID = "44273"
+Inst160Quest3_Level = "110"
+Inst160Quest3_Attain = "110"
+
+
+Inst160Quest1_HORDE_QuestID = "43551"
+Inst160Quest1_HORDE_Level = "110"
+Inst160Quest1_HORDE_Attain = "110"
+
+Inst160Quest2_HORDE_QuestID = "44272"
+Inst160Quest2_HORDE_Level = "110"
+Inst160Quest2_HORDE_Attain = "110"
+
+Inst160Quest3_HORDE_QuestID = "44273"
+Inst160Quest3_HORDE_Level = "110"
+Inst160Quest3_HORDE_Attain = "110"
+
+
+
+AQ_43551_Level = "110"
+AQ_44272_Level = "110"
+AQ_44273_Level = "110"
+
+
+
+--------------- INST161 - Eye of Azshara ---------------
+
+
+
+--------------- INST162 - Halls of Valor ---------------
+
+Inst162Quest1_QuestID = "43509"
+Inst162Quest1_Level = "110"
+Inst162Quest1_Attain = "110"
+
+Inst162Quest2_QuestID = "44268"
+Inst162Quest2_Level = "110"
+Inst162Quest2_Attain = "110"
+
+Inst162Quest3_QuestID = "44269"
+Inst162Quest3_Level = "110"
+Inst162Quest3_Attain = "110"
+
+
+Inst162Quest1_HORDE_QuestID = "43509"
+Inst162Quest1_HORDE_Level = "110"
+Inst162Quest1_HORDE_Attain = "110"
+
+Inst162Quest2_HORDE_QuestID = "44268"
+Inst162Quest2_HORDE_Level = "110"
+Inst162Quest2_HORDE_Attain = "110"
+
+Inst162Quest3_HORDE_QuestID = "44269"
+Inst162Quest3_HORDE_Level = "110"
+Inst162Quest3_HORDE_Attain = "110"
+
+
+
+AQ_43509_Level = "110"
+AQ_44268_Level = "110"
+AQ_44269_Level = "110"
+
+
+
+--------------- INST163 - Maw of Souls ---------------
+
+Inst163Quest1_QuestID = "43553"
+Inst163Quest1_Level = "110"
+Inst163Quest1_Attain = "110"
+
+Inst163Quest2_QuestID = "44266"
+Inst163Quest2_Level = "110"
+Inst163Quest2_Attain = "110"
+
+Inst163Quest3_QuestID = "44267"
+Inst163Quest3_Level = "110"
+Inst163Quest3_Attain = "110"
+
+
+Inst163Quest1_HORDE_QuestID = "43553"
+Inst163Quest1_HORDE_Level = "110"
+Inst163Quest1_HORDE_Attain = "110"
+
+Inst163Quest2_HORDE_QuestID = "44266"
+Inst163Quest2_HORDE_Level = "110"
+Inst163Quest2_HORDE_Attain = "110"
+
+Inst163Quest3_HORDE_QuestID = "44267"
+Inst163Quest3_HORDE_Level = "110"
+Inst163Quest3_HORDE_Attain = "110"
+
+
+
+AQ_43553_Level = "110"
+AQ_44266_Level = "110"
+AQ_44267_Level = "110"
+
+
+
+--------------- INST164 - Neltharion's Lair ---------------
+
+Inst164Quest1_QuestID = "43554"
+Inst164Quest1_Level = "110"
+Inst164Quest1_Attain = "110"
+
+Inst164Quest2_QuestID = "44264"
+Inst164Quest2_Level = "110"
+Inst164Quest2_Attain = "110"
+
+Inst164Quest3_QuestID = "44265"
+Inst164Quest3_Level = "110"
+Inst164Quest3_Attain = "110"
+
+
+Inst164Quest1_HORDE_QuestID = "43554"
+Inst164Quest1_HORDE_Level = "110"
+Inst164Quest1_HORDE_Attain = "110"
+
+Inst164Quest2_HORDE_QuestID = "44264"
+Inst164Quest2_HORDE_Level = "110"
+Inst164Quest2_HORDE_Attain = "110"
+
+Inst164Quest3_HORDE_QuestID = "44265"
+Inst164Quest3_HORDE_Level = "110"
+Inst164Quest3_HORDE_Attain = "110"
+
+
+
+AQ_43554_Level = "110"
+AQ_44264_Level = "110"
+AQ_44265_Level = "110"
+
+
+
+--------------- INST165 - The Arcway ---------------
+
+Inst165Quest1_QuestID = "43555"
+Inst165Quest1_Level = "110"
+Inst165Quest1_Attain = "110"
+
+Inst165Quest2_QuestID = "44262"
+Inst165Quest2_Level = "110"
+Inst165Quest2_Attain = "110"
+
+Inst165Quest3_QuestID = "44263"
+Inst165Quest3_Level = "110"
+Inst165Quest3_Attain = "110"
+
+
+Inst165Quest1_HORDE_QuestID = "43555"
+Inst165Quest1_HORDE_Level = "110"
+Inst165Quest1_HORDE_Attain = "110"
+
+Inst165Quest2_HORDE_QuestID = "44262"
+Inst165Quest2_HORDE_Level = "110"
+Inst165Quest2_HORDE_Attain = "110"
+
+Inst165Quest3_HORDE_QuestID = "44263"
+Inst165Quest3_HORDE_Level = "110"
+Inst165Quest3_HORDE_Attain = "110"
+
+
+
+AQ_43555_Level = "110"
+AQ_44262_Level = "110"
+AQ_44263_Level = "110"
+
+
+
+--------------- INST166 - Vault of the Wardens ---------------
+
+Inst166Quest1_QuestID = "43556"
+Inst166Quest1_Level = "110"
+Inst166Quest1_Attain = "110"
+
+Inst166Quest2_QuestID = "44260"
+Inst166Quest2_Level = "110"
+Inst166Quest2_Attain = "110"
+
+Inst166Quest3_QuestID = "44261"
+Inst166Quest3_Level = "110"
+Inst166Quest3_Attain = "110"
+
+
+Inst166Quest1_HORDE_QuestID = "43556"
+Inst166Quest1_HORDE_Level = "110"
+Inst166Quest1_HORDE_Attain = "110"
+
+Inst166Quest2_HORDE_QuestID = "44260"
+Inst166Quest2_HORDE_Level = "110"
+Inst166Quest2_HORDE_Attain = "110"
+
+Inst166Quest3_HORDE_QuestID = "44261"
+Inst166Quest3_HORDE_Level = "110"
+Inst166Quest3_HORDE_Attain = "110"
+
+
+
+AQ_43556_Level = "110"
+AQ_44260_Level = "110"
+AQ_44261_Level = "110"
+
+
+
+--------------- INST167 - Broken Isles ---------------
+
+
+
+--------------- INST168 - The Emerald Nightmare ---------------
+
+
+
+--------------- INST169 - The Nighthold ---------------
+
+
 
 
 

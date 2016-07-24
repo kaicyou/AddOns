@@ -307,7 +307,7 @@ local function DCS_Durability_Bar_Textures()
 end
 
 local _, private = ...
-private.defaults.dejacharacterstatsShowDuraRepairChecked = {
+private.defaults.dcsdefaults.dejacharacterstatsShowDuraRepairChecked = {
 	ShowDuraRepairSetChecked = false,
 }	
 
@@ -321,38 +321,38 @@ local DCS_ShowDuraRepairCheck = CreateFrame("CheckButton", "DCS_ShowDuraRepairCh
 	_G[DCS_ShowDuraRepairCheck:GetName() .. "Text"]:SetText("Durability & Repair")
 	
 DCS_ShowDuraRepairCheck:SetScript("OnEvent", function(self, event, ...)
-	local checked = private.db.dejacharacterstatsShowDuraRepairChecked
+	local checked = private.db.dcsdefaults.dejacharacterstatsShowDuraRepairChecked
 	self:SetChecked(checked.ShowDuraRepairSetChecked)
 	if self:GetChecked(true) then
 		DCS_Item_Durability()
-		private.db.dejacharacterstatsShowDuraRepairChecked.ShowDuraRepairSetChecked = true
+		private.db.dcsdefaults.dejacharacterstatsShowDuraRepairChecked.ShowDuraRepairSetChecked = true
 	else
 		for k, v in ipairs(DCSITEM_SLOT_FRAMES) do
 			v.durability:SetFormattedText("")
 			v.itemrepair:SetFormattedText("")
 		end
-		private.db.dejacharacterstatsShowDuraRepairChecked.ShowDuraRepairSetChecked = false
+		private.db.dcsdefaults.dejacharacterstatsShowDuraRepairChecked.ShowDuraRepairSetChecked = false
 	end
 end)
 
 DCS_ShowDuraRepairCheck:SetScript("OnClick", function(self,event,arg1) 
-	local checked = private.db.dejacharacterstatsShowDuraRepairChecked
+	local checked = private.db.dcsdefaults.dejacharacterstatsShowDuraRepairChecked
 	if self:GetChecked(true) then
 		DCS_Item_Durability()
-		private.db.dejacharacterstatsShowDuraRepairChecked.ShowDuraRepairSetChecked = true
+		private.db.dcsdefaults.dejacharacterstatsShowDuraRepairChecked.ShowDuraRepairSetChecked = true
 	else
 		for k, v in ipairs(DCSITEM_SLOT_FRAMES) do
 			v.durability:SetFormattedText("")
 			v.itemrepair:SetFormattedText("")
 		end
-		private.db.dejacharacterstatsShowDuraRepairChecked.ShowDuraRepairSetChecked = false
+		private.db.dcsdefaults.dejacharacterstatsShowDuraRepairChecked.ShowDuraRepairSetChecked = false
 	end
 end)
 
 ---------
 
 local _, private = ...
-private.defaults.dejacharacterstatsShowDuraTextureChecked = {
+private.defaults.dcsdefaults.dejacharacterstatsShowDuraTextureChecked = {
 	ShowDuraTextureSetChecked = false,
 }	
 
@@ -366,7 +366,7 @@ local DCS_ShowDuraTextureCheck = CreateFrame("CheckButton", "DCS_ShowDuraTexture
 	_G[DCS_ShowDuraTextureCheck:GetName() .. "Text"]:SetText("Durability Bars")
 	
 DCS_ShowDuraTextureCheck:SetScript("OnEvent", function(self, event, ...)
-	local checked = private.db.dejacharacterstatsShowDuraTextureChecked
+	local checked = private.db.dcsdefaults.dejacharacterstatsShowDuraTextureChecked
 	self:SetChecked(checked.ShowDuraTextureSetChecked)
 	if self:GetChecked(true) then
 		if DCS_ShowDuraRepairCheck:GetChecked(true) then
@@ -386,18 +386,18 @@ DCS_ShowDuraTextureCheck:SetScript("OnEvent", function(self, event, ...)
 			duraMeanTexture:Show()
 			duraMeanFS:SetFormattedText("")
 		end
-		private.db.dejacharacterstatsShowDuraTextureChecked.ShowDuraTextureSetChecked = true
+		private.db.dcsdefaults.dejacharacterstatsShowDuraTextureChecked.ShowDuraTextureSetChecked = true
 	else
 		for k, v in ipairs(DCSITEM_SLOT_FRAMES) do
 			v.duratexture:Hide()
 			duraMeanTexture:Hide()
 		end
-		private.db.dejacharacterstatsShowDuraTextureChecked.ShowDuraTextureSetChecked = false
+		private.db.dcsdefaults.dejacharacterstatsShowDuraTextureChecked.ShowDuraTextureSetChecked = false
 	end
 end)
 
 DCS_ShowDuraTextureCheck:SetScript("OnClick", function(self,event,arg1) 
-	local checked = private.db.dejacharacterstatsShowDuraTextureChecked
+	local checked = private.db.dcsdefaults.dejacharacterstatsShowDuraTextureChecked
 	if self:GetChecked(true) then
 		if DCS_ShowDuraRepairCheck:GetChecked(true) then
 			DCS_Durability_Bar_Textures()
@@ -416,20 +416,20 @@ DCS_ShowDuraTextureCheck:SetScript("OnClick", function(self,event,arg1)
 			duraMeanTexture:Show()
 			duraMeanFS:SetFormattedText("")
 		end
-		private.db.dejacharacterstatsShowDuraTextureChecked.ShowDuraTextureSetChecked = true
+		private.db.dcsdefaults.dejacharacterstatsShowDuraTextureChecked.ShowDuraTextureSetChecked = true
 	else
 		for k, v in ipairs(DCSITEM_SLOT_FRAMES) do
 			v.duratexture:Hide()
 			duraMeanTexture:Hide()
 		end
-		private.db.dejacharacterstatsShowDuraTextureChecked.ShowDuraTextureSetChecked = false
+		private.db.dcsdefaults.dejacharacterstatsShowDuraTextureChecked.ShowDuraTextureSetChecked = false
 	end
 end)
 
 -----------
 
 local _, private = ...
-private.defaults.dejacharacterstatsShowAverageRepairChecked = {
+private.defaults.dcsdefaults.dejacharacterstatsShowAverageRepairChecked = {
 	ShowAverageRepairSetChecked = false,
 }	
 
@@ -443,27 +443,27 @@ local DCS_ShowAverageRepairCheck = CreateFrame("CheckButton", "DCS_ShowAverageRe
 	_G[DCS_ShowAverageRepairCheck:GetName() .. "Text"]:SetText("Average Durability")
 	
 	DCS_ShowAverageRepairCheck:SetScript("OnEvent", function(self, event, ...)
-		local checked = private.db.dejacharacterstatsShowAverageRepairChecked
+		local checked = private.db.dcsdefaults.dejacharacterstatsShowAverageRepairChecked
 		self:SetChecked(checked.ShowAverageRepairSetChecked)
 		if self:GetChecked(true) then
 			DCS_Mean_Durability()
-			private.db.dejacharacterstatsShowAverageRepairChecked.ShowAverageRepairSetChecked = true
+			private.db.dcsdefaults.dejacharacterstatsShowAverageRepairChecked.ShowAverageRepairSetChecked = true
 		else
 			duraMeanFS:SetFormattedText("")
 			duraDurabilityFrameFS:Hide()
-			private.db.dejacharacterstatsShowAverageRepairChecked.ShowAverageRepairSetChecked = false
+			private.db.dcsdefaults.dejacharacterstatsShowAverageRepairChecked.ShowAverageRepairSetChecked = false
 		end
 	end)
 
 	DCS_ShowAverageRepairCheck:SetScript("OnClick", function(self,event,arg1) 
-		local checked = private.db.dejacharacterstatsShowAverageRepairChecked
+		local checked = private.db.dcsdefaults.dejacharacterstatsShowAverageRepairChecked
 		if self:GetChecked(true) then
 			DCS_Mean_Durability()
-			private.db.dejacharacterstatsShowAverageRepairChecked.ShowAverageRepairSetChecked = true
+			private.db.dcsdefaults.dejacharacterstatsShowAverageRepairChecked.ShowAverageRepairSetChecked = true
 		else
 			duraMeanFS:SetFormattedText("")
 			duraDurabilityFrameFS:Hide()
-			private.db.dejacharacterstatsShowAverageRepairChecked.ShowAverageRepairSetChecked = false
+			private.db.dcsdefaults.dejacharacterstatsShowAverageRepairChecked.ShowAverageRepairSetChecked = false
 		end
 	end)
 	

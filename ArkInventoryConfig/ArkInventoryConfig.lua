@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1585 $
-$Date: 2016-07-21 17:51:53 +1000 (Thu, 21 Jul 2016) $
+$Revision: 1635 $
+$Date: 2016-07-23 15:28:52 +1000 (Sat, 23 Jul 2016) $
 
 ]]--
 
@@ -1843,7 +1843,7 @@ function ArkInventory.ConfigInternal( )
 				design = {
 					cmdHidden = true,
 					order = 500,
-					name = ArkInventory.Localise["CONFIG_DESIGN_PLURAL"],
+					name = string.format( "%s / %s", ArkInventory.Localise["CONFIG_DESIGN_STYLE_PLURAL"], ArkInventory.Localise["CONFIG_DESIGN_LAYOUT_PLURAL"] ),
 					type = "group",
 					args = { },
 				},

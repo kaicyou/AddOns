@@ -536,8 +536,7 @@ function ArkInventory.ConfigInternalCategoryCustomCopy( src, id )
 		return
 	end
 	
-	local t = ArkInventory.Const.Category.Type.Custom
-	local v = ArkInventory.db.global.option.category[t].data
+	local v = ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Custom].data
 	
 	local used = v[id].used
 	local system = v[id].system
@@ -625,8 +624,7 @@ function ArkInventory.ConfigInternalCategoryRuleCopy( src, id )
 		return
 	end
 	
-	local t = ArkInventory.Const.Category.Type.Rule
-	local v = ArkInventory.db.global.option.category[t].data
+	local v = ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data
 	
 	local used = v[id].used
 	local system = v[id].system
@@ -898,7 +896,7 @@ function ArkInventory.ConfigInternalCategorysetCopy( src, id )
 		return
 	end
 	
-	local v = ArkInventory.db.global.option.catset.data[t]
+	local v = ArkInventory.db.global.option.catset.data
 	
 	local used = v[id].used
 	local system = v[id].system

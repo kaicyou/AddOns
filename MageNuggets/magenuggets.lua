@@ -1,6 +1,6 @@
-﻿--Mage Nuggets 4.5.3 by B-Buck (Bbuck of Eredar)
+﻿--Mage Nuggets by B-Buck (Bbuck of Eredar)
 
-local magenugVer = "4.5.3"
+local magenugVer = "5.1.0"
 local livingBombCount = 0;
 local mirrorImageTime = 0;
 local livingbombGlobalTime = 0;
@@ -39,16 +39,15 @@ local ignitetimer = 0;
 local fbtime = 0;
 local cauterizeTime = 0;
 local bombType = "none";
-local arcaneMissileCount = 0; 
+local arcaneMissileCount = 0;
 local alterTime = 0;
 local tierSix = "runeOfPower";
 local tierSixTime = 0;
 local tierSixFlash = 0;
 local tierSixIconFlash = 0;
 local bombSpeced = "frost";
-local soundPlayed = false;
 local _, class _, class = UnitClass("player")
-local mnplayerClass, mnenglishClass = UnitClass("player"); 
+local mnplayerClass, mnenglishClass = UnitClass("player");
 
 function mageNuggets_OnStart(self)
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -72,7 +71,7 @@ function mageNuggets_OnStart(self)
 end
 
 local MN_UpdateInterval = 0.25;
-function MageNuggets_OnUpdate(self, elapsed) 
+function MageNuggets_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
  if (self.TimeSinceLastUpdate > MN_UpdateInterval) then
     --Ignite
@@ -81,22 +80,22 @@ function MageNuggets_OnUpdate(self, elapsed)
     local combName, combRank, _, combCount, _, _, expireTime, _, _, _, combspellId = UnitAura("target", h, "PLAYER|HARMFUL");
     while combName do
         if(combspellId == 12654) then
-            dotUp = true;  
+            dotUp = true;
             ignitetimer = RoundOne(expireTime - GetTime());
             MageNugIgnite_Frame_Bar:SetValue(ignitetimer);
             MageNugIgnite_FrameText2:SetText(ignitetimer);
         end
         h = h + 1;
         combName, combRank, _, combCount, _, _, _, _, _, _, combspellId = UnitAura("target", h, "PLAYER|HARMFUL");
-    end 
+    end
     if(dotUp == true) then
-        if(MageNuggets.igniteTog == true)then 
+        if(MageNuggets.igniteTog == true)then
               MageNugIgnite_Frame:Show();
         end
     else
         MageNugIgnite_Frame:Hide();
     end
-    
+
     --Alter Time
     if(alterTime >= 0) then
         if(alterTime >= 1) then
@@ -108,9 +107,9 @@ function MageNuggets_OnUpdate(self, elapsed)
         end
         alterTime = alterTime - 0.25;
     end
-        
-    --SpellSteal 
-    if (spellStealTog >= 1) then 
+
+    --SpellSteal
+    if (spellStealTog >= 1) then
         spellStealTog = spellStealTog - 1;
     else
         if (MageNuggets.ssMonitorToggle == true) then
@@ -120,21 +119,21 @@ function MageNuggets_OnUpdate(self, elapsed)
                 while buffName do
                     if(isStealable == true) then
                         if(expirationTime ~= nil)then
-                            sstimeleft = RoundZero(expirationTime - GetTime());    
+                            sstimeleft = RoundZero(expirationTime - GetTime());
                             if (sstimeleft > 60) then
                                 sstimeleft = "+60";
                             end
                         end
-                        
+
                         stealableBuffs[#stealableBuffs + 1] = buffName.."  "..sstimeleft.."s";
                     end
                     i = i + 1;
                     buffName, _, _, _, _, _, expirationTime, _, isStealable = UnitAura("target", i, "HELPFUL");
                 end
                 if (#stealableBuffs < 1) then
-                    MNSpellSteal_Frame:Hide(); 
+                    MNSpellSteal_Frame:Hide();
                 else
-                    MNSpellSteal_Frame:Show(); 
+                    MNSpellSteal_Frame:Show();
                     stealableBuffs = table.concat(stealableBuffs, "\n");
                     MNSpellSteal_FrameBuffText:SetText("|cffFFFFFF"..stealableBuffs);
                 end
@@ -143,7 +142,7 @@ function MageNuggets_OnUpdate(self, elapsed)
                 while buffName2 do
                     if(isStealable2 == true) then
                         if(expirationTime2 ~= nil)then
-                            sstimeleft2 = RoundZero(expirationTime2 - GetTime());    
+                            sstimeleft2 = RoundZero(expirationTime2 - GetTime());
                             if (sstimeleft2 > 60) then
                                  sstimeleft2 = "+60";
                            end
@@ -154,9 +153,9 @@ function MageNuggets_OnUpdate(self, elapsed)
                     buffName2, _, _, _, _, _, expirationTime2, _, isStealable2 = UnitAura("focus", i, "HELPFUL");
                 end
                 if (#stealableBuffs2 < 1) then
-                    MNSpellStealFocus_Frame:Hide(); 
+                    MNSpellStealFocus_Frame:Hide();
                 else
-                    MNSpellStealFocus_Frame:Show(); 
+                    MNSpellStealFocus_Frame:Show();
                   stealableBuffs2 = table.concat(stealableBuffs2, "\n");
                     MNSpellStealFocus_FrameBuffText:SetText("|cffFFFFFF"..stealableBuffs2);
                 end
@@ -172,21 +171,21 @@ function MageNuggets_OnUpdate(self, elapsed)
                         buffName1, _, _, _, debuffType1, _, expirationTime1, _, _ = UnitAura("target", i, "HELPFUL");
                     end
                     if (#purgeableBuffs < 1) then
-                        MNSpellSteal_Frame:Hide(); 
+                        MNSpellSteal_Frame:Hide();
                     else
-                        MNSpellSteal_Frame:Show(); 
+                        MNSpellSteal_Frame:Show();
                         purgeableBuffs = table.concat(purgeableBuffs, "\n");
                         MNSpellSteal_FrameBuffText:SetText("|cffFFFFFF"..purgeableBuffs);
                     end
                 else
-                    MNSpellSteal_Frame:Hide(); 
+                    MNSpellSteal_Frame:Hide();
                 end
                 local stealableBuffs2, i = { }, 1;
                 local buffName2, _, _, _, debuffTypep, _, expirationTime2, _, isStealable2 = UnitAura("focus", i, "HELPFUL");
                 while buffName2 do
                     if(debuffTypep == "Magic") then
                         if(expirationTime2 ~= nil)then
-                            sstimeleft2 = RoundZero(expirationTime2 - GetTime());    
+                            sstimeleft2 = RoundZero(expirationTime2 - GetTime());
                             if (sstimeleft2 > 60) then
                                  sstimeleft2 = "+60";
                            end
@@ -197,9 +196,9 @@ function MageNuggets_OnUpdate(self, elapsed)
                     buffName2, _, _, _, debuffTypep, _, expirationTime2, _, isStealable2 = UnitAura("focus", i, "HELPFUL");
                 end
                 if (#stealableBuffs2 < 1) then
-                    MNSpellStealFocus_Frame:Hide(); 
+                    MNSpellStealFocus_Frame:Hide();
                 else
-                    MNSpellStealFocus_Frame:Show(); 
+                    MNSpellStealFocus_Frame:Show();
                     stealableBuffs2 = table.concat(stealableBuffs2, "\n");
                     MNSpellStealFocus_FrameBuffText:SetText("|cffFFFFFF"..stealableBuffs2);
                 end
@@ -215,28 +214,28 @@ function MageNuggets_OnUpdate(self, elapsed)
                         buffName2, _, _, _, debuffType2, _, expirationTime2, _, _ = UnitAura("target", i, "HELPFUL");
                     end
                     if (#dispelBuffs < 1) then
-                        MNSpellSteal_Frame:Hide(); 
+                        MNSpellSteal_Frame:Hide();
                     else
-                        MNSpellSteal_Frame:Show(); 
+                        MNSpellSteal_Frame:Show();
                         dispelBuffs = table.concat(dispelBuffs, "\n");
                         MNSpellSteal_FrameBuffText:SetText("|cffFFFFFF"..dispelBuffs);
                     end
                 else
-                    MNSpellSteal_Frame:Hide(); 
+                    MNSpellSteal_Frame:Hide();
                 end
             end
         end
     end
   self.TimeSinceLastUpdate = 0;
   end
-end     
+end
 
 --============================================================================--
 --                                  On Update
 --============================================================================--
-function MageNuggetsHS_OnUpdate(self, elapsed) 
+function MageNuggetsHS_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         if (mageProcHSTime >= 0) then
             mageProcHSTime = RoundOne(mageProcHSTime - 0.1);
             MageNugProcFrame_ProcBar:SetValue(mageProcHSTime)
@@ -249,12 +248,12 @@ function MageNuggetsHS_OnUpdate(self, elapsed)
             end
         end
     self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 
-function MageNuggetsHU_OnUpdate(self, elapsed) 
+function MageNuggetsHU_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         if (mageProcHUTime >= 0) then
             mageProcHUTime = RoundOne(mageProcHUTime - 0.1);
             MageNugProcHUFrame_ProcBar:SetValue(mageProcHUTime)
@@ -267,12 +266,12 @@ function MageNuggetsHU_OnUpdate(self, elapsed)
             end
         end
     self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 
-function MageNuggetsMB_OnUpdate(self, elapsed) 
+function MageNuggetsMB_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         local i = 1;
         local buffName, rank, _, count, _, duration, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
         while buffName do
@@ -283,21 +282,21 @@ function MageNuggetsMB_OnUpdate(self, elapsed)
                 MageNugMBProcFrameText2:SetText(mageProcMBTime)
                 local position = (MageNugMBProcFrame_ProcBar:GetValue() / 20 * 120);
                 MageNugMBProcFrame_ProcBarSpark:SetPoint("BOTTOMLEFT",MageNugMBProcFrame_ProcBar,"BOTTOMLEFT",position - 10,-6);
-            end                
+            end
             i = i + 1;
             buffName, rank, _, count, _, duration, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
-        end     
+        end
         if (mageProcMBTime <= 0.1) then
             MageNugMBProcFrame:Hide()
             MageNugMBProcFrame_ProcBar:SetValue(14)
         end
     self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 
-function MageNuggetsFoF_OnUpdate(self, elapsed) 
+function MageNuggetsFoF_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         if (fofProgMonTime >= 0) then
             local i = 1;
             local buffName, rank, _, count, _, _, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
@@ -319,17 +318,17 @@ function MageNuggetsFoF_OnUpdate(self, elapsed)
             end
         end
     self.TimeSinceLastUpdate = 0;
-    end   
-end  
+    end
+end
 
-function MageNuggetsBF_OnUpdate(self, elapsed) 
+function MageNuggetsBF_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
       if (mageProcBFTime >= 0) then
             local i = 1;
             local buffName, rank, _, count, _, _, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
             while buffName do
-                if(spellId == 57761) then
+                if(spellId == 190446) then
                 MageNugBFProcFrameCountText:SetText("|cffffffff"..count)
                 bfProgMonTime = RoundOne(expirationTime - GetTime());
                 end
@@ -348,47 +347,47 @@ function MageNuggetsBF_OnUpdate(self, elapsed)
                 MageNugBFProcFrame_ProcBar:SetValue(15)
             end
         end
-    
+
     self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 
-function MageNuggetsAB_OnUpdate(self, elapsed) 
+-- Arcane Charge Counter
+local abTimeoutCounter = 0;
+local soundPlayed = false;
+function MageNuggetsAB_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         local _, _, _, castTime, _, _, _, _, _ = GetSpellInfo(30451)
+        local stackCount = UnitPower("player", SPELL_POWER_ARCANE_CHARGES);
         MNabCast_FrameText:SetText(RoundThree(castTime * 0.001))
-        abProgMonTime = 0;
-        local i = 1;
-        local buffName, rank, _, count, _, _, expirationTime, _, _, _, spellId = UnitAura("player", i, "HARMFUL");
-        while buffName do
-            if(spellId == 36032) then
-                abStackCount = count;
-                MageNugAB_FrameText:SetText("|cffFF00FF"..abStackCount)
-                abProgMonTime = RoundOne(expirationTime - GetTime());
-                if (MageNuggets.ABSoundToggle == true) and (abStackCount == 4)then
-                    if(soundPlayed == false) then
-                        soundPlayed = true;
-                        PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.ABSound2);
-                    end
-                end
-            end
-            i = i + 1;
-            buffName, rank, _, count, _, _, expirationTime, _, _, _, spellId = UnitAura("player", i, "HARMFUL");
-        end    
-        
-        MageNugAB_Frame_ABBar:SetValue(abProgMonTime)
-        MageNugAB_FrameText2:SetText("|cffFFFFFF"..abProgMonTime)
-        if (abProgMonTime <= 0) then
-            MageNugAB_Frame:Hide();
+        MageNugAB_FrameText:SetText("|cffFF00FF"..stackCount)
+        abTimeoutCounter = abTimeoutCounter + 1;
+
+        if(stackCount > 0) then
+          abTimeoutCounter = 0;
+        end
+
+        if(stackCount == 0) then
+          soundPlayed = false;
+        end
+
+        if (MageNuggets.ABSoundToggle == true) and (stackCount == 4) and (soundPlayed == false) then
+          soundPlayed = true;
+          PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.ABSound2);
+        end
+
+        if (abTimeoutCounter > 200) then
+          abTimeoutCounter = 0;
+          MageNugAB_Frame:Hide();
         end
     self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 
-function MageNuggetsClearCast_OnUpdate(self, elapsed) 
+function MageNuggetsClearCast_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         if (clearcastTime >= 0) then
             clearcastTime = RoundOne(clearcastTime - 0.1);
             MageNugClearcast_Frame_Bar:SetValue(clearcastTime)
@@ -396,14 +395,14 @@ function MageNuggetsClearCast_OnUpdate(self, elapsed)
             if (clearcastTime <= 0) then
                 MageNugClearcast_Frame:Hide();
             end
-        end    
+        end
     self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 
-function MageNuggetsMI_OnUpdate(self, elapsed) 
+function MageNuggetsMI_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 1.0) then   
+    if (self.TimeSinceLastUpdate > 1.0) then
         if (mirrorImageTime >= 0) then
             mirrorImageTime = mirrorImageTime - 1.0;
             MageNugMI_Frame_MIText1:SetText(" "..mirrorImageTime)
@@ -413,12 +412,12 @@ function MageNuggetsMI_OnUpdate(self, elapsed)
             end
         end
     self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 
 function MageNugInvokers_OnUpdate(self, elapsed) -- rune of power
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         local tempTime = 0;
         local standSpot = false;
         if(tierSix == "runeOfPower") then
@@ -433,7 +432,7 @@ function MageNugInvokers_OnUpdate(self, elapsed) -- rune of power
                 buffName, rank, _, count, _, _, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
             end
         end
-        
+
         if(((standSpot == false) and (tierSix == "runeOfPower") and (tempTime > 7)))then
             if(tierSixIconFlash > 5) then
                 tierSixIconFlash = 0;
@@ -445,7 +444,7 @@ function MageNugInvokers_OnUpdate(self, elapsed) -- rune of power
         else
             MageNugInvokers_FrameTexture1:SetAlpha(1);
         end
-        
+
         if (tempTime > 0.1) then
             MageNugInvokers_Frame_Bar_Text1:SetText(" "..tempTime);
             MageNugInvokers_Frame_Bar:SetValue(tempTime);
@@ -453,7 +452,7 @@ function MageNugInvokers_OnUpdate(self, elapsed) -- rune of power
             local position = (MageNugInvokers_Frame_Bar:GetValue() / max * MageNugInvokers_Frame_Bar:GetWidth());
             MageNugInvokers_Frame_BarSpark:ClearAllPoints();
             MageNugInvokers_Frame_BarSpark:SetPoint("CENTER",MageNugInvokers_Frame_Bar,"LEFT",position + 1 ,0);
-            
+
             if(tempTime < 7.0) then
                if(tierSixFlash > 5) then
                     tierSixFlash = 0;
@@ -469,12 +468,12 @@ function MageNugInvokers_OnUpdate(self, elapsed) -- rune of power
             MageNugInvokers_Frame:Hide();
         end
     self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 
-function MageNuggetsCauterize_OnUpdate(self, elapsed) 
+function MageNuggetsCauterize_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 1.0) then   
+    if (self.TimeSinceLastUpdate > 1.0) then
         if (cauterizeTime >= 0) then
             cauterizeTime = cauterizeTime - 1.0;
             MageNugCauterize_Frame_Text1:SetText(" "..cauterizeTime)
@@ -484,12 +483,12 @@ function MageNuggetsCauterize_OnUpdate(self, elapsed)
             end
         end
     self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 
-function MageNuggetsPoly_OnUpdate(self, elapsed) 
+function MageNuggetsPoly_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 1.0) then   
+    if (self.TimeSinceLastUpdate > 1.0) then
         if (polyTimer >= 0) then
             polyTimer = RoundZero(polyTimer - 1.0);
             MageNugPolyFrameTimerText:SetText(polyTimer);
@@ -499,12 +498,12 @@ function MageNuggetsPoly_OnUpdate(self, elapsed)
             end
         end
     self.TimeSinceLastUpdate = 0;
-    end   
-end  
+    end
+end
 
-function MageNuggetsImpact_OnUpdate(self, elapsed) 
+function MageNuggetsImpact_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         if (mageImpProgMonTime >= 0) then
             mageImpProgMonTime = RoundOne(mageImpProgMonTime - 0.1);
             MageNugImpactProcFrame_ProcBar:SetValue(mageImpProgMonTime)
@@ -513,12 +512,12 @@ function MageNuggetsImpact_OnUpdate(self, elapsed)
             MageNugImpactProcFrame_ProcBarSpark:SetPoint("BOTTOMLEFT",MageNugImpactProcFrame_ProcBar,"BOTTOMLEFT",position - 10,-6);
             if (mageImpProgMonTime <= 0) then
                 MageNugImpactProcFrame:Hide()
-                MageNugImpactProcFrame_ProcBar:SetValue(9)        
+                MageNugImpactProcFrame_ProcBar:SetValue(9)
             end
         end
     self.TimeSinceLastUpdate = 0;
-    end   
-end  
+    end
+end
 
 --============================================================================--
 --                                  On Event
@@ -528,8 +527,7 @@ function MageNuggets_OnEvent(this, event, ...)
     local argin1, argin2, argin3, argin4, _, argin6 = ...
     if (event == "ADDON_LOADED") then
         if(argin1 == "MageNuggets") then
-            loadMageNuggetVariables_OnLoadEvent(); 
-            MageNugz_SetFrame_Positions();
+            loadMageNuggetVariables_OnLoadEvent();
             MageNuggetsLB_Prep();
         end
     elseif (event == "PLAYER_TALENT_UPDATE") then
@@ -577,9 +575,9 @@ function MageNuggets_OnEvent(this, event, ...)
         MageNugCD5_Frame:Hide();
         MageNugCD6_Frame_Bar:SetValue(0);
         MageNugCD6_Frame:Hide();
-    elseif (event == "PLAYER_LOGOUT") then       
+    elseif (event == "PLAYER_LOGOUT") then
         MageNugz_SaveFrame_Position();
-    elseif (event == "PLAYER_REGEN_ENABLED") then       
+    elseif (event == "PLAYER_REGEN_ENABLED") then
         incombat = 0;
         MageNugNova_Frame:Hide();
         MageNugInvokers_Frame:Hide();
@@ -594,15 +592,12 @@ function MageNuggets_OnEvent(this, event, ...)
                 MNstarSurge_Frame:Hide()
             end
         end
-    elseif (event == "PLAYER_REGEN_DISABLED") then       
+    elseif (event == "PLAYER_REGEN_DISABLED") then
         incombat = 1;
         if(mnenglishClass == 'MAGE') and (MageNuggets.novaMonitorToggle == true) and (isNovaSpeced())then
             MageNugNova_Frame:Show();
         end
-        if(mnenglishClass == 'DRUID') or (mnenglishClass == 'MAGE') then
-            MageNugCD_Frame_Text:SetText("c o o l d o w n s")
-        end
-     
+
         if (MageNuggets.moonkinTog == false) then
             if (MageNuggets.moonkinCombat == true) then
                 MageNugMoonkin_Frame:Show();
@@ -617,32 +612,20 @@ function MageNuggets_OnEvent(this, event, ...)
     elseif (event == "PLAYER_ENTERING_WORLD") then
         MageNugHordeFrame:Hide();
         MageNugAlliFrame:Hide();
+        MageNugz_SetFrame_Positions();
         MageNugz_SaveFrame_Position();
     elseif (event == "PLAYER_UPDATE_RESTING") then
         MageNugHordeFrame:Hide();
         MageNugAlliFrame:Hide();
-    elseif (event == "COMBAT_LOG_EVENT_UNFILTERED")then   
-        local timestamp, event1, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName = select(1, ...) 
-        local arg, spellName, spellSchool, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12 = select(12, ...) 
-        
-        --if((sourceName == UnitName("player")) or (destName == UnitName("player"))) then
-         --DEFAULT_CHAT_FRAME:AddMessage(arg.." "..event1);
-        --end
-          
-        if((event1 == "SPELL_DAMAGE") and (sourceName == UnitName("player")))then
-            -- Arcane Blast
-            if (arg == 30451)then
-                if(abStackCount == 3) then
-                    abStackCount2 = 3;
-                end
-                if(abStackCount == 4) then
-                    if(abStackCount2 ~= nil) then
-                        abStackCount2 = abStackCount2 + 1;
-                        MageNugAB_FrameText1:SetText("|cffFF0000"..abStackCount2)
-                    end
-                end 
-            end
-        elseif (event1 == "SPELL_DISPEL") and (sourceName == UnitName("player")) then
+    elseif (event == "COMBAT_LOG_EVENT_UNFILTERED")then
+        local timestamp, event1, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName = select(1, ...)
+        local arg, spellName, spellSchool, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12 = select(12, ...)
+
+        -- if((sourceName == UnitName("player")) or (destName == UnitName("player"))) then
+        --  DEFAULT_CHAT_FRAME:AddMessage(arg.." "..event1.." "..spellName);
+        -- end
+
+        if (event1 == "SPELL_DISPEL") and (sourceName == UnitName("player")) then
             if (MageNuggets.ssMonitorToggle == true) then
                 if(combatTextCvar == '1') then
                     CombatText_AddMessage("Dispelled"..":"..GetSpellLink(arg5), CombatText_StandardScroll, 0.10, 0, 1, "sticky", nil);
@@ -653,52 +636,22 @@ function MageNuggets_OnEvent(this, event, ...)
             end
         elseif (event1 == "SPELL_AURA_REFRESH") and (sourceName == UnitName("player")) then
             spellAuraRefresh(arg, sourceName, destName);
-        elseif (event1 == "SPELL_CAST_SUCCESS") and (sourceName == UnitName("pet"))then 
-            if(arg == 33395)then -- Water Elly Freeze
-                if (MageNuggets.frzCooldown == true) then
-                    freezeId, _, _, _, _, _, _, _, _ = GetSpellInfo(33395);
-                    MNcooldownMonitor(freezeId, 25, "Interface\\Icons\\spell_frost_frostnova")
-                end
-            elseif(arg == 135029)then -- Water Elly Water Jet
-                if (MageNuggets.frzCooldown == true) then
-                    freezeId, _, _, _, _, _, _, _, _ = GetSpellInfo(135029);
-                    MNcooldownMonitor(freezeId, 25, "Interface\\Icons\\spell_frost_chillingblast")
-                end
-            end
-        elseif (event1 == "SPELL_SUMMON") and (sourceName == UnitName("player")) then
-            if (arg == 84714) then -- frozen orb
-                local fostart, foduration, foenabled = GetSpellCooldown(84714);
-                local foTime = RoundOne(fostart + foduration - GetTime())       
-                frozenOrbID, _, _, _, _, _, _, _, _ = GetSpellInfo(84714);
-                MNcooldownMonitor(frozenOrbID, foTime, "Interface\\Icons\\spell_frost_frozenorb")
-            elseif (arg == 82676) then -- ring of frost
-                local rfstart, rfduration, rfenabled = GetSpellCooldown(82676);
-                local rfTime = RoundOne(rfstart + rfduration - GetTime())       
-                ringfrostID, _, _, _, _, _, _, _, _ = GetSpellInfo(82676);
-                MNcooldownMonitor(ringfrostID, rfTime, "Interface\\Icons\\spell_frost_frozencore")
-            elseif (arg == 116011) then -- rune of power
-                if (MageNuggets.invokersToggle == false) then
-                    tierSixTime = GetTime();
-                    tierSix = "runeOfPower"
-                    MageNugInvokers_FrameTexture1:SetAlpha(1);
-                    MageNugInvokers_Frame:SetAlpha(1);
-                    MageNugInvokers_Frame:Show();
-                end
-            end
-        elseif (event1 == "SPELL_CAST_SUCCESS") and (sourceName == UnitName("player"))then 
-            spellCastSuccess(arg, sourceName, destName);
-        elseif (event1 == "SPELL_AURA_REMOVED") and (sourceName == UnitName("player")) then 
+        elseif (event1 == "SPELL_AURA_REMOVED") and (sourceName == UnitName("player")) then
             spellAuraRemoved(arg, sourceName, destName);
         elseif (event1 == "SPELL_PERIODIC_DAMAGE") and (sourceName == UnitName("player")) then
             if(arg == 12654) then
-                if(MageNuggets.igniteTog == true)then 
+                if(MageNuggets.igniteTog == true)then
                     MageNugIgnite_FrameText:SetText(arg5);
                 end
             end
         elseif (event1 == "SPELL_AURA_APPLIED") and (sourceName == UnitName("player")) then
             spellAuraAppliedSource(arg, sourceName, destName);
-		elseif (event1 == "SPELL_AURA_APPLIED") and (destName == UnitName("player")) then
+		   elseif (event1 == "SPELL_AURA_APPLIED") and (destName == UnitName("player")) then
             spellAuraAppliedDest(arg, sourceName, destName);
+		   elseif (event1 == "SPELL_CAST_SUCCESS") and (sourceName == UnitName("player")) then
+          if(arg == 30451) and (MageNuggets.arcaneBlastToggle == true) then
+              MageNugAB_Frame:Show();
+           end
         elseif (event1 == "SPELL_STOLEN") and (sourceName == UnitName("player")) then
             if(combatTextCvar == '1') then
                 CombatText_AddMessage("Stole"..":"..GetSpellLink(arg5), CombatText_StandardScroll, 0.10, 0, 1, "sticky", nil);
@@ -710,104 +663,15 @@ function MageNuggets_OnEvent(this, event, ...)
      end
 end
 
---============================================================================--
---                      Spell Cast Success
---============================================================================--
-
-function spellCastSuccess(arg, sourceName, destName)
-    if (arg == 111264) then -- ice ward
-        iceWardID, _, _, _, _, _, _, _, _ = GetSpellInfo(111264);
-        MNcooldownMonitor(iceWardID, 20, "Interface\\Icons\\spell_frost_frostward")
-    elseif (arg == 153595) then -- comet storm
-        iceWardID, _, _, _, _, _, _, _, _ = GetSpellInfo(153595);
-        MNcooldownMonitor(iceWardID, 20, "Interface\\Icons\\spell_mage_cometstorm")
-    elseif (arg == 33831) then -- force of nature
-        if (MageNuggets.treantCooldown == true) then
-            treantId, _, _, _, _, _, _, _, _ = GetSpellInfo(33831);
-            MNcooldownMonitor(treantId, 180, "Interface\\Icons\\ability_druid_forceofnature")
-        end
-    elseif (arg == 2120) then -- flamestrike
-        flamestrikeID, _, _, _, _, _, _, _, _ = GetSpellInfo(2120);
-        MNcooldownMonitor(flamestrikeID, 12, "Interface\\Icons\\spell_fire_selfdestruct")
-    elseif (arg == 1953) then -- blink
-        if (MageNuggets.blinkCooldown == true) then
-            start, duration, enabled = GetSpellCooldown(1953);
-            blinkId, _, _, _, _, _, _, _, _ = GetSpellInfo(1953);
-            MNcooldownMonitor(blinkId, 15, "Interface\\Icons\\spell_arcane_blink")
-        end         
-    elseif (arg == 11426) then -- ice barrier
-        if (MageNuggets.ibrCooldown == true) then
-            start, duration, enabled = GetSpellCooldown(11426);
-            icebarrierId, _, _, _, _, _, _, _, _ = GetSpellInfo(11426);
-            MNcooldownMonitor(icebarrierId, 24, "Interface\\Icons\\spell_ice_lament")
-        end         
-    elseif (arg == 1463) then -- mana shield
-        manashieldId, _, _, _, _, _, _, _, _ = GetSpellInfo(1463);
-        MNcooldownMonitor(manashieldId, 12, "Interface\\Icons\\spell_shadow_detectlesserinvisibility")
-    elseif (arg == 543) then -- mage ward
-        wardId, _, _, _, _, _, _, _, _ = GetSpellInfo(543);
-        MNcooldownMonitor(wardId, 30, "Interface\\Icons\\spell_fire_twilightfireward")
-    elseif (arg == 122) then -- frost nova
-        frostnovaId, _, _, _, _, _, _, _, _ = GetSpellInfo(122);
-        MNcooldownMonitor(frostnovaId, 25, "Interface\\Icons\\spell_frost_frostnova")
-    elseif (arg == 120) then -- cone of cold
-        coneofcoldId, _, _, _, _, _, _, _, _ = GetSpellInfo(120);
-        MNcooldownMonitor(coneofcoldId, 10, "Interface\\Icons\\spell_frost_glacier")
-    elseif (arg == 153626) then -- arcane orb
-        arcaneOrbId, _, _, _, _, _, _, _, _ = GetSpellInfo(153626);
-        MNcooldownMonitor(arcaneOrbId, 15, "Interface\\Icons\\spell_mage_arcaneorb")
-    elseif (arg == 152087) then -- prismatic crystal
-        prismaticCrystalId, _, _, _, _, _, _, _, _ = GetSpellInfo(152087);
-        MNcooldownMonitor(prismaticCrystalId, 90, "Interface\\Icons\\spell_mage_focusingcrystal")
-    elseif (arg == 45438) then -- Ice Block
-        local ibstart, ibduration, ibenabled = GetSpellCooldown(78674);
-        local ibTime = RoundOne(ibstart + ibduration - GetTime())       
-        iceblockId, _, _, _, _, _, _, _, _ = GetSpellInfo(45438);
-        MNcooldownMonitor(iceblockId, ibTime, "Interface\\Icons\\spell_frost_frost")
-    elseif (arg == 82731) then -- Flame Orb
-        flameOrbId, _, _, _, _, _, _, _, _ = GetSpellInfo(82731);
-        MNcooldownMonitor(flameOrbId, 60, "Interface\\Icons\\spell_mage_flameorb")
-    elseif (arg == 11129) then -- Combustion
-        if (MageNuggets.cbCooldown == true) then
-            combustionId, _, _, _, _, _, _, _, _ = GetSpellInfo(11129);
-            MNcooldownMonitor(combustionId, 120, "Interface\\Icons\\spell_fire_sealoffire")
-        end
-    elseif (arg == 31661) then -- Dragons Breath
-        if (MageNuggets.dbCooldown == true) then
-            dragonsbreathId, _, _, _, _, _, _, _, _ = GetSpellInfo(31661);
-            MNcooldownMonitor(dragonsbreathId, 20, "Interface\\Icons\\inv_misc_head_dragon_01")
-        end
-    elseif (arg == 11113) then -- blastwave
-        if (MageNuggets.bwCooldown == true) then
-            blastwaveId, _, _, _, _, _, _, _, _ = GetSpellInfo(11113);
-            MNcooldownMonitor(blastwaveId, 15, "Interface\\Icons\\spell_holy_excorcism_02")
-        end
-    elseif (arg == 44572) then -- deep freeze
-        if (MageNuggets.dfCooldown == true) then
-            deepfreezeId, _, _, _, _, _, _, _, _ = GetSpellInfo(44572);
-            MNcooldownMonitor(deepfreezeId, 30, "Interface\\Icons\\ability_mage_deepfreeze")
-        end
-    elseif (arg == 2139) then -- Counterspell
-        if(MageNuggets.csCooldown == true) then
-            counterspellId, _, _, _, _, _, _, _, _ = GetSpellInfo(2139);
-            MNcooldownMonitor(counterspellId, 24, "Interface\\Icons\\spell_frost_iceshock")
-        end
-    end
-end
-
 
 --============================================================================--
---                      Spell Aura Refresh
+--                      Spell Aura Removed
 --============================================================================--
 
 function spellAuraRemoved(arg, sourceName, destName)
-    if(arg == 110909) then -- alter time
-        start, duration, enabled = GetSpellCooldown(108978);
-        alterTimeId, _, _, _, _, _, _, _, _ = GetSpellInfo(108978);
-        MNcooldownMonitor(alterTimeId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\spell_mage_altertime")
-    elseif (arg == 48107) then -- heating up
+    if (arg == 48107) then -- heating up
         MageNugProcHUFrame:Hide();
-    elseif(arg == 57761) then
+    elseif(arg == 190446) then
         MageNugBFProcFrame:Hide()
     elseif(arg == 44544) then
         MageNugFoFProcFrame:Hide()
@@ -817,48 +681,6 @@ function spellAuraRemoved(arg, sourceName, destName)
         MageNugImpactProcFrame:Hide();
     elseif(arg == 48108) then
         MageNugProcFrame:Hide();
-    elseif (arg == 36032) then -- arcane charge
-        abStackCount = 0;
-        abStackCount2 = 0;
-        MageNugAB_Frame:Hide();
-        MageNugAB_FrameText1:SetText(" ")
-        soundPlayed = false;
-    elseif (arg == 48505) then
-        if (MageNuggets.starfallCooldown == true) then
-            start, duration, enabled = GetSpellCooldown(48505);
-            starFallId, _, _, _, _, _, _, _, _ = GetSpellInfo(48505);
-            MNcooldownMonitor(starFallId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\ability_druid_starfall")
-        end
-    elseif (arg == 12051) then
-        if (MageNuggets.evoCooldown == true) then
-            start, duration, enabled = GetSpellCooldown(12051);
-            evocateId, _, _, _, _, _, _, _, _ = GetSpellInfo(12051);
-            MNcooldownMonitor(evocateId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\spell_nature_purge")
-        end
-    elseif (arg == 131078) then --icy veins
-        if (MageNuggets.ivCooldown == true) then
-            start, duration, enabled = GetSpellCooldown(131078);
-            icyveinsId, _, _, _, _, _, _, _, _ = GetSpellInfo(131078);
-            MNcooldownMonitor(icyveinsId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\Spell_frost_coldhearted")
-        end    
-    elseif (arg == 12472) then --icy veins
-        if (MageNuggets.ivCooldown == true) then
-            start, duration, enabled = GetSpellCooldown(12472);
-            icyveinsId, _, _, _, _, _, _, _, _ = GetSpellInfo(12472);
-            MNcooldownMonitor(icyveinsId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\Spell_frost_coldhearted")
-        end    
-    elseif (arg == 12042) then
-        if (MageNuggets.apCooldown == true) then
-            start, duration, enabled = GetSpellCooldown(12042);
-            arcanePowerId, _, _, _, _, _, _, _, _ = GetSpellInfo(12042);
-            MNcooldownMonitor(arcanePowerId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\spell_nature_lightning")
-        end    
-    elseif (arg == 11426) then
-        if (MageNuggets.ibrCooldown == true) then
-            start, duration, enabled = GetSpellCooldown(11426);
-            icebarrierId, _, _, _, _, _, _, _, _ = GetSpellInfo(11426);
-            MNcooldownMonitor(icebarrierId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\spell_ice_lament")
-        end         
     elseif(arg == 87023) then
         if(combatTextCvar == '1') then
             if (MageNuggets.mageProcToggle == true) then
@@ -877,7 +699,7 @@ function spellAuraRemoved(arg, sourceName, destName)
     elseif (arg == 44457) then --living bomb
         MNRemoveBomb(destGUID);
     end
-    
+
     if (MageNuggets.polyToggle == true) then
         if (arg == 9484) then
             MageNugPolyFrame:Hide();
@@ -999,7 +821,7 @@ function spellAuraRemoved(arg, sourceName, destName)
             if (MageNuggets.polySoundToggle == true) then
                 PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.polySound2)
             end
-        end 
+        end
     end
 end
 
@@ -1010,9 +832,9 @@ function spellAuraRefresh(arg, sourceName, destName)
     -- Clear Cast
     if (arg == 16870) then
         if (MageNuggets.clearcastToggle == true) then
-            if(combatTextCvar == '1') then    
+            if(combatTextCvar == '1') then
                 CombatText_AddMessage("Clearcast", CombatText_StandardScroll, 1, 1, 1, nil, isStaggered, nil);
-            end    
+            end
             clearcastTime = 14;
             MageNugClearcast_Frame:Show();
         end
@@ -1021,7 +843,7 @@ function spellAuraRefresh(arg, sourceName, destName)
         livingbombGlobalTime = 20;
         MNRefreshBomb(destGUID, GetTime() + 15);
     -- Hot Streak!
-    elseif(arg == 48108) then 
+    elseif(arg == 48108) then
         if(MageNuggets.procMonitorToggle == true) then
             mageProcHSTime = 14;
             MageNugProcFrameText:SetText("|cffFF0000".."HOT STREAK!")
@@ -1037,9 +859,9 @@ function spellAuraRefresh(arg, sourceName, destName)
             PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.hsSound2)
         end
     -- Brain Freeze
-    elseif(arg == 57761) then 
+    elseif(arg == 190446) then
         if(MageNuggets.procMonitorToggle == true) then
-            mageProcBFTime = 14;     
+            mageProcBFTime = 14;
             MageNugBFProcFrameText:SetText("|cffFF3300".."BRAIN FREEZE!")
             MageNugBFProcFrame_ProcBar:SetValue(mageProcBFTime)
             MageNugBFProcFrame:Show()
@@ -1053,7 +875,7 @@ function spellAuraRefresh(arg, sourceName, destName)
            PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.brainfreezeSound2)
         end
     -- Living Bomb
-    elseif(arg == 44457) then 
+    elseif(arg == 44457) then
         if (MageNuggets.livingBombToggle == true) then
             _, _, _, _, _, _, lbrefreshexpTime, unitCaster, _, _, _ = UnitAura("target", livingBombId, nil,"PLAYER|HARMFUL")
             livingbombGlobalTime = 20;
@@ -1064,16 +886,14 @@ function spellAuraRefresh(arg, sourceName, destName)
                 end
             else
                 MNRefreshBomb(destGUID, GetTime() + 12);
-            end   
+            end
         end
-    -- Nether Tempest
-    elseif(arg == 114923) then 
+    elseif(arg == 114923) then -- Nether Tempest
         if (MageNuggets.livingBombToggle == true) then
             livingbombGlobalTime = 20;
             MNRefreshBomb(destGUID, GetTime() + 15);
         end
-    --Fingers of Frost
-    elseif(arg == 44544) then 
+    elseif(arg == 44544) then --Fingers of Frost
         if(MageNuggets.procMonitorToggle == true) then
             fofProgMonTime = 14;
             MageNugFoFProcFrameText:SetText("|cffFFFFFF".."Fingers Of Frost")
@@ -1088,8 +908,8 @@ function spellAuraRefresh(arg, sourceName, destName)
         if (MageNuggets.fofSoundToggle == true) then
            PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.fofSound2)
         end
-    end  
-    
+    end
+
     if (MageNuggets.polyToggle == true) then
         if (arg == 115078) then -- Paralysis
             _, _, _, _, _, _, polyExpTime, unitCaster, _, _, _ = UnitAura("target", paralysisId, nil,"PLAYER|HARMFUL")
@@ -1263,10 +1083,8 @@ function spellAuraRefresh(arg, sourceName, destName)
                 MageNugPolyFrame:Show();
             end
         end
-    end 
+    end
 end
-
-
 --============================================================================--
 --                      Spell Aura Applied Dest
 --============================================================================--
@@ -1274,9 +1092,9 @@ end
 function spellAuraAppliedDest(arg, sourceName, destName)
     if (arg == 16870) then -- Clearcasting
         if (MageNuggets.clearcastToggle == true) then
-            if(combatTextCvar == '1') then    
+            if(combatTextCvar == '1') then
                 CombatText_AddMessage("Clearcast", CombatText_StandardScroll, 1, 1, 1, nil, isStaggered, nil);
-            end    
+            end
             clearcastTime = 14;
             MageNugClearcast_Frame:Show();
         end
@@ -1297,7 +1115,7 @@ function spellAuraAppliedDest(arg, sourceName, destName)
             end
             if(combatTextCvar == '1') then
                CombatText_AddMessage(sourceName, CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);
-               CombatText_AddMessage("Time Warp!", CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);  
+               CombatText_AddMessage("Time Warp!", CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);
             end
         end
     elseif(arg == 102351) then -- drums of rage
@@ -1307,7 +1125,7 @@ function spellAuraAppliedDest(arg, sourceName, destName)
             end
             if(combatTextCvar == '1') then
                CombatText_AddMessage(sourceName, CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);
-               CombatText_AddMessage("Drums of Rage!", CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);  
+               CombatText_AddMessage("Drums of Rage!", CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);
             end
         end
     elseif (arg == 2825) then --bloodlust
@@ -1317,7 +1135,7 @@ function spellAuraAppliedDest(arg, sourceName, destName)
             end
             if(combatTextCvar == '1') then
                 CombatText_AddMessage(sourceName, CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);
-                CombatText_AddMessage("BLOOD LUSTED!", CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);  
+                CombatText_AddMessage("BLOOD LUSTED!", CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);
             end
         end
     elseif (arg == 32182) then
@@ -1327,11 +1145,11 @@ function spellAuraAppliedDest(arg, sourceName, destName)
             end
             if(combatTextCvar == '1') then
                 CombatText_AddMessage(sourceName, CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);
-                CombatText_AddMessage("HEROISM!", CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);  
+                CombatText_AddMessage("HEROISM!", CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);
             end
         end
     end
-    
+
     if(combatTextCvar == '1') then
         if (arg == 63711) then
             CombatText_AddMessage("STORM POWER".."!!", CombatText_StandardScroll, 1, 1, 1, "sticky", nil);
@@ -1391,13 +1209,13 @@ function spellAuraAppliedSource(arg, sourceName, destName)
             end
             if(combatTextCvar == '1') then
                CombatText_AddMessage(sourceName, CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);
-               CombatText_AddMessage("Time Warp!", CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);  
+               CombatText_AddMessage("Time Warp!", CombatText_StandardScroll, 1, 0.10, 0, "sticky", nil);
             end
         end
     elseif (arg == 29166) then
         if (destName ~= UnitName("player")) then
             if (MageNuggets.msgToggle == true) then
-                SendChatMessage(MageNuggets.innervatNotify, "WHISPER", nil, destName);   
+                SendChatMessage(MageNuggets.innervatNotify, "WHISPER", nil, destName);
             end
         end
     elseif(arg == 93400) then -- Shooting Stars
@@ -1454,9 +1272,9 @@ function spellAuraAppliedSource(arg, sourceName, destName)
         if (MageNuggets.hsSoundToggle == true) then
             PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.hsSound2)
         end
-    elseif(arg == 57761) then --Brain Freeze
+    elseif(arg == 190446) then --Brain Freeze
         if(MageNuggets.procMonitorToggle == true) then
-            mageProcBFTime = 14;     
+            mageProcBFTime = 14;
             MageNugBFProcFrameText:SetText("|cffFF3300".."BRAIN FREEZE!")
             MageNugBFProcFrame_ProcBar:SetValue(mageProcBFTime)
             MageNugBFProcFrame:Show()
@@ -1484,10 +1302,6 @@ function spellAuraAppliedSource(arg, sourceName, destName)
         if (MageNuggets.fofSoundToggle == true) then
         PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.fofSound2)
         end
-    elseif (arg == 36032) then -- Arcane Blast
-        if (MageNuggets.arcaneBlastToggle == true) then
-            MageNugAB_Frame:Show()
-        end
     elseif(arg == 114923) then -- nether tempest
         if (MageNuggets.livingBombToggle == true) then
             livingbombGlobalTime = 20;
@@ -1499,20 +1313,20 @@ function spellAuraAppliedSource(arg, sourceName, destName)
                 end
             else
             MNApplyBomb(destGUID, destName, GetTime() + 12);
-            end    
+            end
         end
     elseif(arg == 44457) then -- living bomb
         if (MageNuggets.livingBombToggle == true) then
             livingbombGlobalTime = 20;
             _, _, _, _, _, _, lbexpirationTime, unitCaster, _, _, _ = UnitAura("target", livingBombId, nil,"PLAYER|HARMFUL")
-            local currentTargetGuid = UnitGUID("target");               
+            local currentTargetGuid = UnitGUID("target");
             if(MageNuggets.bombMouseOverMacro == false) then
                 MNApplyBomb(destGUID, destName, lbexpirationTime, "livingbomb");
             else
                 if(destGUID == currentTargetGuid) then
                     if (lbexpirationTime ~= nil) then
                         MNApplyBomb(destGUID, destName, lbexpirationTime, "livingbomb");
-                    end    
+                    end
                 else
                     MNApplyBomb(destGUID, destName, GetTime() + 12, "livingbomb");
                 end
@@ -1528,10 +1342,6 @@ function spellAuraAppliedSource(arg, sourceName, destName)
             MageNugMI_Frame_MiBar:SetValue(mirrorImageTime)
             MageNugMI_Frame:Show();
         end
-        if (MageNuggets.miCooldown == true) then
-            mirrorImageId, _, _, _, _, _, _, _, _ = GetSpellInfo(55342);
-            MNcooldownMonitor(mirrorImageId, 120, "Interface\\Icons\\spell_magic_lesserinvisibilty")
-        end  
     elseif (arg == 10060) then
         if (destName ~= UnitName("player")) then
             if (MageNuggets.powerInfToggle == true) then
@@ -1554,7 +1364,7 @@ function spellAuraAppliedSource(arg, sourceName, destName)
         if (destName ~= UnitName("player")) then
             if (MageNuggets.msgToggle == true) then
                 local sfRandomNum = math.random(1,3)
-                if(sfRandomNum == 1) then 
+                if(sfRandomNum == 1) then
                     SendChatMessage(MageNuggets.slowfallMsg, "WHISPER", nil, destName);
                 end
                 if(sfRandomNum == 2) then
@@ -1570,7 +1380,7 @@ function spellAuraAppliedSource(arg, sourceName, destName)
         if (destName ~= UnitName("player")) then
             if (MageNuggets.symbiosisnToggle == true) then
                 local symRandomNum = math.random(1,3)
-                if(symRandomNum == 1) then 
+                if(symRandomNum == 1) then
                     SendChatMessage(MageNuggets.symbiosisNotify, "WHISPER", nil, destName);
                 end
                 if(symRandomNum == 2) then
@@ -1620,7 +1430,7 @@ function spellAuraAppliedSource(arg, sourceName, destName)
                 MageNugPolyFrameTexture:SetTexture("Interface\\Icons\\spell_nature_sleep");
                 MageNugPolyFrame:Show();
             end
-            
+
         elseif (arg == 76780) then -- bind elemental
             _, _, _, _, _, _, polyExpTime, unitCaster, _, _, _ = UnitAura("target", polyPigId, nil,"PLAYER|HARMFUL")
             if (polyExpTime ~= nil) then
@@ -1659,7 +1469,7 @@ function spellAuraAppliedSource(arg, sourceName, destName)
                 MageNugPolyFrameTexture:SetTexture("Interface\\Icons\\ability_monk_paralysis");
                 MageNugPolyFrame:Show();
             end
-        
+
         elseif (arg == 51514) then -- HEX
             _, _, _, _, _, _, polyExpTime, unitCaster, _, _, _ = UnitAura("target", polyPigId, nil,"PLAYER|HARMFUL")
             if (polyExpTime ~= nil) then
@@ -1775,380 +1585,23 @@ function spellAuraAppliedSource(arg, sourceName, destName)
                 MageNugPolyFrame:Show();
             end
         end
-    end            
-end
-
---============================================================================--
---                          Cooldown Monitor
---============================================================================--
-
-function MNcooldownMonitor(name, expiretime, texture)
-    if(MageNugCD1_Frame_Bar:GetValue() < 1)then
-        MageNugCD1_Frame_Bar:SetMinMaxValues(0,expiretime)
-        MageNugCD1_Frame_Text:SetText(name)
-        MageNugCD1_Frame_Text2:SetText("!")
-        MageNugCD1_Frame_Texture:SetTexture(texture)
-        MageNugCD1_Frame:Show()
-    elseif(MageNugCD2_Frame_Bar:GetValue() < 1)then
-        MageNugCD2_Frame_Bar:SetMinMaxValues(0,expiretime)
-        MageNugCD2_Frame_Text:SetText(name)
-        MageNugCD2_Frame_Text2:SetText("!")
-        MageNugCD2_Frame_Texture:SetTexture(texture)
-        MageNugCD2_Frame:Show()
-    elseif(MageNugCD3_Frame_Bar:GetValue() < 1)then
-        MageNugCD3_Frame_Bar:SetMinMaxValues(0,expiretime)
-        MageNugCD3_Frame_Text:SetText(name)
-        MageNugCD3_Frame_Text2:SetText("!")
-        MageNugCD3_Frame_Texture:SetTexture(texture)
-        MageNugCD3_Frame:Show()
-    elseif(MageNugCD4_Frame_Bar:GetValue() < 1)then
-        MageNugCD4_Frame_Bar:SetMinMaxValues(0,expiretime)
-        MageNugCD4_Frame_Text:SetText(name)
-        MageNugCD4_Frame_Text2:SetText("!")
-        MageNugCD4_Frame_Texture:SetTexture(texture)
-        MageNugCD4_Frame:Show()
-    elseif(MageNugCD5_Frame_Bar:GetValue() < 1)then
-        MageNugCD5_Frame_Bar:SetMinMaxValues(0,expiretime)
-        MageNugCD5_Frame_Text:SetText(name)
-        MageNugCD5_Frame_Text2:SetText("!")
-        MageNugCD5_Frame_Texture:SetTexture(texture)
-        MageNugCD5_Frame:Show()
-    elseif(MageNugCD6_Frame_Bar:GetValue() < 1)then
-        MageNugCD6_Frame_Bar:SetMinMaxValues(0,expiretime)
-        MageNugCD6_Frame_Text:SetText(name)
-        MageNugCD6_Frame_Text2:SetText("!")
-        MageNugCD6_Frame_Texture:SetTexture(texture)
-        MageNugCD6_Frame:Show()
-    end
-end
---
-function MNCooldownToggle()
-    local cdChecked = MageNugCooldownFrame_cdButton:GetChecked();
-    if (cdChecked == true) then
-        MageNuggets.cooldownToggle = true;
-        MageNugCD_Frame:Hide();
-    else  
-        MageNuggets.cooldownToggle = false;
-        MageNugCD_Frame:Show();
-    end
-end
---
-function MageNuggetsCD1_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate >= 0.1) then   
-        local start, duration, enabled = GetSpellCooldown(MageNugCD1_Frame_Text:GetText());
-        if(start ~= nil) and (duration ~= nil) then
-            local timeleft = RoundZero(start + duration - GetTime())
-            MageNugCD1_Frame_Bar:SetValue(timeleft);
-            MageNugCD1_Frame_Text2:SetText(timeleft.."s")
-            if (timeleft <= 0) then
-                MageNugCD1_Frame:Hide();
-            end
-        end
-    self.TimeSinceLastUpdate = 0;
-    end   
-end
---
-function MageNuggetsCD2_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate >= 0.1) then   
-        local start, duration, enabled = GetSpellCooldown(MageNugCD2_Frame_Text:GetText());
-        if(start ~= nil) and (duration ~= nil) then    
-            local timeleft = RoundZero(start + duration - GetTime())
-            MageNugCD2_Frame_Bar:SetValue(timeleft);
-            MageNugCD2_Frame_Text2:SetText(timeleft.."s")
-            if (timeleft <= 0) then
-                MageNugCD2_Frame:Hide();
-            end
-        end
-    self.TimeSinceLastUpdate = 0;
-    end   
-end
---
-function MageNuggetsCD3_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate >= 0.1) then   
-        local start, duration, enabled = GetSpellCooldown(MageNugCD3_Frame_Text:GetText());
-        if(start ~= nil) and (duration ~= nil) then
-            local timeleft = RoundZero(start + duration - GetTime())
-            MageNugCD3_Frame_Bar:SetValue(timeleft);
-            MageNugCD3_Frame_Text2:SetText(timeleft.."s")
-            if (timeleft <= 0) then
-                MageNugCD3_Frame:Hide();
-            end
-        end
-    self.TimeSinceLastUpdate = 0;
-    end   
-end
---
-function MageNuggetsCD4_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate >= 0.1) then   
-        local start, duration, enabled = GetSpellCooldown(MageNugCD4_Frame_Text:GetText());
-        if(start ~= nil) and (duration ~= nil) then            
-            local timeleft = RoundZero(start + duration - GetTime())
-            MageNugCD4_Frame_Bar:SetValue(timeleft);
-            MageNugCD4_Frame_Text2:SetText(timeleft.."s")
-            if (timeleft <= 0) then
-                MageNugCD4_Frame:Hide();
-            end
-        end
-    self.TimeSinceLastUpdate = 0;
-    end   
-end
---
-function MageNuggetsCD5_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate >= 0.1) then   
-        local start, duration, enabled = GetSpellCooldown(MageNugCD5_Frame_Text:GetText());
-        if(start ~= nil) and (duration ~= nil) then
-            local timeleft = RoundZero(start + duration - GetTime())
-            MageNugCD5_Frame_Bar:SetValue(timeleft);
-            MageNugCD5_Frame_Text2:SetText(timeleft.."s")
-            if (timeleft <= 0) then
-                MageNugCD5_Frame:Hide();
-            end
-        end
-    self.TimeSinceLastUpdate = 0;
-    end   
-end
---
-function MageNuggetsCD6_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate >= 0.1) then   
-        local start, duration, enabled = GetSpellCooldown(MageNugCD6_Frame_Text:GetText());
-        if(start ~= nil) and (duration ~= nil) then
-            local timeleft = RoundZero(start + duration - GetTime())
-            MageNugCD6_Frame_Bar:SetValue(timeleft);
-            MageNugCD6_Frame_Text2:SetText(timeleft.."s")
-            if (timeleft <= 0) then
-                MageNugCD6_Frame:Hide();
-            end
-        end
-    self.TimeSinceLastUpdate = 0;
-    end   
-end
---
-function MNapCooldown()
-    local isChecked = MageNugCooldownFrame_apButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.apCooldown = true;
-    else  
-        MageNuggets.apCooldown = false;
-    end
-end
---
-function MNbwCooldown()
-    local isChecked = MageNugCooldownFrame_bwButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.bwCooldown = true;
-    else  
-        MageNuggets.bwCooldown = false;
-    end
-end
---
-function MNcbCooldown()
-    local isChecked = MageNugCooldownFrame_cbButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.cbCooldown = true;
-    else  
-        MageNuggets.cbCooldown = false;
-    end
-end
---
-function MNcsCooldown()
-    local isChecked = MageNugCooldownFrame_csButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.csCooldown = true;
-    else  
-        MageNuggets.csCooldown = false;
-    end
-end
---
-function MNdfCooldown()
-    local isChecked = MageNugCooldownFrame_dfButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.dfCooldown = true;
-    else  
-        MageNuggets.dfCooldown = false;
-    end
-end
---
-function MNdbCooldown()
-    local isChecked = MageNugCooldownFrame_dbButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.dbCooldown = true;
-    else  
-        MageNuggets.dbCooldown = false;
-    end
-end
---
-function MNmwCooldown()
-    local isChecked = MageNugCooldownFrame_mwButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.mwCooldown = true;
-    else  
-        MageNuggets.mwCooldown = false;
-    end
-end
---
-function MNfrzCooldown()
-    local isChecked = MageNugCooldownFrame_frzButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.frzCooldown = true;
-    else  
-        MageNuggets.frzCooldown = false;
-    end
-end
---
-function MNmsCooldown()
-    local isChecked = MageNugCooldownFrame_msButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.msCooldown = true;
-    else  
-        MageNuggets.msCooldown = false;
-    end
-end
---
-function MNmiCooldown()
-    local isChecked = MageNugCooldownFrame_miButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.miCooldown = true;
-    else  
-        MageNuggets.miCooldown = false;
-    end
-end
---
-function MNibrCooldown()
-    local isChecked = MageNugCooldownFrame_ibrButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.ibrCooldown = true;
-    else  
-        MageNuggets.ibrCooldown = false;
-    end
-end
---
-function MNevoCooldown()
-    local isChecked = MageNugCooldownFrame_evoButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.evoCooldown = true;
-    else  
-        MageNuggets.evoCooldown = false;
-    end
-end
---
-function MNivCooldown()
-    local isChecked = MageNugCooldownFrame_ivButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.ivCooldown = true;
-    else  
-        MageNuggets.ivCooldown = false;
-    end
-end
---
-function MNtreantCooldown()
-    local isChecked = MageNugCooldownFrame_treantButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.treantCooldown = true;
-    else  
-        MageNuggets.treantCooldown = false;
-    end
-end
---
-function MNstarfallCooldown()
-    local isChecked = MageNugCooldownFrame_starfallButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.starfallCooldown = true;
-    else  
-        MageNuggets.starfallCooldown = false;
-    end
-end
---
-function MNblinkCooldown()
-    local isChecked = MageNugCooldownFrame_blinkButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.blinkCooldown = true;
-    else  
-        MageNuggets.blinkCooldown = false;
-    end
-end
---
-function MNcooldownSlider()
-    local tempInt = MageNugCooldownFrame_Slider1:GetValue()
-    
-    if not MageNugCooldownFrame_Slider1._onsetting then
-        MageNugCooldownFrame_Slider1._onsetting = true
-        MageNugCooldownFrame_Slider1:SetValue(MageNugCooldownFrame_Slider1:GetValue())
-        tempInt = MageNugCooldownFrame_Slider1:GetValue()
-        MageNugCooldownFrame_Slider1._onsetting = false
-    else return end      
-    
-    if (tempInt == 0) then
-        MageNugMI_Frame:SetScale(0.7);
-        MageNugCD_Frame:SetScale(0.7);
-        MageNuggets.cooldownSize = 0;
-    end
-    if (tempInt == 1) then
-        MageNugMI_Frame:SetScale(0.8);
-        MageNugCD_Frame:SetScale(0.8);
-        MageNuggets.cooldownSize = 1;
-    end
-    if (tempInt == 2) then
-        MageNugMI_Frame:SetScale(0.9);
-        MageNugCD_Frame:SetScale(0.9);
-        MageNuggets.cooldownSize = 2;
-    end
-    if (tempInt == 3) then
-        MageNugMI_Frame:SetScale(1.0);
-        MageNugCD_Frame:SetScale(1.0);
-        MageNuggets.cooldownSize = 3;
-    end
-    if (tempInt == 4) then
-        MageNugMI_Frame:SetScale(1.1);
-        MageNugCD_Frame:SetScale(1.1);
-        MageNuggets.cooldownSize = 4;
-    end
-    if (tempInt == 5) then
-        MageNugMI_Frame:SetScale(1.2);
-        MageNugCD_Frame:SetScale(1.2);
-        MageNuggets.cooldownSize = 5;
-    end
-    if (tempInt == 6) then
-        MageNugMI_Frame:SetScale(1.3);
-        MageNugCD_Frame:SetScale(1.3);
-        MageNuggets.cooldownSize = 6;
-    end
-    if (tempInt == 7) then
-        MageNugMI_Frame:SetScale(1.4);
-        MageNugCD_Frame:SetScale(1.4);
-        MageNuggets.cooldownSize = 7;
-    end
-    if (tempInt == 8) then
-        MageNugMI_Frame:SetScale(1.6);
-        MageNugCD_Frame:SetScale(1.6);
-        MageNuggets.cooldownSize = 8;
-    end
-    if (tempInt == 9) then
-        MageNugMI_Frame:SetScale(1.8);
-        MageNugCD_Frame:SetScale(1.8);
-        MageNuggets.cooldownSize = 9;
     end
 end
 
-function RoundCrit(critNum) 
-    return math.floor(critNum*math.pow(10,2)+0.5) / math.pow(10,2) 
+function RoundCrit(critNum)
+    return math.floor(critNum*math.pow(10,2)+0.5) / math.pow(10,2)
 end
 
-function RoundThree(critNum) 
-    return math.floor(critNum*math.pow(10,3)+0.5) / math.pow(10,3) 
+function RoundThree(critNum)
+    return math.floor(critNum*math.pow(10,3)+0.5) / math.pow(10,3)
 end
 
-function RoundOne(inputNum) 
-    return math.floor(inputNum*math.pow(10,1)+0.5) / math.pow(10,1) 
+function RoundOne(inputNum)
+    return math.floor(inputNum*math.pow(10,1)+0.5) / math.pow(10,1)
 end
 
 function RoundZero(inputNum)
-    return math.floor(inputNum*math.pow(10,0)+0.5) / math.pow(10,0) 
+    return math.floor(inputNum*math.pow(10,0)+0.5) / math.pow(10,0)
 end
 
 
@@ -2156,9 +1609,9 @@ end
 --                              Moonkin                                               --
 ----------------------------------------------------------------------------------------
 
-function MageNuggetsMoonkin_OnUpdate(self, elapsed) 
+function MageNuggetsMoonkin_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         barpower = UnitPower("player", 8);
         local stackCount = "";
         local i = 1;
@@ -2171,14 +1624,14 @@ function MageNuggetsMoonkin_OnUpdate(self, elapsed)
             end
             i = i + 1;
             buffName, rank, _, count, _, _, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
-        end    
+        end
 
         if(empowered == false or stackCount < 1)then
             MageNugMoonkin_Frame_Text2:SetText("")
         else
             MageNugMoonkin_Frame_Text2:SetText(stackCount)
         end
-        
+
         if(barpower < 0) then
             MageNugMoonkin_Frame_Texture:SetTexture("Interface\\Icons\\spell_arcane_starfire");
             MageNugMoonkin_Frame_Bar:SetStatusBarColor(0, 0, 1)
@@ -2189,7 +1642,7 @@ function MageNuggetsMoonkin_OnUpdate(self, elapsed)
             end
             MageNugMoonkin_Frame_Bar:SetStatusBarColor(0, 0, 0.8)
             MageNugMoonkin_Frame_Bar:SetValue(barpower * -1);
-        else           
+        else
             MageNugMoonkin_Frame_Texture:SetTexture("Interface\\Icons\\spell_nature_wrathv2");
             MageNugMoonkin_Frame_Bar:SetStatusBarColor(1, 0.5, 0)
             if(barpower < 0) then
@@ -2201,20 +1654,20 @@ function MageNuggetsMoonkin_OnUpdate(self, elapsed)
             MageNugMoonkin_Frame_Bar:SetValue(barpower);
         end
     self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 
 
 function MageNugMoonSize()
     local tempInt = MageNugMoonkinOptionFrame_Slider:GetValue()
-    
+
     if not MageNugMoonkinOptionFrame_Slider._onsetting then
         MageNugMoonkinOptionFrame_Slider._onsetting = true
         MageNugMoonkinOptionFrame_Slider:SetValue(MageNugMoonkinOptionFrame_Slider:GetValue())
         tempInt = MageNugMoonkinOptionFrame_Slider:GetValue()
         MageNugMoonkinOptionFrame_Slider._onsetting = false
-    else return end  
-    
+    else return end
+
     if (tempInt == 0) then
         MageNugMoonkin_Frame:SetScale(0.7);
         MNmoonFire_Frame:SetScale(0.7);
@@ -2292,7 +1745,7 @@ function MNmoonkinCombatToggle()
         MNmoonFire_Frame:Hide();
         MNinsectSwarm_Frame:Hide();
         MNstarSurge_Frame:Hide();
-    else  
+    else
         MageNuggets.moonkinCombat = false;
         MageNugMoonkin_Frame:Show();
         MNmoonFire_Frame:Show();
@@ -2310,7 +1763,7 @@ function MNmoonkinToggle()
         MNmoonFire_Frame:Hide();
         MNinsectSwarm_Frame:Hide();
         MNstarSurge_Frame:Hide();
-    else  
+    else
         MageNuggets.moonkinTog = false;
         if (MageNuggets.moonkinCombat == false) then
             MageNugMoonkin_Frame:Show();
@@ -2325,7 +1778,7 @@ function TreantSoundToggle()
     local isChecked = MageNugMoonkinOptionFrame_CheckButton2:GetChecked();
     if (isChecked == true) then
         MageNuggets.treantSoundTog = true;
-    else  
+    else
         MageNuggets.treantSoundTog = false;
     end
 end
@@ -2334,7 +1787,7 @@ function MNmoonkinCombatTextToggle()
     local isChecked = MageNugMoonkinOptionFrame_CheckButton3:GetChecked();
     if (isChecked == true) then
         MageNuggets.moonkinCombatText = true;
-    else  
+    else
         MageNuggets.moonkinCombatText = false;
     end
 end
@@ -2352,7 +1805,7 @@ function MNmoonkinAnchorToggle()
         MNstarSurge_Frame:ClearAllPoints();
         MNstarSurge_Frame:EnableMouse(false);
         MNstarSurge_Frame:SetPoint("CENTER", MageNugMoonkin_Frame, "CENTER", 50, 16);
-    else  
+    else
         MageNuggets.moonkinAnchorTog = false;
         MNmoonFire_Frame:EnableMouse(true);
         MNinsectSwarm_Frame:EnableMouse(true);
@@ -2365,7 +1818,7 @@ function MNmoonkinminimalToggle()
     if (isChecked == true) then
         MageNuggets.moonkinMin = true;
         MageNugMoonkin_Frame_Texture:Hide();
-    else  
+    else
         MageNuggets.moonkinMin = false;
         MageNugMoonkin_Frame_Texture:Show();
     end
@@ -2375,7 +1828,7 @@ function MNmoonkinBoxToggle()
     local isChecked = MageNugMoonkinOptionFrame_CheckButton0:GetChecked();
     if (isChecked == true) then
         MageNuggets.moonkinBoxTog = true;
-    else  
+    else
         MageNuggets.moonkinBoxTog = false;
     end
 end
@@ -2383,7 +1836,7 @@ end
 
 function MNmoonFire_OnUpdate(self, elapsed)
     self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         moonfireTime = 0;
         local i = 1;
         local buffName, rank, icon, count, _, duration, expirationTime, unitCaster, _, _, spellId  = UnitAura("target", i, "PLAYER|HARMFUL");
@@ -2393,11 +1846,11 @@ function MNmoonFire_OnUpdate(self, elapsed)
             end
             i = i + 1;
             buffName, rank, icon, count, _, duration, expirationTime, unitCaster, _, _, spellId  = UnitAura("target", i, "PLAYER|HARMFUL");
-        end     
+        end
         if(moonfireTime <= 0.5) then
-            MNmoonFire_FrameText:SetText(" ")                
+            MNmoonFire_FrameText:SetText(" ")
             MNmoonFire_Frame:SetAlpha(1);
-        else    
+        else
             MNmoonFire_FrameText:SetText(moonfireTime);
             MNmoonFire_Frame:SetAlpha(0.5);
         end
@@ -2405,9 +1858,9 @@ function MNmoonFire_OnUpdate(self, elapsed)
     end
 end
 
-function MNinsectSwarm_OnUpdate(self, elapsed) 
+function MNinsectSwarm_OnUpdate(self, elapsed)
     self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         insectTime = 0;
         local i = 1;
         local buffName, rank, icon, count, _, duration, expirationTime, unitCaster, _, _, spellId  = UnitAura("target", i, "PLAYER|HARMFUL");
@@ -2417,11 +1870,11 @@ function MNinsectSwarm_OnUpdate(self, elapsed)
             end
             i = i + 1;
             buffName, rank, icon, count, _, duration, expirationTime, unitCaster, _, _, spellId  = UnitAura("target", i, "PLAYER|HARMFUL");
-        end     
+        end
         if(insectTime <= 0.5) then
-            MNinsectSwarm_FrameText:SetText(" ")                
+            MNinsectSwarm_FrameText:SetText(" ")
             MNinsectSwarm_Frame:SetAlpha(1);
-         else    
+         else
             MNinsectSwarm_FrameText:SetText(insectTime);
             MNinsectSwarm_Frame:SetAlpha(0.5);
         end
@@ -2429,11 +1882,11 @@ function MNinsectSwarm_OnUpdate(self, elapsed)
     end
 end
 
-function MNstarSurge_OnUpdate(self, elapsed) 
+function MNstarSurge_OnUpdate(self, elapsed)
     self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         local ssstart, ssduration, ssenabled = GetSpellCooldown(78674);
-        starsurgeTime = RoundOne(ssstart + ssduration - GetTime())       
+        starsurgeTime = RoundOne(ssstart + ssduration - GetTime())
         if (starsurgeTime > 1.5) then
             MNstarSurge_FrameText:SetText(starsurgeTime)
             MNstarSurge_Frame:SetAlpha(0.5);
@@ -2497,7 +1950,7 @@ end
 
 function MNApplyBomb(destGUID, destName, expireTime, bombType)
     MageNugLB_Frame:Show();
-    
+
     if(bombType == "livingbomb") then
         local i = 1;
         while(i <= 8) do
@@ -2521,9 +1974,9 @@ function MNApplyBomb(destGUID, destName, expireTime, bombType)
         MageNugLB1_Frame_Bar:SetValue(RoundOne(expireTime - GetTime()));
         MageNugLB1_Frame_Text2:SetText(strsub(destName,1,18));
     end
-    
-    
-    
+
+
+
 end
 
 function MNRemoveBomb(destGUID)
@@ -2545,7 +1998,7 @@ end
 function MNRefreshBomb(destGUID, expireTime)
     if(destGUID == lbTargetId[1])then
         livingbombTime[1] = expireTime;
-    elseif(destGUID == lbTargetId[2])then 
+    elseif(destGUID == lbTargetId[2])then
         livingbombTime[2] = expireTime;
     elseif(destGUID == lbTargetId[3])then
         livingbombTime[3] = expireTime;
@@ -2556,7 +2009,7 @@ function MNRefreshBomb(destGUID, expireTime)
     elseif(destGUID == lbTargetId[6])then
         livingbombTime[6] = expireTime;
     elseif(destGUID == lbTargetId[7])then
-        livingbombTime[7] = expireTime;                       
+        livingbombTime[7] = expireTime;
     elseif(destGUID == lbTargetId[8])then
         livingbombTime[8] = expireTime;
     end
@@ -2564,100 +2017,104 @@ end
 
 
 function MNBombMonitorDress()
-    local isFree, talent = GetTalentRowSelectionInfo(5);
-    for i=1, 8 do
-       livingbombTime[i] = 0;
-    end
-    for j=1, 8 do
-      lbTargetId[j] = 0;
-    end
-    if(talent ~= nil)then
-        if(talent == 19299) then
-            if (MageNuggets.simpleUiToggle == true) then
-                MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\spell_mage_nethertempest");
-                MageNugLB_FrameTextureBorder:SetTexture();
-                MageNugLB_FrameTextureTitle:SetTexture();
-                MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-                MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-                MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");    
-                MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-                MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-                MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-                MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-                MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-            else
-                MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\spell_mage_nethertempest");
-                MageNugLB_FrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\Water_Horizontal_Frame.blp");
-                MageNugLB_FrameTextureTitle:SetTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-                MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-                MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-                MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");    
-                MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-                MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-                MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-                MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-                MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-            end
-        elseif(talent == 21690) then
-            if (MageNuggets.simpleUiToggle == true) then
-                MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\ability_mage_livingbomb");
-                MageNugLB_FrameTextureBorder:SetTexture();
-                MageNugLB_FrameTextureTitle:SetTexture();
-                MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-                MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-                MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");    
-                MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-                MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-                MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-                MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-                MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-            else
-                MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\ability_mage_livingbomb");
-                MageNugLB_FrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\Fire_Horizontal_Frame");
-                MageNugLB_FrameTextureTitle:SetTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-                MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-                MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-                MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-                MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-                MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-                MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-                MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-                MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-            end
-        elseif(talent == 21691) then
-            if (MageNuggets.simpleUiToggle == true) then
-                MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\spell_mage_frostbomb");
-                MageNugLB_FrameTextureBorder:SetTexture();
-                MageNugLB_FrameTextureTitle:SetTexture();
-                MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-                MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-                MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");    
-                MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-                MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-                MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-                MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-                MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-            else
-                MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\spell_mage_frostbomb");
-                MageNugLB_FrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\Ice_Horizontal_Frame");
-                MageNugLB_FrameTextureTitle:SetTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-                MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-                MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-                MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");    
-                MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-                MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-                MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-                MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-                MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-            end
-        end
-    end
+    -- local talentID, name, texture, selected, available = GetTalentInfo(1, 1, 1)
+    -- DEFAULT_CHAT_FRAME:AddMessage(GetTalentInfo(1, 1, 1));
+    --
+    --
+    -- local isFree, talent = GetTalentRowSelectionInfo(3);
+    -- for i=1, 8 do
+    --    livingbombTime[i] = 0;
+    -- end
+    -- for j=1, 8 do
+    --   lbTargetId[j] = 0;
+    -- end
+    -- if(talent ~= nil)then
+    --     if(talent == 19299) then
+    --         if (MageNuggets.simpleUiToggle == true) then
+    --             MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\spell_mage_nethertempest");
+    --             MageNugLB_FrameTextureBorder:SetTexture();
+    --             MageNugLB_FrameTextureTitle:SetTexture();
+    --             MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --             MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --             MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --             MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --             MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --             MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --             MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --             MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --         else
+    --             MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\spell_mage_nethertempest");
+    --             MageNugLB_FrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\Water_Horizontal_Frame.blp");
+    --             MageNugLB_FrameTextureTitle:SetTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --         end
+    --     elseif(talent == 21690) then
+    --         if (MageNuggets.simpleUiToggle == true) then
+    --             MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\ability_mage_livingbomb");
+    --             MageNugLB_FrameTextureBorder:SetTexture();
+    --             MageNugLB_FrameTextureTitle:SetTexture();
+    --             MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
+    --             MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
+    --             MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
+    --             MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
+    --             MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
+    --             MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
+    --             MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
+    --             MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
+    --         else
+    --             MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\ability_mage_livingbomb");
+    --             MageNugLB_FrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\Fire_Horizontal_Frame");
+    --             MageNugLB_FrameTextureTitle:SetTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
+    --             MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
+    --             MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
+    --             MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
+    --             MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
+    --             MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
+    --             MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
+    --             MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
+    --             MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
+    --         end
+    --     elseif(talent == 21691) then
+    --         if (MageNuggets.simpleUiToggle == true) then
+    --             MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\spell_mage_frostbomb");
+    --             MageNugLB_FrameTextureBorder:SetTexture();
+    --             MageNugLB_FrameTextureTitle:SetTexture();
+    --             MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --             MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --             MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --             MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --             MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --             MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --             MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --             MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
+    --         else
+    --             MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\spell_mage_frostbomb");
+    --             MageNugLB_FrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\Ice_Horizontal_Frame");
+    --             MageNugLB_FrameTextureTitle:SetTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --             MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
+    --         end
+    --     end
+    -- end
 end
 
 
-function MageNuggetsLB_OnUpdate(self, elapsed) 
+function MageNuggetsLB_OnUpdate(self, elapsed)
     self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 1) then   
+    if (self.TimeSinceLastUpdate > 1) then
        -- MNRefreshFrames();
         if (livingbombGlobalTime >= 0) then
             livingbombGlobalTime = RoundOne(livingbombGlobalTime - 1);
@@ -2665,14 +2122,14 @@ function MageNuggetsLB_OnUpdate(self, elapsed)
                --livingBombCount = 0;
                MageNugLB_Frame:Hide();
             end
-        end    
+        end
     self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 --
-function MageNuggetsLB1_OnUpdate(self, elapsed) 
+function MageNuggetsLB1_OnUpdate(self, elapsed)
     self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         local expireTime = RoundOne(livingbombTime[1] - GetTime());
         if (expireTime >= 0.1) then
             MageNugLB1_Frame_BarSpark:Show();
@@ -2686,14 +2143,14 @@ function MageNuggetsLB1_OnUpdate(self, elapsed)
             MageNugLB1_Frame_Text:SetText("");
             MageNugLB1_Frame_Text2:SetText("");
             livingbombTime[1] = 0;
-        end    
+        end
         self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 --
-function MageNuggetsLB2_OnUpdate(self, elapsed) 
+function MageNuggetsLB2_OnUpdate(self, elapsed)
     self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         local expireTime = RoundOne(livingbombTime[2] - GetTime());
         if (expireTime >= 0.1) then
             MageNugLB2_Frame_BarSpark:Show();
@@ -2707,14 +2164,14 @@ function MageNuggetsLB2_OnUpdate(self, elapsed)
             MageNugLB2_Frame_Text:SetText("");
             MageNugLB2_Frame_Text2:SetText("");
             livingbombTime[2] = 0;
-        end    
+        end
         self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 --
-function MageNuggetsLB3_OnUpdate(self, elapsed) 
+function MageNuggetsLB3_OnUpdate(self, elapsed)
     self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         local expireTime = RoundOne(livingbombTime[3] - GetTime());
         if (expireTime >= 0.1) then
             MageNugLB3_Frame_BarSpark:Show();
@@ -2728,14 +2185,14 @@ function MageNuggetsLB3_OnUpdate(self, elapsed)
             MageNugLB3_Frame_Text:SetText("");
             MageNugLB3_Frame_Text2:SetText("");
             livingbombTime[3] = 0;
-        end    
+        end
         self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 --
-function MageNuggetsLB4_OnUpdate(self, elapsed) 
+function MageNuggetsLB4_OnUpdate(self, elapsed)
     self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         local expireTime = RoundOne(livingbombTime[4] - GetTime());
         if (expireTime >= 0.1) then
             MageNugLB4_Frame_BarSpark:Show();
@@ -2749,14 +2206,14 @@ function MageNuggetsLB4_OnUpdate(self, elapsed)
             MageNugLB4_Frame_Text:SetText("");
             MageNugLB4_Frame_Text2:SetText("");
             livingbombTime[4] = 0;
-        end    
+        end
         self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 --
-function MageNuggetsLB5_OnUpdate(self, elapsed) 
+function MageNuggetsLB5_OnUpdate(self, elapsed)
     self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         local expireTime = RoundOne(livingbombTime[5] - GetTime());
         if (expireTime >= 0.1) then
             MageNugLB5_Frame_BarSpark:Show();
@@ -2770,14 +2227,14 @@ function MageNuggetsLB5_OnUpdate(self, elapsed)
             MageNugLB5_Frame_Text:SetText("");
             MageNugLB5_Frame_Text2:SetText("");
             livingbombTime[5] = 0;
-        end    
+        end
         self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 --
-function MageNuggetsLB6_OnUpdate(self, elapsed) 
+function MageNuggetsLB6_OnUpdate(self, elapsed)
     self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         local expireTime = RoundOne(livingbombTime[6] - GetTime());
         if (expireTime >= 0.1) then
             MageNugLB6_Frame_BarSpark:Show();
@@ -2791,14 +2248,14 @@ function MageNuggetsLB6_OnUpdate(self, elapsed)
             MageNugLB6_Frame_Text:SetText("");
             MageNugLB6_Frame_Text2:SetText("");
             livingbombTime[6] = 0;
-        end    
+        end
         self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 --
-function MageNuggetsLB7_OnUpdate(self, elapsed) 
+function MageNuggetsLB7_OnUpdate(self, elapsed)
     self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         local expireTime = RoundOne(livingbombTime[7] - GetTime());
         if (expireTime >= 0.1) then
             MageNugLB7_Frame_BarSpark:Show();
@@ -2812,14 +2269,14 @@ function MageNuggetsLB7_OnUpdate(self, elapsed)
             MageNugLB7_Frame_Text:SetText("");
             MageNugLB7_Frame_Text2:SetText("");
             livingbombTime[7] = 0;
-        end    
+        end
         self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 --
-function MageNuggetsLB8_OnUpdate(self, elapsed) 
+function MageNuggetsLB8_OnUpdate(self, elapsed)
     self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         local expireTime = RoundOne(livingbombTime[8] - GetTime());
         if (expireTime >= 0.1) then
             MageNugLB8_Frame_BarSpark:Show();
@@ -2833,9 +2290,9 @@ function MageNuggetsLB8_OnUpdate(self, elapsed)
             MageNugLB8_Frame_Text:SetText("");
             MageNugLB8_Frame_Text2:SetText("");
             livingbombTime[8] = 0;
-        end    
+        end
         self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 
 function MageNuggetsLB_Prep()
@@ -2855,7 +2312,7 @@ function MageNuggetsLB_Prep()
     MageNugLB6_Frame_Bar:EnableMouse(false)
     MageNugLB7_Frame_Bar:EnableMouse(false)
     MageNugLB8_Frame_Bar:EnableMouse(false)
-    
+
     local i = 1;
     while(i <= 8) do
         _G["MageNugLB"..i.."_Frame_BarSpark"]:Hide();
@@ -2886,22 +2343,22 @@ end
 function getNovaCooldown()
     local currentCharges, maxCharges, cooldownStart, cooldownDuration,novaId,cooldown;
     local talentId = getNovaTalentId();
-    
+
     if(isNovaSpeced())then
         if(talentId == 21693)then -- ice nova
             MageNugNova_FrameTexture:SetTexture("Interface\\Icons\\spell_mage_icenova");
             novaId, _, _, _, _, _, _, _, _ = GetSpellInfo(157997);
-            currentCharges, maxCharges, cooldownStart, cooldownDuration = GetSpellCharges(157997) 
+            currentCharges, maxCharges, cooldownStart, cooldownDuration = GetSpellCharges(157997)
             cooldown = RoundOne(cooldownStart + cooldownDuration - GetTime())
         elseif(talentId == 19301)then -- supernova
             MageNugNova_FrameTexture:SetTexture("Interface\\Icons\\spell_mage_supernova");
             novaId, _, _, _, _, _, _, _, _ = GetSpellInfo(157980);
-            currentCharges, maxCharges, cooldownStart, cooldownDuration = GetSpellCharges(157980)    
+            currentCharges, maxCharges, cooldownStart, cooldownDuration = GetSpellCharges(157980)
             cooldown = RoundOne(cooldownStart + cooldownDuration - GetTime())
         elseif(talentId == 21692)then -- blast wave
             MageNugNova_FrameTexture:SetTexture("Interface\\Icons\\spell_holy_excorcism_02");
             novaId, _, _, _, _, _, _, _, _ = GetSpellInfo(157981);
-            currentCharges, maxCharges, cooldownStart, cooldownDuration = GetSpellCharges(157981)    
+            currentCharges, maxCharges, cooldownStart, cooldownDuration = GetSpellCharges(157981)
             cooldown = RoundOne(cooldownStart + cooldownDuration - GetTime())
         end
         MageNugNova_Frame_Text:SetText(currentCharges);
@@ -2909,9 +2366,9 @@ function getNovaCooldown()
     return cooldown;
 end
 
-function MNNova_OnUpdate(self, elapsed) 
+function MNNova_OnUpdate(self, elapsed)
     self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         local cooldown = getNovaCooldown();
         if(cooldown == nil) or (cooldown <= 0) or (cooldown > 25)then
             cooldown = "";

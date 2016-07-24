@@ -1,21 +1,21 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
  <Script file="magenuggets.lua" ></Script>
- 
+
  <Frame name="MageNuggets">
     <Scripts>
-		<OnLoad> 
+		<OnLoad>
             self.TimeSinceLastUpdate = 0
-            mageNuggets_OnStart(self);	
+            mageNuggets_OnStart(self);
         </OnLoad>
-		<OnUpdate> 
-            MageNuggets_OnUpdate(self, elapsed) 
+		<OnUpdate>
+            MageNuggets_OnUpdate(self, elapsed)
         </OnUpdate>
 		<OnEvent>
             MageNuggets_OnEvent(self, event, ...);
         </OnEvent>
 	    </Scripts>
  </Frame>
- 
+
  <Frame name="MageNugInfo_Frame" parent="UIParent" hidden="false" enableMouse="false" movable="false">
     <Size x="300" y="100" />
     <Anchors>
@@ -31,14 +31,14 @@
         </Layer>
     </Layers>
      <Frames>
-      
+
     </Frames>
     <Scripts>
-        <OnLoad> 
+        <OnLoad>
             self.TimeSinceLastUpdate = 0;
         </OnLoad>
-	    <OnUpdate> 
-           -- MageNuggetsInfo_OnUpdate(self, elapsed) 
+	    <OnUpdate>
+           -- MageNuggetsInfo_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -147,8 +147,8 @@
         </Button>
     </Frames>
     <Scripts>
-       <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+       <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
        </OnLoad>
 	   <OnDragStart> MNLockFrames(self);</OnDragStart>
@@ -183,7 +183,7 @@
                 </Anchors>
                     <TexCoords left="0" right="1" top="0" bottom="1"/>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parentText" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
                 <Anchors>
@@ -238,20 +238,20 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
-            self.TimeSinceLastUpdate = 0   
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.ignite_point, _, MageNuggets_Frames.ignite_relativePoint, MageNuggets_Frames.ignite_xOfs, MageNuggets_Frames.ignite_yOfs = MageNugIgnite_Frame:GetPoint();
         </OnDragStop>
         <OnEnter> Monitors_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-           -- MageNuggetsIgnite_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           -- MageNuggetsIgnite_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -283,7 +283,7 @@
                 </Anchors>
                     <TexCoords left="0" right="1" top="0" bottom="1"/>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parentText" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
                 <Anchors>
@@ -338,20 +338,20 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
-            self.TimeSinceLastUpdate = 0   
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.cc_point, _, MageNuggets_Frames.cc_relativePoint, MageNuggets_Frames.cc_xOfs, MageNuggets_Frames.cc_yOfs = MageNugClearcast_Frame:GetPoint();
         </OnDragStop>
         <OnEnter> Monitors_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-            MageNuggetsClearCast_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MageNuggetsClearCast_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -376,7 +376,7 @@
                 </Anchors>
                     <TexCoords left="0" right="1" top="0" bottom="1"/>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="BORDER">
             <Texture name="$parentTextureBorder" file="Interface\UNITPOWERBARALT\Fire_Horizontal_Frame">
                 <Size>
@@ -389,8 +389,8 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
-            </Texture>       
-        </Layer> 
+            </Texture>
+        </Layer>
         <Layer level="OVERLAY">
             <Texture name="$parentTexture" file="Interface\UNITPOWERBARALT\StoneTan_Circular_Frame">
                 <Size>
@@ -403,10 +403,10 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
-            </Texture>      
-            
-            
-        </Layer> 
+            </Texture>
+
+
+        </Layer>
         <Layer level="ARTWORK">
             <Texture name="$parentTextureIcon" file="Interface\Icons\ability_mage_livingbomb">
                 <Size>
@@ -431,7 +431,7 @@
                 <FontHeight>
                    <AbsValue val="12"/>
                 </FontHeight>
-                
+
                 <color r="1" g="1" b="1"/>
             </FontString>
         </Layer>
@@ -439,20 +439,20 @@
      <Frames>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
-            self.TimeSinceLastUpdate = 0   
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.lb_point, _, MageNuggets_Frames.lb_relativePoint, MageNuggets_Frames.lb_xOfs, MageNuggets_Frames.lb_yOfs = MageNugLB_Frame:GetPoint();
         </OnDragStop>
         <OnEnter> Monitors_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-            MageNuggetsLB_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MageNuggetsLB_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -521,21 +521,21 @@
             </Layers>
             <Scripts>
                 <OnLoad>
-                  
+
                    self:SetMinMaxValues(0,13)
                 </OnLoad>
             </Scripts>
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
         <OnEnter> SPMonitor_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-           MageNuggetsLB1_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsLB1_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -604,21 +604,21 @@
             </Layers>
             <Scripts>
                 <OnLoad>
-                  
+
                    self:SetMinMaxValues(0,13)
                 </OnLoad>
             </Scripts>
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
         <OnEnter> SPMonitor_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-           MageNuggetsLB2_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsLB2_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -687,21 +687,21 @@
             </Layers>
             <Scripts>
                 <OnLoad>
-                  
+
                    self:SetMinMaxValues(0,13)
                 </OnLoad>
             </Scripts>
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
         <OnEnter> SPMonitor_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-           MageNuggetsLB3_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsLB3_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -770,21 +770,21 @@
             </Layers>
             <Scripts>
                 <OnLoad>
-                  
+
                    self:SetMinMaxValues(0,13)
                 </OnLoad>
             </Scripts>
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
         <OnEnter> SPMonitor_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-           MageNuggetsLB4_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsLB4_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -853,21 +853,21 @@
             </Layers>
             <Scripts>
                 <OnLoad>
-                  
+
                    self:SetMinMaxValues(0,13)
                 </OnLoad>
             </Scripts>
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
         <OnEnter> SPMonitor_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-           MageNuggetsLB5_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsLB5_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -936,21 +936,21 @@
             </Layers>
             <Scripts>
                 <OnLoad>
-                  
+
                    self:SetMinMaxValues(0,13)
                 </OnLoad>
             </Scripts>
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
         <OnEnter> SPMonitor_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-           MageNuggetsLB6_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsLB6_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -1019,21 +1019,21 @@
             </Layers>
             <Scripts>
                 <OnLoad>
-                  
+
                    self:SetMinMaxValues(0,13)
                 </OnLoad>
             </Scripts>
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
         <OnEnter> SPMonitor_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-           MageNuggetsLB7_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsLB7_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -1102,25 +1102,24 @@
             </Layers>
             <Scripts>
                 <OnLoad>
-                  
+
                    self:SetMinMaxValues(0,13)
                 </OnLoad>
             </Scripts>
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
         <OnEnter> SPMonitor_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-           MageNuggetsLB8_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsLB8_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
-
 
 <Frame name="MageNugNova_Frame" parent="UIParent" hidden="true" enableMouse="true" movable="true">
     <Size x="36" y="36" />
@@ -1129,25 +1128,25 @@
     </Anchors>
     <Backdrop edgeFile="Interface/Tooltips/UI-Tooltip-Border" tile="true">
 -       <TileSize>
-            <AbsValue val="32" /> 
+            <AbsValue val="32" />
         </TileSize>
 -       <EdgeSize>
-            <AbsValue val="10" /> 
+            <AbsValue val="10" />
         </EdgeSize>
 -       <BackgroundInsets>
-            <AbsInset left="2" right="2" top="2" bottom="2" /> 
+            <AbsInset left="2" right="2" top="2" bottom="2" />
         </BackgroundInsets>
     </Backdrop>
     <Layers>
         <Layer level="BACKGROUND">
 -           <Texture name="$parentTexture" file="Interface\Icons\spell_mage_icenova">
 -               <Size>
-                    <AbsDimension x="35" y="35" /> 
+                    <AbsDimension x="35" y="35" />
                 </Size>
 -               <Anchors>
-                    <Anchor point="CENTER" relativePoint="CENTER" /> 
+                    <Anchor point="CENTER" relativePoint="CENTER" />
                 </Anchors>
-                <TexCoords left="0" right="1" top="0" bottom="1" /> 
+                <TexCoords left="0" right="1" top="0" bottom="1" />
             </Texture>
         </Layer>
         <Layer level="ARTWORK">
@@ -1211,20 +1210,20 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
-            self.TimeSinceLastUpdate = 0;    
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0;
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.nova_point, _, MageNuggets_Frames.nova_relativePoint, MageNuggets_Frames.nova_xOfs, MageNuggets_Frames.nova_yOfs = MageNugNova_Frame:GetPoint();
         </OnDragStop>
         <OnEnter> Monitors_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-            MNNova_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MNNova_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -1237,25 +1236,25 @@
     </Anchors>
     <Backdrop edgeFile="Interface/Tooltips/UI-Tooltip-Border" tile="true">
 -       <TileSize>
-            <AbsValue val="32" /> 
+            <AbsValue val="32" />
         </TileSize>
 -       <EdgeSize>
-            <AbsValue val="10" /> 
+            <AbsValue val="10" />
         </EdgeSize>
 -       <BackgroundInsets>
-            <AbsInset left="2" right="2" top="2" bottom="2" /> 
+            <AbsInset left="2" right="2" top="2" bottom="2" />
         </BackgroundInsets>
     </Backdrop>
     <Layers>
         <Layer level="BACKGROUND">
 -           <Texture name="$parentTexture" file="Interface\Icons\spell_arcane_arcane01">
 -               <Size>
-                    <AbsDimension x="35" y="35" /> 
+                    <AbsDimension x="35" y="35" />
                 </Size>
 -               <Anchors>
-                    <Anchor point="CENTER" relativePoint="CENTER" /> 
+                    <Anchor point="CENTER" relativePoint="CENTER" />
                 </Anchors>
-                <TexCoords left="0" right="1" top="0" bottom="1" /> 
+                <TexCoords left="0" right="1" top="0" bottom="1" />
             </Texture>
         </Layer>
         <Layer level="ARTWORK">
@@ -1295,60 +1294,25 @@
                     <color r="255" g="255" b="255"/>
                 </Shadow>
             </FontString>
-            <FontString name="$parentText2" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
-                <Anchors>
-                    <Anchor point="CENTER" relativePoint="CENTER">
-                        <Offset>
-                           <AbsDimension x="0" y="-20"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-                <FontHeight>
-                   <AbsValue val="6"/>
-                </FontHeight>
-                 <Shadow>
-                    <offset>
-                       <AbsDimension x="1" y="1"/>
-                    </offset>
-                    <color r="0" g="0" b="0"/>
-                </Shadow>
-            </FontString>
         </Layer>
     </Layers>
     <Frames>
-        <StatusBar name="$parent_ABBar" frameStrata="LOW" inherits="TextStatusBar">
-            <Size x="33" y="7"/>
-            <Anchors>
-                <Anchor point="BOTTOM" relativeTo="$parent">
-                    <Offset>
-                        <AbsDimension x="0" y="-5"/>
-                    </Offset>
-                </Anchor>
-            </Anchors>
-            <BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
-            <Scripts>
-                <OnLoad>
-                   self:SetStatusBarColor(1, 0.1, 1)
-                   self:SetMinMaxValues(0,10)
-                </OnLoad>
-            </Scripts>
-        </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
-            self.TimeSinceLastUpdate = 0    
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.ab_point, _, MageNuggets_Frames.ab_relativePoint, MageNuggets_Frames.ab_xOfs, MageNuggets_Frames.ab_yOfs = MageNugAB_Frame:GetPoint();
         </OnDragStop>
         <OnEnter> Monitors_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-            MageNuggetsAB_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MageNuggetsAB_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -1433,8 +1397,8 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
-            </Texture>       
-        </Layer> 
+            </Texture>
+        </Layer>
         <Layer level="ARTWORK">
             <Texture name="$parentTexture" file="Interface\Icons\ability_Mage_HotStreak">
                 <Size>
@@ -1507,20 +1471,20 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton");  
-            self.TimeSinceLastUpdate = 0   
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.hs_point, _, MageNuggets_Frames.hs_relativePoint, MageNuggets_Frames.hs_xOfs, MageNuggets_Frames.hs_yOfs = MageNugProcFrame:GetPoint();
         </OnDragStop>
         <OnEnter> Monitors_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-            MageNuggetsHS_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MageNuggetsHS_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -1554,8 +1518,8 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
-            </Texture>       
-        </Layer> 
+            </Texture>
+        </Layer>
         <Layer level="ARTWORK">
             <Texture name="$parentTexture" file="Interface\Icons\ability_Mage_HotStreak">
                 <Size>
@@ -1628,20 +1592,20 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton");  
-            self.TimeSinceLastUpdate = 0   
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.hu_point, _, MageNuggets_Frames.hu_relativePoint, MageNuggets_Frames.hu_xOfs, MageNuggets_Frames.hu_yOfs = MageNugProcHUFrame:GetPoint();
         </OnDragStop>
         <OnEnter> Monitors_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-            MageNuggetsHU_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MageNuggetsHU_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -1676,8 +1640,8 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
-            </Texture>       
-        </Layer> 
+            </Texture>
+        </Layer>
         <Layer level="ARTWORK">
             <Texture name="$parentTexture" file="Interface\Icons\Spell_magic_polymorphrabbit">
                 <Size>
@@ -1739,18 +1703,18 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
+        <OnLoad>
             self:RegisterForDrag("LeftButton");
-            self.TimeSinceLastUpdate = 0   
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.poly_point, _, MageNuggets_Frames.poly_relativePoint, MageNuggets_Frames.poly_xOfs, MageNuggets_Frames.poly_yOfs = MageNugPolyFrame:GetPoint();
         </OnDragStop>
-        <OnUpdate> 
-            MageNuggetsPoly_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MageNuggetsPoly_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -1773,7 +1737,7 @@
     </Backdrop>
     <Layers>
         <Layer level="BACKGROUND">
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <Texture name="$parentTexture" file="Interface\Icons\Spell_Fire_MeteorStorm">
                 <Size>
@@ -1846,20 +1810,20 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton");  
-            self.TimeSinceLastUpdate = 0   
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.impact_point, _, MageNuggets_Frames.impact_relativePoint, MageNuggets_Frames.impact_xOfs, MageNuggets_Frames.impact_yOfs = MageNugImpactProcFrame:GetPoint();
         </OnDragStop>
         <OnEnter> Monitors_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-            MageNuggetsImpact_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MageNuggetsImpact_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -1893,8 +1857,8 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
-            </Texture>       
-        </Layer> 
+            </Texture>
+        </Layer>
         <Layer level="ARTWORK">
             <Texture name="$parentTexture" file="Interface\Icons\Ability_mage_brainfreeze">
                 <Size>
@@ -1985,20 +1949,20 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton");  
-            self.TimeSinceLastUpdate = 0   
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.bf_point, _, MageNuggets_Frames.bf_relativePoint, MageNuggets_Frames.bf_xOfs, MageNuggets_Frames.bf_yOfs = MageNugBFProcFrame:GetPoint();
         </OnDragStop>
         <OnEnter> Monitors_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-            MageNuggetsBF_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MageNuggetsBF_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -2032,8 +1996,8 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
-            </Texture>       
-        </Layer> 
+            </Texture>
+        </Layer>
         <Layer level="ARTWORK">
             <Texture name="$parentTexture" file="Interface\Icons\spell_fire_rune">
                 <Size>
@@ -2088,24 +2052,24 @@
         </Layer>
     </Layers>
     <Frames>
- 
+
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton");  
-            self.TimeSinceLastUpdate = 0   
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
            -- MageNugCauterizeFrame:SetScale(1.5);
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.caut_point, _, MageNuggets_Frames.caut_relativePoint, MageNuggets_Frames.caut_xOfs, MageNuggets_Frames.caut_yOfs = MageNugCauterizeFrame:GetPoint();
         </OnDragStop>
         <OnEnter> Monitors_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-            --MageNuggetsBF_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            --MageNuggetsBF_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -2140,8 +2104,8 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
-            </Texture>       
-        </Layer> 
+            </Texture>
+        </Layer>
         <Layer level="ARTWORK">
             <Texture name="$parentTexture" file="Interface\Icons\ability_Mage_MissileBarrage">
                 <Size>
@@ -2227,38 +2191,38 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton");  
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.mb_point, _, MageNuggets_Frames.mb_relativePoint, MageNuggets_Frames.mb_xOfs, MageNuggets_Frames.mb_yOfs = MageNugMBProcFrame:GetPoint();
         </OnDragStop>
         <OnEnter> Monitors_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-            MageNuggetsMB_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MageNuggetsMB_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
 
 <Frame name="MageNugFoFProcFrame" parent="UIParent" hidden="true" enableMouse="true" movable="true">
-  <Size x="150" y="30" /> 
+  <Size x="150" y="30" />
 -   <Anchors>
-        <Anchor point="CENTER" /> 
+        <Anchor point="CENTER" />
     </Anchors>
 -   <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" tile="true">
 -       <TileSize>
-            <AbsValue val="32" /> 
+            <AbsValue val="32" />
         </TileSize>
         <EdgeSize>
-            <AbsValue val="8" /> 
+            <AbsValue val="8" />
         </EdgeSize>
 -       <BackgroundInsets>
-            <AbsInset left="2" right="2" top="2" bottom="2" /> 
+            <AbsInset left="2" right="2" top="2" bottom="2" />
         </BackgroundInsets>
    </Backdrop>
 - <Layers>
@@ -2274,17 +2238,17 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
-            </Texture>       
-    </Layer> 
+            </Texture>
+    </Layer>
     <Layer level="ARTWORK">
 -       <Texture name="$parentTexture" file="Interface\Icons\Ability_Mage_Wintersgrasp">
 -       <Size>
-            <AbsDimension x="26" y="26" /> 
+            <AbsDimension x="26" y="26" />
         </Size>
 -       <Anchors>
 -       <Anchor point="LEFT">
         <Offset>
-            <AbsDimension x="2" y="0" /> 
+            <AbsDimension x="2" y="0" />
         </Offset>
         </Anchor>
         </Anchors>
@@ -2311,68 +2275,68 @@
 -       <Anchors>
 -           <Anchor point="CENTER">
 -           <Offset>
-                <AbsDimension x="10" y="3" /> 
+                <AbsDimension x="10" y="3" />
             </Offset>
             </Anchor>
         </Anchors>
 -       <FontHeight>
-             <AbsValue val="11" /> 
+             <AbsValue val="11" />
         </FontHeight>
     </FontString>
 -   <FontString name="$parentText2" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
 -       <Anchors>
 -           <Anchor point="BOTTOMRIGHT">
 -           <Offset>
-                <AbsDimension x="-3" y="4" /> 
+                <AbsDimension x="-3" y="4" />
             </Offset>
             </Anchor>
         </Anchors>
 -       <FontHeight>
-            <AbsValue val="6" /> 
+            <AbsValue val="6" />
         </FontHeight>
-        <color r="1" g="1" b="1" /> 
+        <color r="1" g="1" b="1" />
     </FontString>
     </Layer>
     </Layers>
 - <Frames>
 -   <StatusBar name="$parent_ProcBar" inherits="TextStatusBar">
-        <Size x="120" y="8" /> 
+        <Size x="120" y="8" />
 -       <Anchors>
 -           <Anchor point="BOTTOMLEFT" relativeTo="$parent">
 -               <Offset>
-                    <AbsDimension x="27" y="2" /> 
+                    <AbsDimension x="27" y="2" />
                 </Offset>
             </Anchor>
         </Anchors>
-        <BarTexture file="Interface\TargetingFrame\UI-StatusBar" /> 
+        <BarTexture file="Interface\TargetingFrame\UI-StatusBar" />
 -       <Layers>
 -       <Layer level="OVERLAY">
 -           <Texture name="$parentSpark" file="Interface\CastingBar\UI-CastingBar-Spark" alphaMode="ADD">
 -               <Size>
-                    <AbsDimension x="20" y="20" /> 
+                    <AbsDimension x="20" y="20" />
                 </Size>
 -           <Anchors>
-    <Anchor point="BOTTOMLEFT" /> 
+    <Anchor point="BOTTOMLEFT" />
     </Anchors>
   </Texture>
   </Layer>
   </Layers>
 - <Scripts>
-        <OnLoad>self:SetStatusBarColor(1, 1, 1) self:SetMinMaxValues(0,14)</OnLoad> 
+        <OnLoad>self:SetStatusBarColor(1, 1, 1) self:SetMinMaxValues(0,14)</OnLoad>
   </Scripts>
   </StatusBar>
   </Frames>
 -   <Scripts>
-        <OnLoad>self:RegisterForDrag("LeftButton"); self.TimeSinceLastUpdate = 0</OnLoad> 
-        <OnDragStart>MNLockFrames(self);</OnDragStart> 
+        <OnLoad>self:RegisterForDrag("LeftButton"); self.TimeSinceLastUpdate = 0</OnLoad>
+        <OnDragStart>MNLockFrames(self);</OnDragStart>
         <OnDragStop>
-            self:StopMovingOrSizing(); 
+            self:StopMovingOrSizing();
             self.isMoving = false;
             MageNuggets_Frames.fof_point, _, MageNuggets_Frames.fof_relativePoint, MageNuggets_Frames.fof_xOfs, MageNuggets_Frames.fof_yOfs = MageNugFoFProcFrame:GetPoint();
-        </OnDragStop> 
-        <OnEnter>Monitors_OnEnter()</OnEnter> 
-        <OnLeave>GameTooltip:Hide()</OnLeave> 
-        <OnUpdate>MageNuggetsFoF_OnUpdate(self, elapsed)</OnUpdate> 
+        </OnDragStop>
+        <OnEnter>Monitors_OnEnter()</OnEnter>
+        <OnLeave>GameTooltip:Hide()</OnLeave>
+        <OnUpdate>MageNuggetsFoF_OnUpdate(self, elapsed)</OnUpdate>
     </Scripts>
   </Frame>
 
@@ -2421,9 +2385,9 @@
     <Scripts>
         <OnLoad> self:RegisterForDrag("LeftButton"); </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.spellsteal_point, _, MageNuggets_Frames.spellsteal_relativePoint, MageNuggets_Frames.spellsteal_xOfs, MageNuggets_Frames.spellsteal_yOfs = MNSpellSteal_Frame:GetPoint();
         </OnDragStop>
         <OnEnter> Monitors_OnEnter() </OnEnter>
@@ -2476,9 +2440,9 @@
     <Scripts>
         <OnLoad> self:RegisterForDrag("LeftButton"); </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.spellstealfocus_point, _, MageNuggets_Frames.spellstealfocus_relativePoint, MageNuggets_Frames.spellstealfocus_xOfs, MageNuggets_Frames.spellstealfocus_yOfs = MNSpellStealFocus_Frame:GetPoint();
         </OnDragStop>
         <OnEnter> Monitors_OnEnter() </OnEnter>
@@ -2517,7 +2481,7 @@
                     </Anchor>
                 </Anchors>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parent_Text" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal" text="Cauterize">
                  <Anchors>
@@ -2565,18 +2529,18 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
-            self.TimeSinceLastUpdate = 0    
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.cautTimer_point, _, MageNuggets_Frames.cautTimer_relativePoint, MageNuggets_Frames.cautTimer_xOfs, MageNuggets_Frames.cautTimer_yOfs = MageNugCauterize_Frame:GetPoint();
         </OnDragStop>
-        <OnUpdate> 
-            MageNuggetsCauterize_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MageNuggetsCauterize_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -2611,7 +2575,7 @@
                     </Anchor>
                 </Anchors>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parent_MIText" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal" text="Mirror Images">
                  <Anchors>
@@ -2659,18 +2623,18 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
-            self.TimeSinceLastUpdate = 0    
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.mi_point, _, MageNuggets_Frames.mi_relativePoint, MageNuggets_Frames.mi_xOfs, MageNuggets_Frames.mi_yOfs = MageNugMI_Frame:GetPoint();
         </OnDragStop>
-        <OnUpdate> 
-            MageNuggetsMI_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MageNuggetsMI_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -2747,7 +2711,7 @@
                     <color r="1" g="1" b="1"/>
 				</Texture>
 			</Layer>
-            </Layers>   
+            </Layers>
             <Scripts>
                 <OnLoad>
                    self:SetStatusBarColor(0, 0, 0)
@@ -2757,18 +2721,18 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
-            self.TimeSinceLastUpdate = 0    
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.invokers_point, _, MageNuggets_Frames.invokers_relativePoint, MageNuggets_Frames.invokers_xOfs, MageNuggets_Frames.invokers_yOfs = MageNugInvokers_Frame:GetPoint();
         </OnDragStop>
-        <OnUpdate> 
-            MageNugInvokers_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MageNugInvokers_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -2803,7 +2767,7 @@
                     </Anchor>
                 </Anchors>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parent_Text" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
                  <Anchors>
@@ -2853,14 +2817,14 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
-            self.TimeSinceLastUpdate = 0    
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
 	    <OnDragStop> self:StopMovingOrSizing(); self.isMoving = false; </OnDragStop>
-        <OnUpdate> 
-           MageNuggetsMoonkin_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsMoonkin_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -2896,7 +2860,7 @@
                 </Anchors>
                     <TexCoords left="0" right="1" top="0" bottom="1"/>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parentText" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
                 <Anchors>
@@ -2916,13 +2880,13 @@
     <Frames>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
-            self.TimeSinceLastUpdate = 0    
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
 	    <OnDragStop> self:StopMovingOrSizing(); self.isMoving = false; </OnDragStop>
-        <OnEnter> 
+        <OnEnter>
             if (MageNuggets.toolTips == true) then
                 GameTooltip:SetOwner(self, ANCHOR_TOPLEFT);
 			    GameTooltip:AddLine("Moonfire")
@@ -2930,8 +2894,8 @@
             end
         </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-            MNmoonFire_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MNmoonFire_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -2967,7 +2931,7 @@
                 </Anchors>
                     <TexCoords left="0" right="1" top="0" bottom="1"/>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parentText" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
                 <Anchors>
@@ -2987,13 +2951,13 @@
     <Frames>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
-            self.TimeSinceLastUpdate = 0    
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
 	    <OnDragStop> self:StopMovingOrSizing(); self.isMoving = false; </OnDragStop>
-        <OnEnter> 
+        <OnEnter>
             if (MageNuggets.toolTips == true) then
                 GameTooltip:SetOwner(self, ANCHOR_TOPLEFT);
 			    GameTooltip:AddLine("Sunfire")
@@ -3001,8 +2965,8 @@
             end
         </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-            MNinsectSwarm_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MNinsectSwarm_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -3038,7 +3002,7 @@
                 </Anchors>
                     <TexCoords left="0" right="1" top="0" bottom="1"/>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parentText" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
                 <Anchors>
@@ -3058,13 +3022,13 @@
     <Frames>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
-            self.TimeSinceLastUpdate = 0    
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
 	    <OnDragStop> self:StopMovingOrSizing(); self.isMoving = false; </OnDragStop>
-        <OnEnter> 
+        <OnEnter>
             if (MageNuggets.toolTips == true) then
                 GameTooltip:SetOwner(self, ANCHOR_TOPLEFT);
 			    GameTooltip:AddLine("Star Surge")
@@ -3072,8 +3036,8 @@
             end
         </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-            MNstarSurge_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MNstarSurge_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -3111,7 +3075,7 @@
                     </Anchor>
                 </Anchors>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parent_MIText" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal" text="Water Elemental">
                  <Anchors>
@@ -3159,462 +3123,15 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
 	    <OnDragStop> self:StopMovingOrSizing(); self.isMoving = false; </OnDragStop>
-        <OnUpdate> 
-            MageNuggetsWE_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MageNuggetsWE_OnUpdate(self, elapsed)
         </OnUpdate>
-    </Scripts>
-</Frame>
-
-<Frame name="MageNugCooldownFrame" toplevel="true" hidden="false" parent="mnCooldowns">
-    <Size>
-        <AbsDimension x="480" y="325"/>
-    </Size>
-    <Anchors>
-        <Anchor point="TOPLEFT"/>
-        <Anchor point="BOTTOMRIGHT"/>
-    </Anchors>
-    <Layers>
-        <Layer level="ARTWORK">
-            <FontString name="$parent_FontString1" inherits="GameFontNormal" text="Arcane Power">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-25"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_cdFontString" inherits="GameFontNormal" text="Disable Cooldown Monitor">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="175" y="-25"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString2" inherits="GameFontNormal" text="Blastwave">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-45"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString3" inherits="GameFontNormal" text="Combustion">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-65"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString4" inherits="GameFontNormal" text="Counterspell">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-85"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString5" inherits="GameFontNormal" text="Deep Freeze">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-105"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString6" inherits="GameFontNormal" text="Dragon's Breath">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-125"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString8" inherits="GameFontNormal" text="Mage Ward">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-145"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString9" inherits="GameFontNormal" text="Pet's Freeze">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-165"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString10" inherits="GameFontNormal" text="Mana Shield">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-185"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString11" inherits="GameFontNormal" text="Ice Barrier">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-205"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString12" inherits="GameFontNormal" text="Evocation">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-225"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString13" inherits="GameFontNormal" text="Icy Veins">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-245"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString13" inherits="GameFontNormal" text="Mirror Image">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="175" y="-245"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString14" inherits="GameFontNormal" text="Treants">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="175" y="-225"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontStringBlink" inherits="GameFontNormal" text="Blink">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="175" y="-185"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString14" inherits="GameFontNormal" text="Starfall">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="175" y="-205"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_FontString14" inherits="GameFontNormal" text="Size">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="110" y="-285"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-        </Layer>
-    </Layers>
-    <Frames>
-        <CheckButton name="$parent_apButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="10" y="-20" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNapCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton>
-        <CheckButton name="$parent_cdButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="150" y="-20" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNCooldownToggle();
-                </OnClick> 
-            </Scripts>
-        </CheckButton>
-        <CheckButton name="$parent_bwButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="10" y="-40" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNbwCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton>   
-        <CheckButton name="$parent_cbButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="10" y="-60" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNcbCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton>     
-        <CheckButton name="$parent_csButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="10" y="-80" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNcsCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton>       
-        <CheckButton name="$parent_dfButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="10" y="-100" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNdfCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton>   
-        <CheckButton name="$parent_dbButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="10" y="-120" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNdbCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton>
-        <CheckButton name="$parent_mwButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="10" y="-140" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNmwCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton> 
-        <CheckButton name="$parent_frzButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="10" y="-160" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNfrzCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton>  
-        <CheckButton name="$parent_msButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="10" y="-180" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNmsCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton>  
-        <CheckButton name="$parent_ibrButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="10" y="-200" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNibrCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton> 
-        <CheckButton name="$parent_blinkButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="150" y="-180" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNblinkCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton> 
-        <CheckButton name="$parent_starfallButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="150" y="-200" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNstarfallCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton> 
-        <CheckButton name="$parent_evoButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="10" y="-220" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNevoCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton> 
-        <CheckButton name="$parent_treantButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="150" y="-220" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNtreantCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton> 
-        <CheckButton name="$parent_ivButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="10" y="-240" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNivCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton>  
-        <CheckButton name="$parent_miButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="150" y="-240" /> 
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnClick>
-                    MNmiCooldown();
-                </OnClick> 
-            </Scripts>
-        </CheckButton>  
-        <Slider name="$parent_Slider1" inherits="OptionsSliderTemplate">
-	            <Size>
-    	            <AbsDimension x="200" y="20"/>
-            	</Size>
-		        <Anchors>
-			        <Anchor point="TOPLEFT" relativeTo="$parent">
-	        	        <Offset>
-                            <AbsDimension x="30" y="-300"/>
-                        </Offset>
-        			</Anchor>
-		        </Anchors>
-		        <Scripts>
-		    	    <OnLoad>
-			    	    getglobal(self:GetName().."High"):SetText("9");
-	    			    getglobal(self:GetName().."Low"):SetText("0");
-		      	    	self:SetMinMaxValues(0,9);
-			        	self:SetValueStep(1);
-		            </OnLoad>
-		            <OnValueChanged>   
-                        MNcooldownSlider();
-                    </OnValueChanged>
-                    <OnMouseUp>
-                        --
-                    </OnMouseUp>
-                    <OnMouseDown>
-                        --
-                    </OnMouseDown>
-                </Scripts>
-            </Slider>
-    </Frames> 
-    <Scripts>
     </Scripts>
 </Frame>
 
@@ -3724,7 +3241,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>  
+	</Button>
     <Button name="$parentPortShat" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -3758,7 +3275,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>  
+	</Button>
     <Button name="$parentPortOrg" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -3789,7 +3306,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
     <Button name="$parentPortUC" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -3820,7 +3337,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
     <Button name="$parentPortTB" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -3851,7 +3368,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
     <Button name="$parentPortSMC" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -3882,7 +3399,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
     <Button name="$parentPortStonard" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -3944,7 +3461,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
       <Button name="$parentPortVale" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -3975,7 +3492,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
     <Button name="$parentPortADal" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4038,7 +3555,7 @@
 			</OnLeave>
 		</Scripts>
 	</Button>
-    
+
     <Button name="$parentTeleDal" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4131,7 +3648,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>    
+	</Button>
     <Button name="$parentTeleUC" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4162,7 +3679,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>     
+	</Button>
     <Button name="$parentTeleTB" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4193,7 +3710,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>   
+	</Button>
     <Button name="$parentTeleSMC" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4224,7 +3741,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>   
+	</Button>
     <Button name="$parentTeleStonard" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4255,7 +3772,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
     <Button name="$parentTeleTol" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4286,7 +3803,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
      <Button name="$parentTeleVale" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4317,7 +3834,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
     <Button name="$parentTeleADal" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4348,7 +3865,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
      <Button name="$parentTeleWarspear" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4379,8 +3896,8 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
-    
+	</Button>
+
     <Button name="$parentHearth" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="20" y="20"/>
@@ -4482,8 +3999,8 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>     
-    
+	</Button>
+
     <Button name="$parentClose" inherits="OptionsButtonTemplate" text="Close">
 	        <Size>
                <AbsDimension x="60" y="18"/>
@@ -4518,12 +4035,12 @@
                     InterfaceOptionsFrame_OpenToCategory("Mage Nuggets");
                 </OnClick>
 	        </Scripts>
-    </Button>    
+    </Button>
     </Frames>
     <Scripts>
-        <OnLoad> 
+        <OnLoad>
             self:RegisterForDrag("LeftButton");
-            self.TimeSinceLastUpdate = 0;       
+            self.TimeSinceLastUpdate = 0;
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
 	    <OnDragStop> self:StopMovingOrSizing(); self.isMoving = false; </OnDragStop>
@@ -4534,9 +4051,9 @@
            -- MageNugHordeFrameText2:SetText("Teleport:"..runeofTele)
         </OnShow>
         <OnUpdate>
-            updatePortalMenu(self, elapsed); 
+            updatePortalMenu(self, elapsed);
         </OnUpdate>
-        
+
     </Scripts>
 </Frame>
 
@@ -4645,7 +4162,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>  
+	</Button>
     <Button name="$parentPortShat" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4676,7 +4193,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>  
+	</Button>
     <Button name="$parentPortIF" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4707,7 +4224,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
     <Button name="$parentPortSW" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4728,7 +4245,7 @@
 			<OnLoad>
 				local swport = GetSpellInfo(10059);
                 if (swport == nil) then
-                
+
                 else
                     self:SetAttribute("type1", "spell")
 	    			self:SetAttribute("spell", GetSpellInfo(10059))
@@ -4743,7 +4260,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
     <Button name="$parentPortDarn" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4774,7 +4291,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
     <Button name="$parentPortExo" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4805,7 +4322,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
     <Button name="$parentPortTheramore" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4867,7 +4384,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
      <Button name="$parentPortVale" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -4898,7 +4415,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
     <Button name="$parentPortADal" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -5053,7 +4570,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>    
+	</Button>
     <Button name="$parentTeleSW" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -5084,7 +4601,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>     
+	</Button>
     <Button name="$parentTeleDarn" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -5115,7 +4632,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>   
+	</Button>
     <Button name="$parentTeleExo" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -5146,7 +4663,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>   
+	</Button>
     <Button name="$parentTeleTheramore" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -5208,8 +4725,8 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
-    
+	</Button>
+
      <Button name="$parentTeleVale" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -5240,7 +4757,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
     <Button name="$parentTeleADal" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -5271,7 +4788,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button> 
+	</Button>
     <Button name="$parentTeleStormshield" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="25" y="25"/>
@@ -5303,7 +4820,7 @@
 			</OnLeave>
 		</Scripts>
 	</Button>
-    
+
     <Button name="$parentHearth" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="20" y="20"/>
@@ -5337,7 +4854,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>  
+	</Button>
     <Button name="$parentGarrisonHearth" inherits="SecureActionButtonTemplate">
 		<Size>
 			<AbsDimension x="20" y="20"/>
@@ -5405,7 +4922,7 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-	</Button>     
+	</Button>
     <Button name="$parentClose" inherits="OptionsButtonTemplate" text="Close">
 	        <Size>
                <AbsDimension x="60" y="18"/>
@@ -5440,10 +4957,10 @@
                     InterfaceOptionsFrame_OpenToCategory("Mage Nuggets");
                 </OnClick>
 	        </Scripts>
-    </Button>    
+    </Button>
     </Frames>
     <Scripts>
-        <OnLoad> 
+        <OnLoad>
             self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0;
         </OnLoad>
@@ -5456,14 +4973,14 @@
            -- MageNugAlliFrameText2:SetText("Teleport:"..runeofTele)
         </OnShow>
         <OnUpdate>
-            updatePortalMenu(self, elapsed); 
+            updatePortalMenu(self, elapsed);
         </OnUpdate>
     </Scripts>
 </Frame>
 
 
 
-	
+
 
 <Frame name="MageNugCD_Frame" parent="UIParent" hidden="true" enableMouse="true" movable="true">
     <Size x="100" y="20" />
@@ -5490,22 +5007,22 @@
     <Frames>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
-            self.TimeSinceLastUpdate = 0   
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
+            self.TimeSinceLastUpdate = 0
         </OnLoad>
 	    <OnDragStart> MNLockFrames(self);</OnDragStart>
-	    <OnDragStop> 
-            self:StopMovingOrSizing(); 
-            self.isMoving = false; 
+	    <OnDragStop>
+            self:StopMovingOrSizing();
+            self.isMoving = false;
             MageNuggets_Frames.cd_point, _, MageNuggets_Frames.cd_relativePoint, MageNuggets_Frames.cd_xOfs, MageNuggets_Frames.cd_yOfs = MageNugCD_Frame:GetPoint();
         </OnDragStop>
         <OnEnter>
 			MNcooldownOnEnter();
         </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
-        <OnUpdate> 
-           -- 
+        <OnUpdate>
+           --
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -5530,7 +5047,7 @@
                 </Anchors>
                     <TexCoords left="0" right="1" top="0" bottom="1"/>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parent_Text" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
                 <Anchors>
@@ -5580,13 +5097,13 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0;
             self:EnableMouse(false);
         </OnLoad>
-        <OnUpdate> 
-           MageNuggetsCD1_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsCD1_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -5611,7 +5128,7 @@
                 </Anchors>
                     <TexCoords left="0" right="1" top="0" bottom="1"/>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parent_Text" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
                 <Anchors>
@@ -5661,12 +5178,12 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
-        <OnUpdate> 
-           MageNuggetsCD2_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsCD2_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -5691,7 +5208,7 @@
                 </Anchors>
                     <TexCoords left="0" right="1" top="0" bottom="1"/>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parent_Text" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
                 <Anchors>
@@ -5741,12 +5258,12 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
-        <OnUpdate> 
-           MageNuggetsCD3_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsCD3_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -5771,7 +5288,7 @@
                 </Anchors>
                     <TexCoords left="0" right="1" top="0" bottom="1"/>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parent_Text" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
                 <Anchors>
@@ -5821,12 +5338,12 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
-        <OnUpdate> 
-           MageNuggetsCD4_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsCD4_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -5851,7 +5368,7 @@
                 </Anchors>
                     <TexCoords left="0" right="1" top="0" bottom="1"/>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parent_Text" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
                 <Anchors>
@@ -5901,12 +5418,12 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
-        <OnUpdate> 
-           MageNuggetsCD5_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsCD5_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -5931,7 +5448,7 @@
                 </Anchors>
                     <TexCoords left="0" right="1" top="0" bottom="1"/>
             </Texture>
-        </Layer> 
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parent_Text" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
                 <Anchors>
@@ -5981,12 +5498,12 @@
         </StatusBar>
     </Frames>
     <Scripts>
-        <OnLoad> 
-            self:RegisterForDrag("LeftButton"); 
+        <OnLoad>
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0
         </OnLoad>
-        <OnUpdate> 
-           MageNuggetsCD6_OnUpdate(self, elapsed) 
+        <OnUpdate>
+           MageNuggetsCD6_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>

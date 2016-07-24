@@ -201,6 +201,7 @@ L["Hide Debuff Timer"] = true
 L["This hides the time remaining for your debuffs."] = true
 
 --Backgrounds
+L["Backgrounds"] = true
 L["SLE_BG_1"] = "Background 1"
 L["SLE_BG_2"] = "Background 2"
 L["SLE_BG_3"] = "Background 3"
@@ -551,7 +552,40 @@ L["Threat Text"] = true
 L["Display threat level as text on targeted, boss or mouseover nameplate."] = true
 
 --Professions
-L['Scroll'] = true
+L["Deconstruct Mode"] = true
+L["Create a button in your bag frame to switch to deconstrution mode allowing you to easily disenchant/mill/prospect and pick locks."] = true
+L["Actionbar Proc"] = true
+L["Actionbar Autocast"] = true
+L["Show glow on bag button"] = true
+L["Show glow on the deconstruction button in bag when deconstruction mode is enabled.\nApplies on next mode toggle."] = true
+L["Scroll"] = true
+L["Sets style of glow around item available for deconstruction while in deconstruct mode. Autocast is less intence but also less noticeable."] = true
+L["Enchant Scroll Button"] = true
+L["Create a button for applying selected enchant on the scroll."] = true
+L["Following options are global and will be applied to all characters on account."] = true
+L["Deconstruction ignore"] = true
+L["Items listed here will be ignored in deconstruction mode. Add names or item links, entries must be separated by comma."] = true
+L["Ignore tabards"] = true
+L["Deconstruction mode will ignore tabards."] = true
+L["Ignore Pandaria BoA"] = true
+L["Deconstruction mode will ignore BoA weapons from Pandaria."] = true
+L["Ignore Cooking"] = true
+L["Deconstruction mode will ignore cooking specific items."] = true
+L["Ignore Fishing"] = true
+L["Deconstruction mode will ignore fishing specific items."] = true
+L["Unlock in trade"] = true
+L["Apply unlocking skills in trade window the same way as in deconstruction mode for bags."] = true
+L["Easy Cast"] = true
+L["Allow to fish with double right-click."] = true
+L["From Mount"] = true
+L["Start fishing even if you are mounted."] = true
+L["Apply Lures"] = true
+L["Automatically apply lures."] = true
+L["Ingore Poles"] = true
+L["If enabled will start fishing even if you don't have fishing pole equipped. Will not work if you have fish key set to \"None\"."] = true
+L["Fish Key"] = true
+L["Hold this button while clicking to allow fishing action."] = true
+
 
 --PvP
 L["Functions dedicated to player versus player modes."] = true
@@ -747,6 +781,8 @@ L["Bottom Offset"] = true
 L["Set the offset from the bottom border of the screen."] = true
 
 --Help
+L["About/Help"] = true
+L["About"] = true
 L["SLE_DESC"] = [=[|cff9482c9Shadow & Light|r is an extention of ElvUI. It adds:
 - a lot of new features 
 - more customization options for existing ones

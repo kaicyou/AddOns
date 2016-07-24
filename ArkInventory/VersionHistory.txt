@@ -13,6 +13,11 @@
  
 
 
+*3.06.16 (23-JUL-2016)*
+ * fixed - issue with deleted rules still showing in the list
+ * fixed - issue with copying category sets
+ * changed - Settings > Design changed to Settings > Styles / Layouts to make it more obvious where they are
+ 
 *3.06.15 (22-JUL-2016)*
  * added - default [1000] editable profile for all locations (this should let you use it from scratch without the need to create anything first)
  * fixed - issue with tooltip positioning whe using CVAR:alwaysCompareItems

@@ -1,4 +1,4 @@
-﻿local magenugVer = "4.5.3"
+﻿local magenugVer = "5.1.0"
 
 MageNuggets = {
     ssMonitorToggle = true;
@@ -99,7 +99,7 @@ MageNuggets = {
     dityToggle = true;
     powerInfToggle = true;
     painSupToggle = true;
-    gspiritToggle = true; 
+    gspiritToggle = true;
     cautSize = 3;
     alterTimeToggle = true;
     simpleUiToggle = false;
@@ -114,7 +114,6 @@ function MageNuggetOptions_Start(self)
     loadMageNuggetsOptionsFrames();
     SlashCmdList['MAGENUGGETS_SLASHCMD'] = MageNuggets_SlashCommandHandler
     SLASH_MAGENUGGETS_SLASHCMD1 = "/magenuggets"
-    
 end
 
 function MageNuggetsOptions_OnEvent(this, event, ...)
@@ -124,14 +123,14 @@ function MageNuggetsOptions_OnEvent(this, event, ...)
            loadMageNuggetOptionsVariables_OnLoadEvent();
            mageNuggetsSoundOptionsOnLoad();
         end
-    end  
+    end
 end
 
 function MageNuggets_SlashCommandHandler(msg)
     if (msg == "options") then
 	    InterfaceOptionsFrame_OpenToCategory("Mage Nuggets");
     elseif (msg == "ports") then
-        MageNugz_Minimap_OnClick(); 
+        MageNugz_Minimap_OnClick();
     else
     DEFAULT_CHAT_FRAME:AddMessage("|cffffffff------------|cff00BFFF".."Mage".." |cff00FF00".."Nuggets".."|cffffffff "..magenugVer.."--------------")
     DEFAULT_CHAT_FRAME:AddMessage("|cffffffff".."/magenuggets".." ".."options (Shows Option Menu)")
@@ -139,7 +138,7 @@ function MageNuggets_SlashCommandHandler(msg)
     end
 end
 
-function loadMageNuggetsOptionsFrames() 
+function loadMageNuggetsOptionsFrames()
     local MageNugOptions = CreateFrame("FRAME", "MageNugOptions", InterfaceOptionsFrame)
     MageNugOptions.name = "Mage Nuggets"
     InterfaceOptions_AddCategory(MageNugOptions)
@@ -148,42 +147,36 @@ function loadMageNuggetsOptionsFrames()
     local msgOptions = CreateFrame("FRAME", "msgOptions");
     msgOptions.name = "Messages";
     msgOptions.parent = "Mage Nuggets";
-    InterfaceOptions_AddCategory(msgOptions); 
+    InterfaceOptions_AddCategory(msgOptions);
     msgOptions:SetPoint("TOPLEFT", InterfaceOptionsFrame, "BOTTOMRIGHT", 0, 0)
-    
+
     local soundOptions = CreateFrame("FRAME", "soundOptions");
     soundOptions.name = "Sounds";
     soundOptions.parent = "Mage Nuggets";
-    InterfaceOptions_AddCategory(soundOptions); 
+    InterfaceOptions_AddCategory(soundOptions);
     soundOptions:SetPoint("TOPLEFT", InterfaceOptionsFrame, "BOTTOMRIGHT", 0, 0)
-    
+
     local priestOptions = CreateFrame("FRAME", "priestOptions");
     priestOptions.name = "Priest";
     priestOptions.parent = "Mage Nuggets";
-    InterfaceOptions_AddCategory(priestOptions); 
+    InterfaceOptions_AddCategory(priestOptions);
     priestOptions:SetPoint("TOPLEFT", InterfaceOptionsFrame, "BOTTOMRIGHT", 0, 0)
-    
+
     local moonkinOptions = CreateFrame("FRAME", "moonkinOptions");
     moonkinOptions.name = "Moonkin";
     moonkinOptions.parent = "Mage Nuggets";
-    InterfaceOptions_AddCategory(moonkinOptions); 
+    InterfaceOptions_AddCategory(moonkinOptions);
     moonkinOptions:SetPoint("TOPLEFT", InterfaceOptionsFrame, "BOTTOMRIGHT", 0, 0)
-    
+
     local mnOptions = CreateFrame("FRAME", "mnOptions");
     mnOptions.name = "Options";
     mnOptions.parent = "Mage Nuggets";
-    InterfaceOptions_AddCategory(mnOptions); 
+    InterfaceOptions_AddCategory(mnOptions);
     mnOptions:SetPoint("TOPLEFT", InterfaceOptionsFrame, "BOTTOMRIGHT", 0, 0)
-    
-    local mnCooldowns = CreateFrame("FRAME", "mnCooldowns");
-    mnCooldowns.name = "Cooldowns";
-    mnCooldowns.parent = "Mage Nuggets";
-    InterfaceOptions_AddCategory(mnCooldowns); 
-    mnCooldowns:SetPoint("TOPLEFT", InterfaceOptionsFrame, "BOTTOMRIGHT", 0, 0)
 
 end
 
-function loadMageNuggetOptionsVariables_OnLoadEvent() 
+function loadMageNuggetOptionsVariables_OnLoadEvent()
     if(MageNuggets.bombMouseOverMacro == nil) then
         MageNuggets.bombMouseOverMacro = false;
     end
@@ -212,7 +205,7 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
         MageNugOptionsFrame_ABcastCheckButton:SetChecked(true);
     else
         MageNugOptionsFrame_ABcastCheckButton:SetChecked(false);
-    end   
+    end
     if (MageNuggets.mageProcToggle == true) then
         MageNugOptionsFrame_CheckButton3:SetChecked(false);
     else
@@ -229,7 +222,7 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     else
         MageNugOptionsFrame_CheckButton6:SetChecked(true);
     end
-    
+
     if (MageNuggets.evocationToggle == true) then
         MageNugOptionsFrame_CheckButton8:SetChecked(false);
     else
@@ -253,7 +246,7 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     else
         MageNugOptionsFrame_CheckButton14:SetChecked(true);
     end
-    
+
     if (MageNuggets.novaMonitorToggle == nil) then
         MageNuggets.novaMonitorToggle = true;
     end
@@ -262,7 +255,7 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     else
         MageNugOptionsFrame_CheckButtonNova:SetChecked(true);
     end
-    
+
     if (MageNuggets.clearcastToggle == nil) then
         MageNuggets.clearcastToggle = true;
     end
@@ -270,7 +263,7 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
         MageNugOptionsFrame_CheckButtonCC:SetChecked(false);
     else
         MageNugOptionsFrame_CheckButtonCC:SetChecked(true);
-    end  
+    end
     if(MageNuggets.mgCombatTog == nil) then
         MageNuggets.mgCombatTog = false;
     end
@@ -317,13 +310,13 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
         MageNugOptionsFrame_Slider4:SetValue(3)
     else
         MageNugOptionsFrame_Slider4:SetValue(MageNuggets.procMonitorSize)
-    end  
+    end
     if (MageNuggets.invokersMonitorSize == nil) then
         MageNugOptionsFrame_InvokersSlider:SetValue(3)
     else
         MageNugOptionsFrame_InvokersSlider:SetValue(MageNuggets.invokersMonitorSize)
-    end  
-    -----Messages Options----        
+    end
+    -----Messages Options----
     if (MageNuggets.msgToggle == nil) then
         MageNuggets.msgToggle = true;
     end
@@ -437,8 +430,8 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     else
     DarkIntentEditBox:SetText(MageNuggets.darkIntentThanks)
     end
-    
-  
+
+
     --------Options 2--------
     MNcheckboxMiniMapFontString:SetText("Disable Minimap Button")
     MNcheckboxCameraFontString:SetText("Disable Maximum Camera Zoom Out")
@@ -507,120 +500,9 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     else
         CauterizeCheckButton:SetChecked(false);
     end
-    
-    ---cooldown options-----
-    if (MageNuggets.cooldownToggle == nil) then
-        MageNuggets.cooldownToggle = false;
-    end
-    if (MageNuggets.cooldownToggle == true) then
-        MageNugCooldownFrame_cdButton:SetChecked(true);        
-    else
-        MageNugCooldownFrame_cdButton:SetChecked(false); 
-        MageNugCD_Frame:Show()
-    end
-    if (MageNuggets.apCooldown == nil) or (MageNuggets.apCooldown == true) then
-        MageNugCooldownFrame_apButton:SetChecked(true);
-        MageNuggets.apCooldown = true;
-    else
-        MageNugCooldownFrame_apButton:SetChecked(false);
-    end
-    if (MageNuggets.bwCooldown == nil) or (MageNuggets.bwCooldown == true) then
-        MageNugCooldownFrame_bwButton:SetChecked(true);
-        MageNuggets.bwCooldown = true;
-    else
-        MageNugCooldownFrame_bwButton:SetChecked(false);
-    end
-    if (MageNuggets.cbCooldown == nil) or (MageNuggets.cbCooldown == true) then
-        MageNugCooldownFrame_cbButton:SetChecked(true);
-        MageNuggets.cbCooldown = true;
-    else
-        MageNugCooldownFrame_cbButton:SetChecked(false);
-    end
-    if (MageNuggets.csCooldown == nil) or (MageNuggets.csCooldown == true) then
-        MageNugCooldownFrame_csButton:SetChecked(true);
-        MageNuggets.csCooldown = true;
-    else
-        MageNugCooldownFrame_csButton:SetChecked(false);
-    end
-    if (MageNuggets.dfCooldown == nil) or (MageNuggets.dfCooldown == true) then
-        MageNugCooldownFrame_dfButton:SetChecked(true);
-        MageNuggets.dfCooldown = true;
-    else
-        MageNugCooldownFrame_dfButton:SetChecked(false);
-    end
-    if (MageNuggets.dbCooldown == nil) or (MageNuggets.dbCooldown == true) then
-        MageNugCooldownFrame_dbButton:SetChecked(true);
-        MageNuggets.dbCooldown = true;
-    else
-        MageNugCooldownFrame_dbButton:SetChecked(false);
-    end
-    if (MageNuggets.mwCooldown == nil) or (MageNuggets.mwCooldown == true) then
-        MageNugCooldownFrame_mwButton:SetChecked(true);
-        MageNuggets.mwCooldown = true;
-    else
-        MageNugCooldownFrame_mwButton:SetChecked(false);
-    end
-    if (MageNuggets.miCooldown == nil) or (MageNuggets.miCooldown == true) then
-        MageNugCooldownFrame_miButton:SetChecked(true);
-        MageNuggets.miCooldown = true;
-    else
-        MageNugCooldownFrame_miButton:SetChecked(false);
-    end
-    if (MageNuggets.frzCooldown == nil) or (MageNuggets.frzCooldown == true) then
-        MageNugCooldownFrame_frzButton:SetChecked(true);
-        MageNuggets.frzCooldown = true;
-    else
-        MageNugCooldownFrame_frzButton:SetChecked(false);
-    end
-    if (MageNuggets.msCooldown == nil) or (MageNuggets.msCooldown == true) then
-        MageNugCooldownFrame_msButton:SetChecked(true);
-        MageNuggets.msCooldown = true;
-    else
-        MageNugCooldownFrame_msButton:SetChecked(false);
-    end
-    if (MageNuggets.ibrCooldown == nil) or (MageNuggets.ibrCooldown == true) then
-        MageNugCooldownFrame_ibrButton:SetChecked(true);
-        MageNuggets.ibrCooldown = true;
-    else
-        MageNugCooldownFrame_ibrButton:SetChecked(false);
-    end
-    if (MageNuggets.evoCooldown == nil) or (MageNuggets.evoCooldown == true) then
-        MageNugCooldownFrame_evoButton:SetChecked(true);
-        MageNuggets.evoCooldown = true;
-    else
-        MageNugCooldownFrame_evoButton:SetChecked(false);
-    end
-    if (MageNuggets.ivCooldown == nil) or (MageNuggets.ivCooldown == true) then
-        MageNugCooldownFrame_ivButton:SetChecked(true);
-        MageNuggets.ivCooldown = true;
-    else
-        MageNugCooldownFrame_ivButton:SetChecked(false);
-    end
-    if (MageNuggets.treantCooldown == nil) or (MageNuggets.treantCooldown == true) then
-        MageNugCooldownFrame_treantButton:SetChecked(true);
-        MageNuggets.treantCooldown = true;
-    else
-        MageNugCooldownFrame_treantButton:SetChecked(false);
-    end
-    if (MageNuggets.starfallCooldown == nil) or (MageNuggets.starfallCooldown == true) then
-        MageNugCooldownFrame_starfallButton:SetChecked(true);
-        MageNuggets.starfallCooldown = true;
-    else
-        MageNugCooldownFrame_starfallButton:SetChecked(false);
-    end
-    if (MageNuggets.blinkCooldown == nil) or (MageNuggets.blinkCooldown == true) then
-        MageNugCooldownFrame_blinkButton:SetChecked(true);
-        MageNuggets.blinkCooldown = true;
-    else
-        MageNugCooldownFrame_blinkButton:SetChecked(false);
-    end
-    if (MageNuggets.cooldownSize == nil) then
-        MageNugCooldownFrame_Slider1:SetValue(3);
-    else
-        MageNugCooldownFrame_Slider1:SetValue(MageNuggets.cooldownSize);
-    end
+
     --------Priest---------------
-    
+
     if(MageNuggets.powerInfToggle == true) or (MageNuggets.powerInfToggle == nil)then
         MageNugPriestOptionFrame_CheckButton0:SetChecked(true);
         MageNuggets.powerInfToggle = true;
@@ -745,7 +627,7 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     MageNugBFProcFrame:Hide();
     MageNugProcFrame:Hide();
     MageNugMBProcFrame:Hide();
-    MageNugFoFProcFrame:Hide(); 
+    MageNugFoFProcFrame:Hide();
     MageNugAB_Frame:Hide();
     paralysisId, _, _, _, _, _, _, _, _ = GetSpellInfo(115078);
     shackleId, _, _, _, _, _, _, _, _ = GetSpellInfo(9484);
@@ -767,15 +649,15 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     thunderclapId, _, _, _, _, _, _, _, _ = GetSpellInfo(47502);
     deadlythrowId, _, _, _, _, _, _, _, _ = GetSpellInfo(48674);
     frostshockId, _, _, _, _, _, _, _, _ = GetSpellInfo(49236);
-    chilledId, _, _, _, _, _, _, _, _ = GetSpellInfo(7321); 
+    chilledId, _, _, _, _, _, _, _, _ = GetSpellInfo(7321);
     mindflayId, _, _, _, _, _, _, _, _ = GetSpellInfo(48156);
     impactId, _, _, _, _, _, _, _, _ = GetSpellInfo(64343);
-    
+
     MageNugz_MinimapButton_Move()
     MnClickThrough()
     MNmoonkinAnchorToggle()
     incombat = 0;
-    
+
     if(MageNuggets_Frames.frostbomb_point == nil) then
         MageNuggets_Frames.frostbomb_point = "CENTER";
     end
@@ -788,7 +670,7 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     if(MageNuggets_Frames.frostbomb_yOfs == nil) then
         MageNuggets_Frames.frostbomb_yOfs = 0;
     end
-    
+
     if(MageNuggets_Frames.invokers_point == nil) then
         MageNuggets_Frames.invokers_point = "CENTER";
     end
@@ -801,7 +683,7 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     if(MageNuggets_Frames.invokers_yOfs == nil) then
         MageNuggets_Frames.invokers_yOfs = 0;
     end
-    
+
     if(MageNuggets_Frames.hu_point == nil) then
         MageNuggets_Frames.hu_point = "CENTER";
     end
@@ -814,7 +696,7 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     if(MageNuggets_Frames.hu_yOfs == nil) then
         MageNuggets_Frames.hu_yOfs = 0;
     end
-    
+
 end
 
 function mageNuggetsSoundOptionsOnLoad()
@@ -851,7 +733,7 @@ function mageNuggetsSoundOptionsOnLoad()
     else
         MageNugSoundOptionFrame_PolyCheckButton:SetChecked(false);
     end
-    
+
     if (MageNuggets.ABSound2 == nil) or (MageNuggets.ABSound2 == "") or (MageNuggets.ABSound2 == "impact.ogg") then
         MageNugSoundOptionFrame_ABSoundEditBox:SetText("impact.mp3")
     else
@@ -863,7 +745,7 @@ function mageNuggetsSoundOptionsOnLoad()
     else
         MageNugSoundOptionFrame_ABCheckButton:SetChecked(false);
     end
-    
+
     if (MageNuggets.hsSound2 == nil) or (MageNuggets.hsSound2 == "") or (MageNuggets.hsSound2 == "hotstreak.ogg") then
         MageNugSoundOptionFrame_HotStreakSoundEditBox:SetText("hotstreak.mp3")
     else
@@ -971,10 +853,10 @@ end
 function MNMinimapButtonToggle()
     local mini = MageNugOption2Frame_MinimapCheckButton:GetChecked();
     if (mini == true) then
-        MageNuggets.minimapToggle = false; 
+        MageNuggets.minimapToggle = false;
         MageNug_MinimapFrame:Hide();
     else
-        MageNuggets.minimapToggle = true; 
+        MageNuggets.minimapToggle = true;
         MageNug_MinimapFrame:Show();
     end
 end
@@ -982,17 +864,17 @@ end
 function MNNovaToggle() -- ice nova supernova
     local mini = MageNugOptionsFrame_CheckButtonNova:GetChecked();
     if (mini == true) then
-        MageNuggets.novaMonitorToggle = false; 
+        MageNuggets.novaMonitorToggle = false;
         MageNugNova_Frame:Hide();
     else
-        MageNuggets.novaMonitorToggle = true; 
+        MageNuggets.novaMonitorToggle = true;
     end
 end
 --
 function HideSSMonitorToggle() -- Spellsteal Monitor Toggle
     local stealMonitorChecked = MageNugOptionsFrame_CheckButton2:GetChecked();
     if (stealMonitorChecked == true) then
-	    MageNuggets.ssMonitorToggle = false; 
+	    MageNuggets.ssMonitorToggle = false;
     else
         MageNuggets.ssMonitorToggle = true;
     end
@@ -1003,7 +885,7 @@ end
 function MNInvokersToggle()
     local isChecked = MageNugOptionsFrame_CheckButtonIE:GetChecked();
     if (isChecked == true) then
-	    MageNuggets.invokersToggle = true; 
+	    MageNuggets.invokersToggle = true;
     else
         MageNuggets.invokersToggle = false;
     end
@@ -1012,7 +894,7 @@ end
 function MNAlterTimeToggle()
     local isChecked = MageNugOptionsFrame_CheckButtonAlterTime:GetChecked();
     if (isChecked == true) then
-	    MageNuggets.alterTimeToggle = false; 
+	    MageNuggets.alterTimeToggle = false;
     else
         MageNuggets.alterTimeToggle = true;
     end
@@ -1021,7 +903,7 @@ end
 function MNmessagesToggle() --slowfall notify Toggle
     local msgTog = MageNugMsgOptionFrame_CheckButton:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.msgToggle = true; 
+	    MageNuggets.msgToggle = true;
     else
         MageNuggets.msgToggle = false;
     end
@@ -1030,7 +912,7 @@ end
 function MNpainSupNotifyToggle() -- pain suppression notify toggle
     local msgTog = MageNugPriestOptionFrame_CheckButton2:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.painSupToggle = true; 
+	    MageNuggets.painSupToggle = true;
     else
         MageNuggets.painSupToggle = false;
     end
@@ -1039,7 +921,7 @@ end
 function MNgspiritNotifyToggle() -- g spirit notify toggle
     local msgTog = MageNugPriestOptionFrame_CheckButton3:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.gspiritToggle = true; 
+	    MageNuggets.gspiritToggle = true;
     else
         MageNuggets.gspiritToggle = false;
     end
@@ -1049,7 +931,7 @@ end
 function MNpowerInfNotifyToggle() -- power inf notify toggle
     local msgTog = MageNugPriestOptionFrame_CheckButton0:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.powerInfToggle = true; 
+	    MageNuggets.powerInfToggle = true;
     else
         MageNuggets.powerInfToggle = false;
     end
@@ -1058,7 +940,7 @@ end
 function MNfocusMagicNotifyToggle() -- Focus magic notify toggle
     local msgTog = MageNugMsgOptionFrame_CheckButton2:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.symbiosisnToggle = true; 
+	    MageNuggets.symbiosisnToggle = true;
     else
         MageNuggets.symbiosisnToggle = false;
     end
@@ -1067,7 +949,7 @@ end
 function MNfocusMagicThanksToggle() -- Focus magic thanks toggle
     local msgTog = MageNugMsgOptionFrame_CheckButton3:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.symbiosistyToggle = true; 
+	    MageNuggets.symbiosistyToggle = true;
     else
         MageNuggets.symbiosistyToggle = false;
     end
@@ -1076,7 +958,7 @@ end
 function MNinnervateThanksToggle() -- innervate thanks toggle
     local msgTog = MageNugMsgOptionFrame_CheckButton4:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.innertyToggle = true; 
+	    MageNuggets.innertyToggle = true;
     else
         MageNuggets.innertyToggle = false;
     end
@@ -1084,7 +966,7 @@ end
 function MNpowerInfusionTyToggle() -- Power infusion thanks toggle
     local msgTog = MageNugMsgOptionFrame_CheckButton5:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.pityToggle = true; 
+	    MageNuggets.pityToggle = true;
     else
         MageNuggets.pityToggle = false;
     end
@@ -1092,7 +974,7 @@ end
 function MNdarkIntentTyToggle() -- dark intent thanks toggle
     local msgTog = MageNugMsgOptionFrame_CheckButton6:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.dityToggle = true; 
+	    MageNuggets.dityToggle = true;
     else
         MageNuggets.dityToggle = false;
     end
@@ -1104,7 +986,7 @@ end
 function MNCauterizeToggle()
     local isChecked = CauterizeCheckButton:GetChecked();
     if (isChecked == true) then
-	    MageNuggets.cauterizeToggle = true; 
+	    MageNuggets.cauterizeToggle = true;
     else
         MageNuggets.cauterizeToggle = false;
     end
@@ -1125,7 +1007,7 @@ function cameraZoomToggle() -- Camera Zoom Out Toggle
     if (camZoomChecked == true) then
         ConsoleExec("cameraDistanceMax 15");
         MageNuggets.camZoomTogg = false;
-    else  
+    else
         ConsoleExec("cameraDistanceMax 50");
         MageNuggets.camZoomTogg = true;
     end
@@ -1135,7 +1017,7 @@ function MirrorImageSoundToggle() -- Mirror Image Sound Toggle
     local miChecked = MageNugSoundOptionFrame_MICheckButton:GetChecked();
     if (miChecked == true) then
         MageNuggets.miSoundToggle = true;
-    else  
+    else
         MageNuggets.miSoundToggle = false;
     end
 end
@@ -1144,7 +1026,7 @@ function ProcSoundToggle() -- Proc Sound Toggle
     local procChecked = MageNugSoundOptionFrame_ProcCheckButton:GetChecked();
     if (procChecked == true) then
         MageNuggets.procSoundToggle = true;
-    else  
+    else
         MageNuggets.procSoundToggle = false;
     end
 end
@@ -1153,7 +1035,7 @@ function PolySoundToggle() -- Poly Sound Toggle
     local isChecked = MageNugSoundOptionFrame_PolyCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.polySoundToggle = true;
-    else  
+    else
         MageNuggets.polySoundToggle = false;
     end
 end
@@ -1162,7 +1044,7 @@ function BlastStackSoundToggle() -- Arcane Blast \ Stack Sound Toggle
     local isChecked = MageNugSoundOptionFrame_ABCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.ABSoundToggle = true;
-    else  
+    else
         MageNuggets.ABSoundToggle = false;
     end
 end
@@ -1171,7 +1053,7 @@ function HotStreakSoundToggle() -- HS Sound Toggle
     local isChecked = MageNugSoundOptionFrame_HotStreakCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.hsSoundToggle = true;
-    else  
+    else
         MageNuggets.hsSoundToggle = false;
     end
 end
@@ -1180,7 +1062,7 @@ function CauterizeSoundToggle() -- Cauterize Sound Toggle
     local isChecked = MageNugSoundOptionFrame_CauterizeCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.cauterizeSoundToggle = true;
-    else  
+    else
         MageNuggets.cauterizeSoundToggle = false;
     end
 end
@@ -1189,7 +1071,7 @@ function TimeWarpSoundToggle() -- time warp Sound Toggle
     local isChecked = MageNugSoundOptionFrame_TimeWarpCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.timewarpSoundToggle = true;
-    else  
+    else
         MageNuggets.timewarpSoundToggle = false;
     end
 end
@@ -1198,7 +1080,7 @@ function ImpactSoundToggle() -- Impact Sound Toggle
     local isChecked = MageNugSoundOptionFrame_ImpactCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.impactSoundToggle = true;
-    else  
+    else
         MageNuggets.impactSoundToggle = false;
     end
 end
@@ -1207,7 +1089,7 @@ function FoFSoundToggle() -- FoF Sound Toggle
     local isChecked = MageNugSoundOptionFrame_FoFCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.fofSoundToggle = true;
-    else  
+    else
         MageNuggets.fofSoundToggle = false;
     end
 end
@@ -1216,7 +1098,7 @@ function BrainFreezeSoundToggle() --Brain Freeze Sound Toggle
     local isChecked = MageNugSoundOptionFrame_BrainFreezeCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.brainfreezeSoundToggle = true;
-    else  
+    else
         MageNuggets.brainfreezeSoundToggle = false;
     end
 end
@@ -1225,7 +1107,7 @@ function MirrorImagToggle() -- Mirror Image Timer Toggle
     local mirrorChecked = MageNugOptionsFrame_CheckButton6:GetChecked();
     if (mirrorChecked == true) then
         MageNuggets.mirrorImageToggle = false;
-    else  
+    else
         MageNuggets.mirrorImageToggle = true;
     end
 end
@@ -1234,7 +1116,7 @@ function EvoToggle() -- Evocation Toggle
     local evoChecked = MageNugOptionsFrame_CheckButton8:GetChecked();
     if (evoChecked == true) then
         MageNuggets.evocationToggle = false;
-    else  
+    else
         MageNuggets.evocationToggle = true;
     end
 end
@@ -1243,7 +1125,7 @@ function LivingBToggle() -- Living Bomb Toggle
     local lbChecked = MageNugOptionsFrame_CheckButton9:GetChecked();
     if (lbChecked == true) then
         MageNuggets.livingBombToggle = false;
-    else  
+    else
         MageNuggets.livingBombToggle = true;
     end
 end
@@ -1253,7 +1135,7 @@ function MNabCastTimeToggle() -- AB Cast Time Toggle
     if (abcChecked == true) then
         MageNuggets.abCastTimeToggle = true;
         MNabCast_Frame:Show();
-    else  
+    else
         MageNuggets.abCastTimeToggle = false;
         MNabCast_Frame:Hide();
     end
@@ -1263,7 +1145,7 @@ function MageProcMonitorToggle()
     local mpChecked = MageNugOptionsFrame_CheckButton11:GetChecked();
     if (mpChecked == true) then
         MageNuggets.procMonitorToggle = false;
-    else  
+    else
         MageNuggets.procMonitorToggle = true;
     end
 end
@@ -1272,7 +1154,7 @@ function MNArcaneBlastToggle()
     local abChecked = MageNugOptionsFrame_CheckButton13:GetChecked();
     if (abChecked == true) then
         MageNuggets.arcaneBlastToggle = false;
-    else  
+    else
         MageNuggets.arcaneBlastToggle = true;
     end
 end
@@ -1281,7 +1163,7 @@ function MNpolyToggle()
     local polyChecked = MageNugOptionsFrame_CheckButton14:GetChecked();
     if (polyChecked == true) then
         MageNuggets.polyToggle = false;
-    else  
+    else
         MageNuggets.polyToggle = true;
     end
 end
@@ -1380,7 +1262,7 @@ function ShowConfigFrames() --Shows frames for 120 seconds
     MageNugMBProcFrame:Show();
     fofProgMonTime = 120;
     MageNugFoFProcFrameText:SetText("|cffFFFFFF".."Fingers Of Frost")
-    MageNugFoFProcFrame:Show(); 
+    MageNugFoFProcFrame:Show();
     cauterizeTime = 120;
     MageNugCauterize_Frame:Show();
     abProgMonTime = 120;
@@ -1403,7 +1285,7 @@ function HideConfigFrames()
     MageNugProcFrame:Hide();
     MageNugProcHUFrame:Hide();
     MageNugMBProcFrame:Hide();
-    MageNugFoFProcFrame:Hide(); 
+    MageNugFoFProcFrame:Hide();
     MageNugAB_Frame:Hide();
     MageNugInvokers_Frame:Hide();
     MageNugClearcast_Frame:Hide();
@@ -1416,7 +1298,7 @@ function LockFramesToggle()
     local flChecked = MageNugOption2Frame_LockFramesCheckButton:GetChecked();
     if (flChecked == true) then
         MageNuggets.lockFrames = true;
-    else  
+    else
         MageNuggets.lockFrames = false;
     end
 end
@@ -1450,16 +1332,16 @@ function MNclearcastToggle()
     end
 end
 
-function MageNugLivingBombSize() 
+function MageNugLivingBombSize()
     local tempInt = MageNugOptionsFrame_Slider3:GetValue()
-    
+
     if not MageNugOptionsFrame_Slider3._onsetting then
         MageNugOptionsFrame_Slider3._onsetting = true
         MageNugOptionsFrame_Slider3:SetValue(MageNugOptionsFrame_Slider3:GetValue())
         tempInt = MageNugOptionsFrame_Slider3:GetValue()
         MageNugOptionsFrame_Slider3._onsetting = false
-    else return end  
-        
+    else return end
+
     if (tempInt == 0) then
         MageNugNova_Frame:SetScale(0.7);
         MageNugAB_Frame:SetScale(0.7);
@@ -1547,7 +1429,7 @@ end
 function MNCauterizeToggle()
     local isChecked = CauterizeCheckButton:GetChecked();
     if (isChecked == true) then
-	    MageNuggets.cauterizeToggle = true; 
+	    MageNuggets.cauterizeToggle = true;
     else
         MageNuggets.cauterizeToggle = false;
     end
@@ -1568,7 +1450,7 @@ function cameraZoomToggle() -- Camera Zoom Out Toggle
     if (camZoomChecked == true) then
         ConsoleExec("cameraDistanceMax 15");
         MageNuggets.camZoomTogg = false;
-    else  
+    else
         ConsoleExec("cameraDistanceMax 50");
         MageNuggets.camZoomTogg = true;
     end
@@ -1578,7 +1460,7 @@ function MirrorImageSoundToggle() -- Mirror Image Sound Toggle
     local miChecked = MageNugSoundOptionFrame_MICheckButton:GetChecked();
     if (miChecked == true) then
         MageNuggets.miSoundToggle = true;
-    else  
+    else
         MageNuggets.miSoundToggle = false;
     end
 end
@@ -1587,7 +1469,7 @@ function ProcSoundToggle() -- Proc Sound Toggle
     local procChecked = MageNugSoundOptionFrame_ProcCheckButton:GetChecked();
     if (procChecked == true) then
         MageNuggets.procSoundToggle = true;
-    else  
+    else
         MageNuggets.procSoundToggle = false;
     end
 end
@@ -1596,7 +1478,7 @@ function PolySoundToggle() -- Poly Sound Toggle
     local isChecked = MageNugSoundOptionFrame_PolyCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.polySoundToggle = true;
-    else  
+    else
         MageNuggets.polySoundToggle = false;
     end
 end
@@ -1605,7 +1487,7 @@ function BlastStackSoundToggle() -- Arcane Blast \ Stack Sound Toggle
     local isChecked = MageNugSoundOptionFrame_ABCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.ABSoundToggle = true;
-    else  
+    else
         MageNuggets.ABSoundToggle = false;
     end
 end
@@ -1614,7 +1496,7 @@ function HotStreakSoundToggle() -- HS Sound Toggle
     local isChecked = MageNugSoundOptionFrame_HotStreakCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.hsSoundToggle = true;
-    else  
+    else
         MageNuggets.hsSoundToggle = false;
     end
 end
@@ -1623,7 +1505,7 @@ function CauterizeSoundToggle() -- Cauterize Sound Toggle
     local isChecked = MageNugSoundOptionFrame_CauterizeCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.cauterizeSoundToggle = true;
-    else  
+    else
         MageNuggets.cauterizeSoundToggle = false;
     end
 end
@@ -1632,7 +1514,7 @@ function TimeWarpSoundToggle() -- time warp Sound Toggle
     local isChecked = MageNugSoundOptionFrame_TimeWarpCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.timewarpSoundToggle = true;
-    else  
+    else
         MageNuggets.timewarpSoundToggle = false;
     end
 end
@@ -1641,7 +1523,7 @@ function ImpactSoundToggle() -- Impact Sound Toggle
     local isChecked = MageNugSoundOptionFrame_ImpactCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.impactSoundToggle = true;
-    else  
+    else
         MageNuggets.impactSoundToggle = false;
     end
 end
@@ -1650,7 +1532,7 @@ function FoFSoundToggle() -- FoF Sound Toggle
     local isChecked = MageNugSoundOptionFrame_FoFCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.fofSoundToggle = true;
-    else  
+    else
         MageNuggets.fofSoundToggle = false;
     end
 end
@@ -1659,7 +1541,7 @@ function BrainFreezeSoundToggle() --Brain Freeze Sound Toggle
     local isChecked = MageNugSoundOptionFrame_BrainFreezeCheckButton:GetChecked();
     if (isChecked == true) then
         MageNuggets.brainfreezeSoundToggle = true;
-    else  
+    else
         MageNuggets.brainfreezeSoundToggle = false;
     end
 end
@@ -1668,7 +1550,7 @@ function MirrorImagToggle() -- Mirror Image Timer Toggle
     local mirrorChecked = MageNugOptionsFrame_CheckButton6:GetChecked();
     if (mirrorChecked == true) then
         MageNuggets.mirrorImageToggle = false;
-    else  
+    else
         MageNuggets.mirrorImageToggle = true;
     end
 end
@@ -1677,7 +1559,7 @@ function EvoToggle() -- Evocation Toggle
     local evoChecked = MageNugOptionsFrame_CheckButton8:GetChecked();
     if (evoChecked == true) then
         MageNuggets.evocationToggle = false;
-    else  
+    else
         MageNuggets.evocationToggle = true;
     end
 end
@@ -1686,7 +1568,7 @@ function LivingBToggle() -- Living Bomb Toggle
     local lbChecked = MageNugOptionsFrame_CheckButton9:GetChecked();
     if (lbChecked == true) then
         MageNuggets.livingBombToggle = false;
-    else  
+    else
         MageNuggets.livingBombToggle = true;
     end
 end
@@ -1696,7 +1578,7 @@ function MNabCastTimeToggle() -- AB Cast Time Toggle
     if (abcChecked == true) then
         MageNuggets.abCastTimeToggle = true;
         MNabCast_Frame:Show();
-    else  
+    else
         MageNuggets.abCastTimeToggle = false;
         MNabCast_Frame:Hide();
     end
@@ -1706,7 +1588,7 @@ function MageProcMonitorToggle()
     local mpChecked = MageNugOptionsFrame_CheckButton11:GetChecked();
     if (mpChecked == true) then
         MageNuggets.procMonitorToggle = false;
-    else  
+    else
         MageNuggets.procMonitorToggle = true;
     end
 end
@@ -1715,7 +1597,7 @@ function MNArcaneBlastToggle()
     local abChecked = MageNugOptionsFrame_CheckButton13:GetChecked();
     if (abChecked == true) then
         MageNuggets.arcaneBlastToggle = false;
-    else  
+    else
         MageNuggets.arcaneBlastToggle = true;
     end
 end
@@ -1724,7 +1606,7 @@ function MNpolyToggle()
     local polyChecked = MageNugOptionsFrame_CheckButton14:GetChecked();
     if (polyChecked == true) then
         MageNuggets.polyToggle = false;
-    else  
+    else
         MageNuggets.polyToggle = true;
     end
 end
@@ -1823,7 +1705,7 @@ function ShowConfigFrames() --Shows frames for 120 seconds
     MageNugMBProcFrame:Show();
     fofProgMonTime = 120;
     MageNugFoFProcFrameText:SetText("|cffFFFFFF".."Fingers Of Frost")
-    MageNugFoFProcFrame:Show(); 
+    MageNugFoFProcFrame:Show();
     cauterizeTime = 120;
     MageNugCauterize_Frame:Show();
     abProgMonTime = 120;
@@ -1846,7 +1728,7 @@ function HideConfigFrames()
     MageNugProcFrame:Hide();
     MageNugProcHUFrame:Hide();
     MageNugMBProcFrame:Hide();
-    MageNugFoFProcFrame:Hide(); 
+    MageNugFoFProcFrame:Hide();
     MageNugAB_Frame:Hide();
     MageNugInvokers_Frame:Hide();
     MageNugClearcast_Frame:Hide();
@@ -1858,7 +1740,7 @@ function LockFramesToggle()
     local flChecked = MageNugOption2Frame_LockFramesCheckButton:GetChecked();
     if (flChecked == true) then
         MageNuggets.lockFrames = true;
-    else  
+    else
         MageNuggets.lockFrames = false;
     end
 end
@@ -1890,9 +1772,9 @@ function MNclearcastToggle()
     end
 end
 
-function updatePortalMenu(self, elapsed) 
+function updatePortalMenu(self, elapsed)
     self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then   
+    if (self.TimeSinceLastUpdate > 0.1) then
         local startTime, duration, enable = GetItemCooldown(6948);
         local hearthCooldown = startTime + duration - GetTime();
         if(hearthCooldown <= 0)then
@@ -1907,8 +1789,8 @@ function updatePortalMenu(self, elapsed)
             MageNugHordeFrameText3:SetText("|cffffffff"..RoundZero(hearthCooldown).."s");
             MageNugAlliFrameText3:SetText("|cffffffff"..RoundZero(hearthCooldown).."s");
         end
-        
-    
+
+
         local ghTime, ghDuration, ghenable = GetItemCooldown(110560);
         local garrisonHearthCooldown = RoundZero(ghTime + ghDuration - GetTime());
         if(garrisonHearthCooldown <= 0)then
@@ -1923,9 +1805,9 @@ function updatePortalMenu(self, elapsed)
             MageNugHordeFrameText4:SetText("|cffffffff"..RoundZero(garrisonHearthCooldown).."s");
             MageNugAlliFrameText4:SetText("|cffffffff"..RoundZero(garrisonHearthCooldown).."s");
         end
-        
+
         self.TimeSinceLastUpdate = 0;
-    end   
+    end
 end
 
 function MNigniteToggle()
@@ -1965,10 +1847,10 @@ end
 function MNMinimapButtonToggle()
     local mini = MageNugOption2Frame_MinimapCheckButton:GetChecked();
     if (mini == true) then
-        MageNuggets.minimapToggle = false; 
+        MageNuggets.minimapToggle = false;
         MageNug_MinimapFrame:Hide();
     else
-        MageNuggets.minimapToggle = true; 
+        MageNuggets.minimapToggle = true;
         MageNug_MinimapFrame:Show();
     end
 end
@@ -1976,7 +1858,7 @@ end
 function HideSSMonitorToggle() -- Spellsteal Monitor Toggle
     local stealMonitorChecked = MageNugOptionsFrame_CheckButton2:GetChecked();
     if (stealMonitorChecked == true) then
-	    MageNuggets.ssMonitorToggle = false; 
+	    MageNuggets.ssMonitorToggle = false;
     else
         MageNuggets.ssMonitorToggle = true;
     end
@@ -1987,7 +1869,7 @@ end
 function MNInvokersToggle()
     local isChecked = MageNugOptionsFrame_CheckButtonIE:GetChecked();
     if (isChecked == true) then
-	    MageNuggets.invokersToggle = true; 
+	    MageNuggets.invokersToggle = true;
     else
         MageNuggets.invokersToggle = false;
     end
@@ -1996,7 +1878,7 @@ end
 function MNAlterTimeToggle()
     local isChecked = MageNugOptionsFrame_CheckButtonAlterTime:GetChecked();
     if (isChecked == true) then
-	    MageNuggets.alterTimeToggle = false; 
+	    MageNuggets.alterTimeToggle = false;
     else
         MageNuggets.alterTimeToggle = true;
     end
@@ -2005,7 +1887,7 @@ end
 function MNmessagesToggle() --slowfall notify Toggle
     local msgTog = MageNugMsgOptionFrame_CheckButton:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.msgToggle = true; 
+	    MageNuggets.msgToggle = true;
     else
         MageNuggets.msgToggle = false;
     end
@@ -2014,7 +1896,7 @@ end
 function MNpainSupNotifyToggle() -- pain suppression notify toggle
     local msgTog = MageNugPriestOptionFrame_CheckButton2:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.painSupToggle = true; 
+	    MageNuggets.painSupToggle = true;
     else
         MageNuggets.painSupToggle = false;
     end
@@ -2023,7 +1905,7 @@ end
 function MNgspiritNotifyToggle() -- g spirit notify toggle
     local msgTog = MageNugPriestOptionFrame_CheckButton3:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.gspiritToggle = true; 
+	    MageNuggets.gspiritToggle = true;
     else
         MageNuggets.gspiritToggle = false;
     end
@@ -2033,7 +1915,7 @@ end
 function MNpowerInfNotifyToggle() -- power inf notify toggle
     local msgTog = MageNugPriestOptionFrame_CheckButton0:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.powerInfToggle = true; 
+	    MageNuggets.powerInfToggle = true;
     else
         MageNuggets.powerInfToggle = false;
     end
@@ -2042,7 +1924,7 @@ end
 function MNfocusMagicNotifyToggle() -- Focus magic notify toggle
     local msgTog = MageNugMsgOptionFrame_CheckButton2:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.symbiosisnToggle = true; 
+	    MageNuggets.symbiosisnToggle = true;
     else
         MageNuggets.symbiosisnToggle = false;
     end
@@ -2051,7 +1933,7 @@ end
 function MNfocusMagicThanksToggle() -- Focus magic thanks toggle
     local msgTog = MageNugMsgOptionFrame_CheckButton3:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.symbiosistyToggle = true; 
+	    MageNuggets.symbiosistyToggle = true;
     else
         MageNuggets.symbiosistyToggle = false;
     end
@@ -2060,7 +1942,7 @@ end
 function MNinnervateThanksToggle() -- innervate thanks toggle
     local msgTog = MageNugMsgOptionFrame_CheckButton4:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.innertyToggle = true; 
+	    MageNuggets.innertyToggle = true;
     else
         MageNuggets.innertyToggle = false;
     end
@@ -2068,7 +1950,7 @@ end
 function MNpowerInfusionTyToggle() -- Power infusion thanks toggle
     local msgTog = MageNugMsgOptionFrame_CheckButton5:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.pityToggle = true; 
+	    MageNuggets.pityToggle = true;
     else
         MageNuggets.pityToggle = false;
     end
@@ -2077,7 +1959,7 @@ end
 function MNdarkIntentTyToggle() -- dark intent thanks toggle
     local msgTog = MageNugMsgOptionFrame_CheckButton6:GetChecked();
     if (msgTog == true) then
-	    MageNuggets.dityToggle = true; 
+	    MageNuggets.dityToggle = true;
     else
         MageNuggets.dityToggle = false;
     end
@@ -2086,7 +1968,7 @@ end
 
 
 function loadMageNuggetVariables_OnLoadEvent()
-     mnplayerClass, mnenglishClass = UnitClass("player");  
+     mnplayerClass, mnenglishClass = UnitClass("player");
     if((mnenglishClass == 'WARRIOR') or (mnenglishClass == 'MONK') or (mnenglishClass == 'ROGUE') or (mnenglishClass == 'DEATHKNIGHT') or (mnenglishClass == 'PALADIN') or (mnenglishClass == 'HUNTER')) then
         MageNuggets.ssMonitorToggle = false;
         MageNuggets.igniteTog = false;
@@ -2202,7 +2084,7 @@ function loadMageNuggetVariables_OnLoadEvent()
         MNstarSurge_Frame:Hide();
         MNSpellSteal_FrameTitleText:SetText("|cff33ccffS P E L L S T E A L");
         MNSpellStealFocus_FrameTitleText:SetText("|cff33ccffFOCUS SPELLSTEAL");
-    end   
+    end
 
     MageNugMoonkinToggle_FrameText:SetText("|cff00BFFF".."Mage".."|cff00FF00".." Nuggets")
     MageNugCauterizeFrame:Hide();
@@ -2210,8 +2092,8 @@ function loadMageNuggetVariables_OnLoadEvent()
         MNabCast_Frame:Show();
     else
         MNabCast_Frame:Hide();
-    end   
-    
+    end
+
 end
 
 
@@ -2321,6 +2203,7 @@ end
 
 
 function MageNugz_SetFrame_Positions()
+    loadMageNuggetOptionsVariables_OnLoadEvent();
     MageNugIgnite_Frame:ClearAllPoints();
     MageNugIgnite_Frame:SetPoint(MageNuggets_Frames.ignite_point, "UIParent", MageNuggets_Frames.ignite_relativePoint, MageNuggets_Frames.ignite_xOfs, MageNuggets_Frames.ignite_yOfs);
     MageNugInvokers_Frame:ClearAllPoints();
@@ -2391,19 +2274,19 @@ end
 function MageNugz_MinimapButton_DraggingFrame_OnUpdate()
 	local xpos,ypos = GetCursorPosition()
 	local xmin,ymin = Minimap:GetLeft(), Minimap:GetBottom()
-	xpos = xmin-xpos/UIParent:GetScale()+70 
+	xpos = xmin-xpos/UIParent:GetScale()+70
     ypos = ypos/UIParent:GetScale()-ymin-70
 	MageNuggets.MinimapPos = math.deg(math.atan2(ypos,xpos))
     MageNugz_MinimapButton_Move()
 end
 
-function MageNugz_Minimap_OnClick() 
+function MageNugz_Minimap_OnClick()
     local englishFaction, localizedFaction = UnitFactionGroup("player")
     if (englishFaction == "Horde")then
         MageNugHordeFrame:Show();
     elseif (englishFaction == "Alliance") then
         MageNugAlliFrame:Show();
-    end   
+    end
 end
 
 function MNRecallFrames()
@@ -2433,14 +2316,14 @@ end
 
 function  MageNugCauterizeSize() -- Cauterize Slider
     local tempInt = MageNugOptionsFrame_Slider5:GetValue()
-    
+
     if not MageNugOptionsFrame_Slider5._onsetting then
         MageNugOptionsFrame_Slider5._onsetting = true
         MageNugOptionsFrame_Slider5:SetValue(MageNugOptionsFrame_Slider5:GetValue())
         tempInt = MageNugOptionsFrame_Slider5:GetValue()
         MageNugOptionsFrame_Slider5._onsetting = false
-    else return end      
-    
+    else return end
+
     if (tempInt == 0) then
         MageNugCauterizeFrame:SetScale(0.7);
         MageNuggets.cautSize = 0;
@@ -2469,14 +2352,14 @@ end
 
 function  MageNugSSMonitorSize() -- SS Slider
     local tempInt = MageNugOptionsFrame_Slider2:GetValue()
-    
+
     if not MageNugOptionsFrame_Slider2._onsetting then
         MageNugOptionsFrame_Slider2._onsetting = true
         MageNugOptionsFrame_Slider2:SetValue(MageNugOptionsFrame_Slider2:GetValue())
         tempInt = MageNugOptionsFrame_Slider2:GetValue()
         MageNugOptionsFrame_Slider2._onsetting = false
-    else return end  
-    
+    else return end
+
     if (tempInt == 0) then
         MNSpellSteal_Frame:SetScale(0.7);
         MageNuggets.ssMonitorSize = 0;
@@ -2503,14 +2386,14 @@ end
 
 function  MageNugProcMonitorSize() --Proc Slider
     local tempInt = MageNugOptionsFrame_Slider4:GetValue()
-    
+
     if not MageNugOptionsFrame_Slider4._onsetting then
         MageNugOptionsFrame_Slider4._onsetting = true
         MageNugOptionsFrame_Slider4:SetValue(MageNugOptionsFrame_Slider4:GetValue())
         tempInt = MageNugOptionsFrame_Slider4:GetValue()
         MageNugOptionsFrame_Slider4._onsetting = false
-    else return end  
-    
+    else return end
+
     if (tempInt == 0) then
         MageNugProcFrame:SetScale(0.7);
         MageNugMBProcFrame:SetScale(0.7);
@@ -2565,14 +2448,14 @@ end
 
 function  MageNugInvokerMonitorSize() -- Rune of power size slider
     local tempInt = MageNugOptionsFrame_InvokersSlider:GetValue()
-    
+
     if not MageNugOptionsFrame_InvokersSlider._onsetting then
         MageNugOptionsFrame_InvokersSlider._onsetting = true
         MageNugOptionsFrame_InvokersSlider:SetValue(MageNugOptionsFrame_InvokersSlider:GetValue())
         tempInt = MageNugOptionsFrame_InvokersSlider:GetValue()
         MageNugOptionsFrame_InvokersSlider._onsetting = false
-    else return end  
-    
+    else return end
+
     if (tempInt == 0) then
         MageNugInvokers_Frame:SetScale(0.7);
         MageNuggets.invokersMonitorSize = 0;
@@ -2626,14 +2509,14 @@ end
 
 function MageNugPolyFrameSize()
     local tempInt = MageNugOptionsFrame_Slider1:GetValue()
-    
+
     if not MageNugOptionsFrame_Slider1._onsetting then
         MageNugOptionsFrame_Slider1._onsetting = true
         MageNugOptionsFrame_Slider1:SetValue(MageNugOptionsFrame_Slider1:GetValue())
         tempInt = MageNugOptionsFrame_Slider1:GetValue()
         MageNugOptionsFrame_Slider1._onsetting = false
-    else return end  
-    
+    else return end
+
     if (tempInt == 0) then
         MageNugPolyFrame:SetScale(0.7);
         MageNuggets.polyFrameSize = 0;

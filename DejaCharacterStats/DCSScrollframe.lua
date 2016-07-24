@@ -31,7 +31,7 @@
  -- Scrollbar Check
 
 	local _, private = ...
-	private.defaults.dejacharacterstatsScrollbarChecked = {
+	private.defaults.dcsdefaults.dejacharacterstatsScrollbarChecked = {
 		ScrollbarSetChecked = false,
 	}	
 	
@@ -45,26 +45,26 @@ local DCS_ScrollbarCheck = CreateFrame("CheckButton", "DCS_ScrollbarCheck", Deja
 	
 	DCS_ScrollbarCheck:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-		local checked = private.db.dejacharacterstatsScrollbarChecked
+		local checked = private.db.dcsdefaults.dejacharacterstatsScrollbarChecked
 			self:SetChecked(checked.ScrollbarSetChecked)
 			if self:GetChecked(true) then
 				DCS_Scrollbar:Show() 
-				private.db.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = true
+				private.db.dcsdefaults.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = true
 			else
 				DCS_Scrollbar:Hide() 
-				private.db.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = false
+				private.db.dcsdefaults.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = false
 			end
 		end
 	end)
 
 	DCS_ScrollbarCheck:SetScript("OnClick", function(self,event,arg1) 
-		local checked = private.db.dejacharacterstatsScrollbarChecked
+		local checked = private.db.dcsdefaults.dejacharacterstatsScrollbarChecked
 		if self:GetChecked(true) then
 			DCS_Scrollbar:Show() 
-			private.db.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = true
+			private.db.dcsdefaults.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = true
 		else
 			DCS_Scrollbar:Hide() 
-			private.db.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = false
+			private.db.dcsdefaults.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = false
 		end
 	end)
  
@@ -175,10 +175,14 @@ local DCS_ScrollbarCheck = CreateFrame("CheckButton", "DCS_ScrollbarCheck", Deja
 	CharacterStatsPane.EnhancementsCategory.Background:SetWidth(186)
 	CharacterStatsPane.EnhancementsCategory.Background:SetHeight(28)
 	
-	PaperDollSidebarTab1:HookScript("OnClick", function(self,event) 
+	PaperDollSidebarTab1:HookScript("OnShow", function(self,event) 
 		DCS_ScrollframeParentFrame:Show()
 	end)
 
+	PaperDollSidebarTab1:HookScript("OnClick", function(self,event) 
+		DCS_ScrollframeParentFrame:Show()
+	end)
+	
 	PaperDollSidebarTab2:HookScript("OnClick", function(self,event) 
 		DCS_ScrollframeParentFrame:Hide()
 	end)

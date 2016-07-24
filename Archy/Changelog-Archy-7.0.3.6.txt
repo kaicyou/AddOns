@@ -1,0 +1,13 @@
+tag 7.0.3.6
+41160d89c912f01990e0bed54b9cd896d995cb4a
+James D. Callahan III <jcallahan@curse.com>
+2016-07-22 20:37:17 -0500
+
+
+
+--------------------
+
+James D. Callahan III:
+	- Blizzard renamed the ARTIFACT_DIG_SITE_UPDATED event to RESEARCH_ARTIFACT_DIG_SITE_UPDATED, which broke TomTom integration and a bunch of other things. Thanks, sidji!
+	- Create a Race object for RaceID.Unknown so the new expansion digsites without real raceIDs attached will Just Work™.
+	- Remove "missing data" print.

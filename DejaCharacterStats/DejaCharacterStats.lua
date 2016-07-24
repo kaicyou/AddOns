@@ -1,9 +1,17 @@
---SavedVariables Setup
+--------------------------
+-- SavedVariables Setup --
+--------------------------
 local DejaCharacterStats, private = ...
 
 private.defaults = {
 }
+private.defaults.dcsdefaults = {
+}
+DejaCharacterStats = {};
 
+----------------------------
+-- Saved Variables Loader --
+----------------------------
 local loader = CreateFrame("Frame")
 	loader:RegisterEvent("ADDON_LOADED")
 	loader:SetScript("OnEvent", function(self, addon)
@@ -28,53 +36,9 @@ local loader = CreateFrame("Frame")
 		end
 	end)
 
-DejaCharacterStats = {};
-
-local _, private = ...
-	private.defaults.optpanelDefaults = {
-	}	
-	
-DejaCharacterStats.panel = CreateFrame( "Frame", "DejaCharacterStatsPanel", UIParent );
--- Register in the Interface Addon Options GUI
--- Set the name for the Category for the Options Panel
-DejaCharacterStats.panel.name = "DejaCharacterStats";
--- Add the panel to the Interface Options
-InterfaceOptions_AddCategory(DejaCharacterStats.panel);
-
--- Make a child panel
--- DejaCharacterStats.childpanel = CreateFrame( "Frame", "DejaCharacterStatsChild", DejaCharacterStats.panel);
--- DejaCharacterStats.childpanel.name = "MyChild";
--- Specify childness of this panel (this puts it under the little red [+], instead of giving it a normal AddOn category)
--- DejaCharacterStats.childpanel.parent = DejaCharacterStats.panel.name;
--- Add the child to the Interface Options
--- InterfaceOptions_AddCategory(DejaCharacterStats.childpanel);
-
---Panel Title
-local dvtitle=CreateFrame("Frame", "dvtitle", DejaCharacterStatsPanel)
-	dvtitle:SetPoint("TOPLEFT", 5, -5)
-	dvtitle:SetScale(2.0)
-	dvtitle:SetWidth(150)
-	dvtitle:SetHeight(50)
-	dvtitle:Show()
-
-local dvtitleFS = dvtitle:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-	dvtitleFS:SetText('|cff00c0ffDejaCharacterStats|r')
-	dvtitleFS:SetPoint("TOPLEFT", 0, 0)
-	dvtitleFS:SetFont("Fonts\\FRIZQT__.TTF", 10)
-	
-dvresetcheck = CreateFrame("Button", "DVResetButton", DejaCharacterStatsPanel, "UIPanelButtonTemplate")
-	dvresetcheck:ClearAllPoints()
-	dvresetcheck:SetPoint("BOTTOMLEFT", 5, 5)
-	dvresetcheck:SetScale(1.25)
-	dvresetcheck:SetWidth(125)
-	dvresetcheck:SetHeight(30)
-	_G[dvresetcheck:GetName() .. "Text"]:SetText("Reset to Default")
-	dvresetcheck:SetScript("OnClick", function(self, button, down)
- 		DejaCharacterStatsDBPC = private.defaults;
-		ReloadUI();
-end)
-
---Open Categaories Fix
+--------------------------
+-- Open Categaories Fix --
+--------------------------
 do
 	local function get_panel_name(panel)
 		local tp = type(panel)
@@ -142,11 +106,19 @@ do
 	hooksecurefunc("InterfaceOptionsFrame_OpenToCategory", InterfaceOptionsFrame_OpenToCategory_Fix)
 end
 
---DV Slash Setup
-local RegisteredEvents = {};
-local dvslash = CreateFrame("Frame", "DejaCharacterStatsSlash", UIParent)
+-- Uncomment below the following three database saved variables setup lines for DejaView integration.
+-- SavedVariables Setup
+-- local DejaCharacterStats, private = ...
+-- private.defaults = {}
+-- DejaCharacterStats = {};
 
-dvslash:SetScript("OnEvent", function (self, event, ...) 
+---------------------
+-- DCS Slash Setup --
+---------------------
+local RegisteredEvents = {};
+local dcsslash = CreateFrame("Frame", "DejaCharacterStatsSlash", UIParent)
+
+dcsslash:SetScript("OnEvent", function (self, event, ...) 
 	if (RegisteredEvents[event]) then 
 	return RegisteredEvents[event](self, event, ...) 
 	end
@@ -163,7 +135,7 @@ function RegisteredEvents:ADDON_LOADED(event, addon, ...)
 end
 
 for k, v in pairs(RegisteredEvents) do
-	dvslash:RegisterEvent(k)
+	dcsslash:RegisterEvent(k)
 end
 
 function DejaCharacterStats.ShowHelp()
@@ -198,11 +170,11 @@ function DejaCharacterStats.SlashCmdHandler(msg, editbox)
 		InterfaceOptionsFrame_OpenToCategory("DejaCharacterStats");
 	elseif (string.lower(msg) == "dumpconfig") then
 		print("With defaults")
-		for k,v in pairs(DVDefaultConfig) do
+		for k,v in pairs(DCSDefaultConfig) do
 			print(k,DejaCharacterStats.GetConfigValue(k))
 		end
 		print("Direct table")
-		for k,v in pairs(DVDefaultConfig) do
+		for k,v in pairs(DCSDefaultConfig) do
 			print(k,v)
 		end
 	elseif (string.lower(msg) == "reset") then
@@ -215,6 +187,49 @@ function DejaCharacterStats.SlashCmdHandler(msg, editbox)
 	end
 end
 	SlashCmdList["DEJACHARACTERSTATS"] = DejaCharacterStats.SlashCmdHandler;
+
+-----------------------
+-- DCS Options Panel --
+-----------------------
+DejaCharacterStats.panel = CreateFrame( "Frame", "DejaCharacterStatsPanel", UIParent );
+DejaCharacterStats.panel.name = "DejaCharacterStats";
+InterfaceOptions_AddCategory(DejaCharacterStats.panel);
+
+-- DCS, DejaView Child Panel
+-- DejaViewPanel.DejaCharacterStatsPanel = CreateFrame( "Frame", "DejaCharacterStatsPanel", DejaViewPanel);
+-- DejaViewPanel.DejaCharacterStatsPanel.name = "DejaCharacterStats";
+-- Specify childness of this panel (this puts it under the little red [+], instead of giving it a normal AddOn category)
+-- DejaViewPanel.DejaCharacterStatsPanel.parent = DejaViewPanel.name;
+-- Add the child to the Interface Options
+-- InterfaceOptions_AddCategory(DejaViewPanel.DejaCharacterStatsPanel);
+
+local dcstitle=CreateFrame("Frame", "DCSTitle", DejaCharacterStatsPanel)
+	dcstitle:SetPoint("TOPLEFT", 5, -5)
+	dcstitle:SetScale(2.0)
+	dcstitle:SetWidth(150)
+	dcstitle:SetHeight(50)
+	dcstitle:Show()
+
+local dcstitleFS = dcstitle:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	dcstitleFS:SetText('|cff00c0ffDejaCharacterStats|r')
+	dcstitleFS:SetPoint("TOPLEFT", 0, 0)
+	dcstitleFS:SetFont("Fonts\\FRIZQT__.TTF", 10)
+	
+dcsresetcheck = CreateFrame("Button", "DCSResetButton", DejaCharacterStatsPanel, "UIPanelButtonTemplate")
+	dcsresetcheck:ClearAllPoints()
+	dcsresetcheck:SetPoint("BOTTOMLEFT", 5, 5)
+	dcsresetcheck:SetScale(1.25)
+	dcsresetcheck:SetWidth(125)
+	dcsresetcheck:SetHeight(30)
+	_G[dcsresetcheck:GetName() .. "Text"]:SetText("Reset to Default")
+	dcsresetcheck:SetScript("OnClick", function(self, button, down)
+ 		private.db.dcsdefaults = private.defaults.dcsdefaults;
+		ReloadUI();
+end)
+
+----------------------------
+-- DCS Functions & Arrays --
+----------------------------
 
 function PaperDollFrame_UpdateStats()
 	local level = UnitLevel("player");
@@ -391,9 +406,10 @@ PAPERDOLL_STATINFO = {
 	},
 };
 
---------------------
--- Relevant Stats --
---------------------
+--------------------------
+-- Relevant Stats Array --
+--------------------------
+
 local function DCS_RelevantStats()
 	-- primary: only show the 1 for the player's current spec
 	-- roles: only show if the player's current spec is one of the roles
@@ -440,12 +456,12 @@ local function DCS_RelevantStats()
 		},
 	};
 	
-		local durabilitychecked = private.db.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked
+		local durabilitychecked = private.db.dcsdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked
 		if durabilitychecked == true then 
 			table.insert(PAPERDOLL_STATCATEGORIES[1].stats, { stat = "DURABILITY" })
 			PaperDollFrame_UpdateStats();
 		end
-		local repairchecked = private.db.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked
+		local repairchecked = private.db.dcsdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked
 		if repairchecked == true then 
 			table.insert(PAPERDOLL_STATCATEGORIES[1].stats, { stat = "REPAIRTOTAL" })
 			PaperDollFrame_UpdateStats();
@@ -453,9 +469,9 @@ local function DCS_RelevantStats()
 	PaperDollFrame_UpdateStats();
 end
 
---------------------
--- Show All Stats --
---------------------
+--------------------------
+-- Show All Stats Array --
+--------------------------
 local function DCS_AllStats()
 	PAPERDOLL_STATCATEGORIES= {
 		[1] = {
@@ -499,6 +515,9 @@ local function DCS_AllStats()
 	PaperDollFrame_UpdateStats();
 end
 
+------------------------------------------------------------------
+-- Various Options Selection Initialization and Logic Functions --
+------------------------------------------------------------------
 local function DCS_SelectStats()
 	PAPERDOLL_STATCATEGORIES= {
 		[1] = {	categoryFrame = "AttributesCategory", stats = {}, },
@@ -509,7 +528,7 @@ end
 
 local function DCS_FillSelectStatsTable()
 	for k, v in ipairs(PAPERDOLL_AttributesIndexDefaultStats) do
-	local checked = private.db.dejacharacterstatsSelectedStats[v]
+	local checked = private.db.dcsdefaults.dejacharacterstatsSelectedStats[v]
 		if checked == true then 
 			table.insert(PAPERDOLL_STATCATEGORIES[1].stats, { stat = format("%s", v) })
 			PaperDollFrame_UpdateStats();
@@ -517,7 +536,7 @@ local function DCS_FillSelectStatsTable()
 	end
 	
 	for k, v in ipairs(PAPERDOLL_EnhancementsIndexDefaultStats) do
-	local checked = private.db.dejacharacterstatsSelectedStats[v]
+	local checked = private.db.dcsdefaults.dejacharacterstatsSelectedStats[v]
 		if checked == true then 
 			table.insert(PAPERDOLL_STATCATEGORIES[2].stats, { stat = format("%s", v) })
 			PaperDollFrame_UpdateStats();
@@ -544,8 +563,11 @@ local function DCS_CheckShowSelectChecks()
 	end
 end
 
+------------------------------
+-- DCS Show All Stats Check --
+------------------------------
 local _, private = ...
-private.defaults.dejacharacterstatsShowAllStatsChecked = {
+private.defaults.dcsdefaults.dejacharacterstatsShowAllStatsChecked = {
 	ShowAllStatsSetChecked = false,
 }	
 
@@ -559,16 +581,16 @@ local DCS_ShowAllStatsCheck = CreateFrame("CheckButton", "DCS_ShowAllStatsCheck"
 	
 	DCS_ShowAllStatsCheck:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-		local checked = private.db.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked
+		local checked = private.db.dcsdefaults.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked
 			self:SetChecked(checked)
 			if self:GetChecked(true) then
 				DCS_AllStats()
 				DCS_SelectStatsCheck:SetChecked(false)
-				private.db.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked = false
-				private.db.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked = true
+				private.db.dcsdefaults.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked = false
+				private.db.dcsdefaults.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked = true
 			elseif not self:GetChecked(true) then
 				DCS_CheckShowSelectChecks()
-				private.db.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked = false
+				private.db.dcsdefaults.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked = false
 			end
 		end
 	end)
@@ -577,24 +599,24 @@ local DCS_ShowAllStatsCheck = CreateFrame("CheckButton", "DCS_ShowAllStatsCheck"
 		if self:GetChecked(true) then
 			DCS_AllStats()
 			DCS_SelectStatsCheck:SetChecked(false)
-			private.db.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked = false
-			private.db.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked = true
+			private.db.dcsdefaults.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked = false
+			private.db.dcsdefaults.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked = true
 		elseif not self:GetChecked(true) then
 			DCS_CheckShowSelectChecks()
-			private.db.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked = false
+			private.db.dcsdefaults.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked = false
 		end
 	end)
 	
-------------------
--- Select Stats --
-------------------
+--------------------------
+-- Select-A-Stat™ Check --
+--------------------------
 local _, private = ...
-private.defaults.dejacharacterstatsSelectStatsChecked = {
+private.defaults.dcsdefaults.dejacharacterstatsSelectStatsChecked = {
 	SelectStatsSetChecked = false,
 }	
 
 local _, private = ...
-private.defaults.dejacharacterstatsSelectedStats = {
+private.defaults.dcsdefaults.dejacharacterstatsSelectedStats = {
 	HEALTH = true,POWER = true,ARMOR = true,
 	STRENGTH = true,AGILITY = true,INTELLECT = true,STAMINA = true,
 	ATTACK_DAMAGE = false,ATTACK_AP = false,ATTACK_ATTACKSPEED = false,SPELLPOWER = false,
@@ -628,16 +650,16 @@ local DCS_SelectStatsCheck = CreateFrame("CheckButton", "DCS_SelectStatsCheck", 
 	
 	DCS_SelectStatsCheck:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-		local checked = private.db.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked
+		local checked = private.db.dcsdefaults.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked
 			self:SetChecked(checked)
 			if self:GetChecked(true) then
 				DCS_SelectStatsReInit()
 				DCS_ShowAllStatsCheck:SetChecked(false)
-				private.db.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked = false
-				private.db.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked = true
+				private.db.dcsdefaults.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked = false
+				private.db.dcsdefaults.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked = true
 			elseif not self:GetChecked(true) then
 				DCS_CheckShowSelectChecks()
-				private.db.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked = false
+				private.db.dcsdefaults.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked = false
 			end
 		end
 	end)
@@ -646,14 +668,17 @@ local DCS_SelectStatsCheck = CreateFrame("CheckButton", "DCS_SelectStatsCheck", 
 		if self:GetChecked(true) then
 			DCS_SelectStatsReInit()
 			DCS_ShowAllStatsCheck:SetChecked(false)
-			private.db.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked = false
-			private.db.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked = true
+			private.db.dcsdefaults.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked = false
+			private.db.dcsdefaults.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked = true
 		elseif not self:GetChecked(true) then
 			DCS_CheckShowSelectChecks()
-			private.db.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked = false
+			private.db.dcsdefaults.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked = false
 		end
 	end)	
 
+--------------------------
+-- Stat Selection Loops --
+--------------------------
 local function tchelper(first, rest)
   return first:upper()..rest:lower()
 end
@@ -694,13 +719,13 @@ for k, v in ipairs(PAPERDOLL_AttributesIndexDefaultStats) do
 	
 	KStatFrame:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-			local setchecked = private.db.dejacharacterstatsSelectedStats[v]
+			local setchecked = private.db.dcsdefaults.dejacharacterstatsSelectedStats[v]
 			self:SetChecked(setchecked)
 			if self:GetChecked(true) then
 				DCS_SelectStatsReInit()
-				private.db.dejacharacterstatsSelectedStats[v] = true;
+				private.db.dcsdefaults.dejacharacterstatsSelectedStats[v] = true;
 			elseif not self:GetChecked(true) then
-				private.db.dejacharacterstatsSelectedStats[v] = false;
+				private.db.dcsdefaults.dejacharacterstatsSelectedStats[v] = false;
 			end
 		end
 		DCS_CheckShowSelectChecks()
@@ -708,9 +733,9 @@ for k, v in ipairs(PAPERDOLL_AttributesIndexDefaultStats) do
 
 	KStatFrame:SetScript("OnClick", function(self, button, up)
 		if self:GetChecked(true) then
-			private.db.dejacharacterstatsSelectedStats[v] = true;
+			private.db.dcsdefaults.dejacharacterstatsSelectedStats[v] = true;
 		elseif not self:GetChecked(true) then
-			private.db.dejacharacterstatsSelectedStats[v] = false;
+			private.db.dcsdefaults.dejacharacterstatsSelectedStats[v] = false;
 		end
 		DCS_CheckShowSelectChecks()
 	end)
@@ -747,13 +772,13 @@ for k, v in ipairs(PAPERDOLL_EnhancementsIndexDefaultStats) do
 
 	KStatFrame:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-			local setchecked = private.db.dejacharacterstatsSelectedStats[v]
+			local setchecked = private.db.dcsdefaults.dejacharacterstatsSelectedStats[v]
 			self:SetChecked(setchecked)
 			if self:GetChecked(true) then
 				DCS_SelectStatsReInit()
-				private.db.dejacharacterstatsSelectedStats[v] = true;
+				private.db.dcsdefaults.dejacharacterstatsSelectedStats[v] = true;
 			elseif not self:GetChecked(true) then
-				private.db.dejacharacterstatsSelectedStats[v] = false;
+				private.db.dcsdefaults.dejacharacterstatsSelectedStats[v] = false;
 			end
 		end
 		DCS_CheckShowSelectChecks()
@@ -761,17 +786,20 @@ for k, v in ipairs(PAPERDOLL_EnhancementsIndexDefaultStats) do
 
 	KStatFrame:SetScript("OnClick", function(self, button, down)
 		if self:GetChecked(true) then
-			private.db.dejacharacterstatsSelectedStats[v] = true;
+			private.db.dcsdefaults.dejacharacterstatsSelectedStats[v] = true;
 		elseif not self:GetChecked(true) then
-			private.db.dejacharacterstatsSelectedStats[v] = false;
+			private.db.dcsdefaults.dejacharacterstatsSelectedStats[v] = false;
 		end
 		DCS_CheckShowSelectChecks()
 	end)
 	yEnhancements = yEnhancements
 end
 
+-------------------------------
+-- DCS Durability Stat Check --
+-------------------------------
 local _, private = ...
-private.defaults.dejacharacterstatsDurabilityStatChecked = {
+private.defaults.dcsdefaults.dejacharacterstatsDurabilityStatChecked = {
 	DurabilityStatSetChecked = true,
 }	
 
@@ -785,27 +813,30 @@ local DCS_DurabilityStatCheck = CreateFrame("CheckButton", "DCS_DurabilityStatCh
 
 	DCS_DurabilityStatCheck:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-			local checked = private.db.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked
+			local checked = private.db.dcsdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked
 			self:SetChecked(checked)
 			if self:GetChecked(true) then
-				private.db.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = true
+				private.db.dcsdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = true
 			elseif not self:GetChecked(true) then
-				private.db.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = false
+				private.db.dcsdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = false
 			end
 		end
 	end)
 
 	DCS_DurabilityStatCheck:SetScript("OnClick", function(self, button, down)
 		if self:GetChecked(true) then
-			private.db.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = true
+			private.db.dcsdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = true
 		elseif not self:GetChecked(true) then
-			private.db.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = false
+			private.db.dcsdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = false
 		end
 		DCS_CheckShowSelectChecks()
 	end)
 	
+---------------------------------
+-- DCS Repair Total Stat Check --
+---------------------------------
 local _, private = ...
-private.defaults.dejacharacterstatsRepairTotalStatChecked = {
+private.defaults.dcsdefaults.dejacharacterstatsRepairTotalStatChecked = {
 	RepairTotalStatSetChecked = true,
 }	
 
@@ -819,27 +850,30 @@ local DCS_RepairTotalStatCheck = CreateFrame("CheckButton", "DCS_RepairTotalStat
 
 	DCS_RepairTotalStatCheck:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-			local checked = private.db.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked
+			local checked = private.db.dcsdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked
 			self:SetChecked(checked)
 			if self:GetChecked(true) then
-				private.db.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = true
+				private.db.dcsdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = true
 			elseif not self:GetChecked(true) then
-				private.db.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = false
+				private.db.dcsdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = false
 			end
 		end
 	end)
 
 	DCS_RepairTotalStatCheck:SetScript("OnClick", function(self, button, down)
 		if self:GetChecked(true) then
-			private.db.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = true
+			private.db.dcsdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = true
 		elseif not self:GetChecked(true) then
-			private.db.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = false
+			private.db.dcsdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = false
 		end
 		DCS_CheckShowSelectChecks()
 	end)
 	
---------------------------------
+------------------------
+-- DCS Stat Functions --
+------------------------
 
+-- Attack Speed --
 function PaperDollFrame_SetAttackSpeed(statFrame, unit)
 	local meleeHaste = GetMeleeHaste();
 	local speed, offhandSpeed = UnitAttackSpeed(unit);
@@ -861,6 +895,7 @@ function PaperDollFrame_SetAttackSpeed(statFrame, unit)
 	statFrame:Show();
 end
 
+-- Movement Speed Mouseover --
 function MovementSpeed_OnEnter(statFrame)
 	GameTooltip:SetOwner(statFrame, "ANCHOR_RIGHT");
 	GameTooltip:SetText(HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, STAT_MOVEMENT_SPEED).." "..format("%d%%", statFrame.speed+0.5)..FONT_COLOR_CODE_CLOSE);
@@ -874,6 +909,7 @@ function MovementSpeed_OnEnter(statFrame)
 	GameTooltip:Show();
 end
 
+-- Movement Speed --
 function PaperDollFrame_SetMovementSpeed(statFrame, unit)
 	statFrame.wasSwimming = nil;
 	statFrame.unit = unit;
@@ -886,6 +922,7 @@ function PaperDollFrame_SetMovementSpeed(statFrame, unit)
 	statFrame:Show();
 end
 
+-- Energy Regen --
 function PaperDollFrame_SetEnergyRegen(statFrame, unit)
 	if ( unit ~= "player" ) then
 		statFrame:Hide();
@@ -908,6 +945,7 @@ function PaperDollFrame_SetEnergyRegen(statFrame, unit)
 	statFrame:Show();
 end
 
+-- Focus Regen --
 function PaperDollFrame_SetFocusRegen(statFrame, unit)
 	if ( unit ~= "player" ) then
 		statFrame:Hide();
@@ -930,6 +968,7 @@ function PaperDollFrame_SetFocusRegen(statFrame, unit)
 	statFrame:Show();
 end
 
+-- Rune Speed --
 function PaperDollFrame_SetRuneRegen(statFrame, unit)
 	if ( unit ~= "player" ) then
 		statFrame:Hide();

@@ -1,0 +1,11 @@
+## Interface: 70000
+## Title: Mage Nuggets Cooldown Monitor
+## Author: B-Buck (Bbuck - Eredar)
+## Version: 1.0.0
+## Notes: Mage Nuggets Cooldown Monitor
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariablesPerCharacter: MageNuggetsCoolDownMon, MageNuggetsCooldownMonitor_Frames
+embeds.xml
+MageNuggetsCooldownMonitor.xml
+MNCooldownMonitorOptions.xml

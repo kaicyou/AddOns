@@ -287,30 +287,30 @@
         </Layer>
     </Layers>
     <Frames>
-          
+
     </Frames>
     <Scripts>
-       <OnLoad> 
+       <OnLoad>
             self:SetScript("OnMouseUp", function(self, button, down)
                 if(button == "RightButton") then
                     setStatMonitorStats();
                     MageNugSP_RightClickFrame:Show();
                 end
             end)
-            self:RegisterForDrag("LeftButton"); 
+            self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0;
        </OnLoad>
        <OnDragStart> MNStatMonitorLockFrames(self);</OnDragStart>
-	   <OnDragStop> 
-            self:StopMovingOrSizing(); 
+	   <OnDragStop>
+            self:StopMovingOrSizing();
             self.isMoving = false;
             mageNuggetsStatMonitor.statmon_point, _, mageNuggetsStatMonitor.statmon_relativePoint, mageNuggetsStatMonitor.statmon_xOfs, mageNuggetsStatMonitor.statmon_yOfs = MageNugSP_Frame:GetPoint();
        </OnDragStop>
-       <OnLeave> 
-        GameTooltip:Hide() 
+       <OnLeave>
+        GameTooltip:Hide()
        </OnLeave>
-        <OnUpdate> 
-            MageNuggetsSP_OnUpdate(self, elapsed) 
+        <OnUpdate>
+            MageNuggetsSP_OnUpdate(self, elapsed)
         </OnUpdate>
     </Scripts>
 </Frame>
@@ -320,9 +320,9 @@
         <Anchors>
             <Anchor point="TOPRIGHT" relativeTo="$parent">
                 <Offset>
-                    <AbsDimension x="290" y="5" /> 
+                    <AbsDimension x="290" y="5" />
                 </Offset>
-            
+
             </Anchor>
         </Anchors>
         <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface/Tooltips/UI-Tooltip-Border" tile="true">
@@ -408,7 +408,7 @@
                         </Anchor>
                     </Anchors>
                 </FontString>
-                <FontString name="$parent_MultiStrikeText" inherits="GameFontNormal" text="Multistrike">
+                <FontString name="$parent_LeechText" inherits="GameFontNormal" text="Leech">
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeTo="$parent">
                             <Offset>
@@ -417,7 +417,7 @@
                         </Anchor>
                     </Anchors>
                 </FontString>
-                <FontString name="$parent_LeechText" inherits="GameFontNormal" text="Leech">
+                <FontString name="$parent_VersatilityText" inherits="GameFontNormal" text="Versatility">
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeTo="$parent">
                             <Offset>
@@ -426,7 +426,7 @@
                         </Anchor>
                     </Anchors>
                 </FontString>
-                <FontString name="$parent_VersatilityText" inherits="GameFontNormal" text="Versatility">
+                <FontString name="$parent_SpiritText" inherits="GameFontNormal" text="Spirit">
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeTo="$parent">
                             <Offset>
@@ -435,7 +435,7 @@
                         </Anchor>
                     </Anchors>
                 </FontString>
-                <FontString name="$parent_SpiritText" inherits="GameFontNormal" text="Spirit">
+                <FontString name="$parent_RegenText" inherits="GameFontNormal" text="Mana Regen">
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeTo="$parent">
                             <Offset>
@@ -444,20 +444,11 @@
                         </Anchor>
                     </Anchors>
                 </FontString>
-                <FontString name="$parent_RegenText" inherits="GameFontNormal" text="Mana Regen">
-                    <Anchors>
-                        <Anchor point="TOPLEFT" relativeTo="$parent">
-                            <Offset>
-                                <AbsDimension x="30" y="-266"/>
-                            </Offset>
-                        </Anchor>
-                    </Anchors>
-                </FontString>
                 <FontString name="$parent_ArmorText" inherits="GameFontNormal" text="Armor">
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeTo="$parent">
                             <Offset>
-                                <AbsDimension x="30" y="-291"/>
+                                <AbsDimension x="30" y="-266"/>
                             </Offset>
                         </Anchor>
                     </Anchors>
@@ -486,16 +477,16 @@
                <Anchors>
                    <Anchor point="TOPLEFT">
                        <Offset>
-                            <AbsDimension x="5" y="-35" /> 
+                            <AbsDimension x="5" y="-35" />
                         </Offset>
                     </Anchor>
                 </Anchors>
                <Scripts>
-                    <OnLoad> 
-                        
+                    <OnLoad>
+
                     </OnLoad>
                     <OnEnter>MageNugSP_RightClickFrame:Show();</OnEnter>
-                    <OnClick>mageNuggetsStatMonitorToggle("spellpower");</OnClick> 
+                    <OnClick>mageNuggetsStatMonitorToggle("spellpower");</OnClick>
                 </Scripts>
             </CheckButton>
             <Button name="MageNugSP_SpellPowerColorButton" frameStrata="HIGH" inherits="OptionsButtonTemplate" text="a">
@@ -540,13 +531,13 @@
                <Anchors>
                    <Anchor point="TOPLEFT">
                        <Offset>
-                            <AbsDimension x="5" y="-60" /> 
+                            <AbsDimension x="5" y="-60" />
                         </Offset>
                     </Anchor>
                 </Anchors>
                <Scripts>
                     <OnEnter>MageNugSP_RightClickFrame:Show();</OnEnter>
-                    <OnClick>mageNuggetsStatMonitorToggle("attackpower");</OnClick> 
+                    <OnClick>mageNuggetsStatMonitorToggle("attackpower");</OnClick>
                 </Scripts>
             </CheckButton>
             <Button name="MageNugSP_AttackPowerColorButton" frameStrata="HIGH" inherits="OptionsButtonTemplate" text="a">
@@ -591,13 +582,13 @@
                <Anchors>
                    <Anchor point="TOPLEFT">
                        <Offset>
-                            <AbsDimension x="5" y="-85" /> 
+                            <AbsDimension x="5" y="-85" />
                         </Offset>
                     </Anchor>
                 </Anchors>
                <Scripts>
                     <OnEnter>MageNugSP_RightClickFrame:Show();</OnEnter>
-                    <OnClick>mageNuggetsStatMonitorToggle("crit");</OnClick> 
+                    <OnClick>mageNuggetsStatMonitorToggle("crit");</OnClick>
                 </Scripts>
             </CheckButton>
             <Button name="MageNugSP_CritColorButton" frameStrata="HIGH" inherits="OptionsButtonTemplate" text="a">
@@ -642,13 +633,13 @@
                <Anchors>
                    <Anchor point="TOPLEFT">
                        <Offset>
-                            <AbsDimension x="5" y="-110" /> 
+                            <AbsDimension x="5" y="-110" />
                         </Offset>
                     </Anchor>
                 </Anchors>
                <Scripts>
                     <OnEnter>MageNugSP_RightClickFrame:Show();</OnEnter>
-                    <OnClick>mageNuggetsStatMonitorToggle("haste");</OnClick> 
+                    <OnClick>mageNuggetsStatMonitorToggle("haste");</OnClick>
                 </Scripts>
             </CheckButton>
             <Button name="MageNugSP_HasteColorButton" frameStrata="HIGH" inherits="OptionsButtonTemplate" text="a">
@@ -693,13 +684,13 @@
                <Anchors>
                    <Anchor point="TOPLEFT">
                        <Offset>
-                            <AbsDimension x="5" y="-135" /> 
+                            <AbsDimension x="5" y="-135" />
                         </Offset>
                     </Anchor>
                 </Anchors>
                <Scripts>
                     <OnEnter>MageNugSP_RightClickFrame:Show();</OnEnter>
-                    <OnClick>mageNuggetsStatMonitorToggle("mastery");</OnClick> 
+                    <OnClick>mageNuggetsStatMonitorToggle("mastery");</OnClick>
                 </Scripts>
             </CheckButton>
             <Button name="MageNugSP_MasteryColorButton" frameStrata="HIGH" inherits="OptionsButtonTemplate" text="a">
@@ -740,68 +731,17 @@
                     </OnClick>
                 </Scripts>
             </Button>
-            <CheckButton name="MageNugSP_MultistrikeCheckButton" inherits="OptionsCheckButtonTemplate">
-               <Anchors>
-                   <Anchor point="TOPLEFT">
-                       <Offset>
-                            <AbsDimension x="5" y="-160" /> 
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-               <Scripts>
-                    <OnEnter>MageNugSP_RightClickFrame:Show();</OnEnter>
-                    <OnClick>mageNuggetsStatMonitorToggle("multistrike");</OnClick> 
-                </Scripts>
-            </CheckButton>
-            <Button name="MageNugSP_MultistrikeColorButton" frameStrata="HIGH" inherits="OptionsButtonTemplate" text="a">
-                <Size>
-                <AbsDimension x="20" y="20"/>
-                </Size>
-                <Anchors>
-                    <Anchor point="TOPLEFT">
-                        <Offset>
-                        <AbsDimension x="120" y="-160"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-                <Scripts>
-                    <OnClick>
-                        setCurrentStatColor(11);
-                        MageNugSP_ColorPickerFrame_ColorPickerText:SetText("MultiStrike Text");
-                        MageNugSP_ColorPickerFrame:Show();
-                    </OnClick>
-                </Scripts>
-            </Button>
-            <Button name="MageNugSP_MultiStrikeValueColorButton" frameStrata="HIGH" inherits="OptionsButtonTemplate" text="1">
-                <Size>
-                <AbsDimension x="20" y="20"/>
-                </Size>
-                <Anchors>
-                    <Anchor point="TOPLEFT">
-                        <Offset>
-                        <AbsDimension x="145" y="-160"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-                <Scripts>
-                    <OnClick>
-                        setCurrentStatColor(12);
-                        MageNugSP_ColorPickerFrame_ColorPickerText:SetText("MultiStrike Value");
-                        MageNugSP_ColorPickerFrame:Show();
-                    </OnClick>
-                </Scripts>
-            </Button>
             <CheckButton name="MageNugSP_LeechCheckButton" inherits="OptionsCheckButtonTemplate">
                <Anchors>
                    <Anchor point="TOPLEFT">
                        <Offset>
-                            <AbsDimension x="5" y="-185" /> 
+                            <AbsDimension x="5" y="-160" />
                         </Offset>
                     </Anchor>
                 </Anchors>
                <Scripts>
                     <OnEnter>MageNugSP_RightClickFrame:Show();</OnEnter>
-                    <OnClick>mageNuggetsStatMonitorToggle("leech");</OnClick> 
+                    <OnClick>mageNuggetsStatMonitorToggle("leech");</OnClick>
                 </Scripts>
             </CheckButton>
             <Button name="MageNugSP_LeechColorButton" frameStrata="HIGH" inherits="OptionsButtonTemplate" text="a">
@@ -811,7 +751,7 @@
                 <Anchors>
                     <Anchor point="TOPLEFT">
                         <Offset>
-                        <AbsDimension x="120" y="-185"/>
+                        <AbsDimension x="120" y="-160"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -830,7 +770,7 @@
                 <Anchors>
                     <Anchor point="TOPLEFT">
                         <Offset>
-                        <AbsDimension x="145" y="-185"/>
+                        <AbsDimension x="145" y="-160"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -846,13 +786,13 @@
                <Anchors>
                    <Anchor point="TOPLEFT">
                        <Offset>
-                            <AbsDimension x="5" y="-210" /> 
+                            <AbsDimension x="5" y="-185" />
                         </Offset>
                     </Anchor>
                 </Anchors>
                <Scripts>
                     <OnEnter>MageNugSP_RightClickFrame:Show();</OnEnter>
-                    <OnClick>mageNuggetsStatMonitorToggle("versatility");</OnClick> 
+                    <OnClick>mageNuggetsStatMonitorToggle("versatility");</OnClick>
                 </Scripts>
             </CheckButton>
             <Button name="MageNugSP_VersatilityColorButton" frameStrata="HIGH" inherits="OptionsButtonTemplate" text="a">
@@ -862,7 +802,7 @@
                 <Anchors>
                     <Anchor point="TOPLEFT">
                         <Offset>
-                        <AbsDimension x="120" y="-210"/>
+                        <AbsDimension x="120" y="-185"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -881,7 +821,7 @@
                 <Anchors>
                     <Anchor point="TOPLEFT">
                         <Offset>
-                        <AbsDimension x="145" y="-210"/>
+                        <AbsDimension x="145" y="-185"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -897,13 +837,13 @@
                <Anchors>
                    <Anchor point="TOPLEFT">
                        <Offset>
-                            <AbsDimension x="5" y="-235" /> 
+                            <AbsDimension x="5" y="-210" />
                         </Offset>
                     </Anchor>
                 </Anchors>
                <Scripts>
                     <OnEnter>MageNugSP_RightClickFrame:Show();</OnEnter>
-                    <OnClick>mageNuggetsStatMonitorToggle("spirit");</OnClick> 
+                    <OnClick>mageNuggetsStatMonitorToggle("spirit");</OnClick>
                 </Scripts>
             </CheckButton>
             <Button name="MageNugSP_SpiritColorButton" frameStrata="HIGH" inherits="OptionsButtonTemplate" text="a">
@@ -913,7 +853,7 @@
                 <Anchors>
                     <Anchor point="TOPLEFT">
                         <Offset>
-                        <AbsDimension x="120" y="-235"/>
+                        <AbsDimension x="120" y="-210"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -932,7 +872,7 @@
                 <Anchors>
                     <Anchor point="TOPLEFT">
                         <Offset>
-                        <AbsDimension x="145" y="-235"/>
+                        <AbsDimension x="145" y="-210"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -948,13 +888,13 @@
                <Anchors>
                    <Anchor point="TOPLEFT">
                        <Offset>
-                            <AbsDimension x="5" y="-260" /> 
+                            <AbsDimension x="5" y="-235" />
                         </Offset>
                     </Anchor>
                 </Anchors>
                <Scripts>
                     <OnEnter>MageNugSP_RightClickFrame:Show();</OnEnter>
-                    <OnClick>mageNuggetsStatMonitorToggle("manaregen");</OnClick> 
+                    <OnClick>mageNuggetsStatMonitorToggle("manaregen");</OnClick>
                 </Scripts>
             </CheckButton>
             <Button name="MageNugSP_RegenColorButton" frameStrata="HIGH" inherits="OptionsButtonTemplate" text="a">
@@ -964,7 +904,7 @@
                 <Anchors>
                     <Anchor point="TOPLEFT">
                         <Offset>
-                        <AbsDimension x="120" y="-260"/>
+                        <AbsDimension x="120" y="-235"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -983,7 +923,7 @@
                 <Anchors>
                     <Anchor point="TOPLEFT">
                         <Offset>
-                        <AbsDimension x="145" y="-260"/>
+                        <AbsDimension x="145" y="-235"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -995,18 +935,18 @@
                     </OnClick>
                 </Scripts>
             </Button>
-            
+
             <CheckButton name="MageNugSP_ArmorCheckButton" inherits="OptionsCheckButtonTemplate">
                <Anchors>
                    <Anchor point="TOPLEFT">
                        <Offset>
-                            <AbsDimension x="5" y="-285" /> 
+                            <AbsDimension x="5" y="-260" />
                         </Offset>
                     </Anchor>
                 </Anchors>
                <Scripts>
                     <OnEnter>MageNugSP_RightClickFrame:Show();</OnEnter>
-                    <OnClick>mageNuggetsStatMonitorToggle("armor");</OnClick> 
+                    <OnClick>mageNuggetsStatMonitorToggle("armor");</OnClick>
                 </Scripts>
             </CheckButton>
             <Button name="MageNugSP_ArmorColorButton" frameStrata="HIGH" inherits="OptionsButtonTemplate" text="a">
@@ -1016,7 +956,7 @@
                 <Anchors>
                     <Anchor point="TOPLEFT">
                         <Offset>
-                        <AbsDimension x="120" y="-285"/>
+                        <AbsDimension x="120" y="-260"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -1035,7 +975,7 @@
                 <Anchors>
                     <Anchor point="TOPLEFT">
                         <Offset>
-                        <AbsDimension x="145" y="-285"/>
+                        <AbsDimension x="145" y="-260"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -1047,24 +987,23 @@
                     </OnClick>
                 </Scripts>
             </Button>
-            
-            
+
         </Frames>
         <Scripts>
         <OnLoad>self:SetScale(0.5);</OnLoad>
         <OnDragStart> MNStatMonitorLockFrames(self);</OnDragStart>
         </Scripts>
     </Frame>
-    
+
 
 <Frame name="MageNugSP_ColorPickerFrame" parent="MageNugSP_RightClickFrame" hidden="true" enableMouse="true" movable="false">
     <Size x="190" y="215" />
     <Anchors>
         <Anchor point="TOPRIGHT" relativeTo="$parent">
             <Offset>
-                <AbsDimension x="190" y="0" /> 
+                <AbsDimension x="190" y="0" />
             </Offset>
-        
+
         </Anchor>
     </Anchors>
     <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface/Tooltips/UI-Tooltip-Border" tile="true">
@@ -1131,7 +1070,7 @@
             </Scripts>
             <ColorWheelTexture>
             </ColorWheelTexture>
-        </ColorSelect>   
+        </ColorSelect>
     </Frames>
     <Scripts>
     <OnLoad>

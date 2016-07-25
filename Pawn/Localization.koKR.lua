@@ -244,7 +244,7 @@ Pawn 사용자 설정의 더 자세한 정보는, 애드온에 포함된 help �
 		Haste = "^가속 %+?([%d%.,]+)$",
 		Haste2 = "^UNUSED$",
 		HaventCollectedAppearance = "^이 형상을 아직 수집하지 않았습니다%.$",
-		HeirloomLevelRange = "^요구 레벨: %d+ %- (%d+)",
+		HeirloomLevelRange = "^요구 레벨: %d+ %~ (%d+)",
 		HeirloomXpBoost = "^착용 효과: 경험치 획득량이", -- Needs review
 		HeirloomXpBoost2 = "^착용 효과: 몬스터 처치와 퀘스트 완료로 얻는 경험치가",
 		Heroic = "^상급$",
@@ -265,7 +265,7 @@ Pawn 사용자 설정의 더 자세한 정보는, 애드온에 포함된 help �
 		Mastery2 = "^UNUSED$",
 		MetaGemRequirements = "|cff%x%x%x%x%x%x필요 조건:",
 		MovementSpeed = "^이동 속도 %+([%d%.,]+)$",
-		MultiStatHeading = "^Multiple Stats$", -- Requires localization
+		MultiStatHeading = "^다수의 능력치$",
 		MultiStatSeparator1 = "/",
 		Multistrike = "^연속타격 %+([%d%.,]+)$",
 		NormalizationEnchant = "^마법부여: (.*)$",
@@ -306,7 +306,7 @@ Pawn 사용자 설정의 더 자세한 정보는, 애드온에 포함된 help �
 		Wand = "^마법봉$",
 		Warforged = "^전쟁벼림$",
 		Warglaives = "^전투검$",
-		WeaponDamage = "^공격력 ([%d%.,]+) %- ([%d%.,]+)$",
+		WeaponDamage = "^공격력 ([%d%.,]+) %~ ([%d%.,]+)$",
 		WeaponDamageArcane = "^비전 피해 ([%d%.,]+)%~([%d%.,]+)$",
 		WeaponDamageArcaneExact = "^비전 피해 %+?([%d%.,]+)$",
 		WeaponDamageEnchantment = "^무기 공격력 %+?([%d%.,]+)$", -- Needs review

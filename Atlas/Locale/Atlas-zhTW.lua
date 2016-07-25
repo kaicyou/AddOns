@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas-zhTW.lua 48 2016-07-19 14:03:11Z arith $
+﻿-- $Id: Atlas-zhTW.lua 56 2016-07-23 13:42:16Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -184,7 +184,16 @@ L["ATLAS_LDB_HINT"] = [=[左鍵開啟 Atlas.
 L["ATLAS_MINIMAPLDB_HINT"] = [=[左鍵開啟 Atlas.
 右鍵開啟 Atlas 選項.
 左鍵並拖曳以移動圖示按鈕位置.]=]
-L["ATLAS_MISSING_MODULE"] = "Atlas 已偵測到遺失的模組/插件："
+L["ATLAS_MISSING_MODULE"] = [=[Atlas 已偵測到遺失的模組／插件。
+
+這有可能是因為先前您有過期的模組／插件而被 Atlas 停用。
+如果您現在已經將所有的模組／插件安裝到最新版，請到插件列表裡確認是否所有的項目都已被啟用。
+
+如果您確認您不需要這些「遺失」的插件並且不想繼續看到這樣的通知，您可以到選項視窗去關閉通知。
+
+以下是遺失的模組／插件列表：
+]=] -- Needs review
+L["ATLAS_OPEN_ADDON_LIST"] = "開啟插件列表"
 L["ATLAS_OPTIONS_ACRONYMS"] = "顯示副本縮寫"
 L["ATLAS_OPTIONS_ACRONYMS_TIP"] = "在地圖的詳盡敘述中顯示副本的縮寫"
 L["ATLAS_OPTIONS_AUTOSEL"] = "自動選擇副本地圖"
@@ -353,6 +362,7 @@ L["Crusaders' Coliseum"] = "銀白大競技場"
 L["Crusaders' Square Postbox"] = "十字軍廣場郵箱"
 L["Cryo-Engineer Sha'heen"] = "工程師薩希恩"
 L["Cursed Centaur"] = "被詛咒的半人馬"
+L["Dantalionax"] = "丹塔利翁斯"
 L["Darkheart"] = "黑心"
 L["Dark Keeper Key"] = "黑暗守衛者鑰匙"
 L["Dark Ranger Kalira"] = "黑暗遊俠卡麗菈"

@@ -86,6 +86,7 @@ end
 function DTP:Toggle(i)
 	if DTP.db["panel"..i].enabled then
 		self["Panel_"..i]:Show()
+		if DTP.db["panel"..i].mouseover then Bar_OnLeave(self["Panel_"..i]) end
 		E:EnableMover(self["Panel_"..i].mover:GetName())
 	else
 		self["Panel_"..i]:Hide()
@@ -98,12 +99,10 @@ function DTP:PetHide(i)
 end
 
 function DTP:Template(i)
-	if not DTP.db["panel"..i].noback then
-		if DTP.db["panel"..i].transparent then
-			self["Panel_"..i]:SetTemplate("Transparent")
-		else
-			self["Panel_"..i]:SetTemplate("Default", true)
-		end
+	if DTP.db["panel"..i].transparent then
+		self["Panel_"..i]:SetTemplate(DTP.db["panel"..i].noback and "NoBackdrop" or "Transparent")
+	else
+		self["Panel_"..i]:SetTemplate(DTP.db["panel"..i].noback and "NoBackdrop" or "Default", true)
 	end
 end
 

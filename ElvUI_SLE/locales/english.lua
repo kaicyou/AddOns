@@ -73,6 +73,7 @@ L["Reset these options to defaults"] = true
 L["Modules designed for older expantions"] = true
 L["Game Menu Buttons"] = true
 L["Adds |cff9482c9Shadow & Light|r buttons to main game menu."] = true
+L["Advanced Options"] = true
 L["SLE_Advanced_Desc"] = [[Folowing options provide acces to additional customization settings in various modules.
 Is not reccomended to new players or people not experienced in addons' configuration.]]
 L["Allow Advanced Options"] = true
@@ -388,6 +389,8 @@ L["Changes the text string to a shorter variant."] = true
 L["Delete character info"] = true
 L["Remove selected character from the stored gold values"] = true
 L["Are you sure you want to remove |cff1784d1%s|r from currency datatexts?"] = true
+L["Hide panel background"] = true
+L["Don't show this panel, only datatexts assinged to it"] = true
 
 --Equip Manager
 L["Equipment Manager"] = true
@@ -408,6 +411,12 @@ L["Use a dedicated set for PvP situations."] = true
 L["Use Timewalking Set"] = true
 L["Use a dedicated set for timewalking instances."] = true
 L["Impossible to switch to appropriate equipment set in combat. Will switch after combat ends."] = true
+L["SLE_EM_LOCK_TITLE"] = "|cff9482c9S&L|r"
+L["SLE_EM_LOCK_TOOLTIP"] = [[This button is designed for temporary disable
+Equip Manager's auto switch gear sets.
+While locked (red colored state) it will disable auto swap.]]
+L["Block button"] = true
+L["Create a button in character frame to allow temp blocking of auto set swap."] = true
 
 --Loot
 L["Loot Dropped:"] = true
@@ -747,6 +756,7 @@ L["Quick Action"] = true
 L["Use quick access (on right click) for this button."] = true
 L["Function"] = true
 L["Function called by quick access."] = true
+L["UI Buttons Strata"] = true
 
 --Unitframes
 L["Options for customizing unit frames. Please don't change these setting when ElvUI's testing frames for bosses and arena teams are shown. That will make them invisible until retoggling."] = true

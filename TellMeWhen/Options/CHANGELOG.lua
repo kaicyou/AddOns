@@ -3,6 +3,20 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="6.2.6"
 
 TMW.CHANGELOG = [==[
+===v8.1.1===
+====Bug Fixes====
+* IconType_cooldowncooldown.lua:295: attempt to index field 'HELP' (a nil value)
+
+===v8.1.0===
+* New group layout option: Shrink Group. For dynamically centering groups.
+* Added new Notification triggers for stacks increased/decreased
+
+====Bug Fixes====
+* Fixed the behavior of the Ignore Runes setting.
+* Fixed Soul Shards condition - correct maximum is 6.
+* Made the Last Ability Used condition not suck.
+* Totem icon configuration should be back to its former glory.
+
 ===v8.0.3===
 ====Bug Fixes====
 * Fixed creation of new profiles

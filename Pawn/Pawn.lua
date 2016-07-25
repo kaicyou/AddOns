@@ -7,7 +7,7 @@
 -- Main non-UI code
 ------------------------------------------------------------
 
-PawnVersion = 2.0000
+PawnVersion = 2.0002
 
 -- Pawn requires this version of VgerCore:
 local PawnVgerCoreVersionRequired = 1.09
@@ -1284,19 +1284,13 @@ function PawnAddValuesToTooltip(Tooltip, ItemValues, UpgradeInfo, BestItemFor, S
 			if UpgradeInfo then
 				for _, ThisUpgrade in pairs(UpgradeInfo) do
 					if ThisUpgrade.ScaleName == ScaleName then
-						local SetAnnotation = ""
-						if InvType == "INVTYPE_2HWEAPON" then
-							SetAnnotation = PawnLocal.TooltipUpgradeFor2H
-						elseif InvType == "INVTYPE_WEAPONMAINHAND" or InvType == "INVTYPE_WEAPON" or InvType == "INVTYPE_WEAPONOFFHAND" then
-							SetAnnotation = PawnLocal.TooltipUpgradeFor1H
-						end
 						if ThisUpgrade.PercentUpgrade >= PawnBigUpgradeThreshold then -- 100 = 10,000%
 							-- For particularly huge upgrades, don't say ridiculous things like "999999999% upgrade"
-							TooltipText = format(PawnLocal.TooltipBigUpgradeAnnotation, TooltipText, SetAnnotation)
+							TooltipText = format(PawnLocal.TooltipBigUpgradeAnnotation, TooltipText, "")
 						elseif NeedsEnhancements then
-							TooltipText = format(PawnLocal.TooltipUpgradeNeedsEnhancementsAnnotation, TooltipText, 100 * ThisUpgrade.PercentUpgrade, SetAnnotation)
+							TooltipText = format(PawnLocal.TooltipUpgradeNeedsEnhancementsAnnotation, TooltipText, 100 * ThisUpgrade.PercentUpgrade, "")
 						else
-							TooltipText = format(PawnLocal.TooltipUpgradeAnnotation, TooltipText, 100 * ThisUpgrade.PercentUpgrade, SetAnnotation)
+							TooltipText = format(PawnLocal.TooltipUpgradeAnnotation, TooltipText, 100 * ThisUpgrade.PercentUpgrade, "")
 						end
 						WasUpgradeOrBest = true
 						break
@@ -2802,7 +2796,7 @@ function PawnIsItemAnUpgrade(Item, DoNotRescan)
 			if InvType == "INVTYPE_WEAPON" then
 				-- Check one-handed weapons against both the main hand and off hand, and report the best upgrade.
 				-- (One-handed weapons aren't stored past the initial scan, so we don't need to check those.)
-				InvType = "INVTYPE_WEAPONMAINHAND"
+				if PawnOptions.UpgradeTracking then InvType = "INVTYPE_WEAPONMAINHAND" end
 				if Scale.Values.IsOffHand == nil or Scale.Values.IsOffHand > PawnIgnoreStatValue then
 					-- Only try putting off-hand weapons in the off hand if they fit there!
 					-- And don't bother if upgrade tracking is off; we'll check both weapon slots anyway.
@@ -2823,6 +2817,8 @@ function PawnIsItemAnUpgrade(Item, DoNotRescan)
 			-- But, it's not clear how best to present this to the user, so this case (and the vice-versa case) is ignored for now.
 			local ThisValue = nil
 			local NewTableEntry = nil
+
+			--VgerCore.Message("*** InvType = " .. tostring(InvType) .. ", InvType2 = " .. tostring(InvType2))
 			
 			while InvType do
 				local BestData = nil
@@ -2840,6 +2836,8 @@ function PawnIsItemAnUpgrade(Item, DoNotRescan)
 					local Value1, Value2
 					if Item1 then _, Value1 = PawnGetSingleValueFromItem(Item1, ScaleName) end
 					if Item2 then _, Value2 = PawnGetSingleValueFromItem(Item2, ScaleName) end
+
+					--VgerCore.Message("*** Equipped: " .. tostring(Value1) .. " and " .. tostring(Value2))
 
 					if Value1 and Value2 then
 						if Value1 >= Value2 then

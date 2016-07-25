@@ -25,6 +25,7 @@ local pairs, wipe, strlower =
 local OnGCD = TMW.OnGCD
 local SpellHasNoMana = TMW.SpellHasNoMana
 local GetSpellTexture = TMW.GetSpellTexture
+local GetRuneCooldownDuration = TMW.GetRuneCooldownDuration
 
 local _, pclass = UnitClass("Player")
 
@@ -171,6 +172,7 @@ local function SpellCooldown_OnUpdate(icon, time)
 	icon.IgnoreRunes, icon.RangeCheck, icon.ManaCheck, icon.Spells.Array, icon.Spells.StringArray
 
 	local usableAlpha = icon.States[STATE_USABLE].Alpha
+	local runeCD = IgnoreRunes and GetRuneCooldownDuration()
 
 	local usableFound, unusableFound
 
@@ -195,11 +197,11 @@ local function SpellCooldown_OnUpdate(icon, time)
 		end
 		
 		if duration then
-			if IgnoreRunes and duration == 10 then
+			if IgnoreRunes and duration == runeCD then
 				-- DK abilities that are on cooldown because of runes are always reported
-				-- as having a cooldown duration of 10 seconds. We use this fact to filter out rune cooldowns.
-				-- We used to have to make sure the ability being checked wasn't Mind Freeze before doing this,
-				-- but Mind Freeze has a 15 second cooldown now (instead of 10), so we don't have to worry.
+				-- as having a cooldown duration equal to the current rune cooldown duration.
+				-- We use this fact to filter out rune cooldowns. GetSpellCooldown reports with a precision of 
+				-- 3 digits past the decimal, so we need to trim off extra trailing digits from GetRuneCooldown.
 				start, duration = 0, 0
 			end
 
@@ -290,6 +292,7 @@ function Type:Setup(icon)
 		icon.IgnoreRunes =  nil
 	end
 	
+	if TMW.HELP then TMW.HELP:Hide("ICONTYPE_COOLDOWN_VOIDBOLT") end
 	if icon.Spells.FirstString == strlower(GetSpellInfo(75)) and not icon.Spells.Array[2] then
 		-- Auto shot needs special handling - it isn't a regular cooldown, so it gets its own update function.
 		icon:SetInfo("texture", GetSpellTexture(75))
@@ -305,6 +308,26 @@ function Type:Setup(icon)
 		
 		icon:SetUpdateFunction(AutoShot_OnUpdate)
 	else
+		local voidBolt = GetSpellInfo(228266)
+		if icon.Spells.FirstString == strlower(voidBolt)
+			and not icon.Spells.Array[2]
+			and icon:IsBeingEdited() == "MAIN"
+			and TellMeWhen_ChooseName
+		then
+			-- Tracking the CD of void bolt doesn't work - you have to check void eruption.
+			local voidEruption = GetSpellInfo(228260)
+			local voidForm = GetSpellInfo(228264)
+			TMW.HELP:Show{
+				code = "ICONTYPE_COOLDOWN_VOIDBOLT",
+				codeOrder = 2,
+				icon = icon,
+				relativeTo = TellMeWhen_ChooseName,
+				x = 0,
+				y = 0,
+				text = format(L["HELP_COOLDOWN_VOIDBOLT"], voidBolt, voidEruption, voidForm, voidBolt)
+			}
+		end
+
 		icon.FirstTexture = GetSpellTexture(icon.Spells.First)
 		
 		icon:SetInfo("texture; reverse; spell", Type:GetConfigIconTexture(icon), false, icon.Spells.First)

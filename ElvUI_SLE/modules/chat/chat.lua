@@ -179,6 +179,20 @@ local function ChatPanels()
 	RightChatDataPanel:Height(20)
 end
 
+local function SetDataPanelStyle()
+	if E.db.datatexts.panelTransparency then
+		LeftChatDataPanel:SetTemplate(E.db.sle.datatexts.leftchat.noborders and "NoBackdrop" or "Transparent")
+		LeftChatToggleButton:SetTemplate(E.db.sle.datatexts.leftchat.noborders and "NoBackdrop" or "Transparent")
+		RightChatDataPanel:SetTemplate(E.db.sle.datatexts.rightchat.noborders and "NoBackdrop" or "Transparent")
+		RightChatToggleButton:SetTemplate(E.db.sle.datatexts.rightchat.noborders and "NoBackdrop" or "Transparent")
+	else
+		LeftChatDataPanel:SetTemplate(E.db.sle.datatexts.leftchat.noborders and "NoBackdrop" or "Default", true)
+		LeftChatToggleButton:SetTemplate(E.db.sle.datatexts.leftchat.noborders and "NoBackdrop" or "Default", true)
+		RightChatDataPanel:SetTemplate(E.db.sle.datatexts.rightchat.noborders and "NoBackdrop" or "Default", true)
+		RightChatToggleButton:SetTemplate(E.db.sle.datatexts.rightchat.noborders and "NoBackdrop" or "Default", true)
+	end
+end
+
 local function CreateChatPanels()
 	local SPACING = E.Border*3 - E.Spacing
 	--Left Chat
@@ -193,6 +207,7 @@ local function CreateChatPanels()
 	LeftChatDataPanel:Point("TOPLEFT", LeftChatToggleButton, "TOPRIGHT", -1 + E.Spacing*2, 0)
 	LeftChatDataPanel:Point("BOTTOMLEFT", LeftChatToggleButton, "BOTTOMRIGHT", -1 + E.Spacing*2, 0)
 	LeftChatDataPanel:Size(E.db.sle.datatexts.leftchat.width, PANEL_HEIGHT)
+
 	--Right Chat
 	RightChatTab:Point('TOPRIGHT', RightChatPanel, 'TOPRIGHT', -2, -2)
 	RightChatTab:Point('BOTTOMLEFT', RightChatPanel, 'TOPLEFT', 2, -PANEL_HEIGHT)
@@ -280,10 +295,12 @@ function C:Initialize()
 	end
 
 	C:InitHistory()
+	LO:SetDataPanelStyle()
 
 	C:InitTabs()
 end
 hooksecurefunc(LO, "CreateChatPanels", CreateChatPanels)
+hooksecurefunc(LO, "SetDataPanelStyle", SetDataPanelStyle)
 CH:AddPluginIcons(GetChatIcon)
 
 SLE:RegisterModule(C:GetName())

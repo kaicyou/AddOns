@@ -191,7 +191,15 @@ Rechte Maustaste drücken, um die Atlas-Optionen anzuzeigen.]=]
 L["ATLAS_MINIMAPLDB_HINT"] = [=[Linke Maustaste drücken, um Atlas zu öffnen.
 Rechte Maustaste drücken, um die Atlas-Optionen anzuzeigen.
 Linke Maustaste gedrückt halten, um diesen Schalter zu verschieben.]=]
-L["ATLAS_MISSING_MODULE"] = "Atlas hat fehlende Module/Plugins erkannt: "
+L["ATLAS_MISSING_MODULE"] = [=[Atlas hat fehlende Module/Plugins erkannt.
+
+Es könnte sein, dass du veraltete Module/Plugins verwendest, die von Atlas deaktiviert wurden.
+Wenn du jetzt alle aktualisiert hast, öffne deine Addonliste, um nachzusehen, ob alle aktiviert wurden.
+
+Wenn du dir sicher bist, dass du diese "fehlenden" Module/Plugins nicht benötigst und du daher diese Meldung nicht sehen willst, kannst du die Meldung im Optionsmenü deaktivieren.
+
+Liste fehlender Module/Plugins:]=]
+-- L["ATLAS_OPEN_ADDON_LIST"] = ""
 L["ATLAS_OPTIONS_ACRONYMS"] = "Abkürzungen anzeigen"
 L["ATLAS_OPTIONS_ACRONYMS_TIP"] = "Zeigt die Instanz-Abkürzungen in den Kartendetails an."
 L["ATLAS_OPTIONS_AUTOSEL"] = "Automatische Kartenauswahl"
@@ -360,6 +368,7 @@ L["Crusaders' Coliseum"] = "Kolloseum der Kreuzfahrer"
 L["Crusaders' Square Postbox"] = "Briefkasten am Kreuzzüglerplatz"
 L["Cryo-Engineer Sha'heen"] = "Kryoingenieur Sha'heen"
 L["Cursed Centaur"] = "Verfluchter Zentaur"
+-- L["Dantalionax"] = ""
 L["Darkheart"] = "Düsterherz"
 L["Dark Keeper Key"] = "Schlüssel des Dunkelbewahrers"
 L["Dark Ranger Kalira"] = "Dunkelläuferin Kalira"

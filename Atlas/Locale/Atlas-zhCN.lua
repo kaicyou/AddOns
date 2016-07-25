@@ -187,7 +187,16 @@ L["ATLAS_LDB_HINT"] = [=[单击打开 Atlas。
 L["ATLAS_MINIMAPLDB_HINT"] = [=[单击打开 Atlas。
 右击打开 Atlas 选项。
 单击並拖拉可移动这个按钮。]=]
-L["ATLAS_MISSING_MODULE"] = "Atlas 已侦测到遗失的模块/插件："
+L["ATLAS_MISSING_MODULE"] = [=[Atlas 已侦测到遗失的模块/插件。
+
+它可能是已过期的模块/插件，并被 Atlas 禁用。
+如果现在安装全部最新版，到插件列表查看他们是否已被启用。
+
+如果确定不需要这些“缺失”的模块/插件并不希望再次看到此消息，可以到选项面板禁用此提示。
+
+缺失模块/插件列表：
+]=]
+L["ATLAS_OPEN_ADDON_LIST"] = "打开插件列表"
 L["ATLAS_OPTIONS_ACRONYMS"] = "显示简称"
 L["ATLAS_OPTIONS_ACRONYMS_TIP"] = "在地图的详尽叙述中显示副本的缩写。"
 L["ATLAS_OPTIONS_AUTOSEL"] = "自动选择副本地图"
@@ -356,6 +365,7 @@ L["Crusaders' Coliseum"] = "十字军大竞技场"
 L["Crusaders' Square Postbox"] = "十字军广场邮箱"
 L["Cryo-Engineer Sha'heen"] = "低温工程师沙赫恩"
 L["Cursed Centaur"] = "被诅咒的半人马"
+-- L["Dantalionax"] = ""
 L["Darkheart"] = "黑心"
 L["Dark Keeper Key"] = "黑暗守护者钥匙"
 L["Dark Ranger Kalira"] = "黑暗游侠卡丽拉"
@@ -490,7 +500,7 @@ L["Helcular"] = "赫尔库拉"
 L["Helpful Jungle Monkey"] = "有用的丛林猴子"
 L["Herod the Bully"] = "赫洛德"
 L["Heroic"] = "英雄模式"
--- L["Heroic_Symbol"] = ""
+L["Heroic_Symbol"] = "（英雄）"
 L["Heroic: Trial of the Grand Crusader"] = "英雄: 大十字军的试炼"
 L["Hierophant Theodora Mulvadania <Kargath Expeditionary Force>"] = "塞朵拉·穆瓦丹尼 <卡加斯远征军>"
 L["High Examiner Tae'thelan Bloodwatcher <The Reliquary>"] = "高阶考察者泰瑟兰·血望者 <神圣遗物学会>"
@@ -549,11 +559,11 @@ L["Kel'Thuzad's Deep Knowledge"] = "克尔苏加德的深层知识"
 L["Kevin Dawson <Morgan's Militia>"] = "凯文·达森 <摩根民兵团>"
 L["Key"] = "钥匙"
 L["Kherrah"] = "柯尔拉"
--- L["King Bjorn"] = ""
--- L["King Haldor"] = ""
--- L["King Ranulf"] = ""
+L["King Bjorn"] = "布约恩国王"
+L["King Haldor"] = "赫尔多国王"
+L["King Ranulf"] = "拉努夫国王"
 L["King's Square Postbox"] = "国王广场邮箱"
--- L["King Tor"] = ""
+L["King Tor"] = "托尔国王"
 L["Knot Thimblejack"] = "诺特·希姆加克"
 L["Koragg"] = "库拉格"
 L["Korag Proudmane"] = "克拉格·傲鬃"
@@ -667,8 +677,8 @@ L["Murd Doc <S.A.F.E.>"] = "莫多克 <S.A.F.E.>"
 L["Muyoh <Disciple of Naralex>"] = "穆约 <纳拉雷克斯的信徒>"
 L["MV"] = "MV"
 L["Mysterious Bookshelf"] = "神秘的书架"
--- L["Mythic"] = ""
--- L["Mythic_Symbol"] = ""
+L["Mythic"] = "（史诗）"
+L["Mythic_Symbol"] = "（史诗）"
 L["Nahuud"] = "纳霍德"
 L["Nalpak <Disciple of Naralex>"] = "纳尔帕克 <纳拉雷克斯的信徒>"
 L["Naralex"] = "纳拉雷克斯"

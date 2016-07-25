@@ -238,7 +238,7 @@ Para mais informações em personalizar o Pawn, favor veja o arquivo de ajuda (R
 		EnchantmentTitaniumWeaponChain = "^Corrente de Arma de Titânico$", -- Needs review
 		Equip = "Equipar:", -- Needs review
 		FistWeapon = "^Arma de Punho$", -- Needs review
-		Flexible = "^Flexible$", -- Requires localization
+		Flexible = "^Flexivel$",
 		Formula = "Fórmula:", -- Needs review
 		Gun = "^Arma$", -- Needs review
 		Haste = "^%+?([%d%.,]+) Aceleração$", -- Needs review
@@ -298,7 +298,7 @@ Para mais informações em personalizar o Pawn, favor veja o arquivo de ajuda (R
 		TemporaryBuffMinutes = "^.+%(%d+ min%)$", -- Needs review
 		TemporaryBuffSeconds = "^.+%(%d+ s%)$", -- Needs review
 		Thunderforged = "^Forjado pelo Trovão$", -- Needs review
-		Timeless = "^Timeless$", -- Requires localization
+		Timeless = "^Perene$",
 		Titanforged = "^Titanforged$", -- Requires localization
 		UpgradeLevel = "^Nível de aprimoramento:", -- Needs review
 		Use = "Usar:", -- Needs review

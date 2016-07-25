@@ -18,6 +18,7 @@ local ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
 
 function UF:Configure_ClassBar(frame, cur)
+	if not frame.VARIABLES_SET then return end
 	local bars = frame[frame.ClassBar]
 	if not bars then return end
 
@@ -334,8 +335,7 @@ function UF:UpdateClassBar(cur, max, hasMaxChanged, powerType, event)
 	local db = frame.db
 	if not db then return; end
 
-	local isShown = self:IsShown()
-	if cur == 0 and db.classbar.autoHide or max == nil then
+	if not frame.USE_CLASSBAR or (cur == 0 and db.classbar.autoHide) or max == nil then
 		self:Hide()
 	else
 		self:Show()

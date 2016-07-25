@@ -1,13 +1,21 @@
 ------------------------------------------------------------------------
-r555 | arkayenro | 2016-07-23 05:45:46 +0000 (Sat, 23 Jul 2016) | 5 lines
+r557 | arkayenro | 2016-07-24 11:43:20 +0000 (Sun, 24 Jul 2016) | 3 lines
 Changed paths:
-   A /tags/3.06.16 (from /trunk:554)
+   A /tags/3.06.17 (from /trunk:556)
 
-*3.06.16 (23-JUL-2016)*
- * fixed - issue with deleted rules still showing in the list
- * fixed - issue with copying category sets
- * changed - Settings > Design changed to Settings > Styles / Layouts to make it more obvious where they are
- 
+*3.06.17 (24-JUL-2016)*
+ * fixed -issue with pet filters
+
+------------------------------------------------------------------------
+r556 | arkayenro | 2016-07-24 11:41:39 +0000 (Sun, 24 Jul 2016) | 3 lines
+Changed paths:
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryPetJournal.lua
+   M /trunk/VersionHistory.txt
+
+*3.06.17 (24-JUL-2016)*
+ * fixed -issue with pet filters
+
 ------------------------------------------------------------------------
 r554 | arkayenro | 2016-07-23 05:31:47 +0000 (Sat, 23 Jul 2016) | 5 lines
 Changed paths:

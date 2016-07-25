@@ -75,7 +75,7 @@ L["NOGROUPS_DIALOG_BODY"] = [[Your current TellMeWhen configuration and/or playe
 If you would like to change the settings of an existing group or create a new group, open TellMeWhen's group options by typing '/tmw options' or click the button below.
 
 Type '/tmw' to leave configuration mode.]]
-L["MAINOPTIONS_SHOW"] = "Group Options"
+L["MAINOPTIONS_SHOW"] = "Show Main Options"
 
 L["GUIDCONFLICT_DESC_PART1"] = [[TellMeWhen has detected that the following things have the same globally-unique identifier (GUID). This can cause quite a few issues if you want to reference either one from another icon or group (E.g. making one the target of a meta icon).
 
@@ -106,9 +106,9 @@ L["ICONMENU_CTRLGROUP_UNAVAILABLEID_DESC"] = [[Only the first icon in a group (i
 
 
 L["ERROR_MISSINGFILE_REQFILE"] = "A required file"
-L["ERROR_MISSINGFILE"] = [[A complete restart of WoW is required to use TellMeWhen %s:
+L["ERROR_MISSINGFILE"] = [[A complete restart of WoW is required to use TellMeWhen %s.
 
-%s was not found.
+%s was not found. See your chat for more details.
 
 Would you like to restart WoW now?]]
 L["ERROR_MISSINGFILE_NOREQ"] = [[A complete restart of WoW may be required to fully use TellMeWhen %s:
@@ -161,6 +161,7 @@ L["LOCKED"] = "Locked"
 L["LOCKED2"] = "Position Locked."
 L["RESIZE"] = "Resize"
 L["RESIZE_TOOLTIP"] = [[|cff7fffffClick-and-drag|r to resize]] -- keep this like this, used by the icon editor
+L["RESIZE_TOOLTIP_IEEXTRA"] = [[Enable scaling in the General options.]]
 L["RESIZE_TOOLTIP_SCALEXY"] = [[|cff7fffffClick-and-drag|r to scale
 |cff7fffffHold Control|r to invert scale axis]]
 L["RESIZE_TOOLTIP_SCALEY_SIZEX"] = [[|cff7fffffClick-and-drag|r to scale]]
@@ -1073,6 +1074,13 @@ L["UP"] = "Up"
 L["DOWN"] = "Down"
 L["LEFT"] = "Left"
 L["RIGHT"] = "Right"
+
+L["ICONMENU_SHRINKGROUP"] = "Shrink Group"
+L["ICONMENU_SHRINKGROUP_DESC"] = [[If this setting is enabled, the bounding box of the group will be dynamically adjusted so that it will exactly fit all of the visible icons within.
+
+The origin of the group's layout direction will form one corner of the group, and the edges of the icon furthest from that point will form the other.
+
+When used in conjunction with both the Shown icon sorting rule and fine-tuned Position settings above, you can create a group that is dynamically centered.]]
 
 L["LAYOUTDIRECTION_PRIMARY_DESC"] = "Make the primary layout direction of icons expand in the %s direction."
 L["LAYOUTDIRECTION_SECONDARY_DESC"] = "Make successive rows/columns of icons expand in the %s direction."
@@ -2035,6 +2043,8 @@ L["SOUND_EVENT_ONSPELL"] = "On Spell Changed"
 L["SOUND_EVENT_ONSPELL_DESC"] = [[This event triggers when the spell/item/etc. that that the icon is displaying information for has changed.]]
 
 L["SOUND_EVENT_ONSTACK"] = "On Stacks Changed"
+L["SOUND_EVENT_ONSTACKINC"] = "On Stacks Increased"
+L["SOUND_EVENT_ONSTACKDEC"] = "On Stacks Decreased"
 L["SOUND_EVENT_ONSTACK_DESC"] = [[This event triggers when the stacks of whatever the icon is tracking has changed.
 
 This includes the amount of diminishment for %s icons.]]
@@ -2581,6 +2591,14 @@ L["HELP_BUFF_NOSOURCERPPM"] = [[It looks like you are trying to track %s, which 
 Due to a Blizzard bug, this buff can't be tracked if you have the %q setting enabled.
 
 Please disable this setting if you want this buff to be tracked properly.]]
+
+L["HELP_COOLDOWN_VOIDBOLT"] = [[|TInterface/Icons/ability_ironmaidens_convulsiveshadows:20|t It looks like you are trying to track the cooldown of %s.
+
+Unfortunately, due to the way Blizzard made this spell, it won't work.
+
+|T1386548:20|t Instead, you need to track the cooldown of %s.
+
+Add a condition to check for the %s buff if you only want the icon while it is actually %s.]]
 
 L["HELP_IMPORT_CURRENTPROFILE"] = [[Trying to move or copy an icon from this profile to another icon slot?
 

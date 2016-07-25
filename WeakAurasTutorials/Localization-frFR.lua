@@ -21,8 +21,8 @@ L["Activation Settings: 3/5"] = "Réglages d'activation : 3/5"
 L["Activation Settings: 4/5"] = "Réglages d'activation : 4/5"
 L["Activation Settings: 5/5"] = "Réglages d'activation : 5/5"
 L["Activation Settings Text"] = "Comme vous êtes un %s, vous pouvez activer l'option de Classe du Joueur et choisir %s."
--- L["Aura"] = ""
--- L["Aura Name"] = ""
+L["Aura"] = "Aura"
+L["Aura Name"] = "Nom d'aura"
 L["Auto-cloning: 1/10"] = "Auto-clonage : 1/10"
 L["Auto-cloning 1/10 Text"] = [=[La plus grande nouveauté de la version |cFF8800FF1.4|r est l'|cFFFF0000auto-clonage|r. L'|cFFFF0000auto-clonage|r permet à vos graphiques de se dupliquer automatiquement pour montrer plusieurs sources d'information. Placés dans un Groupe Dynamique, cela vous permet de créer de grands ensembles d'information dynamiques.
 
@@ -51,8 +51,8 @@ L["Display Options 2/4 Text"] = [=[Les graphiques |cFFFFFFFFBarre de progression
 Cette option est uniquement disponible si votre graphique est déclenché par une aura, un objet, ou un sort.]=]
 L["Display Options: 4/4"] = "Options de Graphique : 4/4"
 L["Display Options 4/4 Text"] = "Finalement, un nouveau type de graphique, |cFFFFFFFFModèle|r, permet d'utiliser n'importe quel modèle 3D tiré du jeu."
--- L["Dynamic Group Options: 1/4"] = ""
--- L["Dynamic Group Options 1/4 Text"] = ""
+L["Dynamic Group Options: 1/4"] = "Options de Groupe Dynamique : 1/4"
+L["Dynamic Group Options 1/4 Text"] = "Options de Groupe Dynamique 1/4 Texte"
 L["Dynamic Group Options: 2/4"] = "Options de Groupe Dynamique : 2/4"
 L["Dynamic Group Options 2/4 Text"] = [=[La plus grande amélioration des |cFFFFFFFFGroupes Dynamiques|rs est une nouvelle option pour la Croissance.
 
@@ -88,9 +88,9 @@ L["Group Auras: 8/10"] = "Auras de groupe : 8/10"
 L["Group Auras 8/10 Text"] = "Activer l'option %s pour une aura de groupe avec |cFFFF0000auto-clonage|r activé causera un nouveau graphique pour chaque membre du groupe qui |cFFFFFFFFn'est pas|r affecté par l'aura spécifiée."
 -- L["Grow"] = ""
 L["Home"] = "Accueil"
--- L["Inverse"] = ""
--- L["Left Text"] = ""
--- L["Model"] = ""
+L["Inverse"] = "Inverser"
+L["Left Text"] = "Texte gauche"
+L["Model"] = "Modèle"
 L["Multi-target Auras: 10/10"] = "Auras multi-cibles : 10/10"
 L["Multi-target Auras 10/10 Text"] = [=[Les auras multi-cibles ont l'|cFFFF0000auto-clonage|r par défaut.
 
@@ -102,24 +102,24 @@ L["Multi-target Auras 9/10 Text"] = "Enfin, sélectionnez \"Multi-cibles\" comme
 L["New in 1.4:"] = "Nouveau dans la 1.4 :"
 L["New in 1.4 Desc:"] = "Nouveau dans la 1.4"
 L["New in 1.4 Desc Text"] = "Découvrez les nouvelles fonctions de WeakAuras 1.4"
--- L["New in 1.4 Finished Text"] = ""
+L["New in 1.4 Finished Text"] = "Nouveau avec la 1.4 Texte final"
 L["New in 1.4 Text1"] = [=[La version 1.4 de |cFF8800FFWeakAuras|r introduit plusieurs nouvelles fonctions puissantes.
 
 Ce didacticiel fournit un aperçu des principales nouvelles possibilités, et comment les utiliser.]=]
 L["New in 1.4 Text2"] = "D'abord, créez un nouveau graphique pour la démonstration."
--- L["Next"] = ""
--- L["Options/Trigger"] = ""
--- L["Player Class"] = ""
--- L["Play Sound"] = ""
--- L["Preset"] = ""
+L["Next"] = "Suivant"
+L["Options/Trigger"] = "Options/Déclencheur"
+L["Player Class"] = "Classe du joueur"
+L["Play Sound"] = "Jouer un son"
+L["Preset"] = "Preset"
 L["Previous"] = "Précédent"
--- L["Progress Bar"] = ""
--- L["Show all matches (Auto-clone)"] = ""
--- L["Sort"] = ""
--- L["Sound"] = ""
--- L["Specific Unit"] = ""
--- L["Status"] = ""
--- L["Tooltip on Mouseover"] = ""
+L["Progress Bar"] = "Barre de progression"
+L["Show all matches (Auto-clone)"] = "Montrer toutes les correspondances (Auto-clone)"
+L["Sort"] = "Trier"
+L["Sound"] = "Son"
+L["Specific Unit"] = "Unité spécifique"
+L["Status"] = "Statut"
+L["Tooltip on Mouseover"] = "Infobulle à la souris"
 L["Trigger Options: 1/4"] = "Options de Déclencheur : 1/4"
 L["Trigger Options 1/4 Text"] = [=[En plus de \"Multi-cibles\" il y a un autre nouveau réglage pour l'option Unité : Unité Spécifique.
 
@@ -136,9 +136,9 @@ L["Trigger Options: 4/4"] = "Options de Déclencheur : 4/4"
 L["Trigger Options 4/4 Text"] = [=[Le déclencheur |cFFFFFFFFCaractéristique d'unité|r permet de tester le nom d'une unité, sa classe, son hostilité, et si c'est un Joueur ou un Personnage non-Joueur.
 
 Les déclencheurs |cFFFFFFFFRecharge Globale|r et |cFFFFFFFFVitesse d'attaque|r s'ajoutent au déclencheur Incantation.]=]
--- L["Type"] = ""
--- L["Unit"] = ""
--- L["Use Full Scan (High CPU)"] = ""
+L["Type"] = "Type"
+L["Unit"] = "Unité"
+L["Use Full Scan (High CPU)"] = "Utiliser Scan Complet (CPU élevé)"
 L["WeakAuras Tutorials"] = "Didacticiels WeakAuras"
 L["Welcome"] = "Bienvenue"
 L["Welcome Text"] = [=[Bienvenue au Guide du Débutant de |cFF8800FFWeakAuras|r.

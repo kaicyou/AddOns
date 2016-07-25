@@ -13,6 +13,9 @@
  
 
 
+*3.06.17 (24-JUL-2016)*
+ * fixed -issue with pet filters
+
 *3.06.16 (23-JUL-2016)*
  * fixed - issue with deleted rules still showing in the list
  * fixed - issue with copying category sets

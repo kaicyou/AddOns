@@ -1,4 +1,4 @@
--- $Id: AtlasDropDown.lua 48 2016-07-19 14:03:11Z arith $
+-- $Id: AtlasDropDown.lua 55 2016-07-22 17:49:48Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -40,7 +40,9 @@ Atlas_DropDownLayouts_Order = {
 		[6] = ATLAS_DDL_CONTINENT_DEEPHOLM;
 		[7] = ATLAS_DDL_CONTINENT_PANDARIA;
 		[8] = ATLAS_DDL_CONTINENT_DRAENOR;
---		[9] = ATLAS_DDL_CONTINENT_BROKENISLES;
+--[===[@alpha@
+		[9] = ATLAS_DDL_CONTINENT_BROKENISLES;
+--@end-alpha@]===]
 	};
 	[ATLAS_DDL_LEVEL] = {
 		[1] = ATLAS_DDL_LEVEL_UNDER45;
@@ -50,9 +52,13 @@ Atlas_DropDownLayouts_Order = {
 		[5] = ATLAS_DDL_LEVEL_80TO85;
 		[6] = ATLAS_DDL_LEVEL_85TO90;
 		[7] = ATLAS_DDL_LEVEL_90TO100;
+--@non-alpha@
 		[8] = ATLAS_DDL_LEVEL_100PLUS;
---		[8] = ATLAS_DDL_LEVEL_100TO110;
---		[9] = ATLAS_DDL_LEVEL_110PLUS;
+--@end-non-alpha@
+--[===[@alpha@
+		[8] = ATLAS_DDL_LEVEL_100TO110;
+		[9] = ATLAS_DDL_LEVEL_110PLUS;
+--@end-alpha@]===]
 	};
 	[ATLAS_DDL_PARTYSIZE] = {
 		[1] = ATLAS_DDL_PARTYSIZE_5_AE;
@@ -71,7 +77,9 @@ Atlas_DropDownLayouts_Order = {
 		[5] = ATLAS_DDL_EXPANSION_CATA;
 		[6] = ATLAS_DDL_EXPANSION_MOP;
 		[7] = ATLAS_DDL_EXPANSION_WOD;
---		[8] = ATLAS_DDL_EXPANSION_LEGION;
+--[===[@alpha@
+		[8] = ATLAS_DDL_EXPANSION_LEGION;
+--@end-alpha@]===]
 	};
 	[ATLAS_DDL_TYPE] = {
 		[1] = ATLAS_DDL_TYPE_INSTANCE_AB;
@@ -265,26 +273,33 @@ Atlas_DropDownLayouts = {
 			"ShadowmoonBurialGrounds",
 			"Skyreach",
 		},
---[[
+--[===[@alpha@
 		[ATLAS_DDL_CONTINENT_BROKENISLES] = {
 			"HallsofValorA",
 			"HallsofValorB",
 			"HallsofValorC",
-			"BlackRookHold",
-			"VaultoftheWardens",
+			"BlackRookHoldA",
+			"BlackRookHoldB",
+			"BlackRookHoldC",
+			"VaultoftheWardensA",
+			"VaultoftheWardensB",
+			"VaultoftheWardensC",
 			"EyeofAzshara",
 			"DarkheartThicket",
 			"NeltharionsLair",
 			"MawofSoulsA",
 			"MawofSoulsB",
 			"TheArcway",
-			"CourtofStars",
+			"CourtofStarsA",
+			"CourtofStarsB",
 			"AssaultonVioletHold",
 			"TheEmeraldNightmare",
 			"TheNightholdA",
 			"TheNightholdB",
+			"TheNightholdC",
+			"TheNightholdD",
 		},
-]]
+--@end-alpha@]===]
 	},
 	[ATLAS_DDL_LEVEL] = {
 		[ATLAS_DDL_LEVEL_UNDER45] = {
@@ -461,6 +476,7 @@ Atlas_DropDownLayouts = {
 			"ThroneofThunderC",
 			"ThroneofThunderD",
 		},
+--@non-alpha@
 		[ATLAS_DDL_LEVEL_100PLUS] = {
 			"BlackrockFoundryA",
 			"BlackrockFoundryB",
@@ -478,7 +494,8 @@ Atlas_DropDownLayouts = {
 			"ShadowmoonBurialGrounds",
 			"UpperBlackrockSpire",
 		},
---[[
+--@end-non-alpha@
+--[===[@alpha@
 		[ATLAS_DDL_LEVEL_100TO110] = {
 			"AssaultonVioletHold",	-- Legion
 			"BlackrockFoundryA",
@@ -504,23 +521,32 @@ Atlas_DropDownLayouts = {
 			"UpperBlackrockSpire",
 		},
 		[ATLAS_DDL_LEVEL_110PLUS] = {
-			"BlackRookHold",
-			"VaultoftheWardens",
+			"BlackRookHoldA",
+			"BlackRookHoldB",
+			"BlackRookHoldC",
+			"VaultoftheWardensA",
+			"VaultoftheWardensB",
+			"VaultoftheWardensC",
 			"MawofSoulsA",
 			"MawofSoulsB",
 			"TheArcway",
-			"CourtofStars",
+			"CourtofStarsA",
+			"CourtofStarsB",
 			"TheEmeraldNightmare",
 			"TheNightholdA",
 			"TheNightholdB",
+			"TheNightholdC",
+			"TheNightholdD",
 		},
-]]		
+--@end-alpha@]===]		
 	},
 	[ATLAS_DDL_PARTYSIZE] = {
 		[ATLAS_DDL_PARTYSIZE_5_AE] = {
 			"AhnKahet",
---			"TheArcway",
---			"AssaultonVioletHold",
+--[===[@alpha@
+			"TheArcway",			-- Legion
+			"AssaultonVioletHold",		-- Legion
+--@end-alpha@]===]
 			"AuchAuchenaiCrypts",
 			"Auchindoun",
 			"AuchindounEnt",
@@ -532,14 +558,21 @@ Atlas_DropDownLayouts = {
 			"BlackfathomDeepsEnt",
 			"BlackrockCaverns",
 			"BlackrockDepths",
---			"BlackRookHold",
+--[===[@alpha@
+			"BlackRookHoldA",
+			"BlackRookHoldB",
+			"BlackRookHoldC",
+--@end-alpha@]===]
 			"BlackrockMountainEnt",
 			"BloodmaulSlagMines",
 			"CFRTheSlavePens",
 			"CFRTheSteamvault",
 			"CFRTheUnderbog",
 			"CoilfangReservoirEnt",
---			"CourtofStars",
+--[===[@alpha@
+			"CourtofStarsA",		-- Legion
+			"CourtofStarsB",		-- Legion
+--@end-alpha@]===]
 			"CavernsOfTimeEnt",
 			"CoTBlackMorass",
 			"CoTEndTime",
@@ -548,14 +581,18 @@ Atlas_DropDownLayouts = {
 			"CoTOldStratholme",
 			"CoTWellOfEternity",
 			"TrialOfTheChampion",
---			"DarkheartThicket",
+--[===[@alpha@
+			"DarkheartThicket",		-- Legion
+--@end-alpha@]===]
 			"DireMaulEast",
 			"DireMaulEnt",
 			"DireMaulNorth",
 			"DireMaulWest",
 			"DrakTharonKeep",
 			"LowerBlackrockSpire",
---			"EyeofAzshara",
+--[===[@alpha@
+			"EyeofAzshara",			-- Legion
+--@end-alpha@]===]
 			"TheEverbloomA",
 			"TheEverbloomB",
 			"UpperBlackrockSpire",
@@ -570,9 +607,11 @@ Atlas_DropDownLayouts = {
 			"GrimBatol",
 			"GrimrailDepot",
 			"Gundrak",
---			"HallsofValorA",	-- Legion
---			"HallsofValorB",	-- Legion
---			"HallsofValorC",	-- Legion
+--[===[@alpha@
+			"HallsofValorA",	-- Legion
+			"HallsofValorB",	-- Legion
+			"HallsofValorC",	-- Legion
+--@end-alpha@]===]
 			"HallsOfOrigination",
 			"HellfireCitadelEnt",
 			"HCBloodFurnace",
@@ -584,10 +623,14 @@ Atlas_DropDownLayouts = {
 			"MagistersTerrace",
 			"Maraudon",
 			"MaraudonEnt",
---			"MawofSoulsA",		-- Legion
---			"MawofSoulsB",		-- Legion
+--[===[@alpha@
+			"MawofSoulsA",		-- Legion
+			"MawofSoulsB",		-- Legion
+--@end-alpha@]===]
 			"MoguShanPalace",
---			"NeltharionsLair",	-- Legion
+--[===[@alpha@
+			"NeltharionsLair",	-- Legion
+--@end-alpha@]===]
 			"RagefireChasm",
 			"RazorfenDowns",
 			"RazorfenKraul",
@@ -629,7 +672,11 @@ Atlas_DropDownLayouts = {
 			"UlduarHallsofLightning",
 			"UtgardeKeep",
 			"UtgardePinnacle",
---			"VaultoftheWardens",		-- Legion
+--[===[@alpha@
+			"VaultoftheWardensA",
+			"VaultoftheWardensB",
+			"VaultoftheWardensC",
+--@end-alpha@]===]
 			"VioletHold",
 			"WailingCaverns",
 			"WailingCavernsEnt",
@@ -647,7 +694,9 @@ Atlas_DropDownLayouts = {
 			"CoTDragonSoulA",
 			"CoTDragonSoulB",
 			"CoTDragonSoulC",
---			"TheEmeraldNightmare",		-- Legion
+--[===[@alpha@
+			"TheEmeraldNightmare",		-- Legion
+--@end-alpha@]===]
 			"Firelands",
 			"HeartofFear",
 			"HellfireA",
@@ -667,8 +716,12 @@ Atlas_DropDownLayouts = {
 			"KarazhanStart",
 			"MoguShanVaults",
 			"Naxxramas",
---			"TheNightholdA",		-- Legion
---			"TheNightholdB",		-- Legion
+--[===[@alpha@
+			"TheNightholdA",		-- Legion
+			"TheNightholdB",		-- Legion
+			"TheNightholdC",		-- Legion
+			"TheNightholdD",		-- Legion
+--@end-alpha@]===]
 		},
 		[ATLAS_DDL_PARTYSIZE_10_OZ] = {
 			"ObsidianSanctum",
@@ -714,7 +767,9 @@ Atlas_DropDownLayouts = {
 			"CoTDragonSoulC",
 			"CoTHyjal",
 			"CoTHyjalEnt",
---			"TheEmeraldNightmare",		-- Legion
+--[===[@alpha@
+			"TheEmeraldNightmare",		-- Legion
+--@end-alpha@]===]
 			"Firelands",
 			"GruulsLair",
 			"HellfireCitadelEnt",
@@ -739,8 +794,12 @@ Atlas_DropDownLayouts = {
 			"IcecrownEnt",
 			"MoguShanVaults",
 			"Naxxramas",
---			"TheNightholdA",		-- Legion
---			"TheNightholdB",		-- Legion
+--[===[@alpha@
+			"TheNightholdA",		-- Legion
+			"TheNightholdB",		-- Legion
+			"TheNightholdC",		-- Legion
+			"TheNightholdD",		-- Legion
+--@end-alpha@]===]
 			"ObsidianSanctum",
 			"OnyxiasLair",
 			"RubySanctum",
@@ -953,32 +1012,41 @@ Atlas_DropDownLayouts = {
 			"Skyreach",
 			"UpperBlackrockSpire",
 		},
---[[
+--[===[@alpha@
 		[ATLAS_DDL_EXPANSION_LEGION] = {
 			"HallsofValorA",
 			"HallsofValorB",
 			"HallsofValorC",
-			"BlackRookHold",
-			"VaultoftheWardens",
+			"BlackRookHoldA",
+			"BlackRookHoldB",
+			"BlackRookHoldC",
+			"VaultoftheWardensA",
+			"VaultoftheWardensB",
+			"VaultoftheWardensC",
 			"EyeofAzshara",
 			"DarkheartThicket",
 			"NeltharionsLair",
 			"MawofSoulsA",
 			"MawofSoulsB",
 			"TheArcway",
-			"CourtofStars",
+			"CourtofStarsA",
+			"CourtofStarsB",
 			"AssaultonVioletHold",
 			"TheEmeraldNightmare",
 			"TheNightholdA",
 			"TheNightholdB",
+			"TheNightholdC",
+			"TheNightholdD",
 		},
-]]
+--@end-alpha@]===]
 	},
 	[ATLAS_DDL_TYPE] = {
 		[ATLAS_DDL_TYPE_INSTANCE_AB] = {
 			"AhnKahet",
---			"TheArcway",			-- Legion
---			"AssaultonVioletHold",		-- Legion
+--[===[@alpha@
+			"TheArcway",			-- Legion
+			"AssaultonVioletHold",		-- Legion
+--@end-alpha@]===]
 			"Auchindoun",
 			"AuchAuchenaiCrypts",
 			"AuchManaTombs",
@@ -991,7 +1059,11 @@ Atlas_DropDownLayouts = {
 			"BlackrockFoundryB",
 			"BlackrockCaverns",
 			"BlackrockDepths",
---			"BlackRookHold",		-- Legion
+--[===[@alpha@
+			"BlackRookHoldA",
+			"BlackRookHoldB",
+			"BlackRookHoldC",
+--@end-alpha@]===]
 			"BlackTempleBasement",
 			"BlackTempleStart",
 			"BlackTempleTop",
@@ -1021,15 +1093,20 @@ Atlas_DropDownLayouts = {
 			"CoTOldHillsbrad",
 			"CoTOldStratholme",
 			"CoTWellOfEternity",
---			"CourtofStars",			-- Legion
---			"DarkheartThicket",		-- Legion
+--[===[@alpha@
+			"CourtofStarsA",		-- Legion
+			"CourtofStarsB",		-- Legion
+			"DarkheartThicket",		-- Legion
+--@end-alpha@]===]
 			"DireMaulEast",
 			"DireMaulNorth",
 			"DireMaulWest",
 			"DrakTharonKeep",
 			"TheDeadmines",
---			"TheEmeraldNightmare",		-- Legion
---			"EyeofAzshara",			-- Legion
+--[===[@alpha@
+			"TheEmeraldNightmare",		-- Legion
+			"EyeofAzshara",			-- Legion
+--@end-alpha@]===]
 			"TheEverbloomA",
 			"TheEverbloomB",
 			"Firelands",
@@ -1047,9 +1124,11 @@ Atlas_DropDownLayouts = {
 			"GruulsLair",
 			"Gundrak",
 			"HallsOfOrigination",
---			"HallsofValorA",	-- Legion
---			"HallsofValorB",	-- Legion
---			"HallsofValorC",	-- Legion
+--[===[@alpha@
+			"HallsofValorA",	-- Legion
+			"HallsofValorB",	-- Legion
+			"HallsofValorC",	-- Legion
+--@end-alpha@]===]
 			"HCBloodFurnace",
 			"HCHellfireRamparts",
 			"HCMagtheridonsLair",
@@ -1072,16 +1151,22 @@ Atlas_DropDownLayouts = {
 			"LostCityOfTolvir",
 			"MagistersTerrace",
 			"Maraudon",
---			"MawofSoulsA",			-- Legion
---			"MawofSoulsB",			-- Legion
+--[===[@alpha@
+			"MawofSoulsA",			-- Legion
+			"MawofSoulsB",			-- Legion
+--@end-alpha@]===]
 			"MoguShanPalace",
 			"MoguShanVaults",
 		},
 		[ATLAS_DDL_TYPE_INSTANCE_NS] = {
 			"Naxxramas",
---			"NeltharionsLair",		-- Legion
---			"TheNightholdA",		-- Legion
---			"TheNightholdB",		-- Legion
+--[===[@alpha@
+			"NeltharionsLair",		-- Legion
+			"TheNightholdA",		-- Legion
+			"TheNightholdB",		-- Legion
+			"TheNightholdC",		-- Legion
+			"TheNightholdD",		-- Legion
+--@end-alpha@]===]
 			"OnyxiasLair",
 			"RagefireChasm",
 			"RazorfenDowns",
@@ -1138,7 +1223,11 @@ Atlas_DropDownLayouts = {
 			"UtgardeKeep",
 			"UtgardePinnacle",
 			"VaultOfArchavon",
---			"VaultoftheWardens",		-- Legion
+--[===[@alpha@
+			"VaultoftheWardensA",
+			"VaultoftheWardensB",
+			"VaultoftheWardensC",
+--@end-alpha@]===]
 			"VioletHold",
 			"WailingCaverns",
 			"ZulAman",

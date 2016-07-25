@@ -1380,6 +1380,13 @@ function TMW.SpellHasNoMana(spell)
 	return nomana
 end
 
+function TMW.GetRuneCooldownDuration()
+	-- Round to a precision of 3 decimal points for comparison with returns from GetSpellCooldown
+	local _, duration = GetRuneCooldown(1)
+	if not duration then return 0 end
+	return floor(duration * 1e3 + 0.5) / 1e3
+end
+
 local function spellCostSorter(a, b)
 	local hasA = a.requiredAuraID ~= 0 and a.hasRequiredAura
 	local hasB = b.requiredAuraID ~= 0 and b.hasRequiredAura

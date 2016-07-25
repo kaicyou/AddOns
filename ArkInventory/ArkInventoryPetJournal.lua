@@ -54,27 +54,65 @@ function ArkInventory.PetJournal.FilterSetSearch( s )
 	C_PetJournal.SetSearchFilter( s )
 end
 
-function ArkInventory.PetJournal.FilterGetCollected( )
-	return not C_PetJournal.IsFilterChecked( LE_PET_JOURNAL_FILTER_COLLECTED )
+function ArkInventory.PetJournal.FilterGetFamilyTypes( )
+	return C_PetJournal.GetNumPetTypes( )
+end
+
+function ArkInventory.PetJournal.FilterGetSourceTypes( )
+	return C_PetJournal.GetNumPetSources( )
+end
+
+function ArkInventory.PetJournal.FilterGetSearch( )
+	return PetJournal.searchBox:GetText( )
+end
+
+function ArkInventory.PetJournal.FilterSetSearch( s )
+	PetJournal.searchBox:SetText( s )
+	C_PetJournal.SetSearchFilter( s )
 end
 
 function ArkInventory.PetJournal.FilterSetCollected( value )
-	C_PetJournal.SetFilterChecked( LE_PET_JOURNAL_FLAG_COLLECTED, value )
+	C_PetJournal.SetFilterChecked( LE_PET_JOURNAL_FILTER_COLLECTED, value )
+	-- legion ok
 end
 
-function ArkInventory.PetJournal.FilterGetUncollected( )
-	return not C_PetJournal.IsFilterChecked( LE_PET_JOURNAL_FILTER_NOT_COLLECTED )
+function ArkInventory.PetJournal.FilterGetCollected( )
+	return C_PetJournal.IsFilterChecked( LE_PET_JOURNAL_FILTER_COLLECTED )
+	-- legion ok
 end
 
 function ArkInventory.PetJournal.FilterSetUncollected( value )
 	C_PetJournal.SetFilterChecked( LE_PET_JOURNAL_FILTER_NOT_COLLECTED, value )
+	-- legion ok
 end
 
-function ArkInventory.PetJournal.FilterGetSource( t )
-	assert( type( t ) == "table", "parameter is not a table" )
-	for i = 1, ArkInventory.PetJournal.FilterGetSourceTypes( ) do
-		t[i] = not C_PetJournal.IsPetSourceChecked( i )
+function ArkInventory.PetJournal.FilterGetUncollected( )
+	return C_PetJournal.IsFilterChecked( LE_PET_JOURNAL_FILTER_NOT_COLLECTED )
+	-- legion ok
+end
+
+function ArkInventory.PetJournal.FilterSetFamily( t )
+	if type( t ) == "table" then
+		for i = 1, ArkInventory.PetJournal.FilterGetFamilyTypes( ) do
+			C_PetJournal.SetPetTypeFilter( i, t[i] )
+		end
+	elseif type( t ) == "boolean" then
+		for i = 1, ArkInventory.PetJournal.FilterGetFamilyTypes( ) do
+			C_PetJournal.SetPetTypeFilter( i, t )
+			
+		end
+	else
+		assert( false, "parameter is " .. type( t ) .. ", not a table or boolean" )
 	end
+	-- legion ok
+end
+
+function ArkInventory.PetJournal.FilterGetFamily( t )
+	assert( type( t ) == "table", "parameter is not a table" )
+	for i = 1, ArkInventory.PetJournal.FilterGetFamilyTypes( ) do
+		t[i] = C_PetJournal.IsPetTypeChecked( i )
+	end
+	-- legion ok
 end
 
 function ArkInventory.PetJournal.FilterSetSource( t )
@@ -89,29 +127,16 @@ function ArkInventory.PetJournal.FilterSetSource( t )
 	else
 		assert( false, "parameter is not a table or boolean" )
 	end
+	-- legion ok
 end
 
-function ArkInventory.PetJournal.FilterGetFamily( t )
+function ArkInventory.PetJournal.FilterGetSource( t )
 	assert( type( t ) == "table", "parameter is not a table" )
-	for i = 1, ArkInventory.PetJournal.FilterGetFamilyTypes( ) do
-		t[i] = not C_PetJournal.IsPetTypeChecked( i )
+	for i = 1, ArkInventory.PetJournal.FilterGetSourceTypes( ) do
+		t[i] = C_PetJournal.IsPetSourceChecked( i )
 	end
+	-- legion ok
 end
-
-function ArkInventory.PetJournal.FilterSetFamily( t )
-	if type( t ) == "table" then
-		for i = 1, ArkInventory.PetJournal.FilterGetFamilyTypes( ) do
-			C_PetJournal.SetPetTypeFilter( i, t[i] )
-		end
-	elseif type( t ) == "boolean" then
-		for i = 1, ArkInventory.PetJournal.FilterGetFamilyTypes( ) do
-			C_PetJournal.SetPetTypeFilter( i, t )
-		end
-	else
-		assert( false, "parameter is " .. type( t ) .. ", not a table or boolean" )
-	end
-end
-
 
 
 function ArkInventory.PetJournal.OnHide( )

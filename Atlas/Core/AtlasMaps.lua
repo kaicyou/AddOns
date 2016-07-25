@@ -1,4 +1,4 @@
-﻿-- $Id: AtlasMaps.lua 48 2016-07-19 14:03:11Z arith $
+﻿-- $Id: AtlasMaps.lua 55 2016-07-22 17:49:48Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -3520,4 +3520,330 @@ Syntax:
 		{ WHIT..INDENT..Atlas_GetBossName("Ragewind Whelp", 1229, 2) };
 		{ WHIT.." 5) "..Atlas_GetBossName("Warlord Zaela", 1234) };
 	};
+--[===[@alpha@
+--************************************************
+-- Legion
+--************************************************
+	AssaultonVioletHold = {
+		ZoneName = { BZ["Assault on Violet Hold"] };
+		Location = { BZ["Dalaran"] };
+		DungeonID = "1208";
+		DungeonHeroicID = "1209";
+		--Acronym = "";
+		JournalInstanceID = "777";
+		Module = "Atlas_Legion";
+		{ BLUE.." A) "..L["Entrance"], 10001 };
+		{ WHIT.." 1) "..Atlas_GetBossName("Shivermaw", 1694) };
+		{ WHIT.." 2) "..Atlas_GetBossName("Blood-Princess Thal'ena", 1702) };
+		{ WHIT.." 3) "..Atlas_GetBossName("Festerface", 1693) };
+		{ WHIT.." 4) "..Atlas_GetBossName("Millificent Manastorm", 1688) };
+		{ WHIT.." 5) "..Atlas_GetBossName("Mindflayer Kaahrj", 1686) };
+		{ WHIT.." 6) "..Atlas_GetBossName("Anub'esset", 1696) };
+		{ WHIT.." 7) "..Atlas_GetBossName("Sael'orn", 1697) };
+		{ WHIT.." 8) "..Atlas_GetBossName("Fel Lord Betrug", 1711) };
+		
+	};
+	BlackRookHoldA = {
+		ZoneName = { BZ["Black Rook Hold"]..L["MapA"] };
+		Location = { BZ["Val'sharah"] };
+		DungeonID = "1204";
+		DungeonHeroicID = "1205";
+		--Acronym = "";
+		JournalInstanceID = "740";
+		Module = "Atlas_Legion";
+		{ BLUE.." A) "..L["Entrance"], 10001 };
+		{ BLUE.." B) "..L["Connection"], 10002 };
+		{ WHIT.." 1) "..Atlas_GetBossName("The Amalgam of Souls", 1518) };
+	};
+	BlackRookHoldB = {
+		ZoneName = { BZ["Black Rook Hold"]..L["MapB"] };
+		Location = { BZ["Val'sharah"] };
+		DungeonID = "1204";
+		DungeonHeroicID = "1205";
+		--Acronym = "";
+		JournalInstanceID = "740";
+		Module = "Atlas_Legion";
+		{ BLUE.." B-G) "..L["Connection"], 10001 };
+		{ WHIT.." 2) "..Atlas_GetBossName("Illysanna Ravencrest", 1653) };
+	};
+	BlackRookHoldC = {
+		ZoneName = { BZ["Black Rook Hold"]..L["MapC"] };
+		Location = { BZ["Val'sharah"] };
+		DungeonID = "1204";
+		DungeonHeroicID = "1205";
+		--Acronym = "";
+		JournalInstanceID = "740";
+		Module = "Atlas_Legion";
+		{ BLUE.." E-G) "..L["Connection"], 10001 };
+		{ WHIT.." 3) "..Atlas_GetBossName("Smashspite the Hateful", 1664) };
+		{ WHIT.." 4) "..Atlas_GetBossName("Lord Kur'talos Ravencrest", 1672) };
+		{ INDENT..WHIT..L["Dantalionax"] };
+	};
+	CourtofStarsA = {
+		ZoneName = { BZ["Court of Stars"]..L["MapA"] };
+		Location = { BZ["Suramar"] };
+		DungeonID = "1318";
+		DungeonHeroicID = "1319";
+		--Acronym = "";
+		JournalInstanceID = "800";
+		Module = "Atlas_Legion";
+		{ BLUE.." A) "..L["Entrance"], 10001 };
+		{ BLUE.." B-C) "..L["Connection"], 10002 };
+		{ WHIT.." 1) "..Atlas_GetBossName("Patrol Captain Gerdo", 1718) };
+		{ WHIT.." 2) "..Atlas_GetBossName("Talixae Flamewreath", 1719) };
+		{ WHIT.." 3) "..Atlas_GetBossName("Advisor Melandrus", 1720) };
+		{ GREN.." 1) "..L["Ly'leth Lunastre"], 10003 };
+	};
+	CourtofStarsB = {
+		ZoneName = { BZ["Court of Stars"]..L["MapB"] };
+		Location = { BZ["Suramar"] };
+		DungeonID = "1318";
+		DungeonHeroicID = "1319";
+		--Acronym = "";
+		JournalInstanceID = "800";
+		Module = "Atlas_Legion";
+		{ BLUE.." B-C) "..L["Connection"], 10002 };
+	};
+	DarkheartThicket = {
+		ZoneName = { BZ["Darkheart Thicket"] };
+		Location = { BZ["Val'sharah"] };
+		DungeonID = "1201";
+		DungeonHeroicID = "1202";
+		--Acronym = "";
+		JournalInstanceID = "762";
+		Module = "Atlas_Legion"; 
+		{ BLUE.." A) "..L["Entrance"], 10001 };
+		{ BLUE.." B) "..L["Connection"], 10002 };
+		{ WHIT.." 1) "..Atlas_GetBossName("Arch-Druid Glaidalis", 1654) };
+		{ WHIT.." 2) "..Atlas_GetBossName("Oakheart", 1655) };
+		{ WHIT.." 3) "..Atlas_GetBossName("Dresaron", 1656) };
+		{ WHIT.." 4) "..Atlas_GetBossName("Shade of Xavius", 1657) };
+	};
+	EyeofAzshara = {
+		ZoneName = { BZ["Eye of Azshara"] };
+		Location = { BZ["Azsuna"] };
+		DungeonID = "1174";
+		DungeonHeroicID = "1175";
+		--Acronym = "";
+		JournalInstanceID = "716";
+		Module = "Atlas_Legion";
+		{ BLUE.." A) "..L["Entrance"], 10001 };
+		{ WHIT.." 1) "..Atlas_GetBossName("Warlord Parjesh", 1480) };
+		{ WHIT.." 2) "..Atlas_GetBossName("Lady Hatecoil", 1490) };
+		{ WHIT.." 3) "..Atlas_GetBossName("King Deepbeard", 1491) };
+		{ WHIT.." 4) "..Atlas_GetBossName("Serpentrix", 1479) };
+		{ WHIT.." 5) "..Atlas_GetBossName("Wrath of Azshara", 1492) };
+	};
+	HallsofValorA = { 
+		ZoneName = { BZ["Halls of Valor"]..L["MapA"] };
+		Location = { BZ["Stormheim"] };
+		DungeonID = "1193";
+		DungeonHeroicID = "1194";
+		--Acronym = "";
+		JournalInstanceID = "721";
+		Module = "Atlas_Legion";
+		{ BLUE.." A) "..L["Entrance"], 10001 };
+		{ BLUE.." B) "..L["Portal"], 10002 };
+		{ BLUE.." C) "..L["Connection"], 10003 };
+		{ WHIT.." 1) "..Atlas_GetBossName("Hymdall", 1485) };
+		{ WHIT.." 2) "..Atlas_GetBossName("Hyrja", 1486) };
+	};
+	HallsofValorB = { 
+		ZoneName = { BZ["Halls of Valor"]..L["MapB"] };
+		Location = { BZ["Stormheim"] };
+		DungeonID = "1193";
+		DungeonHeroicID = "1194";
+		--Acronym = "";
+		JournalInstanceID = "721";
+		Module = "Atlas_Legion";
+		{ BLUE.." B) "..L["Portal"], 10002 };
+		{ WHIT.." 3) "..Atlas_GetBossName("Fenryr", 1487) };
+	};
+	HallsofValorC = { 
+		ZoneName = { BZ["Halls of Valor"]..L["MapC"] };
+		Location = { BZ["Stormheim"] };
+		DungeonID = "1193";
+		DungeonHeroicID = "1194";
+		--Acronym = "";
+		JournalInstanceID = "721";
+		Module = "Atlas_Legion";
+		{ BLUE.." C) "..L["Connection"], 10003 };
+		{ WHIT.." 4) "..Atlas_GetBossName("God-King Skovald", 1488) };
+		{ WHIT.." 5) "..Atlas_GetBossName("Odyn", 1489) };
+		{ GREN.." 1) "..L["King Tor"], 10004 };
+		{ GREN.." 2) "..L["King Bjorn"], 10005 };
+		{ GREN.." 3) "..L["King Haldor"], 10006 };
+		{ GREN.." 4) "..L["King Ranulf"], 10007 };
+	};
+	MawofSoulsA = {
+		ZoneName = { BZ["Maw of Souls"]..L["MapA"] };
+		Location = { BZ["Stormheim"] };
+		DungeonID = "1191";
+		DungeonHeroicID = "1192";
+		--Acronym = "";
+		JournalInstanceID = "727";
+		Module = "Atlas_Legion";
+		{ BLUE.." A) "..L["Entrance"], 10001 };
+		{ BLUE.." B) "..L["Transport"]..L["Hyphen"]..L["Echoing Horn of the Damned"], 10002 };
+		{ WHIT.." 1) "..Atlas_GetBossName("Ymiron, the Fallen King", 1502) };
+	};
+	MawofSoulsB = {
+		ZoneName = { BZ["Maw of Souls"]..L["MapB"] };
+		Location = { BZ["Stormheim"] };
+		DungeonID = "1191";
+		DungeonHeroicID = "1192";
+		--Acronym = "";
+		JournalInstanceID = "727";
+		Module = "Atlas_Legion";
+		{ BLUE.." B-C) "..L["Connection"], 10001 };
+		{ WHIT.." 2) "..Atlas_GetBossName("Harbaron", 1512) };
+		{ WHIT.." 3) "..Atlas_GetBossName("Helya", 1663) };		
+	};
+	NeltharionsLair = {
+		ZoneName = { BZ["Neltharion's Lair"] };
+		Location = { BZ["Highmountain"] };
+		DungeonID = "1206";
+		DungeonHeroicID = "1207";
+		--Acronym = "";
+		JournalInstanceID = "767";
+		Module = "Atlas_Legion";
+		{ BLUE.." A) "..L["Entrance"], 10001 };
+		{ WHIT.." 1) "..Atlas_GetBossName("Rokmora", 1662) };
+		{ WHIT.." 2) "..Atlas_GetBossName("Ularogg Cragshaper", 1665) };
+		{ WHIT.." 3) "..Atlas_GetBossName("Naraxas", 1673) };
+		{ WHIT.." 4) "..Atlas_GetBossName("Dargrul the Underking", 1687) };
+	};
+	TheArcway = {
+		ZoneName = { BZ["The Arcway"] };
+		Location = { BZ["Suramar"] };
+		DungeonID = "1189";
+		DungeonHeroicID = "1190";
+		--Acronym = "";
+		JournalInstanceID = "726";
+		Module = "Atlas_Legion";
+		{ BLUE.." A) "..L["Entrance"], 10001 };
+		{ WHIT.." 1) "..Atlas_GetBossName("Ivanyr", 1497) };
+		{ WHIT.." 2) "..Atlas_GetBossName("Corstilax", 1498) };
+		{ WHIT.." 3) "..Atlas_GetBossName("General Xakal", 1499) };
+		{ WHIT.." 4) "..Atlas_GetBossName("Nal'tira", 1500) };
+		{ WHIT.." 5) "..Atlas_GetBossName("Advisor Vandros", 1501) };
+	};
+	-- Map TODO
+	TheEmeraldNightmare = {
+		ZoneName = { BZ["The Emerald Nightmare"] };
+		Location = { BZ["Val'sharah"] };
+		DungeonID = "1348";
+		DungeonHeroicID = "1349";
+		DungeonMythicID = "1350";
+		--Acronym = "";
+		JournalInstanceID = "768";
+		PlayerLimit = "10-30";
+		Module = "Atlas_Legion";
+		{ BLUE.." A) "..L["Entrance"], 10001 };
+		{ WHIT.." 1) "..Atlas_GetBossName("Nythendra", 1703) };
+		{ WHIT.." 2) "..Atlas_GetBossName("Elerethe Renferal", 1744) };
+		{ WHIT.." 3) "..Atlas_GetBossName("Il'gynoth, Heart of Corruption", 1738) };
+		{ WHIT.." 4) "..Atlas_GetBossName("Ursoc", 1672) };
+		{ WHIT.." 5) "..Atlas_GetBossName("Dragons of Nightmare", 1704) };
+		{ WHIT.." 6) "..Atlas_GetBossName("Cenarius", 1750) };
+		{ WHIT.." 7) "..Atlas_GetBossName("Xavius", 1726) };
+		
+	};
+	TheNightholdA = {
+		ZoneName = { BZ["The Nighthold"]..L["MapA"] };
+		Location = { BZ["Suramar"] };
+		DungeonID = "1351";
+		DungeonHeroicID = "1352";
+		DungeonMythicID = "1353";
+		--Acronym = "";
+		JournalInstanceID = "786";
+		PlayerLimit = "10-30";
+		Module = "Atlas_Legion";
+		{ BLUE.." A) "..L["Entrance"], 10001 };
+		{ BLUE.." B) "..L["Connection"], 10002 };
+		{ WHIT.." 1) "..Atlas_GetBossName("Skorpyron", 1706) };
+	};
+	TheNightholdB = {
+		ZoneName = { BZ["The Nighthold"]..L["MapB"] };
+		Location = { BZ["Suramar"] };
+		DungeonID = "1351";
+		DungeonHeroicID = "1352";
+		DungeonMythicID = "1353";
+		--Acronym = "";
+		JournalInstanceID = "786";
+		PlayerLimit = "10-30";
+		Module = "Atlas_Legion";
+		{ BLUE.." B-C) "..L["Connection"], 10001 };
+		{ WHIT.." 2) "..Atlas_GetBossName("Chronomatic Anomaly", 1725) };
+		{ WHIT.." 3) "..Atlas_GetBossName("Trilliax", 1731) };
+	};
+	TheNightholdC = {
+		ZoneName = { BZ["The Nighthold"]..L["MapC"] };
+		Location = { BZ["Suramar"] };
+		DungeonID = "1351";
+		DungeonHeroicID = "1352";
+		DungeonMythicID = "1353";
+		--Acronym = "";
+		JournalInstanceID = "786";
+		PlayerLimit = "10-30";
+		Module = "Atlas_Legion";
+		{ WHIT.." 4) "..Atlas_GetBossName("Spellblade Aluriel", 1751) };
+		{ WHIT.." 6) "..Atlas_GetBossName("Krosus", 1713) };
+		{ WHIT.." 7) "..Atlas_GetBossName("High Botanist Tel'arn", 1761) };
+	};
+	-- Map TODO
+	TheNightholdD = {
+		ZoneName = { BZ["The Nighthold"]..L["MapD"] };
+		Location = { BZ["Suramar"] };
+		DungeonID = "1351";
+		DungeonHeroicID = "1352";
+		DungeonMythicID = "1353";
+		--Acronym = "";
+		JournalInstanceID = "786";
+		PlayerLimit = "10-30";
+		Module = "Atlas_Legion";
+		{ WHIT.." 5) "..Atlas_GetBossName("Tichondrius") };
+		{ WHIT.." 8) "..Atlas_GetBossName("Star Augur Etraeus", 1732) };
+		{ WHIT.." 9) "..Atlas_GetBossName("Grand Magistrix Elisande", 1743) };
+		{ WHIT.." 10) "..Atlas_GetBossName("Gul'dan", 1737) };
+	};
+	VaultoftheWardensA = {
+		ZoneName = { BZ["Vault of the Wardens"]..L["MapA"] };
+		Location = { BZ["Azsuna"] };
+		DungeonID = "1043";
+		DungeonHeroicID = "1044";
+		--Acronym = "";
+		JournalInstanceID = "707";
+		Module = "Atlas_Legion";
+		{ BLUE.." A) "..L["Entrance"], 10001 };
+		{ BLUE.." B) "..L["Connection"], 10002 };
+		{ BLUE.." C) "..L["Elevator"], 10003 };
+		{ WHIT.." 1) "..Atlas_GetBossName("Tirathon Saltheril", 1467) };
+	};
+	VaultoftheWardensB = {
+		ZoneName = { BZ["Vault of the Wardens"]..L["MapB"] };
+		Location = { BZ["Azsuna"] };
+		DungeonID = "1043";
+		DungeonHeroicID = "1044";
+		--Acronym = "";
+		JournalInstanceID = "707";
+		Module = "Atlas_Legion";
+		{ BLUE.." C) "..L["Elevator"], 10003 };
+		{ BLUE.." D) "..L["Connection"], 10004 };
+		{ WHIT.." 2) "..Atlas_GetBossName("Inquisitor Tormentorum", 1695) };
+		{ WHIT.." 3) "..Atlas_GetBossName("Ash'golm", 1468) };
+		{ WHIT.." 4) "..Atlas_GetBossName("Glazer", 1469) };
+	};
+	VaultoftheWardensC = {
+		ZoneName = { BZ["Vault of the Wardens"]..L["MapC"] };
+		Location = { BZ["Azsuna"] };
+		DungeonID = "1043";
+		DungeonHeroicID = "1044";
+		--Acronym = "";
+		JournalInstanceID = "707";
+		Module = "Atlas_Legion";
+		{ BLUE.." D) "..L["Connection"], 10004 };
+		{ WHIT.." 5) "..Atlas_GetBossName("Cordana Felsong", 1470) };
+	};
+--@end-alpha@]===]
 };

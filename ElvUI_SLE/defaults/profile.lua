@@ -193,11 +193,13 @@ P["sle"] = {
 			["enabled"] = true,
 			["width"] = 396,
 			["alpha"] = 1,
+			["noborders"] = false,
 		},
 		["rightchat"] = {
 			["enabled"] = true,
 			["width"] = 396,
 			["alpha"] = 1,
+			["noborders"] = false,
 		},
 		["chathandle"] = true,
 	},
@@ -503,7 +505,6 @@ P["sle"] = {
 		},
 		["instance"] = {
 			["enable"] = false,
-			["flag"] = true,
 			["xoffset"] = -10,
 			["yoffset"] = 0,
 			["colors"] = {

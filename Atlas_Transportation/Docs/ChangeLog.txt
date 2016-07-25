@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 25 2016-07-19 13:55:09Z arith $
+$Id: ChangeLog.txt 27 2016-07-24 16:01:45Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,14 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.33.01 (Jul. 24, 2016)
+------------------------
+- Enable Broken Isles maps and added nodes' coordinates
+- Added Druid-Only's Emerald Dreamway map;
+  added Druid-Only's portals in Kalimdor, Eastern Kingdoms, and Northrend
+- Translation update:
+  - German (pas06)
 
 v1.33.00 (Jul. 19, 2016)
 ------------------------

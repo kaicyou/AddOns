@@ -296,6 +296,11 @@ function IE:OnInitialize()
 
 	-- Create resizer
 	self.resizer = TMW.Classes.Resizer_Generic:New(self)
+
+	TMW:TT(self.resizer.resizeButton, self.resizer.tooltipTitle, function()
+		return L["RESIZE_TOOLTIP"] .. (not TMW.IE.db.global.ScaleIE and "\r\n\r\n" .. L["RESIZE_TOOLTIP_IEEXTRA"] or "")
+	end, 1, 1)
+	self.resizer.tooltipText = L["RESIZE_TOOLTIP"] .. ("\r\n\r\n" .. L["RESIZE_TOOLTIP_IEEXTRA"])
 	self.resizer:Show()
 	self.resizer.scale_min = 0.4
 	self.resizer.y_min = 400
@@ -771,6 +776,8 @@ function IE:Load(isRefresh)
 	IE:SetHeight(IE.db.global.EditorHeight)
 
 	TMW:Fire("TMW_CONFIG_LOADED")
+
+	IE:ResizeTabs()
 end
 
 
@@ -3503,6 +3510,7 @@ function IE:ResizeTabs()
 
 	-- Next, figure out how much room we we will have for the secondary tabs.
 	-- Subtract an additional 10 here because it just isn't quite right without it. Not sure why it ends up off like that.
+	if not TMW.IE.Tabs.primary:GetLeft() then return end
 	local availableWidth = TMW.IE.Tabs.primary:GetLeft() - TMW.IE.Tabs.secondary:GetLeft() - 20
 
 	-- Now, divide the tabs up into rows so that no rows are overflowing.

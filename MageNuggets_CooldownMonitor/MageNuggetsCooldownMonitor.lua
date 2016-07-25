@@ -36,7 +36,7 @@ function MageNuggetsCdMon_OnEvent(this, event, ...)
     if (event == "ADDON_LOADED") then
         if(argin1 == "MageNuggets_CooldownMonitor") then
             loadMageNuggetCdMonVariables_OnLoadEvent();
---            MageNugz_SetFrame_Positions();
+            MageNugzCdMon_SetFrame_Positions();
         end
     elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
         MageNugCD1_Frame_Bar:SetValue(0);
@@ -90,16 +90,9 @@ function MageNuggetsCdMon_OnEvent(this, event, ...)
                 MNcooldownMonitor(freezeId, 25, "Interface\\Icons\\spell_frost_chillingblast")
             end
         elseif (event1 == "SPELL_SUMMON") and (sourceName == UnitName("player")) then
-            if (arg == 84714) then -- frozen orb
-                local fostart, foduration, foenabled = GetSpellCooldown(84714);
-                local foTime = RoundOne(fostart + foduration - GetTime())
-                frozenOrbID, _, _, _, _, _, _, _, _ = GetSpellInfo(84714);
-                MNcooldownMonitor(frozenOrbID, foTime, "Interface\\Icons\\spell_frost_frozenorb")
-            elseif (arg == 113724) then -- ring of frost
-                local rfstart, rfduration, rfenabled = GetSpellCooldown(113724);
-                local rfTime = RoundOne(rfstart + rfduration - GetTime())
+            if (arg == 113724) then -- ring of frost
                 ringfrostID, _, _, _, _, _, _, _, _ = GetSpellInfo(113724);
-                MNcooldownMonitor(ringfrostID, rfTime, "Interface\\Icons\\spell_frost_frozencore")
+                MNcooldownMonitor(ringfrostID, 45, "Interface\\Icons\\spell_frost_frozencore")
             end
         elseif (event1 == "SPELL_CAST_SUCCESS") and (sourceName == UnitName("player"))then
             MnCdMonSpellCastSuccess(arg, sourceName, destName);
@@ -129,7 +122,6 @@ function MnCdMonSpellCastSuccess(arg, sourceName, destName)
         flamestrikeID, _, _, _, _, _, _, _, _ = GetSpellInfo(2120);
         MNcooldownMonitor(flamestrikeID, 12, "Interface\\Icons\\spell_fire_selfdestruct")
     elseif (arg == 1953) then -- blink
-      --  start, duration, enabled = GetSpellCooldown(1953);
         blinkId, _, _, _, _, _, _, _, _ = GetSpellInfo(1953);
         MNcooldownMonitor(blinkId, 15, "Interface\\Icons\\spell_arcane_blink")
     elseif (arg == 11426) then -- ice barrier
@@ -139,6 +131,9 @@ function MnCdMonSpellCastSuccess(arg, sourceName, destName)
     elseif (arg == 1463) then -- mana shield
         manashieldId, _, _, _, _, _, _, _, _ = GetSpellInfo(1463);
         MNcooldownMonitor(manashieldId, 12, "Interface\\Icons\\spell_shadow_detectlesserinvisibility")
+    elseif (arg == 44457) then -- living bomb
+        lbId, _, _, _, _, _, _, _, _ = GetSpellInfo(44457);
+        MNcooldownMonitor(lbId, 12, "Interface\\Icons\\ability_mage_livingbomb")
     elseif (arg == 543) then -- mage ward
         wardId, _, _, _, _, _, _, _, _ = GetSpellInfo(543);
         MNcooldownMonitor(wardId, 30, "Interface\\Icons\\spell_fire_twilightfireward")
@@ -148,6 +143,9 @@ function MnCdMonSpellCastSuccess(arg, sourceName, destName)
     elseif (arg == 120) then -- cone of cold
         coneofcoldId, _, _, _, _, _, _, _, _ = GetSpellInfo(120);
         MNcooldownMonitor(coneofcoldId, 10, "Interface\\Icons\\spell_frost_glacier")
+    elseif (arg == 84714) then -- frozen orb
+        frozenOrbID, _, _, _, _, _, _, _, _ = GetSpellInfo(84714);
+        MNcooldownMonitor(frozenOrbID, 60, "Interface\\Icons\\spell_frost_frozenorb")
     elseif (arg == 153626) then -- arcane orb
         arcaneOrbId, _, _, _, _, _, _, _, _ = GetSpellInfo(153626);
         MNcooldownMonitor(arcaneOrbId, 15, "Interface\\Icons\\spell_mage_arcaneorb")
@@ -168,12 +166,48 @@ function MnCdMonSpellCastSuccess(arg, sourceName, destName)
     elseif (arg == 31661) then -- Dragons Breath
         dragonsbreathId, _, _, _, _, _, _, _, _ = GetSpellInfo(31661);
         MNcooldownMonitor(dragonsbreathId, 20, "Interface\\Icons\\inv_misc_head_dragon_01")
-    elseif (arg == 11113) then -- blastwave
-        blastwaveId, _, _, _, _, _, _, _, _ = GetSpellInfo(11113);
-        MNcooldownMonitor(blastwaveId, 15, "Interface\\Icons\\spell_holy_excorcism_02")
+    elseif (arg == 157981) then -- blastwave
+        blastwaveId, _, _, _, _, _, _, _, _ = GetSpellInfo(157981);
+        MNcooldownMonitor(blastwaveId, 25, "Interface\\Icons\\spell_holy_excorcism_02")
+    elseif (arg == 66) then -- invisibility
+        invisId, _, _, _, _, _, _, _, _ = GetSpellInfo(66);
+        MNcooldownMonitor(invisId, 300, "Interface\\Icons\\ability_mage_invisibility")
+    elseif (arg == 110959) then -- greater invisibility
+        invisId, _, _, _, _, _, _, _, _ = GetSpellInfo(110959);
+        MNcooldownMonitor(invisId, 120, "Interface\\Icons\\ability_mage_greaterinvisibility")
+    elseif (arg == 12051) then -- evocation
+        invisId, _, _, _, _, _, _, _, _ = GetSpellInfo(12051);
+        MNcooldownMonitor(invisId, 90, "Interface\\Icons\\spell_nature_purge")
     elseif (arg == 44572) then -- deep freeze
         deepfreezeId, _, _, _, _, _, _, _, _ = GetSpellInfo(44572);
         MNcooldownMonitor(deepfreezeId, 30, "Interface\\Icons\\ability_mage_deepfreeze")
+    elseif (arg == 116014) then -- rune of power
+        runeId, _, _, _, _, _, _, _, _ = GetSpellInfo(116014);
+        MNcooldownMonitor(runeId, 30, "Interface\\Icons\\spell_mage_runeofpower")
+    elseif (arg == 157980) then -- supernova
+        superNovaId, _, _, _, _, _, _, _, _ = GetSpellInfo(157980);
+        MNcooldownMonitor(superNovaId, 25, "Interface\\Icons\\spell_mage_supernova")
+    elseif (arg == 205032) then -- charged up
+        chargedId, _, _, _, _, _, _, _, _ = GetSpellInfo(205032);
+        MNcooldownMonitor(chargedId, 40, "Interface\\Icons\\ability_thunderking_overcharge")
+    elseif (arg == 26297) then -- berserking
+        chargedId, _, _, _, _, _, _, _, _ = GetSpellInfo(26297);
+        MNcooldownMonitor(chargedId, 180, "Interface\\Icons\\racial_troll_berserk")
+    elseif (arg == 153561) then -- meteor
+        chargedId, _, _, _, _, _, _, _, _ = GetSpellInfo(153561);
+        MNcooldownMonitor(chargedId, 45, "Interface\\Icons\\spell_mage_meteor")
+    elseif (arg == 108839) then -- ice floes
+        chargedId, _, _, _, _, _, _, _, _ = GetSpellInfo(108839);
+        MNcooldownMonitor(chargedId, 20, "Interface\\Icons\\spell_mage_iceflows")
+    elseif (arg == 205029) then -- flame on
+        chargedId, _, _, _, _, _, _, _, _ = GetSpellInfo(205029);
+        MNcooldownMonitor(chargedId, 40, "Interface\\Icons\\inv_helm_circlet_firelands_d_01")
+    elseif (arg == 198929) then -- cinderstorm
+        chargedId, _, _, _, _, _, _, _, _ = GetSpellInfo(198929);
+        MNcooldownMonitor(chargedId, 9, "Interface\\Icons\\spell_fire_flare")
+    elseif (arg == 12042) then -- arcane power
+        arcanePowerId, _, _, _, _, _, _, _, _ = GetSpellInfo(12042);
+        MNcooldownMonitor(arcanePowerId, 90, "Interface\\Icons\\spell_nature_lightning");
     elseif (arg == 2139) then -- Counterspell
         counterspellId, _, _, _, _, _, _, _, _ = GetSpellInfo(2139);
         MNcooldownMonitor(counterspellId, 24, "Interface\\Icons\\spell_frost_iceshock")
@@ -189,42 +223,37 @@ function MnCdMonSpellAuraRemoved(arg, sourceName, destName)
         start, duration, enabled = GetSpellCooldown(108978);
         alterTimeId, _, _, _, _, _, _, _, _ = GetSpellInfo(108978);
         MNcooldownMonitor(alterTimeId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\spell_mage_altertime")
-    -- elseif(arg == 205021)then -- Ray of Frost
-    --     local start, duration, enabled = GetSpellCooldown(205021);
-    --     local coolDownTime = RoundOne(start + duration - GetTime());
-    --     if(coolDownTime ~= nil) and (coolDownTime > 0)then
-    --       rayId, _, _, _, _, _, _, _, _ = GetSpellInfo(205021);
-    --       MNcooldownMonitor(rayId, 60, "Interface\\Icons\\spell_frost_chillingblast")
-    --     end
+    elseif(arg == 208141) then -- Ray of Frost
+        local start, duration, enabled = GetSpellCooldown(205021);
+        local coolDownTime = RoundOne(start + duration - GetTime());
+        if(coolDownTime ~= nil) and (coolDownTime > 0)then
+          rayId, _, _, _, _, _, _, _, _ = GetSpellInfo(205021);
+          MNcooldownMonitor(rayId, 60, "Interface\\Icons\\spell_frost_chillingblast")
+        end
+    elseif (arg == 205025) then -- presence of mind
+        start, duration, enabled = GetSpellCooldown(205025);
+        pomId, _, _, _, _, _, _, _, _ = GetSpellInfo(205025);
+        MNcooldownMonitor(pomId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\spell_nature_enchantarmor");
     elseif (arg == 48505) then
         start, duration, enabled = GetSpellCooldown(48505);
         starFallId, _, _, _, _, _, _, _, _ = GetSpellInfo(48505);
-        MNcooldownMonitor(starFallId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\ability_druid_starfall")
-    elseif (arg == 12051) then
-        start, duration, enabled = GetSpellCooldown(12051);
-        evocateId, _, _, _, _, _, _, _, _ = GetSpellInfo(12051);
-        MNcooldownMonitor(evocateId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\spell_nature_purge")
+        MNcooldownMonitor(starFallId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\ability_druid_starfall");
     elseif (arg == 131078) then --icy veins
         start, duration, enabled = GetSpellCooldown(131078);
         icyveinsId, _, _, _, _, _, _, _, _ = GetSpellInfo(131078);
-        MNcooldownMonitor(icyveinsId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\Spell_frost_coldhearted")
+        MNcooldownMonitor(icyveinsId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\Spell_frost_coldhearted");
     elseif (arg == 12472) then --icy veins
         start, duration, enabled = GetSpellCooldown(12472);
         icyveinsId, _, _, _, _, _, _, _, _ = GetSpellInfo(12472);
-        MNcooldownMonitor(icyveinsId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\Spell_frost_coldhearted")
-    elseif (arg == 12042) then
-        start, duration, enabled = GetSpellCooldown(12042);
-        arcanePowerId, _, _, _, _, _, _, _, _ = GetSpellInfo(12042);
-        MNcooldownMonitor(arcanePowerId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\spell_nature_lightning")
+        MNcooldownMonitor(icyveinsId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\Spell_frost_coldhearted");
     elseif (arg == 212653) then -- shimmer
         -- TODO: uses charges
-        --start, duration, enabled = GetSpellCooldown(212653);
-        -- blinkId, _, _, _, _, _, _, _, _ = GetSpellInfo(212653);
-        -- MNcooldownMonitor(blinkId, 15, "Interface\\Icons\\spell_arcane_blink")
+        blinkId, _, _, _, _, _, _, _, _ = GetSpellInfo(212653);
+        MNcooldownMonitor(blinkId, 15, "Interface\\Icons\\spell_arcane_blink");
     elseif (arg == 11426) then
         start, duration, enabled = GetSpellCooldown(11426);
         icebarrierId, _, _, _, _, _, _, _, _ = GetSpellInfo(11426);
-        MNcooldownMonitor(icebarrierId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\spell_ice_lament")
+        MNcooldownMonitor(icebarrierId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\spell_ice_lament");
     end
 end
 --============================================================================--

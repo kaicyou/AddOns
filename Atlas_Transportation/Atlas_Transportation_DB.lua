@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation_DB.lua 20 2016-05-25 18:34:17Z arith $
+-- $Id: Atlas_Transportation_DB.lua 27 2016-07-24 16:01:45Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -26,6 +26,90 @@
 
 
 local myDB = {
+	TransAllianceBrokenIsles = {
+		{ " A", 10038, 230, 357 }; --Greyfang Enclave
+		{ " B", 10039, 237, 349 }; --Chamber of the Guardian
+		{ " 1", 10001 , 249, 341 }; --Krasus' Landing
+		{ " 2", 10002 , 151, 378 }; --Watchers' Aerie
+		{ " 3", 10003 , 144, 363 }; --Wardens' Redoubt
+		{ " 4", 10004 , 165, 336 }; --Shackle's Den
+		{ " 5", 10005 , 130, 303 }; --Illidari Stand
+		{ " 6", 10006 , 98, 314 }; --Illidari Perch
+		{ " 7", 10007 , 191, 275 }; --Felblaze Ingress
+		{ " 8", 10008 , 142, 273 }; --Azurewing Repose
+		{ " 9", 10009 , 116, 238 }; --Challiane's Terrace
+		{ "10", 10010, 222, 450 }; --Eye of Azshara
+		{ "11", 10011, 147, 197 }; --Lorlathil
+		{ "12", 10012, 75, 185 }; --Gloaming Reef
+		{ "13", 10013, 117, 175 }; --Bradensbrook
+		{ "14", 10014, 149, 177 }; --Garden of the Moon
+		{ "15", 10015, 183, 163 }; --Starsong Refuge
+		{ " 1", 10100, 110, 112 }; --The Dreamgrove
+		{ "16", 10016, 246, 164 }; --Obsidian Overlook
+		{ "17", 10017, 277, 164 }; --Ironhorn Enclave
+		{ "18", 10018, 210, 126 }; --Sylvan Falls
+		{ "19", 10019, 244, 116 }; --Thunder Totem
+		{ "20", 10020, 286, 128 }; --Stonehoof Watch
+		{ "21", 10021, 224, 97 }; --Nesingwary
+		{ "22", 10022, 263, 84 }; --Skyhorn
+		{ "23", 10023, 191, 68 }; --Felbane Camp
+		{ "24", 10024, 217, 67 }; --The Witchwood
+		{ "25", 10025, 279, 51 }; --Prepfoot
+		{ "26", 10026, 228, 12 }; --Shipwreck Cove
+		{ "27", 10027, 297, 152 }; --Skyfire Triage Camp (A)
+		{ "28", 10028, 318, 176 }; --Lorna's Watch (A)
+		{ "29", 10029, 344, 127 }; --Stormtorn Foothills
+		{ "30", 10030, 369, 154 }; --Valdisdall
+		{ "31", 10031, 404, 171 }; --Greywatch (A)
+		{ "32", 10032, 442, 83 }; --Shield's Rest
+		{ "33", 10033, 353, 223 }; --Hafr Fjall
+		{ "34", 10034, 205, 198 }; --Irongrove Retreat
+		{ "35", 10035, 225, 227 }; --Meredil
+		{ "36", 10036, 291, 212 }; --Crimson Thicket
+		{ "37", 10037, 301, 321 }; --Illidari Camp
+	};
+	TransHordeBrokenIsles = {
+		{ " A", 10038, 239, 336 }; --Windrunner's Sanctuary
+		{ " B", 10039, 237, 348 }; --Chamber of the Guardian
+		{ " 1", 10001, 249, 342 }; --Krasus' Landing
+		{ " 2", 10002 , 151, 378 }; --Watchers' Aerie
+		{ " 3", 10003 , 144, 363 }; --Wardens' Redoubt
+		{ " 4", 10004 , 165, 336 }; --Shackle's Den
+		{ " 5", 10005 , 130, 303 }; --Illidari Stand
+		{ " 6", 10006 , 98, 314 }; --Illidari Perch
+		{ " 7", 10007 , 191, 275 }; --Felblaze Ingress
+		{ " 8", 10008 , 142, 273 }; --Azurewing Repose
+		{ " 9", 10009 , 116, 238 }; --Challiane's Terrace
+		{ "10", 10010, 222, 450 }; --Eye of Azshara
+		{ "11", 10011, 147, 197 }; --Lorlathil
+		{ "12", 10012, 75, 185 }; --Gloaming Reef
+		{ "13", 10013, 117, 175 }; --Bradensbrook
+		{ "14", 10014, 149, 177 }; --Garden of the Moon
+		{ "15", 10015, 183, 163 }; --Starsong Refuge
+		{ " 1", 10100, 110, 112 }; --The Dreamgrove
+		{ "16", 10016, 246, 164 }; --Obsidian Overlook
+		{ "17", 10017, 277, 164 }; --Ironhorn Enclave
+		{ "18", 10018, 210, 126 }; --Sylvan Falls
+		{ "19", 10019, 244, 116 }; --Thunder Totem
+		{ "20", 10020, 286, 128 }; --Stonehoof Watch
+		{ "21", 10021, 224, 97 }; --Nesingwary
+		{ "22", 10022, 263, 84 }; --Skyhorn
+		{ "23", 10023, 191, 68 }; --Felbane Camp
+		{ "24", 10024, 217, 67 }; --The Witchwood
+		{ "25", 10025, 279, 51 }; --Prepfoot
+		{ "26", 10026, 228, 12 }; --Shipwreck Cove
+		{ "27", 10027, 311, 122 }; --Forsaken Foothold (H)
+		{ "28", 10028, 327, 169 }; --Cullen's Post (H)
+		{ "29", 10029, 344, 127 }; --Stormtorn Foothills
+		{ "30", 10030, 369, 154 }; --Valdisdall
+		{ "31", 10031, 355, 191 }; --Dreadwake's Landing (H)
+		{ "32", 10032, 442, 83 }; --Shield's Rest
+		{ "33", 10033, 353, 223 }; --Hafr Fjall
+		{ "34", 10034, 205, 198 }; --Irongrove Retreat
+		{ "35", 10035, 225, 227 }; --Meredil
+		{ "36", 10036, 291, 212 }; --Crimson Thicket
+		{ "37", 10037, 301, 321 }; --Illidari Camp
+	};
 	TransAllianceDraenor = {
 		{ "A", 10052, 278, 259 }; -- Khadgar's Tower
 		{ "A'", 10053, 450, 10 }; -- Darnassus

@@ -54,6 +54,12 @@ function loadMageNuggetCdMonOptionsVariables_OnLoadEvent()
         MageNugCDOptionsFrame_SizeSlider:SetValue(MageNuggetsCoolDownMon.cooldownSize);
     end
 
+    if (MageNuggetsCoolDownMon.clickthru == nil) then
+        MageNugCDOptionsFrame_CheckButtonClickThroughFrame:SetChecked(false);
+    else
+        MageNugCDOptionsFrame_CheckButtonClickThroughFrame:SetChecked(MageNuggetsCoolDownMon.clickthru);
+    end
+
     if (MageNuggetsCoolDownMon.removedSpells == nil) then
         MageNuggetsCoolDownMon.removedSpells = {};
     end
@@ -63,36 +69,12 @@ function loadMageNuggetCdMonOptionsVariables_OnLoadEvent()
     MageNugCDOptionsFrame_IgnoreListText:SetWordWrap(true);
     updateIgnoreListFontString();
 
-    -- paralysisId, _, _, _, _, _, _, _, _ = GetSpellInfo(115078);
-    -- shackleId, _, _, _, _, _, _, _, _ = GetSpellInfo(9484);
-    -- iceBlockId, _, _, _, _, _, _, _, _ = GetSpellInfo(45438);
-    -- livingBombId, _, _, _, _, _, _, _, _ = GetSpellInfo(44457);
-    -- netherTempestId, _, _, _, _, _, _, _, _ = GetSpellInfo(114923);
-    -- icyVeinsId, _, _, _, _, _, _, _, _ = GetSpellInfo(12472);
-    -- polyPigId, _, _, _, _, _, _, _, _ = GetSpellInfo(28272);
-    -- polySheepId, _, _, _, _, _, _, _, _ = GetSpellInfo(28272);
-    -- polyTurtleId, _, _, _, _, _, _, _, _ = GetSpellInfo(28272);
-    -- polyRabbitId, _, _, _, _, _, _, _, _ = GetSpellInfo(28272);
-    -- polyCatId, _, _, _, _, _, _, _, _ = GetSpellInfo(28272);
-    -- frostboltId, _, _, _, _, _, _, _, _ = GetSpellInfo(42842);
-    -- frostfireId, _, _, _, _, _, _, _, _ = GetSpellInfo(47610);
-    -- conecoldId, _, _, _, _, _, _, _, _ = GetSpellInfo(42931);
-    -- blastwaveId, _, _, _, _, _, _, _, _ = GetSpellInfo(42945);
-    -- judgementjustId, _, _, _, _, _, _, _, _ = GetSpellInfo(53696);
-    -- infectedwoundsId, _, _, _, _, _, _, _, _ = GetSpellInfo(48485);
-    -- thunderclapId, _, _, _, _, _, _, _, _ = GetSpellInfo(47502);
-    -- deadlythrowId, _, _, _, _, _, _, _, _ = GetSpellInfo(48674);
-    -- frostshockId, _, _, _, _, _, _, _, _ = GetSpellInfo(49236);
-    -- chilledId, _, _, _, _, _, _, _, _ = GetSpellInfo(7321);
-    -- mindflayId, _, _, _, _, _, _, _, _ = GetSpellInfo(48156);
-    -- impactId, _, _, _, _, _, _, _, _ = GetSpellInfo(64343);
-
-  --  MnClickThrough()
+    MnCdMonClickThrough()
   --  incombat = 0;
 end
 --
-function MnClickThrough()
-    local clickChecked = MageNugOption2Frame_ClickThruCheckButton:GetChecked();
+function MnCdMonClickThrough()
+    local clickChecked = MageNugCDOptionsFrame_CheckButtonClickThroughFrame:GetChecked();
     if (clickChecked == true) then
         MageNuggetsCoolDownMon.clickthru = true;
         MageNugCD_Frame:EnableMouse(false)
@@ -157,31 +139,10 @@ end
 --
 function loadMageNuggetCdMonVariables_OnLoadEvent()
      mnplayerClass, mnenglishClass = UnitClass("player");
-    if((mnenglishClass == 'WARRIOR') or (mnenglishClass == 'MONK') or (mnenglishClass == 'ROGUE') or (mnenglishClass == 'DEATHKNIGHT') or (mnenglishClass == 'PALADIN') or (mnenglishClass == 'HUNTER')) then
-        MageNuggetsCoolDownMon.cooldownToggle = true;
-        MageNugCD_Frame:Hide();
-    end
-    if(mnenglishClass == 'WARLOCK') then
-        DEFAULT_CHAT_FRAME:AddMessage("|cff00BFFF".."Mage".."|cff00FF00".."Nuggets".."|cffffffff "..magenugVer.." loaded! Some Options Disabled (Class:"..UnitClass("Player")..")")
-        MageNuggetsCoolDownMon.cooldownToggle = true;
-        MageNugCD_Frame:Hide();
-    end
-    if(mnenglishClass == 'SHAMAN')then
-        DEFAULT_CHAT_FRAME:AddMessage("|cff00BFFF".."Mage".."|cff00FF00".."Nuggets".."|cffffffff "..magenugVer.." loaded! Some Options Disabled (Class:"..UnitClass("Player")..")")
-        MageNuggetsCoolDownMon.cooldownToggle = true;
-        MageNugCD_Frame:Hide();
-    end
-    if(mnenglishClass == 'PRIEST') then
-        DEFAULT_CHAT_FRAME:AddMessage("|cff00BFFF".."Mage".."|cff00FF00".."Nuggets".."|cffffffff "..magenugVer.." loaded! Some Options Disabled (Class:"..UnitClass("Player")..")")
-        MageNuggetsCoolDownMon.cooldownToggle = true;
-    end
-    if(mnenglishClass == 'DRUID') then
-        DEFAULT_CHAT_FRAME:AddMessage("|cff00BFFF".."Mage".."|cff00FF00".."Nuggets".."|cffffffff "..magenugVer.." loaded! Some Options Disabled (Class:"..UnitClass("Player")..")")
-    --    MageNugCD_Frame_Text:SetText(" ");
-    end
     if(mnenglishClass == 'MAGE') then
         DEFAULT_CHAT_FRAME:AddMessage("|cff00BFFF".."Mage".."|cff00FF00".."Nuggets".."|cffffffff Cooldown Monitor loaded! (Use: /mncd)")
-      --  MageNugCD_Frame_Text:SetText(" ");
+    else
+      MageNugCD_Frame:Hide();
     end
 
 end
@@ -200,7 +161,7 @@ function MageNugz_SaveFrame_Position()
     MageNuggetsCooldownMonitor_Frames.cd_point, _, MageNuggetsCooldownMonitor_Frames.cd_relativePoint, MageNuggetsCooldownMonitor_Frames.cd_xOfs, MageNuggetsCooldownMonitor_Frames.cd_yOfs = MageNugCD_Frame:GetPoint();
 end
 --
-function MageNugz_SetFrame_Positions()
+function MageNugzCdMon_SetFrame_Positions()
     MageNugCD_Frame:ClearAllPoints();
     MageNugCD_Frame:SetPoint(MageNuggetsCooldownMonitor_Frames.cd_point, "UIParent", MageNuggetsCooldownMonitor_Frames.cd_relativePoint, MageNuggetsCooldownMonitor_Frames.cd_xOfs, MageNuggetsCooldownMonitor_Frames.cd_yOfs);
 end

@@ -193,7 +193,8 @@ L["ATLAS_LDB_HINT"] = [=[[ЛКМ] - открывает Атлас.
 L["ATLAS_MINIMAPLDB_HINT"] = [=[[ЛКМ] - открывает Атлас.
 [ПКМ] + открывает настройки Атласа.
 [ЛКМ] + [перемещение] - изменяет позицию кнопки.]=]
-L["ATLAS_MISSING_MODULE"] = "Atlas обнаружил недостоющие модули / плагины: "
+L["ATLAS_MISSING_MODULE"] = "Atlas обнаружил недостоющие модули / плагины: " -- Needs review
+-- L["ATLAS_OPEN_ADDON_LIST"] = ""
 L["ATLAS_OPTIONS_ACRONYMS"] = "Короткие названия"
 L["ATLAS_OPTIONS_ACRONYMS_TIP"] = "Будут отображаться сокрощенные названия подземелий в информации о карте."
 L["ATLAS_OPTIONS_AUTOSEL"] = "Автоматический выбор поздемелья"
@@ -362,6 +363,7 @@ L["Crusaders' Coliseum"] = "Колизей Авангарда"
 L["Crusaders' Square Postbox"] = "Ключ от почтового ящика на Площади рыцарей"
 L["Cryo-Engineer Sha'heen"] = "Крио-инженер Ша'хин"
 L["Cursed Centaur"] = "Проклятый кентавр"
+-- L["Dantalionax"] = ""
 L["Darkheart"] = "Черносерд"
 L["Dark Keeper Key"] = "Ключ темного хранителя"
 L["Dark Ranger Kalira"] = "Темный следопыт Калира"

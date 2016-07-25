@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas-enUS.lua 48 2016-07-19 14:03:11Z arith $
+﻿-- $Id: Atlas-enUS.lua 56 2016-07-23 13:42:16Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -190,7 +190,16 @@ Right-Click for Atlas options.]=]
 L["ATLAS_MINIMAPLDB_HINT"] = [=[Left-Click to open Atlas.
 Right-Click for Atlas options.
 Left-click and drag to move this button.]=]
-L["ATLAS_MISSING_MODULE"] = "Atlas has detected missing module(s) / plugin(s): "
+L["ATLAS_MISSING_MODULE"] = [=[Atlas has detected some missing module(s) / plugin(s). 
+
+It could be you had outdated module(s) / plugin(s) which had been disabled by Atlas. 
+If you have now installed all latest ones, go to your addon list to see if all of them have been enabled. 
+
+If you are sure that you don't need those "missing" module(s) / plugin(s) and do not want to see this message again, you can go to option panel to disable the notification. 
+
+List of missing module(s) / plugin(s): 
+]=]
+L["ATLAS_OPEN_ADDON_LIST"] = "Open addon list"
 L["ATLAS_OPTIONS_ACRONYMS"] = "Display Acronyms"
 L["ATLAS_OPTIONS_ACRONYMS_TIP"] = "Display the instance's acronym in the map details."
 L["ATLAS_OPTIONS_AUTOSEL"] = "Auto-Select Instance Map"
@@ -359,6 +368,7 @@ L["Crusaders' Coliseum"] = "Crusaders' Coliseum"
 L["Crusaders' Square Postbox"] = "Crusaders' Square Postbox"
 L["Cryo-Engineer Sha'heen"] = "Cryo-Engineer Sha'heen"
 L["Cursed Centaur"] = "Cursed Centaur"
+L["Dantalionax"] = "Dantalionax"
 L["Darkheart"] = "Darkheart"
 L["Dark Keeper Key"] = "Dark Keeper Key"
 L["Dark Ranger Kalira"] = "Dark Ranger Kalira"

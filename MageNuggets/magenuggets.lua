@@ -1,11 +1,7 @@
 ﻿--Mage Nuggets by B-Buck (Bbuck of Eredar)
 
-local magenugVer = "5.1.0"
-local livingBombCount = 0;
+local magenugVer = "5.1.3"
 local mirrorImageTime = 0;
-local livingbombGlobalTime = 0;
-local livingbombTime = {};
-local lbTargetId = {};
 local spellStealTog = 0;
 local misslebTog = 0;
 local mageProcSSTime = 0;
@@ -57,23 +53,26 @@ function mageNuggets_OnStart(self)
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
     self:RegisterEvent("CONFIRM_TALENT_WIPE")
     self:RegisterEvent("PLAYER_REGEN_DISABLED")
-    self:RegisterEvent("PLAYER_TALENT_UPDATE")
     self:RegisterEvent("PLAYER_REGEN_ENABLED")
     self:RegisterEvent("PLAYER_UPDATE_RESTING")
     self:RegisterEvent("PLAYER_LOGOUT")
-
-    for i=1, 8 do
-      livingbombTime[i] = 0;
-    end
-    for j=1, 8 do
-      lbTargetId[j] = 0;
-    end
 end
 
 local MN_UpdateInterval = 0.25;
+local previewFramesCounter = 0;
+previewMnFrames = false;
 function MageNuggets_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
  if (self.TimeSinceLastUpdate > MN_UpdateInterval) then
+
+   if(previewFrames == true) then
+     previewFramesCounter = previewFramesCounter + 1;
+     if(previewFramesCounter > 300)then
+       previewFramesCounter = 0;
+       previewFrames = false;
+     end
+   end
+
     --Ignite
     local h = 1;
     local dotUp = false;
@@ -130,7 +129,7 @@ function MageNuggets_OnUpdate(self, elapsed)
                     i = i + 1;
                     buffName, _, _, _, _, _, expirationTime, _, isStealable = UnitAura("target", i, "HELPFUL");
                 end
-                if (#stealableBuffs < 1) then
+                if (#stealableBuffs < 1) and (previewMnFrames == false)then
                     MNSpellSteal_Frame:Hide();
                 else
                     MNSpellSteal_Frame:Show();
@@ -152,7 +151,7 @@ function MageNuggets_OnUpdate(self, elapsed)
                     i = i + 1;
                     buffName2, _, _, _, _, _, expirationTime2, _, isStealable2 = UnitAura("focus", i, "HELPFUL");
                 end
-                if (#stealableBuffs2 < 1) then
+                if (#stealableBuffs2 < 1)  and (previewMnFrames == false) then
                     MNSpellStealFocus_Frame:Hide();
                 else
                     MNSpellStealFocus_Frame:Show();
@@ -242,7 +241,7 @@ function MageNuggetsHS_OnUpdate(self, elapsed)
             MageNugProcFrameText2:SetText(mageProcHSTime)
             local position = (MageNugProcFrame_ProcBar:GetValue() / 14 * 120);
             MageNugProcFrame_ProcBarSpark:SetPoint("BOTTOMLEFT",MageNugProcFrame_ProcBar,"BOTTOMLEFT",position - 10,-6);
-            if (mageProcHSTime <= 0) then
+            if (mageProcHSTime <= 0) and (previewMnFrames == false) then
                 MageNugProcFrame:Hide()
                 MageNugProcFrame_ProcBar:SetValue(15)
             end
@@ -260,7 +259,7 @@ function MageNuggetsHU_OnUpdate(self, elapsed)
             MageNugProcHUFrameText2:SetText(mageProcHUTime)
             local position = (MageNugProcHUFrame_ProcBar:GetValue() / 8 * 120);
             MageNugProcHUFrame_ProcBarSpark:SetPoint("BOTTOMLEFT",MageNugProcHUFrame_ProcBar,"BOTTOMLEFT",position - 10,-6);
-            if (mageProcHUTime <= 0) then
+            if (mageProcHUTime <= 0) and (previewMnFrames == false) then
                 MageNugProcHUFrame:Hide()
                 MageNugProcHUFrame_ProcBar:SetValue(8)
             end
@@ -286,7 +285,7 @@ function MageNuggetsMB_OnUpdate(self, elapsed)
             i = i + 1;
             buffName, rank, _, count, _, duration, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
         end
-        if (mageProcMBTime <= 0.1) then
+        if (mageProcMBTime <= 0.1) and (previewMnFrames == false) then
             MageNugMBProcFrame:Hide()
             MageNugMBProcFrame_ProcBar:SetValue(14)
         end
@@ -312,7 +311,7 @@ function MageNuggetsFoF_OnUpdate(self, elapsed)
             MageNugFoFProcFrameText2:SetText(fofProgMonTime)
             local position = (MageNugFoFProcFrame_ProcBar:GetValue() / 14 * 120);
             MageNugFoFProcFrame_ProcBarSpark:SetPoint("BOTTOMLEFT",MageNugFoFProcFrame_ProcBar,"BOTTOMLEFT",position - 10,-6);
-            if (fofProgMonTime <= 0) then
+            if (fofProgMonTime <= 0) and (previewMnFrames == false) then
                 MageNugFoFProcFrame:Hide()
                 MageNugFoFProcFrame_ProcBar:SetValue(14)
             end
@@ -342,7 +341,7 @@ function MageNuggetsBF_OnUpdate(self, elapsed)
             MageNugBFProcFrameText2:SetText(bfProgMonTime)
             local position = (MageNugBFProcFrame_ProcBar:GetValue() / 14 * 120);
             MageNugBFProcFrame_ProcBarSpark:SetPoint("BOTTOMLEFT",MageNugBFProcFrame_ProcBar,"BOTTOMLEFT",position - 10, -6);
-            if (mageProcBFTime <= 0) then
+            if (mageProcBFTime <= 0) and (previewMnFrames == false) then
                 MageNugBFProcFrame:Hide()
                 MageNugBFProcFrame_ProcBar:SetValue(15)
             end
@@ -528,10 +527,7 @@ function MageNuggets_OnEvent(this, event, ...)
     if (event == "ADDON_LOADED") then
         if(argin1 == "MageNuggets") then
             loadMageNuggetVariables_OnLoadEvent();
-            MageNuggetsLB_Prep();
         end
-    elseif (event == "PLAYER_TALENT_UPDATE") then
-        MNBombMonitorDress();
     elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
         MageNugCD1_Frame_Bar:SetValue(0);
         MageNugCD1_Frame:Hide();
@@ -581,9 +577,6 @@ function MageNuggets_OnEvent(this, event, ...)
         incombat = 0;
         MageNugNova_Frame:Hide();
         MageNugInvokers_Frame:Hide();
-        if(mnenglishClass == 'DRUID') or (mnenglishClass == 'MAGE') then
-            MageNugCD_Frame_Text:SetText(" ")
-        end
         if (MageNuggets.moonkinTog == false) then
             if (MageNuggets.moonkinCombat == true) then
                 MageNugMoonkin_Frame:Hide();
@@ -690,14 +683,6 @@ function spellAuraRemoved(arg, sourceName, destName)
         if (MageNuggets.cauterizeToggle == true) then
             MageNugCauterizeFrame:Hide();
         end
-    elseif (arg == 12536) or (arg == 16870) then
-        if (MageNuggets.clearcastToggle == true) then
-            MageNugClearcast_Frame:Hide();
-        end
-    elseif (arg == 114923) then -- nether tempest
-        MNRemoveBomb(destGUID);
-    elseif (arg == 44457) then --living bomb
-        MNRemoveBomb(destGUID);
     end
 
     if (MageNuggets.polyToggle == true) then
@@ -829,21 +814,7 @@ end
 --                      Spell Aura Refresh
 --============================================================================--
 function spellAuraRefresh(arg, sourceName, destName)
-    -- Clear Cast
-    if (arg == 16870) then
-        if (MageNuggets.clearcastToggle == true) then
-            if(combatTextCvar == '1') then
-                CombatText_AddMessage("Clearcast", CombatText_StandardScroll, 1, 1, 1, nil, isStaggered, nil);
-            end
-            clearcastTime = 14;
-            MageNugClearcast_Frame:Show();
-        end
-    -- Frost Bomb
-    elseif (arg == 112948) and (MageNuggets.livingBombToggle == true) then
-        livingbombGlobalTime = 20;
-        MNRefreshBomb(destGUID, GetTime() + 15);
-    -- Hot Streak!
-    elseif(arg == 48108) then
+  if(arg == 48108) then -- hot streak
         if(MageNuggets.procMonitorToggle == true) then
             mageProcHSTime = 14;
             MageNugProcFrameText:SetText("|cffFF0000".."HOT STREAK!")
@@ -873,25 +844,6 @@ function spellAuraRefresh(arg, sourceName, destName)
         end
         if (MageNuggets.brainfreezeSoundToggle == true) then
            PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.brainfreezeSound2)
-        end
-    -- Living Bomb
-    elseif(arg == 44457) then
-        if (MageNuggets.livingBombToggle == true) then
-            _, _, _, _, _, _, lbrefreshexpTime, unitCaster, _, _, _ = UnitAura("target", livingBombId, nil,"PLAYER|HARMFUL")
-            livingbombGlobalTime = 20;
-            local currentTargetGuid = UnitGUID("target");
-            if(destGUID == currentTargetGuid) then
-                if(lbrefreshexpTime ~= nil) then
-                    MNRefreshBomb(destGUID, lbrefreshexpTime);
-                end
-            else
-                MNRefreshBomb(destGUID, GetTime() + 12);
-            end
-        end
-    elseif(arg == 114923) then -- Nether Tempest
-        if (MageNuggets.livingBombToggle == true) then
-            livingbombGlobalTime = 20;
-            MNRefreshBomb(destGUID, GetTime() + 15);
         end
     elseif(arg == 44544) then --Fingers of Frost
         if(MageNuggets.procMonitorToggle == true) then
@@ -1196,9 +1148,6 @@ function spellAuraAppliedSource(arg, sourceName, destName)
         if (MageNuggets.impactSoundToggle == true) then
             PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.impactSound2)
         end
-    elseif (arg == 112948) and (MageNuggets.livingBombToggle == true) then -- frost bomb
-        livingbombGlobalTime = 20;
-        MNApplyBomb(destGUID, destName, GetTime() + 12);
     elseif(arg == 80353) then -- time warp
         if (MageNuggets.timewarpSoundToggle == true) then
             PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.timewarpSound2) --lawl
@@ -1301,36 +1250,6 @@ function spellAuraAppliedSource(arg, sourceName, destName)
         end
         if (MageNuggets.fofSoundToggle == true) then
         PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.fofSound2)
-        end
-    elseif(arg == 114923) then -- nether tempest
-        if (MageNuggets.livingBombToggle == true) then
-            livingbombGlobalTime = 20;
-            _, _, _, _, _, _, lbexpirationTime, unitCaster, _, _, _ = UnitAura("target", netherTempestId, nil,"PLAYER|HARMFUL")
-            local currentTargetGuid = UnitGUID("target");
-            if(destGUID == currentTargetGuid) then
-                if (lbexpirationTime ~= nil) then
-                    MNApplyBomb(destGUID, destName, lbexpirationTime);
-                end
-            else
-            MNApplyBomb(destGUID, destName, GetTime() + 12);
-            end
-        end
-    elseif(arg == 44457) then -- living bomb
-        if (MageNuggets.livingBombToggle == true) then
-            livingbombGlobalTime = 20;
-            _, _, _, _, _, _, lbexpirationTime, unitCaster, _, _, _ = UnitAura("target", livingBombId, nil,"PLAYER|HARMFUL")
-            local currentTargetGuid = UnitGUID("target");
-            if(MageNuggets.bombMouseOverMacro == false) then
-                MNApplyBomb(destGUID, destName, lbexpirationTime, "livingbomb");
-            else
-                if(destGUID == currentTargetGuid) then
-                    if (lbexpirationTime ~= nil) then
-                        MNApplyBomb(destGUID, destName, lbexpirationTime, "livingbomb");
-                    end
-                else
-                    MNApplyBomb(destGUID, destName, GetTime() + 12, "livingbomb");
-                end
-            end
         end
     elseif (arg == 55342) then
         if (MageNuggets.mirrorImageToggle == true) then
@@ -1909,421 +1828,6 @@ function MNanchorMoonkinFrames()
     MNstarSurge_Frame:SetPoint("CENTER", MageNugMoonkin_Frame, "CENTER", 50, 16);
 end
 
-
-----------------------------------------------------------------------------------------
---                              BOMB MONITOR                                          --
-----------------------------------------------------------------------------------------
-function MNRefreshFrames()
-    local old = MNFindBar();
-    local i = 1;
-    while(i <= 8) do
-        if(livingbombTime[i] == 0) then
-            if(old > 0) and (i < old) then
-                _G["MageNugLB"..i.."_Frame_Text2"]:SetText(_G["MageNugLB"..old.."_Frame_Text2"]:GetText());
-                livingbombTime[i] = livingbombTime[old];
-               -- _G["MageNugLB"..i.."_Frame"]:Show();
-                lbTargetId[i] = lbTargetId[old]
-               -- _G["MageNugLB"..old.."_Frame"]:Hide();
-                _G["MageNugLB"..old.."_Frame_Text"]:SetText("");
-                _G["MageNugLB"..old.."_Frame_Bar"]:SetValue(0);
-                _G["MageNugLB"..old.."_Frame_Text2"]:SetText("");
-                livingbombTime[old] = 0;
-                lbTargetId[old] = nil;
-                break
-            end
-        end
-        i = i + 1;
-    end
- end
-
-function MNFindBar()
-    local bar = 0;
-    local i = 1;
-    while(i <= 8) do
-        if(livingbombTime[i] > 0) then
-            bar = i;
-        end
-        i = i + 1;
-    end
-    return bar;
-end
-
-function MNApplyBomb(destGUID, destName, expireTime, bombType)
-    MageNugLB_Frame:Show();
-
-    if(bombType == "livingbomb") then
-        local i = 1;
-        while(i <= 8) do
-            if(livingbombTime[i] == 0) then
-                livingbombTime[i] = expireTime;
-                lbTargetId[i] = destGUID;
-                _G["MageNugLB"..i.."_Frame_Text"]:SetText(RoundOne(expireTime - GetTime()));
-                _G["MageNugLB"..i.."_Frame_Bar"]:SetValue(RoundOne(expireTime - GetTime()));
-                _G["MageNugLB"..i.."_Frame_Text2"]:SetText(strsub(destName,1,18));
-                --_G["MageNugLB"..i.."_Frame"]:Show()
-                i = 1;
-                break;
-            else
-                i = i + 1;
-            end
-        end
-    else
-        livingbombTime[1] = expireTime;
-        lbTargetId[1] = destGUID;
-        MageNugLB1_Frame_Text:SetText(RoundOne(expireTime - GetTime()));
-        MageNugLB1_Frame_Bar:SetValue(RoundOne(expireTime - GetTime()));
-        MageNugLB1_Frame_Text2:SetText(strsub(destName,1,18));
-    end
-
-
-
-end
-
-function MNRemoveBomb(destGUID)
-    local i = 1;
-    while(i <= 8) do
-        if(destGUID == lbTargetId[i]) then
-            livingbombTime[i] = 0;
-            --_G["MageNugLB"..i.."_Frame"]:Hide();
-            _G["MageNugLB"..i.."_Frame_Bar"]:SetValue(0);
-            _G["MageNugLB"..i.."_Frame_Text"]:SetText("1");
-            lbTargetId[i] = nil;
-            break;
-        end
-        i = i + 1;
-    end
-    MNRefreshFrames();
-end
-
-function MNRefreshBomb(destGUID, expireTime)
-    if(destGUID == lbTargetId[1])then
-        livingbombTime[1] = expireTime;
-    elseif(destGUID == lbTargetId[2])then
-        livingbombTime[2] = expireTime;
-    elseif(destGUID == lbTargetId[3])then
-        livingbombTime[3] = expireTime;
-    elseif(destGUID == lbTargetId[4])then
-        livingbombTime[4] = expireTime;
-    elseif(destGUID == lbTargetId[5])then
-        livingbombTime[5] = expireTime;
-    elseif(destGUID == lbTargetId[6])then
-        livingbombTime[6] = expireTime;
-    elseif(destGUID == lbTargetId[7])then
-        livingbombTime[7] = expireTime;
-    elseif(destGUID == lbTargetId[8])then
-        livingbombTime[8] = expireTime;
-    end
-end
-
-
-function MNBombMonitorDress()
-    -- local talentID, name, texture, selected, available = GetTalentInfo(1, 1, 1)
-    -- DEFAULT_CHAT_FRAME:AddMessage(GetTalentInfo(1, 1, 1));
-    --
-    --
-    -- local isFree, talent = GetTalentRowSelectionInfo(3);
-    -- for i=1, 8 do
-    --    livingbombTime[i] = 0;
-    -- end
-    -- for j=1, 8 do
-    --   lbTargetId[j] = 0;
-    -- end
-    -- if(talent ~= nil)then
-    --     if(talent == 19299) then
-    --         if (MageNuggets.simpleUiToggle == true) then
-    --             MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\spell_mage_nethertempest");
-    --             MageNugLB_FrameTextureBorder:SetTexture();
-    --             MageNugLB_FrameTextureTitle:SetTexture();
-    --             MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --             MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --             MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --             MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --             MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --             MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --             MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --             MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --         else
-    --             MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\spell_mage_nethertempest");
-    --             MageNugLB_FrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\Water_Horizontal_Frame.blp");
-    --             MageNugLB_FrameTextureTitle:SetTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --         end
-    --     elseif(talent == 21690) then
-    --         if (MageNuggets.simpleUiToggle == true) then
-    --             MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\ability_mage_livingbomb");
-    --             MageNugLB_FrameTextureBorder:SetTexture();
-    --             MageNugLB_FrameTextureTitle:SetTexture();
-    --             MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-    --             MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-    --             MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-    --             MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-    --             MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-    --             MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-    --             MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-    --             MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\redbar.tga");
-    --         else
-    --             MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\ability_mage_livingbomb");
-    --             MageNugLB_FrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\Fire_Horizontal_Frame");
-    --             MageNugLB_FrameTextureTitle:SetTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-    --             MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-    --             MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-    --             MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-    --             MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-    --             MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-    --             MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-    --             MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-    --             MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\firebar.tga");
-    --         end
-    --     elseif(talent == 21691) then
-    --         if (MageNuggets.simpleUiToggle == true) then
-    --             MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\spell_mage_frostbomb");
-    --             MageNugLB_FrameTextureBorder:SetTexture();
-    --             MageNugLB_FrameTextureTitle:SetTexture();
-    --             MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --             MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --             MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --             MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --             MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --             MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --             MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --             MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\bluebar.tga");
-    --         else
-    --             MageNugLB_FrameTextureIcon:SetTexture("Interface\\Icons\\spell_mage_frostbomb");
-    --             MageNugLB_FrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\Ice_Horizontal_Frame");
-    --             MageNugLB_FrameTextureTitle:SetTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB1_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB2_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB3_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB4_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB5_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB6_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB7_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --             MageNugLB8_Frame_Bar:SetStatusBarTexture("Interface\\AddOns\\MageNuggets\\netherbar.tga");
-    --         end
-    --     end
-    -- end
-end
-
-
-function MageNuggetsLB_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 1) then
-       -- MNRefreshFrames();
-        if (livingbombGlobalTime >= 0) then
-            livingbombGlobalTime = RoundOne(livingbombGlobalTime - 1);
-            if (livingbombGlobalTime <= 0) then
-               --livingBombCount = 0;
-               MageNugLB_Frame:Hide();
-            end
-        end
-    self.TimeSinceLastUpdate = 0;
-    end
-end
---
-function MageNuggetsLB1_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then
-        local expireTime = RoundOne(livingbombTime[1] - GetTime());
-        if (expireTime >= 0.1) then
-            MageNugLB1_Frame_BarSpark:Show();
-            MageNugLB1_Frame_Bar:SetValue(expireTime);
-            MageNugLB1_Frame_Text:SetText(expireTime);
-            local position = (MageNugLB1_Frame_Bar:GetValue() / 13 * 130);
-            MageNugLB1_Frame_BarSpark:SetPoint("BOTTOMLEFT",MageNugLB1_Frame_Bar,"BOTTOMLEFT",position - 6, -8);
-        else
-            MageNugLB1_Frame_BarSpark:Hide();
-            MageNugLB1_Frame_Bar:SetValue(0);
-            MageNugLB1_Frame_Text:SetText("");
-            MageNugLB1_Frame_Text2:SetText("");
-            livingbombTime[1] = 0;
-        end
-        self.TimeSinceLastUpdate = 0;
-    end
-end
---
-function MageNuggetsLB2_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then
-        local expireTime = RoundOne(livingbombTime[2] - GetTime());
-        if (expireTime >= 0.1) then
-            MageNugLB2_Frame_BarSpark:Show();
-            MageNugLB2_Frame_Bar:SetValue(expireTime)
-            MageNugLB2_Frame_Text:SetText(expireTime)
-            local position = (MageNugLB2_Frame_Bar:GetValue() / 13 * 130);
-            MageNugLB2_Frame_BarSpark:SetPoint("BOTTOMLEFT",MageNugLB2_Frame_Bar,"BOTTOMLEFT",position - 6, -8);
-        else
-            MageNugLB2_Frame_BarSpark:Hide();
-            MageNugLB2_Frame_Bar:SetValue(0);
-            MageNugLB2_Frame_Text:SetText("");
-            MageNugLB2_Frame_Text2:SetText("");
-            livingbombTime[2] = 0;
-        end
-        self.TimeSinceLastUpdate = 0;
-    end
-end
---
-function MageNuggetsLB3_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then
-        local expireTime = RoundOne(livingbombTime[3] - GetTime());
-        if (expireTime >= 0.1) then
-            MageNugLB3_Frame_BarSpark:Show();
-            MageNugLB3_Frame_Bar:SetValue(expireTime)
-            MageNugLB3_Frame_Text:SetText(expireTime)
-            local position = (MageNugLB3_Frame_Bar:GetValue() / 13 * 130);
-            MageNugLB3_Frame_BarSpark:SetPoint("BOTTOMLEFT",MageNugLB3_Frame_Bar,"BOTTOMLEFT",position - 6, -8);
-        else
-            MageNugLB3_Frame_BarSpark:Hide();
-            MageNugLB3_Frame_Bar:SetValue(0);
-            MageNugLB3_Frame_Text:SetText("");
-            MageNugLB3_Frame_Text2:SetText("");
-            livingbombTime[3] = 0;
-        end
-        self.TimeSinceLastUpdate = 0;
-    end
-end
---
-function MageNuggetsLB4_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then
-        local expireTime = RoundOne(livingbombTime[4] - GetTime());
-        if (expireTime >= 0.1) then
-            MageNugLB4_Frame_BarSpark:Show();
-            MageNugLB4_Frame_Bar:SetValue(expireTime)
-            MageNugLB4_Frame_Text:SetText(expireTime)
-            local position = (MageNugLB4_Frame_Bar:GetValue() / 13 * 130);
-            MageNugLB4_Frame_BarSpark:SetPoint("BOTTOMLEFT",MageNugLB4_Frame_Bar,"BOTTOMLEFT",position - 6, -8);
-        else
-            MageNugLB4_Frame_BarSpark:Hide();
-            MageNugLB4_Frame_Bar:SetValue(0);
-            MageNugLB4_Frame_Text:SetText("");
-            MageNugLB4_Frame_Text2:SetText("");
-            livingbombTime[4] = 0;
-        end
-        self.TimeSinceLastUpdate = 0;
-    end
-end
---
-function MageNuggetsLB5_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then
-        local expireTime = RoundOne(livingbombTime[5] - GetTime());
-        if (expireTime >= 0.1) then
-            MageNugLB5_Frame_BarSpark:Show();
-            MageNugLB5_Frame_Bar:SetValue(expireTime)
-            MageNugLB5_Frame_Text:SetText(expireTime)
-            local position = (MageNugLB5_Frame_Bar:GetValue() / 13 * 130);
-            MageNugLB5_Frame_BarSpark:SetPoint("BOTTOMLEFT",MageNugLB5_Frame_Bar,"BOTTOMLEFT",position - 6, -8);
-        else
-            MageNugLB5_Frame_BarSpark:Hide();
-            MageNugLB5_Frame_Bar:SetValue(0);
-            MageNugLB5_Frame_Text:SetText("");
-            MageNugLB5_Frame_Text2:SetText("");
-            livingbombTime[5] = 0;
-        end
-        self.TimeSinceLastUpdate = 0;
-    end
-end
---
-function MageNuggetsLB6_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then
-        local expireTime = RoundOne(livingbombTime[6] - GetTime());
-        if (expireTime >= 0.1) then
-            MageNugLB6_Frame_BarSpark:Show();
-            MageNugLB6_Frame_Bar:SetValue(expireTime)
-            MageNugLB6_Frame_Text:SetText(expireTime)
-            local position = (MageNugLB6_Frame_Bar:GetValue() / 13 * 130);
-            MageNugLB6_Frame_BarSpark:SetPoint("BOTTOMLEFT",MageNugLB6_Frame_Bar,"BOTTOMLEFT",position - 6, -8);
-        else
-            MageNugLB6_Frame_BarSpark:Hide();
-            MageNugLB6_Frame_Bar:SetValue(0);
-            MageNugLB6_Frame_Text:SetText("");
-            MageNugLB6_Frame_Text2:SetText("");
-            livingbombTime[6] = 0;
-        end
-        self.TimeSinceLastUpdate = 0;
-    end
-end
---
-function MageNuggetsLB7_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then
-        local expireTime = RoundOne(livingbombTime[7] - GetTime());
-        if (expireTime >= 0.1) then
-            MageNugLB7_Frame_BarSpark:Show();
-            MageNugLB7_Frame_Bar:SetValue(expireTime)
-            MageNugLB7_Frame_Text:SetText(expireTime)
-            local position = (MageNugLB7_Frame_Bar:GetValue() / 13 * 130);
-            MageNugLB7_Frame_BarSpark:SetPoint("BOTTOMLEFT",MageNugLB7_Frame_Bar,"BOTTOMLEFT",position - 6, -8);
-        else
-            MageNugLB7_Frame_BarSpark:Hide();
-            MageNugLB7_Frame_Bar:SetValue(0);
-            MageNugLB7_Frame_Text:SetText("");
-            MageNugLB7_Frame_Text2:SetText("");
-            livingbombTime[7] = 0;
-        end
-        self.TimeSinceLastUpdate = 0;
-    end
-end
---
-function MageNuggetsLB8_OnUpdate(self, elapsed)
-    self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
-    if (self.TimeSinceLastUpdate > 0.1) then
-        local expireTime = RoundOne(livingbombTime[8] - GetTime());
-        if (expireTime >= 0.1) then
-            MageNugLB8_Frame_BarSpark:Show();
-            MageNugLB8_Frame_Bar:SetValue(expireTime)
-            MageNugLB8_Frame_Text:SetText(expireTime)
-            local position = (MageNugLB8_Frame_Bar:GetValue() / 13 * 130);
-            MageNugLB8_Frame_BarSpark:SetPoint("BOTTOMLEFT",MageNugLB8_Frame_Bar,"BOTTOMLEFT",position - 6, -8);
-        else
-            MageNugLB8_Frame_BarSpark:Hide();
-            MageNugLB8_Frame_Bar:SetValue(0);
-            MageNugLB8_Frame_Text:SetText("");
-            MageNugLB8_Frame_Text2:SetText("");
-            livingbombTime[8] = 0;
-        end
-        self.TimeSinceLastUpdate = 0;
-    end
-end
-
-function MageNuggetsLB_Prep()
-    MageNugLB1_Frame:EnableMouse(false)
-    MageNugLB2_Frame:EnableMouse(false)
-    MageNugLB3_Frame:EnableMouse(false)
-    MageNugLB4_Frame:EnableMouse(false)
-    MageNugLB5_Frame:EnableMouse(false)
-    MageNugLB6_Frame:EnableMouse(false)
-    MageNugLB7_Frame:EnableMouse(false)
-    MageNugLB8_Frame:EnableMouse(false)
-    MageNugLB1_Frame_Bar:EnableMouse(false)
-    MageNugLB2_Frame_Bar:EnableMouse(false)
-    MageNugLB3_Frame_Bar:EnableMouse(false)
-    MageNugLB4_Frame_Bar:EnableMouse(false)
-    MageNugLB5_Frame_Bar:EnableMouse(false)
-    MageNugLB6_Frame_Bar:EnableMouse(false)
-    MageNugLB7_Frame_Bar:EnableMouse(false)
-    MageNugLB8_Frame_Bar:EnableMouse(false)
-
-    local i = 1;
-    while(i <= 8) do
-        _G["MageNugLB"..i.."_Frame_BarSpark"]:Hide();
-        _G["MageNugLB"..i.."_Frame_Text"]:SetText("");
-        _G["MageNugLB"..i.."_Frame_Bar"]:SetValue(0);
-        _G["MageNugLB"..i.."_Frame_Text2"]:SetText("");
-        livingbombTime[i] = 0;
-        lbTargetId[i] = nil;
-        i = i + 1;
-    end
-end
 
 --============================================================================--
 --                                  Nova Monitor

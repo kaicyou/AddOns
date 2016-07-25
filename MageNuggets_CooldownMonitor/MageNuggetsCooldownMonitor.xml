@@ -41,7 +41,7 @@
 	    <OnDragStop>
         self:StopMovingOrSizing();
         self.isMoving = false;
-        --  MageNuggets_Frames.cd_point, _, MageNuggets_Frames.cd_relativePoint, MageNuggets_Frames.cd_xOfs, MageNuggets_Frames.cd_yOfs = MageNugCD_Frame:GetPoint();
+        MageNuggetsCooldownMonitor_Frames.cd_point, _, MageNuggetsCooldownMonitor_Frames.cd_relativePoint, MageNuggetsCooldownMonitor_Frames.cd_xOfs, MageNuggetsCooldownMonitor_Frames.cd_yOfs = MageNugCD_Frame:GetPoint();
       </OnDragStop>
       <OnEnter>
 			  --MNcooldownOnEnter();
@@ -123,14 +123,8 @@
     </Frames>
     <Scripts>
         <OnLoad>
-            self:SetScript("OnMouseUp", function(self, button, down)
-                if(button == "RightButton") then
-                    addSpellToIgnoreList(MageNugCD1_Frame_Text:GetText());
-                end
-            end)
             self:RegisterForDrag("LeftButton");
             self.TimeSinceLastUpdate = 0;
-            self:EnableMouse(true);
         </OnLoad>
         <OnUpdate>
            MageNuggetsCD1_OnUpdate(self, elapsed)
@@ -530,10 +524,11 @@
     <Scripts>
         <OnLoad>
             self:RegisterForDrag("LeftButton");
-            self.TimeSinceLastUpdate = 0
+            self.TimeSinceLastUpdate = 0;
+
         </OnLoad>
         <OnUpdate>
-           MageNuggetsCD6_OnUpdate(self, elapsed)
+           MageNuggetsCD6_OnUpdate(self, elapsed);
         </OnUpdate>
     </Scripts>
 </Frame>

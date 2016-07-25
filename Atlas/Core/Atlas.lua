@@ -1,4 +1,4 @@
--- $Id: Atlas.lua 48 2016-07-19 14:03:11Z arith $
+-- $Id: Atlas.lua 57 2016-07-24 16:15:50Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -177,7 +177,9 @@ local function Process_Deprecated()
 	local Deprecated_List = {
 		-- Most recent (working) versions of known modules at time of release
 		-- Atlas Modules
-		--{ "Atlas_Legion",	 	"1.33.00" },
+--[===[@alpha@
+		{ "Atlas_Legion",	 	"1.33.00" },
+--@end-alpha@]===]
 		{ "Atlas_WarlordsofDraenor", 	"1.33.00" },
 		{ "Atlas_MistsofPandaria",	"1.33.00" },
 		{ "Atlas_Cataclysm", 		"1.33.00" },
@@ -191,7 +193,7 @@ local function Process_Deprecated()
 		{ "Atlas_Transportation", 	"1.33.00" },
 		{ "Atlas_Scenarios", 		"1.33.00" },
 		-- 3rd parties plugins
-		{ "AtlasQuest", 		"4.9.7" }, 	-- updated May 15, 2016
+		{ "AtlasQuest", 		"4.10.00" }, 	-- updated Jul. 23, 2016
 		{ "Atlas_Arena", 		"1.06.00" }, 	-- updated Jul. 19, 2016
 		{ "Atlas_WorldEvents", 		"3.15" }, 	-- updated Jul. 19, 2016
 		-- remove AtlasLoot as it did not rely on Atlas since its v8 release
@@ -204,13 +206,13 @@ local function Process_Deprecated()
 	local OldList = {};
 	for k, v in pairs(Deprecated_List) do
 		local loadable = select(4, GetAddOnInfo(v[1]));
-		local enabled = GetAddOnEnableState(nil, GetAddOnInfo(v[1]))
-		if (enabled >= 0) and loadable then
+		local enabled = GetAddOnEnableState(UnitName("player"), GetAddOnInfo(v[1]))
+		if ( (enabled > 0) and loadable ) then
 			local oldVersion = true;			
-			if v[2] ~= nil and GetAddOnMetadata(v[1], "Version") >= v[2] then
+			if (v[2] ~= nil and GetAddOnMetadata(v[1], "Version") >= v[2]) then
 				oldVersion = false;
 			end
-			if oldVersion then
+			if (oldVersion) then
 				table.insert(OldList, v[1]);
 			end
 		end
@@ -327,6 +329,18 @@ function Atlas_PopulateDropdowns()
 	end
 end
 
+function Atlas_EnableMissing_Modules(list)
+	local addon;
+	print("Number: "..table.getn(list));
+
+	for _, addon in pairs(list) do
+		print(addon);
+		--EnableAddon(addon, UnitName("player"));
+	end
+	
+	ReloadUI();
+end
+
 -- Detect if not all modules / plugins are installed
 local function Atlas_Check_Modules()
 	if (AtlasOptions["AtlasCheckModule"] == nil) then
@@ -342,7 +356,9 @@ local function Atlas_Check_Modules()
 		"Atlas_Cataclysm",
 		"Atlas_MistsofPandaria",
 		"Atlas_WarlordsofDraenor",
-		--"Atlas_Legion",
+--[===[@alpha@
+		"Atlas_Legion",
+--@end-alpha@]===]
 		"Atlas_Battlegrounds",
 		"Atlas_DungeonLocs",
 		"Atlas_OutdoorRaids",
@@ -354,8 +370,8 @@ local function Atlas_Check_Modules()
 	local List = {};
 	for _, module in pairs(Module_List) do
 		local loadable = select(4, GetAddOnInfo(module));
-		local enabled = GetAddOnEnableState(nil, module)
-		if (enabled == 0) or (not loadable) then
+		local enabled = GetAddOnEnableState(UnitName("player"), module)
+		if ( (enabled == 0) or (not loadable) ) then
 			table.insert(List, module);
 		end
 	end
@@ -366,12 +382,17 @@ local function Atlas_Check_Modules()
 		end
 
 		LibDialog:Register("DetectMissing", {
-			text = L["ATLAS_MISSING_MODULE"].."\n|cff6666ff"..textList.."|r\n\n"..L["ATLAS_INFO_12200"],
+			text = L["ATLAS_MISSING_MODULE"].."\n|cff6666ff"..textList.."|r\n",
 			buttons = {
 				{
-					text = ATLAS_DEP_OK,
+					text = CLOSE,
+				},
+				{
+					text = L["ATLAS_OPEN_ADDON_LIST"],
+					on_click = AddonList_Show,
 				},
 			},
+			width = 500,
 			show_while_dead = false,
 			hide_on_escape = true,
 		});

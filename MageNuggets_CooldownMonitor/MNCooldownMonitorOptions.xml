@@ -34,6 +34,15 @@
                     </Anchor>
                 </Anchors>
             </FontString>
+            <FontString name="$parent_LockFrameText" inherits="GameFontNormal" text="Lock Frame">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent">
+                        <Offset>
+                            <AbsDimension x="50" y="-89"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </FontString>
             <FontString name="$parent_IgnoreLabelText" inherits="GameFontNormal" text="IGNORE LIST:">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
@@ -95,6 +104,22 @@
           </OnValueChanged>
         </Scripts>
       </Slider>
+      <CheckButton name="$parent_CheckButtonClickThroughFrame" inherits="OptionsCheckButtonTemplate">
+-           <Anchors>
+-               <Anchor point="TOPLEFT" relativeTo="$parent">
+-                   <Offset>
+                      <AbsDimension x="20" y="-85" />
+                  </Offset>
+              </Anchor>
+          </Anchors>
+-           <Scripts>
+              <OnLoad>
+              </OnLoad>
+              <OnClick>
+                  MnCdMonClickThrough();
+              </OnClick>
+          </Scripts>
+      </CheckButton>
       <EditBox name="$parent_AddSpellEditBox" inherits="InputBoxTemplate">
           <Size>
               <AbsDimension x="200" y="26"/>

@@ -1,4 +1,4 @@
--- $Id: AtlasMapsAssociation.lua 42 2016-07-15 08:11:19Z arith $
+-- $Id: AtlasMapsAssociation.lua 55 2016-07-22 17:49:48Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -699,6 +699,26 @@ Atlas_MapSeries = {
 	["ThroneofThunderB"] = 			{"ThroneofThunderA", "ThroneofThunderB", "ThroneofThunderC", "ThroneofThunderD" };
 	["ThroneofThunderC"] = 			{"ThroneofThunderA", "ThroneofThunderB", "ThroneofThunderC", "ThroneofThunderD" };
 	["ThroneofThunderD"] = 			{"ThroneofThunderA", "ThroneofThunderB", "ThroneofThunderC", "ThroneofThunderD" };
+--[===[@alpha@
+	-- Legion
+	["BlackRookHoldA"] = 			{"BlackRookHoldA", "BlackRookHoldB", "BlackRookHoldC" };
+	["BlackRookHoldB"] = 			{"BlackRookHoldA", "BlackRookHoldB", "BlackRookHoldC" };
+	["BlackRookHoldC"] = 			{"BlackRookHoldA", "BlackRookHoldB", "BlackRookHoldC" };
+	["CourtofStarsA"] = 			{"CourtofStarsA", "CourtofStarsB" };
+	["CourtofStarsB"] = 			{"CourtofStarsA", "CourtofStarsB" };
+	["HallsofValorA"] = 			{"HallsofValorA", "HallsofValorB", "HallsofValorC" };
+	["HallsofValorB"] = 			{"HallsofValorA", "HallsofValorB", "HallsofValorC" };
+	["HallsofValorC"] = 			{"HallsofValorA", "HallsofValorB", "HallsofValorC" };
+	["MawofSoulsA"] = 			{"MawofSoulsA", "MawofSoulsB" };
+	["MawofSoulsB"] = 			{"MawofSoulsA", "MawofSoulsB" };
+	["TheNightholdA"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD" };
+	["TheNightholdB"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD" };
+	["TheNightholdC"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD" };
+	["TheNightholdD"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD" };
+	["VaultoftheWardensA"] = 		{"VaultoftheWardensA", "VaultoftheWardensB", "VaultoftheWardensC" };
+	["VaultoftheWardensB"] = 		{"VaultoftheWardensA", "VaultoftheWardensB", "VaultoftheWardensC" };
+	["VaultoftheWardensC"] = 		{"VaultoftheWardensA", "VaultoftheWardensB", "VaultoftheWardensC" };
+--@end-alpha@]===]
 };
 
 -- Links maps together that are part of the same instance
@@ -751,4 +771,24 @@ Atlas_SubZoneAssoc = {
 	["UlduarC"] =				BZ["Ulduar"];
 	["UlduarD"] =				BZ["Ulduar"];
 	["UlduarE"] =				BZ["Ulduar"];
+--[===[@alpha@
+	-- Legion
+	["BlackRookHoldA"] = 			BZ["Black Rook Hold"];
+	["BlackRookHoldB"] = 			BZ["Black Rook Hold"];
+	["BlackRookHoldC"] = 			BZ["Black Rook Hold"];
+	["CourtofStarsA"] = 			BZ["Court of Stars"];
+	["CourtofStarsB"] = 			BZ["Court of Stars"];
+	["HallsofValorA"] = 			BZ["Halls of Valor"];
+	["HallsofValorB"] = 			BZ["Halls of Valor"];
+	["HallsofValorC"] = 			BZ["Halls of Valor"];
+	["MawofSoulsA"] = 			BZ["Maw of Souls"];
+	["MawofSoulsB"] = 			BZ["Maw of Souls"];
+	["TheNightholdA"] = 			BZ["The Nighthold"];
+	["TheNightholdB"] = 			BZ["The Nighthold"];
+	["TheNightholdC"] = 			BZ["The Nighthold"];
+	["TheNightholdD"] = 			BZ["The Nighthold"];
+	["VaultoftheWardensA"] = 		BZ["Vault of the Wardens"];
+	["VaultoftheWardensB"] = 		BZ["Vault of the Wardens"];
+	["VaultoftheWardensC"] = 		BZ["Vault of the Wardens"];
+--@end-alpha@]===]
 };

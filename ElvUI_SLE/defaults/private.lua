@@ -36,6 +36,7 @@ V["sle"] = {
 			["timewalking"] = "NONE",
 		},
 		["setoverlay"] = false,
+		["lockbutton"] = false,
 	},
 
 	--Minimap Module
@@ -162,7 +163,12 @@ V["sle"] = {
 			["subpages"] = 2,
 		},
 	},
-	["uiButtonStyle"] = "classic"
+	["uibuttons"] = {
+		["style"] = "classic",
+		["strata"] = "MEDIUM",
+		["level"] = 5,
+		["transparent"] = "Default",
+	},
 }
 
 G["sle"] = {

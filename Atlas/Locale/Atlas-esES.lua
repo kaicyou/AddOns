@@ -194,7 +194,8 @@ Click derecho para mostrar el menú.]=]
 L["ATLAS_MINIMAPLDB_HINT"] = [=[Click izquierdo para abrir Atlas.
 Click derecho para mostrar las opciones.
 Click izquierdo y arrastrar para mover este botón.]=]
-L["ATLAS_MISSING_MODULE"] = "Atlas has detected missing module(s) / plugin(s): "
+L["ATLAS_MISSING_MODULE"] = "Atlas has detected missing module(s) / plugin(s): " -- Needs review
+-- L["ATLAS_OPEN_ADDON_LIST"] = ""
 L["ATLAS_OPTIONS_ACRONYMS"] = "Mostrar acrónimos"
 L["ATLAS_OPTIONS_ACRONYMS_TIP"] = "Muestra el acrónimo de la mazmorra en los detalles del mapa."
 L["ATLAS_OPTIONS_AUTOSEL"] = "Auto-Seleccionar mazmorra"
@@ -363,6 +364,7 @@ L["Crusaders' Coliseum"] = "Coliseo de los Cruzados"
 L["Crusaders' Square Postbox"] = "Buzón de la Plaza del Cruzado"
 L["Cryo-Engineer Sha'heen"] = "Crioingeniero Sha'heen"
 L["Cursed Centaur"] = "Centauro maldito"
+-- L["Dantalionax"] = ""
 L["Darkheart"] = "Corazón Oscuro"
 L["Dark Keeper Key"] = "Llave de guarda oscuro"
 L["Dark Ranger Kalira"] = "Forestal oscura Kalira"

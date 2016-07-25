@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 48 2016-07-19 14:03:11Z arith $
+$Id: ChangeLog.txt 57 2016-07-24 16:15:50Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,16 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.33.01 (Jul. 25, 2016)
+------------------------
+- Slightly enhanced the detection of old modules / plugins and notification of missing those. 
+- Translation update:
+  - Simplified Chinese (lilyhewitt)
+  - French (Stuxz)
+  - Korean (muffinman369)
+  - German (pas06)
+- Update Deprecated_List to support the latest AtlasQuest
 
 v1.33.00 (Jul. 19, 2016)
 ------------------------

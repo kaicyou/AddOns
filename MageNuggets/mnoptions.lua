@@ -1,4 +1,4 @@
-﻿local magenugVer = "5.1.3"
+﻿local magenugVer = "5.1.5"
 
 MageNuggets = {
     ssMonitorToggle = true;
@@ -21,16 +21,9 @@ MageNuggets = {
     slowfallMsg = "Slowfall Cast On You";
     slowfallMsg2 = "Slowfall Cast On You";
     slowfallMsg3 = "Slowfall Cast On You";
-    symbiosisNotify = "Symbiosis Cast On You";
-    symbiosisNotify2 = "Symbiosis Cast On You";
-    symbiosisNotify3 = "Symbiosis Cast On You";
-    symbiosisThanks = "Thanks For Symbiosis";
-    symbiosisThanks2 = "Thanks For Symbiosis";
     innervatThanks = "Thanks For The Innervate";
     innervatThanks2 = "Thanks For The Innervate";
     powerinfThanks = "Thanks For Power Infusion";
-    darkIntentThanks = "Thanks For Dark Intent";
-    powerinfNotify = "Power Infusion Cast On You";
     painSupNotify = "Pain Suppression Cast On You";
     gspiritNotify = "Guardian Spirit Cast On You";
     MinimapPos = 45;
@@ -60,20 +53,6 @@ MageNuggets = {
     invokersToggle = false;
     polyFrameSize = 3;
     msgToggle = true;
-    apCooldown = true;
-    bwCooldown = true;
-    cbCooldown = true;
-    csCooldown = true;
-    dfCooldown = true;
-    dbCooldown = true;
-    mwCooldown = true;
-    miCooldown = true;
-    frzCooldown = true;
-    msCooldown = true;
-    ibrCooldown = true;
-    evoCooldown = true;
-    ivCooldown = true;
-    cooldownSize = 3;
     moonkinTog = false;
     moonkinSize = 3;
     moonkinCombat = false;
@@ -93,9 +72,6 @@ MageNuggets = {
     symbiosisnToggle = true;
     symbiosistyToggle = true;
     innertyToggle = true;
-    pityToggle = true;
-    dityToggle = true;
-    powerInfToggle = true;
     painSupToggle = true;
     gspiritToggle = true;
     cautSize = 3;
@@ -104,8 +80,6 @@ MageNuggets = {
     bombMouseOverMacro = false;
     novaMonitorToggle = true;
 }
-
-
 
 function MageNuggetOptions_Start(self)
     self:RegisterEvent("ADDON_LOADED")
@@ -318,22 +292,6 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     else
         MageNugMsgOptionFrame_CheckButton:SetChecked(false);
     end
-    if (MageNuggets.symbiosisnToggle == nil) then
-        MageNuggets.symbiosisnToggle = true;
-    end
-    if (MageNuggets.symbiosisnToggle == true) then
-        MageNugMsgOptionFrame_CheckButton2:SetChecked(true);
-    else
-        MageNugMsgOptionFrame_CheckButton2:SetChecked(false);
-    end
-    if (MageNuggets.symbiosistyToggle == nil) then
-        MageNuggets.symbiosistyToggle = true;
-    end
-    if (MageNuggets.symbiosistyToggle == true) then
-        MageNugMsgOptionFrame_CheckButton3:SetChecked(true);
-    else
-        MageNugMsgOptionFrame_CheckButton3:SetChecked(false);
-    end
     if (MageNuggets.innertyToggle == nil) then
         MageNuggets.innertyToggle = true;
     end
@@ -341,22 +299,6 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
         MageNugMsgOptionFrame_CheckButton4:SetChecked(true);
     else
         MageNugMsgOptionFrame_CheckButton4:SetChecked(false);
-    end
-    if (MageNuggets.pityToggle == nil) then
-        MageNuggets.pityToggle = true;
-    end
-    if (MageNuggets.pityToggle == true) then
-        MageNugMsgOptionFrame_CheckButton5:SetChecked(true);
-    else
-        MageNugMsgOptionFrame_CheckButton5:SetChecked(false);
-    end
-    if (MageNuggets.dityToggle == nil) then
-        MageNuggets.dityToggle = true;
-    end
-    if (MageNuggets.dityToggle == true) then
-        MageNugMsgOptionFrame_CheckButton6:SetChecked(true);
-    else
-        MageNugMsgOptionFrame_CheckButton6:SetChecked(false);
     end
     if (MageNuggets.slowfallMsg == nil) or (MageNuggets.slowfallMsg == "") then
         SlowFallMsgEditBox:SetText("Slowfall Cast On You")
@@ -373,36 +315,6 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     else
         SlowFallMsgEditBox3:SetText(MageNuggets.slowfallMsg3)
     end
-    if (MageNuggets.symbiosisNotify == nil) or (MageNuggets.symbiosisNotify == "") then
-        FocMagNotifyEditBox:SetText("Symbiosis Cast On You")
-        MageNuggets.symbiosisNotify = "Symbiosis Cast On You";
-    else
-    FocMagNotifyEditBox:SetText(MageNuggets.symbiosisNotify)
-    end
-    if (MageNuggets.symbiosisNotify2 == nil) or (MageNuggets.symbiosisNotify2 == "") then
-        FocMagNotifyEditBox2:SetText("Symbiosis Cast On You")
-        MageNuggets.symbiosisNotify2 = "Symbiosis Cast On You";
-    else
-    FocMagNotifyEditBox2:SetText(MageNuggets.symbiosisNotify2)
-    end
-    if (MageNuggets.symbiosisNotify3 == nil) or (MageNuggets.symbiosisNotify3 == "") then
-        FocMagNotifyEditBox3:SetText("Symbiosis Cast On You")
-        MageNuggets.symbiosisNotify3 = "Symbiosis Cast On You";
-    else
-    FocMagNotifyEditBox3:SetText(MageNuggets.symbiosisNotify3)
-    end
-    if (MageNuggets.symbiosisThanks == nil) or (MageNuggets.symbiosisThanks == "") then
-        FocMagThankEditBox:SetText("Thanks For Symbiosis")
-        MageNuggets.symbiosisThanks = "Thanks For Symbiosis";
-    else
-        FocMagThankEditBox:SetText(MageNuggets.symbiosisThanks)
-    end
-    if (MageNuggets.symbiosisThanks2 == nil) or (MageNuggets.symbiosisThanks2 == "") then
-        FocMagThankEditBox2:SetText("Thanks For Symbiosis")
-        MageNuggets.symbiosisThanks2 = "Thanks For Symbiosis";
-    else
-        FocMagThankEditBox2:SetText(MageNuggets.symbiosisThanks2)
-    end
     if (MageNuggets.innervatThanks == nil) or (MageNuggets.innervatThanks == "") then
         InnervThankEditBox:SetText("Thanks For The Innervate")
     else
@@ -413,17 +325,6 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     else
         InnervThankEditBox2:SetText(MageNuggets.innervatThanks2)
     end
-    if (MageNuggets.powerinfThanks == nil) or (MageNuggets.powerinfThanks == "") then
-        PowerInfusionEditBox:SetText("Thanks For Power Infusion")
-    else
-        PowerInfusionEditBox:SetText(MageNuggets.powerinfThanks)
-    end
-    if (MageNuggets.darkIntentThanks == nil) or (MageNuggets.darkIntentThanks == "") then
-        DarkIntentEditBox:SetText("Thanks For Dark Intent")
-    else
-    DarkIntentEditBox:SetText(MageNuggets.darkIntentThanks)
-    end
-
 
     --------Options 2--------
     MNcheckboxMiniMapFontString:SetText("Disable Minimap Button")
@@ -1538,10 +1439,6 @@ MageNuggets_Frames = {
     invokers_relativePoint = "CENTER";
     invokers_xOfs = 0;
     invokers_yOfs = 0;
-    lb_point = "CENTER";
-    lb_relativePoint = "CENTER";
-    lb_xOfs = 0;
-    lb_yOfs = 0;
     hs_point = "CENTER";
     hs_relativePoint = "CENTER";
     hs_xOfs = 0;
@@ -1590,10 +1487,6 @@ MageNuggets_Frames = {
     mi_relativePoint = "CENTER";
     mi_xOfs = 0;
     mi_yOfs = 0;
-    cd_point = "CENTER";
-    cd_relativePoint = "CENTER";
-    cd_xOfs = 0;
-    cd_yOfs = 0;
     cautTimer_point = "CENTER";
     cautTimer_relativePoint = "CENTER";
     cautTimer_xOfs = 0;

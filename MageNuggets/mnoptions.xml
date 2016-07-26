@@ -217,14 +217,14 @@
     </Layers>
     <Frames>
         <CheckButton name="$parent_CheckButton2" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="10" y="-385" />
+           <Anchors>
+               <Anchor point="TOPLEFT">
+                   <Offset>
+                      <AbsDimension x="10" y="-385" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     -- Disable Spellsteal Monitor
                 </OnLoad>
@@ -235,14 +235,14 @@
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButton3" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT">
+                   <Offset>
                         <AbsDimension x="10" y="-485" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Disable Mage Proc Notify
                 </OnLoad>
@@ -254,14 +254,14 @@
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButtonCC" inherits="OptionsCheckButtonTemplate">
--               <Anchors>
--                   <Anchor point="TOPLEFT">
--                       <Offset>
+               <Anchors>
+                   <Anchor point="TOPLEFT">
+                       <Offset>
                             <AbsDimension x="10" y="-20" />
                         </Offset>
                     </Anchor>
                 </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Disable Clearcast
                 </OnLoad>
@@ -271,14 +271,14 @@
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButton6" inherits="OptionsCheckButtonTemplate">
--               <Anchors>
--                   <Anchor point="TOPLEFT">
--                       <Offset>
+               <Anchors>
+                   <Anchor point="TOPLEFT">
+                       <Offset>
                             <AbsDimension x="10" y="-40" />
                         </Offset>
                     </Anchor>
                 </Anchors>
--               <Scripts>
+               <Scripts>
                     <OnLoad>
                         --Disable Mirror Image Timer
                     </OnLoad>
@@ -288,14 +288,14 @@
                 </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButton8" inherits="OptionsCheckButtonTemplate">
--               <Anchors>
--                   <Anchor point="TOPLEFT">
--                       <Offset>
+               <Anchors>
+                   <Anchor point="TOPLEFT">
+                       <Offset>
                             <AbsDimension x="10" y="-80" />
                         </Offset>
                     </Anchor>
                 </Anchors>
--               <Scripts>
+               <Scripts>
                     <OnLoad>
                         --Disable Evocation Notify
                     </OnLoad>
@@ -305,14 +305,14 @@
                 </Scripts>
         </CheckButton>
         <CheckButton name="CauterizeCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT">
+                   <Offset>
                         <AbsDimension x="240" y="-40" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --cauterize
                 </OnLoad>
@@ -322,14 +322,14 @@
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButton11" inherits="OptionsCheckButtonTemplate">
--               <Anchors>
--                   <Anchor point="TOPLEFT">
--                       <Offset>
+               <Anchors>
+                 <Anchor point="TOPLEFT">
+                       <Offset>
                             <AbsDimension x="10" y="-465" />
                         </Offset>
                     </Anchor>
                 </Anchors>
--               <Scripts>
+               <Scripts>
                     <OnLoad>
                         --Disable Mage Proc Monitor
                     </OnLoad>
@@ -339,14 +339,14 @@
                 </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButton13" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT">
+                   <Offset>
                         <AbsDimension x="10" y="-315" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Arcane Blast Counter
                 </OnLoad>
@@ -356,14 +356,14 @@
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButton14" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT">
+                   <Offset>
                         <AbsDimension x="10" y="-240" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Disable Poly Monitor
                 </OnLoad>
@@ -373,14 +373,14 @@
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButtonNova" inherits="OptionsCheckButtonTemplate">
--               <Anchors>
--                   <Anchor point="TOPLEFT">
--                       <Offset>
+               <Anchors>
+                   <Anchor point="TOPLEFT">
+                       <Offset>
                             <AbsDimension x="10" y="-135" />
                         </Offset>
                     </Anchor>
                 </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Disable Nova Monitor
                 </OnLoad>
@@ -390,14 +390,14 @@
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButtonIE" inherits="OptionsCheckButtonTemplate">
--               <Anchors>
--                   <Anchor point="TOPLEFT">
--                       <Offset>
+               <Anchors>
+                   <Anchor point="TOPLEFT">
+                       <Offset>
                             <AbsDimension x="10" y="-160" />
                         </Offset>
                     </Anchor>
                 </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Disable Invokers Energy
                 </OnLoad>
@@ -407,14 +407,14 @@
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButtonAlterTime" inherits="OptionsCheckButtonTemplate">
--               <Anchors>
--                   <Anchor point="TOPLEFT">
--                       <Offset>
+               <Anchors>
+                   <Anchor point="TOPLEFT">
+                       <Offset>
                             <AbsDimension x="10" y="-180" />
                         </Offset>
                     </Anchor>
                 </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Disable Alter Time
                 </OnLoad>
@@ -424,14 +424,14 @@
             </Scripts>
         </CheckButton>
           <CheckButton name="$parent_IgniteCheckButton" inherits="OptionsCheckButtonTemplate">
--               <Anchors>
--                   <Anchor point="TOPLEFT">
--                       <Offset>
+               <Anchors>
+                   <Anchor point="TOPLEFT">
+                       <Offset>
                             <AbsDimension x="240" y="-20" />
                         </Offset>
                     </Anchor>
                 </Anchors>
--               <Scripts>
+               <Scripts>
                     <OnLoad>
 
                     </OnLoad>
@@ -441,14 +441,14 @@
                 </Scripts>
         </CheckButton>
         <CheckButton name="$parent_ABcastCheckButton" inherits="OptionsCheckButtonTemplate">
--               <Anchors>
--                   <Anchor point="TOPLEFT">
--                       <Offset>
+               <Anchors>
+                   <Anchor point="TOPLEFT">
+                       <Offset>
                             <AbsDimension x="40" y="-335" />
                         </Offset>
                     </Anchor>
                 </Anchors>
--               <Scripts>
+               <Scripts>
                     <OnLoad>
                         --AB Cast Time
                     </OnLoad>
@@ -653,8 +653,6 @@
     </Scripts>
 </Frame>
 
-
-
 <Frame name="MageNugMsgOptionFrame" toplevel="true" hidden="false" parent="msgOptions">
     <Size>
         <AbsDimension x="480" y="325"/>
@@ -674,47 +672,11 @@
                     </Anchor>
                 </Anchors>
             </FontString>
-            <FontString name="$parent_Text2" inherits="GameFontNormal" text="Symbiosis Notify">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="45" y="-150"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_Text3" inherits="GameFontNormal" text="Symbiosis Thank You">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="45" y="-260"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
             <FontString name="$parent_Text4" inherits="GameFontNormal" text="Innervate Thank You">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
-                            <AbsDimension x="45" y="-340"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_Text5" inherits="GameFontNormal" text="Power Infusion Thank You">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="45" y="-420"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="$parent_Text6" inherits="GameFontNormal" text="Dark Intent Thank You">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="45" y="-470"/>
+                            <AbsDimension x="45" y="-185"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -722,98 +684,50 @@
         </Layer>
     </Layers>
     <Frames>
-         <CheckButton name="$parent_CheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
+        <CheckButton name="$parent_CheckButton" inherits="OptionsCheckButtonTemplate">
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="15" y="-30" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                      --Disable Messages
                 </OnLoad>
                 <OnEnter>
-			        if (MageNuggets.toolTips == true) then
-                    GameTooltip:SetOwner(self, ANCHOR_TOPLEFT);
-			        GameTooltip:AddLine("Toggle Slowfall Notify Messages")
-			        GameTooltip:Show()
+      			        if (MageNuggets.toolTips == true) then
+                        GameTooltip:SetOwner(self, ANCHOR_TOPLEFT);
+      			            GameTooltip:AddLine("Toggle Slowfall Notify Messages")
+      			            GameTooltip:Show()
                     end
                 </OnEnter>
-                <OnLeave> GameTooltip:Hide() </OnLeave>
+                <OnLeave>
+                  GameTooltip:Hide();
+                </OnLeave>
                 <OnClick>
                     MNmessagesToggle();
                 </OnClick>
             </Scripts>
         </CheckButton>
-        <CheckButton name="$parent_CheckButton2" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="15" y="-145" />
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnLoad>
-                     --Disable Messages
-                </OnLoad>
-                <OnEnter>
-			        if (MageNuggets.toolTips == true) then
-                    GameTooltip:SetOwner(self, ANCHOR_TOPLEFT);
-			        GameTooltip:AddLine("Toggle Symbiosis Notify Messages")
-			        GameTooltip:Show()
-                    end
-                </OnEnter>
-                <OnLeave> GameTooltip:Hide() </OnLeave>
-                <OnClick>
-                    MNfocusMagicNotifyToggle();
-                </OnClick>
-            </Scripts>
-        </CheckButton>
-        <CheckButton name="$parent_CheckButton3" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="15" y="-255" />
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnLoad>
-                     --Disable Messages
-                </OnLoad>
-                <OnEnter>
-			        if (MageNuggets.toolTips == true) then
-                    GameTooltip:SetOwner(self, ANCHOR_TOPLEFT);
-			        GameTooltip:AddLine("Toggle Symbiosis Thank You Messages.")
-			        GameTooltip:Show()
-                    end
-                </OnEnter>
-                <OnLeave> GameTooltip:Hide() </OnLeave>
-                <OnClick>
-                    MNfocusMagicThanksToggle();
-                </OnClick>
-            </Scripts>
-        </CheckButton>
         <CheckButton name="$parent_CheckButton4" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="15" y="-335" />
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
+                        <AbsDimension x="15" y="-180" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                      --Disable Messages
                 </OnLoad>
                 <OnEnter>
-			        if (MageNuggets.toolTips == true) then
-                    GameTooltip:SetOwner(self, ANCHOR_TOPLEFT);
-			        GameTooltip:AddLine("Toggle Innervate Thank You Messages.")
-			        GameTooltip:Show()
+			               if (MageNuggets.toolTips == true) then
+                        GameTooltip:SetOwner(self, ANCHOR_TOPLEFT);
+			                  GameTooltip:AddLine("Toggle Innervate Thank You Messages.")
+			                  GameTooltip:Show()
                     end
                 </OnEnter>
                 <OnLeave> GameTooltip:Hide() </OnLeave>
@@ -822,62 +736,12 @@
                 </OnClick>
             </Scripts>
         </CheckButton>
-        <CheckButton name="$parent_CheckButton5" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="15" y="-415" />
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnLoad>
-                     --Disable Messages
-                </OnLoad>
-                <OnEnter>
-			        if (MageNuggets.toolTips == true) then
-                    GameTooltip:SetOwner(self, ANCHOR_TOPLEFT);
-			        GameTooltip:AddLine("Toggle Power Infusion Thank You Message.")
-			        GameTooltip:Show()
-                    end
-                </OnEnter>
-                <OnLeave> GameTooltip:Hide() </OnLeave>
-                <OnClick>
-                    MNpowerInfusionTyToggle();
-                </OnClick>
-            </Scripts>
-        </CheckButton>
-        <CheckButton name="$parent_CheckButton6" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
-                        <AbsDimension x="15" y="-465" />
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnLoad>
-                     --Disable Messages
-                </OnLoad>
-                <OnEnter>
-			        if (MageNuggets.toolTips == true) then
-                    GameTooltip:SetOwner(self, ANCHOR_TOPLEFT);
-			        GameTooltip:AddLine("Toggle Dark Intent Thank You Message.")
-			        GameTooltip:Show()
-                    end
-                </OnEnter>
-                <OnLeave> GameTooltip:Hide() </OnLeave>
-                <OnClick>
-                    MNdarkIntentTyToggle();
-                </OnClick>
-            </Scripts>
-        </CheckButton>
         <EditBox name="SlowFallMsgEditBox" inherits="InputBoxTemplate">
             <Size>
                 <AbsDimension x="200" y="26"/>
             </Size>
             <Anchors>
-                <Anchor point="TOPLEFT">
+                <Anchor point="TOPLEFT" relativeTo="$parent">
                     <Offset>
                         <AbsDimension x="20" y="-55"/>
                     </Offset>
@@ -888,6 +752,9 @@
                     SlowFallMsgEditBox:SetCursorPosition(0);
                     SlowFallMsgEditBox:SetAutoFocus(false);
                 </OnShow>
+                <OnLoad>
+                  SlowFallMsgEditBox:SetText(MageNuggets.slowfallMsg);
+                </OnLoad>
                 <OnCursorChanged>
                     MageNuggets.slowfallMsg = SlowFallMsgEditBox:GetText()
                 </OnCursorChanged>
@@ -911,6 +778,9 @@
                     SlowFallMsgEditBox2:SetCursorPosition(0);
                     SlowFallMsgEditBox2:SetAutoFocus(false);
                 </OnShow>
+                <OnLoad>
+                  SlowFallMsgEditBox2:SetText(MageNuggets.slowfallMsg2);
+                </OnLoad>
                 <OnCursorChanged>
                     MageNuggets.slowfallMsg2 = SlowFallMsgEditBox2:GetText()
                 </OnCursorChanged>
@@ -932,211 +802,69 @@
                     SlowFallMsgEditBox3:SetCursorPosition(0);
                     SlowFallMsgEditBox3:SetAutoFocus(false);
                 </OnShow>
+                <OnLoad>
+                  SlowFallMsgEditBox3:SetText(MageNuggets.slowfallMsg3);
+                </OnLoad>
                 <OnCursorChanged>
                     MageNuggets.slowfallMsg3 = SlowFallMsgEditBox3:GetText()
                 </OnCursorChanged>
             </Scripts>
+          </EditBox>
+        <EditBox name="InnervThankEditBox" inherits="InputBoxTemplate">
+          <Size>
+              <AbsDimension x="200" y="26"/>
+          </Size>
+          <Anchors>
+              <Anchor point="TOPLEFT" relativeTo="$parent">
+                  <Offset>
+                      <AbsDimension x="20" y="-203"/>
+                  </Offset>
+              </Anchor>
+          </Anchors>
+          <Scripts>
+              <OnShow>
+                  InnervThankEditBox:SetCursorPosition(0)
+                  InnervThankEditBox:SetAutoFocus(false)
+              </OnShow>
+              <OnLoad>
+                  InnervThankEditBox:SetText(MageNuggets.innervatThanks);
+              </OnLoad>
+              <OnCursorChanged>
+                  MageNuggets.innervatThanks = InnervThankEditBox:GetText()
+              </OnCursorChanged>
+              <OnEnter> Tab2_OnEnter() </OnEnter>
+              <OnLeave> GameTooltip:Hide() </OnLeave>
+          </Scripts>
         </EditBox>
-        <EditBox name="FocMagNotifyEditBox" inherits="InputBoxTemplate">
-            <Size>
-                <AbsDimension x="200" y="26"/>
-            </Size>
-            <Anchors>
-                <Anchor point="TOPLEFT" relativeTo="SlowFallMsgEditBox3">
-                    <Offset>
-                        <AbsDimension x="" y="-50"/>
-                    </Offset>
-                </Anchor>
-            </Anchors>
-            <Scripts>
-                <OnShow>
-                    FocMagNotifyEditBox:SetCursorPosition(0)
-                    FocMagNotifyEditBox:SetAutoFocus(false)
-                </OnShow>
-                <OnCursorChanged>
-	                MageNuggets.focusMagicNotify = FocMagNotifyEditBox:GetText()
-                </OnCursorChanged>
-                <OnEnter> Tab2_OnEnter() </OnEnter>
-                <OnLeave> GameTooltip:Hide() </OnLeave>
-            </Scripts>
+        <EditBox name="InnervThankEditBox2" inherits="InputBoxTemplate">
+          <Size>
+              <AbsDimension x="200" y="26"/>
+          </Size>
+          <Anchors>
+              <Anchor point="TOPLEFT" relativeTo="$parent">
+                  <Offset>
+                      <AbsDimension x="20" y="-233"/>
+                  </Offset>
+              </Anchor>
+          </Anchors>
+          <Scripts>
+              <OnShow>
+                  InnervThankEditBox2:SetCursorPosition(0)
+                  InnervThankEditBox2:SetAutoFocus(false)
+              </OnShow>
+              <OnLoad>
+                  InnervThankEditBox2:SetText(MageNuggets.innervatThanks2);
+              </OnLoad>
+              <OnCursorChanged>
+                  MageNuggets.innervatThanks2 = InnervThankEditBox2:GetText();
+              </OnCursorChanged>
+          </Scripts>
         </EditBox>
-        <EditBox name="FocMagNotifyEditBox2" inherits="InputBoxTemplate">
-            <Size>
-                <AbsDimension x="200" y="26"/>
-            </Size>
-            <Anchors>
-                <Anchor point="TOPLEFT" relativeTo="FocMagNotifyEditBox">
-                    <Offset>
-                        <AbsDimension x="0" y="-30"/>
-                    </Offset>
-                </Anchor>
-            </Anchors>
-            <Scripts>
-                <OnShow>
-                    FocMagNotifyEditBox2:SetCursorPosition(0)
-                    FocMagNotifyEditBox2:SetAutoFocus(false)
-                </OnShow>
-                <OnCursorChanged>
-	                MageNuggets.focusMagicNotify2 = FocMagNotifyEditBox2:GetText()
-                </OnCursorChanged>
-            </Scripts>
-        </EditBox>
-        <EditBox name="FocMagNotifyEditBox3" inherits="InputBoxTemplate" >
-            <Size>
-                <AbsDimension x="200" y="26"/>
-            </Size>
-            <Anchors>
-                <Anchor point="TOPLEFT" relativeTo="FocMagNotifyEditBox2">
-                    <Offset>
-                        <AbsDimension x="0" y="-30"/>
-                    </Offset>
-                </Anchor>
-            </Anchors>
-            <Scripts>
-                <OnShow>
-                    FocMagNotifyEditBox3:SetCursorPosition(0)
-                    FocMagNotifyEditBox3:SetAutoFocus(false)
-                </OnShow>
-                <OnCursorChanged>
-	                MageNuggets.focusMagicNotify3 = FocMagNotifyEditBox3:GetText()
-                </OnCursorChanged>
-            </Scripts>
-        </EditBox>
-        <EditBox name="FocMagThankEditBox" inherits="InputBoxTemplate">
-            <Size>
-                <AbsDimension x="200" y="26"/>
-            </Size>
-            <Anchors>
-                <Anchor point="TOPLEFT" relativeTo="FocMagNotifyEditBox3">
-                    <Offset>
-                        <AbsDimension x="0" y="-50"/>
-                    </Offset>
-                </Anchor>
-            </Anchors>
-            <Scripts>
-                <OnShow>
-                    FocMagThankEditBox:SetCursorPosition(0)
-                    FocMagThankEditBox:SetAutoFocus(false)
-                </OnShow>
-                <OnCursorChanged>
-	                MageNuggets.focusMagicThanks = FocMagThankEditBox:GetText()
-                </OnCursorChanged>
-                <OnEnter> Tab2_OnEnter() </OnEnter>
-                <OnLeave> GameTooltip:Hide() </OnLeave>
-            </Scripts>
-        </EditBox>
-        <EditBox name="FocMagThankEditBox2" inherits="InputBoxTemplate">
-            <Size>
-                <AbsDimension x="200" y="26"/>
-            </Size>
-            <Anchors>
-                <Anchor point="TOPLEFT" relativeTo="FocMagThankEditBox">
-                    <Offset>
-                        <AbsDimension x="0" y="-30"/>
-                </Offset>
-                </Anchor>
-            </Anchors>
-            <Scripts>
-                <OnShow>
-                    FocMagThankEditBox2:SetCursorPosition(0)
-                    FocMagThankEditBox2:SetAutoFocus(false)
-                </OnShow>
-                <OnCursorChanged>
-	                MageNuggets.focusMagicThanks2 = FocMagThankEditBox2:GetText()
-                </OnCursorChanged>
-            </Scripts>
-    </EditBox>
-    <EditBox name="InnervThankEditBox" inherits="InputBoxTemplate">
-        <Size>
-            <AbsDimension x="200" y="26"/>
-        </Size>
-        <Anchors>
-            <Anchor point="TOPLEFT" relativeTo="FocMagThankEditBox2">
-                <Offset>
-                    <AbsDimension x="0" y="-50"/>
-                </Offset>
-            </Anchor>
-        </Anchors>
-        <Scripts>
-            <OnShow>
-                InnervThankEditBox:SetCursorPosition(0)
-                InnervThankEditBox:SetAutoFocus(false)
-            </OnShow>
-            <OnCursorChanged>
-                MageNuggets.innervatThanks = InnervThankEditBox:GetText()
-            </OnCursorChanged>
-            <OnEnter> Tab2_OnEnter() </OnEnter>
-            <OnLeave> GameTooltip:Hide() </OnLeave>
-        </Scripts>
-    </EditBox>
-    <EditBox name="InnervThankEditBox2" inherits="InputBoxTemplate">
-        <Size>
-            <AbsDimension x="200" y="26"/>
-        </Size>
-        <Anchors>
-            <Anchor point="TOPLEFT" relativeTo="InnervThankEditBox">
-                <Offset>
-                    <AbsDimension x="0" y="-30"/>
-                </Offset>
-            </Anchor>
-        </Anchors>
-        <Scripts>
-            <OnShow>
-                InnervThankEditBox2:SetCursorPosition(0)
-                InnervThankEditBox2:SetAutoFocus(false)
-            </OnShow>
-            <OnCursorChanged>
-                MageNuggets.innervatThanks2 = InnervThankEditBox2:GetText()
-            </OnCursorChanged>
-        </Scripts>
-    </EditBox>
-    <EditBox name="PowerInfusionEditBox" inherits="InputBoxTemplate">
-            <Size>
-                <AbsDimension x="200" y="26"/>
-            </Size>
-            <Anchors>
-                <Anchor point="TOPLEFT" relativeTo="InnervThankEditBox2">
-                    <Offset>
-                        <AbsDimension x="0" y="-50"/>
-                    </Offset>
-                </Anchor>
-            </Anchors>
-            <Scripts>
-                <OnShow>
-                    PowerInfusionEditBox:SetCursorPosition(0);
-                    PowerInfusionEditBox:SetAutoFocus(false);
-                </OnShow>
-                <OnCursorChanged>
-                    MageNuggets.powerinfThanks = PowerInfusionEditBox:GetText()
-                </OnCursorChanged>
-            </Scripts>
-        </EditBox>
-        <EditBox name="DarkIntentEditBox" inherits="InputBoxTemplate">
-            <Size>
-                <AbsDimension x="200" y="26"/>
-            </Size>
-            <Anchors>
-                <Anchor point="TOPLEFT" relativeTo="PowerInfusionEditBox">
-                    <Offset>
-                        <AbsDimension x="0" y="-50"/>
-                    </Offset>
-                </Anchor>
-            </Anchors>
-            <Scripts>
-                <OnShow>
-                    DarkIntentEditBox:SetCursorPosition(0);
-                    DarkIntentEditBox:SetAutoFocus(false);
-                </OnShow>
-                <OnCursorChanged>
-                    MageNuggets.darkIntentThanks = DarkIntentEditBox:GetText()
-                </OnCursorChanged>
-            </Scripts>
-        </EditBox>
-    </Frames>
-    <Scripts>
-        <OnEnter> Tab2_OnEnter() </OnEnter>
-        <OnLeave> GameTooltip:Hide() </OnLeave>
-    </Scripts>
+      </Frames>
+      <Scripts>
+          <OnEnter> Tab2_OnEnter() </OnEnter>
+          <OnLeave> GameTooltip:Hide() </OnLeave>
+      </Scripts>
 </Frame>
 
 <Frame name="MageNugMoonkinOptionFrame" toplevel="true" hidden="false" parent="moonkinOptions">
@@ -1212,16 +940,6 @@
                         </Anchor>
                     </Anchors>
             </FontString>
-      <!--      <FontString name="$parent_Text5" inherits="GameFontNormal" text="Shooting Star Proc Monitor">
-                    <Anchors>
-                        <Anchor point="TOPLEFT" relativeTo="$parent">
-                            <Offset>
-                                <AbsDimension x="50" y="-127"/>
-                            </Offset>
-                        </Anchor>
-                    </Anchors>
-            </FontString>
-         -->
             <FontString name="$parent_Text5" inherits="GameFontNormal" text="Shooting Star Combat Text">
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeTo="$parent">
@@ -1240,132 +958,104 @@
                         </Anchor>
                     </Anchors>
             </FontString>
-       <!--     <FontString name="$parent_Text7" inherits="GameFontNormal" text="Proc and Cast Frame Size">
-                    <Anchors>
-                        <Anchor point="TOPLEFT" relativeTo="$parent">
-                            <Offset>
-                                <AbsDimension x="50" y="-325"/>
-                            </Offset>
-                        </Anchor>
-                    </Anchors>
-            </FontString>
-         -->
         </Layer>
     </Layers>
     <Frames>
 
          <CheckButton name="$parent_CheckButton0" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="40" y="-30" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnClick>
                     MNmoonkinBoxToggle();
                 </OnClick>
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="20" y="-10" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnClick>
                     MNmoonkinToggle();
                 </OnClick>
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButton1" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="40" y="-50" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnClick>
                     MNmoonkinCombatToggle();
                 </OnClick>
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButtonMin" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="40" y="-70" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnClick>
                     MNmoonkinminimalToggle();
                 </OnClick>
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButtonAnchor" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="200" y="-70" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnClick>
                     MNmoonkinAnchorToggle();
                 </OnClick>
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButton3" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="20" y="-100" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnClick>
                     MNmoonkinCombatTextToggle();
                 </OnClick>
             </Scripts>
         </CheckButton>
-   <!--     <CheckButton name="$parent_ProcCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
-                        <AbsDimension x="20" y="-120" />
-                    </Offset>
-                </Anchor>
-            </Anchors>
--           <Scripts>
-                <OnLoad>
-
-                </OnLoad>
-                <OnClick>
-                    MoonkinProcToggle();
-                </OnClick>
-            </Scripts>
-        </CheckButton>
-    -->
         <CheckButton name="$parent_CheckButton2" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="20" y="-160" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
-                <OnLoad>
+           <Scripts>
+              <OnLoad>
                     --treant Sound
                 </OnLoad>
                 <OnClick>
@@ -1462,7 +1152,6 @@
     </Scripts>
 </Frame>
 
-
 <Frame name="MageNugPriestOptionFrame" toplevel="true" hidden="false" parent="priestOptions">
     <Size>
         <AbsDimension x="480" y="325"/>
@@ -1522,14 +1211,14 @@
     </Layers>
     <Frames>
          <CheckButton name="$parent_CheckButton0" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="20" y="-360" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --cast
                 </OnLoad>
@@ -1560,14 +1249,14 @@
             </Scripts>
         </EditBox>
          <CheckButton name="$parent_CheckButton2" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="20" y="-300" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --cast
                 </OnLoad>
@@ -1598,14 +1287,14 @@
             </Scripts>
         </EditBox>
          <CheckButton name="$parent_CheckButton3" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="20" y="-240" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --cast
                 </OnLoad>
@@ -1640,7 +1329,6 @@
 
     </Scripts>
 </Frame>
-
 
 <Frame name="MageNugSoundOptionFrame" toplevel="true" hidden="false" parent="soundOptions">
         <Anchors>
@@ -1785,14 +1473,14 @@
         </Layers>
     <Frames>
         <CheckButton name="$parent_MICheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="15" y="-15" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Mirror Image Sound
                 </OnLoad>
@@ -1817,6 +1505,9 @@
                     MageNugSoundOptionFrame_MISoundEditBox:SetCursorPosition(0)
                     MageNugSoundOptionFrame_MISoundEditBox:SetAutoFocus(false)
                 </OnShow>
+                <OnLoad>
+                  MageNugSoundOptionFrame_MISoundEditBox:SetText(MageNuggets.miSound2);
+                </OnLoad>
                 <OnCursorChanged>
                     MageNuggets.miSound2 = MageNugSoundOptionFrame_MISoundEditBox:GetText()
                 </OnCursorChanged>
@@ -1824,14 +1515,14 @@
         </EditBox>
 
         <CheckButton name="$parent_ABCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="255" y="-15" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Proc Sound
                 </OnLoad>
@@ -1856,6 +1547,9 @@
                    MageNugSoundOptionFrame_ABSoundEditBox:SetCursorPosition(0)
                    MageNugSoundOptionFrame_ABSoundEditBox:SetAutoFocus(false)
                 </OnShow>
+                <OnLoad>
+                  MageNugSoundOptionFrame_ABSoundEditBox:SetText(MageNuggets.ABSound2);
+                </OnLoad>
                 <OnCursorChanged>
                     MageNuggets.ABSound2 = MageNugSoundOptionFrame_ABSoundEditBox:GetText()
                 </OnCursorChanged>
@@ -1864,14 +1558,14 @@
 
 
         <CheckButton name="$parent_ProcCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="15" y="-70" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Proc Sound
                 </OnLoad>
@@ -1896,20 +1590,23 @@
                     MageNugSoundOptionFrame_ProcSoundEditBox:SetCursorPosition(0)
                     MageNugSoundOptionFrame_ProcSoundEditBox:SetAutoFocus(false)
                 </OnShow>
+                <OnLoad>
+                  MageNugSoundOptionFrame_ProcSoundEditBox:SetText(MageNuggets.procSound2);
+                </OnLoad>
                 <OnCursorChanged>
                     MageNuggets.procSound2 = MageNugSoundOptionFrame_ProcSoundEditBox:GetText()
                 </OnCursorChanged>
             </Scripts>
         </EditBox>
         <CheckButton name="$parent_PolyCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="15" y="-125" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Proc Sound
                 </OnLoad>
@@ -1934,20 +1631,23 @@
                     MageNugSoundOptionFrame_PolySoundEditBox:SetCursorPosition(0)
                     MageNugSoundOptionFrame_PolySoundEditBox:SetAutoFocus(false)
                 </OnShow>
+                <OnLoad>
+                  MageNugSoundOptionFrame_PolySoundEditBox:SetText(MageNuggets.polySound2);
+                </OnLoad>
                 <OnCursorChanged>
                     MageNuggets.polySound2 = MageNugSoundOptionFrame_PolySoundEditBox:GetText()
                 </OnCursorChanged>
             </Scripts>
         </EditBox>
         <CheckButton name="$parent_HotStreakCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="15" y="-180" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Proc Sound
                 </OnLoad>
@@ -1972,20 +1672,23 @@
                     MageNugSoundOptionFrame_HotStreakSoundEditBox:SetCursorPosition(0)
                     MageNugSoundOptionFrame_HotStreakSoundEditBox:SetAutoFocus(false)
                 </OnShow>
+                <OnLoad>
+                  MageNugSoundOptionFrame_HotStreakSoundEditBox:SetText(MageNuggets.hsSound2);
+                </OnLoad>
                 <OnCursorChanged>
                     MageNuggets.hsSound2 = MageNugSoundOptionFrame_HotStreakSoundEditBox:GetText()
                 </OnCursorChanged>
             </Scripts>
         </EditBox>
         <CheckButton name="$parent_ImpactCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="15" y="-235" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Proc Sound
                 </OnLoad>
@@ -2010,20 +1713,23 @@
                     MageNugSoundOptionFrame_ImpactSoundEditBox:SetCursorPosition(0)
                     MageNugSoundOptionFrame_ImpactSoundEditBox:SetAutoFocus(false)
                 </OnShow>
+                <OnLoad>
+                  MageNugSoundOptionFrame_ImpactSoundEditBox:SetText(MageNuggets.impactSound2);
+                </OnLoad>
                 <OnCursorChanged>
                     MageNuggets.impactSound2 = MageNugSoundOptionFrame_ImpactSoundEditBox:GetText()
                 </OnCursorChanged>
             </Scripts>
         </EditBox>
         <CheckButton name="$parent_FoFCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="15" y="-290" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Proc Sound
                 </OnLoad>
@@ -2048,20 +1754,23 @@
                     MageNugSoundOptionFrame_FoFSoundEditBox:SetCursorPosition(0)
                     MageNugSoundOptionFrame_FoFSoundEditBox:SetAutoFocus(false)
                 </OnShow>
+                <OnLoad>
+                  MageNugSoundOptionFrame_FoFSoundEditBox:SetText(MageNuggets.fofSound2);
+                </OnLoad>
                 <OnCursorChanged>
                     MageNuggets.fofSound2 = MageNugSoundOptionFrame_FoFSoundEditBox:GetText()
                 </OnCursorChanged>
             </Scripts>
         </EditBox>
         <CheckButton name="$parent_BrainFreezeCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="15" y="-345" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Proc Sound
                 </OnLoad>
@@ -2086,20 +1795,23 @@
                     MageNugSoundOptionFrame_BrainFreezeSoundEditBox:SetCursorPosition(0)
                     MageNugSoundOptionFrame_BrainFreezeSoundEditBox:SetAutoFocus(false)
                 </OnShow>
+                <OnLoad>
+                  MageNugSoundOptionFrame_BrainFreezeSoundEditBox:SetText(MageNuggets.brainfreezeSound2);
+                </OnLoad>
                 <OnCursorChanged>
                     MageNuggets.brainfreezeSound2 = MageNugSoundOptionFrame_BrainFreezeSoundEditBox:GetText()
                 </OnCursorChanged>
             </Scripts>
         </EditBox>
         <CheckButton name="$parent_CauterizeCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="15" y="-400" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Cauterize Sound
                 </OnLoad>
@@ -2124,20 +1836,23 @@
                     MageNugSoundOptionFrame_CauterizeSoundEditBox:SetCursorPosition(0)
                     MageNugSoundOptionFrame_CauterizeSoundEditBox:SetAutoFocus(false)
                 </OnShow>
+                <OnLoad>
+                  MageNugSoundOptionFrame_CauterizeSoundEditBox:SetText(MageNuggets.cauterizeSound2);
+                </OnLoad>
                 <OnCursorChanged>
                     MageNuggets.cauterizeSound2 = MageNugSoundOptionFrame_CauterizeSoundEditBox:GetText()
                 </OnCursorChanged>
             </Scripts>
         </EditBox>
         <CheckButton name="$parent_TimeWarpCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent">
+                   <Offset>
                         <AbsDimension x="15" y="-455" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --tw Sound
                 </OnLoad>
@@ -2162,6 +1877,9 @@
                     MageNugSoundOptionFrame_TimeWarpSoundEditBox:SetCursorPosition(0)
                     MageNugSoundOptionFrame_TimeWarpSoundEditBox:SetAutoFocus(false)
                 </OnShow>
+                <OnLoad>
+                  MageNugSoundOptionFrame_TimeWarpSoundEditBox:SetText(MageNuggets.timewarpSound2);
+                </OnLoad>
                 <OnCursorChanged>
                     MageNuggets.timewarpSound2 = MageNugSoundOptionFrame_TimeWarpSoundEditBox:GetText()
                 </OnCursorChanged>
@@ -2258,14 +1976,14 @@
     </Layers>
     <Frames>
         <CheckButton name="$parent_MinimapCheckButton" inherits="OptionsCheckButtonTemplate">
--          <Anchors>
--               <Anchor point="TOPLEFT">
--                   <Offset>
+          <Anchors>
+             <Anchor point="TOPLEFT">
+                   <Offset>
                         <AbsDimension x="10" y="-20" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     -- Disable Minimap Button
                 </OnLoad>
@@ -2275,14 +1993,14 @@
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CameraCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent_MinimapCheckButton">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent_MinimapCheckButton">
+                   <Offset>
                         <AbsDimension x="0" y="-20" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Disable Maximum Camera Zoom Out
                 </OnLoad>
@@ -2292,14 +2010,14 @@
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_ConsoleTextCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent_CameraCheckButton">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent_CameraCheckButton">
+                   <Offset>
                         <AbsDimension x="0" y="-20" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Disable Console Text
                 </OnLoad>
@@ -2311,14 +2029,14 @@
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_LockFramesCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent_ConsoleTextCheckButton">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent_ConsoleTextCheckButton">
+                   <Offset>
                         <AbsDimension x="0" y="-20" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --Lock Frames
                 </OnLoad>
@@ -2328,14 +2046,14 @@
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButtonTT" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent_LockFramesCheckButton">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent_LockFramesCheckButton">
+                   <Offset>
                         <AbsDimension x="0" y="-20" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     MNtoolTipToggle();
                 </OnLoad>
@@ -2345,14 +2063,14 @@
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_ClickThruCheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent_CheckButtonTT">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent_CheckButtonTT">
+                   <Offset>
                         <AbsDimension x="0" y="-20" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --clickthru
                 </OnLoad>
@@ -2362,14 +2080,14 @@
             </Scripts>
         </CheckButton>
          <CheckButton name="$parent_SimpleUICheckButton" inherits="OptionsCheckButtonTemplate">
--           <Anchors>
--               <Anchor point="TOPLEFT" relativeTo="$parent_ClickThruCheckButton">
--                   <Offset>
+           <Anchors>
+               <Anchor point="TOPLEFT" relativeTo="$parent_ClickThruCheckButton">
+                   <Offset>
                         <AbsDimension x="0" y="-20" />
                     </Offset>
                 </Anchor>
             </Anchors>
--           <Scripts>
+           <Scripts>
                 <OnLoad>
                     --clickthru
                 </OnLoad>

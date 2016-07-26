@@ -4,8 +4,8 @@
 	please see the included License.txt file.
 
 	* File...: LiteStep.lua
-	* Date...: 2015-10-18T05:21:47Z
-	* Hash...: 8df8824
+	* Date...: 2016-07-26T00:35:55Z
+	* Hash...: 4a85baa
 	* Author.: StormFX
 
 ]]
@@ -16,7 +16,7 @@ if not MSQ then return end
 -- LiteStep
 MSQ:AddSkin("LiteStep", {
 	Author = "StormFX",
-	Version = "6.2.1",
+	Version = "7.0.0",
 	Shape = "Square",
 	Masque_Version = 60200,
 	Backdrop = {
@@ -92,18 +92,18 @@ MSQ:AddSkin("LiteStep", {
 	Name = {
 		Width = 36,
 		Height = 10,
-		OffsetY = 3,
+		OffsetY = 4,
 	},
 	Count = {
 		Width = 36,
 		Height = 10,
 		OffsetX = -1,
-		OffsetY = 3,
+		OffsetY = 4,
 	},
 	HotKey = {
 		Width = 36,
 		Height = 10,
-		OffsetX = -1,
+		OffsetX = -2,
 		OffsetY = -5,
 	},
 	Duration = {
@@ -111,7 +111,7 @@ MSQ:AddSkin("LiteStep", {
 		Height = 10,
 		OffsetY = -2,
 	},
-	AutoCast = {
+	Shine = {
 		Width = 32,
 		Height = 32,
 		OffsetX = 1,

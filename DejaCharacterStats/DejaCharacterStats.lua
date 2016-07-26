@@ -215,7 +215,7 @@ local dcstitleFS = dcstitle:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	dcstitleFS:SetPoint("TOPLEFT", 0, 0)
 	dcstitleFS:SetFont("Fonts\\FRIZQT__.TTF", 10)
 	
-dcsresetcheck = CreateFrame("Button", "DCSResetButton", DejaCharacterStatsPanel, "UIPanelButtonTemplate")
+local dcsresetcheck = CreateFrame("Button", "DCSResetButton", DejaCharacterStatsPanel, "UIPanelButtonTemplate")
 	dcsresetcheck:ClearAllPoints()
 	dcsresetcheck:SetPoint("BOTTOMLEFT", 5, 5)
 	dcsresetcheck:SetScale(1.25)
@@ -553,11 +553,14 @@ end
 
 local function DCS_CheckShowSelectChecks()
 	if DCS_SelectStatsCheck:GetChecked(true) then
+		private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax = 142
 		DCS_SelectStatsReInit()
 	elseif not DCS_SelectStatsCheck:GetChecked(true) then
 		if DCS_ShowAllStatsCheck:GetChecked(true) then
+			private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax = 128
 			DCS_AllStats()
 		elseif not DCS_ShowAllStatsCheck:GetChecked(true) then
+			private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax = 34
 			DCS_RelevantStats()
 		end
 	end
@@ -584,6 +587,7 @@ local DCS_ShowAllStatsCheck = CreateFrame("CheckButton", "DCS_ShowAllStatsCheck"
 		local checked = private.db.dcsdefaults.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked
 			self:SetChecked(checked)
 			if self:GetChecked(true) then
+				private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax = 128
 				DCS_AllStats()
 				DCS_SelectStatsCheck:SetChecked(false)
 				private.db.dcsdefaults.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked = false
@@ -597,6 +601,7 @@ local DCS_ShowAllStatsCheck = CreateFrame("CheckButton", "DCS_ShowAllStatsCheck"
 
 	DCS_ShowAllStatsCheck:SetScript("OnClick", function(self, button, down)
 		if self:GetChecked(true) then
+			private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax = 128
 			DCS_AllStats()
 			DCS_SelectStatsCheck:SetChecked(false)
 			private.db.dcsdefaults.dejacharacterstatsSelectStatsChecked.SelectStatsSetChecked = false
@@ -666,6 +671,7 @@ local DCS_SelectStatsCheck = CreateFrame("CheckButton", "DCS_SelectStatsCheck", 
 
 	DCS_SelectStatsCheck:SetScript("OnClick", function(self, button, down)
 		if self:GetChecked(true) then
+			private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax = 142
 			DCS_SelectStatsReInit()
 			DCS_ShowAllStatsCheck:SetChecked(false)
 			private.db.dcsdefaults.dejacharacterstatsShowAllStatsChecked.ShowAllStatsSetChecked = false

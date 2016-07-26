@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
     
-    Decursive (v 2.7.4.5) add-on for World of Warcraft UI
+    Decursive (v 2.7.4.6) add-on for World of Warcraft UI
     Copyright (C) 2006-2014 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -73,7 +73,7 @@ T._LoadedFiles["frFR.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "frFR");
 
 if not L then 
-    T._LoadedFiles["frFR.lua"] = "2.7.4.5";
+    T._LoadedFiles["frFR.lua"] = "2.7.4.6";
     return;
 end
 
@@ -114,7 +114,7 @@ L["COLORSTATUS"] = "Règle la couleur du statut '%s'."
 L["CTRL"] = "Ctrl"
 L["CURE_PETS"] = "Contrôler et guérir les familiers"
 L["CURSE"] = "Malédiction"
-L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Merci d'envoyer le contenu de cette fenêtre à Archarodim+DcrReport@teaser.fr|r
+L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Merci d'envoyer par email le contenu de cette fenêtre à <Archarodim+DcrReport@teaser.fr>|r
 |cFF009999(Faire CTRL+A pour tout sélectionner et CTRL+C pour le copier dans votre "presse papier")|r
 Dîtes également dans votre rapport si vous avez remarqué un comportement étrange de Decursive.
 ]=]
@@ -484,4 +484,4 @@ L["UNSTABLERELEASE"] = "Version instable"
 
 
 
-T._LoadedFiles["frFR.lua"] = "2.7.4.5";
+T._LoadedFiles["frFR.lua"] = "2.7.4.6";

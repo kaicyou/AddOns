@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
     
-    Decursive (v 2.7.4.5) add-on for World of Warcraft UI
+    Decursive (v 2.7.4.6) add-on for World of Warcraft UI
     Copyright (C) 2006-2014 John Wellesz (archarodim AT
     teaser.fr) ( http://www.2072productions.com/to/decursive.php )
 
@@ -78,7 +78,7 @@ T._LoadedFiles["koKR.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "koKR");
 
 if not L then
-    T._LoadedFiles["koKR.lua"] = "2.7.4.5";
+    T._LoadedFiles["koKR.lua"] = "2.7.4.6";
     return;
 end;
 
@@ -119,10 +119,10 @@ L["COLORSTATUS"] = "MUF 상태가 '%s'일때 색상을 설정합니다."
 L["CTRL"] = "Ctrl"
 L["CURE_PETS"] = "소환수 탐색과 해제"
 L["CURSE"] = "저주"
-L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Archarodim+DcrReport@teaser.fr로 이 창의 내용을 보고해 주십시오|r
+L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33<Archarodim+DcrReport@teaser.fr>로 이 창의 내용을 보고해 주십시오|r
 |cFF009999(CTRL+A키로 모두 선택하고 CTRL+C키로 당신의 클립보드 내 문자를 넣어 사용하십시오)|r
 또한 당신이 눈치챈 Decursive의 어떠한 이상 증상도 보고서에 알리십시오.
-]=]
+]=] -- Needs review
 L["DECURSIVE_DEBUG_REPORT"] = "**** |cFFFF0000Decursive 디버그 보고서|r ****"
 L["DECURSIVE_DEBUG_REPORT_NOTIFY"] = [=[디버그 보고서가 유효합니다!
 |cFFFF0000/DCRREPORT|r를 입력해 그것을 확인합니다.]=]
@@ -446,4 +446,4 @@ L["UNSTABLERELEASE"] = "비안정화판 배포"
 
 
 
-T._LoadedFiles["koKR.lua"] = "2.7.4.5";
+T._LoadedFiles["koKR.lua"] = "2.7.4.6";

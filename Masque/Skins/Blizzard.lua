@@ -14,7 +14,7 @@ local _, Core = ...
 -- Improved Blizzard skin. Thanks to Maul for the reference!
 Core:AddSkin("Blizzard", {
 	Author = "Blizzard Entertainment",
-	Version = "6.2.1",
+	Version = "7.0.0",
 	Masque_Version = 60201,
 	Shape = "Square",
 	Backdrop = {

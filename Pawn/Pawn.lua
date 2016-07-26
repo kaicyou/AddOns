@@ -7,7 +7,7 @@
 -- Main non-UI code
 ------------------------------------------------------------
 
-PawnVersion = 2.0002
+PawnVersion = 2.0003
 
 -- Pawn requires this version of VgerCore:
 local PawnVgerCoreVersionRequired = 1.09
@@ -1839,7 +1839,9 @@ function PawnLookForSingleStat(RegexTable, Stats, ThisString, DebugMessages)
 					MatchIndex = 1
 				end
 				local ExtractedValue = Matches[MatchIndex]
-				if Stat ~= "Speed" and PawnLocal.ThousandsSeparator ~= "" then -- Skip this for Speed because Spanish uses the wrong character for speed, and speed would never be >=1,000
+				if Stat ~= "Speed" and (PawnLocal.ThousandsSeparator ~= "" or (PawnLocal.ThousandsSeparator == PawnLocal.DecimalSeparator)) then
+					-- Skip this for Speed because Spanish uses the wrong character for speed, and speed would never be >=1,000
+					-- In 7.0, Russian also used the comma for both thousands and decimal separators, so use the same logic then.
 					-- Remove commas in numbers.  We need to use % in case it's a dot, and we need to 
 					-- skip this entirely in case there's no large number separator at all (Spanish).
 					ExtractedValue = gsub(ExtractedValue, "%" .. PawnLocal.ThousandsSeparator, "")

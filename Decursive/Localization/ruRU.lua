@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
     
-    Decursive (v 2.7.4.5) add-on for World of Warcraft UI
+    Decursive (v 2.7.4.6) add-on for World of Warcraft UI
     Copyright (C) 2006-2014 John Wellesz (archarodim AT
     teaser.fr) ( http://www.2072productions.com/to/decursive.php )
 
@@ -74,7 +74,7 @@ T._LoadedFiles["ruRU.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "ruRU");
 
 if not L then
-    T._LoadedFiles["ruRU.lua"] = "2.7.4.5";
+    T._LoadedFiles["ruRU.lua"] = "2.7.4.6";
     return;
 end;
 
@@ -115,7 +115,7 @@ L["COLORSTATUS"] = "Установить цвет для статуса МФИ: 
 L["CTRL"] = "Ctrl"
 L["CURE_PETS"] = "Скан и лечение питомцев"
 L["CURSE"] = "Проклятие"
-L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Пожайлуйста, отправьте содержимое этого окна по адресу Archarodim+DcrReport@teaser.fr|r
+L["DEBUG_REPORT_HEADER"] = [=[|cFF11FF33Пожайлуйста, отправьте содержимое этого окна по адресу <Archarodim+DcrReport@teaser.fr>|r
 |cFF009999(Нажмите CTRL+A, чтобы выделить всё содержимое, а затем CTRL+C, чтобы переместить его в буфер обмена)|r
 В своём отчёте также сообщите о неполадках в работе Decursive, если таковые имеются.]=]
 L["DECURSIVE_DEBUG_REPORT"] = "**** |cFFFF0000Отчёт об отладке Decursive|r ****"
@@ -430,4 +430,4 @@ L["UNSTABLERELEASE"] = "Нестабильный релиз"
 
 
 
-T._LoadedFiles["ruRU.lua"] = "2.7.4.5";
+T._LoadedFiles["ruRU.lua"] = "2.7.4.6";

@@ -73,7 +73,7 @@ function UF:Configure_ClassBar(frame, cur)
 		bars:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 		if bars.Holder and bars.Holder.mover then
-			bars.Holder.mover:SetScale(0.000001)
+			bars.Holder.mover:SetScale(0.0001)
 			bars.Holder.mover:SetAlpha(0)
 		end
 	elseif not frame.CLASSBAR_DETACHED then
@@ -88,7 +88,7 @@ function UF:Configure_ClassBar(frame, cur)
 		bars:SetFrameLevel(frame:GetFrameLevel() + 5)
 
 		if bars.Holder and bars.Holder.mover then
-			bars.Holder.mover:SetScale(0.000001)
+			bars.Holder.mover:SetScale(0.0001)
 			bars.Holder.mover:SetAlpha(0)
 		end
 	else --Detached
@@ -440,7 +440,7 @@ function UF:PostUpdateAdditionalPower(unit, min, max, event)
 	local frame = self.origParent or self:GetParent()
 	local db = frame.db
 
-	if ((min ~= max or (not db.classbar.autoHide and frame.USE_CLASSBAR)) and (event ~= "ElementDisable")) then
+	if frame.USE_CLASSBAR and ((min ~= max or (not db.classbar.autoHide)) and (event ~= "ElementDisable")) then
 		if db.classbar.additionalPowerText then
 			local powerValue = frame.Power.value
 			local powerValueText = powerValue:GetText()

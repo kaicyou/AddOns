@@ -4,8 +4,8 @@
 	please see the included License.txt file.
 
 	* File...: Serenity.lua
-	* Date...: 2015-10-13T05:54:36Z
-	* Hash...: 1f82418
+	* Date...: 2016-07-26T00:41:58Z
+	* Hash...: 8cdd45b
 	* Author.: StormFX
 
 ]]
@@ -16,7 +16,7 @@ if not MSQ then return end
 -- Serenity
 MSQ:AddSkin("Serenity", {
 	Author = "StormFX",
-	Version = "6.2.1",
+	Version = "7.0.0",
 	Shape = "Circle",
 	Masque_Version = 60200,
 	Backdrop = {
@@ -104,7 +104,7 @@ MSQ:AddSkin("Serenity", {
 		Width = 44,
 		Height = 10,
 	},
-	AutoCast = {
+	Shine = {
 		Width = 24,
 		Height = 24,
 		OffsetX = 1,
@@ -126,7 +126,7 @@ MSQ:AddSkin("Serenity Redux", {
 -- Serenity: Square
 MSQ:AddSkin("Serenity: Square", {
 	Author = "StormFX",
-	Version = "6.2.1",
+	Version = "7.0.0",
 	Shape = "Square",
 	Masque_Version = 60200,
 	Backdrop = {
@@ -217,7 +217,7 @@ MSQ:AddSkin("Serenity: Square", {
 		Width = 40,
 		Height = 10,
 	},
-	AutoCast = {
+	Shine = {
 		Width = 26,
 		Height = 26,
 		OffsetX = 1,

@@ -25,7 +25,7 @@ local duraMeanFS = CharacterShirtSlot:CreateFontString("FontString","OVERLAY","G
 	duraMeanFS:SetFont("Fonts\\FRIZQT__.TTF", 16, "THINOUTLINE")
 	duraMeanFS:SetFormattedText("")
 
-	duraMeanTexture = CharacterShirtSlot:CreateTexture(nil,"ARTWORK")
+local duraMeanTexture = CharacterShirtSlot:CreateTexture(nil,"ARTWORK")
 
 local duraDurabilityFrameFS = DurabilityFrame:CreateFontString("FontString","OVERLAY","GameTooltipText")
 	duraDurabilityFrameFS:SetPoint("CENTER",DurabilityFrame,"CENTER",0,0)

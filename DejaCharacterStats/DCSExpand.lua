@@ -28,7 +28,7 @@ DCS_ExpandCheck:SetScript("OnEnter", DCS_ExpandCheck_OnEnter)
 DCS_ExpandCheck:SetScript("OnLeave", DCS_ExpandCheck_OnLeave)
 		 
 DCS_ExpandCheck:SetScript("OnMouseDown", function (self, button, up)
-	checked = private.db.dcsdefaults.dejacharacterstatsExpandChecked.ExpandSetChecked
+	local checked = private.db.dcsdefaults.dejacharacterstatsExpandChecked.ExpandSetChecked
 	if checked == true then
 		DCS_ExpandCheck:SetPushedTexture("Interface\\BUTTONS\\UI-SpellbookIcon-PrevPage-Down")
 		DCS_ExpandCheck:SetNormalTexture("Interface\\BUTTONS\\UI-SpellbookIcon-PrevPage-Down")
@@ -39,7 +39,7 @@ DCS_ExpandCheck:SetScript("OnMouseDown", function (self, button, up)
 end)
 
 DCS_ExpandCheck:SetScript("OnMouseUp", function (self, button, up)
-	checked = private.db.dcsdefaults.dejacharacterstatsExpandChecked.ExpandSetChecked
+	local checked = private.db.dcsdefaults.dejacharacterstatsExpandChecked.ExpandSetChecked
 	if checked == true then
 	--	print(checked)
 		CharacterFrame_Collapse()
@@ -70,7 +70,7 @@ PaperDollFrame:SetScript("OnShow", function(self, event, arg1)
 	PaperDollSidebarTabs:Show()
 	PaperDollFrame_UpdateInventoryFixupComplete(self)
 
-	checked = private.db.dcsdefaults.dejacharacterstatsExpandChecked.ExpandSetChecked
+	local checked = private.db.dcsdefaults.dejacharacterstatsExpandChecked.ExpandSetChecked
 	if checked == true then
 	--	print(checked)
 		CharacterFrame_Expand()

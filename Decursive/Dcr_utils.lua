@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
     
-    Decursive (v 2.7.4.5) add-on for World of Warcraft UI
+    Decursive (v 2.7.4.6) add-on for World of Warcraft UI
     Copyright (C) 2006-2014 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2016-05-29T23:56:42Z
+    This file was last updated on 2016-07-23T10:15:10Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -182,11 +182,11 @@ function D:ColorPrint (r,g,b, ... ) --XXX
     t_insert(datas, 1, ColorHeader);
     t_insert(datas, #datas + 1, "|r");
 
-    if D.profile.Print_ChatFrame then
+    if D.profile and D.profile.Print_ChatFrame then
         self:Print(D.Status.OutputWindow, ColorHeader, unpack(datas));
     end
 
-    if D.profile.Print_CustomFrame then
+    if D.profile and D.profile.Print_CustomFrame then
         self:Print(DecursiveTextFrame, ColorHeader, unpack(datas));
     end
 
@@ -802,4 +802,4 @@ do
 end
 
 
-T._LoadedFiles["Dcr_utils.lua"] = "2.7.4.5";
+T._LoadedFiles["Dcr_utils.lua"] = "2.7.4.6";

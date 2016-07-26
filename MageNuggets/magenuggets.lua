@@ -1,6 +1,6 @@
 ﻿--Mage Nuggets by B-Buck (Bbuck of Eredar)
 
-local magenugVer = "5.1.3"
+local magenugVer = "5.1.5"
 local mirrorImageTime = 0;
 local spellStealTog = 0;
 local misslebTog = 0;
@@ -806,6 +806,30 @@ function spellAuraRemoved(arg, sourceName, destName)
             if (MageNuggets.polySoundToggle == true) then
                 PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.polySound2)
             end
+        elseif (arg == 126819) then --porcupine
+            MageNugPolyFrame:Hide();
+            polyTimer = 0;
+            if(combatTextCvar == '1') then
+                CombatText_AddMessage("Polymorph Broken", CombatText_StandardScroll, 1, 0.20, 1, "sticky", nil);
+            end
+            if (MageNuggets.consoleTextEnabled == true) then
+                DEFAULT_CHAT_FRAME:AddMessage("|cffFF0000".."Polymorph(Porcupine) Broken On"..":|cffFFFFFF "..destName);
+            end
+            if (MageNuggets.polySoundToggle == true) then
+                PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.polySound2)
+            end
+        elseif (arg == 161354) then --monkey
+            MageNugPolyFrame:Hide();
+            polyTimer = 0;
+            if(combatTextCvar == '1') then
+                CombatText_AddMessage("Polymorph Broken", CombatText_StandardScroll, 1, 0.20, 1, "sticky", nil);
+            end
+            if (MageNuggets.consoleTextEnabled == true) then
+                DEFAULT_CHAT_FRAME:AddMessage("|cffFF0000".."Polymorph(Monkey) Broken On"..":|cffFFFFFF "..destName);
+            end
+            if (MageNuggets.polySoundToggle == true) then
+                PlaySoundFile("Interface\\AddOns\\MageNuggets\\Sounds\\"..MageNuggets.polySound2)
+            end
         end
     end
 end
@@ -1013,6 +1037,44 @@ function spellAuraRefresh(arg, sourceName, destName)
                 MageNugPolyFrame_Bar:SetMinMaxValues(0,polyTimer);
                 MageNugPolyFrame_Bar:SetValue(polyTimer);
                 MageNugPolyFrameTexture:SetTexture("Interface\\Icons\\Ability_hunter_pet_turtle");
+                MageNugPolyFrame:Show();
+            end
+        elseif (arg == 126819) then -- porcupine
+            _, _, _, _, _, _, polyExpTime, unitCaster, _, _, _ = UnitAura("target", polyTurtleId, nil,"PLAYER|HARMFUL")
+            if(polyExpTime ~= nil) then
+                polyTimer = RoundZero(polyExpTime - GetTime());
+                MageNugPolyFrameText:SetText("|cffFFFFFF".."Polymorph"..":\n|cffFFFFFF "..destName);
+                MageNugPolyFrameTimerText:SetText(polyTimer);
+                MageNugPolyFrame_Bar:SetMinMaxValues(0,polyTimer);
+                MageNugPolyFrame_Bar:SetValue(polyTimer);
+                MageNugPolyFrameTexture:SetTexture("Interface\\Icons\\inv_pet_porcupine");
+                MageNugPolyFrame:Show();
+            else
+                polyTimer = 50;
+                MageNugPolyFrameText:SetText("|cffFFFFFF".."Polymorph"..":\n|cffFFFFFF "..destName);
+                MageNugPolyFrameTimerText:SetText(polyTimer);
+                MageNugPolyFrame_Bar:SetMinMaxValues(0,polyTimer);
+                MageNugPolyFrame_Bar:SetValue(polyTimer);
+                MageNugPolyFrameTexture:SetTexture("Interface\\Icons\\inv_pet_porcupine");
+                MageNugPolyFrame:Show();
+            end
+        elseif (arg == 161354) then -- monkey
+            _, _, _, _, _, _, polyExpTime, unitCaster, _, _, _ = UnitAura("target", polyTurtleId, nil,"PLAYER|HARMFUL")
+            if(polyExpTime ~= nil) then
+                polyTimer = RoundZero(polyExpTime - GetTime());
+                MageNugPolyFrameText:SetText("|cffFFFFFF".."Polymorph"..":\n|cffFFFFFF "..destName);
+                MageNugPolyFrameTimerText:SetText(polyTimer);
+                MageNugPolyFrame_Bar:SetMinMaxValues(0,polyTimer);
+                MageNugPolyFrame_Bar:SetValue(polyTimer);
+                MageNugPolyFrameTexture:SetTexture("Interface\\Icons\\ability_hunter_aspectofthemonkey");
+                MageNugPolyFrame:Show();
+            else
+                polyTimer = 50;
+                MageNugPolyFrameText:SetText("|cffFFFFFF".."Polymorph"..":\n|cffFFFFFF "..destName);
+                MageNugPolyFrameTimerText:SetText(polyTimer);
+                MageNugPolyFrame_Bar:SetMinMaxValues(0,polyTimer);
+                MageNugPolyFrame_Bar:SetValue(polyTimer);
+                MageNugPolyFrameTexture:SetTexture("Interface\\Icons\\ability_hunter_aspectofthemonkey");
                 MageNugPolyFrame:Show();
             end
         elseif (arg == 118)  then  --sheep
@@ -1482,6 +1544,44 @@ function spellAuraAppliedSource(arg, sourceName, destName)
                 MageNugPolyFrame_Bar:SetMinMaxValues(0,polyTimer);
                 MageNugPolyFrame_Bar:SetValue(polyTimer);
                 MageNugPolyFrameTexture:SetTexture("Interface\\Icons\\Ability_hunter_pet_turtle");
+                MageNugPolyFrame:Show();
+            end
+        elseif (arg == 126819) then -- porcupine
+            _, _, _, _, _, _, polyExpTime, unitCaster, _, _, _ = UnitAura("target", polyTurtleId, nil,"PLAYER|HARMFUL")
+            if (polyExpTime ~= nil) then
+                polyTimer = RoundZero(polyExpTime - GetTime());
+                MageNugPolyFrameText:SetText("|cffFFFFFF".."Polymorph"..":\n|cffFFFFFF "..destName);
+                MageNugPolyFrameTimerText:SetText(polyTimer);
+                MageNugPolyFrame_Bar:SetMinMaxValues(0,polyTimer);
+                MageNugPolyFrame_Bar:SetValue(polyTimer);
+                MageNugPolyFrameTexture:SetTexture("Interface\\Icons\\inv_pet_porcupine");
+                MageNugPolyFrame:Show();
+            else
+                polyTimer = 50;
+                MageNugPolyFrameText:SetText("|cffFFFFFF".."Polymorph"..":\n|cffFFFFFF "..destName);
+                MageNugPolyFrameTimerText:SetText(polyTimer);
+                MageNugPolyFrame_Bar:SetMinMaxValues(0,polyTimer);
+                MageNugPolyFrame_Bar:SetValue(polyTimer);
+                MageNugPolyFrameTexture:SetTexture("Interface\\Icons\\inv_pet_porcupine");
+                MageNugPolyFrame:Show();
+            end
+        elseif (arg == 161354) then -- monkey
+            _, _, _, _, _, _, polyExpTime, unitCaster, _, _, _ = UnitAura("target", polyTurtleId, nil,"PLAYER|HARMFUL")
+            if (polyExpTime ~= nil) then
+                polyTimer = RoundZero(polyExpTime - GetTime());
+                MageNugPolyFrameText:SetText("|cffFFFFFF".."Polymorph"..":\n|cffFFFFFF "..destName);
+                MageNugPolyFrameTimerText:SetText(polyTimer);
+                MageNugPolyFrame_Bar:SetMinMaxValues(0,polyTimer);
+                MageNugPolyFrame_Bar:SetValue(polyTimer);
+                MageNugPolyFrameTexture:SetTexture("Interface\\Icons\\ability_hunter_aspectofthemonkey");
+                MageNugPolyFrame:Show();
+            else
+                polyTimer = 50;
+                MageNugPolyFrameText:SetText("|cffFFFFFF".."Polymorph"..":\n|cffFFFFFF "..destName);
+                MageNugPolyFrameTimerText:SetText(polyTimer);
+                MageNugPolyFrame_Bar:SetMinMaxValues(0,polyTimer);
+                MageNugPolyFrame_Bar:SetValue(polyTimer);
+                MageNugPolyFrameTexture:SetTexture("Interface\\Icons\\ability_hunter_aspectofthemonkey");
                 MageNugPolyFrame:Show();
             end
         elseif (arg == 118)  then  --sheep

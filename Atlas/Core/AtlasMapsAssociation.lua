@@ -1,4 +1,4 @@
--- $Id: AtlasMapsAssociation.lua 55 2016-07-22 17:49:48Z arith $
+-- $Id: AtlasMapsAssociation.lua 62 2016-07-26 15:01:58Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -711,6 +711,13 @@ Atlas_MapSeries = {
 	["HallsofValorC"] = 			{"HallsofValorA", "HallsofValorB", "HallsofValorC" };
 	["MawofSoulsA"] = 			{"MawofSoulsA", "MawofSoulsB" };
 	["MawofSoulsB"] = 			{"MawofSoulsA", "MawofSoulsB" };
+	["TheEmeraldNightmareA"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG" };
+	["TheEmeraldNightmareB"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG" };
+	["TheEmeraldNightmareC"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG" };
+	["TheEmeraldNightmareD"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG" };
+	["TheEmeraldNightmareE"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG" };
+	["TheEmeraldNightmareF"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG" };
+	["TheEmeraldNightmareG"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG" };
 	["TheNightholdA"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD" };
 	["TheNightholdB"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD" };
 	["TheNightholdC"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD" };
@@ -783,6 +790,13 @@ Atlas_SubZoneAssoc = {
 	["HallsofValorC"] = 			BZ["Halls of Valor"];
 	["MawofSoulsA"] = 			BZ["Maw of Souls"];
 	["MawofSoulsB"] = 			BZ["Maw of Souls"];
+	["TheEmeraldNightmareA"] = 		BZ["The Emerald Nightmare"];
+	["TheEmeraldNightmareB"] =                BZ["The Emerald Nightmare"];
+	["TheEmeraldNightmareC"] =                BZ["The Emerald Nightmare"];
+	["TheEmeraldNightmareD"] =                BZ["The Emerald Nightmare"];
+	["TheEmeraldNightmareE"] =                BZ["The Emerald Nightmare"];
+	["TheEmeraldNightmareF"] =                BZ["The Emerald Nightmare"];
+	["TheEmeraldNightmareG"] =                BZ["The Emerald Nightmare"];
 	["TheNightholdA"] = 			BZ["The Nighthold"];
 	["TheNightholdB"] = 			BZ["The Nighthold"];
 	["TheNightholdC"] = 			BZ["The Nighthold"];

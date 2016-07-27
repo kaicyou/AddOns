@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
     
-    Decursive (v 2.7.4.6) add-on for World of Warcraft UI
+    Decursive (v 2.7.4.7) add-on for World of Warcraft UI
     Copyright (C) 2006-2014 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2016-07-23T10:15:10Z
+    This file was last updated on 2016-07-26T11:23:37Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -430,11 +430,8 @@ do
                     D:GetClassHexColor(class);
                     D:GetClassColor(class);
                 else
-                    --RAID_CLASS_COLORS[class] = nil; -- Eat that!
-                    --[===[@debug@
-                    D:AddDebugText("Strange class found in RAID_CLASS_COLORS:", class);
-                    --@end-debug@]===]
-                    print("Decursive: |cFFFF0000Stupid value found in _G.RAID_CLASS_COLORS table|r\nThis will cause many issues (tainting), Decursive will display this message until the culprit add-on is fixed or removed, the Stupid value is: '", class, "'");
+                    D:AddDebugText("Strange class found in RAID_CLASS_COLORS:", class, 'maxClass:', CLASS_SORT_ORDER and #CLASS_SORT_ORDER or 'CLASS_SORT_ORDER unavailable...');
+                    print("Decursive: |cFFFF0000Unexpected value found in _G.RAID_CLASS_COLORS table|r\nThis may cause many issues, Decursive will display this message until the culprit add-on is fixed or removed, the unexpected value is: '", class, "'");
                 end
             end
         else
@@ -802,4 +799,4 @@ do
 end
 
 
-T._LoadedFiles["Dcr_utils.lua"] = "2.7.4.6";
+T._LoadedFiles["Dcr_utils.lua"] = "2.7.4.7";

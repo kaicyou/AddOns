@@ -1,0 +1,18 @@
+## Interface: 70000
+## Author: Blazeflack
+## Version: 1.56
+## Title: |cff1784d1ElvUI|r |cff00b3ffCodeNameBlaze|r
+## Notes: Personal edit of ElvUI, containing changes made by Blazeflack. Requires original ElvUI.
+## RequiredDeps: ElvUI
+## DefaultState: enabled
+## X-Curse-Packaged-Version: v1.56
+## X-Curse-Project-Name: ElvUI CodeNameBlaze
+## X-Curse-Project-ID: elvui-codenameblaze
+## X-Curse-Repository-ID: wow/elvui-codenameblaze/mainline
+
+libs\LibChatAnims\LibChatAnims.lua
+core\load_core.xml
+modules\load_modules.xml
+
+## X-Tukui-ProjectID: 229
+## X-Tukui-ProjectFolders: ElvUI_CodeNameBlaze

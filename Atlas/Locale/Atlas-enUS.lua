@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas-enUS.lua 56 2016-07-23 13:42:16Z arith $
+﻿-- $Id: Atlas-enUS.lua 62 2016-07-26 15:01:58Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -680,7 +680,7 @@ L["Murd Doc <S.A.F.E.>"] = "Murd Doc <S.A.F.E.>"
 L["Muyoh <Disciple of Naralex>"] = "Muyoh <Disciple of Naralex>"
 L["MV"] = "MV"
 L["Mysterious Bookshelf"] = "Mysterious Bookshelf"
-L["Mythic"] = "(M)"
+L["Mythic"] = "Mythic"
 L["Mythic_Symbol"] = "(M)"
 L["Nahuud"] = "Nahuud"
 L["Nalpak <Disciple of Naralex>"] = "Nalpak <Disciple of Naralex>"

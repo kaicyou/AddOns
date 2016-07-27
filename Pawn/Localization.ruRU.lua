@@ -265,7 +265,7 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		Mastery2 = "^%+?([%d%.,]+) к показателю искусности$",
 		MetaGemRequirements = "|cff%x%x%x%x%x%xТребуется",
 		MovementSpeed = "^%+([%d%.,]+) к скорости передвижения$",
-		MultiStatHeading = "^Multiple Stats$", -- Requires localization
+		MultiStatHeading = "^Различные характеристики$",
 		MultiStatSeparator1 = "и",
 		Multistrike = "^%+([%d%.,]+) к многократной атаке$",
 		NormalizationEnchant = "^Чары: (.*)$",
@@ -299,7 +299,7 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		TemporaryBuffSeconds = "^.+%(%d+ сек%)$",
 		Thunderforged = "^Создано в Кузне Грома$",
 		Timeless = "^Вневременной предмет$",
-		Titanforged = "^Titanforged$", -- Requires localization
+		Titanforged = "^Кованый титанами$",
 		UpgradeLevel = "^Уровень улучшения:",
 		Use = "Используется:",
 		Versatility = "^%+([%d%.,]+) к [показателю ]-универсальности$",

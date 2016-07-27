@@ -1,4 +1,4 @@
--- $Id: Atlas_OutdoorRaids.lua 13 2016-07-19 13:56:42Z arith $
+-- $Id: Atlas_OutdoorRaids.lua 16 2016-07-26 15:04:31Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -46,7 +46,7 @@ local myData = {
 	OR_DoomLordKazzak = {
 		ZoneName = { Atlas_GetBossName("Doom Lord Kazzak") };
 		Location = { BZ["Hellfire Peninsula"] };
-		LevelRange = "70+";
+		LevelRange = "70-80";
 		PlayerLimit = "40";
 		{ WHIT.."1) "..Atlas_GetBossName("Doom Lord Kazzak"), 10001 };
 		{ WHIT.."2) "..BZ["Invasion Point: Annihilator"], 10002 };
@@ -57,47 +57,68 @@ local myData = {
 	OR_Doomwalker = {
 		ZoneName = { Atlas_GetBossName("Doomwalker") };
 		Location = { BZ["Shadowmoon Valley"] };
-		LevelRange = "70+";
+		LevelRange = "70-80";
 		PlayerLimit = "40";
 		{ WHIT.."1) "..Atlas_GetBossName("Doomwalker"), 10001 };
+	};
+	OR_BrokenIsles = {
+		ZoneName = { L["Broken Isles World Bosses"] };
+		Location = { BZ["Broken Isles"] };
+		LevelRange = "110+";
+		PlayerLimit = "40";
+		JournalInstanceID = "822";
+		{ WHIT.." 1) "..Atlas_GetBossName("Calamir", 1774), 1774 };				-- (Azsuna)
+		{ WHIT.." 2) "..Atlas_GetBossName("Withered J'im", 1796), 1796 };			-- (Azsuna)
+		{ WHIT.." 3) "..Atlas_GetBossName("Levantus", 1769), 1769 };				-- (Stormheim? Looks to be in Azsuna)
+		{ WHIT.." 4) "..Atlas_GetBossName("Humongris", 1770), 1770 };				-- (Val'sharah)
+		{ WHIT.." 5) "..Atlas_GetBossName("Shar'thos", 1763), 1763 };				-- (Val'sharah)
+		{ WHIT.." 6) "..Atlas_GetBossName("Drugon the Frostblood", 1789), 1789 };		-- (Highmountain)
+		{ WHIT.." 7) "..Atlas_GetBossName("Flotsam", 1795), 1795 };				-- (Highmountain)
+		{ WHIT.." 8) "..Atlas_GetBossName("Ana-Mouz", 1790), 1790 };				-- (Stormheim)
+		{ WHIT.." 9) "..Atlas_GetBossName("The Soultakers", 1756), 1756 };			-- (Stormheim)
+		{ INDENT..WHIT..Atlas_GetBossName("Soultrapper Mevra", 1756, 1), 1756 };
+		{ INDENT..WHIT..Atlas_GetBossName("Captain Hring", 1756, 2), 1756 };
+		{ INDENT..WHIT..Atlas_GetBossName("Reaver Jdorn", 1756, 3), 1756 };
+		{ WHIT.."10) "..Atlas_GetBossName("Nithogg", 1749), 1749 };				-- (Stormheim)
+		{ WHIT.."11) "..Atlas_GetBossName("Na'zak the Fiend", 1783), 1783 };			-- (Suramar)
 	};
 	OR_Draenor = {
 		ZoneName = { L["Draenor World Bosses"] };
 		Location = { BZ["Draenor"] };
-		LevelRange = "100+";
+		LevelRange = "100-110";
 		PlayerLimit = "--";
 		JournalInstanceID = "557";
-		{ WHIT.." 1) "..Atlas_GetBossName("Drov the Ruiner", 1291) };
-		{ WHIT..INDENT..Atlas_GetBossName("Frenzied Rumbler", 1291, 2) };
-		{ WHIT.." 2) "..Atlas_GetBossName("Tarlna the Ageless", 1211) };
-		{ WHIT..INDENT..Atlas_GetBossName("Giant Lasher", 1211, 3) };
-		{ WHIT..INDENT..Atlas_GetBossName("Untamed Mandragora", 1211, 2) };
-		{ WHIT.." 3) "..Atlas_GetBossName("Rukhmar", 1262) };
-		{ WHIT.." 4) "..Atlas_GetBossName("Supreme Lord Kazzak", 1452) };
+		{ WHIT.." 1) "..Atlas_GetBossName("Drov the Ruiner", 1291), 1291 };
+		{ WHIT..INDENT..Atlas_GetBossName("Frenzied Rumbler", 1291, 2), 1291 };
+		{ WHIT.." 2) "..Atlas_GetBossName("Tarlna the Ageless", 1211), 1211 };
+		{ WHIT..INDENT..Atlas_GetBossName("Giant Lasher", 1211, 3), 1211 };
+		{ WHIT..INDENT..Atlas_GetBossName("Untamed Mandragora", 1211, 2), 1211 };
+		{ WHIT.." 3) "..Atlas_GetBossName("Rukhmar", 1262), 1262 };
+		{ WHIT.." 4) "..Atlas_GetBossName("Supreme Lord Kazzak", 1452), 1452 };
 	};
 	OR_Pandaria = {
 		ZoneName = { L["Pandaria World Bosses"] };
 		Location = { BZ["Pandaria"] };
-		LevelRange = "90+";
+		LevelRange = "90-100";
 		PlayerLimit = "--";
 		JournalInstanceID = "322";
-		{ WHIT.." 1) "..Atlas_GetBossName("Nalak, The Storm Lord", 814) };
-		{ WHIT.." 2) "..Atlas_GetBossName("Oondasta", 826) };
-		{ WHIT.." 3) "..Atlas_GetBossName("Sha of Anger", 691) };
-		{ WHIT.." 4) "..Atlas_GetBossName("Salyis's Warband", 725) };
-		{ WHIT..INDENT..Atlas_GetBossName("Galleon", 725, 1) };
-		{ WHIT..INDENT..Atlas_GetBossName("Chief Salyis", 725, 2) };
-		{ WHIT.." 5) "..Atlas_GetBossName("Ordos, Fire-God of the Yaungol", 861) };
+		{ WHIT.." 1) "..Atlas_GetBossName("Nalak, The Storm Lord", 814), 814 };
+		{ WHIT.." 2) "..Atlas_GetBossName("Oondasta", 826), 826 };
+		{ WHIT.." 3) "..Atlas_GetBossName("Sha of Anger", 691), 691 };
+		{ WHIT.." 4) "..Atlas_GetBossName("Salyis's Warband", 725), 725 };
+		{ WHIT..INDENT..Atlas_GetBossName("Galleon", 725, 1), 725 };
+		{ WHIT..INDENT..Atlas_GetBossName("Chief Salyis", 725, 2), 725 };
+		{ WHIT.." 5) "..Atlas_GetBossName("Ordos, Fire-God of the Yaungol", 861), 861 };
 		{ WHIT.." 6) "..BF["The August Celestials"] };
-		{ WHIT..INDENT..Atlas_GetBossName("Chi-Ji, The Red Crane", 857) };
-		{ WHIT..INDENT..Atlas_GetBossName("Niuzao, The Black Ox", 859) };
-		{ WHIT..INDENT..Atlas_GetBossName("Xuen, The White Tiger", 860) };
-		{ WHIT..INDENT..Atlas_GetBossName("Yu'lon, The Jade Serpent", 858) };
+		{ WHIT..INDENT..Atlas_GetBossName("Chi-Ji, The Red Crane", 857), 857 };
+		{ WHIT..INDENT..Atlas_GetBossName("Niuzao, The Black Ox", 859), 859 };
+		{ WHIT..INDENT..Atlas_GetBossName("Xuen, The White Tiger", 860), 860 };
+		{ WHIT..INDENT..Atlas_GetBossName("Yu'lon, The Jade Serpent", 858), 858 };
 	};
 	OR_Skettis = {
 		ZoneName = { BZ["Skettis"] };
 		Location = { BZ["Blackwind Valley"]..", "..BZ["Terokkar Forest"] };
-		LevelRange = "70+";
+		LevelRange = "70-80";
 		PlayerLimit = "40";
 		{ WHIT.."1) "..BZ["Blackwind Landing"], 10001 };
 		{ WHIT..INDENT..L["Sky Commander Adaris"] };

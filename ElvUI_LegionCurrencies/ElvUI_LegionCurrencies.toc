@@ -1,0 +1,16 @@
+## Interface: 70300
+## Title: |cff1784d1ElvUI|r |cffded181Legion Currencies|r
+## Author: Alexstraszaa
+## URLs: http://www.curseforge.com/projects/98298/
+## Notes: A lightweight datatext-plugin for Elvui that shows you all the relavant currencies for Legion.
+## Version: 1.00
+## RequiredDeps: ElvUI
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## X-Curse-Packaged-Version: r2
+## X-Curse-Project-Name: ElvUI Legion Currencies DataText
+## X-Curse-Project-ID: elvui-legion-currencies
+## X-Curse-Repository-ID: wow/elvui-legion-currencies/mainline
+
+locales.lua
+datatext.lua

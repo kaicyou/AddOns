@@ -1,4 +1,4 @@
--- $Id: Atlas_OutdoorRaids_DB.lua 11 2016-05-13 05:34:36Z arith $
+-- $Id: Atlas_OutdoorRaids_DB.lua 15 2016-07-25 14:23:32Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -34,6 +34,19 @@ local myDB = {
 	};
 	OR_Doomwalker = {
 		{ 1, 10001, 271, 247 };
+	};
+	OR_BrokenIsles = {
+		{  1, 1774, 168, 351 }; --Calamir
+		{  2, 1796, 152, 375 }; --Withered J'im
+		{  3, 1769, 130, 347 }; --Levantus
+		{  4, 1770, 78, 201 }; --Humongris
+		{  5, 1763, 149, 159 }; --Shar'thos
+		{  6, 1789, 274, 150 }; --Drugon the Frostblood
+		{  7, 1795, 249, 22 }; --Flotsam
+--		{  8, 1790,  }; --Ana-Mouz
+		{  9, 1756, 405, 98 }; --The Soultakers
+		{ 10, 1749, 323, 133 }; --Nithogg
+		{ 11, 1783, 180, 232 }; --Na'zak the Fiend
 	};
 	OR_Draenor = {
 		{ 1, 1291, 271, 119 }; -- Drov the Ruiner

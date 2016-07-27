@@ -1,6 +1,6 @@
 ﻿--Mage Nuggets by B-Buck (Bbuck of Eredar)
 
-local magenugVer = "5.1.5"
+local magenugVer = "5.1.6"
 local mirrorImageTime = 0;
 local spellStealTog = 0;
 local misslebTog = 0;
@@ -529,18 +529,6 @@ function MageNuggets_OnEvent(this, event, ...)
             loadMageNuggetVariables_OnLoadEvent();
         end
     elseif (event == "ACTIVE_TALENT_GROUP_CHANGED") then
-        MageNugCD1_Frame_Bar:SetValue(0);
-        MageNugCD1_Frame:Hide();
-        MageNugCD2_Frame_Bar:SetValue(0);
-        MageNugCD2_Frame:Hide();
-        MageNugCD3_Frame_Bar:SetValue(0);
-        MageNugCD3_Frame:Hide();
-        MageNugCD4_Frame_Bar:SetValue(0);
-        MageNugCD4_Frame:Hide();
-        MageNugCD5_Frame_Bar:SetValue(0);
-        MageNugCD5_Frame:Hide();
-        MageNugCD6_Frame_Bar:SetValue(0);
-        MageNugCD6_Frame:Hide();
         if(mnenglishClass == 'DRUID') then
             currentSpec = GetSpecialization();
             if(currentSpec ~= 1) then
@@ -558,19 +546,6 @@ function MageNuggets_OnEvent(this, event, ...)
                 end
             end
         end
-    elseif (event == "CONFIRM_TALENT_WIPE") then
-        MageNugCD1_Frame_Bar:SetValue(0);
-        MageNugCD1_Frame:Hide();
-        MageNugCD2_Frame_Bar:SetValue(0);
-        MageNugCD2_Frame:Hide();
-        MageNugCD3_Frame_Bar:SetValue(0);
-        MageNugCD3_Frame:Hide();
-        MageNugCD4_Frame_Bar:SetValue(0);
-        MageNugCD4_Frame:Hide();
-        MageNugCD5_Frame_Bar:SetValue(0);
-        MageNugCD5_Frame:Hide();
-        MageNugCD6_Frame_Bar:SetValue(0);
-        MageNugCD6_Frame:Hide();
     elseif (event == "PLAYER_LOGOUT") then
         MageNugz_SaveFrame_Position();
     elseif (event == "PLAYER_REGEN_ENABLED") then
@@ -580,9 +555,9 @@ function MageNuggets_OnEvent(this, event, ...)
         if (MageNuggets.moonkinTog == false) then
             if (MageNuggets.moonkinCombat == true) then
                 MageNugMoonkin_Frame:Hide();
-                MNmoonFire_Frame:Hide()
-                MNinsectSwarm_Frame:Hide()
-                MNstarSurge_Frame:Hide()
+                MNmoonFire_Frame:Hide();
+                MNinsectSwarm_Frame:Hide();
+                MNstarSurge_Frame:Hide();
             end
         end
     elseif (event == "PLAYER_REGEN_DISABLED") then

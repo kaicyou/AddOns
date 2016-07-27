@@ -4,8 +4,8 @@
 	please see the included License.txt file.
 
 	* File...: Apathy.lua
-	* Date...: 2015-10-20T06:32:16Z
-	* Hash...: 1a18b0e
+	* Date...: 2016-07-25T23:55:25Z
+	* Hash...: 9b26b44
 	* Author.: StormFX
 
 ]]
@@ -16,7 +16,7 @@ if not MSQ then return end
 -- Apathy
 MSQ:AddSkin("Apathy", {
 	Author = "StormFX",
-	Version = "6.2.1",
+	Version = "7.0.0",
 	Shape = "Square",
 	Masque_Version = 60200,
 	Backdrop = {
@@ -92,27 +92,26 @@ MSQ:AddSkin("Apathy", {
 	Name = {
 		Width = 32,
 		Height = 10,
-		OffsetX = 2,
-		OffsetY = 5,
+		OffsetX = 1,
+		OffsetY = 6,
 	},
 	Count = {
 		Width = 32,
 		Height = 10,
 		OffsetX = -4,
-		OffsetY = 5,
+		OffsetY = 7,
 	},
 	HotKey = {
 		Width = 32,
 		Height = 10,
-		OffsetX = 1,
-		OffsetY = -6,
+		OffsetY = -7,
 	},
 	Duration = {
 		Width = 32,
 		Height = 10,
 		OffsetY = -2,
 	},
-	AutoCast = {
+	Shine = {
 		Width = 26,
 		Height = 26,
 		OffsetX = 1,
@@ -120,7 +119,7 @@ MSQ:AddSkin("Apathy", {
 	},
 }, true)
 
--- No Shadow
+-- Apathy: No Shadow
 MSQ:AddSkin("Apathy: No Shadow", {
 	Template = "Apathy",
 	Normal = {

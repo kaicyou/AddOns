@@ -1,4 +1,4 @@
--- $Id: AtlasJournalEncounter.lua 48 2016-07-19 14:03:11Z arith $
+-- $Id: AtlasJournalEncounter.lua 62 2016-07-26 15:01:58Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -38,7 +38,7 @@ function Atlas_JournalEncounter_InstanceButton_OnClick(frame)
 		return;
 	end
 
-	if not EncounterJournal or not EncounterJournal:IsShown() then
+	if ( not EncounterJournal or not EncounterJournal:IsShown() ) then
 		ToggleEncounterJournal();
 	end
 	EncounterJournal_ListInstances();
@@ -50,8 +50,35 @@ function Atlas_JournalEncounter_InstanceButton_OnClick(frame)
 		EncounterJournal:Hide();
 		EncounterJournal:Show();
 	end
-
 end
+
+function Atlas_JournalEncounter_EncounterButton_OnClick(encounterID)
+	local zoneID = ATLAS_DROPDOWNS[AtlasOptions.AtlasType][AtlasOptions.AtlasZone];
+	local data = AtlasMaps;
+	local base = data[zoneID];
+
+	if (not EJ_GetInstanceInfo(base.JournalInstanceID)) then
+		return;
+	end
+	if (not EJ_GetEncounterInfo(encounterID)) then
+		return;
+	end
+
+	if ( not EncounterJournal or not EncounterJournal:IsShown() ) then
+		ToggleEncounterJournal();
+	end
+	EncounterJournal_ListInstances();
+	EncounterJournal_DisplayInstance(base.JournalInstanceID);
+	EncounterJournal_DisplayEncounter(encounterID);
+
+	if (not EncounterJournal:IsShown()) then
+		EncounterJournal:Show();
+	else
+		EncounterJournal:Hide();
+		EncounterJournal:Show();
+	end
+end
+
 
 function Atlas_JournalEncounter_InstanceButton_OnEnter(frame)
 	local zoneID = ATLAS_DROPDOWNS[AtlasOptions.AtlasType][AtlasOptions.AtlasZone];

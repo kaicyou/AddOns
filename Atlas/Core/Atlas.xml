@@ -1,4 +1,4 @@
-<!-- $Id: Atlas.xml 48 2016-07-19 14:03:11Z arith $ -->
+<!-- $Id: Atlas.xml 62 2016-07-26 15:01:58Z arith $ -->
 <!--
 
 	Atlas, a World of Warcraft instance map browser
@@ -34,15 +34,15 @@
 	<Script file="AtlasDropDown.lua"/>
 	<Script file="Atlas.lua"/>
 
-	<Button name="AtlasEntryTemplate" hidden="true" virtual="true">
+	<Button name="AtlasEntryTemplate" hidden="true" virtual="true" toplevel="false">
 		<Size>
-			<AbsDimension x="330" y="15" />
+			<AbsDimension x="440" y="15" />
 		</Size>
 		<Layers>
 			<Layer level="OVERLAY">
 				<FontString name="$parent_Text" inherits="GameFontHighlight" wraponspaces="false" justifyH="LEFT">
 					<Size>
-						<AbsDimension x="330" y="15" />
+						<AbsDimension x="440" y="15" />
 					</Size>
 				</FontString>
 			</Layer>
@@ -54,12 +54,15 @@
 			<OnLeave>
 				GameTooltip:Hide();
 			</OnLeave>
+			<OnClick>
+				AtlasEntry_OnClick(self);
+			</OnClick>
 		</Scripts>
 	</Button>
 
 	<Frame name="AtlasFrame" toplevel="true" enableMouse="true" movable="true" parent="UIParent" hidden="true">
 		<Size>
-			<AbsDimension x="921" y="601"/>
+			<AbsDimension x="1023" y="631"/>
 		</Size>
 		<Anchors>
  			<Anchor point="TOPLEFT">
@@ -168,12 +171,12 @@
 			</Button>
 			<EditBox name="AtlasSearchEditBox" inherits="InputBoxTemplate" letters="80">
 				<Size>
-					<AbsDimension x="135" y="32"/>
+					<AbsDimension x="150" y="32"/>
 				</Size>
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT">
 						<Offset>
-							<AbsDimension x="-157" y="15"/>
+							<AbsDimension x="-210" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -191,7 +194,7 @@
 			<Frame name="AtlasSwitchDD" inherits="Lib_UIDropDownMenuTemplate" />
   			<Button name="AtlasSwitchButton" inherits="UIPanelButtonTemplate" parent="AtlasSearchEditBox">
 				<Size>
-					<AbsDimension x="80" y="24"/>
+					<AbsDimension x="120" y="24"/>
 				</Size>
 				<Anchors>
 					<Anchor point="RIGHT" relativePoint="LEFT">
@@ -208,7 +211,7 @@
 			</Button>
 			<Button name="AtlasSearchButton" inherits="UIPanelButtonTemplate" parent="AtlasSearchEditBox" text="ATLAS_STRING_SEARCH">
 				<Size>
-					<AbsDimension x="69" y="24"/>
+					<AbsDimension x="100" y="24"/>
 				</Size>
 				<Anchors>
 					<Anchor point="LEFT" relativePoint="RIGHT">
@@ -226,7 +229,7 @@
 			</Button>
 			<Button name="AtlasSearchClearButton" inherits="UIPanelButtonTemplate" parent="AtlasSearchEditBox" text="ATLAS_STRING_CLEAR">
 				<Size>
-					<AbsDimension x="69" y="24"/>
+					<AbsDimension x="100" y="24"/>
 				</Size>
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="AtlasSearchButton" relativePoint="RIGHT">
@@ -245,7 +248,7 @@
 			</Button>
 			<ScrollFrame name="AtlasScrollBar" inherits="FauxScrollFrameTemplate">
 				<Size>
-					<AbsDimension x="351" y="352" />
+					<AbsDimension x="460" y="392" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT">
@@ -287,12 +290,12 @@
 			</Frame>
 			<Frame name="AtlasText_ZoneName">
 				<Size>
-					<AbsDimension x="351" y="20" />
+					<AbsDimension x="450" y="20" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="546" y="-97"/>
+							<AbsDimension x="546" y="-92"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -300,7 +303,7 @@
 					<Layer level="OVERLAY">
 						<FontString name="$parent_Text" inherits="GameFontHighlightLarge" justifyH="LEFT">
 							<Size>
-								<AbsDimension x="351" y="20"/>
+								<AbsDimension x="450" y="20"/>
 							</Size>
 						</FontString>
 					</Layer>
@@ -316,7 +319,7 @@
 			</Frame>
 			<Frame name="AtlasText_Location">
 				<Size>
-					<AbsDimension x="351" y="15" />
+					<AbsDimension x="450" y="15" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="AtlasText_ZoneName" relativePoint="TOPLEFT">
@@ -329,7 +332,7 @@
 					<Layer level="OVERLAY">
 						<FontString name="$parent_Text" inherits="GameFontNormal" justifyH="LEFT">
 							<Size>
-								<AbsDimension x="351" y="15"/>
+								<AbsDimension x="450" y="15"/>
 							</Size>
 						</FontString>
 					</Layer>
@@ -345,7 +348,7 @@
 			</Frame>
 			<Frame name="AtlasText_LevelRange">
 				<Size>
-					<AbsDimension x="300" y="15" />
+					<AbsDimension x="450" y="15" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="AtlasText_Location" relativePoint="TOPLEFT">
@@ -358,7 +361,7 @@
 					<Layer level="OVERLAY">
 						<FontString name="$parent_Text" inherits="GameFontNormal" justifyH="LEFT">
 							<Size>
-								<AbsDimension x="300" y="15"/>
+								<AbsDimension x="450" y="15"/>
 							</Size>
 						</FontString>
 					</Layer>
@@ -374,7 +377,7 @@
 			</Frame>
 			<Frame name="AtlasText_RecommendedRange">
 				<Size>
-					<AbsDimension x="300" y="15" />
+					<AbsDimension x="400" y="15" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="AtlasText_LevelRange" relativePoint="TOPLEFT">
@@ -387,7 +390,7 @@
 					<Layer level="OVERLAY">
 						<FontString name="$parent_Text" inherits="GameFontNormal" justifyH="LEFT">
 							<Size>
-								<AbsDimension x="300" y="15"/>
+								<AbsDimension x="400" y="15"/>
 							</Size>
 						</FontString>
 					</Layer>
@@ -403,7 +406,7 @@
 			</Frame>
 			<Frame name="AtlasText_MinLevel">
 				<Size>
-					<AbsDimension x="300" y="15" />
+					<AbsDimension x="400" y="15" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="AtlasText_RecommendedRange" relativePoint="TOPLEFT">
@@ -416,7 +419,7 @@
 					<Layer level="OVERLAY">
 						<FontString name="$parent_Text" inherits="GameFontNormal" justifyH="LEFT">
 							<Size>
-								<AbsDimension x="300" y="15"/>
+								<AbsDimension x="400" y="15"/>
 							</Size>
 						</FontString>
 					</Layer>
@@ -466,7 +469,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT" relativeTo="AtlasFrame" relativePoint="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-17" y="-164"/>
+							<AbsDimension x="-8" y="-165"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -488,7 +491,7 @@
 		</Frames>
 		<Layers>
 			<Layer level="ARTWORK">
-				<Texture file="Interface\AddOns\Atlas\Images\AtlasFrame-Top">
+				<Texture file="Interface\AddOns\Atlas\Images\AtlasFrame-TopLeft">
 					<Size>
 						<AbsDimension x="512" y="128"/>
 					</Size>
@@ -500,9 +503,9 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture file="Interface\AddOns\Atlas\Images\AtlasFrame-Left">
+				<Texture file="Interface\AddOns\Atlas\Images\AtlasFrame-BottomLeft">
 					<Size>
-						<AbsDimension x="32" y="256"/>
+						<AbsDimension x="512" y="512"/>
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT">
@@ -512,38 +515,26 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture file="Interface\AddOns\Atlas\Images\AtlasFrame-Bottom">
-					<Size>
-						<AbsDimension x="512" y="256"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="0" y="-384"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<Texture file="Interface\AddOns\Atlas\Images\AtlasFrame-Bottom2">
+				<Texture file="Interface\AddOns\Atlas\Images\AtlasFrame-TopRight.tga">
 					<Size>
 						<AbsDimension x="512" y="128"/>
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="512" y="-512"/>
+								<AbsDimension x="512" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture file="Interface\AddOns\Atlas\Images\AtlasFrame-Right">
+				<Texture file="Interface\AddOns\Atlas\Images\AtlasFrame-BottomRight.tga">
 					<Size>
 						<AbsDimension x="512" y="512"/>
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="512" y="0"/>
+								<AbsDimension x="512" y="-128"/>
 							</Offset>
 						</Anchor>
 					</Anchors>

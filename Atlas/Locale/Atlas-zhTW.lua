@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas-zhTW.lua 56 2016-07-23 13:42:16Z arith $
+﻿-- $Id: Atlas-zhTW.lua 62 2016-07-26 15:01:58Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -192,7 +192,7 @@ L["ATLAS_MISSING_MODULE"] = [=[Atlas 已偵測到遺失的模組／插件。
 如果您確認您不需要這些「遺失」的插件並且不想繼續看到這樣的通知，您可以到選項視窗去關閉通知。
 
 以下是遺失的模組／插件列表：
-]=] -- Needs review
+]=]
 L["ATLAS_OPEN_ADDON_LIST"] = "開啟插件列表"
 L["ATLAS_OPTIONS_ACRONYMS"] = "顯示副本縮寫"
 L["ATLAS_OPTIONS_ACRONYMS_TIP"] = "在地圖的詳盡敘述中顯示副本的縮寫"
@@ -672,7 +672,7 @@ L["Murd Doc <S.A.F.E.>"] = "哮·狼的護腿 <S.A.F.E.>"
 L["Muyoh <Disciple of Naralex>"] = "繆幽 <納拉雷克斯的侍徒>"
 L["MV"] = "MV"
 L["Mysterious Bookshelf"] = "神秘的書架"
--- L["Mythic"] = ""
+L["Mythic"] = "傳奇"
 L["Mythic_Symbol"] = "(傳奇)"
 L["Nahuud"] = "納霍德"
 L["Nalpak <Disciple of Naralex>"] = "納爾派克 <納拉雷克斯的侍徒>"

@@ -199,7 +199,7 @@ Wenn du jetzt alle aktualisiert hast, öffne deine Addonliste, um nachzusehen, o
 Wenn du dir sicher bist, dass du diese "fehlenden" Module/Plugins nicht benötigst und du daher diese Meldung nicht sehen willst, kannst du die Meldung im Optionsmenü deaktivieren.
 
 Liste fehlender Module/Plugins:]=]
--- L["ATLAS_OPEN_ADDON_LIST"] = ""
+L["ATLAS_OPEN_ADDON_LIST"] = "Addon-Liste öffnen"
 L["ATLAS_OPTIONS_ACRONYMS"] = "Abkürzungen anzeigen"
 L["ATLAS_OPTIONS_ACRONYMS_TIP"] = "Zeigt die Instanz-Abkürzungen in den Kartendetails an."
 L["ATLAS_OPTIONS_AUTOSEL"] = "Automatische Kartenauswahl"
@@ -503,7 +503,7 @@ L["Helcular"] = "Helcular"
 L["Helpful Jungle Monkey"] = "Hilfreicher Dschungelaffe"
 L["Herod the Bully"] = "Herod der Tyrann"
 L["Heroic"] = "Heroisch"
--- L["Heroic_Symbol"] = ""
+L["Heroic_Symbol"] = "(H)"
 L["Heroic: Trial of the Grand Crusader"] = "Heroisch: Prüfung des Obersten Kreuzfahrers"
 L["Hierophant Theodora Mulvadania <Kargath Expeditionary Force>"] = "Hierophantin Theodora Mulvadania <Expeditionskorps von Kargath>"
 L["High Examiner Tae'thelan Bloodwatcher <The Reliquary>"] = "Oberster Prüfer Tae'thelan Blutwächter <Die Archäologische Akademie>"
@@ -680,8 +680,8 @@ L["Murd Doc <S.A.F.E.>"] = "Murd Doc <S.I.C.H.E.R.>"
 L["Muyoh <Disciple of Naralex>"] = "Muyoh <Jünger von Naralex>"
 L["MV"] = "MS, Kammer"
 L["Mysterious Bookshelf"] = "Verdächtiges Bücherregal"
--- L["Mythic"] = ""
--- L["Mythic_Symbol"] = ""
+L["Mythic"] = "(M)" -- Needs review
+L["Mythic_Symbol"] = "(M)"
 L["Nahuud"] = "Nahuud"
 L["Nalpak <Disciple of Naralex>"] = "Nalpak <Jünger von Naralex>"
 L["Naralex"] = "Naralex"

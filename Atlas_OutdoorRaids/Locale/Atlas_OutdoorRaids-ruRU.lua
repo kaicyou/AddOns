@@ -38,6 +38,7 @@ local L = AceLocale:NewLocale("Atlas_OutdoorRaids", "ruRU", false);
 
 if L then
 L["Ancient Skull Pile"] = "Груда древних черепов"
+-- L["Broken Isles World Bosses"] = ""
 L["Darkscreecher Akkarai"] = "Темный Крикун Аккарай"
 L["Draenor World Bosses"] = "Боссы Дренора"
 L["Gezzarak the Huntress"] = "Геззарак Охотница"

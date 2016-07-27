@@ -1,4 +1,4 @@
--- $Id: Atlas_OutdoorRaids-zhTW.lua 13 2016-07-19 13:56:42Z arith $
+-- $Id: Atlas_OutdoorRaids-zhTW.lua 15 2016-07-25 14:23:32Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -30,6 +30,7 @@ local L = AceLocale:NewLocale("Atlas_OutdoorRaids", "zhTW", false);
 if L then
 
 L["Ancient Skull Pile"] = "古老的顱骨堆"
+L["Broken Isles World Bosses"] = "破碎群島世界首領"
 L["Darkscreecher Akkarai"] = "黑暗尖叫者阿卡萊"
 L["Draenor World Bosses"] = "德拉諾世界首領"
 L["Gezzarak the Huntress"] = "女獵人吉札拉"
@@ -51,7 +52,7 @@ L["Talonpriest Skizzik"] = "魔爪祭司史奇吉克"
 L["Talonpriest Zellek"] = "魔爪祭司札列克"
 L["Terokk"] = "泰洛克"
 L["Vakkiz the Windrager"] = "『風怒者』瓦奇茲"
-L["ToC/Description"] = "Atlas 戶外首領地圖插件" -- Needs review
+L["ToC/Description"] = "Atlas 戶外首領地圖插件"
 L["ToC/Title"] = "|r|cFF0099FF[地圖]|rAtlas 戶外首領地圖"
 
 end

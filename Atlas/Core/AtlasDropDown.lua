@@ -1,4 +1,4 @@
--- $Id: AtlasDropDown.lua 55 2016-07-22 17:49:48Z arith $
+-- $Id: AtlasDropDown.lua 62 2016-07-26 15:01:58Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -293,7 +293,13 @@ Atlas_DropDownLayouts = {
 			"CourtofStarsA",
 			"CourtofStarsB",
 			"AssaultonVioletHold",
-			"TheEmeraldNightmare",
+			"TheEmeraldNightmareA",
+			"TheEmeraldNightmareB",
+			"TheEmeraldNightmareC",
+			"TheEmeraldNightmareD",
+			"TheEmeraldNightmareE",
+			"TheEmeraldNightmareF",
+			"TheEmeraldNightmareG",
 			"TheNightholdA",
 			"TheNightholdB",
 			"TheNightholdC",
@@ -532,7 +538,13 @@ Atlas_DropDownLayouts = {
 			"TheArcway",
 			"CourtofStarsA",
 			"CourtofStarsB",
-			"TheEmeraldNightmare",
+			"TheEmeraldNightmareA",
+			"TheEmeraldNightmareB",
+			"TheEmeraldNightmareC",
+			"TheEmeraldNightmareD",
+			"TheEmeraldNightmareE",
+			"TheEmeraldNightmareF",
+			"TheEmeraldNightmareG",
 			"TheNightholdA",
 			"TheNightholdB",
 			"TheNightholdC",
@@ -695,7 +707,13 @@ Atlas_DropDownLayouts = {
 			"CoTDragonSoulB",
 			"CoTDragonSoulC",
 --[===[@alpha@
-			"TheEmeraldNightmare",		-- Legion
+			"TheEmeraldNightmareA",
+			"TheEmeraldNightmareB",
+			"TheEmeraldNightmareC",
+			"TheEmeraldNightmareD",
+			"TheEmeraldNightmareE",
+			"TheEmeraldNightmareF",
+			"TheEmeraldNightmareG",		-- Legion
 --@end-alpha@]===]
 			"Firelands",
 			"HeartofFear",
@@ -768,7 +786,13 @@ Atlas_DropDownLayouts = {
 			"CoTHyjal",
 			"CoTHyjalEnt",
 --[===[@alpha@
-			"TheEmeraldNightmare",		-- Legion
+			"TheEmeraldNightmareA",
+			"TheEmeraldNightmareB",
+			"TheEmeraldNightmareC",
+			"TheEmeraldNightmareD",
+			"TheEmeraldNightmareE",
+			"TheEmeraldNightmareF",
+			"TheEmeraldNightmareG",		-- Legion
 --@end-alpha@]===]
 			"Firelands",
 			"GruulsLair",
@@ -1032,7 +1056,13 @@ Atlas_DropDownLayouts = {
 			"CourtofStarsA",
 			"CourtofStarsB",
 			"AssaultonVioletHold",
-			"TheEmeraldNightmare",
+			"TheEmeraldNightmareA",
+			"TheEmeraldNightmareB",
+			"TheEmeraldNightmareC",
+			"TheEmeraldNightmareD",
+			"TheEmeraldNightmareE",
+			"TheEmeraldNightmareF",
+			"TheEmeraldNightmareG",
 			"TheNightholdA",
 			"TheNightholdB",
 			"TheNightholdC",
@@ -1104,7 +1134,13 @@ Atlas_DropDownLayouts = {
 			"DrakTharonKeep",
 			"TheDeadmines",
 --[===[@alpha@
-			"TheEmeraldNightmare",		-- Legion
+			"TheEmeraldNightmareA",
+			"TheEmeraldNightmareB",
+			"TheEmeraldNightmareC",
+			"TheEmeraldNightmareD",
+			"TheEmeraldNightmareE",
+			"TheEmeraldNightmareF",
+			"TheEmeraldNightmareG",		-- Legion
 			"EyeofAzshara",			-- Legion
 --@end-alpha@]===]
 			"TheEverbloomA",

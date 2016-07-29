@@ -1,6 +1,6 @@
 ﻿--Mage Nuggets by B-Buck (Bbuck of Eredar)
 
-local magenugVer = "5.1.6"
+local magenugVer = "5.2.1"
 local mirrorImageTime = 0;
 local spellStealTog = 0;
 local misslebTog = 0;
@@ -72,40 +72,6 @@ function MageNuggets_OnUpdate(self, elapsed)
        previewFrames = false;
      end
    end
-
-    --Ignite
-    local h = 1;
-    local dotUp = false;
-    local combName, combRank, _, combCount, _, _, expireTime, _, _, _, combspellId = UnitAura("target", h, "PLAYER|HARMFUL");
-    while combName do
-        if(combspellId == 12654) then
-            dotUp = true;
-            ignitetimer = RoundOne(expireTime - GetTime());
-            MageNugIgnite_Frame_Bar:SetValue(ignitetimer);
-            MageNugIgnite_FrameText2:SetText(ignitetimer);
-        end
-        h = h + 1;
-        combName, combRank, _, combCount, _, _, _, _, _, _, combspellId = UnitAura("target", h, "PLAYER|HARMFUL");
-    end
-    if(dotUp == true) then
-        if(MageNuggets.igniteTog == true)then
-              MageNugIgnite_Frame:Show();
-        end
-    else
-        MageNugIgnite_Frame:Hide();
-    end
-
-    --Alter Time
-    if(alterTime >= 0) then
-        if(alterTime >= 1) then
-            MageNugInfo_FrameText:SetText("|cfffcea21 " .. RoundZero(alterTime));
-        elseif(alterTime == 0.50) then
-            MageNugInfo_FrameText:SetText("|cfffcea21 T I M E");
-        else
-            MageNugInfo_FrameText:SetText("");
-        end
-        alterTime = alterTime - 0.25;
-    end
 
     --SpellSteal
     if (spellStealTog >= 1) then
@@ -232,39 +198,84 @@ end
 --============================================================================--
 --                                  On Update
 --============================================================================--
+
+local mnFireblastBorderColorTick = 0;
+local mnFireblastHideCounter = 0;
+function MageNuggetsFireblast_OnUpdate(self, elapsed) -- ignite
+ self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
+    if (self.TimeSinceLastUpdate > 0.1) then
+      local currentFbCharges, _, cooldownStart, cooldownDuration = GetSpellCharges(108853);
+      local fbCooldown = RoundOne(cooldownStart + cooldownDuration - GetTime());
+
+      if(fbCooldown > 13) or (fbCooldown < 0) then
+        mnDressFireblastMonitor(currentFbCharges, "", 0)
+      else
+        mnDressFireblastMonitor(currentFbCharges, fbCooldown, fbCooldown)
+      end
+
+      if(currentFbCharges == 2) then
+        mnFireblastHideCounter = mnFireblastHideCounter + 1;
+        if(mnFireblastHideCounter > 250) then
+          mnFireblastHideCounter = 0;
+          MageNugIgnite_Frame:Hide();
+        end
+        mnFireblastBorderColorTick = mnFireblastBorderColorTick + 1;
+        if(mnFireblastBorderColorTick > 10) then
+          MageNugIgnite_Frame:SetBackdropBorderColor(1,0,0,1);
+          mnFireblastBorderColorTick = 0;
+        else
+          MageNugIgnite_Frame:SetBackdropBorderColor(1,1,1,1);
+        end
+      else
+        MageNugIgnite_Frame:SetBackdropBorderColor(1,1,1,1);
+        mnFireblastBorderColorTick = 0;
+        mnFireblastHideCounter = 0;
+      end
+    self.TimeSinceLastUpdate = 0;
+    end
+end
+--
+function mnDressFireblastMonitor(currentFbCharges, timerValue, barValue)
+  MageNugIgnite_TextFrameText:SetText(currentFbCharges);
+  MageNugIgnite_TextFrameText2:SetText(timerValue);
+  MageNugIgnite_Frame_Bar:SetValue(barValue);
+end
+--
 function MageNuggetsHS_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
     if (self.TimeSinceLastUpdate > 0.1) then
-        if (mageProcHSTime >= 0) then
-            mageProcHSTime = RoundOne(mageProcHSTime - 0.1);
-            MageNugProcFrame_ProcBar:SetValue(mageProcHSTime)
-            MageNugProcFrameText2:SetText(mageProcHSTime)
-            local position = (MageNugProcFrame_ProcBar:GetValue() / 14 * 120);
-            MageNugProcFrame_ProcBarSpark:SetPoint("BOTTOMLEFT",MageNugProcFrame_ProcBar,"BOTTOMLEFT",position - 10,-6);
-            if (mageProcHSTime <= 0) and (previewMnFrames == false) then
-                MageNugProcFrame:Hide()
-                MageNugProcFrame_ProcBar:SetValue(15)
-            end
-        end
-    self.TimeSinceLastUpdate = 0;
+      local _, _, _, _, _, duration, expirationTime = UnitBuff("player", "Hot Streak!")
+      local hsCooldown = RoundOne(expirationTime - GetTime());
+
+      if(hsCooldown <= 0) and (previewMnFrames == false) then
+        MageNugProcFrame:Hide();
+        MageNugProcFrame_ProcBar:SetValue(15);
+      end
+
+      MageNugProcFrame_ProcBar:SetValue(hsCooldown)
+      MageNugProcFrameText2:SetText(hsCooldown)
+      local position = (MageNugProcFrame_ProcBar:GetValue() / 14 * 120);
+      MageNugProcFrame_ProcBarSpark:SetPoint("BOTTOMLEFT",MageNugProcFrame_ProcBar,"BOTTOMLEFT",position - 10,-6);
+      self.TimeSinceLastUpdate = 0;
     end
 end
 
 function MageNuggetsHU_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
     if (self.TimeSinceLastUpdate > 0.1) then
-        if (mageProcHUTime >= 0) then
-            mageProcHUTime = RoundOne(mageProcHUTime - 0.1);
-            MageNugProcHUFrame_ProcBar:SetValue(mageProcHUTime)
-            MageNugProcHUFrameText2:SetText(mageProcHUTime)
-            local position = (MageNugProcHUFrame_ProcBar:GetValue() / 8 * 120);
-            MageNugProcHUFrame_ProcBarSpark:SetPoint("BOTTOMLEFT",MageNugProcHUFrame_ProcBar,"BOTTOMLEFT",position - 10,-6);
-            if (mageProcHUTime <= 0) and (previewMnFrames == false) then
-                MageNugProcHUFrame:Hide()
-                MageNugProcHUFrame_ProcBar:SetValue(8)
-            end
-        end
-    self.TimeSinceLastUpdate = 0;
+      local _, _, _, _, _, duration, expirationTime = UnitBuff("player", "Heating Up")
+      local huCooldown = RoundOne(expirationTime - GetTime());
+
+      if (huCooldown <= 0) and (previewMnFrames == false) then
+        MageNugProcHUFrame:Hide();
+        MageNugProcHUFrame_ProcBar:SetValue(8);
+      end
+
+      MageNugProcHUFrame_ProcBar:SetValue(huCooldown)
+      MageNugProcHUFrameText2:SetText(huCooldown)
+      local position = (MageNugProcHUFrame_ProcBar:GetValue() / 8 * 120);
+      MageNugProcHUFrame_ProcBarSpark:SetPoint("BOTTOMLEFT",MageNugProcHUFrame_ProcBar,"BOTTOMLEFT",position - 10,-6);
+      self.TimeSinceLastUpdate = 0;
     end
 end
 
@@ -593,7 +604,7 @@ function MageNuggets_OnEvent(this, event, ...)
         --  DEFAULT_CHAT_FRAME:AddMessage(arg.." "..event1.." "..spellName);
         -- end
 
-        if (event1 == "SPELL_DISPEL") and (sourceName == UnitName("player")) then
+       if (event1 == "SPELL_DISPEL") and (sourceName == UnitName("player")) then
             if (MageNuggets.ssMonitorToggle == true) then
                 if(combatTextCvar == '1') then
                     CombatText_AddMessage("Dispelled"..":"..GetSpellLink(arg5), CombatText_StandardScroll, 0.10, 0, 1, "sticky", nil);
@@ -602,25 +613,27 @@ function MageNuggets_OnEvent(this, event, ...)
                     DEFAULT_CHAT_FRAME:AddMessage("|cffFFFFFF".."Dispelled "..GetSpellLink(arg5).." From "..destName)
 	    	    end
             end
-        elseif (event1 == "SPELL_AURA_REFRESH") and (sourceName == UnitName("player")) then
+       elseif (event1 == "SPELL_AURA_REFRESH") and (sourceName == UnitName("player")) then
             spellAuraRefresh(arg, sourceName, destName);
-        elseif (event1 == "SPELL_AURA_REMOVED") and (sourceName == UnitName("player")) then
+       elseif (event1 == "SPELL_AURA_REMOVED") and (sourceName == UnitName("player")) then
             spellAuraRemoved(arg, sourceName, destName);
-        elseif (event1 == "SPELL_PERIODIC_DAMAGE") and (sourceName == UnitName("player")) then
-            if(arg == 12654) then
-                if(MageNuggets.igniteTog == true)then
-                    MageNugIgnite_FrameText:SetText(arg5);
-                end
-            end
-        elseif (event1 == "SPELL_AURA_APPLIED") and (sourceName == UnitName("player")) then
+       elseif (event1 == "SPELL_AURA_APPLIED") and (sourceName == UnitName("player")) then
             spellAuraAppliedSource(arg, sourceName, destName);
 		   elseif (event1 == "SPELL_AURA_APPLIED") and (destName == UnitName("player")) then
             spellAuraAppliedDest(arg, sourceName, destName);
 		   elseif (event1 == "SPELL_CAST_SUCCESS") and (sourceName == UnitName("player")) then
-          if(arg == 30451) and (MageNuggets.arcaneBlastToggle == true) then
+          if (((arg == 30451) or (arg == 1449) or (arg ==7268)) and (MageNuggets.arcaneBlastToggle == true)) then
               MageNugAB_Frame:Show();
-           end
-        elseif (event1 == "SPELL_STOLEN") and (sourceName == UnitName("player")) then
+          elseif(arg == 108853) then
+            if(MageNuggets.igniteTog == true)then
+              mnFireblastHideCounter = 0;
+              local currentFbCharges, _, cooldownStart, cooldownDuration = GetSpellCharges(108853)
+              MageNugIgnite_TextFrameText:SetText(currentFbCharges);
+              MageNugIgnite_TextFrameText2:SetText(11);
+              MageNugIgnite_Frame:Show();
+            end
+          end
+       elseif (event1 == "SPELL_STOLEN") and (sourceName == UnitName("player")) then
             if(combatTextCvar == '1') then
                 CombatText_AddMessage("Stole"..":"..GetSpellLink(arg5), CombatText_StandardScroll, 0.10, 0, 1, "sticky", nil);
             end

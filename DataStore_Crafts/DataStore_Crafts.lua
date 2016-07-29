@@ -156,7 +156,7 @@ end
 
 local function ScanCooldowns()
 	-- Updated by RGriedel
-	local tradeskillName = GetTradeSkillLine()
+	local tradeskillName = C_TradeSkillUI.GetTradeSkillLine()
 	local char = addon.ThisCharacter
 	local profession = char.Professions[tradeskillName]
 
@@ -373,7 +373,7 @@ skillUpMsg = gsub(skillUpMsg, arg2pattern, "(%%d+)")
 local function OnChatMsgSkill(self, msg)
 	if msg and addon.isOpen then	-- point gained while ts window is open ? rescan
 		local skill = msg:match(skillUpMsg)
-		if skill and skill == GetTradeSkillLine() then	-- if we gained a skill point in the currently opened profession pane, rescan
+		if skill and skill == C_TradeSkillUI.GetTradeSkillLine() then	-- if we gained a skill point in the currently opened profession pane, rescan
 			ScanTradeSkills()
 		end
 	end

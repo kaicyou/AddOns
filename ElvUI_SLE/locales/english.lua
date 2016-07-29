@@ -41,8 +41,10 @@ A |cff1784d1"%s"|r role was chosen.
 |cffFF0000Warning:|r Please note that the authors' may or may not use any of the layouts/themes you have selected as they may have changed their setup more recently. Also switching between layouts in here may cause some unpredictable and weird results.]=]
 L["Darth's Config"] = true
 L["Repooc's Config"] = true
+L["Affinitii's Config"] = true
 L["Darth's Default Set"] = true
 L["Repooc's Default Set"] = true
+L["Affinitii's Default Set"] = true
 L["Layout & Settings Import"] = true
 L["You have selected to use %s."] = true
 L["SLE_INSTALL_LAYOUT_TEXT2"] = [[Following buttons will import layout/addon settings for the selected config and role.
@@ -686,6 +688,14 @@ Ctrl + Left Click to collapce]]
 L["SLE_QUESTKING_Required"] = "  Required: "
 L["ElvUI Objective Tracker"] = true
 L["ElvUI Skins"] = true
+L["As List"] = true
+L["List Style Fonts"] = true
+L["Item Name Font"] = true
+L["Item Name Size"] = true
+L["Item Name Outline"] = true
+L["Item Info Font"] = true
+L["Item Info Size"] = true
+L["Item Info Outline"] = true
 
 --Toolbars
 L["We are sorry, but you can't do this now. Try again after the end of this combat."] = true
@@ -853,6 +863,7 @@ Benik, The Slacker
 Blazeflack
 Boradan
 Camealion
+Nils Ruesch
 Omega1970
 Pvtschlag
 Simpy, The Heretic

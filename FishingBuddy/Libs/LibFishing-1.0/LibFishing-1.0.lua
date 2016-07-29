@@ -7,7 +7,7 @@ Licensed under a Creative Commons "Attribution Non-Commercial Share Alike" Licen
 --]]
 
 local MAJOR_VERSION = "LibFishing-1.0"
-local MINOR_VERSION = 90000 + tonumber(("1603"):match("%d+"))
+local MINOR_VERSION = 90972
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub") end
 
@@ -505,20 +505,46 @@ function FishLib:GetSlotMap()
 	return slotmap;
 end
 
+-- http://lua-users.org/wiki/CopyTable
+function shallowcopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in pairs(orig) do
+            copy[orig_key] = orig_value
+        end
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
+local function deepcopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+            copy[deepcopy(orig_key)] = deepcopy(orig_value)
+        end
+        setmetatable(copy, deepcopy(getmetatable(orig)))
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+end
+
 function FishLib:copytable(tab, level)
-	local t = {};
 	if (tab) then
-		level = level or 10000;
-		for k,v in pairs(tab) do
-			if ( type(v) == "table" and level > 0 ) then
-				level = level - 1;
-				t[k] = self:copytable(v, level);
-			else
-				t[k] = v;
-			end
+		if (level == 1) then
+			return shallowcopy(tab)
+		else
+			return deepcopy(tab)
 		end
+	else
+		return tab;
 	end
-	return t;
 end
 
 -- count tables that don't have monotonic integer indexes
@@ -546,7 +572,7 @@ end
 -- this changes all the damn time
 -- "|c(%x+)|Hitem:(%d+)(:%d+):%d+:%d+:%d+:%d+:[-]?%d+:[-]?%d+:[-]?%d+:[-]?%d+|h%[(.*)%]|h|r"
 -- go with a fixed pattern, since sometimes the hyperlink trick appears not to work
-local _itempattern = "|c(%x+)|Hitem:([^:]+):([^:]+)[-:%d]+|h%[(.*)%]|h|r"
+local _itempattern = "|c(%x+)|Hitem:(%d+):(%d*):[^|]+|h%[(.*)%]|h|r"
 
 function FishLib:GetItemPattern()
 	if ( not _itempattern ) then
@@ -563,6 +589,9 @@ end
 function FishLib:SplitLink(link)
 	if ( link ) then
 		local _,_, color, id, enchant, name = string.find(link, self:GetItemPattern());
+		if (not enchant) then
+			enchant = 0;
+		end
 		if ( name ) then
 			return color, id..":"..enchant, name, enchant;
 		end
@@ -572,6 +601,9 @@ end
 function FishLib:SplitFishLink(link)
 	if ( link ) then
 		local _,_, color, id, enchant, name = string.find(link, self:GetItemPattern());
+		if (not enchant) then
+			enchant = 0;
+		end
 		return color, tonumber(id), name, enchant;
 	end
 end
@@ -611,9 +643,9 @@ function FishLib:GetFishTooltip(force)
 		tooltip:SetOwner(WorldFrame, "ANCHOR_NONE");
 -- Allow tooltip SetX() methods to dynamically add new lines based on these
 -- I don't think we need it if we use GameTooltipTemplate...
---		  tooltip:AddFontStrings(
---				tooltip:CreateFontString( "$parentTextLeft9", nil, "GameTooltipText" ),
---				tooltip:CreateFontString( "$parentTextRight9", nil, "GameTooltipText" ) )
+		tooltip:AddFontStrings(
+		tooltip:CreateFontString( "$parentTextLeft9", nil, "GameTooltipText" ),
+		tooltip:CreateFontString( "$parentTextRight9", nil, "GameTooltipText" ) )
 	end
 	-- the owner gets unset sometimes, not sure why
 	local owner, anchor = tooltip:GetOwner();

@@ -112,6 +112,7 @@ credits[FBConstants.ROLE_HELP_BUGS] = {
 	["Dehvid"] = { "64-bit crash bug", },
 	["ProphetV"] = { "Fish Watcher accounting errors", },
 	["Bodar"] = { "Better Nat's quest handling", "Watch Bobber fix", },
+	["miss_kallistra"] = { "Pet handling fixes for Legion", },
 };
 
 -- Ideas and suggestions

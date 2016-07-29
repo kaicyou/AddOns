@@ -1,9 +1,15 @@
 ------------------------------------------------------------------------
-r1374 | resike | 2016-07-21 15:48:08 +0000 (Thu, 21 Jul 2016) | 1 line
+r1376 | resike | 2016-07-28 18:58:46 +0000 (Thu, 28 Jul 2016) | 1 line
 Changed paths:
-   A /tags/v7.0.3b release (from /trunk:1373)
+   A /tags/v7.0.3c release (from /trunk:1375)
 
-Tagging as v7.0.3b release
+Tagging as v7.0.3c release
+------------------------------------------------------------------------
+r1375 | Resike | 2016-07-28 18:56:49 +0000 (Thu, 28 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Tracker.lua
+
+- Damage to Soul Effigy is now ignored.
 ------------------------------------------------------------------------
 r1373 | Resike | 2016-07-21 15:45:01 +0000 (Thu, 21 Jul 2016) | 1 line
 Changed paths:

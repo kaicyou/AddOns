@@ -196,7 +196,7 @@ local function hideOrDisable(button, what)
 	elseif ( what == "h" ) then
 		 button:Hide();
 		 if ( value  ) then
-			if ( not button.visible or button.visible(button) ) then
+			if ( not button.visible or button.visible(button.option) ) then
 				button:Show();
 			end
 		end
@@ -338,14 +338,6 @@ local function orderbuttons(btnlist)
 		return {};
 	end
 	
-	table.sort(btnlist, function(a,b)
-		if ( a.custom ) then
-			return false;
-		else
-			return a.width and b.width and a.width < b.width;
-		end
-	end);
-	
 	local order = {};
 	local used = {};
 	for idx=1,#btnlist do
@@ -377,6 +369,11 @@ local function orderbuttons(btnlist)
 			end
 			-- here we should arrange order so that as many pairs as possible are
 			-- an appropriate width. For now make all the odd ones the shortest ones.
+			table.sort(group, function(a,b)
+				a = btnlist[a];
+				b = btnlist[b];
+				return a.width and b.width and a.width < b.width;
+			end);
 			for jdx=1,#group do
 				local kdx = #group-jdx+1;
 				if (kdx > jdx) then
@@ -404,6 +401,12 @@ local function orderbuttons(btnlist)
 		end
 	end
 
+	table.sort(group, function(a,b)
+		a = btnlist[a];
+		b = btnlist[b];
+		return a.width and b.width and a.width < b.width;
+	end);
+
 	for jdx=1,#group do
 		local kdx = #group-jdx+1;
 		if (kdx > jdx) then
@@ -413,6 +416,7 @@ local function orderbuttons(btnlist)
 			tinsert(order, group[jdx]);
 		end
 	end
+
 	for jdx=1,#last do
 		tinsert(order, last[jdx]);
 	end
@@ -455,7 +459,7 @@ local function layoutorder(btnlist, maxwidth)
 		end
 		idx = idx + 1;
 	end
-	
+
 	return layout;
 end
 
@@ -467,11 +471,11 @@ end
 
 local SQUISH_OFF = 6;
 local function dolayout(layout, lastbutton, firstoff)
+	firstoff = firstoff or 0;
 	for idx,line in ipairs(layout) do
 		local lb, rb = line[1], line[2];
 		local yoff = nil;
 		if ( lb.margin ) then
-			firstoff = firstoff or 0;
 			yoff = -(lb.margin[2] or SQUISH_OFF);
 			firstoff = firstoff + lb.margin[1] or 0;
 		end
@@ -538,10 +542,15 @@ local function CleanupButton(button)
 	button.option = nil;
 	button:Hide();
 	button:SetParent(nil);
+
+	local text = _G[button:GetName().."Text"];
+	if (text) then
+		text:SetText(button:GetName());
+	end
 end
 
 local insidewidth = 0;
-local function Setup(options, nomap)
+local function SetupOptionTab(options)
 	insidewidth = FishingBuddyFrameInset:GetWidth();
 
 -- Clear out all the stuff we put on the old buttons
@@ -549,114 +558,116 @@ local function Setup(options, nomap)
 		CleanupButton(button);
 	end
 	optionmap = {};
-	
+
 	local overlayidx = 1;
 	local index = 1;
 	for name,option in pairs(options) do
 		local button = nil;
-		if ( option.button ) then
-			if ( type(option.button) == "string" ) then
-				button = _G[option.button];
-			else
-				button = option.button;
+		if (not option.visible or option.visible(option)) then
+			if ( option.button ) then
+				if ( type(option.button) == "string" ) then
+					button = _G[option.button];
+				else
+					button = option.button;
+				end
+				if ( button ) then
+					button.custom = true;
+					button.checkbox = (button:GetObjectType() == "CheckButton");
+				end
+			elseif ( option.v ) then
+				button = optionbuttons[index];
+				if ( not button ) then
+					button = CreateFrame(
+						"CheckButton", "FishingBuddyOption"..index,
+						FishingOptionsFrame, "OptionsSmallCheckButtonTemplate");
+					optionbuttons[index] = button;
+				end
+				button.checkbox = true;
+				index = index + 1;
 			end
 			if ( button ) then
-				button.custom = true;
-				button.checkbox = (button:GetObjectType() == "CheckButton");
-			end
-		elseif ( option.v ) then
-			button = optionbuttons[index];
-			if ( not button ) then
-				button = CreateFrame(
-					"CheckButton", "FishingBuddyOption"..index,
-					FishingOptionsFrame, "OptionsSmallCheckButtonTemplate");
-				optionbuttons[index] = button;
-			end
-			button.checkbox = true;
-			index = index + 1;
-		end
-		if ( button and (not option.visible or option.visible(button)) ) then
-			if ( not nomap ) then
 				optionmap[name] = button;
+
+				button.option = option;
+				button.name = name;
+
 				button:ClearAllPoints();
 				button:SetParent(FishingOptionsFrame);
 				button:SetFrameLevel(FishingOptionsFrame:GetFrameLevel() + 2);
-			end
 
-			if ( button.checkbox and option.v ) then
-				-- override OnShow and OnClick
-				button:SetScript("OnShow", CheckButton_OnShow);
-				button:SetScript("OnClick", CheckButton_OnClick);
-			end
-
-			if (option.init) then
-				option.init(option, button);
-			end
-			
-			button.option = option;
-			button.name = name;
-			button.alone = option.alone;
-			button.layoutright = option.layoutright;
-			button.margin = option.margin;
-			button.name = name;
-			button.update = option.update;
-			button.visible = option.visible;
-			button.enabled = option.enabled;
-			button.width = button:GetWidth();
-			if ( option.text ) then
-				button.text = option.text;
-				local text = _G[button:GetName().."Text"];
-				if (text) then
-					text:SetText(option.text);
-					button.width = button.width + text:GetWidth();
+				if ( button.checkbox and option.v ) then
+					-- override OnShow and OnClick
+					button:SetScript("OnShow", CheckButton_OnShow);
+					button:SetScript("OnClick", CheckButton_OnClick);
 				end
-			else
-				button.text = "";
-			end
 
-			button.tooltipText = option.tooltip;
-			
-			if ( button.checkbox ) then
-				button:SetChecked(GetSettingBool(name));
-				button:SetHitRectInsets(0, -button.width, 0, 0);
-			end
-			-- hack for sliders (why?)
-			if (button:GetObjectType() == "Slider") then
-				button.slider = 16;
-			else
-				button.slider = 0;
-			end
-
-			if ( option.tooltipd ) then
-				local tooltip = option.tooltipd;
-				if ( type(tooltip) == "function" ) then
-					tooltip = tooltip(option);
+				if (option.init) then
+					option.init(option, button);
 				end
 				
-				if ( tooltip ) then
-					local overlay = overlaybuttons[overlayidx];
-					if ( not overlay ) then
-						overlay = CreateFrame("Button");
-						overlay:Hide();
-						overlaybuttons[overlayidx] = overlay;
-						overlay:SetParent(FishingOptionsFrame);
-						overlay:SetScript("OnEnter", Handle_OnEnter);
-						overlay:SetScript("OnLeave", Handle_OnLeave);
-					end
-					overlay:SetSize(button.width or button:GetWidth(), button:GetHeight());
-					overlay:SetPoint("LEFT", button, "LEFT");
-					overlay.tooltipText = tooltip;
-					button.overlay = overlay;
-					overlayidx = overlayidx + 1;
-				end
-			end
+				button.alone = option.alone;
+				button.layoutright = option.layoutright;
+				button.margin = option.margin;
+				button.update = option.update;
+				button.visible = option.visible;
+				button.enabled = option.enabled;
+				button.width = button:GetWidth();
 
-			if ( option.setup ) then
-				option.setup(button);
+				if ( option.text ) then
+					button.text = option.text;
+					local text = _G[button:GetName().."Text"];
+					if (text) then
+						text:SetText(option.text);
+						button.width = button.width + text:GetWidth();
+					end
+				else
+					button.text = "";
+				end
+
+				button.tooltipText = option.tooltip;
+				
+				if ( button.checkbox ) then
+					button:SetChecked(GetSettingBool(name));
+					button:SetHitRectInsets(0, -button.width, 0, 0);
+				end
+				-- hack for sliders (why?)
+				if (button:GetObjectType() == "Slider") then
+					button.slider = 16;
+				else
+					button.slider = 0;
+				end
+
+				if ( option.tooltipd ) then
+					local tooltip = option.tooltipd;
+					if ( type(tooltip) == "function" ) then
+						tooltip = tooltip(option);
+					end
+					
+					if ( tooltip ) then
+						local overlay = overlaybuttons[overlayidx];
+						if ( not overlay ) then
+							overlay = CreateFrame("Button");
+							overlay:Hide();
+							overlaybuttons[overlayidx] = overlay;
+							overlay:SetParent(FishingOptionsFrame);
+							overlay:SetScript("OnEnter", Handle_OnEnter);
+							overlay:SetScript("OnLeave", Handle_OnLeave);
+						end
+						overlay:SetSize(button.width or button:GetWidth(), button:GetHeight());
+						overlay:SetPoint("LEFT", button, "LEFT");
+						overlay.tooltipText = tooltip;
+						button.overlay = overlay;
+						overlayidx = overlayidx + 1;
+					end
+				end
+
+				if ( option.setup ) then
+					option.setup(button);
+				end
 			end
 		end
 	end
-	
+
 	local toplevel = {};
 	for name,option in pairs(options) do
 		local button = optionmap[name];
@@ -758,7 +769,7 @@ local function showallbuttons()
 		if ( button ) then
 			local showit = true;
 			if ( button.visible ) then
-				showit = button.visible(button);
+				showit = button.visible(button.option);
 			end
 			if ( showit ) then
 				button:Show();
@@ -788,7 +799,7 @@ local function OptionTab_OnClick(self, button)
 			FishingBuddy.OptionsUpdate();
 		end
 		FishingOptionsFrame.selected = name;
-		Setup(FBOptionsTable[name].options);
+		SetupOptionTab(FBOptionsTable[name].options);
 		showallbuttons();
 	end
 	tabmap[name]:SetChecked(true);
@@ -837,22 +848,30 @@ end
 
 local INV_MISC_QUESTIONMARK = "Interface\\Icons\\INV_Misc_QuestionMark";
 local GENERAL_ICON = "Interface\\Icons\\INV_Misc_QuestionMark";
-local function HandleOptions(name, icon, options, setter, getter, last)
+local function ProcessOptions(name, icon, options, setter, getter, last)
 	local index = #tabbuttons + 1;
 	local handler = {};
-	local maketab = (name ~= nil);
+	local maketab = true;
 	if ( not name ) then
 		name = "FBHIDDEN";
 		handler.index = 0;
 		-- handle option buttons that show up outside of option frames
-		Setup(options, 1);
-	end
-	if ( name == GENERAL ) then
+		for name,option in pairs(options) do
+			if (option.init) then
+				option.init(option, button);
+			end
+			if ( option.setup ) then
+				option.setup(button);
+			end
+		end
+		maketab = false;
+	elseif ( name == GENERAL ) then
 		handler.first = true;
 		handler.icon = "Interface\\Icons\\inv_gauntlets_18";
 	else
 		handler.icon = icon or INV_MISC_QUESTIONMARK;
 	end
+
 	handler.last = last;
 	handler.name = name;
 	handler.options = FL:copytable(options);
@@ -894,6 +913,29 @@ local function HandleOptions(name, icon, options, setter, getter, last)
 			end
 		end	
 	end
+end
+
+local _delayedframe = nil;
+local _delayedoptions = nil;
+local function HandleOptions(name, icon, options, setter, getter, last)
+	if (not _delayedoptions) then
+		_delayedoptions = {};
+		if (not _delayedframe) then
+			_delayedframe = CreateFrame("Frame");
+			_delayedframe:SetScript("OnUpdate",
+				function()
+					if (_delayedoptions) then
+						for _,rec in ipairs(_delayedoptions) do
+							ProcessOptions(rec.name, rec.icon, rec.options, rec.setter, rec.getter, rec.last);
+						end
+						_delayedoptions = nil;
+					end
+					_delayedframe:Hide();
+				end);
+		end
+		_delayedframe:Show();
+	end
+	tinsert(_delayedoptions, { name = name, icon = icon, options = options, setter = setter, getter = getter, last = last } );
 end
 FishingBuddy.OptionsFrame.HandleOptions = HandleOptions;
 

@@ -1,4 +1,10 @@
 ------------------------------------------------------------------------
+r45 | thaoky | 2016-07-27 17:35:12 +0000 (Wed, 27 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/DataStore_Inventory.lua
+
+Scan Transmog Collection Counters
+------------------------------------------------------------------------
 r44 | thaoky | 2016-07-18 16:09:30 +0000 (Mon, 18 Jul 2016) | 1 line
 Changed paths:
    M /trunk/DataStore_Inventory.toc

@@ -156,25 +156,25 @@
     </Scripts>
 </Frame>
 
-<Frame name="MageNugIgnite_Frame" parent="UIParent" hidden="false" enableMouse="true" movable="true">
+<Frame name="MageNugIgnite_Frame" parent="UIParent" frameStrata="LOW" hidden="true" enableMouse="true" movable="true">
     <Size x="36" y="36" />
     <Anchors>
         <Anchor point="CENTER" />
     </Anchors>
     <Backdrop  edgeFile="Interface/Tooltips/UI-Tooltip-Border" tile="true">
-    <TileSize>
-        <AbsValue val="32"/>
-    </TileSize>
-    <EdgeSize>
-        <AbsValue val="10"/>
-    </EdgeSize>
-    <BackgroundInsets>
-        <AbsInset left="2" right="2" top="2" bottom="2"/>
-    </BackgroundInsets>
+      <TileSize>
+          <AbsValue val="32"/>
+      </TileSize>
+      <EdgeSize>
+          <AbsValue val="10"/>
+      </EdgeSize>
+      <BackgroundInsets>
+          <AbsInset left="2" right="2" top="2" bottom="2"/>
+      </BackgroundInsets>
     </Backdrop>
     <Layers>
         <Layer level="BACKGROUND">
-            <Texture name="$parentTexture" file="Interface\Icons\spell_fire_incinerate">
+            <Texture name="$parentTexture" file="Interface\Icons\spell_fire_fireball">
                 <Size>
                     <AbsDimension x="35" y="35"/>
                 </Size>
@@ -184,55 +184,23 @@
                     <TexCoords left="0" right="1" top="0" bottom="1"/>
             </Texture>
         </Layer>
-        <Layer level="ARTWORK">
-            <FontString name="$parentText" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
-                <Anchors>
-                    <Anchor point="CENTER">
-                        <Offset>
-                           <AbsDimension x="0" y="25"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-                <FontHeight>
-                   <AbsValue val="18"/>
-                </FontHeight>
-                 <Shadow>
-                    <offset>
-                       <AbsDimension x="1" y="1"/>
-                    </offset>
-                    <color r="0" g="0" b="0"/>
-                </Shadow>
-            </FontString>
-            <FontString name="$parentText2" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
-                <Anchors>
-                    <Anchor point="CENTER">
-                        <Offset>
-                           <AbsDimension x="0" y="-19"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-                <FontHeight>
-                   <AbsValue val="6"/>
-                </FontHeight>
-                <color r="1" g="1" b="1"/>
-            </FontString>
-        </Layer>
     </Layers>
-        <Frames>
-        <StatusBar name="$parent_Bar" frameStrata="LOW" inherits="TextStatusBar">
-            <Size x="35" y="8"/>
+    <Frames>
+        <StatusBar name="$parent_Bar" frameStrata="MEDIUM" enableMouse="false" inherits="TextStatusBar">
+            <Size x="31" y="31"/>
             <Anchors>
-                <Anchor point="center" relativeTo="$parent">
+                <Anchor point="TOPLEFT" relativeTo="$parent">
                     <Offset>
-                        <AbsDimension x="0" y="-19"/>
+                        <AbsDimension x="3" y="-2"/>
                     </Offset>
                 </Anchor>
             </Anchors>
             <BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
             <Scripts>
                 <OnLoad>
-                   self:SetStatusBarColor(1, 0.1, 0)
-                   self:SetMinMaxValues(0,5)
+                   self:SetStatusBarColor(0, 0, 0, 0.6);
+                   self:SetMinMaxValues(0,11);
+                   self:EnableMouse(false);
                 </OnLoad>
             </Scripts>
         </StatusBar>
@@ -251,10 +219,54 @@
         <OnEnter> Monitors_OnEnter() </OnEnter>
         <OnLeave> GameTooltip:Hide() </OnLeave>
         <OnUpdate>
-           -- MageNuggetsIgnite_OnUpdate(self, elapsed)
+           MageNuggetsFireblast_OnUpdate(self, elapsed);
         </OnUpdate>
     </Scripts>
 </Frame>
+
+<Frame name="MageNugIgnite_TextFrame" parent="MageNugIgnite_Frame" frameStrata="HIGH" hidden="false" enableMouse="false" movable="true">
+    <Size x="36" y="36" />
+    <Anchors>
+        <Anchor point="CENTER" />
+    </Anchors>
+    <Layers>
+        <Layer level="ARTWORK">
+            <FontString name="$parentText" font="Fonts\FRIZQT__.ttf" inherits="GameFontNormal">
+                <Anchors>
+                    <Anchor point="CENTER">
+                        <Offset>
+                           <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <FontHeight>
+                   <AbsValue val="18"/>
+                </FontHeight>
+                <Color r="1" g="1" b="1"/>
+                <Shadow>
+                  <offset>
+                     <AbsDimension x="-1" y="-1"/>
+                  </offset>
+                  <color r="0" g="0" b="0"/>
+                </Shadow>
+            </FontString>
+            <FontString name="$parentText2" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal">
+                <Anchors>
+                    <Anchor point="left">
+                        <Offset>
+                           <AbsDimension x="10" y="-11"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <FontHeight>
+                   <AbsValue val="8"/>
+                </FontHeight>
+                <color r="1" g="1" b="1"/>
+            </FontString>
+        </Layer>
+    </Layers>
+</Frame>
+
 
 <Frame name="MageNugClearcast_Frame" parent="UIParent" hidden="true" enableMouse="true" movable="true">
     <Size x="36" y="36" />
@@ -636,7 +648,7 @@
             </Texture>
         </Layer>
         <Layer level="ARTWORK">
-            <Texture name="$parentTexture" file="Interface\Icons\ability_Mage_HotStreak">
+            <Texture name="$parentTexture" file="Interface\Icons\ability_ironmaidens_grapeshotblast">
                 <Size>
                     <AbsDimension x="26" y="26"/>
                 </Size>

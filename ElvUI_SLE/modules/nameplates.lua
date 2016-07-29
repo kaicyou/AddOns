@@ -118,14 +118,14 @@ end
 
 function N:Initialize()
 	if not SLE.initialized or not E.private.nameplates.enable then return end
-	N.db = E.db.sle.nameplate
-	N.viewPort = NP.viewPort
+	if E.db.sle.nameplate then E.db.sle.nameplates = E.db.sle.nameplate; E.db.sle.nameplate = nil end
+	N.db = E.db.sle.nameplates
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "StartRosterUpdate")
 	self:RegisterEvent("UNIT_TARGET", "UpdateCount")
 
 	E:Delay(.3, function() N:UpdateCount(nil,"player", true) end)
 	function N:ForUpdateAll()
-		N.db = E.db.sle.nameplate
+		N.db = E.db.sle.nameplates
 	end
 end
 

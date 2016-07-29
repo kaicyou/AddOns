@@ -1,6 +1,5 @@
-﻿--Mage Nuggets by B-Buck (Bbuck of Eredar)
+﻿--Mage Nuggets Cooldown Monitor by B-Buck (Bbuck of Eredar)
 
-local magenugVer = "5.0.2"
 local combatTextCvar = GetCVar("enableCombatText");
 
 function mageNuggetsCdMon_OnStart(self)
@@ -160,8 +159,8 @@ function MnCdMonSpellCastSuccess(arg, sourceName, destName)
     elseif (arg == 82731) then -- Flame Orb
         flameOrbId, _, _, _, _, _, _, _, _ = GetSpellInfo(82731);
         MNcooldownMonitor(flameOrbId, 60, "Interface\\Icons\\spell_mage_flameorb")
-    elseif (arg == 11129) then -- Combustion
-        combustionId, _, _, _, _, _, _, _, _ = GetSpellInfo(11129);
+    elseif (arg == 190319) then -- Combustion
+        combustionId, _, _, _, _, _, _, _, _ = GetSpellInfo(190319);
         MNcooldownMonitor(combustionId, 120, "Interface\\Icons\\spell_fire_sealoffire")
     elseif (arg == 31661) then -- Dragons Breath
         dragonsbreathId, _, _, _, _, _, _, _, _ = GetSpellInfo(31661);

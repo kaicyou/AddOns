@@ -142,7 +142,7 @@
 		<HighlightTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alphaMode="ADD"/>	
 	</Button>		
 
-	<Frame name="FishingPetsMenuHolder" enableMouse="true" hidden="true">
+	<Frame name="FishingPetsMenuHolder" toplevel="true" parent="FishingPetFrame" enableMouse="true" hidden="true">
 		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
 			<BackgroundInsets>
 				<AbsInset left="11" right="12" top="12" bottom="11"/>

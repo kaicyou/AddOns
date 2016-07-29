@@ -17,10 +17,6 @@ local commPrefix = "DS_Tal"		-- let's keep it a bit shorter than the addon name,
 local MSG_TALENTS_REQUEST					= 1	-- request talents ..
 local MSG_TALENTS_TRANSFER					= 2	-- .. and send the data
 
-
--- TODO: 
-	-- add support for hunter pets' talent trees
-
 local AddonDB_Defaults = {
 	global = {
 		Guilds = {
@@ -37,10 +33,8 @@ local AddonDB_Defaults = {
 		Characters = {
 			['*'] = {				-- ["Account.Realm.Name"] 
 				lastUpdate = nil,
-				ActiveTalents = nil,		-- 1 for primary, 2 for secondary
 				Class = nil,				-- englishClass
-				PointsSpent = nil,		-- "51,5,15 ...	" 	3 numbers for primary spec, 3 for secondary, comma separated
-				TalentTrees = {},
+				Specializations = {},
 			}
 		}
 	}
@@ -51,15 +45,14 @@ local AddonDB_Defaults = {
 local ReferenceDB_Defaults = {
 	global = {
 		['*'] = {							-- "englishClass" like "MAGE", "DRUID" etc..
-			Order = nil,
 			Version = nil,					-- build number under which this class ref was saved
 			Locale = nil,					-- locale under which this class ref was saved
-			Trees = {
+			Specializations = {
 				['*'] = {					-- tree name
+					id = nil,
 					icon = nil,
-					background = nil,
+					name = nil,
 					talents = {},			-- name, icon, max rank etc..for talent x in this tree
-					prereqs = {}			-- prerequisites
 				},
 			}
 		},
@@ -145,79 +138,79 @@ elseif GetLocale() == "zhTW" then
 end
 
 local function ScanTalents()
-
 	local level = UnitLevel("player")
-	if not level or level < 10 then return end		-- don't scan anything for low level characters
+	if not level or level < 15 then return end		-- don't scan anything for low level characters
 
 	local char = addon.ThisCharacter
 	local _, englishClass = UnitClass("player")
-	
-	char.ActiveTalents = GetActiveSpecGroup()			-- returns 1 or 2
 	char.Class = englishClass
 	
-	wipe(char.TalentTrees)
+	local ref = addon.ref.global[englishClass]
+	ref.Version = GetVersion()
+	ref.Locale = GetLocale()
 	
-	-- local attrib, offset
-	-- for specNum = 1, 2 do												-- primary and secondary specs
-		-- attrib = 0
-		-- offset = 0
+	local attrib = 0
+	local offset = 0
+	
+	for tier = 1, GetMaxTalentTier() do
+		for column = 1, 3 do
+			local _, _, _, isSelected = GetTalentInfo(tier, column, 1)		-- param 3 = spec group, always 1 since 7.0
+			
+			if isSelected then
+				-- basically save each tier on 2 bits : 00 = no talent on this tier, 01 = column 1, 10 = column 2, 11 = column 3
+				attrib = attrib + LeftShift(column, offset)
+				
+				break		-- selected talent found on this line, quit this inner-loop
+			end
+		end
 		
-		-- bits 0-1 = talent 1
-		-- bits 2-3 = talent 2
-		-- etc..
-		
-		-- for talentNum = 1, GetNumTalents() do			-- all talents
-			-- local _, _, _, column, isSelected = GetTalentInfo(talentNum, nil, specNum)
-			-- if isSelected then
-				-- attrib = attrib + LeftShift(column, offset)
-			-- end
-			-- offset = offset + 2		-- each rank takes 2 bits (values 0 to 3)
-		-- end
-		
-		-- char["Talents" .. specNum] = attrib
-	-- end
-
+		offset = offset + 2		-- each rank takes 2 bits (values 0 to 3)
+	end
+	
+	char.Specializations[GetSpecialization()] = attrib
 	char.lastUpdate = time()
 end
 
-local function ScanTalentReference(ref)
-	-- ref : address of the reference table in which we're saving scanned data
-
+local function ScanTalentReference()
 	local level = UnitLevel("player")
 	if not level or level < 15 then return end		-- don't scan anything for low level characters
 	
-	-- ref.Talents = {}
+	local _, englishClass = UnitClass("player")
+	local ref = addon.ref.global[englishClass]		-- point to global.["MAGE"]
 	
-			
-	-- for talentNum = 1, GetNumTalents() do
-		-- local nameTalent, iconPath, tier, column = GetTalentInfo(talentNum)
+	ref.Version = GetVersion()
+	ref.Locale = GetLocale()
+	
+	local specialization = GetSpecialization()
+	local specRef = ref.Specializations[specialization]
+	
+	specRef.id, specRef.name, _, specRef.icon = GetSpecializationInfo(specialization)
+	
+	wipe(specRef.talents)
+	
+	for tier = 1, GetMaxTalentTier() do
+		for column = 1, 3 do
+			local talentID, name, texture = GetTalentInfo(tier, column, 1)		-- param 3 = spec group, always 1 since 7.0
 
-		-- if nameTalent then
+			-- if talent ID is not enough ..
 			-- all paths start with this prefix, let's hope blue does not change this :)
 			-- saves a lot of memory not to keep the full path for each talent (about 16k in total for all classes)
 			-- iconPath = string.gsub(iconPath, UI_ICONS_PATH, "")
 			-- iconPath = string.gsub(iconPath, string.upper(UI_ICONS_PATH), "")
 			
-			-- local link = GetTalentLink(talentNum)
-			-- local id = tonumber(link:match("talent:(%d+)"))
-			
-			-- ref.Talents[talentNum] = id .. "|" .. nameTalent .. "|" .. iconPath .. "|" .. tier .. "|" ..  column
-		-- end
-	-- end
+			table.insert(specRef.talents, talentID)
+			-- table.insert(specRef.talents, format("%s,%s,%s", talentID, name, texture))
+			-- specRef.talents[talentNum] = id .. "|" .. nameTalent .. "|" .. iconPath .. "|" .. tier .. "|" ..  column
+		
+		end
+	end
 end
 
 
 -- *** Event Handlers ***
 local function OnPlayerAlive()
 	ScanTalents()
-	
-	local _, class = UnitClass("player")		-- we need the englishClass
-	local ref = addon.ref.global[class]
-	
-	ref.Version = GetVersion()
-	ref.Locale = GetLocale()
-	
-	ScanTalentReference(ref)
+	ScanTalentReference()
 end
 
 

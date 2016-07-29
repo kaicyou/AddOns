@@ -1,7 +1,7 @@
 ## Interface: 70000
 ## Title: Mage Nuggets Cooldown Monitor
 ## Author: B-Buck (Bbuck - Eredar)
-## Version: 1.1.0
+## Version: 1.1.1
 ## Notes: Mage Nuggets Cooldown Monitor
 ## DefaultState: Enabled
 ## LoadOnDemand: 0

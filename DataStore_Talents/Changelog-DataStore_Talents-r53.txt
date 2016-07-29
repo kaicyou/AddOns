@@ -1,4 +1,10 @@
 ------------------------------------------------------------------------
+r53 | thaoky | 2016-07-27 17:35:53 +0000 (Wed, 27 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/DataStore_Talents.lua
+
+Rewrote scan of talent info
+------------------------------------------------------------------------
 r52 | thaoky | 2016-07-18 16:12:10 +0000 (Mon, 18 Jul 2016) | 1 line
 Changed paths:
    D /trunk/Data

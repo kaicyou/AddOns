@@ -528,7 +528,7 @@ FishingItems[122742] = {
 	["enUS"] = "Bladebone Hook",					-- 1 hour duration
 	["spell"] = 182226,
 	setting = "UseBladeboneHook",
-	visible = function(item)
+	visible = function(option)
 			return true;
 		end,
 	usable = function(item)
@@ -542,6 +542,15 @@ FishingItems[116755] = {
 	["enUS"] = "Nat's Hookshot",
 	spell = 171740,
 	usable = IsQuestFishing,
+};
+FishingItems[136377] = {
+	["enUS"] = "Oversized Bobber",
+	setting = "UseOversizedBobber",
+	spell = 207700,
+	visible = function(option)
+			return true;
+		end,
+	["default"] = true,
 };
 
 local seascorpion = {
@@ -755,7 +764,7 @@ local FluffOptions = {
 				UpdateChosenPets();
 			end,
 		["visible"] =
-			function()
+			function(option)
 				local numPets, numOwned = C_PetJournal.GetNumPets(false);
 				if (numOwned > 0) then return 1; end;
 			end,
@@ -882,13 +891,17 @@ local function UpdateItemOptions()
 		info.id = id;
 		if (info.setting and not info.ignore) then
 			local option = {};
-		
+
+			option.id = id;
+			option.enUS = info.enUS;
+
 			if (info.visible) then
 				option.visible = info.visible;
 			else
 				option.visible =
-					function(button)
-						if (GetItemCount(id) > 0) then
+					function(option)
+						local count = GetItemCount(option.id);
+						if (count > 0) then
 							return true;
 						end
 						return false;
@@ -897,9 +910,11 @@ local function UpdateItemOptions()
 		
 			option.init =
 				function(option, button)
-					local n, _, _, _, _, _, _, _,_, _ = GetItemInfo(id);
+					local n, _, _, _, _, _, _, _,_, _ = GetItemInfo(option.id);
 					if (n) then
 						option.text = n;
+					else
+						option.text = option.enUS;
 					end
 				end
 
@@ -907,6 +922,7 @@ local function UpdateItemOptions()
 			option.setup = info.setup;
 			option.enabled = info.enabled;
 			option.default = info.default;
+
 			option.v = 1;
 			-- option.deps = { ["FishingFluff"] = "d" };
 			FluffOptions[info.setting] = option;
@@ -960,8 +976,8 @@ FluffEvents["VARIABLES_LOADED"] = function(started)
 	FishingPetsMenuHolder:Hide();
 
 	HandleRaftItems();
-	
 	UpdateItemOptions();
+
 	FishingBuddy.OptionsFrame.HandleOptions(FBConstants.CONFIG_FISHINGFLUFF_ONOFF, "Interface\\Icons\\inv_misc_food_164_fish_seadog", FluffOptions);
 	-- FishingBuddy.OptionsFrame.HandleOptions(nil, nil, FluffInvisible);
 end

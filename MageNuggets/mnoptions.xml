@@ -141,7 +141,7 @@
                     </Anchor>
                 </Anchors>
             </FontString>
-            <FontString name="MNcheckboxIgniteString" inherits="GameFontNormal" text="Enable Ignite Monitor">
+            <FontString name="MNcheckboxIgniteString" inherits="GameFontNormal" text="Enable Fireblast Monitor">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
@@ -168,11 +168,11 @@
                     </Anchor>
                 </Anchors>
             </FontString>
-             <FontString name="MN_Slider3bFontString" inherits="GameFontNormal" text="AB Monitor Size">
+             <FontString name="MN_Slider3bFontString" inherits="GameFontNormal" text="Arcane Charge / Fireblast Monitor Size">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
-                            <AbsDimension x="310" y="-315"/>
+                            <AbsDimension x="270" y="-315"/>
                         </Offset>
                     </Anchor>
                 </Anchors>

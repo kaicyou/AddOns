@@ -27,6 +27,9 @@ local AddonDB_Defaults = {
 			BroadcastAiL = true,						-- Broadcast professions at login or not
 			EquipmentRequestNotification = false,	-- Get a warning when someone requests my equipment
 		},
+		Reference = {
+			AppearancesCounters = {},				-- ex: ["MAGE"] = { [1] = "76/345" ... }	= category 1 => 76/345
+		},
 		Guilds = {
 			['*'] = {			-- ["Account.Realm.Name"] 
 				Members = {
@@ -179,6 +182,28 @@ local function ScanInventory()
 	addon.ThisCharacter.lastUpdate = time()
 end
 
+local function ScanTransmogCollection()
+	local _, englishClass = UnitClass("player")
+	
+	local counters = addon.db.global.Reference.AppearancesCounters
+	
+	counters[englishClass] = counters[englishClass] or {}
+	local classCounters = counters[englishClass]
+	local name
+	local collected, total
+
+	-- browse all categories
+	for i = 1, NUM_LE_TRANSMOG_COLLECTION_TYPES do
+		name = C_TransmogCollection.GetCategoryInfo(i)
+		if name then
+			collected = C_TransmogCollection.GetCategoryCollectedCount(i)
+			total = C_TransmogCollection.GetCategoryTotal(i)
+
+			classCounters[i] = format("%s/%s", collected, total)		-- [1] = "76/345" ...
+		end
+	end
+end
+
 -- *** Event Handlers ***
 local function OnPlayerAlive()
 	ScanInventory()
@@ -194,6 +219,15 @@ end
 local function OnPlayerAilReady()
 	ScanAverageItemLevel()
 end
+
+local function OnTransmogCollectionLoaded()
+	ScanTransmogCollection()
+end
+
+local function OnTransmogCollectionUpdated()
+	ScanTransmogCollection()
+end
+
 
 -- ** Mixins **
 local function _GetInventory(character)
@@ -343,6 +377,8 @@ function addon:OnEnable()
 	addon:RegisterEvent("PLAYER_ALIVE", OnPlayerAlive)
 	addon:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", OnPlayerEquipmentChanged)
 	addon:RegisterEvent("PLAYER_AVG_ITEM_LEVEL_READY", OnPlayerAilReady)
+	addon:RegisterEvent("TRANSMOG_COLLECTION_LOADED", OnTransmogCollectionLoaded)
+	addon:RegisterEvent("TRANSMOG_COLLECTION_UPDATED", OnTransmogCollectionUpdated)
 	
 	addon:SetupOptions()
 	

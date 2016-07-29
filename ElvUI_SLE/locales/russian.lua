@@ -40,8 +40,10 @@ L["SLE_Install_Text_AUTHOR"] = [=[Этот шаг опционален и дол
 |cffFF0000Внимание:|r Пожалуйста помните, что авторы могут не использовать тему/роль, которую вы выбрали, и потому результат не всегда будет хорошим. Также переключение между шаблонами здесь может привести к неоднозначным результатам.]=]
 L["Darth's Config"] = "Опции Дарта"
 L["Repooc's Config"] = "Опции Repooc'а"
+L["Affinitii's Config"] = "Опции Affinitii"
 L["Darth's Default Set"] = "Установлены настройки Дарта"
 L["Repooc's Default Set"] = "Установлены настройки Repooc'а"
+L["Affinitii's Default Set"] = "Установлены настройки Affinitii"
 L["Layout & Settings Import"] = "Импорт расположений и настроек"
 L["You have selected to use %s."] = "Вы выбрали %s"
 L["SLE_INSTALL_LAYOUT_TEXT2"] = [[Данные опции импортируют расположения/настройки аддонов для выбранных опций и роли.
@@ -677,6 +679,14 @@ L["Subpages are blocks of 10 items. This option set how many of subpages will be
 -- L["SLE_QUESTKING_Required"] = "  Required: "
 L["ElvUI Objective Tracker"] = "Список задач ElvUI"
 L["ElvUI Skins"] = "Скины ElvUI"
+L["As List"] = "Списком"
+L["List Style Fonts"] = "Шрифты стиля списка"
+L["Item Name Font"] = "Шрифт названия"
+L["Item Name Size"] = "Размер названия"
+L["Item Name Outline"] = "Граница названия"
+L["Item Info Font"] = "Шрифт информации"
+L["Item Info Size"] = "Размер информации"
+L["Item Info Outline"] = "Граница информации"
 
 --Toolbars
 L["We are sorry, but you can't do this now. Try again after the end of this combat."] = "Извините, но Вы не можете этого сделать сейчас. Попробуйте снова после окончания текущего боя."

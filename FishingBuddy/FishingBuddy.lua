@@ -241,7 +241,6 @@ local CastingOptions = {
 				FBMouseEvent.menu:SetMappedValue("MouseEvent", gs("MouseEvent"));
 			end,
 	},
-
 	["EasyLures"] = {
 		["text"] = FBConstants.CONFIG_EASYLURES_ONOFF,
 		["tooltip"] = FBConstants.CONFIG_EASYLURES_INFO,
@@ -443,6 +442,10 @@ FishingBuddy.ZoneMarkerEx = zmex;
 local function IsFakeEvent(evt)
 	return (evt == "VARIABLES_LOADED") or FBConstants.FBEvents[evt];
 end
+
+-- let's delay bag update when we leave the world
+local bagupdateframe = CreateFrame("Frame");
+bagupdateframe:Hide();
 
 -- we want to do all the magic stuff even when we didn't equip anything
 local autopoleframe = CreateFrame("Frame");
@@ -734,8 +737,8 @@ local QuestItems = {};
 QuestItems[6717] = {
 	["enUS"] = "Gaffer Jack",
 	["deDE"] = "Klemm-Muffen",
-	["esES"] = "Mecanismo eléctrico",
-	["frFR"] = "Rouage électrique",
+	["esES"] = "Mecanismo elï¿½ctrico",
+	["frFR"] = "Rouage ï¿½lectrique",
 };
 QuestItems[6718] = {
 	["enUS"] = "Electropeller",
@@ -755,8 +758,8 @@ QuestItems[16968] = {
 };
 QuestItems[16969] = {
 	["enUS"] = "Savage Coast Blue Sailfin",
-	["deDE"] = "Blauwimpel von der ungezähmten Küste",
-	["frFR"] = "Sailfin bleu de la Côte sauvage",
+	["deDE"] = "Blauwimpel von der ungezï¿½hmten Kï¿½ste",
+	["frFR"] = "Sailfin bleu de la Cï¿½te sauvage",
 };
 QuestItems[16967] = {
 	["enUS"] = "Feralas Ahi",
@@ -894,7 +897,7 @@ local function SetFishingLevel(skillcheck, zone, subzone, fishid)
 	return skill + mods;
 end
 
-local questType = select(10, GetAuctionItemClasses());
+local questType = _G.GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM);
 local CurLoc = GetLocale();
 local function AddFishie(color, id, name, zone, subzone, texture, quantity, quality, level, it, st, poolhint)
 	local GSB = FishingBuddy.GetSettingBool;
@@ -1858,6 +1861,8 @@ FishingBuddy.OnEvent = function(self, event, ...)
 --	  FishingBuddy.Debug(line);
 	local arg1 = ...;
 
+FishingBuddy.Debug(event)
+
 -- TrackZoneEvents(event);
 	if ( event == "PLAYER_EQUIPMENT_CHANGED" or
 		  event == "WEAR_EQUIPMENT_SET" or
@@ -1949,10 +1954,16 @@ FishingBuddy.OnEvent = function(self, event, ...)
 		IsZoning = nil;
 --		DumpZoneEvents();
 -- we could watch for UNIT_INVENTORY_CHANGED, if we wanted to check for "player" in the args
-		self:RegisterEvent("BAG_UPDATE");
 		self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
 		self:RegisterEvent("EQUIPMENT_SWAP_FINISHED");
 		self:RegisterEvent("WEAR_EQUIPMENT_SET");
+
+-- BAG_UPDATE
+		bagupdateframe:Show();
+
+		if (FishingBuddy.StartedFishing and not handlerframe:IsShown()) then
+			handlerframe:Show();
+		end
 
 		if (FishingBuddy_Player and FishingBuddy_Player["ResetEnhance"]) then
 			efsv = FishingBuddy_Player["ResetEnhance"];
@@ -1968,10 +1979,16 @@ FishingBuddy.OnEvent = function(self, event, ...)
 	elseif ( event == "PLAYER_LEAVING_WORLD") then
 		RunHandlers(FBConstants.LEAVING_EVT);
 		IsZoning = 1;
+
+-- Don't reenable BAG_UPDATE until we're back
+		bagupdateframe:Hide();
 		self:UnregisterEvent("BAG_UPDATE");
 		self:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED");
 		self:UnregisterEvent("EQUIPMENT_SWAP_FINISHED");
 		self:UnregisterEvent("WEAR_EQUIPMENT_SET");
+		if (handlerframe:IsShown()) then
+			handlerframe:Hide();
+		end
 	end
 	FishingBuddy.Extravaganza.IsTime(true);
 end
@@ -1995,6 +2012,14 @@ FishingBuddy.OnLoad = function(self)
 	-- self:RegisterEvent("WEAR_EQUIPMENT_SET");
 
 	self:SetScript("OnEvent", FishingBuddy.OnEvent);
+
+	bagupdateframe.fbframe = self;
+	bagupdateframe:SetScript("OnUpdate", function(self, ...)
+			if (self.fbframe) then
+				self.fbframe:RegisterEvent("BAG_UPDATE");
+				self:Hide();
+			end
+		end);
 
 	RegisterHandlers(CaptureEvents);
 	RegisterHandlers(StatusEvents);

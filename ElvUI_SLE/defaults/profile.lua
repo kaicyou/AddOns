@@ -345,9 +345,10 @@ P["sle"] = {
 		},
 	},
 	--Nameplate Options
-	["nameplate"] = {
+	["nameplates"] = {
 		["showthreat"] = false,
 		["targetcount"] = false,
+		["visibleRange"] = 60,
 	},
 	--Loot 
 	["loot"] = {
@@ -554,6 +555,16 @@ P["sle"] = {
 			["underline"] = true,
 			["underlineClass"] = false,
 			["underlineColor"] = {r = 1, g = 0.82, b = 0},
+		},
+		["merchant"] = {
+			["list"] = {
+				["nameFont"] = "PT Sans Narrow",
+				["nameSize"] = 13,
+				["nameOutline"] = "OUTLINE",
+				["subFont"] = "PT Sans Narrow",
+				["subSize"] = 12,
+				["subOutline"] = "OUTLINE",
+			},
 		},
 	},
 	--Unitfrmes

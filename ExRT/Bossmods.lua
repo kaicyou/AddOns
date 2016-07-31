@@ -4056,6 +4056,7 @@ function Archimonde:Load()
 			if toDown then
 				angle = -angle
 			end
+			line:SetAlpha(1)
 			line:SetSize(size,size)
 			RotateTexture(line,(PI/180)*angle,min,min,max,max,.5,.5)
 			
@@ -4071,7 +4072,7 @@ function Archimonde:Load()
 			else
 				line:SetDrawLayer("BORDER", 4)
 			end
-			line:Show()
+			--line:Show()
 		end
 	end
 	
@@ -4108,7 +4109,8 @@ function Archimonde:Load()
 		end
 		text:SetPoint("CENTER",frame,"BOTTOMLEFT",pX,pY)
 		text:SetText(data)
-		text:Show()
+		--text:Show()
+		text:SetAlpha(1)
 	end
 	
 	frame.circles = {}
@@ -4159,6 +4161,8 @@ function Archimonde:Load()
 			return
 		end
 		
+		circle:SetAlpha(1)
+		
 		circle:SetTexCoord(L,R,T,B)
 		
 		circle:SetPoint("BOTTOMLEFT",frame,"BOTTOMLEFT",npX,npY)
@@ -4184,7 +4188,7 @@ function Archimonde:Load()
 			circle:SetDrawLayer("BORDER", 1)
 		end
 		
-		circle:Show()
+		--circle:Show()
 	end
 	
 	local function GetContactPosition(x1,x2,x3,x4,y1,y2,y3,y4)
@@ -4555,13 +4559,16 @@ function Archimonde:Load()
 			
 			
 			for i=1,#self.lines do
-				frame.lines[i]:Hide()
+				--frame.lines[i]:Hide()
+				frame.lines[i]:SetAlpha(0)
 			end
 			for i=1,#self.players do
-				frame.players[i]:Hide()
+				--frame.players[i]:Hide()
+				frame.players[i]:SetAlpha(0)
 			end
 			for i=1,#self.circles do
-				frame.circles[i]:Hide()
+				--frame.circles[i]:Hide()
+				frame.circles[i]:SetAlpha(0)
 			end
 			
 			local count = 0

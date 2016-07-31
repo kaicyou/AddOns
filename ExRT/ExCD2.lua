@@ -249,6 +249,7 @@ do
 			end
 		end
 	})	
+	module.db.session_gGUIDs_DEBUG = sessionData
 end
 
 module.db.session_Pets = {}
@@ -709,12 +710,38 @@ module.db.spell_durationByTalent_fix = {	--Изменение длительно
 	[186257] = {199921,3},
 	[190925] = {109215,8},
 	[212552] = {219779,"*1.5"},
-	[48707] = {207321,5},
+	[48707] = {210852,"*2",207321,5},
 	[80240] = {196410,12},
 	[202137] = {209281,-1,207666,2},
 	[204596] = {209281,-1,207666,2},
 	[207684] = {209281,-1},
 	[202138] = {209281,-1,207666,2},
+	[6544] = {209483,4},
+	[1160] = {188651,"*1.5"},
+	[31281] = {200311,2},
+	[498] = {200407,4},
+	[1022] = {206338,"*1.4"},
+	[1044] = {206338,"*1.4"},
+	[6940] = {206338,"*1.4"},
+	[204018] = {206338,"*1.4"},
+	[26573] = {209218,{1,2,3,4,5,6}},
+	[205273] = {179546,6},
+	[31884] = {186945,{2.5,5,7.5,10,12.5,15}},
+	[224668] = {186945,{2.5,5,7.5,10,12.5,15}},
+	[193530] = {197038,{1,2,3,4,5,6}},
+	[121471] = {197386,{3,6,10,13,16,20}},
+	[47536] = {197727,{1,2,3,4,5,6}},
+	[49028] = {192514,{2,4,6,8,10,12}},
+	[63560] = {208598,{2,4,6,8,10,12}},
+	[5394] = {210604,"*1.2"},
+	[108280] = {210604,"*1.2"},
+	[98008] = {210604,"*1.2"},
+	[12042] = {187264,{1,2,3,4,5,6}},
+	[61336] = {210557,{1,2,3,4,5,6}},
+	[22812] = {200399,{0.5,1,1.5,2,2.5,3}},
+	[192081] = {200399,{0.5,1,1.5,2,2.5,3}},
+	[192083] = {200399,{0.5,1,1.5,2,2.5,3}},
+	[204021] = {212894,2},
 }
 
 module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\глифом   вид: [спелл] = {spellid глифа\таланта, изменение времени (-60;60);spellid2,time2;spellid3,time3;...}
@@ -722,13 +749,13 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[52174] = {202163,-15},
 	[642] = {114154,"*0.7",213313,"*0.5"},
 	[498] = {114154,"*0.7"},
-	[633] = {114154,"*0.7"},
+	[633] = {200326,{-46,-46*2,-46*3,-46*4,-46*5,-46*6},114154,"*0.7",206380,"*0.6"},
 	[20473] = {53376,"*0.5"},
 	[190784] = {204193,"*0.5"},
 	[35395] = {203316,-1},
-	[187698] = {199518,"*0.5"},
-	[191433] = {199518,"*0.5"},
-	[187650] = {199518,"*0.85"},
+	[187698] = {199518,"*0.5",203752,"*0.8"},
+	[191433] = {199518,"*0.5",203752,"*0.8"},
+	[187650] = {199518,"*0.85",203752,"*0.8"},
 	[8122] = {196704,-30},
 	[108199] = {206970,-60},
 	[212552] = {212763,-15},
@@ -738,7 +765,7 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[115308] = {196721,-3},
 	[119582] = {196721,-3},
 	[77761] = {204012,"*0.5"},
-	[22812] = {203965,"*0.67"},
+	[22812] = {200402,{-3,-6,-9,-12,-15,-18},203965,"*0.67"},
 	[61336] = {203965,"*0.67"},
 	[18562] = {200383,-5},
 	[740] = {197073,-60},
@@ -750,11 +777,36 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[204596] = {209281,"*0.8"},
 	[207684] = {209281,"*0.8"},
 	[202138] = {209281,"*0.8"},
+	[1719] = {200870,-10},
+	[6544] = {203230,{-2,-4,-6,-8,-10,-12}},
+	[1022] = {200298,{-15,-30,-45,-60,-75,-90},186994,{-30,-60,-90,-120,-150,-180}},
+	[1044] = {200298,{-1.25,-2.5,-3.75,-5,-6.25,-7.5}},
+	[6940] = {200298,{-7.5,-15,-22.5,-30,-37.5,-45},209285,-60},
+	[31850] = {209220,{-10,-20,-30,-40,-50,-60}},
+	[184662] = {184778,{-10,-20,-30,-40,-50,-60}},
+	[186257] = {197343,-60,225092,-20,206332,"*0.5"},
+	[186387] = {190567,{-1.5,-3,-4.5,-6,-7.5,-9}},
+	[193526] = {190462,{-10,-20,-30,-40,-50,-60}},
+	[186289] = {225092,-20,206332,"*0.5"},
+	[186265] = {225092,-20,206332,"*0.5"},
+	[162488] = {203752,"*0.8"},
+	[194277] = {203752,"*0.8"},
+	[193530] = {206332,"*0.5"},
+	[31224] = {192323,{-3,-6,-10,-13,-16,-20}},
+	[79140] = {192349,{-10,-20,-30,-40,-50,-60}},
+	[2983] = {192345,{-3,-6,-10,-13,-16,-20}},
+	[13750] = {202907,{-10,-18,-25,-33,-40,-48}},
+	[33206] = {197713,{-10,-20,-30,-40,-50,-60}},
+	[34861] = {196429,{-3,-6,-10,-13,-16,-20}},
+	[47585] = {193642,{-10,-20,-30,-40,-50,-60}},
+	[20608] = {207357,-600},
+	[195676] = {187301,{-2,-4,-6,-8,-10,-12}},
+	[104773] = {211131,{-10,-20,-30,-40,-50,60},215223,-30},
+	[191427] = {201460,{-20,-40,-60,-80,-100,-120}},
 
 	[34433] = {186980,-160},
 	[200174] = {186980,-40},
 	[12975] = {185796,"*0.5"},
-	
 }
 
 module.db.tierSetsSpells = {	--[specID.tierID.tierMark] = {2P Bonus Spell ID, 4P Bonus Spell ID}
@@ -798,6 +850,7 @@ module.db.spell_talentReplaceOther = {		--Спелы, показ которых 
 	[194223]=102560,
 	[106951]=102543,
 	[198589]={196555,205411},
+	[1022]=204018,
 }
 
 module.db.spell_aura_list = {		--Спелы, время действия которых отменять при отмене бафа 	[buff_sid] = spellID
@@ -924,6 +977,7 @@ module.db.spell_reduceCdByHaste = {	--Заклинания, кд которых 
 }
 module.db.spell_resetOtherSpells = {	--Заклинания, которые откатывают другие заклинания
 	[191427]={{198013,193897},{179057,193897},{198589,193897}},
+	[187827]={{202137,210867},{204596,210867},{207684,210867},{202138,210867}},
 }
 module.db.spell_sharingCD = {		--Заклинания, которые запускают кд на другие заклинания 	[spellID] = {[otherSpellID] = CD}
 
@@ -991,7 +1045,37 @@ module.db.spell_reduceCdCast = {	--Заклинания, применение к
 	
 	[195676]={1953,-15},
 	
-	[107428]={{116680,210804},-30},
+	[107428]={{116680,210804},-30,{137639,209256},-1.2},
+	
+	[23922]={{871,215057},-4},
+	[185358]={{193526,206889},-1},
+	[198670]={{193526,206889},-1},
+	[19434]={{193526,206889},-1},
+	[186387]={{193526,206889},-1},
+	[120679]={{34026,212278},-3},
+	[185311]={{79140,208895},-0.6},
+	[51723]={{79140,208895},-0.7},
+	[703]={{79140,208895},-0.9},
+	[1725]={{79140,208895},-0.6},
+	[32645]={{79140,208895},-0.7},
+	[185565]={{79140,208895},-0.8},
+	[6770]={{79140,208895},-0.7},
+	[192759]={{79140,208895},-0.7},
+	[1833]={{79140,208895},-0.8},
+	[1329]={{79140,208895},-1.1},
+	[1943]={{79140,208895},-0.5},
+	[408]={{79140,208895},-0.5},
+	[1966]={{79140,208895},-0.4},
+	[16511]={{79140,208895},-0.6},
+	[152150]={{79140,208895},-0.5},
+	[17]={{33206,214576},-4},
+	[206930]={{55233,208706},-3},
+	[51505]={{198067,191512},-2},
+	[113656]={{137639,209256},-1.8},
+	[100784]={{137639,209256},-0.6},
+	[115151]={{115310,206902},-3},
+	[78674]={{102560,208199},-5,{194223,208199},-5},
+	[191034]={{102560,208199},-7.5,{194223,208199},-7.5},
 }
 module.db.spell_increaseDurationCast = {	--Заклинания, продляющие время действия
 	[23922]={{2565,203177},1.5},
@@ -1005,6 +1089,10 @@ module.db.spell_increaseDurationCast = {	--Заклинания, продляю�
 	
 	[5143]={{12042,155147},2},
 	[30455]={{12472,155149},2},
+	
+	[195452]={{121471,208892},1.5},
+	[196819]={{121471,208892},1.5},
+	[408]={{121471,208892},1.5},
 }
 module.db.spell_dispellsFix = {}
 module.db.spell_dispellsList = {	--Заклинания-диспелы (мгновенно откатываются, если ничего не диспелят)
@@ -1234,6 +1322,28 @@ module.db.itemsToSpells = {	-- Тринкеты вида [item ID] = spellID
 	[124232] = 183929,	--Intuition's Gift
 	[133598] = 201414,
 	[133585] = 201371,
+	
+	[137105] = 206338,
+	[137059] = 206380,
+	[137017] = 207628,
+	[137089] = 215176,
+	[137054] = 215057,
+	[137101] = 206332,
+	[137033] = 206889,
+	[137227] = 212278,
+	[137100] = 208892,
+	[137030] = 208895,
+	[132436] = 214576,
+	[132367] = 208706,
+	[132376] = 210852,
+	[137058] = 210604,
+	[137097] = 209256,
+	[137027] = 224489,
+	[137096] = 206902,
+	[137039] = 208199,
+	[137061] = 215149,
+	[137071] = 210867,
+	[138949] = 210970,
 }
 module.db.itemsArtifacts = {	-- Artifacts & First trait
 	[127857] = 224968,
@@ -1310,6 +1420,21 @@ module.db.differentIcons = {	--Другие иконки заклинаниям
 	[187613]="Interface\\Icons\\inv_60legendary_ring1b",
 	[187612]="Interface\\Icons\\inv_60legendary_ring1a",
 }
+
+module.db.artifactAllSpells = {
+	209483, 200870, 203230, 188651,
+	200311, 200326, 200407, 200298, 209285, 209218, 209220, 186994, 179546, 184778, 186945,
+	197038, 197343, 190567, 190462, 225092, 203752,
+	192323, 192349, 192345, 202907, 197386,
+	197727, 197713, 196429, 193642,
+	192514, 208598,
+	191512, 207357,
+	187264, 187301, 195345,
+	211131, 215223,
+	210557, 200399, 200402,
+	201460, 212894,
+}
+
 
 local isLegendaryRingInRaid_DD = nil
 local isLegendaryRingInRaid_Tank = nil
@@ -3393,6 +3518,7 @@ local function UpdateRoster()
 	SortAllData()
 end
 
+local GetArtifactTraitsKnown
 do
 	local function DispellSchedule(data)
 		if not module.db.spell_dispellsFix[ data.fullName ] then
@@ -3432,10 +3558,16 @@ do
 		if durationTable then
 			for j=1,#durationTable,2 do
 				if module.db.session_gGUIDs[fullName][ durationTable[j] ] then
-					if tonumber(durationTable[j+1]) then
-						data.duration = data.duration + durationTable[j+1]
+					local timeReduce = durationTable[j+1]
+					if type(timeReduce) == 'table' then
+						local traits = GetArtifactTraitsKnown(fullName,durationTable[j])
+						if traits > 0 then
+							data.duration = data.duration + timeReduce[traits]
+						end
+					elseif tonumber(timeReduce) then
+						data.duration = data.duration + timeReduce
 					else
-						local timeFix = tonumber( string.sub( durationTable[j+1], 2 ) )
+						local timeFix = tonumber( string.sub( timeReduce, 2 ) )
 						data.duration = data.duration * timeFix
 					end
 				end
@@ -3445,10 +3577,16 @@ do
 		if cdTable then
 			for j=1,#cdTable,2 do
 				if module.db.session_gGUIDs[fullName][ cdTable[j] ] then
-					if tonumber(cdTable[j+1]) then
-						data.cd = data.cd + cdTable[j+1]
+					local timeReduce = cdTable[j+1]
+					if type(timeReduce) == 'table' then
+						local traits = GetArtifactTraitsKnown(fullName,cdTable[j])
+						if traits > 0 then
+							data.cd = data.cd + timeReduce[traits]
+						end
+					elseif tonumber(timeReduce) then
+						data.cd = data.cd + timeReduce
 					else
-						local timeFix = tonumber( string.sub( cdTable[j+1], 2 ) )
+						local timeFix = tonumber( string.sub( timeReduce, 2 ) )
 						data.cd = data.cd * timeFix
 					end
 				end
@@ -4063,14 +4201,27 @@ do
 		[66198] = true,
 		[222026] = true,
 		[66196] = true,
+		[31935] = true,
+		[6343] = true,
+		[116] = true,
+		[115181] = true,
+		[198013] = true,
+		[178740] = true,
 	}
 	local spellDamage_trackedSpells_Register = {
 		[46968] = true,
 		[100130] = true,
 		[190319] = true,
 		[51271] = true,
+		[86659] = true,
+		[1160] = true,
+		[12472] = true,
+		[115203] = true,
+		[198013] = true,
+		[204021] = true,
 	}	
 	local spell46968_var = {}
+	local spell115181_var = {0,0}
 	function module.main:SPELL_DAMAGE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical)
 		if not spellDamage_trackedSpells[spellID] or not sourceName then
 			return
@@ -4139,8 +4290,101 @@ do
 				UpdateAllData()
 				SortAllData()
 			end
+		elseif spellID == 31935 and session_gGUIDs[sourceName][207628] then
+			local line = CDList[sourceName][86659]
+			if line then
+				line.cd = line.cd - 4
+				if line.cd < 0 then 
+					line.cd = 0 
+				end
+				if line.bar and line.bar.data == line then
+					line.bar:UpdateStatus()
+				end
+				UpdateAllData()
+				SortAllData()
+			end
+		elseif spellID == 6343 and session_gGUIDs[sourceName][215176] then
+			local line = CDList[sourceName][1160]
+			if line then
+				line.cd = line.cd - 1
+				if line.cd < 0 then 
+					line.cd = 0 
+				end
+				if line.bar and line.bar.data == line then
+					line.bar:UpdateStatus()
+				end
+				UpdateAllData()
+				SortAllData()
+			end
+		elseif spellID == 116 and critical and session_gGUIDs[sourceName][195345] then
+			local traits = GetArtifactTraitsKnown(sourceName, 195345)
+			if traits > 0 then
+				local line = CDList[sourceName][12472]
+				if line then
+					line.cd = line.cd - (traits * 0.5)
+					if line.cd < 0 then 
+						line.cd = 0 
+					end
+					if line.bar and line.bar.data == line then
+						line.bar:UpdateStatus()
+					end
+					UpdateAllData()
+					SortAllData()
+				end
+			end
+		elseif spellID == 115181 and session_gGUIDs[sourceName][224489] then
+			local line = CDList[sourceName][115203]
+			if line then
+				local t = GetTime()
+				if (t - spell115181_var[2]) > 1.5 then
+					spell115181_var[1] = 0
+					spell115181_var[2] = t
+				end
+				spell115181_var[1] = spell115181_var[1] + 1
+				if spell115181_var[1] > 4 then
+					return
+				end
+			
+				line.cd = line.cd - 1
+				if line.cd < 0 then 
+					line.cd = 0 
+				end
+				if line.bar and line.bar.data == line then
+					line.bar:UpdateStatus()
+				end
+				UpdateAllData()
+				SortAllData()
+			end
+		elseif spellID == 198013 and critical and session_gGUIDs[sourceName][215149] then
+			local line = CDList[sourceName][198013]
+			if line then
+				line.cd = line.cd - 0.3
+				if line.cd < 0 then 
+					line.cd = 0 
+				end
+				if line.bar and line.bar.data == line then
+					line.bar:UpdateStatus()
+				end
+				UpdateAllData()
+				SortAllData()
+			end			
+		elseif spellID == 178740 and session_gGUIDs[sourceName][210970] then
+			local line = CDList[sourceName][204021]
+			if line then
+				line.cd = line.cd - 3
+				if line.cd < 0 then 
+					line.cd = 0 
+				end
+				if line.bar and line.bar.data == line then
+					line.bar:UpdateStatus()
+				end
+				UpdateAllData()
+				SortAllData()
+			end			
 		end
 	end
+	
+	
 	eventsView = {
 		SPELL_AURA_REMOVED=module.main.SPELL_AURA_REMOVED,
 		SPELL_AURA_REMOVED_DOSE=module.main.SPELL_AURA_REMOVED_DOSE,
@@ -5039,7 +5283,9 @@ function module.options:Load()
 			for j=1,#module.db.spell_durationByTalent_fix[self.line[1]],2 do
 				local sname = GetSpellInfo(module.db.spell_durationByTalent_fix[self.line[1]][j]) or "???"
 				local cd = module.db.spell_durationByTalent_fix[self.line[1]][j+1]
-				if not tonumber(cd) then
+				if type(cd) == 'table' then
+					cd = strjoin(",",unpack(cd))
+				elseif not tonumber(cd) then
 					cd = tonumber(string.sub(cd,2))
 					if cd < 1 then
 						cd = "-"..( (1-cd)*100 ).."%"
@@ -5061,7 +5307,9 @@ function module.options:Load()
 				for j=1,#module.db.spell_cdByTalent_fix[self.line[1]],2 do
 					local sname = GetSpellInfo(module.db.spell_cdByTalent_fix[self.line[1]][j]) or "???"
 					local cd = module.db.spell_cdByTalent_fix[self.line[1]][j+1]
-					if not tonumber(cd) then
+					if type(cd) == 'table' then
+						cd = strjoin(",",unpack(cd))
+					elseif not tonumber(cd) then
 						cd = tonumber(string.sub(cd,2))
 						if cd < 1 then
 							cd = "-"..( (1-cd)*100 ).."%"
@@ -7877,7 +8125,6 @@ module.db.allClassSpells = {
 	{196770,3,	nil,			nil,			{196770,20,	8},	nil,			},	--Беспощадность зимы
 	{212552,4,	{212552,60,	3},	nil,			nil,			nil,			},	--Блуждающий дух
 	{194844,4,	nil,			{194844,60,	0},	nil,			nil,			},	--Буря костей
-	{127344,3,	{127344,15,	0},	nil,			nil,			nil,			},	--Взрыв трупа
 	{42650,	3,	nil,			nil,			nil,			{42650,	600,	40},	},	--Войско мертвых
 	{46584,	3,	nil,			nil,			nil,			{46584,	60,	0},	},	--Воскрешение мертвых
 	{61999,	2,	{61999,	600,	0},	nil,			nil,			nil,			},	--Воскрешение союзника
@@ -8073,7 +8320,7 @@ module.db.allClassSpells = {
 	{102560,3,	nil,			{102560,180,	30},	nil,			nil,			nil,			},	--Воплощение: Избранный Элуны
 	{102543,3,	nil,			nil,			{102543,180,	30},	nil,			nil,			},	--Воплощение: Король джунглей
 	{102558,3,	nil,			nil,			nil,			{102558,180,	30},	nil,			},	--Воплощение: Страж Урсока
-	{22812,	4,	{22812,	60,	12},	nil,			nil,			nil,			{22812,	90,	12},	},	--Дубовая кожа
+	{22812,	4,	nil,			{22812,	60,	12},	nil,			{22812,	90,	12},	{22812,	60,	12},	},	--Дубовая кожа
 	{102342,2,	nil,			nil,			nil,			nil,			{102342,90,	12},	},	--Железная кора
 	{61336,	4,	nil,			nil,			{61336,	120,	6},	{61336,	240,	6},	nil,			},	--Инстинкты выживания
 	{155835,3,	nil,			nil,			nil,			{155835,40,	8},	nil,			},	--Колючий мех
@@ -8207,7 +8454,6 @@ moduleInspect.db.statsNames = {
 	strength = {L.cd2InspectStr,L.cd2InspectStrGem,L.cd2InspectAll},
 	spellpower = {L.cd2InspectSpd},
 	
-	multistrike = {L.cd2InspectMultistrike,L.cd2InspectMultistrikeGem},
 	versatility = {L.cd2InspectVersatility,L.cd2InspectVersatilityGem},
 	leech = {L.cd2InspectLeech},
 	armor = {L.cd2InspectBonusArmor},
@@ -8245,7 +8491,7 @@ local function InspectNext()
 	end
 	local nowTime = GetTime()
 	for name,timeAdded in pairs(moduleInspect.db.inspectQuery) do
-		if name and CanInspect(name) and CheckInteractDistance(name,1) then
+		if name and CanInspect(name) then--and CheckInteractDistance(name,1) then
 			NotifyInspect(name)
 			
 			if (VExRT and VExRT.InspectViewer and VExRT.InspectViewer.EnableA4ivs) and not moduleInspect.db.inspectDBAch[name] then
@@ -8333,10 +8579,13 @@ do
 		local ArtifactIlvlSlot1,ArtifactIlvlSlot2 = 0,0
 		for i=1,#moduleInspect.db.itemsSlotTable do
 			local itemSlotID = moduleInspect.db.itemsSlotTable[i]
-			local itemLink = GetInventoryItemLink(inspectedName, itemSlotID)
+			--local itemLink = GetInventoryItemLink(inspectedName, itemSlotID)
+			inspectScantip:SetInventoryItem(inspectedName, itemSlotID)
+			
+			local _,itemLink = inspectScantip:GetItem()
 			if itemLink then
 				inspectData['items'][itemSlotID] = itemLink
-				inspectScantip:SetInventoryItem(inspectedName, itemSlotID)
+				--inspectScantip:SetInventoryItem(inspectedName, itemSlotID)
 				local itemID = itemLink:match("item:(%d+):")
 				
 				if itemSlotID == 16 then
@@ -8386,7 +8635,7 @@ do
 						end
 					end
 				end
-				inspectScantip:ClearLines()
+				
 				itemID = tonumber(itemID or 0)
 				
 				--------> ExCD2
@@ -8403,6 +8652,8 @@ do
 					UpdateLegendaryRingState()
 				end
 			end
+			
+			inspectScantip:ClearLines()
 		end
 		if isArtifactEqipped then
 			inspectData['ilvl'] = inspectData['ilvl'] - ArtifactIlvlSlot1 - ArtifactIlvlSlot2 + max(ArtifactIlvlSlot1,ArtifactIlvlSlot2)
@@ -8744,10 +8995,14 @@ function moduleInspect.main:UNIT_INVENTORY_CHANGED(arg)
 	end
 end
 
-function moduleInspect.main:PLAYER_EQUIPMENT_CHANGED()
+local Inspect_Artifact_PLAYER_EQUIPMENT_CHANGED
+
+function moduleInspect.main:PLAYER_EQUIPMENT_CHANGED(arg)
 	local name = UnitCombatlogname("player")
 	moduleInspect.db.inspectItemsOnly[name] = true
 	moduleInspect.db.inspectQuery[name] = GetTime()
+	
+	Inspect_Artifact_PLAYER_EQUIPMENT_CHANGED(arg)
 end
 
 -------------------------------------------
@@ -8875,6 +9130,7 @@ end
 -------------------------------------------
 
 moduleInspect.db.artifactDB = {}
+moduleInspect.db.artifactNoResDB = {}
 
 local ArtifactCache = {}
 
@@ -8921,9 +9177,14 @@ local function UpdateArtifactData()
 	if not C_ArtifactUI.GetEquippedArtifactInfo() then
 		return
 	end
-	SocketInventoryItem(16)
+	local isArtifactFrameShown = ArtifactFrame and ArtifactFrame:IsShown()
+	if not isArtifactFrameShown then
+		SocketInventoryItem(16)
+	end
 	ScanArtifactData()
-	C_ArtifactUI.Clear()
+	if not isArtifactFrameShown then
+		C_ArtifactUI.Clear()
+	end
 end
 
 local artifactUIfix = CreateFrame'Frame'
@@ -8941,15 +9202,18 @@ end
 
 local function Inspect_SendArtifactData()
 	if not ArtifactCache.AftifactLevel then
+		ExRT.F.SendExMsg("inspect", ExRT.F.CreateAddonMsg("art","NO"))
 		return
 	end
 	local equippedItemID = C_ArtifactUI.GetEquippedArtifactInfo()
 	if not equippedItemID then
+		ExRT.F.SendExMsg("inspect", ExRT.F.CreateAddonMsg("art","NO"))
 		return
 	end
 	if ArtifactCache.itemID ~= equippedItemID then
 		UpdateArtifactData()
 		if not ArtifactCache.AftifactLevel then
+			ExRT.F.SendExMsg("inspect", ExRT.F.CreateAddonMsg("art","NO"))
 			return
 		end
 	end
@@ -8958,7 +9222,7 @@ local function Inspect_SendArtifactData()
 	for i=1,#ArtifactCache.traits do
 		res = res .. ArtifactCache.traits[i].traitID .. "-" ..ArtifactCache.traits[i].currentRank .. "-" .. ArtifactCache.traits[i].maxRank .. ":"
 	end
-	res = res:gsub(":$","")
+	res = res .. equippedItemID
 	
 	ExRT.F.SendExMsg("inspect", ExRT.F.CreateAddonMsg("art","R",res))
 end
@@ -8979,13 +9243,25 @@ local function Inspect_ParseArtifactString(db,string)
 		local trait,o = strsplit(":",tr,2)
 	
 		local id,cr,mr = strsplit("-",trait)
-		db[#db+1] = {tonumber(id),tonumber(cr),tonumber(mr)}
+		if id and cr and mr then
+			db[#db+1] = {tonumber(id),tonumber(cr),tonumber(mr)}
+		else
+			break
+		end
 	
 		tr = o
 	end
 	
+	local itemID,rest = strsplit(":",tr,2)
+	if itemID then
+		db.itemID = tonumber(itemID)
+	end
+	tr = rest
+	
 	return db
 end
+
+local UpdateArtifactToTalentsData
 
 function Inspect_Artifact_ADDON_LOADED()
 	for player,data in pairs(VExRT.InspectArtifact.players) do
@@ -8995,6 +9271,7 @@ function Inspect_Artifact_ADDON_LOADED()
 		moduleInspect.db.artifactDB[ player ] = db
 		
 		Inspect_ParseArtifactString(db, data[1])
+		UpdateArtifactToTalentsData(player)
 	end
 	--LoadAddOn("Blizzard_ArtifactUI")
 	
@@ -9002,6 +9279,75 @@ function Inspect_Artifact_ADDON_LOADED()
 	--function ArtifactUI_CanViewArtifact()
 	--	return C_ArtifactUI.IsAtForge() or (C_ArtifactUI.GetTotalPurchasedRanks() or 0) > 0 or C_ArtifactUI.GetNumObtainedArtifacts() > 1;
 	--end
+end
+
+local UpdateArtifactInfoTimer
+function Inspect_Artifact_PLAYER_EQUIPMENT_CHANGED(slot)
+	if not (slot == 16 or slot == 17) then
+		return
+	end
+	if UpdateArtifactInfoTimer then
+		UpdateArtifactInfoTimer:Cancel()
+	end
+	UpdateArtifactInfoTimer = C_Timer.NewTimer(2,function()
+		UpdateArtifactInfoTimer = nil
+		UpdateArtifactData()
+	end)
+end
+
+
+do
+	local powerToSpellID = {}
+	
+	function UpdateArtifactToTalentsData(player)
+		local name = ExRT.F.delUnitNameServer(player)
+		for i=1,#module.db.artifactAllSpells do
+			module.db.session_gGUIDs[ name ] = -module.db.artifactAllSpells[i]
+		end
+		if not moduleInspect.db.artifactDB[ player ] then
+			return
+		end
+		for i=1,#moduleInspect.db.artifactDB[ player ] do
+			if moduleInspect.db.artifactDB[ player ][i][2] > 0 then
+				local powerID = moduleInspect.db.artifactDB[ player ][i][1]
+				local spellID = powerToSpellID[powerID]
+				if not spellID then
+					spellID = C_ArtifactUI.GetPowerInfo(powerID)
+					powerToSpellID[powerID] = spellID
+				end	
+				if spellID then
+					module.db.session_gGUIDs[ name ] = spellID
+				end
+			end
+		end
+	end
+	
+	function GetArtifactTraitsKnown(playerName, spellID)
+		local data = moduleInspect.db.artifactDB[playerName]
+		if not data then
+			for name,D in pairs(moduleInspect.db.artifactDB) do
+				if name:find("^"..playerName) then
+					data = D
+					break
+				end
+			end
+		end
+		if not data then
+			return 0
+		end
+		for i=1,#data do
+			local powerID = data[i][1]
+			local powerSpellID = powerToSpellID[powerID]
+			if not powerSpellID then
+				powerSpellID = C_ArtifactUI.GetPowerInfo(powerID)
+				powerToSpellID[powerID] = powerSpellID
+			end
+			if powerSpellID == spellID then
+				return data[i][2]
+			end
+		end
+		return 0
+	end
 end
 
 function moduleInspect:addonMessage(sender, prefix, prefix2, ...)
@@ -9016,6 +9362,7 @@ function moduleInspect:addonMessage(sender, prefix, prefix2, ...)
 				moduleInspect.db.artifactDB[ sender ] = db
 				
 				Inspect_ParseArtifactString(db, name)
+				UpdateArtifactToTalentsData(sender)
 				
 				local currTime = time()
 				
@@ -9025,6 +9372,8 @@ function moduleInspect:addonMessage(sender, prefix, prefix2, ...)
 					name,
 					currTime,
 				}
+			elseif type == "NO" then
+				moduleInspect.db.artifactNoResDB[ sender ] = true
 			end
 		end
 	end

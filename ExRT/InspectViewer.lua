@@ -15,7 +15,7 @@ module.db.inspectQuery = parentModule.db.inspectQuery
 module.db.specIcons = ExRT.A.ExCD2 and ExRT.A.ExCD2.db.specIcons
 module.db.itemsSlotTable = parentModule.db.itemsSlotTable
 module.db.classIDs = ExRT.GDB.ClassID
-module.db.glyphsIDs = ExRT.is7 and {8,9,10,11,12,13} or {9,11,13,10,8,12}
+module.db.glyphsIDs = {8,9,10,11,12,13}
 
 module.db.artifactDB = parentModule.db.artifactDB
 
@@ -43,42 +43,7 @@ module.db.raceStatsDiffs = {
 		--	Human,	Dwarf,	NElf,	Orc,	Tauren,	Undead,	Gnome,	Troll,	BElf,	Draenei,Goblin,	Worgen,	Pandaren
 }
 
-module.db.statsMultiplayBySpec = ExRT.is7 and {} or {
-	[62] = 'mastery',
-	[63] = 'crit',
-	[64] = 'multistrike',
-	[65] = 'crit',
-	[66] = 'haste',
-	[70] = 'mastery',
-	[71] = 'mastery',
-	[72] = 'crit',
-	[73] = 'mastery',
-	[102] = 'mastery',
-	[103] = 'crit',
-	[104] = 'mastery',
-	[105] = 'haste',
-	[250] = 'multistrike',
-	[251] = 'haste',
-	[252] = 'multistrike',
-	[253] = 'mastery',
-	[254] = 'crit',
-	[255] = 'multistrike',
-	[256] = 'crit',
-	[257] = 'multistrike',
-	[258] = 'haste',
-	[259] = 'mastery',
-	[260] = 'haste',
-	[261] = 'multistrike',
-	[262] = 'multistrike',
-	[263] = 'haste',
-	[264] = 'mastery',
-	[265] = 'haste',
-	[266] = 'mastery',
-	[267] = 'crit',
-	[268] = 'crit',
-	[269] = 'multistrike',
-	[270] = 'multistrike',
-}
+module.db.statsMultiplayBySpec = {}
 
 module.db.armorType = ExRT.GDB.ClassArmorType
 module.db.roleBySpec = ExRT.GDB.ClassSpecializationRole
@@ -106,7 +71,7 @@ module.db.socketsBonusIDs = {
 	[1808]=true,
 }
 
-module.db.topEnchGems = (ExRT.is7 and ExRT.isLegionContent) and {
+module.db.topEnchGems = ExRT.isLegionContent and {
 	[5427]="Ring:Crit:200",
 	[5428]="Ring:Haste:200",
 	[5429]="Ring:Mastery:200",
@@ -196,7 +161,7 @@ module.db.topEnchGems = (ExRT.is7 and ExRT.isLegionContent) and {
 	[127765]="Gem:Stamina",
 }
 
-module.db.achievementsList = ExRT.is7 and {
+module.db.achievementsList = {
 	{	--Nightmare
 		L.S_ZoneT19Nightmare,
 		10818,10819,10820,10821,10822,10823,10824,10825,10826,10827,
@@ -231,31 +196,8 @@ module.db.achievementsList = ExRT.is7 and {
 		EXPANSION_NAME4,
 		6954,7485,8246,7486,8248,7487,8249,8238,8260,8398,8400,8399,8401
 	},
-} or {
-	{	--HFC
-		L.RaidLootT18HC..":"..L.sencounterWODMythic,		
-		10027,10032,10033,10034,10035,10253,10037,10040,10041,10038,10039,10042,10043,	
-	},{
-		L.RaidLootT18HC,
-		10023,10024,10025,10020,10019,10044,
-	},{	--BRF
-		L.RaidLootT17BF..":"..L.sencounterWODMythic,		
-		8966,8967,8970,8968,8932,8971,8956,8969,8972,8973,
-	},{
-		L.RaidLootT17BF,
-		8989,8990,8991,8992,9444,
-	},{	--H
-		L.RaidLootT17Highmaul..":"..L.sencounterWODMythic,		
-		8949,8960,8962,8961,8963,8964,8965,
-	},{
-		L.RaidLootT17Highmaul,
-		8986,8987,8988,9441,
-	},{	--Old curves
-		EXPANSION_NAME4,
-		6954,7485,8246,7486,8248,7487,8249,8238,8260,8398,8400,8399,8401
-	},
 }
-module.db.achievementsList_statistic = ExRT.is7 and {
+module.db.achievementsList_statistic = {
 	{	--Nightmare
 		0,0,0,{10911,10912,10913,10914},{10920,10921,10922,10923},{10924,10925,10926,10927},{10915,10916,10917,10918},{10928,10929,10930,10931},{10932,10933,10934,10935},{10936,10937,10938,10939},
 	},{	--Legion 5ppl
@@ -266,25 +208,6 @@ module.db.achievementsList_statistic = ExRT.is7 and {
 		nil,nil,nil,nil,nil,
 	
 	},{	--HFC
-		{10201,10202,10203,10204},{10205,10206,10207,10208},{10209,10210,10211,10212},{10213,10214,10215,10216},{10217,10218,10219,10220},{10221,10222,10223,10224},{10225,10226,10227,10228},
-		{10229,10230,10231,10232},{10241,10242,10243,10244},{10233,10234,10235,10236},{10237,10238,10239,10240},{10245,10246,10247,10248},{10249,10250,10251,10252},
-	},{
-		{-10201,-10202,-10203,-10205,-10206,-10207,-10209,-10210,-10211},{-10213,-10214,-10215,-10217,-10218,-10219,-10221,-10222,-10223},
-		{-10225,-10226,-10227,-10229,-10230,-10231,-10241,-10242,-10243},{-10233,-10234,-10235,-10237,-10238,-10239,-10245,-10246,-10247},{-10249,-10250,-10251},{-10251,-10252},
-	},{	--BRF
-		{9316,9317,9318,9319},{9320,9321,9322,9323},{9343,9349,9351,9353},{9324,9327,9328,9329},{9330,9331,9332,9333},
-		{9354,9355,9356,9357},{9334,9336,9337,9338},{9339,9340,9341,9342},{9358,9359,9360,9361},{9362,9363,9364,9365},
-	},{
-		{-9316,-9317,-9318,-9320,-9321,-9322,-9343,-9349,-9351},{-9324,-9327,-9328,-9330,-9331,-9332,-9354,-9355,-9356},{-9334,-9336,-9337,-9339,-9340,-9341,-9358,-9359,-9360},{-9362,-9363,-9364},{-9364,-9365},
-	},{	--H
-		{9280,9282,9284,9285},{9286,9287,9288,9289},{9295,9297,9298,9300},{9290,9292,9293,9294},{9301,9302,9303,9304},{9306,9308,9310,9311},{9312,9313,9314,9315},
-	},{
-		{-9280,-9282,-9284,-9286,-9287,-9288,-9295,-9297,-9298},{-9290,-9292,-9293,-9301,-9302,-9303,-9306,-9308,-9310},{-9312,-9313,-9314},{-9314,-9315},
-	},{	--Old curves
-		{6799,7926},{6800,7927},{6811,7963},{6812,7964},{6819,7971},{6820,7972},{8199,8200},{8202,8201},{8203,8256},{8635},{8637},{8636},{8638},
-	},
-} or {
-	{	--HFC
 		{10201,10202,10203,10204},{10205,10206,10207,10208},{10209,10210,10211,10212},{10213,10214,10215,10216},{10217,10218,10219,10220},{10221,10222,10223,10224},{10225,10226,10227,10228},
 		{10229,10230,10231,10232},{10241,10242,10243,10244},{10233,10234,10235,10236},{10237,10238,10239,10240},{10245,10246,10247,10248},{10249,10250,10251,10252},
 	},{
@@ -379,6 +302,8 @@ end
 
 function module.options:Load()
 	self:CreateTilte()
+	
+	local UpdatePerksTab
 
 	local function reloadChks(self)
 		local clickID = self.id
@@ -417,9 +342,6 @@ function module.options:Load()
 	
 	self.chkArtifact = ELib:Radio(self,ARTIFACT_POWER):Point(385,-28+25):OnClick(reloadChks)
 	self.chkArtifact.id = 5
-	if not ExRT.is7 then
-		self.chkArtifact:Hide()
-	end
 	
 	local function ItemsTrackDropDownClick(self)
 		local f = self.checkButton:GetScript("OnClick")
@@ -733,6 +655,7 @@ function module.options:Load()
 						item.text:SetText("")
 						item.border:Hide()
 					end
+					line.perksData = nil
 					
 					if module.db.page == 1 then
 						for j=1,16 do
@@ -803,17 +726,10 @@ function module.options:Load()
 						for j=9,14 do
 							local t = data[module.db.glyphsIDs[j-8]]
 							if t then
-								if ExRT.is7 then
-									local _,_,spellTexture = GetPvpTalentInfoByID( data.talentsIDs[ j - 1 ] )
-									line.items[j].texture:SetTexture(spellTexture)
-									line.items[j].link = GetPvpTalentLink( data.talentsIDs[ j - 1 ] )
-									line.items[j].sid = nil
-								else
-									local spellTexture = GetSpellTexture(t)
-									line.items[j].texture:SetTexture(spellTexture)
-									line.items[j].link = "|cffffffff|Hspell:"..t.."|h[name]|h|r"
-									line.items[j].sid = t
-								end
+								local _,_,spellTexture = GetPvpTalentInfoByID( data.talentsIDs[ j - 1 ] )
+								line.items[j].texture:SetTexture(spellTexture)
+								line.items[j].link = GetPvpTalentLink( data.talentsIDs[ j - 1 ] )
+								line.items[j].sid = nil
 								line.items[j]:Show()
 							else
 								line.items[j]:Hide()
@@ -826,46 +742,23 @@ function module.options:Load()
 						local result = ""
 						for k,statName in ipairs(module.db.statsList) do
 							local statValue = data[statName]
-							if ExRT.is7 then
-								if statValue and statValue > 200 then
-									if module.db.baseStats[statName] then
-										local classCount = module.db.classIDs[class]
-										if classCount then
-											statValue = statValue + module.db.baseStats[statName][classCount]
-											local raceCount = ExRT.F.table_find(module.db.raceList,data.race)
-											if raceCount then
-												statValue = statValue + module.db.raceStatsDiffs[statName][raceCount]
-											end
+							if statValue and statValue > 200 then
+								if module.db.baseStats[statName] then
+									local classCount = module.db.classIDs[class]
+									if classCount then
+										statValue = statValue + module.db.baseStats[statName][classCount]
+										local raceCount = ExRT.F.table_find(module.db.raceList,data.race)
+										if raceCount then
+											statValue = statValue + module.db.raceStatsDiffs[statName][raceCount]
 										end
 									end
-									if k <= 3 then
-										statValue = statValue * 1.05
-									end
-									result = result .. module.db.statsListName[k] .. ": " ..floor(statValue)..", "
 								end
-							else
-								if statValue and statValue > 50 then
-									if module.db.baseStats[statName] then
-										local classCount = module.db.classIDs[class]
-										if classCount then
-											statValue = statValue + module.db.baseStats[statName][classCount]
-											local raceCount = ExRT.F.table_find(module.db.raceList,data.race)
-											if raceCount then
-												statValue = statValue + module.db.raceStatsDiffs[statName][raceCount]
-											end
-										end
-									end
-									if spec and module.db.statsMultiplayBySpec[spec] == statName then
-										statValue = statValue * 1.05
-									end
-									if k <= 3 then
-										statValue = statValue * 1.05
-									elseif k <= 7 and data.amplify and data.amplify ~= 0 then
-										statValue = statValue * (1 + data.amplify/100)
-									end
-									result = result .. module.db.statsListName[k] .. ": " ..floor(statValue)..", "
+								if k <= 3 then
+									statValue = statValue * 1.05
 								end
+								result = result .. module.db.statsListName[k] .. ": " ..floor(statValue)..", "
 							end
+
 						end
 						result = result:gsub(", $","")
 						
@@ -898,7 +791,7 @@ function module.options:Load()
 									end
 									
 									local statisticList = module.db.achievementsList_statistic[ module.db.achievementList ][j]
-									if statisticList then
+									if statisticList and statisticList ~= 0 then
 										local additional = {}
 										for k=1,#statisticList do
 											local statisticID = statisticList[k]
@@ -953,8 +846,21 @@ function module.options:Load()
 							if not RefreshArtifactCache[ name ] then
 								line.refreshArtifact:Show()
 							else
-								line.otherInfo:SetText(L.BossWatcherDamageSwitchTabInfoNoInfo)
+								local isAddonOn = false
+								for long_name,_ in pairs(parentModule.db.artifactNoResDB) do
+									if ExRT.F.delUnitNameServer(long_name) == name then
+										isAddonOn = true
+										break
+									end						
+								end
+							
+								if isAddonOn then
+									line.otherInfo:SetText(L.BossWatcherDamageSwitchTabInfoNoInfo)
+								else
+									line.otherInfo:SetText(L.InspectViewerNoExRTAddon)
+								end
 								line.otherInfo:Show()
+								line.updateAP:Show()
 							end
 						else
 							local dateStr = date("%d/%m/%Y",db.time)
@@ -964,6 +870,8 @@ function module.options:Load()
 						
 							line.apinfo:SetText("Level: "..db.Level.."|nKnowlege: "..db.KnowledgeLevel.."|n"..dateStr)
 							line.updateAP:Show()
+							
+							line.perksData = db
 						
 							local it = 0
 							for j=1,#db do
@@ -994,7 +902,7 @@ function module.options:Load()
 						line.back:SetGradientAlpha("HORIZONTAL", cR,cG,cB, 0, cR,cG,cB, 0.5)
 					end
 				else
-					for j=1,16 do
+					for j=0,18 do
 						line.items[j]:Hide()
 					end
 					line.time:Show()
@@ -1048,8 +956,11 @@ function module.options:Load()
 			for i=1,n do
 				local unit = "party"..i
 				if i==n then unit = "player" end
-				local name = UnitName(unit)
+				local name,realm = UnitName(unit)
 				if name then
+					if realm and realm ~= "" then
+						name = name .."-"..realm
+					end
 					if module.db.inspectDB[name] and module.db.inspectDB[name].ilvl and module.db.inspectDB[name].ilvl >= 1 then
 						countPeople = countPeople + 1
 						ilvl = ilvl + module.db.inspectDB[name].ilvl
@@ -1154,6 +1065,16 @@ function module.options:Load()
 		
 	local IconBackDrop = {bgFile = "Interface/Tooltips/UI-Tooltip-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, tileSize = 16, edgeSize = 16, insets = { left = 4, right = 4, top = 4, bottom = 4 }}
 	
+	local function Line_OnEnter(self)
+		if not self.perksData then
+			return
+		end
+		UpdatePerksTab(self.perksData,self)
+	end
+	local function Line_OnLeave()
+		self.PerksTab:Hide()
+	end
+	
 	self.lines = {}
 	for i=1,module.db.perPage do
 		local line = CreateFrame("Frame",nil,self.borderList)
@@ -1205,6 +1126,7 @@ function module.options:Load()
 			item.border.background:SetPoint("BOTTOMRIGHT")
 			
 			item.border:Hide()
+			item:Hide()
 		end
 		
 		line.updateButton = ELib:Icon(line,[[Interface\AddOns\ExRT\media\DiesalGUIcons16x256x128]],18,true):Point(210+(24*16)+4,-8)
@@ -1239,6 +1161,9 @@ function module.options:Load()
 		
 		line.refreshArtifact = ELib:Button(line,REFRESH):Point("LEFT",220,0):Size(100,20):OnClick(Lines_RefreshArtifactButton_OnClick)
 		line.refreshArtifact:Hide()
+		
+		line:SetScript("OnEnter",Line_OnEnter)
+		line:SetScript("OnLeave",Line_OnLeave)
 	end
 	self.raidItemLevel = ELib:Text(self,"",12):Size(500,20):Point("TOPLEFT",self.borderList,"BOTTOMLEFT",3,-2):Shadow():Color()
 	
@@ -1272,6 +1197,610 @@ function module.options:Load()
 			animationTimer = animationTimer % 2
 		end
 	end)
+	
+	
+	local PerksTabData = {
+		[120978] = {
+			back = "Artifacts-Paladin-BG",
+			uiCam = 62,
+			mAppID = 10,
+			mDes = 0.5,
+			cR = 1,
+			cG = 0.82352948188782,
+			cB = 0.25098040699959,
+		},
+		[128866] = {
+			back = "Artifacts-Paladin-BG",
+			uiCam = 756,
+			mAppID = 9,
+			mDes = 0.5,
+			aID = 128867,
+			aUiCam = 755,
+			cR = 1,
+			cG = 0.82352948188782,
+			cB = 0.25098040699959,
+		},
+		[128823] = {
+			back = "Artifacts-Paladin-BG",
+			uiCam = 198,
+			mAppID = 9,
+			mDes = 0.5,
+			aUiCam = 199,
+			cR = 1,
+			cG = 0.82352948188782,
+			cB = 0.25098040699959,
+		},
+		[128910] = {
+			back = "Artifacts-Warrior-BG",
+			uiCam = 641,
+			mAppID = 9,
+			mDes = 0.5,
+			cR = 0.65882354974747,
+			cG = 0,
+			cB = 0,
+		},	
+		[128908] = {
+			back = "Artifacts-Warrior-BG",
+			uiCam = 639,
+			mAppID = 9,
+			mDes = 0.39999997615814,
+			aID = 134553,
+			aUiCam = 640,
+			cR = 0.65882354974747,
+			cG = 0,
+			cB = 0,
+		},
+		[128289] = {
+			back = "Artifacts-Warrior-BG",
+			uiCam = 183,
+			mAppID = 12,
+			mDes = 0.39999997615814,
+			aID = 128288,
+			aUiCam = 71,
+			cR = 0.65882354974747,
+			cG = 0,
+			cB = 0,
+		},
+		[128861] = {
+			back = "Artifacts-Hunter-BG",
+			uiCam = 754,
+			mAppID = 9,
+			mDes = 0.5,
+			cR = 0.99215692281723,
+			cG = 0.81960791349411,
+			cB = 0.0039215688593686,
+		},
+		[128826] = {
+			back = "Artifacts-Hunter-BG",
+			uiCam = 719,
+			mAppID = 9,
+			mDes = 0.5,
+			cR = 0.96862751245499,
+			cG = 0.97254908084869,
+			cB = 0.41568630933762,
+		},
+		[128808] = {
+			back = "Artifacts-Hunter-BG",
+			uiCam = 197,
+			mAppID = 9,
+			mDes = 0.5,
+			cR = 0.21960785984993,
+			cG = 0.81960791349411,
+			cB = 0.49411767721176,
+		},
+		[128870] = {
+			back = "Artifacts-Rogue-BG",
+			uiCam = 391,
+			mAppID = 10,
+			mDes = 0.5,
+			aID = 128869,
+			aUiCam = 392,
+			cR = 0.85098046064377,
+			cG = 0.50980395078659,
+			cB = 0.38823533058167,
+		},
+		[128872] = {
+			back = "Artifacts-Rogue-BG",
+			uiCam = 757,
+			mAppID = 9,
+			mDes = 0.5,
+			aID = 134552,
+			aUiCam = 758,
+			cR = 0.90588241815567,
+			cG = 0.74509805440903,
+			cB = 0,
+		},
+		[128476] = {
+			back = "Artifacts-Rogue-BG",
+			uiCam = 168,
+			mAppID = 9,
+			mDes = 0.5,
+			aID = 128479,
+			aUiCam = 169,
+			cR = 0.92549026012421,
+			cG = 0.49803924560547,
+			cB = 0.35294118523598,
+		},
+		[128827] = {
+			back = "Artifacts-PriestShadow-BG",
+			uiCam = 570,
+			mAppID = 9,
+			mDes = 0.5,
+			aID = 133958,
+			aUiCam = 952,
+			cR = 0.54901963472366,
+			cG = 0.32941177487373,
+			cB = 0.6235294342041,
+		},
+		[128825] = {
+			back = "Artifacts-Priest-BG",
+			uiCam = 194,
+			mAppID = 9,
+			mDes = 0.5,
+			cR = 0.41960787773132,
+			cG = 1,
+			cB = 0.9764706492424,
+		},
+		[128868] = {
+			back = "Artifacts-Priest-BG",
+			uiCam = 705,
+			mAppID = 9,
+			mDes = 0.5,
+			cR = 0.37647062540054,
+			cG = 0.93725496530533,
+			cB = 1,
+		},
+		[128402] = {
+			back = "Artifacts-DeathKnightFrost-BG",
+			uiCam = 163,
+			mAppID = 9,
+			mDes = 0.39999997615814,
+			cR = 0.91372555494308,
+			cG = 0.19215688109398,
+			cB = 0.20000001788139,
+		},
+		[128292] = {
+			back = "Artifacts-DeathKnightFrost-BG",
+			uiCam = 166,
+			mAppID = 9,
+			mDes = 0.30000001192093,
+			aID = 128293,
+			aUiCam = 167,
+			cR = 0.54509806632996,
+			cG = 0.65490198135376,
+			cB = 0.88235300779343,
+		},
+		[128403] = {
+			back = "Artifacts-DeathKnightFrost-BG",
+			uiCam = 162,
+			mAppID = 9,
+			mDes = 0.5,
+			cR = 0.25098040699959,
+			cG = 1,
+			cB = 0.42745101451874,
+		},
+		[128911] = {
+			back = "Artifacts-Shaman-BG",
+			uiCam = 195,
+			mAppID = 9,
+			mDes = 0.5,
+			aID = 128934,
+			aUiCam = 958,
+			cR = 0.015686275437474,
+			cG = 0.62745100259781,
+			cB = 0.54901963472366,
+		},
+		[128819] = {
+			back = "Artifacts-Shaman-BG",
+			uiCam = 189,
+			mAppID = 9,
+			mDes = 0.5,
+			aID = 128873,
+			cR = 0.29411765933037,
+			cG = 0.83921575546265,
+			cB = 0.98431378602982,
+		},
+		[128935] = {
+			back = "Artifacts-Shaman-BG",
+			uiCam = 191,
+			mAppID = 9,
+			mDes = 0.5,
+			aID = 128936,
+			aUiCam = 192,
+			cR = 0.29411765933037,
+			cG = 0.81960791349411,
+			cB = 0.96470594406128,
+		},
+		[128862] = {
+			back = "Artifacts-MageArcane-BG",
+			uiCam = 344,
+			mAppID = 9,
+			mDes = 0.5,
+			cR = 0.37647062540054,
+			cG = 0.78823536634445,
+			cB = 0.93725496530533,
+		},
+		[127857] = {
+			back = "Artifacts-MageArcane-BG",
+			uiCam = 178,
+			mAppID = 9,
+			mDes = 0.5,
+			cR = 0.37647062540054,
+			cG = 0.78823536634445,
+			cB = 0.93725496530533,
+		},
+		[128820] = {
+			back = "Artifacts-MageArcane-BG",
+			uiCam = 190,
+			mAppID = 9,
+			mDes = 0.5,
+			aID = 133959,
+			aUiCam = 935,
+			cR = 0.93725496530533,
+			cG = 0.74509805440903,
+			cB = 0.37647062540054,
+		},
+		[128941] = {
+			back = "Artifacts-Warlock-BG",
+			uiCam = 357,
+			mAppID = 9,
+			mDes = 0.5,
+			cR = 0.56470590829849,
+			cG = 0.3098039329052,
+			cB = 0.60784316062927,
+		},
+		[128943] = {
+			back = "Artifacts-Warlock-BG",
+			uiCam = 760,
+			mAppID = 10,
+			mDes = 0.5,
+			gAnim = true,
+			aID = 137246,
+			aUiCam = 922,
+			cR = 0.33333334326744,
+			cG = 0.035294119268656,
+			cB = 0.4627451300621,
+		},
+		[128942] = {
+			back = "Artifacts-Warlock-BG",
+			uiCam = 646,
+			mAppID = 9,
+			mDes = 0.60000002384186,
+			cR = 0.60392159223557,
+			cG = 0.28627452254295,
+			cB = 0.61176472902298,
+		},
+		[128937] = {
+			back = "Artifacts-Monk-BG",
+			uiCam = 196,
+			mAppID = 9,
+			mDes = 0.5,
+			cR = 0.29803922772408,
+			cG = 0.95686280727386,
+			cB = 0.80000007152557,
+		},
+		[128938] = {
+			back = "Artifacts-Monk-BG",
+			uiCam = 710,
+			mAppID = 9,
+			mDes = 0.30000001192093,
+			cR = 0.2549019753933,
+			cG = 0.98823535442352,
+			cB = 0.92549026012421,
+		},
+		[128940] = {
+			back = "Artifacts-Monk-BG",
+			uiCam = 629,
+			mAppID = 9,
+			mDes = 0.5,
+			aID = 133948,
+			aUiCam = 630,
+			cR = 0.23529413342476,
+			cG = 1,
+			cB = 0.74901962280273,
+		},
+		[128858] = {
+			back = "Artifacts-Druid-BG",
+			uiCam = 631,
+			mAppID = 9,
+			mDes = 0.5,
+			cR = 0.66666668653488,
+			cG = 0.8705883026123,
+			cB = 0.40392160415649,
+		},	
+		[128860] = {
+			back = "Artifacts-Druid-BG",
+			uiCam = 636,
+			mAppID = 9,
+			mDes = 0.5,
+			aID = 128859,
+			aUiCam = 637,
+			cR = 0.66666668653488,
+			cG = 0.8705883026123,
+			cB = 0.40392160415649,
+		},
+		[128821] = {
+			back = "Artifacts-Druid-BG",
+			uiCam = 188,
+			mAppID = 9,
+			mDes = 0.5,
+			aID = 128822,
+			aUiCam = 638,
+			cR = 0.66666668653488,
+			cG = 0.8705883026123,
+			cB = 0.40392160415649,
+		},
+		[128306] = {
+			back = "Artifacts-Druid-BG",
+			uiCam = 61,
+			mAppID = 9,
+			mDes = 0.5,
+			cR = 0.66666668653488,
+			cG = 0.8705883026123,
+			cB = 0.40392160415649,
+		},
+		[128832] = {
+			back = "Artifacts-DemonHunter-BG",
+			uiCam = 753,
+			mAppID = 9,
+			mDes = 0.5,
+			aID = 128831,
+			aUiCam = 759,
+			cR = 0.96470594406128,
+			cG = 0,
+			cB = 1,
+		},
+		[127829] = {
+			back = "Artifacts-DemonHunter-BG",
+			uiCam = 72,
+			mAppID = 10,
+			mDes = 0.5,
+			aID = 127830,
+			aUiCam = 161,
+			cR = 0.96470594406128,
+			cG = 0,
+			cB = 1,
+		},
+	}
+	
+	local PerksTab = CreateFrame("Frame",nil,UIParent)
+	self.PerksTab = PerksTab
+	PerksTab:SetSize(500,500*0.854)
+	PerksTab:SetPoint("CENTER")
+	PerksTab:SetFrameStrata("TOOLTIP")
+	PerksTab:SetClampedToScreen(true)
+	PerksTab:Hide()
+	
+	PerksTab.BackgroundBack = PerksTab:CreateTexture(nil,"BACKGROUND",nil,-5)
+	PerksTab.BackgroundBack:SetAllPoints()
+	
+	PerksTab.BackgroundShadow = PerksTab:CreateTexture(nil,"BACKGROUND",nil,-4)
+	PerksTab.BackgroundShadow:SetAllPoints()
+	PerksTab.BackgroundShadow:SetAtlas("Artifacts-BG-Shadow")
+	
+	PerksTab.HeaderBackground = PerksTab:CreateTexture(nil,"OVERLAY",nil,-6)
+	PerksTab.HeaderBackground:SetAllPoints()
+	PerksTab.HeaderBackground:SetAtlas("Artifacts-HeaderBG")
+	
+	PerksTab.Model = CreateFrame("PlayerModel",nil,PerksTab)
+	PerksTab.Model:SetAllPoints()
+	PerksTab.Model:SetAlpha(.5)
+	
+	PerksTab.AltModel = CreateFrame("PlayerModel",nil,PerksTab)
+	PerksTab.AltModel:SetAllPoints()
+	PerksTab.AltModel:SetAlpha(.5)
+	
+	local function ArtifactsModelTemplate_OnModelLoaded(self)
+		local CUSTOM_ANIMATION_SEQUENCE = 213
+		local animationSequence = self:HasAnimation(CUSTOM_ANIMATION_SEQUENCE) and CUSTOM_ANIMATION_SEQUENCE or 0
+	
+		if self.uiCameraID then
+			Model_ApplyUICamera(self, self.uiCameraID)
+		end
+		self:SetLight(true, false, 0, 0, 0, .7, 1.0, 1.0, 1.0)
+					
+		self:SetDesaturation(self.desaturation or .5)
+	
+		self:SetAnimation(animationSequence, 0)
+	end
+	
+	PerksTab.Model:SetScript("OnModelLoaded",ArtifactsModelTemplate_OnModelLoaded)
+	PerksTab.AltModel:SetScript("OnModelLoaded",ArtifactsModelTemplate_OnModelLoaded)
+	
+	PerksTab.powerIDToPowerButton = {}
+	PerksTab.DependencyLines = {}
+	
+	LoadAddOn("Blizzard_ArtifactUI")
+	
+	local function GetOrCreatePowerButton(powerIndex)
+		local button = PerksTab.PowerButtons and PerksTab.PowerButtons[powerIndex]
+		if button then
+			return button
+		end
+		return CreateFrame("BUTTON", nil, PerksTab, "ArtifactPowerButtonTemplate")
+	end
+	
+	local function GetOrCreateDependencyLine(lineIndex)
+		local lineContainer = PerksTab.DependencyLines and PerksTab.DependencyLines[lineIndex]
+		if lineContainer then
+			lineContainer:Show()
+			return lineContainer
+		end
+	
+		lineContainer = CreateFrame("FRAME", nil, PerksTab, "ArtifactDependencyLineTemplate")
+	
+		return lineContainer
+	end
+	
+	local ARTIFACT_TRAIT_SCALE = 0.8
+	
+	local function SetupButton(self, powerID, anchorRegion, currRank, totalRanks)
+		local spellID, cost, currentRank, maxRank, bonusRanks, x, y, prereqsMet, isStart, isGoldMedal, isFinal = C_ArtifactUI.GetPowerInfo(powerID)
+		self:ClearAllPoints()
+		self:SetPoint("CENTER", anchorRegion, "TOPLEFT", x * anchorRegion:GetWidth() / ARTIFACT_TRAIT_SCALE, -y * anchorRegion:GetHeight() / ARTIFACT_TRAIT_SCALE)
+		
+		self:SetScale(ARTIFACT_TRAIT_SCALE)
+	
+		local name, _, texture = GetSpellInfo(spellID)
+		self.Icon:SetTexture(texture)
+		self.IconDesaturated:SetTexture(texture)
+	
+		local totalPurchasedRanks = currRank
+	
+		self.powerID = powerID
+		self.spellID = spellID
+		self.currentRank = currRank
+		self.bonusRanks = 0
+		self.maxRank = totalRanks
+		self.isStart = isStart
+		self.isGoldMedal = isGoldMedal
+		self.isFinal = isFinal
+	
+		self.isCompletelyPurchased = currRank == totalRanks or self.isStart
+		self.hasSpentAny = currRank > 0
+		self.isMaxRank = currRank == totalRanks
+		self.prereqsMet = prereqsMet
+		self.cost = cost
+	
+		self:UpdatePowerType()
+	
+		if currRank > 0 then
+			self:SetStyle(ARTIFACT_POWER_STYLE_PURCHASED_READ_ONLY)
+		else
+			self:SetStyle(ARTIFACT_POWER_STYLE_UNPURCHASED_READ_ONLY)
+		end
+	
+		self.FirstPointWaitingAnimation:Stop()
+	end
+	
+	local function PlayLineFadeAnim(lineContainer, lineAnimType)
+		lineContainer.FadeAnim:Finish()
+	
+		lineContainer.FadeAnim.Background:SetFromAlpha(lineContainer.Background:GetAlpha())
+		lineContainer.FadeAnim.Fill:SetFromAlpha(lineContainer.Fill:GetAlpha())
+		lineContainer.FadeAnim.FillScroll1:SetFromAlpha(lineContainer.FillScroll1:GetAlpha())
+		lineContainer.FadeAnim.FillScroll2:SetFromAlpha(lineContainer.FillScroll2:GetAlpha())
+	
+		lineContainer.ScrollAnim:Play()
+	
+		lineContainer.FadeAnim.Background:SetToAlpha(0.0)
+		lineContainer.FadeAnim.Fill:SetToAlpha(1.0)
+		lineContainer.FadeAnim.FillScroll1:SetToAlpha(1.0)
+		lineContainer.FadeAnim.FillScroll2:SetToAlpha(1.0)
+			
+		lineContainer.animType = lineAnimType
+		lineContainer.FadeAnim:Play()
+	end
+	
+	function UpdatePerksTab(artifactData,lineParent)
+		local itemID = artifactData.itemID
+		if not itemID then
+			return
+		end
+		local data = PerksTabData[itemID]
+		if not data then
+			return
+		end
+		
+		PerksTab.BackgroundBack:SetAtlas(data.back)
+	
+		PerksTab.Model.uiCameraID = data.uiCam
+		PerksTab.Model.desaturation = data.mDes
+		if data.iAppID then
+			PerksTab.Model:SetItemAppearance(data.iAppID)
+		else
+			PerksTab.Model:SetItem(itemID, data.mAppID)
+		end
+	
+		PerksTab.Model:SetModelDrawLayer(data.aTop and "BORDER" or "ARTWORK")
+		PerksTab.AltModel:SetModelDrawLayer(data.aTop and "ARTWORK" or "BORDER")
+	
+		PerksTab.Model:SetSuppressGlobalAnimationTrack(data.gAnim)
+		PerksTab.AltModel:SetSuppressGlobalAnimationTrack(data.gAnim)
+		
+		if data.aID and data.aUiCam then
+			PerksTab.AltModel.uiCameraID = data.aUiCam
+			PerksTab.AltModel.desaturation = data.mDes
+			if data.aIAppID then
+				PerksTab.AltModel:SetItemAppearance(data.aIAppID)
+			else
+				PerksTab.AltModel:SetItem(data.aID, data.mAppID)
+			end
+	
+			PerksTab.AltModel:Show()
+		else
+			PerksTab.AltModel:Hide()
+		end
+		
+		PerksTab:ClearAllPoints()
+		PerksTab:SetPoint("TOPLEFT",lineParent,"BOTTOMLEFT")
+		PerksTab:Show()
+		
+		local powers,powersToData = {},{}
+		for i=1,#artifactData do
+			local powerID = artifactData[i][1]
+			powers[#powers+1] = powerID
+			powersToData[ powerID ] = artifactData[i]
+		end
+		
+		for powerID,button in ipairs(PerksTab.powerIDToPowerButton) do
+			button:Hide()
+		end
+		for i, powerID in ipairs(powers) do
+			local powerButton = PerksTab.powerIDToPowerButton[powerID]
+	
+			if not powerButton then
+				powerButton = GetOrCreatePowerButton(i)
+				PerksTab.powerIDToPowerButton[powerID] = powerButton
+	
+				powerButton:ClearOldData()
+			end
+	
+			SetupButton(powerButton, powerID, PerksTab.BackgroundBack, powersToData[powerID][2], powersToData[powerID][3])
+			powerButton.links = {}
+			powerButton.owner = PerksTab
+			powerButton:Show()
+		end
+		local numUsedLines = 0
+		for i, fromPowerID in ipairs(powers) do
+			local fromButton = PerksTab.powerIDToPowerButton[fromPowerID]
+			if fromButton:IsShown() then
+				local fromLinks = C_ArtifactUI.GetPowerLinks(fromPowerID)
+				if fromLinks then
+					for j, toPowerID in ipairs(fromLinks) do
+						if not fromButton.links[toPowerID] then
+							local toButton = PerksTab.powerIDToPowerButton[toPowerID]
+							if toButton and not toButton.links[fromPowerID] then
+								numUsedLines = numUsedLines + 1
+								local lineContainer = GetOrCreateDependencyLine(numUsedLines)
+	
+								lineContainer.Fill:SetStartPoint("CENTER", fromButton)
+								lineContainer.Fill:SetEndPoint("CENTER", toButton)
+								
+								lineContainer.Fill:SetVertexColor(data.cR, data.cG, data.cB)
+								lineContainer.FillScroll1:SetVertexColor(data.cR, data.cG, data.cB)
+								lineContainer.FillScroll2:SetVertexColor(data.cR, data.cG, data.cB)
+	
+								lineContainer.FillScroll1:Show()
+								lineContainer.FillScroll1:SetStartPoint("CENTER", fromButton)
+								lineContainer.FillScroll1:SetEndPoint("CENTER", toButton)
+	
+								lineContainer.FillScroll2:Show()
+								lineContainer.FillScroll2:SetStartPoint("CENTER", fromButton)
+								lineContainer.FillScroll2:SetEndPoint("CENTER", toButton)
+					
+								PlayLineFadeAnim(lineContainer, 1)
+								
+								fromButton.links[toPowerID] = lineContainer
+								toButton.links[fromPowerID] = lineContainer
+							end
+						end
+					end
+				end
+			end
+		end		
+	end
+
 	
 	self.moreInfoButton = ELib:Button(self,L.InspectViewerMoreInfo):Size(150,20):Point("TOPRIGHT",self.borderList,"BOTTOMRIGHT",2,-4):OnClick(function() module.options.moreInfoWindow:Show() end)
 	

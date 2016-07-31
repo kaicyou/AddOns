@@ -87,124 +87,7 @@ module.db.minFoodLevelToActual = ExRT.isLegionContent and {
 }
 
 
-module.db.buffsList = {"STAMINA","STATS","MASTERY","CRIT","HASTE","MS","VERSA","SPD","AP"}
-module.db.buffsNames = {
-	STAMINA = RAID_BUFF_2 or "Stamina",
-	STATS = RAID_BUFF_1 or "Stats",
-	MASTERY = RAID_BUFF_7 or "Mastery",
-	CRIT = RAID_BUFF_6 or "Crit",
-	HASTE = RAID_BUFF_4 or "Haste",
-	MS = RAID_BUFF_8 or "Ms",
-	VERSA = RAID_BUFF_9 or "Versatility",
-	SPD = RAID_BUFF_5 or "SPD",
-	AP = RAID_BUFF_3 or "AP",
-}
-
-do
-	local function SpellName(spellID)
-		local name = GetSpellInfo(spellID)
-		return name or "UNK BUFF NAME"
-	end
-	module.db.buffsSpells = {
-		STAMINA={
-			SpellName(21562),	-- Power Word: Fortitude
-			SpellName(166928),	-- Blood Pact
-			SpellName(469), 	-- Commanding Shout
-			SpellName(90364),	-- Silithid, Qiraji Fortitude
-			SpellName(50256),	-- Bear, Invigorating Roar
-			SpellName(160014),	-- Goat, Sturdiness
-			SpellName(160199),	-- Hunter, level 100
-		},
-		STATS={
-			SpellName(20217),	-- Blessing of Kings
-			SpellName(1126),	-- Mark of the Wild
-			SpellName(116781),	-- Legacy of the White Tiger
-			SpellName(115921),	-- Legacy of the Emperor
-			SpellName(90363),	-- Shale Spider, Embrace of the Shale Spider
-			SpellName(159988),	-- Dog, Bark of the Wild
-			SpellName(160017),	-- Gorilla, Blessing of Kongs
-			SpellName(160077),	-- Worm, Strength of the Earth
-			SpellName(160206),	-- Hunter, level 100
-		},
-		MASTERY={
-			SpellName(19740),	-- Blessing of Might
-			SpellName(155522),	-- Power of the Grave
-			SpellName(116956),	-- Grace of Air
-			SpellName(24907),	-- Moonkin Aura
-			SpellName(93435),	-- Cat, Roar of Courage
-			SpellName(128997),	-- Spirit Beast, Spirit Beast Blessing
-			SpellName(160073),	-- Tallstrider, Plainswalking
-			SpellName(160039),	-- Hydra, Keen Senses
-			SpellName(160198),	-- Hunter, level 100
-		},
-		CRIT={
-			SpellName(116781),	-- Legacy of the White Tiger
-			SpellName(17007),	-- Leader of the Pack
-			SpellName(1459),	-- Arcane Brilliance
-			SpellName(61316),	-- Dalaran Brilliance
-			SpellName(24604),	-- Wolf, Furious Howl
-			SpellName(90309),	-- Devilsaur, Terrifying Roar
-			SpellName(126373),	-- Quilen, Fearless Roar
-			SpellName(126309),	-- Water Strider, Still Water
-			SpellName(90363),	-- Shale Spider, Embrace of the Shale Spider
-			SpellName(160052),	-- Raptor, Strength of the Pack
-			SpellName(160200),	-- Hunter, level 100
-			SpellName(128997),	-- Spirit Beast Blessing
-		},
-		HASTE={
-			SpellName(55610),	-- Unholy Aura
-			SpellName(116956),	-- Grace of Air
-			SpellName(49868),	-- Mind Quickening
-			SpellName(113742),	-- Swiftblade's Cunning
-			SpellName(135678),	-- Sporebat, Energizing Spores
-			SpellName(128432),	-- Hyena, Cackling Howl
-			SpellName(160074),	-- Wasp, Speed of the Swarm
-			SpellName(160203),	-- Hunter, level 100
-		},
-		MS={
-			SpellName(166916),	-- Windflurry
-			SpellName(49868),	-- Mind Quickening
-			SpellName(113742),	-- Swiftblade's Cunning
-			SpellName(109773),	-- Dark Intent
-			SpellName(50519),	-- Bat, Sonic Focus
-			SpellName(159736), 	-- Chimaera, Duality
-			SpellName(57386),	-- Clefthoof, Wild Strength
-			SpellName(58604),	-- Core Hound, Double Bite
-			SpellName(34889),	-- Dragonhawk, Spry Attacks
-			SpellName(24844),	-- Wind Serpent, Breath of the Winds
-			SpellName(172968),	-- Hunter, level 100
-		},
-		VERSA={
-			SpellName(167187),	-- Sanctity Aura
-			SpellName(167188),	-- Inspiring Presence
-			SpellName(55610),	-- Unholy Aura
-			SpellName(1126),	-- Mark of the Wild
-			SpellName(159735),	-- Bird of Prey, Tenacity
-			SpellName(35290),	-- Boar, Indomitable
-			SpellName(57386),	-- Clefthoof, Wild Strength
-			SpellName(160045),	-- Porcupine, Defensive Quills
-			SpellName(50518),	-- Ravager, Chitinous Armor
-			SpellName(160077),	-- Worm, Strength of the Earth
-			SpellName(172967),	-- Hunter, level 100
-		},
-		SPD={
-			SpellName(1459),	-- Arcane Brilliance
-			SpellName(61316),	-- Dalaran Brilliance
-			SpellName(109773),	-- Dark Intent
-			SpellName(126309),	-- Water Strider, Still Water
-			SpellName(90364),	-- Silithid, Qiraji Fortitude
-			SpellName(128433),	-- Serpent, Serpent's Cunning
-			SpellName(160205),	-- Hunter, level 100
-		},
-		AP={
-			SpellName(19506),	-- Trueshot Aura
-			SpellName(6673),	-- Battle Shout
-			SpellName(57330),	-- Horn of Winter
-		},
-	}
-end
-
-local IsSendFoodByMe,IsSendFlaskByMe,IsSendRunesByMe,IsSendBuffsByMe = nil
+local IsSendFoodByMe,IsSendFlaskByMe,IsSendRunesByMe = nil
 
 local function GetPotion(arg1)
 	local h = L.raidcheckPotion
@@ -343,12 +226,7 @@ local function GetFood(checkType)
 		if name and subgroup <= gMax then
 			local isAnyBuff = nil
 			for i=1,40 do
-				local _,spellId,stats
-				if ExRT.is7 then
-					_,_,_,_,_,_,_,_,_,_,spellId,_,_,_,_,_,stats = UnitAura(name, i,"HELPFUL")
-				else
-					_,_,_,_,_,_,_,_,_,_,spellId,_,_,_,stats = UnitAura(name, i,"HELPFUL")
-				end
+				local _,_,_,_,_,_,_,_,_,_,spellId,_,_,_,_,_,stats = UnitAura(name, i,"HELPFUL")
 				if not spellId then
 					break
 				else
@@ -515,70 +393,6 @@ local function GetFlask(checkType)
 	end
 end
 
-local function GetRaidBuffs(checkType)
-	if ExRT.is7 then return end
-	local f = {}
-	for i=1,#module.db.buffsList do f[i]={} end
-	local gMax = ExRT.F.GetRaidDiffMaxGroup()
-	for i=1,40 do
-		local name,_,subgroup,_,_,_,_,online,isDead = GetRaidRosterInfo(i)
-		if name and subgroup <= gMax and online and not isDead then
-			for j=1,#module.db.buffsList do
-				local isAnyBuff = nil
-				for k,buffName in pairs(module.db.buffsSpells[ module.db.buffsList[j] ]) do
-					if buffName then
-						local auraExists = UnitAura(name, buffName)
-						if auraExists then
-							isAnyBuff = true
-							break
-						end
-					end
-				end
-				if not isAnyBuff then
-					f[j][ #f[j]+1 ] = name
-				end
-			end
-		end
-	end
-
-	if not checkType or checkType == 1 then
-		for i=1,#f do
-			local result = format("|cff00ff00%s (%d):|r ",module.db.buffsNames[ module.db.buffsList[i] ],#f[i])
-			for j=1,#f[i] do
-				result = result .. format("%s%s",f[i][j] or "?", j < #f[i] and ", " or "")
-				if #result > 230 then
-					PublicResults(result,checkType)
-					result = ""
-				end
-			end
-			PublicResults(result,checkType)
-		end
-	elseif checkType == 2 or checkType == 3 then
-		if checkType == 3 then
-			checkType = nil
-		end
-		local missingCount = 0
-		for i=1,#f do
-			if #f[i] > 0 then
-				missingCount = missingCount + 1
-			end
-		end
-		local result = format("|cff00ff00%s (%d):|r ",L.RaidCheckNoBuffs,missingCount)
-		local missingNow = 0
-		for i=1,#f do
-			if #f[i] > 0 then
-				missingNow = missingNow + 1
-				result = result .. module.db.buffsNames[ module.db.buffsList[i] ] .. (missingNow < missingCount and ", " or "")
-				if #result > 230 then
-					PublicResults(result,checkType)
-					result = ""
-				end
-			end
-		end
-		PublicResults(result,checkType)
-	end
-end
-
 
 function module.options:Load()
 	self:CreateTilte()
@@ -601,21 +415,9 @@ function module.options:Load()
 	self.runesToChat = ELib:Button(self,L.RaidCheckRunesChat):Size(230,20):Point("LEFT",self.runes,"RIGHT",71,0):OnClick(function() GetRunes(1) end)
 	self.runesToChat.txt = ELib:Text(self,"/rt check runeschat",11):Size(100,22):Point("LEFT",self.runesToChat,"RIGHT",5,0)
 	
-	if not ExRT.is7 then
-		self.buffs = ELib:Button(self,L.RaidCheckBuffs):Size(230,20):Point(5,-105):OnClick(function() GetRaidBuffs() end)
-		self.buffs.txt = ELib:Text(self,"/rt check buffs",11):Size(60,22):Point("LEFT",self.buffs,"RIGHT",5,0)
-	
-		self.buffsToChat = ELib:Button(self,L.RaidCheckBuffsToChat):Size(230,20):Point("LEFT",self.buffs,"RIGHT",71,0):OnClick(function() GetRaidBuffs(1) end)
-		self.buffsToChat.txt = ELib:Text(self,"/rt check buffschat",11):Size(100,22):Point("LEFT",self.buffsToChat,"RIGHT",5,0)
-	end
-	
 	self.level2optLine = CreateFrame("Frame",nil,self)
-	self.level2optLine:SetPoint("TOPLEFT",0,-130)
-	self.level2optLine:SetSize(1,1)
-	if ExRT.is7 then
-		self.level2optLine:SetPoint("TOPLEFT",0,-105)
-	end
-	
+	self.level2optLine:SetPoint("TOPLEFT",0,-105)
+	self.level2optLine:SetSize(1,1)	
 
 	self.chkSlak = ELib:Check(self,L.raidcheckslak,VExRT.RaidCheck.ReadyCheck):Point("TOPLEFT",self.level2optLine,7,0):OnClick(function(self) 
 		if self:GetChecked() then
@@ -750,10 +552,7 @@ function module.options:Load()
 	self.optReadyCheckFrame:SetBackdropColor(0,0,0,0.3)
 	self.optReadyCheckFrame:SetBackdropBorderColor(.24,.25,.30,0)
 	ELib:Border(self.optReadyCheckFrame,2,.24,.25,.30,1)
-	self.optReadyCheckFrame:SetPoint("TOP",0,-430)
-	if ExRT.is7 then
-		self.optReadyCheckFrame:SetPoint("TOP",0,-405)
-	end
+	self.optReadyCheckFrame:SetPoint("TOP",0,-405)
 
 	self.optReadyCheckFrameHeader = ELib:Text(self.optReadyCheckFrame,L.raidcheckReadyCheck):Size(550,20):Point("BOTTOMLEFT",self.optReadyCheckFrame,"TOPLEFT",10,1):Bottom()
 
@@ -1003,13 +802,9 @@ local function SendDataToChat()
 	if IsSendRunesByMe then
 		GetRunes(2)
 	end
-	if IsSendBuffsByMe then
-		GetRaidBuffs(2)
-	end
 	IsSendFoodByMe = nil
 	IsSendFlaskByMe = nil
 	IsSendRunesByMe = nil
-	IsSendBuffsByMe = nil
 end
 
 local function PrepareDataToChat(toSelf)
@@ -1018,9 +813,6 @@ local function PrepareDataToChat(toSelf)
 		GetFlask(3)
 		if VExRT.RaidCheck.RunesCheck then
 			GetRunes(3)
-		end
-		if VExRT.RaidCheck.BuffsCheck then
-			GetRaidBuffs(3)
 		end
 	else
 		if VExRT.RaidCheck.disableLFR then
@@ -1037,11 +829,6 @@ local function PrepareDataToChat(toSelf)
 		if VExRT.RaidCheck.RunesCheck then
 			IsSendRunesByMe = true
 			ExRT.F.ScheduleTimer(ExRT.F.SendExMsg, 0.1, "raidcheck","RUNES")
-		end
-		IsSendBuffsByMe = nil
-		if VExRT.RaidCheck.BuffsCheck then
-			IsSendBuffsByMe = true
-			ExRT.F.ScheduleTimer(ExRT.F.SendExMsg, 0.1, "raidcheck","BUFFS")
 		end
 		ExRT.F.ScheduleTimer(SendDataToChat, 1)
 	end
@@ -1060,9 +847,6 @@ do
 			GetFlask(2+plus)
 			if VExRT.RaidCheck.RunesCheck then
 				GetRunes(2+plus)
-			end
-			if VExRT.RaidCheck.BuffsCheck then
-				GetRaidBuffs(2+plus)
 			end
 			]]
 			PrepareDataToChat(VExRT.RaidCheck.SendSelf)
@@ -1151,8 +935,6 @@ function module:addonMessage(sender, prefix, ...)
 					IsSendFlaskByMe = nil
 				elseif type == "RUNES" then
 					IsSendRunesByMe = nil
-				elseif type == "BUFFS" then
-					IsSendBuffsByMe = nil
 				end
 			end
 		end

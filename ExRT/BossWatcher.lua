@@ -33,8 +33,6 @@ local VExRT = nil
 local module = ExRT.mod:New("BossWatcher",ExRT.L.BossWatcher)
 local ELib,L = ExRT.lib,ExRT.L
 
-local is6 = not ExRT.is7
-
 module.db.data = {
 	{
 		guids = {},
@@ -103,37 +101,6 @@ module.db.buffsFilters = {
 	[-2]={148010,146194,146198,146200,137593,137596,137590,137288,137323,137326,137247,137331},
 },
 }
-if ExRT.is7 then
-
-else
-	tinsert(module.db.buffsFilters,{
-		[-1]=L.RaidLootT17Highmaul,
-		[-2]={
-			159178,159113,159947,158986,
-			156151,156152,156160,
-			162346,162475,
-			163242,159280,163663,159253,159426,
-			158241,159709,155569,167200,163372,163297,158200,157943,
-			162184,162186,172813,161345,162185,161242,156803,160734,
-			157763,156225,164004,164005,164006,164176,164178,
-		},
-	})
-	tinsert(module.db.buffsFilters,{
-		[-1]=L.RaidLootT17BF,
-		[-2]={
-			-- Gruul: ???
-			173471,155900,156834,
-			155236,154960,155061,154981,
-			154952,154932,
-			-- Hans'gar and Franzok: ???
-			159481,
-			155196,155225,155192,174716,
-			157059,161923,161839,
-			156006,
-			156653,156096,
-		}
-	})
-end
 module.db.buffsFilterStatus = {}
 
 module.db.autoSegmentEvents = {"UNIT_SPELLCAST_SUCCEEDED","SPELL_AURA_REMOVED","SPELL_AURA_APPLIED","UNIT_DIED","CHAT_MSG_RAID_BOSS_EMOTE"}
@@ -165,23 +132,7 @@ module.db.segmentsLNames = {
 module.db.registerOtherEvents = {}
 
 module.db.raidTargets = {0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80}
-module.db.energyLocale = is6 and {
-	[0] = "|cff69ccf0"..L.BossWatcherEnergyType0,
-	[1] = "|cffedc294"..L.BossWatcherEnergyType1,
-	[2] = "|cffd1fa99"..L.BossWatcherEnergyType2,
-	[3] = "|cffffff8f"..L.BossWatcherEnergyType3,
-	[4] = "|cfffff569"..L.BossWatcherEnergyType4,
-	[5] = "|cffeb4561"..L.BossWatcherEnergyType5,
-	[6] = "|cffeb4561"..L.BossWatcherEnergyType6,
-	[7] = "|cff9482c9"..L.BossWatcherEnergyType7,
-	[8] = "|cffffa330"..L.BossWatcherEnergyType8,
-	[9] = "|cffffb3e0"..L.BossWatcherEnergyType9,
-	[10] = "|cffffffff"..L.BossWatcherEnergyType10,
-	[12] = "|cff4DbB98"..L.BossWatcherEnergyType12,
-	[13] = "|cffd9d9d9"..L.BossWatcherEnergyType13,
-	[14] = "|cffeb4561"..L.BossWatcherEnergyType14,
-	[15] = "|cff9482c9"..L.BossWatcherEnergyType15,
-} or {
+module.db.energyLocale = {
 	[0] = "|cff69ccf0"..L.BossWatcherEnergyType0,
 	[1] = "|cffedc294"..L.BossWatcherEnergyType1,
 	[2] = "|cffd1fa99"..L.BossWatcherEnergyType2,
@@ -256,7 +207,7 @@ local ReductionAurasFunctions = {
 	feintCheck = 3,
 	dampenHarmCheck = 4,
 }
-module.db.reductionAuras = ExRT.is7 and {
+module.db.reductionAuras = {
 	--Warrior
 	[871] = 0.6,		--Shield Wall
 	[23920] = {0.7,ReductionAurasFunctions.magic},	--Spell Reflect
@@ -321,89 +272,11 @@ module.db.reductionAuras = ExRT.is7 and {
 
 	--Other
 	[65116] = {0.9,ReductionAurasFunctions.physical},	--Stoneform
-} or {
-	--Paladin
-	[115668] = 0.9,		--Glyph of Templar's Verdict
-	[6940] = 0.7,		--Hand of Sacrifice
-	[498] = {0.6,ReductionAurasFunctions.magic,function(physical,magic) if magic == 0 then return 0.6,ReductionAurasFunctions.magic else return 0.8 end end},	--Divine Protection
-	[31821] = 0.8,		--Devotion Aura
-	[31850] = 0.8,		--Ardent Defender
-	[86659] = 0.5,		--Guardian of Ancient Kings
-	[114039] = 0.85,	--Hand of Purity
-	[132403] = {1,ReductionAurasFunctions.physical,function(auraVar) return (100+auraVar)/100,ReductionAurasFunctions.physical end},	--Shield of the Righteous
-	
-	--Warrior
-	[71] = 0.8,		--Defensive Stance
-	[118038] = 0.7,		--Die by the Sword
-	[114030] = 0.7,		--Vigilance
-	[871] = {0.6,nil,function(auraVar) return (100+auraVar)/100 end},		--Shield Wall
-	
-	--Hunter
-	[148467] = {0.7,nil,function(_,_,_,_,auraVar) return (100+auraVar)/100 end},	--Deterrence
-	[51755] = {1,nil,function(_,_,_,auraVar) return (100+auraVar)/100 end},		--Camouflage
-	
-	--Priest
-	[45242] = 0.7,		--Focused Will
-	[33206] = 0.6,		--Pain Suppression
-	[81782] = 0.75,		--Power Word: Barrier
-	[47585] = 0.1,		--Dispersion
-	[586] = {1,nil,function(_,auraVar) return (100+auraVar)/100 end},		--Fade
-	
-	--DK
-	[48792] = {0.8,nil,function(_,_,auraVar) return (100+auraVar)/100 end},		--Icebound Fortitude
-	[49222] = 0.8,		--Bone Shield
-	[171049] = 0.6,		--Rune Tap
-	[145629] = {0.8,ReductionAurasFunctions.magic},		--Anti-Magic Zone
-	[48263] = 0.9,		--Blood Presence
-	
-	--Shaman
-	[30823] = 0.7,		--Shamanistic Rage
-	[142912] = 0.9,		--Glyph of Lightning Shield
-	[108271] = 0.6,		--Astral Shift
-	[118347] = 0.8,		--Reinforce
-	
-	--Mage
-	[113862] = 0.1,		--Greater Invisibility
-	[110960] = 0.1,		--Greater Invisibility
-	
-	--Rouge
-	[1966] = {0.5,ReductionAurasFunctions.feintCheck},		--Feint
-	[31224] = {1,nil,function(_,_,auraVar) return (100+auraVar)/100,ReductionAurasFunctions.physical end},	--Cloak of Shadows
-	
-	--Warlock
-	[104773] = {0.6,nil,function(_,_,auraVar) return (100+auraVar)/100 end},		--Unending Resolve
-	
-	--Monk
-	[122278] = {0.5,ReductionAurasFunctions.dampenHarmCheck},	--Dampen Harm		Note: for HP ~363k (700 gear); may work incorrect: hit for 56k will be reducted to 28k and doesn't counting, so only big hits will be recorded
-	[120954] = {0.8,nil,function(_,auraVar) return (100+auraVar)/100 end},		--Fortifying Brew
-	[122783] = {0.1,ReductionAurasFunctions.magic},		--Diffuse Magic
-	[115176] = 0.1,		--Zen Meditation
-	
-	--Druid
-	[22812] = 0.8,		--Barkskin
-	[102342] = 0.8,		--Ironbark
-	[155835] = 0.6,		--Bristling Fur
-	[61336] = 0.5,		--Survival Instincts
-	[768] = 1,		--Cat Form
-	
-	--Other
-	[65116] = {0.9,ReductionAurasFunctions.physical},	--Stoneform
-	[185103] = {0.94,nil,function(auraVar) return (100+auraVar)/100 end},	--Priest Archimonde trinket
 }
-if not ExRT.is7 then
-	--Direct fix new val in aura return, so not work in 6.x
-	module.db.reductionAuras = {}
-end
-module.db.reductionBySpec = ExRT.is7 and {
+module.db.reductionBySpec = {
 	[63] = {30482,	0.94,	ReductionAurasFunctions.physical,	0x4},	--Mage fire;  16% with artifact trait, 6% without
 	[104] = {16931,	0.9},		--Druid bear
 	[581] = {203513,0.9,	ReductionAurasFunctions.magic}			--Demonic Wards
-} or {
-	[63] = {16931,	0.94,	ReductionAurasFunctions.physical,	0x4},	--Mage fire
-	[66] = {105805,	0.9},		--Paladin prot
-	[104] = {16931,	0.9},		--Druid bear
-	[268] = {115069,0.85,	ReductionAurasFunctions.magic},		--Monk brew
-	--[105] = {16931,	0.9},	--Test on myself
 }
 module.db.reductionCurrent = {}
 module.db.reductionPowerWordBarrierCaster = nil
@@ -445,6 +318,7 @@ module.db.def_trackingDamageSpells = ExRT.isLegionContent and {
 	[199237]=1841,	--Ursoc: Barreling Momentum > Crushing Impact
 	[211073]=1877,	--Cenarius: Desiccating Stomp
 	[210619]=1877,	--Cenarius: Destructive Nightmares
+	[206369]=1864,	--Xavius: Corruption Meteor
 	
 	[210074]=1849,	--Crystal Scorpion: Shockwave
 	[204733]=1849,	--Crystal Scorpion: Volatile Chitin
@@ -1057,44 +931,23 @@ local function addDamage(_,timestamp,sourceGUID,sourceName,sourceFlags,sourceFla
 	end
 end
 
-local function AddMiss(_,timestamp,sourceGUID,sourceName,sourceFlags,_,destGUID,destName,destFlags,_,spellID,_,school,missType,isOffHand,multistrike,amountMissed)
+local function AddMiss(_,timestamp,sourceGUID,sourceName,sourceFlags,_,destGUID,destName,destFlags,_,spellID,_,school,missType,isOffHand,amountMissed)
 	if missType == "ABSORB" then
-		addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,nil,amountMissed,nil,nil,nil,isOffHand,multistrike)
+		addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,nil,amountMissed,nil,nil,nil,isOffHand)
 	elseif missType == "BLOCK" then
-		addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,amountMissed,nil,nil,nil,nil,isOffHand,multistrike)
+		addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,amountMissed,nil,nil,nil,nil,isOffHand)
 	elseif missType == "PARRY" then
-		addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,nil,nil,nil,nil,nil,isOffHand,multistrike,missType)
+		addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,nil,nil,nil,nil,nil,isOffHand,nil,missType)
 		local spellTable = fightData_damage[destGUID][sourceGUID][spellID]
 		spellTable.parry = spellTable.parry + 1
 	elseif missType == "DODGE" then
-		addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,nil,nil,nil,nil,nil,isOffHand,multistrike,missType)
+		addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,nil,nil,nil,nil,nil,isOffHand,nil,missType)
 		local spellTable = fightData_damage[destGUID][sourceGUID][spellID]
 		spellTable.dodge = spellTable.dodge + 1
 	else
-		addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,nil,nil,nil,nil,nil,isOffHand,multistrike,missType)
+		addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,nil,nil,nil,nil,nil,isOffHand,nil,missType)
 		local spellTable = fightData_damage[destGUID][sourceGUID][spellID]
 		spellTable.miss = spellTable.miss + 1	
-	end
-end
-if ExRT.is7 then
-	function AddMiss(_,timestamp,sourceGUID,sourceName,sourceFlags,_,destGUID,destName,destFlags,_,spellID,_,school,missType,isOffHand,amountMissed)
-		if missType == "ABSORB" then
-			addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,nil,amountMissed,nil,nil,nil,isOffHand)
-		elseif missType == "BLOCK" then
-			addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,amountMissed,nil,nil,nil,nil,isOffHand)
-		elseif missType == "PARRY" then
-			addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,nil,nil,nil,nil,nil,isOffHand,nil,missType)
-			local spellTable = fightData_damage[destGUID][sourceGUID][spellID]
-			spellTable.parry = spellTable.parry + 1
-		elseif missType == "DODGE" then
-			addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,nil,nil,nil,nil,nil,isOffHand,nil,missType)
-			local spellTable = fightData_damage[destGUID][sourceGUID][spellID]
-			spellTable.dodge = spellTable.dodge + 1
-		else
-			addDamage(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,spellID,nil,nil,0,0,school,nil,nil,nil,nil,nil,nil,isOffHand,nil,missType)
-			local spellTable = fightData_damage[destGUID][sourceGUID][spellID]
-			spellTable.miss = spellTable.miss + 1	
-		end
 	end
 end
 
@@ -2544,13 +2397,8 @@ function module.main:SPELL_RESURRECT(timestamp,sourceGUID,sourceName,sourceFlags
 	fightData.resurrests[#fightData.resurrests+1]={sourceGUID,destGUID,spellID,timestamp}
 end
 
-function module.main:SWING_MISSED(timestamp,sourceGUID,sourceName,sourceFlags,_,destGUID,destName,destFlags,_,missType,isOffHand,multistrike,amountMissed)
-	AddMiss(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,6603,nil,0x1,missType,isOffHand,multistrike,amountMissed)
-end
-if ExRT.is7 then
-	function module.main:SWING_MISSED(timestamp,sourceGUID,sourceName,sourceFlags,_,destGUID,destName,destFlags,_,missType,isOffHand,amountMissed)
-		AddMiss(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,6603,nil,0x1,missType,isOffHand,amountMissed)
-	end
+function module.main:SWING_MISSED(timestamp,sourceGUID,sourceName,sourceFlags,_,destGUID,destName,destFlags,_,missType,isOffHand,amountMissed)
+	AddMiss(nil,timestamp,sourceGUID,sourceName,sourceFlags,nil,destGUID,destName,destFlags,nil,6603,nil,0x1,missType,isOffHand,amountMissed)
 end
 
 function module.main:SPELL_SUMMON(timestamp,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID)
@@ -2687,18 +2535,6 @@ function module.main:UNIT_SPELLCAST_SUCCEEDED(unitID,_,_,_,spellID)
 		local guid = UnitGUID(unitID)
 		if AntiSpam("BossWatcherUSS"..(guid or "0x0")..(spellID or "0"),0.5) then
 			StartSegment("UNIT_SPELLCAST_SUCCEEDED",spellID)
-		end
-	end
-end
-if ExRT.is7 then
-	function module.main:UNIT_SPELLCAST_SUCCEEDED(unitID,_,_,spellLine)
-		local unitType,_,serverID,instanceID,zoneUID,spellID,spawnID = strsplit("-", spellLine or "")
-		spellID = tonumber(spellID or 0) or 0
-		if autoSegmentsUPValue.UNIT_SPELLCAST_SUCCEEDED[spellID] then
-			local guid = UnitGUID(unitID)
-			if AntiSpam("BossWatcherUSS"..(guid or "0x0")..(spellID or "0"),0.5) then
-				StartSegment("UNIT_SPELLCAST_SUCCEEDED",spellID)
-			end
 		end
 	end
 end
@@ -3395,13 +3231,22 @@ function BWInterfaceFrameLoad()
 					{hp = 0.405,phase = 3,},
 				},
 			},	--"Dragons of Nightmare"
-			[1876] = nil,	--"Elerethe Renferal"
+			[1876] = {
+				cast = {
+					[210547] = {phase = 1,},
+				}
+			},	--"Elerethe Renferal"
 			[1877] = {
 				cast = {
 					[212726] = {phase = -13487,},
 				},
 			},	--"Cenarius"
-			[1864] = nil,	--"Xavius"
+			[1864] = {
+				hp = {
+					{hp = 0.655,phase = -13152,},
+					{hp = 0.305,phase = -13160,},
+				},
+			},	--"Xavius"
 			
 			--Suramar
 			
@@ -7708,26 +7553,8 @@ function BWInterfaceFrameLoad()
 	local TrackingTab_Variables = {
 		EncounterOrder = {
 			1778,1785,1787,1798,1786,1783,1788,1794,1777,1800,1784,1795,1799,
-			1841,
-			1849,
-		},
-		EncounterNames = {
-			[1778] = L.RaidLootT18HCBoss1,	--"Hellfire Assault"
-			[1785] = L.RaidLootT18HCBoss2,	--"Iron Reaver"
-			[1783] = L.RaidLootT18HCBoss6,	--"Gorefiend"
-			[1798] = L.RaidLootT18HCBoss4,	--"Hellfire High Council"
-			[1787] = L.RaidLootT18HCBoss3,	--"Kormrok"
-			[1786] = L.RaidLootT18HCBoss5,	--"Kilrogg Deadeye"
-			[1788] = L.RaidLootT18HCBoss7,	--"Shadow-Lord Iskar"
-			[1777] = L.RaidLootT18HCBoss9,	--"Fel Lord Zakuun"
-			[1800] = L.RaidLootT18HCBoss10,	--"Xhul'horac"
-			[1794] = L.RaidLootT18HCBoss8,	--"Socrethar the Eternal"
-			[1784] = L.RaidLootT18HCBoss11,	--"Tyrant Velhari"
-			[1795] = L.RaidLootT18HCBoss12,	--"Mannoroth"
-			[1799] = L.RaidLootT18HCBoss13,	--"Archimonde"
-			
-			[1841] = L.S_BossT19N2,	--"Ursoc"
-			[1849] = L.S_BossT19S1,	--"Crystal Scorpion"
+			1853,1841,1873,1854,1876,1877,1864,
+			1849,1865,1867,1871,1862,1886,1842,1863,1872,1866,
 		},
 	}
 	
@@ -7918,16 +7745,14 @@ function BWInterfaceFrameLoad()
 		wipe(BWInterfaceFrame.tab.tabs[8].optionsSpellsList.L)
 		local L = BWInterfaceFrame.tab.tabs[8].optionsSpellsList.L
 		for spellID,encounterID in pairs(var_trackingDamageSpells) do
-			if ExRT.is7 or spellID <= 191000 then				--Remove spells from Legion content at live version
-				local spellName,_,spellTexture = GetSpellInfo(spellID)
-				spellName = spellName or '???'
-				spellTexture = spellTexture or "Interface\\Icons\\INV_MISC_QUESTIONMARK"
-				local encounterName = nil
-				if type(encounterID)=='number' then
-					encounterName = TrackingTab_Variables.EncounterNames[encounterID]
-				end
-				L[#L+1] = {spellID,"|T"..spellTexture..":0|t",(encounterName and encounterName..": " or "")..spellName,module.db.def_trackingDamageSpells[spellID] and "" or "|TInterface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128:16:16:0:0:256:128:128:144:64:80|t",type(encounterID)=='number' and ExRT.F.table_find(TrackingTab_Variables.EncounterOrder,encounterID) or -1}
+			local spellName,_,spellTexture = GetSpellInfo(spellID)
+			spellName = spellName or '???'
+			spellTexture = spellTexture or "Interface\\Icons\\INV_MISC_QUESTIONMARK"
+			local encounterName = nil
+			if type(encounterID)=='number' then
+				encounterName = ExRT.L.bossName[encounterID]
 			end
+			L[#L+1] = {spellID,"|T"..spellTexture..":0|t",(encounterName and encounterName..": " or "")..spellName,module.db.def_trackingDamageSpells[spellID] and "" or "|TInterface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128:16:16:0:0:256:128:128:144:64:80|t",type(encounterID)=='number' and ExRT.F.table_find(TrackingTab_Variables.EncounterOrder,encounterID) or -1}
 		end
 		sort(L,function(a,b) if a[5]==b[5] then return a[1]<b[1] else return a[5]>b[5] end end)
 		BWInterfaceFrame.tab.tabs[8].optionsSpellsList:Update()
@@ -11948,7 +11773,7 @@ function BWInterfaceFrameLoad()
 		},
 		SelectedDot = nil,
 		DebuffsBlackList = {
-			[160029] = not ExRT.is7,	--Resurrecting; haven't CLEU event for removing
+			[160029] = true,	--Resurrecting; haven't CLEU event for removing
 		},
 	}
 	--[[

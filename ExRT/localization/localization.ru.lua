@@ -788,6 +788,7 @@ L.InspectViewerColorizeNoTopEnch = "Выделять предметы без т�
 L.InspectViewerForce = "Ускорить"
 L.InspectViewerHideInRaid = "Скрыть тех кто не в рейде"
 L.InspectViewerColorizeNoValorUpgrade = "Выделять предметы без макс. уровневых улучшений"
+L.InspectViewerNoExRTAddon = "У игрока не установлен ExRT"
 
 L.CoinsSpoilsOfPandariaWinTrigger = "Система перезагружается. Не выключать питание, иначе возможен взрыв."
 L.CoinsEmpty = "Здесь пока пусто"

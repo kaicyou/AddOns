@@ -7,7 +7,7 @@
 -- Main non-UI code
 ------------------------------------------------------------
 
-PawnVersion = 2.0004
+PawnVersion = 2.0005
 
 -- Pawn requires this version of VgerCore:
 local PawnVgerCoreVersionRequired = 1.09
@@ -2823,39 +2823,36 @@ function PawnIsItemAnUpgrade(Item, DoNotRescan)
 			local ThisValue = nil
 			local NewTableEntry = nil
 
-			--VgerCore.Message("*** InvType = " .. tostring(InvType) .. ", InvType2 = " .. tostring(InvType2))
-			
 			while InvType do
 				local BestData = nil
 				if PawnOptions.UpgradeTracking then
 					BestData = CharacterOptions.BestItems[InvType]
 				else
 					-- If upgrade tracking is disabled, manually create a BestData table based on the currently-equipped items for this slot.
-					local Slot1, Slot2, Item1, Item2
+					local Slot1, Slot2, Item1, Item2, ItemLink1, ItemLink2, Value1, Value2
 					Slot1 = PawnItemEquipLocToSlot1[InvType]
 					if Slot1 then Item1 = PawnGetItemDataForInventorySlot(Slot1, true) end
-					if Item1 and UnenchantedItemLink == PawnUnenchantItemLink(Item1.Link, true) then return end -- If this item is already equipped, it can't be an upgrade for any scale. 
+					if Item1 then ItemLink1 = PawnUnenchantItemLink(Item1.Link, true) end
+					if not TwoSlotsForThisItemType and ItemLink1 and UnenchantedItemLink == ItemLink1 then return end -- If this item is already equipped, it can't be an upgrade for any scale. 
 					Slot2 = PawnItemEquipLocToSlot2[InvType]
 					if Slot2 then Item2 = PawnGetItemDataForInventorySlot(Slot2, true) end
-					if Item2 and UnenchantedItemLink == PawnUnenchantItemLink(Item2.Link, true) then return end
-					local Value1, Value2
+					if Item2 then ItemLink2 = PawnUnenchantItemLink(Item2.Link, true) end
+					if not TwoSlotsForThisItemType and ItemLink2 and UnenchantedItemLink == PawnUnenchantItemLink(Item2.Link, true) then return end
 					if Item1 then _, Value1 = PawnGetSingleValueFromItem(Item1, ScaleName) end
 					if Item2 then _, Value2 = PawnGetSingleValueFromItem(Item2, ScaleName) end
 
-					--VgerCore.Message("*** Equipped: " .. tostring(Value1) .. " and " .. tostring(Value2))
-
 					if Value1 and Value2 then
 						if Value1 >= Value2 then
-							BestData = { Value1, Item1, PawnGetMaxLevelItemIsUsefulHeirloom(Item1), Value2, Item2, PawnGetMaxLevelItemIsUsefulHeirloom(Item2) }
+							BestData = { Value1, ItemLink1, PawnGetMaxLevelItemIsUsefulHeirloom(Item1), Value2, ItemLink2, PawnGetMaxLevelItemIsUsefulHeirloom(Item2) }
 						else
-							BestData = { Value2, Item2, PawnGetMaxLevelItemIsUsefulHeirloom(Item2), Value1, Item1, PawnGetMaxLevelItemIsUsefulHeirloom(Item1) }
+							BestData = { Value2, ItemLink2, PawnGetMaxLevelItemIsUsefulHeirloom(Item2), Value1, ItemLink1, PawnGetMaxLevelItemIsUsefulHeirloom(Item1) }
 						end
 					elseif TwoSlotsForThisItemType then
 						-- If it's possible to equip two of these and the player only has one, then any new item is an upgrade.
 					elseif Value1 and not Value2 then
-						BestData = { Value1, Item1, PawnGetMaxLevelItemIsUsefulHeirloom(Item1) }
+						BestData = { Value1, ItemLink1, PawnGetMaxLevelItemIsUsefulHeirloom(Item1) }
 					elseif Value2 and not Value1 then
-						BestData = { Value2, Item2, PawnGetMaxLevelItemIsUsefulHeirloom(Item2) }
+						BestData = { Value2, ItemLink2, PawnGetMaxLevelItemIsUsefulHeirloom(Item2) }
 					end
 				end
 				if BestData then

@@ -1,6 +1,15 @@
---	14:15 22.07.2016
+--	15:57 29.07.2016
 
 --[[
+3720
+* Raid cooldowns: added support for aftifacts (both players [viewer & caster] must have ExRT for this functionality) & legendary items
+* Statistics bosses: added 5ppl mythic and 40ppl to diff list
+* Raid Inspect: removed 20y restrictions for inspecting (still in testing)
+* Raid Inspect: added visual aftifact inspecting
+http://i.imgur.com/xrz5JqB.png
+* Note: added keybind to toggle on/off
+* Minor fixes
+
 3705
 * Fixed blinking textures for archimonde radar
 * Fixed health value for souls on gorefiend
@@ -16,7 +25,7 @@
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3705
+ExRT.V = 3720
 ExRT.T = "R"
 ExRT.is7 = false		--> Legion (7.x) Client
 
@@ -600,7 +609,7 @@ function ExRT.F.SendExMsg(prefix, msg, tochat, touser, addonPrefix)
 		SendAddonMessage(addonPrefix, prefix .. "\t" .. msg, tochat,touser)
 	else
 		local chat_type, playerName = ExRT.F.chatType()
-		if ExRT.is7 and chat_type == "WHISPER" and playerName == ExRT.SDB.charName then
+		if chat_type == "WHISPER" and playerName == ExRT.SDB.charName then
 			ExRT.F.GetExMsg(ExRT.SDB.charName, prefix, strsplit("\t", msg))
 			return
 		end

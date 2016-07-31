@@ -1025,8 +1025,8 @@ ExRT.GDB.ClassSpecializationIcons = {
 	[256] = "Interface\\Icons\\Spell_Holy_PowerWordShield",
 	[257] = "Interface\\Icons\\Spell_Holy_GuardianSpirit",
 	[258] = "Interface\\Icons\\Spell_Shadow_ShadowWordPain",
-	[259] = "Interface\\Icons\\Ability_Rogue_Eviscerate",
-	[260] = "Interface\\Icons\\Ability_BackStab",
+	[259] = "Interface\\Icons\\Ability_Rogue_DeadlyBrew",
+	[260] = "Interface\\Icons\\INV_Sword_30",
 	[261] = "Interface\\Icons\\Ability_Stealth",
 	[262] = "Interface\\Icons\\Spell_Nature_Lightning",
 	[263] = "Interface\\Icons\\Spell_Shaman_ImprovedStormstrike",
@@ -1041,7 +1041,7 @@ ExRT.GDB.ClassSpecializationIcons = {
 	[581] = "Interface\\Icons\\ability_demonhunter_spectank",
 }
 
-ExRT.GDB.ClassList = ExRT.is7 and {
+ExRT.GDB.ClassList = {
 	"WARRIOR",
 	"PALADIN",
 	"HUNTER",
@@ -1054,18 +1054,6 @@ ExRT.GDB.ClassList = ExRT.is7 and {
 	"MONK",
 	"DRUID",
 	"DEMONHUNTER",
-} or {
-	"WARRIOR",
-	"PALADIN",
-	"HUNTER",
-	"ROGUE",
-	"PRIEST",
-	"DEATHKNIGHT",
-	"SHAMAN",
-	"MAGE",
-	"WARLOCK",
-	"MONK",
-	"DRUID",
 }
 
 ExRT.GDB.ClassSpecializationList = {

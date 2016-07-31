@@ -159,13 +159,6 @@ ExRT.lib = ELib
 
 ELib.V = libVersion
 
-if not ExRT.is7 then
-	local t1 = CreateFrame("Frame")
-	local t2 = t1:CreateTexture()
-	local mt = getmetatable(t2).__index
-	mt.SetColorTexture = mt.SetTexture
-end
-
 local Mod = nil
 do
 	local function Widget_SetPoint(self,arg1,arg2,arg3,...)

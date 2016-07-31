@@ -120,6 +120,9 @@ function MnCdMonSpellCastSuccess(arg, sourceName, destName)
     elseif (arg == 2120) then -- flamestrike
         flamestrikeID, _, _, _, _, _, _, _, _ = GetSpellInfo(2120);
         MNcooldownMonitor(flamestrikeID, 12, "Interface\\Icons\\spell_fire_selfdestruct")
+    elseif (arg == 12472) then --icy veins
+        icyveinsId, _, _, _, _, _, _, _, _ = GetSpellInfo(12472);
+        MNcooldownMonitor(icyveinsId, 180, "Interface\\Icons\\Spell_frost_coldhearted");
     elseif (arg == 1953) then -- blink
         blinkId, _, _, _, _, _, _, _, _ = GetSpellInfo(1953);
         MNcooldownMonitor(blinkId, 15, "Interface\\Icons\\spell_arcane_blink")
@@ -237,14 +240,6 @@ function MnCdMonSpellAuraRemoved(arg, sourceName, destName)
         start, duration, enabled = GetSpellCooldown(48505);
         starFallId, _, _, _, _, _, _, _, _ = GetSpellInfo(48505);
         MNcooldownMonitor(starFallId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\ability_druid_starfall");
-    elseif (arg == 131078) then --icy veins
-        start, duration, enabled = GetSpellCooldown(131078);
-        icyveinsId, _, _, _, _, _, _, _, _ = GetSpellInfo(131078);
-        MNcooldownMonitor(icyveinsId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\Spell_frost_coldhearted");
-    elseif (arg == 12472) then --icy veins
-        start, duration, enabled = GetSpellCooldown(12472);
-        icyveinsId, _, _, _, _, _, _, _, _ = GetSpellInfo(12472);
-        MNcooldownMonitor(icyveinsId, RoundZero(start + duration - GetTime()), "Interface\\Icons\\Spell_frost_coldhearted");
     elseif (arg == 212653) then -- shimmer
         -- TODO: uses charges
         blinkId, _, _, _, _, _, _, _, _ = GetSpellInfo(212653);

@@ -24,43 +24,43 @@
     </Anchors>
     <Layers>
         <Layer level="ARTWORK">
-            <FontString name="MNspellstealFontString" inherits="GameFontNormal" text="Disable Spellsteal Monitor">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-390"/>
-                        </Offset>
-                    </Anchor>
-                 </Anchors>
+          <FontString name="MNmirrorImageFontString" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal" text="MAGE">
+              <Anchors>
+                <Anchor point="TOP" relativeTo="$parent">
+                  <Offset>
+                    <AbsDimension x="-110" y="-10"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <FontHeight>
+                 <AbsValue val="24"/>
+              </FontHeight>
+              <Color r="0.1" g="0.7" b="1"/>
+          </FontString>
+          <FontString name="MNmirrorImageFontString" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal" text="NUGGETS">
+              <Anchors>
+                <Anchor point="TOP" relativeTo="$parent">
+                  <Offset>
+                    <AbsDimension x="10" y="-10"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <FontHeight>
+                 <AbsValue val="24"/>
+              </FontHeight>
+              <Color r="0" g="0.8" b="0"/>
+          </FontString>
+          <FontString name="MNmirrorImageFontString" inherits="GameFontNormal" text="Disable Mirror Image Timer">
+              <Anchors>
+                <Anchor point="TOPLEFT" relativeTo="$parent">
+                  <Offset>
+                    <AbsDimension x="40" y="-65"/>
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <Color r="1" g="1" b="1"/>
             </FontString>
-            <FontString name="MNprocTextFontString" inherits="GameFontNormal" text="Disable Mage Proc Combat Text">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-490"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="MNcheckboxclearcastString" inherits="GameFontNormal" text="Disable Clearcast Monitor">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-25"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="MNmirrorImageFontString" inherits="GameFontNormal" text="Disable Mirror Image Timer">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-45"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="MNevoFontString" inherits="GameFontNormal" text="Disable Evocation Notify">
+            <FontString name="MNcheckboxNovaString" inherits="GameFontNormal" text="Disable Nova Monitor">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
@@ -68,44 +68,39 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
+                <Color r="1" g="1" b="1"/>
+            </FontString>
+            <FontString name="MNPolyFontString" inherits="GameFontNormal" text="Disable Polymorph Monitor">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent">
+                        <Offset>
+                            <AbsDimension x="40" y="-105"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Color r="1" g="1" b="1"/>
+            </FontString>
+            <FontString name="MNspellstealFontString" inherits="GameFontNormal" text="Disable Spellsteal Monitor">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent">
+                        <Offset>
+                            <AbsDimension x="40" y="-125"/>
+                        </Offset>
+                    </Anchor>
+                 </Anchors>
+                 <Color r="1" g="1" b="1"/>
             </FontString>
             <FontString name="MNprocMonsFontString" inherits="GameFontNormal" text="Disable Mage Proc Monitors">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
-                            <AbsDimension x="40" y="-470"/>
+                            <AbsDimension x="40" y="-145"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
+                <Color r="1" g="1" b="1"/>
             </FontString>
-            <FontString name="MNabCounterFontString" inherits="GameFontNormal" text="Disable Arcane Blast Counter">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-320"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="MNPolyFontString" inherits="GameFontNormal" text="Disable Polymorph, Hex and">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-245"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="MNPoly2FontString" inherits="GameFontNormal" text="Hibernate Monitors">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="50" y="-260"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-            <FontString name="MNcheckboxIEString" inherits="GameFontNormal" text="Disable Rune of Power Monitor">
+            <FontString name="MNprocTextFontString" inherits="GameFontNormal" text="Disable Mage Proc Combat Text">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
@@ -113,17 +108,10 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
+                <Color r="1" g="1" b="1"/>
             </FontString>
-            <FontString name="MNcheckboxNovaString" inherits="GameFontNormal" text="Disable Nova Monitor">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="40" y="-140"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
-             <FontString name="MNcheckboxAlterTimeString" inherits="GameFontNormal" text="Disable Alter Time Countdown">
+
+            <FontString name="MNabCounterFontString" inherits="GameFontNormal" text="Disable Arcane Blast Counter">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
@@ -131,24 +119,37 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
+                <Color r="1" g="1" b="1"/>
             </FontString>
             <FontString name="MNcheckboxABcastString" inherits="GameFontNormal" text="Show Cast Time">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
-                            <AbsDimension x="65" y="-340"/>
+                            <AbsDimension x="65" y="-205"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
+                <Color r="1" g="1" b="1"/>
             </FontString>
             <FontString name="MNcheckboxIgniteString" inherits="GameFontNormal" text="Enable Fireblast Monitor">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
-                            <AbsDimension x="270" y="-25"/>
+                            <AbsDimension x="40" y="-245"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
+                <Color r="1" g="1" b="1"/>
+            </FontString>
+            <FontString name="MNcheckboxCauterizeFontString" inherits="GameFontNormal" text="Enable Cauterize Monitor">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent">
+                        <Offset>
+                            <AbsDimension x="40" y="-265"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Color r="1" g="1" b="1"/>
             </FontString>
             <FontString name="MNPolySliderString" inherits="GameFontNormal" text="Polymorph Monitor Size">
                 <Anchors>
@@ -158,6 +159,7 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
+                <Color r="1" g="1" b="1"/>
             </FontString>
             <FontString name="MN_Slider2FontString" inherits="GameFontNormal" text="Spellsteal Monitor Size">
                 <Anchors>
@@ -167,60 +169,98 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
+                <Color r="1" g="1" b="1"/>
             </FontString>
              <FontString name="MN_Slider3bFontString" inherits="GameFontNormal" text="Arcane Charge / Fireblast Monitor Size">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
-                            <AbsDimension x="270" y="-315"/>
+                            <AbsDimension x="250" y="-315"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
+                <Color r="1" g="1" b="1"/>
             </FontString>
             <FontString name="MN_Slider4FontString" inherits="GameFontNormal" text="Mage Proc Monitor Size">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
-                            <AbsDimension x="280" y="-460"/>
+                            <AbsDimension x="280" y="-65"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
+                <Color r="1" g="1" b="1"/>
             </FontString>
-            <FontString name="MNcheckboxCauterizeFontString" inherits="GameFontNormal" text="Enable Cauterize Monitor">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="270" y="-45"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-            </FontString>
+
             <FontString name="MNcheckboxCauterizeFontString" inherits="GameFontNormal" text="Cauterize Monitor Size">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
-                            <AbsDimension x="290" y="-65"/>
+                            <AbsDimension x="290" y="-145"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
-            </FontString>
-             <FontString name="MNinvokersFontString" inherits="GameFontNormal" text="Rune of Power Monitor Size">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="288" y="-145"/>
-                        </Offset>
-                    </Anchor>
-                </Anchors>
+                <Color r="1" g="1" b="1"/>
             </FontString>
         </Layer>
     </Layers>
     <Frames>
+        <CheckButton name="$parent_CheckButton6" inherits="OptionsCheckButtonTemplate">
+               <Anchors>
+                   <Anchor point="TOPLEFT">
+                       <Offset>
+                            <AbsDimension x="10" y="-60" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+               <Scripts>
+                    <OnLoad>
+                        --Disable Mirror Image Timer
+                    </OnLoad>
+                    <OnClick>
+                        MirrorImagToggle();
+                    </OnClick>
+                </Scripts>
+        </CheckButton>
+        <CheckButton name="$parent_CheckButtonNova" inherits="OptionsCheckButtonTemplate">
+               <Anchors>
+                   <Anchor point="TOPLEFT">
+                       <Offset>
+                            <AbsDimension x="10" y="-80" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+           <Scripts>
+                <OnLoad>
+                    --Disable Nova Monitor
+                </OnLoad>
+                <OnClick>
+                    MNNovaToggle();
+                </OnClick>
+            </Scripts>
+        </CheckButton>
+        <CheckButton name="$parent_CheckButton14" inherits="OptionsCheckButtonTemplate">
+           <Anchors>
+               <Anchor point="TOPLEFT">
+                   <Offset>
+                        <AbsDimension x="10" y="-100" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+           <Scripts>
+                <OnLoad>
+                    --Disable Poly Monitor
+                </OnLoad>
+                <OnClick>
+                    MNpolyToggle();
+                </OnClick>
+            </Scripts>
+        </CheckButton>
         <CheckButton name="$parent_CheckButton2" inherits="OptionsCheckButtonTemplate">
            <Anchors>
                <Anchor point="TOPLEFT">
                    <Offset>
-                      <AbsDimension x="10" y="-385" />
+                      <AbsDimension x="10" y="-120" />
                     </Offset>
                 </Anchor>
             </Anchors>
@@ -234,11 +274,28 @@
                 </OnClick>
             </Scripts>
         </CheckButton>
+        <CheckButton name="$parent_CheckButton11" inherits="OptionsCheckButtonTemplate">
+               <Anchors>
+                 <Anchor point="TOPLEFT">
+                       <Offset>
+                            <AbsDimension x="10" y="-140" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+               <Scripts>
+                    <OnLoad>
+                        --Disable Mage Proc Monitor
+                    </OnLoad>
+                    <OnClick>
+                        MageProcMonitorToggle();
+                    </OnClick>
+                </Scripts>
+        </CheckButton>
         <CheckButton name="$parent_CheckButton3" inherits="OptionsCheckButtonTemplate">
            <Anchors>
                <Anchor point="TOPLEFT">
                    <Offset>
-                        <AbsDimension x="10" y="-485" />
+                        <AbsDimension x="10" y="-160" />
                     </Offset>
                 </Anchor>
             </Anchors>
@@ -253,96 +310,11 @@
                 <OnLeave> GameTooltip:Hide() </OnLeave>
             </Scripts>
         </CheckButton>
-        <CheckButton name="$parent_CheckButtonCC" inherits="OptionsCheckButtonTemplate">
-               <Anchors>
-                   <Anchor point="TOPLEFT">
-                       <Offset>
-                            <AbsDimension x="10" y="-20" />
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-           <Scripts>
-                <OnLoad>
-                    --Disable Clearcast
-                </OnLoad>
-                <OnClick>
-                    MNclearcastToggle();
-                </OnClick>
-            </Scripts>
-        </CheckButton>
-        <CheckButton name="$parent_CheckButton6" inherits="OptionsCheckButtonTemplate">
-               <Anchors>
-                   <Anchor point="TOPLEFT">
-                       <Offset>
-                            <AbsDimension x="10" y="-40" />
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-               <Scripts>
-                    <OnLoad>
-                        --Disable Mirror Image Timer
-                    </OnLoad>
-                    <OnClick>
-                        MirrorImagToggle();
-                    </OnClick>
-                </Scripts>
-        </CheckButton>
-        <CheckButton name="$parent_CheckButton8" inherits="OptionsCheckButtonTemplate">
-               <Anchors>
-                   <Anchor point="TOPLEFT">
-                       <Offset>
-                            <AbsDimension x="10" y="-80" />
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-               <Scripts>
-                    <OnLoad>
-                        --Disable Evocation Notify
-                    </OnLoad>
-                    <OnClick>
-                        EvoToggle();
-                    </OnClick>
-                </Scripts>
-        </CheckButton>
-        <CheckButton name="CauterizeCheckButton" inherits="OptionsCheckButtonTemplate">
-           <Anchors>
-               <Anchor point="TOPLEFT">
-                   <Offset>
-                        <AbsDimension x="240" y="-40" />
-                    </Offset>
-                </Anchor>
-            </Anchors>
-           <Scripts>
-                <OnLoad>
-                    --cauterize
-                </OnLoad>
-                <OnClick>
-                    MNCauterizeToggle();
-                </OnClick>
-            </Scripts>
-        </CheckButton>
-        <CheckButton name="$parent_CheckButton11" inherits="OptionsCheckButtonTemplate">
-               <Anchors>
-                 <Anchor point="TOPLEFT">
-                       <Offset>
-                            <AbsDimension x="10" y="-465" />
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-               <Scripts>
-                    <OnLoad>
-                        --Disable Mage Proc Monitor
-                    </OnLoad>
-                    <OnClick>
-                        MageProcMonitorToggle();
-                    </OnClick>
-                </Scripts>
-        </CheckButton>
         <CheckButton name="$parent_CheckButton13" inherits="OptionsCheckButtonTemplate">
            <Anchors>
                <Anchor point="TOPLEFT">
                    <Offset>
-                        <AbsDimension x="10" y="-315" />
+                        <AbsDimension x="10" y="-180" />
                     </Offset>
                 </Anchor>
             </Anchors>
@@ -355,96 +327,11 @@
                </OnClick>
             </Scripts>
         </CheckButton>
-        <CheckButton name="$parent_CheckButton14" inherits="OptionsCheckButtonTemplate">
-           <Anchors>
-               <Anchor point="TOPLEFT">
-                   <Offset>
-                        <AbsDimension x="10" y="-240" />
-                    </Offset>
-                </Anchor>
-            </Anchors>
-           <Scripts>
-                <OnLoad>
-                    --Disable Poly Monitor
-                </OnLoad>
-                <OnClick>
-                    MNpolyToggle();
-                </OnClick>
-            </Scripts>
-        </CheckButton>
-        <CheckButton name="$parent_CheckButtonNova" inherits="OptionsCheckButtonTemplate">
-               <Anchors>
-                   <Anchor point="TOPLEFT">
-                       <Offset>
-                            <AbsDimension x="10" y="-135" />
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-           <Scripts>
-                <OnLoad>
-                    --Disable Nova Monitor
-                </OnLoad>
-                <OnClick>
-                    MNNovaToggle();
-                </OnClick>
-            </Scripts>
-        </CheckButton>
-        <CheckButton name="$parent_CheckButtonIE" inherits="OptionsCheckButtonTemplate">
-               <Anchors>
-                   <Anchor point="TOPLEFT">
-                       <Offset>
-                            <AbsDimension x="10" y="-160" />
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-           <Scripts>
-                <OnLoad>
-                    --Disable Invokers Energy
-                </OnLoad>
-                <OnClick>
-                    MNInvokersToggle();
-                </OnClick>
-            </Scripts>
-        </CheckButton>
-        <CheckButton name="$parent_CheckButtonAlterTime" inherits="OptionsCheckButtonTemplate">
-               <Anchors>
-                   <Anchor point="TOPLEFT">
-                       <Offset>
-                            <AbsDimension x="10" y="-180" />
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-           <Scripts>
-                <OnLoad>
-                    --Disable Alter Time
-                </OnLoad>
-                <OnClick>
-                    MNAlterTimeToggle();
-                </OnClick>
-            </Scripts>
-        </CheckButton>
-          <CheckButton name="$parent_IgniteCheckButton" inherits="OptionsCheckButtonTemplate">
-               <Anchors>
-                   <Anchor point="TOPLEFT">
-                       <Offset>
-                            <AbsDimension x="240" y="-20" />
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-               <Scripts>
-                    <OnLoad>
-
-                    </OnLoad>
-                    <OnClick>
-                        MNigniteToggle();
-                    </OnClick>
-                </Scripts>
-        </CheckButton>
         <CheckButton name="$parent_ABcastCheckButton" inherits="OptionsCheckButtonTemplate">
                <Anchors>
                    <Anchor point="TOPLEFT">
                        <Offset>
-                            <AbsDimension x="40" y="-335" />
+                            <AbsDimension x="40" y="-200" />
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -457,7 +344,41 @@
                     </OnClick>
                 </Scripts>
         </CheckButton>
-            <Slider name="$parent_Slider1" inherits="OptionsSliderTemplate">
+        <CheckButton name="$parent_IgniteCheckButton" inherits="OptionsCheckButtonTemplate">
+               <Anchors>
+                   <Anchor point="TOPLEFT">
+                       <Offset>
+                            <AbsDimension x="10" y="-240" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+               <Scripts>
+                    <OnLoad>
+
+                    </OnLoad>
+                    <OnClick>
+                        MNigniteToggle();
+                    </OnClick>
+                </Scripts>
+        </CheckButton>
+        <CheckButton name="CauterizeCheckButton" inherits="OptionsCheckButtonTemplate">
+           <Anchors>
+               <Anchor point="TOPLEFT">
+                   <Offset>
+                        <AbsDimension x="10" y="-260" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+           <Scripts>
+                <OnLoad>
+                    --cauterize
+                </OnLoad>
+                <OnClick>
+                    MNCauterizeToggle();
+                </OnClick>
+            </Scripts>
+        </CheckButton>
+        <Slider name="$parent_Slider1" inherits="OptionsSliderTemplate">
 	            <Size>
     	            <AbsDimension x="200" y="20"/>
             	</Size>
@@ -485,8 +406,8 @@
                         MageNugPolyFrame:Show();
                     </OnMouseDown>
                 </Scripts>
-            </Slider>
-            <Slider name="$parent_Slider2" inherits="OptionsSliderTemplate">
+        </Slider>
+        <Slider name="$parent_Slider2" inherits="OptionsSliderTemplate">
 	            <Size>
     	            <AbsDimension x="200" y="20"/>
             	</Size>
@@ -555,13 +476,12 @@
 		        <Anchors>
 			        <Anchor point="TOPLEFT" relativeTo="$parent">
 	        	        <Offset>
-                            <AbsDimension x="270" y="-480"/>
+                            <AbsDimension x="270" y="-77"/>
                         </Offset>
         			</Anchor>
 		        </Anchors>
 		        <Scripts>
 		    	    <OnLoad>
-			    	    --Living Bomb Counter Size
     			    	getglobal(self:GetName().."High"):SetText("6");
 	    			    getglobal(self:GetName().."Low"):SetText("0");
 		      	    	self:SetMinMaxValues(0,6);
@@ -575,14 +495,12 @@
                         MageNugMBProcFrame:Show();
                         MageNugFoFProcFrame:Show();
                         MageNugBFProcFrame:Show();
-                        --MageNugImpactProcFrame:Show();
                     </OnMouseDown>
                     <OnMouseUp>
                         MageNugProcFrame:Hide();
                         MageNugMBProcFrame:Hide();
                         MageNugFoFProcFrame:Hide();
                         MageNugBFProcFrame:Hide();
-                        --MageNugImpactProcFrame:Hide();
                     </OnMouseUp>
                 </Scripts>
             </Slider>
@@ -593,7 +511,7 @@
 		        <Anchors>
 			        <Anchor point="TOPLEFT" relativeTo="$parent">
 	        	        <Offset>
-                            <AbsDimension x="270" y="-80"/>
+                            <AbsDimension x="270" y="-155"/>
                         </Offset>
         			</Anchor>
 		        </Anchors>
@@ -613,36 +531,6 @@
                     </OnMouseDown>
                     <OnMouseUp>
                         MageNugCauterizeFrame:Hide();
-                    </OnMouseUp>
-                </Scripts>
-            </Slider>
-             <Slider name="$parent_InvokersSlider" inherits="OptionsSliderTemplate">
-	            <Size>
-    	            <AbsDimension x="200" y="20"/>
-            	</Size>
-		        <Anchors>
-			        <Anchor point="TOPLEFT" relativeTo="$parent">
-	        	        <Offset>
-                            <AbsDimension x="270" y="-160"/>
-                        </Offset>
-        			</Anchor>
-		        </Anchors>
-		        <Scripts>
-		    	    <OnLoad>
-			    	    --Cauterize Size
-    			    	getglobal(self:GetName().."High"):SetText("15");
-	    			    getglobal(self:GetName().."Low"):SetText("0");
-		      	    	self:SetMinMaxValues(0,15);
-			        	self:SetValueStep(1);
-		            </OnLoad>
-		            <OnValueChanged>
-                        MageNugInvokerMonitorSize();
-                    </OnValueChanged>
-                    <OnMouseDown>
-                       -- MageNugInvokers_Frame:Show();
-                    </OnMouseDown>
-                    <OnMouseUp>
-                        --MageNugInvokers_Frame:Hide();
                     </OnMouseUp>
                 </Scripts>
             </Slider>

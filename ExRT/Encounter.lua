@@ -22,26 +22,22 @@ module.db.diffNames = {
 	[6] = L.EncounterLegacy..": "..L.sencounter25pplHC,
 	[7] = L.sencounterLfr,		--		PLAYER_DIFFICULTY3
 	[8] = L.sencounterChall,
-	[9] = L.sencounter40ppl,
+	[9] = L.EncounterLegacy..": "..L.sencounter40ppl,
 	[11] = L.sencounter3pplHC,
 	[12] = L.sencounter3ppl,
 	[14] = L.sencounterWODNormal,	-- Normal,	PLAYER_DIFFICULTY1
 	[15] = L.sencounterWODHeroic,	-- Heroic,	PLAYER_DIFFICULTY2
 	[16] = L.sencounterWODMythic,	-- Mythic,	PLAYER_DIFFICULTY6
 	[17] = L.sencounterLfr,		-- Lfr,		PLAYER_DIFFICULTY3
-	[23] = "5ppl: Mythic",
+	[23] = DUNGEON_DIFFICULTY_5PLAYER..": "..PLAYER_DIFFICULTY6,
 	[24] = "5ppl: Timewalker",
 }
-module.db.diffPos = {3,4,5,6,7,14,15,16}
+module.db.diffPos = {1,2,23,9,3,4,5,6,7,14,15,16}
 module.db.dropDownNow = nil
 module.db.onlyMy = nil
 module.db.scrollPos = 1
 module.db.playerName = nil
 module.db.pullTime = 0
-
-if ExRT.is7 then
-	module.db.diffPos = {1,2,8,3,4,5,6,7,14,15,16}
-end
 
 module.db.chachedDB = nil
 
@@ -735,8 +731,8 @@ function module.options:Load()
 				table.wipe(VExRT.Encounter.names)
 				module.db.chachedDB = nil
 				if module.options.ScrollBar:GetValue() == 1 then
-					local func = module.options.ScrollBar:GetScript("OnValueChanged")
-					func(module.options.ScrollBar,1)
+					local func = module.options.ScrollBar.slider:GetScript("OnValueChanged")
+					func(module.options.ScrollBar.slider,1)
 				else
 					module.options.ScrollBar:SetValue(1)
 				end
@@ -837,10 +833,7 @@ function module.main:ADDON_LOADED()
 	module.db.playerName = UnitName("player") or 0
 	VExRT.Encounter.list[module.db.playerName] = VExRT.Encounter.list[module.db.playerName] or {}
 	
-	module:RegisterEvents('ENCOUNTER_START','ENCOUNTER_END')
-	if ExRT.is7 then
-		module:RegisterEvents('BOSS_KILL')
-	end
+	module:RegisterEvents('ENCOUNTER_START','ENCOUNTER_END','BOSS_KILL')
 end
 
 --AAABCCCCCCCCCCDDDEFF

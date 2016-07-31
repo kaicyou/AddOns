@@ -273,22 +273,17 @@ L.BossWatcherEnergyType4 = COMBO_POINTS
 L.BossWatcherEnergyType5 = RUNES
 L.BossWatcherEnergyType6 = RUNIC_POWER
 L.BossWatcherEnergyType7 = SOUL_SHARDS_POWER
-L.BossWatcherEnergyType8 = ECLIPSE
+L.BossWatcherEnergyType8 = POWER_TYPE_LUNAR_POWER
 L.BossWatcherEnergyType9 = HOLY_POWER
 L.BossWatcherEnergyType10 = ALTERNATE_RESOURCE_TEXT
 L.BossWatcherEnergyType11 = POWER_TYPE_MAELSTROM
 L.BossWatcherEnergyType12 = CHI
-L.BossWatcherEnergyType13 = SHADOW_ORBS
+L.BossWatcherEnergyType13 = POWER_TYPE_INSANITY
 L.BossWatcherEnergyType14 = BURNING_EMBERS
 L.BossWatcherEnergyType15 = POWER_TYPE_DEMONIC_FURY
 L.BossWatcherEnergyType16 = POWER_TYPE_ARCANE_CHARGES
 L.BossWatcherEnergyType17 = POWER_TYPE_FURY_DEMONHUNTER
 L.BossWatcherEnergyType18 = POWER_TYPE_PAIN
-
-if ExRT.is7 then
-	L.BossWatcherEnergyType8 = POWER_TYPE_LUNAR_POWER
-	L.BossWatcherEnergyType13 = POWER_TYPE_INSANITY
-end
 
 --- Schools names
 L.BossWatcherSchoolPhysical = STRING_SCHOOL_PHYSICAL
@@ -305,6 +300,4 @@ L.BossWatcherSchoolChaos = STRING_SCHOOL_CHAOS
 L.BossWatcherSchoolUnknown = STRING_SCHOOL_UNKNOWN
 
 
-if ExRT.is7 then
-	L.InspectViewerTalents = TALENTS
-end
+L.InspectViewerTalents = TALENTS

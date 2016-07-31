@@ -786,6 +786,7 @@ PH.InspectViewerColorizeNoTopEnch = "Mark out items if gems & enchants aren't be
 L.InspectViewerForce = "Force"
 PH.InspectViewerHideInRaid = "Hide players who are not in the raid"
 L.InspectViewerColorizeNoValorUpgrade = "Mark out items with missing valor upgrade"
+PH.InspectViewerNoExRTAddon = "Player has no ExRT"
 
 L.CoinsSpoilsOfPandariaWinTrigger = "System resetting. Don't turn the power off, or the whole thing will probably explode."
 PH.CoinsEmpty = "Empty yet"

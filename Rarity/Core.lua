@@ -1,5 +1,5 @@
 Rarity = LibStub("AceAddon-3.0"):NewAddon("Rarity", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "LibSink-2.0", "AceBucket-3.0", "LibBars-1.0")
-Rarity.MINOR_VERSION = tonumber(("$Revision: 533 $"):match("%d+"))
+Rarity.MINOR_VERSION = tonumber(("$Revision: 543 $"):match("%d+"))
 local FORCE_PROFILE_RESET_BEFORE_REVISION = 1 -- Set this to one higher than the Revision on the line above this
 local L = LibStub("AceLocale-3.0"):GetLocale("Rarity")
 local R = Rarity
@@ -18,6 +18,7 @@ local lbz = LibStub("LibBabble-Zone-3.0"):GetUnstrictLookupTable()
 local lbsz = LibStub("LibBabble-SubZone-3.0"):GetUnstrictLookupTable()
 local lbct = LibStub("LibBabble-CreatureType-3.0"):GetUnstrictLookupTable()
 local lbb = LibStub("LibBabble-Boss-3.0"):GetUnstrictLookupTable()
+local hbd = LibStub("HereBeDragons-1.0")
 ---
 
 
@@ -53,6 +54,7 @@ Rarity.ach_npcs_achId = {}
 Rarity.stats_to_scan = {}
 Rarity.items_with_stats = {}
 Rarity.collection_items = {}
+Rarity.itemInfoCache = {}
 
 local bankOpen = false
 local guildBankOpen = false
@@ -101,6 +103,15 @@ local numHolidayReminders = 0
 local showedHolidayReminderOverflow = false
 local canPlayGroupFinderAlert = true
 local wasGroupFinderAutoRefresh = false
+
+local itemCacheDebug = false
+local initializing = true
+local itemsPrimed = 0
+local itemsToPrime = 100
+Rarity.itemsToPrime = {}
+Rarity.itemsMasterList = {}
+local initTimer
+local numPrimeAttempts = 0
 
 local inSession = false
 local sessionStarted = 0
@@ -397,7 +408,8 @@ local UnitIsDead = _G.UnitIsDead
 local GetNumLootItems = _G.GetNumLootItems
 local GetLootSlotInfo = _G.GetLootSlotInfo
 local GetLootSlotLink = _G.GetLootSlotLink
-local GetItemInfo = _G.GetItemInfo
+local GetItemInfo_Blizzard = _G.GetItemInfo
+local GetItemInfo = function(id) return R:GetItemInfo(id) end
 local GetRealZoneText = _G.GetRealZoneText
 local GetContainerNumSlots = _G.GetContainerNumSlots
 local GetContainerItemID = _G.GetContainerItemID
@@ -448,23 +460,21 @@ do
 		
 		dbicon:Register("Rarity", dataobj, self.db.profile.minimap)
 
-		if self.db.profile.debugMode then
-   -- Expose normally private objects publically
-   R.npcs = npcs
-   R.bosses = bosses
-   R.zones = zones
-   R.guids = guids
-   R.items = items
-   R.npcs_to_items = npcs_to_items
-   R.items_to_items = items_to_items
-   R.used = used
-   R.tempbagitems = tempbagitems
-   R.bagitems = bagitems
-   R.fishzones = fishzones
-   R.archfragments = archfragments
-   R.architems = architems
-   R.stats = rarity_stats
-		end
+		-- Expose private objects
+  R.npcs = npcs
+  R.bosses = bosses
+  R.zones = zones
+  R.guids = guids
+  R.items = items
+  R.npcs_to_items = npcs_to_items
+  R.items_to_items = items_to_items
+  R.used = used
+  R.tempbagitems = tempbagitems
+  R.bagitems = bagitems
+  R.fishzones = fishzones
+  R.archfragments = archfragments
+  R.architems = architems
+  R.stats = rarity_stats
 
   -- LibSink still tries to call a non-existent Blizzard function sometimes
   if not CombatText_StandardScroll then CombatText_StandardScroll = 0 end
@@ -487,6 +497,9 @@ do
 		self:OnCurrencyUpdate("INITIALIZING") -- Prepare our currency list
   self:UpdateInterestingThings()
   self:FindTrackedItem()
+		initializing = false
+  self:UpdateText()
+		initializing = true
   self:UpdateText()
 		self:UpdateBar()
 
@@ -494,7 +507,7 @@ do
 		
 		self:UnregisterAllEvents()
   self:RegisterBucketEvent("BAG_UPDATE", 0.5, "OnBagUpdate")
-  self:RegisterEvent("LOOT_READY", "OnEvent")
+  self:RegisterEvent("LOOT_OPENED", "OnEvent")
   self:RegisterEvent("CURRENCY_DISPLAY_UPDATE", "OnCurrencyUpdate")
   self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", "OnCombat") -- Used to detect boss kills that we didn't solo
   self:RegisterEvent("BANKFRAME_OPENED", "OnEvent")
@@ -542,6 +555,48 @@ do
 		RequestRaidInfo() -- Request raid lock info from the server
 		RequestLFDPlayerLockInfo() -- Request LFD data from the server; this is used for holiday boss detection
 		OpenCalendar() -- Request calendar info from the server
+
+		-- Prepare a master list of all the items Rarity may need info for
+		table.wipe(R.itemsMasterList)
+		itemsPrimed = 0
+		itemsToPrime = 0
+		for k, v in pairs(self.db.profile.groups) do
+			if type(v) == "table" then
+				for kk, vv in pairs(v) do
+					if type(vv) == "table" then
+						if vv.itemId then R.itemsMasterList[vv.itemId] = true end
+						if vv.collectedItemId then
+							if type(vv.collectedItemId) == "table" then
+								for kkk, vvv in pairs(vv.collectedItemId) do R.itemsMasterList[vvv] = true end
+							else
+								R.itemsMasterList[vv.collectedItemId] = true
+							end
+						end
+						if vv.items and type(vv.items) == "table" then
+							for kkk, vvv in pairs(vv.items) do R.itemsMasterList[vvv] = true end
+						end
+					end
+				end
+			end
+		end
+		for k, v in pairs(self.db.profile.oneTimeItems) do
+			if type(v) == "table" and v.itemId then R.itemsMasterList[v.itemId] = true end
+		end
+		for k, v in pairs(self.db.profile.extraTooltips.inventoryItems) do
+			for kk, vv in pairs(v) do R.itemsMasterList[vv] = true end
+		end
+		local temp = {}
+		for k, v in pairs(R.itemsMasterList) do
+			itemsToPrime = itemsToPrime + 1
+			temp[itemsToPrime] = k
+		end
+		R.itemsMasterList = temp
+
+		-- Progressively prime our item cache over time instead of hitting Blizzard's API all at once
+		itemsToPrime = 100 -- Just setting this temporarily to avoid a divide by zero
+		self:ScheduleTimer(function()
+			self:PrimeItemCache()
+		end, 2)
 
 		local refresh = nil
 
@@ -617,11 +672,6 @@ do
 			end
 		end, 20)
 
-		-- Trigger holiday reminders
-		self:ScheduleTimer(function()
-			Rarity:ShowTooltip(true)
-		end, 10)
-
   -- Update text again several times later - this helps get the icon right after login
   self:ScheduleTimer(function() R:DelayedInit() end, 10)
   self:ScheduleTimer(function() R:DelayedInit() end, 20)
@@ -647,6 +697,70 @@ function R:DelayedInit()
 	self:UpdateText()
  self:UpdateBar()
 end
+
+
+function R:IsInitializing()
+	return initializing
+end
+
+
+function R:PrimeItemCache()
+	numPrimeAttempts = numPrimeAttempts + 1
+	if numPrimeAttempts >= 20 then
+		self:Debug("Maximum number of cache prime attempts reached")
+		return
+	end
+
+	-- This doesn't always fully work, so first build a list of which items we still need to obtain
+	itemsToPrime = 1
+	itemsPrimed = 0
+	table.wipe(R.itemsToPrime)
+	for k, v in pairs(R.itemsMasterList) do
+		if R.itemInfoCache[v] == nil then
+			R.itemsToPrime[itemsToPrime] = v
+			itemsToPrime = itemsToPrime + 1
+		end
+	end
+	itemsToPrime = itemsToPrime - 1
+	if itemsToPrime <= 0 then return end
+
+	-- Prime the items
+	self:Debug("Loading "..itemsToPrime.." item(s) from server...")
+	initTimer = self:ScheduleRepeatingTimer(function()
+		if itemsPrimed <= 0 then itemsPrimed = 1 end
+		for i = 1, 10 do
+			GetItemInfo(R.itemsToPrime[itemsPrimed])
+			itemsPrimed = itemsPrimed + 1
+			if itemsPrimed > itemsToPrime then break end
+		end
+		if itemsPrimed >= itemsToPrime then
+			self:CancelTimer(initTimer)
+			-- First-time initialization finished
+			if initializing then
+				initializing = false
+				-- Trigger holiday reminders
+				self:ScheduleTimer(function()
+					Rarity:ShowTooltip(true)
+				end, 5)
+			end
+			-- Check how many items were not processed, rescanning if necessary
+			local got = 0
+			local totalNeeded = 0
+			for k, v in pairs(R.itemInfoCache) do got = got + 1 end
+			for k, v in pairs(R.itemsMasterList) do totalNeeded = totalNeeded + 1 end
+			if got < totalNeeded then
+				self:Debug("Initialization failed to retrieve "..(totalNeeded - got).." item(s)")
+				self:ScheduleTimer(function()
+					self:PrimeItemCache()
+				end, 5)
+			else
+				self:Debug("Finished loading "..itemsToPrime.." item(s) from server")
+			end
+		end
+		self:UpdateText()
+	end, 0.1)
+end
+
 
 
 function R:GroupFinderResultsUpdated()
@@ -742,6 +856,20 @@ end
 --[[
       UTILITIES ----------------------------------------------------------------------------------------------------------------
   ]]
+		
+
+function R:GetItemInfo(id)
+	if id == nil then return end
+	if R.itemInfoCache[id] ~= nil then
+		return unpack(R.itemInfoCache[id])
+	end
+	if itemCacheDebug and initializing == false then R:Debug("ItemInfo not cached for "..id) end
+	local info = { GetItemInfo_Blizzard(id) }
+	if #info > 0 then R.itemInfoCache[id] = info end
+	if R.itemInfoCache[id] == nil then return nil end
+	return unpack(R.itemInfoCache[id])
+end
+	
 
 function R:tcopy(to, from)
  for k, v in pairs(from) do
@@ -1178,8 +1306,8 @@ function R:OnEvent(event, ...)
  -------------------------------------------------------------------------------------
  -- You opened a loot window on a corpse or fishing node
  -------------------------------------------------------------------------------------
-	if event == "LOOT_READY" then
-		self:Debug("LOOT_READY with target: "..(UnitGUID("target") or "NO TARGET"))
+	if event == "LOOT_OPENED" then
+		self:Debug("LOOT_OPENED with target: "..(UnitGUID("target") or "NO TARGET"))
   local zone = GetRealZoneText()
   local subzone = GetSubZoneText()
   local zone_t = LibStub("LibBabble-Zone-3.0"):GetReverseLookupTable()[zone]
@@ -1287,6 +1415,7 @@ function R:OnEvent(event, ...)
 		if UnitClassification(guid) == "minus" then return end -- (This doesn't actually work currently; UnitClassification needs a unit, not a GUID)
 
   local numChecked = 0
+		self:Debug(numItems.." slot(s) to loot")
 		for slotID = 1, numItems, 1 do -- Loop through all loot slots (for AoE looting)
    local guidlist
    if GetLootSourceInfo then
@@ -1298,7 +1427,7 @@ function R:OnEvent(event, ...)
    for k, v in pairs(guidlist) do -- Loop through all NPC GUIDs being looted (will be 1 for single-target looting pre-5.0)
     guid = v
     if guid and type(guid) == "string" then
-     self:Debug("Checking NPC guid: "..guid)
+     self:Debug("Checking NPC guid ("..(numChecked + 1).."): "..guid)
      self:CheckNpcInterest(guid, zone, subzone, zone_t, subzone_t, curSpell, requiresPickpocket) -- Decide if we should increment an attempt count for this NPC
      numChecked = numChecked + 1
     else
@@ -2200,6 +2329,7 @@ function R:UpdateBar()
 	else	self.barGroup:SetFont(media:Fetch("font", self.db.profile.bar.font), self.db.profile.bar.fontSize or 8) end
 	if self.db.profile.bar.texture then self.barGroup:SetTexture(media:Fetch("statusbar", self.db.profile.bar.texture)) end
 	if self.db.profile.bar.rightAligned then self.barGroup:SetOrientation(3) else self.barGroup:SetOrientation(1) end
+	if self.db.profile.bar.growUp then self.barGroup:ReverseGrowth(true) else self.barGroup:ReverseGrowth(false) end
 	if self.db.profile.bar.showIcon then self.barGroup:ShowIcon() else self.barGroup:HideIcon() end
 	if self.db.profile.bar.showText then self.barGroup:ShowLabel() else self.barGroup:HideLabel() end
 	self.barGroup:SetColorAt(1.00, 1, 0, 0, 1) -- These SetColorAt calls appear to take longer and longer to execute every time they are called.
@@ -2222,6 +2352,11 @@ do
 	local headers = {}
 
  function R:UpdateText()
+		if initializing then
+			dataobj.text = L["Loading"].." ("..format("%d%%", itemsPrimed / itemsToPrime * 100)..")"
+			return
+		end
+
 		self:ProfileStart()
   local attempts, dropChance, chance = 0, 0, 0
 
@@ -3028,12 +3163,21 @@ do
   return added
  end
 	 
+
+	local renderingTip = false
 	
 	function R:ShowTooltip(hidden)
-		-- The tooltip can't be built in combat; it takes too long and the script will receive a "script ran too long" error
-		if InCombatLockdown() then return end
+
+		-- This function needs to be non-reentrant
+		if renderingTip then return end
+		renderingTip = true
 
 		if qtip:IsAcquired("RarityTooltip") and tooltip then
+			-- Don't show the tooltip if it's already showing
+			if tooltip:IsVisible() then
+				renderingTip = false
+				return
+			end
 			tooltip:Clear()
 		else
 			tooltip = qtip:Acquire("RarityTooltip", 9, "LEFT", "LEFT", "RIGHT", "RIGHT", "RIGHT", "CENTER", "CENTER", "CENTER") -- intentionally one column more than we need to avoid text clipping
@@ -3044,6 +3188,42 @@ do
   local addedLast
 		numHolidayReminders = 0
 		showedHolidayReminderOverflow = false
+		local delay = 0.6
+		if self.db.profile.tooltipHideDelay <= 0 then delay = 0.01 else delay = self.db.profile.tooltipHideDelay or 0.6 end
+		tooltip:SetAutoHideDelay(delay, frame, function()
+			tooltip = nil
+			qtip:Release("RarityTooltip")
+		end)
+
+		-- The tooltip can't be built in combat; it takes too long and the script will receive a "script ran too long" error
+		if InCombatLockdown() then
+			line = tooltip:AddLine()
+			tooltip:SetCell(line, 1, colorize(L["Tooltip can't be shown in combat"], gray), nil, nil, 3)
+			if hidden == true or frame == nil then
+				renderingTip = false
+				return
+			end
+			tooltip:SmartAnchorTo(frame)
+			tooltip:UpdateScrolling()
+			tooltip:Show()
+			renderingTip = false
+			return
+		end
+
+		-- No tooltip until we're done initializing
+		if initializing then
+			line = tooltip:AddLine()
+			tooltip:SetCell(line, 1, colorize(L["Rarity is loading..."], gray), nil, nil, 3)
+			if hidden == true or frame == nil then
+				renderingTip = false
+				return
+			end
+			tooltip:SmartAnchorTo(frame)
+			tooltip:UpdateScrolling()
+			tooltip:Show()
+			renderingTip = false
+			return
+		end
 
   -- Sort header
   local sortDesc = L["Sorting by name"]
@@ -3053,26 +3233,51 @@ do
   end
 		local line = tooltip:AddLine()
 		tooltip:SetCell(line, 1, colorize(sortDesc, green), nil, nil, 3)
-		
+
   -- Item groups
 		R:ProfileStart()
+
+		local group1start = debugprofilestop()
   addedLast = addGroup(self.db.profile.groups.mounts)
+		local group1end = debugprofilestop()
   if addedLast then tooltip:AddSeparator(1, 1, 1, 1, 1.0) end
+
+		local group2start = debugprofilestop()
   addedLast = addGroup(self.db.profile.groups.pets)
+		local group2end = debugprofilestop()
   if addedLast then tooltip:AddSeparator(1, 1, 1, 1, 1.0) end
+
+		local group3start = debugprofilestop()
   addedLast = addGroup(self.db.profile.groups.items)
+		local group3end = debugprofilestop()
   if addedLast then tooltip:AddSeparator(1, 1, 1, 1, 1.0) end
+
+		local group4start = debugprofilestop()
   addedLast = addGroup(self.db.profile.groups.user)
+		local group4end = debugprofilestop()
   if addedLast then tooltip:AddSeparator(1, 1, 1, 1, 1.0) end
+
+		local group5start = debugprofilestop()
   addedLast = addGroup(self.db.profile.groups.mounts, true)
+		local group5end = debugprofilestop()
   if addedLast then tooltip:AddSeparator(1, 1, 1, 1, 1.0) end
+
+		local group6start = debugprofilestop()
   addedLast = addGroup(self.db.profile.groups.pets, true)
+		local group6end = debugprofilestop()
   if addedLast then tooltip:AddSeparator(1, 1, 1, 1, 1.0) end
+
+		local group7start = debugprofilestop()
   addedLast = addGroup(self.db.profile.groups.items, true)
+		local group7end = debugprofilestop()
   if addedLast then tooltip:AddSeparator(1, 1, 1, 1, 1.0) end
+
+		local group8start = debugprofilestop()
   addedLast = addGroup(self.db.profile.groups.user, true)
+		local group8end = debugprofilestop()
   if addedLast then tooltip:AddSeparator(1, 1, 1, 1, 1.0) end
-		R:ProfileStop("Tooltip rendering took %fms")
+
+		R:ProfileStop("Tooltip rendering took %fms"..format(" (%f, %f, %f, %f, %f, %f, %f, %f)", (group1end - group1start), (group2end - group2start), (group3end - group3start), (group4end - group4start), (group5end - group5start), (group6end - group6start), (group7end - group7start), (group8end - group8start)))
 		
 		-- Footer
 		line = tooltip:AddLine()
@@ -3088,15 +3293,16 @@ do
 				Rarity:Print(colorize(L["You can turn off holiday reminders as a whole or on an item-by-item basis by visiting the Rarity Options screen."], gray))
 			end
 		end
-		if hidden == true or frame == nil then return end
+		if hidden == true or frame == nil then
+			renderingTip = false
+			return
+		end
 
-		tooltip:SetAutoHideDelay(0.6, frame, function()
-			tooltip = nil
-			qtip:Release("RarityTooltip")
-		end)
 		tooltip:SmartAnchorTo(frame)
 		tooltip:UpdateScrolling()
 		tooltip:Show()
+		
+		renderingTip = false
 	end
 end
 
@@ -3509,16 +3715,36 @@ function R:ScanExistingItems(reason)
 end
 
 
+local hookedCollectionsJournal_SetTab = false
+local currentCollectionsTab = 1
+local currentCollectionsSelf
+
+
 function R:ScanToys(reason)
 	if InCombatLockdown() then return end
- self:Debug("Scanning toys ("..reason..")")
+ self:Debug("Scanning toys ("..(reason or "")..")")
 
+	-- Load the Collections add-on if needed
 	if not Rarity.toysScanned then
 		if not ToyBox_OnLoad then UIParentLoadAddOn("Blizzard_Collections") end
-		--if ToyBox_OnShow then ToyBox_OnShow() end
-		if CollectionsJournal_SetTab then CollectionsJournal_SetTab(CollectionsJournal, 3) end
 	end
 
+	-- Hook CollectionsJournal_SetTab just so we can observe calls to it; it's the only way to keep track of the current tab
+	if not hookedCollectionsJournal_SetTab and CollectionsJournal_SetTab then
+		local CollectionsJournal_SetTab_Blizzard = _G.CollectionsJournal_SetTab
+		CollectionsJournal_SetTab = function(self, tab)
+			currentCollectionsSelf = self
+			currentCollectionsTab = tab
+			CollectionsJournal_SetTab_Blizzard(self, tab)
+		end
+		hookedCollectionsJournal_SetTab = true
+	end
+
+	-- Save which Collections tab we were on just before we switch it to Toys
+	local tabBefore = currentCollectionsTab
+	if CollectionsJournal_SetTab then CollectionsJournal_SetTab(CollectionsJournal, 3) end
+
+	-- Scan the toys
 	table.wipe(toys)
  for id = 1, C_ToyBox.GetNumToys() do
 		local itemId = C_ToyBox.GetToyFromIndex(id)
@@ -3540,6 +3766,10 @@ function R:ScanToys(reason)
 			end
 		end
 	end
+
+	-- Put the Collections tab back where it was
+	self:Debug("ScanToys: changing tab back to "..tabBefore)
+	CollectionsJournal_SetTab(currentCollectionsSelf, tabBefore)
 end
 
 
@@ -3623,6 +3853,8 @@ end
 
 
 function R:ScanStatistics(reason)
+	if InCombatLockdown() then return end -- Don't do this during combat as it has a tendency to run too long
+
 	self:ProfileStart2()
  --self:Debug("Scanning statistics ("..reason..")")
 

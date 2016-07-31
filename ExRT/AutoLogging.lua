@@ -33,15 +33,13 @@ function module.options:Load()
 		end
 	end)
 	
-	if ExRT.is7 then
-		self.enable5ppLegion = ELib:Check(self,DUNGEONS..": "..EXPANSION_NAME6,VExRT.Logging.enable5ppLegion):Point("TOPLEFT",self.disableLFR,0,-25):OnClick(function(self) 
-			if self:GetChecked() then
-				VExRT.Logging.enable5ppLegion = true
-			else
-				VExRT.Logging.enable5ppLegion = nil
-			end
-		end)
-	end
+	self.enable5ppLegion = ELib:Check(self,DUNGEONS..": "..EXPANSION_NAME6,VExRT.Logging.enable5ppLegion):Point("TOPLEFT",self.disableLFR,0,-25):OnClick(function(self) 
+		if self:GetChecked() then
+			VExRT.Logging.enable5ppLegion = true
+		else
+			VExRT.Logging.enable5ppLegion = nil
+		end
+	end)
 end
 
 

@@ -1006,7 +1006,7 @@
 						<Texture name="PawnUICompareItemScoreArrow1" file="Interface\AddOns\Pawn\Textures\UpgradeArrowBig">
 							<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="205" y="-380" /></Offset></Anchor></Anchors>
 							<Size><AbsDimension x="40" y="40" /></Size>
-							<TexCoords left=".5" top="0" right="1" bottom=".5" />
+							<TexCoords left="0" top="0" right=".5" bottom=".5" />
 						</Texture>
 						<Texture name="PawnUICompareItemScoreArrow2" file="Interface\AddOns\Pawn\Textures\UpgradeArrowBig">
 							<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="355" y="-380" /></Offset></Anchor></Anchors>

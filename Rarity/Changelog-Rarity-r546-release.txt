@@ -1,9 +1,25 @@
 ------------------------------------------------------------------------
-r544 | allara | 2016-07-29 22:03:20 +0000 (Fri, 29 Jul 2016) | 1 line
+r547 | allara | 2016-08-01 16:58:37 +0000 (Mon, 01 Aug 2016) | 1 line
 Changed paths:
-   A /tags/r543-release (from /trunk:543)
+   A /tags/r546-release (from /trunk:546)
 
-Tagging as r543-release
+Tagging as r546-release
+------------------------------------------------------------------------
+r546 | allara | 2016-07-31 19:30:39 +0000 (Sun, 31 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Options_Defaults.lua
+
+- Rarity no longer passes through its CollectionsJournal_SetTab hook in combat (may need to remove this hook entirely)
+------------------------------------------------------------------------
+r545 | allara | 2016-07-30 19:37:57 +0000 (Sat, 30 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- [#129] Added a new option to only make an announcement when an item is found (instead of every attempt)
 ------------------------------------------------------------------------
 r543 | allara | 2016-07-29 20:28:49 +0000 (Fri, 29 Jul 2016) | 1 line
 Changed paths:

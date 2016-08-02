@@ -7,7 +7,7 @@ Licensed under a Creative Commons "Attribution Non-Commercial Share Alike" Licen
 --]]
 
 local MAJOR_VERSION = "LibFishing-1.0"
-local MINOR_VERSION = 90972
+local MINOR_VERSION = 90973
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub") end
 
@@ -284,7 +284,7 @@ function FishLib:HasBuff(buffName)
 	-- return nil
 end
 
-local function UseThisLure(lure, b, enchant, skill, level)
+function FishLib:UseThisLure(lure, b, enchant, skill, level)
 	if ( lure ) then
 		local startTime, _, _ = GetItemCooldown(lure.id);
 		-- already check for skill being nil, so that will skip the whole check with level
@@ -317,10 +317,13 @@ function FishLib:FindNextLure(b, state)
 	-- return nil;
 end
 
-function FishLib:FindBestLure(b, state, usedrinks)
+function FishLib:FindBestLure(b, state, usedrinks, forcemax)
 	local zone, subzone = self:GetZoneInfo();
 	local level = self:GetFishingLevel(zone, subzone);
 	if ( level and level > 1 ) then
+		if (forcemax) then
+			level = 9999;
+		end
 		local rank, modifier, skillmax, enchant = self:GetCurrentSkill();
 		local skill = rank + modifier;
 		-- don't need this now, LT has the full values
@@ -347,7 +350,7 @@ function FishLib:FindBestLure(b, state, usedrinks)
 			for s=state+1,#lureinventory,1 do
 				checklure = lureinventory[s];
 				if (checklure.w) then
-					useit, b = UseThisLure(checklure, b, enchant, skill, level);
+					useit, b = self:UseThisLure(checklure, b, enchant, skill, level);
 					if ( useit and b and b > 0 ) then
 						return s, checklure;
 					end
@@ -357,7 +360,7 @@ function FishLib:FindBestLure(b, state, usedrinks)
 			b = 0;
 			for s=state+1,#lureinventory,1 do
 				checklure = lureinventory[s];
-				useit, b = UseThisLure(checklure, b, enchant, skill, level);
+				useit, b = self:UseThisLure(checklure, b, enchant, skill, level);
 				if ( useit and b and b > 0 ) then
 					return s, checklure;
 				end
@@ -589,7 +592,7 @@ end
 function FishLib:SplitLink(link)
 	if ( link ) then
 		local _,_, color, id, enchant, name = string.find(link, self:GetItemPattern());
-		if (not enchant) then
+		if (not enchant or enchant == '') then
 			enchant = 0;
 		end
 		if ( name ) then
@@ -601,7 +604,7 @@ end
 function FishLib:SplitFishLink(link)
 	if ( link ) then
 		local _,_, color, id, enchant, name = string.find(link, self:GetItemPattern());
-		if (not enchant) then
+		if (not enchant or enchant == '') then
 			enchant = 0;
 		end
 		return color, tonumber(id), name, enchant;

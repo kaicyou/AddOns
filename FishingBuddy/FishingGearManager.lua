@@ -12,7 +12,7 @@ local FINAL_STATE = 4;
 local gearframe = CreateFrame("Frame");
 gearframe:Hide();
 gearframe:SetScript("OnUpdate", function(self)
-	FishingBuddy.Debug("gearframe state "..self.state);
+	-- FishingBuddy.Debug("gearframe state "..self.state);
 	if ( self.state == 0 ) then
 		local icon, idxm1 = GetEquipmentSetInfoByName(self.name);
 		if ( not icon or self.force ) then
@@ -86,15 +86,15 @@ local function GearManagerInitialize(force)
 	local known, name = FL:GetFishingSkillInfo();
 	if ( known ) then
 		if (force) then
-			FishingBuddy.Debug("GearManagerInitialize forced");
+			-- FishingBuddy.Debug("GearManagerInitialize forced");
 		end
-		FishingBuddy.Debug("GearManagerInitialize name "..FBConstants.NAME);
+		-- FishingBuddy.Debug("GearManagerInitialize name "..FBConstants.NAME);
 		local icon, _ = GetEquipmentSetInfoByName(FBConstants.NAME);
 		if ( icon ) then
 			-- Validate outfit, CurseForge bug #218
 			local itemArray = GetEquipmentSetItemIDs(FBConstants.NAME);
 			-- If there is a Ranged slot, nuke this outfit
-			FishingBuddy.Dump(itemArray)
+			-- FishingBuddy.Dump(itemArray)
 			if (itemArray[18] and itemArray[18] ~= 0) then
 				force = true;
 			end
@@ -210,8 +210,8 @@ local Saved_GearSetButton_OnEnter = GearSetButton_OnEnter;
 local function Patch_GearSetButton_OnEnter(self)
 	Saved_GearSetButton_OnEnter(self);
 	local _, name = FL:GetFishingSkillInfo();
-	if ( self.name and self.name == name ) then
-		local bp, sp = OutfitPoints(name)
+	if ( self.name and self.name == FBConstants.NAME ) then
+		local bp, sp = OutfitPoints(self.name)
 		if ( bp >= 0 ) then
 			bp = "+"..bp;
 		else

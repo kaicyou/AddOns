@@ -255,6 +255,13 @@ local CastingOptions = {
 		["m"] = 1,
 		["parents"] = { ["EasyLures"] = "d" },
 		["default"] = false },
+	["BigDraenor"] = {
+		["text"] = FBConstants.CONFIG_BIGDRAENOR_ONOFF,
+		["tooltip"] = FBConstants.CONFIG_BIGDRAENOR_INFO,
+		["v"] = 1,
+		["m"] = 1,
+		["parents"] = { ["EasyLures"] = "d" },
+		["default"] = true },
 	["LastResort"] = {
 		["text"] = FBConstants.CONFIG_LASTRESORT_ONOFF,
 		["tooltip"] = FBConstants.CONFIG_LASTRESORT_INFO,
@@ -1188,7 +1195,8 @@ local function GetUpdateLure()
 			if (skill > 0) then
 				local NextLure, NextState;
 				local pole, tempenchant = FL:GetPoleBonus();
-				local state, bestlure = FL:FindBestLure(tempenchant, LureState);
+				local bigdraenor = (GSB("BigDraenor") and (GetCurrentMapContinent() == 7));
+				local state, bestlure = FL:FindBestLure(tempenchant, LureState, false, bigdraenor);
 				if ( DoEscaped ) then
 					if ( state or bestlure ) then
 						NextState = state or LureState;
@@ -1196,7 +1204,7 @@ local function GetUpdateLure()
 					else
 						NextLure = nil;
 					end
-				elseif ( GSB("AlwaysLure") ) then
+				elseif ( GSB("AlwaysLure") or bigdraenor) then
 					-- don't put on a lure if we've already got one
 					if ( tempenchant == 0 ) then
 						if ( not state ) then
@@ -1860,8 +1868,6 @@ FishingBuddy.OnEvent = function(self, event, ...)
 --	  end
 --	  FishingBuddy.Debug(line);
 	local arg1 = ...;
-
-FishingBuddy.Debug(event)
 
 -- TrackZoneEvents(event);
 	if ( event == "PLAYER_EQUIPMENT_CHANGED" or

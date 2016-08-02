@@ -1,6 +1,6 @@
 ﻿--Mage Nuggets by B-Buck (Bbuck of Eredar)
 
-local magenugVer = "5.2.3"
+local magenugVer = "5.2.4"
 local mirrorImageTime = 0;
 local spellStealTog = 0;
 local polyTimer = 0;
@@ -213,7 +213,8 @@ end
 function MageNuggetsHS_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
     if (self.TimeSinceLastUpdate > 0.1) then
-      local _, _, _, _, _, duration, expirationTime = UnitBuff("player", "Hot Streak!")
+      local name, _, _, _, _, _, _ = GetSpellInfo(48108);
+      local _, _, _, _, _, duration, expirationTime = UnitBuff("player", name)
       local hsCooldown = 0;
 
       if(expirationTime ~= nil) then
@@ -236,7 +237,8 @@ end
 function MageNuggetsHU_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
     if (self.TimeSinceLastUpdate > 0.1) then
-      local _, _, _, _, _, duration, expirationTime = UnitBuff("player", "Heating Up")
+      local name, _, _, _, _, _, _ = GetSpellInfo(48107);
+      local _, _, _, _, _, duration, expirationTime = UnitBuff("player", name)
       local huCooldown = 0;
 
       if(expirationTime ~= nil) then
@@ -259,7 +261,8 @@ end
 function MageNuggetsMB_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
     if (self.TimeSinceLastUpdate > 0.1) then
-      local _, _, _, mbCount, _, duration, expirationTime = UnitBuff("player", "Arcane Missiles!")
+      local name, _, _, _, _, _, _ = GetSpellInfo(79683);
+      local _, _, _, mbCount, _, duration, expirationTime = UnitBuff("player", name)
       local mbCooldown = 0;
 
       if(expirationTime ~= nil) then
@@ -287,7 +290,8 @@ end
 function MageNuggetsFoF_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
     if (self.TimeSinceLastUpdate > 0.1) then
-      local _, _, _, fofCount, _, duration, expirationTime = UnitBuff("player", "Fingers of Frost")
+      local name, _, _, _, _, _, _ = GetSpellInfo(44544);
+      local _, _, _, fofCount, _, duration, expirationTime = UnitBuff("player", name)
       local fofCooldown = 0;
 
       if(expirationTime ~= nil) then
@@ -315,7 +319,8 @@ end
 function MageNuggetsBF_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
     if (self.TimeSinceLastUpdate > 0.1) then
-      local _, _, _, bfCount, _, duration, expirationTime = UnitBuff("player", "Brain Freeze")
+      local name, _, _, _, _, _, _ = GetSpellInfo(190446);
+      local _, _, _, bfCount, _, duration, expirationTime = UnitBuff("player", name)
       local bfCooldown = 0;
 
       if(expirationTime ~= nil) then

@@ -4,23 +4,21 @@ if not L then return end
 
 -- currencies
 L["Ancient Mana"] = true
+L["Curious Coin"] = true
 L["Nethershard"] = true
 L["Order Resources"] = true
+L["Seal of Broken fate"] = true
 L["Shadowy Coins"] = true
 L["Sightless Eye"] = true
+L["Timeworn Artifact"] = true
 
 -- menu
 L["Legion Currencies Options"] = true
-L["Show Ancient Mana"] = true
-L["Show Nethershard"] = true
-L["Show Order Resources"] = true
-L["Show Shadowy Coins"] = true
-L["Show Sightless Eye"] = true
+L["Show"] = true
 L["Show icons"] = true
-L[""] = true
 
 -- other
-L["Legion %sCurrencies|r: Version %s%s|r is loaded."] = true
+L["Legion"] = true
 L["Right-Click"] = true
 L["Datatext Options Menu"] = true
 L["Currencies"] = true

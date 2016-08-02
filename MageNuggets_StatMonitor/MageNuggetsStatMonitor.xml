@@ -310,7 +310,8 @@
         GameTooltip:Hide()
        </OnLeave>
         <OnUpdate>
-            MageNuggetsSP_OnUpdate(self, elapsed)
+            MageNuggetsSP_OnUpdate(self, elapsed);
+          --  MageNuggetsBuff_OnUpdate(self, elapsed);
         </OnUpdate>
     </Scripts>
 </Frame>

@@ -1,4 +1,10 @@
 ------------------------------------------------------------------------
+r54 | thaoky | 2016-07-31 14:41:45 +0000 (Sun, 31 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/DataStore_Talents.lua
+
+Fixed GetThisGuild()
+------------------------------------------------------------------------
 r53 | thaoky | 2016-07-27 17:35:53 +0000 (Wed, 27 Jul 2016) | 1 line
 Changed paths:
    M /trunk/DataStore_Talents.lua

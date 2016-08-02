@@ -100,21 +100,6 @@ local function GuildWhisper(player, messageType, ...)
 	end
 end
 
-local function HasHeirloomAttachment()
-	local link, rarity, _
-
-	for i = 1, ATTACHMENTS_MAX_SEND do	-- loop through all attachments
-		link = GetSendMailItemLink(i)
-		if link then
-			_, _, rarity = GetItemInfo(link)
-			
-			if rarity == 7 then			-- is this an heirloom ?
-				return true					-- .. yes, return true !
-			end
-		end
-	end
-end
-
 local function SendGuildMail(recipient, subject, body, index)
 	local player = DataStore:GetNameOfMain(recipient)
 	if not player then return end
@@ -564,9 +549,6 @@ hooksecurefunc("SendMail", function(recipient, subject, body, ...)
 			for characterName, characterKey in pairs(DataStore:GetCharacters(realm)) do
 				if strlower(characterName) == strlower(recipientName) then		-- right alt ? proceed
 					SendOwnMail(characterKey, subject, body)
-					if not HasHeirloomAttachment() then
-						DataStore:SetConnectedRealms(realm, GetRealmName())
-					end
 					isRecipientAnAlt = true
 					break
 				end

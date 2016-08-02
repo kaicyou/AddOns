@@ -4622,6 +4622,23 @@ function otooltip7func()
 	end	
 	otooltip7:AddSeparator()
 	line = otooltip7:AddLine()
+	-- DISABLE
+	if cfg.oilvlcachesw then
+		otooltip7:SetCell(line, 3, "|cffffffff"..DISABLE)
+		otooltip7:SetCellScript(line, 3, "OnMouseUp", function() 
+			cfg.oilvlcachesw = false
+			cfg.oilvlcache = {} 
+			otooltip7func()
+		end)
+	else
+		otooltip7:SetCell(line, 3, "|cffffffff"..ENABLE)
+		otooltip7:SetCellScript(line, 3, "OnMouseUp", function() 
+			cfg.oilvlcachesw = true
+			cfg.oilvlcache = {} 
+			otooltip7func()
+		end)
+	end
+	
 	-- CLEAR_ALL
 	otooltip7:SetCell(line, 4, "|cffffffff"..CLEAR_ALL)
 	otooltip7:SetCellScript(line, 4, "OnMouseUp", function() 
@@ -4903,10 +4920,27 @@ function OTgathertil(guid, unitid)
 		end
 	end
 	-- cache
-	local cachesw = false
-	if oname3 and not orealm3 then orealm3 = orealm end
-	for i = 1, #cfg.oilvlcache do
-		if cfg.oilvlcache[i].oname == oname3 and cfg.oilvlcache[i].orealm == orealm3 and avgIlvl > 0 then
+	if cfg.oilvlcachesw then
+		local cachesw = false
+		if oname3 and not orealm3 then orealm3 = orealm end
+		for i = 1, #cfg.oilvlcache do
+			if cfg.oilvlcache[i].oname == oname3 and cfg.oilvlcache[i].orealm == orealm3 and avgIlvl > 0 then
+				cfg.oilvlcache[i] = {
+					oname = oname3,
+					orealm = orealm3,
+					oilvl = avgIlvl,
+					ogear = oilvlframedata.gear[OTCurrent3],
+					oclass = oClassColor(unitid)..UnitClass(unitid),
+					otime = time()
+				}
+				sort(cfg.oilvlcache, function(a,b) return a.otime > b.otime end)
+				if #cfg.oilvlcache > 100 then cfg.oilvlcache[#cfg.oilvlcache] = nil; end
+				cachesw = true;
+				break;
+			end
+		end
+		if not cachesw and oname3 and orealm3 and avgIlvl > 0 then
+			local i = #cfg.oilvlcache + 1;
 			cfg.oilvlcache[i] = {
 				oname = oname3,
 				orealm = orealm3,
@@ -4916,24 +4950,9 @@ function OTgathertil(guid, unitid)
 				otime = time()
 			}
 			sort(cfg.oilvlcache, function(a,b) return a.otime > b.otime end)
-			if #cfg.oilvlcache > 100 then cfg.oilvlcache[#cfg.oilvlcache] = nil; end
-			cachesw = true;
-			break;
 		end
+		if #cfg.oilvlcache > 100 then cfg.oilvlcache[#cfg.oilvlcache] = nil; end
 	end
-	if not cachesw and oname3 and orealm3 and avgIlvl > 0 then
-		local i = #cfg.oilvlcache + 1;
-		cfg.oilvlcache[i] = {
-			oname = oname3,
-			orealm = orealm3,
-			oilvl = avgIlvl,
-			ogear = oilvlframedata.gear[OTCurrent3],
-			oclass = oClassColor(unitid)..UnitClass(unitid),
-			otime = time()
-		}
-		sort(cfg.oilvlcache, function(a,b) return a.otime > b.otime end)
-	end
-	if #cfg.oilvlcache > 100 then cfg.oilvlcache[#cfg.oilvlcache] = nil; end
 	return avgIlvl, mia, missenchant, missgem, missHenchant, missHgem, count;
 end
 
@@ -5283,6 +5302,7 @@ function events:ADDON_LOADED(...)
 	if cfg.oilvlrpdetails == nil then cfg.oilvlrpdetails = true; end
 	if cfg.oilvlgears == nil then cfg.oilvlgears = {}; end
 	if cfg.oilvlcache == nil then cfg.oilvlcache = {}; end
+	if cfg.oilvlcachesw == nil then cfg.oilvlcachesw = true; end
 	if cfg.oilvlminimapicon == nil then cfg.oilvlminimapicon = true; end
 	if cfg.oilvldp == nil then cfg.oilvldp = 1 end
 	if cfg.oilvlun == nil then cfg.oilvlun = true end

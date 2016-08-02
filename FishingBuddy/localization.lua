@@ -159,6 +159,8 @@ FishingTranslations["enUS"] = {
 	CONFIG_DRAENORBAIT_INFO   = "If enabled, attempt to use the right bait for the current Draenor zone.",
 	CONFIG_DRAENORBAITMAINTAIN_ONOFF  = "Maintain bait only",
 	CONFIG_DRAENORBAITMAINTAIN_INFO   = "If enabled, maintain existing Draenor bait, do not apply based on location.",
+	CONFIG_BIGDRAENOR_ONOFF   = "Max Draenor",
+	CONFIG_BIGDRAENOR_INFO    = "If enabled, attempt to maximize skill while in Draenor.",
 	
 	CONFIG_SHOWLOCATIONZONES_ONOFF	= "Show Zones",
 	CONFIG_SHOWLOCATIONZONES_INFO = "Display both zones and subzones.",

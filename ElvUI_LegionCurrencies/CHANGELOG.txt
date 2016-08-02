@@ -1,5 +1,8 @@
-v 1.00
-- Initial Release
+v 1.01
+- Rewritten script to support changeable currency caps (such as with Ancient Mana that keeps going up the further you progress in the Suramar storyline)
+
+v 1.00b
+- Fixed compatibility issues that arrose during game version change
 
 v 1.00a
 - Addon Development

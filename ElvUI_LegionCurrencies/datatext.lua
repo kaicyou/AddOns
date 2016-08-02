@@ -4,225 +4,209 @@ local DT = E:GetModule('DataTexts')
 local lastPanel
 local displayString = "---"
 local _hex
-local version = GetAddOnMetadata("ElvUI_LegionCurrencies", "Version")
+local Lang = GetLocale()
 local red = "|cffc74040"
 local orange = "|cffda8c4f"
---local dhgreen = "|cff28d317"
-local Currencies = {1155, 1275, 1226, 1220, 1273, 1154, 1149, 1268}
-local login = false
+local version = GetAddOnMetadata("ElvUI_LegionCurrencies", "Version")
 
-V["LegionCurrencies"] = {
-	["AM"] = true, -- Ancient Mana, 1155
-	["CC"] = true, -- Curious Coin, 1275
-	["NS"] = true, -- Nethershard, 1226
-	["OR"] = true, -- Order Resources, 1220
-	["SoBF"] = true, -- Seal of Broken Fate, 1273
-	["SC"] = true, -- Shadowy Coins, 1154
-	["SE"] = true, -- Sightless Eye, 1149
-	["TA"] = true, -- Timeworn Artifact, 1268
-	["Icons"] = true
-}
+local currencies = {1155, 1275, 1226, 1220, 1273, 1154, 1149, 1268}
 
-local function setupDB() 
-	E.private["LegionCurrencies"] = E.private["LegionCurrencies"] or {}
---	E.private["LegionCurrencies"]["AC"]    = true or false
---	E.private["LegionCurrencies"]["AF"]    = true or false
---	E.private["LegionCurrencies"]["DIC"]   = true or false
---	E.private["LegionCurrencies"]["GR"]    = true or false
---	E.private["LegionCurrencies"]["Oil"]   = true or false
---	E.private["LegionCurrencies"]["SoTF"]  = true or false
---	E.private["LegionCurrencies"]["SoIF"]  = true or false
---	E.private["LegionCurrencies"]["VR"]    = true or false
---	E.private["LegionCurrencies"]["TB"]    = true or false
---	E.private["LegionCurrencies"]["Icons"] = true or false
---	E.private["LegionCurrencies"]["AC"]    = E.private["LegionCurrencies"]["AC"] or true
---	E.private["LegionCurrencies"]["AF"]    = E.private["LegionCurrencies"]["AF"] or true
---	E.private["LegionCurrencies"]["DIC"]   = E.private["LegionCurrencies"]["DIC"] or true
---	E.private["LegionCurrencies"]["GR"]    = E.private["LegionCurrencies"]["GR"] or true
---	E.private["LegionCurrencies"]["Oil"]   = E.private["LegionCurrencies"]["Oil"] or true
---	E.private["LegionCurrencies"]["SoTF"]  = E.private["LegionCurrencies"]["SoTF"] or true
---	E.private["LegionCurrencies"]["SoIF"]  = E.private["LegionCurrencies"]["SoIF"] or true
---	E.private["LegionCurrencies"]["VR"]    = E.private["LegionCurrencies"]["VR"] or true
---	E.private["LegionCurrencies"]["TB"]    = E.private["LegionCurrencies"]["TB"] or true
---	E.private["LegionCurrencies"]["Icons"] = E.private["LegionCurrencies"]["Icons"] or true
+local elvProfileDB = ElvPrivateDB["profiles"][E.myname.." - "..E.myrealm]
+if elvProfileDB["ElvUI_LegionCurrencies"] ~= nil then
+	local s = elvProfileDB["ElvUI_LegionCurrencies"]["setup_complete"]
+	if s or s ~= nil then
+		if ElvCharacterDB["ElvUI_LegionCurrencies"]["locale"] ~= Lang then
+			ElvCharacterDB["ElvUI_LegionCurrencies"] = {}
+		else
+			ElvCharacterDB["ElvUI_LegionCurrencies"] = ElvCharacterDB["ElvUI_LegionCurrencies"] or {}
+		end
+		-- misc
+		ElvCharacterDB["ElvUI_LegionCurrencies"]["icons"]  = elvProfileDB["ElvUI_LegionCurrencies"]["icons"] or true 
+		-- currencies
+		ElvCharacterDB["ElvUI_LegionCurrencies"][1155]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1155]["visible"]  or true -- Ancient Mana
+		ElvCharacterDB["ElvUI_LegionCurrencies"][1275]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1275]["visible"]  or true -- Curious Coin
+		ElvCharacterDB["ElvUI_LegionCurrencies"][1226]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1226]["visible"]  or true -- Nethershard
+		ElvCharacterDB["ElvUI_LegionCurrencies"][1220]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1220]["visible"]  or true -- Order Resources
+		ElvCharacterDB["ElvUI_LegionCurrencies"][1273]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1273]["visible"]  or true -- Seal of Broken fate
+		ElvCharacterDB["ElvUI_LegionCurrencies"][1154]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1154]["visible"]  or true -- Shadowy Coin
+		ElvCharacterDB["ElvUI_LegionCurrencies"][1149]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1149]["visible"]  or true -- Sightless Eye
+		ElvCharacterDB["ElvUI_LegionCurrencies"][1268]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1268]["visible"]  or true -- Timeworn Artifact
+	end
 end
 
+if not ElvCharacterDB["ElvUI_LegionCurrencies"] then
+	ElvCharacterDB["ElvUI_LegionCurrencies"] = {}
+end
+
+V["ElvUI_LegionCurrencies"] = {
+	-- misc
+	["icons"] = true,
+	-- currencies
+	[1155] = true, -- Ancient Mana, 1155
+	[1275] = true, -- Curious Coin, 1275
+	[1226] = true, -- Nethershard, 1226
+	[1220] = true, -- Order Resources, 1220
+	[1273] = true, -- Seal of Broken Fate, 1273
+	[1154] = true, -- Shadowy Coins, 1154
+	[1149] = true, -- Sightless Eye, 1149
+	[1268] = true, -- Timeworn Artifact, 1268
+}
+
 local function ToggleOption(name)
-	if E.private["LegionCurrencies"][name] then
-		E.private["LegionCurrencies"][name] = false
+	if ElvCharacterDB["ElvUI_LegionCurrencies"][name] then
+		ElvCharacterDB["ElvUI_LegionCurrencies"][name] = false
 	else
-		E.private["LegionCurrencies"][name] = true
+		ElvCharacterDB["ElvUI_LegionCurrencies"][name] = true
 	end
 end
 
 local function GetOption(name)
-	if E.private["LegionCurrencies"] then
-		return E.private["LegionCurrencies"][name]
+	if ElvCharacterDB["ElvUI_LegionCurrencies"][name] then
+		return ElvCharacterDB["ElvUI_LegionCurrencies"][name]
 	end
 end
 
 local menu = {
 	{ text = L["Legion Currencies Options"], isTitle = true , notCheckable = true },
-	{ text = L["Show Ancient Mana"], checked = function() return GetOption('AM') end, func = function() ToggleOption('AM') end },
-	{ text = L["Show Curious Coin"], checked = function() return GetOption('CC') end, func = function() ToggleOption('CC') end },
-	{ text = L["Show Nethershard"], checked = function()  return GetOption('NS') end, func = function() ToggleOption('NS') end },
-	{ text = L["Show Order Resources"], checked = function() return GetOption('OR') end, func = function() ToggleOption('OR') end },
-	{ text = L["Show Seal of Broken Fate"], checked = function() return GetOption('SoBF') end, func = function() ToggleOption('SoBF') end },
-	{ text = L["Show Shadowy Coins"], checked = function() return GetOption('SC') end, func = function() ToggleOption('SC') end },
-	{ text = L["Show Sightless Eye"], checked = function() return GetOption('SE') end, func = function() ToggleOption('SE') end },
-	{ text = L["Show Timeworn Artifact"], checked = function() return GetOption('TA') end, func = function() ToggleOption('TA') end },
-	{ text = "  ", isTitle = true, notCheckable = true },
-	{ text = L["Show icons"], checked = function() return GetOption('Icons') end, func = function() ToggleOption('Icons') end },
+	{ text = L["Show"]..' '..L["Ancient Mana"], checked = function() return GetOption(1155) end, func = function() ToggleOption(1155) end },
+	{ text = L["Show"]..' '..L["Curious Coin"], checked = function() return GetOption(1275) end, func = function() ToggleOption(1275) end },
+	{ text = L["Show"]..' '..L["Nethershard"], checked = function() return GetOption(1226) end, func = function() ToggleOption(1226) end },
+	{ text = L["Show"]..' '..L["Order Resources"], checked = function() return GetOption(1220) end, func = function() ToggleOption(1220) end },
+	{ text = L["Show"]..' '..L["Seal of Broken Fate"], checked = function() return GetOption(1273) end, func = function() ToggleOption(1273) end },
+	{ text = L["Show"]..' '..L["Shadowy Coins"], checked = function() return GetOption(1154) end, func = function() ToggleOption(1154) end },
+	{ text = L["Show"]..' '..L["Sightless Eye"], checked = function() return GetOption(1149) end, func = function() ToggleOption(1149) end },
+	{ text = L["Show"]..' '..L["Timeworn Artifact"], checked = function() return GetOption(1268) end, func = function() ToggleOption(1268) end },
+	{ text = " ", isTitle = true , notCheckable = true },
+	{ text = L["Show icons"], checked = function() return GetOption("icons") end, func = function() ToggleOption("icons") end },
 }
+local menuFrame = CreateFrame("Frame", "ElvUI_LegionCurrenciesDatatextMenuFrame", E.UIParent, 'UIDropDownMenuTemplate')
 
-local menuFrame = CreateFrame("Frame", "LegionCurrenciesMenuFrame", E.UIParent, 'UIDropDownMenuTemplate')
-
-local function getCurrenyCap(name)
-	local cap = 0
-		if name == L["Ancient Mana"] then cap = 500
-	elseif name == L["Nethershard"] then cap = 2000
-	elseif name == L["Seal of Broken Fate"] then cap = 10
-	elseif name == L["Shadowy Coins"] then cap = 500
-	elseif name == L["Sightless Eye"] then cap = 1000
-	elseif name == L["Timeworn Artifact"] then cap = 1000
-	else cap = 0
-	end
-	return cap
-end
-
-local function ColorValue(name, currency)
+local function ColorValue(cap, currency)
 	local color, percent
-	local cap = getCurrenyCap(name)
 	if cap ~= 0 then
 		percent = currency * (100 / cap)
 	else
 		percent = 0
 	end
-	
 	if percent < 70 then color = _hex
 	elseif percent >= 70 and percent < 90 then color = orange
-	elseif percent >= 90 then color = red
-	end
-
+	elseif percent >= 90 then color = red end
 	if cap == 0 then return _hex
-	else return color
-	end
+	else return color end 
+	return _hex
 end
 
 local function OnEvent(self, event, ...)
-	setupDB()
 	lastPanel = self
-	
 	local _text = "---"
 	if not _hex then return end
-	if UnitLevel("player") >= 100 then
-		for i = 1, #(Currencies) do
-			if i == 1 then 
-				displayString = '' 
+	for i = 1, #(currencies) do
+		if i == 1 then displayString = '' end
+		local index = currencies[i]
+		local name, count, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = GetCurrencyInfo(index)
+		if isDiscovered then
+			if(i ~= 1) then _text = "  " else _text = "" end
+			local texture = format('|T%s:14:14:0:0:64:64:4:60:4:60|t', icon)
+			if index == 1155 and (GetOption(1155) and GetOption("Legion")) then
+				local str
+				if GetOption("icons") then
+					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
+				else
+					words = { strsplit(" ", name) }
+					for _, word in ipairs(words) do _text = _text..string.sub(word,1,1) end
+					str = tostring(_text..":"..ColorValue(totalMax, count)..count.."|r")
+				end
+				displayString = displayString..str
 			end
-			local index = Currencies[i]
-			local name, count, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = GetCurrencyInfo(index)
-			if name and isDiscovered then
-				if(i ~= 1) then _text = "  " else _text = "" end
-				local texture = format('|T%s:14:14:0:0:64:64:4:60:4:60|t', icon)
-				if name == L["Ancient Mana"] and GetOption("AM") then
-					local str
-					if not GetOption("Icons") then
-						words = { strsplit(" ", name) }
-						for _, word in ipairs(words) do _text = _text .. string.sub(word,1,1) end
-						str = tostring(_text..":".._hex..count.."|r")
-					elseif GetOption("Icons") then
-						str = tostring(_text..texture..":"..ColorValue(name, count)..count.._hex.."|r")
-					end
-					displayString = displayString..str
+			if index == 1275 and (GetOption(1275) and GetOption("Legion")) then
+				local str
+				if GetOption("icons") then
+					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
+				else
+					words = { strsplit(" ", name) }
+					for _, word in ipairs(words) do _text = _text..string.sub(word,1,1) end
+					str = tostring(_text..":"..ColorValue(totalMax, count)..count.."|r")
 				end
-				if name == L["Curious Coin"] and GetOption("CC") then
-					local str
-					if not GetOption("Icons") then
-						words = { strsplit(" ", name) }
-						for _, word in ipairs(words) do _text = _text .. string.sub(word,1,1) end
-						str = tostring(_text..":".._hex..count.."|r")
-					elseif GetOption("Icons") then
-						str = tostring(_text..texture..":"..ColorValue(name, count)..count.._hex.."|r")
-					end
-					displayString = displayString..str
+				displayString = displayString..str
+			end
+			if index == 1226 and (GetOption(1226) and GetOption("Legion")) then
+				local str
+				if GetOption("icons") then
+					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
+				else
+					words = { strsplit(" ", name) }
+					for _, word in ipairs(words) do _text = _text..string.sub(word,1,1) end
+					str = tostring(_text..":"..ColorValue(totalMax, count)..count.."|r")
 				end
-				if name == L["Nethershard"] and GetOption("NS") then
-					local str
-					if not GetOption("Icons") then
-						words = { strsplit(" ", name) }
-						for _, word in ipairs(words) do _text = _text .. string.sub(word,1,1) end
-						str = tostring(_text..":".._hex..count.."|r")
-					elseif GetOption("Icons") then
-						str = tostring(_text..texture..":"..ColorValue(name, count)..count.._hex.."|r")
-					end
-					displayString = displayString..str
+				displayString = displayString..str
+			end
+			if index == 1220 and (GetOption(1220) and GetOption("Legion")) then
+				local str
+				if GetOption("icons") then
+					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
+				else
+					words = { strsplit(" ", name) }
+					for _, word in ipairs(words) do _text = _text..string.sub(word,1,1) end
+					str = tostring(_text..":"..ColorValue(totalMax, count)..count.."|r")
 				end
-				if name == L["Order Resources"] and GetOption("OR") then
-					local str
-					if not GetOption("Icons") then
-						words = { strsplit(" ", name) }
-						for _, word in ipairs(words) do _text = _text .. string.sub(word,1,1) end
-						str = tostring(_text..":".._hex..count.."|r")
-					elseif GetOption("Icons") then
-						str = tostring(_text..texture..":"..ColorValue(name, count)..count.._hex.."|r")
-					end
-					displayString = displayString..str
+				displayString = displayString..str
+			end
+			if index == 1273 and (GetOption(1273) and GetOption("Legion")) then
+				local str
+				if GetOption("icons") then
+					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
+				else
+					words = { strsplit(" ", name) }
+					for _, word in ipairs(words) do _text = _text..string.sub(word,1,1) end
+					str = tostring(_text..":"..ColorValue(totalMax, count)..count.."|r")
 				end
-				if name == L["Seal of Broken Fate"] and GetOption("SoBF") then
-					local str
-					if not GetOption("Icons") then
-						words = { strsplit(" ", name) }
-						for _, word in ipairs(words) do _text = _text .. string.sub(word,1,1) end
-						str = tostring(_text..":".._hex..count.."|r")
-					elseif GetOption("Icons") then
-						str = tostring(_text..texture..":"..ColorValue(name, count)..count.._hex.."|r")
-					end
-					displayString = displayString..str
+				displayString = displayString..str
+			end
+			if index == 1154 and (GetOption(1154) and GetOption("Legion")) then
+				local str
+				if GetOption("icons") then
+					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
+				else
+					words = { strsplit(" ", name) }
+					for _, word in ipairs(words) do _text = _text..string.sub(word,1,1) end
+					str = tostring(_text..":"..ColorValue(totalMax, count)..count.."|r")
 				end
-				if name == L["Shadowy Coins"] and GetOption("SC") then
-					local str
-					if not GetOption("Icons") then
-						words = { strsplit(" ", name) }
-						for _, word in ipairs(words) do _text = _text .. string.sub(word,1,1) end
-						str = tostring(_text..":".._hex..count.."|r")
-					elseif GetOption("Icons") then
-						str = tostring(_text..texture..":"..ColorValue(name, count)..count.._hex.."|r")
-					end
-					displayString = displayString..str
+				displayString = displayString..str
+			end
+			if index == 1149 and (GetOption(1149) and GetOption("Legion")) then
+				local str
+				if GetOption("icons") then
+					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
+				else
+					words = { strsplit(" ", name) }
+					for _, word in ipairs(words) do _text = _text..string.sub(word,1,1) end
+					str = tostring(_text..":"..ColorValue(totalMax, count)..count.."|r")
 				end
-				if name == L["Sightless Eye"] and GetOption("SE") then
-					local str
-					if not GetOption("Icons") then
-						words = { strsplit(" ", name) }
-						for _, word in ipairs(words) do _text = _text .. string.sub(word,1,1) end
-						str = tostring(_text..":".._hex..count.."|r")
-					elseif GetOption("Icons") then
-						str = tostring(_text..texture..":"..ColorValue(name, count)..count.._hex.."|r")
-					end
-					displayString = displayString..str
+				displayString = displayString..str
+			end
+			if index == 1268 and (GetOption(1268) and GetOption("Legion")) then
+				local str
+				if GetOption("icons") then
+					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
+				else
+					words = { strsplit(" ", name) }
+					for _, word in ipairs(words) do _text = _text..string.sub(word,1,1) end
+					str = tostring(_text..":"..ColorValue(totalMax, count)..count.."|r")
 				end
-				if name == L["Timeworn Artifact"] and GetOption("TA") then
-					local str
-					if not GetOption("Icons") then
-						words = { strsplit(" ", name) }
-						for _, word in ipairs(words) do _text = _text .. string.sub(word,1,1) end
-						str = tostring(_text..":".._hex..count.."|r")
-					elseif GetOption("Icons") then
-						str = tostring(_text..texture..":"..ColorValue(name, count)..count.._hex.."|r")
-					end
-					displayString = displayString..str
-				end
+				displayString = displayString..str
 			end
 		end
-		if displayString == '' or (not GetOption(L["AM"]) and not GetOption(L["CC"]) and not GetOption(L["NS"]) and not GetOption(L["OR"]) and not GetOption(L["SoBF"]) and not GetOption(L["SC"]) and not GetOption(L["SE"]) and not GetOption(L["TA"])) then
-			displayString = tostring("Legion |r".._hex..L["Currencies"].."|r")
-		end	
-	else
-		displayString = tostring(_hex.."Legion "..L["Currencies"].."|r "..L["requires level"].." ".._hex.."100+|r")
+	end	
+	if self then
+		if displayString == '' or (not GetOption(1155) and not GetOption(1275) and not GetOption(1226) and not GetOption(1220) and not GetOption(1273) and not GetOption(1154) and not GetOption(1149) and not GetOption(1268)) then 
+			displayString = tostring("ElvUI ".._hex..L["Legion"].." "..L["Currencies"].."|r") end
+		self.text:SetFormattedText(displayString)
 	end
-	if self then self.text:SetFormattedText(displayString) end
-	displayString = "---"
+end
+
+local function getCurinfo(curID)
+	local Name, Amount, Icon, WeeklyEarned, WeeklyMax, TotalMax, IsDiscovered = GetCurrencyInfo(curID)
+	return {Name, Icon, Amount, WeeklyEarned, WeeklyMax, TotalMax, IsDiscovered}
 end
 
 local function OnEnter(self)

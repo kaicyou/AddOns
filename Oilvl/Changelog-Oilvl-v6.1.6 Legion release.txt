@@ -1,9 +1,17 @@
 ------------------------------------------------------------------------
-r503 | olzenkhaw | 2016-07-27 15:10:53 +0000 (Wed, 27 Jul 2016) | 1 line
+r505 | olzenkhaw | 2016-08-01 00:18:07 +0000 (Mon, 01 Aug 2016) | 1 line
 Changed paths:
-   A /tags/v6.1.5 Legion release (from /trunk:502)
+   A /tags/v6.1.6 Legion release (from /trunk:504)
 
-v6.1.5 fixed minimap icon bug.
+v6.1.6 Added feature to disable cache history.
+------------------------------------------------------------------------
+r504 | olzenkhaw | 2016-08-01 00:17:35 +0000 (Mon, 01 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+   M /trunk/Oilvlconfig.lua
+
+v6.1.6 Added feature to disable cache history.
 ------------------------------------------------------------------------
 r502 | olzenkhaw | 2016-07-27 15:10:14 +0000 (Wed, 27 Jul 2016) | 1 line
 Changed paths:

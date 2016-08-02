@@ -1,11 +1,7 @@
-﻿
+-- Mage Nuggets Stat Monitor - B-Buck (Bbuck of Eredar)
 
 local currentStatColor = 0;
 local statMonitorLoadTimer = 0;
-
-
-
-
 
 function MageNuggetsSP_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
@@ -30,15 +26,15 @@ function MageNuggetsSP_OnUpdate(self, elapsed)
 
     local i = 1;
     local buffName, rank, _, count, _, _, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
-        while buffName do
-            if(spellId == 116014) then -- Rune of Power
-                bonusSpellDamage = 15;
-            end
-            if(spellId == 116267) then -- Incanter's Flow
-                bonusSpellDamage = count * 4;
-            end
-            i = i + 1;
-            buffName, rank, _, count, _, _, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
+    while buffName do
+        if(spellId == 116014) then -- Rune of Power
+            bonusSpellDamage = 15;
+        end
+        if(spellId == 116267) then -- Incanter's Flow
+            bonusSpellDamage = count * 4;
+        end
+        i = i + 1;
+        buffName, rank, _, count, _, _, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
     end
 
     if(mageNuggetsStatMonitor.spellpower == true)then
@@ -127,10 +123,10 @@ function MageNuggetsSP_OnUpdate(self, elapsed)
         dressStatMonitorText();
     end
     statCount = 0;
+    MageNuggetsBuff_OnUpdate();
     self.TimeSinceLastUpdate = 0;
    end
 end
-
 
 function setStatMonitorHeight(statCount)
     if(statCount==0)then
@@ -159,7 +155,6 @@ function setStatMonitorHeight(statCount)
         MageNugSP_Frame:SetHeight(120);
     end
 end
-
 
 function mageNuggetsStatMonitorToggle(statType)
     if(statType == "spellpower") then
@@ -327,7 +322,45 @@ function setStatMonitorStats()
     end
 end
 
+function MageNuggetsBuff_OnUpdate(self, elapsed)
+    local lusted = false;
+    local i = 1;
+    local buffName, rank, _, count, _, _, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
+    while buffName do
+        if(spellId == 80353) or (spellId == 102351) or (spellId == 2825) or (spellId == 32182) then -- Timewarp
+            lusted = true;
+        end
+        i = i + 1;
+        buffName, rank, _, count, _, _, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
+    end
 
+    local hasteIndex = getHasteIndex();
+    if(lusted == true) then
+      local rRoll = (math.random (10) * 0.1);
+      local gRoll = (math.random (10) * 0.1);
+      local bRoll = (math.random (10) * 0.1);
+      _G["MageNugSP_FrameText"..hasteIndex]:SetTextColor(rRoll, gRoll, bRoll);
+      _G["MageNugSP_FrameValueText"..hasteIndex]:SetTextColor(rRoll, gRoll, bRoll);
+    else
+      if(hasteIndex ~= 0)then
+        _G["MageNugSP_FrameText"..hasteIndex]:SetTextColor(mageNuggetsStatMonitor.hasteR,mageNuggetsStatMonitor.hasteG,mageNuggetsStatMonitor.hasteB,1);
+        _G["MageNugSP_FrameValueText"..hasteIndex]:SetTextColor(mageNuggetsStatMonitor.hasteValueR,mageNuggetsStatMonitor.hasteValueG,mageNuggetsStatMonitor.hasteValueB,1);
+      end
+    end
+end
+
+function getHasteIndex()
+  local hasteIndex = 0;
+  local i = 1;
+  while i < 11 do
+    local statText = _G["MageNugSP_FrameText"..i]:GetText();
+    if (statText == "Haste") then
+      return i;
+    end
+    i = i + 1;
+  end
+  return 0;
+end
 
 function dressStatMonitorText()
     local statCount = 0;

@@ -1,4 +1,10 @@
-﻿Version 1.7
+﻿Version 1.7.1
+- Curseforge bug #272 - Stuck on loading screen
+- Curseforge bug #274 - Error when using Equipment Manager
+- Curseforge bug #276 - Draenor Fishing Pole works again.
+- Add "Max Draenor" fishing option, if enabled ignore minimum fishing level
+
+Version 1.7
 - Updates for Legion
 - Support for "Oversize Bobber"
 - Pet handling fixes (thanks miss_kallistra!)

@@ -226,6 +226,7 @@ function LP:UpdateCoords(elapsed)
 		displayLine = subZoneText
 	end
 	loc_panel.Text:SetText(displayLine)
+	if LP.db.autowidth then loc_panel:Width(loc_panel.Text:GetStringWidth() + 10) end
 
 	--Location Colorings
 	if displayLine ~= "" then
@@ -248,7 +249,11 @@ function LP:UpdateCoords(elapsed)
 end
 
 function LP:Resize()
-	loc_panel:Size(LP.db.width, LP.db.height)
+	if LP.db.autowidth then
+		loc_panel:Size(loc_panel.Text:GetStringWidth() + 10, LP.db.height)
+	else
+		loc_panel:Size(LP.db.width, LP.db.height)
+	end
 	loc_panel.Text:Width(LP.db.width - 18)
 	loc_panel.Xcoord:Size(LP.db.fontSize * 3, LP.db.height)
 	loc_panel.Ycoord:Size(LP.db.fontSize * 3, LP.db.height)
@@ -304,7 +309,7 @@ end
 function LP:ItemList(check)
 	for i = 1, #LP.PortItems do
 		local data = LP.PortItems[i]
-		if SLE:BagSearch(data.secure.ID) or PlayerHasToy(data.secure.ID)then
+		if (SLE:BagSearch(data.secure.ID) or PlayerHasToy(data.secure.ID)) and T.IsUsableItem(data.secure.ID) then
 			if check then 
 				T.tinsert(LP.MainMenu, {text = ITEMS..":", title = true, nohighlight = true})
 				return true 

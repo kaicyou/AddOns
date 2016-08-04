@@ -17,6 +17,7 @@ T.UnitLevel = UnitLevel
 T.UnitClass = UnitClass
 T.UnitRace = UnitRace
 T.UnitName = UnitName
+T.UnitInVehicle = UnitInVehicle
 T.UnitFullName = UnitFullName
 T.GetUnitName = GetUnitName
 T.UnitFactionGroup = UnitFactionGroup
@@ -26,6 +27,7 @@ T.UnitDebuff = UnitDebuff
 T.GetSpecialization = GetSpecialization
 T.GetSpecializationInfo = GetSpecializationInfo
 T.GetSpecializationInfoByID = GetSpecializationInfoByID
+T.GetSpecializationRole = GetSpecializationRole
 T.GetTalentInfo = GetTalentInfo
 T.GetTalentInfoByID = GetTalentInfoByID
 T.GetNumSpecializationsForClassID = GetNumSpecializationsForClassID
@@ -60,6 +62,7 @@ T.GetNumClasses = GetNumClasses
 T.GetClassInfo = GetClassInfo
 -- T.
 --Items
+T.IsUsableItem = IsUsableItem
 T.GetInventoryItemLink = GetInventoryItemLink
 T.GetInventorySlotInfo = GetInventorySlotInfo
 T.GetInventoryItemDurability = GetInventoryItemDurability

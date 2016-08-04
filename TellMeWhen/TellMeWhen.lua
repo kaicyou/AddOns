@@ -15,10 +15,10 @@
 -- ADDON GLOBALS AND LOCALS
 -- ---------------------------------
 
-TELLMEWHEN_VERSION = "8.1.1"
+TELLMEWHEN_VERSION = "8.1.2"
 
 TELLMEWHEN_VERSION_MINOR = ""
-local projectVersion = "8.1.1" -- comes out like "6.2.2-21-g4e91cee"
+local projectVersion = "8.1.2" -- comes out like "6.2.2-21-g4e91cee"
 if projectVersion:find("project%-version") then
 	TELLMEWHEN_VERSION_MINOR = "dev"
 elseif strmatch(projectVersion, "%-%d+%-") then
@@ -26,7 +26,7 @@ elseif strmatch(projectVersion, "%-%d+%-") then
 end
 
 TELLMEWHEN_VERSION_FULL = TELLMEWHEN_VERSION .. " " .. TELLMEWHEN_VERSION_MINOR
-TELLMEWHEN_VERSIONNUMBER = 81101 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
+TELLMEWHEN_VERSIONNUMBER = 81209 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
 
 TELLMEWHEN_FORCECHANGELOG = 80039 -- if the user hasn't seen the changelog until at least this version, show it to them.
 
@@ -1051,27 +1051,27 @@ function TMW:PLAYER_LOGIN()
 		-- and that it just continually pops up no matter what people do.
 		-- So, instead of forcing a restart on people, i'm going to take out the early return and instead,
 		-- output a ton of debug information.
-		local classCount = 0
-		for k, v in pairs(TMW.C) do classCount = classCount + 1 end
+		-- local classCount = 0
+		-- for k, v in pairs(TMW.C) do classCount = classCount + 1 end
 
-		TMW:Print("There was an issue during TMW's Initialization. A required file, " .. fileName .. " didn't seem to load." )
-		TMW:Print("If you haven't restarted WoW since last updating it, please do so now." )
-		TMW:Print("If you have restarted and this error keeps happening, please report the following information to the addon page at Curse.com (a screenshot of this would probably be easiest):" )
-		TMW:Print(
-			"v", TELLMEWHEN_VERSIONNUMBER, 
-			"TMW.C count", classCount,
-			"TMW.BE", TMW.BE,
-			"TMW.CNDT", TMW.CNDT, 
-			"toc v",  GetAddOnMetadata("TellMeWhen", "Version"),
-			"xcpv",  GetAddOnMetadata("TellMeWhen", "X-Curse-Packaged-Version"),
-			"dbvar", TellMeWhenDB,
-			"dbver", TellMeWhenDB and TellMeWhenDB.Version,
-			"mac?", IsMacClient(),
-			"wowb", select(2, GetBuildInfo()),
-			"L", TMW.L,
-			"ldb", LibStub("LibDataBroker-1.1") and LibStub("LibDataBroker-1.1"):GetDataObjectByName("TellMeWhen") or "noldb",
-			"types", TMW.approachTable and #(TMW.approachTable(TMW, "C", "IconType", "instances") or {}) or "noapproach"
-		)
+		-- TMW:Print("There was an issue during TMW's Initialization. A required file, " .. fileName .. " didn't seem to load." )
+		-- TMW:Print("If you haven't restarted WoW since last updating it, please do so now." )
+		-- TMW:Print("If you have restarted and this error keeps happening, please report the following information to the addon page at Curse.com (a screenshot of this would probably be easiest):" )
+		-- TMW:Print(
+		-- 	"v", TELLMEWHEN_VERSIONNUMBER, 
+		-- 	"TMW.C count", classCount,
+		-- 	"TMW.BE", TMW.BE,
+		-- 	"TMW.CNDT", TMW.CNDT, 
+		-- 	"toc v",  GetAddOnMetadata("TellMeWhen", "Version"),
+		-- 	"xcpv",  GetAddOnMetadata("TellMeWhen", "X-Curse-Packaged-Version"),
+		-- 	"dbvar", TellMeWhenDB,
+		-- 	"dbver", TellMeWhenDB and TellMeWhenDB.Version,
+		-- 	"mac?", IsMacClient(),
+		-- 	"wowb", select(2, GetBuildInfo()),
+		-- 	"L", TMW.L,
+		-- 	"ldb", LibStub("LibDataBroker-1.1") and LibStub("LibDataBroker-1.1"):GetDataObjectByName("TellMeWhen") or "noldb",
+		-- 	"types", TMW.approachTable and #(TMW.approachTable(TMW, "C", "IconType", "instances") or {}) or "noapproach"
+		-- )
 
 
 		-- this also includes upgrading from older than 3.0 (pre-Ace3 DB settings)
@@ -1519,6 +1519,15 @@ TMW.C.TMW:Inherit("Core_Upgrades")
 
 function TMW:GetBaseUpgrades()			-- upgrade functions
 	return {
+
+		[81206] = {
+			group = function(self, gs, domain, groupID)
+				-- the old upgrade accidentaly set these to false instead of nil
+				for i = 1, 4 do
+					gs["Tree" .. i] = nil
+				end
+			end,
+		},
 
 		[80012] = {
 			global = function(self, profile)
@@ -2821,6 +2830,13 @@ function TMW:PLAYER_SPECIALIZATION_CHANGED(event, unit)
 end
 
 function TMW:OnProfile(event, arg2, arg3)
+
+	-- It is possible to change your profile in combat using slash commands.
+	-- If this is done, don't go straight into config mode.
+	if InCombatLockdown() then
+		TMW.db.profile.Locked = true
+	end
+
 	TMW:UpgradeProfile()
 
 	-- Clear out the state since state tables are saved in an icon's attributes.
@@ -3332,31 +3348,3 @@ end
 
 
 
-
-
-
-
-
-
--- TODO: MOVE THIS TO ITS OWN FILE
-
-
-local temp = {}
-function TMW:GetColors(colorSettings, enableSetting, ...)
-	if not colorSettings then
-		error("colorSettings missing")
-	end
-	for n, settings, length in TMW:Vararg(...) do
-		if n == length or settings[enableSetting] then
-			if type(colorSettings) == "table" then
-				for i = 1, #colorSettings do
-					temp[i] = settings[colorSettings[i]]
-				end
-
-				return unpack(temp, 1, #colorSettings)
-			else
-				return settings[colorSettings]
-			end
-		end
-	end
-end

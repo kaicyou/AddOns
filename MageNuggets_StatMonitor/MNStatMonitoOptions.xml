@@ -3,11 +3,11 @@
 
 <Frame name="MNStatMonitorOptionsOnLoadFrame">
     <Scripts>
-        <OnLoad> 
+        <OnLoad>
             self.TimeSinceLastUpdate = 0;
             MNStatMonitorOptions_OnLoad(self);
         </OnLoad>
-        <OnUpdate> 
+        <OnUpdate>
         </OnUpdate>
         <OnEvent>
             MNStatMonitorOptions_OnEvent(self, event, ...);
@@ -24,7 +24,7 @@
     <Anchors>
         <Anchor point="TOPLEFT" relativeTo="$parent">
             <Offset>
-                <AbsDimension x="200" y="-10"/>
+                <AbsDimension x="0" y="0"/>
             </Offset>
         </Anchor>
     </Anchors>
@@ -34,37 +34,51 @@
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
-                            <AbsDimension x="45" y="-10"/>
+                            <AbsDimension x="30" y="-10"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
+                <Color r="1" g="1" b="1"/>
             </FontString>
             <FontString name="MNcheckbox0FontString" inherits="GameFontNormal" text="Frame Lock">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
-                            <AbsDimension x="45" y="-30"/>
+                            <AbsDimension x="30" y="-30"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
+                <Color r="1" g="1" b="1"/>
             </FontString>
             <FontString name="MNcheckbox0FontString" inherits="GameFontNormal" text="Click Through">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
-                            <AbsDimension x="45" y="-50"/>
+                            <AbsDimension x="30" y="-50"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
+                <Color r="1" g="1" b="1"/>
+            </FontString>
+            <FontString name="MNcheckbox0FontString" inherits="GameFontNormal" text="Enable Limit Break (experimental)">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent">
+                        <Offset>
+                            <AbsDimension x="30" y="-70"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Color r="1" g="1" b="1"/>
             </FontString>
             <FontString name="$parent_SPSliderFontString" inherits="GameFontNormal" text="Stat Monitor Size">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent">
                         <Offset>
-                            <AbsDimension x="70" y="-75"/>
+                            <AbsDimension x="345" y="-75"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
+                <Color r="1" g="1" b="1"/>
             </FontString>
         </Layer>
     </Layers>
@@ -73,51 +87,68 @@
 -           <Anchors>
 -               <Anchor point="TOPLEFT" relativeTo="$parent">
 -                   <Offset>
-                        <AbsDimension x="20" y="-5" /> 
+                        <AbsDimension x="3" y="-5" />
                     </Offset>
                 </Anchor>
             </Anchors>
 -           <Scripts>
                 <OnLoad>
                      --only in combat
-                </OnLoad> 
+                </OnLoad>
                 <OnClick>
                     MNstatMonCombat();
-                </OnClick> 
+                </OnClick>
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButtonLockFrame" inherits="OptionsCheckButtonTemplate">
 -           <Anchors>
 -               <Anchor point="TOPLEFT" relativeTo="$parent">
 -                   <Offset>
-                        <AbsDimension x="20" y="-25" /> 
+                        <AbsDimension x="3" y="-25" />
                     </Offset>
                 </Anchor>
             </Anchors>
 -           <Scripts>
                 <OnLoad>
                      --only in combat
-                </OnLoad> 
+                </OnLoad>
                 <OnClick>
                     MNStatMonitorLockFramesToggle();
-                </OnClick> 
+                </OnClick>
             </Scripts>
         </CheckButton>
         <CheckButton name="$parent_CheckButtonClickThroughFrame" inherits="OptionsCheckButtonTemplate">
 -           <Anchors>
 -               <Anchor point="TOPLEFT" relativeTo="$parent">
 -                   <Offset>
-                        <AbsDimension x="20" y="-45" /> 
+                        <AbsDimension x="3" y="-45" />
                     </Offset>
                 </Anchor>
             </Anchors>
 -           <Scripts>
                 <OnLoad>
                      --only in combat
-                </OnLoad> 
+                </OnLoad>
                 <OnClick>
                     MNStatMonitorClickThrough();
-                </OnClick> 
+                </OnClick>
+            </Scripts>
+        </CheckButton>
+        <CheckButton name="$parent_CheckButtonLimitBreakFrame" inherits="OptionsCheckButtonTemplate">
+-           <Anchors>
+-               <Anchor point="TOPLEFT" relativeTo="$parent">
+-                   <Offset>
+                        <AbsDimension x="3" y="-65" />
+                    </Offset>
+                </Anchor>
+            </Anchors>
+-           <Scripts>
+                <OnLoad>
+                     --only in combat
+                </OnLoad>
+                <OnClick>
+                    MNStatMonitorLimitBreakToggle();
+                </OnClick>
             </Scripts>
         </CheckButton>
         <Slider name="$parent_SPSizeSlider" inherits="OptionsSliderTemplate">
@@ -127,7 +158,7 @@
 		    <Anchors>
 		        <Anchor point="TOPLEFT" relativeTo="$parent">
 	              	<Offset>
-                        <AbsDimension x="30" y="-90"/>
+                        <AbsDimension x="300" y="-90"/>
                     </Offset>
 			    </Anchor>
 		    </Anchors>
@@ -139,12 +170,12 @@
 	    	    	self:SetMinMaxValues(0,19);
 		    	    self:SetValueStep(1);
 		        </OnLoad>
-		        <OnValueChanged>   
+		        <OnValueChanged>
                     MageNugSpMonitorSize();
                 </OnValueChanged>
 	        </Scripts>
         </Slider>
-    </Frames> 
+    </Frames>
     <Scripts>
     </Scripts>
 </Frame>
@@ -213,7 +244,7 @@
 	    	   		self:SetMinMaxValues(0,6);
 		        	self:SetValueStep(1);
 		        </OnLoad>
-		        <OnValueChanged>   
+		        <OnValueChanged>
                     BorderTypeSlider()
                 </OnValueChanged>
 	     	</Scripts>
@@ -237,7 +268,7 @@
 	    	   		self:SetMinMaxValues(0,6);
 		        	self:SetValueStep(1);
 		        </OnLoad>
-		        <OnValueChanged>   
+		        <OnValueChanged>
                     BackdropTransparencySlider()
                 </OnValueChanged>
 	        </Scripts>
@@ -278,7 +309,7 @@
                 </OnClick>
 	        </Scripts>
         </Button>
-    </Frames> 
+    </Frames>
     <Scripts>
         <OnLoad>
             MageNugStatMonOptionFrame:SetScale(0.9);

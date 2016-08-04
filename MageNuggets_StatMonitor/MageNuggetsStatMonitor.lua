@@ -2,12 +2,14 @@
 
 local currentStatColor = 0;
 local statMonitorLoadTimer = 0;
+local spellPowerLimitBreak = false;
+local critLimitBreak = false;
 
 function MageNuggetsSP_OnUpdate(self, elapsed)
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
  if (self.TimeSinceLastUpdate > 0.3) then
 
-    local spellpower = GetSpellBonusDamage(3)
+    local spellpower = GetSpellBonusDamage(3);
     local attackpower, posBuff, negBuff = UnitAttackPower("player");
     local crit = roundStat(GetSpellCritChance(3));
     local haste = roundStat(UnitSpellHaste("player"));
@@ -39,7 +41,7 @@ function MageNuggetsSP_OnUpdate(self, elapsed)
 
     if(mageNuggetsStatMonitor.spellpower == true)then
         statCount = statCount + 1;
-        readout[statCount] = "Power";
+        readout[statCount] = "SPower";
         if(bonusSpellDamage > 0)then
             spellpower = spellpower * (1+(bonusSpellDamage * 0.01));
         end
@@ -47,7 +49,7 @@ function MageNuggetsSP_OnUpdate(self, elapsed)
     end
     if(mageNuggetsStatMonitor.attackpower == true)then
         statCount = statCount + 1;
-        readout[statCount] = "Power";
+        readout[statCount] = "APower";
         stats[statCount] = roundZero(attackpower);
     end
     if(mageNuggetsStatMonitor.crit == true)then
@@ -123,7 +125,16 @@ function MageNuggetsSP_OnUpdate(self, elapsed)
         dressStatMonitorText();
     end
     statCount = 0;
-    MageNuggetsBuff_OnUpdate();
+
+    if(spellpower > mageNuggetsStatMonitor.baseSpellPower) then
+      spellPowerLimitBreak = true;
+    else
+      spellPowerLimitBreak = false;
+    end
+
+    if(mageNuggetsStatMonitor.limitBreakToggle == true) then
+      MageNuggetsBuff_OnUpdate();
+    end
     self.TimeSinceLastUpdate = 0;
    end
 end
@@ -334,27 +345,41 @@ function MageNuggetsBuff_OnUpdate(self, elapsed)
         buffName, rank, _, count, _, _, expirationTime, _, _, _, spellId = UnitAura("player", i, "HELPFUL");
     end
 
-    local hasteIndex = getHasteIndex();
+    local hasteIndex = getStatIndex("Haste");
+    local spIndex = getStatIndex("SPower");
+    --local base, stat, posBuff, negBuff = UnitStat("player", 4);
+    --DEFAULT_CHAT_FRAME:AddMessage(base.."   "..posBuff.."  "..stat.."  "..negBuff);
+    local rRoll = (math.random (10) * 0.1);
+    local gRoll = (math.random (10) * 0.1);
+    local bRoll = (math.random (10) * 0.1);
+
     if(lusted == true) then
-      local rRoll = (math.random (10) * 0.1);
-      local gRoll = (math.random (10) * 0.1);
-      local bRoll = (math.random (10) * 0.1);
-      _G["MageNugSP_FrameText"..hasteIndex]:SetTextColor(rRoll, gRoll, bRoll);
-      _G["MageNugSP_FrameValueText"..hasteIndex]:SetTextColor(rRoll, gRoll, bRoll);
+      if(hasteIndex ~= 0)then
+        _G["MageNugSP_FrameValueText"..hasteIndex]:SetTextColor(rRoll, gRoll, bRoll);
+      end
     else
       if(hasteIndex ~= 0)then
-        _G["MageNugSP_FrameText"..hasteIndex]:SetTextColor(mageNuggetsStatMonitor.hasteR,mageNuggetsStatMonitor.hasteG,mageNuggetsStatMonitor.hasteB,1);
         _G["MageNugSP_FrameValueText"..hasteIndex]:SetTextColor(mageNuggetsStatMonitor.hasteValueR,mageNuggetsStatMonitor.hasteValueG,mageNuggetsStatMonitor.hasteValueB,1);
+      end
+    end
+
+    if(spellPowerLimitBreak == true) then
+      if(spIndex ~= 0)then
+        _G["MageNugSP_FrameValueText"..spIndex]:SetTextColor(rRoll, gRoll, bRoll);
+      end
+    else
+      if(spIndex ~= 0)then
+        _G["MageNugSP_FrameValueText"..spIndex]:SetTextColor(mageNuggetsStatMonitor.spellpowerValueR,mageNuggetsStatMonitor.spellpowerValueG,mageNuggetsStatMonitor.spellpowerValueB,1);
       end
     end
 end
 
-function getHasteIndex()
+function getStatIndex(stat)
   local hasteIndex = 0;
   local i = 1;
   while i < 11 do
     local statText = _G["MageNugSP_FrameText"..i]:GetText();
-    if (statText == "Haste") then
+    if (statText == stat) then
       return i;
     end
     i = i + 1;

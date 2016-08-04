@@ -160,6 +160,14 @@ L["Only Damaged"] = true
 L["Gem Sockets"] = true
 L["Socket Size"] = true
 L["Inspect Armory"] = true
+L["Full Item Level"] = true
+L["Show both equipped and average item levels."] = true
+L["Item Level Coloring"] = true
+L["Color code item levels values. Equipped will be gradient, avarage - selected color."] = true
+L["Color of Average"] = true
+L["Sets the color of avarage item level."] = true
+L["Only Relevant Stats"] = true
+L["Show only those primary stats relevant to your spec."] = true
 
 --AFK
 L["You Are Away From Keyboard for"] = true
@@ -394,6 +402,10 @@ L["Are you sure you want to remove |cff1784d1%s|r from currency datatexts?"] = t
 L["Hide panel background"] = true
 L["Don't show this panel, only datatexts assinged to it"] = true
 
+--Enhnced Shadows
+L["Enhanced Shadows"] = true
+L["Use shadows on..."] = true
+
 --Equip Manager
 L["Equipment Manager"] = true
 L["EM_DESC"] = "This module provides different options to automatically change your equipment sets on spec change or entering certain locations. All options are character based."
@@ -529,6 +541,8 @@ L["Show texture"] = true
 L["Show instance difficulty info as default texture."] = true
 L["Sets the colors for difficulty abbreviation"] = true
 L["Location Panel"] = true
+L["Automatic Width"] = true
+L["Change width based on the zone name length."] = true
 L["Update Throttle"] = true
 L["The frequency of coordinates and zonetext updates. Check will be done more often with lower values."] = true
 L["Full Location"] = true

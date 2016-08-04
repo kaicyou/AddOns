@@ -3,6 +3,17 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="6.2.6"
 
 TMW.CHANGELOG = [==[
+===v8.1.2===
+* Restored the old Buff/Debuff duration percentage conditions, since they still have applications for variable-duration effects like Rogue DoTs.
+
+====Bug Fixes====
+* Attempted a permanant fix to very rare and very old bug where some users' includes.*.xml files were getting scrambled around in their TMW install, leading to the problem of most of the addon not getting loaded.
+* Fixed an issue with Condition-triggered animations not working consistently in controlled groups.
+* Buff/Debuff Duration conditions should once again work properly with effects that have no duration.
+* Fixed an issue with occasional missing checkboxes in condition configuration
+* Fixed resource percentage conditions
+* Fixed a rare bug that would cause cooldown sweep animations to totally glitch out, usually in meta icons.
+
 ===v8.1.1===
 ====Bug Fixes====
 * IconType_cooldowncooldown.lua:295: attempt to index field 'HELP' (a nil value)

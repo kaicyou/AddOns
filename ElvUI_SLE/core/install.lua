@@ -288,7 +288,7 @@ function PI:DarthSetup()
 		E.db["unitframe"]["units"]["player"]["raidicon"]["size"] = 24
 		E.db["unitframe"]["units"]["player"]["debuffs"]["yOffset"] = 15
 		E.db["unitframe"]["units"]["player"]["portrait"]["enable"] = true
-		E.db["unitframe"]["units"]["player"]["portrait"]["camDistanceScale"] = 6
+		E.db["unitframe"]["units"]["player"]["portrait"]["camDistanceScale"] = 3
 		E.db["unitframe"]["units"]["player"]["portrait"]["overlay"] = true
 		E.db["unitframe"]["units"]["player"]["castbar"]["height"] = 22
 		E.db["unitframe"]["units"]["player"]["castbar"]["width"] = 220
@@ -318,7 +318,7 @@ function PI:DarthSetup()
 		E.db["unitframe"]["units"]["player"]["pvp"]["text_format"] = "[pvptimer]"
 
 		E.db["unitframe"]["units"]["target"]["portrait"]["enable"] = true
-		E.db["unitframe"]["units"]["target"]["portrait"]["camDistanceScale"] = 6
+		E.db["unitframe"]["units"]["target"]["portrait"]["camDistanceScale"] = 3
 		E.db["unitframe"]["units"]["target"]["portrait"]["overlay"] = true
 		E.db["unitframe"]["units"]["target"]["castbar"]["width"] = 200
 		E.db["unitframe"]["units"]["target"]["customTexts"] = {}
@@ -340,6 +340,7 @@ function PI:DarthSetup()
 		E.db["unitframe"]["units"]["target"]["power"]["xOffset"] = 0
 		E.db["unitframe"]["units"]["target"]["power"]["text_format"] = "[powercolor][curpp]"
 		E.db["unitframe"]["units"]["target"]["power"]["yOffset"] = -10
+		E.db["unitframe"]["units"]["target"]["power"]["hideonnpc"] = false
 		E.db["unitframe"]["units"]["target"]["health"]["yOffset"] = -2
 		E.db["unitframe"]["units"]["target"]["health"]["position"] = "TOPRIGHT"
 		E.db["unitframe"]["units"]["target"]["height"] = 40
@@ -506,6 +507,18 @@ function PI:DarthSetup()
 		E.db["sle"]["pvp"]["autorelease"] = true
 		E.db["sle"]["skins"]["merchant"]["list"]["subSize"] = 11
 		E.db["sle"]["skins"]["merchant"]["list"]["nameSize"] = 12
+		E.db["sle"]["Armory"]["Inspect"]["Level"]["FontSize"] = 12
+		E.db["sle"]["Armory"]["Inspect"]["Enchant"]["FontSize"] = 10
+		E.db["sle"]["Armory"]["Character"]["Enchant"]["FontSize"] = 11
+		E.db["sle"]["Armory"]["Character"]["Stats"]["IlvlColor"] = true
+		E.db["sle"]["Armory"]["Character"]["Stats"]["IlvlFull"] = true
+		E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["SPELLPOWER"] = true
+		E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["HEALTH"] = true
+		E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["POWER"] = true
+		E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["MOVESPEED"] = true
+		E.db["sle"]["Armory"]["Character"]["Durability"]["FontSize"] = 10
+		E.db["sle"]["Armory"]["Character"]["Level"]["FontSize"] = 12
+		E.db["sle"]["Armory"]["Character"]["Backdrop"]["SelectedBG"] = "TheEmpire"
 	end
 	--Movers
 	do
@@ -604,8 +617,19 @@ function PI:DarthSetup()
 			E.db["datatexts"]["panels"]["SLE_DataPanel_8"]["left"] = "Avoidance"
 			E.db["datatexts"]["panels"]["SLE_DataPanel_8"]["middle"] = "Versatility"
 			E.db["unitframe"]["units"]["raid"]["power"]["enable"] = true
+			E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["SPELLPOWER"] = false
+			E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["ATTACK_DAMAGE"] = true
+			E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["ATTACK_AP"] = true
+			E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["ATTACK_ATTACKSPEED"] = true
 		elseif layout == 'dpsMelee' then 
 			E.db["datatexts"]["panels"]["SLE_DataPanel_8"]["left"] = "Attack Power"
+			E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["SPELLPOWER"] = false
+			E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["ATTACK_DAMAGE"] = true
+			E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["ATTACK_AP"] = true
+			E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["ATTACK_ATTACKSPEED"] = true
+			E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["ENERGY_REGEN"] = true
+			E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["RUNE_REGEN"] = true
+			E.db["sle"]["Armory"]["Character"]["Stats"]["List"]["FOCUS_REGEN"] = true
 		elseif layout == 'healer' then DarthHeal() 
 		end
 		E.db.layoutSet = layout
@@ -1044,6 +1068,7 @@ local function SetupCVars()
 	SetCVar("mapFade", "0")
 	SetCVar("cameraSmoothStyle", "0")
 	SetCVar("autoLootDefault", "1")
+	SetCVar("UberTooltips", "1")
 
 	SetAutoDeclineGuildInvites(true)
 	SetInsertItemsLeftToRight(false)
@@ -1319,8 +1344,6 @@ local function AffinitySetup()
 	E.db["datatexts"]["panels"]["SLE_DataPanel_4"]["middle"] = "DPS"
 	E.db["datatexts"]["panels"]["RightChatDataPanel"]["right"] = "Skada"
 	E.db["datatexts"]["panels"]["RightChatDataPanel"]["left"] = "Combat/Arena Time"
-	-- E.db["datatexts"]["panels"]["SLE_DataPanel_1"]["middle"] = "Friends"
-	-- E.db["datatexts"]["panels"]["SLE_DataPanel_6"]["middle"] = "Friends"
 	E.db["datatexts"]["panels"]["LeftChatDataPanel"]["right"] = "Haste"
 	E.db["datatexts"]["panels"]["LeftChatDataPanel"]["left"] = "Spell/Heal Power"
 	E.db["datatexts"]["panels"]["RightMiniPanel"] = "Gold"
@@ -1329,7 +1352,6 @@ local function AffinitySetup()
 	E.db["datatexts"]["panels"]["SLE_DataPanel_8"]["right"] = "Gold"
 	E.db["datatexts"]["panels"]["SLE_DataPanel_8"]["left"] = "System"
 	E.db["datatexts"]["panels"]["SLE_DataPanel_8"]["middle"] = "Time"
-	-- E.db["datatexts"]["panels"]["SLE_DataPanel_2"]["middle"] = "Attack Power"
 	E.db["datatexts"]["panels"]["LeftMiniPanel"] = "Time"
 	E.db["datatexts"]["font"] = "ElvUI Font"
 	E.db["datatexts"]["fontOutline"] = "None"
@@ -1423,6 +1445,8 @@ E.PopupDialogs['SLE_INSTALL_SETTINGS_ADDONS'] = {
 	OnAccept = function()
 		if PI.SLE_Auth == "DARTH" then
 			PI:DarthAddons()
+		elseif PI.SLE_Auth == "AFFINITY" then
+			AffinityAddons()
 		end
 	end,
 	OnCancel = E.noop;

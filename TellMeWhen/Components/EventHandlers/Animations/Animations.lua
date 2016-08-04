@@ -766,6 +766,9 @@ function AnimatedObject:Animations_Stop(arg1)
 
 		TMW:Fire("TMW_ICON_ANIMATION_STOP", self, table)
 
+		-- When an animation stops, find the next animation of the same type to play.
+		Animations:DetermineNextPlayingAnimation(self, table.Animation)
+
 		if not next(animations) then
 			self:Animations_OnUnused()
 		end
@@ -805,7 +808,7 @@ TMW:RegisterCallback("TMW_ICON_ANIMATION_START", function(_, icon, table)
 
 	if eventSettings.Event == "WCSP" then
 		-- Store the event so we can stop it when the conditions fail.
-		MapEventSettingsToAnimationTable[table.eventSettings] = table
+		MapEventSettingsToAnimationTable[Animations:Proxy(table.eventSettings, icon)] = table
 
 		if TMW.Locked then
 			-- Modify the table to play infinitely
@@ -815,11 +818,6 @@ TMW:RegisterCallback("TMW_ICON_ANIMATION_START", function(_, icon, table)
 			TMW:Print("Restricted animation duration to 5 seconds for testing")
 		end
 	end
-end)
-
-TMW:RegisterCallback("TMW_ICON_ANIMATION_STOP", function(_, icon, table)
-	-- When an animation stops, find the next animation of the same type to play.
-	Animations:DetermineNextPlayingAnimation(icon, table.Animation)
 end)
 
 
@@ -871,7 +869,7 @@ function Animations:DetermineNextPlayingAnimation(icon, Animation)
 
 		-- This eventSettings is the animation type we're asking at.
 		if eventSettings.Type == "Animations" and eventSettings.Animation == Animation then
-			local ConditionObject = self.EventSettingsToConditionObject[eventSettings]
+			local ConditionObject = self.EventSettingsToConditionObject[self:Proxy(eventSettings, icon)]
 
 			if ConditionObject and not ConditionObject.Failed then
 				-- We found a WCSP-triggered animation of the requested type, and its conditions are passing, so play it.

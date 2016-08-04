@@ -1,7 +1,7 @@
 ## Interface: 70000
 ## Title: Mage Nuggets Stat Monitor
 ## Author: B-Buck (Bbuck - Eredar)
-## Version: 1.1
+## Version: 1.2.1
 ## Notes: Displays stats on a customizable window
 ## DefaultState: Enabled
 ## LoadOnDemand: 0

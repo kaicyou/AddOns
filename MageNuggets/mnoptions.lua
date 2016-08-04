@@ -1,4 +1,4 @@
-﻿local magenugVer = "5.2.4"
+﻿local magenugVer = "5.2.6"
 
 MageNuggets = {
     ssMonitorToggle = true;

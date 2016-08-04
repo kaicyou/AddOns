@@ -86,7 +86,11 @@
     statmon_xOfs = 0;
     statmon_yOfs = 0;
     clickthru = false;
+    limitBreakToggle = false;
+    hasteLimit = 0;
+    baseSpellPower = 0;
 }
+
 
 function MNStatMonitorOptions_OnLoad(self)
     self:RegisterEvent("ADDON_LOADED")
@@ -105,6 +109,8 @@ function MNStatMonitorOptions_OnEvent(this, event, ...)
         if(argin1 == "MageNuggets_StatMonitor") then
             loadMNStatMonitorOptionsFrames();
             loadStatMonitorColors();
+            mageNuggetsStatMonitor.baseSpellPower = (GetSpellBonusDamage(3) * 1.20);
+
             DEFAULT_CHAT_FRAME:AddMessage("|cff00BFFFMage|cff00FF00Nuggets|cffffffff Stat Monitor loaded!")
             MageNugSP_RightClickFrameText:SetText("|cff00BFFFMage |cff00FF00Nuggets|cffffffff Stat Monitor");
             if(mageNuggetsStatMonitor.spCombatToggle == true) then
@@ -122,6 +128,7 @@ function MNStatMonitorOptions_OnEvent(this, event, ...)
     end
 end
 
+
 function loadMNStatMonitorOptionsFrames()
     if (mageNuggetsStatMonitor.spCombatToggle == nil)then
         mageNuggetsStatMonitor.spCombatToggle = false;
@@ -130,6 +137,14 @@ function loadMNStatMonitorOptionsFrames()
         MageNugStatMonOptionMenu_CheckButton0:SetChecked(true);
     else
         MageNugStatMonOptionMenu_CheckButton0:SetChecked(false);
+    end
+    if (mageNuggetsStatMonitor.limitBreakToggle == nil)then
+        mageNuggetsStatMonitor.limitBreakToggle = false;
+    end
+    if (mageNuggetsStatMonitor.limitBreakToggle == true) then
+        MageNugStatMonOptionMenu_CheckButtonLimitBreakFrame:SetChecked(true);
+    else
+        MageNugStatMonOptionMenu_CheckButtonLimitBreakFrame:SetChecked(false);
     end
     if (mageNuggetsStatMonitor.spMonitorToggle == nil) then
         mageNuggetsStatMonitor.spMonitorToggle = false;
@@ -199,6 +214,15 @@ function MNStatMonitorClickThrough()
     else
         mageNuggetsStatMonitor.clickthru = false;
         MageNugSP_Frame:EnableMouse(true);
+    end
+end
+
+function MNStatMonitorLimitBreakToggle()
+    local isChecked = MageNugStatMonOptionMenu_CheckButtonLimitBreakFrame:GetChecked();
+    if (isChecked == true) then
+        mageNuggetsStatMonitor.limitBreakToggle = true;
+    else
+        mageNuggetsStatMonitor.limitBreakToggle = false;
     end
 end
 

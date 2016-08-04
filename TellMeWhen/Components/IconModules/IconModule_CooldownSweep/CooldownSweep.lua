@@ -19,6 +19,9 @@ local print = TMW.print
 
 local OnGCD = TMW.OnGCD
 
+local pairs, wipe = 
+      pairs, wipe
+
 local CooldownSweep = TMW:NewClass("IconModule_CooldownSweep", "IconModule")
 
 CooldownSweep:RegisterIconDefaults{
@@ -167,9 +170,11 @@ function CooldownSweep:OnNewInstance(icon)
 	self:SetSkinnableComponent("Cooldown", self.cooldown)
 end
 
+local NeedsUpdate = {}
+
 
 function CooldownSweep:Cooldown_OnShow()
-	self.module:UpdateCooldown()
+	NeedsUpdate[self.module] = true
 end
 
 
@@ -233,7 +238,10 @@ function CooldownSweep:UpdateCooldown()
 	local cd = self.cooldown
 	local duration = cd.duration
 	local icon = self.icon
-	
+
+	--if self.updating then return end
+	self.updating = true
+
 	if duration > 0 then
 		if ElvUI then
 			local E = ElvUI[1]
@@ -270,11 +278,14 @@ function CooldownSweep:UpdateCooldown()
 
 		cd:SetCooldown(cd.start, duration)
 		cd:Show()
+
 	elseif icon.attributes.realAlpha == 0 or icon.group:GetEffectiveAlpha() == 0 then
 		cd:Hide()
 	else
 		cd:SetCooldown(0, 0)
 	end
+
+	self.updating = false
 end
 
 function CooldownSweep:DURATION(icon, start, duration)
@@ -288,10 +299,10 @@ function CooldownSweep:DURATION(icon, start, duration)
 		cd.start = start
 		cd.duration = duration
 		
-		self:UpdateCooldown()
+		NeedsUpdate[self] = true
 	end
 end
-CooldownSweep:SetDataListner("DURATION")
+CooldownSweep:SetDataListener("DURATION")
 
 function CooldownSweep:SPELLCHARGES(icon, charges, maxCharges)
 	local cd = self.cooldown
@@ -300,10 +311,10 @@ function CooldownSweep:SPELLCHARGES(icon, charges, maxCharges)
 		cd.charges = charges
 		cd.maxCharges = maxCharges
 		
-		self:UpdateCooldown()
+		NeedsUpdate[self] = true
 	end
 end
-CooldownSweep:SetDataListner("SPELLCHARGES")
+CooldownSweep:SetDataListener("SPELLCHARGES")
 
 function CooldownSweep:REVERSE(icon, reverse)
 	if self.InvertTimer then
@@ -312,9 +323,19 @@ function CooldownSweep:REVERSE(icon, reverse)
 
 	self.cooldown:SetReverse(reverse)
 end
-CooldownSweep:SetDataListner("REVERSE")
+CooldownSweep:SetDataListener("REVERSE")
 
 function CooldownSweep:REALALPHA(icon, realAlpha)
-	self:UpdateCooldown()
+	NeedsUpdate[self] = true
 end
-CooldownSweep:SetDataListner("REALALPHA")
+CooldownSweep:SetDataListener("REALALPHA")
+
+
+
+TMW:RegisterCallback("TMW_ONUPDATE_TIMECONSTRAINED_POST", function()
+	for module in pairs(NeedsUpdate) do
+		module.cooldown:Clear()
+		module:UpdateCooldown()
+	end
+	wipe(NeedsUpdate)
+end)

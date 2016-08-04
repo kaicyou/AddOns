@@ -1,9 +1,31 @@
 ------------------------------------------------------------------------
-r547 | allara | 2016-08-01 16:58:37 +0000 (Mon, 01 Aug 2016) | 1 line
+r551 | allara | 2016-08-03 16:39:43 +0000 (Wed, 03 Aug 2016) | 1 line
 Changed paths:
-   A /tags/r546-release (from /trunk:546)
+   A /tags/r550-release (from /trunk:550)
 
-Tagging as r546-release
+Tagging as r550-release
+------------------------------------------------------------------------
+r550 | allara | 2016-08-02 18:16:46 +0000 (Tue, 02 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- [#201] Rarity now uses the petJournalTab cvar to return the Collections tab to where it was prior to toy scanning
+------------------------------------------------------------------------
+r549 | allara | 2016-08-02 17:24:58 +0000 (Tue, 02 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- Attempt to fix a rare string comparison error
+------------------------------------------------------------------------
+r548 | allara | 2016-08-01 18:06:12 +0000 (Mon, 01 Aug 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- [#137] Added the ability to disable items on a per-class basis
+- [#168] Fandral's Seed Pouch now only appears/tracks for druids
 ------------------------------------------------------------------------
 r546 | allara | 2016-07-31 19:30:39 +0000 (Sun, 31 Jul 2016) | 1 line
 Changed paths:

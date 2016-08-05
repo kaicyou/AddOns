@@ -405,6 +405,7 @@ local CONFIG_UPDATE_FUNCTIONS = {
 		if option == "tooltip" then
 			UpdateAllSites()
 		end
+
 		Archy:UpdateSiteDistances()
 		DigSiteFrame:UpdateChrome()
 
@@ -413,6 +414,7 @@ local CONFIG_UPDATE_FUNCTIONS = {
 		else
 			Archy:RefreshDigSiteDisplay()
 		end
+
 		Archy:SetFramePosition(DigSiteFrame)
 		Archy:SetFramePosition(DistanceIndicatorFrame)
 		DistanceIndicatorFrame:Toggle()
@@ -537,9 +539,11 @@ function UpdateAllSites()
 
 					table.insert(sites, digsite)
 				else
-					local message = "Archy is missing data for dig site %s (key: %s)"
-					Archy:Printf(message, landmarkName, siteKey)
-					DebugPour(message, landmarkName, siteKey)
+					local blobID = _G.ArcheologyGetVisibleBlobID(landmarkIndex)
+					local message = ([[Missing dig site data: ["%s"] = { blobID = %d, mapID = 0, typeID = RaceID.Unknown } -- %s]]):format(siteKey, blobID, landmarkName)
+
+					Archy:Printf(message)
+					DebugPour(message)
 				end
 			end
 		end
@@ -697,7 +701,7 @@ function Archy:OnInitialize()
 		local MIN_ACTION_DOUBLECLICK = 0.05
 
 		_G.WorldFrame:HookScript("OnMouseDown", function(frame, button, down)
-			if button == "RightButton" and profileSettings.general.easyCast and _G.ArchaeologyMapUpdateAll() > 0 and not IsTaintable() and not _G.IsEquippedItemType(FISHING_POLE_NAME) and _G.CanScanResearchSite() then
+			if button == "RightButton" and profileSettings.general.easyCast and _G.ArchaeologyMapUpdateAll() > 0 and not IsTaintable() and not _G.IsEquippedItemType(FISHING_POLE_NAME) and _G.CanScanResearchSite() and _G.GetSpellCooldown(SURVEY_SPELL_ID) == 0 then
 				local perform_survey = false
 				local num_loot_items = _G.GetNumLootItems()
 
@@ -732,9 +736,9 @@ function Archy:OnInitialize()
 	-----------------------------------------------------------------------
 	-- DB cleanups.
 	-----------------------------------------------------------------------
-	for digsiteName, value in pairs(self.db.char.digsites.blacklist) do
+	for blobID, value in pairs(self.db.char.digsites.blacklist) do
 		if value == false then
-			self.db.char.digsites.blacklist[digsiteName] = nil
+			self.db.char.digsites.blacklist[blobID] = nil
 		end
 	end
 
@@ -948,17 +952,17 @@ local SUBCOMMAND_FUNCS = {
 
 		Debug("Scanning digsites:\n")
 
-		for continentIndex, continentID in pairs({ 1, 2, 3, 4, 6, 7 }) do
+		for continentID, continentName in pairs(MAP_CONTINENTS) do
 			_G.SetMapZoom(continentID)
 
 			for landmarkIndex = 1, _G.GetNumMapLandmarks() do
 				local landmarkType, landmarkName, _, textureIndex, mapPositionX, mapPositionY, mapLinkID, showInBattleMap = _G.GetMapLandmarkInfo(landmarkIndex)
 
 				if landmarkType == _G.LE_MAP_LANDMARK_TYPE_DIGSITE then
-					local siteKey = ("%d:%.6f:%.6f"):format(_G.GetCurrentMapContinent(), mapPositionX, mapPositionY)
+					local siteKey = ("%d:%.6f:%.6f"):format(continentID, mapPositionX, mapPositionY)
 
 					if not private.DIGSITE_TEMPLATES[siteKey] and not sites[siteKey] then
-						Debug(("[\"%s\"] = { blobID = %d, mapID = 0, typeID = DigsiteType.Unknown } -- \"%s\""):format(siteKey, _G.ArcheologyGetVisibleBlobID(landmarkIndex), landmarkName))
+						Debug(("[\"%s\"] = { blobID = %d, mapID = 0, typeID = RaceID.Unknown } -- \"%s\""):format(siteKey, _G.ArcheologyGetVisibleBlobID(landmarkIndex), landmarkName))
 						sites[siteKey] = true
 						found = found + 1
 					end
@@ -1145,13 +1149,15 @@ function Archy:UpdatePlayerPosition(force)
 	end
 
 	local mapX, mapY, mapID, mapLevel = HereBeDragons:GetPlayerZonePosition()
+	local continentID = HereBeDragons:GetCZFromMapID(mapID)
+
 	if not mapID or not mapLevel or (mapX == 0 and mapY == 0) then
 		return
 	end
 
 	if not playerLocation.mapID then
 		playerLocation.x, playerLocation.y, playerLocation.mapID, playerLocation.level = mapX, mapY, mapID, mapLevel
-		private.CurrentContinentID = HereBeDragons:GetCZFromMapID(mapID)
+		private.CurrentContinentID = continentID
 		UpdateAllSites()
 	end
 
@@ -1172,7 +1178,6 @@ function Archy:UpdatePlayerPosition(force)
 		self:RefreshDigSiteDisplay()
 	end
 
-	local continentID = _G.GetCurrentMapContinent()
 	if private.CurrentContinentID == continentID then
 		if force then
 			if private.CurrentContinentID then
@@ -1265,18 +1270,6 @@ function Archy:ADDON_LOADED(event, addonName)
 end
 
 do
-	local function DisableProgressBar()
-		local bar = _G.ArcheologyDigsiteProgressBar
-		bar:UnregisterEvent("ARCHAEOLOGY_SURVEY_CAST")
-		bar:UnregisterEvent("ARCHAEOLOGY_FIND_COMPLETE")
-		bar:UnregisterEvent("ARTIFACT_DIGSITE_COMPLETE")
-		bar:SetScript("OnEvent", nil)
-		bar:SetScript("OnHide", nil)
-		bar:SetScript("OnShow", nil)
-		bar:SetScript("OnUpdate", nil)
-		bar:Hide()
-	end
-
 	function Archy:ARCHAEOLOGY_FIND_COMPLETE(eventName, numFindsCompleted, totalFinds)
 		DistanceIndicatorFrame.isActive = false
 		DistanceIndicatorFrame:Toggle()
@@ -1292,9 +1285,8 @@ do
 	end
 
 	function Archy:ARCHAEOLOGY_SURVEY_CAST(eventName, numFindsCompleted, totalFinds)
-		if DisableProgressBar then
-			DisableProgressBar()
-			DisableProgressBar = nil
+		if not private.ProfileSettings.digsite.displayProgressBar then
+			self:DisableProgressBar()
 		end
 
 		if not nearestDigsite then

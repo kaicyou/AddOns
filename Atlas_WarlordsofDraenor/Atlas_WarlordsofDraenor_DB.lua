@@ -1,4 +1,4 @@
--- $Id: Atlas_WarlordsofDraenor_DB.lua 27 2016-07-21 09:19:07Z arith $
+-- $Id: Atlas_WarlordsofDraenor_DB.lua 29 2016-08-05 16:13:17Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -83,7 +83,7 @@ local myDB = {
 	};
 	HellfireA = {
 		{ 1, 1426, 276, 233}; -- Hellfire Assault
-		{ 2, 1425, 155, 255}; -- Iron Reaver
+		{ 2, 1425, 150, 249}; -- Iron Reaver
 		{ "A", 10001, 369, 227}; 
 		{ "B", 10002, 118, 257};
 	};

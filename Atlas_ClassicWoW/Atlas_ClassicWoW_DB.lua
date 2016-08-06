@@ -1,4 +1,4 @@
--- $Id: Atlas_ClassicWoW_DB.lua 8 2016-07-19 13:59:58Z arith $
+-- $Id: Atlas_ClassicWoW_DB.lua 10 2016-08-05 16:16:09Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -200,8 +200,8 @@ local myDB = {
 	TheSunkenTemple = {
 		{ 1, 457, 52, 220 }; -- Avatar of Hakkar
 		{ 2, 458, 448, 176 }; -- Jammal'an the Prophet
-		{ 3, 10004, 252, 221 };
-		{ 4, 459, 254, 430 }; -- Wardens of the Dream
+		{ 3, 459, 252, 221 }; -- Dreamscythe
+		{ 4, 459, 254, 430 }; -- Hazzas
 		{ 5, 463, 408, 429 }; -- Shade of Eranikus
 		{ "A", 10001, 252, 50 };
 		{ "1'", 10002, 251, 78 };
@@ -212,7 +212,7 @@ local myDB = {
 		{ "B", 10002, 304, 166 }; -- Sunken Temple
 		{ "1", 10003, 253, 282 }; -- Priestess Udum'bra
 		{ "2", 10004, 354, 176 }; -- Gomora the Bloodletter
-		{ "3", 10005, 304, 62 }; -- Jammal'an the Prophet
+		{ 3, 458, 304, 62 }; -- Jammal'an the Prophet
 		{ "1", 10006, 248, 179 }; -- Captain Wyrmak
 	};
 	Uldaman = {

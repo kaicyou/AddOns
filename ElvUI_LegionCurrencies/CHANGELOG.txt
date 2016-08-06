@@ -1,3 +1,6 @@
+v 1.02
+- Fixed an issue that cause the addon not to function properly
+
 v 1.01
 - Rewritten script to support changeable currency caps (such as with Ancient Mana that keeps going up the further you progress in the Suramar storyline)
 

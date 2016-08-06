@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation.lua 27 2016-07-24 16:01:45Z arith $
+-- $Id: Atlas_Transportation.lua 29 2016-08-05 16:45:04Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -48,6 +48,7 @@ local myCategory = L["Transportation Maps"];
 local myData = {
 	TransAllianceBrokenIsles = {
 		ZoneName = { BZ["Broken Isles"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
+		WorldMapID = "1007";
 		{ _RED..L["Portals"] };
 		{ PURP.." A) "..BZ["Greyfang Enclave"], 10038 };
 		{ INDENT..PURP.."  -> "..BZ["Ironforge"]..ALC["Comma"]..BZ["Dun Morogh"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
@@ -124,6 +125,7 @@ local myData = {
 	};
 	TransHordeBrokenIsles = {
 		ZoneName = { BZ["Broken Isles"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
+		WorldMapID = "1007";
 		{ _RED..L["Portals"] };
 		{ PURP.." A) "..BZ["Windrunner's Sanctuary"], 10038 };
 		{ INDENT..PURP.." <-> "..BZ["Orgrimmar"]..ALC["Comma"]..BZ["Durotar"]..ALC["Comma"]..BZ["Kalimdor"] };
@@ -200,6 +202,7 @@ local myData = {
 	};
 	TransAllianceDraenor = {
 		ZoneName = { BZ["Draenor"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
+		WorldMapID = "962";
 		{ _RED..L["Portals"] };
 		{ PURP.." A) "..BZ["Khadgar's Tower"]..ALC["Comma"]..BZ["Talador"], 10052 };
 		{ PURP.." A') "..BZ["Darnassus"]..ALC["Comma"]..BZ["Teldrassil"]..ALC["Comma"]..BZ["Kalimdor"], 10053 };
@@ -285,6 +288,7 @@ local myData = {
 	};
 	TransHordeDraenor = {
 		ZoneName = { BZ["Draenor"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
+		WorldMapID = "962";
 		{ _RED..L["Portals"] };
 		{ PURP.." A) "..BZ["Khadgar's Tower"]..ALC["Comma"]..BZ["Talador"], 10051 };
 		{ PURP.." A') "..BZ["Orgrimmar"]..ALC["Comma"]..BZ["Durotar"]..ALC["Comma"]..BZ["Kalimdor"], 10052 };
@@ -368,6 +372,7 @@ local myData = {
 	};
 	TransAllianceAshran = {
 		ZoneName = { BZ["Ashran"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
+		WorldMapID = "1009";
 		{ _RED..L["Taxi Nodes"] };
 		{ WHIT.." A) "..BZ["Stormshield"], 10001 };
 		{ "" };
@@ -379,6 +384,7 @@ local myData = {
 	};
 	TransHordeAshran = {
 		ZoneName = { BZ["Ashran"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
+		WorldMapID = "1011";
 		{ _RED..L["Taxi Nodes"] };
 		{ WHIT.." A) "..BZ["Warspear"], 10001 };
 		{ "" };
@@ -390,6 +396,7 @@ local myData = {
 	};
 	TransAllianceEast = {
 		ZoneName = { BZ["Eastern Kingdoms"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
+		WorldMapID = "14";
 		{ _RED..BZ["Docks"] };
 		{ ORNG.." A') "..BZ["Valgarde"]..ALC["Comma"]..BZ["Howling Fjord"]..ALC["Comma"]..BZ["Northrend"] };
 		{ ORNG.." B') "..BZ["Valiance Keep"]..ALC["Comma"]..BZ["Borean Tundra"]..ALC["Comma"]..BZ["Northrend"] };
@@ -545,6 +552,7 @@ local myData = {
 	};
 	TransAllianceStormwindCity = {
 		ZoneName = { BZ["Stormwind City"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
+		WorldMapID = "301";
 		{ _RED..BZ["Docks"] };
 		{ ORNG.." A) "..BZ["Rut'theran Village"]..ALC["Comma"]..BZ["Teldrassil"]..ALC["Comma"]..BZ["Kalimdor"], 10001 };
 		{ ORNG.." B) "..BZ["Valiance Keep"]..ALC["Comma"]..BZ["Borean Tundra"]..ALC["Comma"]..BZ["Northrend"], 10002 };
@@ -569,6 +577,7 @@ local myData = {
 	};
 	TransAllianceWest = {
 		ZoneName = { BZ["Kalimdor"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
+		WorldMapID = "13";
 		{ _RED..BZ["Docks"] };
 		{ ORNG.." A) "..BZ["Valaar's Berth"]..ALC["Comma"]..BZ["Azuremyst Isle"] };
 		{ ORNG.." A') "..BZ["Stormwind Harbor"]..ALC["Comma"]..BZ["Elwynn Forest"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
@@ -693,6 +702,7 @@ local myData = {
 	};
 	TransHordeEast = {
 		ZoneName = { BZ["Eastern Kingdoms"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
+		WorldMapID = "14";
 		{ _RED..L["Zeppelin Towers"]..ALC["Slash"]..BZ["Docks"] };
 		{ ORNG.." A') "..BZ["Vengeance Landing"]..ALC["Comma"]..BZ["Howling Fjord"]..ALC["Comma"]..BZ["Northrend"] };
 		{ ORNG.." B') "..BZ["Orgrimmar"]..ALC["Comma"]..BZ["Durotar"]..ALC["Comma"]..BZ["Kalimdor"] };
@@ -832,6 +842,7 @@ local myData = {
 	};
 	TransHordeWest = {
 		ZoneName = { BZ["Kalimdor"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
+		WorldMapID = "13";
 		{ _RED..L["Zeppelin Towers"]..ALC["Slash"]..BZ["Docks"] };
 		{ ORNG.." A') "..BZ["Warsong Hold"]..ALC["Comma"]..BZ["Borean Tundra"]..ALC["Comma"]..BZ["Northrend"] };
 		{ ORNG.." B') "..BZ["Undercity"]..ALC["Comma"]..BZ["Tirisfal Glades"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
@@ -962,6 +973,7 @@ local myData = {
 	};
 	TransHordeOrgrimmar = {
 		ZoneName = { BZ["Orgrimmar"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
+		WorldMapID = "321";
 		{ _RED..L["Portals"] };
 		{ PURP.." A) "..BZ["Shattered Landing"]..ALC["Comma"]..BZ["Blasted Lands"]..ALC["Comma"]..BZ["Eastern Kingdoms"], 10001 };
 		{ GREY..INDENT.."("..BZ["Cleft of Shadow"]..ALC["R-Parenthesis"] };
@@ -987,6 +999,7 @@ local myData = {
 	};
 	TransAllianceOutland = {
 		ZoneName = { BZ["Outland"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
+		WorldMapID = "466";
 		{ _RED..L["Portals"]..ALC["Slash"]..L["Transporter"] };
 		{ PURP.." A') "..BZ["Stormwind City"]..ALC["Comma"]..BZ["Elwynn Forest"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
 		{ PURP.." B') "..BZ["The Stair of Destiny"]..ALC["Comma"]..BZ["Hellfire Peninsula"]..ALC["Comma"]..BZ["Outland"] };
@@ -1035,6 +1048,7 @@ local myData = {
 	};
 	TransHordeOutland = {
 		ZoneName = { BZ["Outland"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
+		WorldMapID = "466";
 		{ _RED..L["Portals"]..ALC["Slash"]..L["Transporter"] };
 		{ PURP.." A') "..BZ["Orgrimmar"]..ALC["Comma"]..BZ["Durotar"]..ALC["Comma"]..BZ["Kalimdor"] };
 		{ PURP.." B') "..BZ["The Stair of Destiny"]..ALC["Comma"]..BZ["Hellfire Peninsula"]..ALC["Comma"]..BZ["Outland"] };
@@ -1082,6 +1096,7 @@ local myData = {
 	};
 	TransAllianceNorthrend = {
 		ZoneName = { BZ["Northrend"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
+		WorldMapID = "485";
 		{ _RED..BZ["Docks"] };
 		{ ORNG.." A') "..BZ["Stormwind City"]..ALC["Comma"]..BZ["Elwynn Forest"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
 		{ ORNG.." B') "..BZ["Menethil Harbor"]..ALC["Comma"]..BZ["Wetlands"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
@@ -1172,6 +1187,7 @@ local myData = {
 	};
 	TransHordeNorthrend = {
 		ZoneName = { BZ["Northrend"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
+		WorldMapID = "485";
 		{ _RED..L["Zeppelin Towers"] };
 		{ ORNG.." A') "..BZ["Orgrimmar"]..ALC["Comma"]..BZ["Durotar"]..ALC["Comma"]..BZ["Kalimdor"] };
 		{ ORNG.." B') "..BZ["Undercity"]..ALC["Comma"]..BZ["Tirisfal Glades"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
@@ -1265,6 +1281,7 @@ local myData = {
 	};
 	TransDeepholm = {
 		ZoneName = { BZ["Deepholm"] };
+		WorldMapID = "640";
 		{ _RED..L["Portals"] };
 		{ PURP.." A) "..BZ["Temple of Earth"] };
 		{ PURP.." B) "..BZ["Therazane's Throne"] };
@@ -1277,12 +1294,14 @@ local myData = {
 	};
 	DarkmoonFaire = {
 		ZoneName = { BZ["Darkmoon Island"] };
+		WorldMapID = "823";
 		{ PURP.." A) "..L["Portals"] };
 		{ PURP..INDENT.." -> "..BZ["Elwynn Forest"] };
 		{ PURP..INDENT.." -> "..BZ["Mulgore"] };
 	};
 	TransAlliancePandaria = {
 		ZoneName = { BZ["Pandaria"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
+		WorldMapID = "862";
 		{ _RED..L["Portals"] };
 		{ PURP.." A) "..BZ["Paw'Don Village"]..ALC["Comma"]..BZ["The Jade Forest"] };
 		{ PURP.." B) "..BZ["Violet Rise"]..ALC["Comma"]..BZ["Isle of Thunder"] };
@@ -1378,6 +1397,7 @@ local myData = {
 	};
 	TransHordePandaria = {
 		ZoneName = { BZ["Pandaria"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
+		WorldMapID = "862";
 		{ _RED..L["Portals"] };
 		{ PURP.." A) "..BZ["Honeydew Village"]..ALC["Comma"]..BZ["The Jade Forest"] };
 		{ PURP.." B) "..BZ["Dawnseeker Promontory"]..ALC["Comma"]..BZ["Isle of Thunder"] };
@@ -1474,15 +1494,15 @@ local myData = {
 	};
 	TransEmeraldDreamway = {
 		ZoneName = { BZ["Emerald Dreamway"]..ALC["L-Parenthesis"]..L["Druid-only"]..ALC["R-Parenthesis"] };
+		WorldMapID = "1048";
 		{ _RED..L["Portals"] };
-		{ GREN.." A) "..BZ["The Dreamgrove"]..ALC["Comma"]..BZ["Val'sharah"]..ALC["Comma"]..BZ["Broken Isles"] };
-		{ GREN.." B) "..BZ["Grizzly Hills"]..ALC["Comma"]..BZ["Northrend"] };
-		{ GREN.." C) "..BZ["Dream Bough"]..ALC["Comma"]..BZ["Feralas"]..ALC["Comma"]..BZ["Kalimdor"] };
-		{ GREN.." D) "..BZ["Stormrage Barrow Dens"]..ALC["Comma"]..BZ["Moonglade"]..ALC["Comma"]..BZ["Kalimdor"] };
-		{ GREN.." E) "..BZ["Twilight Grove"]..ALC["Comma"]..BZ["Duskwood"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
-		{ GREN.." F) "..BZ["Seradane"]..ALC["Comma"]..BZ["The Hinterlands"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
-		{ GREN.." G) "..BZ["Nordrassil"]..ALC["Comma"]..BZ["Mount Hyjal"]..ALC["Comma"]..BZ["Kalimdor"] };
-	
+		{ GREN.." A) "..BZ["The Dreamgrove"]..ALC["Comma"]..BZ["Val'sharah"]..ALC["Comma"]..BZ["Broken Isles"], 10001 };
+		{ GREN.." B) "..BZ["Grizzly Hills"]..ALC["Comma"]..BZ["Northrend"], 10002 };
+		{ GREN.." C) "..BZ["Dream Bough"]..ALC["Comma"]..BZ["Feralas"]..ALC["Comma"]..BZ["Kalimdor"], 10003 };
+		{ GREN.." D) "..BZ["Stormrage Barrow Dens"]..ALC["Comma"]..BZ["Moonglade"]..ALC["Comma"]..BZ["Kalimdor"], 10004 };
+		{ GREN.." E) "..BZ["Twilight Grove"]..ALC["Comma"]..BZ["Duskwood"]..ALC["Comma"]..BZ["Eastern Kingdoms"], 10005 };
+		{ GREN.." F) "..BZ["Seradane"]..ALC["Comma"]..BZ["The Hinterlands"]..ALC["Comma"]..BZ["Eastern Kingdoms"], 10006 };
+		{ GREN.." G) "..BZ["Nordrassil"]..ALC["Comma"]..BZ["Mount Hyjal"]..ALC["Comma"]..BZ["Kalimdor"], 10007 };
 	};
 };
 

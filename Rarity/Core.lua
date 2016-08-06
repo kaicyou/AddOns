@@ -1,5 +1,5 @@
 Rarity = LibStub("AceAddon-3.0"):NewAddon("Rarity", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "LibSink-2.0", "AceBucket-3.0", "LibBars-1.0")
-Rarity.MINOR_VERSION = tonumber(("$Revision: 550 $"):match("%d+"))
+Rarity.MINOR_VERSION = tonumber(("$Revision: 553 $"):match("%d+"))
 local FORCE_PROFILE_RESET_BEFORE_REVISION = 1 -- Set this to one higher than the Revision on the line above this
 local L = LibStub("AceLocale-3.0"):GetLocale("Rarity")
 local R = Rarity
@@ -19,7 +19,7 @@ local lbsz = LibStub("LibBabble-SubZone-3.0"):GetUnstrictLookupTable()
 local lbct = LibStub("LibBabble-CreatureType-3.0"):GetUnstrictLookupTable()
 local lbb = LibStub("LibBabble-Boss-3.0"):GetUnstrictLookupTable()
 local hbd = LibStub("HereBeDragons-1.0")
----
+--
 
 
 --[[
@@ -2979,7 +2979,7 @@ do
 									chance = 100 * (1 - math.pow(1 - dropChance, attempts))
 									local medianLoots = round(math.log(1 - 0.5) / math.log(1 - dropChance))
 									lucky = colorize(L["Lucky"], green)
-									if medianLoots < attempts then lucky = colorize(L["Unlucky"], red) end
+									if (tonumber(medianLoots) or 0) < (tonumber(attempts) or 0) then lucky = colorize(L["Unlucky"], red) end
 								else
 									chance = 100 * (attempts / (v.chance or 100))
 									if chance < 0 then chance = 0 end

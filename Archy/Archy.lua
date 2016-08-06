@@ -44,7 +44,6 @@ local MAX_ARCHAEOLOGY_RANK = _G.PROFESSION_RANKS[MAX_PROFESSION_RANK][1]
 private.MAX_ARCHAEOLOGY_RANK = MAX_ARCHAEOLOGY_RANK
 
 local GLOBAL_COOLDOWN_TIME = 1.5
-local SECURE_ACTION_BUTTON -- Populated in Archy:OnInitialize()
 local SURVEY_SPELL_ID = 80451
 local CRATE_USE_STRING -- Populate in Archy:OnEnable()
 
@@ -52,6 +51,8 @@ local ZONE_DATA = {}
 private.ZONE_DATA = ZONE_DATA
 
 local MAP_CONTINENTS = {} -- Popupated in Archy:OnEnable()
+
+local EasySurveyButton -- Populated in Archy:OnInitialize()
 
 local LorewalkersLodestone = {
 	itemID = 87548,
@@ -63,11 +64,39 @@ local LorewalkersMap = {
 	spellID = 126957
 }
 
-local FISHING_POLE_NAME
+local FISHING_POLE_ITEM_TYPE_NAME
 do
-	--  If this stops working, check for the index of "Weapon" via GetAuctionItemClasses(), then find the index of "Fishing Poles" via GetAuctionItemSubClasses().
-	local auctionItemSubClassNames = { _G.GetAuctionItemSubClasses(1) }
-	FISHING_POLE_NAME = auctionItemSubClassNames[#auctionItemSubClassNames]
+	-- If this breaks in a future patch due to indices changing, uncomment the below code to find the correct values:
+	--	do
+	--		COMPILED_ITEM_CLASSES = {}
+	--		local classIndex = 0
+	--		local className = _G.GetItemClassInfo(classIndex)
+	--
+	--		while className and className ~= "" do
+	--			COMPILED_ITEM_CLASSES[classIndex] = {
+	--				name = className,
+	--				subClasses = {},
+	--			}
+	--
+	--			local subClassIndex = 0
+	--			local subClassName = _G.GetItemSubClassInfo(classIndex, subClassIndex)
+	--
+	--			while subClassName and subClassName ~= "" do
+	--				COMPILED_ITEM_CLASSES[classIndex].subClasses[subClassIndex] = subClassName
+	--
+	--				subClassIndex = subClassIndex + 1
+	--				subClassName = _G.GetItemSubClassInfo(classIndex, subClassIndex)
+	--			end
+	--
+	--			classIndex = classIndex + 1
+	--			className = _G.GetItemClassInfo(classIndex)
+	--		end
+	--	end
+
+	local ITEM_CLASS_WEAPON = 2
+	local ITEM_SUBCLASS_FISHING_POLE = 20
+
+	FISHING_POLE_ITEM_TYPE_NAME = _G.GetItemSubClassInfo(ITEM_CLASS_WEAPON, ITEM_SUBCLASS_FISHING_POLE)
 end
 
 _G.BINDING_HEADER_ARCHY = "Archy"
@@ -258,7 +287,7 @@ do
 
 	function SuspendClickToMove()
 		-- we're not using easy cast, no need to mess with click to move
-		if not private.ProfileSettings.general.easyCast or _G.IsEquippedItemType(FISHING_POLE_NAME) or not _G.CanScanResearchSite() then
+		if not private.ProfileSettings.general.easyCast or _G.IsEquippedItemType(FISHING_POLE_ITEM_TYPE_NAME) or not _G.CanScanResearchSite() then
 			return
 		end
 
@@ -670,20 +699,19 @@ function Archy:OnInitialize()
 
 	LDBI:Register("Archy", private.LDB_object, profileSettings.general.icon)
 
-	if not SECURE_ACTION_BUTTON then
-		local button_name = "Archy_SurveyButton"
-		local button = _G.CreateFrame("Button", button_name, _G.UIParent, "SecureActionButtonTemplate")
-		button:SetPoint("LEFT", _G.UIParent, "RIGHT", 10000, 0)
-		button:Hide()
-		button:SetFrameStrata("LOW")
-		button:EnableMouse(true)
-		button:RegisterForClicks("RightButtonUp")
-		button.name = button_name
-		button:SetAttribute("type", "spell")
-		button:SetAttribute("spell", SURVEY_SPELL_ID)
-		button:SetAttribute("action", nil)
+	do
+		local surveyButtonName = "Archy_EasySurveyButton"
+		local surveyButton = _G.CreateFrame("Button", surveyButtonName, _G.UIParent, "SecureActionButtonTemplate")
+		surveyButton:SetPoint("LEFT", _G.UIParent, "RIGHT", 10000, 0)
+		surveyButton:Hide()
+		surveyButton:SetFrameStrata("LOW")
+		surveyButton:EnableMouse(true)
+		surveyButton:RegisterForClicks("RightButtonDown")
+		surveyButton:SetAttribute("type", "spell")
+		surveyButton:SetAttribute("spell", SURVEY_SPELL_ID)
+		surveyButton:SetAttribute("action", nil)
 
-		button:SetScript("PostClick", function(self, mouse_button, is_down)
+		surveyButton:SetScript("PostClick", function(self, mouse_button, is_down)
 			if private.override_binding_on and not IsTaintable() then
 				_G.ClearOverrideBindings(self)
 				private.override_binding_on = nil
@@ -692,38 +720,30 @@ function Archy:OnInitialize()
 			end
 		end)
 
-		SECURE_ACTION_BUTTON = button
-	end
+		EasySurveyButton = surveyButton
 
-	do
-		local clicked_time
-		local ACTION_DOUBLE_WAIT = 0.4
-		local MIN_ACTION_DOUBLECLICK = 0.05
+		local DOUBLECLICK_MAX_SECONDS = 0.2
+		local DOUBLECLICK_MIN_SECONDS = 0.04
+
+		local previousClickTime
 
 		_G.WorldFrame:HookScript("OnMouseDown", function(frame, button, down)
-			if button == "RightButton" and profileSettings.general.easyCast and _G.ArchaeologyMapUpdateAll() > 0 and not IsTaintable() and not _G.IsEquippedItemType(FISHING_POLE_NAME) and _G.CanScanResearchSite() and _G.GetSpellCooldown(SURVEY_SPELL_ID) == 0 then
-				local perform_survey = false
-				local num_loot_items = _G.GetNumLootItems()
+			if button == "RightButton" and profileSettings.general.easyCast and _G.ArchaeologyMapUpdateAll() > 0 and not IsTaintable() and not _G.IsEquippedItemType(FISHING_POLE_ITEM_TYPE_NAME) and _G.CanScanResearchSite() and _G.GetSpellCooldown(SURVEY_SPELL_ID) == 0 then
+				-- Ensure the LootFrame contains no items; we don't care if it's simply visible.
+				if _G.GetNumLootItems() == 0 and previousClickTime then
+					local doubleClickTime = _G.GetTime() - previousClickTime
 
-				if (num_loot_items == 0 or not num_loot_items) and clicked_time then
-					local pressTime = _G.GetTime()
-					local doubleTime = pressTime - clicked_time
+					if doubleClickTime < DOUBLECLICK_MAX_SECONDS and doubleClickTime > DOUBLECLICK_MIN_SECONDS then
+						previousClickTime = nil
 
-					if doubleTime < ACTION_DOUBLE_WAIT and doubleTime > MIN_ACTION_DOUBLECLICK then
-						clicked_time = nil
-						perform_survey = true
+						if not IsTaintable() then
+							_G.SetOverrideBindingClick(surveyButton, true, "BUTTON2", surveyButtonName)
+							private.override_binding_on = true
+						end
 					end
 				end
-				clicked_time = _G.GetTime()
 
-				if perform_survey and not IsTaintable() then
-					-- We're stealing the mouse-up event, make sure we exit MouseLook
-					if _G.IsMouselooking() then
-						_G.MouselookStop()
-					end
-					_G.SetOverrideBindingClick(SECURE_ACTION_BUTTON, true, "BUTTON2", SECURE_ACTION_BUTTON.name)
-					private.override_binding_on = true
-				end
+				previousClickTime = _G.GetTime()
 			end
 		end)
 	end
@@ -1358,7 +1378,9 @@ function Archy:RESEARCH_ARTIFACT_DIG_SITE_UPDATED()
 	if not private.CurrentContinentID then
 		return
 	end
+
 	UpdateAllSites()
+
 	self:UpdateSiteDistances()
 	self:RefreshDigSiteDisplay()
 end
@@ -1622,7 +1644,7 @@ function Archy:PLAYER_REGEN_ENABLED()
 	end
 
 	if private.regen_clear_override then
-		_G.ClearOverrideBindings(SECURE_ACTION_BUTTON)
+		_G.ClearOverrideBindings(EasySurveyButton)
 		private.override_binding_on = nil
 		private.regen_clear_override = nil
 	end

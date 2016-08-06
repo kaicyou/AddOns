@@ -3,11 +3,11 @@
 ## Author: Alexstraszaa
 ## URLs: http://www.curseforge.com/projects/98298/
 ## Notes: A lightweight datatext-plugin for Elvui that shows you all the relavant currencies for Legion.
-## Version: 1.01
+## Version: 1.02
 ## RequiredDeps: ElvUI
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## X-Curse-Packaged-Version: r3
+## X-Curse-Packaged-Version: r4
 ## X-Curse-Project-Name: ElvUI Legion Currencies DataText
 ## X-Curse-Project-ID: elvui-legion-currencies
 ## X-Curse-Repository-ID: wow/elvui-legion-currencies/mainline

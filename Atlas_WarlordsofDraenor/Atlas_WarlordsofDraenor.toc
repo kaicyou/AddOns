@@ -29,14 +29,14 @@
 # ## Notes: Warlords of Draenor Dungeon Maps
 # ## Notes-zhTW: 德拉諾之霸副本地圖模組
 #@end-debug@
-## Version: 1.33.01
+## Version: 1.33.02
 ## Author: arith, Dynaletik, dubcat
-## X-Date: 2016-07-21T09:19:07Z
+## X-Date: 2016-08-05T16:13:17Z
 ## X-Email: atlas.addon at gmail.com
 ## X-Website: http://www.atlasmod.com
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v1.33.01
+## X-Curse-Packaged-Version: v1.33.02
 ## X-Curse-Project-Name: Atlas Warlords of Draenor
 ## X-Curse-Project-ID: atlas-worldofdraenor
 ## X-Curse-Repository-ID: wow/atlas-worldofdraenor/mainline

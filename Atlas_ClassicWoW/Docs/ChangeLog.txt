@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 8 2016-07-19 13:59:58Z arith $
+$Id: ChangeLog.txt 10 2016-08-05 16:16:09Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,13 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.33.01 (Aug. 06, 2016)
+------------------------
+- Update node info:
+  - The Sunken Temple Entrance map - Jammal'an the Prophet
+  - The Sunken Temple map - Dreamscythe
+  
 
 v1.33.00 (Jul. 19, 2016)
 ------------------------

@@ -1,0 +1,11 @@
+tag 7.0.3.11
+017e9f97dfc78fd12b59f6690fef4b2fc423f553
+James D. Callahan III <jcallahan@curse.com>
+2016-08-05 23:57:35 -0500
+
+
+
+--------------------
+
+James D. Callahan III:
+	- Change methodology for determining whether or not a fishing pole is equipped.

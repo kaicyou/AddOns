@@ -29,15 +29,15 @@
 # ## Notes: Classic WoW Dungeon Maps
 # ## Notes-zhTW: 艾澤拉斯副本地圖模組
 #@end-debug@
-## Version: 1.33.00
+## Version: 1.33.01
 ## Author: arith, Dynaletik, dubcat
-## X-Date: 2016-07-19T13:59:58Z
+## X-Date: 2016-08-05T16:16:09Z
 ## X-Credits: Dan Gilbert, Lothaer
 ## X-Email: atlas.addon at gmail.com
 ## X-Website: http://www.atlasmod.com
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v1.33.00
+## X-Curse-Packaged-Version: v1.33.01
 ## X-Curse-Project-Name: Atlas Classic WoW
 ## X-Curse-Project-ID: atlas-classicwow
 ## X-Curse-Repository-ID: wow/atlas-classicwow/mainline

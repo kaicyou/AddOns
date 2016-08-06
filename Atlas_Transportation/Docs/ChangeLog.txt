@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 27 2016-07-24 16:01:45Z arith $
+$Id: ChangeLog.txt 29 2016-08-05 16:45:04Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,12 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.33.02 (Aug. 06, 2016)
+------------------------
+- Revamped Broken Isles maps
+- Added WorldMapID info
+- Added Emerald Dreamway map's coordinates
 
 v1.33.01 (Jul. 24, 2016)
 ------------------------

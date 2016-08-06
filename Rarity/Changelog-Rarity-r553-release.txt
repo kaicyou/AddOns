@@ -1,0 +1,238 @@
+------------------------------------------------------------------------
+r554 | allara | 2016-08-05 17:01:31 +0000 (Fri, 05 Aug 2016) | 1 line
+Changed paths:
+   A /tags/r553-release (from /trunk:553)
+
+Tagging as r553-release
+------------------------------------------------------------------------
+r553 | allara | 2016-08-05 16:55:59 +0000 (Fri, 05 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- [#202] Added Imperial Silkworm
+------------------------------------------------------------------------
+r552 | allara | 2016-08-03 19:59:40 +0000 (Wed, 03 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- Fix a rare string comparison error
+------------------------------------------------------------------------
+r550 | allara | 2016-08-02 18:16:46 +0000 (Tue, 02 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- [#201] Rarity now uses the petJournalTab cvar to return the Collections tab to where it was prior to toy scanning
+------------------------------------------------------------------------
+r549 | allara | 2016-08-02 17:24:58 +0000 (Tue, 02 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- Attempt to fix a rare string comparison error
+------------------------------------------------------------------------
+r548 | allara | 2016-08-01 18:06:12 +0000 (Mon, 01 Aug 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- [#137] Added the ability to disable items on a per-class basis
+- [#168] Fandral's Seed Pouch now only appears/tracks for druids
+------------------------------------------------------------------------
+r546 | allara | 2016-07-31 19:30:39 +0000 (Sun, 31 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Options_Defaults.lua
+
+- Rarity no longer passes through its CollectionsJournal_SetTab hook in combat (may need to remove this hook entirely)
+------------------------------------------------------------------------
+r545 | allara | 2016-07-30 19:37:57 +0000 (Sat, 30 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- [#129] Added a new option to only make an announcement when an item is found (instead of every attempt)
+------------------------------------------------------------------------
+r543 | allara | 2016-07-29 20:28:49 +0000 (Fri, 29 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- Eliminated another hang/crash that could occur if the user tried to show the tooltip while it was already being shown (thanks Jacob30!)
+------------------------------------------------------------------------
+r542 | allara | 2016-07-29 18:21:38 +0000 (Fri, 29 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+
+- Attempt to fix the client hang/crash that can occur shortly after logging in if the tooltip is brought up
+------------------------------------------------------------------------
+r541 | allara | 2016-07-29 07:15:02 +0000 (Fri, 29 Jul 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+
+- [#191] Rarity should no longer change tabs in your Collection window when scanning items
+- [#160] Rarity Options now supports the various Defeat Detection configurations; use with care
+------------------------------------------------------------------------
+r539 | allara | 2016-07-28 18:39:30 +0000 (Thu, 28 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- Added new option to control the auto-hide delay on the primary tooltip
+------------------------------------------------------------------------
+r538 | allara | 2016-07-28 18:27:50 +0000 (Thu, 28 Jul 2016) | 3 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- Improved item cache reliability
+- Rarity now displays a message tooltip when in combat or during initialization to let you know you can't see the tooltip just now
+- Statistics are no longer scanned during combat
+------------------------------------------------------------------------
+r537 | allara | 2016-07-27 23:25:25 +0000 (Wed, 27 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/Core.lua
+   M /trunk/Rarity.toc
+
+- Rarity's item cache will no longer erroneously store empty data if the Blizzard API returns nothing; currently cache priming will fail in these cases
+------------------------------------------------------------------------
+r536 | allara | 2016-07-27 22:50:30 +0000 (Wed, 27 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- [#197] Added a "Grow Up" option to the progress bar
+------------------------------------------------------------------------
+r535 | allara | 2016-07-27 22:00:50 +0000 (Wed, 27 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- Rarity now builds and uses its own item info cache to avoid hitting Blizzard's API repeatedly or hundreds of times in one frame
+------------------------------------------------------------------------
+r533 | allara | 2016-07-25 19:11:40 +0000 (Mon, 25 Jul 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+
+- Rarity now completely throws away (releases) its tooltip and starts from scratch when expanding/collapsing a group. I believe we were seeing recursive relayout behavior inside the LibQTip library that could not scale to the number of frames being created/destroyed when expanding/collapsing a group. This appears to solve the problem, at least in my testing.
+- I also added a small (0.6s) delay before the Rarity tooltip hides itself when you mouse out of it.
+------------------------------------------------------------------------
+r531 | allara | 2016-07-21 23:41:53 +0000 (Thu, 21 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+
+- Rarity's achievement alert when you obtain an item should now function properly in WoW 7.0
+------------------------------------------------------------------------
+r530 | allara | 2016-07-21 22:55:30 +0000 (Thu, 21 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/Core.lua
+   A /trunk/Libs/LibBars-1.0
+   A /trunk/Libs/LibBars-1.0/LibBars-1.0.lua
+   A /trunk/Libs/LibBars-1.0/lib.xml
+
+- Updated LibBars-1.0 in this package with a bug fix for WoW 7.x. GetItemInfo() returns texture IDs instead of image paths now. LibBars:SetIcon should no longer detect an ID and try to route it through GetSpellInfo to obtain the filename, as that is no longer necessary and does not work for item textures. Note to no-libs users: Rarity now contains a custom copy of LibBars-1.0 which manifests itself as r24 in order to force an upgrade in case you have the library installed externally. The version on WowAce does not work properly in WoW 7.0.
+------------------------------------------------------------------------
+r527 | allara | 2016-07-21 17:01:26 +0000 (Thu, 21 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Modules/Options/Rarity_Options.toc
+
+- Options module TOC update for 7.0
+------------------------------------------------------------------------
+r524 | allara | 2016-07-21 06:33:49 +0000 (Thu, 21 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- Remove the extra texture debug messages (sorry!)
+------------------------------------------------------------------------
+r522 | allara | 2016-07-20 19:53:19 +0000 (Wed, 20 Jul 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- Re-enabled Living Infernal Core
+- Fixed a missing localization entry for Orb of the Sin'dorei
+------------------------------------------------------------------------
+r520 | allara | 2016-07-14 19:14:23 +0000 (Thu, 14 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- Added additional waypoint data (thanks Urtgard!)
+------------------------------------------------------------------------
+r519 | allara | 2016-07-11 18:19:50 +0000 (Mon, 11 Jul 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- Moved all the new toys in 7.x to the Legion category
+- Added Felsteel Annihilator, Ironhoof Destroyer
+------------------------------------------------------------------------
+r518 | allara | 2016-07-11 17:20:50 +0000 (Mon, 11 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Options_Defaults.lua
+
+- Temporarily removed Living Infernal Core because the live (6.x) client erroneously returns attempt counts for its statistics
+------------------------------------------------------------------------
+r517 | allara | 2016-07-11 05:52:20 +0000 (Mon, 11 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Options_Defaults.lua
+
+- Fix a typo
+------------------------------------------------------------------------
+r516 | allara | 2016-07-10 19:41:18 +0000 (Sun, 10 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- Added Sting Ray Pup, Brinedeep Bottom-Feeder, Fathom Dweller, Living Infernal Core
+------------------------------------------------------------------------
+r515 | allara | 2016-07-06 23:38:47 +0000 (Wed, 06 Jul 2016) | 16 lines
+Changed paths:
+   M /trunk/Core.lua
+   A /trunk/Icons/legion.blp
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+   M /trunk/Rarity.toc
+
+LEGION SUPPORT:
+
+- [#190] 7.0 compatibility (also works on pre-7.0 clients)
+- [#184] Added various toy conversions in 7.0: Goren "Log" Roller, Sassy Imp, Battle Horn, Eternal Warrior's Sigil, Aqua Jewel, Salyin Battle Banner, Hardened Shell, Essence of the Breeze, Helpful Wikky's Whistle, Bottled Tornado, Ash-Covered Horn, Chain Pet Leash
+- [#180] Added defeat detection and waypoint data for Glittering Arcane Crystal, Vibrating Arcane Crystal, Warm Arcane Crystal
+- [#177] Rarity now uses the LOOT_READY event instead of LOOT_OPENED to detect loot; this should reduce or eliminate Rarity's interaction with other loot add-ons
+- [#166] Added Land Shark, Sea Calf
+- All items that require a group in Mists of Pandaria are now considered soloable
+- Reduced the group size required for items found in Warlords of Draenor
+- Added a Legion expansion category (not used yet)
+- Added support for Seal of Inevitable Fate and Seal of Broken Fate
+- Added new Archaeology races and corrected the race IDs for Fossilized Raptor and Scepter of Azj'Aqir
+- Added new fishing and mining nodes
+- Added support for the kill achievements Adventurer of Azsuna, Adventurer of Highmountain, Adventurer of Stormheim, Adventurer of Suramar, Adventurer of Val'sharah
+
+While this build does work on live (6.x) clients, it is intended primarily for users on the Legion beta test or 7.0.x PTR.
+------------------------------------------------------------------------

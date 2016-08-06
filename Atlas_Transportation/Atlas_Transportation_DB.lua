@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation_DB.lua 27 2016-07-24 16:01:45Z arith $
+-- $Id: Atlas_Transportation_DB.lua 29 2016-08-05 16:45:04Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -869,6 +869,16 @@ local myDB = {
 		{ "41", 10001, x, y }; -- Huojin Landing
 	};
 ]]
+	TransEmeraldDreamway = {
+		{ "A", 10001, 234, 147 }; -- The Dreamgrove
+		{ "B", 10002, 145, 175 }; -- Grizzly Hills
+		{ "C", 10003, 79, 217 }; -- Dream Bough
+		{ "D", 10004, 93, 410 }; -- Stormrage Barrow Dens
+		{ "E", 10005, 196, 359 }; -- Twilight Grove
+		{ "F", 10006, 276, 347 }; -- Seradane
+		{ "G", 10007, 299, 285 }; -- Nordrassil
+	
+	};
 };
 
 

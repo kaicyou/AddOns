@@ -11,33 +11,6 @@ local version = GetAddOnMetadata("ElvUI_LegionCurrencies", "Version")
 
 local currencies = {1155, 1275, 1226, 1220, 1273, 1154, 1149, 1268}
 
-local elvProfileDB = ElvPrivateDB["profiles"][E.myname.." - "..E.myrealm]
-if elvProfileDB["ElvUI_LegionCurrencies"] ~= nil then
-	local s = elvProfileDB["ElvUI_LegionCurrencies"]["setup_complete"]
-	if s or s ~= nil then
-		if ElvCharacterDB["ElvUI_LegionCurrencies"]["locale"] ~= Lang then
-			ElvCharacterDB["ElvUI_LegionCurrencies"] = {}
-		else
-			ElvCharacterDB["ElvUI_LegionCurrencies"] = ElvCharacterDB["ElvUI_LegionCurrencies"] or {}
-		end
-		-- misc
-		ElvCharacterDB["ElvUI_LegionCurrencies"]["icons"]  = elvProfileDB["ElvUI_LegionCurrencies"]["icons"] or true 
-		-- currencies
-		ElvCharacterDB["ElvUI_LegionCurrencies"][1155]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1155]["visible"]  or true -- Ancient Mana
-		ElvCharacterDB["ElvUI_LegionCurrencies"][1275]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1275]["visible"]  or true -- Curious Coin
-		ElvCharacterDB["ElvUI_LegionCurrencies"][1226]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1226]["visible"]  or true -- Nethershard
-		ElvCharacterDB["ElvUI_LegionCurrencies"][1220]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1220]["visible"]  or true -- Order Resources
-		ElvCharacterDB["ElvUI_LegionCurrencies"][1273]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1273]["visible"]  or true -- Seal of Broken fate
-		ElvCharacterDB["ElvUI_LegionCurrencies"][1154]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1154]["visible"]  or true -- Shadowy Coin
-		ElvCharacterDB["ElvUI_LegionCurrencies"][1149]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1149]["visible"]  or true -- Sightless Eye
-		ElvCharacterDB["ElvUI_LegionCurrencies"][1268]  = elvProfileDB["ElvUI_LegionCurrencies"][L["Legion"]][1268]["visible"]  or true -- Timeworn Artifact
-	end
-end
-
-if not ElvCharacterDB["ElvUI_LegionCurrencies"] then
-	ElvCharacterDB["ElvUI_LegionCurrencies"] = {}
-end
-
 V["ElvUI_LegionCurrencies"] = {
 	-- misc
 	["icons"] = true,
@@ -51,6 +24,10 @@ V["ElvUI_LegionCurrencies"] = {
 	[1149] = true, -- Sightless Eye, 1149
 	[1268] = true, -- Timeworn Artifact, 1268
 }
+
+local function setupDB() 
+	E.private["ElvUI_LegionCurrencies"] = E.private["ElvUI_LegionCurrencies"] or {}
+end
 
 local function ToggleOption(name)
 	if ElvCharacterDB["ElvUI_LegionCurrencies"][name] then
@@ -107,7 +84,7 @@ local function OnEvent(self, event, ...)
 		if isDiscovered then
 			if(i ~= 1) then _text = "  " else _text = "" end
 			local texture = format('|T%s:14:14:0:0:64:64:4:60:4:60|t', icon)
-			if index == 1155 and (GetOption(1155) and GetOption("Legion")) then
+			if index == 1155 and GetOption(1155) then
 				local str
 				if GetOption("icons") then
 					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
@@ -118,7 +95,7 @@ local function OnEvent(self, event, ...)
 				end
 				displayString = displayString..str
 			end
-			if index == 1275 and (GetOption(1275) and GetOption("Legion")) then
+			if index == 1275 and GetOption(1275) then
 				local str
 				if GetOption("icons") then
 					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
@@ -129,7 +106,7 @@ local function OnEvent(self, event, ...)
 				end
 				displayString = displayString..str
 			end
-			if index == 1226 and (GetOption(1226) and GetOption("Legion")) then
+			if index == 1226 and GetOption(1226) then
 				local str
 				if GetOption("icons") then
 					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
@@ -140,7 +117,7 @@ local function OnEvent(self, event, ...)
 				end
 				displayString = displayString..str
 			end
-			if index == 1220 and (GetOption(1220) and GetOption("Legion")) then
+			if index == 1220 and GetOption(1220) then
 				local str
 				if GetOption("icons") then
 					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
@@ -151,7 +128,7 @@ local function OnEvent(self, event, ...)
 				end
 				displayString = displayString..str
 			end
-			if index == 1273 and (GetOption(1273) and GetOption("Legion")) then
+			if index == 1273 and GetOption(1273) then
 				local str
 				if GetOption("icons") then
 					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
@@ -162,7 +139,7 @@ local function OnEvent(self, event, ...)
 				end
 				displayString = displayString..str
 			end
-			if index == 1154 and (GetOption(1154) and GetOption("Legion")) then
+			if index == 1154 and GetOption(1154) then
 				local str
 				if GetOption("icons") then
 					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
@@ -173,7 +150,7 @@ local function OnEvent(self, event, ...)
 				end
 				displayString = displayString..str
 			end
-			if index == 1149 and (GetOption(1149) and GetOption("Legion")) then
+			if index == 1149 and GetOption(1149) then
 				local str
 				if GetOption("icons") then
 					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
@@ -184,7 +161,7 @@ local function OnEvent(self, event, ...)
 				end
 				displayString = displayString..str
 			end
-			if index == 1268 and (GetOption(1268) and GetOption("Legion")) then
+			if index == 1268 and GetOption(1268) then
 				local str
 				if GetOption("icons") then
 					str = tostring(_text..texture..":"..ColorValue(totalMax, count)..count.."|r")
@@ -215,7 +192,9 @@ local function OnEnter(self)
 	if UnitLevel("player") >= 100 then
 		DT.tooltip:AddDoubleLine(L["Right-Click"]..":", L["Datatext Options Menu"], r1, g1, b1, r2, g2, b2)
 		DT.tooltip:Show()
-	else DT.tooltip:Hide() end
+	else
+		DT.tooltip:Hide()
+	end
 	if lastPanel ~= nil then
 		OnEvent(lastPanel)
 	end

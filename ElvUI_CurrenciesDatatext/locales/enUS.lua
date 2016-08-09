@@ -57,7 +57,7 @@ L["Order Resources"] = true
 L["Seal of Broken Fate"] = true
 L["Shadowy Coins"] = true
 L["Sightless Eye"] = true
-L["Timeworn Coin"] = true
+L["Timeworn Artifact"] = true
 
 L["Apexis Crystal"] = true
 L["Artifact Fragment"] = true

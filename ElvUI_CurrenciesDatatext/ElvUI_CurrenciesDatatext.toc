@@ -3,11 +3,11 @@
 ## Author: Alexstraszaa
 ## URL: http://www.curseforge.com/projects/99116/
 ## Notes: A datatext for currencies that is highly costumizable, Includes a tooltip for hidden currencies
-## Version: 4.00
+## Version: 4.01
 ## RequiredDeps: ElvUI
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## X-Curse-Packaged-Version: r13
+## X-Curse-Packaged-Version: r14
 ## X-Curse-Project-Name: ElvUI Currencies Datatext
 ## X-Curse-Project-ID: elvui-currencies-datatext
 ## X-Curse-Repository-ID: wow/elvui-currencies-datatext/mainline

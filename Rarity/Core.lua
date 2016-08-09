@@ -1,5 +1,5 @@
 Rarity = LibStub("AceAddon-3.0"):NewAddon("Rarity", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "LibSink-2.0", "AceBucket-3.0", "LibBars-1.0")
-Rarity.MINOR_VERSION = tonumber(("$Revision: 553 $"):match("%d+"))
+Rarity.MINOR_VERSION = tonumber(("$Revision: 555 $"):match("%d+"))
 local FORCE_PROFILE_RESET_BEFORE_REVISION = 1 -- Set this to one higher than the Revision on the line above this
 local L = LibStub("AceLocale-3.0"):GetLocale("Rarity")
 local R = Rarity
@@ -43,7 +43,6 @@ local archfragments = {}
 local coinamounts = {}
 local architems = {}
 local rarity_stats = {}
-local toys = {}
 Rarity.mount_sources = {}
 Rarity.pet_sources = {}
 Rarity.lockouts = {}
@@ -3745,7 +3744,6 @@ end
 
 
 function R:ScanToys(reason)
-	if InCombatLockdown() then return end
  self:Debug("Scanning toys ("..(reason or "")..")")
 
 	-- Load the Collections add-on if needed
@@ -3753,37 +3751,23 @@ function R:ScanToys(reason)
 		if not ToyBox_OnLoad then UIParentLoadAddOn("Blizzard_Collections") end
 	end
 
-	-- Save which Collections tab we were on just before we switch it to Toys
-	local tabBefore = tonumber(GetCVar("petJournalTab")) or 1
-	if CollectionsJournal_SetTab then CollectionsJournal_SetTab(CollectionsJournal, 3) end
-
-	-- Scan the toys
-	table.wipe(toys)
- for id = 1, C_ToyBox.GetNumToys() do
-		local itemId = C_ToyBox.GetToyFromIndex(id)
-		toys[itemId] = true
-		Rarity.toysScanned = true
-		if PlayerHasToy(itemId) then
-			for k, v in pairs(R.db.profile.groups) do
-				if type(v) == "table" then
-					for kk, vv in pairs(v) do
-						if type(vv) == "table" then
-							if vv.itemId and vv.itemId == itemId and not vv.repeatable then
-								vv.known = true
-								vv.enabled = false
-								vv.found = true
-							end
+	-- Scan all Rarity items to see if we already have a toy
+	Rarity.toysScanned = true
+	for k, v in pairs(R.db.profile.groups) do
+		if type(v) == "table" then
+			for kk, vv in pairs(v) do
+				if type(vv) == "table" then
+					if vv.itemId and not vv.repeatable then
+						if PlayerHasToy(vv.itemId) then
+							vv.known = true
+							vv.enabled = false
+							vv.found = true
 						end
 					end
 				end
 			end
 		end
 	end
-
-	-- Put the Collections tab back where it was
-	if tabBefore <= 0 then return end
-	self:Debug("ScanToys: changing tab back to "..tabBefore)
-	CollectionsJournal_SetTab(CollectionsJournal, tabBefore)
 end
 
 

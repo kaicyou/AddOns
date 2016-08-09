@@ -841,7 +841,7 @@ end
 
 function FishLib:OnFishingBobber()
    if ( GameTooltip:IsVisible() and GameTooltip:GetAlpha() == 1 ) then
-		local text = self:GetTooltipText() or self:GetLastTooltipText();
+		local text = GameTooltipTextLeft1:GetText() or self:GetLastTooltipText();
 		-- let a partial match work (for translations)
 		return ( text and string.find(text, self:GetBobberName() ) );
 	end

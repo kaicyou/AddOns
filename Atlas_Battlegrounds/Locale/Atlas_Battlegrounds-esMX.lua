@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas_Battlegrounds-esMX.lua 1534 2016-07-06 14:43:45Z arith $
+﻿-- $Id: Atlas_Battlegrounds-esMX.lua 1538 2016-08-07 15:57:11Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -33,6 +33,10 @@
 
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("Atlas_Battlegrounds", "esMX", false);
+
+-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-- Translation now being managed on curseforge: http://wow.curseforge.com/addons/atlas-battlegrounds/localization/
+-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if L then
 L["2nd Lieutenant Wansworth <Baradin's Wardens>"] = "Segundo teniente Wansworth <Celadores de Baradin>"

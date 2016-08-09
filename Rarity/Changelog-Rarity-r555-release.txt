@@ -1,9 +1,15 @@
 ------------------------------------------------------------------------
-r554 | allara | 2016-08-05 17:01:31 +0000 (Fri, 05 Aug 2016) | 1 line
+r556 | allara | 2016-08-06 23:38:46 +0000 (Sat, 06 Aug 2016) | 1 line
 Changed paths:
-   A /tags/r553-release (from /trunk:553)
+   A /tags/r555-release (from /trunk:555)
 
-Tagging as r553-release
+Tagging as r555-release
+------------------------------------------------------------------------
+r555 | allara | 2016-08-06 20:14:46 +0000 (Sat, 06 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- Rewrote toy scanning to no longer do anything at all with the Collections UI (this fixes your filters being cleared on the toys/appearances/pets/mounts tabs)
 ------------------------------------------------------------------------
 r553 | allara | 2016-08-05 16:55:59 +0000 (Fri, 05 Aug 2016) | 1 line
 Changed paths:

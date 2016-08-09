@@ -68,7 +68,7 @@ private.defaults.dcsdefaults.dejacharacterstatsScrollbarMax = {
 local DCS_ScrollbarCheck = CreateFrame("CheckButton", "DCS_ScrollbarCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
 	DCS_ScrollbarCheck:RegisterEvent("PLAYER_LOGIN")
 	DCS_ScrollbarCheck:ClearAllPoints()
-	DCS_ScrollbarCheck:SetPoint("LEFT", 25, -100)
+	DCS_ScrollbarCheck:SetPoint("LEFT", 25, -175)
 	DCS_ScrollbarCheck:SetScale(1.25)
 	DCS_ScrollbarCheck.tooltipText = 'Displays the DCS scrollbar.' --Creates a tooltip on mouseover.
 	_G[DCS_ScrollbarCheck:GetName() .. "Text"]:SetText("Scrollbar")

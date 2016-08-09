@@ -287,9 +287,11 @@ function PaperDollFrame_UpdateStats()
 					else
 						statFrame:SetPoint("TOP", lastAnchor, "BOTTOM", 0, statYOffset);
 					end
-					numStatInCat = numStatInCat + 1;
-					statFrame.Background:SetShown((numStatInCat % 2) == 0);
-					lastAnchor = statFrame;
+					if statFrame:IsShown() then
+						numStatInCat = numStatInCat + 1;
+						statFrame.Background:SetShown((numStatInCat % 2) == 0);
+						lastAnchor = statFrame;
+					end
 					-- done with this stat frame, get the next one
 					statFrame = CharacterStatsPane.statsFramePool:Acquire();
 				end

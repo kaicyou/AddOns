@@ -83,3 +83,40 @@ PaperDollFrame:SetScript("OnShow", function(self, event, arg1)
 		DCS_ExpandCheck:SetNormalTexture("Interface\\BUTTONS\\UI-SpellbookIcon-NextPage-Up")
 	end
 end)
+
+local _, private = ...
+	private.defaults.dcsdefaults.dejacharacterstatsExpandButtonChecked = {
+		ExpandButtonSetChecked = true,
+}
+local DCS_ExpandButtonCheck = CreateFrame("CheckButton", "DCS_ExpandButtonCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
+	DCS_ExpandButtonCheck:RegisterEvent("PLAYER_LOGIN")
+	DCS_ExpandButtonCheck:ClearAllPoints()
+	DCS_ExpandButtonCheck:SetPoint("LEFT", 25, -150)
+	DCS_ExpandButtonCheck:SetScale(1.25)
+	DCS_ExpandButtonCheck.tooltipText = 'Displays the Expand button for the character stats frame.' --Creates a tooltip on mouseover.
+	_G[DCS_ExpandButtonCheck:GetName() .. "Text"]:SetText("Expand")
+	
+	DCS_ExpandButtonCheck:SetScript("OnEvent", function(self, event, arg1)
+		if event == "PLAYER_LOGIN" then
+		local checked = private.db.dcsdefaults.dejacharacterstatsExpandButtonChecked
+			self:SetChecked(checked.ExpandButtonSetChecked)
+			if self:GetChecked(true) then
+				DCS_ExpandCheck:Show()
+				private.db.dcsdefaults.dejacharacterstatsExpandButtonChecked.ExpandButtonSetChecked = true
+			else
+				DCS_ExpandCheck:Hide()
+				private.db.dcsdefaults.dejacharacterstatsExpandButtonChecked.ExpandButtonSetChecked = false
+			end
+		end
+	end)
+
+	DCS_ExpandButtonCheck:SetScript("OnClick", function(self,event,arg1) 
+		local checked = private.db.dcsdefaults.dejacharacterstatsExpandButtonChecked
+		if self:GetChecked(true) then
+			DCS_ExpandCheck:Show()
+			private.db.dcsdefaults.dejacharacterstatsExpandButtonChecked.ExpandButtonSetChecked = true
+		else
+			DCS_ExpandCheck:Hide()
+			private.db.dcsdefaults.dejacharacterstatsExpandButtonChecked.ExpandButtonSetChecked = false
+		end
+	end)

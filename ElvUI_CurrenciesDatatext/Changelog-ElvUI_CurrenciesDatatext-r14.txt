@@ -1,4 +1,13 @@
 ------------------------------------------------------------------------
+r14 | Alexstraszaa | 2016-08-07 14:24:18 +0000 (Sun, 07 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/CHANGELOG.txt
+   M /trunk/ElvUI_CurrenciesDatatext.toc
+   M /trunk/locales/enUS.lua
+   M /trunk/locales/ruRU.lua
+
+v4.01
+------------------------------------------------------------------------
 r13 | Alexstraszaa | 2016-07-26 22:34:01 +0000 (Tue, 26 Jul 2016) | 1 line
 Changed paths:
    M /trunk/CHANGELOG.txt

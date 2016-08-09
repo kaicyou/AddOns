@@ -7,6 +7,7 @@ if not L then return; end
 L["loginmsg"] = "%sElvUI|r Currencies %sDatatext|r: версии %s%s|r загружен. Кликните правой кнопкой для настроек."
 
 -- currency headers
+L["Legion"] = "Легион"
 L["WoD"] = "Военачальники Дренора"
 L["D&R"] = "Подземелья и Рейды"
 L["PvP"] = "Игрок против Игрока"
@@ -34,6 +35,7 @@ L["WelcomeSetupConfirm"] = "Thank you for using ElvUI Currencies Datatext.\n \nI
 
 -- Menu
 L["menu header"] = "Настройки ElvUI Currencies Datatext"
+L["Show Legion Currencies"] = "Показать валюту Легиона"
 L["Show WoD Currencies"] = "Показывать валюту Дренора"
 L["Show D&R Currencies"] = "Показать валюту подземелий и рейдов"
 L["Show PvP Currencies"] = "Показывать валюту PvP"
@@ -46,6 +48,15 @@ L["Show Icons"] = "Показывать значки на панели"
 L["Hide TT"] = "Не показывать подсказку"
 
 -- Currencies
+L["Ancient Mana"] = "Древняя мана"
+L["Curious Coin"] = "Любопытная монета"
+L["Nethershard"] = "Осколок Пустоты"
+L["Order Resources"] = "Ресурсы оплота класса"
+L["Seal of Broken Fate"] = "Печать сломанной судьбы"
+L["Shadowy Coins"] = "Темные монеты"
+L["Sightless Eye"] = "Незрячий глаз"
+L["Timeworn Artifact"] = "Видавший виды артефакт"
+
 L["Apexis Crystal"] = "Апекситовый кристалл"
 L["Artifact Fragment"] = "Фрагмент артефакта"
 L["Dingy Iron Coins"] = "Тусклые железные монеты"

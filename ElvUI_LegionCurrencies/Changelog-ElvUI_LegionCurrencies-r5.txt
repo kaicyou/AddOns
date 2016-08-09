@@ -1,4 +1,12 @@
 ------------------------------------------------------------------------
+r5 | Alexstraszaa | 2016-08-07 12:47:43 +0000 (Sun, 07 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/CHANGELOG.txt
+   M /trunk/ElvUI_LegionCurrencies.toc
+   M /trunk/datatext.lua
+
+v1.03
+------------------------------------------------------------------------
 r4 | Alexstraszaa | 2016-08-05 03:39:02 +0000 (Fri, 05 Aug 2016) | 1 line
 Changed paths:
    M /trunk/CHANGELOG.txt

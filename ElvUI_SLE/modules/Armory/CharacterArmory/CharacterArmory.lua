@@ -845,6 +845,8 @@ end
 
 function CA:UpdateSettings(part)
 	local db = E.db.sle.Armory.Character
+	if not db.Enable then return end
+	if db.Enable and _G["CharacterArmory"].Setup_CharacterArmory then _G["CharacterArmory"]:Setup_CharacterArmory() end
 	if part == "ilvl" or part == "all" then
 		for _, SlotName in T.pairs(Info.Armory_Constants.GearList) do
 			if _G["CharacterArmory"][SlotName] and _G["CharacterArmory"][SlotName].ItemLevel then
@@ -885,7 +887,7 @@ function CA:UpdateSettings(part)
 			end
 		end
 	end
-	if part == "bg" or part == "all" then
+	if (part == "bg" or part == "all") then
 		_G["CharacterArmory"]:Update_BG()
 	end
 	if part == "gear" or part == "all" then
@@ -899,9 +901,10 @@ function CA:UpdateIlvlFont()
 	_G["CharacterStatsPane"].ItemLevelFrame.Value:FontTemplate(E.LSM:Fetch('font', db.font), db.size, db.outline)
 	_G["CharacterStatsPane"].ItemLevelFrame:SetHeight(db.size + 4)
 	_G["CharacterStatsPane"].ItemLevelFrame.Background:SetHeight(db.size + 4)
-	_G["CharacterStatsPane"].ItemLevelFrame.leftGrad:SetHeight(db.size + 4)
-	_G["CharacterStatsPane"].ItemLevelFrame.rightGrad:SetHeight(db.size + 4)
-	
+	if _G["CharacterStatsPane"].ItemLevelFrame.leftGrad then
+		_G["CharacterStatsPane"].ItemLevelFrame.leftGrad:SetHeight(db.size + 4)
+		_G["CharacterStatsPane"].ItemLevelFrame.rightGrad:SetHeight(db.size + 4)
+	end
 end
 
 KF.Modules[#KF.Modules + 1] = 'CharacterArmory'

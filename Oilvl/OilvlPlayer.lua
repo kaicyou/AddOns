@@ -89,231 +89,251 @@ local GemEnchant = CreateFrame('GameTooltip', 'oilvlgetooltip', UIParent, 'GameT
 local GemEnchant2 = CreateFrame('GameTooltip', 'oilvlgetooltip2', UIParent, 'GameTooltipTemplate');
 local enchantID = {5275,5276,5383,5310,5311,5312,5313,5314,5317,5318,5319,5320,5321,5324,5325,5326,5327,5328,5330,5334,5335,5336,5337,5384,3366,3367,3368,3370,3847,3595}
 
-function OiLvlPlayer_Update(sw)
-	OiLvlPlayer.frame:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED")
-	if cfg ~= nil and cfg.oilvlcharilvl and cfg.oilvlcharilvl ~= nil then
-		local n = 0 -- total equipped gear
-		local ailvl = 0 -- average item level
-		local n2 = 0 -- total upgradable gear
-		local aun = 0 -- total fully upgraded gear
-		local xname = {}
-		local totalilvl = {};
-		local xupgrade = {};
-		for Value = 1,17 do
-		--for Key, Value in pairs(Items) do
-			local Key = Items[Value]
-			local ItemLink = GetInventoryItemLink("player", Value)
-			local Slot = getglobal(Key.."Stock");
-    
-			if Slot and Value ~= 4 then
-				Slot:Hide();
-				-- add upgrade level fontstring
-				if not _G[Key.."un" ] then
-					local un = _G[Key]:CreateFontString(Key.."un","ARTWORK") 
-					un:SetFontObject(Slot:GetFontObject())
-					un:SetTextColor(1,1,0) 
-					if IsAddOnLoaded("ElvUI") then
-						un:SetPoint("TOPRIGHT",2,-2) 
-					else
-						un:SetPoint("TOPRIGHT",0,-2) 
-					end
-				else
-					_G[Key.."un" ]:SetText("")
-				end
-				-- add gem and enchant fontstring
-				if not _G[Key.."ge" ] then
-					local ge = _G[Key]:CreateFontString(Key.."ge","OVERLAY") 
-					ge:SetFontObject("GameFontNormalSmall")
-					ge:SetTextColor(1,1,0)
-					if Value == 1 or Value == 2 or Value == 3 or Value == 5 or Value == 9 or Value == 15 or Value == 17 then
-						ge:SetPoint("BOTTOMLEFT",Key,"BOTTOMRIGHT",7,0) 
-						ge:SetJustifyH("LEFT")
-					else
-						ge:SetPoint("BOTTOMRIGHT",Key,"BOTTOMLEFT",-7,0) 
-						ge:SetJustifyH("RIGHT")
-					end
-					ge:SetWidth(100)
-					ge:SetWordWrap(true) 
-					ge:SetNonSpaceWrap(false)
-					if cfg.oilvlge then
-						ge:Show()
-					else
-						ge:Hide()
-					end
-				else
-					_G[Key.."ge" ]:SetText("")
-				end
-				
-				if ItemLink then
-					n = n + 1
-					Slot:ClearAllPoints();
-					Slot:SetPoint("CENTER",0,-10);
-					
-					-- check item level
-					ItemLink = ItemLink:gsub("::",":0:"):gsub("::",":0:")
-					local itemID,enchant,_,_,_,_,_ = ItemLink:match("%a+:(%d+):(%d+):(%d+):(%d+):(%d+):(%d+)");
-					if OItemAnalysis_CheckILVLGear(ItemLink) ~= 0 then
-						totalilvl[Value], xupgrade[Value] = OItemAnalysis_CheckILVLGear(ItemLink)
-						xname[Value] = itemID
-						if Value == 17 and OTCheckartifactwep(tonumber(itemID)) then
-							if totalilvl[Value] < totalilvl[16] then
-								totalilvl[Value], xupgrade[Value] = totalilvl[16], xupgrade[16]
-							end
-							if totalilvl[Value] > totalilvl[16] then
-								_G[Items[16].."Stock"]:SetText(totalilvl[Value]);
-								_G[Items[16].."Stock"]:SetShadowColor(1,1,1,1);
-								ailvl = ailvl -  totalilvl[16] + totalilvl[Value]
-							end
-						end
-						if xupgrade[Value] and cfg.oilvlun then
-							_G[Key.."un"]:SetText(xupgrade[Value]);
-							_G[Key.."un"]:SetShadowColor(1,1,1,1);
-							n2 = n2 + 1
-							aun = aun + xupgrade[Value]/2
-						else
-							_G[Key.."un" ]:SetText("");
-						end
-						Slot:SetText(totalilvl[Value]);
-						Slot:SetShadowColor(1,1,1,1);
-						Slot:Show();
-						ailvl = ailvl + (totalilvl[Value] or 0)
-						
-						-- check gem and enchant
-						GemEnchant:SetOwner(UIParent, 'ANCHOR_NONE');
-						GemEnchant:ClearLines();
-						GemEnchant:SetHyperlink(ItemLink);
-						for m = 1, GemEnchant:NumLines() do
-							local enchant = _G["oilvlgetooltipTextLeft"..m]:GetText():match(ENCHANTED_TOOLTIP_LINE:gsub("%%s", "(.+)"))
-							if enchant then 
-								_G[Key.."ge"]:SetText("|cff00ff00"..enchant);
-							end
-						end
-						-- check low enchant
-						if (Value == 2 or Value == 15 or Value == 11 or Value == 12 or Value == 16) and enchant ~= "0" and oicb8 and oicb8:GetChecked() then
-							local function CheckLowEnchant(eID)
-								for mm = 1, #enchantID do 
-									if tonumber(eID) == enchantID[mm] then return false end 
-								end
-								return true
-							end
-							if CheckLowEnchant(enchant) and _G[Key.."ge"]:GetText() then
-								_G[Key.."ge"]:SetText(_G[Key.."ge"]:GetText()..(" (|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:43:53:34:61|t" or "")..L["Low level enchanted"]..")");
-							end
-						end
-						-- check no enchant
-						if (Value == 2 or Value == 15 or Value == 11 or Value == 12 or Value == 16) and enchant == "0" then
-							_G[Key.."ge"]:SetText(("|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:43:53:34:61|t" or "")..L["Not enchanted"]);
-						end
-						-- check no gem
-						if OItemAnalysis_CountEmptySockets(ItemLink) > 0 and _G[Key.."ge"] then
-							_G[Key.."ge"]:SetText((_G[Key.."ge"]:GetText() or "").."\n"..("|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:107:117:34:61|t" or "")..L["Not socketed"]);
-						end
-						-- check gem
-						local _, gemlink = GetItemGem(ItemLink,1)
-						if gemlink then
-							GemEnchant2:SetOwner(UIParent, 'ANCHOR_NONE');
-							GemEnchant2:ClearLines();
-							GemEnchant2:SetHyperlink(gemlink);
-							for i = 2, GemEnchant2:NumLines() do
-								if _G["oilvlgetooltip2TextLeft"..i]:GetText():find("+") then
-									_G[Key.."ge"]:SetText((_G[Key.."ge"]:GetText() or "").."\n|cffffffff".._G["oilvlgetooltip2TextLeft"..i]:GetText());
-									break
-								end
-							end
-						end
-						-- check low gem
-						if gemlink and OItemAnalysisLowGem(ItemLink) > 0 and _G[Key.."ge"]:GetText() and oicb8 and oicb8:GetChecked() then
-							_G[Key.."ge"]:SetText((_G[Key.."ge"]:GetText() or "")..("(|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:107:117:34:61|t" or "")..L["Low level socketed"]..")");
-						end
-					end
-				end
-			end
-		end
-		if not CharacterFrameAverageItemLevel then
-			local ifal = CharacterFrame:CreateFontString("CharacterFrameAverageItemLevel","ARTWORK") 
-			ifal:SetFontObject(CharacterLevelText:GetFontObject())
-			ifal:SetTextColor(1,1,0) 
-		end
-		CharacterFrameAverageItemLevel:SetText("")
-		if n ~= 0 then
-			ailvl = tonumber(string.format("%." .. (cfg.oilvldp or 0) .. "f", ailvl/n))
-			local ilt = ailvl
-			if n2 ~= 0 then
-				ilt = ilt.." ("..aun.."/"..n2..")"
-			end
-			CharacterFrameAverageItemLevel:SetText(ilt)
-			CharacterFrameAverageItemLevel:ClearAllPoints()
-			CharacterFrameAverageItemLevel:SetPoint("CENTER",CharacterLevelText,"BOTTOM",0,0)
-		end	
-		-- add Show Gem / Enchant button
-		if not oilvlGemEnchantButton then
-			local button = CreateFrame("Button", "oilvlGemEnchantButton", CharacterFrame, "SecureActionButtonTemplate")
-			button:SetPoint("BOTTOMLEFT", CharacterHeadSlot, "TOPLEFT",50,3)
-			button:SetSize(16,16)
-			button:SetText("\\")
-			button:SetNormalFontObject("GameFontNormal")
-	
-			local ntex = button:CreateTexture()
-			ntex:SetTexture("Interface\\Icons\\Trade_Engraving")
-			ntex:SetAllPoints()	
-			button:SetNormalTexture(ntex)
-			
-			button:RegisterForClicks("LeftButtonDown", "RightButtonDown");
-			button:SetScript("PostClick", function(self, button, down)
-				for Value = 1,17 do
-					local Key = Items[Value]
-				--for Key, Value in pairs(Items) do
-					if _G[Key.."ge"] and Value ~= 4 then
-						if _G[Key.."ge"]:IsShown() then 
-							_G[Key.."ge"]:Hide()
-							cfg.oilvlge = false
-						else
-							_G[Key.."ge"]:Show()
-							cfg.oilvlge = true
-						end
-					end
-				end
-				for Value = 1,17 do
-					local Key = InspectItems[Value]
-				--for Key, Value in pairs(InspectItems) do
-					if _G[Key.."ge2"] and Value ~= 4 then
-						if _G[Key.."ge2"]:IsShown() then 
-							_G[Key.."ge2"]:Hide() 
-							cfg.oilvlge = false
-						else
-							_G[Key.."ge2"]:Show()
-							cfg.oilvlge = true
-						end
-					end
-				end
-			end)
-		end
-	else
-		for Value = 1, 17 do 
-		--for Key, Value in pairs(Items) do
-			local Key = Items[Value]
-			local ItemLink = GetInventoryItemLink("player", Value)
-			local Slot = getglobal(Key.."Stock");
-    
-			if Slot and Value ~= 4 then
-				Slot:Hide();
-			end
-		end	
-	end
-	OiLvlPlayer.frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-	-- Update oilvlframedata
+function OiLvLPlayer_buttonsw(sw)
 	if sw then
-		if IsInRaid() then
-			for i=1,40 do
-				if GetRaidRosterInfo(i) == UnitName("player") then
-					oilvlSetABCD("player","OILVLRAIDFRAME"..i,"player",i)
-					--oilvlSaveItemLevel()
-					break
+		if CharacterFrameAverageItemLevel then
+			CharacterFrameAverageItemLevel:Show()
+		end
+		if oilvlGemEnchantButton then oilvlGemEnchantButton:Show() end
+	else
+		if CharacterFrameAverageItemLevel then
+			CharacterFrameAverageItemLevel:Hide()
+		end
+		if oilvlGemEnchantButton then oilvlGemEnchantButton:Hide() end
+	end
+end
+
+function OiLvlPlayer_Update(sw)
+	if CharacterFrame:GetWidth() > 500 then
+		OiLvlPlayer.frame:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED")
+		if cfg ~= nil and cfg.oilvlcharilvl and cfg.oilvlcharilvl ~= nil then
+			local n = 0 -- total equipped gear
+			local ailvl = 0 -- average item level
+			local n2 = 0 -- total upgradable gear
+			local aun = 0 -- total fully upgraded gear
+			local xname = {}
+			local totalilvl = {};
+			local xupgrade = {};
+			for Value = 1,17 do
+			--for Key, Value in pairs(Items) do
+				local Key = Items[Value]
+				local ItemLink = GetInventoryItemLink("player", Value)
+				local Slot = getglobal(Key.."Stock");
+		
+				if Slot and Value ~= 4 then
+					Slot:Hide();
+					-- add upgrade level fontstring
+					if not _G[Key.."un" ] then
+						local un = _G[Key]:CreateFontString(Key.."un","ARTWORK") 
+						un:SetFontObject(Slot:GetFontObject())
+						un:SetTextColor(1,1,0) 
+						if IsAddOnLoaded("ElvUI") then
+							un:SetPoint("TOPRIGHT",2,-2) 
+						else
+							un:SetPoint("TOPRIGHT",0,-2) 
+						end
+					else
+						_G[Key.."un" ]:SetText("")
+					end
+					-- add gem and enchant fontstring
+					if not _G[Key.."ge" ] then
+						local ge = _G[Key]:CreateFontString(Key.."ge","OVERLAY") 
+						ge:SetFontObject("GameFontNormalSmall")
+						ge:SetTextColor(1,1,0)
+						if Value == 1 or Value == 2 or Value == 3 or Value == 5 or Value == 9 or Value == 15 or Value == 17 then
+							ge:SetPoint("BOTTOMLEFT",Key,"BOTTOMRIGHT",7,0) 
+							ge:SetJustifyH("LEFT")
+						else
+							ge:SetPoint("BOTTOMRIGHT",Key,"BOTTOMLEFT",-7,0) 
+							ge:SetJustifyH("RIGHT")
+						end
+						ge:SetWidth(100)
+						ge:SetWordWrap(true) 
+						ge:SetNonSpaceWrap(false)
+						if cfg.oilvlge then
+							ge:Show()
+						else
+							ge:Hide()
+						end
+					else
+						_G[Key.."ge" ]:SetText("")
+					end
+					
+					if ItemLink then
+						n = n + 1
+						Slot:ClearAllPoints();
+						Slot:SetPoint("CENTER",0,-10);
+						
+						-- check item level
+						ItemLink = ItemLink:gsub("::",":0:"):gsub("::",":0:")
+						local itemID,enchant,_,_,_,_,_ = ItemLink:match("%a+:(%d+):(%d+):(%d+):(%d+):(%d+):(%d+)");
+						if OItemAnalysis_CheckILVLGear(ItemLink) ~= 0 then
+							totalilvl[Value], xupgrade[Value] = OItemAnalysis_CheckILVLGear(ItemLink)
+							xname[Value] = itemID
+							if Value == 17 and OTCheckartifactwep(tonumber(itemID)) then
+								if totalilvl[Value] < totalilvl[16] then
+									totalilvl[Value], xupgrade[Value] = totalilvl[16], xupgrade[16]
+								end
+								if totalilvl[Value] > totalilvl[16] then
+									_G[Items[16].."Stock"]:SetText(totalilvl[Value]);
+									_G[Items[16].."Stock"]:SetShadowColor(1,1,1,1);
+									ailvl = ailvl -  totalilvl[16] + totalilvl[Value]
+								end
+							end
+							if xupgrade[Value] and cfg.oilvlun then
+								_G[Key.."un"]:SetText(xupgrade[Value]);
+								_G[Key.."un"]:SetShadowColor(1,1,1,1);
+								n2 = n2 + 1
+								aun = aun + xupgrade[Value]/2
+							else
+								_G[Key.."un" ]:SetText("");
+							end
+							Slot:SetText(totalilvl[Value]);
+							Slot:SetShadowColor(1,1,1,1);
+							Slot:Show();
+							ailvl = ailvl + (totalilvl[Value] or 0)
+							
+							-- check gem and enchant
+							GemEnchant:SetOwner(UIParent, 'ANCHOR_NONE');
+							GemEnchant:ClearLines();
+							GemEnchant:SetHyperlink(ItemLink);
+							for m = 1, GemEnchant:NumLines() do
+								local enchant = _G["oilvlgetooltipTextLeft"..m]:GetText():match(ENCHANTED_TOOLTIP_LINE:gsub("%%s", "(.+)"))
+								if enchant then 
+									_G[Key.."ge"]:SetText("|cff00ff00"..enchant);
+								end
+							end
+							-- check low enchant
+							if (Value == 2 or Value == 15 or Value == 11 or Value == 12 or Value == 16) and enchant ~= "0" and oicb8 and oicb8:GetChecked() then
+								local function CheckLowEnchant(eID)
+									for mm = 1, #enchantID do 
+										if tonumber(eID) == enchantID[mm] then return false end 
+									end
+									return true
+								end
+								if CheckLowEnchant(enchant) and _G[Key.."ge"]:GetText() then
+									_G[Key.."ge"]:SetText(_G[Key.."ge"]:GetText()..(" (|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:43:53:34:61|t" or "")..L["Low level enchanted"]..")");
+								end
+							end
+							-- check no enchant
+							if (Value == 2 or Value == 15 or Value == 11 or Value == 12 or Value == 16) and enchant == "0" then
+								_G[Key.."ge"]:SetText(("|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:43:53:34:61|t" or "")..L["Not enchanted"]);
+							end
+							-- check no gem
+							if OItemAnalysis_CountEmptySockets(ItemLink) > 0 and _G[Key.."ge"] then
+								_G[Key.."ge"]:SetText((_G[Key.."ge"]:GetText() or "").."\n"..("|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:107:117:34:61|t" or "")..L["Not socketed"]);
+							end
+							-- check gem
+							local _, gemlink = GetItemGem(ItemLink,1)
+							if gemlink then
+								GemEnchant2:SetOwner(UIParent, 'ANCHOR_NONE');
+								GemEnchant2:ClearLines();
+								GemEnchant2:SetHyperlink(gemlink);
+								for i = 2, GemEnchant2:NumLines() do
+									if _G["oilvlgetooltip2TextLeft"..i]:GetText():find("+") then
+										_G[Key.."ge"]:SetText((_G[Key.."ge"]:GetText() or "").."\n|cffffffff".._G["oilvlgetooltip2TextLeft"..i]:GetText());
+										break
+									end
+								end
+							end
+							-- check low gem
+							if gemlink and OItemAnalysisLowGem(ItemLink) > 0 and _G[Key.."ge"]:GetText() and oicb8 and oicb8:GetChecked() then
+								_G[Key.."ge"]:SetText((_G[Key.."ge"]:GetText() or "")..("(|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:107:117:34:61|t" or "")..L["Low level socketed"]..")");
+							end
+						end
+					end
+				end
+			end
+			if not CharacterFrameAverageItemLevel then
+				local ifal = CharacterFrame:CreateFontString("CharacterFrameAverageItemLevel","ARTWORK") 
+				ifal:SetFontObject(CharacterLevelText:GetFontObject())
+				ifal:SetTextColor(1,1,0) 
+			end
+			CharacterFrameAverageItemLevel:SetText("")
+			if n ~= 0 then
+				ailvl = tonumber(string.format("%." .. (cfg.oilvldp or 0) .. "f", ailvl/n))
+				local ilt = ailvl
+				if n2 ~= 0 then
+					ilt = ilt.." ("..aun.."/"..n2..")"
+				end
+				CharacterFrameAverageItemLevel:SetText(ilt)
+				CharacterFrameAverageItemLevel:ClearAllPoints()
+				CharacterFrameAverageItemLevel:SetPoint("CENTER",CharacterLevelText,"BOTTOM",0,0)
+			end	
+			-- add Show Gem / Enchant button
+			if not oilvlGemEnchantButton then
+				local button = CreateFrame("Button", "oilvlGemEnchantButton", CharacterFrame, "SecureActionButtonTemplate")
+				button:SetPoint("BOTTOMLEFT", CharacterHeadSlot, "TOPLEFT",50,3)
+				button:SetSize(16,16)
+				button:SetText("\\")
+				button:SetNormalFontObject("GameFontNormal")
+		
+				local ntex = button:CreateTexture()
+				ntex:SetTexture("Interface\\Icons\\Trade_Engraving")
+				ntex:SetAllPoints()	
+				button:SetNormalTexture(ntex)
+				
+				button:RegisterForClicks("LeftButtonDown", "RightButtonDown");
+				button:SetScript("PostClick", function(self, button, down)
+					for Value = 1,17 do
+						local Key = Items[Value]
+					--for Key, Value in pairs(Items) do
+						if _G[Key.."ge"] and Value ~= 4 then
+							if _G[Key.."ge"]:IsShown() then 
+								_G[Key.."ge"]:Hide()
+								cfg.oilvlge = false
+							else
+								_G[Key.."ge"]:Show()
+								cfg.oilvlge = true
+							end
+						end
+					end
+					for Value = 1,17 do
+						local Key = InspectItems[Value]
+					--for Key, Value in pairs(InspectItems) do
+						if _G[Key.."ge2"] and Value ~= 4 then
+							if _G[Key.."ge2"]:IsShown() then 
+								_G[Key.."ge2"]:Hide() 
+								cfg.oilvlge = false
+							else
+								_G[Key.."ge2"]:Show()
+								cfg.oilvlge = true
+							end
+						end
+					end
+				end)
+			else
+				oilvlGemEnchantButton:Show()
+			end
+		else
+			for Value = 1, 17 do 
+			--for Key, Value in pairs(Items) do
+				local Key = Items[Value]
+				local ItemLink = GetInventoryItemLink("player", Value)
+				local Slot = getglobal(Key.."Stock");
+		
+				if Slot and Value ~= 4 then
+					Slot:Hide();
 				end
 			end	
-		else
-			oilvlSetABCD("player","OILVLRAIDFRAME1","player",1)
 		end
+		OiLvlPlayer.frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+		-- Update oilvlframedata
+		if sw then
+			if IsInRaid() then
+				for i=1,40 do
+					if GetRaidRosterInfo(i) == UnitName("player") then
+						oilvlSetABCD("player","OILVLRAIDFRAME"..i,"player",i)
+						--oilvlSaveItemLevel()
+						break
+					end
+				end	
+			else
+				oilvlSetABCD("player","OILVLRAIDFRAME1","player",1)
+			end
+		end
+	else
+		OiLvLPlayer_buttonsw(false)
 	end
 end
 
@@ -546,7 +566,9 @@ OiLvlPlayer.frame:SetScript("OnEvent", function(self, event, ...)
 		OiLvlPlayer.frame:RegisterEvent("EQUIPMENT_SWAP_FINISHED");
 		
 		if not OiLvLCharFrame_Updatehooksw then 
-			CharacterFrame:HookScript("OnShow", function() OiLvlPlayer_Update(false) end)
+			PaperDollFrame:HookScript("OnShow", function() OiLvLPlayer_buttonsw(true) OiLvlPlayer_Update(false) end)
+			ReputationFrame:HookScript("OnShow", function() OiLvLPlayer_buttonsw(false) end)
+			TokenFrame:HookScript("OnShow", function() OiLvLPlayer_buttonsw(false) end)
 			OiLvLCharFrame_Updatehooksw = true
 		end
 	end

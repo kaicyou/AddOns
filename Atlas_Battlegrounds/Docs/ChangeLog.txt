@@ -8,6 +8,11 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 = Change Log =
 ==============
 
+v1.33.01 (Aug. 08, 2016)
+------------------------
+- Added WorldMap ID for each map
+
+
 v1.33.00 (Jul. 19, 2016)
 ------------------------
 - Toc updated to support WoW Legion pre-patch (7.0.3)

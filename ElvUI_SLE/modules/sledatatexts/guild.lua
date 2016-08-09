@@ -235,7 +235,7 @@ function LDB:OnClick(button)
 	end
 
 	if button == "RightButton" then
-		_G["ElvConfigToggle"]:Click();
+		E:ToggleConfig()
 		SLE.ACD:SelectGroup("ElvUI", "sle", "modules", "datatext", "sldatatext", "slguild")
 	end
 end
@@ -262,8 +262,10 @@ function LDB.OnEnter(self)
 	end
 
 	local line = tooltip:AddLine()
-	tooltip:SetCell(line, 1, "Shadow & Light Guild", ssTitleFont, "CENTER", 0)
-	tooltip:AddLine(" ")
+	if not E.db.sle.dt.guild.hide_titleline then
+		tooltip:SetCell(line, 1, "Shadow & Light Guild", ssTitleFont, "CENTER", 0)
+		tooltip:AddLine(" ")
+	end
 
 	if T.IsInGuild() then
 		local guild_table = {}

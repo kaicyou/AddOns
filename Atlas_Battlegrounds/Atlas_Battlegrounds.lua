@@ -1,4 +1,4 @@
--- $Id: Atlas_Battlegrounds.lua 1536 2016-07-19 13:57:47Z arith $
+-- $Id: Atlas_Battlegrounds.lua 1538 2016-08-07 15:57:11Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -51,6 +51,7 @@ local myData = {
 		MinLevel = "45";
 		PlayerLimit = "40";
 		Acronym = L["AV"];
+		WorldMapID = "401";
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Stormpike Guard"] };
 		{ BLUE.."A) "..ALC["Entrance"], 10001 };
 		{ BLUE.."B) "..BZ["Dun Baldar"], 10002 };
@@ -105,6 +106,7 @@ local myData = {
 		MinLevel = "45";
 		PlayerLimit = "40";
 		Acronym = L["AV"];
+		WorldMapID = "401";
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Frostwolf Clan"] };
 		{ BLUE.."A) "..ALC["Entrance"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"], 10001 };
 		{ BLUE.."B) "..BZ["Frostwolf Keep"], 10002 };
@@ -142,6 +144,7 @@ local myData = {
 		MinLevel = "10";
 		PlayerLimit = "15";
 		Acronym = L["AB"];
+		WorldMapID = "461";
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["The League of Arathor"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["The Defilers"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
 		{ BLUE.."A) "..BZ["Trollbane Hall"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"], 10001 };
@@ -159,6 +162,7 @@ local myData = {
 		MinLevel = "10";
 		PlayerLimit = "10";
 		Acronym = L["WSG"];
+		WorldMapID = "443";
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Silverwing Sentinels"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Warsong Outriders"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
 		{ BLUE.."A) "..BZ["Silverwing Hold"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"], 10001 };
@@ -169,6 +173,7 @@ local myData = {
 		--Location = { BZ["Silithus"] };
 		LevelRange = "55-85";
 		MinLevel = "55";
+		WorldMapID = "261";
 		{ ORNG..PVP..ALC["Colon"]..L["The Silithyst Must Flow"] };
 		{ BLUE.."A) "..BZ["Cenarion Hold"], 10001 };
 		{ BLUE.."B) "..L["Alliance's Camp"], 10002 };
@@ -181,6 +186,7 @@ local myData = {
 		MinLevel = "35";
 		PlayerLimit = "15";
 		Acronym = L["EotS"];
+		WorldMapID = "482";
 		{ BLUE.."A) "..ALC["Entrance"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"], 10001 };
 		{ BLUE.."B) "..ALC["Entrance"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"], 10002 };
 		{ _RED.."1) "..L["Flag"], 10003 };
@@ -195,6 +201,7 @@ local myData = {
 		Location = { BZ["Nagrand"] };
 		LevelRange = "64-85";
 		MinLevel = "64";
+		WorldMapID = "477";
 		{ ORNG..PVP..ALC["Colon"]..BZ["Halaa"] };
 		{ GREN.."1) "..BZ["Halaa"], 10001 };
 		{ GREN..INDENT..FACTION_ALLIANCE };
@@ -214,6 +221,7 @@ local myData = {
 		Location = { BZ["Hellfire Peninsula"] };
 		LevelRange = "58-85";
 		MinLevel = "58";
+		WorldMapID = "465";
 		{ ORNG..PVP..ALC["Colon"]..L["Hellfire Fortifications"] };
 		{ GREN.."1) "..BZ["The Stadium"], 10001 };
 		{ GREN.."2) "..BZ["The Overlook"], 10002 };
@@ -224,6 +232,7 @@ local myData = {
 		Location = { BZ["The Bone Wastes"]..ALC["Comma"]..BZ["Terokkar Forest"] };
 		LevelRange = "62-85";
 		MinLevel = "62";
+		WorldMapID = "478";
 		{ ORNG..PVP..ALC["Colon"]..BZ["Auchindoun"].." "..L["Spirit Towers"] };
 		{ GREN.."1) "..L["Spirit Towers"], 10001 };
 	};
@@ -232,6 +241,7 @@ local myData = {
 		Location = { BZ["Zangarmarsh"] };
 		LevelRange = "60-85";
 		MinLevel = "60";
+		WorldMapID = "467";
 		{ ORNG..PVP..ALC["Colon"]..BZ["Twin Spire Ruins"] };
 		{ GREN.."1) "..L["West Beacon"], 10001 };
 		{ GREN.."2) "..L["East Beacon"], 10002 };
@@ -246,6 +256,7 @@ local myData = {
 		MinLevel = "75";
 		PlayerLimit = "40";
 		Acronym = L["IoC"];
+		WorldMapID = "540";
 		{ ORNG..L["Gates are marked with red bars."] };
 		{ BLUE.."A) "..ALC["Start"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"], 10001 };
 		{ GREN..INDENT..L["Overlord Agmar"] };
@@ -267,6 +278,7 @@ local myData = {
 		MinLevel = "65";
 		PlayerLimit = "15";
 		Acronym = L["SotA"];
+		WorldMapID = "512";
 		{ ORNG..L["Gates are marked with their colors."] };
 		{ BLUE.."A) "..ALC["Start"]..ALC["L-Parenthesis"]..L["Attacking Team"]..ALC["R-Parenthesis"], 10001 };
 		{ BLUE.."B) "..ALC["Start"]..ALC["L-Parenthesis"]..L["Defending Team"]..ALC["R-Parenthesis"], 10002 };
@@ -281,6 +293,7 @@ local myData = {
 		--Location = { BZ["Wintergrasp"] };
 		LevelRange = "73-85";
 		MinLevel = "73";
+		WorldMapID = "501";
 		{ ORNG..PVP..ALC["Colon"]..BZ["Wintergrasp"] };
 		{ BLUE.."A) "..BZ["Wintergrasp Fortress"], 10001 };
 		{ BLUE..INDENT..BZ["Vault of Archavon"] };
@@ -311,6 +324,7 @@ local myData = {
 		--Location = { BZ["Gilneas"] };
 		LevelRange = "85+";
 		MinLevel = "85";
+		WorldMapID = "736";
 		{ BLUE.."A) "..BZ["Gilnean Stronghold"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"], 10001 };
 		{ ORNG..INDENT..L["Alliance Graveyard"] };
 		{ BLUE.."B) "..BZ["Horde Landing"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"], 10002 };
@@ -325,6 +339,7 @@ local myData = {
 		--Location = { BZ["Tol Barad"] };
 		LevelRange = "80-85";
 		MinLevel = "80";
+		WorldMapID = "708";
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Baradin's Wardens"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Hellscream's Reach"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
 		{ BLUE.."A) "..L["Attackers"], 10001 };
@@ -356,6 +371,7 @@ local myData = {
 		Location = { BZ["Twilight Highlands"] };
 		LevelRange = "85+";
 		MinLevel = "85";
+		WorldMapID = "626";
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Wildhammer Clan"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Dragonmaw Clan"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
 		{ BLUE.."A) "..L["Wildhammer Longhouse"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"], 10001 };
@@ -369,6 +385,7 @@ local myData = {
 		LevelRange = "90";
 		MinLevel = "90";
 		PlayerLimit = "10";
+		WorldMapID = "860";
 		{ BLUE.."A) "..ALC["Start"]..ALC["Hyphen"]..FACTION_ALLIANCE, 10001 };
 		{ BLUE.."B) "..ALC["Start"]..ALC["Hyphen"]..FACTION_HORDE, 10002 };
 		{ GREN.."1) "..L["Mine Cart Spawn Point"], 10003 };
@@ -380,6 +397,7 @@ local myData = {
 		LevelRange = "90";
 		MinLevel = "90";
 		PlayerLimit = "10";
+		WorldMapID = "856";
 		{ BLUE.."A) "..ALC["Start"]..ALC["Hyphen"]..FACTION_ALLIANCE, 10001 };
 		{ BLUE.."B) "..ALC["Start"]..ALC["Hyphen"]..FACTION_HORDE, 10002 };
 		{ GREN.."1) "..L["Orb of Power"], 10003 };
@@ -391,6 +409,7 @@ local myData = {
 		LevelRange = "90";
 		MinLevel = "90";
 		PlayerLimit = "15";
+		WorldMapID = "935";
 		{ BLUE.."A) "..ALC["Start"]..ALC["Hyphen"]..FACTION_HORDE, 10001 };
 		{ BLUE.."B) "..ALC["Start"]..ALC["Hyphen"]..FACTION_ALLIANCE, 10002 };
 		{ GREN.."1) "..BZ["Pandaren Mine"], 10003 };
@@ -403,6 +422,7 @@ local myData = {
 		LevelRange = "100";
 		MinLevel = "100";
 		PlayerLimit = "100";
+		WorldMapID = "978";
 		{ BLUE.."A) "..BZ["Warspear"]..ALC["Hyphen"]..FACTION_HORDE, 10001 };
 		{ BLUE.."B) "..BZ["Stormshield"]..ALC["Hyphen"]..FACTION_ALLIANCE, 10002 };
 		{ GREN.."1) "..BZ["Amphitheater of Annihilation"], 10003 };

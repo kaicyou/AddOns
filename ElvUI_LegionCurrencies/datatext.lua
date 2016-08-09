@@ -30,16 +30,16 @@ local function setupDB()
 end
 
 local function ToggleOption(name)
-	if ElvCharacterDB["ElvUI_LegionCurrencies"][name] then
-		ElvCharacterDB["ElvUI_LegionCurrencies"][name] = false
+	if E.private["ElvUI_LegionCurrencies"][name] then
+		E.private["ElvUI_LegionCurrencies"][name] = false
 	else
-		ElvCharacterDB["ElvUI_LegionCurrencies"][name] = true
+		E.private["ElvUI_LegionCurrencies"][name] = true
 	end
 end
 
 local function GetOption(name)
-	if ElvCharacterDB["ElvUI_LegionCurrencies"][name] then
-		return ElvCharacterDB["ElvUI_LegionCurrencies"][name]
+	if E.private["ElvUI_LegionCurrencies"][name] then
+		return E.private["ElvUI_LegionCurrencies"][name]
 	end
 end
 
@@ -74,6 +74,7 @@ local function ColorValue(cap, currency)
 end
 
 local function OnEvent(self, event, ...)
+	setupDB() 
 	lastPanel = self
 	local _text = "---"
 	if not _hex then return end

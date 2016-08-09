@@ -1,9 +1,4 @@
 -- Decimal Check
-	
-	local _, private = ...
-	private.defaults.dcsdefaults.dejacharacterstatsShowDecimalsChecked = {
-		SetChecked = true,
-	}	
 
 local function DCS_DecimalsShow(self)
 	-- Crit Chance
@@ -387,6 +382,11 @@ local function DCS_DecimalsHide(self)
 	PaperDollFrame_UpdateStats()
 end
 	
+	
+local _, private = ...
+	private.defaults.dcsdefaults.dejacharacterstatsShowDecimalsChecked = {
+		SetChecked = true,
+	}	
 local DCS_DecimalCheck = CreateFrame("CheckButton", "DCS_DecimalCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
 	DCS_DecimalCheck:RegisterEvent("PLAYER_LOGIN")
 	DCS_DecimalCheck:ClearAllPoints()

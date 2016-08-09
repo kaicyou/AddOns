@@ -1,7 +1,12 @@
-﻿Version 1.7.1
+﻿Version 1.7.2
+- CurseForge bug #257 - Watch Bobber functionality broken (thanks Bodar!)
+- CurgeForge bug #210 - Disconnect switching outfits on Monk (hopefully because of slowdown)
+
+Version 1.7.1
 - Curseforge bug #272 - Stuck on loading screen
 - Curseforge bug #274 - Error when using Equipment Manager
 - Curseforge bug #276 - Draenor Fishing Pole works again.
+- CurgeForge bug #252 - lure/bait stopped being applied consistently
 - Add "Max Draenor" fishing option, if enabled ignore minimum fishing level
 
 Version 1.7

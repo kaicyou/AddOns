@@ -1,9 +1,16 @@
 ------------------------------------------------------------------------
-r505 | olzenkhaw | 2016-08-01 00:18:07 +0000 (Mon, 01 Aug 2016) | 1 line
+r507 | olzenkhaw | 2016-08-09 00:23:27 +0000 (Tue, 09 Aug 2016) | 1 line
 Changed paths:
-   A /tags/v6.1.6 Legion release (from /trunk:504)
+   A /tags/v6.1.7 Legion release (from /trunk:506)
 
-v6.1.6 Added feature to disable cache history.
+v6.1.7 Fixed a bug.
+------------------------------------------------------------------------
+r506 | olzenkhaw | 2016-08-09 00:23:07 +0000 (Tue, 09 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.toc
+   M /trunk/OilvlPlayer.lua
+
+v6.1.7 Fixed a bug.
 ------------------------------------------------------------------------
 r504 | olzenkhaw | 2016-08-01 00:17:35 +0000 (Mon, 01 Aug 2016) | 1 line
 Changed paths:

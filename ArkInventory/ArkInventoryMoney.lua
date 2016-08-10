@@ -435,7 +435,7 @@ function ArkInventory.MoneyText( money, condense )
 	if money >= COPPER_PER_GOLD then
 		
 		if colorblindMode then
-			txtGold = string.format( "%d%s", FormatLargeNumber( numGold ), GOLD_AMOUNT_SYMBOL )
+			txtGold = string.format( "%s%s", FormatLargeNumber( numGold ), GOLD_AMOUNT_SYMBOL )
 		else
 			txtGold = string.format( GOLD_AMOUNT_TEXTURE_STRING, FormatLargeNumber( numGold ), 0, 0 )
 		end
@@ -451,7 +451,6 @@ function ArkInventory.MoneyText( money, condense )
 		if colorblindMode then
 			txtSilver = string.format( leading_zero_format, numSilver, SILVER_AMOUNT_SYMBOL )
 		else
-			
 			txtSilver = string.format( SILVER_AMOUNT_TEXTURE, numSilver, 0, 0 )
 		end
 		
@@ -498,43 +497,43 @@ end
 function ArkInventory.MoneyFrame_Tooltip( tooltip, loc_id )
 	
 	if not tooltip then return end
-	if not ArkInventory.db.global.option.tooltip.add.count then return end
+	if not ArkInventory.db.option.tooltip.add.count then return end
 	
 	local total = 0
 	
-	local player = ArkInventory.PlayerDataGet( )
+	local codex = ArkInventory.GetPlayerCodex( loc_id )
 	if loc_id then
-		player = ArkInventory.LocationPlayerGet( loc_id )
+		local codex = ArkInventory.GetLocationCodex( loc_id )
 	end
 	
 	tooltip:AddDoubleLine( ArkInventory.Localise["CHARACTER"], ArkInventory.Localise["TOOLTIP_GOLD_AMOUNT"] )
 	
-	local just_me = ArkInventory.db.global.option.tooltip.me
-	local ignore_vaults = not ArkInventory.db.global.option.tooltip.add.vault
-	local my_realm = ArkInventory.db.global.option.tooltip.realm
-	local include_crossrealm = ArkInventory.db.global.option.tooltip.crossrealm
-	local ignore_other_faction = ArkInventory.db.global.option.tooltip.faction
+	local just_me = ArkInventory.db.option.tooltip.me
+	local ignore_vaults = not ArkInventory.db.option.tooltip.add.vault
+	local my_realm = ArkInventory.db.option.tooltip.realm
+	local include_crossrealm = ArkInventory.db.option.tooltip.crossrealm
+	local ignore_other_faction = ArkInventory.db.option.tooltip.faction
 	
-	local paint = ArkInventory.db.global.option.tooltip.colour.class
+	local paint = ArkInventory.db.option.tooltip.colour.class
 	local colour = ""
 	if paint then
 		colour = HIGHLIGHT_FONT_COLOR_CODE
 	end
 	
-	for pn, pd in ArkInventory.spairs( ArkInventory.db.global.player.data ) do
+	for pn, pd in ArkInventory.spairs( ArkInventory.db.player.data ) do
 		
 		if ( not ( ( pd.info.class == "GUILD" ) or ( pd.info.class == "ACCOUNT" ) ) ) and ( pd.info.name ) then
-			if ( not my_realm ) or ( ( my_realm and ( ( player.data.info.realm == pd.info.realm ) ) ) or ( my_realm and include_crossrealm and ArkInventory.IsConnectedRealm( player.data.info.realm, pd.info.realm ) ) ) then
-				if ( not ignore_other_faction ) or ( ignore_other_faction and ( ( player.data.info.faction == pd.info.faction ) ) ) then
-					if ( not just_me ) or ( just_me and ( ( player.data.info.player_id == pd.info.player_id ) ) ) then
+			if ( not my_realm ) or ( ( my_realm and ( ( codex.player.data.info.realm == pd.info.realm ) ) ) or ( my_realm and include_crossrealm and ArkInventory.IsConnectedRealm( codex.player.data.info.realm, pd.info.realm ) ) ) then
+				if ( not ignore_other_faction ) or ( ignore_other_faction and ( ( codex.player.data.info.faction == pd.info.faction ) ) ) then
+					if ( not just_me ) or ( just_me and ( ( codex.player.data.info.player_id == pd.info.player_id ) ) ) then
 						
 						total = total + ( pd.info.money or 0 )
 						
-						local name = ArkInventory.DisplayName3( pd.info, paint, player.data.info )
+						local name = ArkInventory.DisplayName3( pd.info, paint, codex.player.data.info )
 						
 						local hl = ""
-						if not ArkInventory.db.global.option.tooltip.me and player.data.info.player_id == pd.info.player_id then
-							hl = ArkInventory.db.global.option.tooltip.highlight
+						if not ArkInventory.db.option.tooltip.me and codex.player.data.info.player_id == pd.info.player_id then
+							hl = ArkInventory.db.option.tooltip.highlight
 						end
 						
 						name = string.format( "%s%s|r", hl, name )
@@ -554,10 +553,10 @@ function ArkInventory.MoneyFrame_Tooltip( tooltip, loc_id )
 	
 	if not just_me and not ignore_vaults then
 		
-		for pn, pd in pairs( ArkInventory.db.global.player.data ) do
+		for pn, pd in pairs( ArkInventory.db.player.data ) do
 			if pd.info.class == "GUILD" and pd.info.name then
-				if ( not my_realm ) or ( ( my_realm and ( ( player.data.info.realm == pd.info.realm ) ) ) or ( my_realm and include_crossrealm and ArkInventory.IsConnectedRealm( player.data.info.realm, pd.info.realm ) ) ) then
-					if ( not ignore_other_faction ) or ( ignore_other_faction and ( ( player.data.info.faction == pd.info.faction ) ) ) then
+				if ( not my_realm ) or ( ( my_realm and ( ( codex.player.data.info.realm == pd.info.realm ) ) ) or ( my_realm and include_crossrealm and ArkInventory.IsConnectedRealm( codex.player.data.info.realm, pd.info.realm ) ) ) then
+					if ( not ignore_other_faction ) or ( ignore_other_faction and ( ( codex.player.data.info.faction == pd.info.faction ) ) ) then
 						total = 1
 					end
 				end
@@ -571,12 +570,12 @@ function ArkInventory.MoneyFrame_Tooltip( tooltip, loc_id )
 			
 			tooltip:AddDoubleLine( ArkInventory.Global.Location[ArkInventory.Const.Location.Vault].Name, ArkInventory.Localise["TOOLTIP_GOLD_AMOUNT"] )
 			
-			for pn, pd in ArkInventory.spairs( ArkInventory.db.global.player.data ) do
+			for pn, pd in ArkInventory.spairs( ArkInventory.db.player.data ) do
 				
 				if pd.info.class == "GUILD" and pd.info.name then
-					if ( not my_realm ) or ( ( my_realm and ( ( player.data.info.realm == pd.info.realm ) ) ) or ( my_realm and include_crossrealm and ArkInventory.IsConnectedRealm( player.data.info.realm, pd.info.realm ) ) ) then
-						if ( not ignore_other_faction ) or ( ignore_other_faction and ( ( player.data.info.faction == pd.info.faction ) ) ) then
-							ArkInventory.TooltipSetMoneyText( tooltip, pd.info.money or 0, ArkInventory.DisplayName3( pd.info, paint, player.data.info ) )
+					if ( not my_realm ) or ( ( my_realm and ( ( codex.player.data.info.realm == pd.info.realm ) ) ) or ( my_realm and include_crossrealm and ArkInventory.IsConnectedRealm( codex.player.data.info.realm, pd.info.realm ) ) ) then
+						if ( not ignore_other_faction ) or ( ignore_other_faction and ( ( codex.player.data.info.faction == pd.info.faction ) ) ) then
+							ArkInventory.TooltipSetMoneyText( tooltip, pd.info.money or 0, ArkInventory.DisplayName3( pd.info, paint, codex.player.data.info ) )
 						end
 					end
 				end

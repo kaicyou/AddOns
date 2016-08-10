@@ -10,7 +10,7 @@ local table = _G.table
 
 function ArkInventory.RestackString( )
 	
-	if ArkInventory.db.global.option.restack.blizzard then
+	if ArkInventory.db.option.restack.blizzard then
 		return ArkInventory.Localise["CLEANUP"]
 	else
 		return ArkInventory.Localise["RESTACK"]
@@ -20,7 +20,7 @@ end
 
 local function RestackMessageStart( loc_id )
 	
-	if ArkInventory.db.global.option.message.restack[loc_id] then
+	if ArkInventory.db.option.message.restack[loc_id] then
 		ArkInventory.Output( ArkInventory.RestackString( ), ": ", ArkInventory.Global.Location[loc_id].Name, " - " , ArkInventory.Localise["START"] )
 	end
 	
@@ -28,7 +28,7 @@ end
 
 local function RestackMessageComplete( loc_id )
 	
-	if ArkInventory.db.global.option.message.restack[loc_id] then
+	if ArkInventory.db.option.message.restack[loc_id] then
 		ArkInventory.Output( ArkInventory.RestackString( ), ": ", ArkInventory.Global.Location[loc_id].Name, " - " , ArkInventory.Localise["COMPLETE"] )
 	end
 	
@@ -287,7 +287,7 @@ local function FindPartialStack( loc_id, cl, cb, bp, cs, id )
 			return FindPartialStack( loc_id, cl, cb, bp, cs, id )
 		end
 		
-		if loc_id == ArkInventory.Const.Location.Bank and ArkInventory.db.global.option.restack.topup then
+		if loc_id == ArkInventory.Const.Location.Bank and ArkInventory.db.option.restack.topup then
 			return FindStack( ArkInventory.Const.Location.Bag, cl, cb, bp, cs, id )
 		end
 		
@@ -392,7 +392,7 @@ local function FindProfessionItem( loc_id, cl, cb, bp, cs, ct )
 		
 	end
 	
-	if loc_id == ArkInventory.Const.Location.Bank and ArkInventory.db.global.option.restack.bank then
+	if loc_id == ArkInventory.Const.Location.Bank and ArkInventory.db.option.restack.bank then
 		
 		local ab, rc, ok, sb, ss = FindProfessionItem( ArkInventory.Const.Location.Bag, loc_id, nil, nil, nil, ct )
 		
@@ -483,7 +483,7 @@ local function FindCraftingItem( loc_id, cl, cb, bp, cs )
 		
 	end
 	
-	if loc_id == ArkInventory.Const.Location.Bank and ArkInventory.db.global.option.restack.deposit then
+	if loc_id == ArkInventory.Const.Location.Bank and ArkInventory.db.option.restack.deposit then
 		
 		local ab, rc, ok, sb, ss = FindCraftingItem( ArkInventory.Const.Location.Bag, loc_id )
 		
@@ -812,7 +812,7 @@ local function Consolidate( loc_id )
 	
 	if loc_id == ArkInventory.Const.Location.Bank then
 		
-		if  ArkInventory.db.global.option.restack.deposit and IsReagentBankUnlocked( ) then
+		if  ArkInventory.db.option.restack.deposit and IsReagentBankUnlocked( ) then
 			
 			-- fill up reagent bank with crafting items
 			
@@ -840,7 +840,7 @@ local function Consolidate( loc_id )
 			
 		end
 		
-		if ArkInventory.db.global.option.restack.bank then
+		if ArkInventory.db.option.restack.bank then
 			
 			-- fill up normal bags with crafting items
 			
@@ -893,7 +893,7 @@ local function RestackRun( loc_id )
 		
 		RestackMessageStart( loc_id )
 		
-		if ArkInventory.db.global.option.restack.blizzard then
+		if ArkInventory.db.option.restack.blizzard then
 			
 			SortBags( )
 --			coroutine.yield( )
@@ -943,14 +943,14 @@ local function RestackRun( loc_id )
 			
 			RestackMessageStart( loc_id )
 			
-			if ArkInventory.db.global.option.restack.blizzard then
+			if ArkInventory.db.option.restack.blizzard then
 				
 				SortBankBags( )
 --				coroutine.yield( )
 				
 				if IsReagentBankUnlocked( ) then
 					
-					if ArkInventory.db.global.option.restack.deposit then
+					if ArkInventory.db.option.restack.deposit then
 						ArkInventory.Output( ArkInventory.RestackString( ), ": ", REAGENTBANK_DEPOSIT, " " , ArkInventory.Localise["ENABLED"] )
 						DepositReagentBank( )
 --						coroutine.yield( )

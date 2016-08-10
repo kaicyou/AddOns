@@ -12,14 +12,14 @@
 	
 	
 	<Button virtual="true" name="ARKINV_TemplateSearchTableRow" mouseEnabled="true" hidden="true">
-
+		
 		<Size x="2" y="2" />
-
+		
 		<Anchors>
 			<Anchor point="LEFT" x="5" y="0" />
 			<Anchor point="RIGHT" x="-30" y="0" />
 		</Anchors>
-
+		
 		<Layers>
 
 			<Layer level="OVERLAY">

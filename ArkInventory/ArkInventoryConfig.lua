@@ -9,7 +9,9 @@ local table = _G.table
 
 
 function ArkInventory.Frame_Config_Hide( )
+	
 	return ArkInventory.Lib.Dialog:Close( ArkInventory.Const.Frame.Config.Internal )
+	
 end
 	
 function ArkInventory.Frame_Config_Show( ... )
@@ -22,12 +24,13 @@ function ArkInventory.Frame_Config_Show( ... )
 			return
 		end
 		
+		-- load hte config tables before the window is opened or youll get an error
 		ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
 		
 	end
 	
 	ArkInventory.Config.Frame = ArkInventory.Lib.Dialog:Open( ArkInventory.Const.Frame.Config.Internal, ... )
-	
+
 end
 
 function ArkInventory.Frame_Config_Toggle( )
@@ -147,7 +150,7 @@ function ArkInventory.ConfigBlizzard( )
 		rules = {
 			guiHidden = true,
 			order = 9000,
-			name = ArkInventory.Localise["CATEGORY_RULE_PLURAL"],
+			name = ArkInventory.Localise["CONFIG_RULE_PLURAL"],
 			type = "execute",
 			func = function( )
 				ArkInventory.Frame_Rules_Toggle( )
@@ -187,16 +190,17 @@ function ArkInventory.ConfigBlizzard( )
 				end
 				
 				local id = osd[2]
+				local me = ArkInventory.GetPlayerCodex( )
 				
-				if ArkInventory.db.global.option.tracking.items[id] then
+				if ArkInventory.db.option.tracking.items[id] then
 					--remove
-					ArkInventory.db.global.option.tracking.items[id] = nil
-					ArkInventory.Global.Me.data.ldb.tracking.item.tracked[id] = false
+					ArkInventory.db.option.tracking.items[id] = nil
+					me.player.data.ldb.tracking.item.tracked[id] = false
 					ArkInventory.Output( string.format( ArkInventory.Localise["SLASH_TRACK_REMOVE_TEXT"], h ) )
 				else
 					--add
-					ArkInventory.db.global.option.tracking.items[id] = true
-					ArkInventory.Global.Me.data.ldb.tracking.item.tracked[id] = true
+					ArkInventory.db.option.tracking.items[id] = true
+					me.player.data.ldb.tracking.item.tracked[id] = true
 					ArkInventory.Output( string.format( ArkInventory.Localise["SLASH_TRACK_ADD_TEXT"], h ) )
 				end
 				
@@ -208,7 +212,7 @@ function ArkInventory.ConfigBlizzard( )
 		translate = {
 			guiHidden = true,
 			order = 9000,
-			name = "translate", -- ArkInventory.Localise["MENU_ACTION_EDITMODE"],
+			name = "translate", -- ArkInventory.Localise["MENU_ACTION_EDITMODE"], -- TODO FIX
 			desc = "attempts to get translations from the game again, a ui reload might be better",
 			type = "execute",
 			func = function( )
@@ -296,14 +300,16 @@ function ArkInventory.ConfigBlizzard( )
 end
 
 function ArkInventory.ToggleShowHiddenItems( )
+	
 	ArkInventory.Global.Options.ShowHiddenItems = not ArkInventory.Global.Options.ShowHiddenItems
 	ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
+	
 end
 
 
 function ArkInventory.ConfigInternalDesignAdd( name )
 	
-	local v = ArkInventory.db.global.option.design
+	local v = ArkInventory.db.option.design
 	
 	local p, data = ArkInventory.CategoryGetNext( v )
 
@@ -321,22 +327,49 @@ function ArkInventory.ConfigInternalDesignAdd( name )
 	data.used = "Y"
 	data.name = string.trim( name )
 	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
 	return p, data
 	
 end
 
-function ArkInventory.ConfigInternalDesignGet( id )
-	return ArkInventory.db.global.option.design.data[id]
+function ArkInventory.ConfigInternalDesignGet( id, default )
+	
+	local id = id
+	
+	if not default then
+		assert( id, "code error: id is nil" )
+		return ArkInventory.db.option.design.data[id]
+	end
+	
+	local data = ArkInventory.ConfigInternalDesignGet( id )
+	
+	if not data or data.used ~= "Y" then
+		--ArkInventory.OutputWarning( "design ", id, " requested, status=", data.used, ", returning default instead" )
+		id = 9999
+		data = ArkInventory.ConfigInternalDesignGet( id )
+	end
+	
+	return id, data
+	
 end
 
 function ArkInventory.ConfigInternalDesignDelete( id )
+	
 	local v = ArkInventory.ConfigInternalDesignGet( id )
 	v.used = "D"
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
 end
 
 function ArkInventory.ConfigInternalDesignRestore( id )
+	
 	local v = ArkInventory.ConfigInternalDesignGet( id )
 	v.used = "Y"
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
 end
 
 function ArkInventory.ConfigInternalDesignRename( id, name )
@@ -348,15 +381,9 @@ end
 
 function ArkInventory.ConfigInternalDesignCopy( src, id )
 	
-	if src == 9999 and id == 9999 then
-		src = 0
-	end
+	if src == id then return end
 	
-	if src == id then
-		return
-	end
-	
-	local v = ArkInventory.db.global.option.design.data
+	local v = ArkInventory.db.option.design.data
 	
 	local used = v[id].used
 	local system = v[id].system
@@ -377,6 +404,8 @@ function ArkInventory.ConfigInternalDesignPurge( id )
 	local v = ArkInventory.ConfigInternalDesignGet( id )
 	v.used = "N"
 	v.name = ""
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
 	
 end
 
@@ -475,8 +504,7 @@ end
 
 function ArkInventory.ConfigInternalCategoryCustomAdd( name )
 	
-	local t = ArkInventory.Const.Category.Type.Custom
-	local v = ArkInventory.db.global.option.category[t]
+	local v = ArkInventory.db.option.category[ArkInventory.Const.Category.Type.Custom]
 	
 	local p, data = ArkInventory.CategoryGetNext( v )
 	
@@ -493,20 +521,41 @@ function ArkInventory.ConfigInternalCategoryCustomAdd( name )
 	data.used = "Y"
 	data.name = string.trim( name )
 	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
 	ArkInventory.CategoryGenerate( )
 	
 	return p, data
 	
 end
 
-function ArkInventory.ConfigInternalCategoryCustomGet( id )
-	return ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Custom].data[id]
+function ArkInventory.ConfigInternalCategoryCustomGet( id, default )
+	
+	local id = id
+	
+	if not default then
+		assert( id, "code error: id is nil" )
+		return ArkInventory.db.option.category[ArkInventory.Const.Category.Type.Custom].data[id]
+	end
+	
+	local data = ArkInventory.ConfigInternalCategoryCustomGet( id )
+	
+	if not data or data.used ~= "Y" then
+		--ArkInventory.OutputWarning( "design ", id, " requested, status=", data.used, ", returning default instead" )
+		id = 9999
+		data = ArkInventory.ConfigInternalCategoryCustomGet( id )
+	end
+	
+	return id, data
+	
 end
 
 function ArkInventory.ConfigInternalCategoryCustomDelete( id )
 	
 	local v = ArkInventory.ConfigInternalCategoryCustomGet( id )
 	v.used = "D"
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
 	
 	ArkInventory.CategoryGenerate( )
 	
@@ -516,6 +565,8 @@ function ArkInventory.ConfigInternalCategoryCustomRestore( id )
 	
 	local v = ArkInventory.ConfigInternalCategoryCustomGet( id )
 	v.used = "Y"
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
 	
 	ArkInventory.CategoryGenerate( )
 	
@@ -532,11 +583,9 @@ end
 
 function ArkInventory.ConfigInternalCategoryCustomCopy( src, id )
 	
-	if src == id then
-		return
-	end
+	if src == id then return end
 	
-	local v = ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Custom].data
+	local v = ArkInventory.db.option.category[ArkInventory.Const.Category.Type.Custom].data
 	
 	local used = v[id].used
 	local system = v[id].system
@@ -548,6 +597,8 @@ function ArkInventory.ConfigInternalCategoryCustomCopy( src, id )
 	v[id].system = system
 	v[id].name = name
 	
+	ArkInventory.CategoryGenerate( )
+	
 end
 
 function ArkInventory.ConfigInternalCategoryCustomPurge( id )
@@ -558,28 +609,32 @@ function ArkInventory.ConfigInternalCategoryCustomPurge( id )
 	v.used = "N"
 	v.name = ""
 	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
 end
 
 
 function ArkInventory.ConfigInternalCategoryRuleAdd( name )
 	
 	local t = ArkInventory.Const.Category.Type.Rule
-	local v = ArkInventory.db.global.option.category[t]
+	local v = ArkInventory.db.option.category[t]
 	
 	local p, data = ArkInventory.CategoryGetNext( v )
 	
 	if p == -1 then
-		ArkInventory.OutputError( string.format( ArkInventory.Localise["CONFIG_LIST_ADD_LIMIT_TEXT"], ArkInventory.Localise["CONFIG_CATEGORY_RULE_PLURAL"] ) )
+		ArkInventory.OutputError( string.format( ArkInventory.Localise["CONFIG_LIST_ADD_LIMIT_TEXT"], ArkInventory.Localise["CONFIG_RULE_PLURAL"] ) )
 		return
 	end
 	
 	if p == -2 then
-		ArkInventory.OutputError( string.format( ArkInventory.Localise["CONFIG_LIST_ADD_UPGRADE_TEXT"], ArkInventory.Localise["CONFIG_CATEGORY_RULE"] ) )
+		ArkInventory.OutputError( string.format( ArkInventory.Localise["CONFIG_LIST_ADD_UPGRADE_TEXT"], ArkInventory.Localise["CATEGORY_RULE"] ) )
 		return
 	end
 	
 	data.used = "Y"
 	data.name = string.trim( name )
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
 	
 	ArkInventory.CategoryGenerate( )
 	
@@ -587,14 +642,33 @@ function ArkInventory.ConfigInternalCategoryRuleAdd( name )
 	
 end
 
-function ArkInventory.ConfigInternalCategoryRuleGet( id )
-	return ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[id]
+function ArkInventory.ConfigInternalCategoryRuleGet( id, default )
+	
+	local id = id
+	
+	if not default then
+		assert( id, "code error: id is nil" )
+		return ArkInventory.db.option.category[ArkInventory.Const.Category.Type.Rule].data[id]
+	end
+	
+	local data = ArkInventory.ConfigInternalCategoryRuleGet( id )
+	
+	if not data or data.used ~= "Y" then
+		--ArkInventory.OutputWarning( "design ", id, " requested, status=", data.used, ", returning default instead" )
+		id = 9999
+		data = ArkInventory.ConfigInternalCategoryRuleGet( id )
+	end
+	
+	return id, data
+	
 end
 
 function ArkInventory.ConfigInternalCategoryRuleDelete( id )
 	
 	local v = ArkInventory.ConfigInternalCategoryRuleGet( id )
 	v.used = "D"
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
 	
 	ArkInventory.CategoryGenerate( )
 	
@@ -604,6 +678,8 @@ function ArkInventory.ConfigInternalCategoryRuleRestore( id )
 	
 	local v = ArkInventory.ConfigInternalCategoryRuleGet( id )
 	v.used = "Y"
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
 	
 	ArkInventory.CategoryGenerate( )
 	
@@ -620,11 +696,10 @@ end
 
 function ArkInventory.ConfigInternalCategoryRuleCopy( src, id )
 	
-	if src == id then
-		return
-	end
+	if src == id then return end
 	
-	local v = ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data
+	local t = ArkInventory.Const.Category.Type.Rule
+	local v = ArkInventory.db.option.category[t].data
 	
 	local used = v[id].used
 	local system = v[id].system
@@ -646,13 +721,76 @@ function ArkInventory.ConfigInternalCategoryRulePurge( id )
 	v.used = "N"
 	v.name = ""
 	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
+end
+
+function ArkInventory.ConfigInternalCategoryRuleValidate( id )
+	
+	--ArkInventory.Output( "validating rule ", id )
+	
+	if not ArkInventory.Global.Rules.Enabled then return true end
+	
+	local ok = true
+	local em = string.format( ArkInventory.Localise["RULE_FAILED"], id )
+	
+	if not id then
+		return false, string.format( "%s, %s", em, ArkInventory.Localise["RULE_FAILED_KEY_NIL"] )
+	end
+	
+	local data = ArkInventory.ConfigInternalCategoryRuleGet( id )
+	
+	if not data.name or string.trim( data.name ) == "" then
+		em = string.format( "%s, %s", em, ArkInventory.Localise["RULE_FAILED_DESCRIPTION_NIL"] )
+		ok = false
+	end
+	
+	if not data.formula or string.trim( data.formula ) == "" then
+		
+		em = string.format( "%s, %s", em, ArkInventory.Localise["RULE_FAILED_FORMULA_NIL"] )
+		ok = false
+		
+	else
+		
+		ArkInventoryRules.Object = { test_rule=true, class="item", bag_id=0, slot_id=1, count=1, q=1, sb=true, h="item:6948:::::::" } -- hearthstone
+
+		local p, pem = loadstring( string.format( "return( %s )", data.formula ) )
+		
+		if not p then
+			
+			--ArkInventory.Output( "loadstring failed" )
+			
+			ok = false
+			em = string.format( "%s, loadstring failure: %s", em, pem )
+			
+		else
+			
+			--ArkInventory.Output( "loadstring ok" )
+			
+			setfenv( p, ArkInventoryRules.Environment )
+			local pok, pem = pcall( p )
+			
+			if not pok then
+				--ArkInventory.Output( "pcall failed" )
+				ok = false
+				em = string.format( "%s, %s: %s", em, ArkInventory.Localise["RULE_FAILED_FORMULA_BAD"], pem )
+			else
+				--ArkInventory.Output( "pcall ok" )
+			end
+			
+		end
+		
+	end
+	
+	return ok, em
+	
 end
 
 
 function ArkInventory.ConfigInternalSortMethodMoveDown( id, s )
 
 	local p = false
-	local t = ArkInventory.db.global.option.sort.method.data[id].order
+	local t = ArkInventory.db.option.sort.method.data[id].order
 	
 	for k, v in ipairs( t ) do
 		if s == v then
@@ -678,7 +816,7 @@ end
 function ArkInventory.ConfigInternalSortMethodMoveUp( id, s )
 
 	local p = false
-	local t = ArkInventory.db.global.option.sort.method.data[id].order
+	local t = ArkInventory.db.option.sort.method.data[id].order
 	
 	for k, v in ipairs( t ) do
 		if s == v then
@@ -714,7 +852,7 @@ end
 
 function ArkInventory.ConfigInternalSortMethodCheck( id )
 	
-	for sid, data in pairs( ArkInventory.db.global.option.sort.method.data ) do
+	for sid, data in pairs( ArkInventory.db.option.sort.method.data ) do
 		
 		if id == nil or sid == id then
 			
@@ -763,7 +901,7 @@ end
 
 function ArkInventory.ConfigInternalSortMethodAdd( name )
 	
-	local v = ArkInventory.db.global.option.sort.method
+	local v = ArkInventory.db.option.sort.method
 	local p, data = ArkInventory.CategoryGetNext( v )
 
 	if p == -1 then
@@ -779,26 +917,51 @@ function ArkInventory.ConfigInternalSortMethodAdd( name )
 	data.used = "Y"
 	data.name = string.trim( name )
 	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
 	ArkInventory.ConfigInternalSortMethodCheck( p )
 	
-	--ArkInventory.Output( "Added sortkey: ", name, " at ", ArkInventory.db.global.option.sort.method.next )
+	return p, data
+	
+end
+
+function ArkInventory.ConfigInternalSortMethodGet( id, default )
+	
+	local id = id
+	
+	if not default then
+		assert( id, "code error: id is nil" )
+		return ArkInventory.db.option.sort.method.data[id]
+	end
+	
+	local data = ArkInventory.ConfigInternalSortMethodGet( id )
+	
+	if not data or data.used ~= "Y" then
+		--ArkInventory.OutputWarning( "design ", id, " requested, status=", data.used, ", returning default instead" )
+		id = 9999
+		data = ArkInventory.ConfigInternalSortMethodGet( id )
+	end
+	
+	return id, data
+	
+end
+
+function ArkInventory.ConfigInternalSortMethodDelete( id )
+	
+	local v = ArkInventory.ConfigInternalSortMethodGet( id )
+	v.used = "D"
 	
 	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
 	
 end
 
-function ArkInventory.ConfigInternalSortMethodGet( id )
-	return ArkInventory.db.global.option.sort.method.data[id]
-end
-
-function ArkInventory.ConfigInternalSortMethodDelete( id )
-	local v = ArkInventory.ConfigInternalSortMethodGet( id )
-	v.used = "D"
-end
-
 function ArkInventory.ConfigInternalSortMethodRestore( id )
+	
 	local v = ArkInventory.ConfigInternalSortMethodGet( id )
 	v.used = "Y"
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
 end
 
 function ArkInventory.ConfigInternalSortMethodRename( id, name )
@@ -810,11 +973,9 @@ end
 
 function ArkInventory.ConfigInternalSortMethodCopy( src, id )
 	
-	if src == id then
-		return
-	end
+	if src == id then return end
 	
-	local v = ArkInventory.db.global.option.sort.method.data
+	local v = ArkInventory.db.option.sort.method.data
 	
 	local used = v[id].used
 	local system = v[id].system
@@ -838,13 +999,15 @@ function ArkInventory.ConfigInternalSortMethodPurge( id )
 	ArkInventory.Table.Clean( v.active )
 	ArkInventory.Table.Clean( v.order )
 	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
 end
 
 
 
 function ArkInventory.ConfigInternalCategorysetAdd( name )
 	
-	local v = ArkInventory.db.global.option.catset
+	local v = ArkInventory.db.option.catset
 	
 	local p, data = ArkInventory.CategoryGetNext( v )
 	
@@ -861,12 +1024,31 @@ function ArkInventory.ConfigInternalCategorysetAdd( name )
 	data.used = "Y"
 	data.name = string.trim( name )
 	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
 	return p, data
 	
 end
 
-function ArkInventory.ConfigInternalCategorysetGet( id )
-	return ArkInventory.db.global.option.catset.data[id]
+function ArkInventory.ConfigInternalCategorysetGet( id, default )
+	
+	local id = id
+	
+	if not default then
+		assert( id, "code error: id is nil" )
+		return ArkInventory.db.option.catset.data[id]
+	end
+	
+	local data = ArkInventory.ConfigInternalCategorysetGet( id )
+	
+	if not data or data.used ~= "Y" then
+		--ArkInventory.OutputWarning( "design ", id, " requested, status=", data.used, ", returning default instead" )
+		id = 9999
+		data = ArkInventory.ConfigInternalCategorysetGet( id )
+	end
+	
+	return id, data
+	
 end
 
 function ArkInventory.ConfigInternalCategorysetDelete( id )
@@ -874,12 +1056,16 @@ function ArkInventory.ConfigInternalCategorysetDelete( id )
 	local v = ArkInventory.ConfigInternalCategorysetGet( id )
 	v.used = "D"
 	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
 end
 
 function ArkInventory.ConfigInternalCategorysetRestore( id )
 	
 	local v = ArkInventory.ConfigInternalCategorysetGet( id )
 	v.used = "Y"
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
 	
 end
 
@@ -892,11 +1078,9 @@ end
 
 function ArkInventory.ConfigInternalCategorysetCopy( src, id )
 	
-	if src == id then
-		return
-	end
+	if src == id then return end
 	
-	local v = ArkInventory.db.global.option.catset.data
+	local v = ArkInventory.db.option.catset.data[t]
 	
 	local used = v[id].used
 	local system = v[id].system
@@ -917,5 +1101,110 @@ function ArkInventory.ConfigInternalCategorysetPurge( id )
 	local v = ArkInventory.ConfigInternalCategorysetGet( id )
 	v.used = "N"
 	v.name = ""
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
+end
+
+
+
+
+function ArkInventory.ConfigInternalProfileAdd( name )
+	
+	local v = ArkInventory.db.option.profile
+	local p, data = ArkInventory.CategoryGetNext( v )
+	
+	if p == -1 then
+		ArkInventory.OutputError( string.format( ArkInventory.Localise["CONFIG_LIST_ADD_LIMIT_TEXT"], ArkInventory.Localise["CONFIG_PROFILE_PLURAL"] ) )
+		return
+	end
+	
+	if p == -2 then
+		ArkInventory.OutputError( string.format( ArkInventory.Localise["CONFIG_LIST_ADD_UPGRADE_TEXT"], ArkInventory.Localise["CONFIG_PROFILE"] ) )
+		return
+	end
+	
+	data.used = "Y"
+	data.name = string.trim( name )
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
+	return p, data
+	
+end
+
+function ArkInventory.ConfigInternalProfileGet( id, default )
+	
+	local id = id
+	
+	if not default then
+		assert( id, "code error: id is nil" )
+		return ArkInventory.db.option.profile.data[id]
+	end
+	
+	local data = ArkInventory.ConfigInternalProfileGet( id )
+	
+	if not data or data.used ~= "Y" then
+		--ArkInventory.OutputWarning( "design ", id, " requested, status=", data.used, ", returning default instead" )
+		id = 9999
+		data = ArkInventory.ConfigInternalProfileGet( id )
+	end
+	
+	return id, data
+	
+end
+
+function ArkInventory.ConfigInternalProfileDelete( id )
+	
+	local v = ArkInventory.ConfigInternalProfileGet( id )
+	v.used = "D"
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
+end
+
+function ArkInventory.ConfigInternalProfileRestore( id )
+	
+	local v = ArkInventory.ConfigInternalProfileGet( id )
+	v.used = "Y"
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
+	
+end
+
+function ArkInventory.ConfigInternalProfileRename( id, name )
+	
+	local v = ArkInventory.ConfigInternalProfileGet( id )
+	v.name = string.trim( name )
+	
+end
+
+function ArkInventory.ConfigInternalProfileCopy( src, id )
+	
+	if src == id then return end
+	
+	local v = ArkInventory.db.option.profile.data
+	
+	local used = v[id].used
+	local system = v[id].system
+	local name = v[id].name
+	
+	v[id] = ArkInventory.Table.Copy( v[src] )
+	
+	v[id].used = used
+	v[id].system = system
+	v[id].name = name
+	
+end
+
+function ArkInventory.ConfigInternalProfilePurge( id )
+	
+	ArkInventory.ConfigInternalProfileCopy( 0, id )
+	
+	local v = ArkInventory.ConfigInternalProfileGet( id )
+	v.used = "N"
+	v.name = ""
+	
+	ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
 	
 end

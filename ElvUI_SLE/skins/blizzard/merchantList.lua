@@ -1,7 +1,6 @@
 ﻿local SLE, T, E, L, V, P, G = unpack(select(2, ...))
 local Sk = SLE:GetModule("Skins")
 local S = E:GetModule('Skins')
-local LSM = LibStub("LibSharedMedia-3.0")
 --GLOBALS: CreateFrame, hooksecurefunc, ChatFontSmall, UIParent, INVSLOT_FIRST_EQUIPPED, INVSLOT_LAST_EQUIPPED
 --Rebuilding Merchant Frame as a scrollable list. Based on a code by Nils Ruesch (xMerchant addon)
 local _G = _G
@@ -37,6 +36,7 @@ local buttons = {}
 local searching = "";
 local errors = {};
 local knowns = {};
+local MerchantUpdating = false
 
 local locale = {
 	enUS = {
@@ -79,6 +79,14 @@ local locale = {
 		REQUIRES_SKILL = "Requiere (.+) %((%d+)%)",
 		REQUIRES = "Requiere (.+)",
 	},
+	koKR = {
+		REQUIRES_LEVEL = "최소 레벨 (%d+)",
+		LEVEL = "레벨 %d",
+		REQUIRES_REPUTATION = "필수 평판 .+ %- (.+)",
+		REQUIRES_REPUTATION_NAME = "필수 평판 (.+) %- .+",
+		REQUIRES_SKILL = "필수 스킬 (.+) %((%d+)%)",
+		REQUIRES = "필수 (.+)",
+	},
 	ruRU = {
 		REQUIRES_LEVEL = "Требуется уровень: (%d+)",
 		LEVEL = "Уровень %d",
@@ -103,13 +111,13 @@ local locale = {
 		REQUIRES = "需要(.+)",
 	},
 };
-local REQUIRES_LEVEL = locale[GetLocale()].REQUIRES_LEVEL
-local LEVEL = locale[GetLocale()].LEVEL
-local REQUIRES_REPUTATION = locale[GetLocale()].REQUIRES_REPUTATION
-local REQUIRES_REPUTATION_NAME = locale[GetLocale()].REQUIRES_REPUTATION_NAME
-local REQUIRES_SKILL = locale[GetLocale()].REQUIRES_SKILL
+local REQUIRES_LEVEL = locale[GetLocale()] and locale[GetLocale()].REQUIRES_LEVEL or ""
+local LEVEL = locale[GetLocale()] and locale[GetLocale()].LEVEL or ""
+local REQUIRES_REPUTATION = locale[GetLocale()] and locale[GetLocale()].REQUIRES_REPUTATION or ""
+local REQUIRES_REPUTATION_NAME = locale[GetLocale()] and locale[GetLocale()].REQUIRES_REPUTATION_NAME or ""
+local REQUIRES_SKILL = locale[GetLocale()] and locale[GetLocale()].REQUIRES_SKILL or ""
 local SKILL = "%1$s (%2$d)"
-local REQUIRES = locale[GetLocale()].REQUIRES
+local REQUIRES = locale[GetLocale()] and locale[GetLocale()].REQUIRES or ""
 
 local function Item_OnClick(self)
 	HandleModifiedItemClick(self.itemLink);
@@ -271,7 +279,11 @@ local function List_AltCurrencyFrame_Update(item, texture, cost, itemID, currenc
 	if ( itemID ~= 0 or currencyName) then
 		local currency = currencies[itemID] or currencies[currencyName];
 		if ( currency and currency < cost or not currency ) then
-			item.count:SetTextColor(1, 0, 0);
+			if T.GetItemCount(itemID, true) >= cost then
+				item.count:SetTextColor(1, 1, 0);
+			else
+				item.count:SetTextColor(1, 0, 0);
+			end
 		else
 			item.count:SetTextColor(1, 1, 1);
 		end
@@ -629,13 +641,13 @@ local function Create_ListButton(frame, i)
 
 	local itemname = button:CreateFontString("ARTWORK", "$parentItemName")
 	button.itemname = itemname;
-	itemname:SetFont(LSM:Fetch('font', E.db.sle.skins.merchant.list.nameFont), E.db.sle.skins.merchant.list.nameSize, E.db.sle.skins.merchant.list.nameOutline)
+	itemname:SetFont(E.LSM:Fetch('font', E.db.sle.skins.merchant.list.nameFont), E.db.sle.skins.merchant.list.nameSize, E.db.sle.skins.merchant.list.nameOutline)
 	itemname:SetPoint("TOPLEFT", icon, "TOPRIGHT", 4, -3);
 	itemname:SetJustifyH("LEFT");
 
 	local iteminfo = button:CreateFontString("ARTWORK", "$parentItemInfo")
 	button.iteminfo = iteminfo;
-	iteminfo:SetFont(LSM:Fetch('font', E.db.sle.skins.merchant.list.subFont), E.db.sle.skins.merchant.list.subSize, E.db.sle.skins.merchant.list.subOutline)
+	iteminfo:SetFont(E.LSM:Fetch('font', E.db.sle.skins.merchant.list.subFont), E.db.sle.skins.merchant.list.subSize, E.db.sle.skins.merchant.list.subOutline)
 	-- iteminfo:SetPoint("BOTTOMLEFT", 30.4, 3);
 	iteminfo:SetPoint("BOTTOMLEFT", icon, "BOTTOMRIGHT", 4, -3);
 	iteminfo:SetJustifyH("LEFT");
@@ -722,6 +734,15 @@ local function MerchantListSkinInit()
 	for i = 1, #delete do
 		delete[i]:Hide()
 		delete[i].Show = function() end;
+	end
+	frame:RegisterEvent("BAG_UPDATE")
+	frame:SetScript("OnEvent", function(self, event, ...)
+		if not self:IsShown() or MerchantUpdating then return end
+		MerchantUpdating = true
+		E:Delay(0.25, function() List_CurrencyUpdate(); List_MerchantUpdate(); MerchantUpdating = false end)
+	end)
+	if not locale[GetLocale()] then
+		SLE:ErrorPrint("Your language is unavailable for selected merchant style. We would appretiate if ou contact us and provide needed translations.")
 	end
 end
 

@@ -1,10 +1,222 @@
 ------------------------------------------------------------------------
-r557 | arkayenro | 2016-07-24 11:43:20 +0000 (Sun, 24 Jul 2016) | 3 lines
+r580 | arkayenro | 2016-08-10 01:42:26 +0000 (Wed, 10 Aug 2016) | 1 line
 Changed paths:
-   A /tags/3.06.17 (from /trunk:556)
+   A /tags/3.07.01 (from /trunk:579)
 
-*3.06.17 (24-JUL-2016)*
- * fixed -issue with pet filters
+Tagging as 3.07.01
+------------------------------------------------------------------------
+r579 | arkayenro | 2016-08-10 01:39:28 +0000 (Wed, 10 Aug 2016) | 3 lines
+Changed paths:
+   M /trunk/ArkInventory.toc
+   M /trunk/VersionHistory.txt
+
+*3.07.01 (10-AUG-2016)*
+ * tagged as release
+
+------------------------------------------------------------------------
+r577 | arkayenro | 2016-08-09 10:22:16 +0000 (Tue, 09 Aug 2016) | 2 lines
+Changed paths:
+   M /trunk/VersionHistory.txt
+
+ArkInventory:
+- 
+------------------------------------------------------------------------
+r576 | arkayenro | 2016-08-08 11:28:22 +0000 (Mon, 08 Aug 2016) | 7 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryCollectionToy.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryUpgrades.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.00 (08-AUG-2016) BETA 8*
+ * fixed - issue with 30271 conversion code
+ * fixed - issue with config (profiles)
+ * fixed - issue with chatlinked items doubling up
+ * fixed - issue with void storage not getting scanned
+ * removed - debug output of favourite toy ids
+
+------------------------------------------------------------------------
+r574 | arkayenro | 2016-08-06 23:50:40 +0000 (Sat, 06 Aug 2016) | 5 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   A /trunk/ArkInventoryCollectionHeirloom.lua
+   A /trunk/ArkInventoryCollectionMount.lua
+   A /trunk/ArkInventoryCollectionPet.lua
+   A /trunk/ArkInventoryCollectionToy.lua
+   M /trunk/ArkInventoryCompanion.lua
+   M /trunk/ArkInventoryConfig.lua
+   M /trunk/ArkInventoryLDB.lua
+   M /trunk/ArkInventoryMenu.lua
+   D /trunk/ArkInventoryMountJournal.lua
+   D /trunk/ArkInventoryPetJournal.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryTooltip.lua
+   D /trunk/ArkInventoryToyBox.lua
+   M /trunk/ArkInventoryUpgrades.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
+   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.00 (07-AUG-2016) BETA 7*
+ * fixed - issue with 30230 conversion code
+ * added - heirlooms window (view only)
+ * fixed - issue with tooltips in account location windows
+
+------------------------------------------------------------------------
+r572 | arkayenro | 2016-08-03 13:37:25 +0000 (Wed, 03 Aug 2016) | 4 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryMenu.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryToyBox.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.00 (03-AUG-2016) BETA 6*
+ * changed - removed redundant refresh actions in the vault update code
+ * fixed - removed toybox debug output
+
+------------------------------------------------------------------------
+r570 | arkayenro | 2016-08-01 02:20:31 +0000 (Mon, 01 Aug 2016) | 7 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryUpgrades.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.00 (01-AUG-2016) BETA 5*
+ * fixed - issue with online tooltip for the mailbox not showing
+ * fixed - issue with offline tooltip for gold amounts in mailbox
+ * workaround - issue with mailbox being slow due to having to rescan the whole thing every time, default update timer is now 2 seconds (changeable in config)
+ * fixed - issue with config > rules being blank
+ * fixed - issue with conversion code introduced in beta 4
+
+------------------------------------------------------------------------
+r568 | arkayenro | 2016-07-31 02:08:46 +0000 (Sun, 31 Jul 2016) | 9 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventory.xml
+   M /trunk/ArkInventoryCodex.lua
+   M /trunk/ArkInventoryConfig.lua
+   M /trunk/ArkInventoryConst.lua
+   M /trunk/ArkInventoryLDB.lua
+   M /trunk/ArkInventoryMenu.lua
+   M /trunk/ArkInventoryMountJournal.lua
+   M /trunk/ArkInventoryPetJournal.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryTooltip.lua
+   M /trunk/ArkInventoryToyBox.lua
+   M /trunk/ArkInventoryUpgrades.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.00 (31-JUL-2016) BETA 4*
+ * fixed - issue with profiles not applying when opening a non player window (guild bank/account)
+ * fixed - conversion code missed bag to bar assignments which ended up causing a black window on open
+ * fixed - codex issue causing the default profile to be used in some cases
+ * fixed - issue copying a layout/style/catset and the current window not updating
+ * fixed - issue where items would sometimes be picked up when in edit mode (mostly at the bank/vault)
+ * fixed - issue where vault was refreshing on each change
+ * fixed - issue with toybox scanning
+
+------------------------------------------------------------------------
+r566 | arkayenro | 2016-07-28 12:55:54 +0000 (Thu, 28 Jul 2016) | 2 lines
+Changed paths:
+   M /trunk/ArkInventoryStorage.lua
+
+ArkInventory:
+- removed some debug lines
+------------------------------------------------------------------------
+r564 | arkayenro | 2016-07-28 12:46:43 +0000 (Thu, 28 Jul 2016) | 6 lines
+Changed paths:
+   M /trunk/ArkInventoryStorage.lua
+
+*3.07.00 (28-JUL-2016) BETA 3*
+ * added - when the title frame is hidden a smaller set of action icons is displayed in the container frame
+ * fixed - issue with style/layout/category set not getting applied immediately when you change it in a profile
+ * fixed - issue with vault window sometimes opening with the players data (ERR and empty) instead of guild data
+ * fixed - issue with an internal item id format causing item counts to be wonky
+
+------------------------------------------------------------------------
+r562 | arkayenro | 2016-07-28 12:06:22 +0000 (Thu, 28 Jul 2016) | 6 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventory.xml
+   M /trunk/ArkInventoryCodex.lua
+   M /trunk/ArkInventoryConfig.lua
+   M /trunk/ArkInventoryMenu.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryTooltip.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.00 (28-JUL-2016) BETA 3*
+ * added - when the title frame is hidden a smaller set of action icons is displayed in the container frame
+ * fixed - issue with style/layout/category set not getting applied immediately when you change it in a profile
+ * fixed - issue with vault window sometimes opening with the players data (ERR and empty) instead of guild data
+ * fixed - issue with an internal item id format causing item counts to be wonky
+
+------------------------------------------------------------------------
+r560 | arkayenro | 2016-07-26 22:37:19 +0000 (Tue, 26 Jul 2016) | 2 lines
+Changed paths:
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryStorage.lua
+
+ArkInventory:
+- 30700 beta 2
+------------------------------------------------------------------------
+r558 | arkayenro | 2016-07-26 12:53:18 +0000 (Tue, 26 Jul 2016) | 5 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventory.xml
+   A /trunk/ArkInventoryCodex.lua
+   M /trunk/ArkInventoryConfig.lua
+   M /trunk/ArkInventoryConst.lua
+   M /trunk/ArkInventoryJunk.lua
+   M /trunk/ArkInventoryLDB.lua
+   M /trunk/ArkInventoryMedia.lua
+   M /trunk/ArkInventoryMenu.lua
+   M /trunk/ArkInventoryMoney.lua
+   M /trunk/ArkInventoryMountJournal.lua
+   M /trunk/ArkInventoryPetJournal.lua
+   M /trunk/ArkInventoryRestack.lua
+   M /trunk/ArkInventoryRules.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryTooltip.lua
+   M /trunk/ArkInventoryToyBox.lua
+   M /trunk/ArkInventoryTranslate.lua
+   M /trunk/ArkInventoryUpgrades.lua
+   M /trunk/Locale/deDE.lua
+   M /trunk/Locale/enUS.lua
+   M /trunk/Locale/esES.lua
+   M /trunk/Locale/esMX.lua
+   M /trunk/Locale/frFR.lua
+   M /trunk/Locale/itIT.lua
+   M /trunk/Locale/koKR.lua
+   M /trunk/Locale/ptBR.lua
+   M /trunk/Locale/ruRU.lua
+   M /trunk/Locale/zhCN.lua
+   M /trunk/Locale/zhTW.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
+   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
+   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.xml
+   M /trunk/Modules/ArkInventorySearch/ArkInventorySearch.lua
+   M /trunk/Modules/ArkInventorySearch/ArkInventorySearch.xml
+   M /trunk/VersionHistory.txt
+
+*3.07.00 (26-JUL-2016) BETA*
+ * fixed - issue with gold amounts displayed in tooltips when in colourblind mode
+ * added - profiles
+ * recover - where possible previous profile data will be recovered, if it cant be done you just need to set the controls for the profile
 
 ------------------------------------------------------------------------
 r556 | arkayenro | 2016-07-24 11:41:39 +0000 (Sun, 24 Jul 2016) | 3 lines
@@ -422,110 +634,5 @@ Changed paths:
  * added - ability to set the font size and colour of the item level text
  * added - ability to set the font size and colour of the item count text
  * added - ability to set the font size and colour of the item age text
-
-------------------------------------------------------------------------
-r522 | arkayenro | 2016-06-30 12:15:17 +0000 (Thu, 30 Jun 2016) | 6 lines
-Changed paths:
-   M /trunk/ArkInventory.lua
-
-*3.06.03 (30-JUN-2016)*
- * added - config > general > junk items - options for auto selling junk quality items when you visit a merchant
- * fixed - an inconsistency with the restack menu and config choices
- * fixed - issue with opening custom category config from item in edit mode
- * fixed - issue with opening sort methods config from bars in edit mode
-
-------------------------------------------------------------------------
-r521 | arkayenro | 2016-06-30 12:12:00 +0000 (Thu, 30 Jun 2016) | 6 lines
-Changed paths:
-   M /trunk/ArkInventoryMenu.lua
-   M /trunk/VersionHistory.txt
-
-*3.06.03 (30-JUN-2016)*
- * added - config > general > junk items - options for auto selling junk quality items when you visit a merchant
- * fixed - an inconsistency with the restack menu and config choices
- * fixed - issue with opening custom category config from item in edit mode
- * fixed - issue with opening sort methods config from bars in edit mode
-
-------------------------------------------------------------------------
-r520 | arkayenro | 2016-06-30 12:01:06 +0000 (Thu, 30 Jun 2016) | 4 lines
-Changed paths:
-   M /trunk/ArkInventory.lua
-   M /trunk/ArkInventory.toc
-   A /trunk/ArkInventoryJunk.lua
-   M /trunk/ArkInventoryMenu.lua
-   M /trunk/ArkInventoryStorage.lua
-   M /trunk/ArkInventoryUpgrades.lua
-   M /trunk/Locale/deDE.lua
-   M /trunk/Locale/enUS.lua
-   M /trunk/Locale/esES.lua
-   M /trunk/Locale/esMX.lua
-   M /trunk/Locale/frFR.lua
-   M /trunk/Locale/game.lua
-   M /trunk/Locale/itIT.lua
-   M /trunk/Locale/koKR.lua
-   M /trunk/Locale/ptBR.lua
-   M /trunk/Locale/ruRU.lua
-   M /trunk/Locale/zhCN.lua
-   M /trunk/Locale/zhTW.lua
-   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
-   M /trunk/VersionHistory.txt
-
-*3.06.03 (30-JUN-2016)*
- * added - config > general > junk items - options for auto selling junk quality items when you visit a merchant
- * fixed - an inconsistency with the restack menu and config choices
-
-------------------------------------------------------------------------
-r518 | arkayenro | 2016-06-27 13:08:35 +0000 (Mon, 27 Jun 2016) | 22 lines
-Changed paths:
-   M /trunk/ArkInventory.lua
-   M /trunk/ArkInventory.toc
-   M /trunk/ArkInventoryCompanion.lua
-   M /trunk/ArkInventoryConfig.lua
-   M /trunk/ArkInventoryExternals.xml
-   M /trunk/ArkInventoryMenu.lua
-   M /trunk/ArkInventoryRealms.lua
-   M /trunk/ArkInventoryRestack.lua
-   M /trunk/ArkInventoryStaticPopups.lua
-   M /trunk/ArkInventoryStorage.lua
-   M /trunk/ArkInventoryTooltip.lua
-   M /trunk/ArkInventoryUpgrades.lua
-   M /trunk/Locale/deDE.lua
-   M /trunk/Locale/enUS.lua
-   M /trunk/Locale/esES.lua
-   M /trunk/Locale/esMX.lua
-   M /trunk/Locale/frFR.lua
-   M /trunk/Locale/game.lua
-   M /trunk/Locale/itIT.lua
-   M /trunk/Locale/koKR.lua
-   M /trunk/Locale/ptBR.lua
-   M /trunk/Locale/ruRU.lua
-   M /trunk/Locale/zhCN.lua
-   M /trunk/Locale/zhTW.lua
-   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
-   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
-   M /trunk/Modules/ArkInventorySearch/ArkInventorySearch.lua
-   M /trunk/VersionHistory.txt
-
-*3.06.02 (27-JUN-2016)*
- * changed - tooltip counts: when all items are from a single location only the name is listed (not the duplicate item count)
- * removed - config > controls > location > reposition on load
- * removed - config > controls > location > reposition now
- * added - config > display > reposition on show (defaults to enabled) - any windows partially off screen are repositioned back on screen when opened, if its still too big to fit it will remain partially off screen (set the window height to enable the scrollbar to make it fit)
- * removed - config > show hidden items - right click on refresh button instead
- * removed - main icon > right click > show hidden - right click on refresh button instead
- * removed - config > settings > window > sorting > on window open
- * removed - config > settings > window > sorting > instant
- * added - config > display > refresh sorting (defaults to manual) - this is now global and replaces/combines the two above options
- * added - deleted sort methods can be restored/purged
- * added - you can now copy sort methods
- * added - deleted custom categories can be restored/purged
- * changed - most profile based settings have been moved to global based "design".  designs are made up of style and layout options that be assigned seperately to a window to determine how its built
- * added - deleted designs can be restored/purged
- * added - you can now copy designs
- * moved - config > settings has been moved to config > settings > designs
- * moved - config > auto open/close has been moved to config > settings > auto open/close
- * moved - config > sorting has been moved to config > settings > sort methods
- * moved - config > categories has been moved to config > settings > custom categories
- * fixed - issue with tooltips not adding item counts when hovering over currencies at merchants
 
 ------------------------------------------------------------------------

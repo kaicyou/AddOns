@@ -330,7 +330,6 @@ if not L then return end
 	L["CONFIG_CONTROL_ANCHOR_LOCK_TEXT"] = "锁定 %1$s 窗口到当前移动的位置"
 	L["CONFIG_CONTROL_REPOSITION_NOW"] = "立即复位"
 	L["CONFIG_CONTROL_REPOSITION_NOW_TEXT"] = "立即复位 %1$s 窗口" -- %1$s = location name
---	L["CONFIG_CONTROL_BLUEPRINT"] = ""
 	L["CONFIG_CONTROL_BLUEPRINT_TEXT"] = "在此窗口应用 %1$s 的设置"
 	
 	
@@ -338,8 +337,13 @@ if not L then return end
 --	L["CONFIG_DESIGN"] = ""
 --	L["CONFIG_DESIGN_PLURAL"] = ""
 	
---	L["CONFIG_DESIGN_STYLE"] = ""
---	L["CONFIG_DESIGN_STYLE_PLURAL"] = ""
+--	L["CONFIG_STYLE"] = ""
+--	L["CONFIG_STYLE_PLURAL"] = ""
+--	L["CONFIG_STYLE_DESCRIPTION"] = ""
+	
+--	L["CONFIG_LAYOUT"] = ""
+--	L["CONFIG_LAYOUT_PLURAL"] = ""
+--	L["CONFIG_LAYOUT_DESCRIPTION"] = ""
 	
 	L["CONFIG_DESIGN_WINDOW"] = "窗口"
 	L["CONFIG_DESIGN_WINDOW_SCALE_TEXT"] = "设定缩放窗口的大小比例"
@@ -514,18 +518,15 @@ if not L then return end
 --	L["CONFIG_LIST_EXPORT_TEXT"] = ""
 	
 	
---	rules
-	L["CONFIG_RULES_SHOWDISABLED"] = "显示禁用的规则"
-	L["CONFIG_RULES_SHOWDISABLED_TEXT"] = "禁用规则显示开关"
 	
-	
---	configuration options > categories
 --	L["CONFIG_CATEGORY"] = ""
 --	L["CONFIG_CATEGORY_PLURAL"] = ""
-	L["CONFIG_CATEGORY_DELETED"] = "**删除分类 [%s]**"
 	
 	L["CATEGORY_RULE"] = "规则"
-	L["CATEGORY_RULE_PLURAL"] = "规则"
+	L["CONFIG_RULE_PLURAL"] = "规则"
+	
+	L["CONFIG_RULE_SHOWDISABLED"] = "显示禁用的规则"
+	L["CONFIG_RULE_SHOWDISABLED_TEXT"] = "禁用规则显示开关"
 	
 --	L["CONFIG_CATEGORY_CUSTOM"] = ""
 	L["CONFIG_CATEGORY_CUSTOM_PLURAL"] = "自定义分类"
@@ -534,11 +535,12 @@ if not L then return end
 --	L["CONFIG_CATEGORY_SET_PLURAL"] = ""
 --	L["CONFIG_CATEGORY_SET_DESCRIPTION"] = ""
 	
+--	L["CONFIG_PROFILE"] = ""
+--	L["CONFIG_PROFILE_PLURAL"] = ""
+--	L["CONFIG_PROFILE_CURRENT"] = ""
 	
---	layout
---	L["CONFIG_DESIGN_LAYOUT"] = ""
---	L["CONFIG_DESIGN_LAYOUT_PLURAL"] = ""
---	L["CONFIG_DESIGN_LAYOUT_DESCRIPTION"] = ""
+	
+--	L["CONFIG_OBJECT_DELETED"] = ""
 	
 	
 --	configuration options > debug
@@ -562,6 +564,7 @@ if not L then return end
 	L["RULE_LIST_ID"] = "规则"
 	
 	L["RULE_DAMAGED"] = "当期规则设置 %s 为损坏的，除非修理不能使用"
+--	L["RULE_DAMAGED_TEXT"] = ""
 	L["RULE_FAILED"] = "错误验证规则 %s"
 	L["RULE_FAILED_KEY_NIL"] = "旧的关键字为空"
 	L["RULE_FAILED_DATA_NIL"] = "旧数据为空"
@@ -700,6 +703,8 @@ if not L then return end
 --	L["ACTION"] = ""
 --	L["FIRST"] = ""
 --	L["LAST"] = ""
+--	L["NONE_USABLE"] = ""
+--	L["NONE_OWNED"] = ""
 	
 	
 --	libdatabroker

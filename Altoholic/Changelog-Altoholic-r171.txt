@@ -1,4 +1,12 @@
 ------------------------------------------------------------------------
+r171 | thaoky | 2016-08-09 18:50:40 +0000 (Tue, 09 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Frames/TabOptions.lua
+   M /trunk/changelog.txt
+
+7.0.006 Commit
+------------------------------------------------------------------------
 r170 | thaoky | 2016-07-31 15:40:46 +0000 (Sun, 31 Jul 2016) | 1 line
 Changed paths:
    M /trunk/Core.lua

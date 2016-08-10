@@ -44,7 +44,7 @@ end
 
 local function helper_fontpath( face )
 	
-	local face = face or ( ArkInventory.db.global and ArkInventory.db.global.option.font.face ) or [[Friz Quadrata TT]]
+	local face = face or ( ArkInventory.db and ArkInventory.db.option.font.face ) or [[Friz Quadrata TT]]
 	
 	local path = ArkInventory.Lib.SharedMedia:Fetch( ArkInventory.Lib.SharedMedia.MediaType.FONT, face )
 	if not path then
@@ -67,7 +67,7 @@ local function helper_fontsize( size )
 	   -- size can be -1.#QNAN (some invalid number when its first created) so just nil it
 		size = nil
 	end
-	size = size or ( ArkInventory.db.global and ArkInventory.db.global.option.font.height ) or 10
+	size = size or ( ArkInventory.db and ArkInventory.db.option.font.height ) or 10
 	size = math.floor( ( size or 0 ) + 0.5 )
 	
 	if size < ArkInventory.Const.Font.MinHeight then
@@ -161,8 +161,8 @@ end
 
 function ArkInventory.MediaAllFontSet( face, size )
 	
-	for loc_id, v in pairs( ArkInventory.Global.Location ) do
-		if v.canView then
+	for loc_id, loc_data in pairs( ArkInventory.Global.Location ) do
+		if loc_data.canView then
 			local frame = ArkInventory.Frame_Main_Get( loc_id )
 			ArkInventory.MediaFrameFontSet( frame, face, size )
 		end
@@ -176,13 +176,13 @@ function ArkInventory.MediaAllFontSet( face, size )
 end
 
 function ArkInventory.MediaUpdate( )
-	ArkInventory.MediaAllFontSet( ArkInventory.db.global.option.font.face )
+	ArkInventory.MediaAllFontSet( ArkInventory.db.option.font.face )
 	ArkInventory.Frame_Main_Paint_All( )
 end
 
 
 function ArkInventory.MediaFrameDefaultFontSet( frame )
-	if ArkInventory.db.global then
-		ArkInventory.MediaFrameFontSet( frame, ArkInventory.db.global.option.font.face )
+	if ArkInventory.db then
+		ArkInventory.MediaFrameFontSet( frame, ArkInventory.db.option.font.face )
 	end
 end

@@ -330,16 +330,20 @@ if not L then return end
 	L["CONFIG_CONTROL_ANCHOR_LOCK_TEXT"] = "verhindert, dass der %1$s Rahmen verschoben werden kann"
 --	L["CONFIG_CONTROL_REPOSITION_NOW"] = ""
 --	L["CONFIG_CONTROL_REPOSITION_NOW_TEXT"] = ""
---	L["CONFIG_CONTROL_BLUEPRINT"] = ""
 	L["CONFIG_CONTROL_BLUEPRINT_TEXT"] = "welche Einstellungen verwendet werden sollen, wenn das %1$s Fenster erstellt wird"
 	
 	
 --	configuration settings > design
-	L["CONFIG_DESIGN"] = "Design"
-	L["CONFIG_DESIGN_PLURAL"] = "Designs"
+--	L["CONFIG_DESIGN"] = ""
+--	L["CONFIG_DESIGN_PLURAL"] = ""
 	
-	L["CONFIG_DESIGN_STYLE"] = "Style"
-	L["CONFIG_DESIGN_STYLE_PLURAL"] = "Styles"
+--	L["CONFIG_STYLE"] = ""
+--	L["CONFIG_STYLE_PLURAL"] = ""
+--	L["CONFIG_STYLE_DESCRIPTION"] = ""
+	
+--	L["CONFIG_LAYOUT"] = ""
+--	L["CONFIG_LAYOUT_PLURAL"] = ""
+--	L["CONFIG_LAYOUT_DESCRIPTION"] = ""
 	
 	L["CONFIG_DESIGN_WINDOW"] = "Fenster"
 	L["CONFIG_DESIGN_WINDOW_SCALE_TEXT"] = "mit der Skalierung kann man Fenster gr\195\182\195\159er oder kleiner machen"
@@ -514,18 +518,15 @@ if not L then return end
 --	L["CONFIG_LIST_EXPORT_TEXT"] = ""
 	
 	
--- rules
-	L["CONFIG_RULES_SHOWDISABLED"] = "deaktivierte Regeln anzeigen"
-	L["CONFIG_RULES_SHOWDISABLED_TEXT"] = "bestimmt, ob deaktivierte Regeln angezeigt werden sollen"
-
 	
---	configuration options > categories
 --	L["CONFIG_CATEGORY"] = ""
 --	L["CONFIG_CATEGORY_PLURAL"] = ""
---	L["CONFIG_CATEGORY_DELETED"] = ""
 	
 	L["CATEGORY_RULE"] = "Regel"
-	L["CATEGORY_RULE_PLURAL"] = "Regeln"
+	L["CONFIG_RULE_PLURAL"] = "Regeln"
+	
+	L["CONFIG_RULE_SHOWDISABLED"] = "deaktivierte Regeln anzeigen"
+	L["CONFIG_RULE_SHOWDISABLED_TEXT"] = "bestimmt, ob deaktivierte Regeln angezeigt werden sollen"
 	
 --	L["CONFIG_CATEGORY_CUSTOM"] = ""
 	L["CONFIG_CATEGORY_CUSTOM_PLURAL"] = "Eigene Kategorien"
@@ -534,11 +535,12 @@ if not L then return end
 --	L["CONFIG_CATEGORY_SET_PLURAL"] = ""
 --	L["CONFIG_CATEGORY_SET_DESCRIPTION"] = ""
 	
+--	L["CONFIG_PROFILE"] = ""
+--	L["CONFIG_PROFILE_PLURAL"] = ""
+--	L["CONFIG_PROFILE_CURRENT"] = ""
 	
---	layout
---	L["CONFIG_DESIGN_LAYOUT"] = ""
---	L["CONFIG_DESIGN_LAYOUT_PLURAL"] = ""
---	L["CONFIG_DESIGN_LAYOUT_DESCRIPTION"] = ""
+	
+--	L["CONFIG_OBJECT_DELETED"] = ""
 	
 	
 --	configuration options > debug
@@ -562,6 +564,7 @@ if not L then return end
 	L["RULE_LIST_ID"] = "Regel"
 	
 	L["RULE_DAMAGED"] = "Regel %s wird als defekt markiert und daher nicht l\195\164nger ausgef\195\188hrt, bis sie wieder korrigiert wurde"
+--	L["RULE_DAMAGED_TEXT"] = ""
 --	L["RULE_FAILED"] = ""
 	L["RULE_FAILED_KEY_NIL"] = "der angegebene Schl\195\188ssel ist nicht gesetzt"
 	L["RULE_FAILED_DATA_NIL"] = "die angegebenen Daten sind nicht gesetzt"
@@ -700,6 +703,8 @@ if not L then return end
 --	L["ACTION"] = ""
 --	L["FIRST"] = ""
 --	L["LAST"] = ""
+--	L["NONE_USABLE"] = ""
+--	L["NONE_OWNED"] = ""
 	
 	
 -- libdatabroker

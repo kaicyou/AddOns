@@ -330,7 +330,6 @@ if not L then return end
 	L["CONFIG_CONTROL_ANCHOR_LOCK_TEXT"] = "фиксирует положение окна %1$s"
 --	L["CONFIG_CONTROL_REPOSITION_NOW"] = ""
 --	L["CONFIG_CONTROL_REPOSITION_NOW_TEXT"] = ""
---	L["CONFIG_CONTROL_BLUEPRINT"] = ""
 	L["CONFIG_CONTROL_BLUEPRINT_TEXT"] = "выбрать, какие настройки использовать при создании окна %1$s"	
 	
 	
@@ -338,8 +337,13 @@ if not L then return end
 --	L["CONFIG_DESIGN"] = ""
 --	L["CONFIG_DESIGN_PLURAL"] = ""
 	
---	L["CONFIG_DESIGN_STYLE"] = ""
---	L["CONFIG_DESIGN_STYLE_PLURAL"] = ""
+--	L["CONFIG_STYLE"] = ""
+--	L["CONFIG_STYLE_PLURAL"] = ""
+--	L["CONFIG_STYLE_DESCRIPTION"] = ""
+	
+--	L["CONFIG_LAYOUT"] = ""
+--	L["CONFIG_LAYOUT_PLURAL"] = ""
+--	L["CONFIG_LAYOUT_DESCRIPTION"] = ""
 	
 	L["CONFIG_DESIGN_WINDOW"] = "Окно"
 	L["CONFIG_DESIGN_WINDOW_SCALE_TEXT"] = "устанавливает масштаб, делая окно меньше или больше"
@@ -514,18 +518,15 @@ if not L then return end
 --	L["CONFIG_LIST_EXPORT_TEXT"] = ""
 	
 	
---	rules
-	L["CONFIG_RULES_SHOWDISABLED"] = "Показывать отключенные правила"
-	L["CONFIG_RULES_SHOWDISABLED_TEXT"] = "отображать ли отключенные правила?"
 	
-	
---	configuration options > categories
 --	L["CONFIG_CATEGORY"] = ""
 --	L["CONFIG_CATEGORY_PLURAL"] = ""
---	L["CONFIG_CATEGORY_DELETED"] = ""
 	
 	L["CATEGORY_RULE"] = "Правило"
-	L["CATEGORY_RULE_PLURAL"] = "Правила"
+	L["CONFIG_RULE_PLURAL"] = "Правила"
+	
+	L["CONFIG_RULE_SHOWDISABLED"] = "Показывать отключенные правила"
+	L["CONFIG_RULE_SHOWDISABLED_TEXT"] = "отображать ли отключенные правила?"
 	
 --	L["CONFIG_CATEGORY_CUSTOM"] = ""
 	L["CONFIG_CATEGORY_CUSTOM_PLURAL"] = "Пользовательские категории"
@@ -534,11 +535,12 @@ if not L then return end
 --	L["CONFIG_CATEGORY_SET_PLURAL"] = ""
 --	L["CONFIG_CATEGORY_SET_DESCRIPTION"] = ""
 	
+--	L["CONFIG_PROFILE"] = ""
+--	L["CONFIG_PROFILE_PLURAL"] = ""
+--	L["CONFIG_PROFILE_CURRENT"] = ""
 	
---	layout
---	L["CONFIG_DESIGN_LAYOUT"] = ""
---	L["CONFIG_DESIGN_LAYOUT_PLURAL"] = ""
---	L["CONFIG_DESIGN_LAYOUT_DESCRIPTION"] = ""
+	
+--	L["CONFIG_OBJECT_DELETED"] = ""
 	
 	
 --	configuration options > debug
@@ -562,6 +564,7 @@ if not L then return end
 	L["RULE_LIST_ID"] = "Правило"
 	
 	L["RULE_DAMAGED"] = "Правило %s помечено как повреждённое и более не будет работать, пока Вы его не исправите."
+--	L["RULE_DAMAGED_TEXT"] = ""
 --	L["RULE_FAILED"] = ""
 	L["RULE_FAILED_KEY_NIL"] = "нет ключа"
 	L["RULE_FAILED_DATA_NIL"] = "нет данных"
@@ -700,6 +703,8 @@ if not L then return end
 --	L["ACTION"] = ""
 --	L["FIRST"] = ""
 --	L["LAST"] = ""
+--	L["NONE_USABLE"] = ""
+--	L["NONE_OWNED"] = ""
 	
 	
 -- libdatabroker

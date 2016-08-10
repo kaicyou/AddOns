@@ -1259,7 +1259,7 @@ local function importCompanionCrossRefTable( )
 				
 				if data.mt then
 					-- store mount flag values
-					ArkInventory.MountJournal.StoreMountType( data.sid, data.mt )
+					ArkInventory.Collection.Mount.StoreMountType( data.sid, data.mt )
 				end
 				
 				data.sid = nil
@@ -1283,6 +1283,6 @@ function ArkInventory.CompanionDataUpdate( )
 	
 	importCompanionCrossRefTable( )
 	
-	ArkInventory.MountJournal.ApplyUserCorrections( )
+	ArkInventory.Collection.Mount.ApplyUserCorrections( )
 	
 end

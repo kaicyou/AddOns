@@ -2,7 +2,6 @@
 local M = E:GetModule('Minimap')
 local MM, DD = SLE:GetModules("Minimap", "Dropdowns")
 local LP = SLE:NewModule("LocationPanel", "AceTimer-3.0")
-local LSM = LibStub("LibSharedMedia-3.0");
 local loc_panel
 local COORDS_WIDTH = 35 -- Coord panels width
 
@@ -260,9 +259,9 @@ function LP:Resize()
 end
 
 function LP:Fonts()
-	loc_panel.Text:SetFont(LSM:Fetch('font', LP.db.font), LP.db.fontSize, LP.db.fontOutline)
-	loc_panel.Xcoord.Text:SetFont(LSM:Fetch('font', LP.db.font), LP.db.fontSize, LP.db.fontOutline)
-	loc_panel.Ycoord.Text:SetFont(LSM:Fetch('font', LP.db.font), LP.db.fontSize, LP.db.fontOutline)
+	loc_panel.Text:SetFont(E.LSM:Fetch('font', LP.db.font), LP.db.fontSize, LP.db.fontOutline)
+	loc_panel.Xcoord.Text:SetFont(E.LSM:Fetch('font', LP.db.font), LP.db.fontSize, LP.db.fontOutline)
+	loc_panel.Ycoord.Text:SetFont(E.LSM:Fetch('font', LP.db.font), LP.db.fontSize, LP.db.fontOutline)
 end
 
 function LP:Template()
@@ -316,13 +315,17 @@ function LP:ItemList(check)
 			else
 				local tmp = {}
 				local cd = DD:GetCooldown("Item", data.secure.ID)
-				if cd then
-					E:CopyTable(tmp, data)
-					tmp.text = tmp.text..T.format(LP.CDformats[LP.db.portals.cdFormat], cd)
-					T.tinsert(LP.MainMenu, tmp)
-				else
-					T.tinsert(LP.MainMenu, data)
+				local HSplace = ""
+				if LP.db.portals.HSplace and data.secure.ID == 6948 then
+					HSplace = " - "..GetBindLocation()
 				end
+				E:CopyTable(tmp, data)
+				if cd then
+					tmp.text = tmp.text..HSplace..T.format(LP.CDformats[LP.db.portals.cdFormat], cd)
+				else
+					tmp.text = tmp.text..HSplace
+				end
+				T.tinsert(LP.MainMenu, tmp)
 			end
 		end
 	end

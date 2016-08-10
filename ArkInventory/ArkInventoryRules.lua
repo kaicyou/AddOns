@@ -7,6 +7,7 @@ local type = _G.type
 local error = _G.error
 local table = _G.table
 
+ArkInventory.Rules = { }
 
 function ArkInventory.Frame_Rules_Hide( )
 	if ARKINV_Rules then

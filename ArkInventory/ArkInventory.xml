@@ -9,10 +9,10 @@
 				self:SetOwner( UIParent, "ANCHOR_NONE" )
 			</Onload>
 			<OnTooltipAddMoney>
-				<!-- override -->
+				<!-- override template, do nothing -->
 			</OnTooltipAddMoney>
 			<OnTooltipCleared>
-				<!-- override -->
+				<!-- override template, do nothing -->
 			</OnTooltipCleared>
 		</Scripts>
 	</GameTooltip>
@@ -301,15 +301,19 @@
 		<Scripts>
 			
 			<OnClick>
-				ArkInventory.Frame_Item_OnClick( self, button )
+				<!-- override template, do nothing -->
 			</OnClick>
 			
+			<OnMouseUp>
+				ArkInventory.Frame_Item_OnMouseUp( self, button )
+			</OnMouseUp>
+			
 			<OnDragStart>
-				ArkInventory.Frame_Item_OnClick( self )
+				ArkInventory.Frame_Item_OnMouseUp( self )
 			</OnDragStart>
 			
 			<OnReceiveDrag>
-				ArkInventory.Frame_Item_OnClick( self )
+				ArkInventory.Frame_Item_OnMouseUp( self )
 			</OnReceiveDrag>
 			
 		</Scripts>
@@ -321,15 +325,19 @@
 		<Scripts>
 			
 			<OnClick>
-				ArkInventory.Frame_Item_OnClick( self, button )
+				<!-- override template, do nothing -->
 			</OnClick>
 			
+			<OnMouseUp>
+				ArkInventory.Frame_Item_OnMouseUp( self, button )
+			</OnMouseUp>
+			
 			<OnDragStart>
-				-- do nothing
+				<!-- override template, do nothing -->
 			</OnDragStart>
 			
 			<OnReceiveDrag>
-				-- do nothing
+				<!-- override template, do nothing -->
 			</OnReceiveDrag>
 			
 		</Scripts>
@@ -361,15 +369,19 @@
 		<Scripts>
 			
 			<OnClick>
-				ArkInventory.Frame_Item_OnClick( self, button )
+				<!-- override template, do nothing -->
 			</OnClick>
+			
+			<OnMouseUp>
+				ArkInventory.Frame_Item_OnMouseUp( self, button )
+			</OnMouseUp>
 			
 			<OnDragStart>
 				ArkInventory.Frame_Item_OnDragStart_MountJournal( self )
 			</OnDragStart>
 			
 			<OnReceiveDrag>
-				-- do nothing
+				<!-- override template, do nothing -->
 			</OnReceiveDrag>
 			
 		</Scripts>
@@ -427,15 +439,19 @@
 		<Scripts>
 			
 			<OnClick>
-				ArkInventory.Frame_Item_OnClick( self, button )
+				<!-- override template, do nothing -->
 			</OnClick>
+			
+			<OnMouseUp>
+				ArkInventory.Frame_Item_OnMouseUp( self, button )
+			</OnMouseUp>
 			
 			<OnDragStart>
 				ArkInventory.Frame_Item_OnDragStart_PetJournal( self )
 			</OnDragStart>
 			
 			<OnReceiveDrag>
-				-- do nothing
+				<!-- override template, do nothing -->
 			</OnReceiveDrag>
 			
 		</Scripts>
@@ -465,15 +481,19 @@
 		<Scripts>
 			
 			<OnClick>
-				ArkInventory.Frame_Item_OnClick( self, button )
+				<!-- override template, do nothing -->
 			</OnClick>
+			
+			<OnMouseUp>
+				ArkInventory.Frame_Item_OnMouseUp( self, button )
+			</OnMouseUp>
 			
 			<OnDragStart>
 				ArkInventory.Frame_Item_OnDragStart_Toybox( self )
 			</OnDragStart>
 			
 			<OnReceiveDrag>
-				-- do nothing
+				<!-- override template, do nothing -->
 			</OnReceiveDrag>
 			
 		</Scripts>
@@ -485,21 +505,21 @@
 		<Scripts>
 		
 			<OnClick>
-				-- do nothing
+				<!-- override template, do nothing -->
 			</OnClick>
-			
-			<OnDragStart>
-				-- do nothing
-			</OnDragStart>
-			
-			<OnReceiveDrag>
-				-- do nothing
-			</OnReceiveDrag>
 			
 			<OnMouseUp>
 				ArkInventory.Frame_Item_OnMouseUp( self, button )
 			</OnMouseUp>
-
+			
+			<OnDragStart>
+				<!-- override template, do nothing -->
+			</OnDragStart>
+			
+			<OnReceiveDrag>
+				<!-- override template, do nothing -->
+			</OnReceiveDrag>
+			
 		</Scripts>
 
 	</Button>
@@ -545,20 +565,20 @@
 			</OnEnter>
 			
 			<OnClick>
-				-- do nothing
+				<!-- override template, do nothing -->
 			</OnClick>
 			
+			<OnMouseUp>
+				<!-- override template, do nothing -->
+			</OnMouseUp>
+			
 			<OnDragStart>
-				-- do nothing
+				<!-- override template, do nothing -->
 			</OnDragStart>
 			
 			<OnReceiveDrag>
-				-- do nothing
+				<!-- override template, do nothing -->
 			</OnReceiveDrag>
-			
-			<OnMouseUp>
-				-- do nothing
-			</OnMouseUp>
 			
 		</Scripts>
 		
@@ -588,9 +608,21 @@
 				ArkInventory.Frame_Bar_Edit_OnLoad( self )
 			</OnLoad>
 			
+			<OnShow>
+				_G[string.format( "%s%s", self:GetName( ), "EditText" )]:SetText( self:GetID( ) )
+			</OnShow>
+			
 			<OnEnter>
 				ArkInventory.GameTooltipSetText( self, string.format( ArkInventory.Localise["MENU_BAR_TITLE"], self:GetID( ) ) )
 			</OnEnter>
+			
+			<OnClick>
+				ArkInventory.Frame_Bar_Edit_OnClick( self, button )
+			</OnClick>
+			
+			<OnMouseUp>
+				<!-- override template, do nothing -->
+			</OnMouseUp>
 			
 			<OnDragStart>
 				ArkInventory.Frame_Bar_Edit_OnDragStart( self )
@@ -601,24 +633,12 @@
 			</OnReceiveDrag>
 			
 			<OnUpdate>
-				<!-- over-ride template -->
+				<!-- override template, do nothing -->
 			</OnUpdate>
 			
 			<OnEvent>
-				<!-- over-ride template -->
+				<!-- override template, do nothing -->
 			</OnEvent>
-			
-			<OnShow>
-				_G[string.format( "%s%s", self:GetName( ), "EditText" )]:SetText( self:GetID( ) )
-			</OnShow>
-			
-			<OnClick>
-				ArkInventory.Frame_Bar_Edit_OnClick( self, button )
-			</OnClick>
-			
-			<OnMouseUp>
-				<!-- over-ride template -->
-			</OnMouseUp>
 			
 		</Scripts>
 		
@@ -705,30 +725,14 @@
 				ArkInventory.Frame_Changer_Slot_OnLoad( self )
 			</OnLoad>
 			
-			<OnEvent>
-				<!-- over-ride template -->
-			</OnEvent>
-			
 			<OnShow>
-				<!-- over-ride template -->
+				<!-- override template, do nothing -->
 			</OnShow>
 
 			<OnHide>
-				<!-- over-ride template -->
+				<!-- override template, do nothing -->
 			</OnHide>
 
-			<OnClick>
-				ArkInventory.Frame_Changer_Slot_OnClick( self, button, down )
-			</OnClick>
-			
-			<OnDragStart>
-				<!-- over-ride template -->
-			</OnDragStart>
-			
-			<OnReceiveDrag>
-				ArkInventory.Frame_Changer_Slot_OnClick( self )
-			</OnReceiveDrag>
-			
 			<OnEnter>
 				ArkInventory.Frame_Changer_Slot_OnEnter( self )
 			</OnEnter>
@@ -736,6 +740,22 @@
 			<OnLeave>
 				ArkInventory.Frame_Changer_Generic_OnLeave( self )
 			</OnLeave>
+			
+			<OnClick>
+				ArkInventory.Frame_Changer_Slot_OnClick( self, button, down )
+			</OnClick>
+			
+			<OnDragStart>
+				<!-- override template, do nothing -->
+			</OnDragStart>
+			
+			<OnReceiveDrag>
+				ArkInventory.Frame_Changer_Slot_OnClick( self )
+			</OnReceiveDrag>
+			
+			<OnEvent>
+				<!-- override template, do nothing -->
+			</OnEvent>
 			
 		</Scripts>
 
@@ -905,78 +925,65 @@
 		
 		<Frames>
 		
-			<Button name="$parentLocation0" inherits="ARKINV_TemplateButtonAction">
+			<!-- action button row -->
+			<Button name="$parentActionButton0" inherits="ARKINV_TemplateButtonAction">
 				<Size x="42" y="42" />
 				<Anchors>
 					<Anchor point="LEFT" x="8" />
 				</Anchors>
-				<Scripts>
-					<OnClick>
-						ArkInventory.MenuMainOpen( self )
-					</OnClick>
-					<OnEnter>
-						ArkInventory.GameTooltipSetText( self, ArkInventory.Localise["MENU"] )
-					</OnEnter>
-				</Scripts>
 			</Button>
 			
-			<!-- action button row -->
-			<Button name="$parentClose" inherits="ARKINV_TemplateButtonClose">
+			<Button name="$parentActionButton1" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
 					<Anchor point="TOPRIGHT" x="-10" y="-10" />
 				</Anchors>
-				<Scripts>
-					<OnClick>
-						ArkInventory.Frame_Main_Hide( self:GetParent( ):GetParent( ):GetID( ) )
-					</OnClick>
-				</Scripts>
 			</Button>
 			
-			<Button name="$parentActionButton11" inherits="ARKINV_TemplateButtonAction">
+			<Button name="$parentActionButton2" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentClose" relativePoint="LEFT" x="-3" y="0" />
+					<Anchor point="RIGHT" relativeTo="$parentActionButton1" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 			
-			<Button name="$parentActionButton12" inherits="ARKINV_TemplateButtonAction">
+			<Button name="$parentActionButton3" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentActionButton11" relativePoint="LEFT" x="-3" y="0" />
+					<Anchor point="RIGHT" relativeTo="$parentActionButton2" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 			
-			<Button name="$parentActionButton13" inherits="ARKINV_TemplateButtonAction">
+			<Button name="$parentActionButton4" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentActionButton12" relativePoint="LEFT" x="-3" y="0" />
+					<Anchor point="RIGHT" relativeTo="$parentActionButton3" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 			
-			<Button name="$parentActionButton14" inherits="ARKINV_TemplateButtonAction">
+			<Button name="$parentActionButton5" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentActionButton13" relativePoint="LEFT" x="-3" y="0" />
+					<Anchor point="RIGHT" relativeTo="$parentActionButton4" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 			
-			<Button name="$parentActionButton21" inherits="ARKINV_TemplateButtonAction">
+			<Button name="$parentActionButton6" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentActionButton14" relativePoint="LEFT" x="-3" y="0" />
+					<Anchor point="RIGHT" relativeTo="$parentActionButton5" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 			
-			<Button name="$parentActionButton22" inherits="ARKINV_TemplateButtonAction">
+			<Button name="$parentActionButton7" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentActionButton21" relativePoint="LEFT" x="-3" y="0" />
+					<Anchor point="RIGHT" relativeTo="$parentActionButton6" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 			
-			<Button name="$parentActionButton23" inherits="ARKINV_TemplateButtonAction">
+			<Button name="$parentActionButton8" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentActionButton22" relativePoint="LEFT" x="-3" y="0" />
+					<Anchor point="RIGHT" relativeTo="$parentActionButton7" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
-
-			<Button name="$parentActionButton24" inherits="ARKINV_TemplateButtonAction">
+			
+			<Button name="$parentActionButton9" inherits="ARKINV_TemplateButtonAction">
 				<Anchors>
-					<Anchor point="RIGHT" relativeTo="$parentActionButton23" relativePoint="LEFT" x="-3" y="0" />
+					<Anchor point="RIGHT" relativeTo="$parentActionButton8" relativePoint="LEFT" x="-3" y="0" />
 				</Anchors>
 			</Button>
 			
@@ -986,10 +993,10 @@
 					<Layer level="ARTWORK">
 						<FontString name="$parentWho" inherits="ARKINV_GameFontNormalHuge" justifyH="LEFT" text="?">
 							<Anchors>
-								<Anchor point="TOP" relativeTo="$parentLocation0" relativePoint="TOP" />
-								<Anchor point="LEFT" relativeTo="$parentLocation0" relativePoint="RIGHT" x="10" />
+								<Anchor point="TOP" relativeTo="$parentActionButton0" relativePoint="TOP" />
+								<Anchor point="LEFT" relativeTo="$parentActionButton0" relativePoint="RIGHT" x="10" />
 								<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT" />
-								<Anchor point="BOTTOM" relativeTo="$parentLocation0" relativePoint="BOTTOM" />
+								<Anchor point="BOTTOM" relativeTo="$parentActionButton0" relativePoint="BOTTOM" />
 							</Anchors>
 						</FontString>
 					</Layer>
@@ -1074,9 +1081,6 @@
 					<Anchor point="TOPLEFT" />
 					<Anchor point="BOTTOMRIGHT" />
 				</Anchors>
-		
-				<Frames>
-				</Frames>
 				
 				<Scripts>
 					<OnLoad>
@@ -1089,6 +1093,7 @@
 		</ScrollChild>
 		
 		<Frames>
+			
 			<Slider name="$parentVerticalScroll" inherits="MinimalHybridScrollBarTemplate" parentKey="scrollBar">
 				<Anchors>
 					<Anchor point="TOP" y="-30" />
@@ -1101,11 +1106,85 @@
 					</OnValueChanged>
 				</Scripts>
 			</Slider>
+			
+			<!-- action button row -->
+			<Button name="$parentActionButton0" inherits="ARKINV_TemplateButtonAction">
+				<Size x="12" y="12" />
+				<Anchors>
+					<Anchor point="TOPLEFT" x="4" y="-4" />
+				</Anchors>
+			</Button>
+			
+			<Button name="$parentActionButton1" inherits="ARKINV_TemplateButtonAction">
+				<Size x="12" y="12" />
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-4" y="-4" />
+				</Anchors>
+			</Button>
+			
+			<Button name="$parentActionButton2" inherits="ARKINV_TemplateButtonAction">
+				<Size x="12" y="12" />
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentActionButton1" relativePoint="LEFT" x="-3" y="0" />
+				</Anchors>
+			</Button>
+			
+			<Button name="$parentActionButton3" inherits="ARKINV_TemplateButtonAction">
+				<Size x="12" y="12" />
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentActionButton2" relativePoint="LEFT" x="-3" y="0" />
+				</Anchors>
+			</Button>
+			
+			<Button name="$parentActionButton4" inherits="ARKINV_TemplateButtonAction">
+				<Size x="12" y="12" />
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentActionButton3" relativePoint="LEFT" x="-3" y="0" />
+				</Anchors>
+			</Button>
+			
+			<Button name="$parentActionButton5" inherits="ARKINV_TemplateButtonAction">
+				<Size x="12" y="12" />
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentActionButton4" relativePoint="LEFT" x="-3" y="0" />
+				</Anchors>
+			</Button>
+			
+			<Button name="$parentActionButton6" inherits="ARKINV_TemplateButtonAction">
+				<Size x="12" y="12" />
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentActionButton5" relativePoint="LEFT" x="-3" y="0" />
+				</Anchors>
+			</Button>
+			
+			<Button name="$parentActionButton7" inherits="ARKINV_TemplateButtonAction">
+				<Size x="12" y="12" />
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentActionButton6" relativePoint="LEFT" x="-3" y="0" />
+				</Anchors>
+			</Button>
+			
+			<Button name="$parentActionButton8" inherits="ARKINV_TemplateButtonAction">
+				<Size x="12" y="12" />
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentActionButton7" relativePoint="LEFT" x="-3" y="0" />
+				</Anchors>
+			</Button>
+			
+			<Button name="$parentActionButton9" inherits="ARKINV_TemplateButtonAction">
+				<Size x="12" y="12" />
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentActionButton8" relativePoint="LEFT" x="-3" y="0" />
+				</Anchors>
+			</Button>
+			
 		</Frames>
 		
 		<Scripts>
 			<OnLoad>
-				-- override. stops mouse enabling which breaks the main window dragging
+				<!-- override template -->
+				ArkInventory.Frame_Scroll_OnLoad( self )
+				<!-- stops mouse enabling which breaks the main window dragging -->
 			</OnLoad>
 		</Scripts>
 		

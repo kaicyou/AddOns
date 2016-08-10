@@ -491,6 +491,7 @@ P["sle"] = {
 			["customColor"] = {r = 1, g = 1, b = 1 },
 			["portals"] = {
 				["enable"] = true,
+				["HSplace"] = true,
 				["customWidth"] = false,
 				["customWidthValue"] = 200,
 				["justify"] = "LEFT",
@@ -516,6 +517,13 @@ P["sle"] = {
 		["showthreat"] = false,
 		["targetcount"] = false,
 		["visibleRange"] = 60,
+	},
+	--Order Halls
+	["orderhall"] = {
+		["autoOrder"] = {
+			["enable"] = false,
+			["autoEquip"] = false,
+		},
 	},
 	--Quests
 	["quests"] = {

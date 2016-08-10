@@ -29,8 +29,6 @@ ArkInventory.Lib = { -- libraries live here
 	
 }
 
-ArkInventory.db = { }
-
 ArkInventory.Table = { } -- table functions live here, coded elsewhere
 
 ArkInventory.IsFlyable = false
@@ -63,6 +61,7 @@ ArkInventory.Const = { -- constants
 		},
 		Scroll = {
 			Name = "Scroll",
+			stepSize = 40,
 		},
 		Container = {
 			Name = "ScrollContainer",
@@ -361,6 +360,8 @@ ArkInventory.Const = { -- constants
 			Bag = [[Interface\PaperDoll\UI-PaperDoll-Slot-Bag]],
 		},
 		
+		DamagedRule = [[Interface\RAIDFRAME\ReadyCheck-NotReady]],
+		
 		BackgroundDefault = "Solid",
 		
 		BorderDefault = "Blizzard Tooltip",
@@ -447,6 +448,18 @@ ArkInventory.Const = { -- constants
 		Manual = 3,
 	},
 	
+	ActionID = {
+		MainMenu = 0,
+		Close = 1,
+		EditMode = 2,
+		Rules = 3,
+		Search = 4,
+		SwitchCharacter = 5,
+		SwitchLocation = 6,
+		Restack = 7,
+		Changer = 8,
+		Refresh = 9,
+	},
 }
 
 

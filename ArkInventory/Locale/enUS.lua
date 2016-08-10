@@ -330,16 +330,20 @@ if not L then return end
 	L["CONFIG_CONTROL_ANCHOR_LOCK_TEXT"] = "lock the %1$s window so it can't be moved" -- %1$s = location name
 	L["CONFIG_CONTROL_REPOSITION_NOW"] = "Reposition Now"
 	L["CONFIG_CONTROL_REPOSITION_NOW_TEXT"] = "Repositions the %1$s window back onto the screen now" -- %1$s = location name
-	L["CONFIG_CONTROL_BLUEPRINT"] = "Blueprint"
 	L["CONFIG_CONTROL_BLUEPRINT_TEXT"] = "select which %2$s to use when generating the %1$s window" -- %1$s = location name
 	
 	
---	configuration settings > design
+--	configuration settings > design/style/layout
 	L["CONFIG_DESIGN"] = "Design"
 	L["CONFIG_DESIGN_PLURAL"] = "Designs"
 	
-	L["CONFIG_DESIGN_STYLE"] = "Style"
-	L["CONFIG_DESIGN_STYLE_PLURAL"] = "Styles"
+	L["CONFIG_STYLE"] = "Style"
+	L["CONFIG_STYLE_PLURAL"] = "Styles"
+	L["CONFIG_STYLE_DESCRIPTION"] = "to be done"
+	
+	L["CONFIG_LAYOUT"] = "Layout"
+	L["CONFIG_LAYOUT_PLURAL"] = "Layouts"
+	L["CONFIG_LAYOUT_DESCRIPTION"] = "Layouts contain all the data on what category goes where, along with all the custom bar data, and are the second half of a Design, Styles being the first half.  Combined with a Category Set they make up the Blueprint for the window.\n\n\nWhile the Layout options are stored here, You don't modify them directly from here, you can do that via the Edit Mode menus."
 	
 	L["CONFIG_DESIGN_WINDOW"] = "Window"
 	L["CONFIG_DESIGN_WINDOW_SCALE_TEXT"] = "set the scale, making the window larger or smaller"
@@ -514,32 +518,30 @@ if not L then return end
 	L["CONFIG_LIST_EXPORT_TEXT"] = "export this %1$s"
 	
 	
--- rules
-	L["CONFIG_RULES_SHOWDISABLED"] = "Show Disabled Rules"
-	L["CONFIG_RULES_SHOWDISABLED_TEXT"] = "toggles the display of disabled rules"
 	
-	
---	configuration options > categories
 	L["CONFIG_CATEGORY"] = "Category"
 	L["CONFIG_CATEGORY_PLURAL"] = "Categories"
-	L["CONFIG_CATEGORY_DELETED"] = "**Deleted Category [%s]**"
 	
 	L["CONFIG_CATEGORY_CUSTOM"] = "Custom Category"
 	L["CONFIG_CATEGORY_CUSTOM_PLURAL"] = "Custom Categories"
 	
 	L["CATEGORY_RULE"] = "Rule"
-	L["CATEGORY_RULE_PLURAL"] = "Rules"
+	L["CONFIG_RULE_PLURAL"] = "Rules"
 
+	L["CONFIG_RULE_SHOWDISABLED"] = "Show Disabled Rules"
+	L["CONFIG_RULE_SHOWDISABLED_TEXT"] = "toggles the display of disabled rules"
+	
 	L["CONFIG_CATEGORY_SET"] = "Category Set"
 	L["CONFIG_CATEGORY_SET_PLURAL"] = "Category Sets"
 	L["CONFIG_CATEGORY_SET_DESCRIPTION"] = "Category Sets contain all the data on which categories are enabled/disabled, along with which category an item has been assigned.  Combined with a Design (the Style and Layout) they make up the Blueprint for the window.\n\n\nWhile the Category Set options are stored here, You don't modify them directly from here, you can do that via the Edit Mode menus."
 	
+	L["CONFIG_PROFILE"] = "Profile"
+	L["CONFIG_PROFILE_PLURAL"] = "Profiles"
+	L["CONFIG_PROFILE_CURRENT"] = "Current Profile"
 	
---	layout
-	L["CONFIG_DESIGN_LAYOUT"] = "Layout"
-	L["CONFIG_DESIGN_LAYOUT_PLURAL"] = "Layouts"
-	L["CONFIG_DESIGN_LAYOUT_DESCRIPTION"] = "Layouts contain all the data on what category goes where, along with all the custom bar data, and are the second half of a Design, Styles being the first half.  Combined with a Category Set they make up the Blueprint for the window.\n\n\nWhile the Layout options are stored here, You don't modify them directly from here, you can do that via the Edit Mode menus."
 	
+	L["CONFIG_OBJECT_DELETED"] = "** Deleted %1$s [%2$s] **"
+
 	
 --	configuration options > debug
 	L["CONFIG_DEBUG"] = "Debug Mode"
@@ -562,6 +564,7 @@ if not L then return end
 	L["RULE_LIST_ID"] = "Rule"
 	
 	L["RULE_DAMAGED"] = "Rule %s is now flagged as damaged and will no longer be used until repaired"
+	L["RULE_DAMAGED_TEXT"] = "This formula is flagged as damaged.  The rule cannot be used until it is corrected"
 	L["RULE_FAILED"] = "Error validating rule %s"
 	L["RULE_FAILED_KEY_NIL"] = "id is nil"
 	L["RULE_FAILED_DATA_NIL"] = "data is nil"

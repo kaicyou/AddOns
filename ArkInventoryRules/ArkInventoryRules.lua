@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1634 $
-$Date: 2016-07-23 15:28:45 +1000 (Sat, 23 Jul 2016) $
+$Revision: 1680 $
+$Date: 2016-08-06 01:28:40 +1000 (Sat, 06 Aug 2016) $
 
 ]]--
 
@@ -47,11 +47,11 @@ function ArkInventoryRules.OnInitialize( )
 	-- scrap: http://wow.curse.com/downloads/wow-addons/details/scrap.aspx
 	if IsAddOnLoaded( "Scrap" ) then
 		
-		ArkInventory.Output( string.format( "%s: Scrap %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+		ArkInventory.Output( string.format( "%s: Scrap %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
 		
 		if IsAddOnLoaded( "Scrap_Merchant" ) then
 			if Scrap.ToggleJunk then
-				ArkInventory.Output( string.format( "%s: Scrap Merchant %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+				ArkInventory.Output( string.format( "%s: Scrap Merchant %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
 				ArkInventory.MySecureHook( Scrap, "ToggleJunk", ArkInventoryRules.ItemCacheClear )
 			end
 		end
@@ -61,7 +61,7 @@ function ArkInventoryRules.OnInitialize( )
 	-- selljunk: http://wow.curse.com/downloads/wow-addons/details/sell-junk.aspx
 	if IsAddOnLoaded( "SellJunk" ) then
 		if SellJunk.Add and SellJunk.Rem then
-			ArkInventory.Output( string.format( "%s: SellJunk %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+			ArkInventory.Output( string.format( "%s: SellJunk %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
 			ArkInventory.MySecureHook( SellJunk, "Add", ArkInventoryRules.ItemCacheClear )
 			ArkInventory.MySecureHook( SellJunk, "Rem", ArkInventoryRules.ItemCacheClear )
 		end
@@ -70,7 +70,7 @@ function ArkInventoryRules.OnInitialize( )
 	-- reagent restocker: http://wow.curse.com/downloads/wow-addons/details/reagent_restocker.aspx
 	if IsAddOnLoaded( "ReagentRestocker" ) then
 		if ReagentRestocker.addItemToSellingList and ReagentRestocker.deleteItem then
-			ArkInventory.Output( string.format( "%s: ReagentRestocker %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+			ArkInventory.Output( string.format( "%s: ReagentRestocker %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
 			ArkInventory.MySecureHook( ReagentRestocker, "addItemToSellingList", ArkInventoryRules.ItemCacheClear )
 			ArkInventory.MySecureHook( ReagentRestocker, "deleteItem", ArkInventoryRules.ItemCacheClear )
 		end
@@ -83,7 +83,7 @@ function ArkInventoryRules.OnEnable( )
 	-- update all rules, set non damaged and format correctly, first use of each rule will validate them
 	--LEGION TODO
 	
-	local cat = ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule]
+	local cat = ArkInventory.db.option.category[ArkInventory.Const.Category.Type.Rule]
 	for k, v in pairs( cat.data ) do
 		v.damaged = false
 	end
@@ -93,7 +93,7 @@ function ArkInventoryRules.OnEnable( )
 	ArkInventory.ItemCacheClear( )
 	ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
 	
-	ArkInventory.Output( string.format( "%s %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+	ArkInventory.Output( string.format( "%s %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
 	
 	ArkInventory.Global.Rules.Enabled = true
 	
@@ -112,7 +112,7 @@ function ArkInventoryRules.OutfitterInitialize( ... )
 	
 	if Outfitter:IsInitialized( ) then
 		
-		ArkInventory.Output( string.format( "%s: Outfitter %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+		ArkInventory.Output( string.format( "%s: Outfitter %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
 		
 		Outfitter:RegisterOutfitEvent( "ADD_OUTFIT", ArkInventoryRules.ItemCacheClear )
 		Outfitter:RegisterOutfitEvent( "DELETE_OUTFIT", ArkInventoryRules.ItemCacheClear )
@@ -139,15 +139,15 @@ function ArkInventoryRules.OnDisable( )
 	ArkInventory.ItemCacheClear( )
 	ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
 	
-	ArkInventory.Output( string.format( "%s %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Localise["DISABLED"] ) )
+	ArkInventory.Output( string.format( "%s %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["DISABLED"] ) )
 	
 end
 
 function ArkInventoryRules.AppliesToItem( rid, i )
 	
 	local ra = ArkInventory.ConfigInternalCategoryRuleGet( rid )
-	local player = ArkInventory.LocationPlayerGet( i.loc_id )
-	local rp = player.catset.category.active[ArkInventory.Const.Category.Type.Rule][rid]
+	local codex = ArkInventory.GetLocationCodex( i.loc_id )
+	local rp = codex.catset.category.active[ArkInventory.Const.Category.Type.Rule][rid]
 	
 	if not i or not rp or not ra or ra.used ~= "Y" or ra.damaged then
 		return false, nil
@@ -1313,7 +1313,7 @@ function ArkInventoryRules.System.mounttype( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"], fn ), 0 )
 	end
 	
-	local md = ArkInventory.MountJournal.GetMount( ArkInventoryRules.Object.index )
+	local md = ArkInventory.Collection.Mount.GetMount( ArkInventoryRules.Object.index )
 	
 	if md and md.mt then
 		
@@ -1809,7 +1809,7 @@ function ArkInventoryRules.Frame_Rules_Table_Refresh( frame )
 	
 	local ignore
 	
-	for k, d in pairs( ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data ) do
+	for k, d in pairs( ArkInventory.db.option.category[ArkInventory.Const.Category.Type.Rule].data ) do
 
 		-- ArkInventory.Output( "k = [", k, "], order = [", d.order, "], name = [", d.name, "], formula = [", d.formula, "]" )
 	
@@ -1822,10 +1822,6 @@ function ArkInventoryRules.Frame_Rules_Table_Refresh( frame )
 		end
 		
 		if d.used ~= "Y" then
-			ignore = true
-		end
-		
-		if not ArkInventory.db.global.option.showdisabled and not ArkInventory.db.profile.option.rule[k] then
 			ignore = true
 		end
 		
@@ -1906,14 +1902,14 @@ function ArkInventoryRules.Frame_Rules_Paint( )
 	local frame = ARKINV_Rules
 	
 	-- frameStrata
-	if frame:GetFrameStrata( ) ~= ArkInventory.db.global.option.ui.rules.strata then
-		frame:SetFrameStrata( ArkInventory.db.global.option.ui.rules.strata )
+	if frame:GetFrameStrata( ) ~= ArkInventory.db.option.ui.rules.strata then
+		frame:SetFrameStrata( ArkInventory.db.option.ui.rules.strata )
 	end
 	
 	-- title
 	obj = _G[frame:GetName( ) .. "TitleWho"]
 	if obj then
-		t = string.format( "%s: %s %s", ArkInventory.Localise["CATEGORY_RULE_PLURAL"], ArkInventory.Const.Program.Name, ArkInventory.Global.Version )
+		t = string.format( "%s: %s %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Const.Program.Name, ArkInventory.Global.Version )
 		obj:SetText( t )
 	end
 	
@@ -1921,7 +1917,7 @@ function ArkInventoryRules.Frame_Rules_Paint( )
 	ArkInventory.MediaFrameDefaultFontSet( frame )
 	
 	-- scale
-	frame:SetScale( ArkInventory.db.global.option.ui.rules.scale or 1 )
+	frame:SetScale( ArkInventory.db.option.ui.rules.scale or 1 )
 	
 	local style, file, size, offset, scale, colour
 	
@@ -1930,9 +1926,9 @@ function ArkInventoryRules.Frame_Rules_Paint( )
 		-- background
 		local obj = _G[z:GetName( ) .. "Background"]
 		if obj then
-			style = ArkInventory.db.global.option.ui.rules.background.style or ArkInventory.Const.Texture.BackgroundDefault
+			style = ArkInventory.db.option.ui.rules.background.style or ArkInventory.Const.Texture.BackgroundDefault
 			if style == ArkInventory.Const.Texture.BackgroundDefault then
-				colour = ArkInventory.db.global.option.ui.rules.background.colour
+				colour = ArkInventory.db.option.ui.rules.background.colour
 				ArkInventory.SetTexture( obj, true, colour.r, colour.g, colour.b, colour.a )
 			else
 				file = ArkInventory.Lib.SharedMedia:Fetch( ArkInventory.Lib.SharedMedia.MediaType.BACKGROUND, style )
@@ -1941,12 +1937,12 @@ function ArkInventoryRules.Frame_Rules_Paint( )
 		end
 		
 		-- border
-		style = ArkInventory.db.global.option.ui.rules.border.style or ArkInventory.Const.Texture.BorderDefault
+		style = ArkInventory.db.option.ui.rules.border.style or ArkInventory.Const.Texture.BorderDefault
 		file = ArkInventory.Lib.SharedMedia:Fetch( ArkInventory.Lib.SharedMedia.MediaType.BORDER, style )
-		size = ArkInventory.db.global.option.ui.rules.border.size or ArkInventory.Const.Texture.Border[ArkInventory.Const.Texture.BorderDefault].size
-		offset = ArkInventory.db.global.option.ui.rules.border.offset or ArkInventory.Const.Texture.Border[ArkInventory.Const.Texture.BorderDefault].offset
-		scale = ArkInventory.db.global.option.ui.rules.border.scale or 1
-		colour = ArkInventory.db.global.option.ui.rules.border.colour or { }
+		size = ArkInventory.db.option.ui.rules.border.size or ArkInventory.Const.Texture.Border[ArkInventory.Const.Texture.BorderDefault].size
+		offset = ArkInventory.db.option.ui.rules.border.offset or ArkInventory.Const.Texture.Border[ArkInventory.Const.Texture.BorderDefault].offset
+		scale = ArkInventory.db.option.ui.rules.border.scale or 1
+		colour = ArkInventory.db.option.ui.rules.border.colour or { }
 		
 		ArkInventoryRules.Frame_Rules_Paint_Border( z, file, size, offset, scale, colour.r, colour.g, colour.b, 1 )
 		
@@ -1961,7 +1957,7 @@ function ArkInventoryRules.Frame_Rules_Paint_Border( frame, ... )
 	if frame:GetName( ) then
 		local obj = _G[frame:GetName( ) .. "ArkBorder"]
 		if obj then
-			if ArkInventory.db.global.option.ui.rules.border.style ~= ArkInventory.Const.Texture.BorderNone then
+			if ArkInventory.db.option.ui.rules.border.style ~= ArkInventory.Const.Texture.BorderNone then
 				ArkInventory.Frame_Border_Paint( obj, false, ... )
 				obj:Show( )
 			else
@@ -2019,9 +2015,9 @@ function ArkInventoryRules.EntryUpdate( rid, data )
 	ArkInventoryRules.EntryFormat( data )
 	
 	-- save the rule data at the global level
-	ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[rid].used = "Y"
+	ArkInventory.db.option.category[ArkInventory.Const.Category.Type.Rule].data[rid].used = "Y"
 	for k, v in pairs( data ) do
-		ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Rule].data[rid][k] = v
+		ArkInventory.db.option.category[ArkInventory.Const.Category.Type.Rule].data[rid][k] = v
 	end
 	
 	ArkInventory.ItemCacheClear( )

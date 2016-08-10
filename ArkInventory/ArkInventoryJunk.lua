@@ -70,13 +70,13 @@ function ArkInventory.JunkSell( )
 		return
 	end
 	
-	if ArkInventory.db.global.option.junk.sell then
+	if ArkInventory.db.option.junk.sell then
 		
 		local total = ArkInventory.JunkValue( )
 		
 		local sold = 0
 		local limit = BUYBACK_ITEMS_PER_PAGE
-		if not ArkInventory.db.global.option.junk.limit then
+		if not ArkInventory.db.option.junk.limit then
 			limit = 0
 		end
 		
@@ -94,7 +94,7 @@ function ArkInventory.JunkSell( )
 				-- cant use money as it doesnt update in time.
 				-- so next best thing, record how much the junk we had beforehand cost and how much we have at the end costs
 			elseif cost == 0 then
-				if ArkInventory.db.global.option.junk.delete then
+				if ArkInventory.db.option.junk.delete then
 					--ArkInventory.Output( "deleting ", h )
 					PickupContainerItem( blizzard_id, slot_id )
 					DeleteCursorItem( )
@@ -103,7 +103,7 @@ function ArkInventory.JunkSell( )
 			
 		end
 		
-		if sold > 0 and ArkInventory.db.global.option.junk.notify then
+		if sold > 0 and ArkInventory.db.option.junk.notify then
 			total = total - ArkInventory.JunkValue( )
 			ArkInventory.Output( string.format( ArkInventory.Localise["CONFIG_JUNK_SELL_NOTIFY"], ArkInventory.MoneyText( total ) ) )
 		end

@@ -330,7 +330,6 @@ if not L then return end
 	L["CONFIG_CONTROL_ANCHOR_LOCK_TEXT"] = "鎖定 %1$s 框架以避免移動"
 --	L["CONFIG_CONTROL_REPOSITION_NOW"] = ""
 --	L["CONFIG_CONTROL_REPOSITION_NOW_TEXT"] = ""
---	L["CONFIG_CONTROL_BLUEPRINT"] = ""
 	L["CONFIG_CONTROL_BLUEPRINT_TEXT"] = "選擇當產生%1$s視窗時使用的設定"
 	
 	
@@ -338,8 +337,13 @@ if not L then return end
 --	L["CONFIG_DESIGN"] = ""
 --	L["CONFIG_DESIGN_PLURAL"] = ""
 	
---	L["CONFIG_DESIGN_STYLE"] = ""
---	L["CONFIG_DESIGN_STYLE_PLURAL"] = ""
+--	L["CONFIG_STYLE"] = ""
+--	L["CONFIG_STYLE_PLURAL"] = ""
+--	L["CONFIG_STYLE_DESCRIPTION"] = ""
+	
+--	L["CONFIG_LAYOUT"] = ""
+--	L["CONFIG_LAYOUT_PLURAL"] = ""
+--	L["CONFIG_LAYOUT_DESCRIPTION"] = ""
 	
 	L["CONFIG_DESIGN_WINDOW"] = "視窗"
 	L["CONFIG_DESIGN_WINDOW_SCALE_TEXT"] = "設定縮放視窗的大小比例"
@@ -514,18 +518,15 @@ if not L then return end
 --	L["CONFIG_LIST_EXPORT_TEXT"] = ""
 	
 	
---	rules
-	L["CONFIG_RULES_SHOWDISABLED"] = "顯示停用規則"
-	L["CONFIG_RULES_SHOWDISABLED_TEXT"] = "顯示已經停用的規則"
 	
-	
---	configuration options > categories
 --	L["CONFIG_CATEGORY"] = ""
 --	L["CONFIG_CATEGORY_PLURAL"] = ""
---	L["CONFIG_CATEGORY_DELETED"] = ""
 	
 	L["CATEGORY_RULE"] = "規則"
-	L["CATEGORY_RULE_PLURAL"] = "規則"
+	L["CONFIG_RULE_PLURAL"] = "規則"
+	
+	L["CONFIG_RULE_SHOWDISABLED"] = "顯示停用規則"
+	L["CONFIG_RULE_SHOWDISABLED_TEXT"] = "顯示已經停用的規則"
 	
 --	L["CONFIG_CATEGORY_CUSTOM"] = ""
 	L["CONFIG_CATEGORY_CUSTOM_PLURAL"] = "自訂類別"
@@ -534,11 +535,12 @@ if not L then return end
 --	L["CONFIG_CATEGORY_SET_PLURAL"] = ""
 --	L["CONFIG_CATEGORY_SET_DESCRIPTION"] = ""
 	
+--	L["CONFIG_PROFILE"] = ""
+--	L["CONFIG_PROFILE_PLURAL"] = ""
+--	L["CONFIG_PROFILE_CURRENT"] = ""
 	
---	layout
---	L["CONFIG_DESIGN_LAYOUT"] = ""
---	L["CONFIG_DESIGN_LAYOUT_PLURAL"] = ""
---	L["CONFIG_DESIGN_LAYOUT_DESCRIPTION"] = ""
+	
+--	L["CONFIG_OBJECT_DELETED"] = ""
 	
 	
 --	configuration options > debug
@@ -562,6 +564,7 @@ if not L then return end
 	L["RULE_LIST_ID"] = "規則"
 	
 	L["RULE_DAMAGED"] = "規則「%s」已標示為損壞，維修前不會再被使用"
+--	L["RULE_DAMAGED_TEXT"] = ""
 	L["RULE_FAILED"] = "錯誤的驗證規則 %s"
 	L["RULE_FAILED_KEY_NIL"] = "缺少鍵值"
 	L["RULE_FAILED_DATA_NIL"] = "缺少資料"
@@ -700,6 +703,8 @@ if not L then return end
 --	L["ACTION"] = ""
 --	L["FIRST"] = ""
 --	L["LAST"] = ""
+--	L["NONE_USABLE"] = ""
+--	L["NONE_OWNED"] = ""
 	
 	
 -- libdatabroker

@@ -54,23 +54,6 @@ function ArkInventory.PetJournal.FilterSetSearch( s )
 	C_PetJournal.SetSearchFilter( s )
 end
 
-function ArkInventory.PetJournal.FilterGetFamilyTypes( )
-	return C_PetJournal.GetNumPetTypes( )
-end
-
-function ArkInventory.PetJournal.FilterGetSourceTypes( )
-	return C_PetJournal.GetNumPetSources( )
-end
-
-function ArkInventory.PetJournal.FilterGetSearch( )
-	return PetJournal.searchBox:GetText( )
-end
-
-function ArkInventory.PetJournal.FilterSetSearch( s )
-	PetJournal.searchBox:SetText( s )
-	C_PetJournal.SetSearchFilter( s )
-end
-
 function ArkInventory.PetJournal.FilterSetCollected( value )
 	C_PetJournal.SetFilterChecked( LE_PET_JOURNAL_FILTER_COLLECTED, value )
 	-- legion ok
@@ -138,26 +121,22 @@ function ArkInventory.PetJournal.FilterGetSource( t )
 	-- legion ok
 end
 
-
 function ArkInventory.PetJournal.OnHide( )
 	filter.ignore = false
-	ArkInventory:SendMessage( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET", "RESCAN" )
+	ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_PET_RELOAD_BUCKET", "RESCAN" )
 end
 
 function ArkInventory.PetJournal.FilterActionClear( )
 	
 	--ArkInventory.Output( "PetJournal.FilterActionClear" )
 	
-	--PetJournal:UnregisterEvent( "PET_JOURNAL_LIST_UPDATE" )
 	filter.ignore = true
 	
-	ArkInventory.PetJournal.FilterSetSearch( "" ) --SEARCH
+	ArkInventory.PetJournal.FilterSetSearch( "" )
 	ArkInventory.PetJournal.FilterSetCollected( true )
 	ArkInventory.PetJournal.FilterSetUncollected( true )
 	ArkInventory.PetJournal.FilterSetFamily( true )
 	ArkInventory.PetJournal.FilterSetSource( true )
-	
-	--PetJournal:RegisterEvent( "PET_JOURNAL_LIST_UPDATE" )
 	
 end
 
@@ -182,7 +161,6 @@ function ArkInventory.PetJournal.FilterActionRestore( )
 	
 	--ArkInventory.Output( "PetJournal.FilterActionRestore" )
 	
-	--PetJournal:UnregisterEvent( "PET_JOURNAL_LIST_UPDATE" )
 	filter.ignore = true
 	
 	ArkInventory.PetJournal.FilterSetSearch( filter.search )
@@ -190,8 +168,6 @@ function ArkInventory.PetJournal.FilterActionRestore( )
 	ArkInventory.PetJournal.FilterSetUncollected( filter.uncollected )
 	ArkInventory.PetJournal.FilterSetFamily( filter.family )
 	ArkInventory.PetJournal.FilterSetSource( filter.source )
-	
-	--PetJournal:RegisterEvent( "PET_JOURNAL_LIST_UPDATE" )
 	
 end
 
@@ -365,7 +341,7 @@ function ArkInventory.PetJournal.Scan( )
 	
 	if not ArkInventory.PetJournal.JournalIsUnlocked( ) then
 		-- journal not ready, come back later
-		ArkInventory:SendMessage( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET", "RESCAN" )
+		ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_PET_RELOAD_BUCKET", "RESCAN" )
 	end
 	
 	local pj = ArkInventory.PetJournal.data
@@ -411,7 +387,7 @@ function ArkInventory.PetJournal.Scan( )
 		local sd = ArkInventory.PetJournal.ScanSpecies( speciesID )
 		if not sd then
 			ArkInventory.PetJournal.FilterActionRestore( )
-			ArkInventory:SendMessage( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET", "RESCAN" )
+			ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_PET_RELOAD_BUCKET", "RESCAN" )
 			return false
 		end
 
@@ -428,7 +404,7 @@ function ArkInventory.PetJournal.Scan( )
 			if not pd then
 				--ArkInventory.Output( "* pet journal not ready at ", i, " / ", guid )
 				ArkInventory.PetJournal.FilterActionRestore( )
-				ArkInventory:SendMessage( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET", "RESCAN" )
+				ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_PET_RELOAD_BUCKET", "RESCAN" )
 				return false
 			end
 			if not update and upd then
@@ -445,7 +421,7 @@ function ArkInventory.PetJournal.Scan( )
 	pj.loaded = true
 	
 	if update then
-		ArkInventory.ScanPetJournal( )
+		ArkInventory.ScanCollectionPet( )
 	end
 	
 	return true
@@ -977,7 +953,7 @@ function ArkInventory:EVENT_WOW_BATTLEPET_OPENING_DONE( event, ... )
 	
 	--ArkInventory.Output( "EVENT_WOW_BATTLEPET_OPENING_DONE" )
 	-- /run ArkInventory:EVENT_WOW_BATTLEPET_OPENING_DONE( "MANUAL" )
-	if not ArkInventory.db.global.option.message.battlepet.opponent then return end
+	if not ArkInventory.db.option.message.battlepet.opponent then return end
 	
 	ArkInventory.PetJournal.Scan( )
 	
@@ -1141,26 +1117,26 @@ function ArkInventory:EVENT_WOW_COLLECTION_PET_RELOAD( event, ... )
 	
 	if ( event == "PET_JOURNAL_LIST_UPDATE" ) then
 		
-		ArkInventory:SendMessage( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET", event )
+		ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_PET_RELOAD_BUCKET", event )
 		
 	elseif ( event == "COMPANION_UPDATE" ) then
 		
 		local c = ...
 		if ( c == "CRITTER" ) then
-			ArkInventory:SendMessage( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET", event )
+			ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_PET_RELOAD_BUCKET", event )
 		end
 		
 	else
 		
-		ArkInventory:SendMessage( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET", event )
+		ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_PET_RELOAD_BUCKET", event )
 		
 	end
 	
 end
 
-function ArkInventory:EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET( events )
+function ArkInventory:EVENT_ARKINV_COLLECTION_PET_RELOAD_BUCKET( events )
 	
-	--ArkInventory.Output( "EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET( ", events, " )" )
+	--ArkInventory.Output( "EVENT_ARKINV_COLLECTION_PET_RELOAD_BUCKET( ", events, " )" )
 	
 	loc_id = ArkInventory.Const.Location.Pet
 	
@@ -1188,7 +1164,7 @@ function ArkInventory:EVENT_ARKINV_PETJOURNAL_RELOAD_BUCKET( events )
 	
 end
 
--- unit guid, from mmouseover = Creature-[unknown]-[serverID]-[instanceID]-[zoneUID]-[creatureID]-[spawnUID]
+-- unit guid, from mouseover = Creature-[unknown]-[serverID]-[instanceID]-[zoneUID]-[creatureID]-[spawnUID]
 -- caged battletpet (item) = battlepet:
 -- pet journal = battlepet:[speciesID]:16:3:922:185:185:[guid]
 

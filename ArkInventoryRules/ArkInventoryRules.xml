@@ -924,7 +924,7 @@
 		<Scripts>
 
 			<OnLoad>
-				self.name = ArkInventory.Localise["CATEGORY_RULE_PLURAL"]
+				self.name = ArkInventory.Localise["CONFIG_RULE_PLURAL"]
 				self.parent = ArkInventory.Const.Program.Name
 				
 				self:RegisterForDrag( "LeftButton" )

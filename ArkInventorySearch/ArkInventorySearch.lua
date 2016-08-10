@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1525 $
-$Date: 2016-07-16 20:30:36 +1000 (Sat, 16 Jul 2016) $
+$Revision: 1639 $
+$Date: 2016-07-24 07:24:06 +1000 (Sun, 24 Jul 2016) $
 
 ]]--
 
@@ -26,8 +26,8 @@ function ArkInventory.Frame_Search_Paint( )
 	local frame = ARKINV_Search
 	
 	-- frameStrata
-	if frame:GetFrameStrata( ) ~= ArkInventory.db.global.option.ui.search.strata then
-		frame:SetFrameStrata( ArkInventory.db.global.option.ui.search.strata )
+	if frame:GetFrameStrata( ) ~= ArkInventory.db.option.ui.search.strata then
+		frame:SetFrameStrata( ArkInventory.db.option.ui.search.strata )
 	end
 	
 	-- title
@@ -41,7 +41,7 @@ function ArkInventory.Frame_Search_Paint( )
 	ArkInventory.MediaFrameDefaultFontSet( frame )
 	
 	-- scale
-	frame:SetScale( ArkInventory.db.global.option.ui.search.scale or 1 )
+	frame:SetScale( ArkInventory.db.option.ui.search.scale or 1 )
 	
 	local style, file, size, offset, scale, colour
 	
@@ -50,9 +50,9 @@ function ArkInventory.Frame_Search_Paint( )
 		-- background
 		local obj = _G[string.format( "%s%s", z:GetName( ), "Background" )]
 		if obj then
-			style = ArkInventory.db.global.option.ui.search.background.style or ArkInventory.Const.Texture.BackgroundDefault
+			style = ArkInventory.db.option.ui.search.background.style or ArkInventory.Const.Texture.BackgroundDefault
 			if style == ArkInventory.Const.Texture.BackgroundDefault then
-				colour = ArkInventory.db.global.option.ui.search.background.colour
+				colour = ArkInventory.db.option.ui.search.background.colour
 				ArkInventory.SetTexture( obj, true, colour.r, colour.g, colour.b, colour.a )
 			else
 				file = ArkInventory.Lib.SharedMedia:Fetch( ArkInventory.Lib.SharedMedia.MediaType.BACKGROUND, style )
@@ -61,16 +61,16 @@ function ArkInventory.Frame_Search_Paint( )
 		end
 		
 		-- border
-		style = ArkInventory.db.global.option.ui.search.border.style or ArkInventory.Const.Texture.BorderDefault
+		style = ArkInventory.db.option.ui.search.border.style or ArkInventory.Const.Texture.BorderDefault
 		file = ArkInventory.Lib.SharedMedia:Fetch( ArkInventory.Lib.SharedMedia.MediaType.BORDER, style )
-		size = ArkInventory.db.global.option.ui.search.border.size or ArkInventory.Const.Texture.Border[ArkInventory.Const.Texture.BorderDefault].size
-		offset = ArkInventory.db.global.option.ui.search.border.offset or ArkInventory.Const.Texture.Border[ArkInventory.Const.Texture.BorderDefault].offset
-		scale = ArkInventory.db.global.option.ui.search.border.scale or 1
-		colour = ArkInventory.db.global.option.ui.search.border.colour or { }
+		size = ArkInventory.db.option.ui.search.border.size or ArkInventory.Const.Texture.Border[ArkInventory.Const.Texture.BorderDefault].size
+		offset = ArkInventory.db.option.ui.search.border.offset or ArkInventory.Const.Texture.Border[ArkInventory.Const.Texture.BorderDefault].offset
+		scale = ArkInventory.db.option.ui.search.border.scale or 1
+		colour = ArkInventory.db.option.ui.search.border.colour or { }
 	
 		local obj = _G[string.format( "%s%s", z:GetName( ), "ArkBorder" )]
 		if obj then
-			if ArkInventory.db.global.option.ui.search.border.style ~= ArkInventory.Const.Texture.BorderNone then
+			if ArkInventory.db.option.ui.search.border.style ~= ArkInventory.Const.Texture.BorderNone then
 				ArkInventory.Frame_Border_Paint( obj, false, file, size, offset, scale, colour.r, colour.g, colour.b, 1 )
 				obj:Show( )
 			else
@@ -84,7 +84,7 @@ function ArkInventory.Frame_Search_Paint( )
 					if c2:GetName( ) then
 						local obj = _G[string.format( "%s%s", c2:GetName( ), "ArkBorder" )]
 						if obj then
-							if ArkInventory.db.global.option.ui.search.border.style ~= ArkInventory.Const.Texture.BorderNone then
+							if ArkInventory.db.option.ui.search.border.style ~= ArkInventory.Const.Texture.BorderNone then
 								ArkInventory.Frame_Border_Paint( obj, false, file, size, offset, scale, colour.r, colour.g, colour.b, 1 )
 								obj:Show( )
 							else
@@ -203,7 +203,7 @@ function ArkInventory.Frame_Search_Table_Refresh( frame )
 
 	local cp = ArkInventory.Global.Me
 	
-	for p, pd in ArkInventory.spairs( ArkInventory.db.global.player.data ) do
+	for p, pd in ArkInventory.spairs( ArkInventory.db.player.data ) do
 		
 		for l, ld in pairs( pd.location ) do
 			

@@ -297,11 +297,6 @@ end
 
 
 
-if ArkInventory.Const.TOC < 70000 then
-	ArkInventory.OutputError( ArkInventory.Localise["TOC_FAIL"] )
-	return
-end
-
 frame:SetScript( "OnUpdate",
 	function( self, elapsed )
 		self.loop = self.loop or 0
@@ -314,13 +309,13 @@ frame:SetScript( "OnUpdate",
 			
 			if not updateTable then
 				self:Hide( )
-				if ArkInventory.db.global.option.message.translation.final then
+				if ArkInventory.db.option.message.translation.final then
 					ArkInventory.Output( lang, " translations already loaded." )
 				end
 				return
 			end
 			
-			if ArkInventory.db.global.option.message.translation.interim then
+			if ArkInventory.db.option.message.translation.interim then
 				ArkInventory.Output( lang, " translations - attempt ", self.loop, " of ", self.loopmax, "." )
 			end
 			
@@ -332,7 +327,7 @@ frame:SetScript( "OnUpdate",
 
 				if ok then
 					
-					if ArkInventory.db.global.option.message.translation.final then
+					if ArkInventory.db.option.message.translation.final then
 						ArkInventory.Output( lang, " translations successfully loaded." )
 					end
 					

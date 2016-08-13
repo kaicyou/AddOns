@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1639 $
-$Date: 2016-07-24 07:24:06 +1000 (Sun, 24 Jul 2016) $
+$Revision: 1701 $
+$Date: 2016-08-13 00:28:59 +1000 (Sat, 13 Aug 2016) $
 
 ]]--
 
@@ -201,8 +201,6 @@ function ArkInventory.Frame_Search_Table_Refresh( frame )
 	local tt = { }
 	ArkInventory.SearchRebuild = false
 
-	local cp = ArkInventory.Global.Me
-	
 	for p, pd in ArkInventory.spairs( ArkInventory.db.player.data ) do
 		
 		for l, ld in pairs( pd.location ) do

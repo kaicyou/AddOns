@@ -155,7 +155,7 @@ function ArkInventory.TooltipSetBattlepet( tooltip, h, i )
 	-- creates a basic text tooltip, then hooks via the hyperlink for the item counts
 	-- mouseover pet items, and clicking pet links
 	
-	-- mouseover tooltip for pets is done below at TooltipHookSetUnit
+	-- mouseover tooltip for pets is done at TooltipHookSetUnit
 	
 	local osd = ArkInventory.ObjectStringDecode( h )
 	local class, speciesID, level, rarity, fullHealth, power, speed = unpack( osd )
@@ -295,40 +295,40 @@ end
 
 function ArkInventory.TooltipHookSetUnit( ... )
 	
-	if ArkInventory:IsEnabled( ) and ArkInventory.db.option.tooltip.battlepet.mouseover.enable then
+	if not ArkInventory:IsEnabled( ) then return end
+	
+	if not ArkInventory.db.option.tooltip.battlepet.mouseover.enable then return end
+	
+	local tooltip = ...
+	
+	local _, unit = tooltip:GetUnit( )
+	
+	if unit and ( UnitIsWildBattlePet( unit ) or UnitIsOtherPlayersBattlePet( unit ) or UnitIsBattlePetCompanion( unit ) ) then
 		
-		local tooltip = ...
+		local speciesID = UnitBattlePetSpeciesID( unit )
 		
-		local _, unit = tooltip:GetUnit( )
-		
-		if unit and ( UnitIsWildBattlePet( unit ) or UnitIsOtherPlayersBattlePet( unit ) or UnitIsBattlePetCompanion( unit ) ) then
+		if speciesID then
 			
-			local speciesID = UnitBattlePetSpeciesID( unit )
+			tooltip:Show( ) -- its a static tooltip, need to show it first to be able to add to it
 			
-			if speciesID then
+			sd = ArkInventory.PetJournal.GetSpeciesInfo( speciesID )
+			
+			if sd then
 				
-				tooltip:Show( ) -- its a static tooltip, need to show it first to be able to add to it
-				
-				sd = ArkInventory.PetJournal.GetSpeciesInfo( speciesID )
-				
-				if sd then
-					
-					if ArkInventory.db.option.tooltip.battlepet.mouseover.source and sd.sourceText and ( sd.sourceText ~= "" ) then
-						tooltip:AddLine( " " )
-						tooltip:AddLine( sd.sourceText, nil, nil, nil, true )
-					end
-					
-					if ArkInventory.db.option.tooltip.battlepet.mouseover.description and sd.description and ( sd.description ~= "" ) then
-						tooltip:AddLine( " " )
-						tooltip:AddLine( sd.description, nil, nil, nil, true )
-					end
-					
+				if ArkInventory.db.option.tooltip.battlepet.mouseover.source and sd.sourceText and ( sd.sourceText ~= "" ) then
+					tooltip:AddLine( " " )
+					tooltip:AddLine( sd.sourceText, nil, nil, nil, true )
 				end
 				
-				if ArkInventory.db.option.tooltip.add.count then
-					ArkInventory.TooltipAddBattlepetDetail( tooltip, speciesID )
+				if ArkInventory.db.option.tooltip.battlepet.mouseover.description and sd.description and ( sd.description ~= "" ) then
+					tooltip:AddLine( " " )
+					tooltip:AddLine( sd.description, nil, nil, nil, true )
 				end
 				
+			end
+			
+			if ArkInventory.db.option.tooltip.add.count then
+				ArkInventory.TooltipAddBattlepetDetail( tooltip, speciesID )
 			end
 			
 		end
@@ -336,9 +336,7 @@ function ArkInventory.TooltipHookSetUnit( ... )
 	end
 	
 end
-
-
-
+	
 function ArkInventory.TooltipGetMoneyFrame( tooltip )
 	
 	return _G[string.format( "%s%s", tooltip:GetName( ), "MoneyFrame1" )]
@@ -525,6 +523,10 @@ end
 
 function ArkInventory.TooltipHook( ... )
 	
+	if not ArkInventory:IsEnabled( ) then return end
+	
+	if not ArkInventory.db.option.tooltip.show then return end
+	
 	if ArkInventory.Global.Mode.Combat then return end
 
 	local tooltip, arg1, arg2, arg3, arg4 = ...
@@ -589,6 +591,10 @@ end
 
 function ArkInventory.TooltipHookSetCurrencyToken( ... )
 	
+	if not ArkInventory:IsEnabled( ) then return end
+	
+	if not ArkInventory.db.option.tooltip.show then return end
+	
 	local tooltip, arg1 = ...
 	
 	if not tooltip then return end
@@ -600,6 +606,10 @@ function ArkInventory.TooltipHookSetCurrencyToken( ... )
 end
 
 function ArkInventory.TooltipHookSetMerchantCostItem( ... )
+	
+	if not ArkInventory:IsEnabled( ) then return end
+	
+	if not ArkInventory.db.option.tooltip.show then return end
 	
 	local tooltip, slot, index = ...
 	
@@ -621,6 +631,10 @@ end
 
 function ArkInventory.TooltipHookSetCurrencyByID( ... )
 	
+	if not ArkInventory:IsEnabled( ) then return end
+	
+	if not ArkInventory.db.option.tooltip.show then return end
+	
 	local tooltip, id = ...
 	
 	if not tooltip then return end
@@ -635,6 +649,10 @@ end
 
 function ArkInventory.TooltipHookSetBackpackToken( ... )
 	
+	if not ArkInventory:IsEnabled( ) then return end
+	
+	if not ArkInventory.db.option.tooltip.show then return end
+	
 	local tooltip, arg1 = ...
 	
 	if not tooltip then return end
@@ -647,6 +665,10 @@ function ArkInventory.TooltipHookSetBackpackToken( ... )
 end
 
 function ArkInventory.TooltipHookSetRecipeReagentItem( ... )
+	
+	if not ArkInventory:IsEnabled( ) then return end
+	
+	if not ArkInventory.db.option.tooltip.show then return end
 	
 	local tooltip, arg1, arg2 = ...
 	
@@ -893,6 +915,10 @@ function ArkInventory.TooltipSetMoneyText( frame, money, txt, r, g, b )
 end
 
 function ArkInventory.TooltipShowCompare( ... )
+	
+	if not ArkInventory:IsEnabled( ) then return end
+	
+	if not ArkInventory.db.option.tooltip.show then return end
 	
 	-- achievement comparison
 	

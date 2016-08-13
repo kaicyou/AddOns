@@ -1138,11 +1138,9 @@ function ArkInventory:EVENT_ARKINV_COLLECTION_PET_RELOAD_BUCKET( events )
 	
 	--ArkInventory.Output( "EVENT_ARKINV_COLLECTION_PET_RELOAD_BUCKET( ", events, " )" )
 	
-	loc_id = ArkInventory.Const.Location.Pet
+	if not ArkInventory:IsEnabled( ) then return end
 	
-	if not ArkInventory:IsEnabled( ) then
-		return
-	end
+	local loc_id = ArkInventory.Const.Location.Pet
 	
 	if not ArkInventory.LocationIsMonitored( loc_id ) then
 		--ArkInventory.Output( "IGNORED (NOT MONITORED)" )

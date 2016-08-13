@@ -1,9 +1,38 @@
 ------------------------------------------------------------------------
-r507 | olzenkhaw | 2016-08-09 00:23:27 +0000 (Tue, 09 Aug 2016) | 1 line
+r515 | olzenkhaw | 2016-08-13 04:09:09 +0000 (Sat, 13 Aug 2016) | 1 line
 Changed paths:
-   A /tags/v6.1.7 Legion release (from /trunk:506)
+   A /tags/v6.1.11 Legion release (from /trunk:514)
 
-v6.1.7 Fixed a bug.
+v6.1.11 Fixed a bug.
+------------------------------------------------------------------------
+r514 | olzenkhaw | 2016-08-13 04:08:47 +0000 (Sat, 13 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.11 Fixed a bug.
+------------------------------------------------------------------------
+r512 | olzenkhaw | 2016-08-12 03:46:14 +0000 (Fri, 12 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.10 Fixed a bug.
+------------------------------------------------------------------------
+r510 | olzenkhaw | 2016-08-11 16:05:37 +0000 (Thu, 11 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.9 Fixed a bug.
+------------------------------------------------------------------------
+r508 | olzenkhaw | 2016-08-10 16:21:10 +0000 (Wed, 10 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+   M /trunk/Oilvlconfig.lua
+
+v6.1.8 /oiraltc to enable / disable alt-click loot frame feature
 ------------------------------------------------------------------------
 r506 | olzenkhaw | 2016-08-09 00:23:07 +0000 (Tue, 09 Aug 2016) | 1 line
 Changed paths:

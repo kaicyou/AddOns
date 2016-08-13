@@ -305,6 +305,9 @@ frame:SetScript( "OnUpdate",
 		if self.timer > self.timermax then
 			
 			self.timer = nil
+			
+			if not ArkInventory:IsEnabled( ) then return end
+			
 			self.loop = self.loop + 1
 			
 			if not updateTable then

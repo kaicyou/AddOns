@@ -66,6 +66,7 @@ local function FindStack( loc_id, cl, cb, bp, cs, id )
 	
 	--ArkInventory.Output( "FindStack( ", loc_id, ", ", cl, ".", cb, ".", cs, ", ", id, " )" )
 	
+	local me = ArkInventory.GetPlayerCodex( )
 	local abort = false
 	local recheck = false
 	
@@ -76,7 +77,7 @@ local function FindStack( loc_id, cl, cb, bp, cs, id )
 	
 	for _, bag_id in ipairs( ArkInventory.Global.Location[loc_id].Bags ) do
 		
-		if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
+		if not me.player.data.option[loc_id].bag[bag_id].restack.ignore then
 			
 			for slot_id = GetContainerNumSlots( bag_id ), 1, -1 do
 				
@@ -148,6 +149,7 @@ local function FindPartialStack( loc_id, cl, cb, bp, cs, id )
 	
 	--ArkInventory.OutputDebug( "FindPartialStack( ", cl, ".", cb, ".", cs, ", ", id, " )" )
 	
+	local me = ArkInventory.GetPlayerCodex( )
 	local abort = false
 	local recheck = false
 	
@@ -219,7 +221,7 @@ local function FindPartialStack( loc_id, cl, cb, bp, cs, id )
 		
 		for zz, bag_id in ipairs( ArkInventory.Global.Location[loc_id].Bags ) do
 			
-			if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
+			if not me.player.data.option[loc_id].bag[bag_id].restack.ignore then
 				
 				for slot_id = GetContainerNumSlots( bag_id ), 1, -1 do
 					
@@ -299,6 +301,7 @@ end
 
 local function FindProfessionItem( loc_id, cl, cb, bp, cs, ct )
 	
+	local me = ArkInventory.GetPlayerCodex( )
 	local abort = false
 	local recheck = false
 	
@@ -325,7 +328,7 @@ local function FindProfessionItem( loc_id, cl, cb, bp, cs, ct )
 			return abort, recheck, false
 		end
 		
-		if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
+		if not me.player.data.option[loc_id].bag[bag_id].restack.ignore then
 			
 			if bt == 0 then
 				
@@ -415,6 +418,7 @@ end
 
 local function FindCraftingItem( loc_id, cl, cb, bp, cs )
 	
+	local me = ArkInventory.GetPlayerCodex( )
 	local abort = false
 	local recheck = false
 	
@@ -432,7 +436,7 @@ local function FindCraftingItem( loc_id, cl, cb, bp, cs )
 			return abort, recheck, false
 		end
 		
-		if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
+		if not me.player.data.option[loc_id].bag[bag_id].restack.ignore then
 			
 			if bt == 0 and bag_id ~= REAGENTBANK_CONTAINER then
 				-- do not steal from profession bags or the reagent bank
@@ -506,12 +510,13 @@ end
 
 local function CompactBags( loc_id )
 	
+	local me = ArkInventory.GetPlayerCodex( )
 	local abort = false
 	local recheck = false
 	
 	for zz, bag_id in ipairs( ArkInventory.Global.Location[loc_id].Bags ) do
 		
-		if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
+		if not me.player.data.option[loc_id].bag[bag_id].restack.ignore then
 			
 			--ArkInventory.Output( "CompactBags( ", loc_id, ".", bag_id, " )" )
 			
@@ -683,10 +688,11 @@ end
 
 local function ConsolidateBag( loc_id, bag_id, bag_pos )
 	
+	local me = ArkInventory.GetPlayerCodex( )
 	local abort = false
 	local recheck = false
 	
-	if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
+	if not me.player.data.option[loc_id].bag[bag_id].restack.ignore then
 		
 		--ArkInventory.Output( "ConsolidateBag( ", loc_id, ".", bag_id, " )" )
 		
@@ -774,13 +780,14 @@ local function Consolidate( loc_id )
 	
 	--ArkInventory.Output( "Consolidate ", loc_id )
 	
+	local me = ArkInventory.GetPlayerCodex( )
 	local abort = false
 	local recheck = false
 	
 	-- fill up profession bags with profession items
 	for zz, bag_id in ipairs( ArkInventory.Global.Location[loc_id].Bags ) do
 		
-		if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
+		if not me.player.data.option[loc_id].bag[bag_id].restack.ignore then
 			
 			local ab, bt, count = RestackBagCheck( loc_id, bag_id )
 			
@@ -818,7 +825,7 @@ local function Consolidate( loc_id )
 			
 			local bag_id = REAGENTBANK_CONTAINER
 			
-			if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
+			if not me.player.data.option[loc_id].bag[bag_id].restack.ignore then
 				
 				if RestackBagCheck( loc_id, bag_id ) then
 					abort = loc_id
@@ -846,7 +853,7 @@ local function Consolidate( loc_id )
 			
 			for zz, bag_id in ipairs( ArkInventory.Global.Location[loc_id].Bags ) do
 				
-				if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
+				if not me.player.data.option[loc_id].bag[bag_id].restack.ignore then
 					
 					local ab, bt = RestackBagCheck( loc_id, bag_id )
 					
@@ -886,6 +893,7 @@ local function RestackRun( loc_id )
 	
 	-- DO NOT USE CACHED DATA FOR RESTACKING, PULL THE DATA DIRECTLY FROM WOW AGAIN, THE UI WILL CATCH UP
 	
+	local me = ArkInventory.GetPlayerCodex( )
 	local ok = false
 	local abort, recheck
 	
@@ -959,7 +967,7 @@ local function RestackRun( loc_id )
 					end
 					
 					local bag_id = ArkInventory.Global.Location[loc_id].tabReagent
-					if not ArkInventory.Global.Me.data.option[loc_id].bag[bag_id].restack.ignore then
+					if not me.player.data.option[loc_id].bag[bag_id].restack.ignore then
 						SortReagentBankBags( )
 --						coroutine.yield( )
 					end

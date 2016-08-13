@@ -16,7 +16,7 @@ L["Timeworn Artifact"] = true
 L["Legion Currencies Options"] = true
 L["Show"] = true
 L["Show icons"] = true
-
+L["Hide tooltip"] = true
 -- other
 L["Legion"] = true
 L["Right-Click"] = true

@@ -22,6 +22,8 @@ function ArkInventory.EraseSavedData( player_id, loc_id, silent )
 	ArkInventory.Table.Clean( ArkInventory.Global.Cache.ItemCountRaw, nil, true )
 	ArkInventory.Table.Clean( ArkInventory.Global.Cache.ItemCount, nil, true )
 	
+	local info = ArkInventory.GetPlayerInfo( )
+	
 	-- erase data
 	for pk, pv in pairs( ArkInventory.db.player.data ) do
 		
@@ -53,7 +55,7 @@ function ArkInventory.EraseSavedData( player_id, loc_id, silent )
 				
 			end
 			
-			if pk == ArkInventory.Global.Me.data.info.player_id then
+			if pk == info.player_id then
 				rescan = true
 			else
 				if ( loc_id == nil ) or ( ( loc_id == ArkInventory.Const.Location.Vault ) and ( pv.info.class == "GUILD" ) ) then
@@ -76,16 +78,13 @@ end
 
 function ArkInventory.PlayerInfoSet( )
 	
-	-- /run ArkInventory.Output( ArkInventory.Global.Me.data.info )
-	
 	--ArkInventory.Output( "PlayerInfoSet" )
 	
 	local n = UnitName( "player" )
 	local r = GetRealmName( )
 	local id = ArkInventory.PlayerIDSelf( )
 	
-	ArkInventory.Global.Me.data = ArkInventory.db.player.data[id]
-	local player = ArkInventory.Global.Me.data.info
+	local player = ArkInventory.db.player.data[id].info
 	
 	player.guid = UnitGUID( "player" ) or player.guid
 	player.name = n
@@ -158,18 +157,18 @@ end
 function ArkInventory.VaultInfoSet( )
 	
 	local n, _, _, r = GetGuildInfo( "player" )
-	local player = ArkInventory.Global.Me.data.info
+	local player_info = ArkInventory.GetPlayerInfo( )
 	
 	if n then
 		
-		local id = string.format( "%s%s%s%s", ArkInventory.Const.GuildTag, n, ArkInventory.Const.PlayerIDSep, r or player.realm )
+		local id = string.format( "%s%s%s%s", ArkInventory.Const.GuildTag, n, ArkInventory.Const.PlayerIDSep, r or player_info.realm )
 		local guild = ArkInventory.db.player.data[id].info
 		
 		guild.name = n
-		guild.realm = r or player.realm
+		guild.realm = r or player_info.realm
 		guild.player_id = id
-		guild.faction = player.faction
-		guild.faction_local = player.faction_local
+		guild.faction = player_info.faction
+		guild.faction_local = player_info.faction_local
 		guild.class = "GUILD"
 		guild.class_local = GUILD
 		
@@ -177,11 +176,11 @@ function ArkInventory.VaultInfoSet( )
 		guild.level = 1 --GetGuildLevel( )
 		guild.money = GetGuildBankMoney( ) or 0
 		
-		player.guild_id = id
+		player_info.guild_id = id
 		
 	else
 		
-		player.guild_id = nil
+		player_info.guild_id = nil
 		
 	end
 	
@@ -232,9 +231,11 @@ function ArkInventory:EVENT_WOW_PLAYER_LEAVE( )
 	
 	ArkInventory.ScanAuctionExpire( )
 	
+	local player_id = ArkInventory.PlayerIDSelf( )
+	
 	for loc_id, loc_data in pairs( ArkInventory.Global.Location ) do
 		if not ArkInventory.LocationIsSaved( loc_id ) then
-			ArkInventory.EraseSavedData( ArkInventory.Global.Me.data.info.player_id, loc_id, true )
+			ArkInventory.EraseSavedData( player_id, loc_id, true )
 		end
 	end
 	
@@ -247,7 +248,8 @@ function ArkInventory:EVENT_WOW_PLAYER_MONEY( )
 	ArkInventory.PlayerInfoSet( )
 	
 	-- set saved money amount here as well
-	ArkInventory.Global.Me.data.info.money = GetMoney( )
+	local info = ArkInventory.GetPlayerInfo( )
+	info.money = GetMoney( )
 	
 	ArkInventory.LDB.Money:Update( )
 	
@@ -485,7 +487,8 @@ function ArkInventory:EVENT_ARKINV_BANK_LEAVE_BUCKET( )
 	end
 	
 	if not ArkInventory.LocationIsSaved( loc_id ) then
-		ArkInventory.EraseSavedData( ArkInventory.Global.Me.data.info.player_id, loc_id, not ArkInventory.Global.Me.data.location[loc_id].notify )
+		local me = ArkInventory.GetPlayerCodex( )
+		ArkInventory.EraseSavedData( me.player.data.info.player_id, loc_id, not me.profile.location[loc_id].notify )
 	end
 	
 end
@@ -597,7 +600,8 @@ function ArkInventory:EVENT_ARKINV_VAULT_LEAVE_BUCKET( )
 	end
 
 	if not ArkInventory.LocationIsSaved( loc_id ) then
-		ArkInventory.EraseSavedData( ArkInventory.Global.Me.data.info.player_id, loc_id, not ArkInventory.Global.Me.data.location[loc_id].notify )
+		local me = ArkInventory.GetPlayerCodex( )
+		ArkInventory.EraseSavedData( me.player.data.info.player_id, loc_id, not me.profile.location[loc_id].notify )
 	end
 	
 end
@@ -735,30 +739,34 @@ function ArkInventory:EVENT_WOW_MAIL_ENTER( event, ... )
 	
 	--ArkInventory.Output( "MAIL_ENTER( ", event, " )" )
 	
-	ArkInventory.Global.Mode.Mail = true
-	
 	local BACKPACK_WAS_OPEN = ArkInventory.Frame_Main_Get( ArkInventory.Const.Location.Bag ):IsVisible( )
 	
 	MailFrame_OnEvent( MailFrame, event, ... )
 	
-	local loc_id = ArkInventory.Const.Location.Mail
+	ArkInventory.Global.Mode.Mail = true
 	
-		--ArkInventory.ScanLocation( loc_id )
-		--ArkInventory.Frame_Main_DrawStatus( loc_id, ArkInventory.Const.Window.Draw.Refresh )
-	
-	if ArkInventory.LocationIsControlled( loc_id ) then
-		ArkInventory.Frame_Main_Show( loc_id )
-	end
-	
-	if ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
-		-- blizzard auto-opens the backpack when you open the mailbox
-		if not ArkInventory.db.option.auto.open.mail and not BACKPACK_WAS_OPEN then
-			-- so we need to close it if we didnt already have it open
-			ArkInventory.Frame_Main_Hide( ArkInventory.Const.Location.Bag )
+	if ArkInventory:IsEnabled( ) then
+		
+		if ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
+			
+			-- blizzard auto-opens the backpack when you open the mailbox
+			if not ArkInventory.db.option.auto.open.mail and not BACKPACK_WAS_OPEN then
+				-- it wasnt already opened, blizzard opened it, so we need to close it
+				ArkInventory.Frame_Main_Hide( ArkInventory.Const.Location.Bag )
+			end
+			
 		end
+		
+		
+		local loc_id = ArkInventory.Const.Location.Mail
+		
+		if ArkInventory.LocationIsControlled( loc_id ) then
+			ArkInventory.Frame_Main_Show( loc_id )
+		end
+		
+		ArkInventory.Frame_Main_Generate( loc_id )
+		
 	end
-	
-	ArkInventory.Frame_Main_Generate( loc_id )
 	
 end
 
@@ -776,9 +784,10 @@ function ArkInventory:EVENT_ARKINV_MAIL_LEAVE_BUCKET( )
 	
 	ArkInventory.Global.Mode.Mail = false
 	
-	local loc_id = ArkInventory.Const.Location.Mail
+	if not ArkInventory:IsEnabled( ) then return end
 	
-	ArkInventory.Frame_Main_Generate( loc_id, ArkInventory.Const.Window.Draw.Refresh )
+	
+	local loc_id = ArkInventory.Const.Location.Mail
 	
 	if ArkInventory.LocationIsControlled( loc_id ) then
 		ArkInventory.Frame_Main_Hide( loc_id )
@@ -789,7 +798,8 @@ function ArkInventory:EVENT_ARKINV_MAIL_LEAVE_BUCKET( )
 	end
 	
 	if not ArkInventory.LocationIsSaved( loc_id ) then
-		ArkInventory.EraseSavedData( ArkInventory.Global.Me.data.info.player_id, loc_id, not ArkInventory.Global.Me.data.location[loc_id].notify )
+		local me = ArkInventory.GetPlayerCodex( )
+		ArkInventory.EraseSavedData( me.player.data.info.player_id, loc_id, not me.profile.location[loc_id].notify )
 	end
 	
 end
@@ -829,9 +839,13 @@ end
 
 function ArkInventory.HookMailSend( ... )
 	
+	--ArkInventory.Output( "HookMailSend( )" )
+	
 	if not ArkInventory:IsEnabled( ) then return end
 	
-	--ArkInventory.Output( "HookMailSend( )" )
+	local loc_id = ArkInventory.Const.Location.Mail
+	
+	if not ArkInventory.LocationIsMonitored( loc_id ) then return end
 	
 	table.wipe( ArkInventory.Global.Cache.SentMail )
 	
@@ -847,7 +861,8 @@ function ArkInventory.HookMailSend( ... )
 	-- known character, store sent mail data
 	
 	ArkInventory.Global.Cache.SentMail.to = player_id
-	ArkInventory.Global.Cache.SentMail.from = ArkInventory.Global.Me.data.info.player_id
+	local info = ArkInventory.GetPlayerInfo( )
+	ArkInventory.Global.Cache.SentMail.from = info.player_id
 	ArkInventory.Global.Cache.SentMail.age = ArkInventory.TimeAsMinutes( )
 	
 	local name, texture, _, count
@@ -864,9 +879,13 @@ end
 
 function ArkInventory.HookMailReturn( index )
 	
+	--ArkInventory.Output( "HookMailReturn( ", index, " )" )
+	
 	if not ArkInventory:IsEnabled( ) then return end
 	
-	--ArkInventory.Output( "HookMailReturn( ", index, " )" )
+	local loc_id = ArkInventory.Const.Location.Mail
+	
+	if not ArkInventory.LocationIsMonitored( loc_id ) then return end
 	
 	table.wipe( ArkInventory.Global.Cache.SentMail )
 	
@@ -881,9 +900,9 @@ function ArkInventory.HookMailReturn( index )
 	end
 	
 	-- known character, store sent mail data
-	
 	ArkInventory.Global.Cache.SentMail.to = player_id
-	ArkInventory.Global.Cache.SentMail.from = ArkInventory.Global.Me.data.info.player_id
+	local info = ArkInventory.GetPlayerInfo( )
+	ArkInventory.Global.Cache.SentMail.from = info.player_id
 	ArkInventory.Global.Cache.SentMail.age = ArkInventory.TimeAsMinutes( )
 	
 	local name, texture, _, count
@@ -981,40 +1000,29 @@ function ArkInventory:EVENT_WOW_MERCHANT_ENTER( event, ... )
 	
 	--ArkInventory.Output( "EVENT_WOW_MERCHANT_ENTER( ", event, " )" )
 	
-	ArkInventory.Global.Mode.Merchant = true
-	
 	local BACKPACK_WAS_OPEN = ArkInventory.Frame_Main_Get( ArkInventory.Const.Location.Bag ):IsVisible( )
 	
-	if event == "MERCHANT_SHOW" then
+	MerchantFrame_OnEvent( MerchantFrame, event, ... )
+	
+	ArkInventory.Global.Mode.Merchant = true
+	
+	if ArkInventory:IsEnabled( ) then
 		
 		-- merchant / vendor
 		
-		MerchantFrame_OnEvent( MerchantFrame, event, ... )
+		ArkInventory.JunkSell( )
 		
 		if ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
 			
-			ArkInventory.JunkSell( )
-			
 			-- blizzard auto-opens the backpack when you talk to a merchant
 			if not ArkInventory.db.option.auto.open.merchant and not BACKPACK_WAS_OPEN then
-				-- so we need to close it if we didnt already have it open
+				-- it wasnt already opened, blizzard opened it, so we need to close it
 				ArkInventory.Frame_Main_Hide( ArkInventory.Const.Location.Bag )
 			end
 			
 		end
 		
-	else
-		
-		-- reforger / transmogrify
-		
-		if ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
-			if ArkInventory.db.option.auto.open.merchant and not BACKPACK_WAS_OPEN then
-				ArkInventory.Frame_Main_Show( ArkInventory.Const.Location.Bag )
-			end
-		end
-		
 	end
-	
 	
 end
 
@@ -1032,6 +1040,26 @@ function ArkInventory:EVENT_ARKINV_MERCHANT_LEAVE_BUCKET( )
 	
 	if ArkInventory.db.option.auto.close.merchant and ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
 		ArkInventory.Frame_Main_Hide( ArkInventory.Const.Location.Bag )
+	end
+	
+end
+
+function ArkInventory:EVENT_WOW_TRANSMOG_ENTER( event, ... )
+	
+	--ArkInventory.Output( "EVENT_WOW_TRANSMOG_ENTER( ", event, " )" )
+	
+	local BACKPACK_WAS_OPEN = ArkInventory.Frame_Main_Get( ArkInventory.Const.Location.Bag ):IsVisible( )
+	
+	if ArkInventory:IsEnabled( ) then
+		
+		-- reforger / transmogrify
+		
+		if ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
+			if ArkInventory.db.option.auto.open.merchant and not BACKPACK_WAS_OPEN then
+				ArkInventory.Frame_Main_Show( ArkInventory.Const.Location.Bag )
+			end
+		end
+		
 	end
 	
 end
@@ -1132,23 +1160,6 @@ end
 function ArkInventory:EVENT_WOW_ACTIONBAR_UPDATE_USABLE( event )
 	ArkInventory:SendMessage( "EVENT_ARKINV_ACTIONBAR_UPDATE_USABLE_BUCKET", 1 )
 end
-
---[[
-function ArkInventory:EVENT_ARKINV_UNIT_POWER_BUCKET( )
-	
-	--ArkInventory.Output( "EVENT_ARKINV_UNIT_POWER_BUCKET" )
-	
-	if ArkInventory.Global.Me.data.info.class == "WARLOCK" and ArkInventory.Global.Me.data.ldb.tracking.item.tracked[6265] then
-		-- update count for lock shards
-		ArkInventory.LDB.Tracking_Item:Update( )
-	end
-	
-end
-
-function ArkInventory:EVENT_WOW_UNIT_POWER( )
-	ArkInventory:SendMessage( "EVENT_ARKINV_UNIT_POWER_BUCKET", 1 )
-end
-]]--
 
 function ArkInventory:EVENT_ARKINV_SPELLS_CHANGED_BUCKET( )
 	
@@ -1321,10 +1332,7 @@ function ArkInventory.ScanLocation( arg1 )
 	
 	--ArkInventory.Output( "ScanLocation( ", arg1, " )" )
 	
-	if not ArkInventory.Global.Enabled then
-		--ArkInventory.Output( "ScanLocation( ", arg1, " ) - aborted, not ready" )
-		return
-	end
+	if not ArkInventory:IsEnabled( ) then return end
 	
 	for loc_id, loc_data in pairs( ArkInventory.Global.Location ) do
 		if arg1 == nil or arg1 == loc_id then
@@ -1698,7 +1706,8 @@ function ArkInventory.ScanVault( )
 		return
 	end
 	
-	if not ArkInventory.Global.Me.data.info.guild_id then
+	local info = ArkInventory.GetPlayerInfo( )
+	if not info.guild_id then
 		--ArkInventory.Output( RED_FONT_COLOR_CODE, "aborted scan of vault, not in a guild" )
 		return
 	end
@@ -3909,12 +3918,14 @@ function ArkInventory.ObjectCountClear( search_id, player_id, loc_id )
 	
 	--ArkInventory.Output( "ObjectCountClear( ", search_id, ", ", player_id, ", ", loc_id, " )" )
 	
+	local info = ArkInventory.GetPlayerInfo( )
+	
 	if search_id and player_id and loc_id then
 		
 		-- clear the account/vault user if needed, then come back and clear the current user
 		
 		if player_id == ArkInventory.PlayerIDAccount( ) or ( loc_id == ArkInventory.Const.Location.Vault ) or ( loc_id == ArkInventory.Const.Location.Pet ) or ( loc_id == ArkInventory.Const.Location.Mount ) or ( loc_id == ArkInventory.Const.Location.Toybox ) then
-			ArkInventory.ObjectCountClear( search_id, ArkInventory.Global.Me.data.info.player_id )
+			ArkInventory.ObjectCountClear( search_id, info.player_id )
 		end
 		
 	end
@@ -3991,8 +4002,8 @@ function ArkInventory.ObjectCountClear( search_id, player_id, loc_id )
 		
 		table.wipe( ArkInventory.Global.Cache.ItemCount )
 		
-		if ArkInventory.Global.Cache.ItemCountRaw[ArkInventory.Global.Me.data.info.player_id] then
-			table.wipe( ArkInventory.Global.Cache.ItemCountRaw[ArkInventory.Global.Me.data.info.player_id] )
+		if ArkInventory.Global.Cache.ItemCountRaw[info.player_id] then
+			table.wipe( ArkInventory.Global.Cache.ItemCountRaw[info.player_id] )
 		end
 		
 		return
@@ -4114,7 +4125,8 @@ function ArkInventory.ObjectCountGet( search_id, player_id, just_me, ignore_vaul
 	
 	ArkInventory.ObjectCountGetRaw( search_id )
 	
-	local player_id = player_id or ArkInventory.Global.Me.data.info.player_id
+	local info = ArkInventory.GetPlayerInfo( )
+	local player_id = player_id or info.player_id
 	
 	if not ArkInventory.Global.Cache.ItemCount[player_id] then
 		ArkInventory.Global.Cache.ItemCount[player_id] = { }

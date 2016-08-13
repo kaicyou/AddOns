@@ -14,18 +14,28 @@
  
 
 
-*3.07.01 (10-AUG-2016)*
- * tagged as relase
+*3.07.03 (13-AUG-2016)*
+ * fixed - issue with error message about "you should never have got here" displaying incorrectly
+ * fixed - upgrade code
+ * fixed - issue with chatlinked items doubling up (in bag and bank)
+ * fixed - issue with moving items around in the guild bank
+ * fixed (maybe) - issue with mailbox/vendor not opening
+ * added - categories and rules can be enabled/disabled in the config window
+
+*3.07.02 (10-AUG-2016)*
+ * fixed - issue with 30260 upgrade code
+ * fixed - issue with copying category sets
  
+*3.07.01 (10-AUG-2016)*
 *3.07.00 (08-AUG-2016) BETA 8*
- * fixed - issue with 30271 conversion code
+ * fixed - issue with 30271 upgrade code
  * fixed - issue with config (profiles)
  * fixed - issue with chatlinked items doubling up
  * fixed - issue with void storage not getting scanned
  * removed - debug output of favourite toy ids
 
 *3.07.00 (07-AUG-2016) BETA 7*
- * fixed - issue with 30230 conversion code
+ * fixed - issue with 30230 upgrade code
  * added - heirlooms window (view only)
  * fixed - issue with tooltips in account location windows
 
@@ -38,11 +48,11 @@
  * fixed - issue with offline tooltip for gold amounts in mailbox
  * workaround - issue with mailbox being slow due to having to rescan the whole thing every time, default update timer is now 2 seconds (changeable in config)
  * fixed - issue with config > rules being blank
- * fixed - issue with conversion code introduced in beta 4
+ * fixed - issue with upgrade code introduced in beta 4
 
 *3.07.00 (31-JUL-2016) BETA 4*
  * fixed - issue with profiles not applying when opening a non player window (guild bank/account)
- * fixed - conversion code missed bag to bar assignments which ended up causing a black window on open
+ * fixed - upgrade code missed bag to bar assignments which ended up causing a black window on open
  * fixed - codex issue causing the default profile to be used in some cases
  * fixed - issue copying a layout/style/catset and the current window not updating
  * fixed - issue where items would sometimes be picked up when in edit mode (mostly at the bank/vault)
@@ -1667,7 +1677,7 @@
 *2.06 (12-JUL-2007)*
   * info - all cached item data has been cleared - you will need to login to each character for AI to rebuild their data
   * fixed - an issue with item id's not being built properly during bag scans
-  * fixed - an issue with the conversion code
+  * fixed - an issue with the upgrade code
   * fixed - new item text, centred text, should be able to swap same id items without them being tagged as new
 
 *2.05 (11-JUL-2007)*
@@ -1680,7 +1690,7 @@
   * fixed - error in sort code
 
 *2.04 (08-JUL-2007)*
-  * fixed - RULE_PATTERN_ITEMNUMBER issue with conversion code
+  * fixed - RULE_PATTERN_ITEMNUMBER issue with upgrade code
   * added - chinese translation (thanks candykiss)
 
 *2.03 (05-JUL-2007)*
@@ -1734,12 +1744,12 @@
   * changed - slightly increased the thickness of the item borders
 
 *2.00 (21-JUN-2007) (beta-2007-JUN-21-20-30)*
-  * fixed - error in conversion code for item id's
+  * fixed - error in upgrade code for item id's
   * fixed - closetgnome outfit code
   * fixed - error in all non english locales
 
 *2.00 (20-JUN-2007) (beta-2007-JUN-20-22-45)*
-  * fixed - error in conversion code (only impacted new or cleaned installs)
+  * fixed - error in upgrade code (only impacted new or cleaned installs)
   * fixed - rule function name( )
   * added - rules are now validated before being saved
   * changed - item( ) is now id( ) - existing rules will just get damaged and stop working until you edit and change them to use the new function name

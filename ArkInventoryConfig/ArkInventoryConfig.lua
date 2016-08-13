@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1690 $
-$Date: 2016-08-08 21:26:37 +1000 (Mon, 08 Aug 2016) $
+$Revision: 1702 $
+$Date: 2016-08-13 00:29:06 +1000 (Sat, 13 Aug 2016) $
 
 ]]--
 
@@ -36,6 +36,7 @@ local table = _G.table
 	Currently inherited are: set, get, func, confirm, validate, disabled, hidden
 	
 ]]--
+
 
 function ArkInventory.ConfigRefresh( )
 	--ArkInventory.Output( "ConfigRefresh" )
@@ -123,7 +124,9 @@ local function helperColourSet( v, r, g, b, a )
 	v.r = tonumber( string.format( f, r or 1 ) )
 	v.g = tonumber( string.format( f, g or 1 ) )
 	v.b = tonumber( string.format( f, b or 1 ) )
-	v.a = tonumber( string.format( f, a or 1 ) )
+	if a then
+		v.a = tonumber( string.format( f, a or 1 ) )
+	end
 	
 end
 
@@ -271,6 +274,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.open.bank = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 								vault = {
@@ -284,6 +288,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.open.vault = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 								mail = {
@@ -298,6 +303,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.open.mail = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 								merchant = {
@@ -312,6 +318,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.open.merchant = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 								trade = {
@@ -325,6 +332,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.open.trade = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 								auction = {
@@ -338,6 +346,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.open.auction = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 								void = {
@@ -351,6 +360,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.open.void = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 							},
@@ -378,6 +388,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.bank = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 								vault = {
@@ -391,6 +402,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.vault = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 								mail = {
@@ -404,6 +416,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.mail = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 								merchant = {
@@ -417,6 +430,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.merchant = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 								trade = {
@@ -430,6 +444,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.trade = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 								auction = {
@@ -443,6 +458,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.auction = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 								void = {
@@ -456,6 +472,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.void = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 								combat = {
@@ -469,6 +486,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.combat = v
+										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 							},
@@ -762,7 +780,6 @@ function ArkInventory.ConfigInternal( )
 											end,
 											set = function( info, v )
 												ArkInventory.db.option.tooltip.battlepet.enable = v
-												ArkInventory.BlizzardAPIHookBattlepetTooltip( not v )
 											end,
 										},
 										source = {
@@ -2011,8 +2028,6 @@ function ArkInventory.ConfigInternal( )
 	
 	ArkInventory.ConfigInternalProfile( )
 	
-	--ArkInventory.ConfigInternalCategoryRule( )
-	
 	ArkInventory.ConfigInternalLDBMounts( path.args.ldb.args.mounts.args )
 	
 end
@@ -2044,10 +2059,6 @@ function ArkInventory.ConfigInternalControl( )
 			set = function( info, v )
 				local loc_id = ConfigGetNodeArg( info, #info - 1 )
 				me.profile.location[loc_id].monitor = v
-				if loc_id == ArkInventory.Const.Location.Pet then
-					ArkInventory.BlizzardAPIHookBattlepetFunctions( )
-				end
-
 			end,
 		},
 		save = {
@@ -2826,6 +2837,33 @@ function ArkInventory.ConfigInternalCategoryCustom( )
 				ArkInventory.ConfigInternalCategoryCustom( )
 			end,
 		},
+		categoryset = {
+			order = 500,
+			type = "select",
+			name = ArkInventory.Localise["CONFIG_CATEGORY_SET"],
+			width = "double",
+			disabled = ArkInventory.Global.Options.ConfigCategoryCustomListShow ~= 1,
+			values = function( )
+				local t = { }
+				for id, data in pairs( ArkInventory.db.option.catset.data ) do
+					if data.used == "Y" then
+						local n = data.name
+						if data.system then
+							n = string.format( "* %s", n )
+						end
+						t[id] = string.format( "[%04i] %s", id, n )
+					end
+				end
+				return t
+			end,
+			get = function( info )
+				return ArkInventory.Global.Options.ConfigCategoryRuleListSet
+			end,
+			set = function( info, v )
+				ArkInventory.Global.Options.ConfigCategoryRuleListSet = v
+				ArkInventory.ConfigRefresh( )
+			end,
+		},
 	}
 	
 	ArkInventory.ConfigInternalCategoryCustomData( path.args )
@@ -2906,7 +2944,29 @@ function ArkInventory.ConfigInternalCategoryCustomData( path )
 				ArkInventory.ConfigInternalCategoryCustomPurge( id )
 			end,
 		},
+		enabled = {
+			order = 150,
+			name = ArkInventory.Localise["ENABLED"],
+			type = "toggle",
+			disabled = function( info )
+				return ( ArkInventory.Global.Options.ConfigCategoryRuleListSet == 9999 ) or ( ArkInventory.Global.Options.ConfigCategoryCustomListShow ~= 1 )
+			end,
+			get = function( info )
+				local id = ConfigGetNodeArg( info, #info - 1 )
+				local catset = ArkInventory.ConfigInternalCategorysetGet( ArkInventory.Global.Options.ConfigCategoryRuleListSet )
+				return catset.category.active[ArkInventory.Const.Category.Type.Custom][id]
+			end,
+			set = function( info, v )
+				local id = ConfigGetNodeArg( info, #info - 1 )
+				local catset = ArkInventory.ConfigInternalCategorysetGet( ArkInventory.Global.Options.ConfigCategoryRuleListSet )
+				catset.category.active[ArkInventory.Const.Category.Type.Custom][id] = v
+				ArkInventory.ItemCacheClear( )
+				ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Refresh )
+			end,
+		},
 	}
+	
+	local catset = ArkInventory.ConfigInternalCategorysetGet( ArkInventory.Global.Options.ConfigCategoryRuleListSet )
 	
 	for id, data in pairs( ArkInventory.db.option.category[ArkInventory.Const.Category.Type.Custom].data ) do
 		
@@ -2926,6 +2986,13 @@ function ArkInventory.ConfigInternalCategoryCustomData( path )
 					order = 500,
 					name = n,
 					arg = id,
+					icon = function( )
+						if catset.category.active[ArkInventory.Const.Category.Type.Custom][id] then
+							return ArkInventory.Const.Texture.CategoryEnabled
+						else
+							return ArkInventory.Const.Texture.CategoryDisabled
+						end
+					end,
 					type = "group",
 					args = args1,
 				}
@@ -2939,8 +3006,6 @@ function ArkInventory.ConfigInternalCategoryCustomData( path )
 end
 
 function ArkInventory.ConfigInternalCategoryRule( )
-	
-	if true then return end
 	
 	local path = ArkInventory.Config.Internal.args.settings.args.category.args.rule
 	
@@ -3001,6 +3066,33 @@ function ArkInventory.ConfigInternalCategoryRule( )
 			hidden = true,
 			func = function( )
 				ArkInventory.ConfigInternalCategoryRule( )
+			end,
+		},
+		categoryset = {
+			order = 500,
+			type = "select",
+			name = ArkInventory.Localise["CONFIG_CATEGORY_SET"],
+			width = "double",
+			disabled = ArkInventory.Global.Options.ConfigCategoryRuleListShow ~= 1,
+			values = function( )
+				local t = { }
+				for id, data in pairs( ArkInventory.db.option.catset.data ) do
+					if data.used == "Y" then
+						local n = data.name
+						if data.system then
+							n = string.format( "* %s", n )
+						end
+						t[id] = string.format( "[%04i] %s", id, n )
+					end
+				end
+				return t
+			end,
+			get = function( info )
+				return ArkInventory.Global.Options.ConfigCategoryRuleListSet
+			end,
+			set = function( info, v )
+				ArkInventory.Global.Options.ConfigCategoryRuleListSet = v
+				ArkInventory.ConfigRefresh( )
 			end,
 		},
 	}
@@ -3081,6 +3173,26 @@ function ArkInventory.ConfigInternalCategoryRuleData( path )
 			func = function( info )
 				local id = ConfigGetNodeArg( info, #info - 1 )
 				ArkInventory.ConfigInternalCategoryRulePurge( id )
+			end,
+		},
+		enabled = {
+			order = 150,
+			name = ArkInventory.Localise["ENABLED"],
+			type = "toggle",
+			disabled = function( info )
+				return ( ArkInventory.Global.Options.ConfigCategoryRuleListSet == 9999 ) or ( ArkInventory.Global.Options.ConfigCategoryRuleListShow ~= 1 )
+			end,
+			get = function( info )
+				local id = ConfigGetNodeArg( info, #info - 1 )
+				local catset = ArkInventory.ConfigInternalCategorysetGet( ArkInventory.Global.Options.ConfigCategoryRuleListSet )
+				return catset.category.active[ArkInventory.Const.Category.Type.Rule][id]
+			end,
+			set = function( info, v )
+				local id = ConfigGetNodeArg( info, #info - 1 )
+				local catset = ArkInventory.ConfigInternalCategorysetGet( ArkInventory.Global.Options.ConfigCategoryRuleListSet )
+				catset.category.active[ArkInventory.Const.Category.Type.Rule][id] = v
+				ArkInventory.ItemCacheClear( )
+				ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Refresh )
 			end,
 		},
 	
@@ -3166,6 +3278,8 @@ function ArkInventory.ConfigInternalCategoryRuleData( path )
 	
 	}
 	
+	local catset = ArkInventory.ConfigInternalCategorysetGet( ArkInventory.Global.Options.ConfigCategoryRuleListSet )
+	
 	for id, data in pairs( ArkInventory.db.option.category[ArkInventory.Const.Category.Type.Rule].data ) do
 		
 		if ( data.used == "Y" and ArkInventory.Global.Options.ConfigCategoryRuleListShow == 1 ) or ( data.used == "D" and ArkInventory.Global.Options.ConfigCategoryRuleListShow == 2 ) or ( data.used == "Y" and ArkInventory.Global.Options.ConfigCategoryRuleListShow == 3 ) then
@@ -3173,7 +3287,7 @@ function ArkInventory.ConfigInternalCategoryRuleData( path )
 			if not data.system then
 				
 				local n = data.name
-			
+				
 				if ArkInventory.Global.Options.ConfigCategoryRuleListSort == 1 then
 					n = string.format( "%s [%04i] [%04i]", n, id, data.order )
 				elseif ArkInventory.Global.Options.ConfigCategoryRuleListSort == 3 then
@@ -3187,7 +3301,14 @@ function ArkInventory.ConfigInternalCategoryRuleData( path )
 					name = n,
 					arg = id,
 					icon = function( )
-						return data.damaged and ArkInventory.Const.Texture.DamagedRule or ""
+						if data.damaged then
+							return ArkInventory.Const.Texture.CategoryDamaged
+						end
+						if catset.category.active[ArkInventory.Const.Category.Type.Rule][id] then
+							return ArkInventory.Const.Texture.CategoryEnabled
+						else
+							return ArkInventory.Const.Texture.CategoryDisabled
+						end
 					end,
 					type = "group",
 					args = args1,
@@ -6411,3 +6532,6 @@ function ArkInventory.ConfigInternalLDBMountsUpdate( path, args2 )
 	end
 	
 end
+
+-- run on load
+ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )

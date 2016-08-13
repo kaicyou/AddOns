@@ -17,15 +17,7 @@ end
 	
 function ArkInventory.Frame_Rules_Show( )
 	
-	if not IsAddOnLoaded( "ArkInventoryRules" ) then
-		
-		local loaded, reason = LoadAddOn( "ArkInventoryRules" )
-		if reason then
-			ArkInventory.OutputError( "Failed to load Rules: ", getglobal( "ADDON_" .. reason ) )
-			return
-		end
-		
-	end
+	if not ArkInventory.LoadAddOn( "ArkInventoryRules" ) then return end
 	
 	if ARKINV_Rules then
 		ARKINV_Rules:Show( )

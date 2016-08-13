@@ -16,15 +16,7 @@ end
 	
 function ArkInventory.Frame_Search_Show( )
 	
-	if not IsAddOnLoaded( "ArkInventorySearch" ) then
-		
-		local loaded, reason = LoadAddOn( "ArkInventorySearch" )
-		if reason then
-			ArkInventory.OutputError( "Failed to load Search: ", getglobal( "ADDON_" .. reason ) )
-			return
-		end
-		
-	end
+	if not ArkInventory.LoadAddOn( "ArkInventorySearch" ) then return end
 	
 	if ARKINV_Search then
 		ARKINV_Search:Show( )

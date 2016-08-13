@@ -360,7 +360,9 @@ ArkInventory.Const = { -- constants
 			Bag = [[Interface\PaperDoll\UI-PaperDoll-Slot-Bag]],
 		},
 		
-		DamagedRule = [[Interface\RAIDFRAME\ReadyCheck-NotReady]],
+		CategoryDamaged = [[Interface\Icons\Spell_Shadow_DeathCoil]],
+		CategoryEnabled = [[Interface\RAIDFRAME\ReadyCheck-Ready]],
+		CategoryDisabled = [[Interface\RAIDFRAME\ReadyCheck-NotReady]],
 		
 		BackgroundDefault = "Solid",
 		

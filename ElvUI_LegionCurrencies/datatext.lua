@@ -14,6 +14,7 @@ local currencies = {1155, 1275, 1226, 1220, 1273, 1154, 1149, 1268}
 V["ElvUI_LegionCurrencies"] = {
 	-- misc
 	["icons"] = true,
+	["hidett"] = false,
 	-- currencies
 	[1155] = true, -- Ancient Mana, 1155
 	[1275] = true, -- Curious Coin, 1275
@@ -55,6 +56,7 @@ local menu = {
 	{ text = L["Show"]..' '..L["Timeworn Artifact"], checked = function() return GetOption(1268) end, func = function() ToggleOption(1268) end },
 	{ text = " ", isTitle = true , notCheckable = true },
 	{ text = L["Show icons"], checked = function() return GetOption("icons") end, func = function() ToggleOption("icons") end },
+	{ text = L["Hide Tooltip"], checked = function() return GetOption("hidett") end, func = function() ToggleOption("hidett") end },
 }
 local menuFrame = CreateFrame("Frame", "ElvUI_LegionCurrenciesDatatextMenuFrame", E.UIParent, 'UIDropDownMenuTemplate')
 
@@ -188,6 +190,53 @@ local function getCurinfo(curID)
 end
 
 local function OnEnter(self)
+	local hideTT = E.private["ElvUI_LegionCurrencies"]["hidett"]
+	if hideTT or (UnitLevel('player') < 100) then
+		DT.tooltip:Hide()
+	else
+		local r1, g1, b1, r2, g2, b2 = HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b;
+		DT:SetupTooltip(self)
+		if UnitLevel('player') >= 100 then -- Legion
+			if getCurinfo(1155)[7] then
+				DT.tooltip:AddDoubleLine(format('|T%s:14:14:0:0:64:64:4:60:4:60|t', getCurinfo(1155)[2]).." "..getCurinfo(1155)[1], getCurinfo(1155)[3].."/"..getCurinfo(1155)[6], r1, g1, b1, r1, g1, b1)
+			end
+			if getCurinfo(1275)[7] then
+				DT.tooltip:AddDoubleLine(format('|T%s:14:14:0:0:64:64:4:60:4:60|t', getCurinfo(1275)[2]).." "..getCurinfo(1275)[1], getCurinfo(1275)[3], r1, g1, b1, r1, g1, b1)
+			end
+			if getCurinfo(1226)[7] then
+				DT.tooltip:AddDoubleLine(format('|T%s:14:14:0:0:64:64:4:60:4:60|t', getCurinfo(1226)[2]).." "..getCurinfo(1226)[1], getCurinfo(1226)[3].."/"..getCurinfo(1226)[6], r1, g1, b1, r1, g1, b1)
+			end
+			if getCurinfo(1220)[7] then
+				DT.tooltip:AddDoubleLine(format('|T%s:14:14:0:0:64:64:4:60:4:60|t', getCurinfo(1220)[2]).." "..getCurinfo(1220)[1], getCurinfo(1220)[3], r1, g1, b1, r1, g1, b1)
+			end
+			if getCurinfo(1273)[7] then
+				DT.tooltip:AddDoubleLine(format('|T%s:14:14:0:0:64:64:4:60:4:60|t', getCurinfo(1273)[2]).." "..getCurinfo(1273)[1], getCurinfo(1273)[3].."/"..getCurinfo(1273)[6], r1, g1, b1, r1, g1, b1)
+			end
+			if getCurinfo(1154)[7] then
+				DT.tooltip:AddDoubleLine(format('|T%s:14:14:0:0:64:64:4:60:4:60|t', getCurinfo(1154)[2]).." "..getCurinfo(1154)[1], getCurinfo(1154)[3].."/"..getCurinfo(1154)[6], r1, g1, b1, r1, g1, b1)
+			end
+			if getCurinfo(1149)[7] then
+				DT.tooltip:AddDoubleLine(format('|T%s:14:14:0:0:64:64:4:60:4:60|t', getCurinfo(1149)[2]).." "..getCurinfo(1149)[1], getCurinfo(1149)[3].."/"..getCurinfo(1149)[6], r1, g1, b1, r1, g1, b1)
+			end
+			if getCurinfo(1268)[7] then
+				DT.tooltip:AddDoubleLine(format('|T%s:14:14:0:0:64:64:4:60:4:60|t', getCurinfo(1268)[2]).." "..getCurinfo(1268)[1], getCurinfo(1268)[3].."/"..getCurinfo(1268)[6], r1, g1, b1, r1, g1, b1)
+			end
+			DT.tooltip:AddLine("  ")
+		end
+		DT.tooltip:AddDoubleLine(L["rightM"], L["options"], r1, g1, b1, r2, g2, b2)
+		DT.tooltip:Show()
+	end 
+	if lastPanel ~= nil then
+		OnEvent(lastPanel)
+	end
+end
+
+----
+----
+----
+----
+--[[
+local function OnEnter(self)
 	local r1, g1, b1, r2, g2, b2 = HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b;
 	DT:SetupTooltip(self)
 	if UnitLevel("player") >= 100 then
@@ -199,7 +248,7 @@ local function OnEnter(self)
 	if lastPanel ~= nil then
 		OnEvent(lastPanel)
 	end
-end
+end ]]
 
 local function OnClick(self, btn)
 	if UnitLevel("player") >= 100 then

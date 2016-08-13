@@ -1,6 +1,6 @@
 ﻿--Mage Nuggets by B-Buck (Bbuck of Eredar)
 
-local magenugVer = "5.2.6"
+local magenugVer = "5.3.0"
 local mirrorImageTime = 0;
 local spellStealTog = 0;
 local polyTimer = 0;
@@ -183,20 +183,24 @@ function MageNuggetsFireblast_OnUpdate(self, elapsed) -- ignite
       end
 
       if(currentFbCharges == 2) then
+
         mnFireblastHideCounter = mnFireblastHideCounter + 1;
         if(mnFireblastHideCounter > 250) then
           mnFireblastHideCounter = 0;
           MageNugIgnite_Frame:Hide();
         end
+
         mnFireblastBorderColorTick = mnFireblastBorderColorTick + 1;
-        if(mnFireblastBorderColorTick > 10) then
-          MageNugIgnite_Frame:SetBackdropBorderColor(1,0,0,1);
+        if(mnFireblastBorderColorTick > 20) then
           mnFireblastBorderColorTick = 0;
+        elseif(mnFireblastBorderColorTick > 10) then
+          MageNugIgnite_TextFrameTexture:SetTexture('Interface\\BUTTONS\\UI-AutoCastableOverlay');
         else
-          MageNugIgnite_Frame:SetBackdropBorderColor(1,1,1,1);
+          MageNugIgnite_TextFrameTexture:SetTexture('');
         end
+
       else
-        MageNugIgnite_Frame:SetBackdropBorderColor(1,1,1,1);
+        MageNugIgnite_TextFrameTexture:SetTexture('');
         mnFireblastBorderColorTick = 0;
         mnFireblastHideCounter = 0;
       end
@@ -1113,7 +1117,7 @@ function spellAuraAppliedSource(arg, sourceName, destName)
         end
     elseif(arg == 190446) then --Brain Freeze
         if(MageNuggets.procMonitorToggle == true) then
-            MageNugBFProcFrameText:SetText("|cffFF3300".."BRAIN FREEZE!");
+            MageNugBFProcFrameText:SetText("|cffFFFFFF".."BRAIN FREEZE!");
             MageNugBFProcFrame_ProcBar:SetValue(14);
             MageNugBFProcFrame:Show();
         end

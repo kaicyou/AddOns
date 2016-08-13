@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1691 $
-$Date: 2016-08-08 21:26:47 +1000 (Mon, 08 Aug 2016) $
+$Revision: 1703 $
+$Date: 2016-08-13 00:29:15 +1000 (Sat, 13 Aug 2016) $
 
 ]]--
 
@@ -1191,8 +1191,8 @@ ArkInventory.Global = { -- globals
 	},
 	
 	Thread = {
-		--WhileInCombat = true, 
-		WhileInCombat = false, -- !!! comment out when done testing
+		WhileInCombat = true, 
+		--WhileInCombat = false, -- !!! comment out when done testing
 		Restack = { },
 		Window = { },
 		WindowState = { },
@@ -1209,6 +1209,7 @@ ArkInventory.Global = { -- globals
 		ConfigCategoryCustomListShow = 1,
 		ConfigCategoryRuleListSort = 1,
 		ConfigCategoryRuleListShow = 1,
+		ConfigCategoryRuleListSet = 9999,
 		ConfigCategorysetListSort = 1,
 		ConfigCategorysetListShow = 1,
 		ConfigDesignListSort = 1,
@@ -2344,9 +2345,9 @@ function ArkInventory.OnEnable( )
 	ArkInventory:RegisterBucketMessage( "EVENT_ARKINV_MERCHANT_LEAVE_BUCKET", 0.3 )
 	ArkInventory:RegisterEvent( "MERCHANT_SHOW", "EVENT_WOW_MERCHANT_ENTER" )
 	ArkInventory:RegisterEvent( "MERCHANT_CLOSED", "EVENT_WOW_MERCHANT_LEAVE" )
-	ArkInventory:RegisterEvent( "TRANSMOGRIFY_OPEN", "EVENT_WOW_MERCHANT_ENTER" )
+	ArkInventory:RegisterEvent( "TRANSMOGRIFY_OPEN", "EVENT_WOW_TRANSMOG_ENTER" )
 	ArkInventory:RegisterEvent( "TRANSMOGRIFY_CLOSE", "EVENT_WOW_MERCHANT_LEAVE" )
-	ArkInventory:RegisterEvent( "FORGE_MASTER_OPENED", "EVENT_WOW_MERCHANT_ENTER" )
+	ArkInventory:RegisterEvent( "FORGE_MASTER_OPENED", "EVENT_WOW_TRANSMOG_ENTER" )
 	ArkInventory:RegisterEvent( "FORGE_MASTER_CLOSED", "EVENT_WOW_MERCHANT_LEAVE" )
 	
 	
@@ -2373,7 +2374,7 @@ function ArkInventory.OnEnable( )
 	--ArkInventory:RegisterEvent( "PET_BATTLE_OVER", "EVENT_WOW_COLLECTION_PET_RELOAD" )
 	
 	ArkInventory:RegisterBucketMessage( "EVENT_ARKINV_COLLECTION_TOYBOX_UPDATE_BUCKET", 2 )
-	ArkInventory:RegisterEvent( "TOYS_UPDATED", "EVENT_WOW_COLLECTION_TOY_RELOAD" )
+	ArkInventory:RegisterEvent( "TOYS_UPDATED", "EVENT_WOW_COLLECTION_TOYBOX_UPDATE" )
 	
 	ArkInventory:RegisterBucketMessage( "EVENT_ARKINV_COLLECTION_HEIRLOOM_UPDATE_BUCKET", 2 )
 	ArkInventory:RegisterEvent( "HEIRLOOMS_UPDATED", "EVENT_WOW_COLLECTION_HEIRLOOM_UPDATE" )
@@ -2435,7 +2436,7 @@ function ArkInventory.OnDisable( )
 	
 	ArkInventory.Global.Enabled = false
 	
-	ArkInventory.BlizzardAPIHook( true )
+	ArkInventory.BlizzardAPIHook( )
 	
 	ArkInventory.Output( ArkInventory.Global.Version, " ", ArkInventory.Localise["DISABLED"] )
 	
@@ -3754,6 +3755,9 @@ end
 
 function ArkInventory.PutItemInGuildBank( tab_id )
 
+	local ctab = GetCurrentGuildBankTab( )
+	local tab_id = tab_id or ctab
+	
 	if CursorHasItem( ) then
 		
 		local loc_id = ArkInventory.Const.Location.Vault
@@ -3762,9 +3766,7 @@ function ArkInventory.PutItemInGuildBank( tab_id )
 		if canDeposit then
 		
 			--ArkInventory.Output( "PutItemInGuildBank( ", tab_id, " )" )
-		
-			local ctab = GetCurrentGuildBankTab( )
-		
+			
 			if tab_id ~= ctab then
 				SetCurrentGuildBankTab( tab_id )
 				ArkInventory.QueryVault( tab_id )
@@ -7136,15 +7138,14 @@ end
 
 function ArkInventory.Frame_Item_OnMouseUp( frame, button )
 	
-	local loc_id = frame.ARK_Data.loc_id
-	local i = ArkInventory.Frame_Item_GetDB( frame )
-	
 	if ArkInventory.Global.Mode.Edit then
 		ArkInventory.MenuItemOpen( frame )
 		return
 	end
 	
-	if not i or not i.h then return end
+	
+	local loc_id = frame.ARK_Data.loc_id
+	local i = ArkInventory.Frame_Item_GetDB( frame )
 	
 	if ArkInventory.Global.Location[loc_id].isOffline then
 		
@@ -7217,6 +7218,15 @@ function ArkInventory.Frame_Item_OnMouseUp( frame, button )
 	end
 	
 	
+	if loc_id == ArkInventory.Const.Location.Wearing then
+		
+		if HandleModifiedItemClick( i.h ) then return end
+		
+		return
+		
+	end
+	
+	
 	if loc_id == ArkInventory.Const.Location.Pet then
 		
 		if HandleModifiedItemClick( i.h ) then return end
@@ -7272,6 +7282,24 @@ function ArkInventory.Frame_Item_OnMouseUp( frame, button )
 	end
 	
 	
+	if loc_id == ArkInventory.Const.Location.Token then
+		
+		if HandleModifiedItemClick( i.h ) then return end
+		
+		return
+		
+	end
+	
+	
+	if loc_id == ArkInventory.Const.Location.Auction then
+		
+		if HandleModifiedItemClick( i.h ) then return end
+		
+		return
+		
+	end
+	
+	
 	if loc_id == ArkInventory.Const.Location.Toybox then
 		
 		if HandleModifiedItemClick( i.h ) then return end
@@ -7313,8 +7341,6 @@ function ArkInventory.Frame_Item_OnMouseUp( frame, button )
 		
 	end
 	
-	
-	if HandleModifiedItemClick( i.h ) then return end
 	
 end
 
@@ -7930,7 +7956,9 @@ end
 
 function ArkInventory.Frame_Status_Update_Tracking( loc_id )
 	
-	if loc_id and loc_id  ~= ArkInventory.Const.Location.Bag then
+	if not ArkInventory:IsEnabled( ) then return end
+	
+	if loc_id and loc_id ~= ArkInventory.Const.Location.Bag then
 		return
 	end
 	
@@ -8686,201 +8714,227 @@ function ArkInventory.MySecureHook(...)
 	end
 end
 
-function ArkInventory.HookOpenBackpack( self )
+function ArkInventory.HookOpenBackpack( self, ... )
 
 	--ArkInventory.Output( "HookOpenBackpack( )" )
 	
-	local loc_id = ArkInventory.Const.Location.Bag
-	
-	if ArkInventory.LocationIsControlled( loc_id ) then
-		local BACKPACK_WAS_OPEN = ArkInventory.Frame_Main_Get( loc_id ):IsVisible( )
-		ArkInventory.Frame_Main_Show( loc_id )
-		return BACKPACK_WAS_OPEN
+	if ArkInventory:IsEnabled( ) then
+		
+		local loc_id = ArkInventory.Const.Location.Bag
+		
+		if ArkInventory.LocationIsControlled( loc_id ) then
+			local BACKPACK_WAS_OPEN = ArkInventory.Frame_Main_Get( loc_id ):IsVisible( )
+			ArkInventory.Frame_Main_Show( loc_id )
+			return BACKPACK_WAS_OPEN
+		end
+		
 	end
 	
-	ArkInventory.OutputError( "Code failure: HookOpenBackpack( ), you should never have got here" )
+	ArkInventory.hooks["OpenBackpack"]( ... )
 	
 end
 
-function ArkInventory.HookToggleBackpack( self )
+function ArkInventory.HookToggleBackpack( self, ... )
 
 	--ArkInventory.Output( "HookToggleBackpack( )" )
 	
-	local loc_id = ArkInventory.Const.Location.Bag
-	
-	if ArkInventory.LocationIsControlled( loc_id ) then
-		ArkInventory.Frame_Main_Toggle( loc_id )
-		return
+	if ArkInventory:IsEnabled( ) then
+		
+		local loc_id = ArkInventory.Const.Location.Bag
+		
+		if ArkInventory.LocationIsControlled( loc_id ) then
+			ArkInventory.Frame_Main_Toggle( loc_id )
+			return
+		end
+		
 	end
 	
-	ArkInventory.OutputError( "Code failure: HookToggleBackpack( ), you should never have got here" )
+	ArkInventory.hooks["ToggleBackpack"]( ... )
 	
 end
 
-function ArkInventory.HookOpenBag( self, bag_id )
+function ArkInventory.HookOpenBag( self, ... )
+	
+	local bag_id = ...
 	
 	--ArkInventory.Output( "HookOpenBag( ", bag_id, " )" )
 	
-	if bag_id then
+	if ArkInventory:IsEnabled( ) then
 		
-		local loc_id = ArkInventory.BagID_Internal( bag_id )
-		
-		if loc_id == ArkInventory.Const.Location.Bag or ( loc_id == ArkInventory.Const.Location.Bank and ArkInventory.Global.Mode.Bank ) then
-			if ArkInventory.LocationIsControlled( loc_id ) then
-				ArkInventory.Frame_Main_Show( loc_id )
-				return
+		if bag_id then
+			
+			local loc_id = ArkInventory.BagID_Internal( bag_id )
+			
+			if loc_id == ArkInventory.Const.Location.Bag or ( loc_id == ArkInventory.Const.Location.Bank and ArkInventory.Global.Mode.Bank ) then
+				if ArkInventory.LocationIsControlled( loc_id ) then
+					ArkInventory.Frame_Main_Show( loc_id )
+					return
+				end
 			end
+			
 		end
 		
 	end
 	
-	ArkInventory.hooks["OpenBag"]( bag_id )
+	ArkInventory.hooks["OpenBag"]( ... )
 	
 end
 
-function ArkInventory.HookToggleBag( self, bag_id )
+function ArkInventory.HookToggleBag( self, ... )
 	
-	--ArkInventory.Output( "HookToggleBag( ", bag_id, " )" )
-	
-	if bag_id then
-	
-		local loc_id = ArkInventory.BagID_Internal( bag_id )
+	if ArkInventory:IsEnabled( ) then
 		
-		if loc_id == ArkInventory.Const.Location.Bag or ( loc_id == ArkInventory.Const.Location.Bank and ArkInventory.Global.Mode.Bank ) then
-			if ArkInventory.LocationIsControlled( loc_id ) then
-				ArkInventory.Frame_Main_Toggle( loc_id )
-				return
+		local bag_id = ...
+		
+		--ArkInventory.Output( "HookToggleBag( ", bag_id, " )" )
+		
+		if bag_id then
+			
+			local loc_id = ArkInventory.BagID_Internal( bag_id )
+			
+			if loc_id == ArkInventory.Const.Location.Bag or ( loc_id == ArkInventory.Const.Location.Bank and ArkInventory.Global.Mode.Bank ) then
+				if ArkInventory.LocationIsControlled( loc_id ) then
+					ArkInventory.Frame_Main_Toggle( loc_id )
+					return
+				end
 			end
+			
 		end
 		
 	end
 	
-	ArkInventory.hooks["ToggleBag"]( bag_id )
+	ArkInventory.hooks["ToggleBag"]( ... )
 	
 end
 
-function ArkInventory.HookOpenAllBags( self, forceOpen )
+function ArkInventory.HookOpenAllBags( self, ... )
 	
-	--ArkInventory.Output( "HookOpenAllBags( ", forceOpen, " )" )
-	
-	-- we control both bag and bank so just toggle the bag and return
-	if ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) and ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bank ) then
+	if ArkInventory:IsEnabled( ) then
 		
-		if forceOpen then
-			ArkInventory.Frame_Main_Show( ArkInventory.Const.Location.Bag )
-		else
-			ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Bag )
-		end
+		local forceOpen = ...
 		
-		return
+		--ArkInventory.Output( "HookOpenAllBags( ", forceOpen, " )" )
 		
-	end
-	
-	-- we only control one of the bag or bank
-	
-	-- modified from blizzard containerframe.lua
-	
-	local bagsShown = 0
-	local bagsTotal = 0
-	
-	-- close all opened blizzard bag frames, but count how many were already opened
-	
-	for i = 1, NUM_CONTAINER_FRAMES do
-		
-		local containerFrame = _G[string.format( "%s%s", "ContainerFrame", i )]
-		
-		if containerFrame and containerFrame:IsShown( ) then
-			bagsShown = bagsShown + 1
-			containerFrame:Hide( )
-		end
-		
-	end
-	
-	
-	if not ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
-		
-		-- bags not overridden, need to open/close them manually
-		
-		-- find max number of bags that could be open
-		
-		bagsTotal = 1
-		for x = 1, NUM_BAG_SLOTS do
-			if GetContainerNumSlots( x ) > 0 then		
-				bagsTotal = bagsTotal + 1
-			end
-		end
-		
-		if forceOpen or ( bagsShown < bagsTotal ) then
+		-- we control both bag and bank so just toggle the bag and return
+		if ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) and ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bank ) then
 			
-			-- not all bags were open, or we are forcing them open, so open all bags
-			
-			OpenBackpack( )
-			
-			for x = 1, NUM_BAG_SLOTS do
-				OpenBag( x )
+			if forceOpen then
+				ArkInventory.Frame_Main_Show( ArkInventory.Const.Location.Bag )
+			else
+				ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Bag )
 			end
 			
+			return
+			
 		end
 		
-		return
+		-- we only control one of the bag or bank
 		
-	end
-	
-	if not ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bank ) then
+		-- modified from blizzard containerframe.lua
 		
-		-- bank not overridden, need to open/close the bank bags manually
+		local bagsShown = 0
+		local bagsTotal = 0
 		
-		if ArkInventory.Global.Mode.Bank then
+		-- close all opened blizzard bag frames, but count how many were already opened
+		
+		for i = 1, NUM_CONTAINER_FRAMES do
 			
-			-- find max number of bank bags that could be open
+			local containerFrame = _G[string.format( "%s%s", "ContainerFrame", i )]
 			
-			local BACKPACK_WAS_OPEN = ArkInventory.Frame_Main_Get( ArkInventory.Const.Location.Bag ):IsVisible( )
-			
-			if BACKPACK_WAS_OPEN then
+			if containerFrame and containerFrame:IsShown( ) then
 				bagsShown = bagsShown + 1
+				containerFrame:Hide( )
 			end
+			
+		end
+		
+		
+		if not ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
+			
+			-- bags not overridden, need to open/close them manually
+			
+			-- find max number of bags that could be open
 			
 			bagsTotal = 1
-			for x = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
-				if GetContainerNumSlots( x ) > 0 then
+			for x = 1, NUM_BAG_SLOTS do
+				if GetContainerNumSlots( x ) > 0 then		
 					bagsTotal = bagsTotal + 1
 				end
 			end
 			
-			--ArkInventory.Output( bagsShown, " / ", bagsTotal, " / ", forceOpen )
-			
-			if forceOpen or ( bagsShown > 0 and bagsShown < bagsTotal ) then
+			if forceOpen or ( bagsShown < bagsTotal ) then
 				
-				for x = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
+				-- not all bags were open, or we are forcing them open, so open all bags
+				
+				OpenBackpack( )
+				
+				for x = 1, NUM_BAG_SLOTS do
 					OpenBag( x )
 				end
 				
-				if not BACKPACK_WAS_OPEN then
-					ArkInventory.Frame_Main_Show( ArkInventory.Const.Location.Bag )
-				end
-				
-			else
-				
-				ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Bag )
-				
 			end
-
-		else
-		
-			ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Bag )
-		
+			
+			return
+			
 		end
 		
-		return
+		if not ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bank ) then
+			
+			-- bank not overridden, need to open/close the bank bags manually
+			
+			if ArkInventory.Global.Mode.Bank then
+				
+				-- find max number of bank bags that could be open
+				
+				local BACKPACK_WAS_OPEN = ArkInventory.Frame_Main_Get( ArkInventory.Const.Location.Bag ):IsVisible( )
+				
+				if BACKPACK_WAS_OPEN then
+					bagsShown = bagsShown + 1
+				end
+				
+				bagsTotal = 1
+				for x = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
+					if GetContainerNumSlots( x ) > 0 then
+						bagsTotal = bagsTotal + 1
+					end
+				end
+				
+				--ArkInventory.Output( bagsShown, " / ", bagsTotal, " / ", forceOpen )
+				
+				if forceOpen or ( bagsShown > 0 and bagsShown < bagsTotal ) then
+					
+					for x = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
+						OpenBag( x )
+					end
+					
+					if not BACKPACK_WAS_OPEN then
+						ArkInventory.Frame_Main_Show( ArkInventory.Const.Location.Bag )
+					end
+					
+				else
+					
+					ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Bag )
+					
+				end
+	
+			else
+			
+				ArkInventory.Frame_Main_Toggle( ArkInventory.Const.Location.Bag )
+			
+			end
+			
+			return
+			
+		end
 		
 	end
 	
-	ArkInventory.OutputError( "code failure: HookOpenAllBags( ), you should never have got here." )
+	ArkInventory.hooks["OpenAllBags"]( ... )
 	
 end
-
-function ArkInventory.HookToggleAllBags( self )
-	ArkInventory.HookOpenAllBags( self )
+	
+function ArkInventory.HookToggleAllBags( self, ... )
+	ArkInventory.HookOpenAllBags( self, ... )
 end
 
 function ArkInventory.HookDoNothing( self )
@@ -8905,9 +8959,11 @@ function ArkInventory.HookVoidStorageShow( )
 	
 	--ArkInventory.Output( "void storage opened" )
 	
+	if not ArkInventory:IsEnabled( ) then return end
+	
 	local loc_id = ArkInventory.Const.Location.Void
 	
-	if not ArkInventory:IsEnabled( ) or not ArkInventory.LocationIsMonitored( loc_id ) then return end
+	if not ArkInventory.LocationIsMonitored( loc_id ) then return end
 	
 	ArkInventory.Global.Mode.Void = true
 	ArkInventory.Global.Location[loc_id].isOffline = false
@@ -8932,9 +8988,12 @@ end
 function ArkInventory.HookVoidStorageHide( )
 	
 	--ArkInventory.Output( "void storage closed" )
+	
+	if not ArkInventory:IsEnabled( ) then return end
+	
 	local loc_id = ArkInventory.Const.Location.Void
 	
-	if not ArkInventory:IsEnabled( ) or not ArkInventory.LocationIsMonitored( loc_id ) then return end
+	if not ArkInventory.LocationIsMonitored( loc_id ) then return end
 	
 	ArkInventory.Global.Mode.Void = false
 	ArkInventory.Global.Location[loc_id].isOffline = true
@@ -8966,6 +9025,10 @@ end
 
 function ArkInventory.HookFloatingBattlePet_Show( ... )
 	
+	if not ArkInventory:IsEnabled( ) then return end
+	
+	if not ArkInventory.db.option.tooltip.battlepet.enable then return end
+	
 	local h = ArkInventory.BattlepetBaseHyperlink( ... )
 	
 	FloatingBattlePetTooltip:Hide( )
@@ -8983,6 +9046,10 @@ function ArkInventory.HookFloatingBattlePet_Show( ... )
 end
 
 function ArkInventory.HookBattlePetToolTip_Show( ... )
+	
+	if not ArkInventory:IsEnabled( ) then return end
+	
+	if not ArkInventory.db.option.tooltip.battlepet.enable then return end
 	
 	local h = ArkInventory.BattlepetBaseHyperlink( ... )
 	
@@ -9002,24 +9069,81 @@ function ArkInventory.HookCPetJournalSetCustomName( ... )
 	ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_PET_RELOAD_BUCKET", "RENAME" )
 end
 
-function ArkInventory.BlizzardAPIHook( disable )
+function ArkInventory.LoadAddOn( addonname )
+	if IsAddOnLoaded( addonname ) then
+		return true
+	else
+		local loaded, reason = LoadAddOn( addonname )
+		if reason then
+			ArkInventory.OutputError( "Failed to load ", addonname, ": ", getglobal( "ADDON_" .. reason ) )
+		end
+		return not not loaded
+	end
+end
+
+function ArkInventory.BlizzardAPIHook( )
 	
 	-- required blizzard internal addons - load them here as they expect to be loaded after the user has logged in, they usually have issues if you try to load them too early
-	if not IsAddOnLoaded( "Blizzard_GuildBankUI" ) then
-		LoadAddOn( "Blizzard_GuildBankUI" )
-	end
+	ArkInventory.LoadAddOn( "Blizzard_GuildBankUI" )
+	ArkInventory.LoadAddOn( "Blizzard_VoidStorageUI" )
+	ArkInventory.LoadAddOn( "Blizzard_Collections" )
 	
-	if not IsAddOnLoaded( "Blizzard_VoidStorageUI" ) then
-		LoadAddOn( "Blizzard_VoidStorageUI" )
-	end
-	
-	if not IsAddOnLoaded( "Blizzard_Collections" ) then
-		LoadAddOn( "Blizzard_Collections" )
-	end
+	local tooltip_functions = {
+		"SetAuctionItem", "SetAuctionSellItem", "SetAuctionCompareItem", "SetBagItem", "SetBuybackItem", "SetCraftItem", "SetCraftSpell",
+		"SetCurrencyTokenByID", "SetGuildBankItem", "SetHeirloomByItemID", "SetHyperlink", "SetHyperlinkCompareItem", "SetInboxItem",
+		"SetInventoryItem", "SetItemByID", "SetLootItem", "SetLootRollItem", "SetMerchantCompareItem", "SetMerchantItem", "SetQuestItem",
+		"SetQuestCurrency", "SetQuestLogItem", "SetQuestLogSpecialItem", "SetToyByItemID", "SetSendMailItem", "SetTradePlayerItem",
+		"SetTradeTargetItem", "SetVoidDepositItem", "SetVoidItem", "SetVoidWithdrawalItem"
+	}
+    
 	
 	if not ArkInventory.Global.BlizzardAPIHook then
 		
-		-- script hooks cannot be reversed and should only be hooked once and they need to check if they should be active or not
+		-- backpack functions
+		ArkInventory:RawHook( "OpenBackpack", "HookOpenBackpack", true )
+		ArkInventory:RawHook( "ToggleBackpack", "HookToggleBackpack", true )
+		ArkInventory:SecureHook( "BackpackTokenFrame_Update", ArkInventory.Frame_Status_Update_Tracking )
+		
+		-- bag functions
+		ArkInventory:RawHook( "OpenBag", "HookOpenBag", true )
+		ArkInventory:RawHook( "ToggleBag", "HookToggleBag", true )
+		ArkInventory:RawHook( "OpenAllBags", "HookOpenAllBags", true )
+		if ToggleAllBags then
+			ArkInventory:RawHook( "ToggleAllBags", "HookToggleAllBags", true )
+		end
+		
+		-- mailbox fuctions
+		ArkInventory:SecureHook( "SendMail", ArkInventory.HookMailSend )
+		ArkInventory:SecureHook( "ReturnInboxItem", ArkInventory.HookMailReturn )
+		
+		-- battlepet functions
+		ArkInventory:SecureHook( C_PetJournal, "SetFavorite", ArkInventory.HookCPetJournalSetFavorite )
+		ArkInventory:SecureHook( C_PetJournal, "SetCustomName", ArkInventory.HookCPetJournalSetCustomName )
+		
+		
+		-- tooltips
+		ArkInventory:SecureHook( GameTooltip, "SetCurrencyByID", ArkInventory.TooltipHookSetCurrencyByID )
+		ArkInventory:SecureHook( GameTooltip, "SetMerchantCostItem", ArkInventory.TooltipHookSetMerchantCostItem )
+		ArkInventory:SecureHook( GameTooltip, "SetBackpackToken", ArkInventory.TooltipHookSetBackpackToken )
+		ArkInventory:SecureHook( GameTooltip, "SetCurrencyToken", ArkInventory.TooltipHookSetCurrencyToken )
+		ArkInventory:SecureHook( GameTooltip, "SetRecipeReagentItem", ArkInventory.TooltipHookSetRecipeReagentItem )
+		ArkInventory:SecureHook( "GameTooltip_ShowCompareItem", ArkInventory.TooltipShowCompare )
+		for _, obj in pairs( ArkInventory.Global.Tooltip.WOW ) do
+			if obj then
+				for _, func in pairs( tooltip_functions ) do
+					if obj[func] then
+						ArkInventory:SecureHook( obj, func, ArkInventory.TooltipHook )
+					end
+				end
+			end
+		end
+		
+		-- battlepet tooltips
+		ArkInventory:SecureHook( "BattlePetToolTip_Show", ArkInventory.HookBattlePetToolTip_Show )
+		ArkInventory:SecureHook( "FloatingBattlePet_Show", ArkInventory.HookFloatingBattlePet_Show )
+
+		
+		-- script hooks
 		
 		-- battlepet mouseovers
 		GameTooltip:HookScript( "OnTooltipSetUnit", ArkInventory.TooltipHookSetUnit )
@@ -9038,63 +9162,24 @@ function ArkInventory.BlizzardAPIHook( disable )
 		
 	end
 	
-	if disable or not ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
-		-- unhook the backpack functions
-		ArkInventory.MyUnhook( "OpenBackpack" )
-		ArkInventory.MyUnhook( "ToggleBackpack" )
-		ArkInventory.Frame_Main_Hide( ArkInventory.Const.Location.Bag )
-	else
-		-- hook the backpack functions
-		ArkInventory.MyHook( "OpenBackpack", "HookOpenBackpack", true )
-		ArkInventory.MyHook( "ToggleBackpack", "HookToggleBackpack", true )
-		ArkInventory.MySecureHook( "BackpackTokenFrame_Update", ArkInventory.Frame_Status_Update_Tracking )
-	end
-	
-	
-	if disable or not ( ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) or ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bank ) ) then
-		-- unhook the bag functions
-		ArkInventory.MyUnhook( "OpenBag" )
-		ArkInventory.MyUnhook( "ToggleBag" )
-		ArkInventory.MyUnhook( "OpenAllBags" )
-		if ToggleAllBags then
-			ArkInventory.MyUnhook( "ToggleAllBags" )
-		end
-	else
-		-- hook the bag functions
-		ArkInventory.MyHook( "OpenBag", "HookOpenBag", true )
-		ArkInventory.MyHook( "ToggleBag", "HookToggleBag", true )
-		ArkInventory.MyHook( "OpenAllBags", "HookOpenAllBags", true )
-		if ToggleAllBags then
-			ArkInventory.MyHook( "ToggleAllBags", "HookToggleAllBags", true )
-		end
-	end
-
 	
 	-- bank hooks
-	if disable or not ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bank ) then
+	if ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bank ) then
+		BankFrame:Hide( )
+		BankFrame:UnregisterEvent( "BANKFRAME_OPENED" )
+	else
 		BankFrame:RegisterEvent( "BANKFRAME_OPENED" )
 		ArkInventory.Frame_Main_Hide( ArkInventory.Const.Location.Bank )
 		BankFrame:Hide( )
-	else
-		BankFrame:Hide( )
-		BankFrame:UnregisterEvent( "BANKFRAME_OPENED" )
 	end
 	
 	
 	-- mailbox
-	if disable then
-		MailFrame:RegisterEvent( "MAIL_SHOW" )
-		ArkInventory.MyUnhook( "SendMail" )
-		ArkInventory.MyUnhook( "ReturnInboxItem" )
-	else
-		MailFrame:UnregisterEvent( "MAIL_SHOW" )
-		ArkInventory.MySecureHook( "SendMail", ArkInventory.HookMailSend )
-		ArkInventory.MySecureHook( "ReturnInboxItem", ArkInventory.HookMailReturn )
-	end
+	MailFrame:UnregisterEvent( "MAIL_SHOW" )
 	
 	
 	-- merchant
-	if disable then
+	if ArkInventory.db.option.auto.open.merchant then
 		MerchantFrame:RegisterEvent( "MERCHANT_SHOW" )
 	else
 		MerchantFrame:UnregisterEvent( "MERCHANT_SHOW" )
@@ -9108,7 +9193,7 @@ function ArkInventory.BlizzardAPIHook( disable )
 		
 	else
 		
-		if disable or not ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Vault ) then
+		if not ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Vault ) then
 			
 			-- restore guild bank functions
 			
@@ -9163,35 +9248,9 @@ function ArkInventory.BlizzardAPIHook( disable )
 	
 
 	-- tooltips
-
-	local tooltip_functions = {
-		"SetAuctionItem", "SetAuctionSellItem", "SetAuctionCompareItem",
-		"SetBagItem", "SetBuybackItem", "SetCraftItem", "SetCraftSpell", "SetCurrencyTokenByID", "SetGuildBankItem", "SetHeirloomByItemID", 
-		"SetHyperlink", "SetHyperlinkCompareItem", "SetInboxItem", "SetInventoryItem", "SetItemByID",
-		"SetLootItem", "SetLootRollItem",
-		"SetMerchantCompareItem", "SetMerchantItem",
-		"SetQuestItem", "SetQuestCurrency", "SetQuestLogItem", "SetQuestLogSpecialItem",
-		"SetToyByItemID", "SetSendMailItem", "SetTradePlayerItem", "SetTradeTargetItem",
-		"SetVoidDepositItem", "SetVoidItem", "SetVoidWithdrawalItem"
-	}
-    
-	if disable or not ArkInventory.db.option.tooltip.show then
-		
-		ArkInventory.MyUnhook( "GameTooltip", "SetMerchantCostItem" )
-		ArkInventory.MyUnhook( "GameTooltip", "SetBackpackToken" )
-		ArkInventory.MyUnhook( "GameTooltip", "SetCurrencyToken" )
-		ArkInventory.MyUnhook( "GameTooltip", "SetTradeSkillItem" )
-		ArkInventory.MyUnhook( "GameTooltip", "SetCurrencyByID" )
-		ArkInventory.MyUnhook( "GameTooltip_ShowCompareItem", "TooltipShowCompare" )
-		
+	if not ArkInventory.db.option.tooltip.show then
 		for _, obj in pairs( ArkInventory.Global.Tooltip.WOW ) do
 			if obj then
-				
-				for _, func in pairs( tooltip_functions ) do
-					if obj[func] then
-						ArkInventory.MyUnhook( obj, func, ArkInventory.TooltipHook )
-					end
-				end
 				
 				if obj.ARK_Data then
 					table.wipe( obj.ARK_Data )
@@ -9200,17 +9259,9 @@ function ArkInventory.BlizzardAPIHook( disable )
 				
 			end
 		end
-		
 	else
-		
 		for _, obj in pairs( ArkInventory.Global.Tooltip.WOW ) do
 			if obj then
-				
-				for _, func in pairs( tooltip_functions ) do
-					if obj[func] then
-						ArkInventory.MySecureHook( obj, func, ArkInventory.TooltipHook )
-					end
-				end
 				
 				if ArkInventory.db.option.tooltip.scale.enabled then
 					obj:SetScale( ArkInventory.db.option.tooltip.scale.amount or 1 )
@@ -9220,52 +9271,16 @@ function ArkInventory.BlizzardAPIHook( disable )
 				
 			end
 		end
-		
-		ArkInventory.MySecureHook( GameTooltip, "SetCurrencyByID", ArkInventory.TooltipHookSetCurrencyByID )
-		ArkInventory.MySecureHook( GameTooltip, "SetMerchantCostItem", ArkInventory.TooltipHookSetMerchantCostItem )
-		ArkInventory.MySecureHook( GameTooltip, "SetBackpackToken", ArkInventory.TooltipHookSetBackpackToken )
-		ArkInventory.MySecureHook( GameTooltip, "SetCurrencyToken", ArkInventory.TooltipHookSetCurrencyToken )
-		ArkInventory.MySecureHook( GameTooltip, "SetRecipeReagentItem", ArkInventory.TooltipHookSetRecipeReagentItem )
-		ArkInventory.MySecureHook( "GameTooltip_ShowCompareItem", ArkInventory.TooltipShowCompare )
-		
 	end
 	
-	ArkInventory.BlizzardAPIHookBattlepetFunctions( disable )
-	ArkInventory.BlizzardAPIHookBattlepetTooltip( disable )
-	
-end
-
-function ArkInventory.BlizzardAPIHookBattlepetTooltip( disable )
-	
-	if disable or ( not ArkInventory.db.option.tooltip.battlepet.enable ) then
-		
+	-- battlepet tooltips
+	if not ArkInventory.db.option.tooltip.battlepet.enable then
 		ItemRefTooltip:Hide( )
-		
-		ArkInventory.MyUnhook( "FloatingBattlePet_Show", "HookFloatingBattlePet_Show" )
-		ArkInventory.MyUnhook( "BattlePetToolTip_Show", "HookBattlePetToolTip_Show" )
-		
 	else
-		
 		FloatingBattlePetTooltip:Hide( )
-		
-		ArkInventory.MySecureHook( "BattlePetToolTip_Show", ArkInventory.HookBattlePetToolTip_Show )
-		ArkInventory.MySecureHook( "FloatingBattlePet_Show", ArkInventory.HookFloatingBattlePet_Show )
-		
 	end
-
+	
 end
-
-function ArkInventory.BlizzardAPIHookBattlepetFunctions( disable )
-	if disable or ( not ArkInventory.LocationIsMonitored( ArkInventory.Const.Location.Pet ) ) then
-		ArkInventory.MyUnhook( "C_PetJournal", "SetCustomName" )
-		ArkInventory.MyUnhook( "C_PetJournal", "SetFavorite" )
-	else
-		ArkInventory.MySecureHook( C_PetJournal, "SetFavorite", ArkInventory.HookCPetJournalSetFavorite )
-		ArkInventory.MySecureHook( C_PetJournal, "SetCustomName", ArkInventory.HookCPetJournalSetCustomName )
-	end
-end
-
-
 
 
 function ArkInventory.ContainerNameGet( loc_id, bag_id )

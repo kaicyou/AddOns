@@ -1,4 +1,4 @@
-﻿local magenugVer = "5.2.6"
+﻿local magenugVer = "5.3.0"
 
 MageNuggets = {
     ssMonitorToggle = true;
@@ -680,7 +680,7 @@ function MNsimpleUItoggle()
     else
         MageNuggets.simpleUiToggle = false;
         MageNugProcFrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\Fire_Horizontal_Frame");
-        MageNugBFProcFrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\Fire_Horizontal_Frame");
+        MageNugBFProcFrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\Water_Horizontal_Frame");
         MageNugProcHUFrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\Fire_Horizontal_Frame");
         MageNugCauterizeFrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\Fire_Horizontal_Frame");
         MageNugPolyFrameTextureBorder:SetTexture("Interface\\UNITPOWERBARALT\\MetalEternium_Horizontal_Frame");
@@ -1024,7 +1024,7 @@ function ShowConfigFrames() --Shows frames for 120 seconds
     MageNugPolyFrameText:SetText("|cffFFFFFF".."Polymorph")
     MageNugPolyFrame:Show();
     mageImpProgMonTime = 120;
-    MageNugBFProcFrameText:SetText("|cffFF3300".."BRAIN FREEZE!")
+    MageNugBFProcFrameText:SetText("|cffFFFFFF".."BRAIN FREEZE!")
     MageNugBFProcFrame:Show();
     MageNugProcFrameText:SetText("|cffFF0000".."HOT STREAK!");
     MageNugProcFrame:Show();
@@ -1197,7 +1197,7 @@ end
 --
 function loadMageNuggetVariables_OnLoadEvent()
      mnplayerClass, mnenglishClass = UnitClass("player");
-    if((mnenglishClass == 'WARRIOR') or (mnenglishClass == 'MONK') or (mnenglishClass == 'ROGUE') or (mnenglishClass == 'DEATHKNIGHT') or (mnenglishClass == 'PALADIN') or (mnenglishClass == 'HUNTER')) then
+    if((mnenglishClass == 'WARRIOR') or (mnenglishClass == 'MONK') or (mnenglishClass == 'DEMONHUNTER') or (mnenglishClass == 'ROGUE') or (mnenglishClass == 'DEATHKNIGHT') or (mnenglishClass == 'PALADIN') or (mnenglishClass == 'HUNTER')) then
         MageNuggets.ssMonitorToggle = false;
         MageNuggets.igniteTog = false;
         MageNuggets.mageProcToggle = false;

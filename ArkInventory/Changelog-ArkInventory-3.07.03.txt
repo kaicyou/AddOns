@@ -1,9 +1,52 @@
 ------------------------------------------------------------------------
-r580 | arkayenro | 2016-08-10 01:42:26 +0000 (Wed, 10 Aug 2016) | 1 line
+r584 | arkayenro | 2016-08-12 21:50:20 +0000 (Fri, 12 Aug 2016) | 1 line
 Changed paths:
-   A /tags/3.07.01 (from /trunk:579)
+   A /tags/3.07.03 (from /trunk:583)
 
-Tagging as 3.07.01
+Tagging as 3.07.03
+------------------------------------------------------------------------
+r583 | arkayenro | 2016-08-12 21:48:26 +0000 (Fri, 12 Aug 2016) | 8 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryCollectionHeirloom.lua
+   M /trunk/ArkInventoryCollectionMount.lua
+   M /trunk/ArkInventoryCollectionPet.lua
+   M /trunk/ArkInventoryCollectionToy.lua
+   M /trunk/ArkInventoryConfig.lua
+   M /trunk/ArkInventoryConst.lua
+   M /trunk/ArkInventoryRestack.lua
+   M /trunk/ArkInventoryRules.lua
+   M /trunk/ArkInventorySearch.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryTooltip.lua
+   M /trunk/ArkInventoryTranslate.lua
+   M /trunk/ArkInventoryUpgrades.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
+   M /trunk/Modules/ArkInventorySearch/ArkInventorySearch.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.03 (13-AUG-2016)*
+ * fixed - issue with error message about "you should never have got here" displaying incorrectly
+ * fixed - upgrade code
+ * fixed - issue with chatlinked items doubling up (in bag and bank)
+ * fixed - issue with moving items around in the guild bank
+ * fixed (maybe) - issue with mailbox/vendor not opening
+ * added - categories and rules can be enabled/disabled in the config window
+
+------------------------------------------------------------------------
+r581 | arkayenro | 2016-08-10 13:45:16 +0000 (Wed, 10 Aug 2016) | 4 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryConfig.lua
+   M /trunk/ArkInventoryUpgrades.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.02 (10-AUG-2016)*
+ * fixed - issue with 30260 upgrade code
+ * fixed - issue with copying category sets
+
 ------------------------------------------------------------------------
 r579 | arkayenro | 2016-08-10 01:39:28 +0000 (Wed, 10 Aug 2016) | 3 lines
 Changed paths:

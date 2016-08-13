@@ -127,7 +127,7 @@ local function helper_UpgradeProfile( profile, profile_name )
 		profile.option.version = ArkInventory.Const.Program.Version
 	end
 	
-	if profile.option.version >= 30599 then
+	if profile.option.version >= 30699 then
 		return
 	end
 	
@@ -249,13 +249,17 @@ local function helper_UpgradeProfile( profile, profile_name )
 					if v.window.colour then
 					
 						if v.window.colour.border then
-							v.window.border.colour.r = v.window.colour.border.r  or v.window.border.colour.r
+							v.window.border = v.window.border or { }
+							v.window.border.colour = v.window.border.colour or { }
+							v.window.border.colour.r = v.window.colour.border.r or v.window.border.colour.r
 							v.window.border.colour.g = v.window.colour.border.g or v.window.border.colour.g
 							v.window.border.colour.b = v.window.colour.border.b or v.window.border.colour.b
 							v.window.colour.border = nil
 						end
 						
 						if v.window.colour.background then
+							v.window.background = v.window.background or { }
+							v.window.background.colour = v.window.background.colour or { }
 							v.window.background.colour.r = v.window.colour.background.r or v.window.background.colour.r
 							v.window.background.colour.g = v.window.colour.background.g or v.window.background.colour.g
 							v.window.background.colour.b = v.window.colour.background.b or v.window.background.colour.b
@@ -264,6 +268,9 @@ local function helper_UpgradeProfile( profile, profile_name )
 						end
 						
 						if v.window.colour.baghighlight then
+							v.changer = v.changer or { }
+							v.changer.highlight = v.changer.highlight or { }
+							v.changer.highlight.colour = v.changer.highlight.colour or { }
 							v.changer.highlight.colour.r = v.window.colour.baghighlight.r or v.changer.highlight.colour.r
 							v.changer.highlight.colour.g = v.window.colour.baghighlight.g or v.changer.highlight.colour.g
 							v.changer.highlight.colour.b = v.window.colour.baghighlight.b or v.changer.highlight.colour.b
@@ -280,6 +287,7 @@ local function helper_UpgradeProfile( profile, profile_name )
 					
 					if v.bar.name and v.bar.name.label then
 						for id, label in pairs( v.bar.name.label ) do
+							v.bar.data = v.bar.data or { }
 							v.bar.data[id].label = label
 						end
 						v.bar.name.label = nil
@@ -296,6 +304,8 @@ local function helper_UpgradeProfile( profile, profile_name )
 					if v.bar.colour then
 						
 						if v.bar.colour.border then
+							v.bar.border = v.bar.border or { }
+							v.bar.border.colour = v.bar.border.colour or { }
 							v.bar.border.colour.r = v.bar.colour.border.r or v.bar.border.colour.r
 							v.bar.border.colour.g = v.bar.colour.border.g or v.bar.border.colour.g
 							v.bar.border.colour.b = v.bar.colour.border.b or v.bar.border.colour.b
@@ -303,6 +313,8 @@ local function helper_UpgradeProfile( profile, profile_name )
 						end
 						
 						if v.bar.colour.background then
+							v.bar.background = v.bar.background or { }
+							v.bar.background.colour = v.bar.background.colour or { }
 							v.bar.background.colour.r =  v.bar.colour.background.r or v.bar.background.colour.r
 							v.bar.background.colour.g = v.bar.colour.background.g or v.bar.background.colour.g
 							v.bar.background.colour.b = v.bar.colour.background.b or v.bar.background.colour.b
@@ -325,7 +337,6 @@ local function helper_UpgradeProfile( profile, profile_name )
 						v.slot.border.scale = 1
 						v.slot.border.file = nil
 					end
-				
 				
 					if v.slot.empty then
 						v.slot.empty.colour = nil
@@ -360,6 +371,8 @@ local function helper_UpgradeProfile( profile, profile_name )
 				if profile.option.ui.search.colour then
 					
 					if profile.option.ui.search.colour.border then
+						profile.option.ui.search.border = profile.option.ui.search.border or { }
+						profile.option.ui.search.border.colour = profile.option.ui.search.border.colour or { }
 						profile.option.ui.search.border.colour.r = profile.option.ui.search.colour.border.r or profile.option.ui.search.border.colour.r
 						profile.option.ui.search.border.colour.g = profile.option.ui.search.colour.border.g or profile.option.ui.search.border.colour.g
 						profile.option.ui.search.border.colour.b = profile.option.ui.search.colour.border.b or profile.option.ui.search.border.colour.b
@@ -367,6 +380,8 @@ local function helper_UpgradeProfile( profile, profile_name )
 					end
 					
 					if profile.option.ui.search.colour.background then
+						profile.option.ui.search.background = profile.option.ui.search.background or { }
+						profile.option.ui.search.background.colour = profile.option.ui.search.background.colour or { }
 						profile.option.ui.search.background.colour.r = profile.option.ui.search.colour.background.r or profile.option.ui.search.background.colour.r
 						profile.option.ui.search.background.colour.g = profile.option.ui.search.colour.background.g or profile.option.ui.search.background.colour.g
 						profile.option.ui.search.background.colour.b = profile.option.ui.search.colour.background.b or profile.option.ui.search.background.colour.b
@@ -391,6 +406,8 @@ local function helper_UpgradeProfile( profile, profile_name )
 				if profile.option.ui.rules.colour then
 					
 					if profile.option.ui.rules.colour.border then
+						profile.option.ui.rules.border = profile.option.ui.rules.border or { }
+						profile.option.ui.rules.border.colour = profile.option.ui.rules.border.colour or { }
 						profile.option.ui.rules.border.colour.r = profile.option.ui.rules.colour.border.r or profile.option.ui.rules.border.colour.r
 						profile.option.ui.rules.border.colour.g = profile.option.ui.rules.colour.border.g or profile.option.ui.rules.border.colour.g
 						profile.option.ui.rules.border.colour.b = profile.option.ui.rules.colour.border.b or profile.option.ui.rules.border.colour.b
@@ -398,13 +415,15 @@ local function helper_UpgradeProfile( profile, profile_name )
 					end
 				
 					if profile.option.ui.rules.colour.background then
+						profile.option.ui.rules.background = profile.option.ui.rules.background or { }
+						profile.option.ui.rules.background.colour = profile.option.ui.rules.background.colour or { }
 						profile.option.ui.rules.background.colour.r = profile.option.ui.rules.colour.background.r or profile.option.ui.rules.background.colour.r
 						profile.option.ui.rules.background.colour.g = profile.option.ui.rules.colour.background.g or profile.option.ui.rules.background.colour.g
 						profile.option.ui.rules.background.colour.b = profile.option.ui.rules.colour.background.b or profile.option.ui.rules.background.colour.b
 						profile.option.ui.rules.background.colour.a = profile.option.ui.rules.colour.background.a or profile.option.ui.rules.background.colour.a
 						profile.option.ui.rules.colour.background = nil
 					end
-						
+					
 				end
 				
 			end
@@ -430,9 +449,16 @@ local function helper_UpgradeProfile( profile, profile_name )
 				
 				if loc.framehide then
 					
+					loc.title = loc.title or { }
 					loc.title.hide = not not loc.framehide.header
+					
+					loc.search = loc.search or { }
 					loc.search.hide = not not loc.framehide.search
+					
+					loc.status = loc.status or { }
 					loc.status.hide = not not loc.framehide.status
+					
+					loc.changer = loc.changer or { }
 					loc.changer.hide = not not loc.framehide.changer
 					
 					loc.framehide = nil
@@ -458,12 +484,17 @@ local function helper_UpgradeProfile( profile, profile_name )
 			
 			for k, v in pairs( profile.option.location ) do
 				if v.anchor and v.anchor[k] then
+					
+					profile.option.anchor = profile.option.anchor or { }
+					profile.option.anchor[k] = profile.option.anchor[k] or { }
+					
 					profile.option.anchor[k].point = v.anchor[k].point
 					profile.option.anchor[k].locked = v.anchor[k].locked
 					profile.option.anchor[k].t = v.anchor[k].t
 					profile.option.anchor[k].b = v.anchor[k].b
 					profile.option.anchor[k].l = v.anchor[k].l
 					profile.option.anchor[k].r = v.anchor[k].r
+					
 				end
 				v.anchor = nil
 			end
@@ -488,20 +519,6 @@ local function helper_UpgradeProfile( profile, profile_name )
 				end
 			end
 		end
-		
-		
-		profile.option.version = upgrade_version
-		
-	end
-	
-	
-	upgrade_version = 3.0279
-	if profile.option.version < upgrade_version then
-		
-		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], profile_name, upgrade_version ) )
-		
-		helper_CategoryRenumber( "1!303", nil ) -- empty key slot
-		helper_CategoryRenumber( "1!406", nil ) -- key
 		
 		
 		profile.option.version = upgrade_version
@@ -565,6 +582,8 @@ local function helper_UpgradeProfile( profile, profile_name )
 				
 				if v.slot and v.slot.new and v.slot.new.show then
 					
+					v.slot.age = v.slot.age or { }
+					
 					v.slot.age.show = v.slot.new.show
 					v.slot.new.show = nil
 					
@@ -572,6 +591,7 @@ local function helper_UpgradeProfile( profile, profile_name )
 					v.slot.new.cutoff = 2
 					
 					if v.slot.new.colour then
+						v.slot.age.colour = v.slot.age.colour or { }
 						v.slot.age.colour.r = v.slot.new.colour.r
 						v.slot.age.colour.g = v.slot.new.colour.g
 						v.slot.age.colour.b = v.slot.new.colour.b
@@ -642,6 +662,20 @@ local function helper_UpgradeProfile( profile, profile_name )
 				
 			end
 			
+			
+			if profile.option.anchor then
+				for k, v in pairs( profile.option.anchor ) do
+					newprofile.location[k].anchor.point = v.point
+					newprofile.location[k].anchor.locked = v.locked
+					newprofile.location[k].anchor.t = v.t
+					newprofile.location[k].anchor.b = v.b
+					newprofile.location[k].anchor.l = v.l
+					newprofile.location[k].anchor.r = v.r
+				end
+				profile.option.anchor = nil
+			end
+			
+			
 			if profile.option.location then
 				
 				for loc_id, loc_data in pairs( profile.option.location ) do
@@ -679,6 +713,7 @@ local function helper_UpgradeProfile( profile, profile_name )
 							
 						end
 					end
+					
 				end
 				
 				profile.option.location = nil
@@ -710,13 +745,13 @@ local function helper_UpgradeProfile( profile, profile_name )
 	-- ANYTING ELSE FROM THE PTR/BETA, THE MESSY UPGRADE PATH - THIS IS WHY BACKUPS ARE A GOOD IDEA
 	
 	upgrade_version = 30604
-	if ArkInventory.db.profile.option.version < upgrade_version then
+	if profile.option.version < upgrade_version then
 		
-		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], ArkInventory.db:GetCurrentProfile( ), upgrade_version ) )
+		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_PROFILE"], profile_name, upgrade_version ) )
 		
 		local player = ArkInventory.PlayerDataGet( )
 		
-		if ArkInventory.db.profile.option.category or ArkInventory.db.profile.option.rule then
+		if profile.option.category or profile.option.rule then
 			
 			local id, data = ArkInventory.ConfigInternalCategorysetAdd( ArkInventory.db:GetCurrentProfile( ) )
 			
@@ -724,15 +759,15 @@ local function helper_UpgradeProfile( profile, profile_name )
 				
 				catset = id
 				
-				if ArkInventory.db.profile.option.category then
-					ArkInventory.Table.Merge( ArkInventory.db.profile.option.category, data.category.assign )
+				if profile.option.category then
+					ArkInventory.Table.Merge( profile.option.category, data.category.assign )
 				end
-				ArkInventory.db.profile.option.category = nil
+				profile.option.category = nil
 				
-				if ArkInventory.db.profile.option.rule then
-					ArkInventory.Table.Merge( ArkInventory.db.profile.option.rule, data.category.active[ArkInventory.Const.Category.Type.Rule] )
+				if profile.option.rule then
+					ArkInventory.Table.Merge( profile.option.rule, data.category.active[ArkInventory.Const.Category.Type.Rule] )
 				end
-				ArkInventory.db.profile.option.rule = nil
+				profile.option.rule = nil
 				
 				for k, v in pairs( ArkInventory.db.global.option.category[ArkInventory.Const.Category.Type.Custom].data ) do
 					if v.used ~= "N" then
@@ -744,29 +779,29 @@ local function helper_UpgradeProfile( profile, profile_name )
 			
 		end
 		
-		if ArkInventory.db.profile.option.layout then
-				for k, v in pairs( ArkInventory.db.profile.option.layout ) do
+		if profile.option.layout then
+				for k, v in pairs( profile.option.layout ) do
 				player.option[k].layout = v
 			end
 		end
 		
-		if ArkInventory.db.profile.option.style then
-			for k, v in pairs( ArkInventory.db.profile.option.style ) do
+		if profile.option.style then
+			for k, v in pairs( profile.option.style ) do
 				player.option[k].style = v
 			end
 		end
 		
-		if ArkInventory.db.profile.option.catset then
-			for k, v in pairs( ArkInventory.db.profile.option.catset ) do
+		if profile.option.catset then
+			for k, v in pairs( profile.option.catset ) do
 				player.option[k].catset = v
 			end
 		end
 		
-		ArkInventory.db.profile.option.font = nil
-		ArkInventory.db.profile.option.frameStrata = nil
+		profile.option.font = nil
+		profile.option.frameStrata = nil
 		
 		
-		ArkInventory.db.profile.option.version = upgrade_version
+		profile.option.version = upgrade_version
 		
 	end
 	
@@ -1212,6 +1247,9 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		end
 		
 		
+		helper_CategoryRenumber( "1!303", nil ) -- empty key slot
+		helper_CategoryRenumber( "1!406", nil ) -- key
+		
 		helper_CategoryRenumber( "1!114", "1!415" ) -- riding > SYSTEM_MOUNT
 		helper_CategoryRenumber( "1!304", nil ) -- empty soul shard
 		helper_CategoryRenumber( "1!310", nil ) -- bullet > projectile
@@ -1258,14 +1296,6 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 		ArkInventory.acedb.global.option.version = upgrade_version
 		
 	end
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	upgrade_version = 30700
@@ -1337,19 +1367,19 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 	upgrade_version = 30701
 	if ArkInventory.acedb.global.option.version < upgrade_version then
 		
-		--ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_GLOBAL"], "", upgrade_version ) )
+		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_GLOBAL"], "option", upgrade_version ) )
 		
 		if ArkInventory.acedb.global.option.restack.cleanup ~= nil then
 			ArkInventory.acedb.global.option.restack.blizzard = ArkInventory.acedb.global.option.restack.cleanup
 			ArkInventory.acedb.global.option.restack.cleanup = nil
 		end
 		
-		for k1, v1 in pairs( ArkInventory.acedb.global.option.design.data ) do
-			for k2, v2 in pairs( v1.bag ) do
-				if type( v2 ) ~= 'table' then
-					v1.bag[k2] = { ["bar"] = v2 }
+		for id, design in pairs( ArkInventory.acedb.global.option.design.data ) do
+			for k, v in pairs( design.bag ) do
+				if type( v ) ~= 'table' then
+					design.bag[k] = { ["bar"] = v }
 				end
-				v1[k2] = nil
+				design[k] = nil
 			end
 		end
 		
@@ -1360,6 +1390,55 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 	end
 	
 	
+	upgrade_version = 30702
+	if ArkInventory.acedb.global.option.version < upgrade_version then
+		
+		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_GLOBAL"], "profile", upgrade_version ) )
+		
+		for id, profile in pairs( ArkInventory.acedb.global.option.profile.data ) do
+			if profile.anchor then
+				for k, v in pairs( profile.anchor ) do
+					profile.location[k].anchor.point = v.point
+					profile.location[k].anchor.locked = v.locked
+					profile.location[k].anchor.t = v.t
+					profile.location[k].anchor.b = v.b
+					profile.location[k].anchor.l = v.l
+					profile.location[k].anchor.r = v.r
+				end
+				profile.anchor = nil
+			end
+		end
+		
+		
+		ArkInventory.acedb.global.version = upgrade_version
+		
+	end
+	
+	
+	upgrade_version = 30703
+	if ArkInventory.acedb.global.option.version < upgrade_version then
+		
+		ArkInventory.Output( string.format( ArkInventory.Localise["UPGRADE_GLOBAL"], "style/layout", upgrade_version ) )
+		
+		for id, design in pairs( ArkInventory.acedb.global.option.design.data ) do
+			if design.slot then
+				if design.slot.data then
+					for k, v in pairs( design.slot.data ) do
+						v.long = nil
+						v.type = nil
+						if v.colour then
+							v.colour.a = nil
+						end
+					end
+				end
+				design.slot.znew = nil
+			end
+		end
+		
+		
+		ArkInventory.acedb.global.version = upgrade_version
+		
+	end
 	
 	
 	
@@ -1375,16 +1454,17 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 	
 	
 	-- check for character rename and move old data to new name
-	ArkInventory.Global.Me.data.info.renamecheck = true
+	local info = ArkInventory.GetPlayerInfo( )
+	info.renamecheck = true
 	for k, v in pairs( ArkInventory.acedb.global.player.data ) do
-		if ArkInventory.Global.Me.data.info.guid and ArkInventory.Global.Me.data.info.guid == v.info.guid and not v.info.renamecheck then
-			ArkInventory.acedb.global.player.data[ArkInventory.Global.Me.data.info.player_id] = ArkInventory.Table.Copy( v )
-			ArkInventory.Output( "character was renamed from ", v.info.name, " to ", ArkInventory.Global.Me.data.info.name, ", data has been transferred" )
+		if info.guid and info.guid == v.info.guid and not v.info.renamecheck then
+			ArkInventory.acedb.global.player.data[info.player_id] = ArkInventory.Table.Copy( v )
+			ArkInventory.Output( "character was renamed from ", v.info.name, " to ", info.name, ", data has been transferred" )
 			ArkInventory.acedb.global.player.data[v.info.player_id] = ArkInventory.Table.Copy( ArkInventory.acedb.global.player.data[""] )
 			break
 		end
 	end
-	ArkInventory.Global.Me.data.info.renamecheck = nil
+	info.renamecheck = nil
 	
 	
 	

@@ -246,7 +246,7 @@ local rpdframe = nil;
 local rpdframesw = false;
 local rpdounit = nil;
 local orollgear = "";
-local elvlootslotSW = false;
+local lootslotSW = false;
 local otooltip6rpd;
 local otooltip6rpdunit;
 local otooltip6rpdid;
@@ -2354,12 +2354,13 @@ function oilvlframe()
 	f:SetScript("OnDragStop", function() f:StopMovingOrSizing();  cfg.oilvlframeP, _, _, cfg.oilvlframeX, cfg.oilvlframeY = f:GetPoint() end);
 
 -- Set Title
-	f.text = f.text or f:CreateFontString(nil,"ARTWORK", "GameTooltipText");
+	f.text = f.text or f:CreateFontString("oilvlname","ARTWORK", "GameTooltipText");
 	f.text:SetAllPoints(true);
 	f.text:SetPoint("TOPLEFT",0,-6);
 	f.text:SetJustifyH("CENTER");
 	f.text:SetJustifyV("TOP");
 	f.text:SetTextColor(1,1,1,1);
+	f.text:SetFont("Fonts\\FRIZQT__.TTF",12,"")
 	f.text:SetText("O Item Level");	
 
 --background texture
@@ -2477,10 +2478,11 @@ function oilvlframe()
 	for b4j = 1, 8 do
 		for b4i = 1, 5 do
 			local button4 = CreateFrame("Button", "OILVLRAIDFRAME"..rfb, f, "SecureActionButtonTemplate")
-			button4:SetPoint("TOPLEFT", 10+(b4j-1)*82, -66-(b4i-1)*42)
-			button4:SetSize(80,40)
 			button4:SetText("")
-			button4:SetNormalFontObject("GameFontNormalSmall")			
+			button4:SetNormalFontObject("GameFontNormalSmall")
+			local _,bheight,_ = button4:GetNormalFontObject():GetFont()
+			button4:SetSize(80,bheight*4)
+			button4:SetPoint("TOPLEFT",OIVLFRAME,"TOPLEFT",10+(b4j-1)*82, -66-(b4i-1)*(bheight*4+2))
 	
 			local ntex4 = button4:CreateTexture()
 			ntex4:SetColorTexture(0.2,0.2,0.2,0.5)
@@ -2648,7 +2650,9 @@ function oilvlframe()
 			rfb = rfb + 1;
 		end
 	end	
-	
+
+-- Set OiLvLFrame height
+	OIVLFRAME:SetHeight(66+5*(OILVLRAIDFRAME1:GetHeight()+2)+128)
 	
 -- Oilvl Game Tooltips
 	CreateFrame("GameTooltip", "OilvlTooltip", UIParent, "GameTooltipTemplate");
@@ -5307,6 +5311,7 @@ function events:ADDON_LOADED(...)
 	if cfg.oilvldp == nil then cfg.oilvldp = 1 end
 	if cfg.oilvlun == nil then cfg.oilvlun = true end
 	if cfg.oilvlge == nil then cfg.oilvlge = true end
+	if cfg.oilvlaltclickroll == nil then cfg.oilvlaltclickroll = true end
 	OilvlConfigFrame();
 	oilvlframe();
 	Oilvltimer:ScheduleTimer(OVILRefresh,2);
@@ -5321,8 +5326,10 @@ function events:ADDON_LOADED(...)
 			C_Timer.After(1, function() minimapicon:Hide("O Item Level") end)
 		end
 	end
-	OILVL:UnregisterEvent("ADDON_LOADED");
---print("ooo")
+	if cfg.oilvlaltclickroll then
+		if not lootslotSW then C_Timer.After(5, function() oilvlaltc() end); end
+	end
+	OILVL:UnregisterEvent("ADDON_LOADED");	
 end
 
 function events:PLAYER_ENTERING_WORLD(...)
@@ -5442,11 +5449,6 @@ function events:LFG_ROLE_UPDATE(...)
 	rpunit="";
 	Omover2=0;
 	oilvlUpdateLDBTooltip()
---print("ooo")
-end
-
-function events:LOOT_OPENED(...)
-	if not elvlootslotSW then oilvlhookelvlootslot(); end
 --print("ooo")
 end
 
@@ -5750,7 +5752,7 @@ function OilvlConfigFrame()
 	dp:SetScript("OnEscapePressed",function(self) dp:SetNumber(cfg.oilvldp) dp:ClearFocus() end)	
 
 	-- upgrade number
-	local upgradenumbercb = createCheckbutton(cfg.frame, 16+25, -380, ITEM_UPGRADE_TOOLTIP_FORMAT:gsub(": %%d/%%d",""));
+	local upgradenumbercb = createCheckbutton(cfg.frame, 16+25, -380, ITEM_UPGRADE_TOOLTIP_FORMAT:gsub(": %%d/%%d",""):gsub("：",""):gsub("%%d/%%d",""));
 	upgradenumbercb:SetSize(30,30);
 	upgradenumbercb:SetScript("PostClick", function() cfg.oilvlun = oicb10:GetChecked() OiLvlPlayer_Update() end);
 	if cfg.oilvlun then upgradenumbercb:SetChecked(true) end	
@@ -5822,86 +5824,43 @@ GameTooltip:HookScript("OnTooltipSetUnit", function()
 			OMouseover();
 		end
 	end 
---print("ooo")
 end); 
 
-for i = 1, LOOTFRAME_NUMBUTTONS do
-	_G["LootButton"..i]:HookScript("OnClick", function(self, button)
-		if IsAltKeyDown() then 
-			local link = GetLootSlotLink(i);
-			local scantip = CreateFrame("GameTooltip", "OiLvlRoll_Tooltip", nil, "GameTooltipTemplate")
-			local silvl="";
-			orollgear = link;
-			scantip:SetOwner(UIParent, "ANCHOR_NONE")
-			scantip:SetHyperlink(orollgear)
-			for i = 2, scantip:NumLines() do
-				local text = _G["OiLvlRoll_TooltipTextLeft"..i]:GetText()
-				if text and text ~= "" then	silvl = text:match(ITEM_LEVEL:gsub("%%d","(%%d+)")) end
-				if silvl ~= nil then break end
-			end
-			if silvl == nil then silvl = "" end
-			if UnitIsGroupLeader("player") then 
-				ChatFrame_OpenChat("/rw "..silvl.." "..link.." "..ROLL.." ")
-			end
-			if otooltip4 ~= nil then
-				otooltip4:Hide() 
-				LibQTip:Release(otooltip4)
-				otooltip4 = nil
-			end
-			orolln = 0;
-			oroll = {};
-			orolln = orolln + 1;
-			oroll[1] = {silvl,link,""}
-			otooltip4func();
-		else
-			orollgear = "";			
-		end
-	end)
---print("ooo")
-end
-
-function oilvlhookelvlootslot()
-for i = 1, 6 do
-	if _G["ElvLootSlot"..i] then
-		elvlootslotSW = true;
-		_G["ElvLootSlot"..i]:HookScript("OnClick", function(button)
-			if IsAltKeyDown() then
-				local link = GetLootSlotLink(i)
-				if IsAltKeyDown() then 
-					local link = GetLootSlotLink(i);
-					local scantip = CreateFrame("GameTooltip", "OiLvlRoll_Tooltip", nil, "GameTooltipTemplate")
-					local silvl="";
-					orollgear = link;
-					scantip:SetOwner(UIParent, "ANCHOR_NONE")
-					scantip:SetHyperlink(orollgear)
-					for i = 2, scantip:NumLines() do
-						local text = _G["OiLvlRoll_TooltipTextLeft"..i]:GetText()
-						if text and text ~= "" then	silvl = text:match(ITEM_LEVEL:gsub("%%d","(%%d+)")) end
-						if silvl ~= nil then break end
-					end
-					if silvl == nil then silvl = "" end
-					if UnitIsGroupLeader("player") then 
-						ChatFrame_OpenChat("/rw "..silvl.." "..link.." "..ROLL.." ")
-					end
-					if otooltip4 ~= nil then
-						otooltip4:Hide() 
-						LibQTip:Release(otooltip4)
-						otooltip4 = nil
-					end
-					orolln = 0;
-					oroll = {};
-					orolln = orolln + 1;
-					oroll[1] = {silvl,link,""}
-					otooltip4func();
-				else
-					orollgear = "";			
+function oilvlaltc()
+	lootslotSW = true;
+	for i = 1, LOOTFRAME_NUMBUTTONS do
+		_G["LootButton"..i]:HookScript("OnClick", function(self, button)
+			if IsAltKeyDown() then 
+				local link = GetLootSlotLink(i);
+				local scantip = CreateFrame("GameTooltip", "OiLvlRoll_Tooltip", nil, "GameTooltipTemplate")
+				local silvl="";
+				orollgear = link;
+				scantip:SetOwner(UIParent, "ANCHOR_NONE")
+				scantip:SetHyperlink(orollgear)
+				for i = 2, scantip:NumLines() do
+					local text = _G["OiLvlRoll_TooltipTextLeft"..i]:GetText()
+					if text and text ~= "" then	silvl = text:match(ITEM_LEVEL:gsub("%%d","(%%d+)")) end
+					if silvl ~= nil then break end
 				end
+				if silvl == nil then silvl = "" end
+				if UnitIsGroupLeader("player") then 
+					ChatFrame_OpenChat("/rw "..silvl.." "..link.." "..ROLL.." ")
+				end
+				if otooltip4 ~= nil then
+					otooltip4:Hide() 
+					LibQTip:Release(otooltip4)
+					otooltip4 = nil
+				end
+				orolln = 0;
+				oroll = {};
+				orolln = orolln + 1;
+				oroll[1] = {silvl,link,""}
+				otooltip4func();
+			else
+				orollgear = "";			
 			end
 		end)
 	end
---print("ooo")
-end
---print("ooo")
 end
 
 GameTooltip:HookScript("OnHide", function(self) 
@@ -5964,7 +5923,26 @@ SlashCmdList["OILVL_OIROLL"] = function(msg)
 	else
 		orollgear = "";
 	end
---print("ooo")
+end
+
+StaticPopupDialogs["RELOAD"] = {
+	text = SLASH_RELOAD1.."?",
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	OnAccept = function() ReloadUI() end,
+	timeout = 0,
+	whileDead = 1,
+}
+
+SLASH_OILVL_OIRALTC1 = "/oiraltc"
+SlashCmdList["OILVL_OIRALTC"] = function(msg)  
+	if cfg.oilvlaltclickroll then 
+		cfg.oilvlaltclickroll = false 
+		StaticPopup_Show ("RELOAD")
+	else 
+		cfg.oilvlaltclickroll = true 
+		print("OiLvL: Lootframe Alt-click feature is enabled")
+	end
 end
 
 SLASH_OILVL_OIALT1 = "/oialt"
@@ -5974,7 +5952,6 @@ SlashCmdList["OILVL_OIALT"] = function(msg)  otooltip5func() end
 SLASH_OILVL_OICACHE1 = "/oicache"
 SLASH_OILVL_OICACHE2 = "/oic"
 SlashCmdList["OILVL_OICACHE"] = function(msg)  otooltip7func() end
-
 
 DEFAULT_CHAT_FRAME:HookScript("OnHyperlinkClick", function(self, linkData, link, button)
 	if IsAltKeyDown() then

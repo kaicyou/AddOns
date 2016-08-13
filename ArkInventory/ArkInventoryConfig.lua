@@ -16,29 +16,16 @@ end
 	
 function ArkInventory.Frame_Config_Show( ... )
 	
-	if not IsAddOnLoaded( "ArkInventoryConfig" ) then
-		
-		local loaded, reason = LoadAddOn( "ArkInventoryConfig" )
-		if reason then
-			ArkInventory.OutputError( "Failed to load configuration module: ", getglobal( "ADDON_" .. reason ) )
-			return
-		end
-		
-		-- load hte config tables before the window is opened or youll get an error
-		ArkInventory:SendMessage( "EVENT_ARKINV_CONFIG_UPDATE" )
-		
-	end
+	if not ArkInventory.LoadAddOn( "ArkInventoryConfig" ) then return end
 	
 	ArkInventory.Config.Frame = ArkInventory.Lib.Dialog:Open( ArkInventory.Const.Frame.Config.Internal, ... )
 
 end
 
 function ArkInventory.Frame_Config_Toggle( )
-
 	if not ArkInventory.Frame_Config_Hide( ) then
 		ArkInventory.Frame_Config_Show( )
 	end
-	
 end
 
 function ArkInventory.ConfigBlizzard( )
@@ -698,8 +685,7 @@ function ArkInventory.ConfigInternalCategoryRuleCopy( src, id )
 	
 	if src == id then return end
 	
-	local t = ArkInventory.Const.Category.Type.Rule
-	local v = ArkInventory.db.option.category[t].data
+	local v = ArkInventory.db.option.category[ArkInventory.Const.Category.Type.Rule].data
 	
 	local used = v[id].used
 	local system = v[id].system
@@ -1080,7 +1066,7 @@ function ArkInventory.ConfigInternalCategorysetCopy( src, id )
 	
 	if src == id then return end
 	
-	local v = ArkInventory.db.option.catset.data[t]
+	local v = ArkInventory.db.option.catset.data
 	
 	local used = v[id].used
 	local system = v[id].system

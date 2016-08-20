@@ -251,6 +251,10 @@ function OiLvlPlayer_Update(sw)
 			end
 			CharacterFrameAverageItemLevel:SetText("")
 			if n ~= 0 then
+				if totalilvl[16] and not totalilvl[17] then
+					ailvl = ailvl + totalilvl[16]
+					n = n + 1
+				end
 				ailvl = tonumber(string.format("%." .. (cfg.oilvldp or 0) .. "f", ailvl/n))
 				local ilt = ailvl
 				if n2 ~= 0 then
@@ -483,6 +487,10 @@ function OiLvLInspect_Update()
 		end
 		InspectFrameAverageItemLevel:SetText("")
 		if n ~= 0 then
+			if totalilvl[16] and not totalilvl[17] then
+				ailvl = ailvl + totalilvl[16]
+				n = n + 1
+			end
 			ailvl = tonumber(string.format("%." .. (cfg.oilvldp or 0) .. "f", ailvl/n))
 			local ilt = ailvl
 			if n2 ~= 0 then

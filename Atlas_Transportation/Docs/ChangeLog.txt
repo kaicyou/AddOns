@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 29 2016-08-05 16:45:04Z arith $
+$Id: ChangeLog.txt 32 2016-08-17 17:05:16Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,20 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.33.03 (Aug. 18, 2016)
+------------------------
+- Maps revamped:
+  - Stormwind City
+  - Orgrimmar
+- Large size of map added (feature will be enabled in Atlas 1.34.00):
+  - Stormwind City
+  - Orgrimmar
+- New translation language added:
+  - Brazilian Portuguese (Markllan)
+  - Simplified Chinese (ananhaid)
+- Added faction info to the maps
+- Added portal to Dalaran in Stormwind City and Orgrimmar maps
 
 v1.33.02 (Aug. 06, 2016)
 ------------------------

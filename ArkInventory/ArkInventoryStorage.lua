@@ -434,14 +434,13 @@ function ArkInventory:EVENT_ARKINV_CHANGER_UPDATE_BUCKET( arg1 )
 end
 
 
-function ArkInventory:EVENT_WOW_BANK_ENTER( )
+function ArkInventory:EVENT_WOW_BANK_ENTER( event, ... )
 	
-	--ArkInventory.Output( "EVENT_WOW_BANK_ENTER" )
+	--ArkInventory.Output( "EVENT_WOW_BANK_ENTER( ", event, " )" )
 	
 	local loc_id = ArkInventory.Const.Location.Bank
 	
 	ArkInventory.Global.Mode.Bank = true
-	ArkInventory.Global.Location[loc_id].isOffline = false
 	
 	ArkInventory.ScanLocation( loc_id )
 	
@@ -449,13 +448,12 @@ function ArkInventory:EVENT_WOW_BANK_ENTER( )
 	
 	if ArkInventory.LocationIsControlled( loc_id ) then
 		ArkInventory.Frame_Main_Show( loc_id )
+		ArkInventory.Frame_Main_Generate( loc_id )
 	end
 	
 	if ArkInventory.db.option.auto.open.bank and ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
 		ArkInventory.Frame_Main_Show( ArkInventory.Const.Location.Bag )
 	end
-	
-	ArkInventory.Frame_Main_Generate( loc_id )
 	
 end
 
@@ -559,11 +557,9 @@ function ArkInventory:EVENT_WOW_VAULT_ENTER( )
 	
 	QueryGuildBankTab( GetCurrentGuildBankTab( ) or 1 )
 	
-	--ArkInventory.Frame_Main_DrawStatus( loc_id, ArkInventory.Const.Window.Draw.Refresh )
-	
 	if ArkInventory.LocationIsControlled( loc_id ) then
 		ArkInventory.Frame_Main_Show( loc_id )
-		--ArkInventory.Frame_Main_DrawStatus( loc_id, ArkInventory.Const.Window.Draw.Recalculate )
+		ArkInventory.Frame_Main_Generate( loc_id )
 	end
 	
 	if ArkInventory.db.option.auto.open.vault and ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
@@ -745,27 +741,23 @@ function ArkInventory:EVENT_WOW_MAIL_ENTER( event, ... )
 	
 	ArkInventory.Global.Mode.Mail = true
 	
-	if ArkInventory:IsEnabled( ) then
+	
+	if ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
 		
-		if ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
-			
-			-- blizzard auto-opens the backpack when you open the mailbox
-			if not ArkInventory.db.option.auto.open.mail and not BACKPACK_WAS_OPEN then
-				-- it wasnt already opened, blizzard opened it, so we need to close it
-				ArkInventory.Frame_Main_Hide( ArkInventory.Const.Location.Bag )
-			end
-			
+		-- blizzard auto-opens the backpack when you open the mailbox
+		if not ArkInventory.db.option.auto.open.mail and not BACKPACK_WAS_OPEN then
+			-- it wasnt already opened, blizzard opened it, so we need to close it
+			ArkInventory.Frame_Main_Hide( ArkInventory.Const.Location.Bag )
 		end
 		
-		
-		local loc_id = ArkInventory.Const.Location.Mail
-		
-		if ArkInventory.LocationIsControlled( loc_id ) then
-			ArkInventory.Frame_Main_Show( loc_id )
-		end
-		
+	end
+	
+	
+	local loc_id = ArkInventory.Const.Location.Mail
+	
+	if ArkInventory.LocationIsControlled( loc_id ) then
+		ArkInventory.Frame_Main_Show( loc_id )
 		ArkInventory.Frame_Main_Generate( loc_id )
-		
 	end
 	
 end
@@ -1006,20 +998,16 @@ function ArkInventory:EVENT_WOW_MERCHANT_ENTER( event, ... )
 	
 	ArkInventory.Global.Mode.Merchant = true
 	
-	if ArkInventory:IsEnabled( ) then
+	-- merchant / vendor
+	
+	ArkInventory.JunkSell( )
+	
+	if ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
 		
-		-- merchant / vendor
-		
-		ArkInventory.JunkSell( )
-		
-		if ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
-			
-			-- blizzard auto-opens the backpack when you talk to a merchant
-			if not ArkInventory.db.option.auto.open.merchant and not BACKPACK_WAS_OPEN then
-				-- it wasnt already opened, blizzard opened it, so we need to close it
-				ArkInventory.Frame_Main_Hide( ArkInventory.Const.Location.Bag )
-			end
-			
+		-- blizzard auto-opens the backpack when you talk to a merchant
+		if not ArkInventory.db.option.auto.open.merchant and not BACKPACK_WAS_OPEN then
+			-- it wasnt already opened, blizzard opened it, so we need to close it
+			ArkInventory.Frame_Main_Hide( ArkInventory.Const.Location.Bag )
 		end
 		
 	end
@@ -1050,16 +1038,12 @@ function ArkInventory:EVENT_WOW_TRANSMOG_ENTER( event, ... )
 	
 	local BACKPACK_WAS_OPEN = ArkInventory.Frame_Main_Get( ArkInventory.Const.Location.Bag ):IsVisible( )
 	
-	if ArkInventory:IsEnabled( ) then
-		
-		-- reforger / transmogrify
-		
-		if ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
-			if ArkInventory.db.option.auto.open.merchant and not BACKPACK_WAS_OPEN then
-				ArkInventory.Frame_Main_Show( ArkInventory.Const.Location.Bag )
-			end
+	-- reforger / transmogrify
+	
+	if ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bag ) then
+		if ArkInventory.db.option.auto.open.merchant and not BACKPACK_WAS_OPEN then
+			ArkInventory.Frame_Main_Show( ArkInventory.Const.Location.Bag )
 		end
-		
 	end
 	
 end
@@ -1223,7 +1207,8 @@ function ArkInventory.BagID_Internal( blizzard_id )
 		end
 	end
 	
-	error( string.format( "code failure: unknown blizzard id [%s]", blizzard_id ) )
+	ArkInventory.OutputError( "unknown blizzard bag id ", blizzard_id )
+	--error( "code failure" )
 	
 	return
 	
@@ -1613,7 +1598,7 @@ function ArkInventory.ScanBag( blizzard_id )
 		
 		local i = bag.slot[slot_id]
 		
-		local texture, count, locked, rarity, readable, lootable, h, filtered = GetContainerItemInfo( blizzard_id, slot_id )
+		local texture, count, locked, rarity, readable, lootable, h, filtered, novalue, itemID = GetContainerItemInfo( blizzard_id, slot_id )
 		local ab = nil
 		local sb = nil
 		
@@ -1621,42 +1606,47 @@ function ArkInventory.ScanBag( blizzard_id )
 			
 			ArkInventory.TooltipSetItem( ArkInventory.Global.Tooltip.Scan, blizzard_id, slot_id )
 			
+			if ArkInventory.TooltipGetLine( ArkInventory.Global.Tooltip.Scan, 1 ) == RETRIEVING_ITEM_INFO then	
+				--ArkInventory.OutputWarning( "tooltips not ready, queuing bag ", bag_id, " (", blizzard_id, ") for rescan" )
+				ArkInventory:SendMessage( "EVENT_ARKINV_BAG_UPDATE_BUCKET", blizzard_id )
+				return
+			end
+			
 			for _, v in pairs( ArkInventory.Const.Accountbound ) do
-				if ( v and ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, string.format( "^%s$", v ) ) ) then
-					--ArkInventory.Output( loc_id, ".", bag_id, ".", slot_id, " = ", h, " - ", v )
+				if v and ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, string.format( "^%s$", v ) ) then
 					ab = 1
 					sb = 1
 					break
 				end
 			end
 			
-			if ( not ab ) then
+			if not ab then
 				for _, v in pairs( ArkInventory.Const.Soulbound ) do
-					if ( v and ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, string.format( "^%s$", v ) ) ) then
-						--ArkInventory.Output( loc_id, ".", bag_id, ".", slot_id, " = ", h, " - ", v )
+					if v and ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, string.format( "^%s$", v ) ) then
 						sb = 1
 						break
 					end
 				end
 			end
 			
-			i.q = ArkInventory.ObjectInfoQuality( h )
+			rarity = ArkInventory.ObjectInfoQuality( h )
 			
 		else
 			
-			i.q = 0
+			rarity = 0
 			
 			count = 1
 			bag.empty = bag.empty + 1
 			
 		end
 		
-		local isNewItem = C_NewItems.IsNewItem( blizzard_id, slot_id )
-		local changed_item = ArkInventory.ScanChanged( i, h, sb, count ) or isNewItem
+		--local isNewItem = C_NewItems.IsNewItem( blizzard_id, slot_id )
+		local changed_item, changed_type = ArkInventory.ScanChanged( i, h, sb, count )
 		
 		i.h = h
 		i.ab = ab
 		i.sb = sb
+		i.q = rarity
 		i.r = ( not not readable ) or nil
 		i.count = count
 		
@@ -2938,16 +2928,16 @@ function ArkInventory.ScanAuction( massive )
 
 			if duration == 1 then
 				-- Short (less than 30 minutes)
-				i.expires = i.age + 30
+				i.expires = ( i.age or 0 ) + 30
 			elseif duration == 2 then
 				-- Medium (30 minutes to 2 hours)
-				i.expires = i.age + 2 * 60
+				i.expires = ( i.age or 0 ) + 2 * 60
 			elseif duration == 3 then
 				-- Long (2 hours to 12 hours)
-				i.expires = i.age + 12 * 60
+				i.expires = ( i.age or 0 ) + 12 * 60
 			elseif duration == 4 then
 				-- Very Long (more than 12 hours)
-				i.expires = i.age + 48 * 60
+				i.expires = ( i.age or 0 ) + 48 * 60
 			end
 			
 			
@@ -3325,8 +3315,6 @@ function ArkInventory.ScanChanged( old, h, sb, count )
 		
 		if old.h then
 			
-			--ArkInventory.Output( "scanchanged: ", ArkInventory.ObjectIDCount( old.h ) )
-			
 			-- previous item was removed
 			ArkInventory.ItemCacheClear( old.h )
 			ArkInventory.ScanCleanupCount( old.h, old.loc_id )
@@ -3342,8 +3330,6 @@ function ArkInventory.ScanChanged( old, h, sb, count )
 		
 		if not old.h then
 			
-			--ArkInventory.Output( "scanchanged: ", ArkInventory.ObjectIDCount( h ) )
-			
 			-- item added to previously empty slot
 			ArkInventory.ItemCacheClear( h )
 			ArkInventory.ScanCleanupCount( h, old.loc_id )
@@ -3353,12 +3339,24 @@ function ArkInventory.ScanChanged( old, h, sb, count )
 			
 		end
 		
+		if ArkInventory.ObjectIDCount( h ) ~= ArkInventory.ObjectIDCount( old.h ) then
+			
+			-- different item
+			ArkInventory.ItemCacheClear( h )
+			ArkInventory.ItemCacheClear( old.h )
+			ArkInventory.ScanCleanupCount( old.h, old.loc_id )
+			ArkInventory.ScanCleanupCount( h, old.loc_id )
+			
+			--ArkInventory.Output( "scanchanged: ", old.loc_id, ".", old.bag_id, ".", old.slot_id, " - ", old.h, " / ", h, " - item changed" )
+			return true, ArkInventory.Const.Slot.New.Yes
+			
+		end
+		
 		if sb ~= old.sb then
 			
 			-- soulbound changed
 			ArkInventory.ItemCacheClear( old.h )
-			
-			--ArkInventory.Output( "scanchanged: ", old.loc_id, ".", old.bag_id, ".", old.slot_id, " - ", old.h, " - soulbound changed" )
+			--ArkInventory.Output( "scanchanged: ", old.loc_id, ".", old.bag_id, ".", old.slot_id, " - ", old.h, " - soulbound was ", old.sb, " now ", sb )
 			return true, ArkInventory.Const.Slot.New.Yes
 			
 		end
@@ -3376,19 +3374,6 @@ function ArkInventory.ScanChanged( old, h, sb, count )
 				ArkInventory.ScanCleanupCount( old.h, old.loc_id )
 				return true, ArkInventory.Const.Slot.New.Dec
 			end
-			
-		end
-		
-		if ( ArkInventory.ObjectIDCount( h ) ~= ArkInventory.ObjectIDCount( old.h ) ) then
-			
-			-- different item
-			ArkInventory.ItemCacheClear( h )
-			ArkInventory.ItemCacheClear( old.h )
-			ArkInventory.ScanCleanupCount( old.h, old.loc_id )
-			ArkInventory.ScanCleanupCount( h, old.loc_id )
-			
-			--ArkInventory.Output( "scanchanged: ", old.loc_id, ".", old.bag_id, ".", old.slot_id, " - ", old.h, " / ", h, " - item changed" )
-			return true, ArkInventory.Const.Slot.New.Yes
 			
 		end
 		
@@ -3896,8 +3881,8 @@ function ArkInventory.ObjectIDCategory( loc_id, bag_id, sb, h )
 	elseif class == "copper" then
 		r = string.format( "%s:%i", class, id )
 	else
-		ArkInventory.OutputError( "code failure: unknown object class [", h, "] = [", class, "]" )
-		error( "code failure: unknown object class" )
+		ArkInventory.OutputWarning( "unsupported object class [", h, "] = [", class, "]" )
+		r = string.format( "%s:%i", class, id )
 	end
 	
 	local codex = ArkInventory.GetLocationCodex( loc_id )

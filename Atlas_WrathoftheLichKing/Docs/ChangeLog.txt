@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 11 2016-08-01 08:15:00Z arith $
+$Id: ChangeLog.txt 13 2016-08-16 15:13:43Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,11 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.33.02 (Aug. 16, 2016)
+------------------------
+- Correct the boss ID of Sartharion in The Obsidian Sanctum
+
 
 v1.33.01 (Aug. 01, 2016)
 ------------------------

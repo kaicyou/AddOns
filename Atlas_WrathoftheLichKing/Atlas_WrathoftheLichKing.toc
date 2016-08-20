@@ -29,15 +29,15 @@
 # ## Notes: Wrath of the Lich King Dungeon Maps
 # ## Notes-zhTW: 巫妖王之怒副本地圖模組
 #@end-debug@
-## Version: 1.33.01
+## Version: 1.33.02
 ## Author: arith, Dynaletik, dubcat
-## X-Date: 2016-08-01T08:15:00Z
+## X-Date: 2016-08-16T15:13:43Z
 ## X-Credits: Dan Gilbert, Lothaer
 ## X-Email: atlas.addon at gmail.com
 ## X-Website: http://www.atlasmod.com
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v1.33.01
+## X-Curse-Packaged-Version: v1.33.02
 ## X-Curse-Project-Name: Atlas Wrath of the Lich King
 ## X-Curse-Project-ID: atlas-wrathofthelichking
 ## X-Curse-Repository-ID: wow/atlas-wrathofthelichking/mainline

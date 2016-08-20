@@ -1,7 +1,7 @@
 --[[
 	Auctioneer
-	Version: 5.21f.5579 (SanctimoniousSwamprat)
-	Revision: $Id: CoreUtil.lua 5549 2015-03-17 19:51:52Z brykrys $
+	Version: 7.0.5664 (TasmanianThylacine)
+	Revision: $Id: CoreUtil.lua 5609 2016-06-14 17:29:30Z brykrys $
 	URL: http://auctioneeraddon.com/
 
 	This is an addon for World of Warcraft that adds statistical history to the auction data that is collected
@@ -297,12 +297,12 @@ do -- Faction related functions
 	end
 
 	function lib.GetFaction()
-		-- Compatibility function
+		-- Compatibility function. Deprecated
 		return Resources.ServerKeyCurrent, Const.PlayerRealm, Resources.CurrentFaction
 	end
 
 	function lib.GetFactionGroup()
-		-- Compatibility function
+		-- Compatibility function. Deprecated
 		return Resources.CurrentFaction
 	end
 
@@ -531,7 +531,7 @@ do -- Module Functions
 		-- Flag it as loaded
 		module[MODULE_LOADED] = true
 		-- Flush the SPM cache
-		private.ResetSPMArray()
+		internalUtil.ResetSPMArray()
 		-- Send all the callbacks
 		if not moduleLoadCallbacks then return end
 		local moduleName = module:GetName():lower()
@@ -661,7 +661,7 @@ do -- Module Functions
 			end
 
 			private.resetPriceModels()
-			private.ResetSPMArray()
+			internalUtil.ResetSPMArray()
 
 			private.newmoduleCheckName = libName -- ### temp
 			lib.SendProcessorMessage("newmodule", libType, libName)
@@ -928,7 +928,7 @@ else
 	end
 end
 
-function private.ResetSPMArray()
+function internalUtil.ResetSPMArray() -- make available to CoreMain
 	wipe(spmArray)
 end
 
@@ -947,4 +947,4 @@ function lib.CreateMoney(height)
 	return (tooltip:CreateMoney(height))
 end
 
-lib.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/5.21f/Auc-Advanced/CoreUtil.lua $", "$Rev: 5549 $")
+lib.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.0/Auc-Advanced/CoreUtil.lua $", "$Rev: 5609 $")

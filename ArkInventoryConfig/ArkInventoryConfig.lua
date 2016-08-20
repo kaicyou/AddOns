@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1702 $
-$Date: 2016-08-13 00:29:06 +1000 (Sat, 13 Aug 2016) $
+$Revision: 1707 $
+$Date: 2016-08-14 23:47:44 +1000 (Sun, 14 Aug 2016) $
 
 ]]--
 
@@ -16,6 +16,8 @@ local string = _G.string
 local type = _G.type
 local error = _G.error
 local table = _G.table
+
+
 
 
 
@@ -274,7 +276,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.open.bank = v
-										ArkInventory.BlizzardAPIHook( )
+										ArkInventory.BlizzardAPIHook( false, true )
 									end,
 								},
 								vault = {
@@ -288,7 +290,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.open.vault = v
-										ArkInventory.BlizzardAPIHook( )
+										ArkInventory.BlizzardAPIHook( false, true )
 									end,
 								},
 								mail = {
@@ -303,7 +305,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.open.mail = v
-										ArkInventory.BlizzardAPIHook( )
+										ArkInventory.BlizzardAPIHook( false, true )
 									end,
 								},
 								merchant = {
@@ -318,7 +320,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.open.merchant = v
-										ArkInventory.BlizzardAPIHook( )
+										ArkInventory.BlizzardAPIHook( false, true )
 									end,
 								},
 								trade = {
@@ -332,7 +334,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.open.trade = v
-										ArkInventory.BlizzardAPIHook( )
+										ArkInventory.BlizzardAPIHook( false, true )
 									end,
 								},
 								auction = {
@@ -346,7 +348,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.open.auction = v
-										ArkInventory.BlizzardAPIHook( )
+										ArkInventory.BlizzardAPIHook( false, true )
 									end,
 								},
 								void = {
@@ -360,7 +362,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.open.void = v
-										ArkInventory.BlizzardAPIHook( )
+										ArkInventory.BlizzardAPIHook( false, true )
 									end,
 								},
 							},
@@ -388,7 +390,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.bank = v
-										ArkInventory.BlizzardAPIHook( )
+										ArkInventory.BlizzardAPIHook( false, true )
 									end,
 								},
 								vault = {
@@ -402,7 +404,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.vault = v
-										ArkInventory.BlizzardAPIHook( )
+										ArkInventory.BlizzardAPIHook( false, true )
 									end,
 								},
 								mail = {
@@ -416,7 +418,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.mail = v
-										ArkInventory.BlizzardAPIHook( )
+										ArkInventory.BlizzardAPIHook( false, true )
 									end,
 								},
 								merchant = {
@@ -430,7 +432,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.merchant = v
-										ArkInventory.BlizzardAPIHook( )
+										ArkInventory.BlizzardAPIHook( false, true )
 									end,
 								},
 								trade = {
@@ -444,7 +446,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.trade = v
-										ArkInventory.BlizzardAPIHook( )
+										ArkInventory.BlizzardAPIHook( false, true )
 									end,
 								},
 								auction = {
@@ -458,7 +460,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.auction = v
-										ArkInventory.BlizzardAPIHook( )
+										ArkInventory.BlizzardAPIHook( false, true )
 									end,
 								},
 								void = {
@@ -472,7 +474,7 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.void = v
-										ArkInventory.BlizzardAPIHook( )
+										ArkInventory.BlizzardAPIHook( false, true )
 									end,
 								},
 								combat = {
@@ -486,7 +488,6 @@ function ArkInventory.ConfigInternal( )
 									end,
 									set = function( info, v )
 										ArkInventory.db.option.auto.close.combat = v
-										ArkInventory.BlizzardAPIHook( )
 									end,
 								},
 							},
@@ -1373,6 +1374,42 @@ function ArkInventory.ConfigInternal( )
 						},
 					},
 				},
+				newitemglow = {
+					order = 400,
+					name = ArkInventory.Localise["NEW_ITEM_GLOW"],
+					type = "group",
+					inline = true,
+					width = "full",
+					args = {
+						show = {
+							order = 100,
+							name = ArkInventory.Localise["ENABLED"],
+							type = "toggle",
+							get = function( info )
+								return ArkInventory.db.option.newitemglow.enable
+							end,
+							set = function( info, v )
+								ArkInventory.db.option.newitemglow.enable = v
+							end,
+						},
+						colour = {
+							order = 200,
+							name = ArkInventory.Localise["COLOUR"],
+							type = "color",
+							hasAlpha = true,
+							disabled = function( info )
+								return not ArkInventory.db.option.newitemglow.enable
+							end,
+							get = function( info )
+								return helperColourGet( ArkInventory.db.option.newitemglow.colour )
+							end,
+							set = function( info, r, g, b, a )
+								helperColourSet( ArkInventory.db.option.newitemglow.colour, r, g, b, a )
+								
+							end,
+						},
+					},
+				},
 			},
 		},
 		control = {
@@ -2121,7 +2158,7 @@ function ArkInventory.ConfigInternalControl( )
 				
 				if v then
 					
-					-- enabling ai for location - hide open blizzard frame
+					-- enabling ai for location - hide open blizzard frames
 					
 					if loc_id == ArkInventory.Const.Location.Bag then
 						CloseAllBags( )
@@ -2139,7 +2176,7 @@ function ArkInventory.ConfigInternalControl( )
 					
 				end
 				
-				ArkInventory.BlizzardAPIHook( )
+				ArkInventory.BlizzardAPIHook( false, true )
 				
 			end,
 		},

@@ -1,4 +1,8 @@
-﻿Version 1.7.2
+﻿Version 1.7.3
+- Mess with Equipment Manager some more (not done yet)
+- Create a Macintosh compatible ZIP file regardless of which dev machine builds it
+
+Version 1.7.2
 - CurseForge bug #257 - Watch Bobber functionality broken (thanks Bodar!)
 - CurgeForge bug #210 - Disconnect switching outfits on Monk (hopefully because of slowdown)
 

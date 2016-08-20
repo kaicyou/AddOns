@@ -738,7 +738,7 @@ function ArkInventory.ConfigInternalCategoryRuleValidate( id )
 		
 	else
 		
-		ArkInventoryRules.Object = { test_rule=true, class="item", bag_id=0, slot_id=1, count=1, q=1, sb=true, h="item:6948:::::::" } -- hearthstone
+		ArkInventoryRules.Object = { test_rule=true, class="item", bag_id=0, slot_id=1, count=1, q=1, sb=1, h="item:6948:::::::" } -- hearthstone
 
 		local p, pem = loadstring( string.format( "return( %s )", data.formula ) )
 		

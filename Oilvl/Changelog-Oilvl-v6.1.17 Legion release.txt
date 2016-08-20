@@ -1,9 +1,53 @@
 ------------------------------------------------------------------------
-r515 | olzenkhaw | 2016-08-13 04:09:09 +0000 (Sat, 13 Aug 2016) | 1 line
+r527 | olzenkhaw | 2016-08-20 06:48:27 +0000 (Sat, 20 Aug 2016) | 1 line
 Changed paths:
-   A /tags/v6.1.11 Legion release (from /trunk:514)
+   A /tags/v6.1.17 Legion release (from /trunk:526)
 
-v6.1.11 Fixed a bug.
+v6.1.17 Fixed a bug.
+------------------------------------------------------------------------
+r526 | olzenkhaw | 2016-08-20 06:48:05 +0000 (Sat, 20 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.17 Fixed a bug.
+------------------------------------------------------------------------
+r524 | olzenkhaw | 2016-08-16 11:30:18 +0000 (Tue, 16 Aug 2016) | 2 lines
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.16 Fixed a bug.
+
+------------------------------------------------------------------------
+r522 | olzenkhaw | 2016-08-16 03:29:25 +0000 (Tue, 16 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.15 Fixed a bug.
+------------------------------------------------------------------------
+r520 | olzenkhaw | 2016-08-15 01:29:46 +0000 (Mon, 15 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.14 Fixed a bug.
+------------------------------------------------------------------------
+r518 | olzenkhaw | 2016-08-14 12:17:38 +0000 (Sun, 14 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.13 Fixed a bug.
+------------------------------------------------------------------------
+r516 | olzenkhaw | 2016-08-14 12:09:58 +0000 (Sun, 14 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+   M /trunk/OilvlPlayer.lua
+
+v6.1.12 Fixed a bug.
 ------------------------------------------------------------------------
 r514 | olzenkhaw | 2016-08-13 04:08:47 +0000 (Sat, 13 Aug 2016) | 1 line
 Changed paths:
@@ -152,22 +196,4 @@ Changed paths:
    M /trunk/OilvlPlayer.lua
 
 v6.0.2 - fixed some bugs.
-------------------------------------------------------------------------
-r474 | olzenkhaw | 2016-07-19 22:41:25 +0000 (Tue, 19 Jul 2016) | 1 line
-Changed paths:
-   M /trunk/Oilvl.lua
-   M /trunk/Oilvl.toc
-
-v6.0.1 - fixed nil bug
-------------------------------------------------------------------------
-r472 | olzenkhaw | 2016-07-19 13:51:22 +0000 (Tue, 19 Jul 2016) | 1 line
-Changed paths:
-   M /trunk/Oilvl.lua
-   M /trunk/Oilvl.toc
-   M /trunk/libs/LibItemUpgradeInfo-1.0/Core.lua
-   M /trunk/libs/LibItemUpgradeInfo-1.0/LibItemUpgradeInfo-1.0.toc
-   M /trunk/libs/LibItemUpgradeInfo-1.0/LibStub/LibStub.toc
-   M /trunk/libs/LibQTip-1.0/LibQTip-1.0.toc
-
-v6.0.0 - update for Legion Prepatch
 ------------------------------------------------------------------------

@@ -1,9 +1,36 @@
 ------------------------------------------------------------------------
-r562 | allara | 2016-08-12 05:02:21 +0000 (Fri, 12 Aug 2016) | 1 line
+r566 | allara | 2016-08-18 16:55:49 +0000 (Thu, 18 Aug 2016) | 1 line
 Changed paths:
-   A /tags/r561-release (from /trunk:561)
+   A /tags/r565-release (from /trunk:565)
 
-Tagging as r561-release
+Tagging as r565-release
+------------------------------------------------------------------------
+r565 | allara | 2016-08-18 03:32:43 +0000 (Thu, 18 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- [#205] New option: Put "Rarity:" on a separate line in world tooltips
+------------------------------------------------------------------------
+r564 | allara | 2016-08-18 03:21:58 +0000 (Thu, 18 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- [#207] New option: Hide items with no attempts
+------------------------------------------------------------------------
+r563 | allara | 2016-08-18 02:51:59 +0000 (Thu, 18 Aug 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- Added the following toys: Faintly Glowing Flagon of Mead, Don Carlos' Famous Hat, Burgy Blackheart's Handsome Hat
+- Added the following pets: Eye of Inquisition, Knockoff Blingtron
 ------------------------------------------------------------------------
 r561 | allara | 2016-08-12 03:32:27 +0000 (Fri, 12 Aug 2016) | 1 line
 Changed paths:
@@ -220,13 +247,4 @@ Changed paths:
    M /trunk/Options_Defaults.lua
 
 - Added additional waypoint data (thanks Urtgard!)
-------------------------------------------------------------------------
-r519 | allara | 2016-07-11 18:19:50 +0000 (Mon, 11 Jul 2016) | 2 lines
-Changed paths:
-   M /trunk/Core.lua
-   M /trunk/Locales.lua
-   M /trunk/Options_Defaults.lua
-
-- Moved all the new toys in 7.x to the Legion category
-- Added Felsteel Annihilator, Ironhoof Destroyer
 ------------------------------------------------------------------------

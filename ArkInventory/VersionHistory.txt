@@ -14,6 +14,17 @@
  
 
 
+*3.07.05 (20-AUG-2016)*
+ * fixed - issue with item age being reset on login due to tooltip data not being ready
+ * fixed - issue with item age being nil causing the bank to fail
+
+*3.07.04 (15-AUG-2016)*
+ * fixed - issue with ToggleAllBags and OpenAllBags code (when not overriding the bank and bags)
+ * fixed - issue with re-hooking when ai is disabled and then enabled within the same game session
+ * fixed - issue with re-hooking the bank when changing the override option
+ * changed - new item glow changed to cover the entire item and is user configurable via config > general > new item glow
+ * fixed - issue with 30230 upgrade code
+ 
 *3.07.03 (13-AUG-2016)*
  * fixed - issue with error message about "you should never have got here" displaying incorrectly
  * fixed - upgrade code

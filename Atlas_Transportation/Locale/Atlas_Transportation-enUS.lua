@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation-enUS.lua 23 2016-07-01 10:20:35Z arith $
+-- $Id: Atlas_Transportation-enUS.lua 31 2016-08-13 15:18:32Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -38,6 +38,7 @@ L["Druid-only"] = "Druid-only"
 L["From sea level to ground level"] = "From sea level to ground level"
 L["Green"] = "Green"
 L["Gryphon"] = "Gryphon"
+L["Gryphon Master"] = "Gryphon Master"
 L["Legend"] = "Legend"
 L["Nutral"] = "Nutral"
 L["Only available after winning the PvP battle"] = "Only available after winning the PvP battle"
@@ -65,6 +66,7 @@ L["West of the path to Timbermaw Hold"] = "West of the path to Timbermaw Hold"
 L["Whispercloud's Balloon"] = "Whispercloud's Balloon"
 L["White"] = "White"
 L["Wind Rider"] = "Wind Rider"
+L["Wind Rider Master"] = "Wind Rider Master"
 L["Won't be available once the Battle for Andorhal chain is finished."] = "Won't be available once the Battle for Andorhal chain is finished."
 L["Yellow"] = "Yellow"
 L["Zeppelin Towers"] = "Zeppelin Towers"

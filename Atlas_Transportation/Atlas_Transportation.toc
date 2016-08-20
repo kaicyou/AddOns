@@ -7,7 +7,7 @@
 ## Title-frFR: Atlas |r|cFF0099FF[Transportation]|r
 ## Title-itIT: Atlas |r|cFF0099FF[Transportation]|r
 ## Title-koKR: Atlas |r|cFF0099FF[Transportation]|r
-## Title-ptBR: Atlas |r|cFF0099FF[Transportation]|r
+## Title-ptBR: Atlas |r|cFF0099FF[Transporte]|r
 ## Title-ruRU: Atlas |r|cFF0099FF[Маршруты полётов]|r
 ## Title-zhCN: Atlas |r|cFF0099FF[交通]|r
 ## Title-zhTW: |r|cFF0099FF[地圖]|rAtlas 交通網路圖
@@ -18,7 +18,7 @@
 ## Notes-frFR: Cartes des trajets aériens
 ## Notes-itIT: Transportation Maps
 ## Notes-koKR: 비행경로 지도
-## Notes-ptBR: Transportation Maps
+## Notes-ptBR: Mapas de Transporte
 ## Notes-ruRU: Карты маршрутов полёта
 ## Notes-zhCN: 交通地图
 ## Notes-zhTW: |cff00CC33Atlas 交通網路圖插件，顯示各大陸的海陸空交通節點|r
@@ -29,15 +29,15 @@
 # ## Notes: Transportation Maps
 # ## Notes-zhTW: Atlas 交通網路圖插件，顯示各大陸的海陸空交通節點
 #@end-debug@
-## Version: 1.33.02
+## Version: 1.33.03
 ## Author: arith, Dynaletik, dubcat
-## X-Date: 2016-08-05T16:45:04Z
+## X-Date: 2016-08-17T17:05:16Z
 ## X-Credits: Dan Gilbert, Lothaer
 ## X-Email: atlas.addon at gmail.com
 ## X-Website: http://www.atlasmod.com
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v1.33.02
+## X-Curse-Packaged-Version: v1.33.03
 ## X-Curse-Project-Name: Atlas Transportation
 ## X-Curse-Project-ID: atlas-transportation
 ## X-Curse-Repository-ID: wow/atlas-transportation/mainline

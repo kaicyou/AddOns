@@ -1,4 +1,4 @@
- -- $Id: Atlas_WrathoftheLichKing_DB.lua 10 2016-07-28 16:38:07Z arith $
+ -- $Id: Atlas_WrathoftheLichKing_DB.lua 13 2016-08-16 15:13:43Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -191,7 +191,7 @@ local myDB = {
 		{ "1", 10002, 196, 242 };
 		{ "2", 10003, 254, 189 };
 		{ "3", 10004, 250, 301 };
-		{ 4, 1516, 255, 241 };
+		{ 4, 1616, 255, 241 };
 	};
 	OnyxiasLair = {
 		{ "A", 10001, 48, 54 };
@@ -340,11 +340,11 @@ local myDB = {
 		{ "1'", 10002, 298, 161 };
 	};
 	VaultOfArchavon = {
-		{ "A", 10001, 250, 482 };
-		{ 1, 1597, 250, 39 };
-		{ 2, 1598, 360, 256 };
-		{ 3, 1599, 138, 256 };
-		{ 4, 1600, 363, 149 };
+		{ "A", 10001, 250, 482 }; -- Entrance
+		{ 1, 1597, 250, 39 }; -- Archavon the Stone Watcher
+		{ 2, 1598, 360, 256 }; -- Emalon the Storm Watcher
+		{ 3, 1599, 138, 256 }; -- Koralon the Flame Watcher
+		{ 4, 1600, 363, 149 }; -- Toravon the Ice Watcher
 	};
 	VioletHold = {
 		{ 1, 626, 74, 266 }; -- Erekem

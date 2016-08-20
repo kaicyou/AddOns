@@ -288,6 +288,7 @@ local function helper_UpgradeProfile( profile, profile_name )
 					if v.bar.name and v.bar.name.label then
 						for id, label in pairs( v.bar.name.label ) do
 							v.bar.data = v.bar.data or { }
+							v.bar.data[id] = v.bar.data[id] or { }
 							v.bar.data[id].label = label
 						end
 						v.bar.name.label = nil

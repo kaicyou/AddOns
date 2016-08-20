@@ -4893,16 +4893,20 @@ function OTgathertil(guid, unitid)
 		mia = 16-count;
 	end
 	
-	if((count == 15) and twoHander) then
-		avgIlvl = round(totalIlvl / count, cfg.oilvldp)
-	elseif((count == 16) and not twoHander) then
-		avgIlvl = round(totalIlvl / count, cfg.oilvldp)
-	elseif((count == 16) and twoHander) then
-		avgIlvl = round(totalIlvl / 16, cfg.oilvldp)
-	elseif((count == 15) and not twoHander) then
-		avgIlvl = round(totalIlvl / 16, cfg.oilvldp)
+	if totalIlvl > 0 and count > 0 then
+		if((count == 15) and twoHander) then
+			avgIlvl = round((totalIlvl+cgear[16][1]) / 16, cfg.oilvldp)
+		elseif((count == 16) and not twoHander) then
+			avgIlvl = round(totalIlvl / count, cfg.oilvldp)
+		elseif((count == 16) and twoHander) then
+			avgIlvl = round(totalIlvl / 16, cfg.oilvldp)
+		elseif((count == 15) and not twoHander) then
+			avgIlvl = round(totalIlvl / 16, cfg.oilvldp)
+		else
+			avgIlvl = round(totalIlvl / count, cfg.oilvldp)
+		end
 	else
-		avgIlvl = round(totalIlvl / 15, cfg.oilvldp)
+		avgIlvl = 0
 	end
 	-- save player gear to cfg.oilvlgears
 	if cfg.oilvlgear ~= nil then cfg.oilvlgear = nil end
@@ -4910,7 +4914,7 @@ function OTgathertil(guid, unitid)
 	local oname2 = GetUnitName(unitid, true)
 	local oname3, orealm3 = UnitFullName(unitid)
 	local altsw = false
-	if oname == oname2 and avgIlvl > 0 then
+	if oname and oname2 and avgIlvl and oname == oname2 and avgIlvl > 0 then
 		for i = 1, #cfg.oilvlgears do
 			if cfg.oilvlgears[i][1] == oname and cfg.oilvlgears[i][2] == orealm then
 				cfg.oilvlgears[i] = {oname,orealm,avgIlvl,oilvlframedata.gear[OTCurrent3]}
@@ -4924,11 +4928,11 @@ function OTgathertil(guid, unitid)
 		end
 	end
 	-- cache
-	if cfg.oilvlcachesw then
+	if cfg.oilvlcachesw and cfg.oilvlcache and orealm and oname3 and avgIlvl then
 		local cachesw = false
 		if oname3 and not orealm3 then orealm3 = orealm end
 		for i = 1, #cfg.oilvlcache do
-			if cfg.oilvlcache[i].oname == oname3 and cfg.oilvlcache[i].orealm == orealm3 and avgIlvl > 0 then
+			if cfg.oilvlcache[i] and cfg.oilvlcache[i].oname and cfg.oilvlcache[i].oname == oname3 and cfg.oilvlcache[i].orealm and cfg.oilvlcache[i].orealm == orealm3 and avgIlvl > 0 then
 				cfg.oilvlcache[i] = {
 					oname = oname3,
 					orealm = orealm3,
@@ -5197,13 +5201,13 @@ function events:INSPECT_READY(...)
 						if msg then
 							msg = msg:find(L["Item Level"]..":");
 						end						
-						if msg then
+						if msg and OTilvl2 then
 							_G["GameTooltipTextLeft"..i]:SetText(L["Item Level"]..": |r|cFFFF0000"..OTilvl2);
 							omatch=true;
 							break;
 						end
 					end	
-					if not omatch then
+					if not omatch and OTilvl2 then
 						GameTooltip:SetHeight(GameTooltip:GetHeight()+15);
 						GameTooltip:AddLine(L["Item Level"]..": |r|cFFFF0000"..OTilvl2);	
 					end

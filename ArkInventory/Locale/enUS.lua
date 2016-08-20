@@ -580,6 +580,7 @@ if not L then return end
 --	new item indicators
 	L["NEW_ITEM_INCREASE"] = "+++"
 	L["NEW_ITEM_DECREASE"] = "- - -"
+	L["NEW_ITEM_GLOW"] = "New Item Glow"
 	
 	
 --	slash commands

@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation-zhTW.lua 23 2016-07-01 10:20:35Z arith $
+-- $Id: Atlas_Transportation-zhTW.lua 31 2016-08-13 15:18:32Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -38,6 +38,7 @@ L["Druid-only"] = "僅限德魯伊"
 L["From sea level to ground level"] = "從海平面到地面"
 L["Green"] = "綠"
 L["Gryphon"] = "獅鷲獸"
+L["Gryphon Master"] = "獅鷲獸管理員"
 L["Legend"] = "圖例"
 L["Nutral"] = "中立"
 L["Only available after winning the PvP battle"] = "僅限贏得戰場勝利後"
@@ -65,6 +66,7 @@ L["West of the path to Timbermaw Hold"] = "往木喉要塞小徑西方"
 L["Whispercloud's Balloon"] = "雲語的氣球"
 L["White"] = "白"
 L["Wind Rider"] = "雙足飛龍"
+L["Wind Rider Master"] = "蠍尾獅管理員"
 L["Won't be available once the Battle for Andorhal chain is finished."] = "安多哈爾任務線完成後飛行點將會消失"
 L["Yellow"] = "黃"
 L["Zeppelin Towers"] = "飛船空塔"

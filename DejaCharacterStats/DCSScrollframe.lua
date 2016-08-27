@@ -1,7 +1,7 @@
 -- Scroll Frame	
 
 -- Scrollframe Parent Frame
-	local DCS_ScrollframeParentFrame = CreateFrame("Frame", nil, CharacterFrameInsetRight)
+	local DCS_ScrollframeParentFrame = CreateFrame("Frame", "DCS_ScrollframeParentFrame", CharacterFrameInsetRight)
 		DCS_ScrollframeParentFrame:SetSize(198, 352)
 		DCS_ScrollframeParentFrame:SetPoint("TOP", CharacterFrameInsetRight, "TOP", 0, -4)
 
@@ -41,6 +41,7 @@ private.defaults.dcsdefaults.dejacharacterstatsScrollbarMax = {
 					private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax = 34
 				end
 			end
+			DCS_Scrollbar:UnregisterAllEvents();
 		end
 	end)
 	
@@ -85,6 +86,7 @@ local DCS_ScrollbarCheck = CreateFrame("CheckButton", "DCS_ScrollbarCheck", Deja
 				private.db.dcsdefaults.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = false
 			end
 		end
+		DCS_ScrollbarCheck:UnregisterAllEvents();
 	end)
 
 	DCS_ScrollbarCheck:SetScript("OnClick", function(self,event,arg1) 
@@ -206,5 +208,9 @@ local DCS_ScrollbarCheck = CreateFrame("CheckButton", "DCS_ScrollbarCheck", Deja
 	end)
 	
 	PaperDollSidebarTab2:HookScript("OnClick", function(self,event) 
+		DCS_ScrollframeParentFrame:Hide()
+	end)
+	
+	PaperDollSidebarTab3:HookScript("OnClick", function(self,event) 
 		DCS_ScrollframeParentFrame:Hide()
 	end)

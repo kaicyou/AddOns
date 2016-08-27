@@ -23,3 +23,4 @@ cfg.oilvlun = true; -- show upgrade number
 cfg.oilvlge = true; -- show gem and enchant in character frame and inpection frame
 cfg.oilvlcachesw = true; -- enable cache
 cfg.oilvlaltclickroll = true; -- alt click roll
+cfg.oilvlautoscan = true; -- auto scan ilvl

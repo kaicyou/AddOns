@@ -19,6 +19,7 @@ OILVL_L = GetLocale() == "zhCN" and {
 	["Not socketed"] = "无宝石",
 	["Low level enchanted"] = "低等级附魔",
 	["Low level socketed"] = "低等级宝石",
+	["Auto Scan"] = "自动扫描",
 	
 } or GetLocale() == "ruRU" and {
 	["Set the amount of numbers past the decimal place to show"] = "Определяет количество отображаемых после запятой цифр",
@@ -42,6 +43,7 @@ OILVL_L = GetLocale() == "zhCN" and {
 	["Not socketed"] = "Нет самоцвета",
 	["Low level enchanted"] = "Низкий уровень зачарования",
 	["Low level socketed"] = "Низкий уровень камня",
+	["Auto Scan"] = "Авто-сканирование",
 	
 } or GetLocale() == "zhTW" and {
 	["Set the amount of numbers past the decimal place to show"] = "設置小數點後顯示幾位元數位",
@@ -64,6 +66,7 @@ OILVL_L = GetLocale() == "zhCN" and {
 	["Not socketed"] = "無寶石",
 	["Low level enchanted"] = "低等級附魔",
 	["Low level socketed"] = "低等級寶石",
+	["Auto Scan"] = "自動掃描",
 
 } or GetLocale() == "koKR" and {
 	["Set the amount of numbers past the decimal place to show"] = "좌표 표시의 소수점 자릿수를 선택합니다",
@@ -87,6 +90,7 @@ OILVL_L = GetLocale() == "zhCN" and {
 	["Not socketed"] = "보석장착 안됨",
 	["Low level enchanted"] = "낮은 등급 마법부여",
 	["Low level socketed"] = "낮은 등급 보석 장착",
+	["Auto Scan"] = "시 자동 스캔",
 	
 } or GetLocale() == "frFR" and {
 	["Set the amount of numbers past the decimal place to show"] = "Définit le nombre de chiffres à afficher après la virgule",
@@ -110,6 +114,7 @@ OILVL_L = GetLocale() == "zhCN" and {
 	["Not socketed"] = "Non gemmé",
 	["Low level enchanted"] = "Enchantement de bas niveau",
 	["Low level socketed"] = "Gemme de bas niveau",
+	["Auto Scan"] = "Scan automatique",
 	
 } or GetLocale() == "deDE" and {
 	["Set the amount of numbers past the decimal place to show"] = "Festlegen der Anzahl der Nachkommastellen",
@@ -132,6 +137,7 @@ OILVL_L = GetLocale() == "zhCN" and {
 	["Low level socketed"] = "Niedrigstufig gesockelt",
 	["Not enchanted"] = "Nicht verzaubert",
 	["Not socketed"] = "Nicht gesockelt",
+	["Auto Scan"] = "Automatisches Scannen",
 	
 } or GetLocale() == "ptBR" and {
 	["Set the amount of numbers past the decimal place to show"] = "Escolha o quanto de números além dos decimais serão mostrados",
@@ -155,6 +161,7 @@ OILVL_L = GetLocale() == "zhCN" and {
 	["Not socketed"] = "Não engastado",
 	["Low level enchanted"] = "Encantamento de level baixo",
 	["Low level socketed"] = "Engaste de level baixo",
+	["Auto Scan"] = "Auto Scan",
 
 } or GetLocale() == "esMX" and {
 	["Set the amount of numbers past the decimal place to show"] = "Establecer la cantidad de números más allá de la posición decimal para mostrar",
@@ -177,6 +184,7 @@ OILVL_L = GetLocale() == "zhCN" and {
 	["Not socketed"] = "Sin gema",
 	["Low level enchanted"] = "Encanto menor",
 	["Low level socketed"] = "Gema menor",
+	["Auto Scan"] = "Auto escáner",
 
 } or GetLocale() == "esES" and {
 	["Set the amount of numbers past the decimal place to show"] = "Establecer la cantidad de números más allá de la posición decimal para mostrar",
@@ -199,6 +207,7 @@ OILVL_L = GetLocale() == "zhCN" and {
 	["Not socketed"] = "Sin gema",
 	["Low level enchanted"] = "Encanto menor",
 	["Low level socketed"] = "Gema menor",
+	["Auto Scan"] = "Auto escáner",
 
 } or GetLocale() == "itIT" and {
 	["Set the amount of numbers past the decimal place to show"] = "Mostra il numero di cifre decimali da mostrare",
@@ -222,6 +231,7 @@ OILVL_L = GetLocale() == "zhCN" and {
 	["Average Item Level"] = "Livello oggetto medio",
 	["Item Level"] = "Livello oggetto",
 	["Export"] = "Esporta",
+	["Auto Scan"] = "Scandisci automaticamente",
 
 } or { }
 

@@ -113,6 +113,7 @@ local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 local function PlayReminder()
   if (Overachiever_Settings.SoundAchIncomplete ~= 0 and time() >= lastreminder + 15) then
     local sound = SharedMedia:Fetch("sound", Overachiever_Settings.SoundAchIncomplete)
+	--Overachiever.chatprint("sound: " .. (sound and sound or "nope"))
     if (sound) then
       PlaySoundFile(sound)
       lastreminder = time()
@@ -765,33 +766,60 @@ TjBagWatch.RegisterFunc(BagUpdate, true)
 
 if (SharedMedia) then
   local soundtab = {
-  ["Sound\\Doodad\\BellTollAlliance.wav"] = L.SOUND_BELL_ALLIANCE,
-  ["Sound\\Doodad\\BellTollHorde.wav"] = L.SOUND_BELL_HORDE,
-  ["Sound\\Doodad\\BellTollNightElf.wav"] = L.SOUND_BELL_NIGHTELF,
-  ["Sound\\Doodad\\BellTollTribal.wav"] = L.SOUND_DRUMHIT,
-  ["Sound\\Doodad\\BoatDockedWarning.wav"] = L.SOUND_BELL_BOATARRIVED,
-  ["Sound\\Doodad\\G_GongTroll01.wav"] = L.SOUND_GONG_TROLL,
-  ["Sound\\Spells\\ShaysBell.wav"] = L.SOUND_BELL_MELLOW,
+  ["Sound\\Doodad\\BellTollAlliance.ogg"] = L.SOUND_BELL_ALLIANCE,
+  ["Sound\\Doodad\\BellTollHorde.ogg"] = L.SOUND_BELL_HORDE,
+  ["Sound\\Doodad\\BellTollNightElf.ogg"] = L.SOUND_BELL_NIGHTELF,
+  ["Sound\\Doodad\\BellTollTribal.ogg"] = L.SOUND_DRUMHIT,
+  ["Sound\\Doodad\\BoatDockedWarning.ogg"] = L.SOUND_BELL_BOATARRIVED,
+  ["Sound\\Doodad\\G_GongTroll01.ogg"] = L.SOUND_GONG_TROLL,
+  ["Sound\\Spells\\ShaysBell.ogg"] = L.SOUND_BELL_MELLOW,
 
-  ["Sound\\Spells\\PVPEnterQueue.wav"] = L.SOUND_ENTERQUEUE,
-  ["Sound\\Spells\\bind2_Impact_Base.wav"] = L.SOUND_HEARTHBIND,
-  ["Sound\\Doodad\\KharazahnBellToll.wav"] = L.SOUND_BELL_KARA,
+  ["Sound\\Spells\\PVPEnterQueue.ogg"] = L.SOUND_ENTERQUEUE,
+  ["Sound\\Spells\\bind2_Impact_Base.ogg"] = L.SOUND_HEARTHBIND,
+  ["Sound\\Doodad\\KharazahnBellToll.ogg"] = L.SOUND_BELL_KARA,
 
-  ["Sound\\Interface\\AuctionWindowOpen.wav"] = L.SOUND_DING_AUCTION,
-  ["Sound\\Interface\\AuctionWindowClose.wav"] = L.SOUND_BELL_AUCTION,
-  ["Sound\\Interface\\AlarmClockWarning1.wav"] = L.SOUND_ALARM1,
-  ["Sound\\Interface\\AlarmClockWarning2.wav"] = L.SOUND_ALARM2,
-  ["Sound\\Interface\\AlarmClockWarning3.wav"] = L.SOUND_ALARM3,
-  ["Sound\\Interface\\MapPing.wav"] = L.SOUND_MAP_PING,
+  ["Sound\\Interface\\AuctionWindowOpen.ogg"] = L.SOUND_DING_AUCTION,
+  ["Sound\\Interface\\AuctionWindowClose.ogg"] = L.SOUND_BELL_AUCTION,
+  ["Sound\\Interface\\AlarmClockWarning1.ogg"] = L.SOUND_ALARM1,
+  ["Sound\\Interface\\AlarmClockWarning2.ogg"] = L.SOUND_ALARM2,
+  ["Sound\\Interface\\AlarmClockWarning3.ogg"] = L.SOUND_ALARM3,
+  ["Sound\\Interface\\MapPing.ogg"] = L.SOUND_MAP_PING,
 
-  ["Sound\\Spells\\SimonGame_Visual_GameTick.wav"] = L.SOUND_SIMON_DING,
-  ["Sound\\Spells\\SimonGame_Visual_LevelStart.wav"] = L.SOUND_SIMON_STARTGAME,
-  ["Sound\\Spells\\SimonGame_Visual_GameStart.wav"] = L.SOUND_SIMON_STARTLEVEL,
+  ["Sound\\Spells\\SimonGame_Visual_GameTick.ogg"] = L.SOUND_SIMON_DING,
+  ["Sound\\Spells\\SimonGame_Visual_LevelStart.ogg"] = L.SOUND_SIMON_STARTGAME,
+  ["Sound\\Spells\\SimonGame_Visual_GameStart.ogg"] = L.SOUND_SIMON_STARTLEVEL,
 
-  ["Sound\\Spells\\YarrrrImpact.wav"] = L.SOUND_YAR,
+  ["Sound\\Spells\\YarrrrImpact.ogg"] = L.SOUND_YAR,
+  
+  ["Sound\\Interface\\Aggro_Enter_Warning_State.ogg"] = L.SOUND_AGGRO_WARNING,
+  ["Sound\\Interface\\Aggro_Pulled_Aggro.ogg"] = L.SOUND_AGGRO_PULLED,
+  ["Sound\\Interface\\Glyph_MajorCreate.ogg"] = L.SOUND_GLYPH_CREATE_MAJOR,
+  ["Sound\\Interface\\Glyph_MinorCreate.ogg"] = L.SOUND_GLYPH_CREATE_MINOR,
+  ["Sound\\Interface\\Glyph_MajorDestroy.ogg"] = L.SOUND_GLYPH_DESTROY_MAJOR,
+  ["Sound\\Interface\\Glyph_MinorDestroy.ogg"] = L.SOUND_GLYPH_DESTROY_MINOR,
+  ["Sound\\Interface\\UI_BattlegroundCountdown_Timer.ogg"] = L.SOUND_BGTIMER,
+  ["Sound\\Interface\\UI_Challenges_MedalExpires.ogg"] = L.SOUND_MEDAL_EXPIRES,
+  ["Sound\\Interface\\UI_Garrison_Toast_InvasionAlert.ogg"] = L.SOUND_GARRISON_INVASION,
+  --[[ don't work for some reason
+  ["Sound\\Interface\\Deathbind Sound.ogg"] = "Deathbind",
+  ["Sound\\Interface\\FX_Shimmer_Whoosh_Generic.ogg"] = "Shimmer Whoosh",
+  ["Sound\\Interface\\GLUECREATECHARACTERBUTTON.mp3"] = "Create Character",
+  ["Sound\\Interface\\gsCharacterCreationCreateChar.ogg"] = "Create Character",
+  ["Sound\\Interface\\UI_AutoQuestComplete.ogg"] = "Auto Quest Complete",
+  ["Sound\\Interface\\UI_BattlegroundCountdown_Finished.ogg"] = "Battleground Countdown Finished",
+  ["Sound\\Interface\\UI_BonusEventSystemVignettes.ogg"] = "Bonus Event",
+  ["Sound\\Interface\\UI_Challenges_MedalExpires_GoldtoSilver.ogg"] = "Medal Gold to Silver",
+  ["Sound\\Interface\\UI_Challenges_MedalExpires_SilvertoBronze.ogg"] = "Medal Silver to Bronze",
+  ["Sound\\Interface\\UI_DigsiteCompletion_Toast.ogg"] = "Digsite Complete",
+  ["Sound\\Interface\\UI_Garrison_Invasion_AlertPing.ogg"] = "Garrison Invasion Alert",
+  ["Sound\\Interface\\UI_igStore_ConfirmPurchase_Button.ogg"] = "Store Confirmation",
+  ["Sound\\Interface\\UI_igStore_PurchaseDelivered_Toast_01.ogg"] = "Store Delivered",
+  --]]
   }
   for data,name in pairs(soundtab) do
-    SharedMedia:Register("sound", "Blizzard: "..name, data)
+    if (not SharedMedia:Register("sound", "Blizzard: "..name, data)) then
+	  Overachiever.chatprint('Error: Failed to register Blizzard sound "' .. name .. '"')
+	end
   end
   soundtab = nil
 end

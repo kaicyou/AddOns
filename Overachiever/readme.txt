@@ -1,5 +1,5 @@
 
-Overachiever v0.84
+Overachiever v0.90
 ==============================
 
 Author: Tuhljin
@@ -63,7 +63,7 @@ SLASH COMMANDS:
 
 - NEW: /achsilent, /achs
 
-  These commands silently search for the first matching achievement and display it, useful if you don't want text
+  These commands silently search for the first matching achievement and display it. Useful if you don't want text
   added to the chat log.
 
   Example A: /achs gold
@@ -106,6 +106,12 @@ Change log
 ==========
 
 The change log lists changes of particular note to users, not every change made.
+
+v0.90
+- Updated for WoW patch 7.0.x. Updated TOC and fixed several errors. (Haven't added new suggestions yet.)
+- Fixed problem where reminder sounds didn't play.
+- Added some new reminder sounds (from existing sound effects).
+- "The Stockade" zone (instance) was renamed at some point to "Stormwind Stockade". Updated the related suggestion so it once again shows when in that zone.
 
 v0.84
 - Workaround for a WoW bug where the API gives the wrong count of achievements in a category. This should fix debug

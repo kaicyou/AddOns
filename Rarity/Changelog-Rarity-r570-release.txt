@@ -1,9 +1,33 @@
 ------------------------------------------------------------------------
-r566 | allara | 2016-08-18 16:55:49 +0000 (Thu, 18 Aug 2016) | 1 line
+r571 | allara | 2016-08-24 17:22:45 +0000 (Wed, 24 Aug 2016) | 1 line
 Changed paths:
-   A /tags/r565-release (from /trunk:565)
+   A /tags/r570-release (from /trunk:570)
 
-Tagging as r565-release
+Tagging as r570-release
+------------------------------------------------------------------------
+r570 | allara | 2016-08-22 23:02:22 +0000 (Mon, 22 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- When an item is in your current zone as well as one or more other zones, sort by zone now sorts the zone alphabetically instead of at the bottom
+------------------------------------------------------------------------
+r569 | allara | 2016-08-22 22:55:34 +0000 (Mon, 22 Aug 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- Added map data for Reins of the Infinite Timereaver
+- [#156] Implemented support for sorting by zone
+------------------------------------------------------------------------
+r567 | allara | 2016-08-21 20:07:27 +0000 (Sun, 21 Aug 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- Added waypoint data for all remaining items
+- Rarity will no longer try to use TomTom to create waypoints inside instances (due to upcoming 7.1 changes where add-ons cannot receive unit locations while inside instances)
 ------------------------------------------------------------------------
 r565 | allara | 2016-08-18 03:32:43 +0000 (Thu, 18 Aug 2016) | 1 line
 Changed paths:
@@ -200,51 +224,4 @@ Changed paths:
 
 - Rarity now completely throws away (releases) its tooltip and starts from scratch when expanding/collapsing a group. I believe we were seeing recursive relayout behavior inside the LibQTip library that could not scale to the number of frames being created/destroyed when expanding/collapsing a group. This appears to solve the problem, at least in my testing.
 - I also added a small (0.6s) delay before the Rarity tooltip hides itself when you mouse out of it.
-------------------------------------------------------------------------
-r531 | allara | 2016-07-21 23:41:53 +0000 (Thu, 21 Jul 2016) | 1 line
-Changed paths:
-   M /trunk/Core.lua
-   M /trunk/Locales.lua
-
-- Rarity's achievement alert when you obtain an item should now function properly in WoW 7.0
-------------------------------------------------------------------------
-r530 | allara | 2016-07-21 22:55:30 +0000 (Thu, 21 Jul 2016) | 1 line
-Changed paths:
-   M /trunk/.pkgmeta
-   M /trunk/Core.lua
-   A /trunk/Libs/LibBars-1.0
-   A /trunk/Libs/LibBars-1.0/LibBars-1.0.lua
-   A /trunk/Libs/LibBars-1.0/lib.xml
-
-- Updated LibBars-1.0 in this package with a bug fix for WoW 7.x. GetItemInfo() returns texture IDs instead of image paths now. LibBars:SetIcon should no longer detect an ID and try to route it through GetSpellInfo to obtain the filename, as that is no longer necessary and does not work for item textures. Note to no-libs users: Rarity now contains a custom copy of LibBars-1.0 which manifests itself as r24 in order to force an upgrade in case you have the library installed externally. The version on WowAce does not work properly in WoW 7.0.
-------------------------------------------------------------------------
-r527 | allara | 2016-07-21 17:01:26 +0000 (Thu, 21 Jul 2016) | 1 line
-Changed paths:
-   M /trunk/Core.lua
-   M /trunk/Modules/Options/Rarity_Options.toc
-
-- Options module TOC update for 7.0
-------------------------------------------------------------------------
-r524 | allara | 2016-07-21 06:33:49 +0000 (Thu, 21 Jul 2016) | 1 line
-Changed paths:
-   M /trunk/Core.lua
-
-- Remove the extra texture debug messages (sorry!)
-------------------------------------------------------------------------
-r522 | allara | 2016-07-20 19:53:19 +0000 (Wed, 20 Jul 2016) | 2 lines
-Changed paths:
-   M /trunk/Core.lua
-   M /trunk/Locales.lua
-   M /trunk/Options_Defaults.lua
-
-- Re-enabled Living Infernal Core
-- Fixed a missing localization entry for Orb of the Sin'dorei
-------------------------------------------------------------------------
-r520 | allara | 2016-07-14 19:14:23 +0000 (Thu, 14 Jul 2016) | 1 line
-Changed paths:
-   M /trunk/Core.lua
-   M /trunk/Locales.lua
-   M /trunk/Options_Defaults.lua
-
-- Added additional waypoint data (thanks Urtgard!)
 ------------------------------------------------------------------------

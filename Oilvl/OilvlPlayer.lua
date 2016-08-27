@@ -240,6 +240,7 @@ function OiLvlPlayer_Update(sw)
 							if gemlink and OItemAnalysisLowGem(ItemLink) > 0 and _G[Key.."ge"]:GetText() and oicb8 and oicb8:GetChecked() then
 								_G[Key.."ge"]:SetText((_G[Key.."ge"]:GetText() or "")..("(|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:107:117:34:61|t" or "")..L["Low level socketed"]..")");
 							end
+							if cfg.oilvlge then _G[Key.."ge"]:Show() end
 						end
 					end
 				end
@@ -312,6 +313,7 @@ function OiLvlPlayer_Update(sw)
 		else
 			for Value = 1, 17 do 
 			--for Key, Value in pairs(Items) do
+				-- hide item level for gears
 				local Key = Items[Value]
 				local ItemLink = GetInventoryItemLink("player", Value)
 				local Slot = getglobal(Key.."Stock");
@@ -319,7 +321,23 @@ function OiLvlPlayer_Update(sw)
 				if Slot and Value ~= 4 then
 					Slot:Hide();
 				end
-			end	
+				
+				if _G[Key.."ge"] then
+					_G[Key.."ge"]:Hide()
+				end
+
+				if  _G[Key.."un"] then
+					_G[Key.."un"]:SetText("");
+				end
+				
+			end
+			if CharacterFrameAverageItemLevel then
+				CharacterFrameAverageItemLevel:SetText("")
+			end
+			if oilvlGemEnchantButton then
+				oilvlGemEnchantButton:Hide()
+			end
+			cfg.oilvlge = true
 		end
 		OiLvlPlayer.frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 		-- Update oilvlframedata
@@ -328,7 +346,6 @@ function OiLvlPlayer_Update(sw)
 				for i=1,40 do
 					if GetRaidRosterInfo(i) == UnitName("player") then
 						oilvlSetABCD("player","OILVLRAIDFRAME"..i,"player",i)
-						--oilvlSaveItemLevel()
 						break
 					end
 				end	
@@ -476,6 +493,7 @@ function OiLvLInspect_Update()
 						if gemlink and OItemAnalysisLowGem(ItemLink) > 0 and _G[Key.."ge2"]:GetText() and oicb8 and oicb8:GetChecked() then
 							_G[Key.."ge2"]:SetText((_G[Key.."ge2"]:GetText() or "")..("(|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:107:117:34:61|t" or "")..L["Low level socketed"]..")");
 						end	
+						if cfg.oilvlge then _G[Key.."ge2"]:Show() end
 					end
 				end
 			end

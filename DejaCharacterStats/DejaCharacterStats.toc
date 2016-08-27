@@ -1,5 +1,5 @@
 ## Interface: 70000
-## Version: 7.0.3 r7
+## Version: 7.0.3 r8.04
 ## Title: DejaCharacterStats
 ## Authors: Dejablue
 ## Notes: Dejablue's improved character stats panel view.
@@ -12,3 +12,4 @@ DCSExpand.lua
 DCSDecimals.lua
 DCSDuraRepair.lua
 DCSItemLevel.lua
+DCSProfiles.lua

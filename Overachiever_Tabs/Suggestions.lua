@@ -451,7 +451,7 @@ local ACHID_INSTANCES = {
 	["Ragefire Chasm"] = 629,
 	["Wailing Caverns"] = 630,
 	["Blackfathom Deeps"] = 632,
-	["The Stockade"] = 633,		-- "Stormwind Stockade"
+	["Stormwind Stockade"] = 633,		-- previously called "The Stockade"
 	["Gnomeregan"] = 634,
 	["Razorfen Kraul"] = 635,
 	["Razorfen Downs"] = 636,
@@ -990,7 +990,7 @@ local function Refresh(self)
   end
 
   -- Suggestions based on an open tradeskill window or whether a fishing pole is equipped:
-  TradeskillSuggestions = GetTradeSkillLine()
+  TradeskillSuggestions = select(2, C_TradeSkillUI.GetTradeSkillLine())
   local tradeskill = LBIR[TradeskillSuggestions]
   if (not ACHID_TRADESKILL[tradeskill] and IsEquippedItemType("Fishing Poles")) then
     TradeskillSuggestions, tradeskill = LBI["Fishing"], "Fishing"

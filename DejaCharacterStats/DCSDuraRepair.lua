@@ -104,6 +104,7 @@ local function DCS_Mean_DurabilityCalc()
 		
 		duraTotal = duraTotal + durCur
 		duraMaxTotal = duraMaxTotal + durMax
+		if duraMaxTotal == 0 then duraMaxTotal = 1 	end
 		duraMean = ((duraTotal/duraMaxTotal)*100)
 	end
 end		

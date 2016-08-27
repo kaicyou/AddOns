@@ -1,5 +1,5 @@
 Rarity = LibStub("AceAddon-3.0"):NewAddon("Rarity", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "LibSink-2.0", "AceBucket-3.0", "LibBars-1.0", "AceSerializer-3.0")
-Rarity.MINOR_VERSION = tonumber(("$Revision: 565 $"):match("%d+"))
+Rarity.MINOR_VERSION = tonumber(("$Revision: 570 $"):match("%d+"))
 local FORCE_PROFILE_RESET_BEFORE_REVISION = 1 -- Set this to one higher than the Revision on the line above this
 local L = LibStub("AceLocale-3.0"):GetLocale("Rarity")
 local R = Rarity
@@ -366,6 +366,7 @@ local SORT_NAME = "SORT_NAME"
 local SORT_DIFFICULTY = "SORT_DIFFICULTY"
 local SORT_PROGRESS = "SORT_PROGRESS"
 local SORT_CATEGORY = "SORT_CATEGORY"
+local SORT_ZONE = "SORT_ZONE"
 
 -- Categories of origin
 local BASE = "BASE"
@@ -959,8 +960,6 @@ function R:CleanItemForImport(item)
 end
 
 
-
-
 -- Miscellaneous
 function R:tcopy(to, from)
  for k, v in pairs(from) do
@@ -1010,11 +1009,80 @@ local function colorizeV(s, r, g, b)
 end
 
 
+-- Location/Distance/Zone
+function R:GetDistanceToItem(item)
+	local distance = 999999999
+	if item and type(item) == "table" and item.coords and type(item.coords) == "table" then
+		local playerWorldX, playerWorldY, instance = hbd:GetPlayerWorldPosition()
+		for k, v in pairs(item.coords) do
+			if v and type(v) == "table" and v.m and v.i ~= true then
+				local map = v.m
+				local x = (v.x or 50) / 100
+				local y = (v.y or 50) / 100
+				local itemWorldX, itemWorldY = hbd:GetWorldCoordinatesFromZone(x, y, map, v.f or 1)
+				if itemWorldX ~= nil then -- Library returns nil for instances
+					local thisDistance = hbd:GetWorldDistance(instance, itemWorldX, itemWorldY, playerWorldX, playerWorldY)
+					--R:Print("map: "..map..", x: "..x..", y: "..y..", itemWorldX: "..itemWorldX..", itemWorldY: "..itemWorldY..", playerWorldX: "..playerWorldX..", playerWorldY: "..playerWorldY..", thisDistance: "..thisDistance)
+					if thisDistance < distance then distance = thisDistance end
+				end
+			end
+		end
+	end
+	if distance ~= 999999999 then return distance end
+	return nil
+end
+
+function R:GetZone(v)
+	local zoneText = ""
+	local inMyZone = false
+	local zoneColor = gray
+	local numZones = 0
+	local currentZone = GetCurrentMapAreaID()
+	if v.coords ~= nil and type(v.coords) == "table" then
+		local zoneList = {}
+		for _, zoneValue in pairs(v.coords) do
+			if type(zoneValue) == "table" and zoneValue.m ~= nil then
+				if zoneList[zoneValue.m] == nil then
+					numZones = numZones + 1
+					zoneList[zoneValue.m] = true
+				end
+				zoneText = GetMapNameByID(zoneValue.m)
+				if currentZone == zoneValue.m then inMyZone = true end
+			end
+		end
+		if numZones > 1 then zoneText = format(L["%d |4zone:zones;"], numZones) end
+		if v.coords.zoneOverride ~= nil then zoneText = v.coords.zoneOverride end
+		if inMyZone then
+			zoneColor = green
+			if numZones > 1 then
+				zoneText = GetMapNameByID(currentZone).." "..colorize(format("+%d", numZones - 1), gray)
+			end
+		end
+	end
+	return zoneText, inMyZone, zoneColor, numZones
+end
+
+
 -- Sorting
 local function compareName(a, b)
  if not a or not b then return 0 end
  if type(a) ~= "table" or type(b) ~= "table" then return 0 end
  return (a.name or "") < (b.name or "")
+end
+
+local function compareZone(a, b)
+	-- Sort by zone text, unless there are multiple zones. Those go at the bottom, sorted by number of zones.
+ if not a or not b then return 0 end
+ if type(a) ~= "table" or type(b) ~= "table" then return 0 end
+	local zoneTextA, inMyZoneA, zoneColorA, numZonesA = R:GetZone(a)
+	local zoneTextB, inMyZoneB, zoneColorB, numZonesB = R:GetZone(b)
+	if numZonesA > 1 and inMyZoneA ~= true then zoneTextA = "ZZZZZZZZZZZZZZ" end
+	if numZonesB > 1 and inMyZoneB ~= true then zoneTextB = "ZZZZZZZZZZZZZZ" end
+	if numZonesA < 10 and numZonesA > 1 and inMyZoneA ~= true then zoneTextA = zoneTextA.."0" end
+	if numZonesB < 10 and numZonesB > 1 and inMyZoneB ~= true then zoneTextB = zoneTextB.."0" end
+	if numZonesA > 1 and inMyZoneA ~= true then zoneTextA = zoneTextA..numZonesA end
+	if numZonesB > 1 and inMyZoneB ~= true then zoneTextB = zoneTextB..numZonesB end
+ return (zoneTextA or "") < (zoneTextB or "")
 end
 
 local function compareCategory(a, b)
@@ -1168,6 +1236,26 @@ local function sort_category(t)
 	 min = i
 	 for j = i + 1, n, 1 do
 		 if compareCategory(nt[j], nt[min]) then min = j end
+	 end
+	 nt[i], nt[min] = nt[min], nt[i]
+ end
+ return nt
+end
+
+local function sort_zone(t)
+ local nt = {}
+ local i, j, n, min = 0, 0, 0, 0
+ local k, v
+ for k, v in pairs(t) do
+  if type(v) == "table" and v.name then
+   n = n + 1
+   nt[n] = v
+  end
+ end
+ for i = 1, n, 1 do
+	 min = i
+	 for j = i + 1, n, 1 do
+		 if compareZone(nt[j], nt[min]) then min = j end
 	 end
 	 nt[i], nt[min] = nt[min], nt[i]
  end
@@ -2575,6 +2663,7 @@ do
    if R.db.profile.sortMode == SORT_NAME then R.db.profile.sortMode = SORT_CATEGORY
    elseif R.db.profile.sortMode == SORT_CATEGORY then R.db.profile.sortMode = SORT_DIFFICULTY
    elseif R.db.profile.sortMode == SORT_DIFFICULTY then R.db.profile.sortMode = SORT_PROGRESS
+   elseif R.db.profile.sortMode == SORT_PROGRESS then R.db.profile.sortMode = SORT_ZONE
    else R.db.profile.sortMode = SORT_NAME
    end
 			if tooltip then tooltip:Hide() end
@@ -3000,14 +3089,16 @@ do
 					if good and TomTom ~= nil and TomTom.AddMFWaypoint ~= nil and coord.m ~= nil and coord.x ~= nil and coord.y ~= nil then
 						local extraName = ""
 						if coord.n ~= nil then extraName = " ("..coord.n..")" end
-						TomTom:AddMFWaypoint(coord.m, coord.f or nil, coord.x / 100.0, coord.y / 100.0, { title = "Rarity"..": "..item.name..extraName })
-						added = added + 1
+						if coord.i ~= true then
+							TomTom:AddMFWaypoint(coord.m, coord.f or nil, coord.x / 100.0, coord.y / 100.0, { title = "Rarity"..": "..item.name..extraName })
+							added = added + 1
+						end
 						if coord.i == true then instance = instance + 1 end
 						if TomTom.SetClosestWaypoint ~= nil then TomTom:SetClosestWaypoint() end
 					end
 				end
 				if added > 0 then Rarity:Print(format(L["Added %d |4waypoint:waypoints; to TomTom"], added)) end
-				if instance > 0 then Rarity:Print(format(L["%d |4waypoint:waypoints; |4is:are; located inside |4an instance:instances;"], added)) end
+				if instance > 0 then Rarity:Print(format(L["%d |4waypoint:waypoints; |4is:are; located inside |4an instance:instances; and |4was:were; not added"], instance)) end
 			end
   else
    if trackedItem ~= item and inSession then R:EndSession() end
@@ -3029,6 +3120,7 @@ do
   if R.db.profile.sortMode == SORT_NAME then g = sort(group)
   elseif R.db.profile.sortMode == SORT_DIFFICULTY then g = sort_difficulty(group)
   elseif R.db.profile.sortMode == SORT_CATEGORY then g = sort_category(group)
+  elseif R.db.profile.sortMode == SORT_ZONE then g = sort_zone(group)
   else g = sort_progress(group)
   end
   for k, v in pairs(g) do
@@ -3185,32 +3277,7 @@ do
 											end
 
 											-- Zone
-											local zoneText = ""
-											local inMyZone = false
-											local zoneColor = gray
-											local currentZone = GetCurrentMapAreaID()
-											if v.coords ~= nil and type(v.coords) == "table" then
-												local zoneList = {}
-												local numZones = 0
-												for _, zoneValue in pairs(v.coords) do
-													if type(zoneValue) == "table" and zoneValue.m ~= nil then
-														if zoneList[zoneValue.m] == nil then
-															numZones = numZones + 1
-															zoneList[zoneValue.m] = true
-														end
-														zoneText = GetMapNameByID(zoneValue.m)
-														if currentZone == zoneValue.m then inMyZone = true end
-													end
-												end
-												if numZones > 1 then zoneText = format(L["%d |4zone:zones;"], numZones) end
-												if v.coords.zoneOverride ~= nil then zoneText = v.coords.zoneOverride end
-												if inMyZone then
-													zoneColor = green
-													if numZones > 1 then
-														zoneText = GetMapNameByID(currentZone).." "..colorize(format("+%d", numZones - 1), gray)
-													end
-												end
-											end
+											local zoneText, inMyZone, zoneColor, numZones = R:GetZone(v)
 
 											-- Add the item to the tooltip
 											local catIcon = ""
@@ -3321,7 +3388,9 @@ do
   if self.db.profile.sortMode == SORT_DIFFICULTY then sortDesc = L["Sorting by difficulty"]
   elseif self.db.profile.sortMode == SORT_PROGRESS then sortDesc = L["Sorting by percent complete"]
   elseif self.db.profile.sortMode == SORT_CATEGORY then sortDesc = L["Sorting by category, then name"]
+  elseif self.db.profile.sortMode == SORT_ZONE then sortDesc = L["Sorting by zone"]
   end
+		sortDesc = sortDesc..colorize(" ("..L["Ctrl-Click to change sort order"]..")", gray)
 		local line = tooltip:AddLine()
 		tooltip:SetCell(line, 1, colorize(sortDesc, green), nil, nil, 3)
 

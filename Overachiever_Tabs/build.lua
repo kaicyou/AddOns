@@ -1005,7 +1005,9 @@ do
     -- Flashing in
     local fade1 = flasher:CreateAnimation("Alpha")
     fade1:SetDuration(fadeInTime)
-    fade1:SetChange(1)
+	--fade1:SetChange(1)
+	fade1:SetFromAlpha(0)
+	fade1:SetToAlpha(1)
     fade1:SetOrder(1)
 
     if (flashInHoldTime) then  fade1:SetStartDelay(flashInHoldTime);  end
@@ -1013,7 +1015,9 @@ do
     -- Flashing out
     local fade2 = flasher:CreateAnimation("Alpha")
     fade2:SetDuration(fadeOutTime)
-    fade2:SetChange(-1)
+    --fade2:SetChange(-1)
+	fade2:SetFromAlpha(1)
+	fade2:SetToAlpha(0)
     fade2:SetOrder(2)
 
     if (flashOutHoldTime) then  fade2:SetEndDelay(flashOutHoldTime);  end

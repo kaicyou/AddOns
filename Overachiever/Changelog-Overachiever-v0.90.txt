@@ -1,0 +1,31 @@
+------------------------------------------------------------------------
+r131 | tuhljin | 2016-08-26 18:43:42 +0000 (Fri, 26 Aug 2016) | 1 line
+Changed paths:
+   A /tags/v0.90 (from /trunk:130)
+
+Tagging as v0.90
+------------------------------------------------------------------------
+r130 | tuhljin | 2016-08-26 08:26:01 +0000 (Fri, 26 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/GameTip.lua
+   M /trunk/localization.lua
+
+- Fix error involving sound/localization.
+------------------------------------------------------------------------
+r129 | tuhljin | 2016-08-26 07:56:40 +0000 (Fri, 26 Aug 2016) | 4 lines
+Changed paths:
+   M /trunk/GameTip.lua
+   M /trunk/Overachiever.toc
+   M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
+   M /trunk/Overachiever_Tabs/Suggestions.lua
+   M /trunk/Overachiever_Tabs/build.lua
+   M /trunk/Overachiever_Trade/Overachiever_Trade.toc
+   M /trunk/Overachiever_Trade/TradeSkills.lua
+   M /trunk/libs/TjSharedMediaDropDown/LibSharedMedia-3.0.lua
+   M /trunk/readme.txt
+
+- Updated for WoW patch 7.0.x. Updated TOC and fixed several errors. (Haven't added new suggestions yet.)
+- Fixed problem where reminder sounds didn't play.
+- Added some new reminder sounds (from existing sound effects).
+- "The Stockade" zone (instance) was renamed at some point to "Stormwind Stockade". Updated the related suggestion so it once again shows when in that zone.
+------------------------------------------------------------------------

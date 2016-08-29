@@ -1,6 +1,6 @@
 ﻿--Mage Nuggets by B-Buck (Bbuck of Eredar)
 
-local magenugVer = "5.3.0"
+local magenugVer = "5.3.1"
 local mirrorImageTime = 0;
 local spellStealTog = 0;
 local polyTimer = 0;

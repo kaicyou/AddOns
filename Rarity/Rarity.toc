@@ -8,7 +8,7 @@
 ## SavedVariables: RarityDB
 ## X-LoadOn-Always: delayed
 #@no-lib-strip@
-## X-Curse-Packaged-Version: r570-release
+## X-Curse-Packaged-Version: r572-release
 ## X-Curse-Project-Name: Rarity
 ## X-Curse-Project-ID: rarity
 ## X-Curse-Repository-ID: wow/rarity/mainline

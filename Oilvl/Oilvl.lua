@@ -3,8 +3,6 @@ local L = OILVL_L
 
 local HELM, NECK, SHOULDER, SHIRT, CHEST, WAIST, LEGS, FEET, WRISTS, HANDS, RING1, RING2, TRINK1, TRINK2, BACK, WEP, OFFHAND = 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17;
 
-local zzz = 1
-
 local oenchantItem = {
 	[0] = {0, INVTYPE_AMMO},
 	[1] = {0, INVTYPE_HEAD},
@@ -104,6 +102,7 @@ local OClassTexture = {
     ["PALADIN"] = {0, 0.25, 0.5, 0.75},
     ["DEATHKNIGHT"] = {0.25, 0.49609375, 0.5, 0.75},
     ["MONK"]    = {0.49609375, 0.7421875, 0.5, 0.75},
+	["DEMONHUNTER"] = {0.7421875,0.98828125,0.5,0.75}
 }
 
 local OPvP = {"Interface/PVPFrame/UI-CHARACTER-PVP-ELEMENTS",460/512,1,0,75/512}
@@ -153,6 +152,7 @@ local classcolor = {
 	[9]= "|cFF9482C9",
 	[1]= "|cFFC79C6E",
 	[0]= "|cFFFFFF00",
+	[12] = "|cFFA330C9",
 }
 
 local artifactwep = {
@@ -248,9 +248,20 @@ local otooltip6rpdunit;
 local otooltip6rpdid;
 local otooltip6gearsw=false; -- show all gear
 local otooltip6gearsw2=false; -- show only specific raider
+
+-- Will be hidden after Legion Live --
 local WoD, _, _ = EJ_GetTierInfo(6);
 local highmaulname, _, _, _, _, _, _ = EJ_GetInstanceInfo(477)
 local bfname, _, _, _, _, _, _ = EJ_GetInstanceInfo(457)
+-- Will be hidden after Legion Live --
+
+--[[ Legion Settings 01
+local Legion, _, _ = EJ_GetTierInfo(7);
+local TENname, _, _, _, _, _, _ = EJ_GetInstanceInfo(768)
+local TNname, _, _, _, _, _, _ = EJ_GetInstanceInfo(786)
+]]--
+
+-- Will be hide after Legion Live --
 if GetLocale() == "ptBR" then
 	bfname = "Fundição da Rocha Negra";
 end
@@ -261,6 +272,7 @@ local hfcname, _, _, _, _, _, _ = EJ_GetInstanceInfo(669)
 if GetLocale() == "itIT" then
 	hfcname = "Cittadella Fuoco Infernale";
 end
+-- Will be hide after Legion Live --
 
 local function round(number, digits)
     return tonumber(string.format("%." .. (digits or 0) .. "f", number))
@@ -536,7 +548,6 @@ function OilvlRunMouseoverTooltips(oframe)
 		rpdounit = ounit;		
 	end
 end
-
 
 function oilvlcheckunknown()
 	if IsInRaid() then
@@ -1367,19 +1378,19 @@ if not UnitAffectingCombat("player") and oilvlframesw then
 		-- counting class numbers
 		rnum = GetNumGroupMembers();
 		local cnum = {};
-		for j = 1, 11 do cnum[j]=0 end
+		for j = 1, 12 do cnum[j]=0 end
 		if IsInRaid() then
 			for i = 1, rnum do
 				local _, _, cclass = UnitClass("raid"..i);
-				for j = 1, 11 do if cclass == j then cnum[j] = cnum[j] + 1 end	end
+				for j = 1, 12 do if cclass == j then cnum[j] = cnum[j] + 1 end	end
 			end
 		else
 			for i = 1, rnum do
 				local _, _, cclass = UnitClass("party"..i);
-				for j = 1, 11 do if cclass == j then cnum[j] = cnum[j] + 1 end	end
+				for j = 1, 12 do if cclass == j then cnum[j] = cnum[j] + 1 end	end
 			end
 			local _, _, cclass = UnitClass("player");
-			for j = 1, 11 do if cclass == j then cnum[j] = cnum[j] + 1 end	end
+			for j = 1, 12 do if cclass == j then cnum[j] = cnum[j] + 1 end	end
 		end
 		OilvlAIL_WARRIOR:SetText(cnum[1])
 		OilvlAIL_PALADIN:SetText(cnum[2])
@@ -1392,9 +1403,10 @@ if not UnitAffectingCombat("player") and oilvlframesw then
 		OilvlAIL_WARLOCK:SetText(cnum[9])
 		OilvlAIL_MONK:SetText(cnum[10])
 		OilvlAIL_DRUID:SetText(cnum[11])
+		OilvlAIL_DEMONHUNTER:SetText(cnum[12])
 		OVanq = cnum[4]+cnum[8]+cnum[6]+cnum[11]
 		OProt = cnum[1]+cnum[3]+cnum[7]+cnum[10]
-		OConq = cnum[2]+cnum[5]+cnum[9]
+		OConq = cnum[2]+cnum[5]+cnum[9]+cnum[12]
 		VanqText:SetText(OVanq.." "..L["Vanquisher"])
 		ProtText:SetText(OProt.." "..L["Protector"])
 		ConqText:SetText(OConq.." "..L["Conqueror"])
@@ -2385,6 +2397,7 @@ function oilvlframe()
 	CreateTextureFontString("ONumPALADIN",10,68,OClassTexture["BASE"],OClassTexture["PALADIN"][1],OClassTexture["PALADIN"][2],OClassTexture["PALADIN"][3],OClassTexture["PALADIN"][4],"OilvlAIL_PALADIN",28,68)
 	CreateTextureFontString("ONumPRIEST",60,68,OClassTexture["BASE"],OClassTexture["PRIEST"][1],OClassTexture["PRIEST"][2],OClassTexture["PRIEST"][3],OClassTexture["PRIEST"][4],"OilvlAIL_PRIEST",78,68)
 	CreateTextureFontString("ONumWARLOCK",110,68,OClassTexture["BASE"],OClassTexture["WARLOCK"][1],OClassTexture["WARLOCK"][2],OClassTexture["WARLOCK"][3],OClassTexture["WARLOCK"][4],"OilvlAIL_WARLOCK",128,68)
+	CreateTextureFontString("ONumDH",160,68,OClassTexture["BASE"],OClassTexture["DEMONHUNTER"][1],OClassTexture["DEMONHUNTER"][2],OClassTexture["DEMONHUNTER"][3],OClassTexture["DEMONHUNTER"][4],"OilvlAIL_DEMONHUNTER",178,68)
 	OCreateFontString("ConqText",200,68) 
 	
 -- 	Enchantment Reminder
@@ -2695,15 +2708,29 @@ function OilvlGetStatisticId(OCategory, ORaidName, OTable, Oprint)
 		end
 	end
 end
--- /dump EJ_GetInstanceByIndex(2, true)
+
+-- Will be hidden after Legion Live --
 local OSTATHM = {}
 OilvlGetStatisticId(WoD, highmaulname, OSTATHM, false)
--- /dump EJ_GetInstanceByIndex(3, true)
 local OSTATBF = {}
 OilvlGetStatisticId(WoD, bfname:sub(1,strlen(bfname)-2), OSTATBF, false)
---OilvlGetStatisticId(WoD, bfname, OSTATBF, false)
 local OSTATHFC = {}
 OilvlGetStatisticId(WoD, hfcname, OSTATHFC, false)
+-- Will be hide after Legion Live --
+
+--[[ Legion Settings 02
+OSTATTEN = {}
+OSTATTN = {}
+
+if GetLocale() == "enUS" then
+	OilvlGetStatisticId(Legion, TENname:sub(4,strlen(TENname)), OSTATTEN, false)
+	OilvlGetStatisticId(Legion, TNname:sub(4,strlen(TNname)), OSTATTN, false)
+else
+	OilvlGetStatisticId(Legion, TENname, OSTATTEN, false)
+	OilvlGetStatisticId(Legion, TNname, OSTATTN, false)
+end
+]]--
+
 -------------------------------------------------------------------------------
 -- Font definitions.
 -------------------------------------------------------------------------------
@@ -2904,6 +2931,7 @@ local difficulties = {
 	{"LFR",PLAYER_DIFFICULTY3.." ",1,"L "},
 }
 
+-- Will be hidden after Legion Live --
 function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses)
 	collectgarbage()
 	local i=0;
@@ -3736,6 +3764,12 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses)
 	end
 end
 
+-- Will be hidden after Legion Live --
+
+--[[Legion Settings 03
+Please copy OGetRaidProgression2 and OGetRaidProgression3 from beta
+]]--
+
 function otooltip4func()
 	if otooltip4 ~= nil then
 		if LibQTip:IsAcquired("OiLvLRoll") then otooltip4:Clear() end
@@ -4156,7 +4190,7 @@ if not UnitAffectingCombat("player") then
 		if _G["Oilvlmark"..oicomp[m].id]:IsShown() then	otooltip6:SetCellColor(line,1,0,1,0,1) end
 		otooltip6:SetCell(line, 2, oicomp[m].name)
 		otooltip6:SetCellScript(line, 2, "OnMouseUp", function(f,info,button)
-			if button == "LeftButton" then	ORfbIlvl(oicomp[m].id) end
+			if button == "LeftButton" then	ORfbIlvl(oicomp[m].id,true) end
 			if button == "MiddleButton" then
 				if _G["Oilvlmark"..oicomp[m].id]:IsShown() then	
 					otooltip6:SetCellColor(f._line,1,0,0,0,0)
@@ -5182,7 +5216,8 @@ function events:INSPECT_READY(...)
 	end
 	OILVL:UnregisterEvent("INSPECT_READY")
 end
-	
+
+-- will be hidden after Legion Live --	
 function events:INSPECT_ACHIEVEMENT_READY(...)
 	if not UnitAffectingCombat("player") then
 		if cfg.oilvlms then
@@ -5229,6 +5264,10 @@ function events:INSPECT_ACHIEVEMENT_READY(...)
 	OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY")
 end
 
+--[[Legion Settings 04
+Please copy Oevents:INSPECT_ACHIEVEMENT_READY(...) from beta
+]]--
+
 function events:GROUP_ROSTER_UPDATE(...)
 	if not UnitAffectingCombat("player") then
 		if oilvlframesw then OResetSendMark(); OilvlCheckFrame(); end
@@ -5253,6 +5292,7 @@ function events:RAID_ROSTER_UPDATE(...)
 	end
 end
 
+-- will be hidden after Legion Live --
 function events:ADDON_LOADED(...)
 	cfg = Oilvl_Settings;
 	if cfg.oilvlframeP == nil then cfg.oilvlframeP = "TOPLEFT"; end
@@ -5262,7 +5302,7 @@ function events:ADDON_LOADED(...)
 	if cfg.oilvlalpha  == nil then cfg.oilvlalpha = 1; end
 	if cfg.oilvlhm == nil then cfg.oilvlhm = false; end
 	if cfg.oilvlbf == nil then cfg.oilvlbf = false; end
-	if cfg.oilvlhfc == nil then cfg.oilvlbf = true; end		
+	if cfg.oilvlhfc == nil then cfg.oilvlhfc = true; end		
 	if cfg.oilvlms == nil then cfg.oilvlms = true; end
 	if cfg.oilvlme == nil then cfg.oilvlme = true; end
 	if cfg.oilvlme2 == nil then cfg.oilvlme2 = false; end
@@ -5296,6 +5336,9 @@ function events:ADDON_LOADED(...)
 	end
 	OILVL:UnregisterEvent("ADDON_LOADED");	
 end
+-- will be hidden after Legion Live --
+
+-- Please copy events:ADDON_LOADED(...) from beta
 
 function events:PLAYER_ENTERING_WORLD(...)
 	if oilvlframesw then Oilvltimer:ScheduleTimer(OilvlCheckFrame,10); 
@@ -5448,6 +5491,7 @@ function OMouseover()
 	end
 end
 
+-- will be hidden after Legion Live
 function OilvlConfigFrame()
 	cfg.frame = CreateFrame("Frame", "OiLvLConfig",InterfaceOptionsFramePanelContainer)
 	cfg.frame.name = "O Item Level (OiLvL)"
@@ -5714,6 +5758,9 @@ function OilvlConfigFrame()
 	upgradenumbercb:SetScript("PostClick", function() cfg.oilvlun = oicb10:GetChecked() OiLvlPlayer_Update() end);
 	if cfg.oilvlun then upgradenumbercb:SetChecked(true) end	
 end
+-- will be hidden after Legion Live
+
+-- Please copy OilvlConfigFrame() from beta
 
 function LDB:OnClick(button)
 	if button == "LeftButton" then
@@ -5953,7 +6000,7 @@ end
 function oilvlCheckHFCTierBonusSet(i)
 	local set=0;
 	for j = 1, #tiergears do
-		if oilvlframedata.gear[i][tiergears[j]] then 
+		if oilvlframedata.gear[i] and tiergears[j] and oilvlframedata.gear[i][tiergears[j]] then 
 			if checkhfctierID(oilvlframedata.gear[i][tiergears[j]][8]) then set = set + 1 end 
 		end
 	end

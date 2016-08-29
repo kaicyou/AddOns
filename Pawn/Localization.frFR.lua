@@ -308,12 +308,12 @@ Pour plus d'information sur la Personnalisation de Pawn, regarder le fichier d'a
 		Wand = "^Baguette$",
 		Warforged = "^De guerre$", -- Needs review
 		Warglaives = "^Glaives de guerre$", -- Needs review
-		WeaponDamage = "^([%d%. ,]+) %- ([%d%. ,]+) D\195\169g\195\162ts$", -- Needs review
+		WeaponDamage = "^D\195\169g\195\162ts : ([%d%. ,]+) %- ([%d%. ,]+)$", -- Needs review
 		WeaponDamageArcane = "^%+?([%d%. ,]+) %- ([%d%. ,]+) points de d\195\169g\195\162ts %(Arcanes%)$",
 		WeaponDamageArcaneExact = "^%+?([%d%. ,]+) points de d\195\169g\195\162ts %(Arcanes%)$",
 		WeaponDamageEnchantment = "^%+?([%d%. ,]+) aux d\195\169g\195\162ts de l'arme$",
 		WeaponDamageEquip = "^\195\137quip\195\169\194\160: %+?([%d%. ,]+) aux d\195\169g\195\162ts de l'arme%.$",
-		WeaponDamageExact = "^D\195\169g\195\162ts\194\160: ([%d%. ,]+)$",
+		WeaponDamageExact = "^([%d%. ,]+)D\195\169g\195\162ts$", -- Needs review
 		WeaponDamageFire = "^%+?([%d%. ,]+) %- ([%d%. ,]+) points de D\195\169g\195\162ts %(Feu%)$", -- Needs review
 		WeaponDamageFireExact = "^%+?([%d%. ,]+) points de d\195\169g\195\162ts %(Feu%)$",
 		WeaponDamageFrost = "^%+?([%d%. ,]+) %- ([%d%. ,]+) points de d\195\169g\195\162ts %(Givre%)$",

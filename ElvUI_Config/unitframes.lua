@@ -69,6 +69,7 @@ local auraSortValues = {
 	['DURATION'] = L["Duration"],
 	['NAME'] = NAME,
 	['INDEX'] = L["Index"],
+	["PLAYER"] = PLAYER,
 }
 
 local auraSortMethodValues = {
@@ -1781,7 +1782,7 @@ function UF:CreateCustomTextGroup(unit, objectName)
 					E.db.unitframe.units[unit].customTexts[objectName] = nil;
 
 					if unit == 'boss' or unit == 'arena' then
-						for i=1, 5 do --Arena only has 3 units but there's a nil-check in place
+						for i=1, 5 do
 							if UF[unit..i] then
 								UF[unit..i]:Tag(UF[unit..i]["customTexts"][objectName], '');
 								UF[unit..i]["customTexts"][objectName]:Hide();

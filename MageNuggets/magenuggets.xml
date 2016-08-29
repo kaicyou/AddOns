@@ -3813,7 +3813,7 @@
 				self:SetAttribute("type1", "item")
 				self:SetAttribute("item", GetItemInfo(6948))
                 homeLocation = GetBindLocation();
-                GameTooltip:SetOwner(self, A5555555555555555555NCHOR_TOPLEFT);
+                GameTooltip:SetOwner(self, ANCHOR_TOPLEFT);
 				GameTooltip:AddLine("Hearthstone: "..homeLocation)
 				GameTooltip:Show()
 			</OnEnter>

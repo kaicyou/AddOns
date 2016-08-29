@@ -114,6 +114,7 @@ P['databars'] = {
 		["reverseFill"] = false,
 		["hideAtMaxLevel"] = true,
 		["hideInVehicle"] = false,
+		["hideInCombat"] = false,
 	},
 	['reputation'] = {
 		['enable'] = false,
@@ -125,6 +126,7 @@ P['databars'] = {
 		['orientation'] = 'VERTICAL',
 		["reverseFill"] = false,
 		["hideInVehicle"] = false,
+		["hideInCombat"] = false,
 	},
 	['artifact'] = {
 		['enable'] = true,
@@ -136,6 +138,7 @@ P['databars'] = {
 		['orientation'] = 'VERTICAL',
 		["reverseFill"] = false,
 		["hideInVehicle"] = false,
+		["hideInCombat"] = false,
 	},
 	['honor'] = {
 		['enable'] = true,
@@ -147,6 +150,7 @@ P['databars'] = {
 		['orientation'] = 'VERTICAL',
 		["reverseFill"] = false,
 		["hideInVehicle"] = false,
+		["hideInCombat"] = false,
 	},
 }
 
@@ -197,7 +201,7 @@ P["nameplates"] = {
 	['targetScale'] = 1.15,
 	['nonTargetTransparency'] = 0.35,
 	["motionType"] =  "STACKED",
-	["onlyShowTarget"] = false,
+	["displayStyle"] = "ALL",
 	["lowHealthThreshold"] = 0.4,
 	["showFriendlyCombat"] = "DISABLED",
 	["showEnemyCombat"] = "DISABLED",

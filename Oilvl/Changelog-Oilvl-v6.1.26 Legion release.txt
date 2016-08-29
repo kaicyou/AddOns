@@ -1,9 +1,37 @@
 ------------------------------------------------------------------------
-r537 | olzenkhaw | 2016-08-26 05:58:34 +0000 (Fri, 26 Aug 2016) | 1 line
+r545 | olzenkhaw | 2016-08-28 11:34:39 +0000 (Sun, 28 Aug 2016) | 1 line
 Changed paths:
-   A /tags/v6.1.22 Legion release (from /trunk:536)
+   A /tags/v6.1.26 Legion release (from /trunk:544)
 
-v6.1.22 Added Auto Scan option in OiLvL Window. It is enabled by default. Uncheck it will disable auto scan.
+v6.1.26 Fixed a bug.
+------------------------------------------------------------------------
+r544 | olzenkhaw | 2016-08-28 11:34:21 +0000 (Sun, 28 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.26 Fixed a bug.
+------------------------------------------------------------------------
+r542 | olzenkhaw | 2016-08-28 11:27:15 +0000 (Sun, 28 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.25 Fixed a bug.
+------------------------------------------------------------------------
+r540 | olzenkhaw | 2016-08-28 11:07:20 +0000 (Sun, 28 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.24 Added demon hunter class color
+------------------------------------------------------------------------
+r538 | olzenkhaw | 2016-08-27 23:45:53 +0000 (Sat, 27 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.23 Fixed a bug.
 ------------------------------------------------------------------------
 r536 | olzenkhaw | 2016-08-26 05:58:14 +0000 (Fri, 26 Aug 2016) | 1 line
 Changed paths:
@@ -130,18 +158,4 @@ Changed paths:
    M /trunk/Oilvlconfig.lua
 
 v6.1.6 Added feature to disable cache history.
-------------------------------------------------------------------------
-r502 | olzenkhaw | 2016-07-27 15:10:14 +0000 (Wed, 27 Jul 2016) | 1 line
-Changed paths:
-   M /trunk/Oilvl.lua
-   M /trunk/Oilvl.toc
-
-v6.1.5 fixed minimap icon bug.
-------------------------------------------------------------------------
-r500 | olzenkhaw | 2016-07-26 12:40:10 +0000 (Tue, 26 Jul 2016) | 1 line
-Changed paths:
-   M /trunk/Oilvl.toc
-   M /trunk/OilvlPlayer.lua
-
-v6.1.4 fixed a bug.
 ------------------------------------------------------------------------

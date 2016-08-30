@@ -1,6 +1,8 @@
 ﻿local SLE, T, E, L, V, P, G = unpack(select(2, ...))
 local UB = SLE:GetModule('UIButtons')
 
+local CUSTOM, NONE, DEFAULT = CUSTOM, NONE, DEFAULT
+
 local positionValues = {
 	TOPLEFT = 'TOPLEFT',
 	LEFT = 'LEFT',
@@ -218,8 +220,17 @@ local function configTable()
 				get = function(info) return E.db.sle.uibuttons.customroll.max end,
 				set = function(info, value) E.db.sle.uibuttons.customroll.max = value; end,
 			},
-			Config = {
+			visibility = {
 				order = 19,
+				type = 'input',
+				width = 'full',
+				name = L["Visibility State"],
+				disabled = function() return not E.db.sle.uibuttons.enable end,
+				get = function(info) return E.db.sle.uibuttons.visibility end,
+				set = function(info, value) E.db.sle.uibuttons.visibility = value; Bar:ToggleShow() end,
+			},
+			Config = {
+				order = 30,
 				name = "\"C\" "..L["Quick Action"],
 				type = "group",
 				guiInline = true,
@@ -250,7 +261,7 @@ local function configTable()
 				},
 			},
 			Addon = {
-				order = 20,
+				order = 31,
 				name = "\"A\" "..L["Quick Action"],
 				type = "group",
 				guiInline = true,
@@ -271,7 +282,6 @@ local function configTable()
 						type = "select",
 						values = {
 							["Manager"] = L["AddOns"],
-							["Boss"] = L["Boss Mod"],
 						},
 						get = function(info) return E.db.sle.uibuttons.Addon.called end,
 						set = function(info, value) E.db.sle.uibuttons.Addon.called = value; end,
@@ -279,7 +289,7 @@ local function configTable()
 				},
 			},
 			Status = {
-				order = 21,
+				order = 32,
 				name = "\"S\" "..L["Quick Action"],
 				type = "group",
 				guiInline = true,
@@ -308,7 +318,7 @@ local function configTable()
 				},
 			},
 			Roll = {
-				order = 22,
+				order = 33,
 				name = "\"R\" "..L["Quick Action"],
 				type = "group",
 				guiInline = true,
@@ -333,7 +343,7 @@ local function configTable()
 							["Thirty"] = "1-30",
 							["Forty"] = "1-40",
 							["Hundred"] = "1-100",
-							["Custom"] = L["Custom"],
+							["Custom"] = CUSTOM,
 
 						},
 						get = function(info) return E.db.sle.uibuttons.Roll.called end,
@@ -343,6 +353,11 @@ local function configTable()
 			},
 		},
 	}
+	if E.private.sle.uibuttons.style == "dropdown" then
+		for k, v in T.pairs(UB.Holder.Addon) do
+			if k ~= "Toggle" and T.type(v) == "table" and (v.HasScript and v:HasScript("OnClick")) then E.Options.args.sle.args.modules.args.uibuttons.args.Addon.args.called.values[k] = k end
+		end
+	end
 end
 
 T.tinsert(SLE.Configs, configTable)

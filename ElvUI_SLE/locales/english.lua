@@ -187,7 +187,16 @@ L["SLE_TIPS"] = { --This doesn't need to be translated, every locale can has own
 L["Enable S&L's additional features for AFK screen."] = true
 L["Button restrictions"] = true
 L["Use ElvUI's restrictions for button presses."] = true
-L["Crest Size"] = true
+L["Crest"] = true
+L["Faction Crest X-Offset"] = true
+L["Faction Crest Y-Offset"] = true
+L["Race Crest X-Offset"] = true
+L["Race Crest Y-Offset"] = true
+L["Texts Positions"] = true
+L["Date X-Offset"] = true
+L["Date Y-Offset"] = true
+L["Player Info X-Offset"] = true
+L["Player Info Y-Offset"] = true
 L["X-Pack Logo Size"] = true
 L["Template"] = true
 L["Player Model"] = true
@@ -279,6 +288,12 @@ L["Shows you which of docked chat tabs is currently selected."] = true
 L["Chat history size"] = true
 L["Sets how many messages will be stored in history."] = true
 L["Following options determine which channels to save in chat history.\nNote: disabling a channel will immideately delete saved info for that channel."] = true
+L["Alt-Click Invite"] = true
+L["Allows you to invite people by alt-clicking their names in chat."] = true
+L["Invite links"] = true
+L["Convets specified keywords to links that automatically invite message's author to group."] = true
+L["Link Color"] = true
+L["Invite Keywords"] = true
 
 --Databars
 L["Full value on Exp Bar"] = true
@@ -403,6 +418,11 @@ L["Are you sure you want to remove |cff1784d1%s|r from currency datatexts?"] = t
 L["Hide panel background"] = true
 L["Don't show this panel, only datatexts assinged to it"] = true
 L["SLE_DT_CURRENCY_WARNING_GOLD"] = [[Your datapanel %s has ElvUI's "Gold" datatext active while "S&L Currency" datatext is selected elsewhere. To ensure the correct functioning of "S&L Currency" datatext we are disabling some functions of "Gold" datatext. To avoid this conflict you need to replace one of conflicting datatexts.]]
+L["Gold Sorting"] = true
+L["Normal"] = true
+L["Reverced"] = true
+L["Amount"] = true
+L["Order of each toon. Smaller numbers will go first"] = true
 
 --Enhnced Shadows
 L["Enhanced Shadows"] = true
@@ -561,6 +581,7 @@ L["By default menu's width will be equal to the location panel width. Checking t
 L["Justify Text"] = true
 L["Hearthstone Location"] = true
 L["Show the name on location your Heathstone is bound to."] = true
+L["Only Number"] = true
 
 
 --Miscs
@@ -675,35 +696,6 @@ L["Header Text Color"] = true
 L["Class Colored Header Text"] = true
 L["Subpages"] = true
 L["Subpages are blocks of 10 items. This option set how many of subpages will be shown on a single page."] = true
-L["SLE_SKINS_QUESTKING_DESC"] = [[Following options controls additional features for Quest King addon. Settings are character based.
-Due to the way of how that addon works it is mostly impossible to hook into its functions.
-Affected options are:
-- Tooltip positioning and scale
-- Clicks processing
-- Quest tagging
-- Award frame is now following Objective tracker opions of ElvUI
-- Quest names are following header settings from S&L's objective tracker skin
-- Quest King's position is now controlled by ElvUI's objectives mover
-- A lot of lines are now pulled from the client instead of being hardcoded
-- Tracked quest icon is larger]]
-L["Tooltip Anchor"] = true
-L["Tooltip Scale"] = true
-L["Quest Type Indications"] = true
-L["Clicks Registration"] = true
-L["SLE_SKINS_QUESTKING_TEMPLATE_DESC"] = [[|cff9482c9Quest King|r
-Original Quest King's controls:
-Left Click to open quest info
-Alt + Right Click to untrack
-Alt + Left Click to collapce quest
-Right Click to set quest watch
-
-|cff9482c9Blizzlike|r
-Controls of standart Blizzard quest log:
-Left Click to open quest info
-Shift + Left Click to untrack
-Right Click to set uest follow
-Ctrl + Left Click to collapce]]
-L["SLE_QUESTKING_Required"] = "  Required: "
 L["ElvUI Objective Tracker"] = true
 L["ElvUI Skins"] = true
 L["As List"] = true
@@ -714,6 +706,8 @@ L["Item Name Outline"] = true
 L["Item Info Font"] = true
 L["Item Info Size"] = true
 L["Item Info Outline"] = true
+L["Remove Parchment"] = true
+L["Stage Background"] = true
 
 --Toolbars
 L["We are sorry, but you can't do this now. Try again after the end of this combat."] = true
@@ -743,8 +737,12 @@ L["Auto Work Orders for Trading Post"] = true
 L["Automatically queue maximum number of work orders available for Trading Post."] = true
 L["Auto Work Orders for Shipyard"] = true
 L["Automatically queue maximum number of work orders available for Shipyard."] = true
+--Class Hall
+L["Class Hall"] = true
+L["Auto Work Orders for equipment"] = true
 
 --Tooltip
+L["Always Compare Items"] = true
 L["Faction Icon"] = true
 L["Show faction icon to the left of player's name on tooltip."] = true
 L["TTOFFSET_DESC"] = "This adds the ability to have the tooltip offset from the cursor.  Make sure to have the \"Cursor Anchor\" option enabled in ElvUI's Tooltip section to use this feature."
@@ -774,7 +772,6 @@ L["AddOns Manager"] = true
 L["Click to toggle the AddOn Manager frame."] = true
 L["Boss Mod"] = true
 L["Click to toggle the Configuration/Option Window from the Bossmod you have enabled."] = true
-L["Custom"] = true
 L["UB_DESC"] = "This adds a small bar with some useful buttons which acts as a small menu for common things."
 L["Minimum Roll Value"] = true
 L["The lower limit for custom roll button."] = true
@@ -805,6 +802,7 @@ L["Makes frame portrait visible regardles of health level when overlay portrait 
 L["Classbar Texture"] = true
 L["Resize Health Prediction"] = true
 L["Slightly chages size of health prediction bars."] = true
+L["Always Compare Items"] = true
 
 
 --Viewport

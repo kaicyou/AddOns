@@ -1,10 +1,17 @@
-$Id: ChangeLog.txt 22 2016-07-19 13:56:02Z arith $
+$Id: ChangeLog.txt 24 2016-08-29 06:57:49Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2012 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 ==============
 = Change Log =
 ==============
+
+v1.33.01 (Aug. 29, 2016)
+------------------------
+- Translation update:
+  - Traditional Chinese
+- Scenarios database update - now use Lib-Scenarios to get the expected info
+
 
 v1.33.00 (Jul. 19, 2016)
 ------------------------
@@ -15,6 +22,7 @@ v1.33.00 (Jul. 19, 2016)
 - Translation update:
   - Simplified Chinese (ananhaid)
 
+  
 v1.32.05 (Jul. 07, 2016)
 ------------------------
 - Toc title update

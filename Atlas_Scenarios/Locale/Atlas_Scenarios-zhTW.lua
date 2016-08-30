@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas_Scenarios-zhTW.lua 22 2016-07-19 13:56:02Z arith $
+﻿-- $Id: Atlas_Scenarios-zhTW.lua 24 2016-08-29 06:57:49Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -26,14 +26,10 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("Atlas_Scenarios", "zhTW", false);
 
 if L then
-	for key, value in pairs(Atlas_ScenarioStepDB) do
-		L[value[1]] = value[Atlas_ScenariosDB_Langs["zhTW"]];
-	end
 
-
--- L["33 Deamons slain"] = ""
--- L["3 Lords slain"] = ""
--- L["3 Spires of Woe destroyed"] = ""
+L["33 Deamons slain"] = "消滅惡魔 (33)"
+L["3 Lords slain"] = "殺死惡魔領主 (3)"
+L["3 Spires of Woe destroyed"] = "摧毀苦痛魔塔 (3)"
 L["Abomination of Anger"] = "憎惡獸"
 L["Achievement"] = "成就"
 L["Admiral Hagman"] = "海格曼上將"

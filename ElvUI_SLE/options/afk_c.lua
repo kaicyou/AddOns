@@ -37,6 +37,43 @@ local function configTable()
 				},
 			},
 		}
+		if group == "date" then
+			config.args.xOffset = {
+				order = 4,
+				name = L["Date X-Offset"],
+				type = "range",
+				min = -(T.GetScreenWidth()/2), max = T.GetScreenWidth()/2, step = 1,
+				set = function(info, value) E.db.sle.screensaver.date.xOffset = value end,
+			}
+			config.args.yOffset = {
+				order = 5,
+				name = L["Date Y-Offset"],
+				type = "range",
+				min = -(T.GetScreenWidth()/2), max = T.GetScreenWidth()/2, step = 1,
+				set = function(info, value) E.db.sle.screensaver.date.yOffset = value end,
+			}
+			config.args.hour24 = {
+				order = 6,
+				name = L["24-Hour Time"],
+				type = "toggle",
+				set = function(info, value) E.db.sle.screensaver.date.hour24 = value end,
+			}
+		elseif group == "player" then
+			config.args.xOffset = {
+				order = 4,
+				name = L["Player Info X-Offset"],
+				type = "range",
+				min = -(T.GetScreenWidth()/2), max = T.GetScreenWidth()/2, step = 1,
+				set = function(info, value) E.db.sle.screensaver.player.xOffset = value end,
+			}
+			config.args.yOffset = {
+				order = 5,
+				name = L["Player Info Y-Offset"],
+				type = "range",
+				min = -(T.GetScreenWidth()/2), max = T.GetScreenWidth()/2, step = 1,
+				set = function(info, value) E.db.sle.screensaver.player.yOffset = value end,
+			}
+		end
 		return config
 	end
 	E.Options.args.sle.args.modules.args.screensaver = {
@@ -89,11 +126,45 @@ local function configTable()
 						args = {
 							crest = {
 								order = 1,
-								name = L["Crest Size"],
-								type = "range",
-								min = 84, max = 256, step = 1,
-								get = function(info) return E.db.sle.screensaver.crest end,
-								set = function(info, value) E.db.sle.screensaver.crest = value; S:Media() end,
+								type = "group",
+								guiInline = true,
+								name = L["Crest"],
+								get = function(info) return E.db.sle.screensaver.crest[ info[#info] ] end,
+								set = function(info, value) E.db.sle.screensaver.crest[ info[#info] ] = value; end,
+								args = {
+									size = {
+										order = 1,
+										name = L["Size"],
+										type = "range",
+										min = 84, max = 256, step = 1,
+										get = function(info) return E.db.sle.screensaver.crest.size end,
+										set = function(info, value) E.db.sle.screensaver.crest.size = value; S:Media() end,
+									},
+									xOffset_faction = {
+										order = 2,
+										name = L["Faction Crest X-Offset"],
+										type = "range",
+										min = -(T.GetScreenWidth()/2), max = T.GetScreenWidth()/2, step = 1,
+									},
+									yOffset_faction = {
+										order = 3,
+										name = L["Faction Crest Y-Offset"],
+										type = "range",
+										min = -(T.GetScreenWidth()/2), max = T.GetScreenWidth()/2, step = 1,
+									},
+									xOffset_race = {
+										order = 4,
+										name = L["Race Crest X-Offset"],
+										type = "range",
+										min = -(T.GetScreenWidth()/2), max = T.GetScreenWidth()/2, step = 1,
+									},
+									yOffset_race = {
+										order = 5,
+										name = L["Race Crest Y-Offset"],
+										type = "range",
+										min = -(T.GetScreenWidth()/2), max = T.GetScreenWidth()/2, step = 1,
+									},
+								},
 							},
 							xpack = {
 								order = 2,
@@ -112,7 +183,7 @@ local function configTable()
 								set = function(info, value) E.db.sle.screensaver.height = value end,
 							},
 							animType = {
-								order = 4,
+								order = 5,
 								name = L["Template"],
 								type = "select",
 								disabled = function() return E.db.sle.screensaver.panelTemplate == 0 end,

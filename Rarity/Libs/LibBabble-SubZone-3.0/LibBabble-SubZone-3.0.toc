@@ -18,7 +18,7 @@
 ## Notes-esMX: A library to help with localization of in-game subzone names.
 ## Notes-frFR: A library to help with localization of in-game subzone names.
 ## Notes-itIT: A library to help with localization of in-game subzone names.
-## Notes-koKR: A library to help with localization of in-game subzone names.
+## Notes-koKR: 게임 내 세부 지역 이름의 지역화로 도움을 주는 라이브러리 입니다.
 ## Notes-ptBR: A library to help with localization of in-game subzone names.
 ## Notes-ruRU: A library to help with localization of in-game subzone names.
 ## Notes-zhCN: 一个帮助游戏内子区域名称本地化的库。

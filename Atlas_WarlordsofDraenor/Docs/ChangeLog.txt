@@ -1,10 +1,14 @@
-$Id: ChangeLog.txt 29 2016-08-05 16:13:17Z arith $
+$Id: ChangeLog.txt 31 2016-08-29 07:14:21Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 ==============
 = Change Log =
 ==============
+
+v1.33.03 (Aug. 29, 2016)
+------------------------
+- Minor fix: revise Hellfire mapF's node coordinates
 
 v1.33.02 (Aug. 06, 2016)
 ------------------------

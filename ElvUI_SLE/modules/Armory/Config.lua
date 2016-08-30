@@ -11,6 +11,7 @@ local MAX_NUM_SOCKETS = MAX_NUM_SOCKETS
 local ALTERNATE_RESOURCE_TEXT, DAMAGE, ATTACK_POWER, ATTACK_SPEED, STAT_SPELLPOWER, STAT_ENERGY_REGEN, STAT_RUNE_REGEN, STAT_FOCUS_REGEN, STAT_SPEED, DURABILITY, HIDE = ALTERNATE_RESOURCE_TEXT, DAMAGE, ATTACK_POWER, ATTACK_SPEED, STAT_SPELLPOWER, STAT_ENERGY_REGEN, STAT_RUNE_REGEN, STAT_FOCUS_REGEN, STAT_SPEED, DURABILITY, HIDE
 local FACTION_ALLIANCE, FACTION_HORDE, ARENA, NONE, STAT_CATEGORY_ATTRIBUTES, STAT_CATEGORY_ATTRIBUTES = FACTION_ALLIANCE, FACTION_HORDE, ARENA, NONE, STAT_CATEGORY_ATTRIBUTES, STAT_CATEGORY_ATTRIBUTES
 local ADD, DELETE, HEALTH = ADD, DELETE, HEALTH
+local CUSTOM = CUSTOM
 
 if not (KF and KF.Modules and (KF.Modules.CharacterArmory or KF.Modules.InspectArmory)) then return end
 
@@ -209,7 +210,7 @@ local function LoadArmoryConfigTable()
 
 	local BackgroundList = {
 		["0"] = HIDE,
-		["1"] = L["Custom"],
+		["1"] = CUSTOM,
 		["2"] = "Space",
 		["3"] = "The Empire",
 		["4"] = "Castle",
@@ -322,8 +323,8 @@ local function LoadArmoryConfigTable()
 							name = L["Font"],
 							order = 5,
 							guiInline = true,
-							get = function(info) return E.private.sle.Armory.ItemLevel[ info[#info] ] end,
-							set = function(info, value) E.private.sle.Armory.ItemLevel[ info[#info] ] = value; _G["CharacterArmory"]:UpdateIlvlFont() end,
+							get = function(info) return E.db.sle.Armory.Character.ItemLevel[ info[#info] ] end,
+							set = function(info, value) E.db.sle.Armory.Character.ItemLevel[ info[#info] ] = value; _G["CharacterArmory"]:UpdateIlvlFont() end,
 							args = {
 								font = {
 									type = 'select', dialogControl = 'LSM30_Font',

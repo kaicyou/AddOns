@@ -1,7 +1,7 @@
 -- Item Level Check
 
-	local _, private = ...
-	private.defaults.dcsdefaults.dejacharacterstatsItemLevelChecked = {
+	local _, gdbprivate = ...
+	gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsItemLevelChecked = {
 		ItemLevelSetChecked = true,
 	}	
 	
@@ -61,25 +61,25 @@ local DCS_ItemLevelCheck = CreateFrame("CheckButton", "DCS_ItemLevelCheck", Deja
 	
 	DCS_ItemLevelCheck:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-		local checked = private.db.dcsdefaults.dejacharacterstatsItemLevelChecked
+		local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked
 			self:SetChecked(checked.ItemLevelSetChecked)
 			if self:GetChecked(true) then
 				DCS_ItemLevelShow()
-				private.db.dcsdefaults.dejacharacterstatsItemLevelChecked.ItemLevelSetChecked = true
+				gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked.ItemLevelSetChecked = true
 			else
 				DCS_ItemLevelHide()
-				private.db.dcsdefaults.dejacharacterstatsItemLevelChecked.ItemLevelSetChecked = false
+				gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked.ItemLevelSetChecked = false
 			end
 		end
 	end)
 
 	DCS_ItemLevelCheck:SetScript("OnClick", function(self,event,arg1) 
-		local checked = private.db.dcsdefaults.dejacharacterstatsItemLevelChecked
+		local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked
 		if self:GetChecked(true) then
 			DCS_ItemLevelShow()
-			private.db.dcsdefaults.dejacharacterstatsItemLevelChecked.ItemLevelSetChecked = true
+			gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked.ItemLevelSetChecked = true
 		else
 			DCS_ItemLevelHide()
-			private.db.dcsdefaults.dejacharacterstatsItemLevelChecked.ItemLevelSetChecked = false
+			gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked.ItemLevelSetChecked = false
 		end
 	end)

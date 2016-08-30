@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas_Scenarios-ruRU.lua 12 2016-06-27 14:27:22Z arith $
+﻿-- $Id: Atlas_Scenarios-ruRU.lua 24 2016-08-29 06:57:49Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -26,10 +26,6 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("Atlas_Scenarios", "ruRU", false);
 
 if L then
-	for key, value in pairs(Atlas_ScenarioStepDB) do
-		L[value[1]] = value[Atlas_ScenariosDB_Langs["ruRU"]];
-	end
-
 -- L["33 Deamons slain"] = ""
 -- L["3 Lords slain"] = ""
 -- L["3 Spires of Woe destroyed"] = ""
@@ -158,6 +154,5 @@ L["Whispering Stones Sonic Control Towers"] = "Шепчущие камни - З�
 L["Wolf-Rider Gaja"] = "Наездница Гайа"
 L["ToC/Description"] = "Карты сценариев"
 L["ToC/Title"] = "Atlas |r|cFF0099FF[Сценарии]|r"
-
 
 end

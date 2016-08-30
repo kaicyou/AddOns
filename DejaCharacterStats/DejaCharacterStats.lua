@@ -1,12 +1,49 @@
+local _, L = ...; --localization
+
 --------------------------
 -- SavedVariables Setup --
 --------------------------
+local DejaCharacterStats, gdbprivate = ...
+
+gdbprivate.gdbdefaults = {
+}
+gdbprivate.gdbdefaults.gdbdefaults = {
+}
+
+----------------------------
+-- Saved Variables Loader --
+----------------------------
+local loader = CreateFrame("Frame")
+	loader:RegisterEvent("ADDON_LOADED")
+	loader:SetScript("OnEvent", function(self, event, arg1)
+		if event == "ADDON_LOADED" and arg1 == "DejaCharacterStats" then
+			local function initDB(gdb, gdbdefaults)
+				if type(gdb) ~= "table" then gdb = {} end
+				if type(gdbdefaults) ~= "table" then return gdb end
+				for k, v in pairs(gdbdefaults) do
+					if type(v) == "table" then
+						gdb[k] = initDB(gdb[k], v)
+					elseif type(v) ~= type(gdb[k]) then
+						gdb[k] = v
+					end
+				end
+				return gdb
+			end
+
+			DejaCharacterStatsDB = initDB(DejaCharacterStatsDB, gdbprivate.gdbdefaults)
+			gdbprivate.gdb = DejaCharacterStatsDB
+
+			self:UnregisterEvent("ADDON_LOADED")
+		end
+	end)
+
 local DejaCharacterStats, private = ...
 
 private.defaults = {
 }
 private.defaults.dcsdefaults = {
 }
+
 DejaCharacterStats = {};
 
 ----------------------------
@@ -14,8 +51,8 @@ DejaCharacterStats = {};
 ----------------------------
 local loader = CreateFrame("Frame")
 	loader:RegisterEvent("ADDON_LOADED")
-	loader:SetScript("OnEvent", function(self, addon)
-		if addon ~= DejaCharacterStats then 
+	loader:SetScript("OnEvent", function(self, event, arg1)
+		if event == "ADDON_LOADED" and arg1 == "DejaCharacterStats" then
 			local function initDB(db, defaults)
 				if type(db) ~= "table" then db = {} end
 				if type(defaults) ~= "table" then return db end
@@ -26,13 +63,13 @@ local loader = CreateFrame("Frame")
 						db[k] = v
 					end
 				end
-			return db
+				return db
 			end
 
-		DejaCharacterStatsDBPC = initDB(DejaCharacterStatsDBPC, private.defaults)
-		private.db = DejaCharacterStatsDBPC -- add this
-		self:UnregisterEvent("ADDON_LOADED")
-		-- Don't place any frames here
+			DejaCharacterStatsDBPC = initDB(DejaCharacterStatsDBPC, private.defaults)
+			private.db = DejaCharacterStatsDBPC
+
+			self:UnregisterEvent("ADDON_LOADED")
 		end
 	end)
 
@@ -223,7 +260,7 @@ local dcsresetcheck = CreateFrame("Button", "DCSResetButton", DejaCharacterStats
 	dcsresetcheck:SetHeight(30)
 	_G[dcsresetcheck:GetName() .. "Text"]:SetText("Reset to Default")
 	dcsresetcheck:SetScript("OnClick", function(self, button, down)
- 		private.db.dcsdefaults = private.defaults.dcsdefaults;
+ 		gdbprivate.gdb.gdbdefaults = gdbprivate.gdbdefaults.gdbdefaults;
 		ReloadUI();
 end)
 
@@ -458,12 +495,12 @@ local function DCS_RelevantStats()
 		},
 	};
 	
-		local durabilitychecked = private.db.dcsdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked
+		local durabilitychecked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked
 		if durabilitychecked == true then 
 			table.insert(PAPERDOLL_STATCATEGORIES[1].stats, { stat = "DURABILITY" })
 			PaperDollFrame_UpdateStats();
 		end
-		local repairchecked = private.db.dcsdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked
+		local repairchecked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked
 		if repairchecked == true then 
 			table.insert(PAPERDOLL_STATCATEGORIES[1].stats, { stat = "REPAIRTOTAL" })
 			PaperDollFrame_UpdateStats();
@@ -806,8 +843,8 @@ end
 -------------------------------
 -- DCS Durability Stat Check --
 -------------------------------
-local _, private = ...
-private.defaults.dcsdefaults.dejacharacterstatsDurabilityStatChecked = {
+local _, gdbprivate = ...
+gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsDurabilityStatChecked = {
 	DurabilityStatSetChecked = true,
 }	
 
@@ -821,21 +858,21 @@ local DCS_DurabilityStatCheck = CreateFrame("CheckButton", "DCS_DurabilityStatCh
 
 	DCS_DurabilityStatCheck:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-			local checked = private.db.dcsdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked
+			local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked
 			self:SetChecked(checked)
 			if self:GetChecked(true) then
-				private.db.dcsdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = true
+				gdbprivate.gdb.gdbdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = true
 			elseif not self:GetChecked(true) then
-				private.db.dcsdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = false
+				gdbprivate.gdb.gdbdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = false
 			end
 		end
 	end)
 
 	DCS_DurabilityStatCheck:SetScript("OnClick", function(self, button, down)
 		if self:GetChecked(true) then
-			private.db.dcsdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = true
+			gdbprivate.gdb.gdbdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = true
 		elseif not self:GetChecked(true) then
-			private.db.dcsdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = false
+			gdbprivate.gdb.gdbdefaults.dejacharacterstatsDurabilityStatChecked.DurabilityStatSetChecked = false
 		end
 		DCS_CheckShowSelectChecks()
 	end)
@@ -843,8 +880,8 @@ local DCS_DurabilityStatCheck = CreateFrame("CheckButton", "DCS_DurabilityStatCh
 ---------------------------------
 -- DCS Repair Total Stat Check --
 ---------------------------------
-local _, private = ...
-private.defaults.dcsdefaults.dejacharacterstatsRepairTotalStatChecked = {
+local _, gdbprivate = ...
+gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsRepairTotalStatChecked = {
 	RepairTotalStatSetChecked = true,
 }	
 
@@ -858,21 +895,21 @@ local DCS_RepairTotalStatCheck = CreateFrame("CheckButton", "DCS_RepairTotalStat
 
 	DCS_RepairTotalStatCheck:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-			local checked = private.db.dcsdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked
+			local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked
 			self:SetChecked(checked)
 			if self:GetChecked(true) then
-				private.db.dcsdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = true
+				gdbprivate.gdb.gdbdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = true
 			elseif not self:GetChecked(true) then
-				private.db.dcsdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = false
+				gdbprivate.gdb.gdbdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = false
 			end
 		end
 	end)
 
 	DCS_RepairTotalStatCheck:SetScript("OnClick", function(self, button, down)
 		if self:GetChecked(true) then
-			private.db.dcsdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = true
+			gdbprivate.gdb.gdbdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = true
 		elseif not self:GetChecked(true) then
-			private.db.dcsdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = false
+			gdbprivate.gdb.gdbdefaults.dejacharacterstatsRepairTotalStatChecked.RepairTotalStatSetChecked = false
 		end
 		DCS_CheckShowSelectChecks()
 	end)

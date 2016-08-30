@@ -6,6 +6,7 @@ P["sle"] = {
 		["vehicle"] = {
 			["buttonsize"] = 40,
 			["buttonspacing"] = 2,
+			["template"] = "Transparent",
 		},
 	},
 	--Auras
@@ -27,6 +28,7 @@ P["sle"] = {
 			["template"] = "Default",
 			["alpha"] = 1,
 			["clickthrough"] = true,
+			["visibility"] = "show",
 		},
 		["bg2"] = {
 			["enabled"] = false,
@@ -40,6 +42,7 @@ P["sle"] = {
 			["template"] = "Default",
 			["alpha"] = 1,
 			["clickthrough"] = false,
+			["visibility"] = "show",
 		},
 		["bg3"] = {
 			["enabled"] = false,
@@ -53,6 +56,7 @@ P["sle"] = {
 			["template"] = "Default",
 			["alpha"] = 1,
 			["clickthrough"] = false,
+			["visibility"] = "show",
 		},
 		["bg4"] = {
 			["enabled"] = false,
@@ -66,6 +70,7 @@ P["sle"] = {
 			["template"] = "Default",
 			["alpha"] = 1,
 			["clickthrough"] = true,
+			["visibility"] = "show",
 		},
 	},
 		--Bags
@@ -107,6 +112,12 @@ P["sle"] = {
 			["select"] = false,
 			["style"] = "DEFAULT",
 			["color"] = {r = 1, g = 1, b = 1},
+		},
+		["invite"] = {
+			["altInv"] = false,
+			["invLinks"] = false,
+			["keys"] = "invite",
+			["color"] = {r = 1, g = 1, b = 0},
 		},
 	},
 	--Datbars
@@ -280,6 +291,14 @@ P["sle"] = {
 			["Icons"] = true,
 			["Faction"] = true,
 			["Unused"] = true,
+			["gold"] = {
+				["direction"] = "normal",
+				["method"] = "name",
+			},
+			["cur"] = {
+				["direction"] = "normal",
+				["method"] = "name",
+			},
 		},
 		["regen"] = {
 			["short"] = false,
@@ -462,6 +481,7 @@ P["sle"] = {
 			["enable"] = false,
 			["xoffset"] = -10,
 			["yoffset"] = 0,
+			["onlyNumber"] = false,
 			["colors"] = {
 				["lfr"] = {r = 0.32,g = 0.91,b = 0.25},
 				["normal"] = {r = 0.09,g = 0.51,b = 0.82},
@@ -489,6 +509,7 @@ P["sle"] = {
 			["zoneText"] = true,
 			["colorType"] = "REACTION",
 			["customColor"] = {r = 1, g = 1, b = 1 },
+			["combathide"] = false,
 			["portals"] = {
 				["enable"] = true,
 				["HSplace"] = true,
@@ -535,6 +556,7 @@ P["sle"] = {
 			["scenario"] = "FULL",
 			["rested"] = "FULL",
 			["garrison"] = "FULL",
+			["orderhall"] = "FULL",
 		},
 		["autoReward"] = false,
 	},
@@ -582,18 +604,29 @@ P["sle"] = {
 				["font"] = "PT Sans Narrow",
 				["size"] = 15,
 				["outline"] = "OUTLINE",
+				["xOffset"] = 0,
+				["yOffset"] = 0,
+				["hour24"] = true,
 			},
 			["player"] = {
 				["font"] = "PT Sans Narrow",
 				["size"] = 15,
 				["outline"] = "OUTLINE",
+				["xOffset"] = 0,
+				["yOffset"] = 0,
 			},
 			["tips"] = {
 				["font"] = "PT Sans Narrow",
 				["size"] = 20,
 				["outline"] = "OUTLINE",
 			},
-			["crest"] = 128,
+			["crest"] = {
+				["size"] = 128,
+				["xOffset_faction"] = 0,
+				["yOffset_faction"] = 0,
+				["xOffset_race"] = 0,
+				["yOffset_race"] = 0,
+			},
 			["xpack"] = 150,
 			["height"] = 135,
 			["playermodel"] = {
@@ -660,6 +693,7 @@ P["sle"] = {
 		["anchor"] = "TOPRIGHT",
 		["xoffset"] = 0,
 		["yoffset"] = 0,
+		["visibility"] = "show",
 		["customroll"] = {
 			["min"] = "1",
 			["max"] = "50",

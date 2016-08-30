@@ -517,6 +517,13 @@ P["nameplates"] = {
 					['filter'] = 'CCDebuffs'
 				},
 			},
+			['eliteIcon'] = {
+				['enable'] = false,
+				['size'] = 20,
+				["position"] = "RIGHT",
+				['xOffset'] = 15,
+				['yOffset'] = 0,
+			},
 		},
 		['ENEMY_NPC'] = {
 			["minors"] = true,
@@ -569,6 +576,13 @@ P["nameplates"] = {
 					['maxDuration'] = 120,
 					['filter'] = 'CCDebuffs'
 				},
+			},
+			['eliteIcon'] = {
+				['enable'] = false,
+				['size'] = 20,
+				["position"] = "RIGHT",
+				['xOffset'] = 15,
+				['yOffset'] = 0,
 			},
 		},
 	},

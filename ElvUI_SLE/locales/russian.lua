@@ -182,7 +182,16 @@ L["SLE_TIPS"] = { --This doesn't need to be translated, every locale can has own
 L["Enable S&L's additional features for AFK screen."] = "Активировать дополнительные опции для режима АФК."
 L["Button restrictions"] = "Ограничения клавиш"
 L["Use ElvUI's restrictions for button presses."] = "Использовать ограничения Elv'а на нажатия клавиш."
-L["Crest Size"] = "Размер герба"
+L["Crest"] = "Герб"
+L["Faction Crest X-Offset"] = "Отступ по X герба фракции"
+L["Faction Crest Y-Offset"] = "Отступ по Y герба фракции"
+L["Race Crest X-Offset"] = "Отступ по X герба класса"
+L["Race Crest Y-Offset"] = "Отступ по Y герба класса"
+L["Texts Positions"] = "Позиции текстов"
+L["Date X-Offset"] = "Отступ даты по X"
+L["Date Y-Offset"] = "Отступ даты по Y"
+L["Player Info X-Offset"] = "Отступ инфо игрока по X"
+L["Player Info Y-Offset"] = "Отступ инфо игрока по Y"
 L["X-Pack Logo Size"] = "Размел иконки дополнения"
 L["Template"] = "Шаблон"
 L["Player Model"] = "Модель игрока"
@@ -274,6 +283,12 @@ L["Shows you which of docked chat tabs is currently selected."] = "Показы�
 L["Chat history size"] = "Размер истории чата"
 L["Sets how many messages will be stored in history."] = "Кол-во сообщений, сохраняемых в истории чата."
 L["Following options determine which channels to save in chat history.\nNote: disabling a channel will immideately delete saved info for that channel."] = "Следующие опции задают каналы, которые будут сохраняться в истории чата.\nОбратите внимание: отключение канала тутже отчистит историю чата от сообщений из этого канала."
+L["Alt-Click Invite"] = "Альт-клик для приглашения"
+L["Allows you to invite people by alt-clicking their names in chat."] = "Позволяет приглашать людей в группу кликом по их именам с зажатым Alt."
+L["Invite links"] = "Ссылки для приглашения"
+L["Convets specified keywords to links that automatically invite message's author to group."] = "Превращает указаные слова в ссылки, клик по которым пригласит автора сообщения в группу."
+L["Link Color"] = "Цвет ссылки"
+L["Invite Keywords"] = "Ключевые слова для приглашения"
 
 --Databars
 L["Full value on Exp Bar"] = "Полное значение опыта"
@@ -400,6 +415,11 @@ L["Account Time Played"] = "Время в игре на аккаунте"
 L["Hide panel background"] = "Скрыть фон"
 L["Don't show this panel, only datatexts assinged to it"] = "Не показывать фон панели, а только назначенные инфо-тексты."
 L["SLE_DT_CURRENCY_WARNING_GOLD"] = [[На вашей панели %s включен инфо-текст "Gold" при активном инфо-тексте "S&L Currency". Для корректной работы "S&L Currency" мы отключаем некоторые функции инфо-текста "Gold". Для избежания данного конфликта вам необходимо заменить один из конфликтующих инфо-текстов.]]
+L["Gold Sorting"] = "Сортировка золота"
+L["Normal"] = "Нормальная"
+L["Reverced"] = "Обратная"
+L["Amount"] = "Количество"
+L["Order of each toon. Smaller numbers will go first"] = "Порядок персонажей. Показ в порядке возрастания номера."
 
 --Enhnced Shadows
 L["Enhanced Shadows"] = "Улучшенные тени"
@@ -553,6 +573,7 @@ L["By default menu's width will be equal to the location panel width. Checking t
 L["Justify Text"] = "Выравнивание тектса"
 L["Hearthstone Location"] = "Привязка камня"
 L["Show the name on location your Heathstone is bound to."] = "Показывать имя локации, к которой привязан камень возвращения."
+L["Only Number"] = "Только цифры"
 
 --Miscs
 L["Error Frame"] = "Фрейм ошибок"
@@ -665,35 +686,6 @@ L["Header Text Color"] = "Цвет текста заголовка"
 L["Class Colored Header Text"] = "По классу"
 L["Subpages"] = "Субстраницы"
 L["Subpages are blocks of 10 items. This option set how many of subpages will be shown on a single page."] = "Субстраницы это блоки из 10 предметов. Эта опция показывает сколько субстраниц будет показано на одной странице."
--- L["SLE_SKINS_QUESTKING_DESC"] = [[Following options controls additional features for Quest King addon. Settings are character based.
--- Due to the way of how that addon works it is mostly impossible to hook into its functions.
--- Affected options are:
--- - Tooltip positioning and scale
--- - Clicks processing
--- - Quest tagging
--- - Award frame is now following Objective tracker opions of ElvUI
--- - Quest names are following header settings from S&L's objective tracker skin
--- - Quest King's position is now controlled by ElvUI's objectives mover
--- - A lot of lines are now pulled from the client instead of being hardcoded
--- - Tracked quest icon is larger]]
--- L["Tooltip Anchor"] = true
--- L["Tooltip Scale"] = true
--- L["Quest Type Indications"] = true
--- L["Clicks Registration"] = true
--- L["SLE_SKINS_QUESTKING_TEMPLATE_DESC"] = [[|cff9482c9Quest King|r
--- Original Quest King's controls:
--- Left Click to open quest info
--- Alt + Right Click to untrack
--- Alt + Left Click to collapce quest
--- Right Click to set quest watch
-
--- |cff9482c9Blizzlike|r
--- Controls of standart Blizzard quest log:
--- Left Click to open quest info
--- Shift + Left Click to untrack
--- Right Click to set uest follow
--- Ctrl + Left Click to collapce]]
--- L["SLE_QUESTKING_Required"] = "  Required: "
 L["ElvUI Objective Tracker"] = "Список задач ElvUI"
 L["ElvUI Skins"] = "Скины ElvUI"
 L["As List"] = "Списком"
@@ -704,6 +696,8 @@ L["Item Name Outline"] = "Граница названия"
 L["Item Info Font"] = "Шрифт информации"
 L["Item Info Size"] = "Размер информации"
 L["Item Info Outline"] = "Граница информации"
+L["Remove Parchment"] = "Удалить пергамент"
+L["Stage Background"] = "Фон стадии"
 
 --Toolbars
 L["We are sorry, but you can't do this now. Try again after the end of this combat."] = "Извините, но Вы не можете этого сделать сейчас. Попробуйте снова после окончания текущего боя."
@@ -726,15 +720,19 @@ L["Change the position from where seed bars will grow."] = "Изменить с�
 --Garrison
 L["Garrison Tools Bar"] = "Панель гарнизона"
 L["Auto Work Orders"] = "Автоматические заказы"
-L["Automatically queue maximum number of work orders available when visitin respected NPC."] = "Автоматически делать максимально возможное количество заказов при открытии соответствующего диалога."
+L["Automatically queue maximum number of work orders available when visiting respected NPC."] = "Автоматически делать максимально возможное количество заказов при открытии соответствующего диалога."
 L["Auto Work Orders for Warmill"] = "Авто. заказы на фабрике"
 L["Automatically queue maximum number of work orders available for Warmill/Dwarven Bunker."] = "Автоматически делать максимальное количество заказов для военной фабрики/дворфийского бункера."
 L["Auto Work Orders for Trading Post"] = "Авто. заказы в торговой лавке"
 L["Automatically queue maximum number of work orders available for Trading Post."] = "Автоматически делать максимальное количество заказов для торговой лавки."
 L["Auto Work Orders for Shipyard"] = "Авто. заказы на верфи"
 L["Automatically queue maximum number of work orders available for Shipyard."] = "Автоматически делать максимальное количество заказов для верфи."
+--Class Hall
+L["Class Hall"] = "Оплот класса"
+L["Auto Work Orders for equipment"] = "Авто. заказы на экипировку"
 
 --Tooltip
+L["Always Compare Items"] = "Всегда сравнивать предметы"
 L["Faction Icon"] = "Иконка фракции"
 L["Show faction icon to the left of player's name on tooltip."] = "Отображать иконку фракции около имени игроков в подсказках"
 L["TTOFFSET_DESC"] = "Добавляет возможность сделать отступ подсказки от курсора. Работает только при включенной опции \"Около курсора\" в ElvUI."
@@ -765,7 +763,6 @@ L["Click to reload your interface"] = "Нажмите для перезагру�
 L["Click to unlock moving ElvUI elements"] = "Нажмите для входа в режим перемещения элементов"
 L["Click to toggle the AddOn Manager frame."] = "Нажмите для отображения окна менеджера аддонов."
 L["Click to toggle the Configuration/Option Window from the Bossmod you have enabled."] = "Нажмите для отображения окна настроек включенного босс мода."
-L["Custom"] = "Свое"
 L["Minimum Roll Value"] = "Минимальное значение броска"
 L["The lower limit for custom roll button."] = "Нижняя граница броска при использовании собственных установок."
 L["Maximum Roll Value"] = "Масимальное значение броска"
@@ -795,6 +792,7 @@ L["Makes frame portrait visible regardles of health level when overlay portrait 
 L["Classbar Texture"] = "Текстура классовой полосы"
 L["Resize Health Prediction"] = "Подогнать входящее исцеление"
 L["Slightly chages size of health prediction bars."] = "Немного изменяет размер полос входящего исцеления."
+L["Always Compare Items"] = "Прозрачность портрета при наложении"
 
 
 --Viewport

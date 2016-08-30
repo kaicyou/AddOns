@@ -1,4 +1,4 @@
--- $Id: Atlas_WarlordsofDraenor_DB.lua 29 2016-08-05 16:13:17Z arith $
+-- $Id: Atlas_WarlordsofDraenor_DB.lua 31 2016-08-29 07:14:21Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -112,7 +112,7 @@ local myDB = {
 	};
 	HellfireF = { 
 		{ 13, 1438, 297, 262 }; -- Archimonde
-		{ "D", 10001, 121, 261}; 
+		{ "D", 10001, 113, 261}; 
 	};
 	HighmaulA = {
 		{ 1, 1128, 347, 430 }; -- Kargath Bladefist

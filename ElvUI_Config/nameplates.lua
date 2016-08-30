@@ -493,6 +493,7 @@ local function GetUnitSettings(unit, name)
 			name = L["Click Through"],
 			type = "toggle",
 			set = function(info, value) E.db.nameplates.units[unit][ info[#info] ] = value; NP:TogglePlayerMouse() end,
+			disabled = function() return not E.db.nameplates.units[unit].alwaysShow end,
 		}
 		group.args.healthGroup.args.useClassColor = {
 			order = 4,
@@ -536,6 +537,105 @@ local function GetUnitSettings(unit, name)
 			name = L["Display Minor Units"],
 			desc = OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_ENEMY_MINUS,
 			type = "toggle",
+		}
+		group.args.eliteIcon = {
+			order = 10,
+			name = L["Elite Icon"],
+			type = "group",
+			get = function(info) return E.db.nameplates.units[unit].eliteIcon[ info[#info] ] end,
+			set = function(info, value) E.db.nameplates.units[unit].eliteIcon[ info[#info] ] = value; NP:ConfigureAll() end,
+			args = {
+				header = {
+					order = 0,
+					type = "header",
+					name = L["Elite Icon"],
+				},
+				enable = {
+					order = 1,
+					name = L["Enable"],
+					type = "toggle",
+				},
+				position = {
+					order = 2,
+					type = "select",
+					name = L["Position"],
+					values = {
+						["LEFT"] = L["Left"],
+						["RIGHT"] = L["Right"],
+						["TOP"] = L["Top"],
+						["BOTTOM"] = L["Bottom"],
+						["CENTER"] = L["Center"],
+					},
+				},
+				size = {
+					order = 3,
+					type = "range",
+					name = L["Size"],
+					min = 12, max = 42, step = 1,
+				},
+				xOffset = {
+					order = 4,
+					name = L["X-Offset"],
+					type = "range",
+					min = -100, max = 100, step = 1,
+				},
+				yOffset = {
+					order = 5,
+					name = L["Y-Offset"],
+					type = "range",
+					min = -100, max = 100, step = 1,
+				},
+			},
+		}
+	elseif unit == "FRIENDLY_NPC" then
+		group.args.eliteIcon = {
+			order = 10,
+			name = L["Elite Icon"],
+			type = "group",
+			get = function(info) return E.db.nameplates.units[unit].eliteIcon[ info[#info] ] end,
+			set = function(info, value) E.db.nameplates.units[unit].eliteIcon[ info[#info] ] = value; NP:ConfigureAll() end,
+			args = {
+				header = {
+					order = 0,
+					type = "header",
+					name = L["Elite Icon"],
+				},
+				enable = {
+					order = 1,
+					name = L["Enable"],
+					type = "toggle",
+				},
+				position = {
+					order = 2,
+					type = "select",
+					name = L["Position"],
+					values = {
+						["LEFT"] = L["Left"],
+						["RIGHT"] = L["Right"],
+						["TOP"] = L["Top"],
+						["BOTTOM"] = L["Bottom"],
+						["CENTER"] = L["Center"],
+					},
+				},
+				size = {
+					order = 3,
+					type = "range",
+					name = L["Size"],
+					min = 12, max = 42, step = 1,
+				},
+				xOffset = {
+					order = 4,
+					name = L["X-Offset"],
+					type = "range",
+					min = -100, max = 100, step = 1,
+				},
+				yOffset = {
+					order = 5,
+					name = L["Y-Offset"],
+					type = "range",
+					min = -100, max = 100, step = 1,
+				},
+			},
 		}
 	elseif unit == "HEALER" then
 		group.args.healthGroup.args.useClassColor = {

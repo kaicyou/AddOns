@@ -38,8 +38,8 @@ function S:Media()
 	SS.timePassed:SetTextColor(1, 1, 1)
 
 	SS.ExPack:SetSize(S.db.xpack, S.db.xpack/2)
-	SS.FactCrest:SetSize(S.db.crest, S.db.crest)
-	SS.RaceCrest:SetSize(S.db.crest, S.db.crest)
+	SS.FactCrest:SetSize(S.db.crest.size, S.db.crest.size)
+	SS.RaceCrest:SetSize(S.db.crest.size, S.db.crest.size)
 	SS.Elv:SetSize(S.db.xpack, S.db.xpack/2)
 	SS.sle:SetSize(S.db.xpack, S.db.xpack/2)
 end
@@ -111,17 +111,17 @@ function S:Setup()
 	SS.timePassed:ClearAllPoints()
 	SS.timePassed:Point("LEFT", SS.AFKtitle, "RIGHT", 4, -1)
 	SS.ExPack:Point("CENTER", SS.Top, "BOTTOM", 0, 0)
-	SS.FactCrest:ClearAllPoints()
-	SS.FactCrest:Point("CENTER", SS.Top, "BOTTOM", -(T.GetScreenWidth()/6), 0)
-	SS.RaceCrest:Point("CENTER", SS.Top, "BOTTOM", (T.GetScreenWidth()/6), 0)
-	SS.Date:Point("RIGHT", SS.Top, "RIGHT", -40, 10)
+	-- SS.FactCrest:ClearAllPoints()
+	-- SS.FactCrest:Point("CENTER", SS.Top, "BOTTOM", -(T.GetScreenWidth()/6), 0)
+	-- SS.RaceCrest:Point("CENTER", SS.Top, "BOTTOM", (T.GetScreenWidth()/6), 0)
+	-- SS.Date:Point("RIGHT", SS.Top, "RIGHT", -40, 10)
 	SS.Time:Point("TOP", SS.Date, "BOTTOM", 0, -2)
 	SS.Elv:SetPoint("CENTER", SS.Bottom, "TOP", -(T.GetScreenWidth()/10), 0)
 	SS.sle:SetPoint("CENTER", SS.Bottom, "TOP", (T.GetScreenWidth()/10), 0)
 	SS.PlayerName:ClearAllPoints()
 	SS.Guild:ClearAllPoints()
 	SS.GuildRank:ClearAllPoints()
-	SS.PlayerInfo:Point("RIGHT", SS.Date, "LEFT", -100, 0)
+	-- SS.PlayerInfo:Point("RIGHT", SS.Date, "LEFT", -100, 0)
 	SS.PlayerName:Point("BOTTOM", SS.PlayerInfo, "TOP", 0, 2)
 	SS.Guild:SetPoint("TOP", SS.PlayerInfo, "BOTTOM", 0, -2)
 	SS.GuildRank:SetPoint("TOP", SS.Guild, "BOTTOM", 0, -2)
@@ -205,6 +205,16 @@ function S:Show()
 	SS.Bottom:SetHeight(S.db.height)
 	SS.ScrollFrame:SetHeight(S.db.tips.size+4)
 	SS.ScrollFrame.bg:SetHeight(S.db.tips.size+20)
+
+	--Elements
+	SS.FactCrest:ClearAllPoints()
+	SS.RaceCrest:ClearAllPoints()
+	SS.Date:ClearAllPoints()
+	SS.PlayerInfo:ClearAllPoints()
+	SS.FactCrest:Point("CENTER", SS.Top, "BOTTOM", -(T.GetScreenWidth()/6) + S.db.crest.xOffset_faction, 0 + S.db.crest.yOffset_faction)
+	SS.RaceCrest:Point("CENTER", SS.Top, "BOTTOM", (T.GetScreenWidth()/6) + S.db.crest.xOffset_race, 0 + S.db.crest.yOffset_race)
+	SS.Date:Point("RIGHT", SS.Top, "RIGHT", -40 + S.db.date.xOffset, 10 + S.db.date.yOffset)
+	SS.PlayerInfo:Point("RIGHT", SS.TOP, "RIGHT", -(T.GetScreenWidth()/6), 0)
 
 	--Resizing chat
 	SS.chat:SetHeight(SS.Top:GetHeight())
@@ -324,7 +334,11 @@ function S:UpdateTimer()
 	TipsElapsed = TipsElapsed + 1
 	month = SLE.Russian and SLE.RuMonths[T.tonumber(T.date("%m"))] or T.date("%B")
 	week = SLE.Russian and SLE.RuWeek[T.tonumber(T.date("%w"))+1] or T.date("%A")
-	SS.Time:SetText(T.format("%s", T.date("%H|cff00AAFF:|r%M|cff00AAFF:|r%S")))
+	if S.db.date.hour24 then
+		SS.Time:SetText(T.format("%s", T.date("%H|cff00AAFF:|r%M|cff00AAFF:|r%S")))
+	else
+		SS.Time:SetText(T.format("%s", T.date("%I|cff00AAFF:|r%M|cff00AAFF:|r%S %p")))
+	end
 	SS.Date:SetText(T.date("%d").." "..month..", |cff00AAFF"..week.."|r")
 
 	if TipsElapsed > S.db.tipThrottle then
@@ -380,6 +394,10 @@ end
 function S:Initialize()
 	if not SLE.initialized then return end
 	SS = AFK.AFKMode
+	if type(E.db.sle.screensaver.crest) == "number" then
+		E.db.sle.screensaver.crest = nil
+		E.db.sle.screensaver.crest = P.sle.screensaver.crest
+	end
 	S.db = E.db.sle.screensaver
 	S.OnKeyDown = SS:GetScript("OnKeyDown")
 	if not E.private.sle.module.screensaver then return end
@@ -448,6 +466,10 @@ function S:Initialize()
 	
 	function S:ForUpdateAll()
 		-- if not E.private.sle.module.screensaver then return end
+		if type(E.db.sle.screensaver.crest) == "number" then
+			E.db.sle.screensaver.crest = nil
+			E.db.sle.screensaver.crest = P.sle.screensaver.crest
+		end
 		S.db = E.db.sle.screensaver
 		S:SetupAnimations()
 		S:Hide()

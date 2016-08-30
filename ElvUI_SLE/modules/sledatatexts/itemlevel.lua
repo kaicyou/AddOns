@@ -87,8 +87,8 @@ local function OnEnter(self)
 			tooltipOrder[slots[i][3]] = {slots[i][2], itemLevel, 1, 1, 1, color[1], color[2], color[3]}
 		end
 	end
-	for i = 1, #tooltipOrder do
-		DT.tooltip:AddDoubleLine(T.unpack(tooltipOrder[i]))
+	for i in T.pairs(tooltipOrder) do
+		if tooltipOrder[i] then DT.tooltip:AddDoubleLine(T.unpack(tooltipOrder[i])) end
 	end
 	DT.tooltip:Show()
 end

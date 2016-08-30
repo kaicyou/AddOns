@@ -61,8 +61,8 @@ private.defaults.dcsdefaults.dejacharacterstatsScrollbarMax = {
 
 -- Scrollbar Check
 
-	local _, private = ...
-	private.defaults.dcsdefaults.dejacharacterstatsScrollbarChecked = {
+	local _, gdbprivate = ...
+	gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsScrollbarChecked = {
 		ScrollbarSetChecked = false,
 	}	
 	
@@ -76,27 +76,27 @@ local DCS_ScrollbarCheck = CreateFrame("CheckButton", "DCS_ScrollbarCheck", Deja
 	
 	DCS_ScrollbarCheck:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-		local checked = private.db.dcsdefaults.dejacharacterstatsScrollbarChecked
+		local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsScrollbarChecked
 			self:SetChecked(checked.ScrollbarSetChecked)
 			if self:GetChecked(true) then
 				DCS_Scrollbar:Show() 
-				private.db.dcsdefaults.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = true
+				gdbprivate.gdb.gdbdefaults.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = true
 			else
 				DCS_Scrollbar:Hide() 
-				private.db.dcsdefaults.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = false
+				gdbprivate.gdb.gdbdefaults.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = false
 			end
 		end
 		DCS_ScrollbarCheck:UnregisterAllEvents();
 	end)
 
 	DCS_ScrollbarCheck:SetScript("OnClick", function(self,event,arg1) 
-		local checked = private.db.dcsdefaults.dejacharacterstatsScrollbarChecked
+		local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsScrollbarChecked
 		if self:GetChecked(true) then
 			DCS_Scrollbar:Show() 
-			private.db.dcsdefaults.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = true
+			gdbprivate.gdb.gdbdefaults.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = true
 		else
 			DCS_Scrollbar:Hide() 
-			private.db.dcsdefaults.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = false
+			gdbprivate.gdb.gdbdefaults.dejacharacterstatsScrollbarChecked.ScrollbarSetChecked = false
 		end
 	end)
  

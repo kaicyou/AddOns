@@ -383,8 +383,8 @@ local function DCS_DecimalsHide(self)
 end
 	
 	
-local _, private = ...
-	private.defaults.dcsdefaults.dejacharacterstatsShowDecimalsChecked = {
+local _, gdbprivate = ...
+	gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsShowDecimalsChecked = {
 		SetChecked = true,
 	}	
 local DCS_DecimalCheck = CreateFrame("CheckButton", "DCS_DecimalCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
@@ -397,25 +397,25 @@ local DCS_DecimalCheck = CreateFrame("CheckButton", "DCS_DecimalCheck", DejaChar
 	
 	DCS_DecimalCheck:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-		local checked = private.db.dcsdefaults.dejacharacterstatsShowDecimalsChecked
+		local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDecimalsChecked
 			self:SetChecked(checked.SetChecked)
 			if self:GetChecked(true) then
 				DCS_DecimalsShow()
-				private.db.dcsdefaults.dejacharacterstatsShowDecimalsChecked.SetChecked = true
+				gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDecimalsChecked.SetChecked = true
 			else
 				DCS_DecimalsHide()
-				private.db.dcsdefaults.dejacharacterstatsShowDecimalsChecked.SetChecked = false
+				gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDecimalsChecked.SetChecked = false
 			end
 		end
 	end)
 
 	DCS_DecimalCheck:SetScript("OnClick", function(self,event,arg1) 
-		local checked = private.db.dcsdefaults.dejacharacterstatsShowDecimalsChecked
+		local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDecimalsChecked
 		if self:GetChecked(true) then
 			DCS_DecimalsShow()
-			private.db.dcsdefaults.dejacharacterstatsShowDecimalsChecked.SetChecked = true
+			gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDecimalsChecked.SetChecked = true
 		else
 			DCS_DecimalsHide()
-			private.db.dcsdefaults.dejacharacterstatsShowDecimalsChecked.SetChecked = false
+			gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDecimalsChecked.SetChecked = false
 		end
 	end)

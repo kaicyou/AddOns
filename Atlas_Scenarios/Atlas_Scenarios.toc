@@ -29,18 +29,19 @@
 # ## Notes: Scenarios Maps
 # ## Notes-zhTW: Atlas 史詩情境事件模式地圖插件
 #@end-debug@
-## Version: 1.33.00
+## Version: 1.33.01
 ## Author: arith, Dynaletik, dubcat
-## X-Date: 2016-07-19T13:56:02Z
+## X-Date: 2016-08-29T06:57:49Z
 ## X-Email: atlas.addon at gmail.com
 ## X-Website: http://www.atlasmod.com
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v1.33.00
+## X-Curse-Packaged-Version: v1.33.01
 ## X-Curse-Project-Name: Atlas Scenarios
 ## X-Curse-Project-ID: atlas-scenarios
 ## X-Curse-Repository-ID: wow/atlas-scenarios/mainline
 
+Libs\Lib-Scenarios\lib.xml
 Atlas_ScenariosDB.lua
 Locale\Locales.xml
 Atlas_Scenarios.lua

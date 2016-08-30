@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas_Scenarios-enUS.lua 22 2016-07-19 13:56:02Z arith $
+﻿-- $Id: Atlas_Scenarios-enUS.lua 24 2016-08-29 06:57:49Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -26,10 +26,6 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("Atlas_Scenarios", "enUS", true, true);
 
 if L then
-	for key, value in pairs(Atlas_ScenarioStepDB) do
-		L[value[1]] = value[Atlas_ScenariosDB_Langs["enUS"]];
-	end
-
 
 L["33 Deamons slain"] = "33 Deamons slain"
 L["3 Lords slain"] = "3 Lords slain"

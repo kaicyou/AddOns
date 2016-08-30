@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas_Scenarios-koKR.lua 12 2016-06-27 14:27:22Z arith $
+﻿-- $Id: Atlas_Scenarios-koKR.lua 24 2016-08-29 06:57:49Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -26,10 +26,6 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("Atlas_Scenarios", "koKR", false);
 
 if L then
-	for key, value in pairs(Atlas_ScenarioStepDB) do
-		L[value[1]] = value[Atlas_ScenariosDB_Langs["koKR"]];
-	end
-
 -- L["33 Deamons slain"] = ""
 -- L["3 Lords slain"] = ""
 -- L["3 Spires of Woe destroyed"] = ""
@@ -158,6 +154,5 @@ if L then
 -- L["Wolf-Rider Gaja"] = ""
 -- L["ToC/Description"] = ""
 -- L["ToC/Title"] = ""
-
 
 end

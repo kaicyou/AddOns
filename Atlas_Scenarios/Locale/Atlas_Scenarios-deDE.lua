@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas_Scenarios-deDE.lua 12 2016-06-27 14:27:22Z arith $
+﻿-- $Id: Atlas_Scenarios-deDE.lua 24 2016-08-29 06:57:49Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -26,10 +26,6 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("Atlas_Scenarios", "deDE", false);
 
 if L then
-	for key, value in pairs(Atlas_ScenarioStepDB) do
-		L[value[1]] = value[Atlas_ScenariosDB_Langs["deDE"]];
-	end
-
 -- L["33 Deamons slain"] = ""
 -- L["3 Lords slain"] = ""
 -- L["3 Spires of Woe destroyed"] = ""
@@ -158,6 +154,5 @@ L["Whispering Stones Sonic Control Towers"] = "Schallsteuerungstürme der Flüst
 L["Wolf-Rider Gaja"] = "Wolfsreiterin Gaja"
 L["ToC/Description"] = "Szenariokarten"
 L["ToC/Title"] = "Atlas |r|cFF0099FF[Szenarien]|r"
-
 
 end

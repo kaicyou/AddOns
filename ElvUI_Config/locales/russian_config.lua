@@ -326,7 +326,7 @@ L["Testing:"] = "Тестирование:"
 --DataBars
 L["DATABAR_DESC"] = "Контролирует отображение информационных полос."
 L["DataBars"] = "Инфо-полосы"
-L["Hide in Combat"] = true;
+L["Hide in Combat"] = "Скрывать в бою"
 
 --DataTexts
 L["24-Hour Time"] = "24х часовой формат"
@@ -533,6 +533,7 @@ L["Display Minions"] = "Отображать миньонов"
 L["Display Minor Units"] = "Отображать малых существ"
 L["Display NPC Titles whenever healthbars arent displayed and names are."] = "Отображать татилу НИП, когда полосы здоровья отключены, а имена нет."
 L["Display Style"] = "Стиль отображения"
+L["Elite Icon"] = "Иконки элиты"
 L["Enable/Disable the scaling of targetted nameplates."] = "Включить/выключить масштабирование индикатора цели."
 L["Enemy Combat Toggle"] = "Переключение в бою (враги)"
 L["Enemy NPC Frames"] = "Враждебные НИП"

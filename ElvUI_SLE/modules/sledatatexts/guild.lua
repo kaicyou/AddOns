@@ -34,24 +34,24 @@ local ToggleGuildFrame = ToggleGuildFrame
 -- Setup the Title Font. 14
 local ssTitleFont = CreateFont("ssTitleFont")
 ssTitleFont:SetTextColor(1,0.823529,0)
-ssTitleFont:SetFont(GameTooltipText:GetFont(), 14)
 
 -- Setup the Header Font. 12
 local ssHeaderFont = CreateFont("ssHeaderFont")
 ssHeaderFont:SetTextColor(1,0.823529,0)
-ssHeaderFont:SetFont(GameTooltipHeaderText:GetFont(), 12)
 
 -- Setup the Regular Font. 12
 local ssRegFont = CreateFont("ssRegFont")
 ssRegFont:SetTextColor(1,0.823529,0)
-ssRegFont:SetFont(GameTooltipText:GetFont(), 12)
 
 local list_sort = {
 	TOONNAME = function(a, b)
+		if not a["TOONNAME"] or not b["TOONNAME"] then return false end
 		return a["TOONNAME"] < b["TOONNAME"]
 	end,
 	LEVEL =	function(a, b)
-		if a["LEVEL"] < b["LEVEL"] then
+		if not a["LEVEL"] or not b["LEVEL"] then
+			return false
+		elseif a["LEVEL"] < b["LEVEL"] then
 			return true
 		elseif a["LEVEL"] > b["LEVEL"] then
 			return false
@@ -60,7 +60,9 @@ local list_sort = {
 		end
 	end,
 	RANKINDEX =	function(a, b)
-		if a["RANKINDEX"] > b["RANKINDEX"] then
+		if not a["RANKINDEX"] or not b["RANKINDEX"] then
+			return false
+		elseif a["RANKINDEX"] > b["RANKINDEX"] then
 			return true
 		elseif a["RANKINDEX"] < b["RANKINDEX"] then
 			return false
@@ -69,7 +71,9 @@ local list_sort = {
 		end
 	end,
 	ZONENAME = function(a, b)
-		if a["ZONENAME"] < b["ZONENAME"] then
+		if not a["ZONENAME"] or not b["ZONENAME"] then
+			return false
+		elseif a["ZONENAME"] < b["ZONENAME"] then
 			return true
 		elseif a["ZONENAME"] > b["ZONENAME"] then
 			return false
@@ -78,10 +82,13 @@ local list_sort = {
 		end
 	end,
 	revTOONNAME	= function(a, b)
+		if a["TOONNAME"] or not b["TOONNAME"] then return false end
 		return a["TOONNAME"] > b["TOONNAME"]
 	end,
 	revLEVEL = function(a, b)
-		if a["LEVEL"] > b["LEVEL"] then
+		if not a["LEVEL"] or not b["LEVEL"] then
+			return false
+		elseif a["LEVEL"] > b["LEVEL"] then
 			return true
 		elseif a["LEVEL"] < b["LEVEL"] then
 			return false
@@ -90,7 +97,9 @@ local list_sort = {
 		end
 	end,
 	revRANKINDEX = function(a, b)
-		if a["RANKINDEX"] < b["RANKINDEX"] then
+		if not a["RANKINDEX"] or not b["RANKINDEX"] then
+			return false
+		elseif a["RANKINDEX"] < b["RANKINDEX"] then
 			return true
 		elseif a["RANKINDEX"] > b["RANKINDEX"] then
 			return false
@@ -99,7 +108,9 @@ local list_sort = {
 		end
 	end,
 	revZONENAME	= function(a, b)
-		if a["ZONENAME"] > b["ZONENAME"] then
+		if not a["ZONENAME"] or not b["ZONENAME"] then
+			return false
+		elseif a["ZONENAME"] > b["ZONENAME"] then
 			return true
 		elseif a["ZONENAME"] < b["ZONENAME"] then
 			return false
@@ -253,6 +264,8 @@ function LDB.OnEnter(self)
 
 		tooltip:SetBackdropColor(0,0,0,1)
 
+		ssHeaderFont:SetFont(GameTooltipHeaderText:GetFont())
+		ssRegFont:SetFont(GameTooltipText:GetFont())
 		tooltip:SetHeaderFont(ssHeaderFont)
 		tooltip:SetFont(ssRegFont)
 
@@ -263,6 +276,7 @@ function LDB.OnEnter(self)
 
 	local line = tooltip:AddLine()
 	if not E.db.sle.dt.guild.hide_titleline then
+		ssTitleFont:SetFont(GameTooltipText:GetFont())
 		tooltip:SetCell(line, 1, "Shadow & Light Guild", ssTitleFont, "CENTER", 0)
 		tooltip:AddLine(" ")
 	end

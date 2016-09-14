@@ -93,7 +93,7 @@
 	</Texture>
 	
 	<Texture virtual="true" name="ARKINV_TextureSelected" inherits="ARKINV_TextureHighlight" hidden="true">
-		<Color r="1" g="1" b="1" a="0.2" />
+		<Color r="1" g="1" b="1" a="0.8" />
 	</Texture>
 
 	<Texture virtual="true" name="ARKINV_TextureTransparent" inherits="ARKINV_TextureHighlight">
@@ -2011,7 +2011,7 @@
 	
 	<GameTooltip name="ARKINV_ScanTooltip" inherits="ArkScanTooltipTemplate" />
 	
-	<Frame name="ARKINV_CombatYieldTimer" hidden="true">
+	<Frame name="ARKINV_YieldCombatTimer" hidden="true">
 		<Scripts>
 			<Onload>
 				self.timer = 0

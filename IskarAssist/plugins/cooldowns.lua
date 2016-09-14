@@ -31,7 +31,9 @@ local default_config = {
 		[97462] = true,
 		[108280] = true,
 		[102342] = true,
-		[6940] = true,	
+		[6940] = true,
+		[196718] = true, -- dh darkness
+		[207810] = true, --dh nether bond
 	},
 	cooldowns_panels = {},
 	
@@ -103,6 +105,15 @@ local spell_list = {
 		},
 	},
 
+	["DEMONHUNTER"] = {
+		[577] = { --havoc
+			[196718] = {cooldown = 180, type = "raid"}, --darkness
+		},
+		[581] = { --vengeance
+			[207810] = {cooldown = 120, need_talent = 22548, type = "external"}, --nether bond
+		},
+	},
+	
 	["DRUID"] = {
 		[105] = { --resto
 			[740] = {cooldown = 180, type = "raid"}, --tranq
@@ -414,7 +425,7 @@ end
 function Cooldowns.ResetRoster()
 	--reset roster
 	wipe (Cooldowns.Roster)
-	for i = 1, 11 do
+	for i = 1, 12 do --12 classes
 		Cooldowns.Roster [i] = {}
 	end
 	--cancel all schedules
@@ -505,7 +516,7 @@ function Cooldowns.RosterUpdate (need_reset)
 						end
 						
 						unit_table.spells = unit_table.spells or {}
-					
+						
 						unit_table.spells [spellid] = unit_table.spells [spellid] or {}
 						local amt_charges = spelltable.charges or 1
 						if (spelltable.extra_charge_talent and info.talents [spelltable.extra_charge_talent]) then
@@ -801,6 +812,37 @@ function Cooldowns.BarControlUnitEnable (name)
 	end
 end
 
+local player_health_check = function()
+	if (IsInRaid()) then
+		for i = 1, GetNumGroupMembers() do
+			local unit = "raid" .. i
+			local health = UnitHealth (unit)
+			local name = get_unit_name (unit)
+			
+			if (health) then
+				if (health > 2) then
+					if (Cooldowns.Deaths [name]) then
+						--> player is alive
+						local _, _, class_number = UnitClass (unit)
+						if (class_number) then
+							local player = Cooldowns.Roster [class_number] [name]
+							if (player) then
+								player.alive = true
+								Cooldowns.BarControlUnitEnable (name)
+								Cooldowns.Deaths [name] = nil
+							end
+						end
+					end
+				end
+			end
+		end
+		
+	elseif (IsInGroup()) then
+		
+	end
+	
+end
+
 local player_health_event = function (event, unit)
 	local health = UnitHealth (unit)
 	local name = get_unit_name (unit)
@@ -815,7 +857,7 @@ local player_health_event = function (event, unit)
 				local player = Cooldowns.Roster [class_number] [name]
 				if (player) then
 					player.alive = false
-					Cooldowns.BarControlUnitEnable (name)
+					Cooldowns.BarControlUnitDisable (name)
 					Cooldowns.Deaths [name] = true
 				end
 			end
@@ -828,7 +870,7 @@ local player_health_event = function (event, unit)
 				local player = Cooldowns.Roster [class_number] [name]
 				if (player) then
 					player.alive = true
-					Cooldowns.BarControlUnitDisable (name)
+					Cooldowns.BarControlUnitEnable (name)
 					Cooldowns.Deaths [name] = nil
 				end
 			end
@@ -869,6 +911,8 @@ function Cooldowns.ShowPanelInScreen (panel, show, event)
 			Cooldowns:RegisterEvent ("UNIT_HEALTH", player_health_event)
 			Cooldowns:RegisterEvent ("UNIT_HEALTH_FREQUENT", player_health_event)
 
+			Cooldowns.HealthCheck = C_Timer.NewTicker (2, player_health_check)
+			
 			Cooldowns.RosterUpdate (true)
 			local _, instance_type = GetInstanceInfo()
 			Cooldowns.InstanceType = instance_type
@@ -894,6 +938,9 @@ function Cooldowns.ShowPanelInScreen (panel, show, event)
 				Cooldowns:UnregisterEvent ("GROUP_ROSTER_UPDATE")
 				LibGroupInSpecT.UnregisterCallback (Cooldowns, "GroupInSpecT_Update")
 				Cooldowns.RosterIsEnabled = false
+				if (Cooldowns.HealthCheck) then
+					Cooldowns.HealthCheck:Cancel()
+				end
 			end
 		end
 	end
@@ -1065,6 +1112,9 @@ function Cooldowns.BarControl (update_type, unitid, spellid)
 				for id, panel in pairs (Cooldowns.ScreenPanels) do
 					if (panel.Spells [spellid]) then --> this panel is allowed to show this spell
 						local bar = panel:GetBar (Cooldowns.GetPlayerSpellId (player, spell))
+						if (not bar) then
+							return
+						end
 						bar:SetTimer (spell.charges_next - GetTime() - 0.1)
 					end
 				end
@@ -1455,6 +1505,8 @@ function Cooldowns.BuildOptions (frame)
 	Cooldowns.RefreshMainDropdown()
 	
 ---------- Cooldowns -----------
+-- ~cooldowns ~list
+
 	local cooldowns_raid = {
 		[31821] = "PALADIN", -- Devotion Aura
 		[62618] = "PRIEST", --Power Word: Barrier
@@ -1468,6 +1520,7 @@ function Cooldowns.BuildOptions (frame)
 		[115310] = "MONK", -- Revival
 		[15286] = "PRIEST", -- Vampiric Embrace
 		[108281]	= "SHAMAN", -- Ancestral Guidance
+		[196718] = "DEMONHUNTER", --Darkness COMBAT_LOG_EVENT_UNFILTERED 1471194647.002 SPELL_CAST_SUCCESS false Player-976-0017B4B8 Chrdhunter 1297 0  nil -2147483648 -2147483648 196718 Darkness 1
 	}
 	local cooldowns_external = {
 		[114030] = "WARRIOR", -- Vigilance
@@ -1477,6 +1530,7 @@ function Cooldowns.BuildOptions (frame)
 		[6940] = "PALADIN", -- Hand of Sacrifice
 		[102342] = "DRUID", -- Ironbark
 		[1022] = "PALADIN", -- Hand of Protection
+		[207810] = "DEMONHUNTER", --Nether Bond
 	}
 	
 	--raid wide

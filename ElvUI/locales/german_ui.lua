@@ -33,7 +33,7 @@ L["Trigger"] = "Auslöser"
 L["Bank"] = true;
 L["Deposit Reagents"] = "Reagenzien einlagern"
 L["Hold Control + Right Click:"] = "Halte Steuerung + Rechtsklick:"
-L["Hold Shift + Drag:"] = "Halte Shift + Bewege die Maus:"
+L["Hold Shift + Drag:"] = "Halte Shift + Ziehen:"
 L["Purchase Bags"] = "Taschen kaufen"
 L["Purchase"] = "Kaufen"
 L["Reagent Bank"] = "Reagenzien Bank"
@@ -60,6 +60,11 @@ L["RW"] = "RW"
 L["says"] = "sagen"
 L["whispers"] = "flüstern"
 L["yells"] = "schreien"
+
+--DataBars
+L["Current Level:"] = "Derzeitiges Level:"
+L["Honor XP:"] = "Ehre XP:"
+L["Honor Remaining:"] = "Ehre verbleibend:"
 
 --DataTexts
 L["(Hold Shift) Memory Usage"] = "(Shift gedrückt) Speichernutzung"
@@ -102,6 +107,7 @@ L["Offhand"] = "Schildhand"
 L["Profit:"] = "Gewinn:"
 L["Reset Data: Hold Shift + Right Click"] = "Daten zurücksetzen: Halte Shift + Rechtsklick"
 L["Saved Raid(s)"] = "Gespeicherte Schlachtzüge"
+L["Saved Dungeon(s)"] = "Gespeicherte Instanz(en)"
 L["Server: "] = "Server: "
 L["Session:"] = "Sitzung:"
 L["Shoulder"] = "Schulter"
@@ -118,6 +124,7 @@ L["Waist"] = "Taille"
 L["Wrist"] = "Handgelenke"
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = "|cffFFFFFFRechtsklick:|r Talentspezialisierung ändern"
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = "|cffFFFFFFRechtsklick:|r Beutespezialisierung ändern"
+L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = "|cffFFFFFFShift + Linksklick:|r Zeige Talent Spezialisierung UI"
 
 --DebugTools
 L["%s: %s tried to call the protected function '%s'."] = "%s: %s versucht die geschützte Funktion aufrufen '%s'."
@@ -229,7 +236,12 @@ L["Alternative Power"] = "Alternative Energie"
 L["Archeology Progress Bar"] = "Archeologie Fortschrittsleiste"
 L["Arena Frames"] = "Arena Fenster" --Also used in UnitFrames
 L["Artifact Bar"] = "Artefaktleiste"
+L["Bag Mover (Grow Down)"] = "Taschen Anker (Nach unten wachsen)"
+L["Bag Mover (Grow Up)"] = "Taschen Anker (Nach oben wachsen)"
+L["Bag Mover"] = "Taschen Anker"
 L["Bags"] = "Taschen" --Also in DataTexts
+L["Bank Mover (Grow Down)"] = "Bank Anker (Nach unten wachsen)"
+L["Bank Mover (Grow Up)"] = "Bank Anker (Nach oben wachsen)"
 L["Bar "] = "Leiste " --Also in ActionBars
 L["BNet Frame"] = "BNet-Fenster"
 L["Boss Button"] = "Boss Button"

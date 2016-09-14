@@ -506,6 +506,11 @@ local function AchievementUI_FirstShown_post()
   -- UIParent.lua, which causes problems when we don't want it to interact with other UI panels in the standard
   -- way. (Set now instead of leaving it out because the player may want it to interact normally again later.)
   if (orig_AchievementFrame_area) then
+    if (not AchievementFrame) then
+      -- AchievementFrame should exist at this point but some addons do something that gets this called when it hasn't been loaded yet.
+      -- This should prevent the error that otherwise occurs when we try to reference a member of UIPanelWindows["AchievementFrame"], below.
+      AchievementFrame_LoadUI()
+    end
     UIPanelWindows["AchievementFrame"].area = orig_AchievementFrame_area
     AchievementFrame:SetAttribute("UIPanelLayout-area", orig_AchievementFrame_area);
     orig_AchievementFrame_area = nil
@@ -564,8 +569,8 @@ ChatFrame_OnHyperlinkShow = function(self, link, text, button, ...)
   return orig_ChatFrame_OnHyperlinkShow(self, link, text, button, ...)
 end
 
--- ACHIEVEMENT TRACKER CHANGES
---------------------------------
+-- ACHIEVEMENT TRACKER CHANGES AND PROGRESS TRACKING
+------------------------------------------------------
 
 local orig_WatchFrameLinkButtonTemplate_OnLeftClick = WatchFrameLinkButtonTemplate_OnLeftClick
 
@@ -613,7 +618,7 @@ local function TrackerBtnOnLeave()
   GameTooltip:Hide()
 end
 
-if (WATCHFRAME_LINKBUTTONS) then --asdf stopgap solution until watch frame can be used properly
+if (WATCHFRAME_LINKBUTTONS) then --!! stopgap solution until watch frame can be used properly
 
 	-- Hook current Watch Frame Link Buttons:
 	for k, v in pairs(WATCHFRAME_LINKBUTTONS) do
@@ -646,6 +651,7 @@ local function getExplorationAch(zonesOnly, ...)
       if (parentID == CATEGORY_EXPLOREROOT) then
         if ( not zonesOnly or
              -- Eliminate achievements in the category that aren't standard exploration:
+			 -- !! this way has too many manual exceptions and it's getting worse as new content comes out; come up with another method, probably using the list of zone exp. achievements we already use for auto-tracking
              (id ~= OVERACHIEVER_ACHID.MediumRare and id ~= OVERACHIEVER_ACHID.BloodyRare and
               id ~= OVERACHIEVER_ACHID.NorthernExposure and id ~= OVERACHIEVER_ACHID.Frostbitten and
               id ~= OVERACHIEVER_ACHID.StoodInTheFire and id ~= OVERACHIEVER_ACHID.SurveyingTheDamage and
@@ -693,6 +699,20 @@ local function AutoTrackCheck_Explore(noClearing)
       RemoveTrackedAchievement(AutoTrackedAch_explore)
       AutoTrackedAch_explore = nil
     end
+  end
+end
+
+local function ReactToCriteriaToast(achievementID, criteriaString)
+  --local _, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuildAch = GetAchievementInfo(achievementID);
+  if (Overachiever_Settings.ProgressToast_ChatLog) then
+    local link = GetAchievementLink(achievementID)
+    chatprint("", L.MSG_CRITERIAPROGRESS:format(link, criteriaString))
+  end
+  if (Overachiever_Settings.ProgressToast_Suggest) then
+    Overachiever.RecentReminders[achievementID] = time()
+  end
+  if (Overachiever_Settings.ProgressToast_AutoTrack) then
+    setTracking(achievementID)
   end
 end
 
@@ -782,6 +802,7 @@ do
 
   function achbtnOnEnter(self)
     local id, tipset, guildtip = self.id, 0
+	-- If tipset is 1, then if adding a new line, you should add an empty line first. 0 means nothing is on the tooltip yet. Otherwise, use 2.
     GameTooltip:SetOwner(self, "ANCHOR_NONE")
     GameTooltip:SetPoint("TOPLEFT", self, "TOPRIGHT", 8, 0)
     GameTooltip:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b)
@@ -819,7 +840,7 @@ do
 
     if (Overachiever_Settings.UI_SeriesTooltip and (GetNextAchievement(id) or GetPreviousAchievement(id))) then
       if (tipset == 1) then  GameTooltip:AddLine(" ");  end
-      tipset = tipset + 1
+      tipset = 2 --tipset + 1
       GameTooltip:AddLine(L.SERIESTIP)
       GameTooltip:AddLine(" ")
       local ach = GetPreviousAchievement(id)
@@ -852,10 +873,21 @@ do
 
     if (Overachiever_Settings.UI_RequiredForMetaTooltip and AchLookup_metaach[id]) then
       if (tipset == 1) then  GameTooltip:AddLine(" ");  end
-      tipset = tipset + 1
+      tipset = 2 --tipset + 1
       GameTooltip:AddLine(L.REQUIREDFORMETATIP)
       GameTooltip:AddLine(" ")
       AddAchListToTooltip(GameTooltip, AchLookup_metaach[id])
+      GameTooltip:AddLine(" ")
+    end
+
+    if (Overachiever.RecentReminders[id] and Overachiever.RecentReminders_Criteria[id]) then
+      if (tipset == 1) then  GameTooltip:AddLine(" ");  end
+      tipset = 2 --tipset + 1
+      GameTooltip:AddLine(L.RECENTREMINDERCRITERIA)
+      GameTooltip:AddLine(" ")
+	  local s = Overachiever.RecentReminders_Criteria[id]
+	  if (type(s) == "number") then  s = GetAchievementCriteriaInfo(id, s);  end
+      GameTooltip:AddLine(s, 1, 1, 1)
       GameTooltip:AddLine(" ")
     end
 
@@ -866,7 +898,7 @@ do
       else
         GameTooltip:AddLine("|cff7eff00ID:|r "..id, 0.741, 1, 0.467)
       end
-      tipset = tipset + 1
+      tipset = 1 --tipset + 1
     end
 
     if (tipset > 0) then
@@ -897,6 +929,44 @@ end
 --end
 
 
+-- TOASTS
+-----------
+
+local fakeToastBaseID
+local fakeToastName
+
+local function achievementToasted(frame, achievementID, alreadyEarned)
+  if (achievementID == fakeToastBaseID) then
+    frame.Name:SetText(fakeToastName)
+    fakeToastBaseID = nil
+	fakeToastName = nil
+  end
+end
+
+local hookedAchToast = false
+function Overachiever.ToastFakeAchievement(name, baseID, playSound, chatMessage)
+  if (IsKioskModeEnabled()) then
+    return;
+  end
+  if ( not AchievementFrame ) then
+    AchievementFrame_LoadUI();
+  end
+
+  if (not hookedAchToast) then
+	hooksecurefunc(AchievementAlertSystem, "setUpFunction", achievementToasted)
+	hookedAchToast = true
+  end
+
+  if (not baseID) then  baseID = 5208;  end -- 5208 is "Twin Peaking", chosen because of its thumbs-up art.
+  fakeToastName = name
+  fakeToastBaseID = baseID
+  --AchievementAlertSystem:AddAlert(baseID)
+  AchievementAlertSystem:AddAlert(baseID, true) -- Flagging it as already earned gives more space for the text to display since there's no shield+points icon
+  if (playSound) then  PlaySound("UI_Alert_AchievementGained");  end
+  if (chatMessage) then  chatprint("", chatMessage);  end
+end
+
+
 -- GLOBAL FUNCTIONS
 -----------------------
 
@@ -905,16 +975,18 @@ function Overachiever.OnEvent(self, event, arg1, ...)
   if (event == "PLAYER_ENTERING_WORLD") then
     Overachiever.MainFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
     Overachiever.MainFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-    
+
     BuildCategoryInfo()
     BuildCategoryInfo = nil
 
-    local oldver
+    local oldver, toast, msg
     OptionsPanel, oldver = Overachiever.CreateOptions(THIS_TITLE, BuildCriteriaLookupTab_check, AutoTrackCheck_Explore, CheckDraggable_AchFrame)
     Overachiever.CreateOptions = nil
 
     if (oldver and oldver ~= THIS_VERSION) then
       Overachiever_Settings.Version = THIS_VERSION
+	  toast = L.OVERACHIEVER_UPDATED_TOAST
+	  msg = L.OVERACHIEVER_UPDATED_MSG:format(THIS_VERSION)
       local def, settings = Overachiever.DefaultSettings, Overachiever_Settings
       -- Remove options no longer in this version:
       for k,v in pairs(settings) do
@@ -928,8 +1000,15 @@ function Overachiever.OnEvent(self, event, arg1, ...)
       if (tonumber(oldver) < 0.40 and Overachiever_CharVars_Default) then
         Overachiever_CharVars_Default.Pos_AchievementWatchFrame = nil
       end
+
+	elseif (oldver == false) then -- Must be false, not nil; false indicates we created the variables table (fresh install) whereas nil would mean there was no change
+	  toast = L.OVERACHIEVER_INSTALLED_TOAST
+	  msg = L.OVERACHIEVER_INSTALLED_MSG:format(THIS_VERSION)
+
+	elseif (oldver ~= THIS_VERSION) then -- failsafe; shouldn't happen unless player manually messes with saved variables
+	  Overachiever_Settings.Version = THIS_VERSION
     end
-    
+
     if (Overachiever_CharVars) then
       oldver = tonumber(Overachiever_CharVars.Version)
       if (oldver < 0.40) then  Overachiever_CharVars.Pos_AchievementWatchFrame = nil;  end
@@ -957,7 +1036,8 @@ function Overachiever.OnEvent(self, event, arg1, ...)
 
     GameTooltip:HookScript("OnTooltipSetUnit", Overachiever.ExamineSetUnit)
     GameTooltip:HookScript("OnShow", Overachiever.ExamineOneLiner)
-    GameTooltip:HookScript("OnTooltipSetItem", Overachiever.ExamineItem)
+	GameTooltip:HookScript("OnTooltipCleared", Overachiever.ExamineOneLiner_clear)
+	GameTooltip:HookScript("OnTooltipSetItem", Overachiever.ExamineItem)
     ItemRefTooltip:HookScript("OnTooltipSetItem", Overachiever.ExamineItem)
     hooksecurefunc(ItemRefTooltip, "SetHyperlink", Overachiever.ExamineAchievementTip)
     hooksecurefunc(GameTooltip, "SetHyperlink", Overachiever.ExamineAchievementTip)
@@ -979,6 +1059,12 @@ function Overachiever.OnEvent(self, event, arg1, ...)
       chatprint("Building other criteria lookup tables took "..(debugprofilestop() - StartTime)/1000 .." seconds.")
     end
 
+	if (toast) then
+	  C_Timer.After(8, function()
+	    Overachiever.ToastFakeAchievement(toast, nil, false, msg)
+	  end)
+	end
+
   elseif (event == "ZONE_CHANGED_NEW_AREA") then
     AutoTrackCheck_Explore()
 
@@ -998,6 +1084,9 @@ function Overachiever.OnEvent(self, event, arg1, ...)
         end
       end
 	end
+
+  elseif (event == "CRITERIA_EARNED") then
+    ReactToCriteriaToast(arg1, ...)
 
   elseif (event == "ADDON_LOADED" and arg1 == "Blizzard_AchievementUI") then
     Overachiever.MainFrame:UnregisterEvent("ADDON_LOADED")
@@ -1043,7 +1132,7 @@ function Overachiever.OnEvent(self, event, arg1, ...)
       Overachiever_CharVars.TrackedAch = nil
     end
    --]]
-
+  
   end
 end
 
@@ -1358,6 +1447,7 @@ Overachiever.MainFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 Overachiever.MainFrame:RegisterEvent("ADDON_LOADED")
 --Overachiever.MainFrame:RegisterEvent("ACHIEVEMENT_EARNED")
 Overachiever.MainFrame:RegisterEvent("TRACKED_ACHIEVEMENT_UPDATE")
+Overachiever.MainFrame:RegisterEvent("CRITERIA_EARNED")
 Overachiever.MainFrame:RegisterEvent("PLAYER_LOGOUT")
 
 Overachiever.MainFrame:SetScript("OnEvent", Overachiever.OnEvent)

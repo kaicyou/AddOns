@@ -397,8 +397,13 @@ local function DisplayPagleFish()
 		if ( havesome > 0 ) then
 			local _, _, _, _, _, name, _ = FishingBuddy.GetFishieRaw(id);
 			
-			if (info.lunker) then
-				local color = Crayon:GetThresholdHexColor(havesome, 5, 1);
+			if (info.color) then
+				name = Crayon:Colorize(info.color, name);
+			elseif (info.getcolor) then
+				name = Crayon:Colorize(info.getcolor(), name);
+			elseif (info.limit) then
+				local color = Crayon:GetThresholdHexColor(havesome, info.limit, info.limit / 5);
+				name = name.." ("..havesome.."/"..info.limit..")"
 				name = Crayon:Colorize(color, name);
 			elseif (not info.quest or IsUnitOnQuest(info.quest, "player")) then
 				name = Crayon:Green(name);

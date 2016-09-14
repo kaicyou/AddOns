@@ -19,15 +19,16 @@ local statedriver = {
 }
 
 function Q:ChangeState(event)
-	if T.InCombatLockdown() then self:RegisterEvent("PLAYER_REGEN_ENABLED", "ChangeState") return end
-	if event == "PLAYER_REGEN_ENABLED" then self:UnregisterEvent("PLAYER_REGEN_ENABLED") end
 	if not Q.db then return end
 	if not Q.db.visibility then return end
+	if not Q.db.visibility.enable then return end
+	if T.InCombatLockdown() then self:RegisterEvent("PLAYER_REGEN_ENABLED", "ChangeState") return end
+	if event == "PLAYER_REGEN_ENABLED" then self:UnregisterEvent("PLAYER_REGEN_ENABLED") end
 
-	if T.GetZoneText() == BL.Frostwall or T.GetZoneText() == BL.Lunarfall then
+	if C_Garrison.IsPlayerInGarrison(2) then
 		statedriver[Q.db.visibility.garrison](Q.frame)
 	--here be order halls
-	elseif T.GetRealZoneText() ~= _G["ORDER_HALL_"..E.myclass] then
+	elseif C_Garrison.IsPlayerInGarrison(3) then
 		statedriver[Q.db.visibility.orderhall](Q.frame)
 	elseif IsResting() then
 		statedriver[Q.db.visibility.rested](Q.frame)
@@ -48,7 +49,22 @@ function Q:ChangeState(event)
 		else
 			statedriver["FULL"](Q.frame)
 		end
-		
+	end
+	if SLE._Compatibility["WorldQuestTracker"] then -- and WorldQuestTrackerAddon then
+		local y = 0
+		for i = 1, #ObjectiveTrackerFrame.MODULES do
+			local module = ObjectiveTrackerFrame.MODULES[i]
+			if (module.Header:IsShown()) then
+				y = y + module.contentsHeight
+			end
+		end
+		if (ObjectiveTrackerFrame.collapsed) then
+			WorldQuestTrackerAddon.TrackerHeight = 20
+		else
+			WorldQuestTrackerAddon.TrackerHeight = y
+		end
+
+		WorldQuestTrackerAddon.RefreshAnchor()
 	end
 end
 

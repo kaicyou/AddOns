@@ -1,4 +1,4 @@
--- $Id: Atlas_Battlegrounds_DB.lua 1532 2016-05-18 06:26:42Z arith $
+-- $Id: Atlas_Battlegrounds_DB.lua 1541 2016-08-31 05:17:16Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -166,22 +166,22 @@ local myDB = {
 		{ "1", 10007, 315, 361 }; -- Resurrection Point
 	};
 	WintergraspPvP = {
-		{ "A", 10001, 237, 101 }; -- Wintergrasp Fortress
-		{ "B", 10002, 414, 179 }; -- Valiance Landing Camp
-		{ "C", 10003, 9, 198 }; -- Warsong Camp
-		{ "1", 10004, 238, 130 }; -- Wintergrasp Fortress
-		{ "2", 10005, 361, 224 }; -- The Sunken Ring
-		{ "3", 10006, 90, 216 }; -- The Broken Temple
-		{ "4", 10007, 366, 380 }; -- Eastspark Workshop
-		{ "5", 10008, 111, 379 }; -- Westspark Workshop
-		{ "1", 10009, 476, 352 }; -- Flamewatch Tower
-		{ "2", 10010, 240, 368 }; -- Winter's Edge Tower
-		{ "3", 10011, 27, 325 }; -- Shadowsight Tower
-		{ "1", 10012, 223, 61 }; -- Wintergrasp Graveyard
-		{ "2", 10013, 378, 178 }; -- Sunken Ring Graveyard
-		{ "3", 10014, 75, 192 }; -- Broken Temple Graveyard
-		{ "4", 10015, 350, 385 }; -- Southeast Graveyard
-		{ "5", 10016, 131, 385 }; -- Southwest Graveyard
+		{ "A", 10001, 237, 101, 508, 98, "Blue" }; -- Wintergrasp Fortress
+		{ "B", 10002, 414, 179, 794, 233, "Blue" }; -- Valiance Landing Camp
+		{ "C", 10003,   9, 198, 148, 260, "Blue" }; -- Warsong Camp
+		{ "1", 10004, 238, 130, 509, 148, "Green" }; -- Wintergrasp Fortress
+		{ "2", 10005, 361, 224, 706, 298, "Green" }; -- The Sunken Ring
+		{ "3", 10006,  90, 216, 275, 292, "Green" }; -- The Broken Temple
+		{ "4", 10007, 366, 380, 725, 551, "Green" }; -- Eastspark Workshop
+		{ "5", 10008, 111, 379, 307, 552, "Green" }; -- Westspark Workshop
+		{ "1", 10009, 476, 352, 896, 508, "Red" }; -- Flamewatch Tower
+		{ "2", 10010, 240, 368, 518, 535, "Red" }; -- Winter's Edge Tower
+		{ "3", 10011,  27, 325, 170, 465, "Red" }; -- Shadowsight Tower
+		{ "1", 10012, 223,  61, 486,  40, "Orange" }; -- Wintergrasp Graveyard
+		{ "2", 10013, 378, 178, 732, 235, "Orange" }; -- Sunken Ring Graveyard
+		{ "3", 10014,  75, 192, 243, 251, "Orange" }; -- Broken Temple Graveyard
+		{ "4", 10015, 350, 385, 695, 557, "Orange" }; -- Southeast Graveyard
+		{ "5", 10016, 131, 385, 323, 561, "Orange" }; -- Southwest Graveyard
 	};
 	TheBattleForGilneas = {
 		{ "A", 10001, 200, 409 }; -- Gilnean Stronghold

@@ -50,6 +50,7 @@ credits[FBConstants.ROLE_TRANSLATE_FRFR] = {
 	["ckeurk"] = { "V1.4n" },
 	["Mips"] = { "V1.4n" },
 	["Dabeuliou"] = { "V1.4d", "V1.4g" },
+	["gurki35 "] = { "V1.7.7" },
 };
 
 credits[FBConstants.ROLE_TRANSLATE_ESES] = {
@@ -113,6 +114,8 @@ credits[FBConstants.ROLE_HELP_BUGS] = {
 	["ProphetV"] = { "Fish Watcher accounting errors", },
 	["Bodar"] = { "Better Nat's quest handling", "Watch Bobber fix", },
 	["miss_kallistra"] = { "Pet handling fixes for Legion", },
+	["Baconslicer"] = { "Lure managment bug"},
+	["Gulduka"] = { "German language testing for LibBabble-SubZone" }
 };
 
 -- Ideas and suggestions

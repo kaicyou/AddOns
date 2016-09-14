@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1680 $
-$Date: 2016-08-06 01:28:40 +1000 (Sat, 06 Aug 2016) $
+$Revision: 1717 $
+$Date: 2016-09-10 01:22:46 +1000 (Sat, 10 Sep 2016) $
 
 ]]--
 
@@ -83,8 +83,8 @@ function ArkInventoryRules.OnEnable( )
 	-- update all rules, set non damaged and format correctly, first use of each rule will validate them
 	--LEGION TODO
 	
-	local cat = ArkInventory.db.option.category[ArkInventory.Const.Category.Type.Rule]
-	for k, v in pairs( cat.data ) do
+	local cat = ArkInventory.db.option.category[ArkInventory.Const.Category.Type.Rule].data
+	for k, v in pairs( cat ) do
 		v.damaged = false
 	end
 	
@@ -481,7 +481,7 @@ function ArkInventoryRules.System.itemlevelstat( ... )
 	
 	local level = select( 6, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) )
 	
-	if level >= arg1 and level <= arg2 then
+	if level and level >= arg1 and level <= arg2 then
 		return true
 	end
 	
@@ -2055,7 +2055,7 @@ function ArkInventoryRules.EntryIsValid( rid, data )
 		
 	else
 		
-		ArkInventoryRules.Object = { test_rule=true, class="item", bag_id=0, slot_id=1, count=1, q=1, sb=true, h="item:6948:0:0:0:0:0:0:0" } -- hearthstone
+		ArkInventoryRules.Object = { test_rule=true, class="item", bag_id=0, slot_id=1, count=1, q=1, sb=1, h=string.format("item:%s:::::::", HEARTHSTONE_ITEM_ID ) }
 
 		local p, pem = loadstring( string.format( "return( %s )", data.formula ) )
 		

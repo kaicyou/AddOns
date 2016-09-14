@@ -1,4 +1,21 @@
-﻿Version 1.7.3
+﻿Version 1.7.7
+- Force all missing subzone translations to be the English text for now
+- Handle rep turn-ins for Magross, only ding on Mark of Aquaos
+- Update French translations (thanks gurki35!)
+
+Version 1.7.6
+- Add Conjurer Margoss items to watcher display
+- Some preliminary work to get lures working more reliably
+
+Version 1.7.5
+- Update LibBabble-SubZone to release2
+- Fix item pattern reversion
+
+Version 1.7.4
+- Option to use "special" coin lures in Dalaran if you have them in your bags
+- Change "Max Draenor" option to "Max Fishing", try to max out fishing in Broken Isles too
+
+Version 1.7.3
 - Mess with Equipment Manager some more (not done yet)
 - Create a Macintosh compatible ZIP file regardless of which dev machine builds it
 

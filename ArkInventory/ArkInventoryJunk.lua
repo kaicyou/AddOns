@@ -105,7 +105,7 @@ function ArkInventory.JunkSell( )
 		
 		if sold > 0 and ArkInventory.db.option.junk.notify then
 			total = total - ArkInventory.JunkValue( )
-			ArkInventory.Output( string.format( ArkInventory.Localise["CONFIG_JUNK_SELL_NOTIFY"], ArkInventory.MoneyText( total ) ) )
+			ArkInventory.Output( string.format( ArkInventory.Localise["CONFIG_JUNK_SELL_NOTIFY"], ArkInventory.MoneyText( total, true ) ) )
 		end
 	end
 	

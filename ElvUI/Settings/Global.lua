@@ -16,6 +16,7 @@ G['general'] = {
 	},
 	["disableTutorialButtons"] = true,
 	["animateConfig"] = true,
+	["commandBarSetting"] = "ENABLED_RESIZEPARENT",
 }
 
 G['classtimer'] = {}

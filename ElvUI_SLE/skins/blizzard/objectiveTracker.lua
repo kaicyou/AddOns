@@ -186,6 +186,8 @@ local function ObjectiveReskin()
 		if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.objectiveTracker ~= true or E.private.sle.skins.objectiveTracker.enable ~= true then return end
 		-- Objective Tracker Bar
 		hooksecurefunc(_G["BONUS_OBJECTIVE_TRACKER_MODULE"], "AddProgressBar", skinObjectiveBar) 
+		-- World Quests can be bonus objective type
+		hooksecurefunc(_G["WORLD_QUEST_TRACKER_MODULE"], "AddProgressBar", skinObjectiveBar)
 		-- ProgressBar in the ObjectiveTacker
 		hooksecurefunc(DEFAULT_OBJECTIVE_TRACKER_MODULE, "AddProgressBar", function(self, block, line, questID)
 			local progressBar = self.usedProgressBars[block] and self.usedProgressBars[block][line];
@@ -231,14 +233,6 @@ local function ObjectiveReskin()
 		end)
 		-- proving grounds
 		hooksecurefunc("Scenario_ProvingGrounds_ShowBlock", SkinProvingGroundButtons)
-		local function MinOnClick(self)
-			local textObject = self.text
-			textObject:SetText("")
-		end
-		_G["ObjectiveTrackerFrame"].HeaderMenu.MinimizeButton:SetSize(14,14)
-		_G["ObjectiveTrackerFrame"].HeaderMenu.MinimizeButton:SetNormalTexture([[Interface\AddOns\ElvUI_SLE\media\textures\NewQuestMinimize]])
-		_G["ObjectiveTrackerFrame"].HeaderMenu.MinimizeButton:SetPushedTexture([[Interface\AddOns\ElvUI_SLE\media\textures\NewQuestMinimize]])
-		_G["ObjectiveTrackerFrame"].HeaderMenu.MinimizeButton:HookScript('OnClick', MinOnClick)
 
 		--Doing Underlines
 		local flat = [[Interface\AddOns\ElvUI\media\textures\Minimalist]]

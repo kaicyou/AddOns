@@ -7,6 +7,7 @@ local _
 
 local Crayon = LibStub("LibCrayon-3.0");
 local FL = LibStub("LibFishing-1.0");
+local Crayon = LibStub("LibCrayon-3.0");
 
 -- Information for the stylin' fisherman
 local POLES = {
@@ -55,11 +56,6 @@ local GeneralOptions = {
 		["tooltip"] = FBConstants.CONFIG_DINGQUESTFISH_INFO,
 		["v"] = 1,
 		["default"] = true, },
-	["AutoLunker"] = {
-		["text"] = FBConstants.CONFIG_LUNKERQUESTS_ONOFF,
-		["tooltip"] = FBConstants.CONFIG_LUNKERQUESTS_INFO,
-		["v"] = 1,
-		["default"] = true },
 	["EnhanceFishingSounds"] = {
 		["text"] = FBConstants.CONFIG_ENHANCESOUNDS_ONOFF,
 		["tooltip"] = FBConstants.CONFIG_ENHANCESOUNDS_INFO,
@@ -282,6 +278,12 @@ local CastingOptions = {
 		["v"] = 1,
 		["primary"] = "EasyLures",
 		["parents"] = {  ["DraenorBait"] = "d", ["EasyLures"] = "d", },
+		["default"] = true },
+	["DalaranLures"] = {
+		["text"] = FBConstants.CONFIG_DALARANLURES_ONOFF,
+		["tooltip"] = FBConstants.CONFIG_DALARANLURES_INFO,
+		["v"] = 1,
+		["parents"] = { ["EasyLures"] = "d", },
 		["default"] = true },
 };
 
@@ -855,6 +857,25 @@ PagleFish[110508] = {
 	["enUS"] = "Sea Scorpion Minnow",
 };
 
+PagleFish[138777] = {
+	["enUS"] = "Drowned Mana",
+	silent = 1,
+	limit = 100
+};
+PagleFish[141975] = {
+	["enUS"] = "Mark of Aquaos",
+	getcolor = function ()
+			local mana = GetItemCount(138777);
+			if (mana < 70) then
+				return Crayon.COLOR_HEX_GREEN;
+			elseif (mana > 79) then
+				return Crayon.COLOR_HEX_RED;
+			else
+				return Crayon.COLOR_HEX_YELLOW;
+			end
+		end
+};
+
 FishingBuddy.PagleFish = PagleFish;
 
 local QuestLures = {};
@@ -951,7 +972,7 @@ local function AddFishie(color, id, name, zone, subzone, texture, quantity, qual
 	end
 
 	-- Play a sound on Nat Pagle rep
-	if ( PagleFish[id] and GSB("DingQuestFish") ) then
+	if ( PagleFish[id] and not PagleFish[id].silent and GSB("DingQuestFish") ) then
 		PlaySound("igQuestListComplete", "master");
 	end
 	
@@ -1088,11 +1109,12 @@ local function GetFishingItem(itemtable)
 			if ( not info.usable or info.usable(info) ) then
 				local buff = GetSpellInfo(info.spell);
 				local doit = not FL:HasBuff(buff);
+				local it = nil;
 				if ( info.check ) then
-					doit, itemid = info.check(info, buff, doit, itemid);
+					doit, itemid, it = info.check(info, buff, doit, itemid);
 				end
 				if ( doit ) then
-					return doit, itemid, info[CurLoc];
+					return doit, itemid, info[CurLoc], it or info.type;
 				end
 			end
 		end
@@ -1149,9 +1171,9 @@ local function GetUpdateLure()
 
 	-- look for bonus items, like the Ancient Pandaren Fishing Charm
 	if ( FishingBuddy.FishingItems ) then
-		local doit, id, name = GetFishingItem(FishingBuddy.FishingItems);
+		local doit, id, name, it = GetFishingItem(FishingBuddy.FishingItems);
 		if ( doit ) then
-			return doit, id, name;
+			return doit, id, name, it;
 		end
 	end
 
@@ -1172,9 +1194,9 @@ local function GetUpdateLure()
 			end
 			
 			-- look for quest lures
-			local doit, id, name = GetFishingItem(QuestLures);
+			local doit, id, name, it = GetFishingItem(QuestLures);
 			if ( doit ) then
-				return doit, id, name;
+				return doit, id, name, it;
 			end
 		end
 
@@ -1195,7 +1217,8 @@ local function GetUpdateLure()
 			if (skill > 0) then
 				local NextLure, NextState;
 				local pole, tempenchant = FL:GetPoleBonus();
-				local bigdraenor = (GSB("BigDraenor") and (GetCurrentMapContinent() == 7));
+				local continent = GetCurrentMapContinent()
+				local bigdraenor = (GSB("BigDraenor") and (continent == 7 or continent == 8));
 				local state, bestlure = FL:FindBestLure(tempenchant, LureState, false, bigdraenor);
 				if ( DoEscaped ) then
 					if ( state or bestlure ) then
@@ -1334,9 +1357,9 @@ FishingBuddy.SetStealClick = SetStealClick;
 local function CentralCasting()
 	-- put on a lure if we need to
 	if ( not StealClick() ) then
-		local update, id, n = GetUpdateLure();
+		local update, id, n, t = GetUpdateLure();
 		if (update and id) then
-			FL:InvokeLuring(id);
+			FL:InvokeLuring(id, t);
 		else
 			if ( not FL:GetLastTooltipText() or not FL:OnFishingBobber() ) then
 				 -- watch for fishing holes

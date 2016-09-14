@@ -32,7 +32,7 @@ local L = AceLocale:NewLocale("Atlas_OutdoorRaids", "zhCN", false);
 
 if L then
 L["Ancient Skull Pile"] = "上古颅骨堆"
--- L["Broken Isles World Bosses"] = ""
+L["Broken Isles World Bosses"] = "破碎群岛世界首领"
 L["Darkscreecher Akkarai"] = "黑暗尖啸者阿克卡莱"
 L["Draenor World Bosses"] = "德拉诺世界首领"
 L["Gezzarak the Huntress"] = "猎手吉萨拉克"

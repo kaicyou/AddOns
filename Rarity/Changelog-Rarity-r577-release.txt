@@ -1,0 +1,182 @@
+------------------------------------------------------------------------
+r578 | allara | 2016-08-30 21:09:00 +0000 (Tue, 30 Aug 2016) | 1 line
+Changed paths:
+   A /tags/r577-release (from /trunk:577)
+
+Tagging as r577-release
+------------------------------------------------------------------------
+r577 | allara | 2016-08-30 20:56:59 +0000 (Tue, 30 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- Added more redundant checks after ending combat for updated statistics and achievement criteria completion
+------------------------------------------------------------------------
+r575 | allara | 2016-08-28 22:41:15 +0000 (Sun, 28 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- [#209] Implemented support for account-wide statistics tracking. Log in to all your characters and make sure they're all assigned to the same Profile. After doing that, Rarity will count all your statistics. If the total is higher than your current attempt count, it will update to that count. Note that this only works for items detected via statistics, and cannot take into account bonus coin rolls. Rarity must be running on all characters and you must log into each character once to get it updated.
+------------------------------------------------------------------------
+r574 | allara | 2016-08-28 19:41:51 +0000 (Sun, 28 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- First stage of cross-account automatic statistics tracking; this build just adds some additional data storage
+------------------------------------------------------------------------
+r572 | allara | 2016-08-25 17:11:18 +0000 (Thu, 25 Aug 2016) | 4 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- Holiday reminders will now occur for items inside collapsed groups (you can turn reminders off all at once, or on a per-item basis, from the Options screen)
+- Collapsed groups with no items to display will no longer appear
+- Rarity now displays a special message when it can't show any items or collapsed groups in the tooltip
+- [#111] Added new option: Hide items not in your zone
+------------------------------------------------------------------------
+r570 | allara | 2016-08-22 23:02:22 +0000 (Mon, 22 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- When an item is in your current zone as well as one or more other zones, sort by zone now sorts the zone alphabetically instead of at the bottom
+------------------------------------------------------------------------
+r569 | allara | 2016-08-22 22:55:34 +0000 (Mon, 22 Aug 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- Added map data for Reins of the Infinite Timereaver
+- [#156] Implemented support for sorting by zone
+------------------------------------------------------------------------
+r567 | allara | 2016-08-21 20:07:27 +0000 (Sun, 21 Aug 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- Added waypoint data for all remaining items
+- Rarity will no longer try to use TomTom to create waypoints inside instances (due to upcoming 7.1 changes where add-ons cannot receive unit locations while inside instances)
+------------------------------------------------------------------------
+r565 | allara | 2016-08-18 03:32:43 +0000 (Thu, 18 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- [#205] New option: Put "Rarity:" on a separate line in world tooltips
+------------------------------------------------------------------------
+r564 | allara | 2016-08-18 03:21:58 +0000 (Thu, 18 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- [#207] New option: Hide items with no attempts
+------------------------------------------------------------------------
+r563 | allara | 2016-08-18 02:51:59 +0000 (Thu, 18 Aug 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- Added the following toys: Faintly Glowing Flagon of Mead, Don Carlos' Famous Hat, Burgy Blackheart's Handsome Hat
+- Added the following pets: Eye of Inquisition, Knockoff Blingtron
+------------------------------------------------------------------------
+r561 | allara | 2016-08-12 03:32:27 +0000 (Fri, 12 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- Changing the sort order now properly re-renders the tooltip
+------------------------------------------------------------------------
+r560 | allara | 2016-08-10 22:11:10 +0000 (Wed, 10 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- [#206] Fix for disable by class feature (thanks, FlyNeko!)
+------------------------------------------------------------------------
+r559 | allara | 2016-08-10 18:03:11 +0000 (Wed, 10 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Modules/Options/Options.lua
+
+- Minor bug fix in the Options UI
+------------------------------------------------------------------------
+r558 | allara | 2016-08-09 20:40:27 +0000 (Tue, 09 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Modules/Options/Options.lua
+
+- Crash fix
+------------------------------------------------------------------------
+r557 | allara | 2016-08-09 20:15:56 +0000 (Tue, 09 Aug 2016) | 2 lines
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Rarity.toc
+
+- Rarity Item Packs are here! This new feature lets you import and export groups of items to share with friends. Out of the box, Rarity comes with mounts, pets, and toys that are fairly rare. If you'd like to add other items to Rarity such as appearances, illusions, legendary items, and recipes, you can now add those items to Rarity yourself, then export them to share with the world! If you have an item pack to share, post it to the Curse or WowAce web sites. I'll promote the best ones to the main page!
+- New option: Obtained Quest ID. This lets Rarity stop tracking an item automatically when you complete a quest. (This is how weapon illusions are learned.)
+------------------------------------------------------------------------
+r555 | allara | 2016-08-06 20:14:46 +0000 (Sat, 06 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- Rewrote toy scanning to no longer do anything at all with the Collections UI (this fixes your filters being cleared on the toys/appearances/pets/mounts tabs)
+------------------------------------------------------------------------
+r553 | allara | 2016-08-05 16:55:59 +0000 (Fri, 05 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+- [#202] Added Imperial Silkworm
+------------------------------------------------------------------------
+r552 | allara | 2016-08-03 19:59:40 +0000 (Wed, 03 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- Fix a rare string comparison error
+------------------------------------------------------------------------
+r550 | allara | 2016-08-02 18:16:46 +0000 (Tue, 02 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- [#201] Rarity now uses the petJournalTab cvar to return the Collections tab to where it was prior to toy scanning
+------------------------------------------------------------------------
+r549 | allara | 2016-08-02 17:24:58 +0000 (Tue, 02 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+
+- Attempt to fix a rare string comparison error
+------------------------------------------------------------------------
+r548 | allara | 2016-08-01 18:06:12 +0000 (Mon, 01 Aug 2016) | 2 lines
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- [#137] Added the ability to disable items on a per-class basis
+- [#168] Fandral's Seed Pouch now only appears/tracks for druids
+------------------------------------------------------------------------
+r546 | allara | 2016-07-31 19:30:39 +0000 (Sun, 31 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Options_Defaults.lua
+
+- Rarity no longer passes through its CollectionsJournal_SetTab hook in combat (may need to remove this hook entirely)
+------------------------------------------------------------------------
+r545 | allara | 2016-07-30 19:37:57 +0000 (Sat, 30 Jul 2016) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Locales.lua
+   M /trunk/Modules/Options/Options.lua
+   M /trunk/Options_Defaults.lua
+
+- [#129] Added a new option to only make an announcement when an item is found (instead of every attempt)
+------------------------------------------------------------------------

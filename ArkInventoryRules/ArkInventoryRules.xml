@@ -33,9 +33,9 @@
 	
 	<Button virtual="true" name="ARKINV_TemplateButtonTableSort">
 		
-		<NormalFont inherits="ARKINV_GameFontNormalSmall" />
-		<HighlightFont inherits="ARKINV_GameFontNormalSmall" />
-		<DisabledFont inherits="ARKINV_GameFontNormalSmall" />
+		<NormalFont inherits="ARKINV_GameFontNormal" />
+		<HighlightFont inherits="ARKINV_GameFontNormal" />
+		<DisabledFont inherits="ARKINV_GameFontNormal" />
 		
 		<NormalTexture inherits="ARKINV_TextureTransparent" />
 		<PushedTexture inherits="ARKINV_TextureTransparent" />
@@ -46,7 +46,7 @@
 
 			<OnClick>
 				<!-- PlaySound( "igMainMenuOptionCheckBoxOn" ) -->
-				local k = strmatch( self:GetName( ), "^.+_(.-)$" )
+				--local k = strmatch( self:GetName( ), "^.+_(.-)$" )
 			</OnClick>
 			
 		</Scripts>

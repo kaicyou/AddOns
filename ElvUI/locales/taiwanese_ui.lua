@@ -61,6 +61,11 @@ L["says"] = "說"
 L["whispers"] = "密語"
 L["yells"] = "大喊"
 
+--DataBars
+L["Current Level:"] = true;
+L["Honor XP:"] = true;
+L["Honor Remaining:"] = true;
+
 --DataTexts
 L["(Hold Shift) Memory Usage"] = "(按住Shift) 記憶體使用量"
 L["AP"] = "攻擊強度"
@@ -102,6 +107,7 @@ L["Offhand"] = "副手"
 L["Profit:"] = "利潤: "
 L["Reset Data: Hold Shift + Right Click"] = "重置數據: 按住 Shift + 右鍵點擊"
 L["Saved Raid(s)"] = "已有進度的副本"
+L["Saved Dungeon(s)"] = true;
 L["Server: "] = "伺服器: "
 L["Session:"] = "本次登入:"
 L["Shoulder"] = "肩部"
@@ -118,6 +124,7 @@ L["Waist"] = "腰部"
 L["Wrist"] = "護腕"
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = true;
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = true;
+L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = true;
 
 --DebugTools
 L["%s: %s tried to call the protected function '%s'."] = "%s: %s 嘗試調用保護函數'%s'."
@@ -229,7 +236,12 @@ L["Alternative Power"] = "特殊能量條框架"
 L["Archeology Progress Bar"] = true;
 L["Arena Frames"] = "競技場框架" --Also used in UnitFrames
 L["Artifact Bar"] = true;
+L["Bag Mover (Grow Down)"] = true;
+L["Bag Mover (Grow Up)"] = true;
+L["Bag Mover"] = true;
 L["Bags"] = "背包" --Also in DataTexts
+L["Bank Mover (Grow Down)"] = true;
+L["Bank Mover (Grow Up)"] = true;
 L["Bar "] = "快捷列 " --Also in ActionBars
 L["BNet Frame"] = "戰網提示資訊"
 L["Boss Button"] = "特殊技能鍵"

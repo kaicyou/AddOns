@@ -31,6 +31,9 @@ Overachiever.DefaultSettings = {
   Tradeskill_ShowCompletedAch_Cooking = false;
   SoundAchIncomplete = 0;
   SoundAchIncomplete_AnglerCheckPole = true;
+  ProgressToast_AutoTrack = false;
+  ProgressToast_ChatLog = true;
+  ProgressToast_Suggest = true;
   Version = THIS_VERSION;
 };
 
@@ -55,6 +58,11 @@ function Overachiever.CreateOptions(THIS_TITLE, BuildCriteriaLookupTab_check, Au
 	  tooltip = L.OPT_AUTOTRACKEXPLORE_TIP, OnChange = AutoTrackCheck_Explore },
 	--{ variable = "Explore_AutoTrack_Completed", text = L.OPT_AUTOTRACKEXPLORE_COMPLETED,
 	--  xOffset = 10, OnChange = AutoTrackCheck_Explore },
+	{ variable = "ProgressToast_AutoTrack", text = L.OPT_AUTOTRACK_CRITERIATOAST, tooltip = L.OPT_AUTOTRACK_CRITERIATOAST_TIP },
+	
+	{ type = "labelwrap", text = L.OPT_LABEL_CRITERIATOAST, topBuffer = 4 },
+	{ variable = "ProgressToast_ChatLog", text = L.OPT_CRITERIATOAST_CHATLOG, tooltip = L.OPT_CRITERIATOAST_CHATLOG_TIP },
+	{ variable = "ProgressToast_Suggest", text = L.OPT_CRITERIATOAST_SUGGEST, tooltip = L.OPT_CRITERIATOAST_SUGGEST_TIP },
 
 	{ type = "labelwrap", text = L.OPT_LABEL_MAINUI, topBuffer = 4, xOffset = 0 },
 	{ variable = "UI_SeriesTooltip", text = L.OPT_UI_SERIESTIP, tooltip = L.OPT_UI_SERIESTIP_TIP },
@@ -123,7 +131,7 @@ function Overachiever.CreateOptions(THIS_TITLE, BuildCriteriaLookupTab_check, Au
   local mainpanel, oldver = TjOptions.CreatePanel(THIS_TITLE, nil, {
 	title = title,
 	itemspacing = 3,
-	--scrolling = true,
+	scrolling = true,
 	items = items_general,
 	variables = "Overachiever_Settings",
 	defaults = Overachiever.DefaultSettings

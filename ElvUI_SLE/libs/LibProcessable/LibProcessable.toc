@@ -1,0 +1,16 @@
+## Interface: 70000
+## Author: p3lim
+## Version: 13
+## Title: Lib: Processable
+## Notes: Library that lets you easily check if you can process resources
+## OptionalDeps: LibStub
+## X-Curse-Packaged-Version: 13
+## X-Curse-Project-Name: LibProcessable
+## X-Curse-Project-ID: libprocessable
+## X-Curse-Repository-ID: wow/libprocessable/mainline
+## X-Curse-Packaged-Version: v3.14
+## X-Curse-Project-Name: ElvUI Shadow & Light Edit
+## X-Curse-Project-ID: shadow-and-light-edit
+## X-Curse-Repository-ID: wow/shadow-and-light-edit/mainline
+
+embed.xml

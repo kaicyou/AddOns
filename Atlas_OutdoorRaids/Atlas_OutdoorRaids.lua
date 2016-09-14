@@ -1,4 +1,4 @@
--- $Id: Atlas_OutdoorRaids.lua 16 2016-07-26 15:04:31Z arith $
+-- $Id: Atlas_OutdoorRaids.lua 18 2016-08-16 15:12:56Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -67,6 +67,7 @@ local myData = {
 		LevelRange = "110+";
 		PlayerLimit = "40";
 		JournalInstanceID = "822";
+		LargeMap = "OR_BrokenIsles";
 		{ WHIT.." 1) "..Atlas_GetBossName("Calamir", 1774), 1774 };				-- (Azsuna)
 		{ WHIT.." 2) "..Atlas_GetBossName("Withered J'im", 1796), 1796 };			-- (Azsuna)
 		{ WHIT.." 3) "..Atlas_GetBossName("Levantus", 1769), 1769 };				-- (Stormheim? Looks to be in Azsuna)
@@ -88,6 +89,7 @@ local myData = {
 		LevelRange = "100-110";
 		PlayerLimit = "--";
 		JournalInstanceID = "557";
+		LargeMap = "OR_Draenor";
 		{ WHIT.." 1) "..Atlas_GetBossName("Drov the Ruiner", 1291), 1291 };
 		{ WHIT..INDENT..Atlas_GetBossName("Frenzied Rumbler", 1291, 2), 1291 };
 		{ WHIT.." 2) "..Atlas_GetBossName("Tarlna the Ageless", 1211), 1211 };
@@ -102,6 +104,7 @@ local myData = {
 		LevelRange = "90-100";
 		PlayerLimit = "--";
 		JournalInstanceID = "322";
+		LargeMap = "OR_Pandaria";
 		{ WHIT.." 1) "..Atlas_GetBossName("Nalak, The Storm Lord", 814), 814 };
 		{ WHIT.." 2) "..Atlas_GetBossName("Oondasta", 826), 826 };
 		{ WHIT.." 3) "..Atlas_GetBossName("Sha of Anger", 691), 691 };

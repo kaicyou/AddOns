@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 2276 2015-03-01 08:21:37Z arithmandar $
+$Id: ChangeLog.txt 1541 2016-08-31 05:17:16Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -8,9 +8,15 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 = Change Log =
 ==============
 
+v1.34.00 (Aug. 31, 2016)
+------------------------
+- Added faction ID to Alterac Valley maps
+- Added large map of Wintergrasp
+
+
 v1.33.01 (Aug. 08, 2016)
 ------------------------
-- Added WorldMap ID for each map
+- Added WorldMap ID to each map
 
 
 v1.33.00 (Jul. 19, 2016)

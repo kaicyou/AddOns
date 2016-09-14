@@ -193,6 +193,26 @@ else
   }
 end
 
+-- Achievements common to class halls:
+local achClassHall = {
+	10994, -- A Glorious Campaign
+	11223, -- Legendary Research
+	11298, -- A Classy Outfit
+	
+	10461, -- Fighting with Style: Classic
+	10747, -- Fighting with Style: Upgraded
+	10748, -- Fighting with Style: Valorous
+	10749, -- Fighting with Style: War-torn
+	10852, -- Artifact or Artifiction
+	11171, -- Arsenal of Power
+	
+	10706, -- Training the Troops
+	11214, -- Many Missions
+	11218, -- There's a Boss In There
+	11219, -- Need Backup
+	11220, -- Roster of Champions
+}
+
 local ACHID_ZONE_MISC = {
 -- Kalimdor
 	["Ashenvale"] = "4827:6",	-- "Surveying the Damage"
@@ -251,7 +271,7 @@ local ACHID_ZONE_MISC = {
 -- Northrend
 	["Borean Tundra"] = 561,	-- "D.E.H.T.A's Little P.I.T.A."
 	["Dragonblight"] = { 1277, 547 },	-- "Rapid Defense", "Veteran of the Wrathgate"
-	["Dalaran"] = { 2096, 1956, 1958, 545, 1998, IsAlliance and 1782 or 1783, 3217 },
+	["Dalaran (Northrend)"] = { 2096, 1956, 1958, 545, 1998, IsAlliance and 1782 or 1783, 3217 }, -- RENAMED ZONE
 	["Grizzly Hills"] = { "1596:1" },	-- "Guru of Drakuru"
 	["Icecrown"] = { SUBZONES = {
 		["*Argent Tournament Grounds*The Ring of Champions*Argent Pavilion*The Argent Valiants' Ring*The Aspirants' Ring*The Alliance Valiants' Ring*Silver Covenant Pavilion*Sunreaver Pavilion*The Horde Valiants' Ring*"] =
@@ -367,6 +387,67 @@ local ACHID_ZONE_MISC = {
 		IsAlliance and 10072 or 10265, -- Rumble in the Jungle (complete the above, and any in same series as one of the above, and the explore achievement)
 		10052, -- Tiny Terrors in Tanaan
 	},
+-- Legion
+	["Azsuna"] = {
+		11261, -- Adventurer of Azsuna
+		10763, -- Azsuna Matata
+		11175, -- Higher Dimensional Learning
+		"11186:1", -- Tehd & Marius' Excellent Adventure
+		11256, -- Treasures of Azsuna
+	},
+	["Val'sharah"] = {
+		11262, -- Adventurer of Val'sharah
+		"11186:4", -- Tehd & Marius' Excellent Adventure
+		10698, -- That's Val'sharah Folks!
+		11258, -- Treasures of Val'sharah
+	},
+	["Highmountain"] = {
+		11264, -- Adventurer of Highmountain
+		10059, -- Ain't No Mountain High Enough
+		"11186:3", -- Tehd & Marius' Excellent Adventure
+		11257, -- Treasures of Highmountain
+		10774, -- Hatchling of the Talon
+		--10398, -- "Drum Circle" - shows as red for some reason, both factions; comment out for now
+	},
+	["Stormheim"] = {
+		11263, -- Adventurer of Stormheim
+		10627, -- Going Up
+		"11186:2", -- Tehd & Marius' Excellent Adventure
+		11259, -- Treasures of Stormheim
+		10790, -- Vrykul Story, Bro
+		10793, -- What a Ripoff!
+		--11232, -- Lock, Stock and Two Smoking Goblins (starts in Dalaran which is available after "What a Ripoff!")
+	},
+	["Suramar"] = {
+		11265, -- Adventurer of Suramar
+		11124, -- Good Suramaritan
+		10756, -- Leyline Bling
+		10617, -- Nightfallen But Not Forgotten
+		11125, -- Now You're Thinking With Portals
+		11260, -- Treasures of Suramar
+		10778, -- The Nightfallen
+		11133, -- Why Can't I Hold All This Mana?
+	},
+	["Dalaran Sewers"] = {
+		11066, -- Underbelly Tycoon
+	},
+	["Dalaran (Broken Isles)"] = { -- RENAMED ZONE
+		10722, -- The Wish Remover
+		--11066, -- Underbelly Tycoon
+	},
+-- Legion: Class Halls
+	["Acherus: The Ebon Hold"] = achClassHall, -- Death knight
+	["The Fel Hammer"] = achClassHall, -- Demon hunter
+	["The Dreamgrove"] = achClassHall, -- Druid
+	["Trueshot Lodge"] = achClassHall, -- Hunter
+	["Hall of the Guardian"] = achClassHall, -- Mage
+	["Temple of Five Dawns"] = achClassHall, -- Monk
+	["Sanctum of Light"] = achClassHall, -- Paladin
+	["Netherlight Temple"] = achClassHall, -- Priest
+	["The Hall of Shadows"] = achClassHall, -- Rogue
+	["The Heart of Azeroth"] = achClassHall, -- Shaman
+	["Dreadscar Rift"] = achClassHall, -- Warlock
+	["Skyhold"] = achClassHall, -- Warrior
 }
 if (IsAlliance) then
   tinsert(ACHID_ZONE_MISC["Grizzly Hills"], 2016) -- "Grizzled Veteran"
@@ -444,6 +525,18 @@ tinsert(ACHID_ZONE_MISC["Silvermoon City"], "6621:4")
 -- Problem: Two zones named Nagrand. A change to the system is needed. For now, just put the new zone's in with the rest.
 tinsert(ACHID_ZONE_MISC["Nagrand"], IsAlliance and 8927 or 8928)
 tinsert(ACHID_ZONE_MISC["Nagrand"], 9615)
+
+-- ZONE RENAMES AND LOOKUP BY MAP ID (helps handle issues where a zone name is used multiple times)
+local ZONE_RENAME = {
+	["Dalaran"] = {
+		[504] = "Dalaran (Northrend)",
+		[1014] = "Dalaran (Broken Isles)",
+	},
+}
+local ZONE_RENAME_REV = {
+	[L.SUGGESTIONS_ZONERENAME_DALARAN_NORTHREND] = "Dalaran (Northrend)",
+	[L.SUGGESTIONS_ZONERENAME_DALARAN_BROKENISLES] = "Dalaran (Broken Isles)",
+}
 
 -- INSTANCES - ANY DIFFICULTY (any group size):
 local ACHID_INSTANCES = {
@@ -539,7 +632,53 @@ local ACHID_INSTANCES = {
 		8454, 8458, 8459, 8461, 8462, -- "Glory of the Orgrimmar Raider", "Vale of Eternal Sorrows", "Gates of Retribution", "The Underhold", "Downfall"
 		IsAlliance and 8679 or 8680 -- "Conqueror of Orgrimmar" or "Liberator of Orgrimmar"
 	},
+
+-- Legion Dungeons
+	["Eye of Azshara"] = 10780, -- "Eye of Azshara" (chain)
+	["Darkheart Thicket"] = 10783,
+	["Halls of Valor"] = 10786,
+	["Neltharion's Lair"] = {
+		10996, -- Got to Ketchum All
+		10795, -- "Neltharion's Lair" (chain)
+	},
+	["Assault on Violet Hold"] = 10798,
+	["Vault of the Wardens"] = 10801,
+	["Black Rook Hold"] = {
+		10709, -- You Used to Scrawl Me In Your Fel Tome
+		10804, -- "Black Rook Hold" (chain)
+	},
+	["Maw of Souls"] = 10807,
+-- Legion Raids
+	["The Emerald Nightmare"] = {
+		10555, -- Buggy Fight
+		10663, -- Imagined Dragons World Tour
+		10753, -- Scare Bear
+		10755, -- I Attack the Darkness
+		10771, -- Webbing Crashers
+		10772, -- Use the Force(s)
+		10818, -- Darkbough
+		10819, -- Tormented Guardians
+		10820, -- Rift of Aln
+		10830, -- Took the Red Eye Down
+	},
+	["The Nighthold"] = {
+		10575, -- Burning Bridges
+		10678, -- Cage Rematch
+		10696, -- I've Got My Eyes On You
+		10697, -- Grand Opening
+		10699, -- Infinitesimal
+		10704, -- Not For You
+		10742, -- Gluten Free
+		10754, -- Fruit of All Evil
+		10817, -- A Change In Scenery
+		10829, -- Arcing Aqueducts
+		10837, -- Royal Athenaeum
+		10838, -- Nightspire
+		10839, -- Betrayer's Rise
+		10851, -- Elementalry!
+	},
 }
+
 -- Battlegrounds
 ACHID_INSTANCES["The Battle for Gilneas"] = 5258
 ACHID_INSTANCES["Eye of the Storm"] = { 1171, 587, 1258, 211 }
@@ -766,6 +905,78 @@ local ACHID_INSTANCES_25_HEROIC = {
 	["Firelands"] = 5803,	-- "Heroic: Ragnaros" (can be 10 or 25 apparently but putting it here allows detection that it's a raid when getting Suggestions outside it)
 }
 
+-- INSTANCES - MYTHIC ONLY (any group size):
+local ACHID_INSTANCES_MYTHIC = {
+-- Legion Dungeons
+	["Eye of Azshara"] = {
+		10456, -- But You Say He's Just a Friend
+		10458, -- Ready for Raiding V
+		10457, -- Stay Salty
+	},
+	["Darkheart Thicket"] = {
+		10769, -- Burning Down the House
+		10766, -- Egg-cellent!
+	},
+	["Halls of Valor"] = {
+		10542, -- I Got What You Mead
+		10544, -- Stag Party
+		10543, -- Surge Protector
+	},
+	["Neltharion's Lair"] = 10875, -- Can't Eat Just One
+	["Assault on Violet Hold"] = {
+		10554, -- I Made a Food!
+		10553, -- You're Just Making It WORSE!
+	},
+	["Vault of the Wardens"] = {
+		10707, -- A Specter, Illuminated
+		10679, -- I Ain't Even Cold
+		10680, -- Who's Afraid of the Dark?
+	},
+	["Black Rook Hold"] = {
+		10711, -- Adds? More Like Bads
+		10710, -- Black Rook Moan
+	},
+	["Maw of Souls"] = {
+		10411, -- Helheim Hath No Fury
+		10413, -- Instant Karma
+		10412, -- Poor Unfortunate Souls
+	},
+	["The Arcway"] = {
+		10773, -- Arcanic Cling
+		10775, -- Clean House
+		10813, -- Mythic: The Arcway
+		10776, -- No Time to Waste
+	},
+	["Court of Stars"] = {
+		10611, -- Dropping Some Eaves
+		10816, -- Mythic: Court of Stars
+		10610, -- Waiting for Gerdo
+	},
+-- Legion Raids
+-- Legion Raids
+	["The Emerald Nightmare"] = {
+		10821, -- Mythic: Nythendra
+		10822, -- Mythic: Elerethe Renferal
+		10823, -- Mythic: Il'gynoth
+		10824, -- Mythic: Ursoc
+		10825, -- Mythic: Dragons of Nightmare
+		10826, -- Mythic: Cenarius
+		10827, -- Mythic: Xavius
+	},
+	["The Nighthold"] = {
+		10840, -- Mythic: Skorpyron
+		10842, -- Mythic: Anomaly
+		10843, -- Mythic: Trilliax
+		10844, -- Mythic: Aluriel
+		10845, -- Mythic: Star Augur Etraeus
+		10846, -- Mythic: High Botanist Tel'arn
+		10847, -- Mythic: Tichondrius
+		10848, -- Mythic: Krosus
+		10849, -- Mythic: Grand Magistrix Elisande
+		10850, -- Mythic: Gul'dan
+	},
+}
+
 
 -- Create reverse lookup table for L.SUBZONES:
 local SUBZONES_REV = {}
@@ -774,7 +985,15 @@ for k,v in pairs(L.SUBZONES) do  SUBZONES_REV[v] = k;  end
 local function ZoneLookup(zoneName, isSub, subz)
   zoneName = zoneName or subz or ""
   local trimz = strtrim(zoneName)
-  return isSub and SUBZONES_REV[trimz] or LBZR[trimz] or LBZR[zoneName] or trimz
+  local result = isSub and SUBZONES_REV[trimz] or LBZR[trimz] or LBZR[zoneName] or trimz
+  if (not isSub and ZONE_RENAME[result]) then
+    local mapID = Overachiever.GetCurrentMapID()
+	if (mapID and ZONE_RENAME[result][mapID]) then
+      --Overachiever.chatprint(result .. " got renamed to " .. ZONE_RENAME[result][mapID])
+      return ZONE_RENAME[result][mapID]
+	end
+  end
+  return result
 end
 
 
@@ -844,7 +1063,7 @@ local LocationsList, EditZoneOverride, subzdrop, subzdrop_menu, subzdrop_Update 
 local diffdrop, raidsizedrop
 local RefreshBtn, ResetBtn, NoSuggestionsLabel, ResultsLabel
 
-WHAT = LocationsList
+--WHAT = LocationsList
 
 local function SortDrop_OnSelect(self, value)
   VARS.SuggestionsSort = value
@@ -975,14 +1194,15 @@ local function Refresh(self)
     subzdrop:Disable()
   end
 
-  local instype, heroicD, twentyfive, heroicR = Overachiever.GetDifficulty()
+  local instype, heroicD, mythicD, challenge, twentyfive, heroicR, mythicR = Overachiever.GetDifficulty()
 
   -- Check for difficulty override:
   local val = diffdrop:GetSelectedValue()
   if (val ~= 0) then
-    val = val == 2 and true or false
-    heroicD = val
-    heroicR = val
+    heroicD = val == 2 and true or false
+    heroicR = heroicD
+    mythicD = val == 3 and true or false
+    mythicR = mythicD
   end
   val = raidsizedrop:GetSelectedValue()
   if (val ~= 0) then
@@ -1027,6 +1247,11 @@ local function Refresh(self)
         end
       end
 
+	  if (mythicD or mythicR) then
+	    Refresh_Add(ACHID_INSTANCES_MYTHIC[zone])
+		-- No need to check twentyfive; that's a legacy classification and the dungeons/raids with mythic-only achievements don't use it.
+	  end
+
     else
       Refresh_Add(Overachiever.ExploreZoneIDLookup(zone), ACHID_ZONE_NUMQUESTS[zone], ACHID_ZONE_MISC[zone])
       -- Also look for instance achievements for an instance you're near if we can look it up easily (since many zones
@@ -1059,6 +1284,11 @@ local function Refresh(self)
       else
         Refresh_Add(ACHID_INSTANCES_NORMAL[CurrentSubzone] or ACHID_INSTANCES_NORMAL[zone])
       end
+
+	  if (mythicD or mythicR) then
+	    local achM = ACHID_INSTANCES_MYTHIC[CurrentSubzone] or ACHID_INSTANCES_MYTHIC[zone]
+	    if (achM) then  Refresh_Add(achM);  end
+	  end
     end
 
     -- Suggestions from recent reminders:
@@ -1142,6 +1372,7 @@ frame:SetScript("OnEvent", Refresh)
 Overachiever.SUGGESTIONS = {
 	zone_numquests = ACHID_ZONE_NUMQUESTS,
 	zone = ACHID_ZONE_MISC,
+	--zone_id = ACHID_ZONEID_MISC,
 	instance = ACHID_INSTANCES,
 	bg = ACHID_BATTLEGROUNDS,
 	instance_normal = ACHID_INSTANCES_NORMAL,
@@ -1152,6 +1383,7 @@ Overachiever.SUGGESTIONS = {
 	instance_10_heroic = ACHID_INSTANCES_10_HEROIC,
 	instance_25_normal = ACHID_INSTANCES_25_NORMAL,
 	instance_25_heroic = ACHID_INSTANCES_25_HEROIC,
+	instance_mythic = ACHID_INSTANCES_MYTHIC,
 	tradeskill = ACHID_TRADESKILL,
 	tradeskill_zone = ACHID_TRADESKILL_ZONE,
 	tradeskill_bg = ACHID_TRADESKILL_BG,
@@ -1176,7 +1408,12 @@ do
   local zonetab = {}
   for i=1,select("#",Overachiever.GetMapContinents_names()) do  zonetab[i] = { Overachiever.GetMapZones_names(i) };  end
   for i,tab in ipairs(zonetab) do
-    for n,z in ipairs(tab) do  suggested[z] = true;  end  -- Already localized so no need for LBZ here.
+    for n,z in ipairs(tab) do
+	  if (not ZONE_RENAME[LBZR[z] or z]) then  -- Omit zones that we use a different name for so we don't create a confusing autocomplete (e.g. people type "Dalaran" but get no suggestions because we put them somewhere else).
+	    suggested[z] = true -- Already localized so no need for LBZ here.
+	  --else  Overachiever.chatprint("omitting "..z)
+	  end
+	end
   end
   zonetab = nil
   -- Add instances for which we have suggestions:
@@ -1185,7 +1422,7 @@ do
     for i=1,select("#", ...) do
       tab = select(i, ...)
       for k,v in pairs(tab) do
-	    list[ LBZ[k] or k ] = true  -- Add localized version of instance names.
+	    list[ LBZ[k] or ZONE_RENAME_REV[k] or k ] = true  -- Add localized version of instance names.
 		--print("adding: k = "..(LBZ[k] or k)..(LBZ[k] and "" or "no LBZ[k]"))
 		if (Overachiever_Debug and not LBZ[k]) then  print("POSSIBLE ERROR - no LBZ lookup found for "..k);  end
 	  end
@@ -1193,7 +1430,7 @@ do
   end
   addtolist(suggested, ACHID_INSTANCES, ACHID_INSTANCES_NORMAL, ACHID_INSTANCES_HEROIC,
             ACHID_INSTANCES_10, ACHID_INSTANCES_25, ACHID_INSTANCES_10_NORMAL, ACHID_INSTANCES_25_NORMAL,
-            ACHID_INSTANCES_10_HEROIC, ACHID_INSTANCES_25_HEROIC)
+            ACHID_INSTANCES_10_HEROIC, ACHID_INSTANCES_25_HEROIC, ACHID_INSTANCES_MYTHIC)
   addtolist(suggested, ACHID_ZONE_MISC); -- Required for "unlisted" zones like Molten Front (doesn't appear in GetMapContinents/GetMapZones scan)
   addtolist = nil
   -- Arrange into alphabetically-sorted array:
@@ -1204,7 +1441,7 @@ do
 	--print("adding "..k)
   end
   wipe(suggested)
-  WHATWHAT = LocationsList
+  --WHATWHAT = LocationsList
   sort(LocationsList)
   -- Cross-reference by lowercase key to place in the array:
   for i,v in ipairs(LocationsList) do  LocationsList[strlower(v)] = i;  end
@@ -1379,6 +1616,10 @@ diffdrop = TjDropDownMenu.CreateDropDown("Overachiever_SuggestionsFrameDiffDrop"
   {
     text = L.SUGGESTIONS_DIFFICULTY_HEROIC,
     value = 2
+  },
+  {
+    text = L.SUGGESTIONS_DIFFICULTY_MYTHIC,
+    value = 3
   };
 })
 diffdrop:SetLabel(L.SUGGESTIONS_DIFFICULTY, true)
@@ -1421,6 +1662,32 @@ end)
 
 -- MISCELLANEOUS
 ----------------------------------------------------
+
+function Overachiever.GetCurrentMapID()
+  local prevContinent
+  local prevMap, isContinent = GetCurrentMapAreaID()
+  local prevLevel = GetCurrentMapDungeonLevel()
+  if (not prevMap or prevMap < 0 or isContinent) then
+    prevContinent = GetCurrentMapContinent()
+  end
+
+  SetMapToCurrentZone()
+  local id = GetCurrentMapAreaID()
+
+  if (prevContinent) then
+    SetMapZoom(prevContinent)
+  else
+    local level = GetCurrentMapDungeonLevel()
+    if (prevMap and (prevMap ~= id or (prevLevel ~= level and prevLevel == 0))) then
+      SetMapByID(prevMap)
+    end
+    if (prevLevel and prevLevel > 0) then
+      SetDungeonMapLevel(prevLevel)
+    end
+  end
+  return id
+end
+
 
 --[[
 local function grabFromCategory(cat, ...)

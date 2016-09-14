@@ -1,4 +1,4 @@
--- $Id: AtlasOptions.lua 22 2016-05-16 17:06:45Z arith $
+-- $Id: AtlasOptions.lua 77 2016-08-14 16:51:12Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -148,7 +148,7 @@ function AtlasOptions_ToggleColoringDropDown()
 end
 ]]
 
-local function Reset_Dropdowns()
+local function AtlasReset_Dropdowns()
 	AtlasOptions.AtlasZone = 1;
 	AtlasOptions.AtlasType = 1;
 	Atlas_PopulateDropdowns();
@@ -161,7 +161,7 @@ end
 function AtlasOptions_Reset()
 	Atlas_FreshOptions();
 	--AtlasOptions_ResetPosition(); --also calls AtlasOptions_Init()
-	Reset_Dropdowns(); --also calls Atlas_Refresh()
+	AtlasReset_Dropdowns(); --also calls Atlas_Refresh()
 	AtlasButton_Init();
 	Atlas_UpdateLock();
 end
@@ -242,7 +242,7 @@ function AtlasOptionsFrameDropDownCats_OnClick(self)
 	local thisID = self:GetID();
 	Lib_UIDropDownMenu_SetSelectedID(AtlasOptionsFrameDropDownCats, thisID);
 	AtlasOptions.AtlasSortBy = thisID;
-	Reset_Dropdowns();
+	AtlasReset_Dropdowns();
 end
 
 function AtlasOptions_OnMouseWheel(self, delta)

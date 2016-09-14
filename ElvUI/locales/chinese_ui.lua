@@ -61,6 +61,11 @@ L["says"] = "说"
 L["whispers"] = "密语"
 L["yells"] = "大喊"
 
+--DataBars
+L["Current Level:"] = "当前等级:"
+L["Honor XP:"] = "荣誉值:"
+L["Honor Remaining:"] = "荣誉值剩余:"
+
 --DataTexts
 L["(Hold Shift) Memory Usage"] = "(按住Shift) 内存占用"
 L["AP"] = "攻击强度"
@@ -82,7 +87,7 @@ L["Earned:"] = "赚取:"
 L["Feet"] = "脚"
 L["Friends List"] = "好友列表"
 L["Friends"] = "好友" --Also in Skins
-L["Gold:"] = true;
+L["Gold:"] = "金:"
 L["goldabbrev"] = "|cffffd700金|r"
 L["Hands"] = "手"
 L["Head"] = "头"
@@ -102,6 +107,7 @@ L["Offhand"] = "副手"
 L["Profit:"] = "利润:"
 L["Reset Data: Hold Shift + Right Click"] = "重置数据: 按住 Shift + 右键点击"
 L["Saved Raid(s)"] = "已有进度的副本"
+L["Saved Dungeon(s)"] = true;
 L["Server: "] = "服务器: "
 L["Session:"] = "本次登入:"
 L["Shoulder"] = "肩"
@@ -118,6 +124,7 @@ L["Waist"] = "腰"
 L["Wrist"] = "护腕"
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = "|cffFFFFFF左键点击:|r 更改当前专精"
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = "|cffFFFFFF右键点击:|r 更改拾取专精"
+L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = true;
 
 --DebugTools
 L["%s: %s tried to call the protected function '%s'."] = "%s: %s 尝试调用保护函数 '%s'."
@@ -229,7 +236,12 @@ L["Alternative Power"] = "特殊能量条"
 L["Archeology Progress Bar"] = "考古进度条"
 L["Arena Frames"] = "竞技场框架"
 L["Artifact Bar"] = "神器能量条"
+L["Bag Mover (Grow Down)"] = true;
+L["Bag Mover (Grow Up)"] = true;
+L["Bag Mover"] = true;
 L["Bags"] = "背包" --Also in DataTexts
+L["Bank Mover (Grow Down)"] = true;
+L["Bank Mover (Grow Up)"] = true;
 L["Bar "] = "动作条 " --Also in ActionBars
 L["BNet Frame"] = "战网提示资讯"
 L["Boss Button"] = "特殊技能键"

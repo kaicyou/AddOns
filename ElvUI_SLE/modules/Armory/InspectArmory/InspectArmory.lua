@@ -1922,7 +1922,13 @@ function IA:InspectFrame_DataSetting(DataTable)
 						]]
 						if E.db.sle.Armory.Inspect.NoticeMissing ~= false then
 							if not Slot.IsEnchanted and Info.Armory_Constants.EnchantableSlots[SlotName] and Slot.Gradation.ItemEnchant then 
-								if SlotName ~= 'SecondaryHandSlot' or ((ItemType == "INVTYPE_WEAPONOFFHAND" or ItemType == "INVTYPE_WEAPON") and (Slot.ILvL and Slot.ILvL <= 750) ) then
+								local isValid = false
+								local isWeapon = Info.Armory_Constants.WeaponTypes[ItemType]
+								local isArtifact = (ItemRarity == 6)
+								if (isWeapon and not isArtifact) or (SlotName ~= 'SecondaryHandSlot' and not isWeapon) then
+									isValid = true
+								end
+								if isValid then
 									ErrorDetected = true
 									Slot.EnchantWarning:Show()
 									

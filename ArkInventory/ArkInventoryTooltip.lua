@@ -350,45 +350,65 @@ function ArkInventory.TooltipGetItem( tooltip )
 	
 end
 	
-function ArkInventory.TooltipFind( tooltip, TextToFind, IgnoreLeft, IgnoreRight, CaseSensitive, maxDepth )
+function ArkInventory.TooltipFind( tooltip, TextToFind, IgnoreLeft, IgnoreRight, CaseSensitive, maxDepth, BaseOnly )
 	
+	local TextToFind = TextToFind
 	if not TextToFind or string.trim( TextToFind ) == "" then
 		return false
 	end
 	
 	local IgnoreLeft = IgnoreLeft or false
 	local IgnoreRight = IgnoreRight or false
+	
 	local CaseSensitive = CaseSensitive or false
+	if not CaseSensitive then
+		TextToFind = string.lower( TextToFind )
+	end
+	
+	local maxDepth = maxDepth or 0
+	local BaseOnly = BaseOnly or false
 	
 	local obj, txt
 	
 	for i = 2, ArkInventory.TooltipNumLines( tooltip ) do
 		
-		if maxDepth and ( i > maxDepth ) then return end
+		if maxDepth > 0 and i > maxDepth then return end
 		
-		if not IgnoreLeft then
-			obj = _G[string.format( "%s%s%s", tooltip:GetName( ), "TextLeft", i )]
-			if obj and obj:IsShown( ) then
-				txt = obj:GetText( )
-				if txt then
-					
-					--ArkInventory.Output( "L[", i, "] = [", txt, "]" )
-					
+		obj = _G[string.format( "%s%s%s", tooltip:GetName( ), "TextLeft", i )]
+		if obj and obj:IsShown( ) then
+			
+			txt = obj:GetText( )
+			if txt then
+				
+				--ArkInventory.Output( "L[", i, "] = [", txt, "]" )
+				
+				if BaseOnly and ( string.match( txt, "^%s+$" ) or string.match( txt, "^\n" ) ) then
+					-- recipies and patterns have a blank line between the item and what it creates
+					-- techniques have a newline character to break them up
+					return false
+				end
+				
+				if not IgnoreLeft then
+
 					if not CaseSensitive then
 						txt = string.lower( txt )
-						TextToFind = string.lower( TextToFind )
 					end
+					
 					if string.find( txt, TextToFind ) then
 						return string.find( txt, TextToFind )
 					end
 					
 				end
+				
 			end
+			
 		end
 		
 		if not IgnoreRight then
+			
 			obj = _G[string.format( "%s%s%s", tooltip:GetName( ), "TextRight", i )]
 			if obj and obj:IsShown( ) then
+				
 				txt = obj:GetText( )
 				if txt then
 					
@@ -396,14 +416,16 @@ function ArkInventory.TooltipFind( tooltip, TextToFind, IgnoreLeft, IgnoreRight,
 					
 					if not CaseSensitive then
 						txt = string.lower( txt )
-						TextToFind = string.lower( TextToFind )
 					end
+					
 					if string.find( txt, TextToFind ) then
 						return string.find( txt, TextToFind )
 					end
 					
 				end
+				
 			end
+			
 		end
 		
 	end
@@ -434,17 +456,17 @@ function ArkInventory.TooltipGetLine( tooltip, i )
 	
 end
 	
-function ArkInventory.TooltipContains( tooltip, TextToFind, IgnoreLeft, IgnoreRight, CaseSensitive )
-
-	if ArkInventory.TooltipFind( tooltip, TextToFind, IgnoreLeft, IgnoreRight, CaseSensitive ) then
+function ArkInventory.TooltipContains( tooltip, TextToFind, IgnoreLeft, IgnoreRight, CaseSensitive, BaseOnly )
+	
+	if ArkInventory.TooltipFind( tooltip, TextToFind, IgnoreLeft, IgnoreRight, CaseSensitive, BaseOnly ) then
 		return true
 	else
 		return false
 	end
-
+	
 end
 
-function ArkInventory.TooltipCanUse( tooltip )
+function ArkInventory.TooltipCanUse( tooltip, ignoreknown )
 
 	local l = { "TextLeft", "TextRight" }
 	
@@ -464,16 +486,27 @@ function ArkInventory.TooltipCanUse( tooltip )
 				if string.match( txt, "^%s+$" ) or string.match( txt, "^\n" ) then
 					-- recipies and patterns have a blank line between the item and what it creates so check from the last line upwards now
 					-- techniques have a newline character to break them up
-					return ArkInventory.TooltipCanUseBackwards( tooltip )
+					return ArkInventory.TooltipCanUseBackwards( tooltip, ignoreknown )
 				end
 				
 				local r, g, b = obj:GetTextColor( )
 				local c = string.format( "%02x%02x%02x", r * 255, g * 255, b * 255 )
-				if ( c == "fe1f1f" ) then
-					if not ( ( txt == ITEM_DISENCHANT_NOT_DISENCHANTABLE ) or ( txt == RETRIEVING_ITEM_INFO ) ) then
+				if c == "fe1f1f" then
+					
+					if txt == ITEM_SPELL_KNOWN then
+						
+						--ArkInventory.Output( "line[", i, "]=[", txt, "] forwards" )
+						if not ignoreknown then
+							return false
+						end
+					
+					elseif not ( txt == ITEM_DISENCHANT_NOT_DISENCHANTABLE or txt == RETRIEVING_ITEM_INFO ) then
+						
 						--ArkInventory.Output( "line[", i, "]=[", txt, "] forwards" )
 						return false
+						
 					end
+					
 				end
 
 			end
@@ -484,7 +517,7 @@ function ArkInventory.TooltipCanUse( tooltip )
 	
 end
 
-function ArkInventory.TooltipCanUseBackwards( tooltip )
+function ArkInventory.TooltipCanUseBackwards( tooltip, ignoreknown )
 
 	local l = { "TextLeft", "TextRight" }
 	
@@ -505,11 +538,22 @@ function ArkInventory.TooltipCanUseBackwards( tooltip )
 				
 				local r, g, b = obj:GetTextColor( )
 				local c = string.format( "%02x%02x%02x", r * 255, g * 255, b * 255 )
-				if ( c == "fe1f1f" ) then
-					if not ( ( txt == ITEM_DISENCHANT_NOT_DISENCHANTABLE ) or ( txt == RETRIEVING_ITEM_INFO ) ) then
+				if c == "fe1f1f" then
+					
+					if txt == ITEM_SPELL_KNOWN then
+						
+						--ArkInventory.Output( "line[", i, "]=[", txt, "] backwards" )
+						if not ignoreknown then
+							return false
+						end
+					
+					elseif not ( txt == ITEM_DISENCHANT_NOT_DISENCHANTABLE or txt == RETRIEVING_ITEM_INFO ) then
+						
 						--ArkInventory.Output( "line[", i, "]=[", txt, "] backwards" )
 						return false
+						
 					end
+					
 				end
 
 			end

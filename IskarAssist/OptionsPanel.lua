@@ -18,12 +18,12 @@ function RA.OpenMainOptions (plugin)
 	end
 
 	RA.db.options_panel = RA.db.options_panel or {}
-	local f = RA:CreateStandardFrame (UIParent, 1000, 500, "Iskar Assist", "RaidAssistOptionsPanel", RA.db.options_panel)
+	local f = RA:CreateStandardFrame (UIParent, 1000, 500, "Raid Assist", "RaidAssistOptionsPanel", RA.db.options_panel)
 	
 	local label_plugins = RA:CreateLabel (f, "Plugins:")
 	label_plugins:SetPoint (10, -35)	
 	local label_mods = RA:CreateLabel (f, "Options Panel For:")
-	label_mods:SetPoint (10, -335)
+	label_mods:SetPoint (10, -345)
 	
 	f.Menu = {}
 	f.Mods = {}
@@ -35,7 +35,7 @@ function RA.OpenMainOptions (plugin)
 	f.Mods.button_width = 140
 	f.Mods.button_height = 16
 	f.Mods.x = 10
-	f.Mods.y = -350
+	f.Mods.y = -360
 	f.Main.x = 190
 	f.Main.y = -40
 	f.AllOptionsButtons = {}

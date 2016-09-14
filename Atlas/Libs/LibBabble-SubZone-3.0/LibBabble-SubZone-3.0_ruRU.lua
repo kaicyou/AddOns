@@ -1,7 +1,7 @@
 ﻿ --[[
-$Id: LibBabble-SubZone-3.0_ruRU.lua 189 2016-07-19 07:43:10Z arith $
+$Id: LibBabble-SubZone-3.0_ruRU.lua 192 2016-08-31 14:08:00Z arith $
 Name: LibBabble-SubZone-3.0
-Revision: $Rev: 189 $
+Revision: $Rev: 192 $
 Maintainers: arith, dynaletik
 Last updated by: $Author: arith $
 Website: http://www.wowace.com/addons/libbabble-subzone-3-0/
@@ -14,6 +14,7 @@ local lib = private["LibBabble-SubZone-3.0-LoadingLib"]
 if not lib or GetLocale() ~= "ruRU" then return end
 
 lib:SetCurrentTranslations 
+
 {
 	["7th Legion Base Camp"] = "Лагерь 7-го легиона",
 	["7th Legion Front"] = "Передовая 7-го легиона",
@@ -1093,8 +1094,8 @@ lib:SetCurrentTranslations
 	["Dragon's Fall"] = "Драконья погибель",
 	["Dragon's Mouth"] = "Драконья Пасть",
 	["Dragon Soul"] = "Душа Дракона",
-	["Dragon Soul Raid - East Sarlac"] = "Рейд Душа Дракона - Восточный сарлак",
-	["Dragon Soul Raid - Wyrmrest Temple Base"] = "Рейд Душа Дракона - Храм Драконьего Покоя",
+	["Dragon Soul Raid - East Sarlac"] = "Рейд \"Душа Дракона\" - Восточный сарлак",
+	["Dragon Soul Raid - Wyrmrest Temple Base"] = "Рейд \"Душа Дракона\" - Храм Драконьего Покоя",
 	["Dragonspine Peaks"] = "Драконьи пики",
 	["Dragonspine Ridge"] = "Драконий хребет",
 	["Dragonspine Tributary"] = "Кладовая Драконьего Хребта",
@@ -1201,9 +1202,11 @@ lib:SetCurrentTranslations
 	["Earth Song Falls"] = "Поющие водопады",
 	["Earth Song Gate"] = "Врата Поющих водопадов",
 	["Eastern Bridge"] = "Восточный мост",
+	["Eastern Highmountain"] = "Крутогорье (восток)",
 	["Eastern Kingdoms"] = "Восточные королевства",
 	["Eastern Plaguelands"] = "Восточные Чумные земли",
 	["Eastern Strand"] = "Восточное побережье",
+	["Eastern Suramar"] = "Сурамар (восток)",
 	["Eastern Transept"] = "Восточный трансепт",
 	["East Garrison"] = "Восточный гарнизон",
 	["Eastmoon Ruins"] = "Руины Восточной Луны",
@@ -2145,7 +2148,7 @@ lib:SetCurrentTranslations
 	["Invasion: Azshara"] = "Вторжение: Азшара",
 	["Invasion: Dalaran"] = "Вторжение: Даларан",
 	["Invasion: Dun Morogh"] = "Вторжение: Дун Морог",
-	["Invasion: Hillsbrad Foothills"] = "Вторжение: Предгорья Хилсбрада",
+	["Invasion: Hillsbrad Foothills"] = "Вторжение: предгорья Хилсбрада",
 	["Invasion: Mulgore"] = "Вторжение: Мулгор",
 	["Invasion: Northern Barrens"] = "Вторжение: Северные Степи",
 	["Invasion Point: Annihilator"] = "Точка вторжения: Аннигилятор",
@@ -2230,6 +2233,7 @@ lib:SetCurrentTranslations
 	["Jeff NW Quadrant"] = "Джефф СЗ Квадрант",
 	["Jeff SE Quadrant"] = "Джефф ЮВ Квадрант",
 	["Jeff SW Quadrant"] = "Джефф ЮЗ Квадрант",
+	["Jeremy's Test Scenario"] = "Вторжение Легиона",
 	["Jerod's Landing"] = "Лагерь Джерода",
 	["Jintha'Alor"] = "Джинта'Алор",
 	["Jintha'kalar"] = "Джинта'калар",
@@ -2566,6 +2570,7 @@ lib:SetCurrentTranslations
 	Mardum = "Мардум",
 	["Mardum Scenario"] = "Сценарий в Мардуме",
 	["Mardum, the Shattered Abyss"] = "Мардум, Расколотая Бездна",
+	["Mardum Treasure Scenario"] = "Сценарий \"Сокровище Мардума\"",
 	["Mar'gok's Overwatch"] = "Бастион Мар'гока",
 	-- ["Margoss' Retreat"] = "",
 	["Margoss's Retreat"] = "Хижина Маргосса",
@@ -3065,6 +3070,7 @@ lib:SetCurrentTranslations
 	["Propland - Dev Only"] = "Propland - Dev Only",
 	["Prospector's Point"] = "Лагерь горняков",
 	["Protectorate Watch Post"] = "Застава Стражей Протектората",
+	["Prototype Scenario"] = "Сценарий: Прототип",
 	["Proving Grounds"] = "Арена испытаний",
 	["Proving Grounds: Select a Trial"] = "Арена испытаний: выбор испытания",
 	["Purespring Cavern"] = "Пещера Чистого Источника",
@@ -3265,6 +3271,7 @@ lib:SetCurrentTranslations
 	["Ruby Dragonshrine"] = "Рубиновое святилище драконов",
 	["Ruby Lake"] = "Рубиновое озеро",
 	["Ruined Approach"] = "Разрушенный проход",
+	["Ruined City Post 01"] = "Ruined City Post 01",
 	["Ruined Court"] = "Разрушенный двор",
 	["Ruined Passage"] = "Разрушенный проход",
 	["Ruins of Aboraz"] = "Руины Абораза",
@@ -3423,6 +3430,7 @@ lib:SetCurrentTranslations
 	["Scarred Vale"] = "Израненный дол",
 	["Scenario - Black Ox Temple"] = "Сценарий - Храм Черного Быка",
 	["Scenario - Mogu Ruins"] = "Сценарий - Руины могу",
+	["Scenario Template"] = "Шаблон сценария",
 	["Scenic Overlook"] = "Утес дивного вида",
 	["Schnottz's Frigate"] = "Фрегат Шнотца",
 	["Schnottz's Hostel"] = "Таверна Шнотца",
@@ -4002,8 +4010,8 @@ lib:SetCurrentTranslations
 	["Stranglethorn Vale"] = "Тернистая долина",
 	Stratholme = "Стратхольм",
 	["Stratholme Entrance"] = "Стратхольм",
-	["Stratholme - Main Gate"] = "Стратхольм – Главные врата",
-	["Stratholme - Service Entrance"] = "Стратхольм – Черный ход",
+	["Stratholme - Main Gate"] = "Стратхольм - Главные врата",
+	["Stratholme - Service Entrance"] = "Стратхольм - Черный ход",
 	["Stratholme Service Entrance"] = "Стратхольм - черный ход",
 	["Stromgarde Keep"] = "Крепость Стромгард",
 	["Strongarm Airstrip"] = "Взлетная полоса Сильной Руки",
@@ -4208,6 +4216,9 @@ lib:SetCurrentTranslations
 	["Terror's Cave"] = "Пещера Ужаса",
 	["Terrorweb Tunnel"] = "Туннель Ужаса",
 	["Terror Wing Path"] = "Тропа Крылатого Ужаса",
+	TEST = "ТЕСТ",
+	-- ["Test Faction Criteria"] = "",
+	-- ["Test Scenario"] = "",
 	["Tethris Aran"] = "Тефрис-Аран",
 	["Thaelin's Workshop"] = "Мастерская Телина",
 	Thalanaar = "Таланаар",
@@ -4472,7 +4483,7 @@ lib:SetCurrentTranslations
 	["The Deep Reaches"] = "Глубокие плёсы",
 	["The Deep Roads"] = "Глубинные дороги",
 	["The Deepwild"] = "Дикие заросли",
-	["The Defense of Netherlight Temple"] = "Защита Храма света Пустоты",
+	["The Defense of Netherlight Temple"] = "Оборона Храма света Пустоты",
 	["The Defiant"] = "\"Непокорный\"",
 	["The Defiled Chapel"] = "Оскверненная часовня",
 	["The Demon Ward"] = "Блок демонов",
@@ -4582,7 +4593,7 @@ lib:SetCurrentTranslations
 	["The Forlorn Mine"] = "Заброшенный рудник",
 	["The Forsaken Front"] = "Передовая Отрекшихся",
 	["The Foul Pool"] = "Смрадный пруд",
-	["The Fourth Horseman"] = "Четвертый всадник",
+	["The Fourth Horseman"] = "Четвертый Всадник",
 	["The Frigid Tomb"] = "Стылый склеп",
 	["The Frost and the Flame"] = "Лед и пламень",
 	["The Frost Queen's Lair"] = "Логово Королевы Льда",
@@ -5046,9 +5057,9 @@ lib:SetCurrentTranslations
 	["The Sparkling Crawl"] = "Сверкающий ход",
 	["The Spark of Imagination"] = "Искра Воображения",
 	["The Spawning Glen"] = "Грибная поляна",
-	["The Spear in the Shadow"] = "Копье во тьме",
+	["The Spear in the Shadow"] = "Копье среди теней",
 	["The Spire"] = "Шпиль",
-	-- ["The Splintered Fleet"] = "",
+	["The Splintered Fleet"] = "Разбитый флот",
 	["The Splintered Path"] = "Валежный лес",
 	["The Spring Road"] = "Весенняя тропа",
 	["The Stadium"] = "Ристалище",
@@ -5475,6 +5486,7 @@ lib:SetCurrentTranslations
 	Ulduar = "Ульдуар",
 	["Ulduar Raid - Interior - Insertion Point"] = "Ульдуар рейд - внутреннее помещение - точка входа",
 	["Ulduar Raid - Iron Concourse"] = "Ульдуар рейд - Железный двор",
+	["Ulduar Warrior Scenario"] = "Ульдуар: сценарий для воина",
 	Uldum = "Ульдум",
 	["Uldum Phase Oasis"] = "Ульдум фаза оазиса",
 	["Uldum - Phase Wrecked Camp"] = "Uldum - Phase Wrecked Camp",
@@ -5739,6 +5751,7 @@ lib:SetCurrentTranslations
 	["Western Bridge"] = "Западный мост",
 	["Western Plaguelands"] = "Западные Чумные земли",
 	["Western Strand"] = "Западное побережье",
+	["Western Suramar"] = "Сурамар (запад)",
 	["Western Transept"] = "Западный трансепт",
 	Westersea = "Западное море",
 	Westfall = "Западный Край",
@@ -5962,5 +5975,4 @@ lib:SetCurrentTranslations
 	["Zun'watha"] = "Зун'вата",
 	["Zuuldaia Ruins"] = "Руины Зуулдая",
 }
-
 

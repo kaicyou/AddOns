@@ -1,4 +1,4 @@
--- $Id: AtlasJournalEncounter.lua 62 2016-07-26 15:01:58Z arith $
+-- $Id: AtlasJournalEncounter.lua 91 2016-09-02 17:56:36Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -29,7 +29,7 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Atlas");
 local BB = Atlas_GetLocaleLibBabble("LibBabble-Boss-3.0");
 
-function Atlas_JournalEncounter_InstanceButton_OnClick(frame)
+function Atlas_AdventureJournalButton_OnClick(frame)
 	local zoneID = ATLAS_DROPDOWNS[AtlasOptions.AtlasType][AtlasOptions.AtlasZone];
 	local data = AtlasMaps;
 	local base = data[zoneID];
@@ -41,9 +41,10 @@ function Atlas_JournalEncounter_InstanceButton_OnClick(frame)
 	if ( not EncounterJournal or not EncounterJournal:IsShown() ) then
 		ToggleEncounterJournal();
 	end
-	EncounterJournal_ListInstances();
+	-- EncounterJournal_ListInstances();
 	EncounterJournal_DisplayInstance(base.JournalInstanceID);
 
+	Atlas_Toggle();
 	if (not EncounterJournal:IsShown()) then
 		EncounterJournal:Show();
 	else
@@ -52,7 +53,7 @@ function Atlas_JournalEncounter_InstanceButton_OnClick(frame)
 	end
 end
 
-function Atlas_JournalEncounter_EncounterButton_OnClick(encounterID)
+function Atlas_AdventureJournal_EncounterButton_OnClick(encounterID)
 	local zoneID = ATLAS_DROPDOWNS[AtlasOptions.AtlasType][AtlasOptions.AtlasZone];
 	local data = AtlasMaps;
 	local base = data[zoneID];
@@ -67,10 +68,11 @@ function Atlas_JournalEncounter_EncounterButton_OnClick(encounterID)
 	if ( not EncounterJournal or not EncounterJournal:IsShown() ) then
 		ToggleEncounterJournal();
 	end
-	EncounterJournal_ListInstances();
+	-- EncounterJournal_ListInstances();
 	EncounterJournal_DisplayInstance(base.JournalInstanceID);
 	EncounterJournal_DisplayEncounter(encounterID);
 
+	Atlas_Toggle();
 	if (not EncounterJournal:IsShown()) then
 		EncounterJournal:Show();
 	else
@@ -80,7 +82,7 @@ function Atlas_JournalEncounter_EncounterButton_OnClick(encounterID)
 end
 
 
-function Atlas_JournalEncounter_InstanceButton_OnEnter(frame)
+function AtlasFrameAdventureJournalButton_OnEnter(frame)
 	local zoneID = ATLAS_DROPDOWNS[AtlasOptions.AtlasType][AtlasOptions.AtlasZone];
 	local data = AtlasMaps;
 	local base = data[zoneID];
@@ -95,7 +97,7 @@ function Atlas_JournalEncounter_InstanceButton_OnEnter(frame)
 			GameTooltip:SetText(name);
 			GameTooltipTextLeft1:SetTextColor(1, 1, 1);
 			GameTooltip:AddLine(description, nil, nil, nil, true);
-			GameTooltip:AddLine(L["Click to open Dungeon Journal window."], 0.5, 0.5, 1, true);
+			GameTooltip:AddLine(L["ATLAS_OPEN_ADVENTURE"], 0.5, 0.5, 1, true);
 			GameTooltip:Show();
 		end
 	else
@@ -143,3 +145,44 @@ function Atlas_GetBossName(bossname, encounterID, creatureIndex)
 
 	return bossname;
 end
+
+function Atlas_EncounterJournal_Binding()
+	local button = _G["AtlasToggleFromEncounterJournal"];
+	if (not button) then
+		button = CreateFrame("Button","AtlasToggleFromEncounterJournal", EncounterJournal);
+		button:SetWidth(32);
+		button:SetHeight(32);
+		
+		button:SetPoint("TOPRIGHT", EncounterJournalCloseButton, -23, 0, "TOPRIGHT"); 
+		button:SetNormalTexture("Interface\\AddOns\\Atlas\\Images\\AtlasButton-Up");
+		button:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD");
+
+		button:SetScript("OnEnter", function(self)
+			GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
+			GameTooltip:SetText(L["ATLAS_CLICK_TO_OPEN"], nil, nil, nil, nil, 1);
+		end);
+		button:SetScript("OnLeave", function(self) GameTooltip:Hide(); end);
+		button:SetScript("OnClick",AtlasToggleFromEncounterJournal_OnClick);
+	end
+end
+
+function AtlasFrameAdventureJournalMapButton_OnClick()
+	local zoneID = ATLAS_DROPDOWNS[AtlasOptions.AtlasType][AtlasOptions.AtlasZone];
+	local data = AtlasMaps;
+	local base = data[zoneID];
+
+	HideUIPanel(AtlasFrame);
+	WorldMapFrame.fromJournal = true;
+	ShowUIPanel(WorldMapFrame);
+	if (base.WorldMapID) then
+		SetMapByID(base.WorldMapID);
+	end
+	if (base.DungeonLevel) then
+		SetDungeonMapLevel(base.DungeonLevel);
+	end
+end
+
+function AtlasFrameLarge_OnShow(self)
+	AtlasMap_AddNPCButtonLarge();
+end
+

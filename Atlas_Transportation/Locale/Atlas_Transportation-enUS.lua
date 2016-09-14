@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation-enUS.lua 31 2016-08-13 15:18:32Z arith $
+-- $Id: Atlas_Transportation-enUS.lua 42 2016-09-07 18:32:12Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -28,49 +28,63 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("Atlas_Transportation", "enUS", true);
 
 if L then
-
-L["Abandoned Kite"] = "Abandoned Kite"
-L["Airship"] = "Airship"
-L["Blue"] = "Blue"
-L["Climbing Rope"] = "Climbing Rope"
-L["Death Knight Only"] = "Death Knight Only"
-L["Druid-only"] = "Druid-only"
-L["From sea level to ground level"] = "From sea level to ground level"
-L["Green"] = "Green"
-L["Gryphon"] = "Gryphon"
-L["Gryphon Master"] = "Gryphon Master"
-L["Legend"] = "Legend"
-L["Nutral"] = "Nutral"
-L["Only available after winning the PvP battle"] = "Only available after winning the PvP battle"
-L["Orange"] = "Orange"
-L["Orb of Translocation"] = "Orb of Translocation"
-L["Portals"] = "Portals"
-L["Portal / Waygate Path to the destination"] = "Portal / Waygate Path to the destination"
-L["Purple"] = "Purple"
-L["Rappelling Rope"] = "Rappelling Rope"
-L["Red"] = "Red"
-L["Requires honored faction with Sha'tari Skyguard"] = "Requires honored faction with Sha'tari Skyguard"
-L["Require to complete \"Meet the Scout\" quest line first."] = "Require to complete \"Meet the Scout\" quest line first."
-L["Seahorse"] = "Seahorse"
-L["Shado-Pan Rope"] = "Shado-Pan Rope"
-L["Ship / Zeppelin sailing path to destination"] = "Ship / Zeppelin sailing path to destination"
-L["South of the path along Lake Elune'ara"] = "South of the path along Lake Elune'ara"
-L["Special transportation"] = "Special transportation"
-L["Taxi Nodes"] = "Taxi Nodes"
-L["The Bogpaddle Bullet"] = "The Bogpaddle Bullet"
-L["Transportation Maps"] = "Transportation Maps"
-L["Transporter"] = "Transporter"
-L["Transporters by the sea and on the cliff"] = "Transporters by the sea and on the cliff"
-L["Warning: Drop"] = "Warning: Drop"
-L["West of the path to Timbermaw Hold"] = "West of the path to Timbermaw Hold"
-L["Whispercloud's Balloon"] = "Whispercloud's Balloon"
-L["White"] = "White"
-L["Wind Rider"] = "Wind Rider"
-L["Wind Rider Master"] = "Wind Rider Master"
-L["Won't be available once the Battle for Andorhal chain is finished."] = "Won't be available once the Battle for Andorhal chain is finished."
-L["Yellow"] = "Yellow"
-L["Zeppelin Towers"] = "Zeppelin Towers"
-L["ToC/Description"] = "Transportation Maps"
-L["ToC/Title"] = "Atlas |r|cFF0099FF[Transportation]|r"
-
+	-- Colors for legend description
+	L["White"] 	= "White";
+	L["Red"] 	= "Red";
+	L["Purple"] 	= "Purple";
+	L["Green"] 	= "Green";
+	L["Orange"] 	= "Orange";
+	L["Blue"] 	= "Blue";
+	L["Yellow"] 	= "Yellow";
+	-- Class specific nodes
+	L["Druid Only"] 	= "Druid Only";			-- Taxi node in Nighthaven, Moonglade which is only for Druid
+	L["Death Knight Only"] 	= "Death Knight Only";		-- Taxi node in Acherus: The Ebon Hold, which is only for Death Knight
+	L["Hunter Only"] 	= "Hunter Only";
+	L["Class Specific Only"] = "Class Specific Only";
+	L["Warrior's landing / jumping point (from or back to Skyhold)"] = "Warrior's landing / jumping point (from or back to Skyhold)";
+	-- Dalaran
+	L["Class Order Halls"] 			= "Class Order Halls";
+	L["Portal to the Maelstrom"] 		= "Portal to the Maelstrom"; -- Shaman
+	L["Portal to Netherlight Temple"] 	= "Portal to Netherlight Temple"; -- Priest
+	L["Portal to Dreadscar Rift"] 		= "Portal to Dreadscar Rift" -- Warlock
+	L["Jump to Skyhold"] 			= "Jump to Skyhold"; -- Warrior
+	L["Illidari Gateway"] 			= "Illidari Gateway"; -- Demon Hunter
+	L["Talua <Eagle Keeper>"] 		= "Talua <Eagle Keeper>"; -- NPC of Hunter as flight master in Dalaran's Krasus' Landing
+	L["Flight to Trueshot Lodge"] 		= "Flight to Trueshot Lodge"; -- Hunter
+	L["Portal to Sanctum of Light"] 	= "Portal to Sanctum of Light"; -- Paladin
+	L["Connection to the Hall of Shadows"] 	= "Connection to the Hall of Shadows"; -- Rogue
+	L["Aludane Whitecloud <Flight Master>"] = "Aludane Whitecloud <Flight Master>";
+	-- Others
+	L["The Bogpaddle Bullet"] = "The Bogpaddle Bullet";
+	L["Legend"] = "Legend";				-- The chart's legend, for example, the purple line means the portal's path
+	L["Gryphon"] = "Gryphon";
+	L["Only available after winning the PvP battle"] = "Only available after winning the PvP battle";
+	L["Orb of Translocation"] = "Orb of Translocation";	-- The Orb in Silvermonn City and Ruins of Lordaeron
+	L["Portals"] = "Portals";
+	L["Portal / Waygate Path to the destination"] = "Portal / Waygate Path to the destination";
+	L["Ship / Zeppelin sailing path to destination"] = "Ship / Zeppelin sailing path to destination";
+	L["Requires honored faction with Sha'tari Skyguard"] = "Requires honored faction with Sha'tari Skyguard";
+	L["Seahorse"] = "Seahorse";
+	L["South of the path along Lake Elune'ara"] = "South of the path along Lake Elune'ara";
+	L["Special transportation"] = "Special transportation";
+	L["Taxi Nodes"] = "Taxi Nodes";
+	L["Transportation Maps"] = "Transportation Maps";
+	L["Transporter"] = "Transporter";			-- The NPC who can transport you to other place
+	L["Transporters by the sea and on the cliff"] = "Transporters by the sea and on the cliff"; -- The transporters (machine) can be found at Fuselight-by-the-Sea
+	L["West of the path to Timbermaw Hold"] = "West of the path to Timbermaw Hold";
+	L["Wind Rider"] = "Wind Rider";
+	L["Won't be available once the Battle for Andorhal chain is finished."] = "Won't be available once the Battle for Andorhal chain is finished."; -- After quest "Alas, Andorhal" (27206) is completed.
+	L["Zeppelin Towers"] = "Zeppelin Towers";
+	L["Climbing Rope"] = "Climbing Rope";
+	L["Rappelling Rope"] = "Rappelling Rope";
+	L["Abandoned Kite"] = "Abandoned Kite";
+	L["From sea level to ground level"] = "From sea level to ground level";
+	L["Whispercloud's Balloon"] = "Whispercloud's Balloon";
+	L["Shado-Pan Rope"] = "Shado-Pan Rope"; -- 66390
+	L["Require to complete \"Meet the Scout\" quest line first."] = "Require to complete \"Meet the Scout\" quest line first.";
+	L["Warning: Drop"] = "Warning: Drop"; -- In Dalaran (Legion - Broken Isles), inside teh Chamber of the Guardian, the portal to Dalaran Crater will drop you in the sky so there is a sign to warn you that
+	L["Nutral"] = "Nutral";
+	L["Airship"] = "Airship";
+	L["Wind Rider Master"] = "Wind Rider Master";
+	L["Gryphon Master"] = "Gryphon Master";
 end

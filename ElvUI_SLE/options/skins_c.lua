@@ -7,7 +7,7 @@ local function configTable()
 		order = 30,
 		type = "group",
 		name = L["Skins"],
-		childGroups = 'select',
+		childGroups = 'tab',
 		args = {
 			info = {
 				order = 1,
@@ -274,6 +274,11 @@ local function configTable()
 			get = function(info) return E.private.sle.skins.questguru[ info[#info] ] end,
 			set = function(info, value) E.private.sle.skins.questguru[ info[#info] ] = value; E:StaticPopup_Show("PRIVATE_RL") end,
 			args = {
+				enable = {
+					name = L["Enable"],
+					order = 1,
+					type = "toggle",
+				},
 				removeParchment = {
 					order = 1,
 					type = "toggle",

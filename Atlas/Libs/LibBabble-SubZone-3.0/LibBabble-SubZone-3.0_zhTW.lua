@@ -1,7 +1,7 @@
 ﻿ --[[
-$Id: LibBabble-SubZone-3.0_zhTW.lua 189 2016-07-19 07:43:10Z arith $
+$Id: LibBabble-SubZone-3.0_zhTW.lua 192 2016-08-31 14:08:00Z arith $
 Name: LibBabble-SubZone-3.0
-Revision: $Rev: 189 $
+Revision: $Rev: 192 $
 Maintainers: arith, dynaletik
 Last updated by: $Author: arith $
 Website: http://www.wowace.com/addons/libbabble-subzone-3-0/
@@ -14,6 +14,7 @@ local lib = private["LibBabble-SubZone-3.0-LoadingLib"]
 if not lib or GetLocale() ~= "zhTW" then return end
 
 lib:SetCurrentTranslations 
+
 {
 	["7th Legion Base Camp"] = "第七軍團營地",
 	["7th Legion Front"] = "第七軍團前線",
@@ -1201,9 +1202,11 @@ lib:SetCurrentTranslations
 	["Earth Song Falls"] = "地歌瀑布",
 	["Earth Song Gate"] = "地歌之門",
 	["Eastern Bridge"] = "東部橋樑",
+	["Eastern Highmountain"] = "高嶺東部",
 	["Eastern Kingdoms"] = "東部王國",
 	["Eastern Plaguelands"] = "東瘟疫之地",
 	["Eastern Strand"] = "東部海灘",
+	["Eastern Suramar"] = "蘇拉瑪爾東部",
 	["Eastern Transept"] = "東穿堂",
 	["East Garrison"] = "東部兵營",
 	["Eastmoon Ruins"] = "東月廢墟",
@@ -1774,7 +1777,7 @@ lib:SetCurrentTranslations
 	["Greyfang Enclave"] = "狼牙領區",
 	["Greymane Court"] = "葛雷邁恩宮廷",
 	["Greymane Manor"] = "葛雷邁恩莊園",
-	["Greymane's Gambit"] = "葛雷邁恩的行動",
+	["Greymane's Gambit"] = "葛雷邁恩的賭注",
 	["Greymane's Offensive"] = "葛雷邁恩進攻據點",
 	["Greymist Firth"] = "灰霧海灣",
 	["Grey Shoals"] = "灰色海岸",
@@ -2230,6 +2233,7 @@ lib:SetCurrentTranslations
 	["Jeff NW Quadrant"] = "Jeff NW Quadrant",
 	["Jeff SE Quadrant"] = "Jeff SE Quadrant",
 	["Jeff SW Quadrant"] = "Jeff SW Quadrant",
+	-- ["Jeremy's Test Scenario"] = "",
 	["Jerod's Landing"] = "傑羅德碼頭",
 	["Jintha'Alor"] = "辛薩羅",
 	["Jintha'kalar"] = "辛薩卡拉",
@@ -2566,6 +2570,7 @@ lib:SetCurrentTranslations
 	Mardum = "馬爾頓",
 	["Mardum Scenario"] = "馬爾頓事件",
 	["Mardum, the Shattered Abyss"] = "馬爾頓，碎裂深淵",
+	-- ["Mardum Treasure Scenario"] = "",
 	["Mar'gok's Overwatch"] = "瑪爾戈克堡壘",
 	-- ["Margoss' Retreat"] = "",
 	["Margoss's Retreat"] = "瑪苟斯的居所",
@@ -3065,6 +3070,7 @@ lib:SetCurrentTranslations
 	["Propland - Dev Only"] = "Propland - Dev Only",
 	["Prospector's Point"] = "勘察員崗哨",
 	["Protectorate Watch Post"] = "護國者哨站",
+	["Prototype Scenario"] = "原型事件",
 	["Proving Grounds"] = "試煉場",
 	["Proving Grounds: Select a Trial"] = "試煉場:選擇試煉",
 	["Purespring Cavern"] = "純淨泉水洞穴",
@@ -3265,6 +3271,7 @@ lib:SetCurrentTranslations
 	["Ruby Dragonshrine"] = "晶紅龍殿",
 	["Ruby Lake"] = "晶紅之湖",
 	["Ruined Approach"] = "大道遺跡",
+	["Ruined City Post 01"] = "廢墟之城崗哨 01",
 	["Ruined Court"] = "毀壞之廷",
 	["Ruined Passage"] = "廢墟通道",
 	["Ruins of Aboraz"] = "阿博拉茲廢墟",
@@ -3423,6 +3430,7 @@ lib:SetCurrentTranslations
 	["Scarred Vale"] = "殤之谷",
 	["Scenario - Black Ox Temple"] = "事件 - 玄牛寺",
 	["Scenario - Mogu Ruins"] = "事件 - 魔古廢墟",
+	["Scenario Template"] = "事件範本",
 	["Scenic Overlook"] = "觀景台",
 	["Schnottz's Frigate"] = "舒諾茲護衛艦",
 	["Schnottz's Hostel"] = "舒諾茲旅舍",
@@ -4208,6 +4216,9 @@ lib:SetCurrentTranslations
 	["Terror's Cave"] = "恐懼洞穴",
 	["Terrorweb Tunnel"] = "惡蛛隧道",
 	["Terror Wing Path"] = "龍翼小徑",
+	TEST = "測試",
+	-- ["Test Faction Criteria"] = "",
+	-- ["Test Scenario"] = "",
 	["Tethris Aran"] = "塔迪薩蘭",
 	["Thaelin's Workshop"] = "塞林工坊",
 	Thalanaar = "薩蘭納爾",
@@ -5048,7 +5059,7 @@ lib:SetCurrentTranslations
 	["The Spawning Glen"] = "重生峽谷",
 	["The Spear in the Shadow"] = "陰影之矛",
 	["The Spire"] = "冰冠尖塔",
-	-- ["The Splintered Fleet"] = "",
+	["The Splintered Fleet"] = "四分五裂的艦隊",
 	["The Splintered Path"] = "殘破之路",
 	["The Spring Road"] = "春之道",
 	["The Stadium"] = "競技場",
@@ -5475,6 +5486,7 @@ lib:SetCurrentTranslations
 	Ulduar = "奧杜亞",
 	["Ulduar Raid - Interior - Insertion Point"] = "奧杜亞團隊 - 內部 - 嵌入點",
 	["Ulduar Raid - Iron Concourse"] = "奧杜亞團隊 - 鐵之集合場",
+	["Ulduar Warrior Scenario"] = "奧杜亞戰士事件",
 	Uldum = "奧丹姆",
 	["Uldum Phase Oasis"] = "奧丹姆階段綠洲",
 	["Uldum - Phase Wrecked Camp"] = "奧丹姆 - 被破壞的營帳階段",
@@ -5739,6 +5751,7 @@ lib:SetCurrentTranslations
 	["Western Bridge"] = "西部橋樑",
 	["Western Plaguelands"] = "西瘟疫之地",
 	["Western Strand"] = "西部海岸",
+	["Western Suramar"] = "蘇拉瑪爾西部",
 	["Western Transept"] = "西穿堂",
 	Westersea = "西方之海",
 	Westfall = "西部荒野",
@@ -5962,5 +5975,4 @@ lib:SetCurrentTranslations
 	["Zun'watha"] = "祖瓦沙",
 	["Zuuldaia Ruins"] = "祖丹亞廢墟",
 }
-
 

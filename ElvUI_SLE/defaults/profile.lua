@@ -454,7 +454,6 @@ P["sle"] = {
 	--Minimap Module
 	["minimap"] = {
 		["combat"] = false,
-		["alpha"] = 1,
 		["coords"] = {
 			["enable"] = false,
 			["display"] = "SHOW",
@@ -476,6 +475,10 @@ P["sle"] = {
 			["iconperrow"] = 12,
 			["pethide"] = false,
 			["skindungeon"] = false,
+			["skinmail"] = false,
+			["spacing"] = 4,
+			["growth_hor"] = "Right",
+			["growth_vert"] = "Down",
 		},
 		["instance"] = {
 			["enable"] = false,
@@ -508,7 +511,9 @@ P["sle"] = {
 			["format"] = "%.0f",
 			["zoneText"] = true,
 			["colorType"] = "REACTION",
+			["colorType_Coords"] = "DEFAULT",
 			["customColor"] = {r = 1, g = 1, b = 1 },
+			["customColor_Coords"] = {r = 1, g = 1, b = 1 },
 			["combathide"] = false,
 			["portals"] = {
 				["enable"] = true,
@@ -549,6 +554,7 @@ P["sle"] = {
 	--Quests
 	["quests"] = {
 		["visibility"] = {
+			["enable"] = false,
 			["bg"] = "COLLAPSED",
 			["arena"] = "COLLAPSED",
 			["dungeon"] = "FULL",

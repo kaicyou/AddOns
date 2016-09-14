@@ -15,9 +15,19 @@ Info.Armory_Constants = {
 		'HeadSlot', 'HandsSlot', 'NeckSlot', 'WaistSlot', 'ShoulderSlot', 'LegsSlot', 'BackSlot', 'FeetSlot', 'ChestSlot', 'Finger0Slot',
 		'ShirtSlot', 'Finger1Slot', 'TabardSlot', 'Trinket0Slot', 'WristSlot', 'Trinket1Slot', 'SecondaryHandSlot', 'MainHandSlot'
 	},
-	
+
 	EnchantableSlots = {
 		NeckSlot = true, BackSlot = true, Finger0Slot = true, Finger1Slot = true, MainHandSlot = true, SecondaryHandSlot = true,
+	},
+
+	WeaponTypes = {
+		["INVTYPE_WEAPON"] = true,
+		["INVTYPE_2HWEAPON"] = true,
+		["INVTYPE_WEAPONMAINHAND"] = true,
+		["INVTYPE_WEAPONOFFHAND"] = true,
+		["INVTYPE_RANGEDRIGHT"] = true,
+		["INVTYPE_RANGED"] = true,
+		["INVTYPE_THROWN"] = true,
 	},
 	
 	UpgradeColor = {
@@ -55,7 +65,11 @@ Info.Armory_Constants = {
 		HeadSlot = true, ShoulderSlot = true, BackSlot = true, ChestSlot = true, WristSlot = true,
 		HandsSlot = true, WaistSlot = true, LegsSlot = true, FeetSlot = true, MainHandSlot = true, SecondaryHandSlot = true
 	},
-	
+
+	CanIllusionSlot = {
+		MainHandSlot = true, SecondaryHandSlot = true
+	},
+
 	ProfessionList = {},
 	
 	BlizzardBackdropList = {

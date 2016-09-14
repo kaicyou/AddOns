@@ -1,7 +1,7 @@
 ﻿## Interface: 70000
 ## Title: |cff1784d1ElvUI|r |cff9482c9Shadow & Light|r
 ## Author: Darth Predator, Repooc
-## Version: 3.13
+## Version: 3.14
 ## Notes: Plugin-edit for |cff1784d1ElvUI|r implementing additional features.
 ## Notes-ruRU: Плагин-редакция для |cff1784d1ElvUI|r, добавляющий новые функции.
 ## URL: http://tukui.org/ 
@@ -10,6 +10,10 @@
 ## DefaultState: Enabled
 ## X-ElvVersion: 10.16
 ## SavedVariables: SLE_ArmoryDB
+## X-Curse-Packaged-Version: v3.14
+## X-Curse-Project-Name: ElvUI Shadow & Light Edit
+## X-Curse-Project-ID: shadow-and-light-edit
+## X-Curse-Repository-ID: wow/shadow-and-light-edit/mainline
 
 
 libs\load_libs.xml

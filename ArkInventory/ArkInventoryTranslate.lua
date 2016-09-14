@@ -122,11 +122,13 @@ end
 
 
 
-local spellTable = { -- key, spell id
-	{ "WOW_SKILL_SKINNING", 8613 }, -- 8617, 8618, 10768, 32678, 50305, 74522
+local spellTable = { -- key, table of spell ids
+	{ "WOW_SKILL_SKINNING", { 8613, 8617, 8618, 10768, 32678, 50305, 74522 } },
+	{ "WOW_SKILL_HERBALISM", { 170691, 184251 } },
+	{ "WOW_SKILL_MINING", { 184377, 170599, 135120, 32606 } },
 }
 
-local function GetWowSpellNameHelper( id, key )
+local function GetWowSpellNameHelper( id )
 	local name = GetSpellInfo( id )
 	if name then
 		--ArkInventory.Output( "spell: got ", id )
@@ -138,14 +140,14 @@ local function GetWowSpellNameHelper( id, key )
 	end
 end
 
-local function GetWowSpellName( id, key )
-	if type( id ) ~= "table" then
-		return GetWowSpellNameHelper( id, key )
-	else
+local function GetWowSpellName( id )
+	if type( id ) == "table" then
 		for _, v in ipairs( id ) do
-			local x = GetWowSpellNameHelper( v, key )
-			if x then return x end
+			local name = GetWowSpellNameHelper( v )
+			if name then return name end
 		end
+	else
+		return GetWowSpellNameHelper( id )
 	end
 end
 
@@ -178,7 +180,7 @@ local function GetSpellBasedTranslations( )
 				if newValue ~= oldValue then
 					
 					if not oldValue or key == oldValue then
-						--ArkInventory.OutputWarning( "Updating ", lang, " key [", key, "] with [", newValue, "]" )
+						--ArkInventory.OutputWarning( "Setting ", lang, " key [", key, "] to [", newValue, "]" )
 					else
 						ArkInventory.OutputWarning( "Updating ", lang, " key [", key, "] with [", newValue, "], was [", oldValue, "]" )
 					end
@@ -203,8 +205,8 @@ end
 
 
 local tooltipTable = {
-	{ "WOW_SKILL_HERBALISM", 85663 },
-	{ "WOW_SKILL_MINING", 2901 },
+--	{ "WOW_SKILL_HERBALISM", 85663 },
+--	{ "WOW_SKILL_MINING", 2901 },
 }
 
 local function GetWowTooltipTextHelper( id, key )

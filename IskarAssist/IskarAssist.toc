@@ -1,9 +1,9 @@
 ## Interface: 70000
-## Title: Iskar Assist
-## Notes: Helps with the Encounter against Iskar on Hellfire Citadel.
+## Title: Raid Assist (iskar assist)
+## Notes: iskar assist got evolved, type /raa to see our toys. Further boss mods will be added here instead of creating new addons.
 ## SavedVariables: IskarAssistDB, RADataBase
-## X-Curse-Packaged-Version: r94
-## X-Curse-Project-Name: Iskar Assist
+## X-Curse-Packaged-Version: r99
+## X-Curse-Project-Name: Raid Assist (Iskar Assist)
 ## X-Curse-Project-ID: iskar-assist
 ## X-Curse-Repository-ID: wow/iskar-assist/mainline
 
@@ -26,13 +26,11 @@ Loot.lua
 plugins\raidschedule.lua
 plugins\attendance.lua
 plugins\battleres.lua
-plugins\boards.lua
 plugins\cooldowns.lua
 plugins\playercheck.lua
 plugins\bislist.lua
 plugins\raidbislist.lua
 plugins\invite.lua
-plugins\meters.lua
 plugins\notes.lua
 plugins\raidgroups.lua
 plugins\readycheck.lua
@@ -40,5 +38,6 @@ plugins\toolbar.lua
 plugins\addonscheck.lua
 plugins\aurachecker.lua
 plugins\aurabank.lua
+plugins\pastetext.lua
 
 indent.lua

@@ -1,6 +1,6 @@
 --[[
 Name: Lib-Scenarios
-Revision: $Rev: 2 $
+Revision: $Rev: 4 $
 Maintainers: Arith
 Website: https://wow.curseforge.com/addons/lib-scenarios/
 Dependencies: None
@@ -63,7 +63,7 @@ end
 To get the scenario name by given the scenario ID
 ]]
 function lib:GetScenarioNameByID(scID, lang)
-	key = tostring(scID);
+	local key = tostring(scID);
 	
 	if (not key) then 
 		return nil;
@@ -87,7 +87,7 @@ end
 To get the scenario step-name by given the scenario ID and step ID
 ]]
 function lib:GetScenarioStepNameByID(scID, stID, lang)
-	key = tostring(scID);
+	local key = tostring(scID);
 	
 	if (not key) then 
 		return nil;
@@ -116,7 +116,7 @@ end
 To get the scenario step-description by given the scenario ID and step ID
 ]]
 function lib:GetScenarioStepDescByID(scID, stID, lang)
-	key = tostring(scID);
+	local key = tostring(scID);
 	
 	if (not key) then 
 		return nil;
@@ -139,6 +139,23 @@ function lib:GetScenarioStepDescByID(scID, stID, lang)
 	end
 
 	return LibScenariosDescriptionsDB[key][stID][LANGS[lang]];
+end
+
+--[[
+To get the number of steps from specified scenario
+]]
+function lib:GetNumberScenarioSteps(scID)
+	local key = tostring(scID);
+
+	if (not key) then 
+		return nil;
+	end
+	if (not LibScenariosStepsDB[key]) then
+		return nil;
+	else
+		return getn(LibScenariosStepsDB[key]);
+	end
+	
 end
 
 --[[

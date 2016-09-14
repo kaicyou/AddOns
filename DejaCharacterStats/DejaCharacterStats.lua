@@ -851,7 +851,7 @@ gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsDurabilityStatChecked = {
 local DCS_DurabilityStatCheck = CreateFrame("CheckButton", "DCS_DurabilityStatCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
 	DCS_DurabilityStatCheck:RegisterEvent("PLAYER_LOGIN")
 	DCS_DurabilityStatCheck:ClearAllPoints()
-	DCS_DurabilityStatCheck:SetPoint("TOPLEFT", 25, -85)
+	DCS_DurabilityStatCheck:SetPoint("TOPLEFT", 25, -95)
 	DCS_DurabilityStatCheck:SetScale(1.25)
 	DCS_DurabilityStatCheck.tooltipText = 'Displays the average Durability percentage for equipped items in the stat frame.' --Creates a tooltip on mouseover.
 	_G[DCS_DurabilityStatCheck:GetName() .. "Text"]:SetText('Durability')
@@ -888,7 +888,7 @@ gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsRepairTotalStatChecked = {
 local DCS_RepairTotalStatCheck = CreateFrame("CheckButton", "DCS_RepairTotalStatCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
 	DCS_RepairTotalStatCheck:RegisterEvent("PLAYER_LOGIN")
 	DCS_RepairTotalStatCheck:ClearAllPoints()
-	DCS_RepairTotalStatCheck:SetPoint("TOPLEFT", 25, -110)
+	DCS_RepairTotalStatCheck:SetPoint("TOPLEFT", 25, -120)
 	DCS_RepairTotalStatCheck:SetScale(1.25)
 	DCS_RepairTotalStatCheck.tooltipText = 'Displays the Repair Total before discounts for equipped items in the stat frame.' --Creates a tooltip on mouseover.
 	_G[DCS_RepairTotalStatCheck:GetName() .. "Text"]:SetText('Repair Total')

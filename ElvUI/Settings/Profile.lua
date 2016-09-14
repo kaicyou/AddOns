@@ -157,22 +157,17 @@ P['databars'] = {
 --Bags
 P['bags'] = {
 	['sortInverted'] = true,
-	['xOffset'] = 0,
-	['yOffset'] = 0,
-	['xOffsetBank'] = 0,
-	['yOffsetBank'] = 0,
 	['bagSize'] = 34,
 	['bankSize'] = 34,
-	['alignToChat'] = true,
-	['bagWidth'] = 350,
-	['bankWidth'] = 350,
+	['bagWidth'] = 406,
+	['bankWidth'] = 406,
 	['currencyFormat'] = 'ICON_TEXT_ABBR',
 	['moneyFormat'] = 'SMART',
 	['moneyCoins'] = true,
 	["junkIcon"] = false,
-	['ignoreItems'] = '',
+	['ignoredItems'] = {},
 	['itemLevel'] = true,
-	["useTooltipScanning"] = false,
+	["useTooltipScanning"] = true,
 	['itemLevelThreshold'] = 1,
 	['itemLevelFont'] = 'Homespun',
 	['itemLevelFontSize'] = 10,
@@ -181,6 +176,8 @@ P['bags'] = {
 	["countFontSize"] = 10,
 	["countFontOutline"] = "MONOCHROMEOUTLINE",
 	["countFontColor"] = {r = 1, g = 1, b = 1},
+	["reverseLoot"] = false,
+	["clearSearchOnClose"] = false,
 	['bagBar'] = {
 		['growthDirection'] = 'VERTICAL',
 		['sortDirection'] = 'ASCENDING',
@@ -235,6 +232,9 @@ P["nameplates"] = {
 		["useThreatColor"] = true,
 	},
 
+	["clickableWidth"] = 150,
+	["clickableHeight"] = 50,
+
 	['units'] = {
 		['PLAYER'] = {
 			['enable'] = false,
@@ -268,6 +268,8 @@ P["nameplates"] = {
 				['height'] = 8,
 				["hideSpellName"] = false,
 				["hideTime"] = false,
+				["castTimeFormat"] = "CURRENT",
+				["channelTimeFormat"] = "CURRENT",
 			},
 			['buffs'] = {
 				['enable'] = true,
@@ -324,6 +326,8 @@ P["nameplates"] = {
 				['height'] = 8,
 				["hideSpellName"] = false,
 				["hideTime"] = false,
+				["castTimeFormat"] = "CURRENT",
+				["channelTimeFormat"] = "CURRENT",
 			},
 			['buffs'] = {
 				['enable'] = true,
@@ -382,6 +386,8 @@ P["nameplates"] = {
 				['height'] = 8,
 				["hideSpellName"] = false,
 				["hideTime"] = false,
+				["castTimeFormat"] = "CURRENT",
+				["channelTimeFormat"] = "CURRENT",
 			},
 			['buffs'] = {
 				['enable'] = true,
@@ -439,6 +445,8 @@ P["nameplates"] = {
 				['height'] = 8,
 				["hideSpellName"] = false,
 				["hideTime"] = false,
+				["castTimeFormat"] = "CURRENT",
+				["channelTimeFormat"] = "CURRENT",
 			},
 			['buffs'] = {
 				['enable'] = true,
@@ -494,6 +502,8 @@ P["nameplates"] = {
 				['height'] = 8,
 				["hideSpellName"] = false,
 				["hideTime"] = false,
+				["castTimeFormat"] = "CURRENT",
+				["channelTimeFormat"] = "CURRENT",
 			},
 			['buffs'] = {
 				['enable'] = true,
@@ -554,6 +564,8 @@ P["nameplates"] = {
 				['height'] = 8,
 				["hideSpellName"] = false,
 				["hideTime"] = false,
+				["castTimeFormat"] = "CURRENT",
+				["channelTimeFormat"] = "CURRENT",
 			},
 			['buffs'] = {
 				['enable'] = true,
@@ -693,14 +705,23 @@ P['datatexts'] = {
 		['TopRightMiniPanel'] = '',
 		['TopLeftMiniPanel'] = '',
 	},
-	['localtime'] = true,
-	['time24'] = false,
 	['battleground'] = true,
 	['panelTransparency'] = false,
-	['goldFormat'] = 'BLIZZARD',
-	['goldCoins'] = false,
 	["noCombatClick"] = false,
 	["noCombatHover"] = false,
+
+	--Datatext Options
+	--General
+	['goldFormat'] = 'BLIZZARD',
+	['goldCoins'] = false,
+	--Currencies Datatext
+	["currencies"] = {
+		["displayedCurrency"] = "GOLD",
+		["displayStyle"] = "ICON",
+	},
+	--Time Datatext
+	['localtime'] = true,
+	['time24'] = false,
 
 	--Enabled/Disabled Panels
 	['minimapPanels'] = true,
@@ -728,6 +749,7 @@ P['tooltip'] = {
 	["headerFontSize"] = 12,
 	["textFontSize"] = 12,
 	["smallTextFontSize"] = 12,
+	["colorAlpha"] = 0.8,
 	['visibility'] = {
 		['unitFrames'] = 'NONE',
 		["bags"] = "NONE",
@@ -2900,6 +2922,8 @@ P["actionbar"] = {
 
 	['noRangeColor'] = { r = 0.8, g = 0.1, b = 0.1 },
 	['noPowerColor'] = { r = 0.5, g = 0.5, b = 1 },
+	["usableColor"] = { r = 1, g = 1, b = 1 },
+	["notUsableColor"] = { r = 0.4, g = 0.4, b = 0.4 },
 
 	['keyDown'] = true,
 	['movementModifier'] = 'SHIFT',

@@ -61,6 +61,11 @@ L["says"] = "일반"
 L["whispers"] = "귓"
 L["yells"] = "외침"
 
+--DataBars
+L["Current Level:"] = true;
+L["Honor XP:"] = true;
+L["Honor Remaining:"] = true;
+
 --DataTexts
 L["(Hold Shift) Memory Usage"] = "Shift: 메모리 사용량"
 L["AP"] = "전투력"
@@ -102,6 +107,7 @@ L["Offhand"] = "보조장비"
 L["Profit:"] = "이익:"
 L["Reset Data: Hold Shift + Right Click"] = "기록 리셋: Shift + 우클릭"
 L["Saved Raid(s)"] = "귀속된 던전"
+L["Saved Dungeon(s)"] = true;
 L["Server: "] = "서버:"
 L["Session:"] = "현재 접속:"
 L["Shoulder"] = "어깨"
@@ -118,6 +124,7 @@ L["Waist"] = "허리"
 L["Wrist"] = "손목"
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = "클릭 : 전문화 교체"
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = "우클릭 : 전리품 전문화 변경"
+L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = true;
 
 --DebugTools
 L["%s: %s tried to call the protected function '%s'."] = "%s: %s 기능이 사용할 수 없는 %s 함수를 사용하려 합니다."
@@ -229,7 +236,12 @@ L["Alternative Power"] = "특수상황 진행 바"
 L["Archeology Progress Bar"] = "고고학 진척도 바"
 L["Arena Frames"] = "투기장 프레임"
 L["Artifact Bar"] = true;
+L["Bag Mover (Grow Down)"] = true;
+L["Bag Mover (Grow Up)"] = true;
+L["Bag Mover"] = true;
 L["Bags"] = "가방"
+L["Bank Mover (Grow Down)"] = true;
+L["Bank Mover (Grow Up)"] = true;
 L["Bar "] = "바 "
 L["BNet Frame"] = "배틀넷 알림"
 L["Boss Button"] = "특수능력 버튼"

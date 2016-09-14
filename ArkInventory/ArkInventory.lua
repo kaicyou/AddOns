@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1711 $
-$Date: 2016-08-20 16:33:41 +1000 (Sat, 20 Aug 2016) $
+$Revision: 1719 $
+$Date: 2016-09-11 02:16:12 +1000 (Sun, 11 Sep 2016) $
 
 ]]--
 
@@ -202,6 +202,10 @@ ArkInventory.Const.Category = {
 			[449] = {
 				["id"] = "CONSUMABLE_VANTUSRUNE",
 				["text"] = ArkInventory.Localise["WOW_ITEM_CLASS_CONSUMABLE_VANTUSRUNE"],
+			},
+			[450] = {
+				["id"] = "CONSUMABLE_ARTIFACT_POWER",
+				["text"] = ArkInventory.Localise["ARTIFACT_POWER"],
 			},
 		},
 		Trade = {
@@ -1631,8 +1635,7 @@ ArkInventory.Const.DatabaseDefaults.global = {
 						["system"] = false,
 						["used"] = "N", -- Y(es) | N(o) | D(eleted)
 						["name"] = "",
-					},
-					[ArkInventory.Const.Category.Type.Rule] = {
+						-- rules
 						["order"] = 1000,
 						["formula"] = "false",
 						["damaged"] = false,
@@ -3098,7 +3101,7 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	end
 	
 	
-	if itemRarity == 7 then
+	if itemRarity == LE_ITEM_QUALITY_HEIRLOOM then
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_HEIRLOOM" )
 	end
 	
@@ -3110,7 +3113,7 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	end
 	
 	-- trash
-	if itemRarity == 0 then
+	if itemRarity == LE_ITEM_QUALITY_POOR then
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_TRASH" )
 	end
 	
@@ -3126,6 +3129,11 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	
 	-- equipable items
 	if equipSlot ~= "" or itemType == ArkInventory.Const.ItemClass.WEAPON or itemType == ArkInventory.Const.ItemClass.ARMOR then
+		
+--		if not ( itemType == ArkInventory.Const.ItemClass.WEAPON or itemType == ArkInventory.Const.ItemClass.ARMOR ) then
+--			ArkInventory.Output( i.h, " / ", equipSlot )
+--		end
+		
 		if i.ab then
 			return ArkInventory.CategoryGetSystemID( "SYSTEM_EQUIPMENT_ACCOUNTBOUND" )
 		elseif i.sb then
@@ -3133,11 +3141,18 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 		else
 			return ArkInventory.CategoryGetSystemID( "SYSTEM_EQUIPMENT" )
 		end
+		
 	end
 	
 	-- gems
 	if itemType == ArkInventory.Const.ItemClass.GEM then
+		
+		if itemSubType == ArkInventory.Const.ItemClass.GEM_ARTIFACT_RELIC then
+			return ArkInventory.CategoryGetSystemID( "SYSTEM_ARTIFACT_RELIC" )
+		end
+		
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_GEM" )
+		
 	end
 	
 	-- glyphs
@@ -3192,7 +3207,6 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_TOY" )
 	end
 	
-	
 	local codex = ArkInventory.GetLocationCodex( i.loc_id )
 	
 	
@@ -3207,6 +3221,17 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 		local key = string.format( "PT_CLASS_%s", codex.player.data.info.class )
 		if ArkInventory.PT_ItemInSets( i.h, ArkInventory.Localise[key] ) then
 			return ArkInventory.CategoryGetSystemID( string.format( "CLASS_%s", codex.player.data.info.class ) )
+		end
+	end
+	
+	if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ARTIFACT_POWER"], false, true, true, 0, true ) then
+		return ArkInventory.CategoryGetSystemID( "CONSUMABLE_ARTIFACT_POWER" )
+	end
+	
+	
+	if ( itemType == ArkInventory.Const.ItemClass.CONSUMABLE and itemSubType == ArkInventory.Const.ItemClass.CONSUMABLE_OTHER ) then
+		if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ANCIENT_MANA"], false, true, true, 0, true ) then
+			return ArkInventory.CategoryGetSystemID( "SYSTEM_TOKEN" )
 		end
 	end
 	
@@ -3528,7 +3553,7 @@ function ArkInventory.ItemCategoryGetRule( i )
 	local r = ArkInventory.db.option.category[cat_type].data
 	for cat_code in ArkInventory.spairs( r, function(a,b) return ( r[a].order or 1000 ) < ( r[b].order or 1000 ) end ) do
 		
-		if r[cat_code].used == "Y" and codex.catset.category.active[cat_type][cat_code] then -- rule is active in this categoryset?
+		if r[cat_code].used == "Y" and codex.catset.category.active[cat_type][cat_code] then -- rule is active in this categoryset
 			
 			local a, em = ArkInventoryRules.AppliesToItem( cat_code, i )
 			
@@ -3559,10 +3584,8 @@ function ArkInventory.ItemCategoryGetPrimary( i )
 	
 	if i.h then -- only items can have a category, empty slots can only be used by rules
 		
-		local codex = ArkInventory.GetLocationCodex( i.loc_id )
-		
 		-- items category cache id
-		local cid, id = ArkInventory.ObjectIDCategory( i.loc_id, i.bag_id, i.sb, i.h )
+		local cid, id, codex = ArkInventory.ObjectIDCategory( i.loc_id, i.bag_id, i.sb, i.h )
 		
 		local cat_id = codex.catset.category.assign[id]
 		if cat_id then
@@ -3582,19 +3605,19 @@ function ArkInventory.ItemCategoryGetPrimary( i )
 	if ArkInventory.Global.Rules.Enabled then
 		
 		-- items rule cache id
-		cid = ArkInventory.ObjectIDRule( i.loc_id, i.bag_id, i.sb, i.h )
+		local cid, id, codex = ArkInventory.ObjectIDRule( i.loc_id, i.bag_id, i.sb, i.h )
 		
 		-- if the value has already been cached then use it
-		if not ArkInventory.Global.Cache.Rule[cid] then
-			-- check for any rule that applies to the item, cache the result, use true for no match (default)
-			ArkInventory.Global.Cache.Rule[cid] = ArkInventory.ItemCategoryGetRule( i ) or true
+		if ArkInventory.Global.Cache.Rule[cid] == nil then
+			-- check for any rule that applies to the item, cache the result, use false for no match (default)
+			ArkInventory.Global.Cache.Rule[cid] = ArkInventory.ItemCategoryGetRule( i )
 		end
 		
 		return ArkInventory.Global.Cache.Rule[cid]
 		
 	end
 	
-	return true -- use the default
+	return false
 	
 end
 
@@ -3611,13 +3634,8 @@ end
 function ArkInventory.ItemCategoryGet( i )
 
 	local unknown = ArkInventory.CategoryGetSystemID( "SYSTEM_UNKNOWN" )
-	
 	local default = ArkInventory.ItemCategoryGetDefault( i )
-	
 	local cat = ArkInventory.ItemCategoryGetPrimary( i )
-	if cat == true then
-		cat = nil
-	end
 	
 	return cat or default or unknown, cat, default or unknown
 	
@@ -3669,13 +3687,12 @@ function ArkInventory.ItemCacheClear( h )
 				end
 			end
 		end
-			
+		
 	end
 	
 	
 	ArkInventory.CategoryGenerate( )
 	ArkInventory.LocationSetValue( nil, "resort", true )
-	--ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
 	
 end
 
@@ -5922,6 +5939,7 @@ function ArkInventory.Frame_Bar_Label( frame )
 					anchor = ArkInventory.Const.Anchor.Top
 				end
 			end
+			
 			obj:ClearAllPoints( )
 			
 			if anchor == ArkInventory.Const.Anchor.Top then
@@ -5931,8 +5949,9 @@ function ArkInventory.Frame_Bar_Label( frame )
 			end
 			obj:SetPoint( "RIGHT", frame:GetName( ) )
 			
+			obj:SetHeight( codex.style.bar.name.height )
 			obj:SetText( txt )
-		
+			
 			local colour = codex.style.bar.name.colour
 			if codex.layout.bar.data[bar_id].name.custom == 2 then
 				-- use custom colour
@@ -6712,7 +6731,7 @@ function ArkInventory.Frame_Item_Update_Stock( frame )
 			
 			local class, ilnk, inam, itxt, irar, ilvl, imin, ityp, isub, icount, iloc = ArkInventory.ObjectInfo( i.h )
 			if class == "item" then
-				if iloc ~= "" and iloc ~= "INVTYPE_BAG" then
+				if ( iloc ~= "" and iloc ~= "INVTYPE_BAG" ) or ( ityp == ArkInventory.Const.ItemClass.GEM and isub == ArkInventory.Const.ItemClass.GEM_ARTIFACT_RELIC ) then
 					stock = ilvl
 				end
 			end
@@ -6807,8 +6826,6 @@ function ArkInventory.Frame_Item_Update_Fade( frame )
 end
 
 function ArkInventory.Frame_Item_Update_Border( frame )
-	
-	if not ArkInventory.ValidFrame( frame, true ) then return end
 	
 	--ArkInventory.Output( frame.ARK_Data.loc_id, ".", frame.ARK_Data.bag_id, ".", frame.ARK_Data.slot_id )
 	
@@ -7316,7 +7333,7 @@ function ArkInventory.Frame_Item_OnMouseUp( frame, button )
 		
 		if button == "LeftButton" then
 			
-			--UseToy( i.item ) -- secure action, cant be done
+			ArkInventory.Collection.Toybox.Summon( i.index )
 			
 		elseif button == "RightButton" then
 			
@@ -7407,10 +7424,24 @@ function ArkInventory.Frame_Item_Update_Cooldown( frame, arg1 )
 		if i.h then
 			
 			if loc_id == ArkInventory.Const.Location.Toybox and i.item then
+				
 				local start, duration, enable = GetItemCooldown( i.item )
-				if ( cooldown and start and duration ) then
-					--ArkInventory.Output( "toybox cooldown: ", frame:GetName( ) )
-					CooldownFrame_SetTimer( cooldown, start, duration, enable )
+				if obj and start and duration then
+					
+					--ArkInventory.Output( "toybox cooldown: ", obj:GetName( ) )
+					
+					if enable then
+						obj:Show( )
+					else
+						obj:Hide( )
+					end
+					
+					CooldownFrame_Set( obj, start, duration, enable )
+					
+				else
+					
+					obj:Hide( )
+					
 				end
 
 			else
@@ -7441,7 +7472,9 @@ function ArkInventory.Frame_Item_Update_Lock( frame )
 	
 	local i = ArkInventory.Frame_Item_GetDB( frame )
 	
-	local r, g, b = 1, 1, 1
+	local colour = { r = 1, g = 1, b = 1 }
+	local tinted = { r = 1, g = 0.1, b = 0.1 }
+	
 	local locked = false
 	
 	if i and i.h then
@@ -7467,36 +7500,38 @@ function ArkInventory.Frame_Item_Update_Lock( frame )
 				local account = ArkInventory.GetPlayerStorage( player_id )
 				
 				if account and codex.player.data.info and codex.player.data.info.level and codex.player.data.info.level < level then
-					r = 1.0
-					g = 0.1
-					b = 0.1
+					colour = tinted
 				end
 				
 			elseif loc_id == ArkInventory.Const.Location.Mount then
 				
 				if not ArkInventory.Collection.Mount.IsUsable( i.index ) then
-					r = 1.0
-					g = 0.1
-					b = 0.1
+					colour = tinted
 				end
-			
+				
+			elseif loc_id == ArkInventory.Const.Location.Heirloom or loc_id == ArkInventory.Const.Location.Toybox then
+				
+				ArkInventory.TooltipSetHyperlink( ArkInventory.Global.Tooltip.Vendor, i.h )
+				
+				if not ArkInventory.TooltipCanUse( ArkInventory.Global.Tooltip.Vendor, true ) then
+					colour = tinted
+				end
+				
 			else
 				
 				ArkInventory.TooltipSetHyperlink( ArkInventory.Global.Tooltip.Vendor, i.h )
 				
 				if not ArkInventory.TooltipCanUse( ArkInventory.Global.Tooltip.Vendor ) then
-					r = 1.0
-					g = 0.1
-					b = 0.1
+					colour = tinted
 				end
-			
+				
 			end
 			
 		end
 		
 	end
 	
-	ArkInventory.SetItemButtonDesaturate( frame, locked, r, g, b )
+	ArkInventory.SetItemButtonDesaturate( frame, locked, colour.r, colour.g, colour.b )
 	
 	frame.locked = locked
 	
@@ -9819,5 +9854,13 @@ function ArkInventory.FrameDragStop( frame )
 	ArkInventory.Frame_Main_Anchor_Save( frame )
 	
 	frame:SetUserPlaced( false )
+	
+end
+
+function ArkInventory.Frame_Search_Paint( )
+	
+	if ARKINV_Search then
+		ArkInventory.Frame_Search_Paint_Actual( )
+	end
 	
 end

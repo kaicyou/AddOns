@@ -1,4 +1,4 @@
-﻿local magenugVer = "5.3.1"
+﻿local magenugVer = "5.5.4"
 
 MageNuggets = {
     ssMonitorToggle = true;
@@ -74,6 +74,10 @@ MageNuggets = {
     simpleUiToggle = false;
     bombMouseOverMacro = false;
     novaMonitorToggle = true;
+    fireNuggetSize = 3;
+    fireNuggetBorder = 1;
+    fireNugSimpleUiToggle = false;
+    FireNuggetNotifyBorderToggle = true;
 }
 
 function MageNuggetOptions_Start(self)
@@ -110,6 +114,12 @@ function loadMageNuggetsOptionsFrames()
     MageNugOptions.name = "Mage Nuggets"
     InterfaceOptions_AddCategory(MageNugOptions)
     MageNugOptions:SetPoint("TOPLEFT", InterfaceOptionsFrame, "BOTTOMRIGHT", 0, 0)
+
+    local fireNuggetOptions = CreateFrame("FRAME", "fireNuggetOptions");
+    fireNuggetOptions.name = "Fire Nugget";
+    fireNuggetOptions.parent = "Mage Nuggets";
+    InterfaceOptions_AddCategory(fireNuggetOptions);
+    fireNuggetOptions:SetPoint("TOPLEFT", InterfaceOptionsFrame, "BOTTOMRIGHT", 0, 0)
 
     local msgOptions = CreateFrame("FRAME", "msgOptions");
     msgOptions.name = "Messages";
@@ -179,10 +189,10 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
         MageNugOptionsFrame_CheckButton3:SetChecked(true);
     end
     if(MageNuggets.igniteTog == true) or (MageNuggets.igniteTog == nil) then
-        MageNugOptionsFrame_IgniteCheckButton:SetChecked(true);
+        MageNugFireNugOptionFrame_IgniteCheckButton:SetChecked(true);
         MageNuggets.igniteTog = true;
     else
-        MageNugOptionsFrame_IgniteCheckButton:GetChecked(false);
+        MageNugFireNugOptionFrame_IgniteCheckButton:GetChecked(false);
     end
     if (MageNuggets.mirrorImageToggle == true) then
         MageNugOptionsFrame_CheckButton6:SetChecked(false);
@@ -287,6 +297,28 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
         InnervThankEditBox2:SetText(MageNuggets.innervatThanks2)
     end
 
+    ----fire nugget options----
+    if(MageNuggets.fireNuggetSize == nil)then
+      MageNugFireNugOptionFrame_SizeSlider:SetValue(3);
+    else
+      MageNugFireNugOptionFrame_SizeSlider:SetValue(MageNuggets.fireNuggetSize);
+    end
+    if(MageNuggets.fireNuggetBorder == nil)then
+      MageNugFireNugOptionFrame_BorderSlider:SetValue(1);
+    else
+      MageNugFireNugOptionFrame_BorderSlider:SetValue(MageNuggets.fireNuggetBorder);
+    end
+    if(MageNuggets.FireNuggetNotifyBorderToggle == nil)then
+      MageNugFireNugOptionFrame_NotifyCheckButton:SetChecked(true);
+    else
+      MageNugFireNugOptionFrame_NotifyCheckButton:SetChecked(MageNuggets.FireNuggetNotifyBorderToggle);
+    end
+    if(MageNuggets.fireNugSimpleUiToggle == nil)then
+      MageNugFireNugOptionFrame_SimpleUiCheckButton:SetChecked(false);
+    else
+      MageNugFireNugOptionFrame_SimpleUiCheckButton:SetChecked(MageNuggets.fireNugSimpleUiToggle);
+    end
+    MNFireNuggetSimpleUiToggle();
     --------Options 2--------
     MNcheckboxMiniMapFontString:SetText("Disable Minimap Button")
     MNcheckboxCameraFontString:SetText("Disable Maximum Camera Zoom Out")
@@ -298,7 +330,7 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
         MageNuggets.MinimapPos = 45;
     end
     if (MageNuggets.camZoomTogg == true) then
-        ConsoleExec("cameraDistanceMax 50");
+        ConsoleExec("cameraDistanceMaxFactor 2.6");
         MageNugOption2Frame_CameraCheckButton:SetChecked(false);
     else
         MageNugOption2Frame_CameraCheckButton:SetChecked(true);
@@ -655,16 +687,6 @@ function mageNuggetsSoundOptionsOnLoad()
     end
 end
 
-
---
-function MNigniteToggle()
-    local isChecked = MageNugOptionsFrame_IgniteCheckButton:GetChecked();
-    if (isChecked == true) then
-        MageNuggets.igniteTog = true;
-    else
-        MageNuggets.igniteTog = false;
-    end
-end
 --
 function MNsimpleUItoggle()
     local isChecked = MageNugOption2Frame_SimpleUICheckButton:GetChecked();
@@ -1102,57 +1124,46 @@ function MageNugArcaneBlastSize()
     if (tempInt == 0) then
         MageNugNova_Frame:SetScale(0.7);
         MageNugAB_Frame:SetScale(0.7);
-        MageNugIgnite_Frame:SetScale(0.7);
         MageNuggets.arcaneBlastSize = 0;
     elseif (tempInt == 1) then
         MageNugNova_Frame:SetScale(0.8);
         MageNugAB_Frame:SetScale(0.8);
-        MageNugIgnite_Frame:SetScale(0.8);
         MageNuggets.arcaneBlastSize = 1;
     elseif (tempInt == 2) then
         MageNugNova_Frame:SetScale(0.9);
         MageNugAB_Frame:SetScale(0.9);
-        MageNugIgnite_Frame:SetScale(0.9);
         MageNuggets.arcaneBlastSize = 2;
     elseif (tempInt == 3) then
         MageNugNova_Frame:SetScale(1.0);
         MageNugAB_Frame:SetScale(1.0);
-        MageNugIgnite_Frame:SetScale(1.0);
         MageNuggets.arcaneBlastSize = 3;
     elseif (tempInt == 4) then
         MageNugNova_Frame:SetScale(1.1);
         MageNugAB_Frame:SetScale(1.1);
-        MageNugIgnite_Frame:SetScale(1.1);
         MageNuggets.arcaneBlastSize = 4;
     elseif (tempInt == 5) then
         MageNugNova_Frame:SetScale(1.2);
         MageNugAB_Frame:SetScale(1.2);
-        MageNugIgnite_Frame:SetScale(1.2);
         MageNuggets.arcaneBlastSize = 5;
     elseif (tempInt == 6) then
         MageNugNova_Frame:SetScale(1.3);
         MageNugAB_Frame:SetScale(1.3);
-        MageNugIgnite_Frame:SetScale(1.3);
         MageNuggets.arcaneBlastSize = 6;
     elseif (tempInt == 7) then
         MageNugNova_Frame:SetScale(1.5);
         MageNugAB_Frame:SetScale(1.5);
-        MageNugIgnite_Frame:SetScale(1.5);
         MageNuggets.arcaneBlastSize = 7;
     elseif (tempInt == 8) then
         MageNugNova_Frame:SetScale(1.7);
         MageNugAB_Frame:SetScale(1.7);
-        MageNugIgnite_Frame:SetScale(1.7);
         MageNuggets.arcaneBlastSize = 8;
     elseif (tempInt == 9) then
         MageNugNova_Frame:SetScale(1.9);
         MageNugAB_Frame:SetScale(1.9);
-        MageNugIgnite_Frame:SetScale(1.9);
         MageNuggets.arcaneBlastSize = 9;
     elseif (tempInt == 10) then
         MageNugNova_Frame:SetScale(2.1);
         MageNugAB_Frame:SetScale(2.1);
-        MageNugIgnite_Frame:SetScale(2.1);
         MageNuggets.arcaneBlastSize = 10;
     end
 end
@@ -1416,12 +1427,6 @@ function CombatText_OnEnter()
   GameTooltip:Show()
 end
 
-function MageProc_OnEnter()
-    GameTooltip_SetDefaultAnchor( GameTooltip, UIParent )
-    GameTooltip:SetText("|cff00BFFF".."Mage".." |cff00CD00".."Nuggets"..":|cffFFFFFF ".."The in game combat text must be turned on".." \n".."for mage proc combat text to function.")
-    GameTooltip:Show()
-end
-
 function MNLockFrames(self)
     if (MageNuggets.lockFrames == false)then
        self:StartMoving(); self.isMoving = true;
@@ -1436,9 +1441,9 @@ function MageNugz_MinimapButton_DraggingFrame_OnUpdate()
 	local xpos,ypos = GetCursorPosition()
 	local xmin,ymin = Minimap:GetLeft(), Minimap:GetBottom()
 	xpos = xmin-xpos/UIParent:GetScale()+70
-    ypos = ypos/UIParent:GetScale()-ymin-70
+  ypos = ypos/UIParent:GetScale()-ymin-70
 	MageNuggets.MinimapPos = math.deg(math.atan2(ypos,xpos))
-    MageNugz_MinimapButton_Move()
+  MageNugz_MinimapButton_Move()
 end
 
 function MageNugz_Minimap_OnClick()
@@ -1659,4 +1664,176 @@ function MNcooldownOnEnter()
         GameTooltip:SetText("|cff00BFFF".."Mage".." |cff00CD00".."Nuggets"..":|cffFFFFFF ".."See Mage Nuggets Options -> Cooldowns")
         GameTooltip:Show()
     end
+end
+
+-------------------------------------------------------------------------------
+---------------------------------Fire Nuggets----------------------------------
+-------------------------------------------------------------------------------
+
+function MNFireNuggetSimpleUiToggle()
+  local isChecked = MageNugFireNugOptionFrame_SimpleUiCheckButton:GetChecked();
+  if (isChecked == true) then
+    MageNugIgnite_FrameTexture:SetTexture('')
+    MageNugIgnite_FrameTexture2:SetTexture('')
+    MageNugIgnite_FrameTexture3:SetTexture('')
+    MageNugIgnite_FrameCombustionTexture:SetPoint("CENTER",-37,0);
+    MageNugIgnite_FrameCombustionTexture:SetSize(35,35);
+    MageNugIgnite_FramePhenonixFlamesTexture:SetPoint("CENTER",37,0);
+    MageNugIgnite_FramePhenonixFlamesTexture:SetSize(35,35);
+    MageNuggets.fireNugSimpleUiToggle = true;
+  else
+    MageNugIgnite_FrameCombustionTexture:SetPoint("CENTER",-40,0);
+    MageNugIgnite_FrameCombustionTexture:SetSize(28,28);
+    MageNugIgnite_FramePhenonixFlamesTexture:SetPoint("CENTER",40,0);
+    MageNugIgnite_FramePhenonixFlamesTexture:SetSize(28,28);
+    MageNuggets.fireNugSimpleUiToggle = false;
+  end
+end
+
+function MNigniteToggle()
+    local isChecked = MageNugFireNugOptionFrame_IgniteCheckButton:GetChecked();
+    if (isChecked == true) then
+        MageNuggets.igniteTog = true;
+    else
+        MageNuggets.igniteTog = false;
+    end
+end
+
+function MNFireNuggetNotifyBorderToggle()
+    local isChecked = MageNugFireNugOptionFrame_NotifyCheckButton:GetChecked();
+    if (isChecked == true) then
+        MageNuggets.FireNuggetNotifyBorderToggle = true;
+    else
+        MageNuggets.FireNuggetNotifyBorderToggle = false;
+    end
+end
+
+
+function MageNugFireNugSize()
+    local tempInt = MageNugFireNugOptionFrame_SizeSlider:GetValue()
+    if not MageNugFireNugOptionFrame_SizeSlider._onsetting then
+        MageNugFireNugOptionFrame_SizeSlider._onsetting = true
+        MageNugFireNugOptionFrame_SizeSlider:SetValue(MageNugFireNugOptionFrame_SizeSlider:GetValue())
+        tempInt = MageNugFireNugOptionFrame_SizeSlider:GetValue()
+        MageNugFireNugOptionFrame_SizeSlider._onsetting = false
+    else return end
+
+    if (tempInt == 0) then
+        MageNugIgnite_Frame:SetScale(0.7);
+        MageNuggets.fireNuggetSize = 0;
+    elseif (tempInt == 1) then
+        MageNugIgnite_Frame:SetScale(0.8);
+        MageNuggets.fireNuggetSize = 1;
+    elseif (tempInt == 2) then
+        MageNugIgnite_Frame:SetScale(0.9);
+        MageNuggets.fireNuggetSize = 2;
+    elseif (tempInt == 3) then
+        MageNugIgnite_Frame:SetScale(1.0);
+        MageNuggets.fireNuggetSize = 3;
+    elseif (tempInt == 4) then
+        MageNugIgnite_Frame:SetScale(1.1);
+        MageNuggets.fireNuggetSize = 4;
+    elseif (tempInt == 5) then
+        MageNugIgnite_Frame:SetScale(1.2);
+        MageNuggets.fireNuggetSize = 5;
+    elseif (tempInt == 6) then
+        MageNugIgnite_Frame:SetScale(1.3);
+        MageNuggets.fireNuggetSize = 6;
+    elseif (tempInt == 7) then
+        MageNugIgnite_Frame:SetScale(1.5);
+        MageNuggets.fireNuggetSize = 7;
+    elseif (tempInt == 8) then
+        MageNugIgnite_Frame:SetScale(1.7);
+        MageNuggets.fireNuggetSize = 8;
+    elseif (tempInt == 9) then
+        MageNugIgnite_Frame:SetScale(1.9);
+        MageNuggets.fireNuggetSize = 9;
+    elseif (tempInt == 10) then
+        MageNugIgnite_Frame:SetScale(2.1);
+        MageNuggets.fireNuggetSize = 10;
+    elseif (tempInt == 11) then
+        MageNugIgnite_Frame:SetScale(2.5);
+        MageNuggets.fireNuggetSize = 10;
+    end
+end
+
+function MageNugFireNugBorder()
+    local tempInt = MageNugFireNugOptionFrame_BorderSlider:GetValue()
+
+    if not MageNugFireNugOptionFrame_BorderSlider._onsetting then
+        MageNugFireNugOptionFrame_BorderSlider._onsetting = true
+        MageNugFireNugOptionFrame_BorderSlider:SetValue(MageNugFireNugOptionFrame_BorderSlider:GetValue())
+        tempInt = MageNugFireNugOptionFrame_BorderSlider:GetValue()
+        MageNugFireNugOptionFrame_BorderSlider._onsetting = false
+    else return end
+
+    if (tempInt == 0) then
+      MageNugIgnite_FrameTexture:SetTexture("Interface\\UNITPOWERBARALT\\Generic1Player_Circular_Frame")
+      MageNugIgnite_FrameTexture2:SetTexture("Interface\\UNITPOWERBARALT\\Generic1Player_Circular_Frame")
+      MageNugIgnite_FrameTexture3:SetTexture("Interface\\UNITPOWERBARALT\\Generic1Player_Circular_Frame")
+      MageNuggets.fireNuggetBorder = 0;
+    elseif (tempInt == 1) then
+      MageNugIgnite_FrameTexture:SetTexture("Interface\\UNITPOWERBARALT\\Atramedes_Circular_Frame")
+      MageNugIgnite_FrameTexture2:SetTexture("Interface\\UNITPOWERBARALT\\Atramedes_Circular_Frame")
+      MageNugIgnite_FrameTexture3:SetTexture("Interface\\UNITPOWERBARALT\\Atramedes_Circular_Frame")
+      MageNuggets.fireNuggetBorder = 1;
+    elseif (tempInt == 2) then
+      MageNugIgnite_FrameTexture:SetTexture("Interface\\UNITPOWERBARALT\\Horde_Circular_Frame")
+      MageNugIgnite_FrameTexture2:SetTexture("Interface\\UNITPOWERBARALT\\Horde_Circular_Frame")
+      MageNugIgnite_FrameTexture3:SetTexture("Interface\\UNITPOWERBARALT\\Horde_Circular_Frame")
+      MageNuggets.fireNuggetBorder = 2;
+    elseif (tempInt == 3) then
+      MageNugIgnite_FrameTexture:SetTexture("Interface\\UNITPOWERBARALT\\Alliance_Circular_Frame")
+      MageNugIgnite_FrameTexture2:SetTexture("Interface\\UNITPOWERBARALT\\Alliance_Circular_Frame")
+      MageNugIgnite_FrameTexture3:SetTexture("Interface\\UNITPOWERBARALT\\Alliance_Circular_Frame")
+      MageNuggets.fireNuggetBorder = 3;
+    elseif (tempInt == 4) then
+      MageNugIgnite_FrameTexture:SetTexture("Interface\\UNITPOWERBARALT\\Mechanical_Circular_Frame")
+      MageNugIgnite_FrameTexture2:SetTexture("Interface\\UNITPOWERBARALT\\Mechanical_Circular_Frame")
+      MageNugIgnite_FrameTexture3:SetTexture("Interface\\UNITPOWERBARALT\\Mechanical_Circular_Frame")
+      MageNuggets.fireNuggetBorder = 4;
+    elseif (tempInt == 5) then
+      MageNugIgnite_FrameTexture:SetTexture("Interface\\UNITPOWERBARALT\\MetalBronze_Circular_Frame")
+      MageNugIgnite_FrameTexture2:SetTexture("Interface\\UNITPOWERBARALT\\MetalBronze_Circular_Frame")
+      MageNugIgnite_FrameTexture3:SetTexture("Interface\\UNITPOWERBARALT\\MetalBronze_Circular_Frame")
+      MageNuggets.fireNuggetBorder = 5;
+    elseif (tempInt == 6) then
+      MageNugIgnite_FrameTexture:SetTexture("Interface\\UNITPOWERBARALT\\MetalEternium_Circular_Frame")
+      MageNugIgnite_FrameTexture2:SetTexture("Interface\\UNITPOWERBARALT\\MetalEternium_Circular_Frame")
+      MageNugIgnite_FrameTexture3:SetTexture("Interface\\UNITPOWERBARALT\\MetalEternium_Circular_Frame")
+      MageNuggets.fireNuggetBorder = 6;
+    elseif (tempInt == 7) then
+      MageNugIgnite_FrameTexture:SetTexture("Interface\\UNITPOWERBARALT\\StoneTan_Circular_Frame")
+      MageNugIgnite_FrameTexture2:SetTexture("Interface\\UNITPOWERBARALT\\StoneTan_Circular_Frame")
+      MageNugIgnite_FrameTexture3:SetTexture("Interface\\UNITPOWERBARALT\\StoneTan_Circular_Frame")
+      MageNuggets.fireNuggetBorder = 7;
+    elseif (tempInt == 8) then
+      MageNugIgnite_FrameTexture:SetTexture("Interface\\UNITPOWERBARALT\\WoodBoards_Circular_Frame")
+      MageNugIgnite_FrameTexture2:SetTexture("Interface\\UNITPOWERBARALT\\WoodBoards_Circular_Frame")
+      MageNugIgnite_FrameTexture3:SetTexture("Interface\\UNITPOWERBARALT\\WoodBoards_Circular_Frame")
+      MageNuggets.fireNuggetBorder = 8;
+    elseif (tempInt == 9) then
+      MageNugIgnite_FrameTexture:SetTexture("Interface\\UNITPOWERBARALT\\WowUI_Circular_Frame")
+      MageNugIgnite_FrameTexture2:SetTexture("Interface\\UNITPOWERBARALT\\WowUI_Circular_Frame")
+      MageNugIgnite_FrameTexture3:SetTexture("Interface\\UNITPOWERBARALT\\WowUI_Circular_Frame")
+      MageNuggets.fireNuggetBorder = 9;
+    elseif (tempInt == 10) then
+      MageNugIgnite_FrameTexture:SetTexture("Interface\\UNITPOWERBARALT\\Meat_Circular_Frame")
+      MageNugIgnite_FrameTexture2:SetTexture("Interface\\UNITPOWERBARALT\\Meat_Circular_Frame")
+      MageNugIgnite_FrameTexture3:SetTexture("Interface\\UNITPOWERBARALT\\Meat_Circular_Frame")
+      MageNuggets.fireNuggetBorder = 10;
+    elseif (tempInt == 11) then
+      MageNugIgnite_FrameTexture:SetTexture("")
+      MageNugIgnite_FrameTexture2:SetTexture("")
+      MageNugIgnite_FrameTexture3:SetTexture("")
+      MageNuggets.fireNuggetBorder = 11;
+    end
+end
+
+function MNFireBuggetBorderSliderTooltip()
+  if(MageNuggets.fireNugSimpleUiToggle == true) then
+    GameTooltip:SetOwner(MageNugFireNugOptionFrame_BorderSlider)
+    GameTooltip:SetText("|cff00BFFF".."Mage".." |cff00CD00".."Nuggets"..":|cffFFFFFF ".."Please disable Simple UI to change the border.")
+    GameTooltip:Show()
+  end
 end

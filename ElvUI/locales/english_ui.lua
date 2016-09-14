@@ -61,6 +61,11 @@ L["says"] = true;
 L["whispers"] = true;
 L["yells"] = true;
 
+--DataBars
+L["Current Level:"] = true;
+L["Honor XP:"] = true;
+L["Honor Remaining:"] = true;
+
 --DataTexts
 L["(Hold Shift) Memory Usage"] = true;
 L["AP"] = true;
@@ -102,6 +107,7 @@ L["Offhand"] = true;
 L["Profit:"] = true;
 L["Reset Data: Hold Shift + Right Click"] = true;
 L["Saved Raid(s)"] = true;
+L["Saved Dungeon(s)"] = true;
 L["Server: "] = true;
 L["Session:"] = true;
 L["Shoulder"] = true;
@@ -118,6 +124,7 @@ L["Waist"] = true;
 L["Wrist"] = true;
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = true;
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = true;
+L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = true;
 
 --DebugTools
 L["%s: %s tried to call the protected function '%s'."] = true;
@@ -230,7 +237,12 @@ L["Alternative Power"] = true;
 L["Archeology Progress Bar"] = true;
 L["Arena Frames"] = true; --Also used in UnitFrames
 L["Artifact Bar"] = true;
+L["Bag Mover (Grow Down)"] = true;
+L["Bag Mover (Grow Up)"] = true;
+L["Bag Mover"] = true;
 L["Bags"] = true; --Also in DataTexts
+L["Bank Mover (Grow Down)"] = true;
+L["Bank Mover (Grow Up)"] = true;
 L["Bar "] = true; --Also in ActionBars
 L["BNet Frame"] = true;
 L["Boss Button"] = true;

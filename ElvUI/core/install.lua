@@ -3,7 +3,6 @@ local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, Priv
 --Cache global variables
 --Lua functions
 local _G = _G
-local unpack = unpack
 local format = format
 --WoW API / Variables
 local CreateFrame = CreateFrame
@@ -24,7 +23,6 @@ local FCF_SetLocked = FCF_SetLocked
 local FCF_DockFrame, FCF_UnDockFrame = FCF_DockFrame, FCF_UnDockFrame
 local FCF_OpenNewWindow = FCF_OpenNewWindow
 local FCF_SavePositionAndDimensions = FCF_SavePositionAndDimensions
-local FCF_GetChatWindowInfo = FCF_GetChatWindowInfo
 local FCF_SetWindowName = FCF_SetWindowName
 local FCF_StopDragging = FCF_StopDragging
 local FCF_SetChatWindowFontSize = FCF_SetChatWindowFontSize
@@ -59,8 +57,6 @@ local function SetupChat()
 
 	for i = 1, NUM_CHAT_WINDOWS do
 		local frame = _G[format("ChatFrame%s", i)]
-		local chatFrameId = frame:GetID()
-		local chatName = FCF_GetChatWindowInfo(chatFrameId)
 
 		-- move general bottom left
 		if i == 1 then
@@ -281,6 +277,9 @@ function E:SetupResolution(noDataReset)
 			E.db.chat.panelWidthRight = 400
 			E.db.chat.panelHeightRight = 180
 
+			E.db.bags.bagWidth = 394
+			E.db.bags.bankWidth = 394
+
 			E:CopyTable(E.db.actionbar, P.actionbar)
 
 			E.db.actionbar.bar1.heightMult = 2;
@@ -339,6 +338,9 @@ function E:SetupResolution(noDataReset)
 	elseif not noDataReset then
 		E.db.chat.panelWidth = P.chat.panelWidth
 		E.db.chat.panelHeight = P.chat.panelHeight
+		
+		E.db.bags.bagWidth = P.bags.bagWidth
+		E.db.bags.bankWidth = P.bags.bankWidth
 
 		E:CopyTable(E.db.actionbar, P.actionbar)
 		E:CopyTable(E.db.unitframe.units, P.unitframe.units)

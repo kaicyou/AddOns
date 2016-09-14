@@ -6,7 +6,7 @@ local _
 
 local default_priority = 1
 local default_config = {
-	enabled = false,
+	enabled = true,
 	menu_priority = 1,
 	
 	text_size = 10,
@@ -343,6 +343,18 @@ function ReadyCheck:READY_CHECK (event, player, timeout)
 		ReadyCheck.ProgressBar:SetTimer (timeout)
 		ReadyCheck.Waiting = amt
 		ReadyCheck.From.text = "From: " .. player
+		
+		local _, class = UnitClass (player)
+		if (class) then
+			local color = RAID_CLASS_COLORS [class]
+			if (color) then
+				print ("|cFFFFDD00RaidAssist (/raa):|cFFFFFF00 ready check from |c" .. color.colorStr .. player .. "|r|cFFFFFF00 at " .. date ("%H:%M") .. "|r")
+			else
+				print ("|cFFFFDD00RaidAssist (/raa):|cFFFFFF00 ready check from " .. player .. " at " .. date ("%H:%M") .. "|r")
+			end
+		else
+			print ("|cFFFFDD00RaidAssist (/raa):|cFFFFFF00 ready check from " .. player .. " at " .. date ("%H:%M") .. "|r")
+		end
 		
 		for Index, Player in ipairs (ReadyCheck.PlayerList) do
 			Player:Hide()

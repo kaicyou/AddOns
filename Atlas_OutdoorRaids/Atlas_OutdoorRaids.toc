@@ -29,15 +29,15 @@
 # ## Notes: Outdoor Raid Encounters
 # ## Notes-zhTW: Atlas 戶外首領地圖插件
 #@end-debug@
-## Version: 1.33.01
+## Version: 1.34.00
 ## Author: arith, Dynaletik, dubcat
-## X-Date: 2016-07-26T15:04:31Z
+## X-Date: 2016-08-31T05:33:53Z
 ## X-Credits: Dan Gilbert, Lothaer
 ## X-Email: atlas.addon at gmail.com
 ## X-Website: http://www.atlasmod.com
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v1.33.01
+## X-Curse-Packaged-Version: v1.34.00
 ## X-Curse-Project-Name: Atlas Outdoor Raids
 ## X-Curse-Project-ID: atlas-outdoor-raids
 ## X-Curse-Repository-ID: wow/atlas-outdoor-raids/mainline

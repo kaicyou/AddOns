@@ -1,4 +1,4 @@
--- $Id: Atlas_Scenarios.lua 24 2016-08-29 06:57:49Z arith $
+-- $Id: Atlas_Scenarios.lua 27 2016-08-31 06:44:19Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -544,11 +544,13 @@ local myData = {
 		Location = { BZ["Broken Isles"] };
 		LevelRange = "100";
 		MinLevel = "100";
+		WorldMapID = "1021";
+		LargeMap = "SC_BrokenShore";
 		{ YELL.."- "..SS(786, 1) };
 		{ INDENT..GREY..SD(786, 1) };
-		{ INDENT..BLUE.." A) "..L["Alliance Ships"] };
-		{ INDENT..BLUE.." B) "..L["Horde Ships"] };
-		{ BLUE.." C) "..L["Beach"] };
+		{ INDENT..BLUE.." A) "..L["Alliance Ships"], 10001 };
+		{ INDENT..BLUE.." B) "..L["Horde Ships"], 10002 };
+		{ BLUE.." C) "..L["Beach"], 10003 };
 		{ INDENT..YELL.."- "..SS(786, 2) };
 		{ INDENT..INDENT..GREY..SD(786, 2) };
 		{ INDENT..INDENT..INDENT..GREY..L["33 Deamons slain"] };
@@ -559,30 +561,31 @@ local myData = {
 		{ INDENT..INDENT..GREY..SD(1189, 3)..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
 		{ YELL.."- "..SS(786, 4)..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
 		{ INDENT..GREY..SD(786, 4) };
-		{ INDENT..GREN.." 1) "..L["King Varian Wrynn"] };
+		{ INDENT..GREN.." 1) "..L["King Varian Wrynn"], 10004 };
 		{ YELL.."- "..SS(1189, 4)..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
 		{ INDENT..GREY..SD(1189,4 ) };
-		{ INDENT..GREN.." 2) "..L["Sylvanas and Baine"] };
+		{ INDENT..GREN.." 2) "..L["Sylvanas and Baine"], 10005 };
 		{ YELL.."- "..SS(786, 5) };
 		{ INDENT..GREY..SD(786, 5) };
-		{ INDENT..BLUE.." D) "..L["Portal"] };
+		{ INDENT..BLUE.." D) "..L["Portal"], 10006 };
 		{ YELL.."- "..SS(786, 6) };
 		{ INDENT..GREY..SD(786, 6) };
-		{ INDENT..BLUE.." E) "..BZ["The Black City"] };
-		{ BLUE.." F) "..BZ["Tomb Approach"] };
+		{ INDENT..BLUE.." E) "..BZ["The Black City"], 10007 };
+		{ BLUE.." F) "..BZ["Tomb Approach"], 10008 };
 		{ INDENT..YELL.."- "..SS(786, 7) };
 		{ INDENT..INDENT..GREY..SD(786, 7) };
-		{ INDENT..INDENT..GREN.." 3) "..L["Highlord Tirion Fordring"] };
-		{ INDENT..YELL.."- "..L["Stage 8"]..ALC["Hyphen"]..L["Krosus"] };
-		{ INDENT..INDENT..GREY..L["Kill Krosus."] };
-		{ INDENT..INDENT.._RED.." 1) "..L["Krosus"] };
-		{ YELL.."- "..SS(786, 8, true)..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
-		{ INDENT..GREY..SD(786, 8) };
-		{ INDENT..BLUE.." G) "..L["Alliance's final stop"] };
-		{ INDENT.._RED.." 2) "..L["Gul'dan"] };
-		{ YELL.."- "..SS(1189, 8, true)..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
-		{ INDENT..GREY..SD(1189, 8) };
-		{ INDENT..BLUE.." H) "..L["Horde's final stop"] };
+		{ INDENT..INDENT..GREN.." 3) "..L["Highlord Tirion Fordring"], 10009 };
+		{ INDENT..YELL.."- "..SS(786, 8) };
+		{ INDENT..INDENT..GREY..SD(786, 8) };
+		{ INDENT..INDENT.._RED.." 1) "..L["Krosus"], 10010 };
+		{ YELL.."- "..SS(786, 9, true)..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
+		{ INDENT..GREY..SD(786, 9) };
+		{ INDENT..BLUE.." G) "..L["Alliance's final stop"], 10011 };
+		{ INDENT.._RED.." 2) "..L["Gul'dan"], 10012 };
+		{ YELL.."- "..SS(1189, 9, true)..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
+		{ INDENT..GREY..SD(1189, 9) };
+		{ INDENT..BLUE.." H) "..L["Horde's final stop"], 10013 };
+		{ "" };
 	};
 	SC_Demon_Invasion = {
 		ZoneName = { GREN..L["Demon Invasion"] };

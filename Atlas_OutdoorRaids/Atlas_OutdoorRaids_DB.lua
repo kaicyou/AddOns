@@ -1,4 +1,4 @@
--- $Id: Atlas_OutdoorRaids_DB.lua 15 2016-07-25 14:23:32Z arith $
+-- $Id: Atlas_OutdoorRaids_DB.lua 18 2016-08-16 15:12:56Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -36,34 +36,34 @@ local myDB = {
 		{ 1, 10001, 271, 247 };
 	};
 	OR_BrokenIsles = {
-		{  1, 1774, 168, 351 }; --Calamir
-		{  2, 1796, 152, 375 }; --Withered J'im
-		{  3, 1769, 130, 347 }; --Levantus
-		{  4, 1770, 78, 201 }; --Humongris
-		{  5, 1763, 149, 159 }; --Shar'thos
-		{  6, 1789, 274, 150 }; --Drugon the Frostblood
-		{  7, 1795, 249, 22 }; --Flotsam
---		{  8, 1790,  }; --Ana-Mouz
-		{  9, 1756, 405, 98 }; --The Soultakers
-		{ 10, 1749, 323, 133 }; --Nithogg
-		{ 11, 1783, 180, 232 }; --Na'zak the Fiend
+		{  1, 1774, 168, 351, 393, 461 }; -- Calamir
+		{  2, 1796, 152, 375, 374, 502 }; -- Withered J'im
+		{  3, 1769, 130, 347, 341, 460 }; -- Levantus
+		{  4, 1770,  78, 201, 281, 274 }; -- Humongris
+		{  5, 1763, 149, 159, 363, 209 }; -- Shar'thos
+		{  6, 1789, 274, 150, 525, 201 }; -- Drugon the Frostblood
+		{  7, 1795, 249,  22, 492, 39 }; -- Flotsam
+--		{  8, 1790,  }; -- Ana-Mouz
+		{  9, 1756, 405,  98, 689, 132 }; -- The Soultakers
+		{ 10, 1749, 323, 133, 605, 177 }; -- Nithogg
+		{ 11, 1783, 180, 232, 412, 310 }; -- Na'zak the Fiend
 	};
 	OR_Draenor = {
-		{ 1, 1291, 271, 119 }; -- Drov the Ruiner
-		{ 2, 1211, 286, 207 }; -- Tarlna the Ageless
-		{ 3, 1262, 274, 424 }; -- Rukhmar
-		{ 4, 1452, 351, 203 }; -- Supreme Lord Kazzak
+		{ 1, 1291, 271, 119, 517, 153 }; -- Drov the Ruiner
+		{ 2, 1211, 286, 207, 537, 282 }; -- Tarlna the Ageless
+		{ 3, 1262, 274, 424, 519, 588 }; -- Rukhmar
+		{ 4, 1452, 351, 203, 637, 268 }; -- Supreme Lord Kazzak
 	};
 	OR_Pandaria = {
-		{ 1, 814, 58, 81 }; -- Nalak, The Storm Lord
-		{ 2, 826, 219, 70 }; -- Oondasta
-		{ 3, 691, 240, 211 }; -- Sha of Anger
-		{ 4, 725, 270, 324 }; -- Salyis's Warband
-		{ 5, 861, 463, 310 }; -- Ordos, Fire-God of the Yaungol
-		{ 6, 857, 450, 321 }; -- Chi-Ji, The Red Crane
-		{ 6, 859, 464, 321 }; -- Niuzao, The Black Ox
-		{ 6, 860, 450, 337 }; -- Xuen, The White Tiger
-		{ 6, 858, 464, 337 }; -- Yu'lon, The Jade Serpent
+		{ 1, 814,  58,  81, 217, 91 }; -- Nalak, The Storm Lord
+		{ 2, 826, 219,  70, 475, 66 }; -- Oondasta
+		{ 3, 691, 240, 211, 513, 295 }; -- Sha of Anger
+		{ 4, 725, 270, 324, 552, 482 }; -- Salyis's Warband
+		{ 5, 861, 463, 310, 870, 458 }; -- Ordos, Fire-God of the Yaungol
+		{ 6, 857, 450, 321, 849, 473 }; -- Chi-Ji, The Red Crane
+		{ 6, 859, 464, 321, 864, 473 }; -- Niuzao, The Black Ox
+		{ 6, 860, 450, 337, 850, 494 }; -- Xuen, The White Tiger
+		{ 6, 858, 464, 337, 864, 494 }; -- Yu'lon, The Jade Serpent
 	};
 	OR_Skettis = { 
 		{ 1, 10001, 187, 67 };

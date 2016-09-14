@@ -428,7 +428,7 @@ end
 -- Don't cast the angler's raft if we're doing Scavenger Hunt or on Inkgill Mere
 local GSB = FishingBuddy.GetSettingBool;
 local function RaftBergUsable()
-	return ( not IsMounted() and 
+	return ( GSB("UseRaft") and not IsMounted() and 
 		not FL:HasBuff(GetSpellInfo(116032)) and
 		not FL:HasBuff(GetSpellInfo(119700)));
 end
@@ -552,6 +552,83 @@ FishingItems[136377] = {
 		end,
 	["default"] = true,
 };
+
+-- Dalaran coin lures
+local CoinLures = {};
+local function CanUseCoinLure()
+	if (GSB("DalaranLures")) then
+		for id,info in pairs(CoinLures) do
+			if (FL:HasBuff(GetSpellInfo(info.spell))) then
+				return false;
+			end
+		end
+		return true;
+	end
+	return false;
+end
+
+CoinLures[138956] = {
+	["enUS"] = "Hypermagnetic Lure",
+	setting = "DalaranLures",
+	spell = 217835,
+	usable = CanUseCoinLure,
+	ignore = true,
+};
+CoinLures[138959] = {
+	["enUS"] = "Micro-Vortex Generator",
+	setting = "DalaranLures",
+	spell = 217838,
+	usable = CanUseCoinLure,
+	ignore = true,
+};
+CoinLures[138961] = {
+	["enUS"] = "Alchemical Bonding Agent",
+	setting = "DalaranLures",
+	spell = 217840,
+	usable = CanUseCoinLure,
+	ignore = true,
+};
+CoinLures[138962] = {
+	["enUS"] = "Starfish on a String",
+	setting = "DalaranLures",
+	spell = 217842,
+	usable = CanUseCoinLure,
+	ignore = true,
+};
+CoinLures[138957] = {
+	["enUS"] = "Auriphagic Sardine",
+	setting = "DalaranLures",
+	spell = 217836,
+	usable = CanUseCoinLure,
+	ignore = true,
+};
+CoinLures[138960] = {
+	["enUS"] = "Wish Crystal",
+	setting = "DalaranLures",
+	spell = 217839,
+	usable = CanUseCoinLure,
+	ignore = true,
+};
+CoinLures[138963] = {
+	["enUS"] = "Tiny Little Grabbing Apparatus",
+	setting = "DalaranLures",
+	spell = 217844,
+	usable = CanUseCoinLure,
+	ignore = true,
+};
+CoinLures[138958] = {
+	["enUS"] = "Glob of Really Sticky Glue",
+	setting = "DalaranLures",
+	spell = 217837,
+	usable = CanUseCoinLure,
+	ignore = true,
+};
+
+local function SetupCoinLures()
+	for id,info in pairs(CoinLures) do
+		FishingItems[id] = info;
+	end
+end
 
 local seascorpion = {
 	["Shadowmoon Valley (Draenor)"] = {
@@ -788,6 +865,7 @@ local RaftOptions = {
 	["tooltip"] = FBConstants.CONFIG_FISHINGRAFT_INFO,
 	itemid = 85500;
 	spell = 124036,
+	always = 1, -- this is now a toy!
 	setting = "UseAnglersRaft",
 	usable = RaftBergUsable,
 	check = RaftBergCheck,
@@ -830,24 +908,26 @@ local function PickRaft(info, buff, need, itemid)
 		return false;
 	end
 
+	local it = nil;
 	if (not hasraft and GSB("UseBobbingBerg")) then
 		buff = bergbuff;
 		itemid = BergOptions.itemid;
 	else
 		buff = raftbuff;
-		itemid = RaftOptions.itemid;
+		_, itemid = C_ToyBox.GetToyInfo(RaftOptions.itemid)
+		-- it = "item"
 	end
 
 	local _, _, _, _, _, _, et, _, _, _, _ = UnitBuff("player", buff);
 	et = (et or 0) - GetTime();
 	if (need or et <= RAFT_RESET_TIME) then
-		return true, itemid;
+		return true, itemid, it;
 	end
 	--return nil;
 end
 
 local function HandleRaftItems()
-	local haveRaft = GetItemCount(RaftOptions.itemid);
+	local haveRaft = PlayerHasToy(RaftOptions.itemid)
 	local haveBerg = GetItemCount(BergOptions.itemid);
 	
 	if (haveRaft and haveBerg) then
@@ -876,13 +956,14 @@ local function HandleRaftItems()
 		FishingItems[RaftOptions.itemid] = {
 			ignore = 1,
 			spell = 124036,
+			always = 1,
 			usable = RaftBergUsable,
 			check = PickRaft,
 		};
 	else
 		-- if we just have one or the other, then use our regular item option
-		FishingItems[85500] = RaftOptions;
-		FishingItems[107950] = BergOptions;
+		FishingItems[RaftOptions.itemid] = RaftOptions;
+		FishingItems[BergOptions.itemid] = BergOptions;
 	end
 end
 
@@ -976,6 +1057,7 @@ FluffEvents["VARIABLES_LOADED"] = function(started)
 	FishingPetsMenuHolder:Hide();
 
 	HandleRaftItems();
+	SetupCoinLures();
 	UpdateItemOptions();
 
 	FishingBuddy.OptionsFrame.HandleOptions(FBConstants.CONFIG_FISHINGFLUFF_ONOFF, "Interface\\Icons\\inv_misc_food_164_fish_seadog", FluffOptions);

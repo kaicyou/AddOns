@@ -1,7 +1,7 @@
 ﻿ --[[
-$Id: LibBabble-SubZone-3.0_itIT.lua 189 2016-07-19 07:43:10Z arith $
+$Id: LibBabble-SubZone-3.0_itIT.lua 192 2016-08-31 14:08:00Z arith $
 Name: LibBabble-SubZone-3.0
-Revision: $Rev: 189 $
+Revision: $Rev: 192 $
 Maintainers: arith, dynaletik
 Last updated by: $Author: arith $
 Website: http://www.wowace.com/addons/libbabble-subzone-3-0/
@@ -14,6 +14,7 @@ local lib = private["LibBabble-SubZone-3.0-LoadingLib"]
 if not lib or GetLocale() ~= "itIT" then return end
 
 lib:SetCurrentTranslations 
+
 {
 	["7th Legion Base Camp"] = "Campo della VII Legione",
 	["7th Legion Front"] = "Fronte della VII Legione",
@@ -1201,9 +1202,11 @@ lib:SetCurrentTranslations
 	["Earth Song Falls"] = "Cascate Cantaterra",
 	["Earth Song Gate"] = "Porta di Cantaterra",
 	["Eastern Bridge"] = "Ponte Orientale",
+	["Eastern Highmountain"] = "Alto Monte Orientale",
 	["Eastern Kingdoms"] = "Regni Orientali",
 	["Eastern Plaguelands"] = "Terre Infette Orientali",
 	["Eastern Strand"] = "Riva Orientale",
+	["Eastern Suramar"] = "Suramar Orientale",
 	["Eastern Transept"] = "Transetto Orientale",
 	["East Garrison"] = "Guarnigione Orientale",
 	["Eastmoon Ruins"] = "Rovine di Luna dell'Est",
@@ -2230,6 +2233,7 @@ lib:SetCurrentTranslations
 	["Jeff NW Quadrant"] = "Quadrante NO di Jeff",
 	["Jeff SE Quadrant"] = "Quadrante SE di Jeff",
 	["Jeff SW Quadrant"] = "Quadrante SO di Jeff",
+	["Jeremy's Test Scenario"] = "Scenario di Prova di Jeremy",
 	["Jerod's Landing"] = "Molo di Jerod",
 	["Jintha'Alor"] = "Jintha'Alor",
 	["Jintha'kalar"] = "Jintha'Kalar",
@@ -2566,6 +2570,7 @@ lib:SetCurrentTranslations
 	-- Mardum = "",
 	["Mardum Scenario"] = "Scenario di Mardum",
 	["Mardum, the Shattered Abyss"] = "Mardum, l'Abisso Spezzato",
+	["Mardum Treasure Scenario"] = "Scenario con Tesoro di Mardum",
 	["Mar'gok's Overwatch"] = "Fortezza di Mar'gok",
 	-- ["Margoss' Retreat"] = "",
 	["Margoss's Retreat"] = "Rifugio di Margoss",
@@ -3065,6 +3070,7 @@ lib:SetCurrentTranslations
 	["Propland - Dev Only"] = "Propland - Dev Only",
 	["Prospector's Point"] = "Bivacco del Prospettore",
 	["Protectorate Watch Post"] = "Presidio del Protettorato",
+	["Prototype Scenario"] = "Prototipo di Scenario",
 	["Proving Grounds"] = "Arena d'Addestramento",
 	["Proving Grounds: Select a Trial"] = "Arena d'Addestramento: Scegli una Prova",
 	["Purespring Cavern"] = "Caverna di Fontepura",
@@ -3196,7 +3202,7 @@ lib:SetCurrentTranslations
 	["Render's Rock"] = "Roccia di Rend",
 	["Render's Valley"] = "Valle di Rend",
 	["Rensai's Watchpost"] = "Posto di Guardia di Rensai",
-	["Rescue Koltira"] = "Salvezza di Koltira",
+	["Rescue Koltira"] = "Salva Koltira",
 	["Rethban Caverns"] = "Caverne di Rethban",
 	["Rethress Sanctum"] = "Santuario di Rethress",
 	["Retribution Point"] = "Presidio del Castigo",
@@ -3265,6 +3271,7 @@ lib:SetCurrentTranslations
 	["Ruby Dragonshrine"] = "Santuario dei Draghi di Rubino",
 	["Ruby Lake"] = "Lago di Rubino",
 	["Ruined Approach"] = "Androne Dissestato",
+	["Ruined City Post 01"] = "Postazione Città in Rovina 01",
 	["Ruined Court"] = "Corte Sfondata",
 	["Ruined Passage"] = "Passaggio in Rovina",
 	["Ruins of Aboraz"] = "Rovine di Aboraz",
@@ -3423,6 +3430,7 @@ lib:SetCurrentTranslations
 	["Scarred Vale"] = "Vallata Sfregiata",
 	["Scenario - Black Ox Temple"] = "Scenario - Tempio dello Yak Nero",
 	["Scenario - Mogu Ruins"] = "Scenario - Rovine Mogu",
+	["Scenario Template"] = "Scenario d'Esempio",
 	["Scenic Overlook"] = "Miracolle",
 	["Schnottz's Frigate"] = "Fregata di Schnottz",
 	["Schnottz's Hostel"] = "Ostello di Schnottz",
@@ -4002,8 +4010,8 @@ lib:SetCurrentTranslations
 	["Stranglethorn Vale"] = "Valle di Rovotorto",
 	Stratholme = "Stratholme",
 	["Stratholme Entrance"] = "Ingresso a Stratholme",
-	["Stratholme - Main Gate"] = "Stratholme - Porta Principale",
-	["Stratholme - Service Entrance"] = "Stratholme - Ingresso di Servizio",
+	["Stratholme - Main Gate"] = "Stratholme: Porta Principale",
+	["Stratholme - Service Entrance"] = "Stratholme: Ingresso di Servizio",
 	["Stratholme Service Entrance"] = "Ingresso di Servizio a Stratholme",
 	["Stromgarde Keep"] = "Forte di Stromgarde",
 	["Strongarm Airstrip"] = "Aerodromo Voloardito",
@@ -4208,6 +4216,9 @@ lib:SetCurrentTranslations
 	["Terror's Cave"] = "Caverna del Terrore",
 	["Terrorweb Tunnel"] = "Galleria dell'Orrore Brulicante",
 	["Terror Wing Path"] = "Sentiero del Terrore Alato",
+	TEST = "PROVA",
+	-- ["Test Faction Criteria"] = "",
+	["Test Scenario"] = "Scenario di Prova",
 	["Tethris Aran"] = "Tethris Aran",
 	["Thaelin's Workshop"] = "Officina di Thaelin",
 	Thalanaar = "Thalanaar",
@@ -5048,7 +5059,7 @@ lib:SetCurrentTranslations
 	["The Spawning Glen"] = "Radura della Procreazione",
 	["The Spear in the Shadow"] = "Lancia nell'Ombra",
 	["The Spire"] = "Guglia di Ghiaccio",
-	-- ["The Splintered Fleet"] = "",
+	["The Splintered Fleet"] = "La flotta alla deriva",
 	["The Splintered Path"] = "Sentiero Spezzato",
 	["The Spring Road"] = "Via della Primavera",
 	["The Stadium"] = "Stadio",
@@ -5475,6 +5486,7 @@ lib:SetCurrentTranslations
 	Ulduar = "Ulduar",
 	["Ulduar Raid - Interior - Insertion Point"] = "Incursione Ulduar - Interno - Punto di Inserimento",
 	["Ulduar Raid - Iron Concourse"] = "Incursione Ulduar - Viale di Ferro",
+	["Ulduar Warrior Scenario"] = "Scenario Guerriero di Ulduar",
 	Uldum = "Uldum",
 	["Uldum Phase Oasis"] = "Uldum Phase Oasis",
 	["Uldum - Phase Wrecked Camp"] = "Uldum - Phase Wrecked Camp",
@@ -5739,6 +5751,7 @@ lib:SetCurrentTranslations
 	["Western Bridge"] = "Ponte Occidentale",
 	["Western Plaguelands"] = "Terre Infette Occidentali",
 	["Western Strand"] = "Riva Occidentale",
+	["Western Suramar"] = "Suramar Occidentale",
 	["Western Transept"] = "Transetto Occidentale",
 	Westersea = "Mare Occidentale",
 	Westfall = "Marche Occidentali",

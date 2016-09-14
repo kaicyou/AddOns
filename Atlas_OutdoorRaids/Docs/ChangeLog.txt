@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 16 2016-07-26 15:04:31Z arith $
+$Id: ChangeLog.txt 21 2016-08-31 05:33:53Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,15 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.34.00 (Aug. 31, 2016)
+------------------------
+- Large size of map added:
+  - Broken Isles
+  - Draenor
+  - Pandaria
+- Translation update:
+  - Simplified Chinese (ananhaid)
 
 v1.33.01 (Jul. 26, 2016)
 ------------------------

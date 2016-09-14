@@ -20,7 +20,7 @@ local oenchantItem = {
 	[13] = {0, INVTYPE_TRINKET.."1"},
 	[14] = {0, INVTYPE_TRINKET.."2"},
 	[15] = {1, INVTYPE_CLOAK},
-	[16] = {1, INVTYPE_WEAPON},
+	[16] = {0, INVTYPE_WEAPON},
 	[17] = {1, INVTYPE_SHIELD},
 }
 
@@ -249,30 +249,9 @@ local otooltip6rpdid;
 local otooltip6gearsw=false; -- show all gear
 local otooltip6gearsw2=false; -- show only specific raider
 
--- Will be hidden after Legion Live --
-local WoD, _, _ = EJ_GetTierInfo(6);
-local highmaulname, _, _, _, _, _, _ = EJ_GetInstanceInfo(477)
-local bfname, _, _, _, _, _, _ = EJ_GetInstanceInfo(457)
--- Will be hidden after Legion Live --
-
---[[ Legion Settings 01
 local Legion, _, _ = EJ_GetTierInfo(7);
 local TENname, _, _, _, _, _, _ = EJ_GetInstanceInfo(768)
 local TNname, _, _, _, _, _, _ = EJ_GetInstanceInfo(786)
-]]--
-
--- Will be hide after Legion Live --
-if GetLocale() == "ptBR" then
-	bfname = "Fundição da Rocha Negra";
-end
-if GetLocale() == "itIT" then
-	bfname = "Fonderia Roccianera";
-end
-local hfcname, _, _, _, _, _, _ = EJ_GetInstanceInfo(669)
-if GetLocale() == "itIT" then
-	hfcname = "Cittadella Fuoco Infernale";
-end
--- Will be hide after Legion Live --
 
 local function round(number, digits)
     return tonumber(string.format("%." .. (digits or 0) .. "f", number))
@@ -1344,7 +1323,7 @@ if not UnitAffectingCombat("player") and oilvlframesw then
 		ONumTank:Show(); ONumDPS:Show(); ONumHeal:Show();
 		ONumDEATHKNIGHT:Show(); ONumDRUID:Show(); ONumHUNTER:Show(); ONumMAGE:Show();
 		ONumMONK:Show(); ONumPALADIN:Show(); ONumPRIEST:Show(); ONumROGUE:Show();
-		ONumSHAMAN:Show(); ONumWARLOCK:Show(); ONumWARRIOR:Show();
+		ONumSHAMAN:Show(); ONumWARLOCK:Show(); ONumWARRIOR:Show(); ONumDEMONHUNTER:Show();
 		if(n ~= 0) then ail = round(total/n,1); end
 		if(ntank ~= 0) then ailtank = round(totaltank/ntank,1); end
 		if(ndps ~= 0) then aildps = round(totaldps/ndps,1); end
@@ -1414,7 +1393,7 @@ if not UnitAffectingCombat("player") and oilvlframesw then
 		ONumTank:Hide(); ONumDPS:Hide(); ONumHeal:Hide();
 		ONumDEATHKNIGHT:Hide(); ONumDRUID:Hide(); ONumHUNTER:Hide(); ONumMAGE:Hide();
 		ONumMONK:Hide(); ONumPALADIN:Hide(); ONumPRIEST:Hide(); ONumROGUE:Hide();
-		ONumSHAMAN:Hide(); ONumWARLOCK:Hide(); ONumWARRIOR:Hide();
+		ONumSHAMAN:Hide(); ONumWARLOCK:Hide(); ONumWARRIOR:Hide();ONumDEMONHUNTER:Hide();
 		OilvlAIL:SetText(L["Average Item Level"]..": "..oilvlframedata.ilvl[1][1]);
 		LDB.text = oilvlframedata.ilvl[1][1]
 		ail = oilvlframedata.ilvl[1][1];
@@ -1447,9 +1426,8 @@ if not UnitAffectingCombat("player") and oilvlframesw then
 		for i = 2, OilvlTooltip:NumLines() do
 			msg = _G["OilvlTooltipTextLeft"..i]:GetText();
 			if msg then
-				if cfg.oilvlhm then msg = msg:find(highmaulname); if msg then break end end
-				if cfg.oilvlbf then msg = msg:find(bfname); if msg then break end end
-				if cfg.oilvlhfc then msg = msg:find(hfcname); if msg then break end end
+				if cfg.oilvlten then msg = msg:find(TENname); if msg then break end end
+				if cfg.oilvltn then msg = msg:find(TNname); if msg then break end end
 			end
 		end	
 		if not msg then		
@@ -2397,7 +2375,7 @@ function oilvlframe()
 	CreateTextureFontString("ONumPALADIN",10,68,OClassTexture["BASE"],OClassTexture["PALADIN"][1],OClassTexture["PALADIN"][2],OClassTexture["PALADIN"][3],OClassTexture["PALADIN"][4],"OilvlAIL_PALADIN",28,68)
 	CreateTextureFontString("ONumPRIEST",60,68,OClassTexture["BASE"],OClassTexture["PRIEST"][1],OClassTexture["PRIEST"][2],OClassTexture["PRIEST"][3],OClassTexture["PRIEST"][4],"OilvlAIL_PRIEST",78,68)
 	CreateTextureFontString("ONumWARLOCK",110,68,OClassTexture["BASE"],OClassTexture["WARLOCK"][1],OClassTexture["WARLOCK"][2],OClassTexture["WARLOCK"][3],OClassTexture["WARLOCK"][4],"OilvlAIL_WARLOCK",128,68)
-	CreateTextureFontString("ONumDH",160,68,OClassTexture["BASE"],OClassTexture["DEMONHUNTER"][1],OClassTexture["DEMONHUNTER"][2],OClassTexture["DEMONHUNTER"][3],OClassTexture["DEMONHUNTER"][4],"OilvlAIL_DEMONHUNTER",178,68)
+	CreateTextureFontString("ONumDEMONHUNTER",160,68,OClassTexture["BASE"],OClassTexture["DEMONHUNTER"][1],OClassTexture["DEMONHUNTER"][2],OClassTexture["DEMONHUNTER"][3],OClassTexture["DEMONHUNTER"][4],"OilvlAIL_DEMONHUNTER",178,68)
 	OCreateFontString("ConqText",200,68) 
 	
 -- 	Enchantment Reminder
@@ -2709,16 +2687,6 @@ function OilvlGetStatisticId(OCategory, ORaidName, OTable, Oprint)
 	end
 end
 
--- Will be hidden after Legion Live --
-local OSTATHM = {}
-OilvlGetStatisticId(WoD, highmaulname, OSTATHM, false)
-local OSTATBF = {}
-OilvlGetStatisticId(WoD, bfname:sub(1,strlen(bfname)-2), OSTATBF, false)
-local OSTATHFC = {}
-OilvlGetStatisticId(WoD, hfcname, OSTATHFC, false)
--- Will be hide after Legion Live --
-
---[[ Legion Settings 02
 OSTATTEN = {}
 OSTATTN = {}
 
@@ -2729,7 +2697,6 @@ else
 	OilvlGetStatisticId(Legion, TENname, OSTATTEN, false)
 	OilvlGetStatisticId(Legion, TNname, OSTATTN, false)
 end
-]]--
 
 -------------------------------------------------------------------------------
 -- Font definitions.
@@ -2931,7 +2898,6 @@ local difficulties = {
 	{"LFR",PLAYER_DIFFICULTY3.." ",1,"L "},
 }
 
--- Will be hidden after Legion Live --
 function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses)
 	collectgarbage()
 	local i=0;
@@ -3095,9 +3061,8 @@ function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses)
 		return ORP;
 	end
 	
-	bigorp[hfcname] = Save_orp(hfcname, OSTATHFC, 13)
-	bigorp[bfname] = Save_orp(bfname, OSTATBF, 10)
-	bigorp[highmaulname] = Save_orp(highmaulname, OSTATHM, 7)
+	bigorp[TNname] = Save_orp(TNname, OSTATTN, 10)
+	bigorp[TENname] = Save_orp(TENname, OSTATTEN, 7)
 	local function Save_orp_vars(raidname3)
 		OSTAT, NumRaidBosses, twohighest, progression, orp["raidname"], orp["progression"], orp["LFR"], orp["Normal"], orp["Heroic"], orp["Mythic"] = bigorp[raidname3][1],bigorp[raidname3][2],bigorp[raidname3][3],bigorp[raidname3][4],bigorp[raidname3][5],bigorp[raidname3][6],bigorp[raidname3][7],bigorp[raidname3][8],bigorp[raidname3][9],bigorp[raidname3][10]
 	end
@@ -3113,10 +3078,10 @@ function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses)
 		end
 	end
 
-	-- check Achivements for 3 raids
+	-- check Achivements for 2 raids
 	local RaidAchiv = {}
-	RaidAchiv[hfcname],RaidAchiv[bfname],RaidAchiv[highmaulname]={},{},{}
-	SaveAOTCCE(RaidAchiv[hfcname],9680,10044,10045) SaveAOTCCE(RaidAchiv[bfname],9444,9443) SaveAOTCCE(RaidAchiv[highmaulname],9441,9442)
+	RaidAchiv[TNname],RaidAchiv[TENname]={},{}
+	SaveAOTCCE(RaidAchiv[TNname],11195,11192) SaveAOTCCE(RaidAchiv[TENname],11194,11191)
 	
 	local oilvltooltiptexts = {}
 	for i = 1, OilvlTooltip:NumLines() do
@@ -3180,21 +3145,15 @@ function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses)
 			
 		local line = otooltip2:AddLine("")
 		otooltip2:SetCell(1,4,RAID..":","LEFT",2)
-		otooltip2:SetCell(2,4,"|cffffffff"..hfcname,"LEFT",2)
-		otooltip2:SetCellScript(2,4,"OnMouseUp",function(s)
-			Save_orp_vars(hfcname)
+		otooltip2:SetCell(2,4,"|cffffffff"..TNname,"LEFT",2)
+		otooltip2:SetCellScript(2,4,"OnMouseUp",function(s) 
+			Save_orp_vars(TNname)
 			otooltip2:Clear()
 			DrawOTooltip2()
 		end)
-		otooltip2:SetCell(3,4,"|cffffffff"..bfname,"LEFT",2)
+		otooltip2:SetCell(3,4,"|cffffffff"..TENname,"LEFT",2)
 		otooltip2:SetCellScript(3,4,"OnMouseUp",function(s) 
-			Save_orp_vars(bfname)
-			otooltip2:Clear()
-			DrawOTooltip2()
-		end)
-		otooltip2:SetCell(4,4,"|cffffffff"..highmaulname,"LEFT",2)
-		otooltip2:SetCellScript(4,4,"OnMouseUp",function(s) 
-			Save_orp_vars(highmaulname)
+			Save_orp_vars(TENname)
 			otooltip2:Clear()
 			DrawOTooltip2()
 		end)
@@ -3537,9 +3496,8 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses)
 		local ORP = {OSTAT, NumRaidBosses, twohighest, progression, orp["raidname"], orp["progression"], orp["LFR"], orp["Normal"], orp["Heroic"], orp["Mythic"];}
 		return ORP;
 	end
-	bigorp[hfcname] = Save_orp(hfcname, OSTATHFC, 13)
-	bigorp[bfname] = Save_orp(bfname, OSTATBF, 10)
-	bigorp[highmaulname] = Save_orp(highmaulname, OSTATHM, 7)
+	bigorp[TNname] = Save_orp(TNname, OSTATTN, 10)
+	bigorp[TENname] = Save_orp(TENname, OSTATTEN, 7)
 	local function Save_orp_vars(raidname3)
 		OSTAT, NumRaidBosses, twohighest, progression, orp["raidname"], orp["progression"], orp["LFR"], orp["Normal"], orp["Heroic"], orp["Mythic"] = bigorp[raidname3][1],bigorp[raidname3][2],bigorp[raidname3][3],bigorp[raidname3][4],bigorp[raidname3][5],bigorp[raidname3][6],bigorp[raidname3][7],bigorp[raidname3][8],bigorp[raidname3][9],bigorp[raidname3][10]
 	end
@@ -3556,8 +3514,8 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses)
 	end
 
 	local RaidAchiv = {}
-	RaidAchiv[hfcname],RaidAchiv[bfname],RaidAchiv[highmaulname]={},{},{}
-	SaveAOTCCE(RaidAchiv[hfcname],9680,10044,10045) SaveAOTCCE(RaidAchiv[bfname],9444,9443) SaveAOTCCE(RaidAchiv[highmaulname],9441,9442)
+	RaidAchiv[TNname],RaidAchiv[TENname]={},{}
+	SaveAOTCCE(RaidAchiv[TNname],11195,11192) SaveAOTCCE(RaidAchiv[TENname],11194,11191)
 
 	local oilvltooltiptexts = {}
 	for i = 1, OilvlTooltip:NumLines() do
@@ -3645,21 +3603,15 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses)
 			
 		local line = otooltip2:AddLine("")
 		otooltip2:SetCell(1,4,RAID..":","LEFT",2)
-		otooltip2:SetCell(2,4,"|cffffffff"..hfcname,"LEFT",2)
-		otooltip2:SetCellScript(2,4,"OnMouseUp",function(s)
-			Save_orp_vars(hfcname)
+		otooltip2:SetCell(2,4,"|cffffffff"..TNname,"LEFT",2)
+		otooltip2:SetCellScript(2,4,"OnMouseUp",function(s) 
+			Save_orp_vars(TNname)
 			otooltip2:Clear()
 			DrawOTooltip2()
 		end)
-		otooltip2:SetCell(3,4,"|cffffffff"..bfname,"LEFT",2)
+		otooltip2:SetCell(3,4,"|cffffffff"..TENname,"LEFT",2)
 		otooltip2:SetCellScript(3,4,"OnMouseUp",function(s) 
-			Save_orp_vars(bfname)
-			otooltip2:Clear()
-			DrawOTooltip2()
-		end)
-		otooltip2:SetCell(4,4,"|cffffffff"..highmaulname,"LEFT",2)
-		otooltip2:SetCellScript(4,4,"OnMouseUp",function(s) 
-			Save_orp_vars(highmaulname)
+			Save_orp_vars(TENname)
 			otooltip2:Clear()
 			DrawOTooltip2()
 		end)
@@ -3763,12 +3715,6 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses)
 	DrawOTooltip2()
 	end
 end
-
--- Will be hidden after Legion Live --
-
---[[Legion Settings 03
-Please copy OGetRaidProgression2 and OGetRaidProgression3 from beta
-]]--
 
 function otooltip4func()
 	if otooltip4 ~= nil then
@@ -4677,20 +4623,15 @@ function otooltip7func()
 	otooltip7:Show();
 end
 
-local enchantID = {5275,5276,5383,5310,5311,5312,5313,5314,5317,5318,5319,5320,5321,5324,5325,5326,5327,5328,5330,5334,5335,5336,5337,5384,3366,3367,3368,3370,3847,3595}
+local enchantID = {
+	5434,5435,5436, -- cloak
+	5889,5890,5891,5437,5438,5439, -- neck
+	5427,5428,5429,5430 -- ring
+}
+
 local gemTexture = {
-	1033165,
-	1033166,
-	1033167,
-	1033168,
-	1033169,
-	1033170,
-	1137540,
-	1137542,
-	1137539,
-	1137537,
-	1137538,
-	1137541
+	1397648,1397649,1397650,1397651,1397652,1397653, -- 2ndary stat
+	1379221 -- primary stat
 }
 
 function OItemAnalysisLowGem(itemLink)
@@ -4757,7 +4698,7 @@ function OTgathertil(guid, unitid)
 
 				if(itemLevel) then
 					count = count + 1
-					if(i == WEP) then
+					if(i == 16) then
 						if(equipType == "INVTYPE_2HWEAPON" or equipType == "INVTYPE_RANGED" or equipType == "INVTYPE_RANGEDRIGHT") then
 							twoHander = 1
 						end
@@ -4858,8 +4799,9 @@ function OTgathertil(guid, unitid)
 						end
 						if cgear[16][1] < itemLevel then
 							if OTCurrent3 ~= "" and not pvpsw then
+								totalIlvl = totalIlvl - cgear[16][1] + itemLevel
 								oilvlframedata.gear[OTCurrent3][16][1], oilvlframedata.gear[OTCurrent3][16][9] = itemLevel, xupgrade
-								totalIlvl = totalIlvl - oilvlframedata.gear[OTCurrent3][16][1] + itemLevel
+								cgear[16][1], cgear[16][9] = itemLevel, xupgrade
 							end
 							if OTCurrent3 == "" then
 								totalIlvl = totalIlvl - cgear[16][1] + itemLevel
@@ -4893,16 +4835,10 @@ function OTgathertil(guid, unitid)
 	end
 	
 	if totalIlvl > 0 and count > 0 then
-		if((count == 15) and twoHander) then
+		if cgear[16] and cgear[16][1] and not cgear[17] then
 			avgIlvl = round((totalIlvl+cgear[16][1]) / 16, cfg.oilvldp)
-		elseif((count == 16) and not twoHander) then
-			avgIlvl = round(totalIlvl / count, cfg.oilvldp)
-		elseif((count == 16) and twoHander) then
-			avgIlvl = round(totalIlvl / 16, cfg.oilvldp)
-		elseif((count == 15) and not twoHander) then
-			avgIlvl = round(totalIlvl / 16, cfg.oilvldp)
 		else
-			avgIlvl = round(totalIlvl / count, cfg.oilvldp)
+			avgIlvl = round(totalIlvl / 16, cfg.oilvldp)
 		end
 	else
 		avgIlvl = 0
@@ -5217,15 +5153,13 @@ function events:INSPECT_READY(...)
 	OILVL:UnregisterEvent("INSPECT_READY")
 end
 
--- will be hidden after Legion Live --	
 function events:INSPECT_ACHIEVEMENT_READY(...)
 	if not UnitAffectingCombat("player") then
 		if cfg.oilvlms then
 			if Omover2 == 1 then
 				if UnitExists(rpunit) and CheckInteractDistance(rpunit, 1) and rpsw then
-					if cfg.oilvlhm then OGetRaidProgression2(highmaulname, OSTATHM, 7); end
-					if cfg.oilvlbf then OGetRaidProgression2(bfname, OSTATBF, 10); end
-					if cfg.oilvlhfc then OGetRaidProgression2(hfcname, OSTATHFC, 13); end
+					if cfg.oilvlten then OGetRaidProgression2(TENname, OSTATTEN, 7); end
+					if cfg.oilvltn then OGetRaidProgression2(TNname, OSTATTN, 10); end
 				else
 					ClearAchievementComparisonUnit();
 					rpsw=false;
@@ -5234,9 +5168,8 @@ function events:INSPECT_ACHIEVEMENT_READY(...)
 				end
 			elseif Omover2 == 2 then
 				if UnitExists(rpunit) and CheckInteractDistance(rpunit, 1) and rpsw then
-					if cfg.oilvlhm then OGetRaidProgression3(highmaulname, OSTATHM, 7); end
-					if cfg.oilvlbf then OGetRaidProgression3(bfname, OSTATBF, 10); end
-					if cfg.oilvlhfc then OGetRaidProgression3(hfcname, OSTATHFC, 13); end
+					if cfg.oilvlten then OGetRaidProgression3(TENname, OSTATTEN, 7); end
+					if cfg.oilvltn then OGetRaidProgression3(TNname, OSTATTN, 10); end
 				else
 					ClearAchievementComparisonUnit();
 					rpsw=false;
@@ -5245,9 +5178,8 @@ function events:INSPECT_ACHIEVEMENT_READY(...)
 				end
 			else
 				if UnitExists("target") and CheckInteractDistance("target", 1)  and rpsw then
-					if cfg.oilvlhm then OGetRaidProgression(highmaulname, OSTATHM, 7); end
-					if cfg.oilvlbf then OGetRaidProgression(bfname, OSTATBF, 10); end
-					if cfg.oilvlhfc then OGetRaidProgression(hfcname, OSTATHFC, 13); end
+					if cfg.oilvlten then OGetRaidProgression(TENname, OSTATTEN, 7); end
+					if cfg.oilvltn then OGetRaidProgression(TNname, OSTATTN, 10); end
 				else
 					ClearAchievementComparisonUnit();
 					rpsw=false;
@@ -5263,10 +5195,6 @@ function events:INSPECT_ACHIEVEMENT_READY(...)
 	end
 	OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY")
 end
-
---[[Legion Settings 04
-Please copy Oevents:INSPECT_ACHIEVEMENT_READY(...) from beta
-]]--
 
 function events:GROUP_ROSTER_UPDATE(...)
 	if not UnitAffectingCombat("player") then
@@ -5292,7 +5220,6 @@ function events:RAID_ROSTER_UPDATE(...)
 	end
 end
 
--- will be hidden after Legion Live --
 function events:ADDON_LOADED(...)
 	cfg = Oilvl_Settings;
 	if cfg.oilvlframeP == nil then cfg.oilvlframeP = "TOPLEFT"; end
@@ -5300,9 +5227,8 @@ function events:ADDON_LOADED(...)
 	if cfg.oilvlframeY == nil then cfg.oilvlframeY = -60; end
 	if cfg.oilvlscale  == nil then cfg.oilvlscale = 0.8; end
 	if cfg.oilvlalpha  == nil then cfg.oilvlalpha = 1; end
-	if cfg.oilvlhm == nil then cfg.oilvlhm = false; end
-	if cfg.oilvlbf == nil then cfg.oilvlbf = false; end
-	if cfg.oilvlhfc == nil then cfg.oilvlhfc = true; end		
+	if cfg.oilvlten == nil then cfg.oilvlten = true; end
+	if cfg.oilvltn == nil then cfg.oilvltn = false; end
 	if cfg.oilvlms == nil then cfg.oilvlms = true; end
 	if cfg.oilvlme == nil then cfg.oilvlme = true; end
 	if cfg.oilvlme2 == nil then cfg.oilvlme2 = false; end
@@ -5324,7 +5250,7 @@ function events:ADDON_LOADED(...)
 	Oilvltimer:ScheduleRepeatingTimer(OilvlRPDTimeCheck,1);
 	print("O Item Level (|cFFFFFF00OiLvL|r|cFFFFFFFF) |r|cFF00FF00v"..GetAddOnMetadata("Oilvl","Version").." |r|cFFFFFFFF is loaded.")
 	if minimapicon then 
-		minimapicon:Register("O Item Level",LDB, cfg)
+		minimapicon:Register("O Item Level",LDB, cfg) 
 		if cfg.oilvlminimapicon then 
 			C_Timer.After(1, function() minimapicon:Show("O Item Level") end)
 		else
@@ -5332,13 +5258,10 @@ function events:ADDON_LOADED(...)
 		end
 	end
 	if cfg.oilvlaltclickroll then
-		if not lootslotSW then C_Timer.After(5, function() oilvlaltc() end); end
-	end
-	OILVL:UnregisterEvent("ADDON_LOADED");	
+		if not lootslotSW then C_Timer.After(5,function() oilvlaltc() end); end
+	end	
+	OILVL:UnregisterEvent("ADDON_LOADED");
 end
--- will be hidden after Legion Live --
-
--- Please copy events:ADDON_LOADED(...) from beta
 
 function events:PLAYER_ENTERING_WORLD(...)
 	if oilvlframesw then Oilvltimer:ScheduleTimer(OilvlCheckFrame,10); 
@@ -5491,7 +5414,6 @@ function OMouseover()
 	end
 end
 
--- will be hidden after Legion Live
 function OilvlConfigFrame()
 	cfg.frame = CreateFrame("Frame", "OiLvLConfig",InterfaceOptionsFramePanelContainer)
 	cfg.frame.name = "O Item Level (OiLvL)"
@@ -5596,16 +5518,14 @@ function OilvlConfigFrame()
 	end);
 	if cfg.oilvlms then mscb:SetChecked(true) end
 	
-	-- Highmaul check button
-	local hmcb = createCheckbutton(cfg.frame, 16+25, -200, " "..highmaulname);
-	hmcb:SetSize(30,30);
-	hmcb:SetScript("PostClick", function() 
-		cfg.oilvlhm = oicb2:GetChecked() 
-		if cfg.oilvlhm then 
+	-- TEN check button
+	local tencb = createCheckbutton(cfg.frame, 16+25, -200, " "..TENname);
+	tencb:SetSize(30,30);
+	tencb:SetScript("PostClick", function() 
+		cfg.oilvlten = oicb2:GetChecked() 
+		if cfg.oilvlten then 
 			oicb3:SetChecked(false) 
-			cfg.oilvlbf = false; 
-			oicb4:SetChecked(false) 
-			cfg.oilvlhfc = false; 
+			cfg.oilvltn = false; 
 		end
 		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
 		ClearAchievementComparisonUnit();
@@ -5614,18 +5534,16 @@ function OilvlConfigFrame()
 		Omover=0
 		Omover2 = 0;		
 	end);
-	if cfg.oilvlhm then hmcb:SetChecked(true) cfg.oilvlbf = false; cfg.oilvlhfc = false; end
+	if cfg.oilvlten then tencb:SetChecked(true) cfg.oilvltn = false; end
 
-	-- Blackrock Foundry check button
-	local bfcb = createCheckbutton(cfg.frame, 120+100, -200, " "..bfname);
-	bfcb:SetSize(30,30);
-	bfcb:SetScript("PostClick", function() 
-		cfg.oilvlbf = oicb3:GetChecked() 
-		if cfg.oilvlbf then 
+	-- TN check button
+	local tncb = createCheckbutton(cfg.frame, 16+25, -230, " "..TNname);
+	tncb:SetSize(30,30);
+	tncb:SetScript("PostClick", function() 
+		cfg.oilvltn = oicb3:GetChecked() 
+		if cfg.oilvltn then 
 			oicb2:SetChecked(false) 
-			cfg.oilvlhm = false; 
-			oicb4:SetChecked(false) 
-			cfg.oilvlhfc = false; 
+			cfg.oilvlten = false; 
 		end 
 		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
 		ClearAchievementComparisonUnit();
@@ -5634,27 +5552,10 @@ function OilvlConfigFrame()
 		Omover=0
 		Omover2 = 0;		
 	end);	
-	if cfg.oilvlbf then bfcb:SetChecked(true) cfg.oilvlhm = false; cfg.oilvlhfc = false; end
+	if cfg.oilvltn then tncb:SetChecked(true) cfg.oilvlten = false; end
 
 	-- Hellfire Citadel check button
-	local hfccb = createCheckbutton(cfg.frame, 16+25, -230, " "..hfcname);
-	hfccb:SetSize(30,30);
-	hfccb:SetScript("PostClick", function() 
-		cfg.oilvlhfc = oicb4:GetChecked() 
-		if cfg.oilvlhfc then 
-			oicb2:SetChecked(false) 
-			cfg.oilvlhm = false; 
-			oicb3:SetChecked(false) 
-			cfg.oilvlbf = false; 
-		end 
-		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
-		ClearAchievementComparisonUnit();
-		rpsw=false;
-		rpunit="";
-		Omover=0
-		Omover2 = 0;		
-	end);	
-	if cfg.oilvlhfc then hfccb:SetChecked(true) cfg.oilvlhm = false; cfg.oilvlbf = false; end
+	uniquealyzer = uniquealyzer + 1
 
 	-- Raid Progression Details
 	local rpdcb = createCheckbutton(cfg.frame, 16+25, -260, " "..L["Enable Showing Raid Progression Details on tooltips"]);
@@ -5673,12 +5574,10 @@ function OilvlConfigFrame()
 	if oicb1:GetChecked() then
 		oicb2:Enable();
 		oicb3:Enable();
-		oicb4:Enable();
 		oicb5:Enable();
 	else
 		oicb2:Disable();
 		oicb3:Disable();
-		oicb4:Disable();
 		oicb5:Disable();
 	end
 	
@@ -5758,9 +5657,6 @@ function OilvlConfigFrame()
 	upgradenumbercb:SetScript("PostClick", function() cfg.oilvlun = oicb10:GetChecked() OiLvlPlayer_Update() end);
 	if cfg.oilvlun then upgradenumbercb:SetChecked(true) end	
 end
--- will be hidden after Legion Live
-
--- Please copy OilvlConfigFrame() from beta
 
 function LDB:OnClick(button)
 	if button == "LeftButton" then

@@ -49,6 +49,7 @@ DCS_ExpandCheck:SetScript("OnMouseUp", function (self, button, up)
 	else
 	--	print(checked)
 		CharacterFrame_Expand()
+		DCS_Scrollbar:SetMinMaxValues(0, 0)
 		DCS_ExpandCheck:SetNormalTexture("Interface\\BUTTONS\\UI-SpellbookIcon-PrevPage-Up")
 		gdbprivate.gdb.gdbdefaults.dejacharacterstatsExpandChecked.ExpandSetChecked = true
 		DCS_tooltipText = 'Hide Character Stats' --Creates a tooltip on mouseover.
@@ -74,6 +75,7 @@ PaperDollFrame:SetScript("OnShow", function(self, event, arg1)
 	if checked == true then
 	--	print(checked)
 		CharacterFrame_Expand()
+		DCS_Scrollbar:SetMinMaxValues(0, 0)
 		DCS_tooltipText = 'Hide Character Stats' --Creates a tooltip on mouseover.
 		DCS_ExpandCheck:SetNormalTexture("Interface\\BUTTONS\\UI-SpellbookIcon-PrevPage-Up")
 	else

@@ -3,7 +3,6 @@ local LSM = LibStub("LibSharedMedia-3.0")
 
 --Cache global variables
 --WoW API / Variables
-local GetChatWindowInfo = GetChatWindowInfo
 local SetCVar = SetCVar
 
 --Global variables that we don't cache, list them here for the mikk's Find Globals script
@@ -33,7 +32,6 @@ function E:UpdateBlizzardFonts()
 	local NUMBER     = self["media"].normFont
 	local NAMEFONT		 = LSM:Fetch('font', self.private.general.namefont)
 	local MONOCHROME = ''
-	local _, editBoxFontSize, _, _, _, _, _, _, _, _ = GetChatWindowInfo(1)
 
 	CHAT_FONT_HEIGHTS = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
 
@@ -71,6 +69,7 @@ function E:UpdateBlizzardFonts()
 		SetFont(QuestFont_Large,                    NORMAL, 14)
 		SetFont(SystemFont_Large,                   NORMAL, 15)
 		SetFont(GameFontNormalMed3,					NORMAL, 15)
+		SetFont(GameFontHighlightMedium,            NORMAL, 15)
 		SetFont(SystemFont_Shadow_Huge1,			NORMAL, 20, MONOCHROME.."OUTLINE") -- Raid Warning, Boss emote frame too
 		SetFont(SystemFont_Med1,                    NORMAL, self.db.general.fontSize)
 		SetFont(SystemFont_Med3,                    NORMAL, self.db.general.fontSize*1.1)

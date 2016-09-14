@@ -1,4 +1,4 @@
--- $Id: AtlasMapsAssociation.lua 62 2016-07-26 15:01:58Z arith $
+-- $Id: AtlasMapsAssociation.lua 84 2016-08-29 05:33:54Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -31,15 +31,12 @@ local BZ = Atlas_GetLocaleLibBabble("LibBabble-SubZone-3.0");
 
 	Default map to be auto-selected when no SubZone data is available.
 
-	For example, "Dire Maul" has a subzone called "Warpwood Quarter" located in
-	East Dirl Maul, however, there are also some areas which have not been named
-	with any subzone, and we would like to pick a proper default map in this 
-	condition.
+	For example, "Dire Maul" has a subzone called "Warpwood Quarter" located in East Dirl Maul, however, there are also 
+	some areas which have not been named with any subzone, and we would like to pick a proper default map in this condition.
 
-	Define this table entries only when the dungeon has multiple maps.
+	Define this table entries only when the instance has multiple maps.
 
-	Table index is zone name, it need to be localized value, but we will handle
-	the localization with BabbleSubZone library.
+	Table index is zone name, it need to be localized value, but we will handle the localization with BabbleSubZone library.
 	The table value is map's key-name.
 ]]
 Atlas_AssocDefaults = {
@@ -63,12 +60,21 @@ Atlas_AssocDefaults = {
 	[BZ["Throne of Thunder"]] = 		"ThroneofThunderB";
 	[BZ["The Wailing Caverns"]] = 		"WailingCavernsEnt";
 	[BZ["Ulduar"]] =			"UlduarA";
+-- Legion
+	[BZ["Black Rook Hold"]] = 		"BlackRookHoldA";
+	[BZ["Court of Stars"]] = 		"CourtofStarsA";
+	[BZ["Halls of Valor"]] = 		"HallsofValorA";
+	[BZ["Maw of Souls"]] = 			"MawofSoulsA";
+	[BZ["The Emerald Nightmare"]] = 	"TheEmeraldNightmareA";
+	[BZ["The Nighthold"]] = 		"TheNightholdC";
+	[BZ["Vault of the Wardens"]] = 		"VaultoftheWardensA";
 };
 
 --[[
 	Atlas_SubZoneData{}
 
-	Define SubZone data for default map to be selected for dungeon which has multiple maps.
+	Define SubZone data for default map to be selected for instance which has multiple maps.
+	Subzone data should be able to be pulled out from WMOAreaTable for indoor areas, or from AreaTable for outdoor areas.
 
 	Array Syntax: 
 	["localized zone name"] = {
@@ -505,6 +511,150 @@ Atlas_SubZoneData = {
 			BZ["Pit of Fangs"],
 		},
 	},
+	-- /////////////////////////////////////////////
+	-- Legion instances
+	-- /////////////////////////////////////////////
+	[BZ["Black Rook Hold"]] = {
+		["BlackRookHoldA"] = {
+			BZ["The Ravenscrypt"],
+			BZ["The Grand Sepulcher"],
+			BZ["The Mausoleum of Lady Velandras"],
+			BZ["The Mausoleum of Lord Etheldrin"],
+			BZ["The Chamber of War"],
+			BZ["Hidden Passageway"],
+		},
+		["BlackRookHoldB"] = {
+			BZ["The Grand Hall"],
+			BZ["Ravenswatch"],
+			BZ["Ravenshold"],
+			BZ["Rook's Rise"],
+			BZ["Lord Ravencrest's Chamber"],
+		},
+		["BlackRookHoldC"] = {
+			BZ["The Rook's Roost"],
+			BZ["The Raven's Crown"],
+		},
+	},
+	[BZ["Court of Stars"]] = {
+		["CourtofStarsA"] = {
+			BZ["Moonlit Landing"],
+			BZ["Midnight Court"],
+			BZ["The Gilded Market"],
+		},
+		["CourtofStarsB"] = {
+			BZ["The Jeweled Estate"],
+		},
+	},
+	[BZ["Halls of Valor"]] = {
+		["HallsofValorA"] = {
+			BZ["The High Gate"],
+			BZ["Hearth of Revelry"],
+			BZ["Seat of Ascension"],
+			BZ["The Ephemeral Way"],
+		},
+		["HallsofValorB"] = {
+			BZ["Fields of the Eternal Hunt"],
+		},
+		["HallsofValorC"] = {
+			BZ["Hall of Glory"],
+			BZ["Halls of Valor"],
+		},
+	},
+	[BZ["Maw of Souls"]] = {
+		["MawofSoulsA"] = {
+			BZ["Helmouth Cliffs"],
+		},
+		["MawofSoulsB"] = {
+			BZ["The Naglfar"],
+		},
+	},
+	[BZ["The Emerald Nightmare"]] = {
+		["TheEmeraldNightmareA"] = {
+			BZ["Clutch of Corruption"],
+		},
+		["TheEmeraldNightmareB"] = {
+			BZ["Core of the Nightmare"],
+		},
+		["TheEmeraldNightmareC"] = {
+			BZ["Un'goro Crater"],
+		},
+		["TheEmeraldNightmareD"] = {
+			BZ["Mulgore"],
+		},
+		["TheEmeraldNightmareE"] = {
+			BZ["Grizzly Hills"],
+		},
+		["TheEmeraldNightmareF"] = {
+			BZ["The Emerald Dreamway"],
+		},
+		["TheEmeraldNightmareG"] = {
+			BZ["Moonglade"],
+		},
+--[[
+		["TheEmeraldNightmareH"] = {
+			BZ["Rift of Aln"],
+		},
+]]
+			-- BZ["The Emerald Dream"],
+			-- BZ["Bough Shadow"],
+			-- BZ["Seradane"],
+			-- BZ["Twilight Grove"],
+			-- BZ["Dream Bough"],
+	},
+	[BZ["The Nighthold"]] = {
+		-- Skorpyron
+		["TheNightholdA"] = {
+			BZ["Arcing Depths"],
+			BZ["Crystal Breach"],
+		},
+		-- Chronomatic Anomaly, Trilliax
+		["TheNightholdB"] = {
+			BZ["The Nightwell"],
+		},
+		-- Spellblade Aluriel, Krosus, High Botanist Tel'arn
+		["TheNightholdC"] = {
+			BZ["Shal'dorei Terrace"],
+			BZ["The Shattered Walkway"],
+		},
+		-- Tichondrius
+		["TheNightholdD"] = {
+			BZ["Captain's Quarters"],
+		},
+		-- Star Augur Etraeus
+		["TheNightholdE"] = {
+			BZ["Astromancer's Rise"],
+			BZ["Eternal Observatory"],
+		},
+		-- Grand Magistrix Elisande
+		["TheNightholdF"] = {
+			BZ["Elisande's Reach"],
+			BZ["Elisande's Secret Quarters"],
+			BZ["The Nightspire"], -- upper floor
+		},
+		-- Gul'dan
+--[[
+		["TheNightholdG"] = {
+		},
+]]
+			-- BZ["The Font of Night"],
+	},
+	[BZ["Vault of the Wardens"]] = {
+		["VaultoftheWardensA"] = {
+			BZ["Chamber of Night"],
+			BZ["The Warden's Court"],
+		},
+		["VaultoftheWardensB"] = {
+			BZ["The Demon Ward"],
+			BZ["Vault of Law"], -- though we did not show this room as there is nothing
+			BZ["Fallen Passage"],
+			BZ["Vault of Mirrors"],
+			BZ["Vault of Ice"],
+		},
+		["VaultoftheWardensC"] = {
+			BZ["Tomb of the Penitent"],
+			BZ["Vault of the Betrayer"],
+		},
+	},
 };
 
 --[[
@@ -578,7 +728,13 @@ Atlas_OutdoorZoneToAtlas = {
 	[BZ["Northern Barrens"]] = 		"WailingCavernsEnt";
 	[BZ["Ghostlands"]] = 			"ZulAman";
 	[BZ["Northern Stranglethorn"]] = 	"ZulGurub";
-
+-- Legion
+	[BZ["Dalaran"]] = 			"AssaultonVioletHold";
+	[BZ["Azsuna"]] = 			"VaultoftheWardensA";
+	[BZ["Val'sharah"]] = 			"BlackRookHoldA";
+	[BZ["Highmountain"]] = 			"NeltharionsLair";
+	[BZ["Stormheim"]] = 			"HallsofValorA";
+	[BZ["Suramar"]] = 			"TheNightholdA";
 };
 
 -- Yes, the following two tables are redundant, but they're both here in case there's ever more than one entrance map for an instance
@@ -699,7 +855,6 @@ Atlas_MapSeries = {
 	["ThroneofThunderB"] = 			{"ThroneofThunderA", "ThroneofThunderB", "ThroneofThunderC", "ThroneofThunderD" };
 	["ThroneofThunderC"] = 			{"ThroneofThunderA", "ThroneofThunderB", "ThroneofThunderC", "ThroneofThunderD" };
 	["ThroneofThunderD"] = 			{"ThroneofThunderA", "ThroneofThunderB", "ThroneofThunderC", "ThroneofThunderD" };
---[===[@alpha@
 	-- Legion
 	["BlackRookHoldA"] = 			{"BlackRookHoldA", "BlackRookHoldB", "BlackRookHoldC" };
 	["BlackRookHoldB"] = 			{"BlackRookHoldA", "BlackRookHoldB", "BlackRookHoldC" };
@@ -711,21 +866,24 @@ Atlas_MapSeries = {
 	["HallsofValorC"] = 			{"HallsofValorA", "HallsofValorB", "HallsofValorC" };
 	["MawofSoulsA"] = 			{"MawofSoulsA", "MawofSoulsB" };
 	["MawofSoulsB"] = 			{"MawofSoulsA", "MawofSoulsB" };
-	["TheEmeraldNightmareA"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG" };
-	["TheEmeraldNightmareB"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG" };
-	["TheEmeraldNightmareC"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG" };
-	["TheEmeraldNightmareD"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG" };
-	["TheEmeraldNightmareE"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG" };
-	["TheEmeraldNightmareF"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG" };
-	["TheEmeraldNightmareG"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG" };
-	["TheNightholdA"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD" };
-	["TheNightholdB"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD" };
-	["TheNightholdC"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD" };
-	["TheNightholdD"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD" };
+	["TheEmeraldNightmareA"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG"--[[, "TheEmeraldNightmareH"]] };
+	["TheEmeraldNightmareB"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG"--[[, "TheEmeraldNightmareH"]] };
+	["TheEmeraldNightmareC"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG"--[[, "TheEmeraldNightmareH"]] };
+	["TheEmeraldNightmareD"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG"--[[, "TheEmeraldNightmareH"]] };
+	["TheEmeraldNightmareE"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG"--[[, "TheEmeraldNightmareH"]] };
+	["TheEmeraldNightmareF"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG"--[[, "TheEmeraldNightmareH"]] };
+	["TheEmeraldNightmareG"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG"--[[, "TheEmeraldNightmareH"]] };
+-- 	["TheEmeraldNightmareH"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG", "TheEmeraldNightmareH" };
+	["TheNightholdA"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF"--[[, "TheNightholdG"]] };
+	["TheNightholdB"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF"--[[, "TheNightholdG"]] };
+	["TheNightholdC"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF"--[[, "TheNightholdG"]] };
+	["TheNightholdD"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF"--[[, "TheNightholdG"]] };
+	["TheNightholdE"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF"--[[, "TheNightholdG"]] };
+	["TheNightholdF"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF"--[[, "TheNightholdG"]] };
+-- 	["TheNightholdG"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF", "TheNightholdG" };
 	["VaultoftheWardensA"] = 		{"VaultoftheWardensA", "VaultoftheWardensB", "VaultoftheWardensC" };
 	["VaultoftheWardensB"] = 		{"VaultoftheWardensA", "VaultoftheWardensB", "VaultoftheWardensC" };
 	["VaultoftheWardensC"] = 		{"VaultoftheWardensA", "VaultoftheWardensB", "VaultoftheWardensC" };
---@end-alpha@]===]
 };
 
 -- Links maps together that are part of the same instance
@@ -778,7 +936,6 @@ Atlas_SubZoneAssoc = {
 	["UlduarC"] =				BZ["Ulduar"];
 	["UlduarD"] =				BZ["Ulduar"];
 	["UlduarE"] =				BZ["Ulduar"];
---[===[@alpha@
 	-- Legion
 	["BlackRookHoldA"] = 			BZ["Black Rook Hold"];
 	["BlackRookHoldB"] = 			BZ["Black Rook Hold"];
@@ -791,18 +948,21 @@ Atlas_SubZoneAssoc = {
 	["MawofSoulsA"] = 			BZ["Maw of Souls"];
 	["MawofSoulsB"] = 			BZ["Maw of Souls"];
 	["TheEmeraldNightmareA"] = 		BZ["The Emerald Nightmare"];
-	["TheEmeraldNightmareB"] =                BZ["The Emerald Nightmare"];
-	["TheEmeraldNightmareC"] =                BZ["The Emerald Nightmare"];
-	["TheEmeraldNightmareD"] =                BZ["The Emerald Nightmare"];
-	["TheEmeraldNightmareE"] =                BZ["The Emerald Nightmare"];
-	["TheEmeraldNightmareF"] =                BZ["The Emerald Nightmare"];
-	["TheEmeraldNightmareG"] =                BZ["The Emerald Nightmare"];
+	["TheEmeraldNightmareB"] = 		BZ["The Emerald Nightmare"];
+	["TheEmeraldNightmareC"] = 		BZ["The Emerald Nightmare"];
+	["TheEmeraldNightmareD"] = 		BZ["The Emerald Nightmare"];
+	["TheEmeraldNightmareE"] = 		BZ["The Emerald Nightmare"];
+	["TheEmeraldNightmareF"] = 		BZ["The Emerald Nightmare"];
+	["TheEmeraldNightmareG"] = 		BZ["The Emerald Nightmare"];
+	["TheEmeraldNightmareH"] = 		BZ["The Emerald Nightmare"];
 	["TheNightholdA"] = 			BZ["The Nighthold"];
 	["TheNightholdB"] = 			BZ["The Nighthold"];
 	["TheNightholdC"] = 			BZ["The Nighthold"];
 	["TheNightholdD"] = 			BZ["The Nighthold"];
+	["TheNightholdE"] = 			BZ["The Nighthold"];
+	["TheNightholdF"] = 			BZ["The Nighthold"];
+-- 	["TheNightholdG"] = 			BZ["The Nighthold"];
 	["VaultoftheWardensA"] = 		BZ["Vault of the Wardens"];
 	["VaultoftheWardensB"] = 		BZ["Vault of the Wardens"];
 	["VaultoftheWardensC"] = 		BZ["Vault of the Wardens"];
---@end-alpha@]===]
 };

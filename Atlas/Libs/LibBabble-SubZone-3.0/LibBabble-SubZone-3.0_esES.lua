@@ -1,7 +1,7 @@
 ﻿ --[[
-$Id: LibBabble-SubZone-3.0_esES.lua 189 2016-07-19 07:43:10Z arith $
+$Id: LibBabble-SubZone-3.0_esES.lua 192 2016-08-31 14:08:00Z arith $
 Name: LibBabble-SubZone-3.0
-Revision: $Rev: 189 $
+Revision: $Rev: 192 $
 Maintainers: arith, dynaletik
 Last updated by: $Author: arith $
 Website: http://www.wowace.com/addons/libbabble-subzone-3-0/
@@ -14,6 +14,7 @@ local lib = private["LibBabble-SubZone-3.0-LoadingLib"]
 if not lib or GetLocale() ~= "esES" then return end
 
 lib:SetCurrentTranslations 
+
 {
 	["7th Legion Base Camp"] = "Campamento base de la Séptima Legión",
 	["7th Legion Front"] = "Frente de la Séptima Legión",
@@ -733,7 +734,7 @@ lib:SetCurrentTranslations
 	["City of Ironforge"] = "Ciudad de Forjaz",
 	["City Siege - Mogu Island Progression Scenario"] = "Asedio a la ciudad - Gesta de progresión de la isla mogu",
 	["Clackbrine Coast"] = "Costa Tañemar",
-	["Claiming the Truthguard"] = "Reclamar a Veraguardia",
+	["Claiming the Truthguard"] = "Reclamar la Veraguardia",
 	["Clan Watch"] = "Avanzada del Clan",
 	["Class Quest"] = "Misión de Clase",
 	["Claytön's WoWEdit Land"] = "Claytön's WoWEdit Land",
@@ -1201,9 +1202,11 @@ lib:SetCurrentTranslations
 	["Earth Song Falls"] = "Cascadas del Canto de la Tierra",
 	["Earth Song Gate"] = "Puerta del Canto de la Tierra",
 	["Eastern Bridge"] = "Puente Oriental",
+	["Eastern Highmountain"] = "Zona este de Monte Alto",
 	["Eastern Kingdoms"] = "Reinos del Este",
 	["Eastern Plaguelands"] = "Tierras de la Peste del Este",
 	["Eastern Strand"] = "Playa del Este",
+	["Eastern Suramar"] = "Zona este de Suramar",
 	["Eastern Transept"] = "Transepto Oriental",
 	["East Garrison"] = "Cuartel del Este",
 	["Eastmoon Ruins"] = "Ruinas de Lunaeste",
@@ -2230,6 +2233,7 @@ lib:SetCurrentTranslations
 	["Jeff NW Quadrant"] = "Jeff NW Quadrant",
 	["Jeff SE Quadrant"] = "Jeff SE Quadrant",
 	["Jeff SW Quadrant"] = "Jeff SW Quadrant",
+	["Jeremy's Test Scenario"] = "Invasión de la Legión",
 	["Jerod's Landing"] = "Embarcadero de Jerod",
 	["Jintha'Alor"] = "Jintha'Alor",
 	["Jintha'kalar"] = "Jintha'kalar",
@@ -2566,6 +2570,7 @@ lib:SetCurrentTranslations
 	-- Mardum = "",
 	["Mardum Scenario"] = "Gesta de Mardum",
 	["Mardum, the Shattered Abyss"] = "Mardum, el Abismo Devastado",
+	["Mardum Treasure Scenario"] = "Gesta del tesoro de Mardum",
 	["Mar'gok's Overwatch"] = "Avanzada de Mar'gok",
 	-- ["Margoss' Retreat"] = "",
 	["Margoss's Retreat"] = "Reposo de Margoss",
@@ -2782,7 +2787,7 @@ lib:SetCurrentTranslations
 	["Neferset City"] = "Ciudad de Neferset",
 	["Neferset City Outskirts"] = "Afueras de la Ciudad de Neferset",
 	["Nek'mani Wellspring"] = "Manantial Nek'mani",
-	["Neltharion's Lair"] = "Guarida de Neltharion",
+	["Neltharion's Lair"] = "La Guarida de Neltharion",
 	["Neltharion's Vault"] = "Cámara de Neltharion",
 	["Neptulon's Rise"] = "Alto de Neptulon",
 	-- Nesingwary = "",
@@ -3065,6 +3070,7 @@ lib:SetCurrentTranslations
 	["Propland - Dev Only"] = "Propland - Dev Only",
 	["Prospector's Point"] = "Altozano del Prospector",
 	["Protectorate Watch Post"] = "Avanzada del Protectorado",
+	["Prototype Scenario"] = "Gesta prototipo",
 	["Proving Grounds"] = "Terreno de Pruebas",
 	["Proving Grounds: Select a Trial"] = "Terreno de Pruebas: elige una prueba",
 	["Purespring Cavern"] = "Cueva de Manantial",
@@ -3265,6 +3271,7 @@ lib:SetCurrentTranslations
 	["Ruby Dragonshrine"] = "Santuario de Dragones Rubí",
 	["Ruby Lake"] = "Lago Rubí",
 	["Ruined Approach"] = "Acceso en Ruinas",
+	["Ruined City Post 01"] = "Puesto 01 de la Ciudad en Ruinas",
 	["Ruined Court"] = "Patio en Ruinas",
 	["Ruined Passage"] = "Pasaje en Ruinas",
 	["Ruins of Aboraz"] = "Ruinas de Aboraz",
@@ -3423,6 +3430,7 @@ lib:SetCurrentTranslations
 	["Scarred Vale"] = "Valle Arrasado",
 	["Scenario - Black Ox Temple"] = "Gesta: Templo del Buey Negro",
 	["Scenario - Mogu Ruins"] = "Gesta: Ruinas Mogu",
+	["Scenario Template"] = "Plantilla de Gesta",
 	["Scenic Overlook"] = "Mirador Pintoresco",
 	["Schnottz's Frigate"] = "Fragata de Schnottz",
 	["Schnottz's Hostel"] = "Hostal de Schnottz",
@@ -4208,6 +4216,9 @@ lib:SetCurrentTranslations
 	["Terror's Cave"] = "Cueva del Terror",
 	["Terrorweb Tunnel"] = "Túnel Terroarácnido",
 	["Terror Wing Path"] = "Senda del Ala del Terror",
+	TEST = "PRUEBA",
+	-- ["Test Faction Criteria"] = "",
+	-- ["Test Scenario"] = "",
 	["Tethris Aran"] = "Tethris Aran",
 	["Thaelin's Workshop"] = "Taller de Thaelin",
 	Thalanaar = "Thalanaar",
@@ -4388,7 +4399,7 @@ lib:SetCurrentTranslations
 	["The Coil"] = "El Serpenteo",
 	["The Coliseum"] = "Coliseo",
 	["The Coliseum of Light"] = "El Coliseo de la Luz",
-	["The Collapse"] = "El derrumbamiento",
+	["The Collapse"] = "El Derrumbamiento",
 	["The Collapse - Suramar Scenario"] = "El Derrumbamiento: Gesta de Suramar",
 	["The Colossal Forge"] = "La Forja Colosal",
 	["The Colossal's Fist"] = "El Puño Colosal",
@@ -5048,7 +5059,7 @@ lib:SetCurrentTranslations
 	["The Spawning Glen"] = "La Cañada Emergente",
 	["The Spear in the Shadow"] = "La lanza entre las sombras",
 	["The Spire"] = "La Aguja",
-	-- ["The Splintered Fleet"] = "",
+	["The Splintered Fleet"] = "La flota escindida",
 	["The Splintered Path"] = "La Vereda Solitaria",
 	["The Spring Road"] = "La Senda Florida",
 	["The Stadium"] = "El Estadium",
@@ -5321,7 +5332,7 @@ lib:SetCurrentTranslations
 	["Tidefury Cove"] = "Cala Furiamarea",
 	["Tides' Hollow"] = "Hoya de la Marea",
 	["Tideskorn Harbor"] = "Puerto Mareskorn",
-	["Tides of Glory"] = "Mareas de gloria",
+	["Tides of Glory"] = "Mareas de Gloria",
 	["Tideview Thicket"] = "Matorral Olavista",
 	["Tigers' Wood"] = "Bosque del Tigre",
 	["Timbermaw Hold"] = "Bastión Fauces de Madera",
@@ -5475,6 +5486,7 @@ lib:SetCurrentTranslations
 	Ulduar = "Ulduar",
 	["Ulduar Raid - Interior - Insertion Point"] = "Banda Ulduar: Interior: Punto de Entrada",
 	["Ulduar Raid - Iron Concourse"] = "Banda Ulduar: Explanada de Hierro",
+	["Ulduar Warrior Scenario"] = "Gesta \"El guerrero de Ulduar\"",
 	Uldum = "Uldum",
 	["Uldum Phase Oasis"] = "Oasis de fase de Uldum",
 	["Uldum - Phase Wrecked Camp"] = "Uldum: fase del campamento arrasado",
@@ -5739,6 +5751,7 @@ lib:SetCurrentTranslations
 	["Western Bridge"] = "Puente Occidental",
 	["Western Plaguelands"] = "Tierras de la Peste del Oeste",
 	["Western Strand"] = "Playa del Oeste",
+	["Western Suramar"] = "Zona oeste de Suramar",
 	["Western Transept"] = "Transepto Occidental",
 	Westersea = "Maroeste",
 	Westfall = "Páramos de Poniente",

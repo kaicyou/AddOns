@@ -1,6 +1,5 @@
 ﻿local E, L, V, P, G = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local mod = E:NewModule('NamePlates', 'AceHook-3.0', 'AceEvent-3.0', 'AceTimer-3.0')
-local LSM = LibStub("LibSharedMedia-3.0")
 
 --Cache global variables
 --Lua functions
@@ -310,7 +309,7 @@ function mod:CheckUnitType(frame)
 	end
 end
 
-function mod:NAME_PLATE_UNIT_ADDED(event, unit, frame)
+function mod:NAME_PLATE_UNIT_ADDED(_, unit, frame)
 	local frame = frame or self:GetNamePlateForUnit(unit);
 	frame.UnitFrame.unit = unit
 	frame.UnitFrame.displayedUnit = unit
@@ -373,7 +372,7 @@ function mod:NAME_PLATE_UNIT_ADDED(event, unit, frame)
 	end
 end
 
-function mod:NAME_PLATE_UNIT_REMOVED(event, unit, frame, ...)
+function mod:NAME_PLATE_UNIT_REMOVED(_, unit, frame)
 	local frame = frame or self:GetNamePlateForUnit(unit);
 	frame.UnitFrame.unit = nil
 
@@ -425,6 +424,10 @@ end
 
 function mod:ConfigureAll()
 	if E.private.nameplates.enable ~= true then return; end
+
+	--We don't allow player nameplate health to be disabled
+	self.db.units.PLAYER.healthbar.enable = true
+
 	self:ForEachPlate("UpdateAllFrame")
 	self:UpdateCVars()
 	self:TogglePlayerDisplayType()
@@ -440,8 +443,8 @@ end
 
 function mod:SetBaseNamePlateSize()
 	local self = mod
-	local baseWidth = self.db.units["ENEMY_NPC"].healthbar.width
-	local baseHeight = self.db.units["ENEMY_NPC"].castbar.height + self.db.units["ENEMY_NPC"].healthbar.height + 30
+	local baseWidth = self.db.clickableWidth
+	local baseHeight = self.db.clickableHeight
 	NamePlateDriverFrame:SetBaseNamePlateSize(baseWidth, baseHeight)
 	self.PlayerFrame__:SetSize(baseWidth, baseHeight)
 end
@@ -502,7 +505,7 @@ function mod:UpdateElement_All(frame, unit, noTargetFrame)
 	end
 end
 
-function mod:NAME_PLATE_CREATED(event, frame)
+function mod:NAME_PLATE_CREATED(_, frame)
 	frame.UnitFrame = CreateFrame("BUTTON", frame:GetName().."UnitFrame", UIParent);
 	frame.UnitFrame:EnableMouse(false);
 	frame.UnitFrame:SetAllPoints(frame)
@@ -516,8 +519,8 @@ function mod:NAME_PLATE_CREATED(event, frame)
 	frame.UnitFrame.Name = self:ConstructElement_Name(frame.UnitFrame)
 	frame.UnitFrame.NPCTitle = self:ConstructElement_NPCTitle(frame.UnitFrame)
 	frame.UnitFrame.Glow = self:ConstructElement_Glow(frame.UnitFrame)
-	frame.UnitFrame.Buffs = self:ConstructElement_Auras(frame.UnitFrame, 5, "LEFT")
-	frame.UnitFrame.Debuffs = self:ConstructElement_Auras(frame.UnitFrame, 5, "RIGHT")
+	frame.UnitFrame.Buffs = self:ConstructElement_Auras(frame.UnitFrame, "LEFT")
+	frame.UnitFrame.Debuffs = self:ConstructElement_Auras(frame.UnitFrame, "RIGHT")
 	frame.UnitFrame.HealerIcon = self:ConstructElement_HealerIcon(frame.UnitFrame)
 	frame.UnitFrame.RaidIcon = self:ConstructElement_RaidIcon(frame.UnitFrame)
 	frame.UnitFrame.Elite = self:ConstructElement_Elite(frame.UnitFrame)
@@ -581,7 +584,6 @@ function mod:OnEvent(event, unit, ...)
 end
 
 function mod:RegisterEvents(frame, unit)
-	local unit = frame.unit;
 	local displayedUnit;
 	if ( unit ~= frame.displayedUnit ) then
 		displayedUnit = frame.displayedUnit;
@@ -699,7 +701,7 @@ function mod:TogglePlayerDisplayType()
 	end
 end
 
-function mod:UpdateVehicleStatus(event, unit)
+function mod:UpdateVehicleStatus()
 	if ( UnitHasVehicleUI("player") ) then
 		self.playerUnitToken = "vehicle"
 	else
@@ -742,6 +744,9 @@ end
 function mod:Initialize()
 	self.db = E.db["nameplates"]
 	if E.private["nameplates"].enable ~= true then return end
+
+	--We don't allow player nameplate health to be disabled
+	self.db.units.PLAYER.healthbar.enable = true
 
 	self:UpdateVehicleStatus()
 

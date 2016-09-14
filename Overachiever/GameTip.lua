@@ -5,13 +5,17 @@ local GetStatistic = GetStatistic
 local GetAchievementInfo = Overachiever.GetAchievementInfo
 local GetAchievementCriteriaInfo = Overachiever.GetAchievementCriteriaInfo
 
+local REMINDER_EXPIRE_SECONDS = 120  -- Allow reminders from up to 2 minutes ago
+
 local AchievementIcon = "Interface\\AddOns\\Overachiever\\AchShield"
 local tooltip_complete = { r = 0.2, g = 0.5, b = 0.2 }
 local tooltip_incomplete = { r = 1, g = 0.1, b = 0.1 }
 
 local time = time
 
-local skipNextExamineOneLiner
+local chatprint = Overachiever.chatprint
+
+--local skipNextExamineOneLiner
 
 local isCriteria
 do
@@ -43,7 +47,12 @@ do
       local n
       for i=1,GetAchievementNumCriteria(achID) do
         n = GetAchievementCriteriaInfo(achID, i)
-        cache[achID][base:format(n)] = i  -- Creating lookup table
+		local arr = { strsplit("\n", base) }
+		-- Creating lookup table
+		--cache[achID][base:format(n)] = i
+		for k,v in ipairs(arr) do
+		  cache[achID][v:format(n)] = i
+		end
       end
     end
     if (cache[achID][name]) then
@@ -107,13 +116,29 @@ local function isCriteria_hidden(achID, name)
 end
 --]]
 
+
+local function getMobID(unit)
+  local guid = UnitGUID(unit)
+  if (not guid) then  return;  end
+  local unitType, _, _, _, _, id = ("-"):split(guid)
+  if (unitType == "Creature") then
+    --chatprint("ExamineSetUnit "..(id and tonumber(id) or "nil"))
+    return tonumber(id)
+  end
+  --guid = tonumber( "0x"..strsub(guid, 6, 10) )
+  --guid = tonumber(guid:sub(6,10), 16)
+  --guid = tonumber((guid):sub(-12, -9), 16)
+  --return guid
+end
+
+
 local lastreminder = 0
 local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 
 local function PlayReminder()
   if (Overachiever_Settings.SoundAchIncomplete ~= 0 and time() >= lastreminder + 15) then
     local sound = SharedMedia:Fetch("sound", Overachiever_Settings.SoundAchIncomplete)
-	--Overachiever.chatprint("sound: " .. (sound and sound or "nope"))
+	--chatprint("sound: " .. (sound and sound or "nope"))
     if (sound) then
       PlaySoundFile(sound)
       lastreminder = time()
@@ -123,22 +148,88 @@ end
 
 
 Overachiever.RecentReminders = {}  -- Used by Tabs module
+Overachiever.RecentReminders_Criteria = {}
 local RecentReminders = Overachiever.RecentReminders
+local RecentReminders_Criteria = Overachiever.RecentReminders_Criteria
 
 function Overachiever.RecentReminders_Check()
-  local earliest = time() - 120  -- Allow reminders from up to 2 minutes ago
+  local earliest = time() - REMINDER_EXPIRE_SECONDS
   for id,t in pairs(RecentReminders) do
     if (t < earliest) then
       RecentReminders[id] = nil
+	  RecentReminders_Criteria[id] = nil
     end
   end
 end
 
+local function isTwentyFiver(diffID)
+  if (diffID == 4 or diffID == 6 or diffID == 7 or diffID == 20) then  return true;  end
+  return false
+end
+
+function Overachiever.GetDifficulty()
+  if (IsInInstance()) then
+  -- IF IN AN INSTANCE:
+  -- Returns: <instance type ("arena", "party", "pvp", "raid", or "scenario")>, <Is Heroic?>, <Is Mythic?>, <Challenge Mode?>, <Legacy raid size 25 players?>, <Heroic Raid?>, <Mythic Raid?>
+  --   If in a raid, the "Heroic Raid?" return will match the "Heroic?" return. Otherwise, it will be nil. (Similar for "Mythic Raid?".)
+  --   Note: While it may seem that the "Heroic?" and "Heroic Raid?" returns are redundant here, it's done this
+  --   way to make the return values consistent with those given when you're NOT in an instance.
+
+    --local name, itype, difficultyID, difficultyName, maxPlayers, playerDifficulty, isDynamicInstance, mapID, instanceGroupSize = GetInstanceInfo()
+	--local difficultyName, instanceType, isHeroic, isChallengeMode, displayHeroic, displayMythic, toggleDifficultyID = GetDifficultyInfo(difficultyID);
+	local _, itype, difficultyID = GetInstanceInfo()
+	local _, _, isHeroic, isChallengeMode, _, displayMythic, toggleDifficultyID = GetDifficultyInfo(difficultyID)
+	if (itype == "raid") then  return itype, isHeroic, displayMythic, isChallengeMode, isHeroic, displayMythic, isTwentyFiver(difficultyID);  end
+	return itype, isHeroic, displayMythic, isChallengeMode, nil, nil, nil
+  else
+  -- IF NOT IN AN INSTANCE:
+  -- Returns: false, <Dungeon set as Heroic?>, <Dungeon set as Mythic?>, nil, <Legacy raid size is 25 players?>, <Raid set as Heroic?>, <Raid set as Mythic?>
+
+    local d = GetDungeonDifficultyID()
+	local _, _, isHeroicD, _, _, displayMythicD = GetDifficultyInfo(d);
+    local r = GetLegacyRaidDifficultyID() --GetRaidDifficultyID()
+	local _, _, isHeroicR, _, _, displayMythicR = GetDifficultyInfo(r)
+	return false, isHeroicD, displayMythicD, nil, isTwentyFiver(r), isHeroicR, displayMythicR --isTwentyFiver(GetLegacyRaidDifficultyID())
+  end
+end
+
+--[[
+http://wowprogramming.com/docs/api/GetInstanceInfo
+local name, itype, difficulty, difficultyName, maxPlayers, playerDifficulty, isDynamicInstance, mapID, instanceGroupSize = GetInstanceInfo()
+difficulty:
+0 - None; not in an Instance.
+1 - 5-player Instance.
+2 - 5-player Heroic Instance.
+3 - 10-player Raid Instance.
+4 - 25-player Raid Instance.
+5 - 10-player Heroic Raid Instance.
+6 - 25-player Heroic Raid Instance.
+7 - 25-player Raid Finder Instance.
+8 - Challenge Mode Instance.
+9 - 40-player Raid Instance.
+10 - Not used.
+11 - Heroic Scenario Instance.
+12 - Scenario Instance.
+13 - Not used.
+14 - 10-30-player Normal Raid Instance.
+15 - 10-30-player Heroic Raid Instance.
+16 - 20-player Mythic Raid Instance .
+17 - 10-30-player Raid Finder Instance.
+18 - 40-player Event raid (Used by the level 100 version of Molten Core for WoW's 10th anniversary).
+19 - 5-player Event instance (Used by the level 90 version of UBRS at WoD launch).
+20 - 25-player Event scenario (unknown usage).
+21 - Not used.
+22 - Not used.
+23 - Mythic 5-player Instance.
+24 - Timewalker 5-player Instance.
+--]]
+
+--[[
 function Overachiever.GetDifficulty()
   local inInstance = IsInInstance()
   if (inInstance) then
 -- IF IN AN INSTANCE:
-  -- Returns: <instance type ("pvp"/"arena"/"party"/"raid")>, <Heroic?>, <25-player Raid?>, <Heroic Raid?>, <Dynamic?>
+  -- Returns: <instance type ("arena", "party", "pvp", "raid", or "scenario")>, <Heroic?>, <25-player Raid?>, <Heroic Raid?>, <Dynamic?>
   --   If in a raid, the "Heroic Raid?" return will match the "Heroic?" return. Otherwise, it will be nil (actually
   --   no return). "Dynamic?" refers to whether the current instance's difficulty can be changed on the fly, as is
   --   the case with the Icecrown Citadel raid.
@@ -155,6 +246,7 @@ function Overachiever.GetDifficulty()
   local r = GetRaidDifficultyID()
   return false, (d > 1), (r == 4 or r == 6), (r > 4)
 end
+--]]
 
 
 -- UNIT TOOLTIP HOOK
@@ -253,15 +345,15 @@ local function RaceClassCheck(ach, tab, raceclass, race, unit)
 end
 
 function Overachiever.ExamineSetUnit(tooltip)
-  skipNextExamineOneLiner = true
+  --skipNextExamineOneLiner = true
   tooltip = tooltip or GameTooltip  -- Workaround since another addon is known to break this
   local name, unit = tooltip:GetUnit()
   if (not unit) then  return;  end
   local id, text, complete, needtipshow
 
   if (UnitIsPlayer(unit)) then
-    local _, r, c = UnitRace(unit)
-    _, c = UnitClass(unit)
+    local raceName, r = UnitRace(unit)
+	local className, c = UnitClass(unit)
     if (r and c) then
       local raceclass = r.." "..c
       for key,tab in pairs(RaceClassAch) do
@@ -275,6 +367,8 @@ function Overachiever.ExamineSetUnit(tooltip)
               r, g, b = tooltip_incomplete.r, tooltip_incomplete.g, tooltip_incomplete.b
               PlayReminder()
               RecentReminders[id] = time()
+			  local playername = UnitName(unit)
+			  if (playername) then  RecentReminders_Criteria[id] = playername .. " (" .. raceName .. " " .. className .. ")";  end
             end
             tooltip:AddLine(text, r, g, b)
             tooltip:AddTexture(AchievementIcon)
@@ -298,6 +392,7 @@ function Overachiever.ExamineSetUnit(tooltip)
               r, g, b = tooltip_incomplete.r, tooltip_incomplete.g, tooltip_incomplete.b
               PlayReminder()
               RecentReminders[id] = time()
+			  RecentReminders_Criteria[id] = name
             end
             tooltip:AddLine(text, r, g, b)
             tooltip:AddTexture(AchievementIcon)
@@ -307,9 +402,7 @@ function Overachiever.ExamineSetUnit(tooltip)
       end
 
     elseif (Overachiever_Settings.CreatureTip_killed and UnitCanAttack("player", unit)) then
-      local guid = UnitGUID(unit)
-      --guid = tonumber( "0x"..strsub(guid, 6, 10) )
-      guid = tonumber(guid:sub(6,10), 16)
+      local guid = getMobID(unit)
       local tab = Overachiever.AchLookup_kill[guid]
       if (tab) then
         local num, numincomplete, potential, _, achcom, c, t = 0, 0
@@ -322,7 +415,7 @@ function Overachiever.ExamineSetUnit(tooltip)
             if (not c) then
               numincomplete = numincomplete + 1
               potential = potential or {}
-              potential[id] = i+1
+			  potential[id] = tab[i+1]
             end
           end
         end
@@ -330,8 +423,9 @@ function Overachiever.ExamineSetUnit(tooltip)
         if (num > 0) then
           if (numincomplete > 0) then
             local cat, t
-            local instype, heroic, twentyfive = Overachiever.GetDifficulty()
+            local instype, heroic, mythic, challenge, twentyfive = Overachiever.GetDifficulty()
             for id, crit in pairs(potential) do
+			  --[[
               cat = GetAchievementCategory(id)
               if (((not instype or not heroic) and (OVERACHIEVER_CATEGORY_HEROIC[cat] or (OVERACHIEVER_HEROIC_CRITERIA[id] and OVERACHIEVER_HEROIC_CRITERIA[id][crit])))
                   or ((not instype or not twentyfive) and OVERACHIEVER_CATEGORY_25[cat])) then
@@ -339,6 +433,16 @@ function Overachiever.ExamineSetUnit(tooltip)
               else
                 t = t or time()
                 RecentReminders[id] = t
+              end
+			  --]]
+			  -- We don't have an easy way to detect whether the achievement is heroic-only any more here. (Maybe add a new function for this later?)
+			  -- We can still use the criteria-specific table, though:
+              if ((not instype or not heroic) and (OVERACHIEVER_HEROIC_CRITERIA[id] and OVERACHIEVER_HEROIC_CRITERIA[id][crit])) then
+                numincomplete = numincomplete - 1 -- Discount this reminder if it's heroic-only and you're not in a heroic instance or if it's 25-man only and you're not in a 25-man instance.
+              else
+                t = t or time()
+                RecentReminders[id] = t
+				RecentReminders_Criteria[id] = crit
               end
             end
           end
@@ -397,11 +501,18 @@ end
 do
   local last_check, last_tiptext = 0
   local last_id, last_text, last_complete, last_angler
+  --local tooltipUsed
+
   function Overachiever.ExamineOneLiner(tooltip)
-  -- Unfortunately, we couldn't find a "GameTooltip:SetWorldObject" or similar type of thing, so we have to check for
+  -- Unfortunately, there isn't a "GameTooltip:SetWorldObject" or similar type of thing, so we have to check for
   -- these sorts of tooltips in a less direct way.
-    if (skipNextExamineOneLiner) then  skipNextExamineOneLiner = nil;  return;  end
+
+    --tooltipUsed = nil
+
+    --if (skipNextExamineOneLiner) then  skipNextExamineOneLiner = nil;  return;  end
     -- Skipping works because this function is consistently called after the functions that set skipNextExamineOneLiner to true.
+	-- At least, it used to or seemed like it did. On second examination (years later, perhaps due to API changes?), it seems unnecessary so we can
+	-- do without it.
 
     tooltip = tooltip or GameTooltip  -- Workaround since another addon is known to break this
     if (tooltip:NumLines() == 1) then
@@ -412,6 +523,7 @@ do
       local t = time()
 
       local cache_used
+	  --local prev_tiptext = last_tiptext
       if (tiptext ~= last_tiptext or t ~= last_check) then
         for key,tab in pairs(WorldObjAch) do
           if (Overachiever_Settings[ tab[1] ]) then
@@ -434,17 +546,34 @@ do
           r, g, b = tooltip_incomplete.r, tooltip_incomplete.g, tooltip_incomplete.b
           if (not cache_used) then
             RecentReminders[id] = time()
-            if (not angler or not Overachiever_Settings.SoundAchIncomplete_AnglerCheckPole or
-                not IsEquippedItemType("Fishing Poles")) then
-              PlayReminder()
-            end
+			RecentReminders_Criteria[id] = tiptext
+			--if (tiptext ~= prev_tiptext) then
+              if (not angler or not Overachiever_Settings.SoundAchIncomplete_AnglerCheckPole or
+                  not IsEquippedItemType("Fishing Poles")) then
+                PlayReminder()
+              end
+			--end
           end
         end
         tooltip:AddLine(text, r, g, b)
         tooltip:AddTexture(AchievementIcon)
         tooltip:Show()
+		--tooltipUsed = true
       end
     end
+  end
+
+  -- We need this function because something is making the tooltip refresh its text while it's open, causing us to lose what we added:
+  function Overachiever.ExamineOneLiner_clear(tooltip)
+    -- This is a workaround. I'm not sure why Blizzard makes the tooltip refresh like they do. Anyway, we know the tooltip's either not going to be
+	-- displayed or about to be "shown" again (even though the text might be the same as before), but the problem is that if it's the latter, our
+	-- OnShow hook (Overachiever.ExamineOneLiner) doesn't get called if the frame was still visible. So, we hide it, so when GameTooltip:Show() is
+	-- called next, our hook is always called. (And if it was the latter, the tooltip not being displayed, then hiding it *shouldn't* cause problems.)
+	tooltip:Hide()
+	-- Tried to use a variable to track when we needed to do this to avoid doing it all the time, just in case this conflicts with some tooltip addon
+    -- or something, but there are cases where it didn't work (e.g. when you have a mob's tooltip visible as you move the cursor to the triggering
+	-- world object):
+	--if (tooltipUsed) then  tooltip:Hide();  end
   end
 end
 
@@ -492,11 +621,11 @@ function Overachiever.BuildItemLookupTab(THIS_VERSION, id, savedtab, tab, duptab
           tab[k] = v;
           if (savedtab) then  savedtab[k] = v;  end
         end
-        if (Overachiever_Debug) then  Overachiever.chatprint("Skipped lookup table rebuild for Ach #"..id..": Used default list because WoW API no longer supports the required method and character has no relevant saved data.");  end
+        if (Overachiever_Debug) then  chatprint("Skipped lookup table rebuild for Ach #"..id..": Used default list because WoW API no longer supports the required method and character has no relevant saved data.");  end
       elseif (savedtab) then
         wipe(tab)
         for k,v in pairs(savedtab) do  tab[k] = v;  end  -- Copy table (cannot just set using "=" or reference will be lost)
-        if (Overachiever_Debug) then  Overachiever.chatprint("Skipped lookup table rebuild for Ach #"..id..": Retrieved from saved variables because WoW API no longer supports the required method.");  end
+        if (Overachiever_Debug) then  chatprint("Skipped lookup table rebuild for Ach #"..id..": Retrieved from saved variables because WoW API no longer supports the required method.");  end
       end
       return tab
     end
@@ -568,7 +697,7 @@ function Overachiever.BuildItemLookupTab(THIS_VERSION, id, savedtab, tab, duptab
     ConsumeItemAch.TastesLikeChicken[5], ConsumeItemAch.HappyHour[5] = FoodCriteria, DrinkCriteria
     ConsumeItemAch.CataclysmicallyDelicious[5], ConsumeItemAch.DrownYourSorrows[5] = FoodCriteria2, DrinkCriteria2
     ConsumeItemAch.PandarenCuisine[5], ConsumeItemAch.PandarenDelicacies[5] = PandaEats, PandaEats2
-    if (Overachiever_Debug) then  Overachiever.chatprint("Skipped food/drink lookup table rebuild: Retrieved from saved variables.");  end
+    if (Overachiever_Debug) then  chatprint("Skipped food/drink lookup table rebuild: Retrieved from saved variables.");  end
   end
   Overachiever.Consumed_Default = nil
 end
@@ -619,7 +748,7 @@ end
 
 
 function Overachiever.ExamineItem(tooltip)
-  skipNextExamineOneLiner = true
+  --skipNextExamineOneLiner = true
   tooltip = tooltip or this or GameTooltip  -- Workaround in case another addon breaks this
   local name, link = tooltip:GetItem() -- Issue: This doesn't reliably get the item we want?
   if (not link) then  return;  end
@@ -818,7 +947,7 @@ if (SharedMedia) then
   }
   for data,name in pairs(soundtab) do
     if (not SharedMedia:Register("sound", "Blizzard: "..name, data)) then
-	  Overachiever.chatprint('Error: Failed to register Blizzard sound "' .. name .. '"')
+	  chatprint('Error: Failed to register Blizzard sound "' .. name .. '"')
 	end
   end
   soundtab = nil

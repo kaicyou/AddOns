@@ -1,0 +1,12 @@
+tag 7.0.3.14
+73b7fb1dd831e6e85b3a2757027ad42caa6c315b
+James D. Callahan III <jcallahan@curse.com>
+2016-09-01 14:40:41 -0500
+
+
+
+--------------------
+
+James D. Callahan III:
+	- Use Debug rather than DebugPour so non-devs won't see the "Missing digsite" messages.
+	- More digsites and a survey count fix from sidji.

@@ -1,4 +1,4 @@
--- $Id: Atlas_DungeonLocs.lua 14 2016-07-19 13:57:19Z arith $
+-- $Id: Atlas_DungeonLocs.lua 26 2016-09-06 07:37:35Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -44,6 +44,7 @@ local myCategory = L["Dungeon Locations"];
 local myData = {
 	DLEast = {
 		ZoneName = { BZ["Eastern Kingdoms"] };
+		LargeMap = "DLEast";
 		{ WHIT.." 1) "..BZ["Sunwell Plateau"]..ALC["Comma"].._RED..BZ["Isle of Quel'Danas"], 10001 };
 		{ WHIT.." 2) "..BZ["Magisters' Terrace"]..ALC["Comma"].._RED..BZ["Isle of Quel'Danas"], 10002 };
 		{ WHIT.." 3) "..BZ["Zul'Aman"]..ALC["Comma"].._RED..BZ["Ghostlands"], 10003 };
@@ -83,6 +84,7 @@ local myData = {
 	};
 	DLWest = {
 		ZoneName = { BZ["Kalimdor"] };
+		LargeMap = "DLWest";
 		{ WHIT.." 1) "..BZ["Firelands"]..ALC["Comma"].._RED..BZ["Mount Hyjal"], 10001 };
 		{ WHIT.." 2) "..BZ["Blackfathom Deeps"]..ALC["Comma"].._RED..BZ["Ashenvale"], 10002 };
 		{ WHIT.." 3) "..BZ["Ragefire Chasm"]..ALC["Comma"].._RED..BZ["Orgrimmar"], 10003 };
@@ -116,6 +118,7 @@ local myData = {
 	};
 	DLOutland = {
 		ZoneName = { BZ["Outland"] };
+		LargeMap = "DLOutland";
 		{ WHIT.." 1) "..BZ["Gruul's Lair"]..ALC["Comma"].._RED..BZ["Blade's Edge Mountains"], 10001 };
 		{ WHIT.." 2) "..BZ["Tempest Keep"]..ALC["Comma"].._RED..BZ["Netherstorm"], 10002 };
 		{ WHIT..INDENT..BZ["The Mechanar"] };
@@ -141,6 +144,7 @@ local myData = {
 	};
 	DLNorthrend = {
 		ZoneName = { BZ["Northrend"] };
+		LargeMap = "DLNorthrend";
 		{ WHIT.." 1) "..BZ["Ulduar"]..ALC["Comma"].._RED..BZ["The Storm Peaks"], 10001 };
 		{ WHIT..INDENT..BZ["Ulduar"] };
 		{ WHIT..INDENT..BZ["Halls of Stone"] };
@@ -183,6 +187,7 @@ local myData = {
 	};
 	DLPandaria = {
 		ZoneName = { BZ["Pandaria"] };
+		LargeMap = "DLPandaria";
 		{ WHIT.." 1) "..BZ["Throne of Thunder"]..ALC["Comma"].._RED..BZ["Isle of Thunder"], 10001 };
 		{ WHIT.." 2) "..BZ["Shado-Pan Monastery"]..ALC["Comma"].._RED..BZ["Kun-Lai Summit"], 10002 };
 		{ WHIT.." 3) "..BZ["Mogu'shan Vaults"]..ALC["Comma"].._RED..BZ["Kun-Lai Summit"], 10003 };
@@ -204,11 +209,15 @@ local myData = {
 		{ "" };
 		{ "" };
 		{ "" };
+		{ "" };
+		{ "" };
+		{ "" };
 		{ WHIT..L["White"]..ALC["Colon"]..ORNG..L["Instances"] };
 		{ GREN..L["Green"]..ALC["Colon"]..ORNG..BATTLEGROUNDS };
 	};
 	DLDraenor = {
 		ZoneName = { BZ["Draenor"] };
+		LargeMap = "DLDraenor";
 		{ WHIT.." 1) "..BZ["Iron Docks"]..ALC["Comma"].._RED..BZ["Gorgrond"], 10001 };
 		{ WHIT.." 2) "..BZ["Blackrock Foundry"]..ALC["Comma"].._RED..BZ["Gorgrond"], 10002 };
 		{ WHIT.." 3) "..BZ["Grimrail Depot"]..ALC["Comma"].._RED..BZ["Gorgrond"], 10003 };
@@ -230,14 +239,19 @@ local myData = {
 		{ "" };
 		{ "" };
 		{ "" };
+		{ "" };
+		{ "" };
+		{ "" };
 		{ WHIT..L["White"]..ALC["Colon"]..ORNG..L["Instances"] };
 		{ GREN..L["Green"]..ALC["Colon"]..ORNG..BATTLEGROUNDS };
 	};
 	DLBrokenIsles = {
 		ZoneName = { BZ["Broken Isles"] };
+		LargeMap = "DLBrokenIsles";
 		{ WHIT.." 1) "..BZ["Assault on Violet Hold"]..ALC["Comma"].._RED..BZ["Dalaran"], 10001 };
 		{ WHIT.." 2) "..BZ["Vault of the Wardens"]..ALC["Comma"].._RED..BZ["Azsuna"], 10002 };
 		{ WHIT.." 3) "..BZ["Eye of Azshara"]..ALC["Comma"].._RED..BZ["Azsuna"], 10003 };
+		{ INDENT.." 3') "..BZ["Eye of Azshara"]..ALC["Hyphen"]..ALC["Meeting Stone"], 100031 }; -- Eye of Azshara's meeting stone is a bit far away from the dungeon's actual location
 		{ WHIT.." 4) "..BZ["Black Rook Hold"]..ALC["Comma"].._RED..BZ["Val'sharah"], 10004 };
 		{ WHIT.." 5) "..BZ["The Emerald Nightmare"]..ALC["Comma"].._RED..BZ["Val'sharah"], 10005 };
 		{ WHIT.." 6) "..BZ["Darkheart Thicket"]..ALC["Comma"].._RED..BZ["Val'sharah"], 10006 };
@@ -257,8 +271,10 @@ local myData = {
 		{ "" };
 		{ "" };
 		{ "" };
-		{ WHIT..L["White"]..ALC["Colon"]..ORNG..L["Instances"] };
-		--{ GREN..L["Green"]..ALC["Colon"]..ORNG..BATTLEGROUNDS };
+		{ "" };
+		{ "" };
+--		{ WHIT..L["White"]..ALC["Colon"]..ORNG..L["Instances"] };
+--		{ GREN..L["Green"]..ALC["Colon"]..ORNG..BATTLEGROUNDS };
 	};
 };
 

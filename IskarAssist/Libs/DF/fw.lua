@@ -1,5 +1,5 @@
 
-local dversion = 26
+local dversion = 44
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -111,6 +111,10 @@ local embed_functions = {
 	"FindHighestParent",
 	"OpenInterfaceProfile",
 	"CreateInCombatTexture",
+	"CreateAnimationHub",
+	"CreateAnimation",
+	"CreateScrollBox",
+	"CreateBorder",
 }
 
 DF.table = {}
@@ -1084,6 +1088,7 @@ DF.GlobalWidgetControlNames = {
 	image = "DF_ImageMetaFunctions",
 	slider = "DF_SliderMetaFunctions",
 	split_bar = "DF_SplitBarMetaFunctions",
+	aura_tracker = "DF_AuraTracker",
 }
 
 function DF:AddMemberForWidget (widgetName, memberType, memberName, func)
@@ -1159,3 +1164,251 @@ function DF:Mixin (object, ...)
 
 	return object;
 end
+
+-----------------------------
+--> animations
+
+function DF:CreateAnimationHub (parent, onPlay, onFinished)
+	local newAnimation = parent:CreateAnimationGroup()
+	newAnimation:SetScript ("OnPlay", onPlay)
+	newAnimation:SetScript ("OnFinished", onFinished)
+	newAnimation.NextAnimation = 1
+	return newAnimation
+end
+
+function DF:CreateAnimation (animation, type, order, duration, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+	local anim = animation:CreateAnimation (type)
+	
+	anim:SetOrder (order or animation.NextAnimation)
+	anim:SetDuration (duration)
+	
+	type = string.upper (type)
+	
+	if (type == "ALPHA") then
+		anim:SetFromAlpha (arg1)
+		anim:SetToAlpha (arg2)
+	
+	elseif (type == "SCALE") then
+		anim:SetFromScale (arg1, arg2)
+		anim:SetToScale (arg3, arg4)
+		anim:SetOrigin (arg5 or "center", arg6 or 0, arg7 or 0) --point, x, y
+	
+	elseif (type == "ROTATION") then
+		anim:SetDegrees (arg1) --degree
+		anim:SetOrigin (arg2 or "center", arg3 or 0, arg4 or 0) --point, x, y
+		
+	elseif (type == "TRANSLATION") then
+		anim:SetOffset (arg1, arg2)
+		
+	end
+	
+	animation.NextAnimation = animation.NextAnimation + 1	
+	return anim
+end
+
+
+-----------------------------
+--> borders
+
+local default_border_color1 = .5
+local default_border_color2 = .3
+local default_border_color3 = .1
+
+local SetBorderAlpha = function (self, alpha1, alpha2, alpha3)
+	self.Borders.Alpha1 = alpha1 or self.Borders.Alpha1
+	self.Borders.Alpha2 = alpha2 or self.Borders.Alpha2
+	self.Borders.Alpha3 = alpha3 or self.Borders.Alpha3
+	
+	for _, texture in ipairs (self.Borders.Layer1) do
+		texture:SetAlpha (self.Borders.Alpha1)
+	end
+	for _, texture in ipairs (self.Borders.Layer2) do
+		texture:SetAlpha (self.Borders.Alpha2)
+	end
+	for _, texture in ipairs (self.Borders.Layer3) do
+		texture:SetAlpha (self.Borders.Alpha3)
+	end
+end
+
+function DF:CreateBorder (parent, alpha1, alpha2, alpha3)
+	
+	parent.Borders = {
+		Layer1 = {},
+		Layer2 = {},
+		Layer3 = {},
+		Alpha1 = alpha1 or default_border_color1,
+		Alpha2 = alpha2 or default_border_color2,
+		Alpha3 = alpha3 or default_border_color3,
+	}
+	
+	parent.SetBorderAlpha = SetBorderAlpha
+	
+	local border1 = parent:CreateTexture (nil, "background")
+	border1:SetPoint ("topleft", parent, "topleft", -1, 1)
+	border1:SetPoint ("bottomleft", parent, "bottomleft", -1, -1)
+	border1:SetColorTexture (0, 0, 0, alpha1 or default_border_color1)
+	local border2 = parent:CreateTexture (nil, "background")
+	border2:SetPoint ("topleft", parent, "topleft", -2, 2)
+	border2:SetPoint ("bottomleft", parent, "bottomleft", -2, -2)
+	border2:SetColorTexture (0, 0, 0, alpha2 or default_border_color2)
+	local border3 = parent:CreateTexture (nil, "background")
+	border3:SetPoint ("topleft", parent, "topleft", -3, 3)
+	border3:SetPoint ("bottomleft", parent, "bottomleft", -3, -3)
+	border3:SetColorTexture (0, 0, 0, alpha3 or default_border_color3)
+	
+	tinsert (parent.Borders.Layer1, border1)
+	tinsert (parent.Borders.Layer2, border2)
+	tinsert (parent.Borders.Layer3, border3)
+	
+	local border1 = parent:CreateTexture (nil, "background")
+	border1:SetPoint ("topleft", parent, "topleft", 0, 1)
+	border1:SetPoint ("topright", parent, "topright", 1, 1)
+	border1:SetColorTexture (0, 0, 0, alpha1 or default_border_color1)
+	local border2 = parent:CreateTexture (nil, "background")
+	border2:SetPoint ("topleft", parent, "topleft", -1, 2)
+	border2:SetPoint ("topright", parent, "topright", 2, 2)
+	border2:SetColorTexture (0, 0, 0, alpha2 or default_border_color2)
+	local border3 = parent:CreateTexture (nil, "background")
+	border3:SetPoint ("topleft", parent, "topleft", -2, 3)
+	border3:SetPoint ("topright", parent, "topright", 3, 3)
+	border3:SetColorTexture (0, 0, 0, alpha3 or default_border_color3)
+	
+	tinsert (parent.Borders.Layer1, border1)
+	tinsert (parent.Borders.Layer2, border2)
+	tinsert (parent.Borders.Layer3, border3)	
+	
+	local border1 = parent:CreateTexture (nil, "background")
+	border1:SetPoint ("topright", parent, "topright", 1, 0)
+	border1:SetPoint ("bottomright", parent, "bottomright", 1, -1)
+	border1:SetColorTexture (0, 0, 0, alpha1 or default_border_color1)
+	local border2 = parent:CreateTexture (nil, "background")
+	border2:SetPoint ("topright", parent, "topright", 2, 1)
+	border2:SetPoint ("bottomright", parent, "bottomright", 2, -2)
+	border2:SetColorTexture (0, 0, 0, alpha2 or default_border_color2)
+	local border3 = parent:CreateTexture (nil, "background")
+	border3:SetPoint ("topright", parent, "topright", 3, 2)
+	border3:SetPoint ("bottomright", parent, "bottomright", 3, -3)
+	border3:SetColorTexture (0, 0, 0, alpha3 or default_border_color3)
+	
+	tinsert (parent.Borders.Layer1, border1)
+	tinsert (parent.Borders.Layer2, border2)
+	tinsert (parent.Borders.Layer3, border3)	
+	
+	local border1 = parent:CreateTexture (nil, "background")
+	border1:SetPoint ("bottomleft", parent, "bottomleft", 0, -1)
+	border1:SetPoint ("bottomright", parent, "bottomright", 0, -1)
+	border1:SetColorTexture (0, 0, 0, alpha1 or default_border_color1)
+	local border2 = parent:CreateTexture (nil, "background")
+	border2:SetPoint ("bottomleft", parent, "bottomleft", -1, -2)
+	border2:SetPoint ("bottomright", parent, "bottomright", 1, -2)
+	border2:SetColorTexture (0, 0, 0, alpha2 or default_border_color2)
+	local border3 = parent:CreateTexture (nil, "background")
+	border3:SetPoint ("bottomleft", parent, "bottomleft", -2, -3)
+	border3:SetPoint ("bottomright", parent, "bottomright", 2, -3)
+	border3:SetColorTexture (0, 0, 0, alpha3 or default_border_color3)
+	
+	tinsert (parent.Borders.Layer1, border1)
+	tinsert (parent.Borders.Layer2, border2)
+	tinsert (parent.Borders.Layer3, border3)
+	
+end
+
+function DF:ReskinSlider (slider, heightOffset)
+	if (slider.slider) then
+		slider.cima:SetNormalTexture ([[Interface\Buttons\Arrow-Up-Up]])
+		slider.cima:SetPushedTexture ([[Interface\Buttons\Arrow-Up-Down]])
+		slider.cima:SetDisabledTexture ([[Interface\Buttons\Arrow-Up-Disabled]])
+		slider.cima:GetNormalTexture():ClearAllPoints()
+		slider.cima:GetPushedTexture():ClearAllPoints()
+		slider.cima:GetDisabledTexture():ClearAllPoints()
+		slider.cima:GetNormalTexture():SetPoint ("center", slider.cima, "center", 1, 1)
+		slider.cima:GetPushedTexture():SetPoint ("center", slider.cima, "center", 1, 1)
+		slider.cima:GetDisabledTexture():SetPoint ("center", slider.cima, "center", 1, 1)
+		slider.cima:SetSize (16, 16)
+		slider.cima:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\AddOns\Details\images\background]]})
+		slider.cima:SetBackdropColor (0, 0, 0, 0.3)
+		slider.cima:SetBackdropBorderColor (0, 0, 0, 1)
+		
+		slider.baixo:SetNormalTexture ([[Interface\Buttons\Arrow-Down-Up]])
+		slider.baixo:SetPushedTexture ([[Interface\Buttons\Arrow-Down-Down]])
+		slider.baixo:SetDisabledTexture ([[Interface\Buttons\Arrow-Down-Disabled]])
+		slider.baixo:GetNormalTexture():ClearAllPoints()
+		slider.baixo:GetPushedTexture():ClearAllPoints()
+		slider.baixo:GetDisabledTexture():ClearAllPoints()
+		slider.baixo:GetNormalTexture():SetPoint ("center", slider.baixo, "center", 1, -5)
+		slider.baixo:GetPushedTexture():SetPoint ("center", slider.baixo, "center", 1, -5)
+		slider.baixo:GetDisabledTexture():SetPoint ("center", slider.baixo, "center", 1, -5)
+		slider.baixo:SetSize (16, 16)
+		slider.baixo:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\AddOns\Details\images\background]]})
+		slider.baixo:SetBackdropColor (0, 0, 0, 0.35)
+		slider.baixo:SetBackdropBorderColor (0, 0, 0, 1)
+		
+		slider.slider:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\AddOns\Details\images\background]]})
+		slider.slider:SetBackdropColor (0, 0, 0, 0.35)
+		slider.slider:SetBackdropBorderColor (0, 0, 0, 1)
+		
+		--slider.slider:Altura (164)
+		slider.slider:cimaPoint (0, 13)
+		slider.slider:baixoPoint (0, -13)
+		slider.slider.thumb:SetTexture ([[Interface\AddOns\Details\images\icons2]])
+		slider.slider.thumb:SetTexCoord (482/512, 492/512, 104/512, 120/512)
+		slider.slider.thumb:SetSize (12, 12)
+		slider.slider.thumb:SetVertexColor (0.6, 0.6, 0.6, 0.95)
+	else
+
+		slider.ScrollBar.ScrollUpButton:SetNormalTexture ([[Interface\Buttons\Arrow-Up-Up]])
+		slider.ScrollBar.ScrollUpButton:GetNormalTexture():SetTexCoord (0, 1, 0, 1)
+		slider.ScrollBar.ScrollUpButton:SetPushedTexture ([[Interface\Buttons\Arrow-Up-Down]])
+		slider.ScrollBar.ScrollUpButton:GetPushedTexture():SetTexCoord (0, 1, 0, 1)
+		slider.ScrollBar.ScrollUpButton:SetDisabledTexture ([[Interface\Buttons\Arrow-Up-Disabled]])
+		slider.ScrollBar.ScrollUpButton:GetDisabledTexture():SetTexCoord (0, 1, 0, 1)
+
+		slider.ScrollBar.ScrollUpButton:SetSize (16, 16)
+		slider.ScrollBar.ScrollUpButton:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"})
+		slider.ScrollBar.ScrollUpButton:SetBackdropColor (0, 0, 0, 0.3)
+		slider.ScrollBar.ScrollUpButton:SetBackdropBorderColor (0, 0, 0, 1)
+
+		slider.ScrollBar.ScrollUpButton:GetNormalTexture():ClearAllPoints()
+		slider.ScrollBar.ScrollUpButton:GetPushedTexture():ClearAllPoints()
+		slider.ScrollBar.ScrollUpButton:GetDisabledTexture():ClearAllPoints()
+		slider.ScrollBar.ScrollUpButton:GetNormalTexture():SetPoint ("center", slider.ScrollBar.ScrollUpButton, "center", 1, 1)
+		slider.ScrollBar.ScrollUpButton:GetPushedTexture():SetPoint ("center", slider.ScrollBar.ScrollUpButton, "center", 1, 1)
+		slider.ScrollBar.ScrollUpButton:GetDisabledTexture():SetPoint ("center", slider.ScrollBar.ScrollUpButton, "center", 1, 1)
+	
+		--
+		
+		slider.ScrollBar.ScrollDownButton:SetNormalTexture ([[Interface\Buttons\Arrow-Down-Up]])
+		slider.ScrollBar.ScrollDownButton:GetNormalTexture():SetTexCoord (0, 1, 0, 1)
+		slider.ScrollBar.ScrollDownButton:SetPushedTexture ([[Interface\Buttons\Arrow-Down-Down]])
+		slider.ScrollBar.ScrollDownButton:GetPushedTexture():SetTexCoord (0, 1, 0, 1)
+		slider.ScrollBar.ScrollDownButton:SetDisabledTexture ([[Interface\Buttons\Arrow-Down-Disabled]])
+		slider.ScrollBar.ScrollDownButton:GetDisabledTexture():SetTexCoord (0, 1, 0, 1)
+		
+		slider.ScrollBar.ScrollDownButton:SetSize (16, 16)
+		slider.ScrollBar.ScrollDownButton:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"})
+		slider.ScrollBar.ScrollDownButton:SetBackdropColor (0, 0, 0, 0.3)
+		slider.ScrollBar.ScrollDownButton:SetBackdropBorderColor (0, 0, 0, 1)
+	
+		slider.ScrollBar.ScrollDownButton:GetNormalTexture():ClearAllPoints()
+		slider.ScrollBar.ScrollDownButton:GetPushedTexture():ClearAllPoints()
+		slider.ScrollBar.ScrollDownButton:GetDisabledTexture():ClearAllPoints()
+		slider.ScrollBar.ScrollDownButton:GetNormalTexture():SetPoint ("center", slider.ScrollBar.ScrollDownButton, "center", 1, -5)
+		slider.ScrollBar.ScrollDownButton:GetPushedTexture():SetPoint ("center", slider.ScrollBar.ScrollDownButton, "center", 1, -5)
+		slider.ScrollBar.ScrollDownButton:GetDisabledTexture():SetPoint ("center", slider.ScrollBar.ScrollDownButton, "center", 1, -5)
+	
+		--
+		slider.ScrollBar:SetPoint ("TOPLEFT", slider, "TOPRIGHT", 6, -16)
+		slider.ScrollBar:SetPoint ("BOTTOMLEFT", slider, "BOTTOMRIGHT", 6, 16 + (heightOffset and heightOffset*-1 or 0))
+		
+		slider.ScrollBar.ThumbTexture:SetColorTexture (.5, .5, .5, .3)
+		slider.ScrollBar.ThumbTexture:SetSize (12, 8)
+		
+		--
+		
+		slider.ScrollBar:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"})
+		slider.ScrollBar:SetBackdropColor (0, 0, 0, 0.35)
+		slider.ScrollBar:SetBackdropBorderColor (0, 0, 0, 1)
+	end
+end
+
+--doo elsee 

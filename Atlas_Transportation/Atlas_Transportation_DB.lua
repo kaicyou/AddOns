@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation_DB.lua 32 2016-08-17 17:05:16Z arith $
+-- $Id: Atlas_Transportation_DB.lua 42 2016-09-07 18:32:12Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -26,25 +26,42 @@
 
 
 local myDB = {
+	TransDalaran = {
+		{ "A", 10014, 184, 279 }; -- Greyfang Enclave
+		{ "B", 10015, 262, 145 }; -- Windrunner's Sanctuary
+		{ "C", 10016, 234, 221 }; -- Chamber of the Guardian
+		{ "1", 10013, 335, 232 }; -- Aludane Whitecloud <Flight Master>
+		{ "A", 10001, 463, 288 }; -- Illidari Gateway
+		{ "A", 10002, 345, 200 }; -- Talua <Eagle Keeper>
+		{ "A", 10003, 288, 113 }; -- Portal to Sanctum of Light
+		{ "B", 10004, 152, 294 }; -- Portal to Sanctum of Light
+		{ "A", 10005, 296, 125 }; -- Portal to Netherlight Temple
+		{ "B", 10006, 188, 254 }; -- Portal to Netherlight Temple
+		{ "A", 10007, 242, 292 }; -- Glorious Goods
+		{ "B", 10008, 256, 174 }; -- One More Glass
+		{ "C", 10009, 210, 162 }; -- Tanks for Everything
+		{ "A", 10010, 319, 222 }; -- Portal to the Maelstrom
+		{ "A", 10011, 155, 204 }; -- Portal to Dreadscar Rift
+		{ "A", 10012, 354, 217 }; -- Jump to Skyhold
+	};
 	TransAllianceBrokenIsles = {
-		{ " A", 10038, 230, 357 }; -- Greyfang Enclave
-		{ " B", 10039, 237, 349 }; -- Chamber of the Guardian
-		{ " 1", 10001 , 249, 341 }; -- Krasus' Landing
-		{ " 2", 10002 , 151, 378 }; -- Watchers' Aerie
-		{ " 3", 10003 , 144, 363 }; -- Wardens' Redoubt
-		{ " 4", 10004 , 165, 336 }; -- Shackle's Den
-		{ " 5", 10005 , 130, 303 }; -- Illidari Stand
-		{ " 6", 10006 , 98, 314 }; -- Illidari Perch
-		{ " 7", 10007 , 191, 275 }; -- Felblaze Ingress
-		{ " 8", 10008 , 142, 273 }; -- Azurewing Repose
-		{ " 9", 10009 , 116, 238 }; -- Challiane's Terrace
+		{ "A", 10038, 230, 357 }; -- Greyfang Enclave
+		{ "B", 10039, 237, 349 }; -- Chamber of the Guardian
+		{ "1", 10001, 249, 341 }; -- Krasus' Landing
+		{ "2", 10002, 151, 378 }; -- Watchers' Aerie
+		{ "3", 10003, 144, 363 }; -- Wardens' Redoubt
+		{ "4", 10004, 165, 336 }; -- Shackle's Den
+		{ "5", 10005, 130, 303 }; -- Illidari Stand
+		{ "6", 10006, 98, 314 }; -- Illidari Perch
+		{ "7", 10007, 191, 275 }; -- Felblaze Ingress
+		{ "8", 10008, 138, 266 }; -- Azurewing Repose
+		{ "9", 10009, 116, 238 }; -- Challiane's Terrace
 		{ "10", 10010, 222, 450 }; -- Eye of Azshara
 		{ "11", 10011, 147, 197 }; -- Lorlathil
 		{ "12", 10012, 75, 185 }; -- Gloaming Reef
 		{ "13", 10013, 117, 175 }; -- Bradensbrook
 		{ "14", 10014, 149, 177 }; -- Garden of the Moon
 		{ "15", 10015, 183, 163 }; -- Starsong Refuge
-		{ " 1", 10100, 110, 112 }; -- The Dreamgrove
 		{ "16", 10016, 246, 164 }; -- Obsidian Overlook
 		{ "17", 10017, 277, 164 }; -- Ironhorn Enclave
 		{ "18", 10018, 210, 126 }; -- Sylvan Falls
@@ -67,26 +84,28 @@ local myDB = {
 		{ "35", 10035, 225, 227 }; -- Meredil
 		{ "36", 10036, 291, 212 }; -- Crimson Thicket
 		{ "37", 10037, 301, 321 }; -- Illidari Camp
+		{ "1", 10100, 110, 112 }; -- The Dreamgrove
+		{ "2", 10101, 193, 91}; -- Trueshot Lodge
+		{ "3", 10102, 387, 365 }; -- Acherus: The Ebon Hold
 	};
 	TransHordeBrokenIsles = {
-		{ " A", 10038, 239, 336 }; -- Windrunner's Sanctuary
-		{ " B", 10039, 237, 348 }; -- Chamber of the Guardian
-		{ " 1", 10001, 249, 342 }; -- Krasus' Landing
-		{ " 2", 10002 , 151, 378 }; -- Watchers' Aerie
-		{ " 3", 10003 , 144, 363 }; -- Wardens' Redoubt
-		{ " 4", 10004 , 165, 336 }; -- Shackle's Den
-		{ " 5", 10005 , 130, 303 }; -- Illidari Stand
-		{ " 6", 10006 , 98, 314 }; -- Illidari Perch
-		{ " 7", 10007 , 191, 275 }; -- Felblaze Ingress
-		{ " 8", 10008 , 142, 273 }; -- Azurewing Repose
-		{ " 9", 10009 , 116, 238 }; -- Challiane's Terrace
+		{ "A", 10038, 239, 336 }; -- Windrunner's Sanctuary
+		{ "B", 10039, 237, 348 }; -- Chamber of the Guardian
+		{ "1", 10001, 249, 342 }; -- Krasus' Landing
+		{ "2", 10002, 151, 378 }; -- Watchers' Aerie
+		{ "3", 10003, 144, 363 }; -- Wardens' Redoubt
+		{ "4", 10004, 165, 336 }; -- Shackle's Den
+		{ "5", 10005, 130, 303 }; -- Illidari Stand
+		{ "6", 10006, 98, 314 }; -- Illidari Perch
+		{ "7", 10007, 191, 275 }; -- Felblaze Ingress
+		{ "8", 10008, 138, 266 }; -- Azurewing Repose
+		{ "9", 10009, 116, 238 }; -- Challiane's Terrace
 		{ "10", 10010, 222, 450 }; -- Eye of Azshara
 		{ "11", 10011, 147, 197 }; -- Lorlathil
 		{ "12", 10012, 75, 185 }; -- Gloaming Reef
 		{ "13", 10013, 117, 175 }; -- Bradensbrook
 		{ "14", 10014, 149, 177 }; -- Garden of the Moon
 		{ "15", 10015, 183, 163 }; -- Starsong Refuge
-		{ " 1", 10100, 110, 112 }; -- The Dreamgrove
 		{ "16", 10016, 246, 164 }; -- Obsidian Overlook
 		{ "17", 10017, 277, 164 }; -- Ironhorn Enclave
 		{ "18", 10018, 210, 126 }; -- Sylvan Falls
@@ -109,6 +128,9 @@ local myDB = {
 		{ "35", 10035, 225, 227 }; -- Meredil
 		{ "36", 10036, 291, 212 }; -- Crimson Thicket
 		{ "37", 10037, 301, 321 }; -- Illidari Camp
+		{ "1", 10100, 110, 112 }; -- The Dreamgrove
+		{ "2", 10101, 193, 91}; -- Trueshot Lodge
+		{ "3", 10102, 387, 365 }; -- Acherus: The Ebon Hold
 	};
 	TransAllianceDraenor = {
 		{ "A", 10052, 278, 259 }; -- Khadgar's Tower

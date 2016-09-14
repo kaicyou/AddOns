@@ -32,9 +32,9 @@
 ## X-eMail: arithmandarjp at yahoo.co.jp
 ## X-Category: Library
 ## X-License: MIT
-## X-Date: 2016-08-29T06:50:16Z
+## X-Date: 2016-08-29T14:45:35Z
 ## X-Website: https://wow.curseforge.com/addons/lib-scenarios/
-## X-Curse-Packaged-Version: r2
+## X-Curse-Packaged-Version: r4
 ## X-Curse-Project-Name: Lib-Scenarios
 ## X-Curse-Project-ID: lib-scenarios
 ## X-Curse-Repository-ID: wow/lib-scenarios/mainline

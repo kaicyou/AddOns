@@ -1,6 +1,6 @@
 ﻿--Mage Nuggets by B-Buck (Bbuck of Eredar)
 
-local magenugVer = "5.3.1"
+local magenugVer = "5.5.4"
 local mirrorImageTime = 0;
 local spellStealTog = 0;
 local polyTimer = 0;
@@ -168,18 +168,21 @@ end
 --                                  On Update
 --============================================================================--
 
-local mnFireblastBorderColorTick = 0;
 local mnFireblastHideCounter = 0;
 function MageNuggetsFireblast_OnUpdate(self, elapsed) -- ignite
  self.TimeSinceLastUpdate = self.TimeSinceLastUpdate + elapsed;
     if (self.TimeSinceLastUpdate > 0.1) then
       local currentFbCharges, _, cooldownStart, cooldownDuration = GetSpellCharges(108853);
       local fbCooldown = RoundOne(cooldownStart + cooldownDuration - GetTime());
+      local currentPfCharges, _, cooldownStart, cooldownDuration = GetSpellCharges(194466);
+      local pfCooldown = RoundOne(cooldownStart + cooldownDuration - GetTime());
+      local combustStart, combustDuration, combustEnable = GetSpellCooldown(190319);
+      local combustCooldown = RoundOne(combustStart + combustDuration - GetTime());
 
-      if(fbCooldown > 13) or (fbCooldown < 0) then
-        mnDressFireblastMonitor(currentFbCharges, "", 0)
+      if(combustCooldown == nil) then
+        mnDressFireblastMonitor(currentFbCharges, fbCooldown, currentPfCharges, pfCooldown, "");
       else
-        mnDressFireblastMonitor(currentFbCharges, fbCooldown, fbCooldown)
+        mnDressFireblastMonitor(currentFbCharges, fbCooldown, currentPfCharges, pfCooldown, combustCooldown);
       end
 
       if(currentFbCharges == 2) then
@@ -190,11 +193,8 @@ function MageNuggetsFireblast_OnUpdate(self, elapsed) -- ignite
           MageNugIgnite_Frame:Hide();
         end
 
-        mnFireblastBorderColorTick = mnFireblastBorderColorTick + 1;
-        if(mnFireblastBorderColorTick > 20) then
-          mnFireblastBorderColorTick = 0;
-        elseif(mnFireblastBorderColorTick > 10) then
-          MageNugIgnite_TextFrameTexture:SetTexture('Interface\\BUTTONS\\UI-AutoCastableOverlay');
+        if(currentFbCharges == 2) and (MageNuggets.FireNuggetNotifyBorderToggle == true)then
+          MageNugIgnite_TextFrameTexture:SetTexture('Interface\\UNITPOWERBARALT\\Fire_Circular_Frame');
         else
           MageNugIgnite_TextFrameTexture:SetTexture('');
         end
@@ -208,10 +208,26 @@ function MageNuggetsFireblast_OnUpdate(self, elapsed) -- ignite
     end
 end
 --
-function mnDressFireblastMonitor(currentFbCharges, timerValue, barValue)
-  MageNugIgnite_TextFrameText:SetText(currentFbCharges);
-  MageNugIgnite_TextFrameText2:SetText(timerValue);
-  MageNugIgnite_Frame_Bar:SetValue(barValue);
+function mnDressFireblastMonitor(fbCharges, fbTimerValue, pfCharges, pfTimerValue, combustCooldown)
+  if(fbTimerValue > 13) or (fbTimerValue < 0) then
+    MageNugIgnite_TextFrameFlameBlastText2:SetText("");
+  else
+    MageNugIgnite_TextFrameFlameBlastText2:SetText(fbTimerValue);
+  end
+  MageNugIgnite_TextFrameFlameBlastText:SetText(fbCharges);
+
+  if(pfTimerValue > 45) or (pfTimerValue < 0) then
+    MageNugIgnite_TextFramePheonixFlamesText2:SetText("");
+  else
+    MageNugIgnite_TextFramePheonixFlamesText2:SetText(pfTimerValue);
+  end
+  MageNugIgnite_TextFramePheonixFlamesText:SetText(pfCharges);
+
+  if(combustCooldown > 120) or (combustCooldown < 0) then
+    MageNugIgnite_TextFrameCombustionText:SetText("");
+  else
+    MageNugIgnite_TextFrameCombustionText:SetText(combustCooldown);
+  end
 end
 --
 function MageNuggetsHS_OnUpdate(self, elapsed)
@@ -553,8 +569,8 @@ function MageNuggets_OnEvent(this, event, ...)
             if(MageNuggets.igniteTog == true)then
               mnFireblastHideCounter = 0;
               local currentFbCharges, _, cooldownStart, cooldownDuration = GetSpellCharges(108853)
-              MageNugIgnite_TextFrameText:SetText(currentFbCharges);
-              MageNugIgnite_TextFrameText2:SetText(11);
+              MageNugIgnite_TextFrameFlameBlastText:SetText(currentFbCharges);
+              MageNugIgnite_TextFrameFlameBlastText2:SetText(11);
               MageNugIgnite_Frame:Show();
             end
           end

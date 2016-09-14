@@ -61,6 +61,11 @@ L["says"] = "diz"
 L["whispers"] = "sussurra"
 L["yells"] = "grita"
 
+--DataBars
+L["Current Level:"] = true;
+L["Honor XP:"] = true;
+L["Honor Remaining:"] = true;
+
 --DataTexts
 L["(Hold Shift) Memory Usage"] = "(Segurar Shift) Memória em Uso"
 L["AP"] = "PA"
@@ -102,6 +107,7 @@ L["Offhand"] = "Mão Secundária"
 L["Profit:"] = "Lucro:"
 L["Reset Data: Hold Shift + Right Click"] = "Redefinir Dados: Segurar Shifr + Clique Direito"
 L["Saved Raid(s)"] = "Raide(s) Salva(s)"
+L["Saved Dungeon(s)"] = true;
 L["Server: "] = "Servidor: "
 L["Session:"] = "Sessão:"
 L["Shoulder"] = "Ombros"
@@ -118,6 +124,7 @@ L["Waist"] = "Cintura"
 L["Wrist"] = "Pulsos"
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = "|cffFFFFFFClique Esquerdo:|r Altera Especialização de Talento";
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = "|cffFFFFFFClique Direito:|r Altera a Especialização de Saque";
+L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = true;
 
 --DebugTools
 L["%s: %s tried to call the protected function '%s'."] = "%s: %s tentou chamar a função protegida '%s'."
@@ -229,7 +236,12 @@ L["Alternative Power"] = "Recurso Alternativo"
 L["Archeology Progress Bar"] = true;
 L["Arena Frames"] = "Quadros de Arenas"
 L["Artifact Bar"] = true;
+L["Bag Mover (Grow Down)"] = true;
+L["Bag Mover (Grow Up)"] = true;
+L["Bag Mover"] = true;
 L["Bags"] = "Bolsas"
+L["Bank Mover (Grow Down)"] = true;
+L["Bank Mover (Grow Up)"] = true;
 L["Bar "] = "Barra "
 L["BNet Frame"] = "Quadro do Bnet"
 L["Boss Button"] = "Botão de Chefe"

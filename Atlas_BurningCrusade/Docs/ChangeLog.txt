@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 10 2016-07-19 14:00:29Z arith $
+$Id: ChangeLog.txt 13 2016-09-09 08:17:01Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,10 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.34.00 (Sep. 09, 2016)
+------------------------
+- Move main map data from core Atlas into individual module's DB
 
 v1.33.00 (Jul. 19, 2016)
 ------------------------

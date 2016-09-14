@@ -3,6 +3,7 @@
 	local _, gdbprivate = ...
 	gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsItemLevelChecked = {
 		ItemLevelSetChecked = true,
+		ItemLevelDecimalsSetChecked = false,
 	}	
 	
 local function DCS_ItemLevelShow(self)
@@ -13,20 +14,36 @@ local function DCS_ItemLevelShow(self)
 		end
 
 		local avgItemLevel, avgItemLevelEquipped = GetAverageItemLevel();
-		avgItemLevel = floor(avgItemLevel);
-		avgItemLevelEquipped = floor(avgItemLevelEquipped);
-		if ( avgItemLevelEquipped == avgItemLevel ) then
-			PaperDollFrame_SetLabelAndText(statFrame, STAT_AVERAGE_ITEM_LEVEL, avgItemLevelEquipped, false, avgItemLevelEquipped);
+
+		if gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked.ItemLevelDecimalsSetChecked == true then
+			-- print(avgItemLevel, avgItemLevelEquipped)
+			if ( avgItemLevelEquipped == avgItemLevel ) then
+				PaperDollFrame_SetLabelAndText(statFrame, STAT_AVERAGE_ITEM_LEVEL, format("%.2f", avgItemLevelEquipped), false, avgItemLevelEquipped);
+			else
+				PaperDollFrame_SetLabelAndText(statFrame, STAT_AVERAGE_ITEM_LEVEL, (format("%.2f", avgItemLevelEquipped).."/"..format("%.2f", avgItemLevel)), false, avgItemLevelEquipped);
+			end
+			statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, STAT_AVERAGE_ITEM_LEVEL).." "..avgItemLevel;
+			if ( avgItemLevelEquipped ~= avgItemLevel ) then
+				statFrame.tooltip = statFrame.tooltip .. "  " .. format(STAT_AVERAGE_ITEM_LEVEL_EQUIPPED, avgItemLevelEquipped);
+			end
+			statFrame.tooltip = statFrame.tooltip .. FONT_COLOR_CODE_CLOSE;
+			statFrame.tooltip2 = STAT_AVERAGE_ITEM_LEVEL_TOOLTIP;
 		else
-			PaperDollFrame_SetLabelAndText(statFrame, STAT_AVERAGE_ITEM_LEVEL, ((avgItemLevelEquipped).."/"..avgItemLevel), false, avgItemLevelEquipped);
+			avgItemLevel = floor(avgItemLevel);
+			avgItemLevelEquipped = floor(avgItemLevelEquipped);
+			if ( avgItemLevelEquipped == avgItemLevel ) then
+				PaperDollFrame_SetLabelAndText(statFrame, STAT_AVERAGE_ITEM_LEVEL, avgItemLevelEquipped, false, avgItemLevelEquipped);
+			else
+				PaperDollFrame_SetLabelAndText(statFrame, STAT_AVERAGE_ITEM_LEVEL, ((avgItemLevelEquipped).."/"..avgItemLevel), false, avgItemLevelEquipped);
+			end
+			statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, STAT_AVERAGE_ITEM_LEVEL).." "..avgItemLevel;
+			if ( avgItemLevelEquipped ~= avgItemLevel ) then
+				statFrame.tooltip = statFrame.tooltip .. "  " .. format(STAT_AVERAGE_ITEM_LEVEL_EQUIPPED, avgItemLevelEquipped);
+			end
+			statFrame.tooltip = statFrame.tooltip .. FONT_COLOR_CODE_CLOSE;
+			statFrame.tooltip2 = STAT_AVERAGE_ITEM_LEVEL_TOOLTIP;
 		end
-		statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, STAT_AVERAGE_ITEM_LEVEL).." "..avgItemLevel;
-		if ( avgItemLevelEquipped ~= avgItemLevel ) then
-			statFrame.tooltip = statFrame.tooltip .. "  " .. format(STAT_AVERAGE_ITEM_LEVEL_EQUIPPED, avgItemLevelEquipped);
-		end
-		statFrame.tooltip = statFrame.tooltip .. FONT_COLOR_CODE_CLOSE;
-		statFrame.tooltip2 = STAT_AVERAGE_ITEM_LEVEL_TOOLTIP;
-	end
+	end	
 	PaperDollFrame_UpdateStats()
 end
 
@@ -82,4 +99,34 @@ local DCS_ItemLevelCheck = CreateFrame("CheckButton", "DCS_ItemLevelCheck", Deja
 			DCS_ItemLevelHide()
 			gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked.ItemLevelSetChecked = false
 		end
+	end)
+	
+local DCS_ItemLevelDecimalCheck = CreateFrame("CheckButton", "DCS_ItemLevelDecimalCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
+	DCS_ItemLevelDecimalCheck:RegisterEvent("PLAYER_LOGIN")
+	DCS_ItemLevelDecimalCheck:ClearAllPoints()
+	DCS_ItemLevelDecimalCheck:SetPoint("TOPLEFT", 65, -100)
+	DCS_ItemLevelDecimalCheck:SetScale(1.00)
+	DCS_ItemLevelDecimalCheck.tooltipText = 'Displays average item level to two decimal places.' --Creates a tooltip on mouseover.
+	_G[DCS_ItemLevelDecimalCheck:GetName() .. "Text"]:SetText("Ilvl Decimals")
+	
+	DCS_ItemLevelDecimalCheck:SetScript("OnEvent", function(self, event, arg1)
+		if event == "PLAYER_LOGIN" then
+		local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked
+			self:SetChecked(checked.ItemLevelDecimalsSetChecked)
+			if self:GetChecked(true) then
+				gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked.ItemLevelDecimalsSetChecked = true
+			else
+				gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked.ItemLevelDecimalsSetChecked = false
+			end
+		end
+	end)
+
+	DCS_ItemLevelDecimalCheck:SetScript("OnClick", function(self,event,arg1) 
+		local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked
+		if self:GetChecked(true) then
+			gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked.ItemLevelDecimalsSetChecked = true
+		else
+			gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked.ItemLevelDecimalsSetChecked = false
+		end
+		PaperDollFrame_UpdateStats()
 	end)

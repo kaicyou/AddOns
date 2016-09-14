@@ -1088,9 +1088,9 @@ function ArkInventory:EVENT_ARKINV_BAG_UPDATE_COOLDOWN_BUCKET( arg )
 	
 end
 
-function ArkInventory:EVENT_WOW_BAG_UPDATE_COOLDOWN( event, arg1 )
+function ArkInventory:EVENT_WOW_BAG_UPDATE_COOLDOWN( event, arg1, arg2, arg3, arg4 )
 	
-	--ArkInventory.Output( "EVENT_WOW_BAG_UPDATE_COOLDOWN( ", arg1, " )" )
+	--ArkInventory.Output( "EVENT_WOW_BAG_UPDATE_COOLDOWN( ", arg1, ", ", arg2, ", ", arg3, ", ", arg4, " )" )
 	
 	if arg1 then
 		local loc_id = ArkInventory.BagID_Internal( arg1 )
@@ -1258,6 +1258,7 @@ function ArkInventory.BagType( blizzard_id )
 	
 	
 	if ArkInventory.Global.Location[loc_id].isOffline then
+		
 		local codex = ArkInventory.GetLocationCodex( loc_id )
 		return codex.player.data.location[loc_id].bag[bag_id].type
 		
@@ -1613,7 +1614,7 @@ function ArkInventory.ScanBag( blizzard_id )
 			end
 			
 			for _, v in pairs( ArkInventory.Const.Accountbound ) do
-				if v and ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, string.format( "^%s$", v ) ) then
+				if v and ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, string.format( "^%s$", v ), false, false, false, 0, true ) then
 					ab = 1
 					sb = 1
 					break
@@ -1622,7 +1623,7 @@ function ArkInventory.ScanBag( blizzard_id )
 			
 			if not ab then
 				for _, v in pairs( ArkInventory.Const.Soulbound ) do
-					if v and ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, string.format( "^%s$", v ) ) then
+					if v and ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, string.format( "^%s$", v ), false, false, false, 0, true ) then
 						sb = 1
 						break
 					end
@@ -1673,7 +1674,7 @@ function ArkInventory.ScanBag( blizzard_id )
 		
 	end
 	
-	if bt == ArkInventory.Const.Slot.Type.Unknown then
+	if bt == ArkInventory.Const.Slot.Type.Unknown and status == ArkInventory.Const.Bag.Status.Active then
 		
 		if ArkInventory.TranslationsLoaded then
 			-- print the warning only after the translations are loaded
@@ -1681,6 +1682,10 @@ function ArkInventory.ScanBag( blizzard_id )
 		end
 		ArkInventory:SendMessage( "EVENT_ARKINV_BAG_UPDATE_BUCKET", blizzard_id )
 		
+	end
+	
+	if changed_bag then
+		ArkInventory:SendMessage( "EVENT_ARKINV_STORAGE", ArkInventory.Const.Event.BagUpdate, loc_id, bag_id, ArkInventory.Const.Window.Draw.Recalculate )
 	end
 	
 	ArkInventory.ScanCleanup( player, loc_id, bag_id, bag )
@@ -1965,8 +1970,14 @@ function ArkInventory.ScanWearing( )
 		
 			ArkInventory.TooltipSetInventoryItem( ArkInventory.Global.Tooltip.Scan, inv_id )
 			
+			if ArkInventory.TooltipGetLine( ArkInventory.Global.Tooltip.Scan, 1 ) == RETRIEVING_ITEM_INFO then	
+				--ArkInventory.OutputWarning( "tooltips not ready, queuing bag ", bag_id, " (", blizzard_id, ") for rescan" )
+				ArkInventory:SendMessage( "EVENT_ARKINV_BAG_UPDATE_BUCKET", blizzard_id )
+				return
+			end
+			
 			for _, v in pairs( ArkInventory.Const.Accountbound ) do
-				if ( v and ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, string.format( "^%s$", v ) ) ) then
+				if v and ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, string.format( "^%s$", v ), false, false, false, 0, true ) then
 					ab = 1
 					sb = 1
 					break
@@ -1975,7 +1986,7 @@ function ArkInventory.ScanWearing( )
 			
 			if ( not sb ) then
 				for _, v in pairs( ArkInventory.Const.Soulbound ) do
-					if ( v and ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, string.format( "^%s$", v ) ) ) then
+					if v and ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, string.format( "^%s$", v ), false, false, false, 0, true ) then
 						sb = 1
 						break
 					end
@@ -2097,7 +2108,11 @@ function ArkInventory.ScanMailInbox( )
 			
 			if changed_item then
 				
-				i.age = ArkInventory.TimeAsMinutes( )
+				if i.h then
+					i.age = ArkInventory.TimeAsMinutes( )
+				else
+					i.age = nil
+				end
 				
 				ArkInventory.Frame_Main_DrawStatus( loc_id, ArkInventory.Const.Window.Draw.Refresh )
 				
@@ -3316,7 +3331,8 @@ function ArkInventory.ScanChanged( old, h, sb, count )
 		if old.h then
 			
 			-- previous item was removed
-			ArkInventory.ItemCacheClear( old.h )
+			--ArkInventory.ItemCacheClear( old.h )
+			ArkInventory.ItemCacheClear( )
 			ArkInventory.ScanCleanupCount( old.h, old.loc_id )
 			
 			--ArkInventory.Output( "scanchanged: ", old.loc_id, ".", old.bag_id, ".", old.slot_id, " - ", old.h, " - item removed" )
@@ -3331,7 +3347,8 @@ function ArkInventory.ScanChanged( old, h, sb, count )
 		if not old.h then
 			
 			-- item added to previously empty slot
-			ArkInventory.ItemCacheClear( h )
+			--ArkInventory.ItemCacheClear( h )
+			ArkInventory.ItemCacheClear( )
 			ArkInventory.ScanCleanupCount( h, old.loc_id )
 			
 			--ArkInventory.Output( "scanchanged: ", old.loc_id, ".", old.bag_id, ".", old.slot_id, " - ", h, " - item added" )
@@ -3342,8 +3359,9 @@ function ArkInventory.ScanChanged( old, h, sb, count )
 		if ArkInventory.ObjectIDCount( h ) ~= ArkInventory.ObjectIDCount( old.h ) then
 			
 			-- different item
-			ArkInventory.ItemCacheClear( h )
-			ArkInventory.ItemCacheClear( old.h )
+			--ArkInventory.ItemCacheClear( h )
+			--ArkInventory.ItemCacheClear( old.h )
+			ArkInventory.ItemCacheClear( )
 			ArkInventory.ScanCleanupCount( old.h, old.loc_id )
 			ArkInventory.ScanCleanupCount( h, old.loc_id )
 			
@@ -3355,7 +3373,8 @@ function ArkInventory.ScanChanged( old, h, sb, count )
 		if sb ~= old.sb then
 			
 			-- soulbound changed
-			ArkInventory.ItemCacheClear( old.h )
+			--ArkInventory.ItemCacheClear( old.h )
+			ArkInventory.ItemCacheClear( )
 			--ArkInventory.Output( "scanchanged: ", old.loc_id, ".", old.bag_id, ".", old.slot_id, " - ", old.h, " - soulbound was ", old.sb, " now ", sb )
 			return true, ArkInventory.Const.Slot.New.Yes
 			
@@ -3568,7 +3587,7 @@ function ArkInventory.ObjectInfo( h )
 		end
 		
 		
-		return osd[1], info[2], info[1], info[10], info[3] or 1, info[4] or 0, info[5] or 0, info[12], info[13], info[8], info[9], info[11] or -1, osd[13], bid, info[6] or "", info[7] or ""
+		return osd[1], info[2], info[1], info[10], info[3] or 1, info[4] or 0, info[5] or 0, info[12], info[13], info[8], info[9] or "", info[11] or -1, osd[13], bid, info[6] or "", info[7] or ""
 --[[
 			[01]class
 			[02]itemLink
@@ -3896,7 +3915,7 @@ function ArkInventory.ObjectIDRule( loc_id, bag_id, sb, h )
 	local id = string.format( "%i:%i:%i:%s", loc_id or 0, bag_id or 0, ( sb and 1 ) or 0, ArkInventory.ObjectIDInternal( h ) )
 	local codex = ArkInventory.GetLocationCodex( loc_id )
 	local cid = string.format( "%i:%s", codex.catset_id, id )
-	return cid, id
+	return cid, id, codex
 end
 
 function ArkInventory.ObjectCountClear( search_id, player_id, loc_id )

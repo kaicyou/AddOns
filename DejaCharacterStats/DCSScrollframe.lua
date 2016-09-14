@@ -19,7 +19,7 @@ private.defaults.dcsdefaults.dejacharacterstatsScrollbarMax = {
 --		DCS_scrollframetexture:SetColorTexture(.5,.5,.5,1) 
 
 -- DCS_Scrollbar 
-	local DCS_Scrollbar = CreateFrame("Slider", nil, DCS_ScrollFrame, "UIPanelScrollBarTemplate") 
+	local DCS_Scrollbar = CreateFrame("Slider", "DCS_Scrollbar", DCS_ScrollFrame, "UIPanelScrollBarTemplate") 
 		DCS_Scrollbar:RegisterEvent("PLAYER_LOGIN")
 		DCS_Scrollbar:SetPoint("TOPLEFT", CharacterFrameInsetRight, "TOPRIGHT", -18, -20) 
 		DCS_Scrollbar:SetPoint("BOTTOMLEFT", CharacterFrameInsetRight, "BOTTOMRIGHT", -18, 18) 
@@ -31,8 +31,10 @@ private.defaults.dcsdefaults.dejacharacterstatsScrollbarMax = {
 
 	DCS_Scrollbar:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-			DCS_Scrollbar:SetMinMaxValues(0, private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax)
-			if DCS_SelectStatsCheck:GetChecked(true) then
+		local cur_val = self:GetValue()
+		local min_val, max_val = DCS_Scrollbar:GetMinMaxValues()
+		DCS_Scrollbar:SetMinMaxValues(cur_val, private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax)
+		if DCS_SelectStatsCheck:GetChecked(true) then
 				private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax = 142
 			elseif not DCS_SelectStatsCheck:GetChecked(true) then
 				if DCS_ShowAllStatsCheck:GetChecked(true) then
@@ -46,16 +48,11 @@ private.defaults.dcsdefaults.dejacharacterstatsScrollbarMax = {
 	end)
 	
 	DCS_Scrollbar:SetScript("OnValueChanged", function (self, value) 
-		DCS_Scrollbar:SetMinMaxValues(0, private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax)
-		if DCS_SelectStatsCheck:GetChecked(true) then
-			private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax = 142
-		elseif not DCS_SelectStatsCheck:GetChecked(true) then
-			if DCS_ShowAllStatsCheck:GetChecked(true) then
-				private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax = 128
-			elseif not DCS_ShowAllStatsCheck:GetChecked(true) then
-				private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax = 34
-			end
-		end
+		local cur_val = self:GetValue()
+		local min_val, max_val = DCS_Scrollbar:GetMinMaxValues()
+		
+		DCS_Scrollbar:SetMinMaxValues(cur_val, private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax)
+
 		self:GetParent():SetVerticalScroll(value) 
 	end) 
 
@@ -123,15 +120,16 @@ local DCS_ScrollbarCheck = CreateFrame("CheckButton", "DCS_ScrollbarCheck", Deja
 -- Enable mousewheel scrolling
 	DCS_ScrollFrame:EnableMouseWheel(true)
 	DCS_ScrollFrame:SetScript("OnMouseWheel", function(self, delta)
+		DCS_Scrollbar:SetMinMaxValues(0, private.db.dcsdefaults.dejacharacterstatsScrollbarMax.DCS_ScrollbarMax)
 		local cur_val = DCS_Scrollbar:GetValue()
 		local min_val, max_val = DCS_Scrollbar:GetMinMaxValues()
 
 		if delta < 0 and cur_val < max_val then
 			if IsShiftKeyDown() then
-				if DCS_ShowAllStatsCheck:GetChecked(true) then
-					DCS_Scrollbar:SetValue(128)
-				elseif DCS_SelectStatsCheck:GetChecked(true) then
+				if DCS_SelectStatsCheck:GetChecked(true) then
 					DCS_Scrollbar:SetValue(142)
+				elseif DCS_ShowAllStatsCheck:GetChecked(true) then
+					DCS_Scrollbar:SetValue(128)
 				elseif not DCS_ShowAllStatsCheck:GetChecked(true) then
 					DCS_Scrollbar:SetValue(34)
 				end

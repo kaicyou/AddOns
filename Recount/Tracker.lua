@@ -4,7 +4,7 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("Recount")
 local BossIDs = LibStub("LibBossIDs-1.0")
 
-local revision = tonumber(string.sub("$Revision: 1375 $", 12, -3))
+local revision = tonumber(string.sub("$Revision: 1386 $", 12, -3))
 if Recount.Version < revision then
 	Recount.Version = revision
 end
@@ -1481,7 +1481,7 @@ function Recount:AddTableDataStatsNoAmount(who, datatype, secondary, detailtype)
 	who.Fights.OverallData[datatype] = who.Fights.OverallData[datatype] or {}
 	CurTable = who.Fights.OverallData[datatype][secondary]
 
-	if type(CurTable)~="table" then
+	if type(CurTable) ~= "table" then
 		who.Fights.OverallData[datatype][secondary] = Recount:GetTable()
 		CurTable = who.Fights.OverallData[datatype][secondary]
 		CurTable.count = 0
@@ -1913,6 +1913,10 @@ function Recount:AddDamageData(source, victim, ability, element, hittype, damage
 
 				if element then
 					Recount:AddTableDataSum(sourceData, "ElementHitsDone", element, hittype, 1)
+
+					if blocked then
+						Recount:AddTableDataSum(sourceData, "ElementHitsDone", element, "Block", 1)
+					end
 				end
 			end
 		else
@@ -2023,6 +2027,10 @@ function Recount:AddDamageData(source, victim, ability, element, hittype, damage
 
 			if element then
 				Recount:AddTableDataSum(victimData, "ElementHitsTaken", element, hittype, 1)
+
+				if blocked then
+					Recount:AddTableDataSum(victimData, "ElementHitsTaken", element, "Block", 1)
+				end
 			end
 		end
 	else

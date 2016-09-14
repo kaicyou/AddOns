@@ -1,4 +1,4 @@
--- $Id: AtlasButton.lua 11 2016-05-08 17:52:36Z arith $
+-- $Id: AtlasButton.lua 98 2016-09-09 08:18:21Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -56,6 +56,7 @@ function addon:OnInitialize()
 		profile = {
 			minimap = {
 				hide = false,
+				minimapPos = 190,
 			},
 		},
 	})

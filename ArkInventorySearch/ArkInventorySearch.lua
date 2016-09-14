@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1701 $
-$Date: 2016-08-13 00:28:59 +1000 (Sat, 13 Aug 2016) $
+$Revision: 1716 $
+$Date: 2016-09-10 01:22:38 +1000 (Sat, 10 Sep 2016) $
 
 ]]--
 
@@ -21,7 +21,7 @@ local table = _G.table
 ArkInventory.SearchRebuild = true
 ArkInventory.SearchTable = { }
 
-function ArkInventory.Frame_Search_Paint( )
+function ArkInventory.Frame_Search_Paint_Actual( )
 
 	local frame = ARKINV_Search
 	

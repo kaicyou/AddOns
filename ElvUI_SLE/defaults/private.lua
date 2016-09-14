@@ -37,6 +37,10 @@ V["sle"] = {
 		},
 		["setoverlay"] = false,
 		["lockbutton"] = false,
+		["FishingRaft"] = {
+			["enable"] = false,
+			["set"] = "NONE",
+		},
 	},
 	--Minimap Module
 	["minimap"] = {
@@ -46,6 +50,7 @@ V["sle"] = {
 		["mapicons"] = {
 			["enable"] = false,
 			["barenable"] = false,
+			["template"] = "Transparent",
 		},
 	},
 
@@ -172,6 +177,7 @@ V["sle"] = {
 			["subpages"] = 2,
 		},
 		["questguru"] = {
+			["enable"] = false,
 			["removeParchment"] = false,
 		},
 	},

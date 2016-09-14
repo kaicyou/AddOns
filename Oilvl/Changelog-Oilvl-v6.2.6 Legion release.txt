@@ -1,0 +1,201 @@
+------------------------------------------------------------------------
+r557 | olzenkhaw | 2016-09-07 09:43:14 +0000 (Wed, 07 Sep 2016) | 1 line
+Changed paths:
+   A /tags/v6.2.6 Legion release (from /trunk:556)
+
+v6.2.6 - fixed a bug
+------------------------------------------------------------------------
+r556 | olzenkhaw | 2016-09-07 09:42:54 +0000 (Wed, 07 Sep 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.2.6 - fixed a bug
+------------------------------------------------------------------------
+r554 | olzenkhaw | 2016-09-06 13:00:23 +0000 (Tue, 06 Sep 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.2.5 - fixed a bug
+------------------------------------------------------------------------
+r552 | olzenkhaw | 2016-09-06 12:49:35 +0000 (Tue, 06 Sep 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+
+v6.2.4 - fixed item level calculation
+------------------------------------------------------------------------
+r550 | olzenkhaw | 2016-09-06 12:32:43 +0000 (Tue, 06 Sep 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.2.3 - fixed item level calculation
+------------------------------------------------------------------------
+r548 | olzenkhaw | 2016-08-31 08:10:06 +0000 (Wed, 31 Aug 2016) | 4 lines
+Changed paths:
+   M /trunk/OilvlPlayer.lua
+
+v6.2.0 
+- Updated Legion Enchant and Gem.
+- Updated Raid Progression Detail for Legion Raids.
+- Removed Raid Progression Detial for WoD Raids.
+------------------------------------------------------------------------
+r546 | olzenkhaw | 2016-08-31 07:48:48 +0000 (Wed, 31 Aug 2016) | 4 lines
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+   M /trunk/OilvlPlayer.lua
+   M /trunk/Oilvlconfig.lua
+
+v6.2.0 
+- Updated Legion Enchant and Gem.
+- Updated Raid Progression Detail for Legion Raids.
+- Removed Raid Progression Detial for WoD Raids.
+------------------------------------------------------------------------
+r544 | olzenkhaw | 2016-08-28 11:34:21 +0000 (Sun, 28 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.26 Fixed a bug.
+------------------------------------------------------------------------
+r542 | olzenkhaw | 2016-08-28 11:27:15 +0000 (Sun, 28 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.25 Fixed a bug.
+------------------------------------------------------------------------
+r540 | olzenkhaw | 2016-08-28 11:07:20 +0000 (Sun, 28 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.24 Added demon hunter class color
+------------------------------------------------------------------------
+r538 | olzenkhaw | 2016-08-27 23:45:53 +0000 (Sat, 27 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.23 Fixed a bug.
+------------------------------------------------------------------------
+r536 | olzenkhaw | 2016-08-26 05:58:14 +0000 (Fri, 26 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+   M /trunk/OilvlPlayer.lua
+   M /trunk/Oilvlconfig.lua
+   M /trunk/localization.lua
+
+v6.1.22 Added Auto Scan option in OiLvL Window. It is enabled by default. Uncheck it will disable auto scan.
+------------------------------------------------------------------------
+r534 | olzenkhaw | 2016-08-23 01:34:26 +0000 (Tue, 23 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.toc
+   M /trunk/OilvlPlayer.lua
+
+v6.1.21 Fixed a bug.
+------------------------------------------------------------------------
+r532 | olzenkhaw | 2016-08-22 23:49:15 +0000 (Mon, 22 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.20 Optimization codes
+------------------------------------------------------------------------
+r530 | olzenkhaw | 2016-08-22 13:20:35 +0000 (Mon, 22 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.toc
+   M /trunk/OilvlPlayer.lua
+
+v6.1.19 Fixed a bug.
+------------------------------------------------------------------------
+r528 | olzenkhaw | 2016-08-20 08:32:49 +0000 (Sat, 20 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.18 Fixed a bug.
+------------------------------------------------------------------------
+r526 | olzenkhaw | 2016-08-20 06:48:05 +0000 (Sat, 20 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.17 Fixed a bug.
+------------------------------------------------------------------------
+r524 | olzenkhaw | 2016-08-16 11:30:18 +0000 (Tue, 16 Aug 2016) | 2 lines
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.16 Fixed a bug.
+
+------------------------------------------------------------------------
+r522 | olzenkhaw | 2016-08-16 03:29:25 +0000 (Tue, 16 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.15 Fixed a bug.
+------------------------------------------------------------------------
+r520 | olzenkhaw | 2016-08-15 01:29:46 +0000 (Mon, 15 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.14 Fixed a bug.
+------------------------------------------------------------------------
+r518 | olzenkhaw | 2016-08-14 12:17:38 +0000 (Sun, 14 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.13 Fixed a bug.
+------------------------------------------------------------------------
+r516 | olzenkhaw | 2016-08-14 12:09:58 +0000 (Sun, 14 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+   M /trunk/OilvlPlayer.lua
+
+v6.1.12 Fixed a bug.
+------------------------------------------------------------------------
+r514 | olzenkhaw | 2016-08-13 04:08:47 +0000 (Sat, 13 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.11 Fixed a bug.
+------------------------------------------------------------------------
+r512 | olzenkhaw | 2016-08-12 03:46:14 +0000 (Fri, 12 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.10 Fixed a bug.
+------------------------------------------------------------------------
+r510 | olzenkhaw | 2016-08-11 16:05:37 +0000 (Thu, 11 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.1.9 Fixed a bug.
+------------------------------------------------------------------------
+r508 | olzenkhaw | 2016-08-10 16:21:10 +0000 (Wed, 10 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+   M /trunk/Oilvlconfig.lua
+
+v6.1.8 /oiraltc to enable / disable alt-click loot frame feature
+------------------------------------------------------------------------
+r506 | olzenkhaw | 2016-08-09 00:23:07 +0000 (Tue, 09 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.toc
+   M /trunk/OilvlPlayer.lua
+
+v6.1.7 Fixed a bug.
+------------------------------------------------------------------------

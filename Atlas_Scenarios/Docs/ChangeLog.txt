@@ -1,10 +1,20 @@
-$Id: ChangeLog.txt 24 2016-08-29 06:57:49Z arith $
+$Id: ChangeLog.txt 27 2016-08-31 06:44:19Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2012 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 ==============
 = Change Log =
 ==============
+
+v1.34.00 (Aug. 31, 2016)
+------------------------
+- Added Broken Shore coordinates
+- Added Broken Shore large map
+- Translation update:
+  - Simplified Chinese (ananhaid)
+  - German (pas06)
+- Corrected the step 8 and 9's name and description in Broken Shore scenario
+
 
 v1.33.01 (Aug. 29, 2016)
 ------------------------

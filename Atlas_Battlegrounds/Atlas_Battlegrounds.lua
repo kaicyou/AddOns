@@ -1,4 +1,4 @@
--- $Id: Atlas_Battlegrounds.lua 1538 2016-08-07 15:57:11Z arith $
+-- $Id: Atlas_Battlegrounds.lua 1541 2016-08-31 05:17:16Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -52,6 +52,7 @@ local myData = {
 		PlayerLimit = "40";
 		Acronym = L["AV"];
 		WorldMapID = "401";
+		Faction = "Alliance";
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Stormpike Guard"] };
 		{ BLUE.."A) "..ALC["Entrance"], 10001 };
 		{ BLUE.."B) "..BZ["Dun Baldar"], 10002 };
@@ -107,6 +108,7 @@ local myData = {
 		PlayerLimit = "40";
 		Acronym = L["AV"];
 		WorldMapID = "401";
+		Faction = "Horde";
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Frostwolf Clan"] };
 		{ BLUE.."A) "..ALC["Entrance"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"], 10001 };
 		{ BLUE.."B) "..BZ["Frostwolf Keep"], 10002 };
@@ -294,6 +296,7 @@ local myData = {
 		LevelRange = "73-85";
 		MinLevel = "73";
 		WorldMapID = "501";
+		LargeMap = "WintergraspPvP";
 		{ ORNG..PVP..ALC["Colon"]..BZ["Wintergrasp"] };
 		{ BLUE.."A) "..BZ["Wintergrasp Fortress"], 10001 };
 		{ BLUE..INDENT..BZ["Vault of Archavon"] };

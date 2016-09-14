@@ -1,7 +1,7 @@
 ﻿ --[[
-$Id: LibBabble-SubZone-3.0_ptBR.lua 189 2016-07-19 07:43:10Z arith $
+$Id: LibBabble-SubZone-3.0_ptBR.lua 192 2016-08-31 14:08:00Z arith $
 Name: LibBabble-SubZone-3.0
-Revision: $Rev: 189 $
+Revision: $Rev: 192 $
 Maintainers: arith, dynaletik
 Last updated by: $Author: arith $
 Website: http://www.wowace.com/addons/libbabble-subzone-3-0/
@@ -14,6 +14,7 @@ local lib = private["LibBabble-SubZone-3.0-LoadingLib"]
 if not lib or GetLocale() ~= "ptBR" then return end
 
 lib:SetCurrentTranslations 
+
 {
 	["7th Legion Base Camp"] = "Campo-base da 7ª Legião",
 	["7th Legion Front"] = "Front da 7ª Legião",
@@ -1201,9 +1202,11 @@ lib:SetCurrentTranslations
 	["Earth Song Falls"] = "Cachoeiras da Canção Telúrica",
 	["Earth Song Gate"] = "Portal da Canção da Terra",
 	["Eastern Bridge"] = "Ponte Oriental",
+	["Eastern Highmountain"] = "Alta Montanha Oriental",
 	["Eastern Kingdoms"] = "Reinos do Leste",
 	["Eastern Plaguelands"] = "Terras Pestilentas Orientais",
 	["Eastern Strand"] = "Praia Oriental",
+	["Eastern Suramar"] = "Suramar Oriental",
 	["Eastern Transept"] = "Transepto Oriental",
 	["East Garrison"] = "Guarnição Leste",
 	["Eastmoon Ruins"] = "Ruínas de Lunaleste",
@@ -2230,6 +2233,7 @@ lib:SetCurrentTranslations
 	["Jeff NW Quadrant"] = "Quadrante NW do Jeff",
 	["Jeff SE Quadrant"] = "Quadrante SE do Jeff",
 	["Jeff SW Quadrant"] = "Quadrante SW do Jeff",
+	["Jeremy's Test Scenario"] = "Cenário de Teste de Jeremy",
 	["Jerod's Landing"] = "Ancoradouro de Jerod",
 	["Jintha'Alor"] = "Jintha'Alor",
 	["Jintha'kalar"] = "Jintha'kalar",
@@ -2566,6 +2570,7 @@ lib:SetCurrentTranslations
 	-- Mardum = "",
 	["Mardum Scenario"] = "Cenário de Mardum",
 	["Mardum, the Shattered Abyss"] = "Mardum, o Abismo Partido",
+	["Mardum Treasure Scenario"] = "Cenário do Tesouro de Mardum",
 	["Mar'gok's Overwatch"] = "Vedeta de Mar'gok",
 	-- ["Margoss' Retreat"] = "",
 	["Margoss's Retreat"] = "Retiro de Margoss",
@@ -3065,6 +3070,7 @@ lib:SetCurrentTranslations
 	["Propland - Dev Only"] = "Propland - Dev Only",
 	["Prospector's Point"] = "Mirante do Minerador",
 	["Protectorate Watch Post"] = "Posto de Guarda do Protetorado",
+	["Prototype Scenario"] = "Protótipo de Cenário",
 	["Proving Grounds"] = "Campo de Testes",
 	["Proving Grounds: Select a Trial"] = "Campo de Testes: Escolha uma Provação",
 	["Purespring Cavern"] = "Caverna Fonte Clara",
@@ -3265,6 +3271,7 @@ lib:SetCurrentTranslations
 	["Ruby Dragonshrine"] = "Santuário Dragônico Rubi",
 	["Ruby Lake"] = "Lago Rubi",
 	["Ruined Approach"] = "Acesso em Ruínas",
+	["Ruined City Post 01"] = "Posto 01 da Cidade Arruinada",
 	["Ruined Court"] = "Pátio Arruinado",
 	["Ruined Passage"] = "Passagem Arruinada",
 	["Ruins of Aboraz"] = "Ruínas de Aboraz",
@@ -3423,6 +3430,7 @@ lib:SetCurrentTranslations
 	["Scarred Vale"] = "Vale Escarioso",
 	["Scenario - Black Ox Temple"] = "Cenário - Templo do Boi Negro",
 	["Scenario - Mogu Ruins"] = "Cenário - Ruínas Mogu",
+	-- ["Scenario Template"] = "",
 	["Scenic Overlook"] = "Mirante Panorâmico",
 	["Schnottz's Frigate"] = "Fragata do Schnottz",
 	["Schnottz's Hostel"] = "Albergue do Schnottz",
@@ -4208,6 +4216,9 @@ lib:SetCurrentTranslations
 	["Terror's Cave"] = "Caverna do Terror",
 	["Terrorweb Tunnel"] = "Túnel Terrorteia",
 	["Terror Wing Path"] = "Vale Asa do Terror",
+	-- TEST = "",
+	-- ["Test Faction Criteria"] = "",
+	["Test Scenario"] = "Testar Cenário",
 	["Tethris Aran"] = "Tethris Aran",
 	["Thaelin's Workshop"] = "Oficina de Thaelin",
 	Thalanaar = "Thalanaar",
@@ -5476,6 +5487,7 @@ Tocas da Morte]=], -- Needs review
 	Ulduar = "Ulduar",
 	["Ulduar Raid - Interior - Insertion Point"] = "Raide de Ulduar - Interior - Ponto de Inserção",
 	["Ulduar Raid - Iron Concourse"] = "Raide de Ulduar - Junção de Ferro",
+	["Ulduar Warrior Scenario"] = "Cenário de Guerreiro em Ulduar",
 	Uldum = "Uldum",
 	["Uldum Phase Oasis"] = "Fase Oásis em Uldum",
 	["Uldum - Phase Wrecked Camp"] = "Uldum - Fase Acampamento Destruído",
@@ -5740,6 +5752,7 @@ Tocas da Morte]=], -- Needs review
 	["Western Bridge"] = "Ponte Ocidental",
 	["Western Plaguelands"] = "Terras Pestilentas Ocidentais",
 	["Western Strand"] = "Praia Ocidental",
+	["Western Suramar"] = "Suramar Ocidental",
 	["Western Transept"] = "Transepto Ocidental",
 	Westersea = "Mar do Oeste",
 	Westfall = "Cerro Oeste",
@@ -5963,5 +5976,4 @@ Tocas da Morte]=], -- Needs review
 	["Zun'watha"] = "Zun'watha",
 	["Zuuldaia Ruins"] = "Ruínas Zuuldaia",
 }
-
 

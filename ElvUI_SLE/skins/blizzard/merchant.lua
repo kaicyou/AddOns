@@ -99,7 +99,11 @@ local function UpdateBuybackInfo()
 			link = T.GetBuybackItemLink(i);
 			if (link) then
 				_, _, quality = T.GetItemInfo(link);
-				r, g, b = T.GetItemQualityColor(quality);
+				if quality then
+					r, g, b = T.GetItemQualityColor(quality);
+				else
+					r, g, b = 1,1,1
+				end
 				_G["MerchantItem" .. i .. "Name"]:SetTextColor(r, g, b);
 			end
 		end
@@ -121,10 +125,10 @@ local function isKnown(link, itemType, itemSubType)
 
 	_G["SLE_Merchant_HiddenTooltip"]:SetOwner(UIParent, "ANCHOR_NONE");
 	_G["SLE_Merchant_HiddenTooltip"]:SetHyperlink(link);
-	upperLimit = isRecipe and _G["SLE_Merchant_HiddenTooltip"]:NumLines() - 1 or 0
+	upperLimit = isRecipe and _G["SLE_Merchant_HiddenTooltip"]:NumLines() or 0
 
 	for i=2, _G["SLE_Merchant_HiddenTooltip"]:NumLines() do
-		if (isRecipe and (i <= 5 or i == upperLimit)) or isMount or not isRecipe then
+		if (isRecipe and (i <= 5 or i >= upperLimit - 3)) or isMount or not isRecipe then
 			local text = _G["SLE_Merchant_HiddenTooltipTextLeft"..i];
 			local r, g, b = text:GetTextColor();
 			local gettext = text:GetText();

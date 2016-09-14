@@ -79,13 +79,10 @@
 					<Anchor point="TOPLEFT" relativeTo="$Parent" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 				
-				<Backdrop bgFile="Interface\AddOns\Details\images\background" edgeFile="Interface\Buttons\WHITE8X8" tile="true">
+				<Backdrop edgeFile="Interface\Buttons\WHITE8X8">
 					<EdgeSize>
 						<AbsValue val="1"/>
 					</EdgeSize>
-					<TileSize>
-						<AbsValue val="256"/>
-					</TileSize>
 					<BackgroundInsets>
 						<AbsInset left="0" right="0" top="0" bottom="0"/>
 					</BackgroundInsets>
@@ -96,27 +93,36 @@
 						DetailsFrameworkDropDownOptionsFrameOnHide (self);
 					</OnHide>
 					<OnLoad>
-						self:SetBackdropColor (0, 0, 0, 0.95);
-						self:SetBackdropBorderColor (.2, .20, .20, 0.95);
+						self:SetBackdropColor (0, 0, 0, 0.92);
+						self:SetBackdropBorderColor (0, 0, 0, 1);
 					</OnLoad>
 				</Scripts>
 				
 			</Frame>	
 			
 			<ScrollFrame name="$Parent_ScrollFrame" parentKey="dropdownframe" hidden="true" frameStrata="FULLSCREEN">
-				<Size x="150" y="150"/>
+				<Size x="150" y="170"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$Parent" relativePoint="BOTTOMLEFT" x="0" y="-10" />
 				</Anchors>
 				
 				<ScrollChild>
-					<Frame name="$Parent_ScrollChild" frameStrata="DIALOG" parentKey="scrollchild">
+					<Frame name="$Parent_ScrollChild" frameStrata="FULLSCREEN" parentKey="scrollchild">
 					
-						<Size x="150" y="150"/>
+						<Size x="150" y="170"/>
 						
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$Parent" relativePoint="TOPLEFT" x="0" y="0" />
 						</Anchors>
+						
+						<Backdrop bgFile="Interface\FrameGeneral\UI-Background-Marble" tile="true">
+							<TileSize>
+								<AbsValue val="256"/>
+							</TileSize>
+							<BackgroundInsets>
+								<AbsInset left="0" right="0" top="0" bottom="0"/>
+							</BackgroundInsets>
+						</Backdrop>
 						
 						<Layers>
 							<Layer level="BACKGROUND">
@@ -161,19 +167,19 @@
 			</OnLoad>
 		
 			<OnShow>
-				DetailsFrameworkDropDownOnShow (self);
+				<!--DetailsFrameworkDropDownOnShow (self);-->
 			</OnShow>
 			
 			<OnHide>
-				DetailsFrameworkDropDownOnHide (self);
+				<!--DetailsFrameworkDropDownOnHide (self);-->
 			</OnHide>
 		
 			<OnEnter>
-				DetailsFrameworkDropDownOnEnter (self);
+				<!--DetailsFrameworkDropDownOnEnter (self);-->
 			</OnEnter>
 			
 			<OnLeave>
-				DetailsFrameworkDropDownOnLeave (self);
+				<!--DetailsFrameworkDropDownOnLeave (self);-->
 			</OnLeave>
 		
 			<OnSizeChanged>
@@ -222,6 +228,10 @@
 		</Layers>
 		
 		<Scripts>
+			<OnLoad>
+				self:SetFrameStrata (self:GetParent():GetFrameStrata())
+				self:SetFrameLevel (self:GetParent():GetFrameLevel()+10)
+			</OnLoad>
 			<OnMouseDown>
 				DetailsFrameworkDropDownOptionClick (self);
 			</OnMouseDown>

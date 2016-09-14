@@ -1,4 +1,4 @@
--- $Id: AtlasIngameLocales.lua 48 2016-07-19 14:03:11Z arith $
+-- $Id: AtlasIngameLocales.lua 87 2016-08-29 15:35:17Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -36,56 +36,6 @@ Atlas_IngameLocales = {
 	["Key to the Palace of Lei Shen"] = GetItemInfo(94222),
 	["Relic Coffer Key"] = GetItemInfo(11078),
 	["The Eye of Haramad"] = GetItemInfo(32092),
-
-	-- Jul. 14, 2016
-	-- GetFactionInfoByID will only return the faction info for the same faction side to the player. 
-	-- For example, if the player is with Alliance, then s/he won't be able to see the name for "Hellscream's Reach" which is in Horde side
-	-- Therefore, we will be using LibBabble-Faction. 
-	-- We will be removing below faction section in the later release
-	-- ######################################################################
-	-- Factions
-	-- ######################################################################
-	--[[
-	-- Mists of Pandaria
-	["Shado-Pan Assault"] = GetFactionInfoByID(1435),
-	["The August Celestials"] = GetFactionInfoByID(1341),
-
-	-- Cataclysm
-	["Avengers of Hyjal"] = GetFactionInfoByID(1204),
-	["Baradin's Wardens"] = GetFactionInfoByID(1177),
-	["Dragonmaw Clan"] = GetFactionInfoByID(1172),
-	["Hellscream's Reach"] = GetFactionInfoByID(1178),
-	["Wildhammer Clan"] = GetFactionInfoByID(1174),
-
-	-- Wrath of the Lich King
-	["The Ashen Verdict"] = GetFactionInfoByID(1156),
-
-	-- Burning Crusade
-	["Ashtongue Deathsworn"] = GetFactionInfoByID(1012),
-	["Cenarion Expedition"] = GetFactionInfoByID(942),
-	["Honor Hold"] = GetFactionInfoByID(946),
-	["Keepers of Time"] = GetFactionInfoByID(989),
-	["Lower City"] = GetFactionInfoByID(1011),
-	["Shattered Sun Offensive"] = GetFactionInfoByID(1077),
-	["The Aldor"] = GetFactionInfoByID(932),
-	["The Consortium"] = GetFactionInfoByID(933),
-	["The Scale of the Sands"] = GetFactionInfoByID(990),
-	["The Scryers"] = GetFactionInfoByID(934),
-	["The Sha'tar"] = GetFactionInfoByID(935),
-	["The Violet Eye"] = GetFactionInfoByID(967),
-	["Thrallmar"] = GetFactionInfoByID(947),
-
-	-- Classic
-	["Brood of Nozdormu"] = GetFactionInfoByID(910),
-	["Cenarion Circle"] = GetFactionInfoByID(609),
-	["Frostwolf Clan"] = GetFactionInfoByID(729),
-	["Hydraxian Waterlords"] = GetFactionInfoByID(749),
-	["Silverwing Sentinels"] = GetFactionInfoByID(890),
-	["Stormpike Guard"] = GetFactionInfoByID(730),
-	["The Defilers"] = GetFactionInfoByID(510),
-	["The League of Arathor"] = GetFactionInfoByID(509),
-	["Warsong Outriders"] = GetFactionInfoByID(889),
-	]]
 }
 
 do
@@ -93,3 +43,15 @@ do
 		return rawget(tab, key) or key end
 	})
 end
+
+function Atlas_GetClassName(class)
+	if (not LOCALIZED_CLASS_NAMES_MALE[class]) then
+		return nil;
+	end
+	if (UnitSex("player") == "3") then
+		return LOCALIZED_CLASS_NAMES_FEMALE[class];
+	else
+		return LOCALIZED_CLASS_NAMES_MALE[class];
+	end
+end
+

@@ -76,7 +76,7 @@ end
 local function FilterGetSource( t )
 	assert( type( t ) == "table", "parameter is not a table" )
 	for i = 1, FilterGetSourceTypes( ) do
-		t[i] = C_ToyBox.IsSourceTypeFilterChecked( i )
+		t[i] = not C_ToyBox.IsSourceTypeFilterChecked( i )
 	end
 	-- legion ok
 end
@@ -160,7 +160,7 @@ local function Scan( )
 		local owned = PlayerHasToy( i )
 		
 --		if not hide then
-		
+			
 			--ArkInventory.Output( item, " / ", name )
 			if ( not update ) and ( ( not c[i] ) or ( c[i].owned ~= owned or c[i].fav ~= fav ) ) then
 				update = true
@@ -218,7 +218,7 @@ end
 
 function ArkInventory.Collection.Toybox.Summon( index )
 	local td = ArkInventory.Collection.Toybox.GetToy( index )
-	UseToy( td.item )
+	--UseToy( td.item ) -- secure action, cant be done
 end
 
 function ArkInventory.Collection.Toybox.GetFavorite( index )

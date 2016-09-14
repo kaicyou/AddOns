@@ -7,7 +7,7 @@ Licensed under a Creative Commons "Attribution Non-Commercial Share Alike" Licen
 --]]
 
 local MAJOR_VERSION = "LibFishing-1.0"
-local MINOR_VERSION = 90973
+local MINOR_VERSION = 90976
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub") end
 
@@ -255,14 +255,12 @@ function FishLib:UpdateLureInventory()
 			if (startTime == 0) then
 				-- get the name so we can check enchants
 				lure.n,_,_,_,_,_,_,_,_,_ = GetItemInfo(id);
-				if ( lure.b > b or lure.w ) then
+				if ( lure.b > b or (lure.w and FishLib:IsWorn(id))) then
 					b = lure.b;
 					if ( lure.u ) then
 						tinsert(useinventory, lure);
 					elseif ( lure.s <= rawskill ) then
-						if ( not lure.w or FishLib:IsWorn(id)) then
-							tinsert(lureinventory, lure);
-						end
+						tinsert(lureinventory, lure);
 					end
 				end
 			end
@@ -575,6 +573,7 @@ end
 -- this changes all the damn time
 -- "|c(%x+)|Hitem:(%d+)(:%d+):%d+:%d+:%d+:%d+:[-]?%d+:[-]?%d+:[-]?%d+:[-]?%d+|h%[(.*)%]|h|r"
 -- go with a fixed pattern, since sometimes the hyperlink trick appears not to work
+-- In 7.0, the single digit '0' can be dropped, leading to ":::::" sequences
 local _itempattern = "|c(%x+)|Hitem:(%d+):(%d*):[^|]+|h%[(.*)%]|h|r"
 
 function FishLib:GetItemPattern()
@@ -1361,16 +1360,21 @@ function FishLib:InvokeFishing(useaction)
 	btn.postclick = nil;
 end
 
-function FishLib:InvokeLuring(id)
+function FishLib:InvokeLuring(id, itemtype, targetslot)
 	local btn = self.sabutton;
 	if ( not btn ) then
 		return;
 	end
-	btn:SetAttribute("type", "item");
 	if ( id ) then
+		if (not itemtype) then
+			itemtype = "item";
+			targetslot = INVSLOT_MAINHAND;
+		end
+		btn:SetAttribute("type", itemtype);
 		btn:SetAttribute("item", "item:"..id);
-		btn:SetAttribute("target-slot", INVSLOT_MAINHAND);
+		btn:SetAttribute("target-slot", targetslot);
 	else
+		btn:SetAttribute("type", nil);
 		btn:SetAttribute("item", nil);
 		btn:SetAttribute("target-slot", nil);
 	end

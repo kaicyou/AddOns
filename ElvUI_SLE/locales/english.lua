@@ -213,6 +213,12 @@ L["Slide Sideways"] = true
 L["Fade"] = true
 L["Tip time"] = true
 L["Number of seconds tip will be shown before changed to another."] = true
+L["Title font"] = true
+L["Subitle font"] = true
+L["Date font"] = true
+L["Player info font"] = true
+L["Tips font"] = true
+L["Graphics"] = true
 
 --Auras
 L["Hide Buff Timer"] = true
@@ -569,7 +575,10 @@ L["Update Throttle"] = true
 L["The frequency of coordinates and zonetext updates. Check will be done more often with lower values."] = true
 L["Full Location"] = true
 L["Color Type"] = true
+L["Custom Color"] = true
 L["Reaction"] = true
+L["Location"] = true
+L["Coordinates"] = true
 L["Teleports"] = true
 L["Portals"] = true
 L["Link Position"] = true
@@ -582,6 +591,8 @@ L["Justify Text"] = true
 L["Hearthstone Location"] = true
 L["Show the name on location your Heathstone is bound to."] = true
 L["Only Number"] = true
+L["Horizontal Growth"] = true
+L["Vertical Growth"] = true
 
 
 --Miscs
@@ -746,6 +757,7 @@ L["Always Compare Items"] = true
 L["Faction Icon"] = true
 L["Show faction icon to the left of player's name on tooltip."] = true
 L["TTOFFSET_DESC"] = "This adds the ability to have the tooltip offset from the cursor.  Make sure to have the \"Cursor Anchor\" option enabled in ElvUI's Tooltip section to use this feature."
+L["Tooltip Cursor Offset"] = true
 L["Tooltip X-offset"] = true
 L["Offset the tooltip on the X-axis."] = true
 L["Tooltip Y-offset"] = true

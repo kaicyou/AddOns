@@ -4,15 +4,33 @@
 
 *known issues*
  * moving an item from one guild bank tab to another will leave a ghost item behind until you view that tab again (it also increases the tooltip count for that ghost item).
- 
-*known issues (ptr 7.0)*
- * caged battle pets cannot be seen when placed in the guild bank, they appear as pet cages instead
+ * caged battle pets cannot be seen when placed in the guild bank, they appear as pet cages instead (api issue, default ui has same issue)
+ * rule headers are really small
  
 *wiki pages*
  * main wiki page - https://github.com/arkayenro/arkinventory/wiki
  * faq - https://github.com/arkayenro/arkinventory/wiki/FAQ
  
 
+
+*3.07.07 (11-SEP-2016)*
+ * added - artifact relics should now show their item level (if enabled)
+ * added - category for consumable > artifact power (to be able split up relics and power)
+ * changed - artifact power items should now have a default category of consumable > artifact power
+ * changed - ancient mana items should now have a default category of system > currency
+ * fixed - items being incorrectly assigned to the equipable items category (the equip location value for some items is nil and not an empty string which it has been up until now)
+ * fixed - toybox items were getting incorrectly flagged as being unusable (if you had that enabled)
+ * fixed - toybox item cooldowns should now display
+ * fixed - issue with changing search options in config when the search module is not loaded
+ * changed - ldb tooltip for currencies now includes the total and weekly maximums
+
+*3.07.06 (03-SEP-2016)*
+ * changed - translations for mining and herbalism will try to get data from spells instead of items (to hopefully get them to work more reliably)
+ * fixed - issue with recipes/patterns being flagged as soulbound when they arent due to the item they create being soulbound
+ * changed - artifact power and artifact relic items should now be categorised under system > artifact relic
+ * fixed - issue with bar names that were too long getting wrapped instead of shortened (and ending up underneath the item)
+ * fixed - equipping a new bag in an empty bag slot will now update the window correctly
+ * fixed - issue with toybox source filter
 
 *3.07.05 (20-AUG-2016)*
  * fixed - issue with item age being reset on login due to tooltip data not being ready

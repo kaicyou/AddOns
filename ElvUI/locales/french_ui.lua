@@ -61,6 +61,11 @@ L["says"] = "dit"
 L["whispers"] = "chuchote"
 L["yells"] = "crie"
 
+--DataBars
+L["Current Level:"] = true;
+L["Honor XP:"] = true;
+L["Honor Remaining:"] = true;
+
 --DataTexts
 L["(Hold Shift) Memory Usage"] = "(Maintenir MAJ) Utilisation de la Mémoire."
 L["AP"] = "PA"
@@ -102,12 +107,13 @@ L["Offhand"] = "Main gauche"
 L["Profit:"] = "Profit:"
 L["Reset Data: Hold Shift + Right Click"] = "RAZ des données: MAJ + Clic droit"
 L["Saved Raid(s)"] = "Raid(s) Sauvegardé(s)"
+L["Saved Dungeon(s)"] = "Donjon(s) Sauvegardé(s)";
 L["Server: "] = "Serveur: "
 L["Session:"] = "Session:"
 L["Shoulder"] = "Épaule"
 L["silverabbrev"] = "|cffc7c7cfs|r" --Also used in Bags
 L["SP"] = "PdS"
-L["Spec"] = 'Spécialisation'
+L["Spec"] = "Spec"
 L["Spent:"] = "Dépensé: "
 L["Stats For:"] = "Stats pour:"
 L["Total CPU:"] = "Charge du CPU:"
@@ -118,6 +124,7 @@ L["Waist"] = "Ceinture"
 L["Wrist"] = "Poignets"
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = '|cffFFFFFFClick Gauche:|r Changer de spécialisation des talents'
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = '|cffFFFFFFClick Droit:|r Changer la spécialisation de butin'
+L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = true;
 
 --DebugTools
 L["%s: %s tried to call the protected function '%s'."] = "%s: %s a essayé d'appeler la fonction protégée '%s'."
@@ -229,7 +236,12 @@ L["Alternative Power"] = "Puissance Alternative"
 L["Archeology Progress Bar"] = "Barre de progression d'Archéologie";
 L["Arena Frames"] = "Cadre d'arène" --Also used in UnitFrames
 L["Artifact Bar"] = true;
+L["Bag Mover (Grow Down)"] = true;
+L["Bag Mover (Grow Up)"] = true;
+L["Bag Mover"] = true;
 L["Bags"] = "Sacs" --Also in DataTexts
+L["Bank Mover (Grow Down)"] = true;
+L["Bank Mover (Grow Up)"] = true;
 L["Bar "] = "Barre " --Also in ActionBars
 L["BNet Frame"] = "Cadre BNet"
 L["Boss Button"] = "Bouton du Boss"

@@ -1,5 +1,5 @@
 
-Overachiever v0.90
+Overachiever v0.92
 ==============================
 
 Author: Tuhljin
@@ -106,6 +106,21 @@ Change log
 ==========
 
 The change log lists changes of particular note to users, not every change made.
+
+v0.92
+- New options: Can now react to the Achievement Progress toast by tracking the achievement, linking the achievement and showing the completed criteria in the chat log, and/or adding the achievement to the Suggestions tab as a "Recent Reminder".
+- Added a "Recently spotted objective" tooltip for certain types of achievements in the achievement UI when they are on the Recent Reminders list. The tooltip indicates what was seen that triggered the reminder. (E.g., it would show the name of the mob that you need to kill or the player you need to blast with your Turkey Shooter.) Helpful when you briefly run the mouse over something that triggers the reminder sound (if you turned that on!) but you don't know what it was.
+- Fixed reminder tooltips not showing for achievements that identified the mob by ID (non-critter "need to kill" achievements).
+- Fixed reminder tooltips for world objects disappearing after a short while due to the default tooltip resetting its text periodically.
+- Fixed reminder tooltips for world objects sometimes not showing if the tooltip previously showed mob data.
+- Attempt to fix compatibility issue with other addons resulting in an error that appears when the achievement frame is opened.
+- Fixed reminder tooltips for certain fishing nodes not showing. (Note that, like several other features, this is localization-dependent. If it doesn't work with a non-English locale, you can help fix this by contributing on CurseForge. The relevant phrase key in this case is "ACH_FISHSCHOOL_FORMAT". If you see a node I missed in English, let me know.)
+
+v0.91
+- Suggestions Tab:
+-- Added numerous suggestions for Legion zones, dungeons, and raids.
+-- Added "Mythic" to instance difficulty override dropdown.
+-- Now considers the different "Dalaran" zones individually (so suggestions for Dalaran in Northrend don't show in other Dalaran zones).
 
 v0.90
 - Updated for WoW patch 7.0.x. Updated TOC and fixed several errors. (Haven't added new suggestions yet.)

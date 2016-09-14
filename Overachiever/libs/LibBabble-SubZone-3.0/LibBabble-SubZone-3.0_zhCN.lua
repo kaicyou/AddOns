@@ -1,7 +1,7 @@
 ﻿ --[[
-$Id: LibBabble-SubZone-3.0_zhCN.lua 189 2016-07-19 07:43:10Z arith $
+$Id: LibBabble-SubZone-3.0_zhCN.lua 192 2016-08-31 14:08:00Z arith $
 Name: LibBabble-SubZone-3.0
-Revision: $Rev: 189 $
+Revision: $Rev: 192 $
 Maintainers: arith, dynaletik
 Last updated by: $Author: arith $
 Website: http://www.wowace.com/addons/libbabble-subzone-3-0/
@@ -14,6 +14,7 @@ local lib = private["LibBabble-SubZone-3.0-LoadingLib"]
 if not lib or GetLocale() ~= "zhCN" then return end
 
 lib:SetCurrentTranslations 
+
 {
 	["7th Legion Base Camp"] = "第七军团营地",
 	["7th Legion Front"] = "第七军团前线",
@@ -1201,9 +1202,11 @@ lib:SetCurrentTranslations
 	["Earth Song Falls"] = "地歌瀑布",
 	["Earth Song Gate"] = "地歌之门",
 	["Eastern Bridge"] = "东部桥梁",
+	["Eastern Highmountain"] = "至高岭东部",
 	["Eastern Kingdoms"] = "东部王国",
 	["Eastern Plaguelands"] = "东瘟疫之地",
 	["Eastern Strand"] = "东部海滩",
+	["Eastern Suramar"] = "苏拉玛东部",
 	["Eastern Transept"] = "东侧耳堂",
 	["East Garrison"] = "东区兵营",
 	["Eastmoon Ruins"] = "东月废墟",
@@ -2230,6 +2233,7 @@ lib:SetCurrentTranslations
 	["Jeff NW Quadrant"] = "Jeff NW Quadrant",
 	["Jeff SE Quadrant"] = "Jeff SE Quadrant",
 	["Jeff SW Quadrant"] = "Jeff SW Quadrant",
+	-- ["Jeremy's Test Scenario"] = "",
 	["Jerod's Landing"] = "杰罗德码头",
 	["Jintha'Alor"] = "辛萨罗",
 	["Jintha'kalar"] = "金萨卡拉",
@@ -2566,6 +2570,7 @@ lib:SetCurrentTranslations
 	Mardum = "马顿",
 	["Mardum Scenario"] = "马顿场景战役",
 	["Mardum, the Shattered Abyss"] = "破碎深渊马顿",
+	["Mardum Treasure Scenario"] = "马顿宝藏场景战役",
 	["Mar'gok's Overwatch"] = "马尔高克岗哨",
 	-- ["Margoss' Retreat"] = "",
 	["Margoss's Retreat"] = "马戈斯的小屋",
@@ -3065,6 +3070,7 @@ lib:SetCurrentTranslations
 	["Propland - Dev Only"] = "Propland - Dev Only",
 	["Prospector's Point"] = "勘探员哨站",
 	["Protectorate Watch Post"] = "维序派哨站",
+	["Prototype Scenario"] = "标准场景战役",
 	["Proving Grounds"] = "试炼场",
 	["Proving Grounds: Select a Trial"] = "试炼场：选择试炼",
 	["Purespring Cavern"] = "纯粹之泉洞穴",
@@ -3265,6 +3271,7 @@ lib:SetCurrentTranslations
 	["Ruby Dragonshrine"] = "红玉巨龙圣地",
 	["Ruby Lake"] = "红玉湖",
 	["Ruined Approach"] = "废弃过道",
+	["Ruined City Post 01"] = "Ruined City Post 01 Zul'Drak",
 	["Ruined Court"] = "废弃之厅",
 	["Ruined Passage"] = "废弃走廊",
 	["Ruins of Aboraz"] = "阿博拉兹废墟",
@@ -3423,6 +3430,7 @@ lib:SetCurrentTranslations
 	["Scarred Vale"] = "瘢痕谷",
 	["Scenario - Black Ox Temple"] = "场景战役——玄牛寺",
 	["Scenario - Mogu Ruins"] = "场景战役——魔古遗迹",
+	-- ["Scenario Template"] = "",
 	["Scenic Overlook"] = "观景台",
 	["Schnottz's Frigate"] = "司克诺兹的护卫舰",
 	["Schnottz's Hostel"] = "司克诺兹的宿舍",
@@ -4002,8 +4010,8 @@ lib:SetCurrentTranslations
 	["Stranglethorn Vale"] = "荆棘谷",
 	Stratholme = "斯坦索姆",
 	["Stratholme Entrance"] = "斯坦索姆入口",
-	["Stratholme - Main Gate"] = "斯坦索姆 - 正门",
-	["Stratholme - Service Entrance"] = "斯坦索姆 - 仆从入口",
+	["Stratholme - Main Gate"] = "斯坦索姆－正门",
+	["Stratholme - Service Entrance"] = "斯坦索姆－后门",
 	["Stratholme Service Entrance"] = "斯坦索姆仆从之门入口",
 	["Stromgarde Keep"] = "激流堡",
 	["Strongarm Airstrip"] = "铁腕机坪",
@@ -4208,6 +4216,9 @@ lib:SetCurrentTranslations
 	["Terror's Cave"] = "魔王洞穴",
 	["Terrorweb Tunnel"] = "恶蛛隧道",
 	["Terror Wing Path"] = "龙翼小径",
+	TEST = "测试",
+	["Test Faction Criteria"] = "测试阵营条件",
+	["Test Scenario"] = "测试场景",
 	["Tethris Aran"] = "塔迪萨兰",
 	["Thaelin's Workshop"] = "塞林的车间",
 	Thalanaar = "萨兰纳尔",
@@ -5046,9 +5057,9 @@ lib:SetCurrentTranslations
 	["The Sparkling Crawl"] = "耀晶幽径",
 	["The Spark of Imagination"] = "思想火花",
 	["The Spawning Glen"] = "孢殖林",
-	["The Spear in the Shadow"] = "迷雾中的塔杖",
+	["The Spear in the Shadow"] = "迷雾中的圣矛",
 	["The Spire"] = "冰冠之塔",
-	-- ["The Splintered Fleet"] = "",
+	["The Splintered Fleet"] = "分裂的舰队",
 	["The Splintered Path"] = "碎石小径",
 	["The Spring Road"] = "春之路",
 	["The Stadium"] = "竞赛场",
@@ -5475,6 +5486,7 @@ lib:SetCurrentTranslations
 	Ulduar = "奥杜尔",
 	["Ulduar Raid - Interior - Insertion Point"] = "Ulduar Raid - Interior - Insertion Point",
 	["Ulduar Raid - Iron Concourse"] = "Ulduar Raid - Iron Concourse",
+	["Ulduar Warrior Scenario"] = "奥杜尔战士",
 	Uldum = "奥丹姆",
 	["Uldum Phase Oasis"] = "奥丹姆绿洲位面",
 	["Uldum - Phase Wrecked Camp"] = "奥丹姆——失事营地位面",
@@ -5739,6 +5751,7 @@ lib:SetCurrentTranslations
 	["Western Bridge"] = "西部桥梁",
 	["Western Plaguelands"] = "西瘟疫之地",
 	["Western Strand"] = "西部海岸",
+	["Western Suramar"] = "苏拉玛西部",
 	["Western Transept"] = "西侧耳堂",
 	Westersea = "西部之海",
 	Westfall = "西部荒野",
@@ -5889,12 +5902,12 @@ lib:SetCurrentTranslations
 	["Wyrmbreaker's Rookery"] = "碎龙者的孵化间",
 	["Wyrmrest Summit"] = "龙眠神殿顶层",
 	["Wyrmrest Temple"] = "龙眠神殿",
-	["Wyrmrest Temple - bottom to middle"] = "Wyrmrest Temple - bottom to middle, Dragonblight - Begin",
-	["Wyrmrest Temple - bottom to top"] = "Wyrmrest Temple - bottom to top, Dragonblight - End",
-	["Wyrmrest Temple - middle to bottom"] = "Wyrmrest Temple - middle to bottom, Dragonblight - Begin",
-	["Wyrmrest Temple - middle to top"] = "Wyrmrest Temple - middle to top, Dragonblight - Begin",
-	["Wyrmrest Temple - top to bottom"] = "Wyrmrest Temple - top to bottom, Dragonblight - End",
-	["Wyrmrest Temple - top to middle"] = "Wyrmrest Temple - top to middle, Dragonblight - End",
+	["Wyrmrest Temple - bottom to middle"] = "Wyrmrest Temple - bottom to middle Dragonblight - Begin",
+	["Wyrmrest Temple - bottom to top"] = "Wyrmrest Temple - bottom to top Dragonblight - Begin",
+	["Wyrmrest Temple - middle to bottom"] = "Wyrmrest Temple - middle to bottom Dragonblight - Begin",
+	["Wyrmrest Temple - middle to top"] = "Wyrmrest Temple - middle to top Dragonblight - Begin",
+	["Wyrmrest Temple - top to bottom"] = "Wyrmrest Temple - top to bottom Dragonblight - Begin",
+	["Wyrmrest Temple - top to middle"] = "Wyrmrest Temple - top to middle Dragonblight - Begin",
 	["Wyrms' Bend"] = "巨龙曲径",
 	["Wyrmscar Island"] = "龙痕岛",
 	["Wyrmskull Bridge"] = "龙颅之桥",
@@ -5962,5 +5975,4 @@ lib:SetCurrentTranslations
 	["Zun'watha"] = "祖瓦沙",
 	["Zuuldaia Ruins"] = "祖丹亚废墟",
 }
-
 

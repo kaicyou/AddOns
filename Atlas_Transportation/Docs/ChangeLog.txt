@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 32 2016-08-17 17:05:16Z arith $
+$Id: ChangeLog.txt 43 2016-09-08 11:20:03Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,22 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.34.01 (Sep. 08, 2016)
+------------------------
+- Added coordinates of Hunter- and Deathknight-only's taxi points to broken isles maps
+- Adjust Azurewing Repose's position in broken isles maps
+- Added information regarding to warrior's landing and jumping points in broken isles
+- Translation update:
+  - German (pas06)
+
+v1.34.00 (Aug. 31, 2016)
+------------------------
+- Added class-only taxi nodes in Broken Isles:
+  - Hunter, Death Knight
+- Added Dalaran map
+- Translation update:
+  - German (pas06)
 
 v1.33.03 (Aug. 18, 2016)
 ------------------------

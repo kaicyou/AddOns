@@ -141,7 +141,8 @@ function ArkInventory.LDB.Tracking_Currency:OnTooltipShow( )
 	
 	for j = 1, numTokenTypes do
 		
-		local name, isHeader, isExpanded, isUnused, isWatched, count, icon = GetCurrencyListInfo( j )
+		local name, isHeader, isExpanded, isUnused, isWatched, count, icon, limit, limitWeekly, countWeekly = GetCurrencyListInfo( j )
+		--ArkInventory.Output( GetCurrencyListInfo( j ) )
 		
 		if isHeader then
 			self:AddLine( " " )
@@ -153,11 +154,31 @@ function ArkInventory.LDB.Tracking_Currency:OnTooltipShow( )
 			local id = osd[2]
 			local me = ArkInventory.GetPlayerCodex( )
 			
-			if me.player.data.ldb.tracking.currency.tracked[id] then
-				self:AddDoubleLine( name, count, 0, 1, 0, 0, 1, 0 )
-			else
-				self:AddDoubleLine( name, count, 1, 1, 1, 1, 1, 1 )
+			--limit = limit / 100
+			local txt = FormatLargeNumber( count )
+			
+			if limit and limit > 0 then
+				txt = string.format( "%s/%s", FormatLargeNumber( count ), FormatLargeNumber( limit ) )
 			end
+			
+			if me.player.data.ldb.tracking.currency.tracked[id] then
+				self:AddDoubleLine( name, txt, 0, 1, 0, 0, 1, 0 )
+			else
+				self:AddDoubleLine( name, txt, 1, 1, 1, 1, 1, 1 )
+			end
+			
+			if limitWeekly and countWeekly and countWeekly > 0 then
+				
+				txt = string.format( "%s/%s", FormatLargeNumber( countWeekly ), FormatLargeNumber( limitWeekly ) )
+				
+				if me.player.data.ldb.tracking.currency.tracked[id] then
+					self:AddDoubleLine( string.format( "  * %s", ArkInventory.Localise["WEEKLY"] ), txt, 0, 1, 0, 0, 1, 0 )
+				else
+					self:AddDoubleLine( string.format( "  * %s", ArkInventory.Localise["WEEKLY"] ), txt, 1, 1, 1, 1, 1, 1 )
+				end
+				
+			end
+			
 		end
 		
 	end

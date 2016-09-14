@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 62 2016-07-26 15:01:58Z arith $
+$Id: ChangeLog.txt 98 2016-09-09 08:18:21Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,37 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.34.02 (Sep. 09, 2016)
+------------------------
+- Move instance map data into individual module's local DB
+- Set minimap button's default position
+
+v1.34.01 (Sep. 03, 2016)
+------------------------
+- Minor fix on adventure journal related functions, EncounterJournal_ListInstances() looks to be not necessary anymore.
+
+v1.34.00 (Aug. 31, 2016)
+------------------------
+- Corrected the boss ID of Sartharion in The Obsidian Sanctum
+- Corrected the instance ID of Vault of Archavon
+- Changed the old Violet Hold's location to Dalaran (Northrend)
+- Updated Icecrown Citadel mapA to add the info regarding to portal to Dalaran
+- Minor update for map presenting
+- Attached Atlas button to World Map window
+- Attached Atlas button to Adventure Journal window
+- Added World Map buttton. And now switching between Atlas, World Map, and Adventure Journal will be easier with one click
+- New Atlas frames introduced:
+  - Large frame: when a instance or location has a large scale of map provided, user can click on size-up button to switch to it
+  - Light frame: with the normal Atlas frame, user can collapse the right side of legend panel and only show the main map
+- Boss buttons on instance map: now instance's bosses will be presenting with corresponding boss button
+- Libraries update: LibBabble-Boss-3.0, LibBabble-Faction-3.0
+- Translation update:
+  - Simplified Chinese (ananhaid)
+  - French (Stuxz)
+  - German (pas06)
+  - Brazilian Portuguese (Sunflow72)
+- Library update: LibBabble-SubZone
 
 v1.33.02 (Jul. 26, 2016)
 ------------------------
@@ -28,6 +59,7 @@ v1.33.01 (Jul. 25, 2016)
   - Korean (muffinman369)
   - German (pas06)
 - Update Deprecated_List to support the latest AtlasQuest
+
 
 v1.33.00 (Jul. 19, 2016)
 ------------------------

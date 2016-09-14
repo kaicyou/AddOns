@@ -90,7 +90,9 @@ L["ACCEPT"] = ACCEPT or true
 L["ACTIVE"] = ACTIVE_PETS or true
 L["ADD"] = ADD or true
 L["ALL"] = ALL or true
+L["ALREADY_KNOWN"] = ITEM_SPELL_KNOWN or true
 L["APPEARANCE"] = APPEARANCE_LABEL or true
+L["ARTIFACT_POWER"] = ARTIFACT_POWER or true
 L["BAG"] = INVTYPE_BAG or true
 L["BLIZZARD"] = "Blizzard"
 L["AQUATIC"] = BATTLE_PET_NAME_9 or true
@@ -170,6 +172,7 @@ L["TOYBOX"] = TOY_BOX or true
 L["TRACKING"] = TRACKING or true
 L["UNKNOWN"] = UNKNOWNOBJECT or true
 L["VIEW"] = VIEW or true
+L["WEEKLY"] = CALENDAR_REPEAT_WEEKLY or true
 L["YES"] = YES or true
 
 
@@ -189,6 +192,8 @@ L["WOW_TOOLTIP_REQUIRES_CLASS"] = ConvertToCapture( ITEM_CLASSES_ALLOWED )
 L["WOW_TOOLTIP_REQUIRES"] = ConvertToCapture( ITEM_REQ_SKILL )
 L["WOW_TOOLTIP_ITEMUPGRADELEVEL"] = ConvertToCapture( ITEM_UPGRADE_TOOLTIP_FORMAT )
 L["WOW_TOOLTIP_ITEM_LEVEL"] = ConvertToCapture( ITEM_LEVEL )
+L["WOW_TOOLTIP_ARTIFACT_POWER"] = string.format( "%%d %s", ARTIFACT_POWER )
+L["WOW_TOOLTIP_ANCIENT_MANA"] = string.format( "%%d %s", ( GetCurrencyInfo( 1155 ) ) )
 
 L["WOW_TOOLTIP_CLASS"] = string.format( "^%s", string.gsub( ITEM_CLASSES_ALLOWED, "%%s", "(.+)", 1 ) )
 L["PET_BATTLE_BOUND"] = string.format( "%s (%s)", TOOLTIP_BATTLE_PET, ITEM_ACCOUNTBOUND )

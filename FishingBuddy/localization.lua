@@ -120,8 +120,13 @@ FishingTranslations["enUS"] = {
 	CONFIG_FISHWATCHPAGLE_INFO   = "Display which Pagle quest fish you have caught today.",
 	CONFIG_FISHWATCHCURRENT_ONOFF = "Current fish only",
 	CONFIG_FISHWATCHCURRENT_INFO = "Display only the fish caught in the current session.",
+
+	CONFIG_HANDLEQUESTS_ONOFF    = "Handle quests",
+	CONFIG_HANDLEQUESTS_INFO     = "If enabled, handle fishing quests and reputation automatically,",
 	CONFIG_LUNKERQUESTS_ONOFF    = "Turn in lunkers",
 	CONFIG_LUNKERQUESTS_INFO     = "Automatically turn in lunker quests",
+	CONFIG_DROWNEDMANA_ONOFF     = "Margoss reputation",
+	CONFIG_DROWNEDMANA_INFO      = "If enabled, turn in Drowned Mana for reputation",
 	
 	CONFIG_EASYCAST_ONOFF	 = "Easy Cast",
 	CONFIG_EASYCAST_INFO     = "Enable double-right-click casting.",
@@ -159,8 +164,10 @@ FishingTranslations["enUS"] = {
 	CONFIG_DRAENORBAIT_INFO   = "If enabled, attempt to use the right bait for the current Draenor zone.",
 	CONFIG_DRAENORBAITMAINTAIN_ONOFF  = "Maintain bait only",
 	CONFIG_DRAENORBAITMAINTAIN_INFO   = "If enabled, maintain existing Draenor bait, do not apply based on location.",
-	CONFIG_BIGDRAENOR_ONOFF   = "Max Draenor",
-	CONFIG_BIGDRAENOR_INFO    = "If enabled, attempt to maximize skill while in Draenor.",
+	CONFIG_BIGDRAENOR_ONOFF   = "Max Fishing",
+	CONFIG_BIGDRAENOR_INFO    = "If enabled, attempt to maximize skill while in Draenor and Broken Islands.",
+	CONFIG_DALARANLURES_ONOFF = "Dalaran Lures",
+	CONFIG_DALARANLURES_INFO  = "If enabled, apply special Dalaran coin lures when available.",
 	
 	CONFIG_SHOWLOCATIONZONES_ONOFF	= "Show Zones",
 	CONFIG_SHOWLOCATIONZONES_INFO = "Display both zones and subzones.",

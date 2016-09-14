@@ -61,6 +61,11 @@ L["says"] = "говорит"
 L["whispers"] = "шепчет"
 L["yells"] = "кричит"
 
+--DataBars
+L["Current Level:"] = "Текущий уровень:"
+L["Honor XP:"] = "Честь: "
+L["Honor Remaining:"] = "Осталось Чести"
+
 --DataTexts
 L["(Hold Shift) Memory Usage"] = "(Зажать Shift) Использование памяти"
 L["AP"] = "Сила Ат."
@@ -102,6 +107,7 @@ L["Offhand"] = "Левая рука"
 L["Profit:"] = "Прибыль:"
 L["Reset Data: Hold Shift + Right Click"] = "Сбросить данные: Shift + ПКМ"
 L["Saved Raid(s)"] = "Сохраненные рейды"
+L["Saved Dungeon(s)"] = "Сохраненнные подземелья"
 L["Server: "] = "На сервере:"
 L["Session:"] = "За сеанс:"
 L["Shoulder"] = "Плечо"
@@ -118,6 +124,7 @@ L["Waist"] = "Пояс"
 L["Wrist"] = "Запястья"
 L["|cffFFFFFFLeft Click:|r Change Talent Specialization"] = "|cffFFFFFFЛКМ:|r Изменить набор талантов"
 L["|cffFFFFFFRight Click:|r Change Loot Specialization"] = "|cffFFFFFFПКМ:|r Изменить специализацию для получения добычи"
+L["|cffFFFFFFShift + Left Click:|r Show Talent Specialization UI"] = "|cffFFFFFFShift + ЛКМ:|r Показать окно специализации"
 
 --DebugTools
 L["%s: %s tried to call the protected function '%s'."] = "%s: %s tried to call the protected function '%s'."
@@ -229,7 +236,12 @@ L["Alternative Power"] = "Альтернативный ресурс"
 L["Archeology Progress Bar"] = "Прогресс археологии"
 L["Arena Frames"] = "Арена" --Also used in UnitFrames
 L["Artifact Bar"] = "Полоса Артефакта"
+L["Bag Mover (Grow Down)"] = "Сумки (Рост вниз)"
+L["Bag Mover (Grow Up)"] = "Сумки (Рост вверх)"
+L["Bag Mover"] = "Фиксатор сумок"
 L["Bags"] = "Сумки" --Also in DataTexts
+L["Bank Mover (Grow Down)"] = "Банк (Рост вниз)"
+L["Bank Mover (Grow Up)"] = "Банк (Рост вверх)"
 L["Bar "] = "Панель " --Also in ActionBars
 L["BNet Frame"] = "Оповещения BNet"
 L["Boss Button"] = "Кнопка босса"

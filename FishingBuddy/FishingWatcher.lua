@@ -300,8 +300,10 @@ end
 local WatchEvents = {};
 
 WatchEvents["SKILL_LINES_CHANGED"] = function()
-	if ( FishingBuddy.GetSettingBool("WatchCurrentSkill") ) then
-		FishingBuddy.WatchUpdate();
+	if ( FishingWatchFrame:IsVisible() ) then
+		if ( FishingBuddy.GetSettingBool("WatchCurrentSkill") ) then
+			FishingBuddy.WatchUpdate();
+		end
 	end
 end
 
@@ -326,6 +328,10 @@ WatchEvents[FBConstants.ADD_FISHIE_EVT] = function(id, name, zone, subzone, text
 				info = fishdata[id];
 				tinsert(fishsort, id);
 			end
+		end
+
+		if (not info) then
+			info = BuildInfoEntry(id, 1);
 		end
 		
 		info.count = info.count + quantity;
@@ -395,8 +401,8 @@ local function DisplayPagleFish()
 	for id,info in pairs(FishingBuddy.PagleFish) do
 		local havesome = GetItemCount(id);
 		if ( havesome > 0 ) then
-			local _, _, _, _, _, name, _ = FishingBuddy.GetFishieRaw(id);
-			
+			local _,_,_,_,_,name,_ = FishingBuddy.GetFishieRaw(id);
+
 			if (info.color) then
 				name = Crayon:Colorize(info.color, name);
 			elseif (info.getcolor) then
@@ -518,10 +524,6 @@ function UpdateTotalsLine(index)
 	end
 end
 
-WatchEvents["LOOT_CLOSED"] = function()
-	UpdateTotalsLine();
-end
-
 local function UpdateFishieEntry(index, info)
 	local fishietext = FishingBuddy.StripRaw(info.text);
 	local dopercent = FishingBuddy.GetSettingBool("WatchFishPercent");
@@ -636,9 +638,11 @@ local function WatchUpdate()
 
 	for idx,fishid in ipairs(fishsort) do
 		local info = fishdata[fishid];
-		local fishie = info.text;
-		if ( fishie ) then
-			index = UpdateFishieEntry(index, info);
+		if (info) then
+			local fishie = info.text;
+			if ( fishie ) then
+				index = UpdateFishieEntry(index, info);
+			end
 		end
 	end
 

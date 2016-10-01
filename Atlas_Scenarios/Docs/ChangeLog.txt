@@ -1,10 +1,16 @@
-$Id: ChangeLog.txt 27 2016-08-31 06:44:19Z arith $
+$Id: ChangeLog.txt 29 2016-09-23 10:55:20Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2012 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 ==============
 = Change Log =
 ==============
+
+v1.34.01 (Sep. 23, 2016)
+------------------------
+- Enabled nolib-creation
+- Removed Demon Invasion's leading color
+
 
 v1.34.00 (Aug. 31, 2016)
 ------------------------

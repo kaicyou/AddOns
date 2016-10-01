@@ -4,7 +4,7 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("Recount")
 local BossIDs = LibStub("LibBossIDs-1.0")
 
-local revision = tonumber(string.sub("$Revision: 1386 $", 12, -3))
+local revision = tonumber(string.sub("$Revision: 1390 $", 12, -3))
 if Recount.Version < revision then
 	Recount.Version = revision
 end
@@ -508,19 +508,19 @@ end
 	end
 end]=]
 
-function Recount:SwingDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand, multistrike)
-	Recount:SpellDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, 0, L["Melee"], SPELLSCHOOL_PHYSICAL, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand, multistrike)
+function Recount:SwingDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand)
+	Recount:SpellDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, 0, L["Melee"], SPELLSCHOOL_PHYSICAL, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand)
 end
 
-function Recount:SpellBuildingDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand, multistrike)
-	Recount:SpellDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand, multistrike)
+function Recount:SpellBuildingDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand)
+	Recount:SpellDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand)
 end
 
 function Recount:SpellBuildingHeal(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, amount, overheal, critical)
 	-- Ignoring these for now
 end
 
-function Recount:SpellDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand, multistrike)
+function Recount:SpellDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand)
 	-- Prismatic Crystal
 	if string_match(dstGUID, "^Creature%-0%-%d+%-%d+%-%d+%-76933%-%w+$") then
 		return
@@ -551,11 +551,11 @@ function Recount:SpellDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, d
 	if glancing	then
 		HitType = "Glancing" -- Elsia: Do NOT localize this, it breaks functionality!!! If you need this localized contact me on WowAce or Curse.
 	end
-	if multistrike and critical then
+	--[[if multistrike and critical then
 		HitType = "Multistrike (Crit)"
 	elseif multistrike and not critical then
 		HitType = "Multistrike"
-	end
+	end]]
 	--[[if blocked then
 		HitType = "Block"
 	end
@@ -612,7 +612,7 @@ function Recount:FixCaps(capsstr)
 	end
 end
 
-function Recount:SwingMissed(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, missType, isOffHand, multistrike, amountMissed)
+function Recount:SwingMissed(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, missType, isOffHand, amountMissed)
 	local blocked
 	local absorbed
 	local spellId = L["Melee"]
@@ -633,7 +633,7 @@ function Recount:SwingMissed(timestamp, eventtype, srcGUID, srcName, srcFlags, d
 	end
 end
 
-function Recount:SpellMissed(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, missType, isOffHand, multistrike, amountMissed)
+function Recount:SpellMissed(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, missType, isOffHand, amountMissed)
 	local blocked
 	local absorbed
 
@@ -659,7 +659,7 @@ function Recount:SpellMissed(timestamp, eventtype, srcGUID, srcName, srcFlags, d
 	end
 end
 
-function Recount:SpellHeal(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, amount, overheal, absorbed, critical, multistrike)
+function Recount:SpellHeal(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, amount, overheal, absorbed, critical)
 	local healtype = "Hit" -- Elsia: Do NOT localize this, it breaks functionality!!! If you need this localized contact me on WowAce or Curse.
 	local isHot
 	if eventtype == "SPELL_PERIODIC_HEAL" then
@@ -676,11 +676,11 @@ function Recount:SpellHeal(timestamp, eventtype, srcGUID, srcName, srcFlags, dst
 	if critical then
 		healtype = "Crit" -- Elsia: Do NOT localize this, it breaks functionality!!! If you need this localized contact me on WowAce or Curse.
 	end
-	if multistrike and critical then
+	--[[if multistrike and critical then
 		healtype = "Multistrike (Crit)"
 	elseif multistrike and not critical then
 		healtype = "Multistrike"
-	end
+	end]]
 
 	Recount:AddHealData(srcName, dstName, spellName, healtype, amount, overheal, srcGUID, srcFlags, dstGUID, dstFlags, spellId, isHot, absorbed) -- Elsia: Overheal missing!!!
 end
@@ -1785,7 +1785,7 @@ function Recount:AddDamageData(source, victim, ability, element, hittype, damage
 		Recount.cleventtext = Recount.cleventtext.." -"..damage
 	end
 	if resist and resist > 0 then
-		Recount.cleventtext = Recount.cleventtext .." ("..resist..L[" resisted"]..")"
+		Recount.cleventtext = Recount.cleventtext .." ("..resist.." "..L["Resisted"]..")"
 	end
 	if absorbed and absorbed > 0 then
 		absorbed = math.floor(absorbed + 0.5) -- Bandaid for weird rounding issues

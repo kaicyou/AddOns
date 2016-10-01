@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1716 $
-$Date: 2016-09-10 01:22:38 +1000 (Sat, 10 Sep 2016) $
+$Revision: 1726 $
+$Date: 2016-09-22 00:02:17 +1000 (Thu, 22 Sep 2016) $
 
 ]]--
 
@@ -211,16 +211,16 @@ function ArkInventory.Frame_Search_Table_Refresh( frame )
 					
 					if sd.h then
 						
-						local item_name = select( 3, ArkInventory.ObjectInfo( sd.h ) ) or ""
+						local info = ArkInventory.ObjectInfoArray( sd.h )
 						
-						if item_name == "" then
+						if info.name == "" then
 							ArkInventory.SearchRebuild = true
 						end
 						
 						local ignore = false
 						
-						if filter ~= "" and item_name ~= "" then
-							if not string.find( string.lower( item_name or "" ), string.lower( filter ) ) then
+						if filter ~= "" and info.name ~= "" then
+							if not string.find( string.lower( info.name or "" ), string.lower( filter ) ) then
 								ignore = true
 							end
 						end
@@ -230,8 +230,7 @@ function ArkInventory.Frame_Search_Table_Refresh( frame )
 							local id = ArkInventory.ObjectIDCount( sd.h )
 							
 							if not tt[id] then
-								local t = select( 4, ArkInventory.ObjectInfo( sd.h ) )
-								tt[id] = { id = id, sorted = item_name, name = item_name, h = sd.h, q = sd.q, t = t }
+								tt[id] = { id = id, sorted = info.name, name = info.name, h = sd.h, q = sd.q, t = info.texture }
 							end
 							
 						end

@@ -14,6 +14,8 @@ function ArkInventory.TooltipInit( name )
 	local tooltip = _G[name]
 	assert( tooltip, string.format( "XML Frame [%s] not found", name ) )
 	
+	tooltip.ARK_Data = { scan = true }
+	
 	return tooltip
 	
 end
@@ -26,12 +28,26 @@ end
 
 function ArkInventory.TooltipSetHyperlink( tooltip, h )
 	
+	if not tooltip.ARK_Data then
+		tooltip.ARK_Data = { }
+	end
+	
+	if tooltip.ARK_Data.scan and tooltip.ARK_Data.h == h then
+		-- its the scan tooltip and the hyperlink is the same as last time
+		return
+	end
+	
 	tooltip:ClearLines( )
+	tooltip.ARK_Data.h = h
 	
-	local osd = ArkInventory.ObjectStringDecode( h )
-	
-	if h and ( osd[1] == "item" or osd[1] == "spell" ) then
-		return tooltip:SetHyperlink( h )
+	if h then
+		
+		local osd = ArkInventory.ObjectStringDecode( h )
+		
+		if osd.class == "item" or osd.class == "spell" then
+			return tooltip:SetHyperlink( h )
+		end
+		
 	end
 	
 end
@@ -158,30 +174,30 @@ function ArkInventory.TooltipSetBattlepet( tooltip, h, i )
 	-- mouseover tooltip for pets is done at TooltipHookSetUnit
 	
 	local osd = ArkInventory.ObjectStringDecode( h )
-	local class, speciesID, level, rarity, fullHealth, power, speed = unpack( osd )
 	
-	if class ~= "battlepet" then return end
+	if osd.class ~= "battlepet" then return end
 	
 	--ArkInventory.Output( "[", class, " : ", speciesID, " : ", level, " : ", rarity, " : ", fullHealth, " : ", power, " : ", speed, "]" )
 	
 	if not ArkInventory.db.option.tooltip.battlepet.enable then
-		BattlePetToolTip_Show( species, level, rarity, fullHealth, power, speed )
+		BattlePetToolTip_Show( osd.id, osd.level, osd.q, osd.maxhealth, osd.power, osd.speed )
 		return
 	end
 	
-	local sd = ArkInventory.PetJournal.GetSpeciesInfo( speciesID )
+	local sd = ArkInventory.PetJournal.GetSpeciesInfo( osd.id )
 	if not sd then
-		--ArkInventory.OutputWarning( "no species data found for ", speciesID, " / ", name )
+		--ArkInventory.OutputWarning( "no species data found for ", osd.id )
 		return
 	end
 	
 	local name = sd.name
 	local pd
+	local rarity = osd.q
 	
 	if i and i.index then
 		pd = ArkInventory.PetJournal.GetPet( i.index )
 		if pd then
-			if ( rarity == -1 ) then
+			if rarity == -1 then
 				rarity = pd.rarity
 			end
 			name = pd.fullname
@@ -197,7 +213,7 @@ function ArkInventory.TooltipSetBattlepet( tooltip, h, i )
 	tooltip:AddLine( string.format( "|T%s:32:32:-4:4:128:256:64:100:130:166|t %s", GetPetTypeTexture( sd.petType ), name ) )
 	
 	if ArkInventory.db.option.tooltip.battlepet.source then
-		if ( sd.sourceText and sd.sourceText ~= "" ) then
+		if sd.sourceText and sd.sourceText ~= "" then
 			tooltip:AddLine( sd.sourceText, 1, 1, 1, true )
 		end
 	end
@@ -221,7 +237,7 @@ function ArkInventory.TooltipSetBattlepet( tooltip, h, i )
 		
 		
 		txt1 = LEVEL
-		txt2 = string.format( "%s %s", level, "|TInterface\\PetBattles\\BattleBar-AbilityBadge-Strong-Small:0|t" )
+		txt2 = string.format( "%s %s", osd.level, "|TInterface\\PetBattles\\BattleBar-AbilityBadge-Strong-Small:0|t" )
 		if pd and pd.xp and pd.maxXp and pd.xp > 0 then
 			
 			local pc = pd.xp / pd.maxXp * 100
@@ -243,13 +259,13 @@ function ArkInventory.TooltipSetBattlepet( tooltip, h, i )
 		if pd and pd.health and ( pd.health <= 0 ) then
 			
 			txt1 = string.format( "%s (%s)", txt1, DEAD )
-			txt2 = string.format( "%s %s", fullHealth, iconPetDead )
+			txt2 = string.format( "%s %s", osd.maxhealth, iconPetDead )
 			
 		else
 			
-			if pd and ( pd.health ~= fullHealth ) then
+			if pd and ( pd.health ~= osd.maxhealth ) then
 				
-				local pc = pd.health / fullHealth * 100
+				local pc = pd.health / osd.maxhealth * 100
 				if pc < 1 then
 					pc = 1
 				elseif pc > 99 then
@@ -260,17 +276,17 @@ function ArkInventory.TooltipSetBattlepet( tooltip, h, i )
 				
 			end
 			
-			txt2 = string.format( "%s %s", fullHealth, iconPetAlive )
+			txt2 = string.format( "%s %s", osd.maxhealth, iconPetAlive )
 			
 		end
 		tooltip:AddDoubleLine( txt1, txt2 )
 		
 		
 		-- |TTexturePath:size1:size2:offset-x:offset-y:original-size-x:original-size-y:crop-x1:crop-x2:crop-y1:crop-y2|t
-		tooltip:AddDoubleLine( PET_BATTLE_STAT_POWER, string.format( "%s %s", power, "|TInterface\\PetBattles\\PetBattle-StatIcons:0:0:0:0:32:32:0:16:0:16|t" ) )
+		tooltip:AddDoubleLine( PET_BATTLE_STAT_POWER, string.format( "%s %s", osd.power, "|TInterface\\PetBattles\\PetBattle-StatIcons:0:0:0:0:32:32:0:16:0:16|t" ) )
 		
 		
-		tooltip:AddDoubleLine( PET_BATTLE_STAT_SPEED, string.format( "%s %s", speed, "|TInterface\\PetBattles\\PetBattle-StatIcons:0:0:0:0:32:32:0:16:16:32|t" ) )
+		tooltip:AddDoubleLine( PET_BATTLE_STAT_SPEED, string.format( "%s %s", osd.speed, "|TInterface\\PetBattles\\PetBattle-StatIcons:0:0:0:0:32:32:0:16:16:32|t" ) )
 		
 		
 		if ( not sd.isWild ) and ( rarity ~= -1 ) then
@@ -289,7 +305,7 @@ function ArkInventory.TooltipSetBattlepet( tooltip, h, i )
 	
 	tooltip:Show( )
 	
-	ArkInventory.TooltipAddBattlepetDetail( tooltip, speciesID, i, h )
+	ArkInventory.TooltipAddBattlepetDetail( tooltip, osd.id, i, h )
 	
 end
 
@@ -458,7 +474,7 @@ end
 	
 function ArkInventory.TooltipContains( tooltip, TextToFind, IgnoreLeft, IgnoreRight, CaseSensitive, BaseOnly )
 	
-	if ArkInventory.TooltipFind( tooltip, TextToFind, IgnoreLeft, IgnoreRight, CaseSensitive, BaseOnly ) then
+	if ArkInventory.TooltipFind( tooltip, TextToFind, IgnoreLeft, IgnoreRight, CaseSensitive, 0, BaseOnly ) then
 		return true
 	else
 		return false
@@ -589,31 +605,34 @@ function ArkInventory.TooltipHook( ... )
 	
 	--ArkInventory.Output( tooltip.ARK_Data )
 	
-	local _, h
+	local _, h, addItemCount
 	
 	if not h and tooltip["GetItem"] then
 		
-		_, h = tooltip:GetItem( )
-		--ArkInventory.Output( "[", _, "] = ", gsub( h, "\124", "\124\124" ) )
+		local name, link = tooltip:GetItem( )
+		--ArkInventory.Output( "[", name, "] = ", gsub( link, "\124", "\124\124" ) )
 		
 		-- check for broken hyperlink bug
-		if _ == "" then
-			h = nil
+		if name and name ~= "" then
+			addItemCount = true
+			h = link
 		end
 		
 	end
 	
 	if not h and tooltip["GetSpell"] then
-		_, _, h = tooltip:GetSpell( )
-		if h then
-			h = GetSpellLink( h )
+		
+		local name, rank, id = tooltip:GetSpell( )
+		
+		if id then
+			h = GetSpellLink( id )
 			--ArkInventory.Output( "GetSpell = ", h )
 		end
+		
 	end
 	
-	if not h and arg1 then
-		_, h = ArkInventory.ObjectInfo( arg1 )
-		--ArkInventory.Output( "arg1 = ", arg1, " / ", h )
+	if not h and arg1 and type( arg1 ) == "string" then
+		h = arg1
 	end
 	
 	if not h then
@@ -621,10 +640,11 @@ function ArkInventory.TooltipHook( ... )
 		return
 	end
 	
-	--ArkInventory.Output( "h = ", h )
-	
 	if ArkInventory.db.option.tooltip.add.count then
-		ArkInventory.TooltipAddItemCount( tooltip, h )
+		local osd = ArkInventory.ObjectStringDecode( h )
+		if osd.class == "item" or osd.class == "currency" or osd.class == "battlepet" or osd.class == "spell" then
+			ArkInventory.TooltipAddItemCount( tooltip, h )
+		end
 	end
 	
 	--ArkInventory.TooltipAddItemAge( tooltip, h, arg1, arg2 )
@@ -719,7 +739,25 @@ function ArkInventory.TooltipHookSetRecipeReagentItem( ... )
 	if tooltip and arg1 and arg2 then
 		
 		local h = C_TradeSkillUI.GetRecipeReagentItemLink( arg1, arg2 )
+		--ArkInventory.Output( "recipe id:", arg1, " / reagent index:", arg2, " = ", h )
+		ArkInventory.TooltipHook( tooltip, h )
 		
+	end
+	
+end
+
+function ArkInventory.TooltipHookSetRecipeResultItem( ... )
+	
+	if not ArkInventory:IsEnabled( ) then return end
+	
+	if not ArkInventory.db.option.tooltip.show then return end
+	
+	local tooltip, arg1 = ...
+	
+	if tooltip and arg1 then
+		
+		local h = C_TradeSkillUI.GetRecipeItemLink( arg1 )
+		--ArkInventory.Output( "recipe id:", arg1, " = ", h )
 		ArkInventory.TooltipHook( tooltip, h )
 		
 	end

@@ -2034,7 +2034,7 @@
 					self:Hide( )
 					table.wipe( ArkInventory.Global.Thread.Window )
 					table.wipe( ArkInventory.Global.Thread.WindowState )
-					--ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
+					ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
 				end
 			</OnEvent>
 		</Scripts>

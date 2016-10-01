@@ -2,8 +2,8 @@
 ## Title: Raid Assist (iskar assist)
 ## Notes: iskar assist got evolved, type /raa to see our toys. Further boss mods will be added here instead of creating new addons.
 ## SavedVariables: IskarAssistDB, RADataBase
-## X-Curse-Packaged-Version: r99
-## X-Curse-Project-Name: Raid Assist (Iskar Assist)
+## X-Curse-Packaged-Version: r100
+## X-Curse-Project-Name: Raid Assist
 ## X-Curse-Project-ID: iskar-assist
 ## X-Curse-Repository-ID: wow/iskar-assist/mainline
 

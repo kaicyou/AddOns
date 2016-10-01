@@ -51,8 +51,8 @@ _fqframe:Register('GOSSIP_SHOW', function()
 			end
 		elseif (npcID == 108825) then
 			local _, _, _, _, _, _, _, _, nextThreshold = GetFriendshipReputation();
-			-- if max rank, don't do turn-in
-			if ( nextThreshold  and GSB("DrownedMana")) then
+			--  if max rank, don't do turn-in
+			if (nextThreshold  and GSB("DrownedMana")) then
 				local mana = GetItemCount(138777);
 				if (mana > 10) then
 					SelectGossipOption(5, true)

@@ -11,7 +11,7 @@ pslocale()
 end
 
 
-	psversion=7.000
+	psversion=7.002
 
 
 	psverstiptext="alpha"
@@ -164,9 +164,9 @@ psdeathgriplocal=GetSpellInfo(49560)
 
 
 --cataclysm & Panda data
-pslocations={{752,754,758,773,800,824},{77777,897,896,886,930,953},{994,988,1026}}
-pslocationnamesdef={{"Baradin Hold","Blackwing Descent","The Bastion of Twilight","Throne of the Four Winds","Firelands", "Dragon Soul"},{"New Baradin Hold","Heart of Fear","Mogu'shan Vaults","Terrace of Endless Spring","Throne of Thunder","Siege of Orgrimmar"},{"Highmaul", "Blackrock Foundry","Hellfire Citadel"}}
-psaddontoload={{"PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_Firelands","PhoenixStyleMod_DragonSoul"},{"PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier2","PhoenixStyleMod_Panda_tier3"},{"PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1"}}
+pslocations={{752,754,758,773,800,824},{77777,897,896,886,930,953},{994,988,1026},{1094,1088}}
+pslocationnamesdef={{"Baradin Hold","Blackwing Descent","The Bastion of Twilight","Throne of the Four Winds","Firelands", "Dragon Soul"},{"New Baradin Hold","Heart of Fear","Mogu'shan Vaults","Terrace of Endless Spring","Throne of Thunder","Siege of Orgrimmar"},{"Highmaul", "Blackrock Foundry","Hellfire Citadel"},{"The Emerald Nightmare","The Nighthold"}}
+psaddontoload={{"PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_Firelands","PhoenixStyleMod_DragonSoul"},{"PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier2","PhoenixStyleMod_Panda_tier3"},{"PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1"},{"PhoenixStyleMod_Legion","PhoenixStyleMod_Legion"}}
 
 psbossnamesdef={
 {{"Argaloth","Occu'thar", "Alizabal, Mistress of Hate"},{"Magmaw","Omnitron Defense System","Maloriak","Atramedes","Chimaeron","Nefarian"},{"Halfus Wyrmbreaker","Valiona & Theralion","Twilight Ascendant Council","Cho'gall","Sinestra"},{"Conclave of Wind", "Al'Akir"},{"Beth'tilac", "Lord Rhyolith","Alysrazor","Shannox","Baleroc","Majordomo Staghelm","Ragnaros"},{"Morchok","Warlord Zon'ozz","Yor'sahj the Unsleeping","Hagara the Stormbinder","Ultraxion","Warmaster Blackhorn","Spine of Deathwing","Madness of Deathwing"}},
@@ -174,10 +174,17 @@ psbossnamesdef={
 {"Jin'rokh the Breaker","Horridon","The Council of Elders","Tortos","Megaera","Ji-Kun","Durumu the Forgotten","Primordius","Dark Animus","Iron Qon","Twin Consorts","Lei Shen","Ra-den"},
 {"Immerseus","The Fallen Protectors","Norushen","Sha of Pride","Galakras","Iron Juggernaut","Kor'kron Dark Shaman","General Nazgrim","Malkorok","Spoils of Pandaria","Thok the Bloodthirsty","Siegecrafter Blackfuse","Paragons of the Klaxxi","Garrosh Hellscream"},
 },
+
 {{"Kargath Bladefist","The Butcher","Brackenspore","Tectus","Twin Ogron","Ko'ragh","Imperator Mar'gok"},
 {"Gruul","Oregorger","Blast Furnace","Hans'gar & Franzok","Flamebender Ka'graz","Kromog","Beastlord Darmac","Operator Thogar","Iron Maidens","Blackhand"},
 {"Hellbreach","Hellfire Assault","Iron Reaver","Kilrogg Deadeye","Hellfire High Council","Gorefiend","Shadow-Lord Iskar","Socrethar the Eternal","Tyrant Velhari","Fel Lord Zakuun","Xhul'horac","Mannoroth","Archimonde"}
+},
+
+{{"Nythendra","Il´gynoth, the Heart of Corruption","Elerethe Renferal","Ursoc","Dragons of Nightmare","Cenarius","Xavius"},
+{"Skorpyron","Chronomatic Anomaly","Trilliax","Spellblade Aluriel","High Botanist Tel'arn","Star Augur Etraeus","Tichondrius","Krosus","Grand Magistrix Elisande","Gul'dan"}
 }
+
+
 }
 psbossid={
 {{{47120},{52363},{55869}},{{41570},{0,42180,42166,42178,42179},{41378},{41442},{43296},{41376}},{{44600},{0,45992,45993},{0,43735,43686,43687,43688,43689},{43324},{45213}},{{0,45871,45870,45872},{46753}},{{52498},{52558},{52530},{53691},{53494},{52571},{52409}},{{55265},{55308},{55312},{55689},{55294},{56427},{0,53879, 56598, 55870},{0,53879}}},
@@ -188,7 +195,12 @@ psbossid={
 {{{78714},{77404},{78491},{78948},{78237},{79015},{77428}},
 {{76877},{77182},{76806},{76973,76974},{76814},{77692},{76865},{76906},{77557},{77325}},
 {{93023},{90284},{90435},{90378},{92146,92144,93713},{90199},{90316},{90296},{90269},{89890},{93068},{91349},{91331}},
+},
+
+{{{102672},{105393},{106087},{100497},{39407},{106912,104636},{103769}},
+{{102263},{104415},{104288},{110908},{104528},{103758},{103685},{101002},{110965},{110533}},
 }
+
 }
 
 --obj.modelId = select(4, EJ_GetCreatureInfo(1, tonumber(name)))
@@ -203,23 +215,35 @@ ps_modelid={
 {{{0},{0},{0},{0},{0},{0},{0}},
 {{0},{0},{0},{0},{0},{0},{0},{0},{0},{0}},
 {{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0}}
+},
+
+{{{0},{0},{0},{0},{0},{0},{0}},
+{{0},{0},{0},{0},{0},{0},{0},{0},{0},{0}}
 }
+
+
 }
 
 --options for SayAnnouncer
 ps_saoptions_def={
 {{{},{},{}},{{},{1,1,1,1},{},{1,1},{},{1}},{{},{1,1,0},{1,0},{1}},{{},{1}},{{},{},{},{1,1},{1},{1},{1}}, {{},{1},{},{1,1},{},{1},{},{}}},
 {{{}},{{},{1},{},{1,1},{},{}},{{0},{1,1},{},{0},{},{}},{{1},{},{},{}},{{1},{1},{},{},{1},{},{},{},{},{},{},{},{}}},
-{{{},{},{},{},{},{},{}},{{},{},{},{},{},{},{},{},{},{}},{{},{},{},{},{},{},{},{},{},{},{},{},{}}}
+{{{},{},{},{},{},{},{}},{{},{},{},{},{},{},{},{},{},{}},{{},{},{},{},{},{},{},{},{},{},{},{},{}}},
+{{{},{},{},{},{},{},{}},{{},{},{},{},{},{},{},{},{},{}}}
 }
 ps_sa_id={
 {{{},{},{}},{{},{79501,79888,92053,80157},{},{78092,92677},{},{79339}},{{},{86622,86788,86369},{92075,92067},{81685}},{{},{89668}},{{},{},{},{99836,99839},{99516},{98535},{98164}},{{},{"103434|AddComm"..psiccheroic},{},{109541,109325},{},{108046},{},{}}}, --не забыть дефалт добавить вкл/выкл
 {{{}},{{},{122949},{},{121881,122064},{},{}},{{130395},{116784,116417},{},{118303},{},{}},{{111850},{},{},{}},{{137399},{136769},{},{},{139822},{},{},{},{},{},{},{},{}},{{},{},{},{},{},{},{},{},{},{},{},{},{},{}}},
+
 {{{},{},{},{},{},{},{}},
 {{},{},{},{},{},{},{},{},{},{}},
 {{},{},{},{},{},{},{},{},{},{},{},{},{}}
+},
 
+{{{},{},{},{},{},{},{}},
+{{},{},{},{},{},{},{},{},{},{}},
 }
+
 }
 --"106794|AddComm"..psmainbutdragonsoul1
 
@@ -1608,12 +1632,6 @@ end
 	
 	if IsAddOnLoaded("PhoenixStyleMod_WoD_tier1") then
 
-		--if (id==60585 or id==60586 or id==60583) then
-		--	if psstrazhfdf==nil then
-		--		psstrazhfdf=0
-		--	end
-		--	psstrazhfdf=psstrazhfdf+1
-		--end
     if psstrazhfdf==nil or (psstrazhfdf and psstrazhfdf==3) then
       for i=1,#psbossid[3] do
         for j=1,#psbossid[3][i] do
@@ -1631,6 +1649,35 @@ end
 	end
 
 	bil2=0
+
+	
+	
+	
+	if IsAddOnLoaded("PhoenixStyleMod_Legion") then
+
+    if psstrazhfdf==nil or (psstrazhfdf and psstrazhfdf==3) then
+      for i=1,#psbossid[4] do
+        for j=1,#psbossid[4][i] do
+          for t=1,#psbossid[4][i][j] do
+            if psbossid[4][i][j][t]==id then
+              bil2=1
+            end
+          end
+        end
+      end
+      if bil2==1 then
+          psiccwipereport_legion1()
+      end
+    end
+	end
+
+	bil2=0
+	
+	
+	
+	
+	
+	
 	
 
 end
@@ -3511,6 +3558,7 @@ if IsAddOnLoaded("PhoenixStyleMod_Panda_tier1") then psiccwipereport_p1("wipe", 
 if IsAddOnLoaded("PhoenixStyleMod_Panda_tier2") then psiccwipereport_p2("wipe", "try", nil, "checkforwipe") end
 if IsAddOnLoaded("PhoenixStyleMod_Panda_tier3") then psiccwipereport_p3("wipe", "try", nil, "checkforwipe") end
 if IsAddOnLoaded("PhoenixStyleMod_WoD_tier1") then psiccwipereport_wod1("wipe", "try", nil, "checkforwipe") end
+if IsAddOnLoaded("PhoenixStyleMod_Legion") then psiccwipereport_legion1("wipe", "try", nil, "checkforwipe") end
 end
 
 
@@ -4068,6 +4116,7 @@ if IsAddOnLoaded("PhoenixStyleMod_Panda_tier1") then psiccwipereport_p1("wipe", 
 if IsAddOnLoaded("PhoenixStyleMod_Panda_tier2") then psiccwipereport_p2("wipe", "try", nil, "checkforwipe") end
 if IsAddOnLoaded("PhoenixStyleMod_Panda_tier3") then psiccwipereport_p3("wipe", "try", nil, "checkforwipe") end
 if IsAddOnLoaded("PhoenixStyleMod_WoD_tier1") then psiccwipereport_wod1("wipe", "try", nil, "checkforwipe") end
+if IsAddOnLoaded("PhoenixStyleMod_Legion") then psiccwipereport_legion1("wipe", "try", nil, "checkforwipe") end
 
 
 
@@ -4505,6 +4554,7 @@ function PSFvkladdon()
 			if IsAddOnLoaded("PhoenixStyleMod_Panda_tier2") then psiccwipereport_p2() end
 			if IsAddOnLoaded("PhoenixStyleMod_Panda_tier3") then psiccwipereport_p3() end
 			if IsAddOnLoaded("PhoenixStyleMod_WoD_tier1") then psiccwipereport_wod1() end
+			if IsAddOnLoaded("PhoenixStyleMod_Legion") then psiccwipereport_legion1() end
 
 		end
 end
@@ -5959,7 +6009,7 @@ DropDownMenusaybossadexp:ClearAllPoints()
 DropDownMenusaybossadexp:SetPoint("TOPLEFT", 8, -190)
 DropDownMenusaybossadexp:Show()
 
-local items={"Cataclysm", "Pandaria", "Warlords of Draenor"}
+local items={"Cataclysm", "Pandaria", "Warlords of Draenor", "Legion"}
 SetMapToCurrentZone()
 ps_sa_menuchooseexp1=#items
 ps_sa_menuchoose1=1
@@ -6600,6 +6650,36 @@ end
 -- 3 expans end
 
 
+-- Legion add here too
+if pssetexpans==4 then
+
+if psmenuchoose1==1 or psmenuchoose1==2 then
+	if psraidoptionsonLegion1[psmenuchoose1][psmenuchoose2] and psraidoptionsonLegion1[psmenuchoose1][psmenuchoose2][nrmenu] then
+		if psraidoptionsonLegion1[psmenuchoose1][psmenuchoose2][nrmenu]==1 then
+			psraidoptionsonLegion1[psmenuchoose1][psmenuchoose2][nrmenu]=0 else psraidoptionsonLegion1[psmenuchoose1][psmenuchoose2][nrmenu]=1
+		end
+	else
+		--SA плай изменений
+		local whichsais=0
+		for i=1,nrmenu do
+			if psraidoptionsonLegion1[psmenuchoose1][psmenuchoose2][i]==nil then
+				whichsais=whichsais+1
+			end
+		end
+		if ps_saoptions[pssetexpans][psmenuchoose1][psmenuchoose2][whichsais] then
+			if ps_saoptions[pssetexpans][psmenuchoose1][psmenuchoose2][whichsais]==1 then
+				ps_saoptions[pssetexpans][psmenuchoose1][psmenuchoose2][whichsais]=0
+			else
+				ps_saoptions[pssetexpans][psmenuchoose1][psmenuchoose2][whichsais]=1
+			end
+		end
+	end
+end
+
+end
+-- 4 expans end
+
+
 
 --общее
 if psraidoptionson[pssetexpans][psmenuchoose1][psmenuchoose2][nrmenu] then
@@ -6682,6 +6762,27 @@ psicctableradiobut[1][bb]:SetChecked(false)
 psicctableradiobut[2][bb]:SetChecked(false)
 psicctableradiobut[3][bb]:SetChecked(false)
 psraidoptionschatd1[psmenuchoose1][psmenuchoose2][bb]=aa
+psicctableradiobut[aa][bb]:SetChecked(true)
+if aa==1 then
+psicctablecifr[bb]:SetText("|cff00ff001|r")
+elseif aa==2 then
+psicctablecifr[bb]:SetText("|cffff00002|r")
+elseif aa==3 then
+psicctablecifr[bb]:SetText("|CFFFFFF003|r")
+end
+end
+
+end
+
+
+if pssetexpans==4 then
+
+--ыытест для т1 драенора
+if psmenuchoose1==1 or psmenuchoose1==2 then
+psicctableradiobut[1][bb]:SetChecked(false)
+psicctableradiobut[2][bb]:SetChecked(false)
+psicctableradiobut[3][bb]:SetChecked(false)
+psraidoptionschatLegion1[psmenuchoose1][psmenuchoose2][bb]=aa
 psicctableradiobut[aa][bb]:SetChecked(true)
 if aa==1 then
 psicctablecifr[bb]:SetText("|cff00ff001|r")
@@ -6812,7 +6913,6 @@ end
 
 
 function psloadmodulemanual()
-
 if IsAddOnLoaded(psaddontoload[pssetexpans][psmenuchoose1])==false then
 local loaded = LoadAddOn(psaddontoload[pssetexpans][psmenuchoose1])
 if loaded then
@@ -7081,7 +7181,7 @@ for i=1,#pssisavedfailaftercombat[pssichose1][pssichose2] do
 	if pssisavedfailaftercombat[pssichose1][pssichose2][i] then
 		local a11=pssisavedfailaftercombat[pssichose1][pssichose2][i]
 		a11=psrestorelinksforexport2(a11,2)
-		local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|cff999999"}
+		local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|CFFA330C9","|cff999999"}
 		for km=1,#tablecolor do
 			if string.find (a11, tablecolor[km]) then
 				local ll=string.find (a11, tablecolor[km])
@@ -7591,6 +7691,63 @@ end
 
 end
 
+
+
+
+
+if pssetexpans==4 then
+
+if psmenuchoose1>0 and psmenuchoose1<5 then
+
+  table.wipe(psraidoptionson_legion1[psmenuchoose1])
+  table.wipe(psraidoptionschat_legion1[psmenuchoose1])
+
+  pscmrpassvariables_legion1()
+
+
+  table.wipe(psraidoptionson[pssetexpans][psmenuchoose1])
+  table.wipe(psraidoptionschat[pssetexpans][psmenuchoose1])
+
+  local i=psmenuchoose1
+	if psraidoptionson[pssetexpans][i]==nil then psraidoptionson[pssetexpans][i]={}
+	end
+	for j=1,#psraidoptionson_legion1[i] do
+		if psraidoptionson[pssetexpans][i][j]==nil then
+			psraidoptionson[pssetexpans][i][j]={}
+		end
+		for t=1,#psraidoptionson_legion1[i][j] do
+			if psraidoptionson[pssetexpans][i][j][t]==nil then
+				psraidoptionson[pssetexpans][i][j][t]=psraidoptionsonp1[i][j][t]
+			end
+		end
+	end
+
+
+
+	if psraidoptionschat[pssetexpans][i]==nil then psraidoptionschat[pssetexpans][i]={}
+	end
+	for j=1,#psraidoptionschat_legion1[i] do
+		if psraidoptionschat[pssetexpans][i][j]==nil then
+			psraidoptionschat[pssetexpans][i][j]={}
+		end
+		for t=1,#psraidoptionschat_legion1[i][j] do
+			if psraidoptionschat[pssetexpans][i][j][t]==nil then
+				psraidoptionschat[pssetexpans][i][j][t]=psraidoptionschatp1[i][j][t]
+			end
+		end
+	end
+
+
+
+end
+-- Другие инсты ЛЕГИОН тут
+
+end
+
+
+
+
+
 --ыытест другие инсты тут
 
 psupdatemenugo()
@@ -7779,7 +7936,7 @@ end
     if pssavedinfocheckexport[2]==1 then
       --все меняем в цвете --смена ТОЛЬКО красного и зеленого будет по ходу создания текста если эта откл
 
-      local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|cff00ff00","|cffff0000","|CFFFFFF00","|cff71d5ff","|cff999999"}
+      local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|CFFA330C9","|cff00ff00","|cffff0000","|CFFFFFF00","|cff71d5ff","|cff999999"}
       local tablecolor2={"#C79C6E","#C41F3B","#F58CBA","#FFFFFF","#0070DE","#FF7D0A","#FFF569","#69CCF0","#9482C9","#ABD473","#00FF96","green","red","orange","black","grey"}
       for i=1,#tablecolor do
         txttoshow=string.gsub(txttoshow, tablecolor[i], "[color="..tablecolor2[i].."]")
@@ -7787,7 +7944,7 @@ end
       txttoshow=string.gsub(txttoshow, "|r", "[/color]")
     else
       --откл, но вырезать цвета нужно
-      local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|cff00ff00","|cffff0000","|CFFFFFF00","|cff71d5ff","|cff999999"}
+      local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|CFFA330C9","|cff00ff00","|cffff0000","|CFFFFFF00","|cff71d5ff","|cff999999"}
       for i=1,#tablecolor do
         txttoshow=string.gsub(txttoshow, tablecolor[i], "")
       end
@@ -8046,8 +8203,9 @@ else
       elseif rsctekclass=="warlock" then rsccodeclass=9
       elseif rsctekclass=="hunter" then rsccodeclass=10
       elseif rsctekclass=="monk" then rsccodeclass=11
+	  elseif rsctekclass=="demonhunter" then rsccodeclass=12
     end
-			local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|cff999999"}
+			local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|CFFA330C9","|cff999999"}
 			if rsccodeclass==0 then
 				return "|cff999999" --для цвет петов
 			else
@@ -8064,7 +8222,7 @@ end
 
 function psremovecolor(a)
 if a then
-local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|cff00ff00","|cffff0000","|CFFFFFF00","|cff999999"}
+local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|CFFA330C9","|cff00ff00","|cffff0000","|CFFFFFF00","|cff999999"}
 for km=1,#tablecolor do
 	if string.find (a, tablecolor[km]) then
 		while string.find (a, tablecolor[km]) do
@@ -8430,11 +8588,11 @@ DropDownMenuexpans:SetPoint("TOPLEFT", 8, -40)
 DropDownMenuexpans:Show()
 
 if pssetexpans==nil then
-  pssetexpans=3
+  pssetexpans=4  --Legion here set expansion def?
   psmenuchoose1=#pslocations[pssetexpans]
   psmenuchoose2=1
 end
-local items= {"Cataclysm", "Pandaria", "Warlords of Draenor"}
+local items= {"Cataclysm", "Pandaria", "Warlords of Draenor", "Legion"}
 SetMapToCurrentZone()
 for t=1,#pslocations do
   if #pslocations[t]>0 then

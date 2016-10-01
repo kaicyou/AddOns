@@ -1,0 +1,60 @@
+------------------------------------------------------------------------
+r61 | andymon | 2016-09-16 21:05:30 +0000 (Fri, 16 Sep 2016) | 1 line
+Changed paths:
+   A /tags/v1.09-7.0.3 (from /trunk:60)
+
+Tagging as v1.09-7.0.3
+------------------------------------------------------------------------
+r60 | andymon | 2016-09-16 20:57:17 +0000 (Fri, 16 Sep 2016) | 4 lines
+Changed paths:
+   M /trunk/AtlasMajorCities.lua
+   M /trunk/AtlasMajorCitiesEnhanced.toc
+   M /trunk/AtlasMajorCities_db.lua
+   M /trunk/AtlasMajorCities_edit.lua
+   M /trunk/AtlasMajorCities_zones.lua
+   A /trunk/Images/DLL.blp
+   A /trunk/Images/DLLA.blp
+   A /trunk/Images/DLLS.blp
+   M /trunk/Locale/AtlasMajorCities_deDE.lua
+   M /trunk/Locale/AtlasMajorCities_enUS.lua
+   M /trunk/Locale/AtlasMajorCities_esES.lua
+   M /trunk/Locale/AtlasMajorCities_frFR.lua
+   M /trunk/Locale/AtlasMajorCities_ruRU.lua
+   M /trunk/Locale/AtlasMajorCities_zhCN.lua
+   M /trunk/Locale/AtlasMajorCities_zhTW.lua
+
+* Added "Dalaran - Legion" for enUS and deDE, more locale will come
+* Fixes for pre-Legion cities
+* Localization update for pre-Legion cities for zhCN and zhTW
+
+------------------------------------------------------------------------
+r59 | arith | 2016-08-30 06:15:11 +0000 (Tue, 30 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Locale/AtlasMajorCities_esES.lua
+   M /trunk/Locale/AtlasMajorCities_frFR.lua
+   M /trunk/Locale/AtlasMajorCities_ruRU.lua
+
+added keyword replacement to other languages
+------------------------------------------------------------------------
+r58 | arith | 2016-08-30 06:04:46 +0000 (Tue, 30 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Locale/AtlasMajorCities_deDE.lua
+   M /trunk/Locale/AtlasMajorCities_zhCN.lua
+   M /trunk/Locale/AtlasMajorCities_zhTW.lua
+
+set handle-unlocalized="comment"
+------------------------------------------------------------------------
+r57 | arith | 2016-08-30 05:50:39 +0000 (Tue, 30 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Locale/AtlasMajorCities_deDE.lua
+   M /trunk/Locale/AtlasMajorCities_zhCN.lua
+   M /trunk/Locale/AtlasMajorCities_zhTW.lua
+
+added keyword replacement
+------------------------------------------------------------------------
+r56 | arith | 2016-08-30 05:17:54 +0000 (Tue, 30 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/Locale/AtlasMajorCities_enUS.lua
+
+convert to UTF8
+------------------------------------------------------------------------

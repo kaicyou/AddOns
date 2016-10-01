@@ -1,6 +1,5 @@
 ﻿*to-do*
  * mail items expiry date/time
- * cache default category, reset just cached defaults if needed
 
 *known issues*
  * moving an item from one guild bank tab to another will leave a ghost item behind until you view that tab again (it also increases the tooltip count for that ghost item).
@@ -12,6 +11,41 @@
  * faq - https://github.com/arkayenro/arkinventory/wiki/FAQ
  
 
+
+*3.07.13 (26-SEP-2016)*
+ * fixed - removed debug output
+ 
+*3.07.12 (26-SEP-2016)*
+ * changed - co-routine code rewritten to remove the possibility of item updates in between a yield/resume being ignored (redraws may now take longer to complete under some circumstances)
+ * changed - bag rescan timer for zero slot bug lowered from 10 to 2 seconds
+ * fixed - objectstringdecode function to handle new itemstring format
+ * fixed - issue with restack code and positioning of profession bags
+ * changed - sell junk also displays number of items destroyed (if any)
+
+*3.07.11 (24-SEP-2016)*
+ * fixed - item counts restored for currency and spell (mount) objects
+ * fixed - typo in objectstringdecode function for bonusids3
+ * fixed (maybe) - issue with artifact power items in zhCN locale
+ * updated - mount data
+
+*3.07.10 (23-SEP-2016)*
+ * fixed - issue with inconsistent hyperlinks causing an error
+
+*3.07.09 (23-SEP-2016)*
+ * fixed - issue with type() rule function
+ * workaround - issue with i being nil when getting an items assigned category. still need to work out the cause
+ * fixed - item counts should only be added to tooltips for items
+
+*3.07.08 (22-SEP-2016)*
+ * note - all item data has been erased.  please login to each character to update its data
+ * changed - items that end up assigned to the default category now have that assignment cached to speed up display.
+ * changed - rules should use slightly less cpu.  should be more noticable if you have a lot of rules
+ * changed - starlight rosedust should now have a default category of system > quest
+ * fixed - creeping carpet set to ground mount
+ * fixed - errors inside coroutines should now display (the ones where the bag window is usually just black, or partially built)
+ * added - rule variables. rules can now access most of the item information directly via the i, osd and info variables (see wiki for details)
+ * changed - sell junk function now only sells items assigned to the system > junk category.  if you have a grey item you dont want sold just assign it to another category.  if you have non grey items you want auto sold then assign them to the system > junk category.  deletion of non sellable greens (or higher) will still prompt for confirmation
+ * fixed - issue with item counts not getting added to some types of links (mostly the tradeskill ones)
 
 *3.07.07 (11-SEP-2016)*
  * added - artifact relics should now show their item level (if enabled)

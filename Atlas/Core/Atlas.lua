@@ -1,4 +1,4 @@
--- $Id: Atlas.lua 98 2016-09-09 08:18:21Z arith $
+-- $Id: Atlas.lua 100 2016-09-20 03:46:42Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -1012,6 +1012,9 @@ end
 -- Also responsible for updating all the text when a map is changed
 function Atlas_Refresh()
 	local zoneID = ATLAS_DROPDOWNS[AtlasOptions.AtlasType][AtlasOptions.AtlasZone];
+	if (not zoneID) then
+		return;
+	end
 	local data = AtlasMaps;
 	local base = data[zoneID];
 

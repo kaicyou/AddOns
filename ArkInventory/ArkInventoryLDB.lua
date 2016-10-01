@@ -97,7 +97,7 @@ function ArkInventory.LDB.Tracking_Currency:Update( )
 		if not isHeader then
 			local h = GetCurrencyListLink( j )
 			local osd = ArkInventory.ObjectStringDecode( h )
-			local id = osd[2]
+			local id = osd.id
 			local me = ArkInventory.GetPlayerCodex( )
 			if me.player.data.ldb.tracking.currency.tracked[id] then
 				self.text = string.format( "%s  |T%s:0|t %d", self.text, icon or ArkInventory.Const.Texture.Missing, count or 0 )
@@ -151,7 +151,7 @@ function ArkInventory.LDB.Tracking_Currency:OnTooltipShow( )
 			
 			local h = GetCurrencyListLink( j )
 			local osd = ArkInventory.ObjectStringDecode( h )
-			local id = osd[2]
+			local id = osd.id
 			local me = ArkInventory.GetPlayerCodex( )
 			
 			--limit = limit / 100

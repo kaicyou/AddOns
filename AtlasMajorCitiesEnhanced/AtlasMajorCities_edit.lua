@@ -14,6 +14,9 @@ local AMC_ShopSize = {
 	["ShattrathCity"]        = 1.4,
 	["Dalaran1_"]            = 2.0,
 	["Dalaran2_"]            = 3.0,
+	["Dalaran7010_"]         = 2.0,
+	["Dalaran7011_"]         = 3.0,
+	["Dalaran7012_"]         = 3.0,
 	["ShrineofTwoMoons1_"]   = 1.5,
 	["ShrineofTwoMoons2_"]   = 2.0,
 	["ShrineofSevenStars3_"] = 1.5,
@@ -786,12 +789,12 @@ function AtlasMajorCities_SetZone(msg)
 
 	-- get the name of the city
 	CityName = GetZoneText();
-	local nlevels = GetNumDungeonMapLevels();
-	if ( nlevels > 1 ) then
+	local nlevels = { GetNumDungeonMapLevels() };
+	if ( #nlevels > 1 ) then
 		SetMapToCurrentZone();
 		local level = GetCurrentMapDungeonLevel();
 		local mapname = strupper(GetMapInfo());
-		if ( not _G["DUNGEON_FLOOR_"..mapname..nlevels] ) then level = level - 1; end
+		if ( not _G["DUNGEON_FLOOR_"..mapname..#nlevels] ) then level = level - 1; end
 		CityName = _G["DUNGEON_FLOOR_"..mapname..level];
 	end
 

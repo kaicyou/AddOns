@@ -66,6 +66,7 @@ elseif rsctekclass=="mage" then rsccodeclass=8
 elseif rsctekclass=="warlock" then rsccodeclass=9
 elseif rsctekclass=="hunter" then rsccodeclass=10
 elseif rsctekclass=="monk" then rsccodeclass=11
+elseif rsctekclass=="demonhunter" then rsccodeclass=13
 else rsccodeclass=12 --хз кто!
 end
 			else

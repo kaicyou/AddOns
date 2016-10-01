@@ -7,21 +7,30 @@ local type = _G.type
 local error = _G.error
 local table = _G.table
 
+
 function ArkInventory.JunkIterate( )
 	
-	local bags = ArkInventory.Global.Location[ArkInventory.Const.Location.Bag].Bags
+	local cat_junk = ArkInventory.CategoryGetSystemID( "SYSTEM_TRASH" )
+	
+	local loc_id = ArkInventory.Const.Location.Bag
 	local bag_id = 1
+	local slot_id = 0
+	
+	local player = ArkInventory.GetPlayerStorage( nil, loc_id )
+	local i, cat
+	
+	local bags = ArkInventory.Global.Location[loc_id].Bags
 	local blizzard_id = bags[bag_id]
 	local numslots = GetContainerNumSlots( blizzard_id )
-	local slot_id = 0
-	local z, isJunk, isLocked, rarity, itemCount, itemLink, itemCost
+	
+	local _, isJunk, isLocked, itemCount, itemLink, vendorPrice
 	
 	return function( )
 		
 		isJunk = false
-		itemCount = 0
 		itemLink = nil
-		itemCost = 0
+		itemCount = 0
+		vendorPrice = -1
 		
 		while not isJunk do
 			
@@ -37,30 +46,47 @@ function ArkInventory.JunkIterate( )
 				slot_id = nil
 				itemCount = nil
 				itemLink = nil
-				itemCost = 0
+				vendorPrice = -1
 				break
 			end
 			
-			z, itemCount, isLocked, rarity, z, z, itemLink = GetContainerItemInfo( blizzard_id, slot_id )
-			itemCost = ArkInventory.ObjectInfoSellPrice( itemLink )
-			if not isLocked and rarity == LE_ITEM_QUALITY_POOR and itemCost >= 0 then
-				isJunk = true
+			_, itemCount, isLocked, _, _, _, itemLink, _, _, _ = GetContainerItemInfo( blizzard_id, slot_id )
+			
+			if not isLocked then
+				
+				i = player.data.location[loc_id].bag[bag_id].slot[slot_id]
+				if i then
+					
+					cat = ArkInventory.ItemCategoryGet( i )
+					isJunk = ( cat == cat_junk )
+					
+					if isJunk then
+						vendorPrice = ArkInventory.ObjectInfoVendorPrice( itemLink )
+					end
+					
+				end
+				
 			end
 			
 		end
 		
-		return blizzard_id, slot_id, itemLink, itemCount, itemCost
+		--ArkInventory.Output( itemLink, " / ", itemCount, " / ", vendorPrice )
+		return blizzard_id, slot_id, itemLink, itemCount, vendorPrice
 		
 	end
 	
 end
 
 function ArkInventory.JunkValue( )
-	local total = 0
-	for blizzard_id, slot_id, h, count, cost in ArkInventory.JunkIterate( ) do
-		total = total + ( cost * count )
+	local count = 0
+	local price = 0
+	for blizzard_id, slot_id, itemLink, itemCount, vendorPrice in ArkInventory.JunkIterate( ) do
+		count = count + 1
+		if vendorPrice > 0 then
+			price = price + ( vendorPrice * itemCount )
+		end
 	end
-	return total
+	return count, price
 end
 
 function ArkInventory.JunkSell( )
@@ -72,40 +98,51 @@ function ArkInventory.JunkSell( )
 	
 	if ArkInventory.db.option.junk.sell then
 		
-		local total = ArkInventory.JunkValue( )
+		local count, price = ArkInventory.JunkValue( )
+		--ArkInventory.Output( "start ", count, " / ", price )
 		
 		local sold = 0
-		local limit = BUYBACK_ITEMS_PER_PAGE
-		if not ArkInventory.db.option.junk.limit then
-			limit = 0
-		end
+		local destroyed = 0
+		local limit = ( ArkInventory.db.option.junk.limit and 0 ) or BUYBACK_ITEMS_PER_PAGE
 		
-		for blizzard_id, slot_id, h, count, cost in ArkInventory.JunkIterate( ) do
+		for blizzard_id, slot_id, itemLink, itemCount, vendorPrice in ArkInventory.JunkIterate( ) do
 			
-			if cost > 0 then
+			if vendorPrice > 0 then
 				sold = sold + 1
 				if limit > 0 and sold > limit then
 					-- limit to buyback page
+					--ArkInventory.Output( "buyback limit (", limit, ") reached, ending sell process" )
 					return
 				end
-				--ArkInventory.Output( "selling ", h )
+				--ArkInventory.Output( "selling ", itemLink )
 				UseContainerItem( blizzard_id, slot_id )
-				-- this will sometimes fail, and you will have no idea, you cant just add up the values
+				-- this will sometimes fail, and you will have no idea, so you cant just add up the values as you go
 				-- cant use money as it doesnt update in time.
 				-- so next best thing, record how much the junk we had beforehand cost and how much we have at the end costs
-			elseif cost == 0 then
+			elseif vendorPrice == 0 then
 				if ArkInventory.db.option.junk.delete then
-					--ArkInventory.Output( "deleting ", h )
+					--ArkInventory.Output( "deleting ", itemLink )
 					PickupContainerItem( blizzard_id, slot_id )
 					DeleteCursorItem( )
+					destroyed = destroyed + 1
+					-- might fail, may prompt user if quality is green or higher
 				end
 			end
 			
 		end
 		
-		if sold > 0 and ArkInventory.db.option.junk.notify then
-			total = total - ArkInventory.JunkValue( )
-			ArkInventory.Output( string.format( ArkInventory.Localise["CONFIG_JUNK_SELL_NOTIFY"], ArkInventory.MoneyText( total, true ) ) )
+		if sold > 0 or destroyed > 0 and ArkInventory.db.option.junk.notify then
+			local itemCount, vendorPrice = ArkInventory.JunkValue( )
+			--ArkInventory.Output( "end ", itemCount, " / ", vendorPrice )
+			count = count - itemCount
+			price = price - vendorPrice
+			if price > 0 then
+				ArkInventory.Output( string.format( ArkInventory.Localise["CONFIG_JUNK_SELL_NOTIFY_SOLD"], ArkInventory.MoneyText( price ) ) )
+			end
+			if destroyed > 0 then
+				ArkInventory.Output( string.format( ArkInventory.Localise["CONFIG_JUNK_SELL_NOTIFY_DESTROYED"], destroyed ) )
+			end
+			--ArkInventory.Output( sold, " items sold, ", destroyed, " items destroyed" )
 		end
 	end
 	

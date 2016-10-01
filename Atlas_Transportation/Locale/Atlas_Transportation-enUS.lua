@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation-enUS.lua 42 2016-09-07 18:32:12Z arith $
+-- $Id: Atlas_Transportation-enUS.lua 48 2016-09-23 08:41:48Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -55,6 +55,7 @@ if L then
 	L["Connection to the Hall of Shadows"] 	= "Connection to the Hall of Shadows"; -- Rogue
 	L["Aludane Whitecloud <Flight Master>"] = "Aludane Whitecloud <Flight Master>";
 	-- Others
+	L["Portal to Dalaran"] = "Portal to Dalaran";
 	L["The Bogpaddle Bullet"] = "The Bogpaddle Bullet";
 	L["Legend"] = "Legend";				-- The chart's legend, for example, the purple line means the portal's path
 	L["Gryphon"] = "Gryphon";

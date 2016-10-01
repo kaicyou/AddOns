@@ -1,4 +1,4 @@
-﻿-- $Id: AtlasMaps.lua 97 2016-09-05 14:59:04Z arith $
+﻿-- $Id: AtlasMaps.lua 101 2016-09-20 05:02:33Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -224,9 +224,17 @@ Syntax:
 		ZoneName = { BZ["Tempest Keep"]..L["L-Parenthesis"]..L["Entrance"]..L["R-Parenthesis"] };
 		Module = "Atlas_BurningCrusade";
 	};
+	TheArcwayEnt = {
+		ZoneName = { BZ["The Arcway"]..L["L-Parenthesis"]..L["Entrance"]..L["R-Parenthesis"] };
+		Module = "Atlas_Legion";
+	};
 	TheDeadminesEnt = {
 		ZoneName = { BZ["The Deadmines"]..L["L-Parenthesis"]..L["Entrance"]..L["R-Parenthesis"] };
 		Module = "Atlas_Cataclysm";
+	};
+	TheNightholdEnt = {
+		ZoneName = { BZ["The Nighthold"]..L["L-Parenthesis"]..L["Entrance"]..L["R-Parenthesis"] };
+		Module = "Atlas_Legion";
 	};
 	TheSunkenTempleEnt = {
 		ZoneName = { BZ["Sunken Temple"]..L["L-Parenthesis"]..L["Entrance"]..L["R-Parenthesis"] };

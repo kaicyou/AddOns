@@ -1,4 +1,4 @@
--- $Id: Atlas_DungeonLocs-zhTW.lua 12 2016-07-13 09:16:38Z arith $
+-- $Id: Atlas_DungeonLocs-zhTW.lua 28 2016-09-20 15:11:38Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser

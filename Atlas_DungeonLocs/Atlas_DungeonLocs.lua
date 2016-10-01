@@ -1,4 +1,4 @@
--- $Id: Atlas_DungeonLocs.lua 26 2016-09-06 07:37:35Z arith $
+-- $Id: Atlas_DungeonLocs.lua 28 2016-09-20 15:11:38Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -36,6 +36,7 @@ local ORNG = "|cffcc9933";
 local PINK = "|ccfcc33cc";
 local PURP = "|cff9900ff";
 local WHIT = "|cffffffff";
+local GREY = "|cff999999";
 local YLOW = "|cffcccc33";
 local INDENT = "      ";
 
@@ -249,18 +250,20 @@ local myData = {
 		ZoneName = { BZ["Broken Isles"] };
 		LargeMap = "DLBrokenIsles";
 		{ WHIT.." 1) "..BZ["Assault on Violet Hold"]..ALC["Comma"].._RED..BZ["Dalaran"], 10001 };
-		{ WHIT.." 2) "..BZ["Vault of the Wardens"]..ALC["Comma"].._RED..BZ["Azsuna"], 10002 };
+		{ WHIT.." 2) "..BZ["Vault of the Wardens"]..ALC["Comma"].._RED..BZ["Azsuna"]..GREY.." (48.2, 82.7)", 10002 };
 		{ WHIT.." 3) "..BZ["Eye of Azshara"]..ALC["Comma"].._RED..BZ["Azsuna"], 10003 };
-		{ INDENT.." 3') "..BZ["Eye of Azshara"]..ALC["Hyphen"]..ALC["Meeting Stone"], 100031 }; -- Eye of Azshara's meeting stone is a bit far away from the dungeon's actual location
-		{ WHIT.." 4) "..BZ["Black Rook Hold"]..ALC["Comma"].._RED..BZ["Val'sharah"], 10004 };
-		{ WHIT.." 5) "..BZ["The Emerald Nightmare"]..ALC["Comma"].._RED..BZ["Val'sharah"], 10005 };
-		{ WHIT.." 6) "..BZ["Darkheart Thicket"]..ALC["Comma"].._RED..BZ["Val'sharah"], 10006 };
-		{ WHIT.." 7) "..BZ["Neltharion's Lair"]..ALC["Comma"].._RED..BZ["Highmountain"], 10007 };
-		{ WHIT.." 8) "..BZ["Maw of Souls"]..ALC["Comma"].._RED..BZ["Stormheim"], 10008 };
-		{ WHIT.." 9) "..BZ["Halls of Valor"]..ALC["Comma"].._RED..BZ["Stormheim"], 10009 };
-		{ WHIT.."10) "..BZ["The Arcway"]..ALC["Comma"].._RED..BZ["Suramar"], 10010 };
-		{ WHIT.."11) "..BZ["Court of Stars"]..ALC["Comma"].._RED..BZ["Suramar"], 10011 };
-		{ WHIT.."12) "..BZ["The Nighthold"]..ALC["Comma"].._RED..BZ["Suramar"], 10012 };
+		{ INDENT.." 3') "..BZ["Eye of Azshara"]..ALC["Hyphen"]..ALC["Meeting Stone"]..ALC["Comma"].._RED..BZ["Hatecoil Warcamp"]..GREY.." (61.2, 41.1)", 100031 }; -- Eye of Azshara's meeting stone is a bit far away from the dungeon's actual location
+		{ WHIT.." 4) "..BZ["Black Rook Hold"]..ALC["Comma"].._RED..BZ["Val'sharah"]..GREY.." (38.6, 51.3)", 10004 };
+		{ WHIT.." 5) "..BZ["The Emerald Nightmare"]..ALC["Comma"].._RED..BZ["Val'sharah"]..GREY.." (55.6, 38.0)", 10005 };
+		{ WHIT.." 6) "..BZ["Darkheart Thicket"]..ALC["Comma"].._RED..BZ["Val'sharah"]..GREY.." (59.0, 32.4)", 10006 };
+		{ WHIT.." 7) "..BZ["Neltharion's Lair"]..ALC["Comma"].._RED..BZ["Highmountain"]..GREY.." (49.7, 68.5)", 10007 };
+		{ WHIT.." 8) "..BZ["Maw of Souls"]..ALC["Comma"].._RED..BZ["Stormheim"]..GREY.." (52.7, 46.3)", 10008 };
+		{ WHIT.." 9) "..BZ["Halls of Valor"]..ALC["Comma"].._RED..BZ["Stormheim"]..GREY.." (71.9, 71.7)", 10009 };
+		{ WHIT.."10) "..BZ["The Arcway"]..ALC["Comma"].._RED..BZ["Suramar"]..GREY.." (42.6, 61.4)", 10010 };
+		{ INDENT..GREY..ALC["L-Parenthesis"]..L["Meeting stone is inside the Sanctum of Order"]..ALC["R-Parenthesis"].." (45.9, 64.5)" };
+		{ WHIT.."11) "..BZ["Court of Stars"]..ALC["Comma"].._RED..BZ["Suramar"]..GREY.." (50.4, 65.9)", 10011 };
+		{ WHIT.."12) "..BZ["The Nighthold"]..ALC["Comma"].._RED..BZ["Suramar"]..GREY.." (44.1, 59.8)", 10012 };
+		{ INDENT..GREY..ALC["L-Parenthesis"]..L["Raid entrance is inside the Sanctum Depths of Sanctum of Order"]..ALC["R-Parenthesis"].." (45.9, 64.5)" };
 		{ "" };
 		{ "" };
 		{ "" };
@@ -271,9 +274,7 @@ local myData = {
 		{ "" };
 		{ "" };
 		{ "" };
-		{ "" };
-		{ "" };
---		{ WHIT..L["White"]..ALC["Colon"]..ORNG..L["Instances"] };
+		{ WHIT..L["White"]..ALC["Colon"]..ORNG..L["Instances"] };
 --		{ GREN..L["Green"]..ALC["Colon"]..ORNG..BATTLEGROUNDS };
 	};
 };

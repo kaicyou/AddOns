@@ -464,7 +464,7 @@ function ArkInventory.PetJournal.ScanPet( index, guid, update )
 	end
 	
 	local sd = ArkInventory.PetJournal.GetSpeciesInfo( speciesID )
-	if ( not sd ) then
+	if not sd then
 		--ArkInventory.Output( "no species data for pet #", index, ": ", guid, " / ", speciesID )
 		return  -- will rescan from there
 	end

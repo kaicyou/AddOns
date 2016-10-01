@@ -1,4 +1,4 @@
-	-- what's the name of this addon?
+-- what's the name of this addon?
 local AMC_thisAddonName = ...
 
 local AMC_myCategory = AtlasMajorCities_loc["Atlas_Category"];
@@ -36,6 +36,9 @@ local AMC_myDataKeys = {
 	["ShattrathCity"]            = "SR",
 	["Dalaran1_"]                = "DL",
 	["Dalaran2_"]                = "DLS",
+	["Dalaran7010_"]             = "DLL",
+	["Dalaran7011_"]             = "DLLS",
+	["Dalaran7012_"]             = "DLLA",
 	["ShrineofTwoMoons1_"]       = "STM1",
 	["ShrineofTwoMoons2_"]       = "STM2",
 	["ShrineofSevenStars3_"]     = "SSS3",
@@ -57,6 +60,9 @@ local AMC_cityMapPath = {
 	["ShattrathCity"]            = "Interface\\Worldmap\\ShattrathCity\\ShattrathCity",
 	["Dalaran1_"]                = "Interface\\Worldmap\\Dalaran\\Dalaran1_",
 	["Dalaran2_"]                = "Interface\\Worldmap\\Dalaran\\Dalaran2_",
+	["Dalaran7010_"]             = "Interface\\Worldmap\\Dalaran70\\Dalaran7010_",
+	["Dalaran7011_"]             = "Interface\\Worldmap\\Dalaran70\\Dalaran7011_",
+	["Dalaran7012_"]             = "Interface\\Worldmap\\Dalaran70\\Dalaran7012_",
 	["ShrineofTwoMoons1_"]       = "Interface\\Worldmap\\MicroDungeon\\ValeOfEternalBlossoms\\ShrineofTwoMoons\\ShrineofTwoMoons1_",
 	["ShrineofTwoMoons2_"]       = "Interface\\Worldmap\\MicroDungeon\\ValeOfEternalBlossoms\\ShrineofTwoMoons\\ShrineofTwoMoons2_",
 	["ShrineofSevenStars3_"]     = "Interface\\Worldmap\\MicroDungeon\\ValeOfEternalBlossoms\\ShrineofSevenStars\\ShrineofSevenStars3_",
@@ -91,6 +97,12 @@ AtlasMajorCities_XMapCoordSkip = {
 	["Dalaran1_2"] = 21.0,
 	["Dalaran2_1"] = 10.4,
 	["Dalaran2_2"] = 23.0,
+	["Dalaran7010_1"] = 12.4,
+	["Dalaran7010_2"] = 21.0,
+	["Dalaran7011_1"] = 16.4,
+	["Dalaran7011_2"] = 17.0,
+	["Dalaran7012_1"] = 13.4,
+	["Dalaran7012_2"] = 20.0,
 	["ShrineofTwoMoons1_1"] = 17.0,
 	["ShrineofTwoMoons1_2"] = 16.4,
 	["ShrineofTwoMoons2_1"] = 15.2,
@@ -124,7 +136,7 @@ local AMC_myAtlasData = {};
 local AMC_FrameLabel;
 
 -- the with of the table window with the shop list
-local AMC_TableMaxWidth = 305;
+local AMC_TableMaxWidth = 430;
 
 -- counted number of displayed map labels
 local AMC_NumFrames = 0;
@@ -871,7 +883,9 @@ function AtlasMajorCities_Label_ShowTT(self)
 				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT");
 				if ( TT_zone ) then GameTooltip:SetText(TT_color..TT_zone); end
 			end
-			GameTooltip:AddLine(TT_color..TT_npc);
+			if ( TT_npc ) then
+				GameTooltip:AddLine(TT_color..TT_npc);
+			end
 		end
 	end
 
@@ -937,7 +951,7 @@ local function FAMC_createMergedCityList()
 	-- create city list
 	local clist = {};
 	local zid;
-	for zid = 0, 9 do
+	for zid = 0, 10 do
 		local zlist = {};
 
 		local iskey, pskey, slist;
@@ -975,6 +989,7 @@ end
 
 -- compare shop entries with the Atlas search string
 local function FAMC_lineMatches(line, search_text)
+	if ( not line ) then return false; end
 	local foundMatch = false;
 	if (string.len(search_text) == 0) then
 		foundMatch = true;

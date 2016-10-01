@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 43 2016-09-08 11:20:03Z arith $
+$Id: ChangeLog.txt 48 2016-09-23 08:41:48Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,20 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.34.03 (Sep. 23, 2016)
+------------------------
+- Added taxi nodes' coordinates to Broken Isles' maps
+- Translation update:
+  - German (pas06)
+- Added portal to Dalaran in Stormheim
+
+v1.34.02 (Sep. 20, 2016)
+------------------------
+- Added Suramar map to include taxi nodes and teleportation
+- Translation update:
+  - German (pas06)
+  - French (onslaugh2)
 
 v1.34.01 (Sep. 08, 2016)
 ------------------------

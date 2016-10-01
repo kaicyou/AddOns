@@ -1,4 +1,4 @@
--- $Id: Atlas_DungeonLocs-enUS.lua 12 2016-07-13 09:16:38Z arith $
+-- $Id: Atlas_DungeonLocs-enUS.lua 28 2016-09-20 15:11:38Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -34,4 +34,7 @@ if L then
 	L["Green"] = "Green";
 	L["Instances"] = "Instances";
 	L["White"] = "White";
+	-- Broken Isles
+	L["Meeting stone is inside the Sanctum of Order"] = "Meeting stone is inside the Sanctum of Order";
+	L["Raid entrance is inside the Sanctum Depths of Sanctum of Order"] = "Raid entrance is inside the Sanctum Depths of Sanctum of Order";
 end

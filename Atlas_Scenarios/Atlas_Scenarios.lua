@@ -1,4 +1,4 @@
--- $Id: Atlas_Scenarios.lua 27 2016-08-31 06:44:19Z arith $
+-- $Id: Atlas_Scenarios.lua 29 2016-09-23 10:55:20Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -588,7 +588,7 @@ local myData = {
 		{ "" };
 	};
 	SC_Demon_Invasion = {
-		ZoneName = { GREN..L["Demon Invasion"] };
+		ZoneName = { L["Demon Invasion"] };
 		Location = { BZ["Eastern Kingdoms"]..ALC["Slash"]..BZ["Kalimdor"] };
 		{ ORNG..ACHIEVEMENTS..ALC["Colon"] };
 		{ GREN..Atlas_GetAchievementName(11200, "Stand Against the Legion") };

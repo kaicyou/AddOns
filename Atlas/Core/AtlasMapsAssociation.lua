@@ -1,4 +1,4 @@
--- $Id: AtlasMapsAssociation.lua 84 2016-08-29 05:33:54Z arith $
+-- $Id: AtlasMapsAssociation.lua 101 2016-09-20 05:02:33Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -60,6 +60,7 @@ Atlas_AssocDefaults = {
 	[BZ["Throne of Thunder"]] = 		"ThroneofThunderB";
 	[BZ["The Wailing Caverns"]] = 		"WailingCavernsEnt";
 	[BZ["Ulduar"]] =			"UlduarA";
+	[BZ["Sunken Temple"]] = 		"TheSunkenTemple";
 -- Legion
 	[BZ["Black Rook Hold"]] = 		"BlackRookHoldA";
 	[BZ["Court of Stars"]] = 		"CourtofStarsA";
@@ -758,6 +759,9 @@ Atlas_EntToInstMatches = {
 	["UldamanEnt"] =			{"Uldaman"};
 	["UlduarEnt"] = 			{"UlduarHallsofStone", "UlduarHallsofLightning", "UlduarA", "UlduarB", "UlduarC", "UlduarD", "UlduarE"};
 	["WailingCavernsEnt"] =			{"WailingCaverns"};
+	-- Legion
+	["TheArcwayEnt"] = 			{"TheArcway"};
+ 	["TheNightholdEnt"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF"--[[, "TheNightholdG" ]] };
 };
 
 -- Instance maps to entrance maps
@@ -823,6 +827,15 @@ Atlas_InstToEntMatches = {
 	["UlduarD"] = 				{"UlduarEnt"};
 	["UlduarE"] = 				{"UlduarEnt"};
 	["WailingCaverns"] =			{"WailingCavernsEnt"};
+	-- Legion
+	["TheArcway"] = 			{"TheArcwayEnt"};
+	["TheNightholdA"] = 			{"TheNightholdEnt"};
+	["TheNightholdB"] = 			{"TheNightholdEnt"};
+	["TheNightholdC"] = 			{"TheNightholdEnt"};
+	["TheNightholdD"] = 			{"TheNightholdEnt"};
+	["TheNightholdE"] = 			{"TheNightholdEnt"};
+	["TheNightholdF"] = 			{"TheNightholdEnt"};
+--	["TheNightholdG"] = 			{"TheNightholdEnt"};
 };
 
 -- Defines the instance which have multiple maps
@@ -955,6 +968,7 @@ Atlas_SubZoneAssoc = {
 	["TheEmeraldNightmareF"] = 		BZ["The Emerald Nightmare"];
 	["TheEmeraldNightmareG"] = 		BZ["The Emerald Nightmare"];
 	["TheEmeraldNightmareH"] = 		BZ["The Emerald Nightmare"];
+	["TheNightholdEnt"] = 			BZ["The Nighthold"];
 	["TheNightholdA"] = 			BZ["The Nighthold"];
 	["TheNightholdB"] = 			BZ["The Nighthold"];
 	["TheNightholdC"] = 			BZ["The Nighthold"];

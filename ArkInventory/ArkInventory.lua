@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1719 $
-$Date: 2016-09-11 02:16:12 +1000 (Sun, 11 Sep 2016) $
+$Revision: 1733 $
+$Date: 2016-09-25 23:59:59 +1000 (Sun, 25 Sep 2016) $
 
 ]]--
 
@@ -841,9 +841,6 @@ ArkInventory.Global = { -- globals
 	
 	Tooltip = {
 		Scan = nil,
-		Vendor = nil,
-		Mount = nil,
-		Rule = nil,
 		WOW = { GameTooltip, ShoppingTooltip1, ShoppingTooltip2, ShoppingTooltip3, ItemRefTooltip, ItemRefShoppingTooltip1, ItemRefShoppingTooltip2, ItemRefShoppingTooltip3 }
 	},
 	
@@ -1188,14 +1185,13 @@ ArkInventory.Global = { -- globals
 		StackCompress = { }, -- key generated via ObjectIDCount( )
 		
 		Default = { }, -- key generated via ObjectIDCategory( )
-		
 		Rule = { }, -- key generated via ObjectIDRule( )
 		
 		SentMail = { }, -- keeps track of any sent mail to other characters you have
 	},
 	
 	Thread = {
-		WhileInCombat = true, 
+		WhileInCombat = true,
 		--WhileInCombat = false, -- !!! comment out when done testing
 		Restack = { },
 		Window = { },
@@ -2208,10 +2204,8 @@ function ArkInventory.OnInitialize( )
 	ArkInventory.Lib.Dialog:AddToBlizOptions( ArkInventory.Const.Frame.Config.Blizzard, ArkInventory.Const.Program.Name )
 	
 	
-	-- tooltips
+	-- tooltip
 	ArkInventory.Global.Tooltip.Scan = ArkInventory.TooltipInit( "ARKINV_ScanTooltip" )	
-	ArkInventory.Global.Tooltip.Vendor = ArkInventory.Global.Tooltip.Scan
-	ArkInventory.Global.Tooltip.Mount = ArkInventory.Global.Tooltip.Scan
 	
 	
 	ArkInventory.PlayerInfoSet( )
@@ -2279,7 +2273,7 @@ function ArkInventory.OnEnable( )
 	
 	-- register events
 	ArkInventory:RegisterMessage( "EVENT_ARKINV_STORAGE" )
-	ArkInventory:RegisterBucketMessage( "EVENT_ARKINV_RESCAN_LOCATION_BUCKET", 10 )
+	ArkInventory:RegisterBucketMessage( "EVENT_ARKINV_RESCAN_LOCATION_BUCKET", 2 )
 	
 	ArkInventory:RegisterEvent( "PLAYER_ENTERING_WORLD", "EVENT_WOW_PLAYER_ENTER" ) -- not really needed but seems to fix a bug where ace doesnt seem to init again
 	ArkInventory:RegisterEvent( "PLAYER_LEAVING_WORLD", "EVENT_WOW_PLAYER_LEAVE" ) --when the player logs out or the UI is reloaded.
@@ -2604,7 +2598,7 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 	local s = { }
 	local sx = ""
 	
-	if ( sid == 9995 ) then
+	if sid == 9995 then
 		-- vault layout / void storage layout
 		s["!bagslot"] = string.format( "%04i %04i", i.bag_id, i.did or i.slot_id )
 	else
@@ -2612,14 +2606,14 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 		s["!bagslot"] = string.format( "%04i %04i", i.bag_id, i.slot_id )
 	end
 	
-	if ( sorting.used ) and ( not sorting.bagslot ) then
+	if sorting.used and not sorting.bagslot then
 		
 		local t
-		local class, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11 = ArkInventory.ObjectInfo( i.h )
+		local info = ArkInventory.ObjectInfoArray( i.h )
 		
-		-- slot type (system)
+		-- slot type (system+user)
 		t = 0
-		if not i.h then
+		if not i.h or sorting.active.slottype then
 			t = ArkInventory.BagType( i.bag_id )
 		end
 		s["!slottype"] = string.format( "%04i", t )
@@ -2635,7 +2629,7 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 			
 			if i.h then
 				
-				t = v2
+				t = info.name
 				if i.cn and ( i.cn ~= "" ) then
 					t = string.format( "%s %s", t, i.cn )
 				end
@@ -2672,47 +2666,30 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 		-- location
 		t = "!"
 		if i.h and class == "item" and sorting.active.location then
-			
-			if not v10 or v10 == "" then
-				t = "!"
-			else
-				t = _G[v10]
+			if info.equiploc and info.equiploc ~= "" and _G[info.equiploc] then
+				t = _G[info.equiploc]
 			end
-			
 		end
 		s["location"] = t
 		
 		
 		-- item type / subtype
-		local item_type = "!"
-		local item_subtype = "!"
+		local item_type = 0
+		local item_subtype = 0
 		
-		if i.h and ( class == "item" or class == "battlepet" ) and sorting.active.itemtype then
-			
-			item_type = v7
-			if not item_type or item_type == "" then
-				item_type = "!"
-			end
-			
-			if ( class == "battlepet" ) and tonumber( item_type ) then
-				item_type = ArkInventory.PetJournal.PetTypeName( tonumber( item_type ) ) or "!"
-			end
-
-			item_subtype = v8
-			if not item_subtype or item_subtype == "" then
-				item_subtype = "!"
-			end
-			
+		if sorting.active.itemtype then
+			item_type = info.itemtypeid
+			item_subtype = info.itemsubtypeid
 		end
-		s["itemtype"] = string.format( "%s %s", item_type, item_subtype )
+		s["itemtype"] = string.format( "%03i %03i", item_type or 0, item_subtype or 0 )
 		
 		
 		-- item (use) level
 		t = 0
 		if i.h and sorting.active.itemuselevel then
-			t = v6
+			t = info.uselevel
 		end
-		s["itemuselevel"] = string.format( "%04i", t or 0 )
+		s["itemuselevel"] = string.format( "%03i", t or 0 )
 		
 		
 		-- item age
@@ -2726,15 +2703,15 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 		-- item (stat) level
 		t = 0
 		if i.h and sorting.active.itemstatlevel then
-			t = v5
+			t = info.ilvl
 		end
-		s["itemstatlevel"] = string.format( "%04i", t or 0 )
+		s["itemstatlevel"] = string.format( "%03i", t or 0 )
 		
 		
 		-- vendor price
 		t = 0
 		if i.h and sorting.active.vendorprice then
-			t = v11 * ( i.count or 1 )
+			t = ( info.vendorprice or 0 ) * ( i.count or 1 )
 		end
 		s["vendorprice"] = string.format( "%10i", t or 0 )
 		
@@ -3044,7 +3021,7 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	-- local debuginfo = { ["m"]=gcinfo( ), ["t"]=GetTime( ) }
 	
 	-- pet journal pets
-	if ( i.loc_id == ArkInventory.Const.Location.Pet ) then
+	if i.loc_id == ArkInventory.Const.Location.Pet then
 		
 		if i.bp then
 			if i.sb then
@@ -3063,12 +3040,12 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	end
 	
 	-- mounts
-	if ( i.loc_id == ArkInventory.Const.Location.Mount ) then
+	if i.loc_id == ArkInventory.Const.Location.Mount then
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_MOUNT" )
 	end
 	
 	-- currencies
-	if ( i.loc_id == ArkInventory.Const.Location.Token ) then
+	if i.loc_id == ArkInventory.Const.Location.Token then
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_TOKEN" )
 	end
 	
@@ -3084,10 +3061,10 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	
 	
 	-- everything else
-	local class, _, itemName, _, itemRarity, _, _, itemType, itemSubType, _, equipSlot = ArkInventory.ObjectInfo( i.h )
+	local info = ArkInventory.ObjectInfoArray( i.h )
 	
 	-- (caged) battle pets
-	if class == "battlepet" then
+	if info.class == "battlepet" then
 		if i.sb then
 			return ArkInventory.CategoryGetSystemID( "SYSTEM_PET_BATTLE_BOUND" )
 		else
@@ -3096,42 +3073,45 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	end
 	
 	-- items only from here on
-	if class ~= "item" then
-		return
-	end
+	if info.class ~= "item" then return end
 	
 	
-	if itemRarity == LE_ITEM_QUALITY_HEIRLOOM then
+	if info.q == LE_ITEM_QUALITY_HEIRLOOM then
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_HEIRLOOM" )
 	end
 	
 	--ArkInventory.Output( "bag[", i.bag_id, "], slot[", i.slot_id, "] = ", itemType )
 	
 	-- no item info
-	if itemName == nil then
+	if info.name == nil then
 		return
 	end
 	
+	if info.id == 129158 then
+		-- starlight rose dust
+		return ArkInventory.CategoryGetSystemID( "SYSTEM_QUEST" )
+	end
+	
 	-- trash
-	if itemRarity == LE_ITEM_QUALITY_POOR then
+	if info.q == LE_ITEM_QUALITY_POOR then
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_TRASH" )
 	end
 	
 	-- quest items
-	if itemType == ArkInventory.Const.ItemClass.QUEST then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.QUEST then
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_QUEST" )
 	end
 	
 	-- bags / containers
-	if itemType == ArkInventory.Const.ItemClass.CONTAINER then	
+	if info.itemtypeid == ArkInventory.Const.ItemClass.CONTAINER then	
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_CONTAINER" )
 	end
 	
 	-- equipable items
-	if equipSlot ~= "" or itemType == ArkInventory.Const.ItemClass.WEAPON or itemType == ArkInventory.Const.ItemClass.ARMOR then
+	if info.equiploc ~= "" or info.itemtypeid == ArkInventory.Const.ItemClass.WEAPON or info.itemtypeid == ArkInventory.Const.ItemClass.ARMOR then
 		
---		if not ( itemType == ArkInventory.Const.ItemClass.WEAPON or itemType == ArkInventory.Const.ItemClass.ARMOR ) then
---			ArkInventory.Output( i.h, " / ", equipSlot )
+--		if not ( info.itemtypeid == ArkInventory.Const.ItemClass.WEAPON or info.itemtypeid == ArkInventory.Const.ItemClass.ARMOR ) then
+--			ArkInventory.Output( i.h, " / ", info.equiploc )
 --		end
 		
 		if i.ab then
@@ -3145,9 +3125,9 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	end
 	
 	-- gems
-	if itemType == ArkInventory.Const.ItemClass.GEM then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.GEM then
 		
-		if itemSubType == ArkInventory.Const.ItemClass.GEM_ARTIFACT_RELIC then
+		if info.itemsubtypeid == ArkInventory.Const.ItemClass.GEM_ARTIFACT_RELIC then
 			return ArkInventory.CategoryGetSystemID( "SYSTEM_ARTIFACT_RELIC" )
 		end
 		
@@ -3156,17 +3136,17 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	end
 	
 	-- glyphs
-	if itemType == ArkInventory.Const.ItemClass.GLYPH then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.GLYPH then
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_GLYPH" )
 	end
 	
 	-- recipe
-	if itemType == ArkInventory.Const.ItemClass.RECIPE then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.RECIPE then
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_RECIPE" )
 	end
 	
 	-- (battle)pet as an item
-	if itemType == ArkInventory.Const.ItemClass.BATTLEPET then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.BATTLEPET then
 		if i.sb then
 			return ArkInventory.CategoryGetSystemID( "SYSTEM_PET_BATTLE_BOUND" )
 		else
@@ -3175,9 +3155,9 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	end
 	
 	-- misc
-	if itemType == ArkInventory.Const.ItemClass.MISC then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.MISC then
 		
-		if itemSubType == ArkInventory.Const.ItemClass.MISC_PET or ArkInventory.PT_ItemInSets( i.h, ArkInventory.Localise["PT_CATEGORY_PET"] ) then
+		if info.itemsubtypeid == ArkInventory.Const.ItemClass.MISC_PET or ArkInventory.PT_ItemInSets( i.h, ArkInventory.Localise["PT_CATEGORY_PET"] ) then
 			if i.sb then
 				return ArkInventory.CategoryGetSystemID( "SYSTEM_PET_COMPANION_BOUND" )
 			else
@@ -3185,14 +3165,14 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 			end
 		end
 		
-		if itemSubType == ArkInventory.Const.ItemClass.MISC_MOUNT or ArkInventory.PT_ItemInSets( i.h, ArkInventory.Localise["PT_CATEGORY_MOUNT"] ) then
+		if info.itemsubtypeid == ArkInventory.Const.ItemClass.MISC_MOUNT or ArkInventory.PT_ItemInSets( i.h, ArkInventory.Localise["PT_CATEGORY_MOUNT"] ) then
 			return ArkInventory.CategoryGetSystemID( "SYSTEM_MOUNT" )
 		end
 		
 	end
 	
 	-- item enhancements
-	if itemType == ArkInventory.Const.ItemClass.ITEM_ENHANCEMENT then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.ITEM_ENHANCEMENT then
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_ITEM_ENHANCEMENT" )
 	end
 	
@@ -3210,46 +3190,38 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	local codex = ArkInventory.GetLocationCodex( i.loc_id )
 	
 	
-	-- class requirement (via tooltip)
-	local _, _, req = ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_CLASS"], false, true, true )
-	if req and string.find( req, codex.player.data.info.class_local ) then
-		return ArkInventory.CategoryGetSystemID( string.format( "CLASS_%s", codex.player.data.info.class ) )
-	end
-	
-	-- class requirement (via PT)
+	-- only check these if its the player (not the account)
 	if codex.player.data.info.isplayer then
+		
+		-- class requirement (via tooltip)
+		local _, _, req = ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_CLASS"], false, true, true )
+		if req and string.find( req, codex.player.data.info.class_local ) then
+			return ArkInventory.CategoryGetSystemID( string.format( "CLASS_%s", codex.player.data.info.class ) )
+		end
+		
+		-- class requirement (via PT)
 		local key = string.format( "PT_CLASS_%s", codex.player.data.info.class )
 		if ArkInventory.PT_ItemInSets( i.h, ArkInventory.Localise[key] ) then
 			return ArkInventory.CategoryGetSystemID( string.format( "CLASS_%s", codex.player.data.info.class ) )
 		end
+		
 	end
 	
-	if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ARTIFACT_POWER"], false, true, true, 0, true ) then
-		return ArkInventory.CategoryGetSystemID( "CONSUMABLE_ARTIFACT_POWER" )
-	end
-	
-	
-	if ( itemType == ArkInventory.Const.ItemClass.CONSUMABLE and itemSubType == ArkInventory.Const.ItemClass.CONSUMABLE_OTHER ) then
-		if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ANCIENT_MANA"], false, true, true, 0, true ) then
-			return ArkInventory.CategoryGetSystemID( "SYSTEM_TOKEN" )
-		end
-	end
-	
-	if itemType == ArkInventory.Const.ItemClass.TRADEGOODS then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.TRADEGOODS then
 		
 		local t = { "ELEMENTAL", "CLOTH", "LEATHER", "METAL_AND_STONE", "COOKING", "HERB", "ENCHANTING", "JEWELCRAFTING", "ENCHANTMENT" }
 		
 		for _, w in pairs( t ) do
-			if itemSubType == ArkInventory.Const.ItemClass[string.format( "TRADEGOODS_%s", w )] then
+			if info.itemsubtypeid == ArkInventory.Const.ItemClass[string.format( "TRADEGOODS_%s", w )] then
 				return ArkInventory.CategoryGetSystemID( string.format( "TRADEGOODS_%s", w ) )
 			end
 		end
 		
 	end
 	
-	if itemType == ArkInventory.Const.ItemClass.CONSUMABLE then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.CONSUMABLE then
 		
-		if itemSubType == ArkInventory.Const.ItemClass.CONSUMABLE_FOOD_AND_DRINK then
+		if info.itemsubtypeid == ArkInventory.Const.ItemClass.CONSUMABLE_FOOD_AND_DRINK then
 			
 			if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_ITEM_TOOLTIP_FOOD"] ) then
 				return ArkInventory.CategoryGetSystemID( "CONSUMABLE_FOOD" )
@@ -3271,7 +3243,7 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 			
 		end
 		
-		if itemSubType == ArkInventory.Const.ItemClass.CONSUMABLE_POTION then
+		if info.itemsubtypeid == ArkInventory.Const.ItemClass.CONSUMABLE_POTION then
 			
 			if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_ITEM_TOOLTIP_POTION_HEAL"] ) or ArkInventory.PT_ItemInSets( i.h, ArkInventory.Localise["PT_CATEGORY_POTION_HEAL"] ) then
 				return ArkInventory.CategoryGetSystemID( "CONSUMABLE_POTION_HEAL" )
@@ -3285,7 +3257,7 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 			
 		end
 		
-		if itemSubType == ArkInventory.Const.ItemClass.CONSUMABLE_ELIXIR then
+		if info.itemsubtypeid == ArkInventory.Const.ItemClass.CONSUMABLE_ELIXIR then
 			
 			if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_ITEM_TOOLTIP_ELIXIR_BATTLE"] ) then
 				return ArkInventory.CategoryGetSystemID( "CONSUMABLE_ELIXIR_BATTLE" )
@@ -3299,19 +3271,32 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 			
 		end
 		
-		if itemSubType == ArkInventory.Const.ItemClass.CONSUMABLE_FLASK then
+		if info.itemsubtypeid == ArkInventory.Const.ItemClass.CONSUMABLE_FLASK then
 			return ArkInventory.CategoryGetSystemID( "CONSUMABLE_FLASK" )
 		end
 		
-		if itemSubType == ArkInventory.Const.ItemClass.CONSUMABLE_BANDAGE then
+		if info.itemsubtypeid == ArkInventory.Const.ItemClass.CONSUMABLE_BANDAGE then
 			return ArkInventory.CategoryGetSystemID( "CONSUMABLE_BANDAGE" )
 		end
 		
-		if itemSubType == ArkInventory.Const.ItemClass.CONSUMABLE_EXPLOSIVES_AND_DEVICES then
+		if info.itemsubtypeid == ArkInventory.Const.ItemClass.CONSUMABLE_EXPLOSIVES_AND_DEVICES then
 			return ArkInventory.CategoryGetSystemID( "CONSUMABLE_EXPLOSIVES_AND_DEVICES" )
 		end
 		
+		if info.itemsubtypeid == ArkInventory.Const.ItemClass.CONSUMABLE_OTHER then
+			
+			if ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["ARTIFACT_POWER"], false, true, true, 2, true ) then
+				return ArkInventory.CategoryGetSystemID( "CONSUMABLE_ARTIFACT_POWER" )
+			end
+		
+			if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ANCIENT_MANA"], false, true, true, true ) then
+				return ArkInventory.CategoryGetSystemID( "SYSTEM_TOKEN" )
+			end
+			
+		end
+		
 	end
+	
 	
 	-- primary professions
 	if codex.player.data.info.skills then
@@ -3348,17 +3333,17 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_REAGENT" )
 	end
 	
-	if itemType == ArkInventory.Const.ItemClass.MISC then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.MISC then
 	
-		if itemSubType == ArkInventory.Const.ItemClass.MISC_REAGENT then
+		if info.itemsubtypeid == ArkInventory.Const.ItemClass.MISC_REAGENT then
 			return ArkInventory.CategoryGetSystemID( "SYSTEM_REAGENT" )
 		end
 		
 	end
 	
-	if itemType == ArkInventory.Const.ItemClass.TRADEGOODS then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.TRADEGOODS then
 		
-		if itemSubType == ArkInventory.Const.ItemClass.TRADEGOODS_PARTS then
+		if info.itemsubtypeid == ArkInventory.Const.ItemClass.TRADEGOODS_PARTS then
 			return ArkInventory.CategoryGetSystemID( "TRADEGOODS_PARTS" )
 		end
 		
@@ -3392,19 +3377,19 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_SOULBOUND" )
 	end
 	
-	if itemType == ArkInventory.Const.ItemClass.TRADEGOODS then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.TRADEGOODS then
 		return ArkInventory.CategoryGetSystemID( "TRADEGOODS_OTHER" )
 	end
 
-	if itemType == ArkInventory.Const.ItemClass.CONSUMABLE then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.CONSUMABLE then
 		return ArkInventory.CategoryGetSystemID( "CONSUMABLE_OTHER" )
 	end
 
-	if itemType == ArkInventory.Const.ItemClass.MISC then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.MISC then
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_MISC" )
 	end
 
-	if itemType == ArkInventory.Const.ItemClass.REAGENT then
+	if info.itemtypeid == ArkInventory.Const.ItemClass.REAGENT then
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_REAGENT" )
 	end
 	
@@ -3545,36 +3530,11 @@ function ArkInventory.ItemCategoryGetRule( i )
 	
 	-- local debuginfo = { ["m"]=gcinfo( ), ["t"]=GetTime( ) }
 	
-	if not ArkInventory.Global.Rules.Enabled then return end
-	
-	-- check rules
-	local codex = ArkInventory.GetLocationCodex( i.loc_id )
-	local cat_type = ArkInventory.Const.Category.Type.Rule
-	local r = ArkInventory.db.option.category[cat_type].data
-	for cat_code in ArkInventory.spairs( r, function(a,b) return ( r[a].order or 1000 ) < ( r[b].order or 1000 ) end ) do
-		
-		if r[cat_code].used == "Y" and codex.catset.category.active[cat_type][cat_code] then -- rule is active in this categoryset
-			
-			local a, em = ArkInventoryRules.AppliesToItem( cat_code, i )
-			
-			if em == nil then
-				
-				if a == true then
-					return ArkInventory.CategoryCodeJoin( cat_type, cat_code )
-				end
-				
-			else
-				
-				ArkInventory.OutputWarning( em )
-				ArkInventory.OutputWarning( string.format( ArkInventory.Localise["RULE_DAMAGED"], cat_code ) )
-				
-				ArkInventory.db.option.category[cat_type].data[cat_code].damaged = true
-				
-			end
-			
-		end
-		
+	if not ArkInventory.Global.Rules.Enabled then
+		return false
 	end
+	
+	return ArkInventoryRules.AppliesToItem( i ) or false
 	
 	-- ArkInventory.Output( "ItemCategoryGetRule( ) end", debuginfo )
 	
@@ -3622,7 +3582,7 @@ function ArkInventory.ItemCategoryGetPrimary( i )
 end
 
 function ArkInventory.ItemCategorySet( i, cat_id )
-
+	
 	-- set cat_id to nil to reset back to default
 	
 	local cid, id, codex = ArkInventory.ObjectIDCategory( i.loc_id, i.bag_id, i.sb, i.h )
@@ -3632,9 +3592,12 @@ function ArkInventory.ItemCategorySet( i, cat_id )
 end
 
 function ArkInventory.ItemCategoryGet( i )
-
+	
 	local unknown = ArkInventory.CategoryGetSystemID( "SYSTEM_UNKNOWN" )
-	local default = ArkInventory.ItemCategoryGetDefault( i )
+	
+	local default = ArkInventory.CategoryGetSystemID( "SYSTEM_DEFAULT" )
+	default = ( i and ArkInventory.ItemCategoryGetDefault( i ) ) or default
+	
 	local cat = ArkInventory.ItemCategoryGetPrimary( i )
 	
 	return cat or default or unknown, cat, default or unknown
@@ -4317,44 +4280,39 @@ function ArkInventory.Frame_Main_Draw( frame )
 	
 	local loc_id = frame.ARK_Data.loc_id
 	
-	if ( type( ArkInventory.Global.Thread.Window[loc_id] ) ~= "thread" ) or ( coroutine.status( ArkInventory.Global.Thread.Window[loc_id] ) == "dead" ) then
+	if type( ArkInventory.Global.Thread.Window[loc_id] ) ~= "thread" or coroutine.status( ArkInventory.Global.Thread.Window[loc_id] ) == "dead" then
 		
-		--ArkInventory.Output( "draw location ", loc_id, " start, state=", ArkInventory.Global.Location[loc_id].drawState )
+		-- nothing in progress so just kick it off
+		
+		--ArkInventory.Output( "draw [", loc_id, "] new thread, state=", ArkInventory.Global.Location[loc_id].drawState )
 		
 		ArkInventory.Global.Thread.WindowState[loc_id] = ArkInventory.Global.Location[loc_id].drawState
 		
-		-- thread not active, or dead, create a new one
-		ArkInventory.Global.Thread.Window[loc_id] = coroutine.create(
-			function ( )
-				ArkInventory.Frame_Main_DrawThreadStart( frame )
-			end
-		)
-		
-		-- run it
-		coroutine.resume( ArkInventory.Global.Thread.Window[loc_id] )
-		
 	else
 		
-		-- draw already in progress
-		--ArkInventory.Output( "draw", ": ", loc_id, "already in progress, old=", ArkInventory.Global.Thread.WindowState[loc_id], ", new = ", ArkInventory.Global.Location[loc_id].drawState )
+		-- already in progress, find highest drawstate and start again
+		
+		--ArkInventory.Output( "draw", " [", loc_id, "] existing thread, old=", ArkInventory.Global.Thread.WindowState[loc_id], ", new=", ArkInventory.Global.Location[loc_id].drawState )
 		
 		if ArkInventory.Global.Thread.WindowState[loc_id] >= ArkInventory.Global.Location[loc_id].drawState then
-			
-			--ArkInventory.Output( "draw location ", loc_id, " restart, state=", ArkInventory.Global.Location[loc_id].drawState )
-			
-			-- needs to be drawn, but request has higher priority, replace existing thread
 			ArkInventory.Global.Thread.WindowState[loc_id] = ArkInventory.Global.Location[loc_id].drawState
-			ArkInventory.Global.Thread.Window[loc_id] = coroutine.create(
-				function ( )
-					ArkInventory.Frame_Main_DrawThreadStart( frame )
-				end
-			)
-			
 		end
 		
-		-- give it a push / or run it
-		coroutine.resume( ArkInventory.Global.Thread.Window[loc_id] )
-		
+	end
+	
+	-- load the co-routine, overwite existing, the garbage collector will sort it out
+	ArkInventory.Global.Thread.Window[loc_id] = coroutine.create(
+		function ( )
+			--ArkInventory.Output( "start of co-routine" )
+			ArkInventory.Frame_Main_DrawThreadStart( frame )
+			--ArkInventory.Output( "end of co-routine" )
+		end
+	)
+	
+	-- run it
+	local ok, em = coroutine.resume( ArkInventory.Global.Thread.Window[loc_id] )
+	if not ok then
+		ArkInventory.OutputError( em )
 	end
 	
 	--ArkInventory.Output( "draw location ", loc_id, " complete" )
@@ -4364,10 +4322,12 @@ end
 function ArkInventory.Frame_Main_DrawThreadResume( )
 	
 	for loc_id, thread in pairs( ArkInventory.Global.Thread.Window ) do
-		if ( type( thread ) == "thread" ) and ( coroutine.status( thread ) == "suspended" ) then
+		if type( thread ) == "thread" and coroutine.status( thread ) == "suspended" then
 			--ArkInventory.Output( "resume draw thread for location ", loc_id )
-			coroutine.resume( thread )
-			return
+			local ok, em = coroutine.resume( thread )
+			if not ok then
+				ArkInventory.OutputError( em )
+			end
 		end
 	end
 	
@@ -5056,15 +5016,13 @@ function ArkInventory.Frame_Container_CalculateBars( frame )
 		for slot_id = 1, bag.count do
 			
 			local i = bag.slot[slot_id]
-			
 			ignore = false
 			
 			if loc_id == ArkInventory.Const.Location.Vault and not codex.player.data.option[loc_id].bag[bag_id].display then
 				ignore = true
 			end
 			
-			
-			if not ignore then
+			if i and not ignore then
 				
 				cat_id = ArkInventory.ItemCategoryGet( i )
 				
@@ -5095,9 +5053,9 @@ function ArkInventory.Frame_Container_CalculateBars( frame )
 					
 					if stack_compress > 0 and i.h and bar_id > 0 then
 						
-						local stack_size = select( 10, ArkInventory.ObjectInfo( i.h ) )
+						local info = ArkInventory.ObjectInfoArray( i.h )
 						
-						if stack_size > 1 then
+						if info.stacksize > 1 then
 							
 							local key = ArkInventory.ObjectIDCount( i.h )
 							
@@ -5152,9 +5110,9 @@ function ArkInventory.Frame_Container_CalculateBars( frame )
 					
 				end
 				
-				if ( ArkInventory.Global.Mode.Combat ) and ( ArkInventory.Global.Thread.WhileInCombat ) then
+				if ArkInventory.Global.Mode.Combat and ArkInventory.Global.Thread.WhileInCombat then
 					--ArkInventory.Output( loc_id, ".", bag_id, ".", slot_id, " / yield check 62 - ", yieldcount )
-					if ( yieldcount % ArkInventory.db.option.combat.yieldafter == 0 ) then
+					if yieldcount % ArkInventory.db.option.combat.yieldafter == 0 then
 						--ArkInventory.Output( "yielding" )
 						coroutine.yield( )
 					end
@@ -6590,8 +6548,6 @@ end
 	
 function ArkInventory.Frame_Item_Update_Texture( frame )
 	
-	if not ArkInventory.ValidFrame( frame, true ) then return end
-
 	local loc_id = frame.ARK_Data.loc_id
 	local i = ArkInventory.Frame_Item_GetDB( frame )
 
@@ -6677,12 +6633,12 @@ function ArkInventory.Frame_Item_Update_Count( frame )
 		if codex.style.slot.itemcount.show then
 			
 			local osd = ArkInventory.ObjectStringDecode( i.h )
-			local class = osd[1]
+			local class = osd.class
 			local count = i.count or 0
 			frame.count = count
 			
 			if class == "battlepet" then
-				count = osd[3] or 1
+				count = osd.level
 			end
 			
 			if ( class == "battlepet" ) or ( count > 1 ) or ( frame.isBag and count > 0 ) then
@@ -6729,10 +6685,11 @@ function ArkInventory.Frame_Item_Update_Stock( frame )
 		
 		if codex.style.slot.itemlevel.show then
 			
-			local class, ilnk, inam, itxt, irar, ilvl, imin, ityp, isub, icount, iloc = ArkInventory.ObjectInfo( i.h )
-			if class == "item" then
-				if ( iloc ~= "" and iloc ~= "INVTYPE_BAG" ) or ( ityp == ArkInventory.Const.ItemClass.GEM and isub == ArkInventory.Const.ItemClass.GEM_ARTIFACT_RELIC ) then
-					stock = ilvl
+			local info = ArkInventory.ObjectInfoArray( i.h )
+			
+			if info.class == "item" then
+				if ( info.equiploc ~= "" and info.equiploc ~= "INVTYPE_BAG" ) or ( info.itemtypeid == ArkInventory.Const.ItemClass.GEM and info.itemsubtypeid == ArkInventory.Const.ItemClass.GEM_ARTIFACT_RELIC ) then
+					stock = info.ilvl
 				end
 			end
 			
@@ -6775,7 +6732,8 @@ function ArkInventory.Frame_Item_MatchesFilter( frame )
 		matches = true
 	else
 		local i = ArkInventory.Frame_Item_GetDB( frame ) or { }
-		local n = string.lower( select( 3, ArkInventory.ObjectInfo( i.h ) ) or "" )
+		local info = ArkInventory.ObjectInfoArray( i.h )
+		local n = string.lower( info.name or "" )
 		if string.find( n, f ) then
 			matches = true
 		end
@@ -7003,8 +6961,6 @@ end
 
 function ArkInventory.Frame_Item_Update_Empty( frame )
 
-	if not ArkInventory.ValidFrame( frame, true ) then return end
-	
 	local loc_id = frame.ARK_Data.loc_id
 	local bag_id = frame.ARK_Data.bag_id
 	
@@ -7491,7 +7447,7 @@ function ArkInventory.Frame_Item_Update_Lock( frame )
 		if codex.style.slot.unusable.tint then
 			
 			local osd = ArkInventory.ObjectStringDecode( i.h )
-			local class, level = osd[1], osd[3]
+			local class, level = osd.class, osd.level
 			
 			if loc_id == ArkInventory.Const.Location.Pet or class == "battlepet" then
 				
@@ -7511,17 +7467,17 @@ function ArkInventory.Frame_Item_Update_Lock( frame )
 				
 			elseif loc_id == ArkInventory.Const.Location.Heirloom or loc_id == ArkInventory.Const.Location.Toybox then
 				
-				ArkInventory.TooltipSetHyperlink( ArkInventory.Global.Tooltip.Vendor, i.h )
+				ArkInventory.TooltipSetHyperlink( ArkInventory.Global.Tooltip.Scan, i.h )
 				
-				if not ArkInventory.TooltipCanUse( ArkInventory.Global.Tooltip.Vendor, true ) then
+				if not ArkInventory.TooltipCanUse( ArkInventory.Global.Tooltip.Scan, true ) then
 					colour = tinted
 				end
 				
 			else
 				
-				ArkInventory.TooltipSetHyperlink( ArkInventory.Global.Tooltip.Vendor, i.h )
+				ArkInventory.TooltipSetHyperlink( ArkInventory.Global.Tooltip.Scan, i.h )
 				
-				if not ArkInventory.TooltipCanUse( ArkInventory.Global.Tooltip.Vendor ) then
+				if not ArkInventory.TooltipCanUse( ArkInventory.Global.Tooltip.Scan ) then
 					colour = tinted
 				end
 				
@@ -7841,7 +7797,7 @@ function ArkInventory.Frame_Item_Update( loc_id, bag_id, slot_id )
 			ArkInventory.Frame_Item_Update_Heirloom( obj )
 		end
 		
-		if ( obj == GameTooltip:GetOwner( ) ) then
+		if obj == GameTooltip:GetOwner( ) then
 			obj.UpdateTooltip( obj )
 		end
 		
@@ -9210,6 +9166,7 @@ function ArkInventory.BlizzardAPIHook( disable, reload )
 		ArkInventory:SecureHook( GameTooltip, "SetBackpackToken", ArkInventory.TooltipHookSetBackpackToken )
 		ArkInventory:SecureHook( GameTooltip, "SetCurrencyToken", ArkInventory.TooltipHookSetCurrencyToken )
 		ArkInventory:SecureHook( GameTooltip, "SetRecipeReagentItem", ArkInventory.TooltipHookSetRecipeReagentItem )
+		ArkInventory:SecureHook( GameTooltip, "SetRecipeResultItem", ArkInventory.TooltipHookSetRecipeResultItem )
 		ArkInventory:SecureHook( "GameTooltip_ShowCompareItem", ArkInventory.TooltipShowCompare )
 		for _, obj in pairs( ArkInventory.Global.Tooltip.WOW ) do
 			if obj then
@@ -9415,14 +9372,19 @@ function ArkInventory.GameTooltipSetHyperlink( frame, h )
 	ArkInventory.GameTooltipSetPosition( frame )
 	
 	local osd = ArkInventory.ObjectStringDecode( h )
-	if osd[1] == "battlepet" then
+	if osd.class == "battlepet" then
 		
 		ArkInventory.TooltipSetBattlepet( GameTooltip, h )
 		
-	elseif osd[1] == "copper" then
+	elseif osd.class == "copper" then
 		
-		SetTooltipMoney( GameTooltip, osd[3] )
+		SetTooltipMoney( GameTooltip, osd.amount )
 		GameTooltip:Show( )
+		
+	elseif osd.class == "empty" then
+		
+		GameTooltip:ClearLines( )
+		GameTooltip:Hide( )
 		
 	else
 		
@@ -9441,7 +9403,7 @@ function ArkInventory.PTItemSearch( item )
 	-- sourced from pt3.0 because someone decided that it didnt belong in pt3.1
 	
 	local osd = ArkInventory.ObjectStringDecode( h )
-	local item = osd[2]
+	local item = osd.id
 	
 	if not item or item <= 0 then
 		return nil

@@ -55,6 +55,7 @@ L["Only available after winning the PvP battle"] = "只有赢下 PvP 战斗后�
 L["Orange"] = "橙"
 L["Orb of Translocation"] = "传送宝珠"
 L["Portals"] = "传送门"
+-- L["Portal to Dalaran"] = ""
 -- L["Portal to Dreadscar Rift"] = ""
 -- L["Portal to Netherlight Temple"] = ""
 -- L["Portal to Sanctum of Light"] = ""

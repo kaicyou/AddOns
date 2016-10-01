@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 25 2016-09-06 06:58:49Z arith $
+$Id: ChangeLog.txt 28 2016-09-20 15:11:38Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,11 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.34.02 (Sep. 20, 2016)
+------------------------
+- Added coordinates information to Broken Isles map
+
 
 v1.34.01 (Sep. 06, 2016)
 ------------------------

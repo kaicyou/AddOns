@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation-zhTW.lua 42 2016-09-07 18:32:12Z arith $
+-- $Id: Atlas_Transportation-zhTW.lua 48 2016-09-23 08:41:48Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -53,6 +53,7 @@ L["Only available after winning the PvP battle"] = "僅限贏得戰場勝利後"
 L["Orange"] = "橙"
 L["Orb of Translocation"] = "傳送之門"
 L["Portals"] = "傳送門"
+L["Portal to Dalaran"] = "到達拉然的傳送門"
 L["Portal to Dreadscar Rift"] = "懼痕裂隙傳送門"
 L["Portal to Netherlight Temple"] = "虛空之光神殿傳送門"
 L["Portal to Sanctum of Light"] = "聖光會堂傳送門"

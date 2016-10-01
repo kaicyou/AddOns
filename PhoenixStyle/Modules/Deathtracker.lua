@@ -465,6 +465,74 @@ function psdeathrepfindactiveboss()
     elseif pswasonbossd210 then
 	  psdeathrepbossnametemp=psbossnames[3][2][10]
 	end
+	
+    if pswasonbossd31 then
+      psdeathrepbossnametemp=psbossnames[3][3][1]
+    elseif pswasonbossd32 then
+      psdeathrepbossnametemp=psbossnames[3][3][2]
+    elseif pswasonbossd33 then
+      psdeathrepbossnametemp=psbossnames[3][3][3]
+    elseif pswasonbossd34 then
+      psdeathrepbossnametemp=psbossnames[3][3][4]
+    elseif pswasonbossd35 then
+      psdeathrepbossnametemp=psbossnames[3][3][5]
+    elseif pswasonbossd36 then
+      psdeathrepbossnametemp=psbossnames[3][3][6]
+    elseif pswasonbossd37 then
+	  psdeathrepbossnametemp=psbossnames[3][3][7]
+    elseif pswasonbossd38 then
+	  psdeathrepbossnametemp=psbossnames[3][3][8]
+    elseif pswasonbossd39 then
+	  psdeathrepbossnametemp=psbossnames[3][3][9]
+    elseif pswasonbossd310 then
+	  psdeathrepbossnametemp=psbossnames[3][3][10]
+    elseif pswasonbossd311 then
+	  psdeathrepbossnametemp=psbossnames[3][3][11]
+    elseif pswasonbossd312 then
+	  psdeathrepbossnametemp=psbossnames[3][3][12]
+    elseif pswasonbossd313 then
+	  psdeathrepbossnametemp=psbossnames[3][3][13]
+	end
+  end
+  
+   if IsAddOnLoaded("PhoenixStyleMod_Legion") then
+    if pswasonbossLegion11 then
+      psdeathrepbossnametemp=psbossnames[4][1][1]
+    elseif pswasonbossLegion12 then
+      psdeathrepbossnametemp=psbossnames[4][1][2]
+    elseif pswasonbossLegion13 then
+      psdeathrepbossnametemp=psbossnames[4][1][3]
+    elseif pswasonbossLegion14 then
+      psdeathrepbossnametemp=psbossnames[4][1][4]
+    elseif pswasonbossLegion15 then
+      psdeathrepbossnametemp=psbossnames[4][1][5]
+    elseif pswasonbossLegion16 then
+      psdeathrepbossnametemp=psbossnames[4][1][6]
+    elseif pswasonbossLegion17 then
+	  psdeathrepbossnametemp=psbossnames[4][1][7]
+	end
+	
+    if pswasonbossLegion21 then
+      psdeathrepbossnametemp=psbossnames[4][2][1]
+    elseif pswasonbossLegion22 then
+      psdeathrepbossnametemp=psbossnames[4][2][2]
+    elseif pswasonbossLegion23 then
+      psdeathrepbossnametemp=psbossnames[4][2][3]
+    elseif pswasonbossLegion24 then
+      psdeathrepbossnametemp=psbossnames[4][2][4]
+    elseif pswasonbossLegion25 then
+      psdeathrepbossnametemp=psbossnames[4][2][5]
+    elseif pswasonbossLegion26 then
+      psdeathrepbossnametemp=psbossnames[4][2][6]
+    elseif pswasonbossLegion27 then
+	  psdeathrepbossnametemp=psbossnames[4][2][7]
+    elseif pswasonbossLegion28 then
+	  psdeathrepbossnametemp=psbossnames[4][2][8]
+    elseif pswasonbossLegion29 then
+	  psdeathrepbossnametemp=psbossnames[4][2][9]
+    elseif pswasonbossLegion210 then
+	  psdeathrepbossnametemp=psbossnames[4][2][10]
+	end
   end
 end
 

@@ -15,7 +15,7 @@ end
 
 ralldatabase()
 
-  achievementsreminderver=7.000
+  achievementsreminderver=7.008
 
 
 	if ralloptions==nil then ralloptions={1,1,0,0,0,0,1,0,0,0,0,0} end
@@ -1383,7 +1383,7 @@ if ralloptions[2]==1 then
 			if ralltrack[rallcolonka][i]==0 and ralltip[rallcolonka]~=ramainbattleground then
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnoaddontrack..")|r"
 			end
-			if rallboss[rallcolonka][i][1]==0 and ralltip[rallcolonka]~=ramainbattleground then
+			if rallboss[rallcolonka][i][1]==0 and ralltip[rallcolonka]~=ramainbattleground and rallcontent[rallcolonka]~=6 then
 					texttableout[#texttableout]=texttableout[#texttableout].." ("..rallnotfromboss..")"
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnotfromboss..")|r"
 			end
@@ -1449,7 +1449,7 @@ elseif ralloptions[3]==1 then
 			if ralltrack[rallcolonka][i]==0 and ralltip[rallcolonka]~=ramainbattleground then
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnoaddontrack..")|r"
 			end
-			if rallboss[rallcolonka][i][1]==0 and ralltip[rallcolonka]~=ramainbattleground then
+			if rallboss[rallcolonka][i][1]==0 and ralltip[rallcolonka]~=ramainbattleground and rallcontent[rallcolonka]~=6 then
 					texttableout[#texttableout]=texttableout[#texttableout].." ("..rallnotfromboss..")"
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnotfromboss..")|r"
 			end
@@ -1499,7 +1499,7 @@ elseif ralloptions[4]==1 then
 			if ralltrack[rallcolonka][i]==0 and ralltip[rallcolonka]~=ramainbattleground then
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnoaddontrack..")|r"
 			end
-			if rallboss[rallcolonka][i][1]==0 and ralltip[rallcolonka]~=ramainbattleground then
+			if rallboss[rallcolonka][i][1]==0 and ralltip[rallcolonka]~=ramainbattleground and rallcontent[rallcolonka]~=6 then
 					texttableout[#texttableout]=texttableout[#texttableout].." ("..rallnotfromboss..")"
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnotfromboss..")|r"
 			end
@@ -1563,7 +1563,7 @@ elseif ralloptions[5]==1 then
 			if ralltrack[rallcolonka][i]==0 and ralltip[rallcolonka]~=ramainbattleground then
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnoaddontrack..")|r"
 			end
-			if rallboss[rallcolonka][i][1]==0 and ralltip[rallcolonka]~=ramainbattleground then
+			if rallboss[rallcolonka][i][1]==0 and ralltip[rallcolonka]~=ramainbattleground and rallcontent[rallcolonka]~=6 then
 					texttableout[#texttableout]=texttableout[#texttableout].." ("..rallnotfromboss..")"
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnotfromboss..")|r"
 			end
@@ -1616,7 +1616,7 @@ elseif ralloptions[6]==1 then
 			if ralltrack[rallcolonka][i]==0 and ralltip[rallcolonka]~=ramainbattleground then
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnoaddontrack..")|r"
 			end
-			if rallboss[rallcolonka][i][1]==0 and ralltip[rallcolonka]~=ramainbattleground then
+			if rallboss[rallcolonka][i][1]==0 and ralltip[rallcolonka]~=ramainbattleground and rallcontent[rallcolonka]~=6 then
 					texttableout[#texttableout]=texttableout[#texttableout].." ("..rallnotfromboss..")"
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnotfromboss..")|r"
 			end
@@ -2250,7 +2250,7 @@ if ralloptionsmanual[1]==1 then
       end
       end
 
-			if rallboss[locrallcolonka][i][1]==0 and ralltip[locrallcolonka]~=ramainbattleground then
+			if rallboss[locrallcolonka][i][1]==0 and ralltip[locrallcolonka]~=ramainbattleground and rallcontent[locrallcolonka]~=6 then
 					texttableout[#texttableout]=texttableout[#texttableout].." ("..rallnotfromboss..")"
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnotfromboss..")|r"
 			end
@@ -2306,7 +2306,7 @@ elseif ralloptionsmanual[2]==1 then
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallachdonel2..")|r"
 			end
 
-			if rallboss[locrallcolonka][i][1]==0 and ralltip[locrallcolonka]~=ramainbattleground then
+			if rallboss[locrallcolonka][i][1]==0 and ralltip[locrallcolonka]~=ramainbattleground and rallcontent[locrallcolonka]~=6 then
 					texttableout[#texttableout]=texttableout[#texttableout].." ("..rallnotfromboss..")"
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnotfromboss..")|r"
 			end
@@ -2350,7 +2350,7 @@ elseif ralloptionsmanual[3]==1 then
       end
       end
 
-			if rallboss[locrallcolonka][i][1]==0 and ralltip[locrallcolonka]~=ramainbattleground then
+			if rallboss[locrallcolonka][i][1]==0 and ralltip[locrallcolonka]~=ramainbattleground and rallcontent[locrallcolonka]~=6 then
 					texttableout[#texttableout]=texttableout[#texttableout].." ("..rallnotfromboss..")"
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnotfromboss..")|r"
 			end
@@ -2407,7 +2407,7 @@ elseif ralloptionsmanual[4]==1 then
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallachdonel2..")|r"
 			end
 
-			if rallboss[locrallcolonka][i][1]==0 and ralltip[locrallcolonka]~=ramainbattleground then
+			if rallboss[locrallcolonka][i][1]==0 and ralltip[locrallcolonka]~=ramainbattleground and rallcontent[locrallcolonka]~=6 then
 					texttableout[#texttableout]=texttableout[#texttableout].." ("..rallnotfromboss..")"
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnotfromboss..")|r"
 			end
@@ -2450,7 +2450,7 @@ elseif ralloptionsmanual[5]==1 then
       end
       end
 
-			if rallboss[locrallcolonka][i][1]==0 and ralltip[locrallcolonka]~=ramainbattleground then
+			if rallboss[locrallcolonka][i][1]==0 and ralltip[locrallcolonka]~=ramainbattleground and rallcontent[locrallcolonka]~=6 then
 					texttableout[#texttableout]=texttableout[#texttableout].." ("..rallnotfromboss..")"
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnotfromboss..")|r"
 			end
@@ -2505,7 +2505,7 @@ elseif ralloptionsmanual[6]==1 then
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallachdonel2..")|r"
 			end
 
-			if rallboss[locrallcolonka][i][1]==0 and ralltip[locrallcolonka]~=ramainbattleground then
+			if rallboss[locrallcolonka][i][1]==0 and ralltip[locrallcolonka]~=ramainbattleground and rallcontent[locrallcolonka]~=6 then
 					texttableout[#texttableout]=texttableout[#texttableout].." ("..rallnotfromboss..")"
 					texttableout2[#texttableout2]=texttableout2[#texttableout2].." |cffff0000("..rallnotfromboss..")|r"
 			end

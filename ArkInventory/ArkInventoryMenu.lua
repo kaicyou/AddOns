@@ -932,6 +932,7 @@ function ArkInventory.MenuItemOpen( frame )
 		local slot_id = frame.ARK_Data.slot_id
 		local codex = ArkInventory.GetLocationCodex( loc_id )
 		local i = ArkInventory.Frame_Item_GetDB( frame )
+		local info = ArkInventory.ObjectInfoArray( i.h )
 		
 		local isEmpty = false
 		if not i or i.h == nil then
@@ -950,7 +951,7 @@ function ArkInventory.MenuItemOpen( frame )
 		end
 		
 		local ic = select( 5, ArkInventory.GetItemQualityColor( i.q ) )
-		local itemname = string.format( "%s%s%s", ic, select( 3, ArkInventory.ObjectInfo( i.h ) ) or "", FONT_COLOR_CODE_CLOSE )
+		local itemname = string.format( "%s%s%s", ic, info.name or "", FONT_COLOR_CODE_CLOSE )
 		
 		local cat0, cat1, cat2 = ArkInventory.ItemCategoryGet( i )
 		local bar_id = abs( ArkInventory.CategoryLocationGet( loc_id, cat0 ) )
@@ -1127,8 +1128,7 @@ function ArkInventory.MenuItemOpen( frame )
 							"isTitle", true
 						)
 						
-						local osd = ArkInventory.ObjectStringDecode( i.h )
-						local class, id = osd[1], osd[2]
+						local class, id = info.class, info.id
 						local bagtype = ArkInventory.Const.Slot.Data[ArkInventory.BagType( blizzard_id )].type
 						
 						ArkInventory.Lib.Dewdrop:AddLine( )
@@ -1142,63 +1142,59 @@ function ArkInventory.MenuItemOpen( frame )
 						
 						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["CATEGORY_CLASS"], LIGHTYELLOW_FONT_COLOR_CODE, class ) )
 						
+							ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["NAME"], LIGHTYELLOW_FONT_COLOR_CODE, info.name or "" ) )
+							
+							ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_ITEMSTRING"], LIGHTYELLOW_FONT_COLOR_CODE, info.osd.h ) )
+							
 						if i.h then
 							
-							local class, ilnk, inam, itxt, irar, ilvl, imin, ityp, isub, icount, iloc, icost, isource, ibonus = ArkInventory.ObjectInfo( i.h )
-							
-							iloc = _G[iloc]
-							if not iloc then
-								iloc = ""
-							end
-
-							ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["NAME"], LIGHTYELLOW_FONT_COLOR_CODE, inam ) )
-							
-							local istring = ArkInventory.ObjectInfoItemString( ilnk )
-							ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_ITEMSTRING"], LIGHTYELLOW_FONT_COLOR_CODE, istring ) )
-							
-							if ( class == "item" ) then
+							if info.class == "item" then
 								
 								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ITEM_ACCOUNTBOUND, LIGHTYELLOW_FONT_COLOR_CODE, ( i.ab and YES ) or NO ) )
 								
 								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ITEM_SOULBOUND, LIGHTYELLOW_FONT_COLOR_CODE, ( i.sb and YES ) or NO ) )
 								
-								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s (%s)", QUALITY, LIGHTYELLOW_FONT_COLOR_CODE, irar, _G[string.format( "ITEM_QUALITY%s_DESC", irar )] ) )
+								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s (%s)", QUALITY, LIGHTYELLOW_FONT_COLOR_CODE, info.q, _G[string.format( "ITEM_QUALITY%s_DESC", info.q )] ) )
 								
-								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_LVL_ITEM"], LIGHTYELLOW_FONT_COLOR_CODE, ilvl ) )
-								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_LVL_USE"], LIGHTYELLOW_FONT_COLOR_CODE, imin ) )
+								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_LVL_ITEM"], LIGHTYELLOW_FONT_COLOR_CODE, info.ilvl ) )
+								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_LVL_USE"], LIGHTYELLOW_FONT_COLOR_CODE, info.uselevel ) )
 								
-								if isource > 0 then
-									ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_SOURCE"], LIGHTYELLOW_FONT_COLOR_CODE, isource ) )
+								if info.osd.sourceid > 0 then
+									ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_SOURCE"], LIGHTYELLOW_FONT_COLOR_CODE, info.osd.sourceid ) )
 								end
 								
-								if ibonus then
+								if info.osd.bonusids then
 									local tmp = { }
-									for k in pairs( ibonus ) do
+									for k in pairs( info.osd.bonusids ) do
 										table.insert( tmp, k )
 									end
 									ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_BONUS"], LIGHTYELLOW_FONT_COLOR_CODE, table.concat( tmp, ", " ) ) )
 								end
 								
-								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s - %s", ArkInventory.Localise["MENU_ITEM_DEBUG_TYPE"], LIGHTYELLOW_FONT_COLOR_CODE, ityp, GetItemClassInfo( ityp ) ) )
-								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s - %s", ArkInventory.Localise["MENU_ITEM_DEBUG_SUBTYPE"], LIGHTYELLOW_FONT_COLOR_CODE, isub, GetItemSubClassInfo( ityp, isub ) ) )
+								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s (%s)", ArkInventory.Localise["MENU_ITEM_DEBUG_TYPE"], LIGHTYELLOW_FONT_COLOR_CODE, info.itemtypeid, GetItemClassInfo( info.itemtypeid ) ) )
+								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s (%s)", ArkInventory.Localise["MENU_ITEM_DEBUG_SUBTYPE"], LIGHTYELLOW_FONT_COLOR_CODE, info.itemsubtypeid, GetItemSubClassInfo( info.itemtypeid, info.itemsubtypeid ) ) )
 								
-								if iloc ~= "" then
-									ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_EQUIP"], LIGHTYELLOW_FONT_COLOR_CODE, iloc ) )
+
+								if info.equiploc ~= "" then
+									local iloc = _G[info.equiploc]
+									if iloc then
+										ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_EQUIP"], LIGHTYELLOW_FONT_COLOR_CODE, iloc ) )
+									end
 								end
 								
-								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", AUCTION_STACK_SIZE, LIGHTYELLOW_FONT_COLOR_CODE, icount ) )
-								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["TEXTURE"], LIGHTYELLOW_FONT_COLOR_CODE, itxt ) )
+								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", AUCTION_STACK_SIZE, LIGHTYELLOW_FONT_COLOR_CODE, info.stacksize ) )
+								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["TEXTURE"], LIGHTYELLOW_FONT_COLOR_CODE, info.texture ) )
 								
 								local ifam = GetItemFamily( i.h )
 								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_FAMILY"], LIGHTYELLOW_FONT_COLOR_CODE, ifam ) )
 								
-							elseif ( class == "battlepet" ) then
+							elseif info.class == "battlepet" then
 								
 								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s (%s)", QUALITY, LIGHTYELLOW_FONT_COLOR_CODE, i.q, _G[string.format( "ITEM_QUALITY%s_DESC", i.q )] ) )
 								
-								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_LVL_ITEM"], LIGHTYELLOW_FONT_COLOR_CODE, ilvl ) )
+								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_LVL_ITEM"], LIGHTYELLOW_FONT_COLOR_CODE, info.ilvl ) )
 								
-								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s (%s)", ArkInventory.Localise["MENU_ITEM_DEBUG_TYPE"], LIGHTYELLOW_FONT_COLOR_CODE, ityp, ArkInventory.PetJournal.PetTypeName( ityp ) or ArkInventory.Localise["UNKNOWN"] ) )
+								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s (%s)", ArkInventory.Localise["MENU_ITEM_DEBUG_TYPE"], LIGHTYELLOW_FONT_COLOR_CODE, info.itemsubtypeid, ArkInventory.PetJournal.PetTypeName( info.itemsubtypeid ) or ArkInventory.Localise["UNKNOWN"] ) )
 								
 								if i.guid then
 									
@@ -1213,7 +1209,7 @@ function ArkInventory.MenuItemOpen( frame )
 									
 								end
 								
-							elseif ( class == "spell" ) then
+							elseif info.class == "spell" then
 								
 								-- mounts
 								
@@ -1223,7 +1219,7 @@ function ArkInventory.MenuItemOpen( frame )
 								
 								ArkInventory.Lib.Dewdrop:AddLine( )
 								
-								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["TEXTURE"], LIGHTYELLOW_FONT_COLOR_CODE, itxt ) )
+								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["TEXTURE"], LIGHTYELLOW_FONT_COLOR_CODE, info.texture ) )
 								
 							end
 							
@@ -1511,6 +1507,7 @@ function ArkInventory.MenuBagOpen( frame )
 		local player_id = codex.player.data.info.player_id
 		
 		local i = ArkInventory.Frame_Item_GetDB( frame )
+		local info = ArkInventory.ObjectInfoArray( i.h )
 		
 		local isEmpty = false
 		if not i or i.h == nil then
@@ -1840,39 +1837,35 @@ function ArkInventory.MenuBagOpen( frame )
 						
 						ArkInventory.Lib.Dewdrop:AddLine( )
 						
-						local class, ilnk, inam, itxt, irar, ilvl, imin, ityp, isub, icount, iloc = ArkInventory.ObjectInfo( i.h )
-						local osd = ArkInventory.ObjectStringDecode( i.h )
-						local id = osd[2]
-						
-						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["NAME"], LIGHTYELLOW_FONT_COLOR_CODE, inam ) )
+						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["NAME"], LIGHTYELLOW_FONT_COLOR_CODE, info.name ) )
 						
 						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s (%s)", ArkInventory.Localise["LOCATION"], LIGHTYELLOW_FONT_COLOR_CODE, loc_id, ArkInventory.Global.Location[loc_id].Name ) )
 						
-						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["CATEGORY_CLASS"], LIGHTYELLOW_FONT_COLOR_CODE, class ) )
+						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["CATEGORY_CLASS"], LIGHTYELLOW_FONT_COLOR_CODE, info.class ) )
 
-						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s (%s)", QUALITY, LIGHTYELLOW_FONT_COLOR_CODE, irar, _G[string.format( "ITEM_QUALITY%s_DESC", irar )] ) )
+						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s (%s)", QUALITY, LIGHTYELLOW_FONT_COLOR_CODE, info.q, _G[string.format( "ITEM_QUALITY%s_DESC", info.q )] ) )
 						
 						ArkInventory.Lib.Dewdrop:AddLine(
-							"text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_AI_ID_SHORT"], LIGHTYELLOW_FONT_COLOR_CODE, id ),
+							"text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_AI_ID_SHORT"], LIGHTYELLOW_FONT_COLOR_CODE, info.id ),
 							"hasArrow", true,
 							"hasEditBox", true,
-							"editBoxText", id
+							"editBoxText", info.id
 						)
 						
 						ArkInventory.Lib.Dewdrop:AddLine(
-							"text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_TYPE"], LIGHTYELLOW_FONT_COLOR_CODE, ityp ),
+							"text", string.format( "%s: %s%s (%s)", ArkInventory.Localise["MENU_ITEM_DEBUG_TYPE"], LIGHTYELLOW_FONT_COLOR_CODE, info.itemtypeid, info.itemtype ),
 							"hasArrow", true,
 							"hasEditBox", true,
-							"editBoxText", ityp
+							"editBoxText", info.itemtypeid
 						)
 						ArkInventory.Lib.Dewdrop:AddLine(
-							"text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_SUBTYPE"], LIGHTYELLOW_FONT_COLOR_CODE, isub ),
+							"text", string.format( "%s: %s%s (%s)", ArkInventory.Localise["MENU_ITEM_DEBUG_SUBTYPE"], LIGHTYELLOW_FONT_COLOR_CODE, info.itemsubtypeid, info.itemsubtype ),
 							"hasArrow", true,
 							"hasEditBox", true,
-							"editBoxText", isub
+							"editBoxText", info.itemsubtypeid
 						)
 						
-						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["TEXTURE"], LIGHTYELLOW_FONT_COLOR_CODE, itxt ) )
+						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["TEXTURE"], LIGHTYELLOW_FONT_COLOR_CODE, info.texture ) )
 						
 						local ifam = GetItemFamily( i.h )
 						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_FAMILY"], LIGHTYELLOW_FONT_COLOR_CODE, ifam ) )
@@ -2877,7 +2870,7 @@ function ArkInventory.MenuLDBTrackingCurrencyOpen( frame )
 								
 								local h = GetCurrencyListLink( j )
 								local osd = ArkInventory.ObjectStringDecode( h )
-								local id = osd[2]
+								local id = osd.id
 								
 								local checked = me.player.data.ldb.tracking.currency.tracked[id]
 								

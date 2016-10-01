@@ -953,7 +953,7 @@
 	</Frame>
 	
 <!-- END OF MAIN FRAME -->
-
+	
 	<GameTooltip name="ARKINV_RuleTooltip" inherits="ArkScanTooltipTemplate" />
 	
 </Ui>

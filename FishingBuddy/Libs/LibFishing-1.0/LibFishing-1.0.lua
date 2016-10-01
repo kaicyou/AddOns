@@ -7,7 +7,7 @@ Licensed under a Creative Commons "Attribution Non-Commercial Share Alike" Licen
 --]]
 
 local MAJOR_VERSION = "LibFishing-1.0"
-local MINOR_VERSION = 90976
+local MINOR_VERSION = 90977
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub") end
 
@@ -255,12 +255,14 @@ function FishLib:UpdateLureInventory()
 			if (startTime == 0) then
 				-- get the name so we can check enchants
 				lure.n,_,_,_,_,_,_,_,_,_ = GetItemInfo(id);
-				if ( lure.b > b or (lure.w and FishLib:IsWorn(id))) then
-					b = lure.b;
-					if ( lure.u ) then
-						tinsert(useinventory, lure);
-					elseif ( lure.s <= rawskill ) then
-						tinsert(lureinventory, lure);
+				if (not lure.w or FishLib:IsWorn(id)) then
+					if ( lure.b > b) then
+						b = lure.b;
+						if ( lure.u ) then
+							tinsert(useinventory, lure);
+						elseif ( lure.s <= rawskill ) then
+							tinsert(lureinventory, lure);
+						end
 					end
 				end
 			end

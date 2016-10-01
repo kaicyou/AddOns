@@ -460,6 +460,10 @@ bagupdateframe:Hide();
 local autopoleframe = CreateFrame("Frame");
 autopoleframe:Hide();
 
+-- we want to dismiss the loot window as fast as possible
+local lootframe = CreateFrame("Frame");
+lootframe:Hide();
+
 local LastCastTime = nil;
 local FISHINGSPAN = 60;
 
@@ -1124,15 +1128,27 @@ end
 
 local function GetFishieRaw(fishid)
 	local fi = FishingBuddy_Info["Fishies"][fishid];
-	if( fi ) then
-		return fishid,
-				 fi.texture,
-				 fi.color,
-				 fi.quantity,
-				 fi.quality,
-				 fi[CurLoc],
-				 fi.quest;
+	if ( not fi or not fi[CurLoc] ) then
+		local _,_,_,_,it,_,_,_,_,_ = FL:GetItemInfo(link);
+		local color, id, name = FL:SplitFishLink(link);
+
+		if (not fi) then
+			return fishid, it, color, 1, nil, name, nil;
+		else
+			fi.texture = it;
+			fi.color = color;
+			fi.quantity = 1;
+			fi[CurLoc] = name;
+		end
 	end
+
+	return fishid,
+			fi.texture,
+			fi.color,
+			fi.quantity,
+			fi.quality,
+			fi[CurLoc],
+			fi.quest;
 end
 FishingBuddy.GetFishieRaw = GetFishieRaw;
 
@@ -1884,6 +1900,29 @@ local function DumpZoneEvents()
 	ZoneEvents = nil;
 end
 
+local lootcache = {}
+local lootcheck = false;
+local lootcount = 0;
+local function ProcessFishLoot()
+	local zone, subzone = FL:GetZoneInfo();
+	for _,info in ipairs(lootcache) do
+		local texture, fishie, quantity, quality, link = info.texture, info.fishie, info.quantity, info.quality, info.link;
+		local nm,_,_,_,it,st,_,el,_,il = FL:GetItemInfo(link);
+		local color, id, name = FL:SplitFishLink(link);
+
+		-- handle things we can't actually count that might be in our fish (e.g. Garrison Resources)
+		if (id) then
+			AddFishie(color, id, name, zone, subzone, texture, quantity, quality, nil, it, st, poolhint and (index == 1));
+			SetFishingLevel(nil, zone, subzone, id);
+		end
+		lootcount = lootcount + 1;
+		lootcheck = true;
+	end
+	lootframe:Hide();
+	lootcache = {};
+end
+lootframe:SetScript("OnUpdate", ProcessFishLoot);
+
 FishingBuddy.OnEvent = function(self, event, ...)
 --	  local line = event;
 --	  for idx=1,select("#",...) do
@@ -1893,10 +1932,20 @@ FishingBuddy.OnEvent = function(self, event, ...)
 	local arg1 = ...;
 
 -- TrackZoneEvents(event);
-	if ( event == "PLAYER_EQUIPMENT_CHANGED" or
+    if ( event == "PLAYER_EQUIPMENT_CHANGED" or
 		  event == "WEAR_EQUIPMENT_SET" or
-		  event == "EQUIPMENT_SWAP_FINISHED" or
-		  event == "BAG_UPDATE" ) then
+		  event == "EQUIPMENT_SWAP_FINISHED") then
+		FishingMode();
+    elseif (event == "BAG_UPDATE" ) then
+		if (lootcheck) then
+			if (lootcount > 0) then
+				lootcount = lootcount - 1;
+			end
+			if (lootcount == 0) then
+				lootcheck = false;
+				FishingBuddy.WatchUpdate();
+			end
+		end
 		FishingMode();
 	elseif ( event == "LOOT_OPENED" ) then		
 		local doautoloot = ShouldAutoLoot() and (GetCVar("autoLootDefault") ~= "1" );
@@ -1909,31 +1958,27 @@ FishingBuddy.OnEvent = function(self, event, ...)
 			end
 			
 			-- if we want to autoloot, and Blizz isn't, let's grab stuff
-			local zone, subzone = FL:GetZoneInfo();
 			local checkloot = LootSlotIsItem or LootSlotHasItem;
 			for index = 1, GetNumLootItems(), 1 do
+				local texture, fishie, quantity, quality, locked = GetLootSlotInfo(index);
 				if (checkloot(index)) then
--- lootIcon, lootName, lootQuantity, rarity, locked = GetLootSlotInfo(index)
--- itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount,itemEquipLoc, itemTexture = GetItemInfo(itemID or "itemString" or "itemName" or "itemLink") ;
-					local texture, fishie, quantity, quality = GetLootSlotInfo(index);
 					local link = GetLootSlotLink(index);
-					local nm,_,_,_,it,st,_,el,_,il = FL:GetItemInfo(link);
-					local color, id, name = FL:SplitFishLink(link);
+
+					-- should we track "locked" items we couldn't loot?'
+					tinsert(lootcache, {texture = texture, fishie = fishie, quantity = quantity, quality = quality, link = link});
+					local _, id, _ = FL:SplitFishLink(link);
 
 					-- handle things we can't actually count that might be in our fish (e.g. Garrison Resources)
-					if (id) then
-						AddFishie(color, id, name, zone, subzone, texture, quantity, quality, nil, it, st, poolhint and (index == 1));
-						SetFishingLevel(nil, zone, subzone, id);
-						if (quality == 0 and FL:IsMissedFish(id)) then
-							DoEscaped = 1;
-						end
+					if (id and quality == 0 and FL:IsMissedFish(id)) then
+						DoEscaped = 1;
 					end
 				end
-				if (doautoloot) then
+				if (not locked and doautoloot) then
 					LootSlot(index);
 				end
 			end
 	
+			lootframe:Show();
 			ClearTooltipText();
 			FL:ExtendDoubleClick();
 			LureState = 0;
@@ -1947,7 +1992,7 @@ FishingBuddy.OnEvent = function(self, event, ...)
 		end
 	elseif ( event == "LOOT_CLOSED" ) then
 		-- nothing to do here at the moment
-		DoAutoOpenLoot = false;
+		DoAutoOpenLoot = nil;
 	elseif ( event == "PLAYER_LOGIN" ) then
 		FL:CreateSAButton();
 		FL:SetSAMouseEvent(FishingBuddy.GetSetting("MouseEvent"));

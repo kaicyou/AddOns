@@ -453,7 +453,8 @@ if not L then return end
 	L["CONFIG_JUNK"] = "Junk Items"
 	L["CONFIG_JUNK_SELL"] = "Auto Sell"
 	L["CONFIG_JUNK_SELL_TEXT"] = "Sell all junk as soon as you open a merchant window"
-	L["CONFIG_JUNK_SELL_NOTIFY"] = "Sold your junk for %s"
+	L["CONFIG_JUNK_SELL_NOTIFY_SOLD"] = "Sold your junk for %s"
+	L["CONFIG_JUNK_SELL_NOTIFY_DESTROYED"] = "Destroyed %s junk items"
 	L["CONFIG_JUNK_LIMIT"] = "Limit to Buyback"
 	L["CONFIG_JUNK_LIMIT_TEXT"] = "As a safety precaution stop selling your junk when the buyback limit (%i) is reached"
 	L["CONFIG_JUNK_DELETE_TEXT"] = "Delete junk that cannot be vendored (has no sell price)"
@@ -499,6 +500,8 @@ if not L then return end
 	L["CONFIG_SORTING_INCLUDE_VENDORPRICE_TEXT"] = "include vendor price (per current stack size) when sorting."
 	L["CONFIG_SORTING_INCLUDE_ID"] = "internal id"
 	L["CONFIG_SORTING_INCLUDE_ID_TEXT"] = "include internal id (class:id:soulbound) when sorting."
+	L["CONFIG_SORTING_INCLUDE_SLOTTYPE"] = "slot type"
+	L["CONFIG_SORTING_INCLUDE_SLOTTYPE_TEXT"] = "include slot type when sorting."
 	
 	L["CONFIG_SORTING_DIRECTION_TEXT"] = "select what direction you want your items sorted in"
 	L["CONFIG_SORTING_ORDER"] = "Sort Order"

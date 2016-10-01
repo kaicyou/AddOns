@@ -151,7 +151,7 @@ function Overachiever.ExamineAchievementTip(tooltip, link)
        Overachiever_Settings.Tooltip_ShowProgress_Other or Overachiever_Settings.Tooltip_ShowID) ) then
     local _, _, id = strfind(link, "achievement:(.+):")
     if (id) then
-      PlayerGUID = PlayerGUID or strsub(UnitGUID("player"), 3) -- !! not sure this is right any more
+      PlayerGUID = PlayerGUID or UnitGUID("player")
       local GUID
       id, GUID = strsplit(":", id);
       if (Overachiever.DEBUG_NoPlayerGUID) then  GUID = "NotMe";  end

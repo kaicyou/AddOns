@@ -501,13 +501,13 @@ end
 do
   local last_check, last_tiptext = 0
   local last_id, last_text, last_complete, last_angler
-  --local tooltipUsed
+  local tooltipUsed
 
   function Overachiever.ExamineOneLiner(tooltip)
   -- Unfortunately, there isn't a "GameTooltip:SetWorldObject" or similar type of thing, so we have to check for
   -- these sorts of tooltips in a less direct way.
 
-    --tooltipUsed = nil
+    tooltipUsed = nil
 
     --if (skipNextExamineOneLiner) then  skipNextExamineOneLiner = nil;  return;  end
     -- Skipping works because this function is consistently called after the functions that set skipNextExamineOneLiner to true.
@@ -558,9 +558,13 @@ do
         tooltip:AddLine(text, r, g, b)
         tooltip:AddTexture(AchievementIcon)
         tooltip:Show()
-		--tooltipUsed = true
+		tooltipUsed = true
       end
     end
+  end
+
+  local function delayedExamine()
+    if (GameTooltip:IsShown()) then  Overachiever.ExamineOneLiner(GameTooltip);  end
   end
 
   -- We need this function because something is making the tooltip refresh its text while it's open, causing us to lose what we added:
@@ -569,11 +573,16 @@ do
 	-- displayed or about to be "shown" again (even though the text might be the same as before), but the problem is that if it's the latter, our
 	-- OnShow hook (Overachiever.ExamineOneLiner) doesn't get called if the frame was still visible. So, we hide it, so when GameTooltip:Show() is
 	-- called next, our hook is always called. (And if it was the latter, the tooltip not being displayed, then hiding it *shouldn't* cause problems.)
-	tooltip:Hide()
-	-- Tried to use a variable to track when we needed to do this to avoid doing it all the time, just in case this conflicts with some tooltip addon
-    -- or something, but there are cases where it didn't work (e.g. when you have a mob's tooltip visible as you move the cursor to the triggering
-	-- world object):
-	--if (tooltipUsed) then  tooltip:Hide();  end
+	--tooltip:Hide()
+	-- We can't just do the above, as if causes the tooltip to be hidden when we don't want it to. (Depends on addons you're using. Seems most common in
+	-- my testing with buffs/debuffs that have a timer ticking.) So, we use a variable to track when we know we need to do this. However, that doesn't
+	-- catch all instances, so the C_Timer.After call is used to catch the rest. (We don't want to only use the timer call because if it's the refreshing
+	-- tooltip issue, what we add is for a brief moment not shown - repeatedly, every few seconds, since the tooltip keeps refreshing.)
+	if (tooltipUsed) then
+	  tooltip:Hide()
+	elseif (tooltip == GameTooltip) then
+	  C_Timer.After(0, delayedExamine)
+	end
   end
 end
 
@@ -582,8 +591,10 @@ end
 ----------------------
 
 -- All this consumable item tracking stuff really should be rewritten when you've got the time. (It's so disorganized and confusing because Blizzard kept changing things on me but I didn't want to take too long fixing things.)
+-- It should be much easier to add stuff in the new version, as well. Make it so you can just add to the data table; don't require additional lines of code
+-- to process it (e.g. instead of calling BuildItemLookupTab for each directly, use a loop through the table).
 
-local FoodCriteria, DrinkCriteria, FoodCriteria2, DrinkCriteria2, PandaEats, PandaEats2 = {}, {}, {}, {}, {}, {}
+local FoodCriteria, DrinkCriteria, FoodCriteria2, DrinkCriteria2, PandaEats, PandaEats2, DraenorEats, BrewfestEats, DarkmoonFaireEats = {}, {}, {}, {}, {}, {}, {}, {}, {}
 local numDrinksConsumed, numFoodConsumed
 
 local ConsumeItemAch = {
@@ -593,11 +604,14 @@ local ConsumeItemAch = {
   DrownYourSorrows = { "Item_consumed", L.ACH_CONSUME_COMPLETE, L.ACH_CONSUME_INCOMPLETE, L.ACH_CONSUME_INCOMPLETE_EXTRA, DrinkCriteria2 },
   PandarenCuisine = { "Item_consumed", L.ACH_CONSUME_COMPLETE, L.ACH_CONSUME_INCOMPLETE, L.ACH_CONSUME_INCOMPLETE_EXTRA, PandaEats, "PandaEats" },
   PandarenDelicacies = { "Item_consumed", L.ACH_CONSUME_COMPLETE, L.ACH_CONSUME_INCOMPLETE, L.ACH_CONSUME_INCOMPLETE_EXTRA, PandaEats2, "PandaEats2" },
+  DraenorCuisine = { "Item_consumed", L.ACH_CONSUME_COMPLETE, L.ACH_CONSUME_INCOMPLETE, L.ACH_CONSUME_INCOMPLETE_EXTRA, DraenorEats },
+  BrewfestDiet = { "Brewfest_consumed", L.ACH_CONSUME_COMPLETE, L.ACH_CONSUME_INCOMPLETE, L.ACH_CONSUME_INCOMPLETE_EXTRA, BrewfestEats },
+  DarkmoonFaireFeast = { "Darkmoon_consumed", L.ACH_CONSUME_COMPLETE, L.ACH_CONSUME_INCOMPLETE, L.ACH_CONSUME_INCOMPLETE_EXTRA, DarkmoonFaireEats },
 };
 
 --local lastitemTime, lastitemLink = 0
 
-function Overachiever.BuildItemLookupTab(THIS_VERSION, id, savedtab, tab, duptab)
+function Overachiever.BuildItemLookupTab(THIS_VERSION, id, savedtab, tab, duptab, alwaysLookup)
   if (id) then  -- Build lookup tables (since examining the criteria each time is time-consuming):
 -- This is separate from the BuildCriteriaLookupTab function because while that gave some good achievements
 -- involving consumable items, it also gave some that didn't fit well. This function instead uses hardcoded IDs
@@ -636,9 +650,12 @@ function Overachiever.BuildItemLookupTab(THIS_VERSION, id, savedtab, tab, duptab
       if (duptab) then
         tab[asset] = completed or 0
         if (duptab[asset]) then  duptab[asset] = completed or 0;  end
-      else
+      elseif (savedtab) then
         tab[asset] = savedtab[asset] or 0
+      else
+        tab[asset] = completed or 0
       end
+	  if (alwaysLookup and tab[asset] == 0) then  tab[asset] = -1;  end
       i = i + 1
       _, _, completed, _, _, _, _, asset = GetAchievementCriteriaInfo(id, i)
     end
@@ -676,6 +693,8 @@ function Overachiever.BuildItemLookupTab(THIS_VERSION, id, savedtab, tab, duptab
     Overachiever_CharVars_Consumed.Drink2 = Overachiever_CharVars_Consumed.Drink2 or {}
     Overachiever_CharVars_Consumed.PandaEats = Overachiever_CharVars_Consumed.PandaEats or {}
     Overachiever_CharVars_Consumed.PandaEats2 = Overachiever_CharVars_Consumed.PandaEats2 or {}
+    -- Saving char vars for these ones is pointless since the API gives us data on criteria completion: (some achievements from above should probably be given this treatment instead)
+    --Overachiever_CharVars_Consumed.Brewfest = Overachiever_CharVars_Consumed.Brewfest or {}
     needBuild = true
   else
     local oldver, oldbuild = strsplit("|", Overachiever_CharVars_Consumed.LastBuilt, 2)
@@ -699,6 +718,11 @@ function Overachiever.BuildItemLookupTab(THIS_VERSION, id, savedtab, tab, duptab
     ConsumeItemAch.PandarenCuisine[5], ConsumeItemAch.PandarenDelicacies[5] = PandaEats, PandaEats2
     if (Overachiever_Debug) then  chatprint("Skipped food/drink lookup table rebuild: Retrieved from saved variables.");  end
   end
+  -- Since the API gives us data on criteria completion, we don't need char vars for this so gather their data now: (some achievements from above should probably be given this treatment instead)
+  Overachiever.BuildItemLookupTab(nil, OVERACHIEVER_ACHID.DraenorCuisine, nil, DraenorEats, nil, true)
+  Overachiever.BuildItemLookupTab(nil, OVERACHIEVER_ACHID.BrewfestDiet, nil, BrewfestEats, nil, true)
+  Overachiever.BuildItemLookupTab(nil, OVERACHIEVER_ACHID.DarkmoonFaireFeast, nil, DarkmoonFaireEats, nil, true)
+
   Overachiever.Consumed_Default = nil
 end
 -- Run periodically (then "/dump TESTTAB") to see if Blizzard reinstated API-accessible tracking:
@@ -718,12 +742,20 @@ local function ItemConsumedCheck(ach, itemID)
   local isCrit = ach[5][itemID]
   if (isCrit) then
     local complete
-    if (ach[6]) then -- Special case for criteria we can't track by seeing what was consumed (consumed food/drink statistic doesn't change - Blizzard bug?) but CAN track through the achievement itself:
+	if (isCrit == -1) then
+      isCrit, complete = isCriteria_asset(id, itemID)
+      if (not isCrit) then  return;  end  -- That should never happen..
+      -- Update the table so we don't have to look this criteria up again:
+      if (complete) then  ach[5][itemID] = true;  end
+
+    elseif (ach[6]) then -- Special case for criteria we can't track by seeing what was consumed (consumed food/drink statistic doesn't change - Blizzard bug?) but CAN track through the achievement itself:
+	-- Note for rewrite: ach[6] is a pointless thing, isn't it? All the ones using it should instead be using this alwaysLookup (-1) thing instead and not use saved vars, right?
       isCrit, complete = isCriteria_asset(id, itemID)
       if (not isCrit) then  return;  end  -- That should never happen..
       -- Update the table for tracking purposes, just to be consistent (mostly for the saved variable, in case we use it in some other way in the future):
       ach[5][itemID] = complete or 0
       Overachiever_CharVars_Consumed[ ach[6] ][itemID] = complete or 0
+
     else
       complete = isCrit == true
     end
@@ -754,18 +786,33 @@ function Overachiever.ExamineItem(tooltip)
   if (not link) then  return;  end
   -- Could check IsUsableItem(link) to see if it's something in your inventory..
   local itemMinLevel, itemType, subtype = select(5, GetItemInfo(link))
-  if ((itemType == LBI["Consumable"] and (subtype == LBI["Food & Drink"] or subtype == LBI["Consumable"])) or
+  if ((itemType == LBI["Consumable"] and (subtype == LBI["Food & Drink"] or subtype == LBI["Consumable"] or subtype == LBI["Other"])) or
       (itemType == LBI["Trade Goods"] and subtype == LBI["Meat"])) then
     local _, _, itemID  = strfind(link, "item:(%d+)")
     itemID = tonumber(itemID)
     if (not itemID) then  return;  end  -- Ignores special objects not classified as normal items, like battlepets
     local id, text, complete, achcomplete
+	local idPrev, textPrev, completePrev, achcomplete
     for key,tab in pairs(ConsumeItemAch) do
       if (Overachiever_Settings[ tab[1] ]) then
         id, text, complete, achcomplete = ItemConsumedCheck(key, itemID)
-        if (text) then  break;  end
+        --if (text) then  break;  end -- Can't be as simple as that, or else we won't check multiple achievements to find the "least complete" one.
+		if (text) then
+		  if (not complete and not achcomplete) then
+		    RecentReminders[id] = time()
+            RecentReminders_Criteria[id] = name
+			--idPrev = nil
+		    --break
+			idPrev, textPrev, completePrev, achcompletePrev = id, text, complete, achcomplete
+		  elseif (not idPrev or (not achcomplete and (completePrev or not complete))) then
+		    idPrev, textPrev, completePrev, achcompletePrev = id, text, complete, achcomplete
+		  end
+		end
       end
     end
+	if (idPrev) then
+	  id, text, complete, achcomplete = idPrev, textPrev, completePrev, achcompletePrev
+	end
     if (text) then
       local r, g, b
       if (complete) then
@@ -775,7 +822,6 @@ function Overachiever.ExamineItem(tooltip)
         if (not achcomplete and tooltip == GameTooltip and itemMinLevel <= UnitLevel("player")) then
           -- Extra checks needed since the previous item sometimes shows up on the tooltip?
           PlayReminder()
-          RecentReminders[id] = time()
         end
       end
       tooltip:AddLine(text, r, g, b)
@@ -795,6 +841,7 @@ function Overachiever.ExamineItem(tooltip)
             -- Extra checks needed since the previous item sometimes shows up on the tooltip?
             PlayReminder()
             RecentReminders[id] = time()
+            RecentReminders_Criteria[id] = name
           end
         end
         tooltip:AddLine(text, r, g, b)
@@ -815,7 +862,7 @@ local function BagUpdate(...)
 
   --print("BagUpdate?",numFoodConsumed,oldF < numFoodConsumed, numDrinksConsumed,oldD < numDrinksConsumed)
 
-  local changeF, changeD = oldF < numFoodConsumed, oldD < numDrinksConsumed
+  local changeF, changeD = oldF < numFoodConsumed, oldD < numDrinksConsumed -- This isn't reliable any more. At least, it doesn't work for the newer achievements I've tried. Probably should rewrite this, not even bother grabbing these numbers, etc.
   if (changeF or changeD) then
     local itemID, old, new
     for i=1,select("#", ...),3 do

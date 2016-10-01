@@ -61,6 +61,7 @@ L["Only available after winning the PvP battle"] = "Disponible únicamente despu
 -- L["Orange"] = ""
 L["Orb of Translocation"] = "Orbe de traslado"
 L["Portals"] = "Portales"
+-- L["Portal to Dalaran"] = ""
 -- L["Portal to Dreadscar Rift"] = ""
 -- L["Portal to Netherlight Temple"] = ""
 -- L["Portal to Sanctum of Light"] = ""

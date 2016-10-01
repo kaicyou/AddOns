@@ -3077,8 +3077,9 @@ elseif rsctekclass=="mage" then rsccodeclass=8
 elseif rsctekclass=="warlock" then rsccodeclass=9
 elseif rsctekclass=="hunter" then rsccodeclass=10
 elseif rsctekclass=="monk" then rsccodeclass=11
+elseif rsctekclass=="demonhunter" then rsccodeclass=12
 end
-local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|CFF00FF96"}
+local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|CFFA330C9"}
 if rsccodeclass==0 then
 	return "|cff999999" --для цвет петов тест
 else
@@ -3600,9 +3601,9 @@ if (psautoinvsave[1]==1 or (pstempinv and pstempinv>GetTime())) and arg1 and arg
 		--if psautoinvsave[2]==1 then
 			for i=1, GetNumFriends() do
 				local a = select(1,GetFriendInfo(i))
-				if string.find(a, "%-") then a=string.sub(a,1,string.find(a, "%-")-1)
+				if a and string.find(a, "%-") then a=string.sub(a,1,string.find(a, "%-")-1)
 				end
-				if(a==arg2) then
+				if(a and a==arg2) then
 					friend=1
 				end
 			end
@@ -3611,8 +3612,8 @@ if (psautoinvsave[1]==1 or (pstempinv and pstempinv>GetTime())) and arg1 and arg
         local b,a=BNGetNumFriends()
         for i=1,a do
           local a1,a2,a3,a4,a5=BNGetFriendInfo(i)
-          if string.find(a5, "%-") then a5=string.sub(a5,1,string.find(a5, "%-")-1) end
-          if a5==arg2 then
+          if a5 and string.find(a5, "%-") then a5=string.sub(a5,1,string.find(a5, "%-")-1) end
+          if a5 and a5==arg2 then
             friend=1
           end
         end
@@ -3621,7 +3622,7 @@ if (psautoinvsave[1]==1 or (pstempinv and pstempinv>GetTime())) and arg1 and arg
         local b,a=BNGetNumFriends()
         for i=1,a do
           local a1,a2,a3,a4,a5=BNGetFriendInfo(i)
-          if a1==bnet then
+          if a1 and a1==bnet then
             friend=1
             for j=1,BNGetNumFriendToons(i) do
               local b1,b2,b3,b4=BNGetFriendToonInfo(i,j)
@@ -4242,7 +4243,7 @@ if pssisavedbossinfo[pssichose1] and #pssisavedbossinfo[pssichose1]>0 then
     if pssavedinfocheckexport[2]==1 then
       --все меняем в цвете --смена ТОЛЬКО красного и зеленого будет по ходу создания текста если эта откл
 
-      local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|cff00ff00","|cffff0000","|CFFFFFF00","|cff71d5ff","|cff999999"}
+      local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|CFFA330C9","|cff00ff00","|cffff0000","|CFFFFFF00","|cff71d5ff","|cff999999"}
       local tablecolor2={"#C79C6E","#C41F3B","#F58CBA","#FFFFFF","#0070DE","#FF7D0A","#FFF569","#69CCF0","#9482C9","#ABD473","#00FF96","green","red","orange","black","grey"}
 
       for i=1,#tablecolor do
@@ -4251,7 +4252,7 @@ if pssisavedbossinfo[pssichose1] and #pssisavedbossinfo[pssichose1]>0 then
       psstrochka=string.gsub(psstrochka, "|r", "[/color]")
     else
       --откл, но вырезать цвета нужно
-      local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|cff00ff00","|cffff0000","|CFFFFFF00","|cff71d5ff","|cff999999"}
+      local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|CFFA330C9","|cff00ff00","|cffff0000","|CFFFFFF00","|cff71d5ff","|cff999999"}
       for i=1,#tablecolor do
         psstrochka=string.gsub(psstrochka, tablecolor[i], "")
       end

@@ -26,7 +26,7 @@ privateTable.L = setmetatable({
 	["lootTypeGreed"]="взять самую дорогую",
 	["lootTypeNeed"]="взять самую нужную",
 	
-	["tournamentLabel"]="серебряный турнир", 
+	["tournamentLabel"]="Серебряный Турнир", 
 	["tournamentWrit"]="Удостоверение чемпиона", -- 46114
 	["tournamentPurse"]="Кошелек чемпиона",  -- 45724
 	
@@ -54,6 +54,9 @@ privateTable.L = setmetatable({
 	["gogreedy"]="Подходящих предметов не найдено. Берем самую дорогую.",
 	["rewardlag"]=BUTTON_LAG_LOOT_TOOLTIP.. '. '..ERR_QUEST_MUST_CHOOSE,
 	["stopitemfound"]="Среди наград есть %s. Выберите и наденьте предмет самостоятельно.",
+	["relictoggle"]="Отключить автолут Релика.",
+	["artifactpowertoggle"]="Отключить автолут Силы Артефакта.",
+	["ivechosen"]="выбрал первую опцию за тебя",
 	},
 	{__index = function(table, index) return index end})
 

@@ -1,13 +1,13 @@
 ## Interface: 70000
 ## Title: Overachiever - Trade
-## Version: 0.92
+## Version: 0.94
 ## Author: Tuhljin
 ## Notes: Trade Skills module.
 ## LoadOnDemand: 1
 ## LoadWith: Blizzard_TradeSkillUI
 ## Dependencies: Overachiever
 ## X-Child-Of: Overachiever
-## X-Curse-Packaged-Version: v0.92
+## X-Curse-Packaged-Version: v0.94
 ## X-Curse-Project-Name: Overachiever - achievement tools and tweaks
 ## X-Curse-Project-ID: overachiever
 ## X-Curse-Repository-ID: wow/overachiever/mainline

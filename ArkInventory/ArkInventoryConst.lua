@@ -247,6 +247,7 @@ ArkInventory.Const = { -- constants
 	PlayerIDSep = " - ",
 	
 	ItemClass = {
+		["EMPTY"] = -1,
 		["CONSUMABLE"] = LE_ITEM_CLASS_CONSUMABLE,
 		["CONSUMABLE_EXPLOSIVES_AND_DEVICES"] = 0,
 		["CONSUMABLE_POTION"] = 1,
@@ -425,6 +426,7 @@ ArkInventory.Const = { -- constants
 		vendorprice = true,
 		itemage = true,
 		id = true,
+		slottype = true,
 	},
 
 	DatabaseDefaults = { },

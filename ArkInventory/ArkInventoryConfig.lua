@@ -171,12 +171,12 @@ function ArkInventory.ConfigBlizzard( )
 				
 				local osd = ArkInventory.ObjectStringDecode( h )
 				
-				if osd[1] ~= "item" then
+				if osd.class ~= "item" then
 					ArkInventory.OutputWarning( "not an item: ", v )
 					return
 				end
 				
-				local id = osd[2]
+				local id = osd.id
 				local me = ArkInventory.GetPlayerCodex( )
 				
 				if ArkInventory.db.option.tracking.items[id] then
@@ -738,7 +738,7 @@ function ArkInventory.ConfigInternalCategoryRuleValidate( id )
 		
 	else
 		
-		ArkInventoryRules.Object = { test_rule=true, class="item", bag_id=0, slot_id=1, count=1, q=1, sb=1, h=string.format("item:%s:::::::", HEARTHSTONE_ITEM_ID ) }
+		ArkInventoryRules.SetObject( { test_rule=true, class="item", bag_id=0, slot_id=1, count=1, q=1, sb=1, h=string.format("item:%s:::::::", HEARTHSTONE_ITEM_ID ) } )
 		
 		local p, pem = loadstring( string.format( "return( %s )", data.formula ) )
 		

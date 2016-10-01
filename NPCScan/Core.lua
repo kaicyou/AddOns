@@ -6,6 +6,7 @@ local pairs = _G.pairs
 
 -- Libraries
 local string = _G.string
+local table = _G.table
 
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
@@ -13,7 +14,7 @@ local string = _G.string
 local AddOnFolderName, private = ...
 
 local LibStub = _G.LibStub
-local NPCScan = LibStub("AceAddon-3.0"):NewAddon(AddOnFolderName, "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceBucket-3.0")
+local NPCScan = LibStub("AceAddon-3.0"):NewAddon(AddOnFolderName, "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceBucket-3.0", "LibSink-2.0", "LibToast-1.0")
 local VL = LibStub("AceLocale-3.0"):GetLocale(AddOnFolderName .. "Vignette")
 
 local HereBeDragons = LibStub("HereBeDragons-1.0")
@@ -73,6 +74,9 @@ function NPCScan:OnInitialize()
 	db.RegisterCallback(self, "OnProfileCopied", "RefreshPreferences")
 	db.RegisterCallback(self, "OnProfileReset", "RefreshPreferences")
 
+	self:DefineSinkToast(AddOnFolderName, [[Interface\LFGFRAME\BattlenetWorking0]])
+	self:SetSinkStorage(db.profile.alert.output)
+
 	private.db = db
 
 	-- ----------------------------------------------------------------------------
@@ -103,26 +107,18 @@ function NPCScan:OnEnable()
 				private.NPCData[npcID] = npcData
 			end
 
-			-- This is technically incorrect, since NPCs can be in several locations, but it's primarily used for informational purposes where an
-			-- NPC _should_ ever only have a single location. For now.
-			npcData.mapID = mapID
-
+			npcData.mapIDs = npcData.mapIDs or {}
+			npcData.mapIDs[#npcData.mapIDs + 1] = mapID
 			npcData.npcID = npcID
 
-			local npcName = self:GetNPCNameFromID(npcID)
-			if not npcName then
-				private.Debug("NPC ID %d not found in localization table.", npcID)
-
-				npcName = ("%s_%d"):format(_G.UNKNOWN, npcID)
-			end
-
-			npcData.name = npcName
-
-			NPCIDFromName[npcName] = npcID
+			-- This sets values for NPCIDFromName, which is used for vignette detection.
+			self:GetNPCNameFromID(npcID)
 		end
 	end
 
 	for npcID, data in pairs(private.NPCData) do
+		table.sort(data.mapIDs, private.SortByMapNameThenByID)
+
 		if data.questID then
 			local npcIDs = QuestNPCs[data.questID]
 			if not npcIDs then
@@ -228,7 +224,7 @@ function NPCScan:OnEnable()
 						private.Debug("-- ----------------------------------------------------------------------------")
 					end
 
-					private.Debug("NPC %d (%s) has no questID.", npcID, npcData.name)
+					private.Debug("NPC %d (%s) has no questID.", npcID, self:GetNPCNameFromID(npcID))
 				end
 			end
 		end
@@ -305,40 +301,44 @@ do
 end
 
 do
-	local SUBCOMMAND_FUNCS = {
-		--[===[@debug@
-		DEBUG = function()
-			local debugger = private.GetDebugger()
-
-			if debugger:Lines() == 0 then
-				debugger:AddLine("Nothing to report.")
-				debugger:Display()
-				debugger:Clear()
-				return
-			end
-
-			debugger:Display()
-		end,
-		DUMP = function(arguments)
-			local dumpType, arguments = NPCScan:GetArgs(arguments, 2)
-
-			local func = private.DUMP_COMMANDS[dumpType]
-
-			if func then
-				private.TextDump = private.TextDump or _G.LibStub("LibTextDump-1.0"):New(AddOnFolderName)
-				func(arguments)
-			else
-				NPCScan:Print("Unknown dump command. Valid commands:")
-
-				for command in pairs(private.DUMP_COMMANDS) do
-					NPCScan:Printf("     %s", command)
-				end
-			end
-		end,
-		--@end-debug@]===]
-	}
+	local SUBCOMMAND_FUNCS
 
 	function NPCScan:ChatCommand(input)
+		SUBCOMMAND_FUNCS = SUBCOMMAND_FUNCS or {
+			ADD = private.AddUserDefinedNPC,
+			REMOVE = private.RemoveUserDefinedNPC,
+			--[===[@debug@
+			DEBUG = function()
+				local debugger = private.GetDebugger()
+
+				if debugger:Lines() == 0 then
+					debugger:AddLine("Nothing to report.")
+					debugger:Display()
+					debugger:Clear()
+					return
+				end
+
+				debugger:Display()
+			end,
+			DUMP = function(arguments)
+				local dumpType, arguments = NPCScan:GetArgs(arguments, 2)
+
+				local func = private.DUMP_COMMANDS[dumpType]
+
+				if func then
+					private.TextDump = private.TextDump or _G.LibStub("LibTextDump-1.0"):New(AddOnFolderName)
+					func(arguments)
+				else
+					NPCScan:Print("Unknown dump command. Valid commands:")
+
+					for command in pairs(private.DUMP_COMMANDS) do
+						NPCScan:Printf("     %s", command)
+					end
+				end
+			end,
+			--@end-debug@]===]
+		}
+
 		local subcommand, arguments = self:GetArgs(input, 2)
 
 		if subcommand then

@@ -1442,6 +1442,17 @@ function ArkInventory.DatabaseUpgradePostLoad( )
 	end
 	
 	
+	upgrade_version = 30708
+	if ArkInventory.acedb.global.player.version < upgrade_version then
+		
+		ArkInventory.EraseSavedData( )
+		
+		
+		ArkInventory.acedb.global.version = upgrade_version
+		
+	end
+
+	
 	
 	
 	

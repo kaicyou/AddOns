@@ -192,7 +192,6 @@ L["WOW_TOOLTIP_REQUIRES_CLASS"] = ConvertToCapture( ITEM_CLASSES_ALLOWED )
 L["WOW_TOOLTIP_REQUIRES"] = ConvertToCapture( ITEM_REQ_SKILL )
 L["WOW_TOOLTIP_ITEMUPGRADELEVEL"] = ConvertToCapture( ITEM_UPGRADE_TOOLTIP_FORMAT )
 L["WOW_TOOLTIP_ITEM_LEVEL"] = ConvertToCapture( ITEM_LEVEL )
-L["WOW_TOOLTIP_ARTIFACT_POWER"] = string.format( "%%d %s", ARTIFACT_POWER )
 L["WOW_TOOLTIP_ANCIENT_MANA"] = string.format( "%%d %s", ( GetCurrencyInfo( 1155 ) ) )
 
 L["WOW_TOOLTIP_CLASS"] = string.format( "^%s", string.gsub( ITEM_CLASSES_ALLOWED, "%%s", "(.+)", 1 ) )

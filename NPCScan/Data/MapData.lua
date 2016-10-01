@@ -919,10 +919,12 @@ local MapNPCs = {
 	-- Deepholm
 	-- ----------------------------------------------------------------------------
 	[640] = {
+		[3868] = true, -- Blood Seeker
 		[49822] = true, -- Jadefang
 		[50059] = true, -- Golgarok
 		[50060] = true, -- Terborus
 		[50062] = true, -- Aeonaxx
+		[50061] = true, -- Xariona
 	},
 	-- ----------------------------------------------------------------------------
 	-- The Cape of Stranglethorn
@@ -1818,6 +1820,7 @@ local MapNPCs = {
 		[93622] = true, -- Mortiferous
 		[99846] = true, -- Raging Earth
 		[99886] = true, -- Pacified Earth
+		[101596] = true, -- Charfeather
 		[102064] = true, -- Torrentius
 		[103975] = true, -- Jade Darkhaven
 		[105938] = true, -- Felwing
@@ -1840,9 +1843,11 @@ local MapNPCs = {
 		[109584] = true, -- Fjordun
 		[109630] = true, -- Immolian
 		[109641] = true, -- Arcanor Prime
+		[109677] = true, -- Chief Treasurer Jabrill
 		[109702] = true, -- Deepclaw
 		[109943] = true, -- Ana-Mouz
 		[110824] = true, -- Tideclaw
+		[111434] = true, -- Sea King Tidross
 		[112636] = true, -- Sinister Leyrunner
 		[112637] = true, -- Devious Sunrunner
 	},
@@ -1895,6 +1900,7 @@ local MapNPCs = {
 		[108255] = true, -- Coura, Mistress of Arcana
 		[108790] = true, -- Den Mother Ylva
 		[108885] = true, -- Aegir Wavecrusher
+		[109015] = true, -- Lagertha
 		[109318] = true, -- Runeseer Sigvid
 		[109994] = true, -- Stormtalon
 		[110363] = true, -- Roteye
@@ -1929,6 +1935,7 @@ local MapNPCs = {
 		[107924] = true, -- Darkfiend Tormentor
 		[108879] = true, -- Humongris
 		[109281] = true, -- Malisandra
+		[109692] = true, -- Lytheron
 		[109708] = true, -- Undergrell Ringleader
 		[110361] = true, -- Harbinger of Screams
 		[110562] = true, -- Bahagar
@@ -1990,14 +1997,33 @@ local MapNPCs = {
 		[110378] = true, -- Drugon the Frostblood
 	},
 	-- ----------------------------------------------------------------------------
+	-- Mardum, the Shattered Abyss
+	-- ----------------------------------------------------------------------------
+	[1028] = {
+		[97057] = true, -- Overseer Brutarg
+		[97058] = true, -- Count Nefarious
+		[97059] = true, -- King Voras
+		[97370] = true, -- General Volroth
+	},
+	-- ----------------------------------------------------------------------------
+	-- Vault of the Wardens
+	-- ----------------------------------------------------------------------------
+	[1032] = {
+		[96997] = true, -- Kethrazor
+		[97069] = true, -- Wrath-Lord Lekos
+	},
+	-- ----------------------------------------------------------------------------
 	-- Suramar
 	-- ----------------------------------------------------------------------------
 	[1033] = {
 		[99610] = true, -- Garvrulg
 		[99792] = true, -- Elfbane
+		[99899] = true, -- Vicious Whale Shark
+		[99929] = true, -- Flotsam
 		[100864] = true, -- Cora'kar
 		[102303] = true, -- Lieutenant Strathmar
 		[103183] = true, -- Rok'nash
+		[103203] = true, -- Jetsam
 		[103214] = true, -- Har'kess the Insatiable
 		[103223] = true, -- Hertha Grimdottir
 		[103575] = true, -- Reef Lord Raj'his
@@ -2051,9 +2077,16 @@ local MapNPCs = {
 		[101077] = true, -- Sekhan
 	},
 	-- ----------------------------------------------------------------------------
+	-- The Exodar
+	-- ----------------------------------------------------------------------------
+	[1091] = {
+		[110486] = true, -- Huk'roth the Huntmaster
+	},
+	-- ----------------------------------------------------------------------------
 	-- Eye of Azshara
 	-- ----------------------------------------------------------------------------
 	[1096] = {
+		[108543] = true, -- Dread Captain Thedon
 		[111573] = true, -- Kosumoth the Hungering
 	},
 }
@@ -2075,12 +2108,15 @@ local ContinentIDByDungeonMapID = {
 	[761] = private.ContinentID.Kalimdor, -- Razorfen Kraul
 	[764] = private.ContinentID.EasternKingdoms, -- Shadowfang Keep
 	[765] = private.ContinentID.EasternKingdoms, -- Stratholme
-	[795] = private.ContinentID.Kalimdor,-- Molten Front
+	[795] = private.ContinentID.Kalimdor, -- Molten Front
 	[799] = private.ContinentID.EasternKingdoms, -- Karazhan
 	[898] = private.ContinentID.EasternKingdoms, -- Scholomance
 	[930] = private.ContinentID.Pandaria, -- Throne of Thunder
 	[995] = private.ContinentID.EasternKingdoms, -- Upper Blackrock Spire
 	[1022] = private.ContinentID.BrokenIsles, -- Helheim
+	[1028] = private.ContinentID.BrokenIsles, -- Mardum, the Shattered Abyss
+	[1032] = private.ContinentID.BrokenIsles, -- Vault of the Wardens
+	[1091] = private.ContinentID.Kalimdor, -- The Exodar (Scenario version)
 }
 
 private.ContinentIDByDungeonMapID = ContinentIDByDungeonMapID
@@ -2104,6 +2140,9 @@ for mapID in pairs(MapNPCs) do
 	AlphabeticalMapIDs[#AlphabeticalMapIDs + 1] = mapID
 
 	local continentID = HereBeDragons:GetCZFromMapID(mapID)
+	if continentID < 1 then
+		continentID = ContinentIDByDungeonMapID[mapID]
+	end
 
 	ContinentMaps[continentID] = ContinentMaps[continentID] or {}
 	ContinentMaps[continentID][mapID] = true
@@ -2125,6 +2164,8 @@ local function SortByMapNameThenByID(a, b)
 
 	return mapNameA < mapNameB
 end
+
+private.SortByMapNameThenByID = SortByMapNameThenByID
 
 for index = 1, #AlphabeticalContinentMaps do
 	table.sort(AlphabeticalContinentMaps[index], SortByMapNameThenByID)

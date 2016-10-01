@@ -9,8 +9,8 @@
 ## X-Curse-Project-Name: LibStub
 ## X-Curse-Project-ID: libstub
 ## X-Curse-Repository-ID: wow/libstub/mainline
-## X-Curse-Packaged-Version: r99
-## X-Curse-Project-Name: Raid Assist (Iskar Assist)
+## X-Curse-Packaged-Version: r100
+## X-Curse-Project-Name: Raid Assist
 ## X-Curse-Project-ID: iskar-assist
 ## X-Curse-Repository-ID: wow/iskar-assist/mainline
 

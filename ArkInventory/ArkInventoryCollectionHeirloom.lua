@@ -166,7 +166,7 @@ local function Scan( )
 	for x = 1, total do
 		
 		local i = C_Heirloom.GetHeirloomItemIDFromDisplayedIndex( x )
-		local name, itemEquipLoc, isPvP, icon, upgradeLevel, source, _, effectiveLevel, minLevel, maxLevel = C_Heirloom.GetHeirloomInfo( i )
+		local name, itemEquipLoc, isPvP, icon, upgradeLevel, source, _, effectiveLevel, useLevel, maxLevel = C_Heirloom.GetHeirloomInfo( i )
 		local owned = C_Heirloom.PlayerHasHeirloom( i )
 		
 		if not hide then

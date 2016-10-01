@@ -52,6 +52,7 @@ if L then
 -- L["Orange"] = ""
 -- L["Orb of Translocation"] = ""
 -- L["Portals"] = ""
+-- L["Portal to Dalaran"] = ""
 -- L["Portal to Dreadscar Rift"] = ""
 -- L["Portal to Netherlight Temple"] = ""
 -- L["Portal to Sanctum of Light"] = ""

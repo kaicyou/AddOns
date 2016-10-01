@@ -138,6 +138,11 @@ for oispec = 250, 270 do
 	local _, name, _, _, _, _, _ = GetSpecializationInfoByID(oispec)
 	ospec[oispec] = name;
 end
+local dhnamespec
+local _, dhnamespec, _, _, _, _, _ = GetSpecializationInfoByID(581)
+ospec[581] = dhnamespec;
+local _, dhnamespec, _, _, _, _, _ = GetSpecializationInfoByID(577)
+ospec[577] = dhnamespec;
 
 local classcolor = {
 	[6]= "|cFFC41F3B",
@@ -154,44 +159,6 @@ local classcolor = {
 	[0]= "|cFFFFFF00",
 	[12] = "|cFFA330C9",
 }
-
-local artifactwep = {
-	128402,
-	128403,
-	128858,
-	128306,
-	128861,
-	128826,
-	128808,
-	127857,
-	128862,
-	128938,
-	128937,
-	128823,
-	120978,
-	128868,
-	128825,
-	128942,
-	128941,
-	128910,
-	128292,128293,
-	127829,127830,
-	128832,128831,
-	128860,128859,
-	128821,128822,
-	128820,133959,
-	128940,133948,
-	128866,128867,
-	128827,133958,
-	128870,128869,
-	128872,134552,
-	128476,128479,
-	128935,128936,
-	128819,128873,
-	128911,128934,
-	128943,137246,
-	128908,134553,
-	128289,128288}
 
 local Oilvlrole = {};
 local Oilvlrank = {};
@@ -243,11 +210,14 @@ local rpdframesw = false;
 local rpdounit = nil;
 local orollgear = "";
 local lootslotSW = false;
+local oilvlOnHyperlinkClickSW = false;
 local otooltip6rpd;
 local otooltip6rpdunit;
 local otooltip6rpdid;
 local otooltip6gearsw=false; -- show all gear
 local otooltip6gearsw2=false; -- show only specific raider
+
+local rescanilvl = 0;
 
 local Legion, _, _ = EJ_GetTierInfo(7);
 local TENname, _, _, _, _, _, _ = EJ_GetInstanceInfo(768)
@@ -4247,17 +4217,17 @@ if not UnitAffectingCombat("player") then
 				otooltip6func()
 			end)
 		end
+		local function checklegendary(itemlink)
+			local _,_,quality,_ = GetItemInfo(itemlink)
+			if quality == 5 then return true else return false end
+		end
 		otooltip6:SetCell(line, 5, oicomp[m].nset,"CENTER")
 		if (otooltip6gearsw or otooltip6gearsw2) and oicomp[m].sw then
 			for ot = 6,21 do
 				if tonumber(oicomp[m][ot6gear[ot-5]][1]) and tonumber(oilvlframedata.gear[oicomp[m].id][ot6gear[ot-5]][1]) and 
 					tonumber(oicomp[m].ilvl) then 
-					if ot6gear[ot-5] == RING1 or ot6gear[ot-5] == RING2 then
-						if oicomp[m][ot6gear[ot-5]][1] >= 735 and not oicomp[m][ot6gear[ot-5]][4] then
-							otooltip6:SetCell(line,ot, "|cFFFF8000"..oicomp[m][ot6gear[ot-5]][1].." |cFF00FF00"..(oicomp[m][ot6gear[ot-5]][4] or ""))
-						else
-							otooltip6:SetCell(line,ot, oicomp[m][ot6gear[ot-5]][3]..oicomp[m][ot6gear[ot-5]][1].." |cFF00FF00"..(oicomp[m][ot6gear[ot-5]][4] or ""))
-						end
+					if checklegendary(oicomp[m][ot6gear[ot-5]][2]) then
+						otooltip6:SetCell(line,ot, "|cFFFF8000"..oicomp[m][ot6gear[ot-5]][1].." |cFF00FF00"..(oicomp[m][ot6gear[ot-5]][4] or ""))
 					else
 						otooltip6:SetCell(line,ot, oicomp[m][ot6gear[ot-5]][3]..oicomp[m][ot6gear[ot-5]][1].." |cFF00FF00"..(oicomp[m][ot6gear[ot-5]][4] or ""))
 						if ot >= 6 and ot <= 10 then
@@ -4662,9 +4632,8 @@ function OItemAnalysisLowGem(itemLink)
 end
 
 function OTCheckartifactwep(itemID)
-	for i = 1, #artifactwep do
-		if artifactwep[i] == itemID then return true end
-	end
+	local _,_,quality,_ = GetItemInfo(itemID)
+	if quality == 6 then return true end
 	return false
 end
 
@@ -4688,14 +4657,13 @@ function OTgathertil(guid, unitid)
 	for i = 1,17 do
 		local xupgrade = nil
 		local xname = nil
-		if(i ~= SHIRT) then
+		if(i ~= 4) then
 			local item = GetInventoryItemLink(unitid, i)
 			if(item) then
 				local upgradeID = ItemUpgradeInfo:GetUpgradeID(item)
 				local upgrade = ItemUpgradeInfo:GetCurrentUpgrade(upgradeID)
 				_,_,_,itemLevel,_,itemClass,_,_,equipType = GetItemInfo(item)
 				
-
 				if(itemLevel) then
 					count = count + 1
 					if(i == 16) then
@@ -4793,7 +4761,7 @@ function OTgathertil(guid, unitid)
 					if OItemAnalysis_CheckILVLGear(item) ~= 0 then
 						itemLevel, xupgrade = OItemAnalysis_CheckILVLGear(item)
 					end
-					if i == 17 and OTCheckartifactwep(tonumber(itemID)) then
+					if cgear[16] and cgear[16][1] and i == 17 and OTCheckartifactwep(tonumber(itemID)) then
 						if cgear[16][1] > itemLevel then
 							itemLevel, xupgrade = cgear[16][1], cgear[16][9]
 						end
@@ -4972,7 +4940,10 @@ function oilvlSaveItemLevel()
 	if OILVL_Unit ~= "" then
 		if CheckInteractDistance(OILVL_Unit, 1) then
 			local OTilvl, OTmia, missenchant, missgem,  missenchant2, missgem2, count2 = OTgathertil(UnitGUID("OILVL_Unit"),OILVL_Unit)
-			if (OTmia == 0) then
+			rescanilvl = rescanilvl + 1
+			if rescanilvl > 2 then rescanilvl = 0 end
+			if rescanilvl > 0 then ORfbIlvl(OTCurrent3,true) end
+			if (OTmia == 0 and rescanilvl == 0) then
 				miacount=0;	miaunit[1]="";miaunit[2]="";miaunit[3]="";miaunit[4]="";miaunit[5]="";miaunit[6]="";
 				local ntex4 = _G[OTCurrent]:CreateTexture()
 				ntex4:SetColorTexture(0.2,0.2,0.2,0.5)
@@ -5017,9 +4988,9 @@ function oilvlSaveItemLevel()
 				OTCurrent2 = "";
 				OTCurrent3 = "";
 				ountrack=true;
-				OILVL_Unit="";						
+				OILVL_Unit="";	
 			else
-				if OTmia < 3 then
+				if OTmia < 3 and OTmia > 0 then
 					miacount = miacount + 1
 					miaunit[miacount] = UnitGUID("OILVL_Unit");
 					if miaunit[1] == miaunit[2] and miaunit[2] == miaunit[3] and miaunit[3] == miaunit[4] and miaunit[4] == miaunit[5] and miaunit[5] == miaunit[6] then
@@ -5068,7 +5039,7 @@ function events:INSPECT_READY(...)
 				local oname, _ = GameTooltip:GetUnit();
 				if oname ~= nil then oname = oname:gsub("%-.+", ""); else return -1; end
 				if oname ~= GetUnitName("target",""):gsub("%-.+", "") then return -1; end
-				local OTilvl2, OTmia2, missenchant, missgem = OTgathertil(UnitGUID("target"),"target")
+				local OTilvl2, OTmia2, missenchant, missgem = OTgathertil(UnitGUID("target"),"target")				
 				if (OTmia2 == 0) then
 					local i=0;
 					local omatch=false;
@@ -5243,6 +5214,8 @@ function events:ADDON_LOADED(...)
 	if cfg.oilvlge == nil then cfg.oilvlge = true end
 	if cfg.oilvlaltclickroll == nil then cfg.oilvlaltclickroll = true end
 	if cfg.oilvlautoscan == nil then cfg.oilvlautoscan = true end
+	if cfg.oilvlsamefaction == nil then cfg.oilvlsamefaction = false end
+	cfg.oilvlautoscan = false
 	OilvlConfigFrame();
 	oilvlframe();
 	Oilvltimer:ScheduleTimer(OVILRefresh,2);
@@ -5259,6 +5232,7 @@ function events:ADDON_LOADED(...)
 	end
 	if cfg.oilvlaltclickroll then
 		if not lootslotSW then C_Timer.After(5,function() oilvlaltc() end); end
+		if not oilvlOnHyperlinkClickSW then C_Timer.After(5,function() oilvlOnHyperlinkClick() end); end
 	end	
 	OILVL:UnregisterEvent("ADDON_LOADED");
 end
@@ -5400,15 +5374,31 @@ function OMouseover()
 	if InspectFrame and InspectFrame.unit then return -1 end
 	if not UnitAffectingCombat("player") and cfg.oilvlms and oilvlframesw then
 		if CheckInteractDistance("target", 1) and CanInspect("target") then
-			OILVL:RegisterEvent("INSPECT_READY");
-			NotifyInspect("target");
-			Omover=1;
-			if not rpsw then
-				ClearAchievementComparisonUnit();
-				OILVL:RegisterEvent("INSPECT_ACHIEVEMENT_READY")
-				SetAchievementComparisonUnit("target");
-				rpunit = "target";
-				rpsw=true;
+			-- if (cfg.oilvlsamefaction and UnitFactionGroup("player") == UnitFactionGroup("target")) then
+			if not cfg.oilvlsamefaction then
+				OILVL:RegisterEvent("INSPECT_READY");
+				NotifyInspect("target");
+				Omover=1;
+				if not rpsw then
+					ClearAchievementComparisonUnit();
+					OILVL:RegisterEvent("INSPECT_ACHIEVEMENT_READY")
+					SetAchievementComparisonUnit("target");
+					rpunit = "target";
+					rpsw=true;
+				end
+			else
+				if UnitFactionGroup("player") == UnitFactionGroup("target") then
+					OILVL:RegisterEvent("INSPECT_READY");
+					NotifyInspect("target");
+					Omover=1;
+					if not rpsw then
+						ClearAchievementComparisonUnit();
+						OILVL:RegisterEvent("INSPECT_ACHIEVEMENT_READY")
+						SetAchievementComparisonUnit("target");
+						rpunit = "target";
+						rpsw=true;
+					end
+				end
 			end
 		end
 	end
@@ -5507,12 +5497,12 @@ function OilvlConfigFrame()
 		if oicb1:GetChecked() then
 			oicb2:Enable();
 			oicb3:Enable();
-			oicb4:Enable();
+--			oicb4:Enable();
 			oicb5:Enable();
 		else
 			oicb2:Disable();
 			oicb3:Disable();
-			oicb4:Disable();
+--			oicb4:Disable();
 			oicb5:Disable();
 		end
 	end);
@@ -5712,7 +5702,7 @@ end
 ------------------------------------------------------------------
 
 GameTooltip:HookScript("OnTooltipSetUnit", function() 
-	if not UnitAffectingCombat("player") and cfg.oilvlms and UnitExists("target") then
+	if not UnitAffectingCombat("player") and cfg.oilvlms and UnitExists("target") and not IsInRaid() and not IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and not IsInGroup(LE_PARTY_CATEGORY_HOME) then
 		local oname, _ = GameTooltip:GetUnit()
 		if oname ~= nil then oname = oname:gsub("%-.+", ""); else return -1; end
 		if  oname == GetUnitName("target",""):gsub("%-.+", "") then
@@ -5828,12 +5818,16 @@ StaticPopupDialogs["RELOAD"] = {
 
 SLASH_OILVL_OIRALTC1 = "/oiraltc"
 SlashCmdList["OILVL_OIRALTC"] = function(msg)  
-	if cfg.oilvlaltclickroll then 
+	local token = {msg}
+	if string.upper(token[1]) == "OFF" then 
 		cfg.oilvlaltclickroll = false 
+		print("OiLvL: Lootframe Alt-click feature is disabled")
 		StaticPopup_Show ("RELOAD")
-	else 
+	end
+	if  string.upper(token[1]) == "ON" then 
 		cfg.oilvlaltclickroll = true 
 		print("OiLvL: Lootframe Alt-click feature is enabled")
+		StaticPopup_Show ("RELOAD")
 	end
 end
 
@@ -5845,36 +5839,39 @@ SLASH_OILVL_OICACHE1 = "/oicache"
 SLASH_OILVL_OICACHE2 = "/oic"
 SlashCmdList["OILVL_OICACHE"] = function(msg)  otooltip7func() end
 
-DEFAULT_CHAT_FRAME:HookScript("OnHyperlinkClick", function(self, linkData, link, button)
-	if IsAltKeyDown() then
-		local scantip = CreateFrame("GameTooltip", "OiLvlRoll_Tooltip", nil, "GameTooltipTemplate")
-		local silvl="";
-		orollgear = link;
-		scantip:SetOwner(UIParent, "ANCHOR_NONE")
-		scantip:SetHyperlink(orollgear)
-		for i = 2, scantip:NumLines() do
-			local text = _G["OiLvlRoll_TooltipTextLeft"..i]:GetText()
-			if text and text ~= "" then	silvl = text:match(ITEM_LEVEL:gsub("%%d","(%%d+)")) end
-			if silvl ~= nil then break end
+function oilvlOnHyperlinkClick()
+	oilvlOnHyperlinkClickSW = true
+	DEFAULT_CHAT_FRAME:HookScript("OnHyperlinkClick", function(self, linkData, link, button)
+		if IsAltKeyDown() then
+			local scantip = CreateFrame("GameTooltip", "OiLvlRoll_Tooltip", nil, "GameTooltipTemplate")
+			local silvl="";
+			orollgear = link;
+			scantip:SetOwner(UIParent, "ANCHOR_NONE")
+			scantip:SetHyperlink(orollgear)
+			for i = 2, scantip:NumLines() do
+				local text = _G["OiLvlRoll_TooltipTextLeft"..i]:GetText()
+				if text and text ~= "" then	silvl = text:match(ITEM_LEVEL:gsub("%%d","(%%d+)")) end
+				if silvl ~= nil then break end
+			end
+			if silvl == nil then silvl = "" end
+			if UnitIsGroupLeader("player") then 
+				SendChatMessage(ROLL.." "..silvl.." "..link, "RAID_WARNING")
+			end
+			if otooltip4 ~= nil then
+				otooltip4:Hide() 
+				LibQTip:Release(otooltip4)
+				otooltip4 = nil
+			end
+			orolln = 0;
+			oroll = {};
+			orolln = orolln + 1;
+			oroll[1] = {silvl,link,""}
+			otooltip4func();
+		else
+			orollgear = "";
 		end
-		if silvl == nil then silvl = "" end
-		if UnitIsGroupLeader("player") then 
-			SendChatMessage(ROLL.." "..silvl.." "..link, "RAID_WARNING")
-		end
-		if otooltip4 ~= nil then
-			otooltip4:Hide() 
-			LibQTip:Release(otooltip4)
-			otooltip4 = nil
-		end
-		orolln = 0;
-		oroll = {};
-		orolln = orolln + 1;
-		oroll[1] = {silvl,link,""}
-		otooltip4func();
-	else
-		orollgear = "";
-	end
-end)
+	end)
+end
 
 function oilvlchecktiers()
 	local vanquisher, protector, conqueror = 0,0,0
@@ -5925,6 +5922,21 @@ SlashCmdList["OILVL_OIT"] = function(msg)
 	print("Vanquisher (Death Knight, Druid, Mage, Rogue): "..vanquisher)
 	print("Protector (Hunter, Monk, Shaman, Warrior): "..protector)
 	print("Conqueror (Paladin, Priest, Warlock): "..conqueror)
+end
+
+SLASH_OILVL_OISF1 = "/oisf"
+SlashCmdList["OILVL_OISF"] = function(msg)  
+	local token = {msg}
+	if string.upper(token[1]) == "OFF" then 
+		cfg.oilvlsamefaction = false 
+		print("OiLvL: Show both faction item level")
+		StaticPopup_Show ("RELOAD")
+	end
+	if  string.upper(token[1]) == "ON" then 
+		cfg.oilvlsamefaction = true 
+		print("OiLvL: Show only same faction item level")
+		StaticPopup_Show ("RELOAD")
+	end
 end
 
 

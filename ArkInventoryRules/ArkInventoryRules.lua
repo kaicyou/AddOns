@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1717 $
-$Date: 2016-09-10 01:22:46 +1000 (Sat, 10 Sep 2016) $
+$Revision: 1728 $
+$Date: 2016-09-23 10:28:37 +1000 (Fri, 23 Sep 2016) $
 
 ]]--
 
@@ -19,9 +19,8 @@ local table = _G.table
 
 ArkInventoryRules = LibStub( "AceAddon-3.0" ):NewAddon( "ArkInventoryRules" )
 
-ArkInventoryRules.Object = nil
+ArkInventoryRules.Object = { }
 ArkInventoryRules.System = { } -- system rules
-
 
 function ArkInventoryRules.ItemCacheClear( )
 	ArkInventory.ItemCacheClear( )
@@ -143,34 +142,59 @@ function ArkInventoryRules.OnDisable( )
 	
 end
 
-function ArkInventoryRules.AppliesToItem( rid, i )
+function ArkInventoryRules.AppliesToItem( i )
 	
-	local ra = ArkInventory.ConfigInternalCategoryRuleGet( rid )
+	if not i then
+		return false
+	end
+	
 	local codex = ArkInventory.GetLocationCodex( i.loc_id )
-	local rp = codex.catset.category.active[ArkInventory.Const.Category.Type.Rule][rid]
 	
-	if not i or not rp or not ra or ra.used ~= "Y" or ra.damaged then
-		return false, nil
-	end
+	local cat_type = ArkInventory.Const.Category.Type.Rule
+	local r = ArkInventory.db.option.category[cat_type].data
 	
-	local p, eor = loadstring( string.format( "return( %s )", ra.formula ) )
-
-	if not p then
-		return nil, eor
-	end
+	ArkInventoryRules.SetObject( i )
 	
-	ArkInventoryRules.Object = i
+	local rp, ra, rr
 	
-	local osd = ArkInventory.ObjectStringDecode( i.h )
-	i.class = osd[1]
-	
-	setfenv( p, ArkInventoryRules.Environment )
-	local ok, eor = pcall( p )
-	
-	if not ok then
-		return nil, eor
-	else
-		return eor, nil
+	for cat_code in ArkInventory.spairs( r, function(a,b) return ( r[a].order or 1000 ) < ( r[b].order or 1000 ) end ) do
+		
+		rp = codex.catset.category.active[cat_type][cat_code]
+		ra = r[cat_code]
+		
+		if rp and ra and ra.used == "Y" and not ra.damaged then
+			
+			local cr, res = loadstring( string.format( "return( %s )", ra.formula ) )
+			
+			if not cr then
+				
+				ArkInventory.OutputWarning( res )
+				ArkInventory.OutputWarning( string.format( ArkInventory.Localise["RULE_DAMAGED"], cat_code ) )
+				ArkInventory.db.option.category[cat_type].data[cat_code].damaged = true
+				
+			else
+				
+				setfenv( cr, ArkInventoryRules.Environment )
+				local ok, res = pcall( cr )
+				
+				if ok then
+					
+					if res == true then
+						return ArkInventory.CategoryCodeJoin( cat_type, cat_code )
+					end
+					
+				else
+					
+					ArkInventory.OutputWarning( res )
+					ArkInventory.OutputWarning( string.format( ArkInventory.Localise["RULE_DAMAGED"], cat_code ) )
+					ArkInventory.db.option.category[cat_type].data[cat_code].damaged = true
+					
+				end
+				
+			end
+			
+		end
+		
 	end
 	
 end
@@ -238,8 +262,6 @@ function ArkInventoryRules.System.type( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"], fn ), 0 )
 	end
 	
-	local e1, _, _, _, _, _, _, e2 = select( 8, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) )
-	
 	for ax = 1, ac do
 		
 		local arg = select( ax, ... )
@@ -249,11 +271,11 @@ function ArkInventoryRules.System.type( ... )
 		end
 		
 		if type( arg ) == "number" then
-			if e1 and e1 == arg then
+			if ArkInventoryRules.Object.info.itemtypeid and ArkInventoryRules.Object.info.itemtypeid == arg then
 				return true
 			end
 		elseif type( arg ) == "string" then
-			if e2 and string.lower( string.trim( e2 ) ) == string.lower( string.trim( arg ) ) then
+			if ArkInventoryRules.Object.info.itemtype and string.lower( string.trim( ArkInventoryRules.Object.info.itemtype ) ) == string.lower( string.trim( arg ) ) then
 				return true
 			end
 		else
@@ -280,8 +302,6 @@ function ArkInventoryRules.System.subtype( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"], fn ), 0 )
 	end
 	
-	local e1, _, _, _, _, _, _, e2 = select( 9, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) )
-	
 	for ax = 1, ac do
 		
 		local arg = select( ax, ... )
@@ -291,11 +311,11 @@ function ArkInventoryRules.System.subtype( ... )
 		end
 		
 		if type( arg ) == "number" then
-			if e1 and e1 == arg then
+			if ArkInventoryRules.Object.info.itemsubtypeid and ArkInventoryRules.Object.info.itemsubtypeid == arg then
 				return true
 			end
 		elseif type( arg ) == "string" then
-			if e2 and string.lower( string.trim( e2 ) ) == string.lower( string.trim( arg ) ) then
+			if ArkInventoryRules.Object.info.itemsubtype and string.lower( string.trim( ArkInventoryRules.Object.info.itemsubtype ) ) == string.lower( string.trim( arg ) ) then
 				return true
 			end
 		else
@@ -314,7 +334,7 @@ function ArkInventoryRules.System.equip( ... )
 		return false
 	end
 	
-	local e = string.trim( ArkInventory.ObjectInfoEquipLoc( ArkInventoryRules.Object.h ) )
+	local e = string.trim( ArkInventoryRules.Object.info.equiploc or "" )
 	if string.len( e ) > 1 then
 		e = _G[e]
 	end
@@ -369,7 +389,7 @@ function ArkInventoryRules.System.name( ... )
 		return false
 	end
 	
-	local e = string.lower( select( 3, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) ) or "" )
+	local e = string.lower( ArkInventoryRules.Object.info.name or "" )
 	
 	local fn = "name"
 	
@@ -479,7 +499,7 @@ function ArkInventoryRules.System.itemlevelstat( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, 2, ArkInventory.Localise["NUMBER"] ), 0 )
 	end
 	
-	local level = select( 6, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) )
+	local level = ArkInventoryRules.Object.info.ilvl
 	
 	if level and level >= arg1 and level <= arg2 then
 		return true
@@ -521,7 +541,7 @@ function ArkInventoryRules.System.itemleveluse( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, 2, ArkInventory.Localise["NUMBER"] ), 0 )
 	end
 	
-	local level = select( 7, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) ) or 0
+	local level = ArkInventoryRules.Object.info.uselevel or 0
 	
 	if level >= arg1 and level <= arg2 then
 		return true
@@ -545,7 +565,7 @@ function ArkInventoryRules.System.itemfamily( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"], fn ), 0 )
 	end
 	
-	local itemloc = select( 11, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) )
+	local itemloc = ArkInventoryRules.Object.info.equiploc
 	
 	for ax = 1, ac do
 		
@@ -698,7 +718,7 @@ function ArkInventoryRules.System.outfit( ... )
 		return false
 	end
 	
-	if select( 11, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) ) == "" then
+	if ArkInventoryRules.Object.info.equiploc == "" then
 		return false
 	end
 	
@@ -965,7 +985,7 @@ function ArkInventoryRules.System.vendorprice( opt, t )
 		return false
 	end
 	
-	local price_per = select( 12, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) )
+	local price_per = ArkInventoryRules.Object.info.vendorprice
 	
 	if price_per == nil then
 	
@@ -1041,12 +1061,12 @@ function ArkInventoryRules.System.characterlevelrange( ... )
 	end
 	
 	local clevel = UnitLevel( "player" )
-	local ilevel = select( 6, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) ) or clevel
+	local ulevel = ArkInventoryRules.Object.info.uselevel or clevel
 	
 	arg1 = clevel - arg1
 	arg2 = clevel + arg2
 	
-	if ilevel >= arg1 and ilevel <= arg2 then
+	if ulevel >= arg1 and ulevel <= arg2 then
 		return true
 	end
 	
@@ -1189,7 +1209,7 @@ function ArkInventoryRules.System.stacks( )
 		return false
 	end
 	
-	if select( 10, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) ) > 1 then
+	if ArkInventoryRules.Object.info.stacksize > 1 then
 		return true
 	end
 	
@@ -1207,8 +1227,7 @@ function ArkInventoryRules.System.trash( )
 		return true
 	end
 	
-	local osd = ArkInventory.ObjectStringDecode( ArkInventoryRules.Object.h )
-	local id = osd[2]
+	local id = ArkInventoryRules.Object.info.id
 	
 	if IsAddOnLoaded( "Scrap" ) then
 		if Scrap:IsJunk( id ) then
@@ -1247,7 +1266,7 @@ function ArkInventoryRules.System.pettype( ... )
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"], fn ), 0 )
 	end
 	
-	local e = select( 8, ArkInventory.ObjectInfo( ArkInventoryRules.Object.h ) )
+	local e = ArkInventoryRules.Object.info.itemsubtypeid
 	e = string.lower( ArkInventory.PetJournal.PetTypeName( e ) )
 	
 	if e then
@@ -1352,7 +1371,7 @@ function ArkInventoryRules.System.bonus( ... )
 	
 	local ac = select( '#', ... )
 	
-	local bid = ArkInventory.ObjectInfoBonusId( ArkInventoryRules.Object.h )
+	local bid = ArkInventoryRules.Object.info.bonusids
 	
 	if not bid then
 		return
@@ -1501,6 +1520,10 @@ end
 
 
 ArkInventoryRules.Environment = {
+	
+	i = ArkInventoryRules.Object,
+	
+	-- rule functions
 	
 	soulbound = ArkInventoryRules.System.soulbound,
 	sb = ArkInventoryRules.System.soulbound,
@@ -2055,8 +2078,8 @@ function ArkInventoryRules.EntryIsValid( rid, data )
 		
 	else
 		
-		ArkInventoryRules.Object = { test_rule=true, class="item", bag_id=0, slot_id=1, count=1, q=1, sb=1, h=string.format("item:%s:::::::", HEARTHSTONE_ITEM_ID ) }
-
+		ArkInventoryRules.SetObject( { test_rule=true, class="item", bag_id=0, slot_id=1, count=1, q=1, sb=1, h=string.format("item:%s:::::::", HEARTHSTONE_ITEM_ID ) } )
+		
 		local p, pem = loadstring( string.format( "return( %s )", data.formula ) )
 		
 		if not p then
@@ -2290,4 +2313,17 @@ end
 
 function ArkInventoryRules.Frame_Rules_Button_View_Remove( frame )
 	return ArkInventoryRules.Frame_Rules_Button_Modify( frame, "R" )
+end
+
+function ArkInventoryRules.SetObject( tbl )
+	
+	table.wipe( ArkInventoryRules.Object )
+	ArkInventory.Table.Merge( tbl, ArkInventoryRules.Object )
+	
+	ArkInventoryRules.Object.info = ArkInventory.ObjectInfoArray( ArkInventoryRules.Object.h )
+	
+	ArkInventoryRules.Object.osd = ArkInventoryRules.Object.info.osd
+	
+	ArkInventoryRules.Object.class = ArkInventoryRules.Object.osd.class
+	
 end

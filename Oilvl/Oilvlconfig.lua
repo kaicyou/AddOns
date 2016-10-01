@@ -23,3 +23,4 @@ cfg.oilvlge = true; -- show gem and enchant in character frame and inpection fra
 cfg.oilvlcachesw = true; -- enable cache
 cfg.oilvlaltclickroll = true; -- alt click roll
 cfg.oilvlautoscan = true; -- auto scan ilvl
+cfg.oilvlsamefaction = false; -- show ilvl of target for same faction only

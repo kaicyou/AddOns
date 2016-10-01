@@ -20,10 +20,14 @@ Overachiever.DefaultSettings = {
   Item_consumed = true;
   Item_consumed_whencomplete = false;
   Item_satisfied = true;
-  CreatureTip_killed = false;
+  CreatureTip_killed = true;
   LetItSnow_flaked = false;
   FistfulOfLove_petals = false;
   BunnyMaker_eared = false;
+  Brewfest_consumed = true;
+  Brewfest_consumed_whencomplete = false;
+  Darkmoon_consumed = true;
+  Darkmoon_consumed_whencomplete = false;
   CheckYourHead_pumpkin = false;
   TurkeyLurkey_feathered = false;
   Draggable_AchFrame = true;
@@ -101,10 +105,13 @@ function Overachiever.CreateOptions(THIS_TITLE, BuildCriteriaLookupTab_check, Au
 	{ type = "Oa_AchLabel", text = L.OPT_LABEL_ACHTWO, topBuffer = 4, id1 = IDs.Limnologist, id2 = IDs.Oceanographer, xOffset = 0 },
 	{ variable = "SchoolTip_fished", text = L.OPT_ANGLERTIPS, tooltip = L.OPT_ANGLERTIPS_TIP, xOffset = 28 },
 
-	{ type = "Oa_AchLabel", text = L.OPT_LABEL_ACHSIX, topBuffer = 4, id1 = IDs.TastesLikeChicken, id2 = IDs.HappyHour, id3 = IDs.CataclysmicallyDelicious, id4 = IDs.DrownYourSorrows, id5 = IDs.PandarenCuisine, id6 = IDs.PandarenDelicacies, xOffset = 0 },
+	{ type = "Oa_AchLabel", text = L.OPT_LABEL_ACHSEVEN, topBuffer = 4, id1 = IDs.TastesLikeChicken, id2 = IDs.HappyHour,
+		id3 = IDs.CataclysmicallyDelicious, id4 = IDs.DrownYourSorrows, id5 = IDs.PandarenCuisine, id6 = IDs.PandarenDelicacies,
+		id7 = IDs.DraenorCuisine,
+		xOffset = 0 },
 	{ variable = "Item_consumed", text = L.OPT_CONSUMEITEMTIPS, tooltip = L.OPT_CONSUMEITEMTIPS_TIP, tooltip2 = L.OPT_CONSUMEITEMTIPS_TIP2, xOffset = 28 },
 	{ variable = "Item_consumed_whencomplete", text = L.OPT_CONSUMEITEMTIPS_WHENCOMPLETE, xOffset = 39 },
-	
+
 	{ type = "Oa_AchLabel", topBuffer = 4, id1 = IDs.RightAsRain, xOffset = 0 },
 	{ variable = "Item_satisfied", text = L.OPT_SATISFIEDTIPS, tooltip = L.OPT_SATISFIEDTIPS_TIP, xOffset = 28 },
 
@@ -115,6 +122,14 @@ function Overachiever.CreateOptions(THIS_TITLE, BuildCriteriaLookupTab_check, Au
 
 	{ type = "Oa_AchLabel", topBuffer = 4, xOffset = 0, id1 = IDs.BunnyMaker, xOffset = 0 },
 	{ variable = "BunnyMaker_eared", text = L.OPT_BUNNYMAKERTIPS, tooltip = L.OPT_BUNNYMAKERTIPS_TIP, xOffset = 28 },
+
+	{ type = "Oa_AchLabel", topBuffer = 4, id1 = IDs.BrewfestDiet, xOffset = 0 },
+	{ variable = "Brewfest_consumed", text = L.OPT_CONSUMEITEMTIPS, tooltip = L.OPT_CONSUMEITEMTIPS_TIP, tooltip2 = L.OPT_CONSUMEITEMTIPS_TIP2, xOffset = 28 },
+	{ variable = "Brewfest_consumed_whencomplete", text = L.OPT_CONSUMEITEMTIPS_WHENCOMPLETE, xOffset = 39 },
+
+	{ type = "Oa_AchLabel", topBuffer = 4, id1 = IDs.DarkmoonFaireFeast, xOffset = 0 },
+	{ variable = "Darkmoon_consumed", text = L.OPT_CONSUMEITEMTIPS, tooltip = L.OPT_CONSUMEITEMTIPS_TIP, tooltip2 = L.OPT_CONSUMEITEMTIPS_TIP2, xOffset = 28 },
+	{ variable = "Darkmoon_consumed_whencomplete", text = L.OPT_CONSUMEITEMTIPS_WHENCOMPLETE, xOffset = 39 },
 
 	{ type = "Oa_AchLabel", topBuffer = 4, id1 = IDs.CheckYourHead, xOffset = 0 },
 	{ variable = "CheckYourHead_pumpkin", text = L.OPT_CHECKYOURHEADTIPS, tooltip = L.OPT_CHECKYOURHEADTIPS_TIP, xOffset = 28 },
@@ -214,27 +229,38 @@ do
     end
 
     function CreateAchLabel_pre(name, parent, data, arg)
+	  local perRow = 2
+	  if (data["id5"]) then  perRow = 3;  end
       local first = createicon(name, 1, parent, data.id1)
       local w = 28
       local yOffset = 0
       if (data.id2) then
-        data.iconTopRight = createicon(name, 2, parent, data.id2)
-        data.iconTopRight:SetPoint("LEFT", first, "RIGHT", 2, 0)
-        w = w + 23
-        local i, v, last, iconframe = 3, data.id3, first
+        w = w + (23 * (perRow - 1))
+        local iconframe
+        local i, v, last, lastleft = 2, data.id2, first, first
         while (v) do
           iconframe = createicon(name, i, parent, v)
-          if (i % 2 == 0) then
+          if (i % perRow ~= 1) then -- If not first icon of a new row:
             iconframe:SetPoint("LEFT", last, "RIGHT", 2, 0)
           else
-            if (not data["id"..i+1]) then  iconframe:SetPoint("TOP", last, "BOTTOM", 12, -2);
-            else  iconframe:SetPoint("TOP", last, "BOTTOM", 0, -2);  end
-            last = iconframe
+            if (not data.iconTopRight) then  data.iconTopRight = last;  end
+            if (not data["id"..i+1]) then
+              if (perRow == 2) then
+                iconframe:SetPoint("TOP", lastleft, "BOTTOM", 12, -2)
+              else
+                iconframe:SetPoint("TOPLEFT", lastleft, "BOTTOMRIGHT", 2, -2)
+              end
+            else
+              iconframe:SetPoint("TOP", lastleft, "BOTTOM", 0, -2)
+            end
             yOffset = yOffset + 23
+            lastleft = iconframe
           end
+          last = iconframe
           i = i + 1
           v = data["id"..i]
         end
+        if (not data.iconTopRight) then  data.iconTopRight = last;  end
       else
         data.iconTopRight = first
       end

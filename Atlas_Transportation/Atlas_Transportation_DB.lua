@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation_DB.lua 42 2016-09-07 18:32:12Z arith $
+-- $Id: Atlas_Transportation_DB.lua 48 2016-09-23 08:41:48Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -26,6 +26,20 @@
 
 
 local myDB = {
+	TransSuramar = {
+		{ "A", 10001, 155, 248 }; -- Ruins of Elune'eth
+		{ "B", 10002, 209, 175 }; -- Tel'anor
+		{ "C", 10003,  24, 142 }; -- Falanaar
+		{ "D", 10004, 103,  23 }; -- Moonfall Overlook
+		{ "E", 10005, 182, 428 }; -- Felsoul Hold
+		{ "F", 10006, 242, 357 }; -- Sanctum of Order
+		{ "G", 10007, 220, 450 }; -- Lunastre Estate
+		{ "H", 10008, 263, 464 }; -- The Waning Crescent
+		{ "I", 10009, 414, 329 }; -- Twilight Vineyards
+		{ "1", 10101,  58, 156 }; -- Irongrove Retreat
+		{ "2", 10102, 134, 263 }; -- Meredil
+		{ "3", 10103, 414, 216 }; -- Crimson Thicket
+	};
 	TransDalaran = {
 		{ "A", 10014, 184, 279 }; -- Greyfang Enclave
 		{ "B", 10015, 262, 145 }; -- Windrunner's Sanctuary
@@ -47,6 +61,7 @@ local myDB = {
 	TransAllianceBrokenIsles = {
 		{ "A", 10038, 230, 357 }; -- Greyfang Enclave
 		{ "B", 10039, 237, 349 }; -- Chamber of the Guardian
+		{ "C", 10040, 290, 133 }; -- Portal to Dalaran
 		{ "1", 10001, 249, 341 }; -- Krasus' Landing
 		{ "2", 10002, 151, 378 }; -- Watchers' Aerie
 		{ "3", 10003, 144, 363 }; -- Wardens' Redoubt
@@ -66,7 +81,7 @@ local myDB = {
 		{ "17", 10017, 277, 164 }; -- Ironhorn Enclave
 		{ "18", 10018, 210, 126 }; -- Sylvan Falls
 		{ "19", 10019, 244, 116 }; -- Thunder Totem
-		{ "20", 10020, 286, 128 }; -- Stonehoof Watch
+		{ "20", 10020, 283, 121 }; -- Stonehoof Watch
 		{ "21", 10021, 224, 97 }; -- Nesingwary
 		{ "22", 10022, 263, 84 }; -- Skyhorn
 		{ "23", 10023, 191, 68 }; -- Felbane Camp
@@ -91,6 +106,7 @@ local myDB = {
 	TransHordeBrokenIsles = {
 		{ "A", 10038, 239, 336 }; -- Windrunner's Sanctuary
 		{ "B", 10039, 237, 348 }; -- Chamber of the Guardian
+		{ "C", 10040, 290, 133 }; -- Portal to Dalaran
 		{ "1", 10001, 249, 342 }; -- Krasus' Landing
 		{ "2", 10002, 151, 378 }; -- Watchers' Aerie
 		{ "3", 10003, 144, 363 }; -- Wardens' Redoubt
@@ -110,7 +126,7 @@ local myDB = {
 		{ "17", 10017, 277, 164 }; -- Ironhorn Enclave
 		{ "18", 10018, 210, 126 }; -- Sylvan Falls
 		{ "19", 10019, 244, 116 }; -- Thunder Totem
-		{ "20", 10020, 286, 128 }; -- Stonehoof Watch
+		{ "20", 10020, 283, 121 }; -- Stonehoof Watch
 		{ "21", 10021, 224, 97 }; -- Nesingwary
 		{ "22", 10022, 263, 84 }; -- Skyhorn
 		{ "23", 10023, 191, 68 }; -- Felbane Camp

@@ -178,6 +178,8 @@ P['bags'] = {
 	["countFontColor"] = {r = 1, g = 1, b = 1},
 	["reverseLoot"] = false,
 	["clearSearchOnClose"] = false,
+	["disableBagSort"] = false,
+	["disableBankSort"] = false,
 	['bagBar'] = {
 		['growthDirection'] = 'VERTICAL',
 		['sortDirection'] = 'ASCENDING',
@@ -596,6 +598,9 @@ P["nameplates"] = {
 				['xOffset'] = 15,
 				['yOffset'] = 0,
 			},
+			["detection"] = {
+				["enable"] = true,
+			},
 		},
 	},
 };
@@ -689,7 +694,7 @@ P['datatexts'] = {
 		['LeftChatDataPanel'] = {
 			['left'] = 'Talent/Loot Specialization',
 			['middle'] = 'Durability',
-			['right'] = 'Garrison',
+			['right'] = 'Orderhall',
 		},
 		['RightChatDataPanel'] = {
 			['left'] = 'System',
@@ -3083,6 +3088,7 @@ P["actionbar"] = {
 		["backdropSpacing"] = 2,
 		['alpha'] = 1,
 		['inheritGlobalFade'] = false,
+		["usePositionOverride"] = true,
 	},
 	['extraActionButton'] = {
 		['alpha'] = 1,

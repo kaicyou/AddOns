@@ -271,7 +271,7 @@ function OiLvlPlayer_Update(sw)
 			end	
 			-- add Show Gem / Enchant button
 			if not oilvlGemEnchantButton then
-				local button = CreateFrame("Button", "oilvlGemEnchantButton", CharacterFrame, "SecureActionButtonTemplate")
+				local button = CreateFrame("Button", "oilvlGemEnchantButton", CharacterFrame, "ActionButtonTemplate")
 				button:SetPoint("BOTTOMLEFT", CharacterHeadSlot, "TOPLEFT",50,3)
 				button:SetSize(16,16)
 				button:SetText("\\")
@@ -431,9 +431,9 @@ function OiLvLInspect_Update()
 							if totalilvl[Value] < totalilvl[16] then
 								totalilvl[Value], xupgrade[Value] = totalilvl[16], xupgrade[16]
 							end
-							if totalilvl[Value] > totalilvl[16] then
-								_G[Items[16].."Stock"]:SetText(totalilvl[Value]);
-								_G[Items[16].."Stock"]:SetShadowColor(1,1,1,1);
+							if totalilvl[Value] > totalilvl[16] then								
+								_G[InspectItems[16].."Stock"]:SetText(totalilvl[Value]);
+								_G[InspectItems[16].."Stock"]:SetShadowColor(1,1,1,1);
 								ailvl = ailvl -  totalilvl[16] + totalilvl[Value]
 							end
 						end

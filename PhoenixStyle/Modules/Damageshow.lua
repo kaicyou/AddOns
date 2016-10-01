@@ -586,7 +586,7 @@ if string.find(a,"\r") then
 	end
 end
 
-local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|cff00ff00","|cffff0000","|CFFFFFF00","|cff999999"}
+local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|CFFA330C9","|cff00ff00","|cffff0000","|CFFFFFF00","|cff999999"}
 for km=1,#tablecolor do
 	if string.find (a, tablecolor[km]) then
 		while string.find (a, tablecolor[km]) do
@@ -648,7 +648,7 @@ if math.floor(PSFmainfrainsavedinfo_slid2:GetValue())>=math.floor(PSFmainfrainsa
 if pspartoftextofkicks and #pspartoftextofkicks>0 then
 	for i=1,#pspartoftextofkicks do
 		local a=pspartoftextofkicks[i]
-		local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|cff00ff00","|cffff0000","|CFFFFFF00","|cff999999"}
+		local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|CFFA330C9","|cff00ff00","|cffff0000","|CFFFFFF00","|cff999999"}
 		for km=1,#tablecolor do
 			if string.find (a, tablecolor[km]) then
 				while string.find (a, tablecolor[km]) do
@@ -855,7 +855,7 @@ if pssisavedbossinfo[pssichose1] and #pssisavedbossinfo[pssichose1]>0 then
     end
     if pssavedinfocheckexport[2]==1 then
       --все меняем в цвете --смена ТОЛЬКО красного и зеленого будет по ходу создания текста если эта откл
-      local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|cff00ff00","|cffff0000","|CFFFFFF00","|cff71d5ff","|cff999999"}
+      local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|CFFA330C9","|cff00ff00","|cffff0000","|CFFFFFF00","|cff71d5ff","|cff999999"}
       local tablecolor2={"#C79C6E","#C41F3B","#F58CBA","#FFFFFF","#0070DE","#FF7D0A","#FFF569","#69CCF0","#9482C9","#ABD473","#00FF96","green","red","orange","black","grey"}
       for i=1,#tablecolor do
         psstrochka=string.gsub(psstrochka, tablecolor[i], "[color="..tablecolor2[i].."]")
@@ -863,7 +863,7 @@ if pssisavedbossinfo[pssichose1] and #pssisavedbossinfo[pssichose1]>0 then
       psstrochka=string.gsub(psstrochka, "|r", "[/color]")
     else
       --откл, но вырезать цвета нужно
-      local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|cff00ff00","|cffff0000","|CFFFFFF00","|cff71d5ff","|cff999999"}
+      local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|CFFA330C9","|cff00ff00","|cffff0000","|CFFFFFF00","|cff71d5ff","|cff999999"}
       for i=1,#tablecolor do
         psstrochka=string.gsub(psstrochka, tablecolor[i], "")
       end

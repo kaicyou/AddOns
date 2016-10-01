@@ -1,4 +1,4 @@
--- $Id: AtlasDropDown.lua 84 2016-08-29 05:33:54Z arith $
+-- $Id: AtlasDropDown.lua 101 2016-09-20 05:02:33Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -85,79 +85,79 @@ Atlas_DropDownLayouts_Order = {
 Atlas_DropDownLayouts = {
 	[ATLAS_DDL_CONTINENT] = {
 		[ATLAS_DDL_CONTINENT_EASTERN1] = {
-			"BaradinHold",
-			"BlackrockCaverns",
-			"BlackrockDepths",
-			"BlackrockMountainEnt",
-			"BlackwingDescent",
-			"BlackwingLair",
-			"Gnomeregan",
-			"GnomereganEnt",
-			"GrimBatol",
-			"KarazhanEnd",
-			"KarazhanEnt",
-			"KarazhanStart",
-			"LowerBlackrockSpire",
-			"MagistersTerrace",
-			"MoltenCore",
-			"UpperBlackrockSpire",
+			"BlackrockDepths",		-- Classic WoW
+			"BlackrockMountainEnt",		-- Classic WoW, Catalysm, Draenor
+			"BlackwingLair",		-- Classic WoW
+			"Gnomeregan",			-- Classic WoW
+			"GnomereganEnt",		-- Classic WoW
+			"LowerBlackrockSpire",		-- Classic WoW
+			"MoltenCore",			-- Classic WoW
+			"KarazhanEnd",			-- Burning Crusade
+			"KarazhanEnt",			-- Burning Crusade
+			"KarazhanStart",		-- Burning Crusade
+			"MagistersTerrace",		-- Burning Crusade
+			"BaradinHold",			-- Catalysm
+			"BlackrockCaverns",		-- Catalysm
+			"BlackwingDescent",		-- Catalysm
+			"GrimBatol",			-- Catalysm
+			"UpperBlackrockSpire",		-- Draenor
 		},
 		[ATLAS_DDL_CONTINENT_EASTERN2] = {
-			"Scholomance",
-			"ShadowfangKeep",
-			"ScarletMonasteryEnt",
-			"ScarletHalls",
-			"ScarletMonastery",
-			"StratholmeCrusader",
-			"StratholmeGauntlet",
-			"SunwellPlateau",
-			"TheBastionOfTwilight",
-			"TheDeadmines",
-			"TheDeadminesEnt",
-			"TheStockade",
-			"TheSunkenTemple",
-			"TheSunkenTempleEnt",
-			"ThroneOfTheTides",
-			"Uldaman",
-			"UldamanEnt",
-			"ZulAman",
-			"ZulGurub",
+			"ShadowfangKeep",		-- Classic WoW, Catalysm
+			"TheDeadmines",			-- Classic WoW, Catalysm
+			"TheDeadminesEnt",		-- Classic WoW, Catalysm
+			"StratholmeCrusader",		-- Classic WoW
+			"StratholmeGauntlet",		-- Classic WoW
+			"TheStockade",			-- Classic WoW
+			"TheSunkenTemple",		-- Classic WoW
+			"TheSunkenTempleEnt",		-- Classic WoW
+			"Uldaman",			-- Classic WoW
+			"UldamanEnt",			-- Classic WoW
+			"SunwellPlateau",		-- Burning Crusade
+			"TheBastionOfTwilight",		-- Catalysm
+			"ThroneOfTheTides",		-- Catalysm
+			"ZulAman",			-- Catalysm
+			"ZulGurub",			-- Catalysm
+			"Scholomance",			-- Mop, Classic WoW
+			"ScarletMonasteryEnt",		-- Mop, Classic WoW
+			"ScarletHalls",			-- Mop, Classic WoW
+			"ScarletMonastery",		-- Mop, Classic WoW
 		},
 		[ATLAS_DDL_CONTINENT_KALIMDOR] = {
-			"BlackfathomDeeps",
-			"BlackfathomDeepsEnt",
-			"CavernsOfTimeEnt",
-			"CoTBlackMorass",
-			"CoTDragonSoulA",
-			"CoTDragonSoulB",
-			"CoTDragonSoulC",
-			"CoTEndTime",
-			"CoTHyjal",
-			"CoTHyjalEnt",
-			"CoTHourOfTwilight",
-			"CoTOldHillsbrad",
-			"CoTOldStratholme",
-			"CoTWellOfEternity",
-			"DireMaulEast",
-			"DireMaulEnt",
-			"DireMaulNorth",
-			"DireMaulWest",
-			"Firelands",
-			"HallsOfOrigination",
-			"LostCityOfTolvir",
-			"Maraudon",
-			"MaraudonEnt",
-			"OnyxiasLair",
-			"RagefireChasm",
-			"RazorfenDowns",
-			"RazorfenKraul",
-			"TheRuinsofAhnQiraj",
-			"TheTempleofAhnQiraj",
-			"TheVortexPinnacle",
-			"ThroneOfTheFourWinds",
-			"WailingCaverns",
-			"WailingCavernsEnt",
-			"ZulFarrak",
+			"CavernsOfTimeEnt",		-- Catalysm, Burning Crusade
+			"BlackfathomDeeps",		-- Classic WoW
+			"BlackfathomDeepsEnt",		-- Classic WoW
+			"DireMaulEast",			-- Classic WoW
+			"DireMaulEnt",			-- Classic WoW
+			"DireMaulNorth",		-- Classic WoW
+			"DireMaulWest",			-- Classic WoW
+			"Maraudon",			-- Classic WoW
+			"MaraudonEnt",			-- Classic WoW
+			"RagefireChasm",		-- Classic WoW
+			"RazorfenDowns",		-- Classic WoW
+			"RazorfenKraul",		-- Classic WoW
+			"TheRuinsofAhnQiraj",		-- Classic WoW
+			"TheTempleofAhnQiraj",		-- Classic WoW
+			"WailingCaverns",		-- Classic WoW
+			"WailingCavernsEnt",		-- Classic WoW
+			"ZulFarrak",			-- Classic WoW
+			"CoTBlackMorass",		-- Burning Crusade
+			"CoTHyjal",			-- Burning Crusade
+			"CoTHyjalEnt",			-- Burning Crusade
+			"CoTOldHillsbrad",		-- Burning Crusade
+			"CoTOldStratholme",		-- Burning Crusade
+			"OnyxiasLair",			-- WrathoftheLichKing
+			"CoTDragonSoulA",		-- Catalysm
+			"CoTDragonSoulB",		-- Catalysm
+			"CoTDragonSoulC",		-- Catalysm
+			"CoTEndTime",			-- Catalysm
+			"CoTHourOfTwilight",		-- Catalysm
+			"CoTWellOfEternity",		-- Catalysm
+			"Firelands",			-- Catalysm
+			"HallsOfOrigination",		-- Catalysm
+			"LostCityOfTolvir",		-- Catalysm
+			"TheVortexPinnacle",		-- Catalysm
+			"ThroneOfTheFourWinds",		-- Catalysm
 		},
 		[ATLAS_DDL_CONTINENT_OUTLAND] = {
 			"AuchAuchenaiCrypts",
@@ -279,6 +279,7 @@ Atlas_DropDownLayouts = {
 			"NeltharionsLair",
 			"MawofSoulsA",
 			"MawofSoulsB",
+			"TheArcwayEnt",
 			"TheArcway",
 			"CourtofStarsA",
 			"CourtofStarsB",
@@ -290,6 +291,7 @@ Atlas_DropDownLayouts = {
 			"TheEmeraldNightmareE",
 			"TheEmeraldNightmareF",
 			"TheEmeraldNightmareG",
+			"TheNightholdEnt",
 			"TheNightholdA",
 			"TheNightholdB",
 			"TheNightholdC",
@@ -301,202 +303,202 @@ Atlas_DropDownLayouts = {
 	},
 	[ATLAS_DDL_LEVEL] = {
 		[ATLAS_DDL_LEVEL_UNDER45] = {
-			"BlackfathomDeeps",
-			"BlackfathomDeepsEnt",
-			"Gnomeregan",
-			"GnomereganEnt",
-			"RagefireChasm",
-			"RazorfenDowns",
-			"RazorfenKraul",
-			"ShadowfangKeep",
-			"ScarletMonasteryEnt",
-			"ScarletHalls",
-			"ScarletMonastery",
-			"Scholomance",
-			"TheDeadmines",
-			"TheDeadminesEnt",
-			"TheStockade",
-			"Uldaman",
-			"UldamanEnt",
-			"WailingCaverns",
-			"WailingCavernsEnt",
+			"BlackfathomDeeps",		-- Classic WoW
+			"BlackfathomDeepsEnt",		-- Classic WoW
+			"Gnomeregan",			-- Classic WoW
+			"GnomereganEnt",		-- Classic WoW
+			"RagefireChasm",		-- Classic WoW
+			"RazorfenDowns",		-- Classic WoW
+			"RazorfenKraul",		-- Classic WoW
+			"ShadowfangKeep",		-- Classic WoW
+			"ScarletMonasteryEnt",		-- Classic WoW
+			"ScarletHalls",			-- Classic WoW
+			"ScarletMonastery",		-- Classic WoW
+			"Scholomance",			-- Classic WoW
+			"TheDeadmines",			-- Classic WoW
+			"TheDeadminesEnt",		-- Classic WoW
+			"TheStockade",			-- Classic WoW
+			"Uldaman",			-- Classic WoW
+			"UldamanEnt",			-- Classic WoW
+			"WailingCaverns",		-- Classic WoW
+			"WailingCavernsEnt",		-- Classic WoW
 		},
 		[ATLAS_DDL_LEVEL_45TO60] = {
-			"BlackrockDepths",
-			"BlackrockMountainEnt",
-			"DireMaulEast",
-			"DireMaulEnt",
-			"DireMaulNorth",
-			"DireMaulWest",
-			"LowerBlackrockSpire",
-			"Maraudon",
-			"MaraudonEnt",
-			"StratholmeCrusader",
-			"StratholmeGauntlet",
-			"TheSunkenTemple",
-			"TheSunkenTempleEnt",
-			"ZulFarrak",
+			"BlackrockDepths",		-- Classic WoW
+			"BlackrockMountainEnt",		-- Classic WoW
+			"DireMaulEast",			-- Classic WoW
+			"DireMaulEnt",			-- Classic WoW
+			"DireMaulNorth",		-- Classic WoW
+			"DireMaulWest",			-- Classic WoW
+			"LowerBlackrockSpire",		-- Classic WoW
+			"Maraudon",			-- Classic WoW
+			"MaraudonEnt",			-- Classic WoW
+			"StratholmeCrusader",		-- Classic WoW
+			"StratholmeGauntlet",		-- Classic WoW
+			"TheSunkenTemple",		-- Classic WoW
+			"TheSunkenTempleEnt",		-- Classic WoW
+			"ZulFarrak",			-- Classic WoW
 		},
 		[ATLAS_DDL_LEVEL_60TO70] = {
-			"AuchAuchenaiCrypts",
-			"AuchindounEnt",
-			"AuchManaTombs",
-			"AuchSethekkHalls",
-			"AuchShadowLabyrinth",
-			"BlackrockMountainEnt",
-			"BlackwingLair",
-			"CFRTheSlavePens",
-			"CFRTheSteamvault",
-			"CFRTheUnderbog",
-			"CoilfangReservoirEnt",
-			"CoTBlackMorass",
-			"CavernsOfTimeEnt",
-			"CoTOldHillsbrad",
-			"HellfireCitadelEnt",
-			"HCBloodFurnace",
-			"HCHellfireRamparts",
-			"HCTheShatteredHalls",
-			"MagistersTerrace",
-			"MoltenCore",
-			"TempestKeepEnt",
-			"TempestKeepArcatraz",
-			"TempestKeepBotanica",
-			"TempestKeepMechanar",
-			"TheRuinsofAhnQiraj",
-			"TheTempleofAhnQiraj",
+			"BlackrockMountainEnt",		-- Classic WoW
+			"BlackwingLair",		-- Classic WoW
+			"MoltenCore",			-- Classic WoW
+			"TheRuinsofAhnQiraj",		-- Classic WoW
+			"TheTempleofAhnQiraj",		-- Classic WoW
+			"AuchAuchenaiCrypts",		-- Burning Crusade
+			"AuchindounEnt",		-- Burning Crusade
+			"AuchManaTombs",		-- Burning Crusade
+			"AuchSethekkHalls",		-- Burning Crusade
+			"AuchShadowLabyrinth",		-- Burning Crusade
+			"CFRTheSlavePens",		-- Burning Crusade
+			"CFRTheSteamvault",		-- Burning Crusade
+			"CFRTheUnderbog",		-- Burning Crusade
+			"CoilfangReservoirEnt",		-- Burning Crusade
+			"CoTBlackMorass",		-- Burning Crusade
+			"CavernsOfTimeEnt",		-- Burning Crusade
+			"CoTOldHillsbrad",		-- Burning Crusade
+			"HellfireCitadelEnt",		-- Burning Crusade
+			"HCBloodFurnace",		-- Burning Crusade
+			"HCHellfireRamparts",		-- Burning Crusade
+			"HCTheShatteredHalls",		-- Burning Crusade
+			"MagistersTerrace",		-- Burning Crusade
+			"TempestKeepEnt",		-- Burning Crusade
+			"TempestKeepArcatraz",		-- Burning Crusade
+			"TempestKeepBotanica",		-- Burning Crusade
+			"TempestKeepMechanar",		-- Burning Crusade
 		},
 		[ATLAS_DDL_LEVEL_70TO80] = {
-			"AhnKahet",
-			"AzjolNerub",
-			"BlackTempleBasement",
-			"BlackTempleStart",
-			"BlackTempleTop",
-			"CFRSerpentshrineCavern",
-			"CavernsOfTimeEnt",
-			"CoTHyjal",
-			"CoTHyjalEnt",
-			"CoTOldStratholme",
-			"DrakTharonKeep",
-			"FHHallsOfReflection",
-			"FHPitOfSaron",
-			"FHTheForgeOfSouls",
-			"GruulsLair",
-			"Gundrak",
-			"HellfireCitadelEnt",
-			"HCMagtheridonsLair",
-			"KarazhanEnd",
-			"KarazhanEnt",
-			"KarazhanStart",
-			"SunwellPlateau",
-			"TempestKeepTheEye",
-			"TheNexus",
-			"TheOculus",
-			"TrialOfTheChampion",
-			"UlduarEnt",
-			"UlduarHallsofStone",
-			"UlduarHallsofLightning",
-			"UtgardeKeep",
-			"UtgardePinnacle",
-			"VioletHold",
+			"CavernsOfTimeEnt",		-- Burning Crusade
+			"BlackTempleBasement",		-- Burning Crusade
+			"BlackTempleStart",		-- Burning Crusade
+			"BlackTempleTop",		-- Burning Crusade
+			"CFRSerpentshrineCavern",	-- Burning Crusade
+			"CoTHyjal",			-- Burning Crusade
+			"CoTHyjalEnt",			-- Burning Crusade
+			"CoTOldStratholme",		-- Burning Crusade
+			"KarazhanEnd",			-- Burning Crusade
+			"KarazhanEnt",			-- Burning Crusade
+			"KarazhanStart",		-- Burning Crusade
+			"AhnKahet",			-- WrathoftheLichKing
+			"AzjolNerub",			-- WrathoftheLichKing
+			"DrakTharonKeep",		-- WrathoftheLichKing
+			"FHHallsOfReflection",		-- WrathoftheLichKing
+			"FHPitOfSaron",			-- WrathoftheLichKing
+			"FHTheForgeOfSouls",		-- WrathoftheLichKing
+			"GruulsLair",			-- WrathoftheLichKing
+			"Gundrak",			-- WrathoftheLichKing
+			"HellfireCitadelEnt",		-- WrathoftheLichKing
+			"HCMagtheridonsLair",		-- WrathoftheLichKing
+			"SunwellPlateau",		-- WrathoftheLichKing
+			"TempestKeepTheEye",		-- WrathoftheLichKing
+			"TheNexus",			-- WrathoftheLichKing
+			"TheOculus",			-- WrathoftheLichKing
+			"TrialOfTheChampion",		-- WrathoftheLichKing
+			"UlduarEnt",			-- WrathoftheLichKing
+			"UlduarHallsofStone",		-- WrathoftheLichKing
+			"UlduarHallsofLightning",	-- WrathoftheLichKing
+			"UtgardeKeep",			-- WrathoftheLichKing
+			"UtgardePinnacle",		-- WrathoftheLichKing
+			"VioletHold",			-- WrathoftheLichKing
 		},
 		[ATLAS_DDL_LEVEL_80TO85] = {
-			"BlackrockCaverns",
-			"BlackrockMountainEnt",
-			"GrimBatol",
-			"HallsOfOrigination",
-			"IcecrownCitadelA",
-			"IcecrownCitadelB",
-			"IcecrownCitadelC",
-			"IcecrownEnt",
-			"LostCityOfTolvir",
-			"Naxxramas",
-			"ObsidianSanctum",
-			"OnyxiasLair",
-			"RubySanctum",
-			"TheEyeOfEternity",
-			"TheStonecore",
-			"TheVortexPinnacle",
-			"ThroneOfTheTides",
-			"TrialOfTheCrusader",
-			"UlduarA",
-			"UlduarB",
-			"UlduarC",
-			"UlduarD",
-			"UlduarE",
-			"VaultOfArchavon",
+			"IcecrownCitadelA",		-- WrathoftheLichKing
+			"IcecrownCitadelB",		-- WrathoftheLichKing
+			"IcecrownCitadelC",		-- WrathoftheLichKing
+			"IcecrownEnt",			-- WrathoftheLichKing
+			"Naxxramas",			-- WrathoftheLichKing
+			"ObsidianSanctum",		-- WrathoftheLichKing
+			"OnyxiasLair",			-- WrathoftheLichKing
+			"RubySanctum",			-- WrathoftheLichKing
+			"TheEyeOfEternity",		-- WrathoftheLichKing
+			"TrialOfTheCrusader",		-- WrathoftheLichKing
+			"UlduarA",			-- WrathoftheLichKing
+			"UlduarB",			-- WrathoftheLichKing
+			"UlduarC",			-- WrathoftheLichKing
+			"UlduarD",			-- WrathoftheLichKing
+			"UlduarE",			-- WrathoftheLichKing
+			"VaultOfArchavon",		-- WrathoftheLichKing
+			"BlackrockMountainEnt",		-- Catalysm
+			"BlackrockCaverns",		-- Catalysm
+			"GrimBatol",			-- Catalysm
+			"HallsOfOrigination",		-- Catalysm
+			"LostCityOfTolvir",		-- Catalysm
+			"TheStonecore",			-- Catalysm
+			"TheVortexPinnacle",		-- Catalysm
+			"ThroneOfTheTides",		-- Catalysm
 		},
 		[ATLAS_DDL_LEVEL_85TO90] = {
-			"BaradinHold",
-			"BlackrockMountainEnt",
-			"BlackwingDescent",
-			"CavernsOfTimeEnt",
-			"CoTDragonSoulA",
-			"CoTDragonSoulB",
-			"CoTDragonSoulC",
-			"CoTEndTime",
-			"CoTHourOfTwilight",
-			"CoTWellOfEternity",
-			"Firelands",
-			"GateoftheSettingSun",
-			"MoguShanPalace",
-			"ShadoPanMonasteryA",
-			"ShadoPanMonasteryB",
-			"ShadowfangKeep",
-			"StormstoutBrewery",
-			"TempleOfTheJadeSerpent",
-			"TheBastionOfTwilight",
-			"TheDeadmines",
-			"TheDeadminesEnt",
-			"ThroneOfTheFourWinds",
-			"ZulAman",
-			"ZulGurub",
+			"BaradinHold",			-- Catalysm
+			"BlackrockMountainEnt",		-- Catalysm
+			"BlackwingDescent",		-- Catalysm
+			"CavernsOfTimeEnt",		-- Catalysm
+			"CoTDragonSoulA",		-- Catalysm
+			"CoTDragonSoulB",		-- Catalysm
+			"CoTDragonSoulC",		-- Catalysm
+			"CoTEndTime",			-- Catalysm
+			"CoTHourOfTwilight",		-- Catalysm
+			"CoTWellOfEternity",		-- Catalysm
+			"Firelands",			-- Catalysm
+			"TheBastionOfTwilight",		-- Catalysm
+			"ThroneOfTheFourWinds",		-- Catalysm
+			"ShadowfangKeep",		-- Catalysm
+			"TheDeadmines",			-- Catalysm
+			"TheDeadminesEnt",		-- Catalysm
+			"ZulAman",			-- Catalysm
+			"ZulGurub",			-- Catalysm
+			"GateoftheSettingSun",		-- MoP
+			"MoguShanPalace",		-- MoP
+			"ShadoPanMonasteryA",		-- MoP
+			"ShadoPanMonasteryB",		-- MoP
+			"StormstoutBrewery",		-- MoP
+			"TempleOfTheJadeSerpent",	-- MoP
 		},
 		[ATLAS_DDL_LEVEL_90TO100] = {
-			"Auchindoun",
-			"BloodmaulSlagMines",
-			"HeartofFear",
-			"IronDocks",
-			"MoguShanVaults",
-			"Scholomance",
-			"ScarletMonasteryEnt",
-			"ScarletHalls",
-			"ScarletMonastery",
-			"SiegeofNiuzaoTempleA",
-			"SiegeofNiuzaoTempleB",
-			"SiegeofOrgrimmarA",
-			"SiegeofOrgrimmarB",
-			"SiegeofOrgrimmarC",
-			"SiegeofOrgrimmarD",
-			"Skyreach",
-			"TerraceofEndlessSpring",
-			"ThroneofThunderA",
-			"ThroneofThunderB",
-			"ThroneofThunderC",
-			"ThroneofThunderD",
+			"Scholomance",			-- MoP
+			"ScarletMonasteryEnt",		-- MoP
+			"ScarletHalls",			-- MoP
+			"ScarletMonastery",		-- MoP
+			"HeartofFear",			-- MoP
+			"MoguShanVaults",		-- MoP
+			"SiegeofNiuzaoTempleA",		-- MoP
+			"SiegeofNiuzaoTempleB",		-- MoP
+			"SiegeofOrgrimmarA",		-- MoP
+			"SiegeofOrgrimmarB",		-- MoP
+			"SiegeofOrgrimmarC",		-- MoP
+			"SiegeofOrgrimmarD",		-- MoP
+			"TerraceofEndlessSpring",	-- MoP
+			"ThroneofThunderA",		-- MoP
+			"ThroneofThunderB",		-- MoP
+			"ThroneofThunderC",		-- MoP
+			"ThroneofThunderD",		-- MoP
+			"Auchindoun",			-- Draenor
+			"BloodmaulSlagMines",		-- Draenor
+			"IronDocks",			-- Draenor
+			"Skyreach",			-- Draenor
 		},
 		[ATLAS_DDL_LEVEL_100TO110] = {
-			"AssaultonVioletHold",	-- Legion
-			"BlackrockFoundryA",
-			"BlackrockFoundryB",
-			"DarkheartThicket",	-- Legion
-			"EyeofAzshara",		-- Legion
-			"TheEverbloomA",
-			"TheEverbloomB",
-			"GrimrailDepot",
-			"HallsofValorA",	-- Legion
-			"HallsofValorB",	-- Legion
-			"HallsofValorC",	-- Legion
-			"HellfireA",
-			"HellfireB",
-			"HellfireC",
-			"HellfireD",
-			"HellfireE",
-			"HellfireF",
-			"HighmaulA",
-			"HighmaulB",
-			"NeltharionsLair",	-- Legion
-			"ShadowmoonBurialGrounds",
-			"UpperBlackrockSpire",
+			"BlackrockFoundryA",		-- Draenor
+			"BlackrockFoundryB",		-- Draenor
+			"TheEverbloomA",		-- Draenor
+			"TheEverbloomB",		-- Draenor
+			"GrimrailDepot",		-- Draenor
+			"HellfireA",			-- Draenor
+			"HellfireB",			-- Draenor
+			"HellfireC",			-- Draenor
+			"HellfireD",			-- Draenor
+			"HellfireE",			-- Draenor
+			"HellfireF",			-- Draenor
+			"HighmaulA",			-- Draenor
+			"HighmaulB",			-- Draenor
+			"ShadowmoonBurialGrounds",	-- Draenor
+			"UpperBlackrockSpire",		-- Draenor
+			"AssaultonVioletHold",		-- Legion
+			"DarkheartThicket",		-- Legion
+			"EyeofAzshara",			-- Legion
+			"HallsofValorA",		-- Legion
+			"HallsofValorB",		-- Legion
+			"HallsofValorC",		-- Legion
+			"NeltharionsLair",		-- Legion
 		},
 		[ATLAS_DDL_LEVEL_110PLUS] = {
 			"BlackRookHoldA",
@@ -507,6 +509,7 @@ Atlas_DropDownLayouts = {
 			"VaultoftheWardensC",
 			"MawofSoulsA",
 			"MawofSoulsB",
+			"TheArcwayEnt",
 			"TheArcway",
 			"CourtofStarsA",
 			"CourtofStarsB",
@@ -517,6 +520,7 @@ Atlas_DropDownLayouts = {
 			"TheEmeraldNightmareE",
 			"TheEmeraldNightmareF",
 			"TheEmeraldNightmareG",
+			"TheNightholdEnt",
 			"TheNightholdA",
 			"TheNightholdB",
 			"TheNightholdC",
@@ -528,166 +532,169 @@ Atlas_DropDownLayouts = {
 	},
 	[ATLAS_DDL_PARTYSIZE] = {
 		[ATLAS_DDL_PARTYSIZE_5_AE] = {
-			"AhnKahet",
+			"TheDeadmines",			-- Classic WoW, Catalysm
+			"TheDeadminesEnt",		-- Classic WoW, Catalysm
+			"BlackrockMountainEnt",		-- Classic WoW, Catalysm, Draenor
+			"CavernsOfTimeEnt",		-- Catalysm, Burning Crusade
+			"BlackfathomDeeps",		-- Classic WoW
+			"BlackfathomDeepsEnt",		-- Classic WoW
+			"BlackrockDepths",		-- Classic WoW
+			"DireMaulEast",			-- Classic WoW
+			"DireMaulEnt",			-- Classic WoW
+			"DireMaulNorth",		-- Classic WoW
+			"DireMaulWest",			-- Classic WoW
+			"LowerBlackrockSpire",		-- Classic WoW
+			"AuchindounEnt",		-- Burning Crusade
+			"AuchManaTombs",		-- Burning Crusade
+			"AuchSethekkHalls",		-- Burning Crusade
+			"AuchShadowLabyrinth",		-- Burning Crusade
+			"CFRTheSlavePens",		-- Burning Crusade
+			"CFRTheSteamvault",		-- Burning Crusade
+			"CFRTheUnderbog",		-- Burning Crusade
+			"CoilfangReservoirEnt",		-- Burning Crusade
+			"CoTBlackMorass",		-- Burning Crusade
+			"CoTOldHillsbrad",		-- Burning Crusade
+			"CoTOldStratholme",		-- Burning Crusade
+			"AhnKahet",			-- WrathoftheLichKing
+			"AuchAuchenaiCrypts",		-- WrathoftheLichKing
+			"AzjolNerub",			-- WrathoftheLichKing
+			"TrialOfTheChampion",		-- WrathoftheLichKing
+			"DrakTharonKeep",		-- WrathoftheLichKing
+			"BlackrockCaverns",		-- Catalysm
+			"CoTEndTime",			-- Catalysm
+			"CoTHourOfTwilight",		-- Catalysm
+			"CoTWellOfEternity",		-- Catalysm
+			"Auchindoun",			-- Draenor
+			"BloodmaulSlagMines",		-- Draenor
+			"TheEverbloomA",		-- Draenor
+			"TheEverbloomB",		-- Draenor
+			"UpperBlackrockSpire",		-- Draenor
+			"BlackRookHoldA",		-- Legion
+			"BlackRookHoldB",		-- Legion
+			"BlackRookHoldC",		-- Legion
+			"TheArcwayEnt",			-- Legion
 			"TheArcway",			-- Legion
 			"AssaultonVioletHold",		-- Legion
-			"AuchAuchenaiCrypts",
-			"Auchindoun",
-			"AuchindounEnt",
-			"AuchManaTombs",
-			"AuchSethekkHalls",
-			"AuchShadowLabyrinth",
-			"AzjolNerub",
-			"BlackfathomDeeps",
-			"BlackfathomDeepsEnt",
-			"BlackrockCaverns",
-			"BlackrockDepths",
-			"BlackRookHoldA",
-			"BlackRookHoldB",
-			"BlackRookHoldC",
-			"BlackrockMountainEnt",
-			"BloodmaulSlagMines",
-			"CFRTheSlavePens",
-			"CFRTheSteamvault",
-			"CFRTheUnderbog",
-			"CoilfangReservoirEnt",
 			"CourtofStarsA",		-- Legion
 			"CourtofStarsB",		-- Legion
-			"CavernsOfTimeEnt",
-			"CoTBlackMorass",
-			"CoTEndTime",
-			"CoTHourOfTwilight",
-			"CoTOldHillsbrad",
-			"CoTOldStratholme",
-			"CoTWellOfEternity",
-			"TrialOfTheChampion",
 			"DarkheartThicket",		-- Legion
-			"DireMaulEast",
-			"DireMaulEnt",
-			"DireMaulNorth",
-			"DireMaulWest",
-			"DrakTharonKeep",
-			"LowerBlackrockSpire",
 			"EyeofAzshara",			-- Legion
-			"TheEverbloomA",
-			"TheEverbloomB",
-			"UpperBlackrockSpire",
 		},
 		[ATLAS_DDL_PARTYSIZE_5_FS] = {
-			"FHHallsOfReflection",
-			"FHTheForgeOfSouls",
-			"FHPitOfSaron",
-			"GateoftheSettingSun",
-			"Gnomeregan",
-			"GnomereganEnt",
-			"GrimBatol",
-			"GrimrailDepot",
-			"Gundrak",
+			"ShadowfangKeep",		-- Classic WoW, Catalysm
+			"Gnomeregan",			-- Classic WoW
+			"GnomereganEnt",		-- Classic WoW
+			"Maraudon",			-- Classic WoW
+			"MaraudonEnt",			-- Classic WoW
+			"RagefireChasm",		-- Classic WoW
+			"RazorfenDowns",		-- Classic WoW
+			"RazorfenKraul",		-- Classic WoW
+			"TheStockade",			-- Classic WoW
+			"StratholmeCrusader",		-- Classic WoW
+			"StratholmeGauntlet",		-- Classic WoW
+			"TheSunkenTemple",		-- Classic WoW
+			"TheSunkenTempleEnt",		-- Classic WoW
+			"HellfireCitadelEnt",		-- Burning Crusade
+			"HCBloodFurnace",		-- Burning Crusade
+			"HCHellfireRamparts",		-- Burning Crusade
+			"HCTheShatteredHalls",		-- Burning Crusade
+			"MagistersTerrace",		-- Burning Crusade
+			"FHHallsOfReflection",		-- WrathoftheLichKing
+			"FHTheForgeOfSouls",		-- WrathoftheLichKing
+			"FHPitOfSaron",			-- WrathoftheLichKing
+			"Gundrak",			-- WrathoftheLichKing
+			"IcecrownEnt",			-- WrathoftheLichKing
+			"TheNexus",			-- WrathoftheLichKing
+			"TheOculus",			-- WrathoftheLichKing
+			"GrimBatol",			-- Catalysm
+			"HallsOfOrigination",		-- Catalysm
+			"LostCityOfTolvir",		-- Catalysm
+			"GateoftheSettingSun",		-- Mop
+			"MoguShanPalace",		-- Mop
+			"ScarletMonasteryEnt",		-- MoP
+			"ScarletHalls",			-- MoP
+			"ScarletMonastery",		-- MoP
+			"Scholomance",			-- MoP
+			"ShadoPanMonasteryA",		-- Mop
+			"ShadoPanMonasteryB",		-- Mop
+			"SiegeofNiuzaoTempleA",		-- Mop
+			"SiegeofNiuzaoTempleB",		-- Mop
+			"StormstoutBrewery",		-- Mop
+			"GrimrailDepot",		-- Draenor
+			"IronDocks",			-- Draenor
+			"ShadowmoonBurialGrounds",	-- Draenor
+			"Skyreach",			-- Draenor
 			"HallsofValorA",	-- Legion
 			"HallsofValorB",	-- Legion
 			"HallsofValorC",	-- Legion
-			"HallsOfOrigination",
-			"HellfireCitadelEnt",
-			"HCBloodFurnace",
-			"HCHellfireRamparts",
-			"HCTheShatteredHalls",
-			"IcecrownEnt",
-			"IronDocks",
-			"LostCityOfTolvir",
-			"MagistersTerrace",
-			"Maraudon",
-			"MaraudonEnt",
 			"MawofSoulsA",		-- Legion
 			"MawofSoulsB",		-- Legion
-			"MoguShanPalace",
 			"NeltharionsLair",	-- Legion
-			"RagefireChasm",
-			"RazorfenDowns",
-			"RazorfenKraul",
-			"Scholomance",
-			"ShadowmoonBurialGrounds",
-			"ShadoPanMonasteryA",
-			"ShadoPanMonasteryB",
-			"ShadowfangKeep",
-			"ScarletMonasteryEnt",
-			"ScarletHalls",
-			"ScarletMonastery",
-			"SiegeofNiuzaoTempleA",
-			"SiegeofNiuzaoTempleB",
-			"Skyreach",
-			"StormstoutBrewery",
-			"StratholmeCrusader",
-			"StratholmeGauntlet",
 		},
 		[ATLAS_DDL_PARTYSIZE_5_TZ] = {
-			"TempestKeepEnt",
-			"TempestKeepArcatraz",
-			"TempestKeepBotanica",
-			"TempestKeepMechanar",
-			"TempleOfTheJadeSerpent",
-			"TheDeadmines",
-			"TheDeadminesEnt",
-			"TheNexus",
-			"TheOculus",
-			"TheStockade",
-			"TheStonecore",
-			"TheSunkenTemple",
-			"TheSunkenTempleEnt",
-			"TheVortexPinnacle",
-			"ThroneOfTheTides",
-			"Uldaman",
-			"UldamanEnt",
-			"UlduarEnt",
-			"UlduarHallsofStone",
-			"UlduarHallsofLightning",
-			"UtgardeKeep",
-			"UtgardePinnacle",
-			"VaultoftheWardensA",
-			"VaultoftheWardensB",
-			"VaultoftheWardensC",
-			"VioletHold",
-			"WailingCaverns",
-			"WailingCavernsEnt",
-			"ZulAman",
-			"ZulFarrak",
-			"ZulGurub",
+			"Uldaman",				-- Classic WoW
+			"UldamanEnt",				-- Classic WoW
+			"WailingCaverns",			-- Classic WoW
+			"WailingCavernsEnt",			-- Classic WoW
+			"ZulFarrak",				-- Classic WoW
+			"TempestKeepEnt",			-- Burning Crusade
+			"TempestKeepArcatraz",			-- Burning Crusade
+			"TempestKeepBotanica",			-- Burning Crusade
+			"TempestKeepMechanar",			-- Burning Crusade
+			"VioletHold",				-- Burning Crusade
+			"UlduarEnt",				-- WrathoftheLichKing
+			"UlduarHallsofStone",			-- WrathoftheLichKing
+			"UlduarHallsofLightning",		-- WrathoftheLichKing
+			"UtgardeKeep",				-- WrathoftheLichKing
+			"UtgardePinnacle",			-- WrathoftheLichKing
+			"TheStonecore",				-- Catalysm
+			"TheVortexPinnacle",			-- Catalysm
+			"ThroneOfTheTides",			-- Catalysm
+			"ZulAman",				-- Catalysm
+			"ZulGurub",				-- Catalysm
+			"TempleOfTheJadeSerpent",		-- MoP
+			"VaultoftheWardensA",			-- Legion
+			"VaultoftheWardensB",			-- Legion
+			"VaultoftheWardensC",			-- Legion
 		},
 		[ATLAS_DDL_PARTYSIZE_10_AN] = {
-			"BaradinHold",
-			"BlackrockFoundryA",
-			"BlackrockFoundryB",
-			"BlackrockMountainEnt",
-			"BlackwingDescent",
-			"CavernsOfTimeEnt",
-			"CoTDragonSoulA",
-			"CoTDragonSoulB",
-			"CoTDragonSoulC",
-			"TheEmeraldNightmareA",
-			"TheEmeraldNightmareB",
-			"TheEmeraldNightmareC",
-			"TheEmeraldNightmareD",
-			"TheEmeraldNightmareE",
-			"TheEmeraldNightmareF",
+			"BlackrockMountainEnt",			-- Catalysm, Draenor
+			"CavernsOfTimeEnt",			-- Catalysm, Burning Crusade
+			"KarazhanEnd",				-- Burning Crusade
+			"KarazhanEnt",				-- Burning Crusade
+			"KarazhanStart",			-- Burning Crusade
+			"Naxxramas",				-- Burning Crusade
+			"IcecrownCitadelA",			-- WrathoftheLichKing
+			"IcecrownCitadelB",			-- WrathoftheLichKing
+			"IcecrownCitadelC",			-- WrathoftheLichKing
+			"IcecrownEnt",				-- WrathoftheLichKing
+			"TheBastionOfTwilight",			-- Catalysm
+			"BaradinHold",				-- Catalysm
+			"BlackwingDescent",			-- Catalysm
+			"CoTDragonSoulA",			-- Catalysm
+			"CoTDragonSoulB",			-- Catalysm
+			"CoTDragonSoulC",			-- Catalysm
+			"Firelands",				-- Catalysm
+			"HeartofFear",			-- MoP
+			"MoguShanVaults",		-- MoP
+			"BlackrockFoundryA",		-- Draenor
+			"BlackrockFoundryB",		-- Draenor
+			"HellfireA",			-- Draenor
+			"HellfireB",			-- Draenor
+			"HellfireC",			-- Draenor
+			"HellfireD",			-- Draenor
+			"HellfireE",			-- Draenor
+			"HellfireF",			-- Draenor
+			"HighmaulA",			-- Draenor
+			"HighmaulB",			-- Draenor
+			"TheEmeraldNightmareA",		-- Legion
+			"TheEmeraldNightmareB",		-- Legion
+			"TheEmeraldNightmareC",		-- Legion
+			"TheEmeraldNightmareD",		-- Legion
+			"TheEmeraldNightmareE",		-- Legion
+			"TheEmeraldNightmareF",		-- Legion
 			"TheEmeraldNightmareG",		-- Legion
-			"Firelands",
-			"HeartofFear",
-			"HellfireA",
-			"HellfireB",
-			"HellfireC",
-			"HellfireD",
-			"HellfireE",
-			"HellfireF",
-			"HighmaulA",
-			"HighmaulB",
-			"IcecrownCitadelA",
-			"IcecrownCitadelB",
-			"IcecrownCitadelC",
-			"IcecrownEnt",
-			"KarazhanEnd",
-			"KarazhanEnt",
-			"KarazhanStart",
-			"MoguShanVaults",
-			"Naxxramas",
+			"TheNightholdEnt",
 			"TheNightholdA",		-- Legion
 			"TheNightholdB",		-- Legion
 			"TheNightholdC",		-- Legion
@@ -697,49 +704,65 @@ Atlas_DropDownLayouts = {
 			-- "TheNightholdG",		-- Legion
 		},
 		[ATLAS_DDL_PARTYSIZE_10_OZ] = {
-			"ObsidianSanctum",
-			"OnyxiasLair",
-			"RubySanctum",
-			"SiegeofOrgrimmarA",
-			"SiegeofOrgrimmarB",
-			"SiegeofOrgrimmarC",
-			"SiegeofOrgrimmarD",
-			"TerraceofEndlessSpring",
-			"TheBastionOfTwilight",
-			"TheEyeOfEternity",
-			"TheRuinsofAhnQiraj",
-			"ThroneOfTheFourWinds",
-			"ThroneofThunderA",
-			"ThroneofThunderB",
-			"ThroneofThunderC",
-			"ThroneofThunderD",
-			"TrialOfTheCrusader",
-			"UlduarA",
-			"UlduarB",
-			"UlduarC",
-			"UlduarD",
-			"UlduarE",
-			"VaultOfArchavon",
+			"TheRuinsofAhnQiraj",		-- Classic WoW
+			"ObsidianSanctum",		-- WrathoftheLichKing
+			"OnyxiasLair",			-- WrathoftheLichKing
+			"RubySanctum",			-- WrathoftheLichKing
+			"TheEyeOfEternity",		-- WrathoftheLichKing
+			"TrialOfTheCrusader",		-- WrathoftheLichKing
+			"UlduarA",			-- WrathoftheLichKing
+			"UlduarB",			-- WrathoftheLichKing
+			"UlduarC",			-- WrathoftheLichKing
+			"UlduarD",			-- WrathoftheLichKing
+			"UlduarE",			-- WrathoftheLichKing
+			"VaultOfArchavon",		-- WrathoftheLichKing
+			"ThroneOfTheFourWinds",		-- Catalysm
+			"SiegeofOrgrimmarA",		-- MoP
+			"SiegeofOrgrimmarB",		-- MoP
+			"SiegeofOrgrimmarC",		-- MoP
+			"SiegeofOrgrimmarD",		-- MoP
+			"TerraceofEndlessSpring",	-- MoP
+			"ThroneofThunderA",		-- MoP
+			"ThroneofThunderB",		-- MoP
+			"ThroneofThunderC",		-- MoP
+			"ThroneofThunderD",		-- MoP
 		},
 		[ATLAS_DDL_PARTYSIZE_20TO40AH] = {
-			"BaradinHold",
-			"TheBastionOfTwilight",
-			"BlackrockFoundryA",
-			"BlackrockFoundryB",
-			"BlackrockMountainEnt",
-			"BlackTempleBasement",
-			"BlackTempleStart",
-			"BlackTempleTop",
-			"BlackwingDescent",
-			"BlackwingLair",
-			"CFRSerpentshrineCavern",
-			"CoilfangReservoirEnt",
-			"CavernsOfTimeEnt",
-			"CoTDragonSoulA",
-			"CoTDragonSoulB",
-			"CoTDragonSoulC",
-			"CoTHyjal",
-			"CoTHyjalEnt",
+			"BlackrockMountainEnt",		-- Classic WoW, Catalysm, Draenor
+			"CavernsOfTimeEnt",		-- Catalysm, Burning Crusade
+			"BlackwingLair",		-- Classic WoW
+			"MoltenCore",			-- Classic WoW
+			"TheTempleofAhnQiraj",		-- Classic WoW
+			"BlackTempleBasement",		-- Burning Crusade
+			"BlackTempleStart",		-- Burning Crusade
+			"BlackTempleTop",		-- Burning Crusade
+			"CFRSerpentshrineCavern",	-- Burning Crusade
+			"CoilfangReservoirEnt",		-- Burning Crusade
+			"CoTHyjal",			-- Burning Crusade
+			"CoTHyjalEnt",			-- Burning Crusade
+			"TheEyeOfEternity",		-- Burning Crusade
+			"GruulsLair",			-- Burning Crusade
+			"HellfireCitadelEnt",		-- Burning Crusade
+			"HCMagtheridonsLair",		-- Burning Crusade
+			"TrialOfTheCrusader",		-- WrathoftheLichKing
+			"BaradinHold",			-- Catalysm
+			"TheBastionOfTwilight",		-- Catalysm
+			"BlackwingDescent",		-- Catalysm
+			"CoTDragonSoulA",		-- Catalysm
+			"CoTDragonSoulB",		-- Catalysm
+			"CoTDragonSoulC",		-- Catalysm
+			"Firelands",			-- Catalysm
+			"HeartofFear",			-- MoP
+			"BlackrockFoundryA",		-- Draenor
+			"BlackrockFoundryB",		-- Draenor
+			"HellfireA",			-- Draenor
+			"HellfireB",			-- Draenor
+			"HellfireC",			-- Draenor
+			"HellfireD",			-- Draenor
+			"HellfireE",			-- Draenor
+			"HellfireF",			-- Draenor
+			"HighmaulA",			-- Draenor
+			"HighmaulB",			-- Draenor
 			"TheEmeraldNightmareA",		-- Legion
 			"TheEmeraldNightmareB",		-- Legion
 			"TheEmeraldNightmareC",		-- Legion
@@ -747,30 +770,37 @@ Atlas_DropDownLayouts = {
 			"TheEmeraldNightmareE",		-- Legion
 			"TheEmeraldNightmareF",		-- Legion
 			"TheEmeraldNightmareG",		-- Legion
-			"Firelands",
-			"GruulsLair",
-			"HellfireCitadelEnt",
-			"HCMagtheridonsLair",
-			"HeartofFear",
-			"HellfireA",
-			"HellfireB",
-			"HellfireC",
-			"HellfireD",
-			"HellfireE",
-			"HellfireF",
-			"HighmaulA",
-			"HighmaulB",
-			"MoltenCore",
-			"TheTempleofAhnQiraj",
-			"TrialOfTheCrusader",
 		},
 		[ATLAS_DDL_PARTYSIZE_20TO40IZ] = {
-			"IcecrownCitadelA",
-			"IcecrownCitadelB",
-			"IcecrownCitadelC",
-			"IcecrownEnt",
-			"MoguShanVaults",
-			"Naxxramas",
+			"Naxxramas",			-- Burning Crusade
+			"SunwellPlateau",		-- Burning Crusade
+			"TempestKeepEnt",		-- Burning Crusade
+			"TempestKeepTheEye",		-- Burning Crusade
+			"IcecrownCitadelA",		-- WrathoftheLichKing
+			"IcecrownCitadelB",		-- WrathoftheLichKing
+			"IcecrownCitadelC",		-- WrathoftheLichKing
+			"IcecrownEnt",			-- WrathoftheLichKing
+			"ObsidianSanctum",		-- WrathoftheLichKing
+			"OnyxiasLair",			-- WrathoftheLichKing
+			"RubySanctum",			-- WrathoftheLichKing
+			"UlduarA",			-- WrathoftheLichKing
+			"UlduarB",			-- WrathoftheLichKing
+			"UlduarC",			-- WrathoftheLichKing
+			"UlduarD",			-- WrathoftheLichKing
+			"UlduarE",			-- WrathoftheLichKing
+			"VaultOfArchavon",		-- WrathoftheLichKing
+			"ThroneOfTheFourWinds",		-- Catalysm
+			"MoguShanVaults",		-- MoP
+			"SiegeofOrgrimmarA",		-- MoP
+			"SiegeofOrgrimmarB",		-- MoP
+			"SiegeofOrgrimmarC",		-- MoP
+			"SiegeofOrgrimmarD",		-- MoP
+			"TerraceofEndlessSpring",	-- MoP
+			"ThroneofThunderA",		-- MoP
+			"ThroneofThunderB",		-- MoP
+			"ThroneofThunderC",		-- MoP
+			"ThroneofThunderD",		-- MoP
+			"TheNightholdEnt",
 			"TheNightholdA",		-- Legion
 			"TheNightholdB",		-- Legion
 			"TheNightholdC",		-- Legion
@@ -778,29 +808,6 @@ Atlas_DropDownLayouts = {
 			"TheNightholdE",		-- Legion
 			"TheNightholdF",		-- Legion
 			-- "TheNightholdG",		-- Legion
-			"ObsidianSanctum",
-			"OnyxiasLair",
-			"RubySanctum",
-			"SiegeofOrgrimmarA",
-			"SiegeofOrgrimmarB",
-			"SiegeofOrgrimmarC",
-			"SiegeofOrgrimmarD",
-			"SunwellPlateau",
-			"TempestKeepEnt",
-			"TempestKeepTheEye",
-			"TerraceofEndlessSpring",
-			"TheEyeOfEternity",
-			"ThroneOfTheFourWinds",
-			"ThroneofThunderA",
-			"ThroneofThunderB",
-			"ThroneofThunderC",
-			"ThroneofThunderD",
-			"UlduarA",
-			"UlduarB",
-			"UlduarC",
-			"UlduarD",
-			"UlduarE",
-			"VaultOfArchavon",
 		},
 	},
 	[ATLAS_DDL_EXPANSION] = {
@@ -1005,6 +1012,7 @@ Atlas_DropDownLayouts = {
 			"NeltharionsLair",
 			"MawofSoulsA",
 			"MawofSoulsB",
+			"TheArcwayEnt",
 			"TheArcway",
 			"CourtofStarsA",
 			"CourtofStarsB",
@@ -1016,6 +1024,7 @@ Atlas_DropDownLayouts = {
 			"TheEmeraldNightmareE",
 			"TheEmeraldNightmareF",
 			"TheEmeraldNightmareG",
+			"TheNightholdEnt",
 			"TheNightholdA",
 			"TheNightholdB",
 			"TheNightholdC",
@@ -1027,61 +1036,68 @@ Atlas_DropDownLayouts = {
 	},
 	[ATLAS_DDL_TYPE] = {
 		[ATLAS_DDL_TYPE_INSTANCE_AB] = {
-			"AhnKahet",
+			"BlackfathomDeeps",		-- Classic WoW
+			"BlackrockDepths",		-- Classic WoW
+			"BlackwingLair",		-- Classic WoW
+			"LowerBlackrockSpire",		-- Classic WoW
+			"TheRuinsofAhnQiraj",		-- Classic WoW
+			"TheTempleofAhnQiraj",		-- Classic WoW
+			"AuchAuchenaiCrypts",		-- Burning Crusade
+			"AuchManaTombs",		-- Burning Crusade
+			"AuchSethekkHalls",		-- Burning Crusade
+			"AuchShadowLabyrinth",		-- Burning Crusade
+			"BlackTempleBasement",		-- Burning Crusade
+			"BlackTempleStart",		-- Burning Crusade
+			"BlackTempleTop",		-- Burning Crusade
+			"AhnKahet",			-- WrathoftheLichKing
+			"AzjolNerub",			-- WrathoftheLichKing
+			"BaradinHold",			-- Catalysm
+			"BlackrockCaverns",		-- Catalysm
+			"BlackwingDescent",		-- Catalysm
+			"TheBastionOfTwilight",		-- Catalysm
+			"Auchindoun",			-- Draenor
+			"BlackrockFoundryA",		-- Draenor
+			"BlackrockFoundryB",		-- Draenor
+			"BloodmaulSlagMines",		-- Draenor
+			"UpperBlackrockSpire",		-- Draenor
 			"TheArcway",			-- Legion
 			"AssaultonVioletHold",		-- Legion
-			"Auchindoun",
-			"AuchAuchenaiCrypts",
-			"AuchManaTombs",
-			"AuchSethekkHalls",
-			"AuchShadowLabyrinth",
-			"AzjolNerub",
-			"BaradinHold",
-			"BlackfathomDeeps",
-			"BlackrockFoundryA",
-			"BlackrockFoundryB",
-			"BlackrockCaverns",
-			"BlackrockDepths",
 			"BlackRookHoldA",		-- Legion
 			"BlackRookHoldB",		-- Legion
 			"BlackRookHoldC",		-- Legion
-			"BlackTempleBasement",
-			"BlackTempleStart",
-			"BlackTempleTop",
-			"BlackwingDescent",
-			"BlackwingLair",
-			"BloodmaulSlagMines",
-			"LowerBlackrockSpire",
-			"MoltenCore",
-			"TheBastionOfTwilight",
-			"TheRuinsofAhnQiraj",
-			"TheTempleofAhnQiraj",
-			"UpperBlackrockSpire",
 		},
 		[ATLAS_DDL_TYPE_INSTANCE_CF] = {
-			"CFRSerpentshrineCavern",
-			"CFRTheSlavePens",
-			"CFRTheSteamvault",
-			"CFRTheUnderbog",
-			"CoTBlackMorass",
-			"CoTDragonSoulA",
-			"CoTDragonSoulB",
-			"CoTDragonSoulC",
-			"CoTEndTime",
-			"CoTHourOfTwilight",
-			"CoTHyjal",
-			"CoTHyjalEnt",
-			"CoTOldHillsbrad",
-			"CoTOldStratholme",
-			"CoTWellOfEternity",
+			"TheDeadmines",			-- Classic WoW, Cayalysm
+			"DireMaulEast",			-- Classic WoW
+			"DireMaulNorth",		-- Classic WoW
+			"DireMaulWest",			-- Classic WoW
+			"CFRSerpentshrineCavern",	-- Burning Crusade
+			"CFRTheSlavePens",		-- Burning Crusade
+			"CFRTheSteamvault",		-- Burning Crusade
+			"CFRTheUnderbog",		-- Burning Crusade
+			"CoTBlackMorass",		-- Burning Crusade
+			"CoTHyjal",			-- Burning Crusade
+			"CoTHyjalEnt",			-- Burning Crusade
+			"CoTOldHillsbrad",		-- Burning Crusade
+			"CoTOldStratholme",		-- Burning Crusade
+			"DrakTharonKeep",		-- WrathoftheLichKing
+			"FHHallsOfReflection",		-- WrathoftheLichKing
+			"FHTheForgeOfSouls",		-- WrathoftheLichKing
+			"FHPitOfSaron",			-- WrathoftheLichKing
+			"TrialOfTheChampion",		-- WrathoftheLichKing
+			"TrialOfTheCrusader",		-- WrathoftheLichKing
+			"CoTDragonSoulA",		-- Catalysm
+			"CoTDragonSoulB",		-- Catalysm
+			"CoTDragonSoulC",		-- Catalysm
+			"CoTEndTime",			-- Catalysm
+			"CoTHourOfTwilight",		-- Catalysm
+			"CoTWellOfEternity",		-- Catalysm
+			"Firelands",			-- Catalysm
+			"TheEverbloomA",		-- Draenor
+			"TheEverbloomB",		-- Draenor
 			"CourtofStarsA",		-- Legion
 			"CourtofStarsB",		-- Legion
 			"DarkheartThicket",		-- Legion
-			"DireMaulEast",
-			"DireMaulNorth",
-			"DireMaulWest",
-			"DrakTharonKeep",
-			"TheDeadmines",
 			"TheEmeraldNightmareA",		-- Legion
 			"TheEmeraldNightmareB",		-- Legion
 			"TheEmeraldNightmareC",		-- Legion
@@ -1090,55 +1106,78 @@ Atlas_DropDownLayouts = {
 			"TheEmeraldNightmareF",		-- Legion
 			"TheEmeraldNightmareG",		-- Legion
 			"EyeofAzshara",			-- Legion
-			"TheEverbloomA",
-			"TheEverbloomB",
-			"Firelands",
-			"FHHallsOfReflection",
-			"FHTheForgeOfSouls",
-			"FHPitOfSaron",
-			"TrialOfTheChampion",
-			"TrialOfTheCrusader",
 		},
 		[ATLAS_DDL_TYPE_INSTANCE_GM] = {
-			"GateoftheSettingSun",
-			"Gnomeregan",
-			"GrimBatol",
-			"GrimrailDepot",
-			"GruulsLair",
-			"Gundrak",
-			"HallsOfOrigination",
-			"HallsofValorA",	-- Legion
-			"HallsofValorB",	-- Legion
-			"HallsofValorC",	-- Legion
-			"HCBloodFurnace",
-			"HCHellfireRamparts",
-			"HCMagtheridonsLair",
-			"HCTheShatteredHalls",
-			"HellfireA",
-			"HellfireB",
-			"HellfireC",
-			"HellfireD",
-			"HellfireE",
-			"HellfireF",
-			"HeartofFear",
-			"HighmaulA",
-			"HighmaulB",
-			"IcecrownCitadelA",
-			"IcecrownCitadelB",
-			"IcecrownCitadelC",
-			"IronDocks",
-			"KarazhanEnd",
-			"KarazhanStart",
-			"LostCityOfTolvir",
-			"MagistersTerrace",
-			"Maraudon",
+			"Gnomeregan",			-- Classic WoW
+			"Maraudon",			-- Classic WoW
+			"MoltenCore",			-- Classic WoW
+			"GruulsLair",			-- Burning Crusade
+			"HCBloodFurnace",		-- Burning Crusade
+			"HCHellfireRamparts",		-- Burning Crusade
+			"HCMagtheridonsLair",		-- Burning Crusade
+			"HCTheShatteredHalls",		-- Burning Crusade
+			"KarazhanEnd",			-- Burning Crusade
+			"KarazhanStart",		-- Burning Crusade
+			"MagistersTerrace",		-- Burning Crusade
+			"Gundrak",			-- WrathoftheLichKing
+			"IcecrownCitadelA",		-- WrathoftheLichKing
+			"IcecrownCitadelB",		-- WrathoftheLichKing
+			"IcecrownCitadelC",		-- WrathoftheLichKing
+			"GrimBatol",			-- Catalysm
+			"HallsOfOrigination",		-- Catalysm
+			"LostCityOfTolvir",		-- Catalysm
+			"GateoftheSettingSun",		-- MoP
+			"HeartofFear",			-- MoP
+			"MoguShanPalace",		-- MoP
+			"MoguShanVaults",		-- MoP
+			"GrimrailDepot",		-- Draenor
+			"HellfireA",			-- Draenor
+			"HellfireB",			-- Draenor
+			"HellfireC",			-- Draenor
+			"HellfireD",			-- Draenor
+			"HellfireE",			-- Draenor
+			"HellfireF",			-- Draenor
+			"HighmaulA",			-- Draenor
+			"HighmaulB",			-- Draenor
+			"IronDocks",			-- Draenor
+			"HallsofValorA",		-- Legion
+			"HallsofValorB",		-- Legion
+			"HallsofValorC",		-- Legion
 			"MawofSoulsA",			-- Legion
 			"MawofSoulsB",			-- Legion
-			"MoguShanPalace",
-			"MoguShanVaults",
 		},
 		[ATLAS_DDL_TYPE_INSTANCE_NS] = {
-			"Naxxramas",
+			"RagefireChasm",		-- Classic WoW
+			"RazorfenDowns",		-- Classic WoW
+			"RazorfenKraul",		-- Classic WoW
+			"ScarletHalls",			-- Classic WoW, MoP
+			"ScarletMonastery",		-- Classic WoW, MoP
+			"ShadowfangKeep",		-- Classic WoW, Catalysm
+			"StratholmeCrusader",		-- Classic WoW
+			"StratholmeGauntlet",		-- Classic WoW
+			"TheStockade",			-- Classic WoW
+			"TheSunkenTemple",		-- Classic WoW
+			"Naxxramas",			-- Burning Crusade
+			"SunwellPlateau",		-- Burning Crusade
+			"ObsidianSanctum",		-- WrathoftheLichKing
+			"OnyxiasLair",			-- WrathoftheLichKing
+			"RubySanctum",			-- WrathoftheLichKing
+			"TheNexus",			-- WrathoftheLichKing
+			"TheEyeOfEternity",		-- WrathoftheLichKing
+			"TheOculus",			-- WrathoftheLichKing
+			"TheStonecore",			-- Catalysm
+			"Scholomance",			-- MoP
+			"ShadoPanMonasteryA",		-- MoP
+			"ShadoPanMonasteryB",		-- MoP
+			"SiegeofNiuzaoTempleA",		-- MoP
+			"SiegeofNiuzaoTempleB",		-- MoP
+			"SiegeofOrgrimmarA",		-- MoP
+			"SiegeofOrgrimmarB",		-- MoP
+			"SiegeofOrgrimmarC",		-- MoP
+			"SiegeofOrgrimmarD",		-- MoP
+			"StormstoutBrewery",		-- MoP
+			"ShadowmoonBurialGrounds",	-- Draenor
+			"Skyreach",			-- Draenor
 			"NeltharionsLair",		-- Legion
 			"TheNightholdA",		-- Legion
 			"TheNightholdB",		-- Legion
@@ -1147,91 +1186,63 @@ Atlas_DropDownLayouts = {
 			"TheNightholdE",		-- Legion
 			"TheNightholdF",		-- Legion
 			-- "TheNightholdG",		-- Legion
-			"OnyxiasLair",
-			"RagefireChasm",
-			"RazorfenDowns",
-			"RazorfenKraul",
-			"ScarletHalls",
-			"ScarletMonastery",
-			"Scholomance",
-			"ShadowmoonBurialGrounds",
-			"ShadoPanMonasteryA",
-			"ShadoPanMonasteryB",
-			"ShadowfangKeep",
-			"SiegeofNiuzaoTempleA",
-			"SiegeofNiuzaoTempleB",
-			"SiegeofOrgrimmarA",
-			"SiegeofOrgrimmarB",
-			"SiegeofOrgrimmarC",
-			"SiegeofOrgrimmarD",
-			"Skyreach",
-			"StormstoutBrewery",
-			"StratholmeCrusader",
-			"StratholmeGauntlet",
-			"SunwellPlateau",
-			"TheNexus",
-			"TheEyeOfEternity",
-			"TheOculus",
-			"TheStockade",
-			"TheStonecore",
-			"TheSunkenTemple",
 		},
 		[ATLAS_DDL_TYPE_INSTANCE_TZ] = {
-			"ObsidianSanctum",
-			"RubySanctum",
-			"TempestKeepArcatraz",
-			"TempestKeepBotanica",
-			"TempestKeepMechanar",
-			"TempestKeepTheEye",
-			"TempleOfTheJadeSerpent",
-			"TerraceofEndlessSpring",
-			"TheVortexPinnacle",
-			"ThroneOfTheFourWinds",
-			"ThroneOfTheTides",
-			"ThroneofThunderA",
-			"ThroneofThunderB",
-			"ThroneofThunderC",
-			"ThroneofThunderD",
-			"Uldaman",
-			"UlduarHallsofStone",
-			"UlduarHallsofLightning",
-			"UlduarA",
-			"UlduarB",
-			"UlduarC",
-			"UlduarD",
-			"UlduarE",
-			"UtgardeKeep",
-			"UtgardePinnacle",
-			"VaultOfArchavon",
+			"Uldaman",			-- Classic WoW
+			"WailingCaverns",		-- Classic WoW
+			"ZulFarrak",			-- Classic WoW
+			"TempestKeepArcatraz",		-- Burning Crusade
+			"TempestKeepBotanica",		-- Burning Crusade
+			"TempestKeepMechanar",		-- Burning Crusade
+			"TempestKeepTheEye",		-- Burning Crusade
+			"VioletHold",			-- Burning Crusade
+			"UlduarHallsofStone",		-- WrathoftheLichKing
+			"UlduarHallsofLightning",	-- WrathoftheLichKing
+			"UlduarA",			-- WrathoftheLichKing
+			"UlduarB",			-- WrathoftheLichKing
+			"UlduarC",			-- WrathoftheLichKing
+			"UlduarD",			-- WrathoftheLichKing
+			"UlduarE",			-- WrathoftheLichKing
+			"UtgardeKeep",			-- WrathoftheLichKing
+			"UtgardePinnacle",		-- WrathoftheLichKing
+			"VaultOfArchavon",		-- WrathoftheLichKing
+			"TheVortexPinnacle",		-- Catalysm
+			"ThroneOfTheFourWinds",		-- Catalysm
+			"ThroneOfTheTides",		-- Catalysm
+			"ZulAman",			-- Catalysm
+			"ZulGurub",			-- Catalysm
+			"TempleOfTheJadeSerpent",	-- MoP
+			"TerraceofEndlessSpring",	-- MoP
+			"ThroneofThunderA",		-- MoP
+			"ThroneofThunderB",		-- MoP
+			"ThroneofThunderC",		-- MoP
+			"ThroneofThunderD",		-- MoP
 			"VaultoftheWardensA",		-- Legion
 			"VaultoftheWardensB",		-- Legion
 			"VaultoftheWardensC",		-- Legion
-			"VioletHold",
-			"WailingCaverns",
-			"ZulAman",
-			"ZulFarrak",
-			"ZulGurub",
 		},
 		[ATLAS_DDL_TYPE_ENTRANCE] = {
-			"AuchindounEnt",
-			"BlackfathomDeepsEnt",
-			"BlackrockMountainEnt",
-			"CoilfangReservoirEnt",
-			"CavernsOfTimeEnt",
-			"CoTHyjalEnt",
-			"DireMaulEnt",
-			"GnomereganEnt",
-			"HellfireCitadelEnt",
-			"IcecrownEnt",
-			"KarazhanEnt",
-			"MaraudonEnt",
-			"ScarletMonasteryEnt",
-			"TheDeadminesEnt",
-			"TheSunkenTempleEnt",
-			"TempestKeepEnt",
-			"UldamanEnt",
-			"UlduarEnt",
-			"WailingCavernsEnt",
+			"BlackrockMountainEnt",		-- Classic WoW, Catalysm, Draenor
+			"CavernsOfTimeEnt",		-- Catalysm, Burning Crusade
+			"TheDeadminesEnt",		-- Classic WoW, Catalysm
+			"ScarletMonasteryEnt",		-- Classic WoW, MoP
+			"BlackfathomDeepsEnt",		-- Classic WoW
+			"DireMaulEnt",			-- Classic WoW
+			"GnomereganEnt",		-- Classic WoW
+			"MaraudonEnt",			-- Classic WoW
+			"TheSunkenTempleEnt",		-- Classic WoW
+			"UldamanEnt",			-- Classic WoW
+			"WailingCavernsEnt",		-- Classic WoW
+			"AuchindounEnt",		-- Burning Crusade
+			"CoilfangReservoirEnt",		-- Burning Crusade
+			"CoTHyjalEnt",			-- Burning Crusade
+			"HellfireCitadelEnt",		-- Burning Crusade
+			"KarazhanEnt",			-- Burning Crusade
+			"TempestKeepEnt",		-- Burning Crusade
+			"IcecrownEnt",			-- WrathoftheLichKing
+			"UlduarEnt",			-- WrathoftheLichKing
+			"TheArcwayEnt",			-- Legion
+			"TheNightholdEnt",		-- Legion
 		},
 	},
 };

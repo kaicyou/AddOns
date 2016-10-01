@@ -109,10 +109,15 @@ local function expandCategory(category)
   AchievementFrameCategories_Update()
 end
 
-local function isAchievementInUI(id, checkNext)
+local function isAchievementInUI(id, checkNext, allowStatistic)
 -- Return true if the achievement should be found in the standard UI
   local StartTime
   if (Overachiever_Debug) then  StartTime = debugprofilestop();  end
+  if (not allowStatistic) then -- Attempting to open to a statistic through AchievementFrame_SelectAchievement can cause WoW to crash.
+    local _, _, _, _, _, _, _, _, flags = GetAchievementInfo(id)
+	local flag_statistic = 0x00000001 -- Didn't see where Blizzard put this in their constants
+	if (bit.band(flags, flag_statistic) == flag_statistic) then  return false;  end
+  end
   if (checkNext) then
     local nextID, completed = GetNextAchievement(id)
     if (nextID and completed) then
@@ -148,13 +153,17 @@ local function openToAchievement(id, canToggleTracking)
     end
     if (sel == id) then
       AchievementButton_ToggleTracking(id)
+	  return true
     else
-      Overachiever.UI_SelectAchievement(id)
+      if (Overachiever.UI_SelectAchievement(id)) then  return true;  end
+	  UIErrorsFrame:AddMessage(L.MSG_ACHNOTFOUND, 1.0, 0.1, 0.1, 1.0)
+	  chatprint(L.MSG_ACHNOTFOUND)
     end
   else
     UIErrorsFrame:AddMessage(L.MSG_ACHNOTFOUND, 1.0, 0.1, 0.1, 1.0)
-    --chatprint(L.MSG_ACHNOTFOUND)
+    chatprint(L.MSG_ACHNOTFOUND)
   end
+  return false
 end
 
 local function getCategoryID(name)
@@ -593,12 +602,14 @@ WatchFrameLinkButtonTemplate_OnLeftClick = function(self, ...)
   orig_WatchFrameLinkButtonTemplate_OnLeftClick(self, ...)
 end
 
+--[[ No longer useful as the function named doesn't exist any more and we can't track those problem achievements any more.
 WatchFrame_OpenAchievementFrame = function(button, arg1, arg2, checked)
 -- Take over reaction to clicking "Open Achievement" in the watch frame's right-click popup menu, preventing
 -- lock ups if tracking an achievement not in the UI as well as using openToAchievement(), which we prefer, instead of
 -- a direct AchievementFrame_SelectAchievement() call.
   openToAchievement(arg1)
 end
+--]]
 
 local function TrackerBtnOnEnter(self)
   if (self.type ~= "ACHIEVEMENT") then  return;  end
@@ -1215,6 +1226,7 @@ function Overachiever.UI_SelectAchievement(id, failFunc, ...)
     if (parentID == -1) then
       expandCategory(category)
     end
+	return true
   else
     chatprint(L.MSG_ACHNOTFOUND)
     if (Overachiever_Debug) then
@@ -1226,6 +1238,7 @@ function Overachiever.UI_SelectAchievement(id, failFunc, ...)
       AchievementCategoryButton_OnClick(AchievementFrameCategoriesContainerButton1)
     end
   end
+  return false
 end
 
 function Overachiever.UI_HookAchButtons(buttons, scrollbar)

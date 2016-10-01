@@ -1,0 +1,16 @@
+tag 7.0.3.16
+214d4d7489ab96a08d11b45384fe68fd0beb9707
+James D. Callahan III <jcallahan@curse.com>
+2016-09-15 10:50:42 -0500
+
+
+
+--------------------
+
+Caleb Atherton:
+	- Added mapIDs for all Legion digsites. Set typeID to match existing scheme (Stormheim = Demon, Highmountain = Tauren, Azsuna = Highborne) when appropriate.
+James D. Callahan III:
+	- Add commas where commas should be.
+	- Fixes for string replacement failures.
+Caleb Atherton:
+	- Added all Legion research projects.

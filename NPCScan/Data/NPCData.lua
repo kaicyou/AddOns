@@ -2252,6 +2252,7 @@ local NPCData = {
 		vignetteName = "Sapper Vorick",
 	},
 	[94347] = { -- Dread-Rider Cortis
+		factionGroup = "Horde",
 		questID = 43343, -- Dread-Rider Cortis
 		vignetteName = "Dread-Rider Cortis",
 	},
@@ -2508,6 +2509,9 @@ local NPCData = {
 		isTameable = true,
 		questID = 40681, -- Snarf
 		vignetteName = "Sekhan",
+	},
+	[101411] = { -- Gom Crabbar
+		vignetteName = "Gom Crabbar",
 	},
 	[101596] = { -- Charfeather
 		questID = 40766, -- Charfeather

@@ -2659,7 +2659,7 @@ end
 
 OSTATTEN = {}
 OSTATTN = {}
-
+--[[
 if GetLocale() == "enUS" then
 	OilvlGetStatisticId(Legion, TENname:sub(4,strlen(TENname)), OSTATTEN, false)
 	OilvlGetStatisticId(Legion, TNname:sub(4,strlen(TNname)), OSTATTN, false)
@@ -2667,6 +2667,125 @@ else
 	OilvlGetStatisticId(Legion, TENname, OSTATTEN, false)
 	OilvlGetStatisticId(Legion, TNname, OSTATTN, false)
 end
+]]
+
+function oilvlSetOSTATTEN()
+	OSTATTEN[1]={
+		[1]=10911,
+		[2]=10912,
+		[3]=10913,
+		[4]=10914
+	}
+	OSTATTEN[2]={
+		[1]=10920,
+		[2]=10921,
+		[3]=10922,
+		[4]=10923
+	}
+	OSTATTEN[3]={
+		[1]=10924,
+		[2]=10925,
+		[3]=10926,
+		[4]=10927
+	}
+	OSTATTEN[4]={
+		[1]=10915,
+		[2]=10916,
+		[3]=10917,
+		[4]=10919	
+	}
+	OSTATTEN[5]={
+		[1]=10928,
+		[2]=10929,
+		[3]=10930,
+		[4]=10931
+	}
+	OSTATTEN[6]={
+		[1]=10932,
+		[2]=10933,
+		[3]=10934,
+		[4]=10935
+	}
+	OSTATTEN[7]={
+		[1]=10936,
+		[2]=10937,
+		[3]=10938,
+		[4]=10939
+	}	
+	for i = 1,7 do
+		OSTATTEN[i][5] = select(2,GetAchievementInfo(OSTATTEN[i][1])):gsub(" %(.*%)","")..""
+	end
+end
+
+oilvlSetOSTATTEN()
+
+function oilvlSetOSTATTN()
+	OSTATTN[1] = {
+		[1]=10940,
+		[2]=10941,
+		[3]=10942,
+		[4]=10943
+	}
+	OSTATTN[2] = {
+		[1]=10944,
+		[2]=10945,
+		[3]=10946,
+		[4]=10947
+	}
+	OSTATTN[3] = {
+		[1]=10948,
+		[2]=10949,
+		[3]=10950,
+		[4]=10951
+	}
+	OSTATTN[4] = {
+		[1]=10952,
+		[2]=10953,
+		[3]=10954,
+		[4]=10955
+	}
+	OSTATTN[5] = {
+		[1]=10956,
+		[2]=10957,
+		[3]=10959,
+		[4]=10960
+	}
+	OSTATTN[6] = {
+		[1]=10961,
+		[2]=10962,
+		[3]=10963,
+		[4]=10964
+	}
+	OSTATTN[7] = {
+		[1]=10965,
+		[2]=10966,
+		[3]=10967,
+		[4]=10968
+	}
+	OSTATTN[8] = {
+		[1]=10969,
+		[2]=10970,
+		[3]=10971,
+		[4]=10972
+	}
+	OSTATTN[9] = {
+		[1]=10973,
+		[2]=10974,
+		[3]=10975,
+		[4]=10976
+	}
+	OSTATTN[10] = {
+		[1]=10977,
+		[2]=10978,
+		[3]=10979,
+		[4]=10980
+	}
+	for i = 1,10 do
+		OSTATTN[i][5] = select(2,GetAchievementInfo(OSTATTN[i][1])):gsub(" %(.*%)","")..""
+	end
+end
+
+oilvlSetOSTATTN()
 
 -------------------------------------------------------------------------------
 -- Font definitions.
@@ -3954,10 +4073,8 @@ function otooltip6func()
 		otooltip6:Hide()
 		LibQTip:Release(otooltip6)
 		otooltip6 = nil
-	end
-	if UnitAffectingCombat("player") then otooltip6sw = false end
+	end	
 	collectgarbage()
-if not UnitAffectingCombat("player") then
 	if LibQTip:IsAcquired("Oraidprog") or otooltip2 then
 		otooltip2:Clear()
 		otooltip2:Hide()
@@ -4415,13 +4532,10 @@ if not UnitAffectingCombat("player") then
 	otooltip6:UpdateScrolling();
 	otooltip6:Show();
 end
-end
 
 function LDB.OnEnter(self)
-	if not UnitAffectingCombat("player") then
-		LDB_ANCHOR = self;
-		otooltip6func();
-	end
+	LDB_ANCHOR = self;
+	otooltip6func();
 end
 
 function otooltip7func()
@@ -4654,6 +4768,7 @@ function OTgathertil(guid, unitid)
 		oilvlframedata.gear[OTCurrent3] = {};
 	end
 	local cgear = {}
+	local relic = {}
 	for i = 1,17 do
 		local xupgrade = nil
 		local xname = nil
@@ -4776,6 +4891,14 @@ function OTgathertil(guid, unitid)
 							end
 						end
 					end
+					if OTCheckartifactwep(tonumber(itemID)) then
+						for aw = 1, 3 do 
+							local reliclink = select(2,GetItemGem(item,aw))
+							if reliclink then
+								relic[aw] = tonumber(C_ArtifactUI.GetItemLevelIncreaseProvidedByRelic(reliclink))
+							end
+						end
+					end
 					if pvpsw then
 						if OItemAnalysis_CheckPvPGear(item) ~= 0 then
 							totalIlvl = totalIlvl + OItemAnalysis_CheckPvPGear(item)
@@ -4788,9 +4911,9 @@ function OTgathertil(guid, unitid)
 					if itemLevel == nil then itemLevel = "" end
 					if item == nil then item = "" end
 					if OTCurrent3 ~= "" then
-						oilvlframedata.gear[OTCurrent3][i] = {itemLevel, item, ogme, ogmg, ogmHe, ogmHg, OItemAnalysis_CheckPvPGear(item),tonumber(itemID),xupgrade}
+						oilvlframedata.gear[OTCurrent3][i] = {itemLevel, item, ogme, ogmg, ogmHe, ogmHg, OItemAnalysis_CheckPvPGear(item),tonumber(itemID),xupgrade,relic}
 					end
-					cgear[i] = {itemLevel, item, ogme, ogmg, ogmHe, ogmHg, OItemAnalysis_CheckPvPGear(item),tonumber(itemID),xupgrade}
+					cgear[i] = {itemLevel, item, ogme, ogmg, ogmHe, ogmHg, OItemAnalysis_CheckPvPGear(item),tonumber(itemID),xupgrade,relic}
 				end
 			end
 		end
@@ -4941,8 +5064,8 @@ function oilvlSaveItemLevel()
 		if CheckInteractDistance(OILVL_Unit, 1) then
 			local OTilvl, OTmia, missenchant, missgem,  missenchant2, missgem2, count2 = OTgathertil(UnitGUID("OILVL_Unit"),OILVL_Unit)
 			rescanilvl = rescanilvl + 1
-			if rescanilvl > 2 then rescanilvl = 0 end
-			if rescanilvl > 0 then ORfbIlvl(OTCurrent3,true) end
+			if rescanilvl > 1 then rescanilvl = 0 end
+			if rescanilvl > 0 then C_Timer.After(0.5,function() ORfbIlvl(OTCurrent3,true) end) end
 			if (OTmia == 0 and rescanilvl == 0) then
 				miacount=0;	miaunit[1]="";miaunit[2]="";miaunit[3]="";miaunit[4]="";miaunit[5]="";miaunit[6]="";
 				local ntex4 = _G[OTCurrent]:CreateTexture()
@@ -5025,13 +5148,14 @@ function oilvlSaveItemLevel()
 			ountrack=true;
 		end	
 	end
+	OILVL:UnregisterEvent("INSPECT_READY")
 end
 
 local events = {}
 
 function events:INSPECT_READY(...)
 	if not UnitAffectingCombat("player") and not (InspectFrame and InspectFrame.unit) then
-		oilvlSaveItemLevel()
+		C_Timer.After(1,oilvlSaveItemLevel)
 		-- GameTooltip		
 		if (Omover ==1) and cfg.oilvlms then
 			Omover=0;
@@ -5119,9 +5243,9 @@ function events:INSPECT_READY(...)
 					Oilvltimer:ScheduleTimer(OMouseover,1);
 				end
 			end
+			OILVL:UnregisterEvent("INSPECT_READY")
 		end
 	end
-	OILVL:UnregisterEvent("INSPECT_READY")
 end
 
 function events:INSPECT_ACHIEVEMENT_READY(...)
@@ -5215,7 +5339,7 @@ function events:ADDON_LOADED(...)
 	if cfg.oilvlaltclickroll == nil then cfg.oilvlaltclickroll = true end
 	if cfg.oilvlautoscan == nil then cfg.oilvlautoscan = true end
 	if cfg.oilvlsamefaction == nil then cfg.oilvlsamefaction = false end
-	cfg.oilvlautoscan = false
+	if not cfg.oilvlautoscan then cfg.oilvlautoscan = true end
 	OilvlConfigFrame();
 	oilvlframe();
 	Oilvltimer:ScheduleTimer(OVILRefresh,2);

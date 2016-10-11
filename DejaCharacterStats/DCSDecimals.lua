@@ -1,3 +1,6 @@
+local ADDON_NAME, namespace = ... 	--localization
+local L = namespace.L 				--localization
+
 -- Decimal Check
 
 local function DCS_DecimalsShow(self)
@@ -392,8 +395,8 @@ local DCS_DecimalCheck = CreateFrame("CheckButton", "DCS_DecimalCheck", DejaChar
 	DCS_DecimalCheck:ClearAllPoints()
 	DCS_DecimalCheck:SetPoint("TOPLEFT", 25, -60)
 	DCS_DecimalCheck:SetScale(1.25)
-	DCS_DecimalCheck.tooltipText = 'Displays "Enhancements" category stats to two decimal places.' --Creates a tooltip on mouseover.
-	_G[DCS_DecimalCheck:GetName() .. "Text"]:SetText("Decimals")
+	DCS_DecimalCheck.tooltipText = L['Displays "Enhancements" category stats to two decimal places.'] --Creates a tooltip on mouseover.
+	_G[DCS_DecimalCheck:GetName() .. "Text"]:SetText(L["Decimals"])
 	
 	DCS_DecimalCheck:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then

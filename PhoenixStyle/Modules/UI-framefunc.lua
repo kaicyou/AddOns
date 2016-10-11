@@ -451,6 +451,8 @@ table.insert (psfchatadd,pschc[pschcnum])
 --RA
 if bigmenuchatlistea then
 table.insert (bigmenuchatlistea,pschc[pschcnum])
+end
+if lowmenuchatlistea then
 table.insert (lowmenuchatlistea,pschc[pschcnum])
 end
 
@@ -469,6 +471,8 @@ table.remove (lowmenuchatlist,pschcnumrem-2)
 --RA
 if bigmenuchatlistea then
 table.remove (bigmenuchatlistea,pschcnumrem)
+end
+if lowmenuchatlistea then
 table.remove (lowmenuchatlistea,pschcnumrem-2)
 end
 openremovechat()

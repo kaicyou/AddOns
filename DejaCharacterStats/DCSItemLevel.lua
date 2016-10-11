@@ -1,3 +1,6 @@
+local ADDON_NAME, namespace = ... 	--localization
+local L = namespace.L 				--localization
+
 -- Item Level Check
 
 	local _, gdbprivate = ...
@@ -73,8 +76,8 @@ local DCS_ItemLevelCheck = CreateFrame("CheckButton", "DCS_ItemLevelCheck", Deja
 	DCS_ItemLevelCheck:ClearAllPoints()
 	DCS_ItemLevelCheck:SetPoint("TOPLEFT", 25, -35)
 	DCS_ItemLevelCheck:SetScale(1.25)
-	DCS_ItemLevelCheck.tooltipText = 'Displays Equipped/Available item levels unless equal.' --Creates a tooltip on mouseover.
-	_G[DCS_ItemLevelCheck:GetName() .. "Text"]:SetText("Equipped/Available")
+	DCS_ItemLevelCheck.tooltipText = L['Displays Equipped/Available item levels unless equal.'] --Creates a tooltip on mouseover.
+	_G[DCS_ItemLevelCheck:GetName() .. "Text"]:SetText(L["Equipped/Available"])
 	
 	DCS_ItemLevelCheck:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
@@ -106,8 +109,8 @@ local DCS_ItemLevelDecimalCheck = CreateFrame("CheckButton", "DCS_ItemLevelDecim
 	DCS_ItemLevelDecimalCheck:ClearAllPoints()
 	DCS_ItemLevelDecimalCheck:SetPoint("TOPLEFT", 65, -100)
 	DCS_ItemLevelDecimalCheck:SetScale(1.00)
-	DCS_ItemLevelDecimalCheck.tooltipText = 'Displays average item level to two decimal places.' --Creates a tooltip on mouseover.
-	_G[DCS_ItemLevelDecimalCheck:GetName() .. "Text"]:SetText("Ilvl Decimals")
+	DCS_ItemLevelDecimalCheck.tooltipText = L['Displays average item level to two decimal places.'] --Creates a tooltip on mouseover.
+	_G[DCS_ItemLevelDecimalCheck:GetName() .. "Text"]:SetText(L["Ilvl Decimals"])
 	
 	DCS_ItemLevelDecimalCheck:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then

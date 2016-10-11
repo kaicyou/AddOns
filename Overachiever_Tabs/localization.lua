@@ -67,14 +67,64 @@ L.WATCH_POPUP_DELETELIST = "Are you sure you want to permanently delete the curr
 L.WATCH_POPUP_CLEARLIST = "Are you sure you want to clear the contents of the current achievement watch list?";
 L.WATCH_ERR_INVALIDID = 'Removed "%s" from Watch List: An achievement with that ID could not be found.';
 
+L.RELATED_TAB = "Related";
+L.RELATED_HELP = "This tab shows achievements that are related to one another. One achievement was chosen as the base. The rest are in the same series as the base, are one of the criteria of the base or of another in its series, or have as one of their own criteria either the base or an achievement in its series.";
+L.RELATED_RESULTS = "Found %s |4achievement:achievements;.";
+L.RELATED_BASE = "Base Achievement:";
+L.RELATED_CLOSE = "Close";
+L.RELATED_RECURSIVE = "Extended";
+L.RELATED_RECURSIVE_TIP = "Do a recursive search so all achievements that are indirectly related to the base achievement are also included.";
+
 L.TAB_SORT = "Sort by:";
 L.TAB_SORT_NAME = "Name";
 L.TAB_SORT_ID = "ID";
 L.TAB_SORT_POINTS = "Point value";
 L.TAB_SORT_COMPLETE = "Date completed";
-L.TAB_HELP = "|cffffffffCtrl-click|r on an achievement to jump to its place in the standard UI.|n|nA |cffffffffblue background|r means it is part of a series for which you haven't completed an earlier step.|n|nA |cffffffffred background|r means it cannot be found in the standard UI for this character because it is exclusive to the opposing faction or is an unacquired Feat of Strength.|n|nA |cffffffffgreen background|r means the achievement is on the \"Recent Reminder\" list. It became especially relevant within the last 2 minutes (e.g. because its timer started or an objective was seen in a tooltip).";
+L.TAB_SORT_RELATION = "Relation";
+L.TAB_HELP = "|cffffffffCtrl-click|r on an achievement to jump to its place in the standard UI.|n|n|cffffffffCtrl-shift-click|r on an achievement to view related achievements.|n|nA |cffffffffblue background|r means it is part of a series for which you haven't completed an earlier step.|n|nA |cffffffffred background|r means it cannot be found in the standard UI for this character because it is exclusive to the opposing faction or is an unacquired Feat of Strength.|n|nA |cffffffffgreen background|r means the achievement is on the \"Recent Reminder\" list. It became especially relevant within the last 2 minutes (e.g. because its timer started or an objective was seen in a tooltip).";
+
+L.EVENTNOTICE_ONGOING = "This event is ongoing.";
+L.EVENTNOTICE_STARTED_TODAY = "This event started earlier today.";
+L.EVENTNOTICE_STARTS_HOURS = "This event starts in|cff7eff00 %s |4hour:hours;|r.";
+L.EVENTNOTICE_STARTS_MINUTES = "This event starts in|cff7eff00 %s |4minute:minutes;|r.";
+L.EVENTNOTICE_ENDED_TODAY = "|cffff2020This event ended|r earlier today."
+L.EVENTNOTICE_ENDS_DAYS = "It ends in|cffff2020 %s |4day:days;|r.";
+L.EVENTNOTICE_ENDS_HOURS = "It ends in|cffff2020 %s |4hour:hours;|r.";
+L.EVENTNOTICE_ENDS_MINUTES = "It ends in|cffff2020 %s |4minute:minutes;|r.";
+L.EVENTNOTICE_ENDS_DATETIME = "It ends on %2$d/%1$02d at %3$s (server time).";  -- 1 - day 2 - month 3 - time
+L.EVENTNOTICE_ENDS_TIME = "It ends today at %3$s (server time).";
+L.EVENTNOTICE_TIP = "Hold |cffffffffShift|r for more details.";
+L.EVENTNOTICE_HELP = "|cffffffffClick|r to see related achievements.|n|cffffffffCtrl-click|r to open the calendar.|n|cffffffffShift-right-click|r to temporarily hide this notice."; --|n|cffffffffRight-click|r for more options.";
+
+
+--if (locale == "enGB") then  -- English (EU)
+-- Unfortunately, GetLocale() returns "enUS" even when "enGB" would be more appropriate, and the SHORTDATE
+-- global string is defined incorrectly for enGB clients (it's set as it is for enUS), so we have to do things
+-- this way:
+if (ACHIEVEMENT_TOOLTIP_COMPLETE == "Achievement earned by %1$s on %3$d/%2$d/20%4$02d") then
+	L.EVENTNOTICE_ENDS_DATETIME = "It ends on %1$d/%2$02d at %3$s (server time).";  -- 1 - day 2 - month 3 - time
+end
 
 if (locale == "deDE") then  -- German
+L["EVENTNOTICE_ENDED_TODAY"] = "|cffff2020Dieses Ereignis endete|r heute frühzeitig."
+L["EVENTNOTICE_ENDS_DATETIME"] = "Es endet am %2$d/%1$02d um %3$s (Serverzeit)."
+L["EVENTNOTICE_ENDS_DAYS"] = "Es endet in|cffff2020 %s |4Tag:Tagen;|r."
+L["EVENTNOTICE_ENDS_HOURS"] = "Es endet in|cffff2020 %s |4Stunde:Stunden;|r."
+L["EVENTNOTICE_ENDS_MINUTES"] = "Es endet in|cffff2020 %s |4Minute:Minuten;|r."
+L["EVENTNOTICE_ENDS_TIME"] = "Es endet heute um %3$s (Serverzeit)."
+L["EVENTNOTICE_HELP"] = "|cffffffffKlick|r, um dazugehörige Erfolge anzuzeigen.|n|cffffffffSTRG-Klick|r, um den Kalender zu öffnen.|n|cffffffffUMSCHALT-Rechtsklick|r, um diesen Hinweis temporär zu verstecken."
+L["EVENTNOTICE_ONGOING"] = "Dieses Ereignis findet gerade statt."
+L["EVENTNOTICE_STARTED_TODAY"] = "Dieses Ereignis begann heute frühzeitig."
+L["EVENTNOTICE_STARTS_HOURS"] = "Dieses Ereignis beginnt in|cff7eff00 %s |4Stunde:Stunden;|r."
+L["EVENTNOTICE_STARTS_MINUTES"] = "Dieses Ereignis beginnt in|cff7eff00 %s |4Minute:Minuten;|r."
+L["EVENTNOTICE_TIP"] = "Halte |cffffffffUMSCHALT|r, um mehr zu erfahren."
+L["RELATED_BASE"] = "Basiserfolg:"
+L["RELATED_CLOSE"] = "Eng"
+L["RELATED_HELP"] = "Dieser Tab zeigt Erfolge, die mit einem anderen verwandt sind. Ein Erfolg wurde als Basiserfolg ausgewählt. Der Rest gehört zur selben Serie wie der Basiserfolg, ist eines der Kriterien vom Basiserfolg oder vom anderen aus seiner Serie, oder hat in seinen Kriterien den Basiserfolg oder ein Erfolg in seiner Serie."
+L["RELATED_RECURSIVE"] = "Erweitert"
+L["RELATED_RECURSIVE_TIP"] = "Führe eine rekursive Suche durch, so dass alle Erfolge, die indirekt mit dem Basiserfolg verwandt sind, auch mit einbezogen werden."
+L["RELATED_RESULTS"] = "Es wurden %s |4Erfolg:Erfolge; gefunden."
+L["RELATED_TAB"] = "Verwandt"
 L["SEARCH_ANY"] = "Überall suchen:"
 L["SEARCH_CRITERIA"] = "Kriterien:"
 L["SEARCH_DESC"] = "Beschreibung:"
@@ -126,6 +176,7 @@ L["TAB_SORT_COMPLETE"] = "Abgeschlossen am"
 L["TAB_SORT_ID"] = "ID"
 L["TAB_SORT_NAME"] = "Name"
 L["TAB_SORT_POINTS"] = "Erfolgspunkte"
+L["TAB_SORT_RELATION"] = "Beziehung"
 L["WATCH_CLEAR"] = "Leeren"
 L["WATCH_COPY"] = "Kopiere nach:"
 L["WATCH_COPY_TIP"] = "Wenn aktiviert, wird mit |cffffffffUMSCHALT+ALT+Klick|r ein Erfolg in diesem Tab auf die Beobachtungsliste gesetzt."
@@ -172,6 +223,25 @@ L.SUBZONES = {
 
 
 elseif (locale == "frFR") then  -- French
+-- L["EVENTNOTICE_ENDED_TODAY"] = ""
+-- L["EVENTNOTICE_ENDS_DATETIME"] = ""
+-- L["EVENTNOTICE_ENDS_DAYS"] = ""
+-- L["EVENTNOTICE_ENDS_HOURS"] = ""
+-- L["EVENTNOTICE_ENDS_MINUTES"] = ""
+-- L["EVENTNOTICE_ENDS_TIME"] = ""
+-- L["EVENTNOTICE_HELP"] = ""
+-- L["EVENTNOTICE_ONGOING"] = ""
+-- L["EVENTNOTICE_STARTED_TODAY"] = ""
+-- L["EVENTNOTICE_STARTS_HOURS"] = ""
+-- L["EVENTNOTICE_STARTS_MINUTES"] = ""
+-- L["EVENTNOTICE_TIP"] = ""
+-- L["RELATED_BASE"] = ""
+-- L["RELATED_CLOSE"] = ""
+-- L["RELATED_HELP"] = ""
+-- L["RELATED_RECURSIVE"] = ""
+-- L["RELATED_RECURSIVE_TIP"] = ""
+-- L["RELATED_RESULTS"] = ""
+-- L["RELATED_TAB"] = ""
 L["SEARCH_ANY"] = "Tout ce qui précède :"
 L["SEARCH_CRITERIA"] = "Critère :"
 L["SEARCH_DESC"] = "Description :"
@@ -221,6 +291,7 @@ L["TAB_SORT_COMPLETE"] = "Date d'accomplissement"
 L["TAB_SORT_ID"] = "ID"
 L["TAB_SORT_NAME"] = "Nom"
 L["TAB_SORT_POINTS"] = "Valeur en point"
+-- L["TAB_SORT_RELATION"] = ""
 L["WATCH_CLEAR"] = "Vider"
 L["WATCH_COPY"] = "Copier vers :"
 L["WATCH_COPY_TIP"] = "Quand activé, si vous |cffffffffmajuscule+alt+clicquez|r sur un haut-fait sur cet onglet, il sera ajouté à la liste de suivi spécifiée."
@@ -267,6 +338,25 @@ L.SUBZONES = {
 
 
 elseif (locale == "zhTW") then  -- Traditional Chinese
+-- L["EVENTNOTICE_ENDED_TODAY"] = ""
+-- L["EVENTNOTICE_ENDS_DATETIME"] = ""
+-- L["EVENTNOTICE_ENDS_DAYS"] = ""
+-- L["EVENTNOTICE_ENDS_HOURS"] = ""
+-- L["EVENTNOTICE_ENDS_MINUTES"] = ""
+-- L["EVENTNOTICE_ENDS_TIME"] = ""
+-- L["EVENTNOTICE_HELP"] = ""
+-- L["EVENTNOTICE_ONGOING"] = ""
+-- L["EVENTNOTICE_STARTED_TODAY"] = ""
+-- L["EVENTNOTICE_STARTS_HOURS"] = ""
+-- L["EVENTNOTICE_STARTS_MINUTES"] = ""
+-- L["EVENTNOTICE_TIP"] = ""
+-- L["RELATED_BASE"] = ""
+-- L["RELATED_CLOSE"] = ""
+-- L["RELATED_HELP"] = ""
+-- L["RELATED_RECURSIVE"] = ""
+-- L["RELATED_RECURSIVE_TIP"] = ""
+-- L["RELATED_RESULTS"] = ""
+-- L["RELATED_TAB"] = ""
 L["SEARCH_ANY"] = "以上皆可："
 L["SEARCH_CRITERIA"] = "條件："
 L["SEARCH_DESC"] = "描述："
@@ -316,6 +406,7 @@ L["TAB_SORT_COMPLETE"] = "完成時間"
 L["TAB_SORT_ID"] = "成就ID"
 L["TAB_SORT_NAME"] = "名稱"
 L["TAB_SORT_POINTS"] = "成就點數"
+-- L["TAB_SORT_RELATION"] = ""
 L["WATCH_CLEAR"] = "清除"
 L["WATCH_COPY"] = "複製到:"
 L["WATCH_COPY_TIP"] = "當啟用時，假如你 |cffffffffshift+alt+點擊|r 在一個標籤上的成就，將會新增至指定的觀察列表中。"
@@ -362,6 +453,25 @@ L.SUBZONES = {
 
 
 elseif (locale == "zhCN") then  -- Simplified Chinese
+-- L["EVENTNOTICE_ENDED_TODAY"] = ""
+-- L["EVENTNOTICE_ENDS_DATETIME"] = ""
+-- L["EVENTNOTICE_ENDS_DAYS"] = ""
+-- L["EVENTNOTICE_ENDS_HOURS"] = ""
+-- L["EVENTNOTICE_ENDS_MINUTES"] = ""
+-- L["EVENTNOTICE_ENDS_TIME"] = ""
+-- L["EVENTNOTICE_HELP"] = ""
+-- L["EVENTNOTICE_ONGOING"] = ""
+-- L["EVENTNOTICE_STARTED_TODAY"] = ""
+-- L["EVENTNOTICE_STARTS_HOURS"] = ""
+-- L["EVENTNOTICE_STARTS_MINUTES"] = ""
+-- L["EVENTNOTICE_TIP"] = ""
+-- L["RELATED_BASE"] = ""
+-- L["RELATED_CLOSE"] = ""
+-- L["RELATED_HELP"] = ""
+-- L["RELATED_RECURSIVE"] = ""
+-- L["RELATED_RECURSIVE_TIP"] = ""
+-- L["RELATED_RESULTS"] = ""
+-- L["RELATED_TAB"] = ""
 L["SEARCH_ANY"] = "以上所有："
 L["SEARCH_CRITERIA"] = "条件："
 L["SEARCH_DESC"] = "描述："
@@ -378,39 +488,40 @@ L["SEARCH_TYPE"] = "类型："
 L["SEARCH_TYPE_ALL"] = "全部"
 L["SEARCH_TYPE_GUILD"] = "公会"
 L["SEARCH_TYPE_INDIV"] = "个人"
-L["SUGGESTIONS_DIFFICULTY"] = "地下城难度：" -- Needs review
-L["SUGGESTIONS_DIFFICULTY_AUTO"] = "自动检测" -- Needs review
-L["SUGGESTIONS_DIFFICULTY_HEROIC"] = "英雄" -- Needs review
--- L["SUGGESTIONS_DIFFICULTY_MYTHIC"] = ""
-L["SUGGESTIONS_DIFFICULTY_NORMAL"] = "普通" -- Needs review
+L["SUGGESTIONS_DIFFICULTY"] = "地下城难度："
+L["SUGGESTIONS_DIFFICULTY_AUTO"] = "自动检测"
+L["SUGGESTIONS_DIFFICULTY_HEROIC"] = "英雄"
+L["SUGGESTIONS_DIFFICULTY_MYTHIC"] = "史诗"
+L["SUGGESTIONS_DIFFICULTY_NORMAL"] = "普通"
 L["SUGGESTIONS_EMPTY"] = "Overachiever当前没有建议。"
 L["SUGGESTIONS_EMPTY_TRADESKILL"] = "%s：Overachiever当前没有建议。"
-L["SUGGESTIONS_HELP"] = "根据你的当前区域建议追踪成就。" -- Needs review
+L["SUGGESTIONS_HELP"] = "根据你的当前区域建议追踪成就。"
 L["SUGGESTIONS_LOCATION"] = "区域："
 L["SUGGESTIONS_LOCATION_NOSUBZONE"] = "（未指定）"
 L["SUGGESTIONS_LOCATION_SUBZONE"] = "子区域："
 L["SUGGESTIONS_LOCATION_TIP"] = "无视区域/副本位置"
 L["SUGGESTIONS_LOCATION_TIP2"] = "在字段中输入一个完整的有效区域或副本名称，以取得提示。若字段保持空白，则会根据你目前的所在位置。当光标在字段中时，按下|cffffffffTab|r键可根据已输入的内容依序产生有效的完整位置名称。按下|cffffffffShift+Tab|r则产生前一个名称。如果光标在字段的最左侧，它将依序产生所有有效位置名称。"
-L["SUGGESTIONS_RAIDSIZE"] = "团队模式：" -- Needs review
-L["SUGGESTIONS_RAIDSIZE_10"] = "10人" -- Needs review
-L["SUGGESTIONS_RAIDSIZE_25"] = "25人" -- Needs review
-L["SUGGESTIONS_RAIDSIZE_AUTO"] = "自动检测" -- Needs review
+L["SUGGESTIONS_RAIDSIZE"] = "团队模式："
+L["SUGGESTIONS_RAIDSIZE_10"] = "10人"
+L["SUGGESTIONS_RAIDSIZE_25"] = "25人"
+L["SUGGESTIONS_RAIDSIZE_AUTO"] = "自动检测"
 L["SUGGESTIONS_REFRESH"] = "刷新"
 L["SUGGESTIONS_RESULTS"] = "找到 %d 个建议。"
 L["SUGGESTIONS_RESULTS_TRADESKILL"] = "%s：找到 %d 个建议。"
 L["SUGGESTIONS_TAB"] = "建议"
--- L["SUGGESTIONS_ZONERENAME_DALARAN_BROKENISLES"] = ""
--- L["SUGGESTIONS_ZONERENAME_DALARAN_NORTHREND"] = ""
--- L["SUGGESTIONS_ZONERENAME_NAGRAND_DRAENOR"] = ""
--- L["SUGGESTIONS_ZONERENAME_NAGRAND_OUTLAND"] = ""
--- L["SUGGESTIONS_ZONERENAME_SHADOWMOONVALLEY_DRAENOR"] = ""
--- L["SUGGESTIONS_ZONERENAME_SHADOWMOONVALLEY_OUTLAND"] = ""
+L["SUGGESTIONS_ZONERENAME_DALARAN_BROKENISLES"] = "达拉然 (破碎群岛)"
+L["SUGGESTIONS_ZONERENAME_DALARAN_NORTHREND"] = "达拉然 (诺森德)"
+L["SUGGESTIONS_ZONERENAME_NAGRAND_DRAENOR"] = "纳兰格 (德拉诺)"
+L["SUGGESTIONS_ZONERENAME_NAGRAND_OUTLAND"] = "纳兰格 (外域)"
+L["SUGGESTIONS_ZONERENAME_SHADOWMOONVALLEY_DRAENOR"] = "影月谷 (德拉诺)"
+L["SUGGESTIONS_ZONERENAME_SHADOWMOONVALLEY_OUTLAND"] = "影月谷 (外域)"
 L["TAB_HELP"] = "|cffffffffCtrl-点击|r一个成就跳转到它在标准成就界面的位置。|n|n |cffffffff蓝色背景|r表示此成就是你还没有完成前续内容的系列成就。|n|n |cffffffff红色背景|r表示此成就无法在当前人物的标准成就界面中找到，因为这是阵营专属成就，或是无法取得的‘光辉事迹’成就。|n|n  |cffffffff绿色背景|r 是提醒此成就最近在鼠标提示中显示过。" -- Needs review
 L["TAB_SORT"] = "排序："
 L["TAB_SORT_COMPLETE"] = "完成时间"
 L["TAB_SORT_ID"] = "成就ID"
 L["TAB_SORT_NAME"] = "名称"
 L["TAB_SORT_POINTS"] = "成就点数"
+-- L["TAB_SORT_RELATION"] = ""
 L["WATCH_CLEAR"] = "清除"
 L["WATCH_COPY"] = "复制"
 L["WATCH_COPY_TIP"] = "当启用时，假如你 |cffffffffshift+alt+点击|r 一个标签上的成就，将会新增至指定的监视列表中。"
@@ -457,6 +568,25 @@ L.SUBZONES = {
 
 
 elseif (locale == "ruRU") then  -- Russian
+-- L["EVENTNOTICE_ENDED_TODAY"] = ""
+-- L["EVENTNOTICE_ENDS_DATETIME"] = ""
+-- L["EVENTNOTICE_ENDS_DAYS"] = ""
+-- L["EVENTNOTICE_ENDS_HOURS"] = ""
+-- L["EVENTNOTICE_ENDS_MINUTES"] = ""
+-- L["EVENTNOTICE_ENDS_TIME"] = ""
+-- L["EVENTNOTICE_HELP"] = ""
+-- L["EVENTNOTICE_ONGOING"] = ""
+-- L["EVENTNOTICE_STARTED_TODAY"] = ""
+-- L["EVENTNOTICE_STARTS_HOURS"] = ""
+-- L["EVENTNOTICE_STARTS_MINUTES"] = ""
+-- L["EVENTNOTICE_TIP"] = ""
+-- L["RELATED_BASE"] = ""
+-- L["RELATED_CLOSE"] = ""
+-- L["RELATED_HELP"] = ""
+-- L["RELATED_RECURSIVE"] = ""
+-- L["RELATED_RECURSIVE_TIP"] = ""
+-- L["RELATED_RESULTS"] = ""
+-- L["RELATED_TAB"] = ""
 L["SEARCH_ANY"] = "Всё перечисленное:"
 L["SEARCH_CRITERIA"] = "Критерий:"
 L["SEARCH_DESC"] = "Описание:"
@@ -506,6 +636,7 @@ L["TAB_SORT_COMPLETE"] = "дате завершения"
 L["TAB_SORT_ID"] = "номеру"
 L["TAB_SORT_NAME"] = "названию"
 L["TAB_SORT_POINTS"] = "очкам"
+-- L["TAB_SORT_RELATION"] = ""
 L["WATCH_CLEAR"] = "Очистить"
 L["WATCH_COPY"] = "Копировать в:"
 L["WATCH_COPY_TIP"] = "Когда включено, если вы |cffffffffshift+alt+click|r на достижении в этой вкладке, оно будет добавлено в специальный отслеживаемый лист."
@@ -552,6 +683,25 @@ L.SUBZONES = {
 
 
 elseif (locale == "koKR") then  -- Korean
+L["EVENTNOTICE_ENDED_TODAY"] = "|cffff2020이벤트는 오늘 0시에|r 종료되었습니다."
+L["EVENTNOTICE_ENDS_DATETIME"] = "이벤트는 %2$d/%1$02d at %3$s 에 종료됩니다(서버 시간)."
+L["EVENTNOTICE_ENDS_DAYS"] = "이벤트는 |cffff2020 %s |4일:일;|r 후에 종료됩니다."
+L["EVENTNOTICE_ENDS_HOURS"] = "이벤트는 |cffff2020 %s |4시간:시간;|r 후에 종료됩니다."
+L["EVENTNOTICE_ENDS_MINUTES"] = "이벤트는|cffff2020 %s |4분:분;|r. 후에 종료됩니다"
+L["EVENTNOTICE_ENDS_TIME"] = "이벤트는 오늘 %3$s 후에 종료됩니다(서버 시간)."
+L["EVENTNOTICE_HELP"] = "|cffffffff클릭|r하면 연계된 업적을 표시합니다.|n|cffffffffCtrl-클릭|r하면 달력을 엽니다.|n|cffffffffShift-오른쪽-클릭|r하면 이 메시지를 숨깁니다."
+L["EVENTNOTICE_ONGOING"] = "이벤트는 진행중입니다."
+L["EVENTNOTICE_STARTED_TODAY"] = "이벤트는 오늘 0시에 시작되었습니다."
+L["EVENTNOTICE_STARTS_HOURS"] = "이벤트는 시작한지 |cff7eff00 %s |4시:시;|r가 지났습니다."
+L["EVENTNOTICE_STARTS_MINUTES"] = "이벤트는 시작한지 |cff7eff00 %s |4분:분;|r이 지났습니다."
+L["EVENTNOTICE_TIP"] = "|cffffffffShift|r를 누르면 상세정보를 확인할 수 있습니다."
+L["RELATED_BASE"] = "기본 업적:"
+L["RELATED_CLOSE"] = "닫기"
+L["RELATED_HELP"] = "이 탭은 하나의 업적에 연계된 업적을 표시합니다. 하나의 업적을 기본으로 선택한 후 이것을 기본으로 하여 동일한 계열, 또는 연계된 업적을 표시하게 됩니다."
+L["RELATED_RECURSIVE"] = "확장"
+L["RELATED_RECURSIVE_TIP"] = "기본 업적에 관련되어 있는 모든 업적을 연계하여 검색합니다."
+L["RELATED_RESULTS"] = "%s |4업적:업적; 찾음."
+L["RELATED_TAB"] = "연계"
 L["SEARCH_ANY"] = "다음 중 적어도 하나 포함:"
 L["SEARCH_CRITERIA"] = "기준:"
 L["SEARCH_DESC"] = "내용:"
@@ -601,6 +751,7 @@ L["TAB_SORT_COMPLETE"] = "완료된 날짜 순"
 L["TAB_SORT_ID"] = "ID 순"
 L["TAB_SORT_NAME"] = "이름 순"
 L["TAB_SORT_POINTS"] = "업적 점수 순"
+L["TAB_SORT_RELATION"] = "연계"
 L["WATCH_CLEAR"] = "지우기"
 L["WATCH_COPY"] = "복사"
 L["WATCH_COPY_TIP"] = "현재 탭의 업적에 |cffffffffshift+alt+click|r하면, 추적 목록에 표시됩니다."
@@ -647,6 +798,25 @@ L.SUBZONES = {
 
 
 elseif (locale == "esES" or locale == "esMX") then  -- Spanish
+-- L["EVENTNOTICE_ENDED_TODAY"] = ""
+-- L["EVENTNOTICE_ENDS_DATETIME"] = ""
+-- L["EVENTNOTICE_ENDS_DAYS"] = ""
+-- L["EVENTNOTICE_ENDS_HOURS"] = ""
+-- L["EVENTNOTICE_ENDS_MINUTES"] = ""
+-- L["EVENTNOTICE_ENDS_TIME"] = ""
+-- L["EVENTNOTICE_HELP"] = ""
+-- L["EVENTNOTICE_ONGOING"] = ""
+-- L["EVENTNOTICE_STARTED_TODAY"] = ""
+-- L["EVENTNOTICE_STARTS_HOURS"] = ""
+-- L["EVENTNOTICE_STARTS_MINUTES"] = ""
+-- L["EVENTNOTICE_TIP"] = ""
+-- L["RELATED_BASE"] = ""
+-- L["RELATED_CLOSE"] = ""
+-- L["RELATED_HELP"] = ""
+-- L["RELATED_RECURSIVE"] = ""
+-- L["RELATED_RECURSIVE_TIP"] = ""
+-- L["RELATED_RESULTS"] = ""
+-- L["RELATED_TAB"] = ""
 L["SEARCH_ANY"] = "Cualquiera de los anteriores:"
 L["SEARCH_CRITERIA"] = "Requisitos:"
 L["SEARCH_DESC"] = "Descripción:"
@@ -696,6 +866,7 @@ L["TAB_SORT_COMPLETE"] = "Fecha de finalización"
 L["TAB_SORT_ID"] = "ID"
 L["TAB_SORT_NAME"] = "Nombre"
 L["TAB_SORT_POINTS"] = "Puntuación"
+-- L["TAB_SORT_RELATION"] = ""
 L["WATCH_CLEAR"] = "Limpiar"
 L["WATCH_COPY"] = "Copiar a:"
 L["WATCH_COPY_TIP"] = "Al activarlo, si haces |cffffffffshift+alt+click|r sobre un logro en esta pestaña, éste será añadido a la lista de seguimiento especificada."
@@ -742,6 +913,25 @@ L.SUBZONES = {
 
 
 	if (locale == "esMX") then  -- Spanish (Mexican)
+-- L["EVENTNOTICE_ENDED_TODAY"] = ""
+-- L["EVENTNOTICE_ENDS_DATETIME"] = ""
+-- L["EVENTNOTICE_ENDS_DAYS"] = ""
+-- L["EVENTNOTICE_ENDS_HOURS"] = ""
+-- L["EVENTNOTICE_ENDS_MINUTES"] = ""
+-- L["EVENTNOTICE_ENDS_TIME"] = ""
+-- L["EVENTNOTICE_HELP"] = ""
+-- L["EVENTNOTICE_ONGOING"] = ""
+-- L["EVENTNOTICE_STARTED_TODAY"] = ""
+-- L["EVENTNOTICE_STARTS_HOURS"] = ""
+-- L["EVENTNOTICE_STARTS_MINUTES"] = ""
+-- L["EVENTNOTICE_TIP"] = ""
+-- L["RELATED_BASE"] = ""
+-- L["RELATED_CLOSE"] = ""
+-- L["RELATED_HELP"] = ""
+-- L["RELATED_RECURSIVE"] = ""
+-- L["RELATED_RECURSIVE_TIP"] = ""
+-- L["RELATED_RESULTS"] = ""
+-- L["RELATED_TAB"] = ""
 -- L["SEARCH_ANY"] = ""
 -- L["SEARCH_CRITERIA"] = ""
 -- L["SEARCH_DESC"] = ""
@@ -791,6 +981,7 @@ L.SUBZONES = {
 -- L["TAB_SORT_ID"] = ""
 -- L["TAB_SORT_NAME"] = ""
 -- L["TAB_SORT_POINTS"] = ""
+-- L["TAB_SORT_RELATION"] = ""
 -- L["WATCH_CLEAR"] = ""
 -- L["WATCH_COPY"] = ""
 -- L["WATCH_COPY_TIP"] = ""
@@ -847,6 +1038,25 @@ L.SUBZONES = {
 	end
 
 elseif (locale == "ptBR") then  -- Brazilian Portuguese
+-- L["EVENTNOTICE_ENDED_TODAY"] = ""
+-- L["EVENTNOTICE_ENDS_DATETIME"] = ""
+-- L["EVENTNOTICE_ENDS_DAYS"] = ""
+-- L["EVENTNOTICE_ENDS_HOURS"] = ""
+-- L["EVENTNOTICE_ENDS_MINUTES"] = ""
+-- L["EVENTNOTICE_ENDS_TIME"] = ""
+-- L["EVENTNOTICE_HELP"] = ""
+-- L["EVENTNOTICE_ONGOING"] = ""
+-- L["EVENTNOTICE_STARTED_TODAY"] = ""
+-- L["EVENTNOTICE_STARTS_HOURS"] = ""
+-- L["EVENTNOTICE_STARTS_MINUTES"] = ""
+-- L["EVENTNOTICE_TIP"] = ""
+-- L["RELATED_BASE"] = ""
+-- L["RELATED_CLOSE"] = ""
+-- L["RELATED_HELP"] = ""
+-- L["RELATED_RECURSIVE"] = ""
+-- L["RELATED_RECURSIVE_TIP"] = ""
+-- L["RELATED_RESULTS"] = ""
+-- L["RELATED_TAB"] = ""
 L["SEARCH_ANY"] = "Qualquer acima:"
 L["SEARCH_CRITERIA"] = "Critérios:"
 L["SEARCH_DESC"] = "Descrição:"
@@ -896,6 +1106,7 @@ L["TAB_SORT_COMPLETE"] = "Data completada"
 L["TAB_SORT_ID"] = "ID"
 L["TAB_SORT_NAME"] = "Nome"
 L["TAB_SORT_POINTS"] = "Valor de pontos"
+-- L["TAB_SORT_RELATION"] = ""
 L["WATCH_CLEAR"] = "Limpar"
 L["WATCH_COPY"] = "Copiar Para:"
 L["WATCH_COPY_TIP"] = "Quando ativado, se você |cffffffffshift+alt+clicar|r em uma conquista nesta aba, ela será adicionada à lista de vigia especificada. "
@@ -942,6 +1153,25 @@ L.SUBZONES = {
 
 
 elseif (locale == "itIT") then  -- Italian
+-- L["EVENTNOTICE_ENDED_TODAY"] = ""
+-- L["EVENTNOTICE_ENDS_DATETIME"] = ""
+-- L["EVENTNOTICE_ENDS_DAYS"] = ""
+-- L["EVENTNOTICE_ENDS_HOURS"] = ""
+-- L["EVENTNOTICE_ENDS_MINUTES"] = ""
+-- L["EVENTNOTICE_ENDS_TIME"] = ""
+-- L["EVENTNOTICE_HELP"] = ""
+-- L["EVENTNOTICE_ONGOING"] = ""
+-- L["EVENTNOTICE_STARTED_TODAY"] = ""
+-- L["EVENTNOTICE_STARTS_HOURS"] = ""
+-- L["EVENTNOTICE_STARTS_MINUTES"] = ""
+-- L["EVENTNOTICE_TIP"] = ""
+-- L["RELATED_BASE"] = ""
+-- L["RELATED_CLOSE"] = ""
+-- L["RELATED_HELP"] = ""
+-- L["RELATED_RECURSIVE"] = ""
+-- L["RELATED_RECURSIVE_TIP"] = ""
+-- L["RELATED_RESULTS"] = ""
+-- L["RELATED_TAB"] = ""
 L["SEARCH_ANY"] = [=[Qualsiasi delle soprastanti:
 Schede]=]
 L["SEARCH_CRITERIA"] = [=[Criteri:
@@ -995,6 +1225,7 @@ L["SUGGESTIONS_LOCATION"] = "Luogo:"
 -- L["TAB_SORT_ID"] = ""
 -- L["TAB_SORT_NAME"] = ""
 -- L["TAB_SORT_POINTS"] = ""
+-- L["TAB_SORT_RELATION"] = ""
 -- L["WATCH_CLEAR"] = ""
 -- L["WATCH_COPY"] = ""
 -- L["WATCH_COPY_TIP"] = ""
@@ -1041,6 +1272,7 @@ L.SUBZONES = {
 
 
 end
+
 if (not L.SUBZONES) then
 	L.SUBZONES = {
 	-- Ulduar:

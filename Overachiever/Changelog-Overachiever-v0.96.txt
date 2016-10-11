@@ -1,9 +1,72 @@
 ------------------------------------------------------------------------
-r145 | tuhljin | 2016-09-23 16:00:27 +0000 (Fri, 23 Sep 2016) | 1 line
+r152 | tuhljin | 2016-10-07 23:28:57 +0000 (Fri, 07 Oct 2016) | 1 line
 Changed paths:
-   A /tags/v0.94 (from /trunk:144)
+   A /tags/v0.96 (from /trunk:151)
 
-Tagging as v0.94
+Tagging as v0.96
+------------------------------------------------------------------------
+r151 | tuhljin | 2016-10-07 23:11:08 +0000 (Fri, 07 Oct 2016) | 1 line
+Changed paths:
+   M /trunk/GameTip.lua
+   M /trunk/Options.lua
+   M /trunk/localization.lua
+   M /trunk/readme.txt
+
+- New option added to prevent the reminder sound from being triggered by needing to kill a creature when you're already in combat with it. (Enabled by default.)
+------------------------------------------------------------------------
+r150 | tuhljin | 2016-10-06 21:57:33 +0000 (Thu, 06 Oct 2016) | 1 line
+Changed paths:
+   M /trunk/readme.txt
+
+(No real changes. Recommit so CurseForge packager notices it this time.)
+------------------------------------------------------------------------
+r149 | tuhljin | 2016-10-06 17:56:07 +0000 (Thu, 06 Oct 2016) | 2 lines
+Changed paths:
+   M /trunk/Overachiever.toc
+   M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
+   M /trunk/Overachiever_Tabs/Related.lua
+   M /trunk/Overachiever_Tabs/Suggestions.lua
+   M /trunk/Overachiever_Trade/Overachiever_Trade.toc
+   M /trunk/readme.txt
+
+- Suggestions Tab: Fix automatic suggestions not showing when in Ironforge.
+- Fix addon compatibility issue resulting in an error on startup for new users.
+------------------------------------------------------------------------
+r147 | tuhljin | 2016-10-05 19:07:02 +0000 (Wed, 05 Oct 2016) | 1 line
+Changed paths:
+   M /trunk/Overachiever_Tabs/CalendarNotice.lua
+
+- Holiday notices: Show hours or minutes left instead of days left when event ends the next day but in less than a full 24 hours.
+------------------------------------------------------------------------
+r146 | tuhljin | 2016-10-03 20:49:52 +0000 (Mon, 03 Oct 2016) | 8 lines
+Changed paths:
+   M /trunk/AchieveTip.lua
+   A /trunk/Calendar.lua
+   M /trunk/Options.lua
+   M /trunk/Overachiever.lua
+   M /trunk/Overachiever.toc
+   A /trunk/Overachiever_Tabs/CalendarNotice.lua
+   M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
+   A /trunk/Overachiever_Tabs/Related.lua
+   A /trunk/Overachiever_Tabs/RelatedWatermark.tga
+   M /trunk/Overachiever_Tabs/Suggestions.lua
+   M /trunk/Overachiever_Tabs/Watch.lua
+   M /trunk/Overachiever_Tabs/build.lua
+   M /trunk/Overachiever_Tabs/localization.lua
+   M /trunk/Overachiever_Trade/Overachiever_Trade.toc
+   A /trunk/libs/TjCalendar.lua
+   M /trunk/libs/TjOptions.lua
+   M /trunk/localization.lua
+   M /trunk/readme.txt
+
+- New option: Add tooltip in achievement UI giving your character's progress on quantity-based achievements which were earned on your account but not with the current character.
+- Tabs module: The new Related tab has been implemented, allowing you to better see a specified base achievement's related achievements. Ctrl+shift+click on an achievement in the UI or on an achievement link to specify the achievement and open the tab. ("Related" achievements are those that are in the same series as the base, are one of the criteria of the base or of another in its series, or have as one of their own criteria either the base or an achievement in its series).
+- Suggestions Tab:
+-- New option: Display graphical notices next to the achievement frame indicating today's holiday events. Click a notice to get related suggestions.
+-- Added suggestions for these holidays/events: Brewfest, Darkmoon Faire, Hallow's End, Day of the Dead, Pilgrim's Bounty, Feast of Winter Veil (alias Winter Veil). Ties in to the notice feature mentioned above or you can see them manually by entering the holiday name into the Suggestions tab.
+- Watch Tab: Fixed an issue where, when naming a new list, hitting Enter ignored whether the name was valid.
+- Slash command /oa now opens to the main options panel. However, the sub-panels list is expanded so you can easily get to Reminder Tooltips options.
+- Fixed some visual elements of the options panel and Tabs module (missing background colors, etc.).
 ------------------------------------------------------------------------
 r144 | tuhljin | 2016-09-23 14:54:27 +0000 (Fri, 23 Sep 2016) | 1 line
 Changed paths:
@@ -116,44 +179,4 @@ Changed paths:
    M /trunk/readme.txt
 
 - Fixed reminder tooltips not showing for achievements that identified the mob by ID (non-critter "need to kill" achievements).
-------------------------------------------------------------------------
-r132 | tuhljin | 2016-08-31 02:30:43 +0000 (Wed, 31 Aug 2016) | 4 lines
-Changed paths:
-   M /trunk/AchieveID.lua
-   M /trunk/GameTip.lua
-   M /trunk/Overachiever.toc
-   M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
-   M /trunk/Overachiever_Tabs/Suggestions.lua
-   M /trunk/Overachiever_Tabs/localization.lua
-   M /trunk/Overachiever_Trade/Overachiever_Trade.toc
-   M /trunk/readme.txt
-
-- Suggestions Tab:
--- Added numerous suggestions for Legion zones, dungeons, and raids.
--- Added "Mythic" to instance difficulty override dropdown.
--- Now considers the different "Dalaran" zones individually (so suggestions for Dalaran in Northrend don't show in other Dalaran zones).
-------------------------------------------------------------------------
-r130 | tuhljin | 2016-08-26 08:26:01 +0000 (Fri, 26 Aug 2016) | 1 line
-Changed paths:
-   M /trunk/GameTip.lua
-   M /trunk/localization.lua
-
-- Fix error involving sound/localization.
-------------------------------------------------------------------------
-r129 | tuhljin | 2016-08-26 07:56:40 +0000 (Fri, 26 Aug 2016) | 4 lines
-Changed paths:
-   M /trunk/GameTip.lua
-   M /trunk/Overachiever.toc
-   M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
-   M /trunk/Overachiever_Tabs/Suggestions.lua
-   M /trunk/Overachiever_Tabs/build.lua
-   M /trunk/Overachiever_Trade/Overachiever_Trade.toc
-   M /trunk/Overachiever_Trade/TradeSkills.lua
-   M /trunk/libs/TjSharedMediaDropDown/LibSharedMedia-3.0.lua
-   M /trunk/readme.txt
-
-- Updated for WoW patch 7.0.x. Updated TOC and fixed several errors. (Haven't added new suggestions yet.)
-- Fixed problem where reminder sounds didn't play.
-- Added some new reminder sounds (from existing sound effects).
-- "The Stockade" zone (instance) was renamed at some point to "Stormwind Stockade". Updated the related suggestion so it once again shows when in that zone.
 ------------------------------------------------------------------------

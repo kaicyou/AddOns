@@ -22,6 +22,10 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion11 and pswasonbossLeg
 			strochkavezcrash=psiccdmgfrom.." |s4id203045|id ("..psmainmtotal.."): "
 			reportafterboitwotab(psraidchats3[psraidoptionschat[4][1][1][3]], true, vezaxname3, vezaxcrash3, 1)
 		end
+		if psraidoptionson[4][1][1][4]==1 then
+			strochkavezcrash=psmainmgot.." |s4id205043|id ("..psmainmtotal.."): "
+			reportafterboitwotab(psraidchats3[psraidoptionschat[4][1][1][4]], true, vezaxname4, vezaxcrash4, 1)
+		end
 
 
 	end
@@ -35,6 +39,8 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion11 and pswasonbossLeg
 		reportafterboitwotab("raid", true, vezaxname2, vezaxcrash2, nil, nil,0,1)
 		strochkavezcrash=psiccdmgfrom.." |s4id203045|id ("..psmainmtotal.."): "
 		reportafterboitwotab("raid", true, vezaxname3, vezaxcrash3, nil, nil,0,1)
+		strochkavezcrash=psmainmgot.." |s4id205043|id ("..psmainmtotal.."): "
+		reportafterboitwotab("raid", true, vezaxname4, vezaxcrash4, nil, nil,0,1)
 
 		psiccrefsvin()
 
@@ -63,6 +69,8 @@ table.wipe(vezaxname2)
 table.wipe(vezaxcrash2)
 table.wipe(vezaxname3)
 table.wipe(vezaxcrash3)
+table.wipe(vezaxname4)
+table.wipe(vezaxcrash4)
 
 end
 end
@@ -134,7 +142,25 @@ if arg2=="SPELL_PERIODIC_DAMAGE" and spellid==203045 then
       if arg13>=0 then
         tt2=", "..psdamageceil(arg12-arg13).." |cffff0000("..psoverkill..": "..psdamageceil(arg13)..")|r"
       end
-    pscaststartinfo(0,spellname..": "..psaddcolortxt(1,name2)..name2..psaddcolortxt(2,name2)..tt2, -1, "id1", 2, "|s4id"..spellid.."|id - "..psinfo,psbossnames[4][1][1],3)
+    pscaststartinfo(0,spellname..": "..psaddcolortxt(1,name2)..name2..psaddcolortxt(2,name2)..tt2, -1, "id1", 3, "|s4id"..spellid.."|id - "..psinfo,psbossnames[4][1][1],2)
+  end
+end
+
+
+if arg2=="SPELL_AURA_APPLIED" and (spellid==205043 or spellid==225943) then
+  if pswasonbossLegion11==nil then
+    pswasonbossLegion11=1
+  end
+  psunitisplayer(guid2,name2)
+  if psunitplayertrue then
+
+    pscheckwipe1()
+    if pswipetrue and pswasonbossLegion11~=2 then
+      psiccwipereport_legion1("wipe", "try")
+    end
+    addtotwotables4(name2)
+    vezaxsort4()
+    pscaststartinfo(0,spellname..": "..psaddcolortxt(1,name2)..name2..psaddcolortxt(2,name2), -1, "id1", 4, "|s4id"..spellid.."|id - "..psinfo,psbossnames[4][1][1],2)
   end
 end
 

@@ -60,6 +60,7 @@ if not L then return end
 	L["RESTACK_TOPUP_FROM_BAGS"] = "Top Up"
 	L["RESTACK_TOPUP_FROM_BAGS_TEXT"] = "Top up any partial stacks with items from your bags"
 	L["RESTACK_FILL_FROM_BAGS_TEXT"] = "Fill any empty %1$s slots with Crafting items from your bags"
+	L["RESTACK_REFRESH_WHEN_COMPLETE"] = "Refresh window when completed"
 	
 	
 --	vault tab tooltips

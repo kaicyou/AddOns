@@ -59,7 +59,7 @@ L["Wodin the Troll-Servant"] = "Тролль-прислужник Водин"
 L["Xazi Smolderpipe <Arena Vendor>"] = "Ксази Смолилка <Продавец экипировки арены>"
 L["Yggdras"] = "Иггдрас"
 L["Zom Bocom <Apprentice Arena Vendor>"] = "Зом Боком <Младший продавец экипировки арены>"
--- L["ToC/Description"] = ""
--- L["ToC/Title"] = ""
+L["ToC/Description"] = "Плагин для модификации Atlas, показывающий карты арен."
+L["ToC/Title"] = "Atlas |r|cFF0099FF[Арена]|r"
 
 end

@@ -34,11 +34,11 @@
 # ## Notes-zhTW: Atlas 地圖集主程式
 #@end-debug@
 ## Author: arith, Dynaletik, dubcat
-## Version: 1.34.03
+## Version: 1.34.04
 ## OptionalDeps: Ace3, LibBabble-Boss-3.0, LibBabble-SubZone-3.0, LibBabble-Faction-3.0, LibDataBroker-1.1, LibAboutPanel, CallbackHandler-1.0, LibDBIcon-1.0, LibDialog-1.0
 ## X-Category: Map
 ## X-Credits: Dan Gilbert, Lothaer
-## X-Date: 2016-09-20T16:51:47Z
+## X-Date: 2016-10-04T15:37:04Z
 ## X-Donate: http://pledgie.com/campaigns/14729
 ## X-Email: atlas.addon@gmail.com
 ## X-Feedback: http://www.atlasmod.com/phpBB3/
@@ -47,7 +47,7 @@
 ## X-Website: http://www.atlasmod.com
 ## X-OptionsFrame: AtlasOptionsFrame
 ## SavedVariables: AtlasOptions, AtlasDB
-## X-Curse-Packaged-Version: v1.34.03
+## X-Curse-Packaged-Version: v1.34.04
 ## X-Curse-Project-Name: Atlas
 ## X-Curse-Project-ID: atlas
 ## X-Curse-Repository-ID: wow/atlas/mainline

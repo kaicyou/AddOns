@@ -11,7 +11,7 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion16 and pswasonbossLeg
 		pssetcrossbeforereport1=GetTime()
 
 		if psraidoptionson[4][1][6][1]==1 then
-			strochkavezcrash=psdidfriendlyf.." |s4id203097|id ("..psmainmtotal.."): "
+			strochkavezcrash=psmainmgot.." |s4id210315|id ("..psmainmtotal.."): "
 			reportafterboitwotab(psraidchats3[psraidoptionschat[4][1][6][1]], true, vezaxname, vezaxcrash, 1)
 		end
 		if psraidoptionson[4][1][6][2]==1 then
@@ -25,7 +25,7 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion16 and pswasonbossLeg
 
 		psiccsavinginf(psbossnames[4][1][6], try, pswasonbossLegion16)
 
-		strochkavezcrash=psdidfriendlyf.." |s4id221028|id ("..psmainmtotal.."): "
+		strochkavezcrash=psmainmgot.." |s4id210315|id ("..psmainmtotal.."): "
 		reportafterboitwotab("raid", true, vezaxname, vezaxcrash, nil, nil,0,1)
 		--strochkavezcrash=psiccdmgfrom.." |s4id179897|id ("..psmainmtotal.."): "
 		--reportafterboitwotab("raid", true, vezaxname2, vezaxcrash2, nil, nil,0,1)
@@ -66,7 +66,7 @@ function pscombatlogbossLegion16(arg1, arg2, hideCaster, guid1, name1, flag1, ne
 
 
 
-if arg2=="SPELL_DAMAGE" and spellid==99999999999999999 and name1 and name2 and name1~=name2 then
+if arg2=="SPELL_AURA_APPLIED" and spellid==210315 and name1 and name2 and name1~=name2 then
   if pswasonbossLegion16==nil then
     pswasonbossLegion16=1
   end
@@ -79,11 +79,7 @@ if arg2=="SPELL_DAMAGE" and spellid==99999999999999999 and name1 and name2 and n
     end
     addtotwotables1(name1)
     vezaxsort1()
-    local tt2=", "..psdamageceil(arg12)
-      if arg13>=0 then
-        tt2=", "..psdamageceil(arg12-arg13).." |cffff0000("..psoverkill..": "..psdamageceil(arg13)..")|r"
-      end
-    pscaststartinfo(0,spellname..": "..psaddcolortxt(1,name1)..name1..psaddcolortxt(2,name1).." > "..psaddcolortxt(1,name2)..name2..psaddcolortxt(2,name2)..tt2, -1, "id1", 1, "|s4id"..spellid.."|id - "..psinfo,psbossnames[4][1][6],2)
+    pscaststartinfo(0,spellname..": "..psaddcolortxt(1,name1)..name1..psaddcolortxt(2,name1).." > "..psaddcolortxt(1,name2)..name2..psaddcolortxt(2,name2), -1, "id1", 1, "|s4id"..spellid.."|id - "..psinfo,psbossnames[4][1][6],2)
   end
 end
 

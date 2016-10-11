@@ -1,4 +1,12 @@
-﻿Version 1.7.7
+﻿Version 1.7.9
+- Another set if nil handling changes (found a major one)
+
+Version 1.7.8
+- Faster looting
+- Hopefully fix null reference bugs that occur for some people
+- Better loot logic when using Artifact fishing pole
+
+Version 1.7.7
 - Force all missing subzone translations to be the English text for now
 - Handle rep turn-ins for Magross, only ding on Mark of Aquaos
 - Update French translations (thanks gurki35!)

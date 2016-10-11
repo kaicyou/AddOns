@@ -11,7 +11,7 @@ pslocale()
 end
 
 
-	psversion=7.002
+	psversion=7.005
 
 
 	psverstiptext="alpha"
@@ -5430,6 +5430,10 @@ if kudarep and (kudarep=="raid" or kudarep=="raid_warning" or kudarep=="party") 
   kudarep="instance_chat"
 end
 
+if (mydebugTable) then
+table.insert(mydebugTable, "запуск анонса: "..chtorep)
+end
+
 if (select(3,GetInstanceInfo())==17 or select(3,GetInstanceInfo())==18) and (kudarep~="raid" and kudarep~="sebe" and kudarep~="instance_chat") then
   psstopreportiflfrotherchan=1
 end
@@ -7438,6 +7442,10 @@ end
 
 	if bililine==1 then
 
+if (mydebugTable) then
+table.insert(mydebugTable, "репорт этого не работает: "..txt1)
+end
+	
 if string.len(txt1)>0 then
 SendChatMessage(txt1, chat)
 end

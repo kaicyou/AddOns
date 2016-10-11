@@ -118,6 +118,7 @@ L["Restore Bar"] = "Leiste zurücksetzen"
 L["Restore the actionbars default settings"] = "Wiederherstellung der vordefinierten Aktionsleisteneinstellung"
 L["Seconds"] = "Sekunden"
 L["Show Empty Buttons"] = "Zeige leere Tasten"
+L["Shows a swipe animation when a spell is recharging but still has charges left."] = "Zeigt eine 'Swipe' Animation wenn ein Zauber am Aufladen ist aber immer noch Aufladungen hat." -- not a really good translation for 'Swipe'
 L["The amount of buttons to display per row."] = "Anzahl der Aktionstasten in einer Reihe."
 L["The amount of buttons to display."] = "Anzahl der angezeigten Aktionstasten."
 L["The button you must hold down in order to drag an ability to another action button."] = "Die Taste, die du gedrückt halten musst, um eine Fähigkeit zu einer anderen Aktionstaste zu ziehen."
@@ -129,10 +130,12 @@ L["Threshold before text turns red and is in decimal form. Set to -1 for it to n
 L["Toggles the display of the actionbars backdrop."] = "Aktiviere den Hintergrund der Aktionsleisten."
 L["Transparency level when not in combat, no target exists, full health, not casting, and no focus target exists."] = "Transparenz Level wenn nicht im Kampf, kein Ziel ausgewählt, volle Gesundheit, nicht am Zaubern und kein Fokus existiert."
 L["Usable"] = "Nutzbar"
+L["Use Draw Swipe"] = "Benutze Draw Swipe" -- really bad
 L["Use Position Override"] = "Benutze Überschreibung der Position"
 L["Visibility State"] = "Sichbarkeitszustand"
 L["When enabled it will use the Anchor Point setting to determine growth direction, otherwise it will be determined by where the bar is positioned."] = "Wenn aktiviert, wird der Ankerpunkt benutzt um die Wachstumsrichtung festzulegen. Andernfalls wird festgelegt wo die Leiste positioniert ist."
 L["Width Multiplier"] = "Breitenmultiplikator"
+L["Zone Ability"] = "Zonen Fähigkeit"
 L[ [=[This works like a macro, you can run different situations to get the actionbar to page differently.
  Example: '[combat] 2;']=] ] = [=[Dieses funktioniert wie ein Makro, du kannst verschiedene Situationen haben um die Aktionsleiste zu wechseln.
  Beispiel: '[combat] 2;']=]
@@ -334,6 +337,7 @@ L["Hide in Combat"] = "Im Kampf ausblenden"
 
 --DataTexts
 L["24-Hour Time"] = "24-Stunden-Format"
+L["Add Currency ID"] = "Währungs-ID hinzufügen"
 L["Battleground Texts"] = "Schlachtfeld-Infotexte"
 L["Block Combat Click"] = "Blockiere Klicks im Kampf"
 L["Block Combat Hover"] = "Blockiere Hovereffekt im Kampf"
@@ -342,6 +346,8 @@ L["Blocks datatext tooltip from showing in combat."] = "Blockiere Infotextetoolt
 L["BottomLeftMiniPanel"] = "Minimap Untenlinks (Innen)"
 L["BottomMiniPanel"] = "Minimap Unten (Innen)"
 L["BottomRightMiniPanel"] = "Minimap Untenrechts (Innen)"
+L["Custom Currencies"] = "Benutzerdefinierte Währungen"
+L["Custom Currency"] = "Benutzerdefinierte Währung"
 L["Datatext Panel (Left)"] = "Infotextleiste (Links)"
 L["Datatext Panel (Right)"] = "Infotextleiste (Rechts)"
 L["DataTexts"] = "Infotexte"
@@ -363,10 +369,12 @@ L["RightChatDataPanel"] = "Rechter Chat"
 L["RightMiniPanel"] = "Minimap Rechts"
 L["Small Panels"] = "Schmale Leisten"
 L["The display format of the money text that is shown in the gold datatext and its tooltip."] = "Das Anzeigeformat für Gold in den Haupt-Infoleisten und Tooltips."
+L["This allows you to create a new datatext which will track the currency with the supplied currency ID. The datatext can be added to a panel immediately after creation."] = "Dieses erlaubt dir einen neuen Infotext zu erstellen, der die Währung verfolgt mit der bereitgestellten Währungs-ID. Der Infotext kann sofort nach der Erstellung einer Leiste hinzugefügt werden."
 L["Toggle 24-hour mode for the time datatext."] = "Wählt das 24-Stunden-Format für den Zeit-Infotext."
 L["TopLeftMiniPanel"] = "Minimap Obenlinks (Innen)"
 L["TopMiniPanel"] = "Minimap Oben (Innen)"
 L["TopRightMiniPanel"] = "Minimap Obenrechts (Innen)"
+L["Use Tooltip"] = "Benutze Tooltip"
 L["When inside a battleground display personal scoreboard information on the main datatext bars."] = "Zeige innerhalb eines Schlachtfeldes persönliche Statistiken in den Haupt-Infoleisten."
 L["Word Wrap"] = "Zeilenumbruch"
 

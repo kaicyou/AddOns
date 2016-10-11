@@ -39,10 +39,10 @@ local L = AceLocale:NewLocale("Atlas_DungeonLocs", "ruRU", false);
 if L then
 L["Blue"] = "Синий"
 L["Dungeon Locations"] = "Расположение подземелий"
-L["Green"] = "Зеленый"
-L["Instances"] = "Инстансы"
+L["Green"] = "Зелёный"
+L["Instances"] = "Подземелья"
 L["White"] = "Белый"
-L["ToC/Description"] = "Расположение подземелий" -- Needs review
+L["ToC/Description"] = "Карты расположений подземелий"
 L["ToC/Title"] = "Atlas |r|cFF0099FF[Расп. подземелий]|r"
 
 end

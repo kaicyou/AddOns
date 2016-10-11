@@ -59,7 +59,7 @@ L["Wodin the Troll-Servant"] = "巨魔仆从伍迪"
 L["Xazi Smolderpipe <Arena Vendor>"] = "夏尔兹·斯莫德普 <竞技场商人>"
 L["Yggdras"] = "伊戈达斯"
 L["Zom Bocom <Apprentice Arena Vendor>"] = "佐姆·波克  <见习竞技场商人>"
-L["ToC/Description"] = "Atlas 竞技场地图"
-L["ToC/Title"] = "|r|cFF0099FF[地图]|rAtlas 竞技场地图集"
+L["ToC/Description"] = "Atlas 竞技场地图插件。"
+L["ToC/Title"] = "Atlas |r|cFF0099FF[竞技场]|r"
 
 end

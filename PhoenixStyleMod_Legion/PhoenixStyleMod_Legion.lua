@@ -11,13 +11,13 @@ end
 --description of the menu
 psraidoptionstxtLegion1={}
 psraidoptionstxtLegion1[1]={
-{"|tip2 "..psdidfriendlyf.." |sid203097|id","|tip2 "..psmainmdamagefrom.." |sid202978|id","|tip2 "..psmainmdamagefrom.." |sid203045|id"},
-{"|tip2 "..psmainmdamagefrom.." |sid212886|id"},
-{"|tip2 "..psmainmdamagefrom.." |sid213124|id"},
+{"|tip2 "..psdidfriendlyf.." |sid203097|id","|tip2 "..psmainmdamagefrom.." |sid202978|id","|tip2 "..psmainmdamagefrom.." |sid203045|id","|tip2 "..psmainmgot.." |sid210850|id"},
+{"|tip2 "..psmainmdamagefrom.." |sid212886|id","|tip2 "..psdidfriendlyf.." |sid215143|id"},
+{"|tip2 "..psmainmdamagefrom.." |sid213124|id","|tip2 "..psmainmgot.." |sid210850|id"},
 {},
-{"|tip2 "..psmainmgot.." |sid203110|id","|tip2 "..psmainmdamagefrom.." |sid204122|id"},
-{},
-{},
+{"|tip2 "..psmainmgot.." |sid203110|id","|tip2 "..psmainmdamagefrom.." |sid204122|id","|tip2 "..psmainmgot.." |sid205341|id","|tip2 "..psmainmdamagefrom.." |sid205870|id"},
+{"|tip2 "..psmainmgot.." |sid210315|id"},
+{"|tip2 "..psmainmdamagefrom.." |sid206656|id"},
 }
 psraidoptionstxtLegion1[2]={
 {},
@@ -44,13 +44,13 @@ end
 --chat settings 1 or 2 or 3
 psraidoptionschatdefLegion1={}
 psraidoptionschatdefLegion1[1]={
-{1,1,1},
-{1},
-{1},
-{},
+{1,1,1,1},
+{1,1},
 {1,1},
 {},
-{},
+{1,1,1,1},
+{1},
+{1},
 }
 psraidoptionschatdefLegion1[2]={
 {},
@@ -70,13 +70,13 @@ psraidoptionschatdefLegion1[2]={
 --chat settings on or off
 psraidoptionsondefLegion1={}
 psraidoptionsondefLegion1[1]={
-{1,1,1},
-{1},
-{1},
-{},
+{1,1,1,1},
+{1,1},
 {1,1},
 {},
-{},
+{1,1,1,1},
+{1},
+{1},
 }
 psraidoptionsondefLegion1[2]={
 {},

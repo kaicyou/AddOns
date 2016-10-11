@@ -1,9 +1,45 @@
 ------------------------------------------------------------------------
-r604 | arkayenro | 2016-09-25 23:51:15 +0000 (Sun, 25 Sep 2016) | 1 line
+r608 | arkayenro | 2016-10-02 01:10:02 +0000 (Sun, 02 Oct 2016) | 1 line
 Changed paths:
-   A /tags/3.07.13 (from /trunk:603)
+   A /tags/3.07.15 (from /trunk:607)
 
-Tagging as 3.07.13
+Tagging as 3.07.15
+------------------------------------------------------------------------
+r607 | arkayenro | 2016-10-01 22:38:50 +0000 (Sat, 01 Oct 2016) | 3 lines
+Changed paths:
+   M /trunk/ArkInventory.toc
+   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.15 (02-OCT-2016)*
+ * fixed - rule function: itemstring
+
+------------------------------------------------------------------------
+r605 | arkayenro | 2016-10-01 12:08:17 +0000 (Sat, 01 Oct 2016) | 9 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventory.xml
+   M /trunk/ArkInventoryJunk.lua
+   M /trunk/ArkInventoryMenu.lua
+   M /trunk/ArkInventoryRestack.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryTooltip.lua
+   M /trunk/ArkInventoryTranslate.lua
+   M /trunk/Locale/enUS.lua
+   M /trunk/Locale/game.lua
+   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.14 (01-OCT-2016)*
+ * fixed - issue with sell junk notification not always displaying
+ * fixed - issue with sort category equip location
+ * fixed - issue with artifact power items not getting categorised properly when colorblind mode is enabled
+ * removed - rule function: id()
+ * added - rule function: itemstring()
+ * added - sorting: slot type
+ * fixed - restack function should no longer be able to stall, should also not lock up the game while it does it
+
 ------------------------------------------------------------------------
 r603 | arkayenro | 2016-09-25 23:47:48 +0000 (Sun, 25 Sep 2016) | 3 lines
 Changed paths:

@@ -24,9 +24,7 @@ local suggested = {}
 local ZONE_RENAME = Overachiever.ZONE_RENAME
 
 local ZONE_RENAME_REV = { -- lookup table so localizations can use their own renames
---[[
-	["What we're calling this zone (localized)"] = "The key we're using for this zone",
----]]
+--	["What we're calling this zone (localized)"] = "The key we're using for this zone",
 	[L.SUGGESTIONS_ZONERENAME_DALARAN_NORTHREND] = "Dalaran (Northrend)",
 	[L.SUGGESTIONS_ZONERENAME_DALARAN_BROKENISLES] = "Dalaran (Broken Isles)",
 	[L.SUGGESTIONS_ZONERENAME_SHADOWMOONVALLEY_OUTLAND] = "Shadowmoon Valley (Outland)",
@@ -607,6 +605,8 @@ tinsert(ACHID_ZONE_MISC["Thunder Bluff"], "6621:2")
 tinsert(ACHID_ZONE_MISC["Undercity"], "6621:3")
 tinsert(ACHID_ZONE_MISC["Silvermoon City"], "6621:4")
 
+ACHID_ZONE_MISC["City of Ironforge"] = ACHID_ZONE_MISC["Ironforge"]
+
 -- INSTANCES - ANY DIFFICULTY (any group size):
 local ACHID_INSTANCES = {
 -- Classic Dungeons
@@ -1066,6 +1066,55 @@ local ACHID_INSTANCES_MYTHIC = {
 }
 
 
+local ACHID_HOLIDAY = {
+	["Brewfest"] = {
+		1683, -- Brewmaster (includes many other achievements)
+		1183, -- Brew of the Year
+		IsAlliance and 1184 or 1203, -- Strange Brew
+		1260, -- Almost Blind Luck
+		293,  -- Disturbing the Peace
+	},
+	["Darkmoon Faire"] = achDarkmoonFaire,
+	["Hallow's End"] = {
+		1656,  -- Hallowed By Thy Name
+		971,   -- Tricks and Treats of Azeroth
+		IsAlliance and 5836 or 5835,  -- Tricks and Treats of Northrend
+		IsAlliance and 5837 or 5838,  -- Tricks and Treats of the Cataclysm
+		IsAlliance and 7601 or 7602,  -- Tricks and Treats of Pandaria
+		979,   -- The Mask Task
+		284,   -- A Mask for All Occasions
+		10365, -- A Frightening Friend
+	},
+	["Day of the Dead"] = {
+		3456, -- Dead Man's Party
+		9426, -- To the Afterlife
+	},
+	["Pilgrim's Bounty"] = {
+		3478, -- Pilgrim
+		IsAlliance and 3556 or 3557, -- Pilgrim's Paunch
+		3558, -- Sharing is Caring
+		3559, -- Turkey Lurkey
+		IsAlliance and 3576 or 3577, -- Now We're Cookin'
+		3578, -- The Turkinator
+		3579, -- "FOOD FIGHT!"
+		IsAlliance and 3580 or 3581, -- Pilgrim's Peril
+		3582, -- Terokkar Turkey Time
+		IsAlliance and 3596 or 3597, -- Pilgrim's Progress
+	},
+	["Feast of Winter Veil"] = {
+		1691,  -- Merrymaker
+		IsAlliance and 5853 or 5854, -- A-Caroling We Will Go
+		1295,  -- Crashin' & Thrashin'
+		IsAlliance and 4436 or 4437,  -- BB King
+		8699,  -- The Danger Zone
+		10353, -- Iron Armada
+	},
+	-- Aliases:  (since Overachiever.HOLIDAY_REV has these point to a different key, we don't need them to point to a table here)
+}
+-- Aliases:
+ACHID_HOLIDAY["Winter Veil"] = ACHID_HOLIDAY["Feast of Winter Veil"]
+
+
 -- Create reverse lookup table for L.SUBZONES:
 local SUBZONES_REV = {}
 for k,v in pairs(L.SUBZONES) do  SUBZONES_REV[v] = k;  end
@@ -1140,6 +1189,8 @@ else
   ACHID_TRADESKILL_ZONE["Cooking"]["Thunder Bluff"] = 5843		-- "Let's Do Lunch: Thunder Bluff"
   ACHID_TRADESKILL_ZONE["Cooking"]["Undercity"] = 5844			-- "Let's Do Lunch: Undercity"
 end
+
+ACHID_TRADESKILL_ZONE["Fishing"]["City of Ironforge"] = ACHID_TRADESKILL_ZONE["Fishing"]["Ironforge"]
 
 local ACHID_TRADESKILL_BG = { Cooking = 1785 }	-- "Dinner Impossible"
 
@@ -1269,16 +1320,20 @@ local function Refresh(self)
   wipe(suggested)
   EditZoneOverride:ClearFocus()
   CurrentSubzone = ZoneLookup(GetSubZoneText(), true)
-  local zone = LocationsList[ strtrim(strlower(EditZoneOverride:GetText())) ]
+  local inputtext = strtrim(EditZoneOverride:GetText())
+  local zone = LocationsList[ strlower(inputtext) ]
+  local textoverride = false
   if (zone) then
+    textoverride = true
     zone = LocationsList[zone]
     EditZoneOverride:SetText(zone)
+    EditZoneOverride:SetTextColor(1, 1, 1)
     if (self ~= subzdrop) then  subzdrop_Update(zone);  end
     local subz = subzdrop:GetSelectedValue()
     if (subz ~= 0) then  CurrentSubzone = subz;  end
   else
     zone = GetZoneSpecialOverride() or ZoneLookup(GetRealZoneText(), nil, CurrentSubzone)
-    EditZoneOverride:SetTextColor(0.75, 0.1, 0.1)
+	if (inputtext and inputtext ~= "") then  EditZoneOverride:SetTextColor(0.75, 0.1, 0.1);  end
     --Refresh_stoploop = true
     subzdrop:SetMenu(subzdrop_menu)
     --Refresh_stoploop = nil
@@ -1318,7 +1373,7 @@ local function Refresh(self)
     TradeskillSuggestions = nil
 
   -- Suggestions for your location:
-    if (instype) then  -- If in an instance:
+    if (instype and not textoverride) then  -- If in an instance:
       Refresh_Add(ACHID_INSTANCES[zone])
       if (instype == "pvp") then  -- If in a battleground:
         Refresh_Add(ACHID_BATTLEGROUNDS)
@@ -1380,6 +1435,10 @@ local function Refresh(self)
 	    local achM = ACHID_INSTANCES_MYTHIC[CurrentSubzone] or ACHID_INSTANCES_MYTHIC[zone]
 	    if (achM) then  Refresh_Add(achM);  end
 	  end
+    end
+
+    if (textoverride) then
+      Refresh_Add(ACHID_HOLIDAY[zone])
     end
 
     -- Suggestions from recent reminders:
@@ -1478,6 +1537,7 @@ Overachiever.SUGGESTIONS = {
 	tradeskill = ACHID_TRADESKILL,
 	tradeskill_zone = ACHID_TRADESKILL_ZONE,
 	tradeskill_bg = ACHID_TRADESKILL_BG,
+	holiday = ACHID_HOLIDAY,
 }
 
 
@@ -1508,14 +1568,15 @@ do
   end
   zonetab = nil
   -- Add instances for which we have suggestions:
+  local locallookup = nil
   local function addtolist(list, ...)
     local tab
     for i=1,select("#", ...) do
       tab = select(i, ...)
       for k,v in pairs(tab) do
-	    list[ LBZ[k] or ZONE_RENAME_REV[k] or k ] = true  -- Add localized version of instance names.
+	    list[ (locallookup and locallookup[k]) or LBZ[k] or ZONE_RENAME_REV[k] or k ] = true  -- Add localized version of zone/instance names.
 		--print("adding: k = "..(LBZ[k] or k)..(LBZ[k] and "" or "no LBZ[k]"))
-		if (Overachiever_Debug and not LBZ[k] and not ZONE_RENAME_REV[k]) then  print("POSSIBLE ERROR - no LBZ lookup found for "..k);  end
+		if (Overachiever_Debug and (not (locallookup and locallookup[k])) and not LBZ[k] and not ZONE_RENAME_REV[k]) then  print("POSSIBLE ERROR - no LBZ lookup found for "..k);  end
 	  end
     end
   end
@@ -1523,6 +1584,9 @@ do
             ACHID_INSTANCES_10, ACHID_INSTANCES_25, ACHID_INSTANCES_10_NORMAL, ACHID_INSTANCES_25_NORMAL,
             ACHID_INSTANCES_10_HEROIC, ACHID_INSTANCES_25_HEROIC, ACHID_INSTANCES_MYTHIC)
   addtolist(suggested, ACHID_ZONE_MISC); -- Required for "unlisted" zones like Molten Front (doesn't appear in GetMapContinents/GetMapZones scan)
+  locallookup = Overachiever.HOLIDAY_REV
+  addtolist(suggested, ACHID_HOLIDAY); -- These aren't actual zones but we want the user to be able to look them up by name.
+  locallookup = nil
   addtolist = nil
   -- Arrange into alphabetically-sorted array:
   local count = 0
@@ -1532,7 +1596,6 @@ do
 	--print("adding "..k)
   end
   wipe(suggested)
-  --WHATWHAT = LocationsList
   sort(LocationsList)
   -- Cross-reference by lowercase key to place in the array:
   for i,v in ipairs(LocationsList) do  LocationsList[strlower(v)] = i;  end
@@ -1753,6 +1816,16 @@ end)
 
 -- MISCELLANEOUS
 ----------------------------------------------------
+
+function Overachiever.OpenSuggestionsTab(text)
+	EditZoneOverride:SetText(text)
+	if (Overachiever.GetSelectedTab() == frame) then
+		Overachiever.OpenTab_frame(frame)
+		PlaySound("igMainMenuOptionCheckBoxOn")
+	else
+		Overachiever.OpenTab_frame(frame, true)
+	end
+end
 
 --[[
 local function grabFromCategory(cat, ...)

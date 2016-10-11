@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 28 2016-09-20 15:11:38Z arith $
+ˇ$Id: ChangeLog.txt 30 2016-10-04 16:06:47Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -8,6 +8,16 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 = Change Log =
 ==============
 
+v1.34.03 (Oct. 04, 2016)
+------------------------
+- Added world quest PVP areas' location
+- Translation update:
+  - Russian (dartraiden)
+- Map revamped:
+  - Eastern Kingdoms
+- Adjust green marks' color: Kalimdor, Broken Isles
+  
+  
 v1.34.02 (Sep. 20, 2016)
 ------------------------
 - Added coordinates information to Broken Isles map

@@ -82,6 +82,7 @@ local function getProgressString(q, t, qs)
     return q.."/"..t;
   end
 end
+Overachiever.GetCriteriaProgressString = getProgressString
 
 local function AppendProgressToTooltip(tooltip, id, GUID)
   local text = (PlayerGUID == GUID) and L.PROGRESS or L.YOURPROGRESS;

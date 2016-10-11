@@ -5,6 +5,11 @@ Copyright 2011 ~ 2016 - Arith Hsu
 = Change Log =
 ==============
 
+* 3.16 (2016/10/06)
+- Translation update:
+  - Russian (dartraiden)
+  - Simplified Chinese (Mazanic)
+
 * 3.15 (2016/07/19)
 - TOC update to support WoW 7.0.3
 - Replace punctuations by using Atlas' localization

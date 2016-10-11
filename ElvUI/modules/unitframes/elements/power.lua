@@ -29,7 +29,6 @@ function UF:Construct_PowerBar(frame, bg, text, textPos)
 	if text then
 		power.value = frame.RaisedElementParent:CreateFontString(nil, 'OVERLAY')
 		UF:Configure_FontString(power.value)
-		power.value:SetParent(frame)
 
 		local x = -2
 		if textPos == 'LEFT' then
@@ -198,6 +197,7 @@ function UF:Configure_Power(frame)
 	elseif frame:IsElementEnabled('Power') then
 		frame:DisableElement('Power')
 		power:Hide()
+		frame:Tag(power.value, "")
 	end
 
 	--Transparency Settings

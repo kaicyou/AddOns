@@ -245,6 +245,33 @@ function ArkInventory:EVENT_WOW_PLAYER_MONEY( )
 
 	--ArkInventory.Output( "PLAYER_MONEY" )
 
+	if ArkInventory.db.option.junk.sell then
+		
+		if ArkInventory.db.option.junk.notify and ( ArkInventory.Global.Junk.sold > 0 or ArkInventory.Global.Junk.destroyed > 0 ) then
+			
+			--ArkInventory.Output( "end amount ", GetMoney( ) )
+			ArkInventory.Global.Junk.money = GetMoney( ) - ArkInventory.Global.Junk.money
+			--ArkInventory.Output( "difference ", ArkInventory.Global.Junk.money )
+			--ArkInventory.Output( "sold ", ArkInventory.Global.Junk.sold )
+			--ArkInventory.Output( "destroyed ", ArkInventory.Global.Junk.destroyed )
+			
+			if ArkInventory.Global.Junk.sold > 0 and ArkInventory.Global.Junk.money > 0 then
+				ArkInventory.Output( string.format( ArkInventory.Localise["CONFIG_JUNK_SELL_NOTIFY_SOLD"], ArkInventory.MoneyText( ArkInventory.Global.Junk.money, true ) ) )
+			end
+			
+			if ArkInventory.Global.Junk.destroyed > 0 then
+				ArkInventory.Output( string.format( ArkInventory.Localise["CONFIG_JUNK_SELL_NOTIFY_DESTROYED"], ArkInventory.Global.Junk.destroyed ) )
+			end
+			
+		end
+		
+		ArkInventory.Global.Junk.sold = 0
+		ArkInventory.Global.Junk.destroyed = 0
+		ArkInventory.Global.Junk.money = 0
+		
+	end
+	
+	
 	ArkInventory.PlayerInfoSet( )
 	
 	-- set saved money amount here as well
@@ -340,7 +367,7 @@ function ArkInventory:EVENT_ARKINV_BAG_UPDATE_BUCKET( bagTable )
 		if ArkInventory.BagID_Internal( blizzard_id ) == ArkInventory.Const.Location.Bag then
 			bag_changed = true
 		end
-		ArkInventory.RestackResume( ArkInventory.BagID_Internal( blizzard_id ) )
+		--ArkInventory.RestackResume( ArkInventory.BagID_Internal( blizzard_id ) )
 	end
 
 	-- re-scan empty bag slots to wipe their data - no events are triggered when you move a bag from one bag slot into an empty bag slot (for the empty slot, new slot is fine)
@@ -388,9 +415,10 @@ function ArkInventory:EVENT_WOW_BAG_LOCK( event, arg1, arg2 )
 			if arg1 == GetInventorySlotInfo( slotName ) then
 				local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
 				ArkInventory.ObjectLockChanged( loc_id, bag_id, nil )
-				ArkInventory.RestackResume( loc_id )
 			end
 		end
+		
+		--ArkInventory.RestackResume( loc_id )
 	
 	else
 	
@@ -413,10 +441,11 @@ function ArkInventory:EVENT_WOW_BAG_LOCK( event, arg1, arg2 )
 			-- item lock
 			local loc_id, bag_id = ArkInventory.BagID_Internal( arg1 )
 			ArkInventory.ObjectLockChanged( loc_id, bag_id, arg2 )
-			ArkInventory.RestackResume( loc_id )
 			
 		end
 	
+		--ArkInventory.RestackResume( loc_id )
+		
 	end
 
 end
@@ -611,7 +640,7 @@ function ArkInventory:EVENT_ARKINV_VAULT_UPDATE_BUCKET( )
 	ArkInventory.ScanVault( )
 	ArkInventory.ScanVaultHeader( )
 	
-	ArkInventory.RestackResume( ArkInventory.Const.Location.Vault )
+	--ArkInventory.RestackResume( ArkInventory.Const.Location.Vault )
 	
  	-- instant sorting enabled
 	local me = ArkInventory.GetPlayerCodex( loc_id )
@@ -642,7 +671,7 @@ function ArkInventory:EVENT_WOW_VAULT_LOCK( event, ... )
 		ArkInventory.ObjectLockChanged( loc_id, bag_id, slot_id )
 	end
 	
-	ArkInventory.RestackResume( ArkInventory.Const.Location.Vault )
+	--ArkInventory.RestackResume( ArkInventory.Const.Location.Vault )
 	
 end
 
@@ -1581,6 +1610,9 @@ function ArkInventory.ScanBag( blizzard_id )
 	
 	local bag = player.data.location[loc_id].bag[bag_id]
 	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
+	
 	local old_bag_count = bag.count
 	local old_bag_link = bag.h
 	local old_bag_status = bag.status
@@ -1740,6 +1772,9 @@ function ArkInventory.ScanVault( )
 	
 	local bag = player.data.location[loc_id].bag[bag_id]
 	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
+	
 	bag.count = bag.count or 0
 	bag.empty = 0
 	bag.type = ArkInventory.Const.Slot.Type.Bag
@@ -1877,7 +1912,10 @@ function ArkInventory.ScanVaultHeader( )
 		--ArkInventory.Output( "scaning tab header: ", bag_id )
 		
 		local bag = player.data.location[loc_id].bag[bag_id]
-	
+		
+		bag.loc_id = loc_id
+		bag.bag_id = bag_id
+		
 		bag.type = ArkInventory.Const.Slot.Type.Bag
 	
 		if bag_id <= GetNumGuildBankTabs( ) then
@@ -1958,6 +1996,10 @@ function ArkInventory.ScanWearing( )
 	
 	
 	local bag = player.data.location[loc_id].bag[bag_id]
+	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
+	
 	bag.count = 0
 	bag.empty = 0
 	bag.type = ArkInventory.Const.Slot.Type.Wearing
@@ -2068,6 +2110,10 @@ function ArkInventory.ScanMailInbox( )
 	local player = ArkInventory.GetPlayerStorage( nil, loc_id )
 	
 	local bag = player.data.location[loc_id].bag[bag_id]
+	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
+	
 	bag.count = 0
 	bag.empty = 0
 	bag.type = ArkInventory.Const.Slot.Type.Mail
@@ -2257,6 +2303,10 @@ function ArkInventory.ScanMailInbox( )
 	loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
 	
 	bag = player.data.location[loc_id].bag[bag_id]
+	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
+	
 	bag.count = 0
 	bag.empty = 0
 	bag.type = ArkInventory.Const.Slot.Type.Mail
@@ -2283,6 +2333,10 @@ function ArkInventory.ScanMailSentData( )
 	end
 	
 	local bag = player.data.location[loc_id].bag[bag_id]
+	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
+	
 	bag.empty = 0
 	bag.type = ArkInventory.Const.Slot.Type.Mail
 	bag.status = ArkInventory.Const.Bag.Status.Active
@@ -2359,6 +2413,10 @@ function ArkInventory.ScanCollectionMount( )
 	local player = ArkInventory.GetPlayerStorage( nil, loc_id )
 	
 	local bag = player.data.location[loc_id].bag[bag_id]
+	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
+
 	bag.count = 0
 	bag.empty = 0
 	bag.type = ArkInventory.BagType( blizzard_id )
@@ -2449,6 +2507,10 @@ function ArkInventory.ScanCollectionPet( )
 	local player = ArkInventory.GetPlayerStorage( nil, loc_id )
 	
 	local bag = player.data.location[loc_id].bag[bag_id]
+	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
+	
 	bag.count = 0
 	bag.empty = 0
 	bag.type = ArkInventory.BagType( blizzard_id )
@@ -2544,6 +2606,10 @@ function ArkInventory.ScanCollectionToy( )
 	local player = ArkInventory.GetPlayerStorage( nil, loc_id )
 	
 	local bag = player.data.location[loc_id].bag[bag_id]
+	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
+	
 	bag.count = 0
 	bag.empty = 0
 	bag.type = ArkInventory.BagType( blizzard_id )
@@ -2628,6 +2694,10 @@ function ArkInventory.ScanCollectionHeirloom( )
 	local player = ArkInventory.GetPlayerStorage( nil, loc_id )
 	
 	local bag = player.data.location[loc_id].bag[bag_id]
+	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
+	
 	bag.count = 0
 	bag.empty = 0
 	bag.type = ArkInventory.BagType( blizzard_id )
@@ -2693,6 +2763,10 @@ function ArkInventory.ScanCurrency( )
 	local player = ArkInventory.GetPlayerStorage( nil, loc_id )
 	
 	local bag = player.data.location[loc_id].bag[bag_id]
+	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
+	
 	bag.count = 0
 	bag.empty = 0
 	bag.type = ArkInventory.Const.Slot.Type.Token
@@ -2764,6 +2838,10 @@ function ArkInventory.ScanCurrency( )
 	-- token "bag" blizzard is using (mapped to our second bag)
 	bag_id = 2
 	bag = player.data.location[loc_id].bag[bag_id]
+	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
+	
 	bag.count = 0
 	bag.empty = 0
 	bag.type = ArkInventory.Const.Slot.Type.Token
@@ -2799,6 +2877,10 @@ function ArkInventory.ScanVoidStorage( blizzard_id )
 	local player = ArkInventory.GetPlayerStorage( nil, loc_id )
 	
 	local bag = player.data.location[loc_id].bag[bag_id]
+	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
+	
 	bag.count = ArkInventory.Const.VOID_STORAGE_MAX
 	bag.empty = 0
 	bag.type = ArkInventory.BagType( blizzard_id )
@@ -2890,6 +2972,9 @@ function ArkInventory.ScanAuction( massive )
 	local player = ArkInventory.GetPlayerStorage( nil, loc_id )
 	
 	local bag = player.data.location[loc_id].bag[bag_id]
+	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
 	
 	local auctions = select( 2, GetNumAuctionItems( "owner" ) )
 	
@@ -2984,6 +3069,10 @@ function ArkInventory.ScanAuctionExpire( )
 	
 	local bag = player.data.location[loc_id].bag[bag_id]
 	
+	
+	bag.loc_id = loc_id
+	bag.bag_id = bag_id
+	
 	local search_id
 	
 	for slot_id = 1, bag.count do
@@ -3039,6 +3128,9 @@ function ArkInventory.ScanSpellbook( )
 	for bag_id = 1, numTabs do
 		
 		local bag = player.data.location[loc_id].bag[bag_id]
+		
+		bag.loc_id = loc_id
+		bag.bag_id = bag_id
 		
 		local old_bag_count = bag.count
 		
@@ -3239,6 +3331,9 @@ function ArkInventory.ScanTradeskill( )
 	for bag_id = 1, 6 do
 		
 		local bag = player.data.location[loc_id].bag[bag_id]
+		
+		bag.loc_id = loc_id
+		bag.bag_id = bag_id
 		
 		bag.count = 0
 		bag.empty = 0
@@ -3506,7 +3601,6 @@ function ArkInventory.ObjectInfoArray( h, i )
 	info.itemtypeid = 0
 	info.itemsubtypeid = 0
 	
-	
 	if info.class == "item" then
 		
 		info.info = { GetItemInfo( info.osd.h ) }
@@ -3526,7 +3620,7 @@ function ArkInventory.ObjectInfoArray( h, i )
 			-- upgradable or has bonusId that may not adjust the itemlevel return value (eg 615/timewarped), so get item level from tooltip
 			
 			ArkInventory.TooltipSetHyperlink( ArkInventory.Global.Tooltip.Scan, info.h )
-			local _, _, ilvl = ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ITEM_LEVEL"], false, true )
+			local _, _, ilvl = ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ITEM_LEVEL"], false, true, true, 0, true )
 			
 			info.ilvl = tonumber( ilvl ) or info.ilvl
 			
@@ -3610,6 +3704,11 @@ end
 function ArkInventory.ObjectStringDecode( h, i )
 	
 	local h = string.trim( h or "" )
+	
+	if h == "" and i and not i.h then
+		h = ArkInventory.ObjectIDCategory( i )
+	end
+	
 	local s = string.lower( string.match( h, "|H(.-)|h" ) or string.match( h, "^([a-z]-:.+)" ) or "empty:0:0" )
 	local v = { strsplit( ":", s ) }
 	
@@ -3625,6 +3724,15 @@ function ArkInventory.ObjectStringDecode( h, i )
 	v.h = s
 	v.class = v[1]
 	v.id = v[2]
+	
+	v.slottype = 0
+	if i then
+		if not i.loc_id then
+			ArkInventory.Output( i )
+		end
+		local blizzard_id = ArkInventory.BagID_Blizzard( i.loc_id, i.bag_id )
+		v.slottype = ArkInventory.BagType( blizzard_id )
+	end
 	
 	if v.class == "item" then
 		
@@ -3729,7 +3837,7 @@ function ArkInventory.ObjectStringDecode( h, i )
 		
 		v.level = v[3]
 		v.q = v[4]
-		v.maxhealth = v[5]
+		v.maxhealth = v[5] 
 		v.power = v[6]
 		v.speed = v[7]
 		
@@ -3748,7 +3856,7 @@ function ArkInventory.ObjectStringDecode( h, i )
 		
 		v.amount = v[3]
 		
-	elseif class == "empty" then
+	elseif v.class == "empty" then
 		
 		v.bagtype = v[3]
 		
@@ -3811,79 +3919,43 @@ function ArkInventory.InventoryIDGet( loc_id, bag_id )
 end
 
 
-function ArkInventory.ObjectIDInternal( h )
-	
-	local osd = ArkInventory.ObjectStringDecode( h )
-	
-	if osd.class == "item" then
-		--todo - if equiploc then leave source, otherwide make it zero?
-		return string.format( "%s:%s:%s:%s", osd.class, osd.id, osd.suffixid, osd.sourceid )
-	elseif osd.class == "empty" then
-		-- (1)empty:(2)slottype
-		return string.format( "%s:%s", osd.class, osd.id )
-	elseif osd.class == "spell" then
-		-- (1)spell:(2)spellID
-		return string.format( "%s:%s", osd.class, osd.id )
-	elseif osd.class == "battlepet" then
-		-- (1)battlepet:(2)speciesID:(3)level:(4)rarity:(5)health:(6)power:(7)speed:(8)guid(BattlePet-[unknown]-[creatureID])
-		return string.format( "%s:%s:%s", osd.class, osd.id, osd.level )
-	elseif osd.class == "currency" then
-		-- (1)currency:(2)currencyID
-		return string.format( "%s:%s", osd.class, osd.id )
-	elseif osd.class == "copper" then
-		return string.format( "%s:%s", osd.class, osd.id )
-	end
-	
-	ArkInventory.OutputWarning( "ObjectIDInternal: uncoded class [", osd.class, "] for object ", h, "" )
-	return string.format( "%s:%s", osd.class, osd.id )
-	
-end
-
 function ArkInventory.ObjectIDCount( h )
 	local osd = ArkInventory.ObjectStringDecode( h )
 	return string.format( "%s:%s", osd.class, osd.id )
 end
 
-function ArkInventory.ObjectIDCategory( loc_id, bag_id, sb, h )
+function ArkInventory.ObjectIDCategory( i )
 	
-	local h = h or "empty:0:0"
+	local soulbound = ( i.sb and 1 ) or 0
 	
-	local soulbound = ( sb and 1 ) or 0
-	
-	local osd = ArkInventory.ObjectStringDecode( h )
-	local class, id = osd.class, osd.id
+	local osd = ArkInventory.ObjectStringDecode( i.h )
 	local r
 	
-	
-	if class == "item" then
-		r = string.format( "%s:%i:%i", class, id, soulbound )
-	elseif class == "empty" then
-		local blizzard_id = ArkInventory.BagID_Blizzard( loc_id, bag_id )
+	if osd.class == "item" then
+		r = string.format( "%s:%i:%i", osd.class, osd.id, soulbound )
+	elseif osd.class == "empty" then
+		local blizzard_id = ArkInventory.BagID_Blizzard( i.loc_id, i.bag_id )
 		soulbound = ArkInventory.BagType( blizzard_id ) -- allows for unique codes per bag type
-		r = string.format( "%s:%i:%i", class, 0, soulbound )
-	elseif class == "spell" then
-		r = string.format( "%s:%i", class, id )
-	elseif class == "battlepet" then
-		r = string.format( "%s:%i:%i", class, id, soulbound )
-	elseif class == "currency" then
-		r = string.format( "%s:%i", class, id )
-	elseif class == "copper" then
-		r = string.format( "%s:%i", class, id )
+		r = string.format( "%s:%i:%i", osd.class, osd.id, soulbound )
+	elseif osd.class == "spell" or osd.class == "currency" or osd.class == "copper" then
+		r = string.format( "%s:%i", osd.class, osd.id )
+	elseif osd.class == "battlepet" then
+		r = string.format( "%s:%i:%i", osd.class, osd.id, soulbound )
 	else
-		ArkInventory.OutputWarning( "unsupported object class [", h, "] = [", class, "]" )
-		r = string.format( "%s:%i", class, id )
+		ArkInventory.OutputWarning( "uncoded object class [", i.h, "] = [", osd.class, "]" )
+		r = string.format( "%s:%i", osd.class, osd.id )
 	end
 	
-	local codex = ArkInventory.GetLocationCodex( loc_id )
+	local codex = ArkInventory.GetLocationCodex( i.loc_id )
 	local cr = string.format( "%i:%s", codex.catset_id, r )
 	
 	return cr, r, codex
 	
 end
 
-function ArkInventory.ObjectIDRule( loc_id, bag_id, sb, h )
-	local id = string.format( "%i:%i:%i:%s", loc_id or 0, bag_id or 0, ( sb and 1 ) or 0, ArkInventory.ObjectIDInternal( h ) )
-	local codex = ArkInventory.GetLocationCodex( loc_id )
+function ArkInventory.ObjectIDRule( i )
+	local id = string.format( "%i:%i:%i:%s", i.loc_id or 0, i.bag_id or 0, ( i.sb and 1 ) or 0, ArkInventory.ObjectIDCategory( i ) )
+	local codex = ArkInventory.GetLocationCodex( i.loc_id )
 	local cid = string.format( "%i:%s", codex.catset_id, id )
 	return cid, id, codex
 end

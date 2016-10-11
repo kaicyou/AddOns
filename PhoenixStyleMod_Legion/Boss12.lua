@@ -11,12 +11,12 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion12 and pswasonbossLeg
 		pssetcrossbeforereport1=GetTime()
 
 		if psraidoptionson[4][1][2][1]==1 then
-			strochkavezcrash=psdidfriendlyf.." |s4id212886|id ("..psmainmtotal.."): "
+			strochkavezcrash=psiccdmgfrom.." |s4id212886|id ("..psmainmtotal.."): "
 			reportafterboitwotab(psraidchats3[psraidoptionschat[4][1][2][1]], true, vezaxname, vezaxcrash, 1)
 		end
 		if psraidoptionson[4][1][2][2]==1 then
-			--strochkavezcrash=psiccdmgfrom.." |s4id179897|id ("..psmainmtotal.."): "
-			--reportafterboitwotab(psraidchats3[psraidoptionschat[4][1][2][2]], true, vezaxname2, vezaxcrash2, 1)
+			strochkavezcrash=psdidfriendlyf.." |s4id215143|id ("..psmainmtotal.."): "
+			reportafterboitwotab(psraidchats3[psraidoptionschat[4][1][2][2]], true, vezaxname2, vezaxcrash2, 1)
 		end
 
 
@@ -27,8 +27,8 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion12 and pswasonbossLeg
 
 		strochkavezcrash=psdidfriendlyf.." |s4id212886|id ("..psmainmtotal.."): "
 		reportafterboitwotab("raid", true, vezaxname, vezaxcrash, nil, nil,0,1)
-		--strochkavezcrash=psiccdmgfrom.." |s4id179897|id ("..psmainmtotal.."): "
-		--reportafterboitwotab("raid", true, vezaxname2, vezaxcrash2, nil, nil,0,1)
+		strochkavezcrash=psiccdmgfrom.." |s4id215143|id ("..psmainmtotal.."): "
+		reportafterboitwotab("raid", true, vezaxname2, vezaxcrash2, nil, nil,0,1)
 
 		psiccrefsvin()
 
@@ -87,7 +87,7 @@ if arg2=="SPELL_PERIODIC_DAMAGE" and spellid==212886 then
   end
 end
 
-if arg2=="SPELL_DAMAGE" and spellid==99999999999999999 then
+if arg2=="SPELL_DAMAGE" and spellid==215143 and name1 and name2 and name1~=name2 then
   if pswasonbossLegion12==nil then
     pswasonbossLegion12=1
   end
@@ -98,13 +98,13 @@ if arg2=="SPELL_DAMAGE" and spellid==99999999999999999 then
     if pswipetrue and pswasonbossLegion12~=2 then
       psiccwipereport_legion1("wipe", "try")
     end
-    addtotwotables2(name2)
+    addtotwotables2(name1)
     vezaxsort2()
     local tt2=", "..psdamageceil(arg12)
       if arg13>=0 then
         tt2=", "..psdamageceil(arg12-arg13).." |cffff0000("..psoverkill..": "..psdamageceil(arg13)..")|r"
       end
-    pscaststartinfo(0,spellname..": "..psaddcolortxt(1,name2)..name2..psaddcolortxt(2,name2)..tt2, -1, "id1", 2, "|s4id"..spellid.."|id - "..psinfo,psbossnames[4][1][2],2)
+    pscaststartinfo(0,spellname..": "..psaddcolortxt(1,name1)..name1..psaddcolortxt(2,name1).." > "..psaddcolortxt(1,name2)..name2..psaddcolortxt(2,name2)..tt2, -1, "id1", 2, "|s4id"..spellid.."|id - "..psinfo,psbossnames[4][1][2],2)
   end
 end
 

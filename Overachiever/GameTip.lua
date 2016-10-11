@@ -131,6 +131,12 @@ local function getMobID(unit)
   --return guid
 end
 
+local function isPlayerInCombatWith(unit)
+  --local isTanking, status, threatpct, rawthreatpct, threatvalue = UnitDetailedThreatSituation("unit", "mob")
+  local isTanking, status = UnitDetailedThreatSituation("player", unit)
+  return status ~= nil
+end
+
 
 local lastreminder = 0
 local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
@@ -453,7 +459,9 @@ function Overachiever.ExamineSetUnit(tooltip)
           else
             text = L.KILL_INCOMPLETE
             r, g, b = tooltip_incomplete.r, tooltip_incomplete.g, tooltip_incomplete.b
-            PlayReminder()
+            if (not Overachiever_Settings.SoundAchIncomplete_KillCheckCombat or not isPlayerInCombatWith(unit)) then
+              PlayReminder()
+            end
           end
           tooltip:AddLine(text, r, g, b)
           tooltip:AddTexture(AchievementIcon)

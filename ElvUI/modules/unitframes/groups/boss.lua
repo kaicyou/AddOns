@@ -19,6 +19,10 @@ assert(ElvUF, "ElvUI was unable to locate oUF.")
 
 local BossHeader = CreateFrame('Frame', 'BossHeader', UIParent)
 function UF:Construct_BossFrames(frame)
+	frame.RaisedElementParent = CreateFrame('Frame', nil, frame)
+	frame.RaisedElementParent:SetFrameStrata("MEDIUM")
+	frame.RaisedElementParent:SetFrameLevel(frame:GetFrameLevel() + 10)
+
 	frame.Health = self:Construct_HealthBar(frame, true, true, 'RIGHT')
 
 	frame.Power = self:Construct_PowerBar(frame, true, true, 'LEFT')
@@ -166,7 +170,7 @@ function UF:Update_BossFrames(frame, db)
 		BossHeader:Height(frame.UNIT_HEIGHT)
 	end
 
-	frame:UpdateAllElements()
+	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
 UF['unitgroupstoload']['boss'] = {MAX_BOSS_FRAMES}

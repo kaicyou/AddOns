@@ -39,7 +39,7 @@ L["TRADE_SKILLET_ACHSORT"] = "的成就"
 
 
 elseif (locale == "zhCN") then  -- Simplified Chinese
-L["TRADE_COOKING_OBJRENAME"] = "交易" -- Needs review
+L["TRADE_COOKING_OBJRENAME"] = "交易"
 L["TRADE_SKILLET_ACHSORT"] = "的成就"
 
 

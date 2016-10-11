@@ -12,6 +12,18 @@
  
 
 
+*3.07.15 (02-OCT-2016)*
+ * fixed - rule function: itemstring
+ 
+*3.07.14 (01-OCT-2016)*
+ * fixed - issue with sell junk notification not always displaying
+ * fixed - issue with sort category equip location
+ * fixed - issue with artifact power items not getting categorised properly when colorblind mode is enabled
+ * removed - rule function: id()
+ * added - rule function: itemstring()
+ * added - sorting: slot type
+ * fixed - restack function should no longer be able to stall, should also not lock up the game while it does it
+
 *3.07.13 (26-SEP-2016)*
  * fixed - removed debug output
  

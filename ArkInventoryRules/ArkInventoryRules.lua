@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1728 $
-$Date: 2016-09-23 10:28:37 +1000 (Fri, 23 Sep 2016) $
+$Revision: 1740 $
+$Date: 2016-10-02 09:37:35 +1100 (Sun, 02 Oct 2016) $
 
 ]]--
 
@@ -208,20 +208,16 @@ function ArkInventoryRules.System.accountbound( )
 	return not not ArkInventoryRules.Object.ab
 end
 
-function ArkInventoryRules.System.id( ... )
+function ArkInventoryRules.System.itemstring( ... )
 	
-	if not ArkInventoryRules.Object.h then
-		return false
-	end
-	
-	local fn = "id"
+	local fn = "itemstring"
 	
 	local ac = select( '#', ... )
 	
 	if ac == 0 then
 		error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_NONE_SPECIFIED"], fn ), 0 )
 	end
-
+	
 	for ax = 1, ac do
 		
 		local arg = select( ax, ... )
@@ -230,14 +226,17 @@ function ArkInventoryRules.System.id( ... )
 			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NIL"], fn, ax ), 0 )
 		end
 		
-		if type( arg ) == "number" or type( arg ) == "string" then
-			arg = string.format( "item:%s:", arg )
+		if type( arg ) == "number" then
+			arg = string.format( "item:%s", arg )
+		end
+		
+		if type( arg ) == "string" then
+			arg = arg .. ":"
 		else
 			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, ax, string.format( "%s or %s", ArkInventory.Localise["STRING"], ArkInventory.Localise["NUMBER"] ) ), 0 )
 		end
 		
-		local e = string.sub( ArkInventory.ObjectIDInternal( ArkInventoryRules.Object.h ) .. ":", 1, string.len( arg ) )
-		
+		local e = string.sub( ArkInventoryRules.Object.info.osd.h .. ":", 1, string.len( arg ) )
 		if e == arg then
 			return true
 		end
@@ -1531,7 +1530,7 @@ ArkInventoryRules.Environment = {
 	accountbound = ArkInventoryRules.System.accountbound,
 	ab = ArkInventoryRules.System.accountbound,
 	
-	id = ArkInventoryRules.System.id,
+	itemstring = ArkInventoryRules.System.itemstring,
 	
 	type = ArkInventoryRules.System.type,
 	

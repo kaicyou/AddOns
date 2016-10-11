@@ -177,7 +177,7 @@ function ArkInventory.TooltipSetBattlepet( tooltip, h, i )
 	
 	if osd.class ~= "battlepet" then return end
 	
-	--ArkInventory.Output( "[", class, " : ", speciesID, " : ", level, " : ", rarity, " : ", fullHealth, " : ", power, " : ", speed, "]" )
+	--ArkInventory.Output( "[", osd.class, " : ", osd.id, " : ", osd.level, " : ", osd.q, " : ", osd.maxhealth, " : ", osd.power, " : ", osd.speed, "]" )
 	
 	if not ArkInventory.db.option.tooltip.battlepet.enable then
 		BattlePetToolTip_Show( osd.id, osd.level, osd.q, osd.maxhealth, osd.power, osd.speed )
@@ -365,7 +365,7 @@ function ArkInventory.TooltipGetItem( tooltip )
 	return itemName, ItemLink
 	
 end
-	
+
 function ArkInventory.TooltipFind( tooltip, TextToFind, IgnoreLeft, IgnoreRight, CaseSensitive, maxDepth, BaseOnly )
 	
 	local TextToFind = TextToFind
@@ -393,7 +393,7 @@ function ArkInventory.TooltipFind( tooltip, TextToFind, IgnoreLeft, IgnoreRight,
 		obj = _G[string.format( "%s%s%s", tooltip:GetName( ), "TextLeft", i )]
 		if obj and obj:IsShown( ) then
 			
-			txt = obj:GetText( )
+			txt = ArkInventory.StripColourCodes( obj:GetText( ) )
 			if txt then
 				
 				--ArkInventory.Output( "L[", i, "] = [", txt, "]" )
@@ -425,7 +425,7 @@ function ArkInventory.TooltipFind( tooltip, TextToFind, IgnoreLeft, IgnoreRight,
 			obj = _G[string.format( "%s%s%s", tooltip:GetName( ), "TextRight", i )]
 			if obj and obj:IsShown( ) then
 				
-				txt = obj:GetText( )
+				txt = ArkInventory.StripColourCodes( obj:GetText( ) )
 				if txt then
 					
 					--ArkInventory.Output( "R[", i, "] = [", txt, "]" )
@@ -450,6 +450,18 @@ function ArkInventory.TooltipFind( tooltip, TextToFind, IgnoreLeft, IgnoreRight,
 	
 end
 
+function ArkInventory.TooltipFindExact( tooltip, TextToFind, IgnoreLeft, IgnoreRight, CaseSensitive, maxDepth, BaseOnly )
+	
+	local TextToFind = TextToFind
+	if not TextToFind or string.trim( TextToFind ) == "" then
+		return false
+	end
+	
+	TextToFind = string.format( "^%s$", TextToFind )
+	return ArkInventory.TooltipFind( tooltip, TextToFind, IgnoreLeft, IgnoreRight, CaseSensitive, maxDepth, BaseOnly )
+	
+end
+
 function ArkInventory.TooltipGetLine( tooltip, i )
 
 	if not i or i < 1 or i > ArkInventory.TooltipNumLines( tooltip ) then
@@ -467,7 +479,8 @@ function ArkInventory.TooltipGetLine( tooltip, i )
 	if obj and obj:IsShown( ) then
 		txt2 = obj:GetText( )
 	end
-
+	
+	txt1 = ArkInventory.StripColourCodes( txt1 )
 	return txt1 or "", txt2 or ""
 	
 end
@@ -1011,20 +1024,19 @@ function ArkInventory.TooltipShowCompare( ... )
 	if not self or not self.ARK_Data then return end
 	
 	local objectlink = self.ARK_Data[1]
-	if ( not objectlink ) or ( type( objectlink ) ~= "string" ) then return end
+	if not objectlink or type( objectlink ) ~= "string" then return end
 	
 	--ArkInventory.Output( self.ARK_Data[1], " / ", self.ARK_Data[2], " / ", self.ARK_Data[3], " / ", self.ARK_Data[4] )
 	
-	local objectlink = string.match( objectlink, "|H(.-)|h" ) or objectlink
-	local class, id, extra = string.match( objectlink, "^(.-):(.-):(.+)$" )
-	if not class or not id then return end
+	local osd = ArkInventory.ObjectStringDecode( objectlink )
+	if not osd.class or not osd.id then return end
 	
 	local link = nil
 	
-	--ArkInventory.Output( class, " / ", id, " / ", extra )
+	--ArkInventory.Output( osd.class, " / ", osd.id )
 	
-	if class == "achievement" then
-		link = GetAchievementLink( id )
+	if osd.class == "achievement" then
+		link = GetAchievementLink( osd.id )
 --	elseif class == "instancelock" then
 --		link = GetSavedInstanceChatLink(self:GetID())
 	else

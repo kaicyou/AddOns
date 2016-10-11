@@ -54,6 +54,10 @@ function UF:UpdatePrep(event, unit, status)
 end
 
 function UF:Construct_ArenaFrames(frame)
+	frame.RaisedElementParent = CreateFrame('Frame', nil, frame)
+	frame.RaisedElementParent:SetFrameStrata("MEDIUM")
+	frame.RaisedElementParent:SetFrameLevel(frame:GetFrameLevel() + 10)
+
 	frame.Health = self:Construct_HealthBar(frame, true, true, 'RIGHT')
 	frame.Name = self:Construct_NameText(frame)
 
@@ -236,7 +240,7 @@ function UF:Update_ArenaFrames(frame, db)
 		ArenaHeader:Height(frame.UNIT_HEIGHT)
 	end
 
-	frame:UpdateAllElements()
+	frame:UpdateAllElements("ElvUI_UpdateAllElements")
 end
 
 UF['unitgroupstoload']['arena'] = {5, 'ELVUI_UNITTARGET'}

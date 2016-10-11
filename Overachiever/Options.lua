@@ -3,12 +3,17 @@ local L = OVERACHIEVER_STRINGS
 local THIS_VERSION = GetAddOnMetadata("Overachiever", "Version")
 local GetAchievementInfo = Overachiever.GetAchievementInfo
 
+local holidayNoticeChange
+
 Overachiever.DefaultSettings = {
   Tooltip_ShowProgress = true;
   Tooltip_ShowProgress_Other = true;
   Tooltip_ShowID = false;
   UI_SeriesTooltip = true;
   UI_RequiredForMetaTooltip = true;
+  UI_ProgressIfOtherCompleted = true;
+  UI_HolidayNotice = true;
+  UI_HolidayNotice_SuggestionsTabOnly = false;
   Tracker_AutoTimer = true;
   Explore_AutoTrack = false;
   --Explore_AutoTrack_Completed = false;
@@ -35,6 +40,7 @@ Overachiever.DefaultSettings = {
   Tradeskill_ShowCompletedAch_Cooking = false;
   SoundAchIncomplete = 0;
   SoundAchIncomplete_AnglerCheckPole = true;
+  SoundAchIncomplete_KillCheckCombat = true;
   ProgressToast_AutoTrack = false;
   ProgressToast_ChatLog = true;
   ProgressToast_Suggest = true;
@@ -72,7 +78,11 @@ function Overachiever.CreateOptions(THIS_TITLE, BuildCriteriaLookupTab_check, Au
 	{ variable = "UI_SeriesTooltip", text = L.OPT_UI_SERIESTIP, tooltip = L.OPT_UI_SERIESTIP_TIP },
 	{ variable = "UI_RequiredForMetaTooltip", text = L.OPT_UI_REQUIREDFORMETATIP,
 	  tooltip = L.OPT_UI_REQUIREDFORMETATIP_TIP, OnChange = BuildCriteriaLookupTab_check },
-	{ variable = "Draggable_AchFrame", text = L.OPT_DRAGGABLE, OnChange = CheckDraggable_AchFrame },
+	{ variable = "UI_ProgressIfOtherCompleted", text = L.OPT_UI_PROGRESSIFOTHERCOMPLETED, tooltip = L.OPT_UI_PROGRESSIFOTHERCOMPLETED_TIP },
+	{ variable = "UI_HolidayNotice", text = L.OPT_UI_HOLIDAYNOTICE, OnChange = holidayNoticeChange,
+	  tooltip = L.OPT_UI_HOLIDAYNOTICE_TIP, tooltip2 = L.OPT_UI_HOLIDAYNOTICE_TIP2 },
+	{ variable = "UI_HolidayNotice_SuggestionsTabOnly", xOffset = 15, text = L.OPT_UI_HOLIDAYNOTICE_SUGGESTIONSTABONLY, OnChange = holidayNoticeChange },
+	{ variable = "Draggable_AchFrame", xOffset = 0, text = L.OPT_DRAGGABLE, OnChange = CheckDraggable_AchFrame },
 	{ variable = "DragSave_AchFrame", text = L.OPT_DRAGSAVE, xOffset = 15, OnChange = CheckDraggable_AchFrame },
 
 	{ type = "labelwrap", text = L.OPT_LABEL_TRADESKILLUI, topBuffer = 4, xOffset = 0 },
@@ -83,6 +93,8 @@ function Overachiever.CreateOptions(THIS_TITLE, BuildCriteriaLookupTab_check, Au
 	  xOffset = 0, topBuffer = 10, OnChange = SoundSelected },
 	{ variable = "SoundAchIncomplete_AnglerCheckPole", text = L.OPT_SELECTSOUND_ANGLERCHECKPOLE,
 	  tooltip = L.OPT_SELECTSOUND_ANGLERCHECKPOLE_TIP, xOffset = 15 },
+	{ variable = "SoundAchIncomplete_KillCheckCombat", text = L.OPT_SELECTSOUND_CHECKCOMBAT,
+	  tooltip = L.OPT_SELECTSOUND_CHECKCOMBAT_TIP, xOffset = 15 },
   }
 
   local items_reminders = {
@@ -161,7 +173,8 @@ function Overachiever.CreateOptions(THIS_TITLE, BuildCriteriaLookupTab_check, Au
 	defaults = Overachiever.DefaultSettings
   });
 
-  return reminderspanel, oldver
+  return mainpanel, oldver
+  --return reminderspanel, oldver
 end
 
 
@@ -293,4 +306,14 @@ do
 
   TjOptions.RegisterItemType("Oa_AchLabel", tonumber(THIS_VERSION) or 0, "labelwrap",
     { create_prehook = CreateAchLabel_pre, create_posthook = CreateAchLabel_post })
+end
+
+
+function holidayNoticeChange(self, varname, value, playerClicked)
+	if (varname == "UI_HolidayNotice" and value and Overachiever.ResetHiddenHolidayNotices) then
+		Overachiever.ResetHiddenHolidayNotices()
+	end
+	if (Overachiever.SetupHolidayNotices and AchievementFrame:IsShown()) then
+		Overachiever.SetupHolidayNotices(nil, true)
+	end
 end

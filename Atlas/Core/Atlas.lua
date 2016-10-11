@@ -1,4 +1,4 @@
--- $Id: Atlas.lua 100 2016-09-20 03:46:42Z arith $
+-- $Id: Atlas.lua 105 2016-10-04 15:33:26Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -1383,6 +1383,8 @@ function AtlasMap_AddNPCButtonLarge()
 						button.bgImage:SetTexture("Interface\\MINIMAP\\"..info_colortag);
 					elseif (info_colortag == "Battlegrounds") then
 						button.bgImage:SetTexture("Interface\\MINIMAP\\Tracking\\BattleMaster");
+					elseif (info_colortag == "PvP") then
+						button.bgImage:SetAtlas("worldquest-icon-pvp-ffa", true);
 					elseif (info_colortag == "FlightMaster") then
 						button.TaxiImage:SetTexture("Interface\\MINIMAP\\Tracking\\FlightMaster");
 						button.TaxiImage:SetTexCoord(0, 1, 0, 1);
@@ -1978,5 +1980,4 @@ function AtlasSetEJBackground(instanceID)
 	end
 end
 ]]
-
 

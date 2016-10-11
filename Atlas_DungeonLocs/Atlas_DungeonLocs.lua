@@ -1,4 +1,4 @@
--- $Id: Atlas_DungeonLocs.lua 28 2016-09-20 15:11:38Z arith $
+-- $Id: Atlas_DungeonLocs.lua 30 2016-10-04 16:06:47Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -38,6 +38,8 @@ local PURP = "|cff9900ff";
 local WHIT = "|cffffffff";
 local GREY = "|cff999999";
 local YLOW = "|cffcccc33";
+local ALAN = "|cff7babe0"; -- Alliance
+local HRDE = "|cffda6955"; -- Horde
 local INDENT = "      ";
 
 local myCategory = L["Dungeon Locations"];
@@ -249,7 +251,7 @@ local myData = {
 	DLBrokenIsles = {
 		ZoneName = { BZ["Broken Isles"] };
 		LargeMap = "DLBrokenIsles";
-		{ WHIT.." 1) "..BZ["Assault on Violet Hold"]..ALC["Comma"].._RED..BZ["Dalaran"], 10001 };
+		{ WHIT.." 1) "..BZ["Assault on Violet Hold"]..ALC["Comma"].._RED..BZ["Dalaran"]..GREY.." (66.7, 68.3)", 10001 };
 		{ WHIT.." 2) "..BZ["Vault of the Wardens"]..ALC["Comma"].._RED..BZ["Azsuna"]..GREY.." (48.2, 82.7)", 10002 };
 		{ WHIT.." 3) "..BZ["Eye of Azshara"]..ALC["Comma"].._RED..BZ["Azsuna"], 10003 };
 		{ INDENT.." 3') "..BZ["Eye of Azshara"]..ALC["Hyphen"]..ALC["Meeting Stone"]..ALC["Comma"].._RED..BZ["Hatecoil Warcamp"]..GREY.." (61.2, 41.1)", 100031 }; -- Eye of Azshara's meeting stone is a bit far away from the dungeon's actual location
@@ -265,17 +267,16 @@ local myData = {
 		{ WHIT.."12) "..BZ["The Nighthold"]..ALC["Comma"].._RED..BZ["Suramar"]..GREY.." (44.1, 59.8)", 10012 };
 		{ INDENT..GREY..ALC["L-Parenthesis"]..L["Raid entrance is inside the Sanctum Depths of Sanctum of Order"]..ALC["R-Parenthesis"].." (45.9, 64.5)" };
 		{ "" };
-		{ "" };
-		{ "" };
-		{ "" };
-		{ "" };
-		{ "" };
-		{ "" };
-		{ "" };
-		{ "" };
+		{ GREN.." 1) "..BZ["Darkfollow's Spire"]..HRDE..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"]..GREY..ALC["Comma"].._RED..BZ["Val'sharah"]..GREY.." (37.7, 73.2)", 10101 };
+		{ GREN.." 2) "..BZ["Starstalker's Point"]..ALAN..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"]..GREY..ALC["Comma"].._RED..BZ["Val'sharah"]..GREY.." (33.6, 40.7)", 10102 };
+		{ GREN.." 3) "..BZ["Black Rook Hold Arena"]..GREY..ALC["Comma"].._RED..BZ["Val'sharah"]..GREY.." (42.4, 48.8)", 10103 };
+		{ GREN.." 4) "..BZ["Nightwatcher's Perch"]..HRDE..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"]..GREY..ALC["Comma"].._RED..BZ["Highmountain"]..GREY.." (25.6, 54.2)", 10104 };
+		{ GREN.." 5) "..BZ["Cordana's Apex"]..ALAN..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"]..GREY..ALC["Comma"].._RED..BZ["Stormheim"]..GREY.." (61.2, 56.4)", 10105 };
+		{ GREN.." 6) "..BZ["Whisperwind's Citadel"]..ALAN..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"]..GREY..ALC["Comma"].._RED..BZ["Stormheim"]..GREY.." (48.4, 20.7)", 10106 };
+		{ GREN.." 7) "..BZ["Blackhawk's Bulwark"]..HRDE..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"]..GREY..ALC["Comma"].._RED..BZ["Stormheim"]..GREY.." (61.2, 89.7)", 10107 };
 		{ "" };
 		{ WHIT..L["White"]..ALC["Colon"]..ORNG..L["Instances"] };
---		{ GREN..L["Green"]..ALC["Colon"]..ORNG..BATTLEGROUNDS };
+		{ GREN..L["Green"]..ALC["Colon"]..ORNG..PVP };
 	};
 };
 

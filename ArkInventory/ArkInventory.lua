@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1733 $
-$Date: 2016-09-25 23:59:59 +1000 (Sun, 25 Sep 2016) $
+$Revision: 1739 $
+$Date: 2016-10-01 22:06:44 +1000 (Sat, 01 Oct 2016) $
 
 ]]--
 
@@ -1229,6 +1229,12 @@ ArkInventory.Global = { -- globals
 	
 	NewItemResetTime = nil,
 	
+	Junk = {
+		sold = 0,
+		destroyed = 0,
+		money = 0,
+	},
+	
 }
 
 ArkInventory.Config = {
@@ -2442,17 +2448,15 @@ end
 
 function ArkInventory.ClassColourRGB( class )
 	
-	if not class then
-		return
-	end
+	if not class then return end
 	
 	local ct = nil
 	
 	-- reminder: ct is now pointing to a secured variable, if you change it you'll taint it and screw up AI (and a lot of other mods as well) - so dont.
 	
-	if ( class == "GUILD" ) then
+	if class == "GUILD" then
 		ct = ORANGE_FONT_COLOR
-	elseif ( class == "ACCOUNT" ) then
+	elseif class == "ACCOUNT" then
 		ct = YELLOW_FONT_COLOR
 	else
 		ct = ( CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] ) or RAID_CLASS_COLORS[class]
@@ -2509,6 +2513,13 @@ function ArkInventory.ColourCodetoRGB( c )
 	
 	return r, g, b, a
 
+end
+
+function ArkInventory.StripColourCodes( txt )
+	local txt = txt or ""
+	gsub( txt, "|c........", "" )
+	gsub( txt, "|r", "" )
+	return txt
 end
 
 function ArkInventory.PT_ItemInSets( item, setnames )
@@ -2609,12 +2620,12 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 	if sorting.used and not sorting.bagslot then
 		
 		local t
-		local info = ArkInventory.ObjectInfoArray( i.h )
+		local info = ArkInventory.ObjectInfoArray( i.h, i )
 		
-		-- slot type (system+user)
+		-- slot type
 		t = 0
-		if not i.h or sorting.active.slottype then
-			t = ArkInventory.BagType( i.bag_id )
+		if sorting.active.slottype then
+			t = info.osd.slottype
 		end
 		s["!slottype"] = string.format( "%04i", t )
 		
@@ -2665,7 +2676,7 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 		
 		-- location
 		t = "!"
-		if i.h and class == "item" and sorting.active.location then
+		if i.h and info.class == "item" and sorting.active.location then
 			if info.equiploc and info.equiploc ~= "" and _G[info.equiploc] then
 				t = _G[info.equiploc]
 			end
@@ -2753,7 +2764,6 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 			end
 		end
 		
-		sx = string.format( "%s%s", sx, s["!slottype"] )
 		sx = string.format( "%s%s", sx, s["!count"] )
 		sx = string.format( "%s%s", sx, s["!bagslot"] )
 		
@@ -3061,7 +3071,7 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	
 	
 	-- everything else
-	local info = ArkInventory.ObjectInfoArray( i.h )
+	local info = ArkInventory.ObjectInfoArray( i.h, i )
 	
 	-- (caged) battle pets
 	if info.class == "battlepet" then
@@ -3194,7 +3204,7 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	if codex.player.data.info.isplayer then
 		
 		-- class requirement (via tooltip)
-		local _, _, req = ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_CLASS"], false, true, true )
+		local _, _, req = ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_CLASS"], false, true, true, 0, true )
 		if req and string.find( req, codex.player.data.info.class_local ) then
 			return ArkInventory.CategoryGetSystemID( string.format( "CLASS_%s", codex.player.data.info.class ) )
 		end
@@ -3285,10 +3295,17 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 		
 		if info.itemsubtypeid == ArkInventory.Const.ItemClass.CONSUMABLE_OTHER then
 			
-			if ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["ARTIFACT_POWER"], false, true, true, 2, true ) then
+--[[
+			if info.id == 141710 then
+				local line = ArkInventory.TooltipGetLine( ArkInventory.Global.Tooltip.Scan, 2 )
+				ArkInventory.Output( gsub( line, "\124", "\124\124" ) )
+			end
+]]--
+			
+			if ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ARTIFACT_POWER"], false, true, true, 4, true ) then
 				return ArkInventory.CategoryGetSystemID( "CONSUMABLE_ARTIFACT_POWER" )
 			end
-		
+			
 			if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ANCIENT_MANA"], false, true, true, true ) then
 				return ArkInventory.CategoryGetSystemID( "SYSTEM_TOKEN" )
 			end
@@ -3301,7 +3318,7 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	-- primary professions
 	if codex.player.data.info.skills then
 		
-		local _, _, req = ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_REQUIRES_SKILL"], false, true, true )
+		local _, _, req = ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_REQUIRES_SKILL"], false, true, true, 0, true )
 		
 		for x = 1, ArkInventory.Const.Skills.Primary do
 			
@@ -3329,7 +3346,7 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	
 	
 	-- crafting reagents
-	if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["CRAFTING_REAGENT"], false, true, true ) then
+	if ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_CRAFTING_REAGENT"], false, true, true, 4, true ) then
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_REAGENT" )
 	end
 	
@@ -3510,7 +3527,7 @@ end
 function ArkInventory.ItemCategoryGetDefault( i )
 	
 	-- items cache id
-	local cid = ArkInventory.ObjectIDCategory( i.loc_id, i.bag_id, i.sb, i.h )
+	local cid = ArkInventory.ObjectIDCategory( i )
 	
 	-- if the value has not been cached yet then get it and cache it
 	if ArkInventory.TranslationsLoaded and not ArkInventory.Global.Cache.Default[cid] then
@@ -3545,7 +3562,7 @@ function ArkInventory.ItemCategoryGetPrimary( i )
 	if i.h then -- only items can have a category, empty slots can only be used by rules
 		
 		-- items category cache id
-		local cid, id, codex = ArkInventory.ObjectIDCategory( i.loc_id, i.bag_id, i.sb, i.h )
+		local cid, id, codex = ArkInventory.ObjectIDCategory( i )
 		
 		local cat_id = codex.catset.category.assign[id]
 		if cat_id then
@@ -3565,7 +3582,7 @@ function ArkInventory.ItemCategoryGetPrimary( i )
 	if ArkInventory.Global.Rules.Enabled then
 		
 		-- items rule cache id
-		local cid, id, codex = ArkInventory.ObjectIDRule( i.loc_id, i.bag_id, i.sb, i.h )
+		local cid, id, codex = ArkInventory.ObjectIDRule( i )
 		
 		-- if the value has already been cached then use it
 		if ArkInventory.Global.Cache.Rule[cid] == nil then
@@ -3585,7 +3602,7 @@ function ArkInventory.ItemCategorySet( i, cat_id )
 	
 	-- set cat_id to nil to reset back to default
 	
-	local cid, id, codex = ArkInventory.ObjectIDCategory( i.loc_id, i.bag_id, i.sb, i.h )
+	local cid, id, codex = ArkInventory.ObjectIDCategory( i )
 	--ArkInventory.Output( cid, " / ", id, " / ", cat_id, " / ", codex.player.data.info.name )
 	codex.catset.category.assign[id] = cat_id
 	
@@ -3634,17 +3651,22 @@ function ArkInventory.ItemCacheClear( h )
 	else
 		
 		local cid
+		local i = { h = h }
 		
 		--ArkInventory.Output( "clearing cache - ", h )
 		
 		for loc_id, loc_data in pairs( ArkInventory.Global.Location ) do
+			i.loc_id = loc_id
 			for bag_id in pairs( ArkInventory.Global.Location[loc_id].Bags ) do
+				i.bag_id = bag_id
 				for _, sb in ipairs( ArkInventory.Const.booleantable ) do
 					
-					cid = ArkInventory.ObjectIDRule( loc_id, bag_id, sb, h )
+					i.sb = sb
+					
+					cid = ArkInventory.ObjectIDRule( i )
 					ArkInventory.Global.Cache.Rule[cid] = nil
 				
-					cid = ArkInventory.ObjectIDCategory( loc_id, bag_id, sb, h )
+					cid = ArkInventory.ObjectIDCategory( i )
 					ArkInventory.Global.Cache.Default[cid] = nil
 					
 				end
@@ -5053,11 +5075,11 @@ function ArkInventory.Frame_Container_CalculateBars( frame )
 					
 					if stack_compress > 0 and i.h and bar_id > 0 then
 						
-						local info = ArkInventory.ObjectInfoArray( i.h )
+						local info = ArkInventory.ObjectInfoArray( i.h, i )
 						
 						if info.stacksize > 1 then
 							
-							local key = ArkInventory.ObjectIDCount( i.h )
+							local key = ArkInventory.ObjectIDCount( i.h, i )
 							
 							if not ArkInventory.Global.Cache.StackCompress[loc_id][key] then
 								ArkInventory.Global.Cache.StackCompress[loc_id][key] = 0
@@ -5709,8 +5731,6 @@ function ArkInventory.Frame_Scroll_OnLoad( frame )
 	frame.ARK_Data = {
 		loc_id = tonumber( loc_id ),
 	}
-	
-	loc_id = frame.ARK_Data.loc_id
 	
 	frame.stepSize = ArkInventory.Const.Frame.Scroll.stepSize
 	
@@ -6633,15 +6653,14 @@ function ArkInventory.Frame_Item_Update_Count( frame )
 		if codex.style.slot.itemcount.show then
 			
 			local osd = ArkInventory.ObjectStringDecode( i.h )
-			local class = osd.class
 			local count = i.count or 0
 			frame.count = count
 			
-			if class == "battlepet" then
+			if osd.class == "battlepet" then
 				count = osd.level
 			end
 			
-			if ( class == "battlepet" ) or ( count > 1 ) or ( frame.isBag and count > 0 ) then
+			if osd.class == "battlepet" or count > 1 or ( frame.isBag and count > 0 ) then
 				
 				if count > ( frame.maxDisplayCount or 9999 ) then
 					count = "*"
@@ -6685,12 +6704,20 @@ function ArkInventory.Frame_Item_Update_Stock( frame )
 		
 		if codex.style.slot.itemlevel.show then
 			
-			local info = ArkInventory.ObjectInfoArray( i.h )
+			local info = ArkInventory.ObjectInfoArray( i.h, i )
 			
 			if info.class == "item" then
-				if ( info.equiploc ~= "" and info.equiploc ~= "INVTYPE_BAG" ) or ( info.itemtypeid == ArkInventory.Const.ItemClass.GEM and info.itemsubtypeid == ArkInventory.Const.ItemClass.GEM_ARTIFACT_RELIC ) then
+				
+				-- equipable items
+				if info.equiploc ~= "" and info.equiploc ~= "INVTYPE_BAG" then
 					stock = info.ilvl
 				end
+				
+				-- artifact relics
+				if info.itemtypeid == ArkInventory.Const.ItemClass.GEM and info.itemsubtypeid == ArkInventory.Const.ItemClass.GEM_ARTIFACT_RELIC then
+					stock = info.ilvl
+				end
+				
 			end
 			
 			if stock > 0 then
@@ -6732,7 +6759,7 @@ function ArkInventory.Frame_Item_MatchesFilter( frame )
 		matches = true
 	else
 		local i = ArkInventory.Frame_Item_GetDB( frame ) or { }
-		local info = ArkInventory.ObjectInfoArray( i.h )
+		local info = ArkInventory.ObjectInfoArray( i.h, i )
 		local n = string.lower( info.name or "" )
 		if string.find( n, f ) then
 			matches = true
@@ -7447,15 +7474,13 @@ function ArkInventory.Frame_Item_Update_Lock( frame )
 		if codex.style.slot.unusable.tint then
 			
 			local osd = ArkInventory.ObjectStringDecode( i.h )
-			local class, level = osd.class, osd.level
 			
-			if loc_id == ArkInventory.Const.Location.Pet or class == "battlepet" then
+			if loc_id == ArkInventory.Const.Location.Pet or osd.class == "battlepet" then
 				
-				level = level or 1
 				local player_id = ArkInventory.PlayerIDAccount( )
 				local account = ArkInventory.GetPlayerStorage( player_id )
 				
-				if account and codex.player.data.info and codex.player.data.info.level and codex.player.data.info.level < level then
+				if account and codex.player.data.info and codex.player.data.info.level and codex.player.data.info.level < osd.level then
 					colour = tinted
 				end
 				
@@ -8431,7 +8456,7 @@ function ArkInventory.Frame_Changer_Slot_OnClick( frame, button )
 		return
 		
 	elseif button == "RightButton" then
-				
+		
 		ArkInventory.MenuBagOpen( frame )
 		
 	elseif button == "LeftButton" then

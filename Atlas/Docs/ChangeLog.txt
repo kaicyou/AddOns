@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 103 2016-09-20 16:51:47Z arith $
+$Id: ChangeLog.txt 106 2016-10-04 15:37:04Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -8,6 +8,14 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 = Change Log =
 ==============
 
+v1.34.04 (Oct. 04, 2016)
+------------------------
+- Added PvP icon to be presented in large map
+- Translation update:
+  - Korean (netaras)
+  - Portuguese (MetalFlavio)
+  - Russian (dartraiden)
+  
 v1.34.03 (Sep. 20, 2016)
 ------------------------
 - Slightly enhanced maps' loading process to prevent from nil data being feed

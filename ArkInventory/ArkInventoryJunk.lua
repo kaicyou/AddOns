@@ -77,18 +77,6 @@ function ArkInventory.JunkIterate( )
 	
 end
 
-function ArkInventory.JunkValue( )
-	local count = 0
-	local price = 0
-	for blizzard_id, slot_id, itemLink, itemCount, vendorPrice in ArkInventory.JunkIterate( ) do
-		count = count + 1
-		if vendorPrice > 0 then
-			price = price + ( vendorPrice * itemCount )
-		end
-	end
-	return count, price
-end
-
 function ArkInventory.JunkSell( )
 	
 	if IsAddOnLoaded( "Scrap" ) or IsAddOnLoaded( "SellJunk" ) then
@@ -96,54 +84,57 @@ function ArkInventory.JunkSell( )
 		return
 	end
 	
+	ArkInventory.Global.Junk.sold = 0
+	ArkInventory.Global.Junk.destroyed = 0
+	ArkInventory.Global.Junk.money = 0
+	
 	if ArkInventory.db.option.junk.sell then
 		
-		local count, price = ArkInventory.JunkValue( )
-		--ArkInventory.Output( "start ", count, " / ", price )
+		--ArkInventory.Output( "start amount ", GetMoney( ) )
+		ArkInventory.Global.Junk.money = GetMoney( )
 		
-		local sold = 0
-		local destroyed = 0
 		local limit = ( ArkInventory.db.option.junk.limit and 0 ) or BUYBACK_ITEMS_PER_PAGE
 		
 		for blizzard_id, slot_id, itemLink, itemCount, vendorPrice in ArkInventory.JunkIterate( ) do
 			
 			if vendorPrice > 0 then
-				sold = sold + 1
-				if limit > 0 and sold > limit then
-					-- limit to buyback page
+				
+				ArkInventory.Global.Junk.sold = ArkInventory.Global.Junk.sold + 1
+				
+				if limit > 0 and ArkInventory.Global.Junk.sold > limit then
+					-- limited to buyback page
 					--ArkInventory.Output( "buyback limit (", limit, ") reached, ending sell process" )
+					ArkInventory.Global.Junk.sold = limit
 					return
 				end
-				--ArkInventory.Output( "selling ", itemLink )
+				
+				--ArkInventory.Output( "selling #", ArkInventory.Global.Junk.sold, " - ", itemLink )
 				UseContainerItem( blizzard_id, slot_id )
-				-- this will sometimes fail, and you will have no idea, so you cant just add up the values as you go
-				-- cant use money as it doesnt update in time.
-				-- so next best thing, record how much the junk we had beforehand cost and how much we have at the end costs
+				
+				-- this will sometimes fail, without any notifcation, so you cant just add up the values as you go
+				-- GetMoney doesnt update in realtime so also cannot be used here
+				-- so next best thing, record how much money we had beforehand and how much we have at the next money update
+				
 			elseif vendorPrice == 0 then
+				
 				if ArkInventory.db.option.junk.delete then
-					--ArkInventory.Output( "deleting ", itemLink )
+					
+					ArkInventory.Global.Junk.destroyed = ArkInventory.Global.Junk.destroyed + 1
+					
+					--ArkInventory.Output( "destroying #", ArkInventory.Global.Junk.destroyed, " - ", itemLink )
 					PickupContainerItem( blizzard_id, slot_id )
 					DeleteCursorItem( )
-					destroyed = destroyed + 1
-					-- might fail, may prompt user if quality is green or higher
+					
+					-- might fail, might prompt user if quality is green or higher
+					
 				end
+				
 			end
 			
 		end
 		
-		if sold > 0 or destroyed > 0 and ArkInventory.db.option.junk.notify then
-			local itemCount, vendorPrice = ArkInventory.JunkValue( )
-			--ArkInventory.Output( "end ", itemCount, " / ", vendorPrice )
-			count = count - itemCount
-			price = price - vendorPrice
-			if price > 0 then
-				ArkInventory.Output( string.format( ArkInventory.Localise["CONFIG_JUNK_SELL_NOTIFY_SOLD"], ArkInventory.MoneyText( price ) ) )
-			end
-			if destroyed > 0 then
-				ArkInventory.Output( string.format( ArkInventory.Localise["CONFIG_JUNK_SELL_NOTIFY_DESTROYED"], destroyed ) )
-			end
-			--ArkInventory.Output( sold, " items sold, ", destroyed, " items destroyed" )
-		end
+		-- notifcation is at EVENT_WOW_PLAYER_MONEY
+		
 	end
 	
 end

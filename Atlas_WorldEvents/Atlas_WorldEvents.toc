@@ -8,7 +8,7 @@
 ## Title-itIT: Atlas |r|cFF0099FF[World Events]|r
 ## Title-koKR: Atlas |r|cFF0099FF[World Events]|r
 ## Title-ptBR: Atlas |r|cFF0099FF[World Events]|r
-## Title-ruRU: Atlas |r|cFF0099FF[World Events]|r
+## Title-ruRU: Atlas |r|cFF0099FF[Игровые события]|r
 ## Title-zhCN: Atlas |r|cFF0099FF[世界事件]|r
 ## Title-zhTW: |r|cFF0099FF[地圖]|rAtlas 世界事件地圖集
 ## Notes: An Atlas Plugin that displays world events maps.
@@ -19,7 +19,7 @@
 ## Notes-itIT: An Atlas Plugin that displays world events maps.
 ## Notes-koKR: An Atlas Plugin that displays world events maps.
 ## Notes-ptBR: An Atlas Plugin that displays world events maps.
-## Notes-ruRU: An Atlas Plugin that displays world events maps.
+## Notes-ruRU: Карты игровых событий
 ## Notes-zhCN: Atlas 世界事件地图插件。
 ## Notes-zhTW: Atlas 世界事件地圖集, 顯示重要世界事件任務目標點地圖
 #@end-non-debug@
@@ -29,11 +29,11 @@
 # ## Notes: An Atlas Plugin that displays world events maps.
 # ## Notes-zhTW: Atlas 世界事件地圖集, 顯示重要世界事件任務目標點地圖
 #@end-debug@
-## Version: 3.15
-## X-Date: 2016-07-19T09:22:52Z
+## Version: 3.16
+## X-Date: 2016-10-06T04:01:27Z
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v3.15
+## X-Curse-Packaged-Version: v3.16
 ## X-Curse-Project-Name: Atlas World Events
 ## X-Curse-Project-ID: atlas-worldevents
 ## X-Curse-Repository-ID: wow/atlas-worldevents/mainline

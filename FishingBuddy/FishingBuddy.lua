@@ -1129,8 +1129,8 @@ end
 local function GetFishieRaw(fishid)
 	local fi = FishingBuddy_Info["Fishies"][fishid];
 	if ( not fi or not fi[CurLoc] ) then
-		local _,_,_,_,it,_,_,_,_,_ = FL:GetItemInfo(link);
-		local color, id, name = FL:SplitFishLink(link);
+		local _,_,_,_,it,_,_,_,_,_ = FL:GetItemInfo(fishid);
+		local color, id, name = FL:SplitFishLink(fishid);
 
 		if (not fi) then
 			return fishid, it, color, 1, nil, name, nil;

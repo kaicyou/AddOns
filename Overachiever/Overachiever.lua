@@ -448,8 +448,8 @@ local function BuildCriteriaLookupTab(...)
 end
 
 local AchLookup_metaach, AchLookup_kill
-local function BuildCriteriaLookupTab_check()
-  local meta = not AchLookup_metaach and Overachiever_Settings.UI_RequiredForMetaTooltip
+local function BuildCriteriaLookupTab_check(forceMeta)
+  local meta = not AchLookup_metaach and (Overachiever_Settings.UI_RequiredForMetaTooltip or forceMeta)
   local kill = not AchLookup_kill and Overachiever_Settings.CreatureTip_killed
   if (meta and kill) then
     AchLookup_metaach, AchLookup_kill = {}, {}
@@ -465,23 +465,37 @@ local function BuildCriteriaLookupTab_check()
   end
 end
 
+function Overachiever.GetMetaCriteriaLookup()
+  if (not AchLookup_metaach) then  BuildCriteriaLookupTab_check(true);  end
+  return AchLookup_metaach
+end
+
+
 -- DRAGGABLE FRAMES
 ---------------------
+
+local function changeAchFrameDragging(enable)
+  if (enable) then
+        TjDragIt.EnableDragging(AchievementFrame, AchievementFrameHeader, AchievementFrameCategoriesContainer,
+                                AchievementFrameAchievementsContainer, AchievementFrameStatsContainer,
+                                Overachiever_SearchFrameContainer, Overachiever_SuggestionsFrameContainer, Overachiever_WatchFrameContainer, Overachiever_RelatedFrameContainer)
+  else
+      TjDragIt.DisableDragging(AchievementFrame, AchievementFrameHeader, AchievementFrameCategoriesContainer,
+                               AchievementFrameAchievementsContainer, AchievementFrameStatsContainer,
+                               Overachiever_SearchFrameContainer, Overachiever_SuggestionsFrameContainer, Overachiever_WatchFrameContainer, Overachiever_RelatedFrameContainer)
+  end
+end
 
 local function CheckDraggable_AchFrame(self, key, val, clicked, LoadPos)
   if (AchievementFrame) then
     -- Check if draggable:
     if (Overachiever_Settings.Draggable_AchFrame) then
       if (not MadeDraggable_AchFrame) then
-        TjDragIt.EnableDragging(AchievementFrame, AchievementFrameHeader, AchievementFrameCategoriesContainer,
-                                AchievementFrameAchievementsContainer, AchievementFrameStatsContainer,
-                                Overachiever_SearchFrameContainer, Overachiever_SuggestionsFrameContainer, Overachiever_WatchFrameContainer)
+        changeAchFrameDragging(true)
         MadeDraggable_AchFrame = true
       end
     elseif (MadeDraggable_AchFrame) then
-      TjDragIt.DisableDragging(AchievementFrame, AchievementFrameHeader, AchievementFrameCategoriesContainer,
-                               AchievementFrameAchievementsContainer, AchievementFrameStatsContainer,
-                               Overachiever_SearchFrameContainer, Overachiever_SuggestionsFrameContainer, Overachiever_WatchFrameContainer)
+      changeAchFrameDragging(false)
       MadeDraggable_AchFrame = nil
     end
     if (key and AchievementFrame:IsShown()) then
@@ -503,6 +517,15 @@ local function CheckDraggable_AchFrame(self, key, val, clicked, LoadPos)
       AchievementFrame:SetAttribute("UIPanelLayout-enabled", true);
       MadeDragSave_AchFrame = nil
     end
+  end
+end
+
+function Overachiever.CheckDraggable_AchFrame_redo()
+  -- Call this when a draggable element is created late so it wasn't included before
+  if (Overachiever_Settings.Draggable_AchFrame and MadeDraggable_AchFrame) then -- Only do anything if we want draggable frames and already acted on this
+    -- Disable then re-enable dragging:
+    changeAchFrameDragging(false)
+	changeAchFrameDragging(true)
   end
 end
 
@@ -563,6 +586,35 @@ ChatFrame_OnHyperlinkShow = function(self, link, text, button, ...)
     if (IsControlKeyDown()) then
       local id = strsplit(":", strsub(link, 13));
       id = tonumber(id)
+      if (IsShiftKeyDown()) then
+        --[[
+        if (not AchievementFrame) then
+          AchievementFrame_LoadUI()
+          openToAchievement(id)
+        elseif (not AchievementFrame:IsShown()) then
+          ToggleAchievementFrame()
+        end
+        --]]
+        local delay = false
+        if (not AchievementFrame) then
+          ToggleAchievementFrame()
+          if (Overachiever.OpenRelatedTab) then
+            openToAchievement(id)
+            delay = true
+          end
+        elseif (Overachiever.OpenRelatedTab and not AchievementFrame:IsShown()) then
+          ToggleAchievementFrame()
+          openToAchievement(id)
+        end
+        if (Overachiever.OpenRelatedTab) then
+          if (delay) then  -- The delay is needed in this case or else the left panel of the frame renders incorrectly.
+            C_Timer.After(0, function()  Overachiever.OpenRelatedTab(id);  end)
+          else
+            Overachiever.OpenRelatedTab(id)
+          end
+          return;
+        end
+      end
       openToAchievement(id, true)
       return;
     elseif (IsAltKeyDown()) then
@@ -828,9 +880,10 @@ do
 		tipset = 1
 		GameTooltip:Show();
 	end
+	local me
 	if ( (tipset == 0 or not self.completed) and self.shield.earnedBy ) then
 		GameTooltip:AddLine(format(ACHIEVEMENT_EARNED_BY,self.shield.earnedBy));
-		local me = UnitName("player")
+		me = UnitName("player")
 		if ( not self.shield.wasEarnedByMe ) then
 			GameTooltip:AddLine(format(ACHIEVEMENT_NOT_COMPLETED_BY, me));
 		elseif ( me ~= self.shield.earnedBy ) then
@@ -891,6 +944,43 @@ do
       GameTooltip:AddLine(" ")
     end
 
+    if (Overachiever_Settings.UI_ProgressIfOtherCompleted) then
+      local _, _, _, completed, _, _, _, _, _, _, _, _, wasEarnedByMe = GetAchievementInfo(id)
+	  if (completed and not wasEarnedByMe) then
+	    local numCrit = GetAchievementNumCriteria(id)
+		local didLabel = false
+	    for i=1,numCrit do
+		  local criteriaString, _, critCompleted, quantity, totalQuantity, _, _, _, quantityString = GetAchievementCriteriaInfo(id, i)
+		  quantityString = Overachiever.GetCriteriaProgressString(quantity, totalQuantity, quantityString)
+		  if (quantityString) then
+		    if (not didLabel) then
+			  if (tipset == 1) then  GameTooltip:AddLine(" ");  end
+			  tipset = 2 --tipset + 1
+			  if (not me) then  me = UnitName("player");  end
+			  GameTooltip:AddLine(L.PROGRESSIFOTHERCOMPLETED:format(me))
+			  GameTooltip:AddLine(" ")
+			  didLabel = true
+			end
+		    local r, g, b
+			if (critCompleted) then
+			  r, g, b = r_com, g_com, b_com -- critCompleted refers to this character's completion; if that should change, then may need to check if quantity < totalQuantity
+			else
+			  r, g, b = r_inc, g_inc, b_inc
+			end
+			if (numCrit == 1) then
+			  GameTooltip:AddLine(quantityString, r, g, b);
+		    else
+			  if (criteriaString:sub(-1) == "." and criteriaString:sub(-2) ~= "..")  then  criteriaString = criteriaString:sub(1, -2);  end -- Remove period at end of statement.
+			  GameTooltip:AddLine("|cffffffff"..criteriaString..":|r  " .. quantityString, r, g, b) --|cff7eff00 --|cffffff00
+			end
+		  end
+		end
+		if (didLabel) then
+		  GameTooltip:AddLine(" ")
+		end
+	  end
+    end
+
     if (Overachiever.RecentReminders[id] and Overachiever.RecentReminders_Criteria[id]) then
       if (tipset == 1) then  GameTooltip:AddLine(" ");  end
       tipset = 2 --tipset + 1
@@ -934,6 +1024,9 @@ do
     end
   end
 end
+
+Overachiever.AchBtnRedisplayTooltip = achBtnRedisplay
+
 
 --local function achbtnShieldOnEnter(self, ...)
 --  return achbtnOnEnter(self:GetParent(), ...);
@@ -1071,7 +1164,7 @@ function Overachiever.OnEvent(self, event, arg1, ...)
     end
 
 	if (toast) then
-	  C_Timer.After(8, function()
+	  C_Timer.After(8, function() -- 8 might not be a long enough delay. It might depend on loading time. Tried to find an event that told me when loading was REALLY done; couldn't find one. (Although it seems pretty reliable as is, for me at least, so long as the player is actually entering the game world and not just reloading the UI.)
 	    Overachiever.ToastFakeAchievement(toast, nil, false, msg)
 	  end)
 	end
@@ -1143,6 +1236,9 @@ function Overachiever.OnEvent(self, event, arg1, ...)
       Overachiever_CharVars.TrackedAch = nil
     end
    --]]
+  
+  --else
+    --chatprint(event)
   
   end
 end
@@ -1270,7 +1366,7 @@ end
 Overachiever.IsAchievementInUI = isAchievementInUI;
 Overachiever.OpenToAchievement = openToAchievement;
 Overachiever.GetAllAchievements = getAllAchievements;
-Overachiever.BuildCriteriaLookupTab = BuildCriteriaLookupTab;
+--Overachiever.BuildCriteriaLookupTab = BuildCriteriaLookupTab;
 Overachiever.AddAchListToTooltip = AddAchListToTooltip;
 Overachiever.IsGuildAchievement = isGuildAchievement
 Overachiever.isUIInGuildView = isUIInGuildView
@@ -1304,10 +1400,27 @@ local function slashHandler(msg, self, silent, func_nomsg)
   end
 end
 
-local function openOptions()
-  InterfaceOptionsFrame_OpenToCategory(OptionsPanel)
+local function openOptions(panel)
+  panel = panel or OptionsPanel
+  InterfaceOptionsFrame_OpenToCategory(panel)
   -- Working around a Blizzard bug by calling this twice:
-  InterfaceOptionsFrame_OpenToCategory(OptionsPanel)
+  InterfaceOptionsFrame_OpenToCategory(panel)
+
+  -- Expand the options category: (based in part on code in InterfaceOptionsFrame.lua function InterfaceOptionsFrame_OpenToCategory)
+	local elementToDisplay
+	for i, element in next, INTERFACEOPTIONS_ADDONCATEGORIES do
+		if ( element == panel ) then --or (panelName and element.name and element.name == panelName) ) then
+			elementToDisplay = element;
+			break;
+		end
+	end
+	local buttons = InterfaceOptionsFrameAddOns.buttons;
+	for i, button in next, buttons do
+		if ( button.element == elementToDisplay and button.element.collapsed ) then
+			OptionsListButtonToggle_OnClick(button.toggle);
+			break;
+		end
+	end
 end
 
 SLASH_Overachiever1 = "/oa";

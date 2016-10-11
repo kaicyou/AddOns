@@ -1,5 +1,5 @@
 
-Overachiever v0.94
+Overachiever v0.96
 ==============================
 
 Author: Tuhljin
@@ -106,6 +106,21 @@ Change log
 ==========
 
 The change log lists changes of particular note to users, not every change made.
+
+v0.96
+- New option added to prevent the reminder sound from being triggered by needing to kill a creature when you're already in combat with it. (Enabled by default.)
+- Suggestions Tab: Fix failure to default to suggestions for Ironforge when in that zone.
+- Fix addon compatibility issue resulting in an error on startup for some users.
+
+v0.95
+- New option: Add tooltip in achievement UI giving your character's progress on quantity-based achievements which were earned on your account but not with the current character.
+- Tabs module: The new Related tab has been implemented, allowing you to better see a specified base achievement's related achievements. Ctrl+shift+click on an achievement in the UI or on an achievement link to specify the achievement and open the tab. ("Related" achievements are those that are in the same series as the base, are one of the criteria of the base or of another in its series, or have as one of their own criteria either the base or an achievement in its series).
+- Suggestions Tab:
+-- New option: Display graphical notices next to the achievement frame indicating today's holiday events. Click a notice to get related suggestions.
+-- Added suggestions for these holidays/events: Brewfest, Darkmoon Faire, Hallow's End, Day of the Dead, Pilgrim's Bounty, Feast of Winter Veil (alias Winter Veil). Ties in to the notice feature mentioned above or you can see them manually by entering the holiday name into the Suggestions tab.
+- Watch Tab: Fixed an issue where, when naming a new list, hitting Enter ignored whether the name was valid.
+- Slash command /oa now opens to the main options panel. However, the sub-panels list is expanded so you can easily get to Reminder Tooltips options.
+- Fixed some visual elements of the options panel and Tabs module (missing background colors, etc.).
 
 v0.94
 - "Draenor Cuisine" (new): Added to the consumed item tracking system.

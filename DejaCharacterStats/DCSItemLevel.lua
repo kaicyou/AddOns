@@ -17,17 +17,24 @@ local function DCS_ItemLevelShow(self)
 		end
 
 		local avgItemLevel, avgItemLevelEquipped = GetAverageItemLevel();
-
 		if gdbprivate.gdb.gdbdefaults.dejacharacterstatsItemLevelChecked.ItemLevelDecimalsSetChecked == true then
-			-- print(avgItemLevel, avgItemLevelEquipped)
+			avgItemLevel = floor(100*avgItemLevel)/100;
+			avgItemLevelEquipped = floor(100*avgItemLevelEquipped)/100;
+			--avgItemLevel = 0; --test to see the formating of whole number
+			--avgItemLevel = 0.995; --with floor(100*x)/100 won't round up, without it will 
+			--avgItemLevelEquipped = 0; --test to see the formating of whole number
+			--print(avgItemLevel, avgItemLevelEquipped)
 			if ( avgItemLevelEquipped == avgItemLevel ) then
 				PaperDollFrame_SetLabelAndText(statFrame, STAT_AVERAGE_ITEM_LEVEL, format("%.2f", avgItemLevelEquipped), false, avgItemLevelEquipped);
 			else
 				PaperDollFrame_SetLabelAndText(statFrame, STAT_AVERAGE_ITEM_LEVEL, (format("%.2f", avgItemLevelEquipped).."/"..format("%.2f", avgItemLevel)), false, avgItemLevelEquipped);
 			end
-			statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, STAT_AVERAGE_ITEM_LEVEL).." "..avgItemLevel;
+			--statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, STAT_AVERAGE_ITEM_LEVEL).." "..avgItemLevel;
+			statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, STAT_AVERAGE_ITEM_LEVEL).." "..format("%.2f", avgItemLevel);
 			if ( avgItemLevelEquipped ~= avgItemLevel ) then
-				statFrame.tooltip = statFrame.tooltip .. "  " .. format(STAT_AVERAGE_ITEM_LEVEL_EQUIPPED, avgItemLevelEquipped);
+				local format_for_avg_equipped = gsub(STAT_AVERAGE_ITEM_LEVEL_EQUIPPED, "d%)", ".2f%)",  1)
+				statFrame.tooltip = statFrame.tooltip .. "  " .. format(format_for_avg_equipped, avgItemLevelEquipped);
+				--statFrame.tooltip = statFrame.tooltip .. "  " .. format(STAT_AVERAGE_ITEM_LEVEL_EQUIPPED, avgItemLevelEquipped);
 			end
 			statFrame.tooltip = statFrame.tooltip .. FONT_COLOR_CODE_CLOSE;
 			statFrame.tooltip2 = STAT_AVERAGE_ITEM_LEVEL_TOOLTIP;

@@ -1,9 +1,26 @@
 ------------------------------------------------------------------------
-r61 | andymon | 2016-09-16 21:05:30 +0000 (Fri, 16 Sep 2016) | 1 line
+r64 | andymon | 2016-10-11 19:09:12 +0000 (Tue, 11 Oct 2016) | 1 line
 Changed paths:
-   A /tags/v1.09-7.0.3 (from /trunk:60)
+   A /tags/v1.10-7.0.3 (from /trunk:63)
 
-Tagging as v1.09-7.0.3
+Tagging as v1.10-7.0.3
+------------------------------------------------------------------------
+r63 | andymon | 2016-10-11 19:01:26 +0000 (Tue, 11 Oct 2016) | 2 lines
+Changed paths:
+   M /trunk/AtlasMajorCities_db.lua
+   M /trunk/Locale/AtlasMajorCities_deDE.lua
+   M /trunk/Locale/AtlasMajorCities_enUS.lua
+   M /trunk/Locale/AtlasMajorCities_esES.lua
+   M /trunk/Locale/AtlasMajorCities_frFR.lua
+
+* Added Illidari to Orgrimmar
+* Localization for esES and frFR
+------------------------------------------------------------------------
+r62 | arith | 2016-09-28 15:39:29 +0000 (Wed, 28 Sep 2016) | 1 line
+Changed paths:
+   M /trunk/AtlasMajorCities.lua
+
+fixed the issue that worldmap was always forced to current-map when Atlas is opened.
 ------------------------------------------------------------------------
 r60 | andymon | 2016-09-16 20:57:17 +0000 (Fri, 16 Sep 2016) | 4 lines
 Changed paths:
@@ -35,26 +52,4 @@ Changed paths:
    M /trunk/Locale/AtlasMajorCities_ruRU.lua
 
 added keyword replacement to other languages
-------------------------------------------------------------------------
-r58 | arith | 2016-08-30 06:04:46 +0000 (Tue, 30 Aug 2016) | 1 line
-Changed paths:
-   M /trunk/Locale/AtlasMajorCities_deDE.lua
-   M /trunk/Locale/AtlasMajorCities_zhCN.lua
-   M /trunk/Locale/AtlasMajorCities_zhTW.lua
-
-set handle-unlocalized="comment"
-------------------------------------------------------------------------
-r57 | arith | 2016-08-30 05:50:39 +0000 (Tue, 30 Aug 2016) | 1 line
-Changed paths:
-   M /trunk/Locale/AtlasMajorCities_deDE.lua
-   M /trunk/Locale/AtlasMajorCities_zhCN.lua
-   M /trunk/Locale/AtlasMajorCities_zhTW.lua
-
-added keyword replacement
-------------------------------------------------------------------------
-r56 | arith | 2016-08-30 05:17:54 +0000 (Tue, 30 Aug 2016) | 1 line
-Changed paths:
-   M /trunk/Locale/AtlasMajorCities_enUS.lua
-
-convert to UTF8
 ------------------------------------------------------------------------

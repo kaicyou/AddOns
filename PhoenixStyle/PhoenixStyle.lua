@@ -11,7 +11,7 @@ pslocale()
 end
 
 
-	psversion=7.005
+	psversion=7.008
 
 
 	psverstiptext="alpha"
@@ -7219,6 +7219,40 @@ end
 
 function pssendchatmsg(chat,tbl,nick)
 
+
+
+-- FIX SPELL LINKS
+-- FIND: |cff71d5ff|Hspell:203097|h[Гниль]|h|r
+-- FIX:  |cff71d5ff|Hspell:203097:0|h[Гниль]|h|r
+
+
+
+
+-- first change text
+for x=1,#tbl do
+	-- FIND: |cff71d5ff|HQQQQQ:203097|h[Гниль]|h|r
+	tbl[x]=string.gsub(tbl[x],"|Hspell","|HQQQQQ")
+end
+--not check that text and fix it
+for x=1,#tbl do
+	if (string.find(tbl[x],"HQQQQQ")) then
+		while string.find(tbl[x], "HQQQQQ") do
+			local temporigtext=string.sub(tbl[x], string.find(tbl[x], "HQQQQQ"), string.find(tbl[x], "|h", string.find(tbl[x], "HQQQQQ"))+1)
+			local tempreplace=string.gsub(temporigtext,"HQQQQQ","Hspell")
+			-- check if there is not :0 already
+			if string.find(temporigtext,":0|h") == nil then
+				tempreplace=string.gsub(tempreplace,"|h",":0|h")
+			end
+			tbl[x]=string.gsub(tbl[x],temporigtext,tempreplace)
+		end
+	end
+end
+
+
+--
+
+
+
 if chat and (chat=="raid" or chat=="raid_warning" or chat=="party") and (select(3,GetInstanceInfo())==17 or select(3,GetInstanceInfo())==18 or IsLFGModeActive(LE_LFG_CATEGORY_LFD)) then
   chat="instance_chat"
 end
@@ -7249,11 +7283,11 @@ for ee=1,#tbl do
 
 	local texttoconvert=tbl[ee]
 
-  if string.len(texttoconvert)<=255 then
+  if string.len(texttoconvert)<=250 then
     txt1=texttoconvert
   else
     --берем 1 часть строчки и ищем в ней посл пробел либо запятую, но не раньше 120 знаков, иначе текущий вариант
-    local ph=string.sub(texttoconvert,1,255)
+    local ph=string.sub(texttoconvert,1,250)
     local lastfound1=120
     local maxtocheck=256
     --если мы находим разорванный спелл то ищем пробел ДО него
@@ -7298,8 +7332,8 @@ for ee=1,#tbl do
       txt2=string.sub(texttoconvert,lastfound1+1)
       txt1=string.sub(texttoconvert,1,lastfound1-1)
       --теперь делаем тоже со 2
-      if string.len(txt2)>255 then
-        local ph=string.sub(txt2,1,255)
+      if string.len(txt2)>250 then
+        local ph=string.sub(txt2,1,250)
         local lastfound1=120
         local maxtocheck=256
         --если мы находим разорванный спелл то ищем пробел ДО него
@@ -7342,16 +7376,16 @@ for ee=1,#tbl do
           txt3=string.sub(txt2,lastfound1+1)
           txt2=string.sub(txt2,1,lastfound1-1)
         else
-          txt3=string.sub(txt2,255)
-          txt2=string.sub(txt2,1,254)
+          txt3=string.sub(txt2,250)
+          txt2=string.sub(txt2,1,249)
         end
       end
     else
-      txt2=string.sub(texttoconvert,255)
-      txt1=string.sub(texttoconvert,1,254)
+      txt2=string.sub(texttoconvert,250)
+      txt1=string.sub(texttoconvert,1,249)
       --если 2 больше все равно
       if string.len(txt2)>255 then
-        local ph=string.sub(txt2,1,255)
+        local ph=string.sub(txt2,1,250)
         local lastfound1=120
         local maxtocheck=256
         --если мы находим разорванный спелл то ищем пробел ДО него
@@ -7394,8 +7428,8 @@ for ee=1,#tbl do
           txt3=string.sub(txt2,lastfound1+1)
           txt2=string.sub(txt2,1,lastfound1-1)
         else
-          txt3=string.sub(txt2,255)
-          txt2=string.sub(txt2,1,254)
+          txt3=string.sub(txt2,250)
+          txt2=string.sub(txt2,1,249)
         end
       end
     end

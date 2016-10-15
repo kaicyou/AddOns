@@ -325,13 +325,13 @@ Para mais informações em personalizar o Pawn, favor veja o arquivo de ajuda (R
 	},
 	UI = {
 		AboutHeader = "Sobre Pawn", -- Needs review
+		AboutMrRobot = "Default stat weights are provided by the generous Mr. Robot.  They’re a great starting point for characters with typical talents and artifact traits in typical fights.  You can get more accurate, customized stat weights for your character using the Ask Mr. Robot simulator at askmrrobot.com.", -- Requires localization
 		AboutReadme = "Novato no Pawn?  Veja a aba começando para uma introdução básica.", -- Needs review
 		AboutTab = "Sobre", -- Needs review
 		AboutTranslation = "Português traduzido por Maxmag-Goldrinn magnodias.maxmag@gmail.com", -- Needs review
 		AboutVersion = "Versão %s", -- Needs review
-		AboutWebsite = [=[Para outros mods por Vger, visite vgermods.com.
-
-Escalas/Ponderação do Wowhead usados com permissão—Favor direcionar feedback nos valores padrões do Wowhead.]=], -- Needs review
+		AboutWebsite = "Para outros mods por Vger, visite vgermods.com.",
+		AskMrRobotProvider = "Ask Mr. Robot scales", -- Requires localization
 		CompareClearItems = "Limpar", -- Needs review
 		CompareClearItemsTooltip = "Remover ambos itens da comparação.", -- Needs review
 		CompareColoredSockets = "Engastes coloridos", -- Needs review
@@ -523,6 +523,7 @@ Atalho: Shift+clique em uma escala]=], -- Needs review
 		SocketingAdvisorButtonTooltip = "Clique para abrir a aba de Gemas do Pawn, onde você pode encontrar mais informação sobre gemas que o Pawn recomenda.", -- Needs review
 		SocketingAdvisorHeader = "Pawn Assessor de engaste sugere:", -- Needs review
 		SocketingAdvisorIgnoreThisItem = "Don't bother adding gems to this low-level item.  But if you do, use these:", -- Requires localization
+		StarterProvider = "Starter scales", -- Requires localization
 		ValuesDoNotShowUpgradesFor1H = "Não mostrar upgrades para armas de uma mão", -- Needs review
 		ValuesDoNotShowUpgradesFor2H = "Não mostrar upgrades para armas de duas mãos", -- Needs review
 		ValuesDoNotShowUpgradesTooltip = "Habilite esta opção para esconder upgrades deste tipo de item.  Exemplo, mesmo se tankers paladinos podem usar armas de duas mãos, uma arma de duas mãos nunca é um upgrade para um set tanker de paladino, então Pawn não deve mostrar notificações de ugprade para ele.  Similarmente, paladinos retribuição podem usar armas de uma mão, mas nunca serão upgrades.", -- Needs review
@@ -541,10 +542,6 @@ Para mais informação nesta opção, veja o arquivo leia-me.]=], -- Needs revie
 		ValuesWelcome = "Você pode personalizar os valores que são designados para cada atributo nesta escala.  Para genreciar esta escala e adicionar novos, use a aba Escalas.", -- Needs review
 		ValuesWelcomeNoScales = "Você pode não ter uma escala selecionada.  Para começar, vá para a aba de Escala e comece uma nova escala ou cole uma da internet.", -- Needs review
 		ValuesWelcomeReadOnly = "A escala que você selecionou não pode ser mudada.  Se você quer mudar os valores, vá para a aba Escala e crie uma cópia desta escala ou comece uma nova.", -- Needs review
-	},
-	Wowhead = {
-		Provider = "Escalas do Wowhead", -- Needs review
-		ProviderStarter = "Starter scales", -- Requires localization
 	},
 }
 end

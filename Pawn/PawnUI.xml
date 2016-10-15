@@ -1542,7 +1542,15 @@
 						</FontString>
 						<FontString name="PawnUIFrame_WebsiteLabel" inherits="GameFontNormal" justifyH="LEFT" justifyV="TOP" text="PawnUIFrame_WebsiteLabel_Text">
 							<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="25" y="-160" /></Offset></Anchor></Anchors>
-							<Size><AbsDimension x="550" y="160" /></Size>
+							<Size><AbsDimension x="550" y="40" /></Size>
+						</FontString>
+						<Texture file="Interface\AddOns\Pawn\Textures\MrRobot">
+							<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="25" y="-210" /></Offset></Anchor></Anchors>
+							<Size><AbsDimension x="100" y="100" /></Size>
+						</Texture>
+						<FontString name="PawnUIFrame_MrRobotLabel" inherits="GameFontNormal" justifyH="LEFT" justifyV="TOP" text="PawnUIFrame_MrRobotLabel_Text">
+							<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="125" y="-210" /></Offset></Anchor></Anchors>
+							<Size><AbsDimension x="450" y="120" /></Size>
 						</FontString>
 
 					</Layer>

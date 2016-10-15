@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas-frFR.lua 97 2016-09-05 14:59:04Z arith $
+﻿-- $Id: Atlas-frFR.lua 108 2016-10-12 09:38:23Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -32,8 +32,8 @@ local L = AceLocale:NewLocale("Atlas", "frFR", false);
 -- Atlas French Localization
 -- Sur un travail de Wysiwyg, Khiria, Trasher entre 2007 et 2014
 -- Many thanks to all contributors!
--- $Date: 2016-09-05 14:59:04 +0000 (Mon, 05 Sep 2016) $
--- $Revision: 97 $
+-- $Date: 2016-10-12 09:38:23 +0000 (Wed, 12 Oct 2016) $
+-- $Revision: 108 $
 
 if ( GetLocale() == "frFR" ) then
 -- Define the leading strings to be ignored while sorting

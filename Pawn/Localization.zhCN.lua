@@ -324,15 +324,13 @@ PawnLocal =
 	},
 	UI = {
 		AboutHeader = "关于 Pawn",
+		AboutMrRobot = "Default stat weights are provided by the generous Mr. Robot.  They’re a great starting point for characters with typical talents and artifact traits in typical fights.  You can get more accurate, customized stat weights for your character using the Ask Mr. Robot simulator at askmrrobot.com.", -- Requires localization
 		AboutReadme = "新手？看看“准备开始”标签。",
 		AboutTab = "关于",
 		AboutTranslation = "国服简中汉化：五十五颗土豆#5630",
 		AboutVersion = "版本 %s",
-		AboutWebsite = [=[想要更多作者Vger的插件，请访问vgermods.com。
-
-默认属性权重的统计与设定来自于Wowhead。
-
-国服简中汉化：五十五颗土豆#5630   |   NGA论坛ID：bigbamboo  如果有汉化问题反馈请联系我]=],
+		AboutWebsite = "想要更多作者Vger的插件，请访问vgermods.com。", -- Needs review
+		AskMrRobotProvider = "Ask Mr. Robot scales", -- Requires localization
 		CompareClearItems = "清除",
 		CompareClearItemsTooltip = "移除两件对照的物品.",
 		CompareColoredSockets = "彩色插槽",
@@ -380,7 +378,7 @@ Pawn插件默认已经参考Wowhead给所有职业的专精建立了标准评分
  •  鼠标右键点击聊天窗口的装备链接，可以查看到该装备如何与你当前装备进行比较。
  •  复制一个标准属性权重项目，根据自己的需要去修改装备的收益评分已达到自己的特殊要求。
  •  试着查找互联网上其他人推荐的属性权重评分标准。
- •  查看自述文件，以了解更多关于Pawn的高级功能。]=],
+ •  查看自述文件，以了解更多关于Pawn的高级功能。]=], -- Needs review
 		InterfaceOptionsBody = "点击 Pawn 按钮到达此处。  你也可从插件页面打开 Pawn ，或者为它绑定一个按键。",
 		InterfaceOptionsWelcome = "Pawn 设置位于 Pawn 介面处.",
 		InventoryButtonTooltip = "点击显示Pawn介面.",
@@ -423,7 +421,7 @@ Pawn插件默认已经参考Wowhead给所有职业的专精建立了标准评分
 选中后，插件只会计算装备当前状态的属性评估。
 
 未选中的情况下，插件会计算本件装备最大提升后潜在的属性评估，即用勇气点数等升级满装备装等后的属性。此属性将显示包含在装备当前属性后的括号内。]=],
-		OptionsInventoryIcon = "显示物品图标",
+		OptionsInventoryIcon = "显示物品图标", -- Needs review
 		OptionsInventoryIconTooltip = "在你点击聊天窗口的物品显示其信息的时候，在信息旁边显示该物品的图标。",
 		OptionsItemIDs = "显示物品ID",
 		OptionsItemIDsTooltip = "显示物品的ID",
@@ -455,7 +453,7 @@ Pawn插件默认已经参考Wowhead给所有职业的专精建立了标准评分
 
 |cff8ec3e6奥法:  123.4
 火法:  156.7 |TInterface\AddOns\Pawn\Textures\UpgradeArrow:0|t |cff00ff00+10% 提升|r]=],
-		OptionsTooltipValuesOnly = "只显示比重数值,不显示提升%",
+		OptionsTooltipValuesOnly = "只显示属性权重评分数值，不显示提升%",
 		OptionsTooltipValuesOnlyTooltip = [=[只显示装备在你选择的属性权重下的分值，不显示属性的提升。例如：
 
 |cff8ec3e6奥法:  123.4
@@ -513,26 +511,23 @@ Pawn插件默认已经参考Wowhead给所有职业的专精建立了标准评分
 		SocketingAdvisorButtonTooltip = "点击显示Pawn珠宝界面, 你可看到 Pawn 为每种属性权重推荐的宝石.",
 		SocketingAdvisorHeader = "Pawn 插槽建议:",
 		SocketingAdvisorIgnoreThisItem = "不需要特地为这个低等装备去镶嵌宝石，但如果你真的要这么做的话，可参考以下建议：",
+		StarterProvider = "各职业标准属性权重：", -- Needs review
 		ValuesDoNotShowUpgradesFor1H = "请不要显示单手装备的提升",
 		ValuesDoNotShowUpgradesFor2H = "请不要显示双手装备的提升",
 		ValuesDoNotShowUpgradesTooltip = "启用该选项来隐藏此类型装备的提升。比如，虽然坦骑可以用双手武器，但是对坦骑设定来说一件双手武器从来都不是一个\"提升\"，因此Pawn将不会为它们显示提升信息。同样，惩戒骑可以使用单手武器，但它们从不是一个提升。",
 		ValuesFollowSpecialization = "只有显示50等以后我最佳护甲类型的提升",
 		ValuesFollowSpecializationTooltip = "启用该选项来隐藏50等以后非职业专精的护甲类型。比如，神圣圣骑士在50等学到了鎧甲专精, 当只装备鎧甲时增加智力5%。当此选项选择时Pawn将不会考虑布、皮及锁甲对50+神圣圣骑士的提升",
-		ValuesHeader = "调整 %s 分值",
+		ValuesHeader = "调整 %s 分值", -- Needs review
 		ValuesIgnoreStat = "带此属性的物品没有用处。",
 		ValuesIgnoreStatTooltip = "启用这个选项，将不能使用的物品设为无效。例如萨满不能装备板甲，板甲无论属性再好，对萨满来说，属性权重为0。",
 		ValuesNormalize = "校正数值 (比如 Wowhead)",
 		ValuesNormalizeTooltip = "启用此选项以特定计算后校正优化属性权重评分的数值，使其不至于过大。",
 		ValuesRemove = "移除",
 		ValuesRemoveTooltip = "从属性权重计算中移除此属性。",
-		ValuesTab = "数值",
-		ValuesWelcome = "你可以为该属性权重自定义每项属性的数值.  若要管理你的自定义项目和增加新的项目,请用属性权重页面.",
+		ValuesTab = "数值", -- Needs review
+		ValuesWelcome = "你可以为该属性权重自定义每项属性的数值.  若要管理你的自定义项目和增加新的项目,请用属性权重页面.", -- Needs review
 		ValuesWelcomeNoScales = "你还未选择属性权重. 若要启用,请去属性权重页面并启动一个新属性权重或者从网上粘贴一个.",
-		ValuesWelcomeReadOnly = "已被选择的该属性权重不能被更改.若你想改变这些数值,请去属性权重页面生成一份备份或者启用一个新的比重.",
-	},
-	Wowhead = {
-		Provider = "Wowhead 属性权重",
-		ProviderStarter = "各职业标准属性权重：",
+		ValuesWelcomeReadOnly = "已被选择的该属性权重不能被更改.若你想改变这些数值,请去属性权重页面生成一份备份或者启用一个新的属性权重.", -- Needs review
 	},
 }
 end

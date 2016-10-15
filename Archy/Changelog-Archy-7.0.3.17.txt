@@ -1,0 +1,15 @@
+tag 7.0.3.17
+d8ed45b2f68a001b180590e1a5dccb4f3b9cd72f
+James D. Callahan III <jcallahan@curse.com>
+2016-10-12 20:09:20 -0500
+
+
+
+--------------------
+
+Caleb Atherton:
+	- ... and added a race for it. Oops.
+	- Added the final Suramar digsite available this week.
+	- And added one more.
+	- Added UI coordinates for some of the Suramar digsites that are available this week.
+	- Added Timeworn Strand digsite UI coordinates, a special digsite that only appears for a quest.

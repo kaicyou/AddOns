@@ -290,6 +290,7 @@ PawnUIFrame_AboutVersionLabel_Text = L.AboutVersion
 PawnUIFrame_AboutTranslationLabel_Text = L.AboutTranslation -- Translators: credit yourself here... "Klingon translation by Stovokor"
 PawnUIFrame_ReadmeLabel_Text = L.AboutReadme
 PawnUIFrame_WebsiteLabel_Text = L.AboutWebsite
+PawnUIFrame_MrRobotLabel_Text = L.AboutMrRobot
 
 -- Configuration UI, Help tab
 PawnUIFrame_HelpTab_Text = L.HelpTab

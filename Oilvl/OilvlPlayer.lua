@@ -171,8 +171,8 @@ function OiLvlPlayer_Update(sw)
 						-- check item level
 						ItemLink = ItemLink:gsub("::",":0:"):gsub("::",":0:")
 						local itemID,enchant,_,_,_,_,_ = ItemLink:match("%a+:(%d+):(%d+):(%d+):(%d+):(%d+):(%d+)");
-						if OItemAnalysis_CheckILVLGear(ItemLink) ~= 0 then
-							totalilvl[Value], xupgrade[Value] = OItemAnalysis_CheckILVLGear(ItemLink)
+						if OItemAnalysis_CheckILVLGear("player",Value) ~= 0 then
+							totalilvl[Value], xupgrade[Value] = OItemAnalysis_CheckILVLGear("player",Value)
 							xname[Value] = itemID
 							if Value == 17 and OTCheckartifactwep(tonumber(itemID)) then
 								if totalilvl[Value] < totalilvl[16] then
@@ -198,17 +198,19 @@ function OiLvlPlayer_Update(sw)
 							ailvl = ailvl + (totalilvl[Value] or 0)
 							
 							-- check gem and enchant
-							GemEnchant:SetOwner(UIParent, 'ANCHOR_NONE');
-							GemEnchant:ClearLines();
-							GemEnchant:SetHyperlink(ItemLink);
-							for m = 1, GemEnchant:NumLines() do
-								local enchant = _G["oilvlgetooltipTextLeft"..m]:GetText():match(ENCHANTED_TOOLTIP_LINE:gsub("%%s", "(.+)"))
-								if enchant then 
-									_G[Key.."ge"]:SetText("|cff00ff00"..enchant);
+							if Value < 16 then
+								GemEnchant:SetOwner(UIParent, 'ANCHOR_NONE');
+								GemEnchant:ClearLines();
+								GemEnchant:SetHyperlink(ItemLink);
+								for m = 1, GemEnchant:NumLines() do
+									local enchant = _G["oilvlgetooltipTextLeft"..m]:GetText():match(ENCHANTED_TOOLTIP_LINE:gsub("%%s", "(.+)"))
+									if enchant then 
+										_G[Key.."ge"]:SetText("|cff00ff00"..enchant);
+									end
 								end
 							end
 							-- check low enchant
-							if (Value == 2 or Value == 15 or Value == 11 or Value == 12 or Value == 16) and enchant ~= "0" and oicb8 and oicb8:GetChecked() then
+							if (Value == 2 or Value == 15 or Value == 11 or Value == 12) and enchant ~= "0" and oicb8 and oicb8:GetChecked() then
 								local function CheckLowEnchant(eID)
 									for mm = 1, #enchantID do 
 										if tonumber(eID) == enchantID[mm] then return false end 
@@ -224,24 +226,11 @@ function OiLvlPlayer_Update(sw)
 								_G[Key.."ge"]:SetText(("|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:43:53:34:61|t" or "")..L["Not enchanted"]);
 							end
 							-- check no gem
-							if OItemAnalysis_CountEmptySockets(ItemLink) > 0 and _G[Key.."ge"] then
+							if OItemAnalysis_CountEmptySockets("player", Value) > 0 and _G[Key.."ge"] then
 								_G[Key.."ge"]:SetText((_G[Key.."ge"]:GetText() or "").."\n"..("|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:107:117:34:61|t" or "")..L["Not socketed"]);
 							end
-							-- check gem
-							local _, gemlink = GetItemGem(ItemLink,1)
-							if gemlink then
-								GemEnchant2:SetOwner(UIParent, 'ANCHOR_NONE');
-								GemEnchant2:ClearLines();
-								GemEnchant2:SetHyperlink(gemlink);
-								for i = 2, GemEnchant2:NumLines() do
-									if _G["oilvlgetooltip2TextLeft"..i]:GetText():find("+") then
-										_G[Key.."ge"]:SetText((_G[Key.."ge"]:GetText() or "").."\n|cffffffff".._G["oilvlgetooltip2TextLeft"..i]:GetText());
-										break
-									end
-								end
-							end
 							-- check low gem
-							if gemlink and OItemAnalysisLowGem(ItemLink) > 0 and _G[Key.."ge"]:GetText() and oicb8 and oicb8:GetChecked() then
+							if gemlink and OItemAnalysisLowGem("player", Value) > 0 and _G[Key.."ge"]:GetText() and oicb8 and oicb8:GetChecked() then
 								_G[Key.."ge"]:SetText((_G[Key.."ge"]:GetText() or "")..("(|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:107:117:34:61|t" or "")..L["Low level socketed"]..")");
 							end
 							if cfg.oilvlge then _G[Key.."ge"]:Show() end
@@ -424,8 +413,8 @@ function OiLvLInspect_Update()
 					-- check item level
 					ItemLink = ItemLink:gsub("::",":0:"):gsub("::",":0:")
 					local itemID,enchant,_,_,_,_,_ = ItemLink:match("%a+:(%d+):(%d+):(%d+):(%d+):(%d+):(%d+)");
-					if OItemAnalysis_CheckILVLGear(ItemLink) ~= 0 then
-						totalilvl[Value], xupgrade[Value] = OItemAnalysis_CheckILVLGear(ItemLink)
+					if OItemAnalysis_CheckILVLGear("target",Value) ~= 0 then
+						totalilvl[Value], xupgrade[Value] = OItemAnalysis_CheckILVLGear("target",Value)
 						xname[Value] = itemID
 						if Value == 17 and OTCheckartifactwep(tonumber(itemID)) then
 							if totalilvl[Value] < totalilvl[16] then
@@ -461,7 +450,7 @@ function OiLvLInspect_Update()
 							end
 						end
 						-- check low enchant
-						if (Value == 2 or Value == 15 or Value == 11 or Value == 12 or Value == 16) and enchant ~= "0" and oicb8 and oicb8:GetChecked() then
+						if (Value == 2 or Value == 15 or Value == 11 or Value == 12) and enchant ~= "0" and oicb8 and oicb8:GetChecked() then
 							local function CheckLowEnchant(eID)
 								for mm = 1, #enchantID do 
 									if tonumber(eID) == enchantID[mm] then return false end 
@@ -477,24 +466,11 @@ function OiLvLInspect_Update()
 							_G[Key.."ge2"]:SetText(("|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:43:53:34:61|t" or "")..L["Not enchanted"]);
 						end
 						-- check no gem
-						if OItemAnalysis_CountEmptySockets(ItemLink) > 0 and _G[Key.."ge2"] then
+						if OItemAnalysis_CountEmptySockets("target",Value) > 0 and _G[Key.."ge2"] then
 							_G[Key.."ge2"]:SetText((_G[Key.."ge2"]:GetText() or "").."\n"..("|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:107:117:34:61|t" or "")..L["Not socketed"]);
 						end
-						-- check gem
-						local _, gemlink = GetItemGem(ItemLink,1)
-						if gemlink then
-							GemEnchant2:SetOwner(UIParent, 'ANCHOR_NONE');
-							GemEnchant2:ClearLines();
-							GemEnchant2:SetHyperlink(gemlink);
-							for i = 2, GemEnchant2:NumLines() do
-								if _G["oilvlgetooltip2TextLeft"..i]:GetText():find("+") then
-									_G[Key.."ge2"]:SetText((_G[Key.."ge2"]:GetText() or "").."\n|cffffffff".._G["oilvlgetooltip2TextLeft"..i]:GetText());
-									break
-								end
-							end
-						end
 						-- check low gem
-						if gemlink and OItemAnalysisLowGem(ItemLink) > 0 and _G[Key.."ge2"]:GetText() and oicb8 and oicb8:GetChecked() then
+						if gemlink and OItemAnalysisLowGem("target",Value) > 0 and _G[Key.."ge2"]:GetText() and oicb8 and oicb8:GetChecked() then
 							_G[Key.."ge2"]:SetText((_G[Key.."ge2"]:GetText() or "")..("(|TInterface\\MINIMAP\\TRACKING\\OBJECTICONS:0:0:0:0:256:64:107:117:34:61|t" or "")..L["Low level socketed"]..")");
 						end	
 						if cfg.oilvlge then _G[Key.."ge2"]:Show() end
@@ -625,6 +601,16 @@ OiLvlPlayer.frame:SetScript("OnEvent", function(self, event, ...)
 	if event == "INSPECT_READY"  and InspectFrame then
 		if not OiLvLInspect_Updatehooksw then 
 			InspectFrame:HookScript("OnShow", OiLvLInspect_Update)
+			InspectFrame:HookScript("OnHide", 
+				function() 
+					for i = 1, 17 do 
+						local Slot = getglobal(InspectItems[i].."Stock");
+						if Slot and i ~= 4 then
+							Slot:Hide();
+						end
+					end	
+				end
+			)
 			OiLvLInspect_Updatehooksw = true
 		end
 		OiLvlPlayer.frame:UnregisterEvent("INSPECT_READY");

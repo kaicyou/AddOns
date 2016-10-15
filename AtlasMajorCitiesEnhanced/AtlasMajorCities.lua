@@ -246,6 +246,7 @@ end
 
 -- get the actual map name
 local function FAMC_GetActualMapName()
+	local oMapID = GetCurrentMapAreaID();
 	SetMapToCurrentZone();
 
 	local MapName, _, _, isMicro, MicroMap = GetMapInfo();
@@ -262,6 +263,9 @@ local function FAMC_GetActualMapName()
 	if ( AMC_Pcity and not AMC_Pcity[MapName] and not AMC_DBcity[MapName] ) then MapName = nil;
 	elseif ( not AMC_Pcity and not AMC_DBcity[MapName] ) then MapName = nil; end
 
+	-- arith: fixed the issue that worldmap was always forced to current-map when Atlas is opened.
+	if (oMapID) then SetMapByID(oMapID); end
+	
 	return MapName;
 end
 

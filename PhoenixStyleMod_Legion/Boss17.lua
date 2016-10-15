@@ -77,7 +77,7 @@ if arg2=="SPELL_DAMAGE" and spellid==206656 and name2 then
     if pswipetrue and pswasonbossLegion17~=2 then
       psiccwipereport_legion1("wipe", "try")
     end
-    addtotwotables1(name1)
+    addtotwotables1(name2)
     vezaxsort1()
     local tt2=", "..psdamageceil(arg12)
       if arg13>=0 then

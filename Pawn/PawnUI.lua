@@ -1287,7 +1287,7 @@ function PawnUI_CompareItems()
 			PawnUI_AddComparisonHeaderLine(LastFoundHeader)
 			LastFoundHeader = nil
 		end
-		PawnUI_AddComparisonStatLineNumbers(PawnLocal.ItemLevelTooltipLine, Level1, Level2)
+		PawnUI_AddComparisonStatLineStrings(PawnLocal.ItemLevelTooltipLine, Level1, Level2)
 	end
 	
 	-- Add asterisk indicator.

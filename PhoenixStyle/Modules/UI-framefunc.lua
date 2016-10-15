@@ -3628,8 +3628,8 @@ if (psautoinvsave[1]==1 or (pstempinv and pstempinv>GetTime())) and arg1 and arg
           local a1,a2,a3,a4,a5=BNGetFriendInfo(i)
           if a1 and a1==bnet then
             friend=1
-            for j=1,BNGetNumFriendToons(i) do
-              local b1,b2,b3,b4=BNGetFriendToonInfo(i,j)
+            for j=1,BNGetNumFriendGameAccounts(i) do
+              local b1,b2,b3,b4=BNGetFriendGameAccountInfo(i,j)
               if b4 and b2 and b2==a5 then
                 temptoinvite=a5.."-"..b4
               elseif temptoinvite==nil then

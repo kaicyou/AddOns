@@ -7,7 +7,7 @@
 -- Main non-UI code
 ------------------------------------------------------------
 
-PawnVersion = 2.0013
+PawnVersion = 2.0100
 
 -- Pawn requires this version of VgerCore:
 local PawnVgerCoreVersionRequired = 1.09
@@ -55,7 +55,7 @@ local PawnScaleProvidersInitialized = nil
 -- "Constants"
 local PawnCurrentScaleVersion = 1
 
-local PawnTooltipAnnotation = " " .. PawnDiamondTexture -- diamond texture defined in Localization.lua
+local PawnTooltipAnnotation = " " .. PawnDiamondTexture -- diamond texture defined in Core.lua
 
 local PawnScaleColorDarkFactor = 0.75 -- the unenchanted color is 75% of the enchanted color
 
@@ -520,11 +520,11 @@ function PawnInitializeOptions()
 	PawnCommon.ShowBoth1HAnd2HUpgrades = nil
 	PawnCommon.ShowSpace = nil
 
-	-- The current version of Pawn doesn't use placeholder scales anymore, so remove any stale data that
+	-- Remove any stale scales from previous versions that might have accumulated.
 	-- the user might have accumulated.
 	local ScalesToDelete = { }
 	for ScaleName, Scale in pairs(PawnCommon.Scales) do
-		if Scale.Provider == "PawnPlaceholder" then tinsert(ScalesToDelete, ScaleName) end
+		if Scale.Provider == "PawnPlaceholder" or Scale.Provider == "Starter" or Scale.Provider == "Wowhead" then tinsert(ScalesToDelete, ScaleName) end
 	end
 	for _, ScaleName in pairs(ScalesToDelete) do
 		PawnCommon.Scales[ScaleName] = nil
@@ -551,14 +551,12 @@ function PawnInitializeOptions()
 		-- The baleful/valor upgrade option returned temporarily in 2.0.4, and it's on by default. 
 		PawnCommon.IgnoreItemUpgrades = true
 	end
-	if (not PawnCommon.LastVersion) or (PawnCommon.LastVersion < 2.0011) then
-		-- Gem values changed in 2.0.11 due to a hotfix, so invalidate best item data.
+	if (not PawnCommon.LastVersion) or (PawnCommon.LastVersion < 2.01) then
+		-- The default scales changed in 2.1 when we switched from Wowhead to Ask Mr. Robot, so reset all upgrade data.
 		PawnInvalidateBestItems()
 	end
 	PawnCommon.LastVersion = PawnVersion
 	PawnOptions.LastVersion = PawnVersion
-
-	-- TODO: *** Should remove any scales from the "Starter" provider that are still in peoples' SavedVariables...
 
 	-- Just to fix up people who used the beta...  (Can remove this when the Legion beta realms close down)
 	if PawnOptions.UpgradeTracking == nil then PawnOptions.UpgradeTracking = false end
@@ -1912,6 +1910,9 @@ end
 -- of each line specified by index in the list Lines.
 -- Returns true if any lines were annotated.
 function PawnAnnotateTooltipLines(TooltipName, Lines)
+	-- Temporarily disabling this feature to see if anyone misses it.
+	if not PawnCommon.ShowAsterisks then return end
+
 	if not Lines then return false end
 	local Annotated = false
 	local Tooltip = _G[TooltipName]

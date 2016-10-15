@@ -7,7 +7,7 @@
 ## Version: v1.09
 ## RequiredDeps: Atlas
 ## SavedVariables: AtlasMajorCities_DB, AtlasMajorCities_Continent, AtlasMajorCities_City, AtlasMajorCities_Zone, AtlasMajorCities_Shop, AtlasMajorCities_Title, AtlasMajorCities_NPC, AtlasMajorCities_Comment, AtlasMajorCities_Adds, AtlasMajorCities_Input
-## X-Curse-Packaged-Version: v1.09-7.0.3
+## X-Curse-Packaged-Version: v1.10-7.0.3
 ## X-Curse-Project-Name: AtlasMajorCities Enhanced
 ## X-Curse-Project-ID: atlasmajorcities-enhanced
 ## X-Curse-Repository-ID: wow/atlasmajorcities-enhanced/mainline

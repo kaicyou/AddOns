@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 51 2016-10-03 16:24:15Z arith $
+$Id: ChangeLog.txt 53 2016-10-17 06:42:14Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,12 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.34.05 (Oct. 17, 2016)
+------------------------
+- Added Trueshot Lodge's coordinate
+- Translation update:
+  - Traditional Chinese
 
 v1.34.04 (Oct. 03, 2016)
 ------------------------

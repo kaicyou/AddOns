@@ -15,6 +15,8 @@ local function emptyfunc() end
 local ACHIEVEMENTUI_FONTHEIGHT
 local In_Guild_View   -- imitation of Blizzard's local IN_GUILD_VIEW
 
+local GetPreviousAchievement = GetPreviousAchievement
+
 
 local isAchievementInUI_cache = {}
 local function isAchievementInUI(id, checkNext, useCache)
@@ -861,7 +863,7 @@ local function LeftFrame_OnHide(self)
   end
 end
 
-local LeftFrame_OnEvent_CRITERIA_UPDATE, LeftFrame_OnUpdate
+local LeftFrame_OnEvent, LeftFrame_OnUpdate
 local recolor_AchievementObjectives_DisplayCriteria
 do
   local time, last, isSet = time, 0
@@ -895,7 +897,7 @@ do
     self:SetScript("OnUpdate", nil)
     for k,tab in ipairs(tabs) do
       local frame = tab.frame
-      if ( frame.selection and tabselected == frame ) then
+      if ( tabselected == frame and frame.selection ) then
 -- Based on part of AchievementFrameAchievements_OnEvent.
         local id = AchievementFrameAchievementsObjectives.id;
         local button = AchievementFrameAchievementsObjectives:GetParent();
@@ -910,10 +912,21 @@ do
     end
   end
 
-  function LeftFrame_OnEvent_CRITERIA_UPDATE(self)
-    if (isSet) then  return;  end
-    self:SetScript("OnUpdate", LeftFrame_OnUpdate)
-    isSet = true
+  function LeftFrame_OnEvent(self, event, arg1, ...)
+    if (event == "CRITERIA_UPDATE") then
+      if (isSet) then  return;  end
+      self:SetScript("OnUpdate", LeftFrame_OnUpdate)
+      isSet = true
+	elseif (event == "ACHIEVEMENT_EARNED") then
+      isAchievementInUI_cache[arg1] = nil
+	  local failsafe = 0
+      local nextID = GetNextAchievement(arg1)
+      while (nextID and failsafe < 100) do
+        isAchievementInUI_cache[nextID] = nil
+        nextID = GetNextAchievement(nextID)
+		failsafe = failsafe + 1
+      end
+    end
   end
 
 end
@@ -954,7 +967,8 @@ do
     if (arg1 == "Overachiever_Tabs") then
       self:UnregisterEvent("ADDON_LOADED")
       self:RegisterEvent("CRITERIA_UPDATE")
-      self:SetScript("OnEvent", LeftFrame_OnEvent_CRITERIA_UPDATE)
+	  self:RegisterEvent("ACHIEVEMENT_EARNED")
+      self:SetScript("OnEvent", LeftFrame_OnEvent)
       varsLoaded = true
 
       Overachiever_Tabs_Settings = Overachiever_Tabs_Settings or {}

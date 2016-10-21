@@ -395,6 +395,12 @@ Pawn viene con escalas pre-fabricadas para cada clase y especialización.  Tambi
 		OptionsAdvisorHeader = "Opciones del consejero",
 		OptionsAlignRight = "Alinea los valores al lado derecho del tooltip",
 		OptionsAlignRightTooltip = "Activa ésta opción para alinear tus valores de Pawn y la información de mejora al lado derecho del tooltip en vez de al izquierdo.",
+		OptionsBagUpgradeAdvisor = "Show bag upgrade advisor",
+		OptionsBagUpgradeAdvisorTooltip = [=[Enable this option to have Pawn take over the in-bag upgrade arrows.
+
+If checked, Pawn will find upgrades in your bags and mark items that are an upgrade for any of your active scales with green arrows. 
+
+If unchecked, WoW will mark items with a higher item level than what you're currently wearing, and Pawn will not interfere with the built-in feature.]=],
 		OptionsBlankLine = "Añade una línea en blanco antes de los valores",
 		OptionsBlankLineTooltip = "Mantén tus tooltips de objetos super ordenados activando ésta opción, que añade una línea en blanco antes de los valores de Pawn.",
 		OptionsButtonHidden = "Esconder",

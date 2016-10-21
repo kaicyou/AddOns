@@ -22,6 +22,7 @@ Overachiever.DefaultSettings = {
   WellReadTip_read = true;
   AnglerTip_fished = true;
   SchoolTip_fished = true;
+  DraenorAnglerTip_fished = true;
   Item_consumed = true;
   Item_consumed_whencomplete = false;
   Item_satisfied = true;
@@ -112,7 +113,10 @@ function Overachiever.CreateOptions(THIS_TITLE, BuildCriteriaLookupTab_check, Au
 	{ variable = "WellReadTip_read", text = L.OPT_WELLREADTIPS, tooltip = L.OPT_WELLREADTIPS_TIP, xOffset = 28 },
 
 	{ type = "Oa_AchLabel", text = L.OPT_LABEL_ACHFOUR, topBuffer = 4, id1 = IDs.Scavenger, id2 = IDs.OutlandAngler, id3 = IDs.NorthrendAngler, id4 = IDs.PandarianAngler, xOffset = 0 },
-	{ variable = "AnglerTip_fished", text = L.OPT_ANGLERTIPS, tooltip = L.OPT_ANGLERTIPS_TIP, xOffset = 28 },
+	{ variable = "AnglerTip_fished", text = L.OPT_ANGLERTIPS, tooltip = L.OPT_ANGLERTIPS_TIP_ALWAYS, xOffset = 28 },
+
+	{ type = "Oa_AchLabel", text = L.OPT_LABEL_DRAENORANGLER, topBuffer = 4, id1 = IDs.DraenorAngler, xOffset = 0 },
+	{ variable = "DraenorAnglerTip_fished", text = L.OPT_ANGLERTIPS, tooltip = L.OPT_ANGLERTIPS_TIP_ALWAYS, xOffset = 28 },
 
 	{ type = "Oa_AchLabel", text = L.OPT_LABEL_ACHTWO, topBuffer = 4, id1 = IDs.Limnologist, id2 = IDs.Oceanographer, xOffset = 0 },
 	{ variable = "SchoolTip_fished", text = L.OPT_ANGLERTIPS, tooltip = L.OPT_ANGLERTIPS_TIP, xOffset = 28 },

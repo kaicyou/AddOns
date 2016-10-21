@@ -130,6 +130,12 @@ function C:GMIconUpdate()
 end
 
 function C:Combat(event)
+	--To get rid of "script ran too long" in links
+	if event == "PLAYER_REGEN_DISABLED" then
+		C:Unhook("SetItemRef")
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		C:RawHook("SetItemRef", true)
+	end
 	if C.db.combathide == "NONE" or not C.db.combathide then return end
 	if event == "PLAYER_REGEN_DISABLED" then
 		if C.db.combathide == "BOTH" or C.db.combathide == "RIGHT" then
@@ -299,7 +305,8 @@ function C:Initialize()
 
 	--Launching stuff so hooks can work
 	LO:ToggleChatPanels()
-	CH:SetupChat()
+	local setupDelay = E.global.sle.advanced.chat.setupDelay
+	E:Delay(setupDelay, function() CH:SetupChat() end) --This seems to actually fix some issues with detecting right panel chat frame
 	--Justify
 	for i = 1, NUM_CHAT_WINDOWS do
 		C:JustifyChat(i)

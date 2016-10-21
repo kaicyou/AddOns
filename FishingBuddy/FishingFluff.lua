@@ -144,20 +144,25 @@ local unTrack = nil;
 local resetPVP = nil;
 local resetPet = nil;
 
-local LastDraenorBait = nil;
-local DraenorBait = 
+local LastSpecialBait = nil;
+local SpecialBait = 
 {
-	110274,		-- Jawless Skulker Bait
-	110289,		-- Fat Sleeper Bait
-	110290,		-- Blind Lake Sturgeon Bait
-	110291,		-- Fire Ammonite Bait
-	110292,		-- Sea Scorpion Bait
-	110293,		-- Abyssal Gulper Eel Bait
-	110294,		-- Blackwater Whiptail Bait
+	[7] = {
+		110274,		-- Jawless Skulker Bait
+		110289,		-- Fat Sleeper Bait
+		110290,		-- Blind Lake Sturgeon Bait
+		110291,		-- Fire Ammonite Bait
+		110292,		-- Sea Scorpion Bait
+		110293,		-- Abyssal Gulper Eel Bait
+		110294,		-- Blackwater Whiptail Bait
+	},
+	[8] = {
+		139175,		-- Arcane lure
+	}
 };
 
 FluffEvents[FBConstants.FISHING_ENABLED_EVT] = function()
-	LastDraenorBait = nil;
+	LastSpecialBait = nil;
 	if ( FishingBuddy.GetSettingBool("FishingFluff")) then
 		if ( GetSettingBool("FindFish") ) then
 			local findid = FL:GetFindFishID();
@@ -238,7 +243,7 @@ FluffEvents[FBConstants.FISHING_DISABLED_EVT] = function(started, logout)
 	unTrack = nil;
 	resetPet = nil;
 	resetPVP = nil;
-	LastDraenorBait = nil;
+	LastSpecialBait = nil;
 end
 
 FluffEvents[FBConstants.LOGIN_EVT] = function()
@@ -427,8 +432,8 @@ end
 
 -- Don't cast the angler's raft if we're doing Scavenger Hunt or on Inkgill Mere
 local GSB = FishingBuddy.GetSettingBool;
-local function RaftBergUsable()
-	return ( GSB("UseRaft") and not IsMounted() and 
+local function RaftBergUsable(info)
+	return ( GSB(info.setting) and not IsMounted() and 
 		not FL:HasBuff(GetSpellInfo(116032)) and
 		not FL:HasBuff(GetSpellInfo(119700)));
 end
@@ -440,6 +445,9 @@ local function RaftBergCheck(info, buff, need, itemid)
 	local _, _, _, _, _, _, et, _, _, _, _ = UnitBuff("player", buff);
 	et = (et or 0) - GetTime();
 	if (need or et <= RAFT_RESET_TIME) then
+		if (info.toy) then
+			_, itemid = C_ToyBox.GetToyInfo(itemid)
+		end
 		return true, itemid;
 	end
 	--return nil;
@@ -699,44 +707,47 @@ local seascorpion = {
 	},
 };
 
-local function CurrentDraenorBait()
-	for _,id in ipairs(DraenorBait) do
-		local bait = FishingItems[id];
-		if (bait and FL:HasBuff(GetSpellInfo(bait.spell))) then
-			return id;
+local function CurrentSpecialBait()
+	local continent = GetCurrentMapContinent();
+	local baits = SpecialBait[continent];
+	if (baits) then
+		for _,id in ipairs(baits) do
+			local bait = FishingItems[id];
+			if (bait and FL:HasBuff(GetSpellInfo(bait.spell))) then
+				return id;
+			end
 		end
 	end
 	-- return nil
 end
 
-local function CheckDraenorBait(info, buff, need)
+local function CheckSpecialBait(info, buff, need)
 	local continent = GetCurrentMapContinent();
-	local zone, subzone = FL:GetBaseZoneInfo();
-	if ( continent == 7 ) then
-		if ( GSB("DraenorBaitMaintainOnly") and LastDraenorBait ) then
-			return true, LastDraenorBait;
+	if (SpecialBait[continent]) then
+		if ( GSB("DraenorBaitMaintainOnly") and LastSpecialBait ) then
+			return true, LastSpecialBait;
 		elseif (not FL:HasBuff(GetSpellInfo(info.spell))) then
 			return true, info.id;
 		end
 	end
 end
 
-local function VerifyrDraenorBait(info, checkscorpion)
+local function VerifySpecialBait(info, checkscorpion)
 	if (not IsQuestFishing()) then
 		if (GSB("EasyLures") and GSB("DraenorBait")) then
 			local continent = GetCurrentMapContinent();
-			local zone, subzone = FL:GetBaseZoneInfo();
-			if (continent == 7 ) then
-				if ( GSB("DraenorBaitMaintainOnly") ) then
-					local baitid = CurrentDraenorBait();
-					if ( not baitid and LastDraenorBait ) then
-						if (GetItemCount(LastDraenorBait) > 0) then
-							return true;
-						end
-					else
-						LastDraenorBait = baitid;
+			if ( GSB("DraenorBaitMaintainOnly") ) then
+				local baitid = CurrentSpecialBait();
+				if ( not baitid and LastSpecialBait ) then
+					if (GetItemCount(LastSpecialBait) > 0) then
+						return true;
 					end
-				elseif ( checkscorpion ) then
+				else
+					LastSpecialBait = baitid;
+				end
+			elseif (continent == 7 ) then
+				local zone, subzone = FL:GetBaseZoneInfo();
+				if ( checkscorpion ) then
 					return (seascorpion[zone] and seascorpion[zone][subzone]);
 				elseif ( zone == info.zone) then
 					return not seascorpion[zone][subzone];
@@ -748,12 +759,12 @@ local function VerifyrDraenorBait(info, checkscorpion)
 end
 
 local function UseSeaScorpionBait(info)
-	return VerifyrDraenorBait(info, true);
+	return VerifySpecialBait(info, true);
 end
 
 
-local function UsableDraenorBait(info)
-	return VerifyrDraenorBait(info, false);
+local function UsableSpecialBait(info)
+	return VerifySpecialBait(info, false);
 end
 
 -- Blind Lake Sturgeon, 158035
@@ -761,50 +772,50 @@ FishingItems[110290] = {
 	["enUS"] = "Blind Lake Sturgeon Bait",
 	spell = 158035,
 	zone = "Shadowmoon Valley (Draenor)",
-	usable = UsableDraenorBait,
-	check = CheckDraenorBait,
+	usable = UsableSpecialBait,
+	check = CheckSpecialBait,
 };
 FishingItems[110293] = {
 	["enUS"] = "Abyssal Gulper Eel Bait",
 	spell = 158038,
 	zone = "Spires of Arak",
-	usable = UsableDraenorBait,
-	check = CheckDraenorBait,
+	usable = UsableSpecialBait,
+	check = CheckSpecialBait,
 };
 FishingItems[110294] = {
 	["enUS"] = "Blackwater Whiptail Bait",
 	spell = 158039,
 	zone = "Talador",
-	usable = UsableDraenorBait,
-	check = CheckDraenorBait,
+	usable = UsableSpecialBait,
+	check = CheckSpecialBait,
 };
 FishingItems[110289] = {
 	["enUS"] = "Fat Sleeper Bait",
 	spell = 158034,
 	zone = "Nagrand (Draenor)",
-	usable = UsableDraenorBait,
-	check = CheckDraenorBait,
+	usable = UsableSpecialBait,
+	check = CheckSpecialBait,
 };
 FishingItems[110291] = {
 	["enUS"] = "Fire Ammonite Bait",
 	spell = 158036,
 	zone = "Frostfire Ridge",
-	usable = UsableDraenorBait,
-	check = CheckDraenorBait,
+	usable = UsableSpecialBait,
+	check = CheckSpecialBait,
 };
 FishingItems[110274] = {
 	["enUS"] = "Jawless Skulker Bait",
 	spell = 158031,
 	zone = "Gorgrond",
-	usable = UsableDraenorBait,
-	check = CheckDraenorBait,
+	usable = UsableSpecialBait,
+	check = CheckSpecialBait,
 };
 FishingItems[128229] = {
 	["enUS"] = "Felmouth Frenzy Bait",
 	spell = 188904,
 	zone = "Tanaan Jungle",
-	usable = UsableDraenorBait,
-	check = CheckDraenorBait,
+	usable = UsableSpecialBait,
+	check = CheckSpecialBait,
 };
 
 FishingItems[110292] = {
@@ -812,7 +823,14 @@ FishingItems[110292] = {
 	spell = 158037,
 	zone = "Non-inland water",
 	usable = UseSeaScorpionBait,
-	check = CheckDraenorBait,
+	check = CheckSpecialBait,
+};
+
+FishingItems[139175] = {
+	["enUS"] = "Arcane Lure",
+	spell = 218861,
+	usable = UsableSpecialBait,
+	check = CheckSpecialBait,
 };
 
 FishingBuddy.FishingItems = FishingItems;
@@ -865,13 +883,14 @@ local RaftOptions = {
 	["tooltip"] = FBConstants.CONFIG_FISHINGRAFT_INFO,
 	itemid = 85500;
 	spell = 124036,
+	toy = 1,
 	always = 1, -- this is now a toy!
 	setting = "UseAnglersRaft",
 	usable = RaftBergUsable,
 	check = RaftBergCheck,
 	["default"] = true,
 	["option"] = {
-		["setting"] = "RaftMaintainOnly",
+		["setting"] = "BergMaintainOnly",
 		["text"] = FBConstants.CONFIG_MAINTAINRAFTBERG_ONOFF,
 		["tooltip"] = FBConstants.CONFIG_MAINTAINRAFT_INFO,
 		["default"] = true,
@@ -927,9 +946,9 @@ local function PickRaft(info, buff, need, itemid)
 end
 
 local function HandleRaftItems()
-	local haveRaft = PlayerHasToy(RaftOptions.itemid)
+	local haveRaft = PlayerHasToy(RaftOptions.itemid);
 	local haveBerg = GetItemCount(BergOptions.itemid);
-	
+
 	if (haveRaft and haveBerg) then
 		-- if we have both, be smarter about rafts
 		FluffOptions["UseRaft"] = {
@@ -954,17 +973,32 @@ local function HandleRaftItems()
 		};
 		
 		FishingItems[RaftOptions.itemid] = {
+			setting = "UseRaft",
 			ignore = 1,
 			spell = 124036,
 			always = 1,
 			usable = RaftBergUsable,
 			check = PickRaft,
 		};
-	else
+	elseif (haveRaft) then
 		-- if we just have one or the other, then use our regular item option
 		FishingItems[RaftOptions.itemid] = RaftOptions;
+	else
 		FishingItems[BergOptions.itemid] = BergOptions;
 	end
+end
+
+local function ItemInit(option, button)
+	local n, _, _, _, _, _, _, _,_, _ = GetItemInfo(option.id);
+	if (n) then
+		option.text = n;
+	else
+		option.text = option.enUS;
+	end
+end
+
+local function ItemVisible(option)
+	return GetItemCount(option.id) > 0;
 end
 
 local function UpdateItemOptions()
@@ -979,25 +1013,10 @@ local function UpdateItemOptions()
 			if (info.visible) then
 				option.visible = info.visible;
 			else
-				option.visible =
-					function(option)
-						local count = GetItemCount(option.id);
-						if (count > 0) then
-							return true;
-						end
-						return false;
-					end
+				option.visible = ItemCountVisible;
 			end
 		
-			option.init =
-				function(option, button)
-					local n, _, _, _, _, _, _, _,_, _ = GetItemInfo(option.id);
-					if (n) then
-						option.text = n;
-					else
-						option.text = option.enUS;
-					end
-				end
+			option.init = ItemInit;
 
 			option.tooltip = info.tooltip;
 			option.setup = info.setup;
@@ -1056,12 +1075,20 @@ FluffEvents["VARIABLES_LOADED"] = function(started)
 	FishingPetsMenuHolder:SetPoint("TOP", FishingPetFrameButton, "BOTTOM", 0, 8);
 	FishingPetsMenuHolder:Hide();
 
-	HandleRaftItems();
 	SetupCoinLures();
-	UpdateItemOptions();
 
-	FishingBuddy.OptionsFrame.HandleOptions(FBConstants.CONFIG_FISHINGFLUFF_ONOFF, "Interface\\Icons\\inv_misc_food_164_fish_seadog", FluffOptions);
-	-- FishingBuddy.OptionsFrame.HandleOptions(nil, nil, FluffInvisible);
+	-- we have to wait until the toys are actually available
+	local toydelayframe = CreateFrame("Frame");
+	toydelayframe:Hide();
+
+	toydelayframe:SetScript("OnUpdate", function(self, ...)
+			HandleRaftItems();
+			UpdateItemOptions();
+			FishingBuddy.OptionsFrame.HandleOptions(FBConstants.CONFIG_FISHINGFLUFF_ONOFF, "Interface\\Icons\\inv_misc_food_164_fish_seadog", FluffOptions);
+			-- FishingBuddy.OptionsFrame.HandleOptions(nil, nil, FluffInvisible);
+			self:Hide();
+		end);
+	toydelayframe:Show();
 end
 
 FishingBuddy.RegisterHandlers(FluffEvents);
@@ -1087,7 +1114,7 @@ if ( FishingBuddy.Debugging ) then
 
 	FishingBuddy.SeaScorpion = seascorpion;
 	
-	FishingBuddy.CurrentDraenorBait = CurrentDraenorBait;
+	FishingBuddy.CurrentSpecialBait = CurrentSpecialBait;
 end
 
 function fixthis()

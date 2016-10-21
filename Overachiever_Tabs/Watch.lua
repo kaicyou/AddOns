@@ -210,12 +210,12 @@ function frame.SetAchWatchList(id, add)
 end
 
 local orig_AchievementButton_OnClick = AchievementButton_OnClick
-AchievementButton_OnClick = function(self, ignoreModifiers, ...)
+AchievementButton_OnClick = function(self, button, down, ignoreModifiers, ...)
   if (not ignoreModifiers and IsAltKeyDown()) then
     frame.SetAchWatchList(self.id, true)
     return;
   end
-  return orig_AchievementButton_OnClick(self, ignoreModifiers, ...)
+  return orig_AchievementButton_OnClick(self, button, down, ignoreModifiers, ...)
 end
 
 

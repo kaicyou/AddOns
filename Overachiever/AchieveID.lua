@@ -21,12 +21,13 @@ OVERACHIEVER_ACHID = {
 
 	RightAsRain = 5779,		-- "You'll Feel Right as Rain"
 
-	Scavenger = 1257,		-- "The Scavenger"
+	Scavenger = 1257,			-- "The Scavenger"
 	OutlandAngler = 1225,		-- "Outland Angler"
 	NorthrendAngler = 1517,		-- "Northrend Angler"
-	Limnologist = 5478,		-- "The Limnologist"
+	Limnologist = 5478,			-- "The Limnologist"
 	Oceanographer = 5479,		-- "The Oceanographer"
 	PandarianAngler = 7611,		-- "Pandarian Angler"
+	DraenorAngler = 9462,		-- "Draenor Angler"
 
 	GourmetOutland = 1800,		-- "The Outland Gourmet"
 	GourmetNorthrend = 1779,	-- "The Northrend Gourmet" (last part)

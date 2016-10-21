@@ -1,9 +1,66 @@
 ------------------------------------------------------------------------
-r605 | olzenkhaw | 2016-10-14 08:53:32 +0000 (Fri, 14 Oct 2016) | 1 line
+r622 | olzenkhaw | 2016-10-19 11:10:03 +0000 (Wed, 19 Oct 2016) | 1 line
 Changed paths:
-   A /tags/v6.2.33 Legion release (from /trunk:604)
+   A /tags/v6.2.41 Legion release (from /trunk:621)
 
-v6.2.33 - fixed a bug
+v6.2.41 - fixed a bug
+------------------------------------------------------------------------
+r621 | olzenkhaw | 2016-10-19 11:09:45 +0000 (Wed, 19 Oct 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.2.41 - fixed a bug
+------------------------------------------------------------------------
+r619 | olzenkhaw | 2016-10-17 13:27:59 +0000 (Mon, 17 Oct 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.2.40 - fixed a bug
+------------------------------------------------------------------------
+r617 | olzenkhaw | 2016-10-16 10:58:43 +0000 (Sun, 16 Oct 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.toc
+   M /trunk/OilvlPlayer.lua
+
+v6.2.39 - mouseover relics ilvl (beside artifact weapon's ilvl) will show tooltips of all relics, but the details of tooltips of relics will be wrong in inspection windows as it show depend on player (not target) class specialization. 
+------------------------------------------------------------------------
+r614 | olzenkhaw | 2016-10-15 21:08:52 +0000 (Sat, 15 Oct 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.toc
+   M /trunk/OilvlPlayer.lua
+
+v6.2.38 - fixed gems bug
+------------------------------------------------------------------------
+r612 | olzenkhaw | 2016-10-15 14:12:53 +0000 (Sat, 15 Oct 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.toc
+   M /trunk/OilvlPlayer.lua
+
+v6.2.37 - Shows Relics' Item Level in Character and Inspection Window
+------------------------------------------------------------------------
+r610 | olzenkhaw | 2016-10-15 09:39:56 +0000 (Sat, 15 Oct 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.2.36 - Shows Relics' Item Level in Character and Inspection Window
+------------------------------------------------------------------------
+r608 | olzenkhaw | 2016-10-15 06:33:22 +0000 (Sat, 15 Oct 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+   M /trunk/OilvlPlayer.lua
+
+v6.2.35 - Shows Relics' Item Level in Character and Inspection Window
+------------------------------------------------------------------------
+r606 | olzenkhaw | 2016-10-15 02:01:48 +0000 (Sat, 15 Oct 2016) | 1 line
+Changed paths:
+   M /trunk/Oilvl.lua
+   M /trunk/Oilvl.toc
+
+v6.2.34 - fixed a bug
 ------------------------------------------------------------------------
 r604 | olzenkhaw | 2016-10-14 08:53:03 +0000 (Fri, 14 Oct 2016) | 1 line
 Changed paths:

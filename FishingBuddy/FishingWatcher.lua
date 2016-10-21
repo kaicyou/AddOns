@@ -77,6 +77,12 @@ local WatcherOptions = {
 		["v"] = 1,
 		["default"] = true,
 		["parents"] = { ["WatchFishies"] = "d" } },
+	["WatchWorldQuests"] = {
+		["text"] = FBConstants.CONFIG_FISHWATCHWORLD_ONOFF,
+		["tooltip"] = FBConstants.CONFIG_FISHWATCHWORLD_INFO,
+		["v"] = 1,
+		["default"] = true,
+		["parents"] = { ["WatchFishies"] = "d" } },
 	["WatchCurrentOnly"] = {
 		["text"] = FBConstants.CONFIG_FISHWATCHCURRENT_ONOFF,
 		["tooltip"] = FBConstants.CONFIG_FISHWATCHCURRENT_INFO,
@@ -395,6 +401,51 @@ WatchEvents[FBConstants.FISHING_DISABLED_EVT] = function(started)
 	FishingBuddy.SetSetting("CaughtSoFar", FL:GetCaughtSoFar());
 end
 
+-- Display world quests
+local legionmaps = {
+	[1015] = true,
+	[1024] = true,
+	[1017] = true,
+	[1033] = true,
+	[1018] = true,
+	[1096] = true,
+}
+
+function DisplayFishingWorldQuests()
+	local GetQuestsForPlayerByMapID = C_TaskQuest.GetQuestsForPlayerByMapID
+	local line = nil;
+
+	for mapId, configTable in pairs (legionmaps) do
+		local taskInfo = GetQuestsForPlayerByMapID (mapId)
+		local shownQuests = 0
+				
+		if (taskInfo and #taskInfo > 0) then
+			for i, info in ipairs (taskInfo) do
+				local questID = info.questId
+				if (HaveQuestData (questID)) then
+					local tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = GetQuestTagInfo (questID)
+					if ( worldQuestType == LE_QUEST_TAG_TYPE_PROFESSION ) then
+						local prof1, prof2, arch, fish, cook, firstAid = GetProfessions();
+						if ( tradeskillLineIndex == fish ) then
+							local title, factionID, capped = C_TaskQuest.GetQuestInfoByQuestID(questID);
+							title = Crayon:Green(title);
+							if (line) then
+								line = line..", "..title
+							else
+								line = title;
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	if (not line) then
+		line = Crayon:Yellow(NONE);
+	end
+	return TRACKER_HEADER_WORLD_QUESTS..": "..line;
+end
+
 -- Handle display of caught Pagle fish
 local function DisplayPagleFish()
 	local line = nil;
@@ -402,6 +453,10 @@ local function DisplayPagleFish()
 		local havesome = GetItemCount(id);
 		if ( havesome > 0 ) then
 			local _,_,_,_,_,name,_ = FishingBuddy.GetFishieRaw(id);
+
+			if (not name) then
+				name = UNKNOWN;
+			end
 
 			if (info.color) then
 				name = Crayon:Colorize(info.color, name);
@@ -630,6 +685,11 @@ local function WatchUpdate()
 
 	if ( GSB("WatchPagleFish") ) then
 		SetEntry(index, DisplayPagleFish());
+		index = index + 1;
+	end
+
+	if ( GSB("WatchWorldQuests")) then
+		SetEntry(index, DisplayFishingWorldQuests());
 		index = index + 1;
 	end
 

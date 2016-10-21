@@ -300,6 +300,8 @@ L["Invite links"] = true
 L["Convets specified keywords to links that automatically invite message's author to group."] = true
 L["Link Color"] = true
 L["Invite Keywords"] = true
+L["Chat Setup Delay"] = true
+L["Manages the delay before S&L will execute hooks to ElvUI's chat positioning. Prevents some weird positioning issues."] = true
 
 --Databars
 L["Full value on Exp Bar"] = true
@@ -459,6 +461,8 @@ Equip Manager's auto switch gear sets.
 While locked (red colored state) it will disable auto swap.]]
 L["Block button"] = true
 L["Create a button in character frame to allow temp blocking of auto set swap."] = true
+L["Ignore zone change"] = true
+L["Swap sets only on specialization change ignoring location change when. Does not influence entering/leaving instances and bg/arena."] = true
 
 --Loot
 L["Loot Dropped:"] = true
@@ -762,9 +766,8 @@ L["Tooltip X-offset"] = true
 L["Offset the tooltip on the X-axis."] = true
 L["Tooltip Y-offset"] = true
 L["Offset the tooltip on the Y-axis."] = true
-L["RAID_HFC"] = "HFC"
-L["RAID_BRF"] = "BRF"
-L["RAID_HM"] = "HM"
+L["RAID_NH"] = "NH"
+L["RAID_EN"] = "EN"
 L["Raid Progression"] = true
 L["Show raid experience of character in tooltip (requires holding shift)."] = true
 

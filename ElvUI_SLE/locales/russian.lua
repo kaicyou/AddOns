@@ -295,6 +295,8 @@ L["Invite links"] = "Ссылки для приглашения"
 L["Convets specified keywords to links that automatically invite message's author to group."] = "Превращает указаные слова в ссылки, клик по которым пригласит автора сообщения в группу."
 L["Link Color"] = "Цвет ссылки"
 L["Invite Keywords"] = "Ключевые слова для приглашения"
+L["Chat Setup Delay"] = "Задержка подключения ата"
+L["Manages the delay before S&L will execute hooks to ElvUI's chat positioning. Prevents some weird positioning issues."] = "задает задержку до выполнения хуков к функция позиционирования ElvUI. Предотвращает некоторые проблемы расположения окон чата."
 
 --Databars
 L["Full value on Exp Bar"] = "Полное значение опыта"
@@ -456,6 +458,8 @@ L["SLE_EM_LOCK_TOOLTIP"] = [[Эта кнопка позволит временн
 В заблокированном состоянии (красный цвет) автоматическая смена отключена.]]
 L["Block button"] = "Кнопка блокировки"
 L["Create a button in character frame to allow temp blocking of auto set swap."] = "Создать в окне персонажа кнопку, позволяющую временно отключить автоматическую смену комплектов."
+L["Ignore zone change"] = "Игнорировать смену зоны"
+L["Swap sets only on specialization change ignoring location change when. Does not influence entering/leaving instances and bg/arena."] = "Изменять комплект только при смене специализации, игнорируя изменение локации. Не влиет на вход/выход из подземелий и полей боя/арен."
 
 --Loot
 L["Loot Dropped:"] = "Список добычи:"
@@ -752,9 +756,8 @@ L["Tooltip X-offset"] = "Смещение подсказки по X"
 L["Offset the tooltip on the X-axis."] = "Смещает подсказку по оси X относительно выбранной точки крепления."
 L["Tooltip Y-offset"] = "Смещение подсказки по Y"
 L["Offset the tooltip on the Y-axis."] = "Смещает подсказку по оси Y относительно выбранной точки крепления."
-L["RAID_HFC"] = "ЦАП"
-L["RAID_BRF"] = "ЛКЧГ"
-L["RAID_HM"] = "ВМ"
+L["RAID_NH"] = "ЦН"
+L["RAID_EN"] = "ИК"
 L["Raid Progression"] = "Рейдовый прогресс"
 L["Show raid experience of character in tooltip (requires holding shift)."] = "Отображает рейдовый опыт данного персонажа (требуется зажатый shift)"
 

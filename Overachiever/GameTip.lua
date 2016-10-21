@@ -11,8 +11,8 @@ local AchievementIcon = "Interface\\AddOns\\Overachiever\\AchShield"
 local tooltip_complete = { r = 0.2, g = 0.5, b = 0.2 }
 local tooltip_incomplete = { r = 1, g = 0.1, b = 0.1 }
 
+local LBI = LibStub:GetLibrary("LibBabble-Inventory-3.0"):GetLookupTable()
 local time = time
-
 local chatprint = Overachiever.chatprint
 
 --local skipNextExamineOneLiner
@@ -479,31 +479,67 @@ end
 ------------------------------
 
 local WorldObjAch = {
+  -- OVERACHIEVER_ACHID Key = { 1. Saved variable, 2. tooltip if complete, 3. tooltip if incomplete,
+  --   4. bool: fishing, 5. possible criteria format, 6. bool: show nothing if entire achievement is complete }
   WellRead = { "WellReadTip_read", L.ACH_WELLREAD_COMPLETE, L.ACH_WELLREAD_INCOMPLETE },
   HigherLearning = { "WellReadTip_read", L.ACH_WELLREAD_COMPLETE, L.ACH_WELLREAD_INCOMPLETE },
   Scavenger = { "AnglerTip_fished", L.ACH_ANGLER_COMPLETE, L.ACH_ANGLER_INCOMPLETE, true },
   OutlandAngler = { "AnglerTip_fished", L.ACH_ANGLER_COMPLETE, L.ACH_ANGLER_INCOMPLETE, true },
   NorthrendAngler = { "AnglerTip_fished", L.ACH_ANGLER_COMPLETE, L.ACH_ANGLER_INCOMPLETE, true },
-  Limnologist = { "SchoolTip_fished", L.ACH_ANGLER_COMPLETE, L.ACH_ANGLER_INCOMPLETE, true, L.ACH_FISHSCHOOL_FORMAT },
-  Oceanographer = { "SchoolTip_fished", L.ACH_ANGLER_COMPLETE, L.ACH_ANGLER_INCOMPLETE, true, L.ACH_FISHSCHOOL_FORMAT },
-  PandarianAngler = { "SchoolTip_fished", L.ACH_ANGLER_COMPLETE, L.ACH_ANGLER_INCOMPLETE, true, L.ACH_FISHSCHOOL_FORMAT },
+  PandarianAngler = { "AnglerTip_fished", L.ACH_ANGLER_COMPLETE, L.ACH_ANGLER_INCOMPLETE, true, L.ACH_FISHSCHOOL_FORMAT },
+  Limnologist = { "SchoolTip_fished", L.ACH_ANGLER_COMPLETE, L.ACH_ANGLER_INCOMPLETE, true, L.ACH_FISHSCHOOL_FORMAT, true },
+  Oceanographer = { "SchoolTip_fished", L.ACH_ANGLER_COMPLETE, L.ACH_ANGLER_INCOMPLETE, true, L.ACH_FISHSCHOOL_FORMAT, true },
 };
+local WorldObjLookup = {}
+if (L.ACH_ANGLER_COUNT) then
+	local arr = { strsplit("\n", L.ACH_ANGLER_COUNT) }
+	for k,v in ipairs(arr) do
+		local data
+		local achID, names = strsplit("=", v, 2)
+		achID = tonumber(achID)
+		if (achID and names and names ~= "") then
+			names = { strsplit(",", names) }
+			for k2,text in ipairs(names) do
+				if (text ~= "") then
+					data = data or { "DraenorAnglerTip_fished", L.ACH_ANGLER_COMPLETE, L.ACH_ANGLER_INCOMPLETE, true, ["id"] = achID }
+					WorldObjLookup[text] = data
+				end
+			end
+		end
+	end
+end
 
 local function WorldObjCheck(ach, text)
-  local id = OVERACHIEVER_ACHID[ach]
-  if (select(4, GetAchievementInfo(id))) then
-    WorldObjAch[ach] = nil;
-    return;
-  end
-  local isCrit, complete
-  if (WorldObjAch[ach][5]) then
-    isCrit, complete = isCriteria_formatted(id, text, WorldObjAch[ach][5])
+  local id, data, complete
+  if (not ach) then
+    if (not WorldObjLookup[text]) then  return;  end
+    data = WorldObjLookup[text]
+    id = data.id
+    complete = select(4, GetAchievementInfo(id))
+    if (complete and data[6]) then
+      WorldObjLookup[text] = nil;
+      return;
+    end
+
   else
-    isCrit, complete = isCriteria(id, text)
+    data = WorldObjAch[ach]
+    id = OVERACHIEVER_ACHID[ach]
+    local achComplete = select(4, GetAchievementInfo(id))
+    if (achComplete and data[6]) then
+      WorldObjAch[ach] = nil;
+      return;
+    end
+    local isCrit
+    if (data[5]) then
+      isCrit, complete = isCriteria_formatted(id, text, data[5])
+    else
+      isCrit, complete = isCriteria(id, text)
+    end
+    if (not isCrit) then  return;  end
+	complete = complete or achComplete
   end
-  if (isCrit) then
-    return id, complete and WorldObjAch[ach][2] or WorldObjAch[ach][3], complete, WorldObjAch[ach][4]
-  end
+
+  return id, complete and data[2] or data[3], complete, data[4]
 end
 
 do
@@ -533,12 +569,15 @@ do
       local cache_used
 	  --local prev_tiptext = last_tiptext
       if (tiptext ~= last_tiptext or t ~= last_check) then
-        for key,tab in pairs(WorldObjAch) do
-          if (Overachiever_Settings[ tab[1] ]) then
-            id, text, complete, angler = WorldObjCheck(key, tiptext)
-            if (text) then  break;  end
+	    id, text, complete, angler = WorldObjCheck(nil, tiptext)
+		if (not text) then
+          for key,tab in pairs(WorldObjAch) do
+            if (Overachiever_Settings[ tab[1] ]) then
+              id, text, complete, angler = WorldObjCheck(key, tiptext)
+              if (text) then  break;  end
+            end
           end
-        end
+		end
         last_tiptext, last_check = tiptext, t
         last_id, last_text, last_complete, last_angler = id, text, complete, angler
       else
@@ -557,7 +596,7 @@ do
 			RecentReminders_Criteria[id] = tiptext
 			--if (tiptext ~= prev_tiptext) then
               if (not angler or not Overachiever_Settings.SoundAchIncomplete_AnglerCheckPole or
-                  not IsEquippedItemType("Fishing Poles")) then
+                  not IsEquippedItemType(LBI["Fishing Poles"])) then
                 PlayReminder()
               end
 			--end
@@ -737,8 +776,6 @@ end
 -- /run TESTTAB={};local id,i,_,a=1832,1; _, _, c, _, _, _, _, a = GetAchievementCriteriaInfo(id, i); while (a) do TESTTAB[i]=c or nil; i=i+1; _, _, c, _, _, _, _, a = GetAchievementCriteriaInfo(id, i); end
 -- Only worth doing on a character that's actually consumed things on the list for ach #1832, of course.
 -- Also, you can use this to get an item's ID:  /run local name,link=GameTooltip:GetItem();local _,_,id=strfind(link,"item:(%d+)");print(link,":",id)
-
-local LBI = LibStub:GetLibrary("LibBabble-Inventory-3.0"):GetLookupTable()
 
 local function ItemConsumedCheck(ach, itemID)
   local id = OVERACHIEVER_ACHID[ach]

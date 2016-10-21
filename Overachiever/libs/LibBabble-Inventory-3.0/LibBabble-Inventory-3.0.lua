@@ -1,6 +1,6 @@
 --[[
 Name: LibBabble-Inventory-3.0
-Revision: $Rev: 197 $
+Revision: $Rev: 199 $
 Maintainers: ckknight, nevcairiel, Ackis
 Website: http://www.wowace.com/projects/libbabble-inventory-3-0/
 Dependencies: None
@@ -8,7 +8,7 @@ License: MIT
 ]]
 
 local MAJOR_VERSION = "LibBabble-Inventory-3.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 197 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 199 $"):match("%d+"))
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub("LibBabble-3.0"):New(MAJOR_VERSION, MINOR_VERSION)
@@ -311,7 +311,7 @@ elseif GAME_LOCALE == "deDE" then
 	Monk = "Mönch",
 	Mount = "Reittier",
 	Mounts = "Reittiere",
-	["Naval Equipment"] = "Marineausstattung", -- Needs review
+	["Naval Equipment"] = "Marineausstattung",
 	Neck = "Hals",
 	["Off Hand"] = "Schildhand",
 	["One-Hand"] = "Einhändig",
@@ -361,7 +361,7 @@ elseif GAME_LOCALE == "deDE" then
 	Thrown = "Wurfwaffe",
 	Totem = "Totem",
 	Totems = "Totems",
-	["Trade Goods"] = "Handwerkswaren",
+	["Trade Goods"] = "Handwerksmaterial",
 	Trinket = "Schmuck",
 	["Two-Hand"] = "Zweihändig",
 	["Two-Handed Axes"] = "Zweihandäxte",
@@ -371,7 +371,7 @@ elseif GAME_LOCALE == "deDE" then
 	Waist = "Taille",
 	Wand = "Zauberstab",
 	Wands = "Zauberstäbe",
-	-- Warglaives = "",
+	Warglaives = "Kriegsgleven",
 	Warlock = "Hexenmeister",
 	Warrior = "Krieger",
 	Weapon = "Waffe",
@@ -383,7 +383,7 @@ elseif GAME_LOCALE == "frFR" then
 	lib:SetCurrentTranslations {
 	Alchemy = "Alchimie",
 	["Ammo Pouch"] = "Giberne",
-	Aquatic = "Aquatique", -- Needs review
+	Aquatic = "Aquatique",
 	Archaeology = "Archéologie",
 	Armor = "Armure",
 	["Armor Enchantment"] = "Enchantement d'armure",
@@ -392,7 +392,7 @@ elseif GAME_LOCALE == "frFR" then
 	Back = "Dos",
 	Bag = "Sac",
 	Bandage = "Bandage",
-	Beast = "Bête", -- Needs review
+	Beast = "Bête",
 	Blacksmithing = "Forge",
 	Blue = "Bleu",
 	Book = "Livre",
@@ -403,21 +403,21 @@ elseif GAME_LOCALE == "frFR" then
 	Cloth = "Tissu",
 	Cogwheel = "Crémaillère",
 	Companion = "Compagnon",
-	["Companion Pets"] = "Mascottes", -- Needs review
+	["Companion Pets"] = "Mascottes",
 	Companions = "Compagnons",
 	Consumable = "Consommable",
 	Container = "Conteneur",
 	Cooking = "Cuisine",
-	["Cooking Bag"] = "Sac de cuisinier", -- Needs review
-	Cosmetic = "Cosmétique", -- Needs review
-	Critter = "Bestiole", -- Needs review
+	["Cooking Bag"] = "Sac de cuisinier",
+	Cosmetic = "Ornemental",
+	Critter = "Bestiole",
 	Crossbow = "Arbalète",
 	Crossbows = "Arbalètes",
 	Dagger = "Dague",
 	Daggers = "Dagues",
 	["Death Knight"] = "Chevalier de la mort",
 	Devices = "Appareils",
-	Dragonkin = "Draconien", -- Needs review
+	Dragonkin = "Draconien",
 	Drink = "Breuvage",
 	Druid = "Druide",
 	Elemental = "Élémentaire",
@@ -438,7 +438,7 @@ elseif GAME_LOCALE == "frFR" then
 	["Fist Weapon"] = "Arme de pugilat",
 	["Fist Weapons"] = "Armes de pugilat",
 	Flask = "Flacon",
-	Flying = "Volant", -- Needs review
+	Flying = "Aérien",
 	["Flying Mount"] = "Monture volante",
 	Food = "Ration",
 	["Food & Drink"] = "Nourriture & boissons",
@@ -456,7 +456,7 @@ elseif GAME_LOCALE == "frFR" then
 	Herbalism = "Herboristerie",
 	["Herb Bag"] = "Sac d'herbes",
 	Holiday = "Vacances",
-	Humanoid = "Humanoïde", -- Needs review
+	Humanoid = "Humanoïde",
 	Hunter = "Chasseur",
 	Hydraulic = "Hydraulique",
 	Idol = "Idole",
@@ -476,22 +476,22 @@ elseif GAME_LOCALE == "frFR" then
 	Librams = "Librams",
 	Mace = "Masse",
 	Mage = "Mage",
-	Magic = "Magique", -- Needs review
+	Magic = "Magique",
 	Mail = "Mailles",
 	["Main Hand"] = "Main droite",
 	Materials = "Matériaux",
 	Meat = "Viande",
-	Mechanical = "Mécanique", -- Needs review
+	Mechanical = "Machine",
 	Meta = "Méta",
 	["Metal & Stone"] = "Métal & pierre",
 	Mining = "Minage",
 	["Mining Bag"] = "Sac de mineur",
 	Miscellaneous = "Divers",
 	Money = "Argent",
-	Monk = "Moine", -- Needs review
+	Monk = "Moine",
 	Mount = "Monture",
 	Mounts = "Montures",
-	["Naval Equipment"] = "Équipement naval", -- Needs review
+	["Naval Equipment"] = "Équipement naval",
 	Neck = "Cou",
 	["Off Hand"] = "Main gauche",
 	["One-Hand"] = "A une main",
@@ -547,11 +547,11 @@ elseif GAME_LOCALE == "frFR" then
 	["Two-Handed Axes"] = "Haches à deux mains",
 	["Two-Handed Maces"] = "Masses à deux mains",
 	["Two-Handed Swords"] = "Epées à deux mains",
-	Undead = "Mort-vivant", -- Needs review
+	Undead = "Mort-vivant",
 	Waist = "Taille",
 	Wand = "Baguette",
 	Wands = "Baguettes",
-	-- Warglaives = "",
+	Warglaives = "Glaives de guerre",
 	Warlock = "Démoniste",
 	Warrior = "Guerrier",
 	Weapon = "Arme",
@@ -671,7 +671,7 @@ elseif GAME_LOCALE == "koKR" then
 	Monk = "수도사",
 	Mount = "탈것",
 	Mounts = "탈것",
-	["Naval Equipment"] = "해상 장비", -- Needs review
+	["Naval Equipment"] = "해상 장비",
 	Neck = "목",
 	["Off Hand"] = "보조장비",
 	["One-Hand"] = "한손",
@@ -731,7 +731,7 @@ elseif GAME_LOCALE == "koKR" then
 	Waist = "허리",
 	Wand = "마법봉",
 	Wands = "마법봉류",
-	-- Warglaives = "",
+	Warglaives = "전투검",
 	Warlock = "흑마법사",
 	Warrior = "전사",
 	Weapon = "무기",
@@ -1092,7 +1092,7 @@ elseif GAME_LOCALE == "esMX" then
 	Waist = "Cintura",
 	Wand = "Varita",
 	Wands = "Varitas",
-	-- Warglaives = "",
+	Warglaives = "Gujas de Guerra",
 	Warlock = "Brujo",
 	Warrior = "Guerrero",
 	Weapon = "Arma",
@@ -1572,7 +1572,7 @@ elseif GAME_LOCALE == "ruRU" then
 	Monk = "Монах",
 	Mount = "Верховые животные",
 	Mounts = "Верховые животные",
-	["Naval Equipment"] = "Корабельное оборудование", -- Needs review
+	["Naval Equipment"] = "Корабельное оборудование",
 	Neck = "Шея",
 	["Off Hand"] = "Левая рука",
 	["One-Hand"] = "Одноручное",
@@ -1632,7 +1632,7 @@ elseif GAME_LOCALE == "ruRU" then
 	Waist = "Пояс",
 	Wand = "Жезл",
 	Wands = "Жезлы",
-	-- Warglaives = "",
+	Warglaives = "Боевые клинки",
 	Warlock = "Чернокнижник",
 	Warrior = "Воин",
 	Weapon = "Оружие",
@@ -1932,7 +1932,7 @@ elseif GAME_LOCALE == "zhTW" then
 	Monk = "武僧",
 	Mount = "座騎",
 	Mounts = "座騎",
-	["Naval Equipment"] = "船艦設備", -- Needs review
+	["Naval Equipment"] = "船艦設備",
 	Neck = "頸部",
 	["Off Hand"] = "副手",
 	["One-Hand"] = "單手",
@@ -1992,7 +1992,7 @@ elseif GAME_LOCALE == "zhTW" then
 	Waist = "腰部",
 	Wand = "魔杖",
 	Wands = "魔杖",
-	-- Warglaives = "",
+	Warglaives = "戰刃",
 	Warlock = "術士",
 	Warrior = "戰士",
 	Weapon = "武器",

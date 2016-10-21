@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation.lua 51 2016-10-03 16:24:15Z arith $
+-- $Id: Atlas_Transportation.lua 53 2016-10-17 06:42:14Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -203,7 +203,7 @@ local myData = {
 		{ NUTL.."24) "..BZ["The Witchwood"]..GREY.." (38.3, 39.3)", 10024 };
 		{ NUTL.."25) "..BZ["Prepfoot"]..GREY.." (58.0, 28.6)", 10025 };
 		{ NUTL.."26) "..BZ["Shipwreck Cove"]..GREY.." (41.9, 10.4)", 10026 };
-		{ GREN.." 2) "..BZ["Trueshot Lodge"]..CL["HUNTER"]..ALC["L-Parenthesis"]..L["Hunter Only"]..ALC["R-Parenthesis"], 10101 };
+		{ GREN.." 2) "..BZ["Trueshot Lodge"]..CL["HUNTER"]..ALC["L-Parenthesis"]..L["Hunter Only"]..ALC["R-Parenthesis"]..GREY.." (35.7, 27.5)", 10101 };
 		{ "" };
 		{ BLUE..BZ["Stormheim"] };
 		{ ALAN.."27) "..BZ["Skyfire Triage Camp"]..GREY.." (33.6, 50.6)", 10027 };
@@ -288,7 +288,7 @@ local myData = {
 		{ NUTL.."24) "..BZ["The Witchwood"]..GREY.." (38.3, 39.3)", 10024 };
 		{ NUTL.."25) "..BZ["Prepfoot"]..GREY.." (58.0, 28.6)", 10025 };
 		{ NUTL.."26) "..BZ["Shipwreck Cove"]..GREY.." (41.9, 10.4)", 10026 };
-		{ GREN.." 2) "..BZ["Trueshot Lodge"]..CL["HUNTER"]..ALC["L-Parenthesis"]..L["Hunter Only"]..ALC["R-Parenthesis"], 10101 };
+		{ GREN.." 2) "..BZ["Trueshot Lodge"]..CL["HUNTER"]..ALC["L-Parenthesis"]..L["Hunter Only"]..ALC["R-Parenthesis"]..GREY.." (35.7, 27.5)", 10101 };
 		{ "" };
 		{ BLUE..BZ["Stormheim"] };
 		{ HRDE.."27) "..BZ["Forsaken Foothold"]..GREY.." (36.5, 30.7)", 10027 };

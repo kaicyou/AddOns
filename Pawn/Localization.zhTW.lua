@@ -387,6 +387,12 @@ Pawn會與你身上的裝備比較]=],
 		OptionsAdvisorHeader = "建議選項",
 		OptionsAlignRight = "將數值對齊右方",
 		OptionsAlignRightTooltip = "讓Pawn的數值在物品提示欄對齊右方，而非左方",
+		OptionsBagUpgradeAdvisor = "Show bag upgrade advisor",
+		OptionsBagUpgradeAdvisorTooltip = [=[Enable this option to have Pawn take over the in-bag upgrade arrows.
+
+If checked, Pawn will find upgrades in your bags and mark items that are an upgrade for any of your active scales with green arrows. 
+
+If unchecked, WoW will mark items with a higher item level than what you're currently wearing, and Pawn will not interfere with the built-in feature.]=],
 		OptionsBlankLine = "數值前加一個空白行",
 		OptionsBlankLineTooltip = "在 Pawn 數值前加入空白行，讓你的提示訊息更整齊",
 		OptionsButtonHidden = "不顯示",

@@ -1,6 +1,24 @@
+2016-10-18  Tercio  <Tercio>
+
+[8085e82de4df] [tip]
+* RaidAssist.lua:
+
+- framework update.
+- fixed an issue with raidgroups where sometimes frames won't move.
+- fixed an issue an a player leaves the raid the plugin won't move players.
+
+
+[340d8c598780]
+* Libs/DF/fw.lua, plugins/raidgroups.lua:
+
+- framework update.
+- fixed an issue with raidgroups where sometimes frames won't move.
+- fixed an issue an a player leaves the raid the plugin won't move players.
+
+
 2016-09-30  Tercio  <Tercio>
 
-[f30d5f37b208] [tip]
+[f30d5f37b208]
 * Libs/DF/fw.lua, Libs/LibGroupInSpecT-1.1/LibGroupInSpecT-1.1.lua:
 
 - libraries update.
@@ -214,22 +232,5 @@ tagging release
 * IskarAssist.toc, indent.lua, plugins/cooldowns.lua, plugins/notes.lua:
 
 - few changes on the notepad plugin for the new project.
-
-
-2016-03-30  Tercio  <Tercio>
-
-[51dc71d59257]
-* API.lua, IskarAssist.lua, plugins/playercheck.lua:
-
-- playercheck plugin updated.
-
-
-2016-03-27  Tercio  <Tercio>
-
-[d83901e0382f]
-* IskarAssist.lua, plugins/notes.lua:
-
-- Version ++
-- few improvements on the notepad plugin.
 
 

@@ -1,9 +1,54 @@
 ------------------------------------------------------------------------
-r152 | tuhljin | 2016-10-07 23:28:57 +0000 (Fri, 07 Oct 2016) | 1 line
+r157 | tuhljin | 2016-10-20 01:30:30 +0000 (Thu, 20 Oct 2016) | 1 line
 Changed paths:
-   A /tags/v0.96 (from /trunk:151)
+   A /tags/v0.97 (from /trunk:156)
 
-Tagging as v0.96
+Tagging as v0.97
+------------------------------------------------------------------------
+r156 | tuhljin | 2016-10-18 18:18:16 +0000 (Tue, 18 Oct 2016) | 1 line
+Changed paths:
+   M /trunk/GameTip.lua
+
+- Fix Overachiever thinking one-liner world objects of all shapes and sizes were "Already fished" if you've completed a fishing achievement.
+------------------------------------------------------------------------
+r155 | tuhljin | 2016-10-18 17:43:15 +0000 (Tue, 18 Oct 2016) | 1 line
+Changed paths:
+   M /trunk/Overachiever_Tabs/build.lua
+   M /trunk/readme.txt
+
+- Fix crash introduced in r154 that sometimes happens when an achievement is earned.
+------------------------------------------------------------------------
+r154 | tuhljin | 2016-10-18 00:16:41 +0000 (Tue, 18 Oct 2016) | 4 lines
+Changed paths:
+   M /trunk/AchieveID.lua
+   M /trunk/GameTip.lua
+   M /trunk/Options.lua
+   M /trunk/localization.lua
+   M /trunk/readme.txt
+
+- Fix "Pandarian Angler" reminder tooltips being shown based on the wrong option.
+- "Draenor Angler" (new): Added an option to display a reminder tooltip for fishing nodes that you need to fish from. The Recent Reminders that result will actually be for its criteria achievements, since it is a meta-achievement.
+- Now shows "Already fished" tooltip even if the entire achievement is complete (if the option is enabled) unless the achievement only required a certain number of fish from a list to be fished ("Limnologist", "Oceanographer").
+- Fix error when attempting to detect if fishing pole is equipped.
+------------------------------------------------------------------------
+r153 | tuhljin | 2016-10-17 23:49:26 +0000 (Mon, 17 Oct 2016) | 5 lines
+Changed paths:
+   M /trunk/GameTip.lua
+   M /trunk/Overachiever.lua
+   M /trunk/Overachiever.toc
+   M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
+   M /trunk/Overachiever_Tabs/Suggestions.lua
+   M /trunk/Overachiever_Tabs/Watch.lua
+   M /trunk/Overachiever_Tabs/build.lua
+   M /trunk/Overachiever_Tabs/localization.lua
+   M /trunk/Overachiever_Trade/Overachiever_Trade.toc
+   M /trunk/readme.txt
+
+- Fixed issue where the position of the draggable Achievement UI was not used despite the "Remember position" option being enabled. The option once again divorces the Achievement UI from the positioning system used by Character Info, the Spellbook, etc.
+- Attempt to fix addon compatibility issue resulting in an error message the first time the achievement frame is opened if Overachiever's draggable Achievement UI option is enabled.
+- Suggestions Tab: Added additional suggestions for Draenor zones/dungeons/raids and Cataclysm raids. (Thanks to chrisnolanca for many of these.)
+- Fix detection of fishing poles for non-English locales.
+- Tabs module: Fix problem where an achievement that was given a blue background due to being a future step of a series continued to use that background after it became the current step (because an achievement was completed that session).
 ------------------------------------------------------------------------
 r151 | tuhljin | 2016-10-07 23:11:08 +0000 (Fri, 07 Oct 2016) | 1 line
 Changed paths:
@@ -126,57 +171,4 @@ Changed paths:
 
 - "Brewfest Diet" (new): Added options to display a reminder tooltip for Brewfest food you need to eat.
 - The "Recently spotted objective" feature now works with items you need to consume.
-------------------------------------------------------------------------
-r139 | tuhljin | 2016-09-14 10:21:29 +0000 (Wed, 14 Sep 2016) | 1 line
-Changed paths:
-   M /trunk/GameTip.lua
-
-- Fix last fix: Don't examine when tooltip not shown any more.
-------------------------------------------------------------------------
-r138 | tuhljin | 2016-09-14 10:16:13 +0000 (Wed, 14 Sep 2016) | 1 line
-Changed paths:
-   M /trunk/GameTip.lua
-   M /trunk/Overachiever.toc
-   M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
-   M /trunk/Overachiever_Trade/Overachiever_Trade.toc
-   M /trunk/readme.txt
-
-- Fix an issue where the tooltip disappears when it shouldn't. (When this was depends on user's other addons.)
-------------------------------------------------------------------------
-r136 | tuhljin | 2016-09-14 05:02:29 +0000 (Wed, 14 Sep 2016) | 3 lines
-Changed paths:
-   M /trunk/GameTip.lua
-   M /trunk/Overachiever.lua
-   M /trunk/Overachiever_Tabs/localization.lua
-   M /trunk/localization.lua
-   M /trunk/readme.txt
-
-- Fixed reminder tooltips for world objects disappearing after a short while due to the default tooltip resetting its text periodically.
-- Fixed reminder tooltips for world objects sometimes not showing if the tooltip previously showed mob data.
-- Fixed reminder tooltips for certain fishing nodes not showing.
-------------------------------------------------------------------------
-r135 | tuhljin | 2016-09-13 23:17:32 +0000 (Tue, 13 Sep 2016) | 3 lines
-Changed paths:
-   M /trunk/AchieveID.lua
-   M /trunk/GameTip.lua
-   M /trunk/Options.lua
-   M /trunk/Overachiever.lua
-   M /trunk/Overachiever_Tabs/localization.lua
-   M /trunk/localization.lua
-   M /trunk/readme.txt
-
-- New options: Can now react to the Achievement Progress toast by tracking the achievement, linking the achievement and showing the completed criteria in the chat log, and/or adding the achievement to the Suggestions tab as a "Recent Reminder".
-- Added a "Recently spotted objective" tooltip to certain types of achievements on the Recent Reminders list in the achievement UI indicating what was seen that triggered the reminder. (E.g., it would show name of the mob that needs to be killed.) Helpful when you briefly run the mouse over something that triggers the reminder sound (if you turned that on!) but you don't know what it was.
-- Attempt to fix compatibility issue with other addons resulting in an error that appears when the achievement frame is opened.
-------------------------------------------------------------------------
-r134 | tuhljin | 2016-09-11 04:04:57 +0000 (Sun, 11 Sep 2016) | 1 line
-Changed paths:
-   M /trunk/AchieveTip.lua
-   M /trunk/GameTip.lua
-   M /trunk/Overachiever.toc
-   M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
-   M /trunk/Overachiever_Trade/Overachiever_Trade.toc
-   M /trunk/readme.txt
-
-- Fixed reminder tooltips not showing for achievements that identified the mob by ID (non-critter "need to kill" achievements).
 ------------------------------------------------------------------------

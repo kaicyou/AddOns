@@ -21,7 +21,7 @@ local oenchantItem = {
 	[14] = {0, INVTYPE_TRINKET.."2"},
 	[15] = {1, INVTYPE_CLOAK},
 	[16] = {0, INVTYPE_WEAPON},
-	[17] = {1, INVTYPE_SHIELD},
+	[17] = {0, INVTYPE_SHIELD},
 }
 
 local gslot = {
@@ -216,7 +216,6 @@ local otooltip6rpdunit;
 local otooltip6rpdid;
 local otooltip6gearsw=false; -- show all gear
 local otooltip6gearsw2=false; -- show only specific raider
-local rescanilvl = 0
 
 local Legion, _, _ = EJ_GetTierInfo(7);
 local TENname, _, _, _, _, _, _ = EJ_GetInstanceInfo(768)
@@ -436,6 +435,25 @@ function OItemAnalysis_CheckILVLGear(unitid,slot)
 				end
 				if xilvl then
 					return tonumber(xilvl), tonumber(xupgrade);
+				end
+			else
+				break
+			end
+		end
+	end
+	return 0;
+end
+
+function OItemAnalysis_CheckILVLRelic(reliclink)
+	if reliclink then
+		OILVLFrame:SetOwner(UIParent, 'ANCHOR_NONE');
+		OILVLFrame:ClearLines();
+		OILVLFrame:SetHyperlink(reliclink)
+		for i = 1, 4 do
+			if _G["OILVLTooltipTextLeft"..i]:GetText() then
+				local xilvl = _G["OILVLTooltipTextLeft"..i]:GetText():match(ITEM_LEVEL:gsub("%%d","(%%d+)"));
+				if xilvl then
+					return tonumber(xilvl)
 				end
 			else
 				break
@@ -4758,7 +4776,7 @@ function OTgathertil(guid, unitid)
 		oilvlframedata.gear[OTCurrent3] = {};
 	end
 	local cgear = {}
-	local relic = {}
+	--local relic = {}
 	for i = 1,17 do
 		local xupgrade = nil
 		local xname = nil
@@ -4884,14 +4902,14 @@ function OTgathertil(guid, unitid)
 							end
 						end
 					end
-					if OTCheckartifactwep(tonumber(itemID)) then
+					--[[if OTCheckartifactwep(tonumber(itemID)) then
 						for aw = 1, 3 do 
 							local reliclink = select(2,GetItemGem(item,aw))
 							if reliclink then
-								relic[aw] = tonumber(C_ArtifactUI.GetItemLevelIncreaseProvidedByRelic(reliclink))
+								relic[aw] = {reliclink, OItemAnalysis_CheckILVLRelic(reliclink), tonumber(C_ArtifactUI.GetItemLevelIncreaseProvidedByRelic(reliclink))}
 							end
 						end
-					end
+					end]]
 					if pvpsw then
 						if OItemAnalysis_CheckPvPGear(unitid,i) ~= 0 then
 							totalIlvl = totalIlvl + OItemAnalysis_CheckPvPGear(unitid,i)
@@ -4904,9 +4922,9 @@ function OTgathertil(guid, unitid)
 					if itemLevel == nil then itemLevel = "" end
 					if item == nil then item = "" end
 					if OTCurrent3 ~= "" then
-						oilvlframedata.gear[OTCurrent3][i] = {itemLevel, item, ogme, ogmg, ogmHe, ogmHg, OItemAnalysis_CheckPvPGear(unitid,i),tonumber(itemID),xupgrade,relic}
+						oilvlframedata.gear[OTCurrent3][i] = {itemLevel, item, ogme, ogmg, ogmHe, ogmHg, OItemAnalysis_CheckPvPGear(unitid,i),tonumber(itemID),xupgrade}
 					end
-					cgear[i] = {itemLevel, item, ogme, ogmg, ogmHe, ogmHg, OItemAnalysis_CheckPvPGear(unitid,i),tonumber(itemID),xupgrade,relic}
+					cgear[i] = {itemLevel, item, ogme, ogmg, ogmHe, ogmHg, OItemAnalysis_CheckPvPGear(unitid,i),tonumber(itemID),xupgrade}
 				end
 			end
 		end
@@ -5052,14 +5070,11 @@ function oilvlSetABCD(a,b,c,d)
 	OTCurrent3=d; -- current raid frame number
 end
 
-function oilvlSaveItemLevel()
+function oilvlSaveItemLevel(n)
 	if OILVL_Unit ~= "" then
 		if CheckInteractDistance(OILVL_Unit, 1) then
 			local OTilvl, OTmia, missenchant, missgem,  missenchant2, missgem2, count2 = OTgathertil(UnitGUID("OILVL_Unit"),OILVL_Unit)
-			rescanilvl = rescanilvl + 1
-			if rescanilvl > 1 then rescanilvl = 0 end
-			if rescanilvl > 0 then C_Timer.After(0.5,function() ORfbIlvl(OTCurrent3,true) end) end
-			if (OTmia == 0 and rescanilvl == 0) then
+			if (OTmia == 0 and n > 1) then
 				miacount=0;	miaunit[1]="";miaunit[2]="";miaunit[3]="";miaunit[4]="";miaunit[5]="";miaunit[6]="";
 				local ntex4 = _G[OTCurrent]:CreateTexture()
 				ntex4:SetColorTexture(0.2,0.2,0.2,0.5)
@@ -5148,7 +5163,9 @@ local events = {}
 
 function events:INSPECT_READY(...)
 	if not UnitAffectingCombat("player") and not (InspectFrame and InspectFrame.unit) then
-		oilvlSaveItemLevel()
+		oilvlSaveItemLevel(0)
+		C_Timer.After(1,function() oilvlSaveItemLevel(1) end)
+		C_Timer.After(2,function() oilvlSaveItemLevel(2) end)
 		-- GameTooltip		
 		if (Omover ==1) and cfg.oilvlms then
 			Omover=0;
@@ -5381,6 +5398,7 @@ function events:PLAYER_REGEN_DISABLED(...)
 		end
 		OILVLREFRESH:Hide();
 	end
+	rescanilvl = 0
 	OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
 	ClearAchievementComparisonUnit();
 	rpsw=false;
@@ -5389,6 +5407,18 @@ function events:PLAYER_REGEN_DISABLED(...)
 	orollgear = ""
 	oilvlUpdateLDBTooltip()
 	otooltip6sw = false
+	
+	OILVL_Unit="";
+	if OTCurrent ~= "" then
+		local ntex4 = _G[OTCurrent]:CreateTexture()
+		ntex4:SetColorTexture(0.2,0.2,0.2,0.5)
+		ntex4:SetAllPoints()	
+		_G[OTCurrent]:SetNormalTexture(ntex4)
+	end
+	OTCurrent = "";
+	OTCurrent2 = "";
+	OTCurrent3 = "";
+	ountrack=true;	
 end
 
 function events:PLAYER_REGEN_ENABLED(...)
@@ -5409,6 +5439,18 @@ function events:PLAYER_REGEN_ENABLED(...)
 	Omover2 = 0;
 	orollgear = ""
 	oilvlUpdateLDBTooltip()
+	
+	OILVL_Unit="";
+	if OTCurrent ~= "" then
+		local ntex4 = _G[OTCurrent]:CreateTexture()
+		ntex4:SetColorTexture(0.2,0.2,0.2,0.5)
+		ntex4:SetAllPoints()	
+		_G[OTCurrent]:SetNormalTexture(ntex4)
+	end
+	OTCurrent = "";
+	OTCurrent2 = "";
+	OTCurrent3 = "";
+	ountrack=true;	
 end	
 
 function events:ROLE_CHANGED_INFORM(...)

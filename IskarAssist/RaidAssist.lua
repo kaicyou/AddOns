@@ -1,4 +1,4 @@
-
+ 
 -- raid control
 
 local DF = _G ["DetailsFramework"]

@@ -73,6 +73,7 @@ LP.PortItems = {
 	{141605}, --Flight Masters's Whistle
 	{128502}, --Hunter's Seeking Crystal
 	{128503}, --Master Hunter's Seeking Crystal
+	{140324, nil, true}, --Mobile Telemancy Beacon
 }
 LP.Spells = {
 	["DEATHKNIGHT"] = {
@@ -113,7 +114,7 @@ LP.Spells = {
 			[9] = {text = T.GetSpellInfo(132627),icon = SLE:GetIconFromID("spell", 132627),secure = {buttonType = "spell",ID = 132627}, UseTooltip = true},-- TP:Vale of Eternal Blossoms
 			[10] = {text = T.GetSpellInfo(120145),icon = SLE:GetIconFromID("spell", 120145),secure = {buttonType = "spell",ID = 120145}, UseTooltip = true},-- TP:Ancient Dalaran
 			[11] = {text = T.GetSpellInfo(176242),icon = SLE:GetIconFromID("spell", 176242),secure = {buttonType = "spell",ID = 176242}, UseTooltip = true},-- TP:Warspear
-			[12] = {text = T.GetSpellInfo(224873),icon = SLE:GetIconFromID("spell", 224873),secure = {buttonType = "spell",ID = 224873}, UseTooltip = true},-- TP:Dalaran - BI
+			[12] = {text = T.GetSpellInfo(224869),icon = SLE:GetIconFromID("spell", 224869),secure = {buttonType = "spell",ID = 224869}, UseTooltip = true},-- TP:Dalaran - BI
 		},
 		["Alliance"] = {
 			[1] = {text = T.GetSpellInfo(3561),icon = SLE:GetIconFromID("spell", 3561),secure = {buttonType = "spell",ID = 3561}, UseTooltip = true},-- TP:Stormwind
@@ -127,7 +128,7 @@ LP.Spells = {
 			[9] = {text = T.GetSpellInfo(132621),icon = SLE:GetIconFromID("spell", 132621),secure = {buttonType = "spell",ID = 132621}, UseTooltip = true},-- TP:Vale of Eternal Blossoms
 			[10] = {text = T.GetSpellInfo(120145),icon = SLE:GetIconFromID("spell", 120145),secure = {buttonType = "spell",ID = 120145}, UseTooltip = true},-- TP:Ancient Dalaran
 			[11] = {text = T.GetSpellInfo(176248),icon = SLE:GetIconFromID("spell", 176248),secure = {buttonType = "spell",ID = 176248}, UseTooltip = true},-- TP:StormShield
-			[12] = {text = T.GetSpellInfo(224873),icon = SLE:GetIconFromID("spell", 224873),secure = {buttonType = "spell",ID = 224873}, UseTooltip = true},-- TP:Dalaran - BI
+			[12] = {text = T.GetSpellInfo(224869),icon = SLE:GetIconFromID("spell", 224869),secure = {buttonType = "spell",ID = 224869}, UseTooltip = true},-- TP:Dalaran - BI
 		},
 	},
 	["portals"] = {
@@ -372,22 +373,26 @@ end
 
 function LP:ItemList(check)
 	for i = 1, #LP.PortItems do
+		local tmp = {}
 		local data = LP.PortItems[i]
 		if SLE:BagSearch(data.secure.ID) or (PlayerHasToy(data.secure.ID) and IsToyUsable(data.secure.ID)) then
 			if check then 
-				if LP.db.portals.HSplace then T.tinsert(LP.MainMenu, {text = HOME..": "..GetBindLocation(), title = true, nohighlight = true}) end
+				if LP.db.portals.HSplace then T.tinsert(LP.MainMenu, {text = L["Hearthstone Location"]..": "..GetBindLocation(), title = true, nohighlight = true}) end
 				T.tinsert(LP.MainMenu, {text = ITEMS..":", title = true, nohighlight = true})
 				return true 
 			else
-				local tmp = {}
-				local cd = DD:GetCooldown("Item", data.secure.ID)
-				E:CopyTable(tmp, data)
-				if cd or (T.tonumber(cd) and T.tonumber(cd) > 1.5) then
-					tmp.text = "|cff636363"..tmp.text.."|r"..T.format(LP.CDformats[LP.db.portals.cdFormat], cd)
-				else
-					tmp.text = tmp.text
+				if data.text then
+					local cd = DD:GetCooldown("Item", data.secure.ID)
+					E:CopyTable(tmp, data)
+					if cd or (T.tonumber(cd) and T.tonumber(cd) > 1.5) then
+						tmp.text = "|cff636363"..tmp.text.."|r"..T.format(LP.CDformats[LP.db.portals.cdFormat], cd)
+						T.tinsert(LP.MainMenu, tmp)
+					else
+						-- tmp.text = tmp.text
+						T.tinsert(LP.MainMenu, data)
+					end
+					
 				end
-				T.tinsert(LP.MainMenu, tmp)
 			end
 		end
 	end
@@ -401,13 +406,15 @@ function LP:SpellList(list, dropdown, check)
 			if check then 
 				return true 
 			else
-				local cd = DD:GetCooldown("Spell", data.secure.ID)
-				if cd or (T.tonumber(cd) and T.tonumber(cd) > 1.5) then
-					E:CopyTable(tmp, data)
-					tmp.text = "|cff636363"..tmp.text.."|r"..T.format(LP.CDformats[LP.db.portals.cdFormat], cd)
-					T.tinsert(dropdown, tmp)
-				else
-					T.tinsert(dropdown, data)
+				if data.text then
+					local cd = DD:GetCooldown("Spell", data.secure.ID)
+					if cd or (T.tonumber(cd) and T.tonumber(cd) > 1.5) then
+						E:CopyTable(tmp, data)
+						tmp.text = "|cff636363"..tmp.text.."|r"..T.format(LP.CDformats[LP.db.portals.cdFormat], cd)
+						T.tinsert(dropdown, tmp)
+					else
+						T.tinsert(dropdown, data)
+					end
 				end
 			end
 		end

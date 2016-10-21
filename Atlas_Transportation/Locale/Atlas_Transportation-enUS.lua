@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation-enUS.lua 48 2016-09-23 08:41:48Z arith $
+-- $Id: Atlas_Transportation-enUS.lua 54 2016-10-17 07:26:22Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -49,11 +49,11 @@ if L then
 	L["Portal to Dreadscar Rift"] 		= "Portal to Dreadscar Rift" -- Warlock
 	L["Jump to Skyhold"] 			= "Jump to Skyhold"; -- Warrior
 	L["Illidari Gateway"] 			= "Illidari Gateway"; -- Demon Hunter
-	L["Talua <Eagle Keeper>"] 		= "Talua <Eagle Keeper>"; -- NPC of Hunter as flight master in Dalaran's Krasus' Landing
+	L["Talua <Eagle Keeper>"] 		= "Talua <Eagle Keeper>"; -- 108868, NPC of Hunter as flight master in Dalaran's Krasus' Landing
 	L["Flight to Trueshot Lodge"] 		= "Flight to Trueshot Lodge"; -- Hunter
 	L["Portal to Sanctum of Light"] 	= "Portal to Sanctum of Light"; -- Paladin
 	L["Connection to the Hall of Shadows"] 	= "Connection to the Hall of Shadows"; -- Rogue
-	L["Aludane Whitecloud <Flight Master>"] = "Aludane Whitecloud <Flight Master>";
+	L["Aludane Whitecloud <Flight Master>"] = "Aludane Whitecloud <Flight Master>"; -- 96813
 	-- Others
 	L["Portal to Dalaran"] = "Portal to Dalaran";
 	L["The Bogpaddle Bullet"] = "The Bogpaddle Bullet";

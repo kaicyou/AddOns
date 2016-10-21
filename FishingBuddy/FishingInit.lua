@@ -216,8 +216,7 @@ end
 
 FishingInit.ResetFishies = function(zones, subzones, holes, skills)
 	local AddFishie = FishingBuddy.AddFishie;
-	local questIndex = select('#', GetAuctionItemClasses());
-	local questType = select(questIndex, GetAuctionItemClasses());
+	local questType = _G.GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM);
 	FishingInit.ResetHelpers();
 
 	local FI = FishingBuddy_Info["Fishies"];

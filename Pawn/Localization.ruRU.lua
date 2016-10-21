@@ -393,6 +393,12 @@ Pawn поставляется со шкалами с сайта Wowhead для �
 		OptionsAdvisorHeader = "Опции советника",
 		OptionsAlignRight = "Выравнивать значения по правому краю",
 		OptionsAlignRightTooltip = "Включите данную опцию чтобы Pawn выравнял ваши значения и информацию по улучшениям по правому краю всплывающего сообщения.",
+		OptionsBagUpgradeAdvisor = "Show bag upgrade advisor",
+		OptionsBagUpgradeAdvisorTooltip = [=[Enable this option to have Pawn take over the in-bag upgrade arrows.
+
+If checked, Pawn will find upgrades in your bags and mark items that are an upgrade for any of your active scales with green arrows. 
+
+If unchecked, WoW will mark items with a higher item level than what you're currently wearing, and Pawn will not interfere with the built-in feature.]=],
 		OptionsBlankLine = "Добавить пустую строку перед значениями",
 		OptionsBlankLineTooltip = "Позволяет добавить пустую строку перед значениями Pawn. Это позволяет сделать сообщения более читаемыми.",
 		OptionsButtonHidden = "не отображать",

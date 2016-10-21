@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation-zhTW.lua 48 2016-09-23 08:41:48Z arith $
+-- $Id: Atlas_Transportation-zhTW.lua 53 2016-10-17 06:42:14Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -69,14 +69,14 @@ L["Shado-Pan Rope"] = "影潘索 "
 L["Ship / Zeppelin sailing path to destination"] = "船隻 / 飛船航向目的地的路徑"
 L["South of the path along Lake Elune'ara"] = "月神湖南方小徑"
 L["Special transportation"] = "特殊運輸工具"
--- L["Talua <Eagle Keeper>"] = ""
+L["Talua <Eagle Keeper>"] = "塔陸亞 <飼鷹者>"
 L["Taxi Nodes"] = "航行點"
 L["The Bogpaddle Bullet"] = "沼槳火箭"
 L["Transportation Maps"] = "交通網路地圖"
 L["Transporter"] = "輸送者"
 L["Transporters by the sea and on the cliff"] = "傳送器位於懸崖上與懸崖下"
 L["Warning: Drop"] = "小心輕放"
-L["Warrior's landing / jumping point (from or back to Skyhold)"] = "戰士的降落 / 跳躍點 (往返擎天堡)"
+L["Warrior's landing / jumping point (from or back to Skyhold)"] = "戰士的降落 / 跳躍點（往返擎天堡）"
 L["West of the path to Timbermaw Hold"] = "往木喉要塞小徑西方"
 L["Whispercloud's Balloon"] = "雲語的氣球"
 L["White"] = "白"

@@ -278,6 +278,14 @@ local achDraenorGarrison = {
 	9099, -- Time for an Upgrade
 	9405, -- Working Some Orders
 }
+local achDraenorGarrisonShipyard = {
+	10177, -- Set Sail! (series)
+	10170, -- Seaman
+	10164, -- Master of the Seas
+	10165, -- Ironsides
+	IsAlliance and 10256 or 10258, -- Charting a Course
+	10166, -- Naval Mechanics (broken?)
+}
 
 local ACHID_ZONE_MISC = {
 -- Kalimdor
@@ -424,7 +432,14 @@ local ACHID_ZONE_MISC = {
 		IsAlliance and 9214 or 9215, -- Hero of Stormshield / Hero of Warspear
 		IsAlliance and 9714 or 9715, -- Thy Kingdom Come
 	},
-	--["Frostfire Ridge"] = {},
+	["Frostfire Ridge"] = {
+		SUBZONES = {
+			-- !! haven't tested these subzones
+			["Bloodmaul Stronghold"] = { 9533, 9534, IsAlliance and 9530 or 9531 },
+			["*Magnarok*Altar of Kron*Ascent of Frostfire*Refuse Pit*"] = { 9537, 9536, 9535 },
+			["Iron Siegeworks"] = { 9710, 9711 }
+		},
+	},
 	["Gorgrond"] = {
 		IsAlliance and 8923 or 8924,
 		9607, -- Make It a Bonus
@@ -432,27 +447,48 @@ local ACHID_ZONE_MISC = {
 		9401, -- Shredder Maniac
 		9402, -- Prove Your Strength
 		9423, -- Goliaths of Gorgrond
-		SUBZONES = { ["Everbloom Wilds"] = {
-			9663, 9678, 9667, 9654, 9658
+		SUBZONES = {
 			--!! untested if subzone detection works properly for this one
-		}},
+			["Everbloom Wilds"] = { 9663, 9678, 9667, 9654, 9658 },
+			["The Pit"] = { 9655, 9656, 9659 }
+		},
 	},
 	["Nagrand (Draenor)"] = { -- RENAMED ZONE
 		IsAlliance and 8927 or 8928, -- Nagrandeur
 		IsAlliance and 9539 or 9705, -- Advanced Husbandry
 		IsAlliance and 9540 or 9706, -- The Stable Master
 		9615, -- With a Nagrand Cherry On Top
+		SUBZONES = {
+			-- !! haven't tested these subzones
+			["Broken Precipice"] = { 9571, 9610 },
+			["Mok'gol Watchpost"] = { 9548, 9541 },
+			["Gorian Proving Grounds"] = 9617,
+		},
 	},
 	["Spires of Arak"] = {
 		IsAlliance and 8925 or 8926, -- Between Arak and a Hard Place
 		9605, -- Arak Star
 		9425, -- So Grossly Incandescent
+		SUBZONES = {
+			-- !! haven't tested these subzones
+			["Skettis Ruins"] = { 9612, 9613 },
+			["Lost Veil Anzu"] = { 9600, 9601 },
+			["Pillars of Fate"] = { 9433, 9434, 9432 }, -- !! subzone might be "Shadowmoon Enclave" instead and/or might be in Shadowmoon Valley (or maybe need to cover both)
+		},
 	},
-	["Shadowmoon Valley (Draenor)"] = { -- RENAMED ZONE (so needs to be here even though it's empty for Horde)
+	["Shadowmoon Valley (Draenor)"] = { -- RENAMED ZONE
+		SUBZONES = {
+			-- !! haven't tested these subzones
+			["*Darktide Roost*Darktide Strait*"] = { 9481, 9483, 9479 },
+			["Socrethar's Rise"] = { 9437, 9436, 9435 },
+		},
 	},
 	["Talador"] = {
 		IsAlliance and 8920 or 8919, -- Don't Let the Tala-door Hit You on the Way Out
 		9674, -- I Want More Talador
+		SUBZONES = {
+			["Shattrath City"] = { 9486, 9632, 9633, 9634, 9635, 9636, 9637, 9638 } -- !! haven't checked whether these all belong to this subzone (or multiple subzones? Harbor, City)
+		},
 	},
 	["Tanaan Jungle"] = {
 		10261, -- Jungle Treasure Hunter
@@ -559,6 +595,7 @@ if (IsAlliance) then
   tinsert(ACHID_ZONE_MISC["Shadowmoon Valley (Draenor)"], 9528) -- "On the Shadow's Trail"
   tinsert(ACHID_ZONE_MISC["Shadowmoon Valley (Draenor)"], 9602) -- "Shoot For the Moon"
   ACHID_ZONE_MISC["Lunarfall"] = achDraenorGarrison
+  ACHID_ZONE_MISC["Shadowmoon Valley (Draenor)"].SUBZONES = { ["Lunarfall Shipyard"] = achDraenorGarrisonShipyard }
 
 else
   tinsert(ACHID_ZONE_MISC["Azshara"], 5454) -- "Joy Ride"
@@ -580,12 +617,12 @@ else
   tinsert(ACHID_ZONE_MISC["Icecrown"], 3677)
   tinsert(ACHID_ZONE_MISC["Icecrown"], 2788)
   
-  ACHID_ZONE_MISC["Frostfire Ridge"] = {
-	8671, -- "You'll Get Caught Up in The... Frostfire!"
-	9606, -- "Frostfire Fridge"
-	9529, -- "On the Shadow's Trail"
-  }
+  tinsert(ACHID_ZONE_MISC["Frostfire Ridge"], 8671) -- "You'll Get Caught Up in The... Frostfire!"
+  tinsert(ACHID_ZONE_MISC["Frostfire Ridge"], 9606) -- "Frostfire Fridge"
+  tinsert(ACHID_ZONE_MISC["Frostfire Ridge"], 9529) -- "On the Shadow's Trail"
+
   ACHID_ZONE_MISC["Frostwall"] = achDraenorGarrison -- !! name not 100% verified (have to run Horde char around outskirts of their garrison, refreshing suggestions, to test)
+  ACHID_ZONE_MISC["Frostfire Ridge"].SUBZONES = { ["Frostwall Shipyard"] = achDraenorGarrisonShipyard }
 
 end
 -- "The Fishing Diplomat":
@@ -622,15 +659,15 @@ local ACHID_INSTANCES = {
 	["Maraudon"] = 640,
 	["Sunken Temple"] = 641,
 	["Blackrock Depths"] = 642,
-	["Lower Blackrock Spire"] = 643,
-	["Upper Blackrock Spire"] = { 1307, 2188 },	-- "Upper Blackrock Spire", "Leeeeeeeeeeeeeroy!"
+	["Lower Blackrock Spire"] = 643, -- !! is this achievement still available? is the zone name right?
+	--!! unavailable after Warlords of Draenor patch?-- ["Upper Blackrock Spire"] = { 1307, 2188 },	-- "Upper Blackrock Spire", "Leeeeeeeeeeeeeroy!"
 	["Dire Maul"] = 644,
 	["Stratholme"] = 646,
 -- Classic Raids
 	-- These are now Feats of Strength: ["Zul'Gurub"] = { 688, 560, 957 },	-- "Zul'Gurub", "Deadliest Catch", "Hero of the Zandalar"
 	["Ruins of Ahn'Qiraj"] = 689,
 	--["Onyxia's Lair"] = 684, -- This is now a Feat of Strength
-	["Molten Core"] = 686,
+	["The Molten Core"] = { 686, 955 },
 	["Blackwing Lair"] = 685,
 	["Temple of Ahn'Qiraj"] = 687,
 -- Burning Crusade
@@ -683,6 +720,13 @@ local ACHID_INSTANCES = {
 	["Zul'Gurub"] = { 5768, 5765, 5743, 5762, 5759, 5744 },  -- "Heroic: Zul'Gurub", "Here, Kitty Kitty...", "It's Not Easy Being Green", "Ohganot So Fast!", "Spirit Twister", "Gurubashi Headhunter"
 -- Cataclysm Raids
 	["Firelands"] = { 5802, 5828, 5855 }, -- "Firelands", "Glory of the Firelands Raider", "Ragnar-O's"
+	["Dragon Soul"] = {
+		6169, -- Glory of the Dragon Soul Raider
+		6175,
+		6106,
+		6107,
+		6177,
+	},
 
 -- Pandaria Dungeons
 	["Gate of the Setting Sun"] = 6945, -- "Mantid Swarm"
@@ -703,10 +747,19 @@ local ACHID_INSTANCES = {
 	},
 
 -- Draenor Dungeons
-	["The Everbloom"] = {
-		9044, -- The Everbloom
-		-- !! not 100% sure on instance's coded/in-game name; double check and remove this note if it's good
-	},
+-- !! not 100% sure on these zone names
+	["Auchindoun"] = 9039,
+	["Bloodmaul Slag Mines"] = 9037,
+	["Grimrail Depot"] = 9043,
+	["Iron Docks"] = 9038,
+	["Shadowmoon Burial Grounds"] = 9041,
+	["Skyreach"] = 8843,
+	["The Everbloom"] = 9044,
+	["Upper Blackrock Spire"] = 9042, -- !! or is this Upper Blackrock Spire?
+-- Draenor Raids
+	["Highmaul"] = { 8975, 8987, 8958, 8948, 8947, 8988, 8977, 8974, 8976, 8986 },
+	["Blackrock Foundry"] = { 8978, 8979, 8930, 8980, 8929, 8983, 8981, 8982, 8984, 8952, 8989, 8990, 8991, 8992 },
+	["Hellfire Citadel"] = { 10026, 10057, 10013, 9972, 9979, 9988, 10086, 9989, 10012, 10087, 10030, 10073, 10023, 10024, 10025, 10020, 10019 },
 
 -- Legion Dungeons
 	["Eye of Azshara"] = 10780, -- "Eye of Azshara" (chain)
@@ -753,6 +806,9 @@ local ACHID_INSTANCES = {
 		10851, -- Elementalry!
 	},
 }
+-- Aliases
+ACHID_INSTANCES["Molten Core"] = ACHID_INSTANCES["The Molten Core"]
+ACHID_INSTANCES["Hall of Blackhand"] = ACHID_INSTANCES["Upper Blackrock Spire"]
 
 -- Battlegrounds
 ACHID_INSTANCES["The Battle for Gilneas"] = 5258
@@ -848,6 +904,8 @@ local ACHID_INSTANCES_HEROIC = {
 	["The Deadmines"] = { 5083, 5370, 5369, 5368, 5367, 5366, 5371 },
 	["The Stonecore"] = { 5063, 5287 },
 	["Throne of the Tides"] = { 5061, 5285, 5286 },
+-- Cataclysm Raids
+	["Dragon Soul"] = { 6115, 6116, },
 -- Pandaria Dungeons
 	["Gate of the Setting Sun"] = { 6759, 6479, 6476 },
 	["Mogu'shan Palace"] = { 6478, 6756, 6713, 6736 },
@@ -869,13 +927,38 @@ local ACHID_INSTANCES_HEROIC = {
 	},
 
 -- Draenor Dungeons
+	["Auchindoun"] = { 9023, 9551, 9552 },
+	["Bloodmaul Slag Mines"] = { 8993, 9005, 9008 },
+	["Grimrail Depot"] = { 9024, 9007 },
+	["Iron Docks"] = { 9081, 9083, 9082 },
+	["Shadowmoon Burial Grounds"] = { 9018, 9025, 9026 },
+	["Skyreach"] = { 9033, 9035,9034, 9036 },
 	["The Everbloom"] = {
 		9493, -- They Burn, Burn, Burn
-		"9619:5", -- Savage Hero
 		9017, -- Water Management
 		9223, -- Weed Whacker
 	},
+	["Upper Blackrock Spire"] = { 9045, 9058, 9056, 9057 },
 }
+-- Aliases
+ACHID_INSTANCES_HEROIC["Hall of Blackhand"] = ACHID_INSTANCES_HEROIC["Upper Blackrock Spire"]
+
+local ACHID_INSTANCES_HEROIC_PLUS = {
+-- Draenor Dungeons
+	["Auchindoun"] = "9619:2", -- Savage Hero
+	["Bloodmaul Slag Mines"] = "9619:1",
+	["Grimrail Depot"] = "9619:6",
+	["Iron Docks"] = "9619:3",
+	["Shadowmoon Burial Grounds"] = "9619:8",
+	["Skyreach"] = "9619:7",
+	["The Everbloom"] = "9619:5",
+	["Upper Blackrock Spire"] = "9619:4",
+-- Draenor Raids
+	["Upper Blackrock Spire"] = "9619:9",
+	["Blackrock Foundry"] = "9619:10",
+}
+-- Aliases
+ACHID_INSTANCES_HEROIC_PLUS["Hall of Blackhand"] = ACHID_INSTANCES_HEROIC_PLUS["Upper Blackrock Spire"]
 
 -- INSTANCES - 10-MAN ONLY (normal or heroic):
 local ACHID_INSTANCES_10 = {
@@ -1040,7 +1123,6 @@ local ACHID_INSTANCES_MYTHIC = {
 		10816, -- Mythic: Court of Stars
 		10610, -- Waiting for Gerdo
 	},
--- Legion Raids
 -- Legion Raids
 	["The Emerald Nightmare"] = {
 		10821, -- Mythic: Nythendra
@@ -1358,7 +1440,7 @@ local function Refresh(self)
   -- Suggestions based on an open tradeskill window or whether a fishing pole is equipped:
   TradeskillSuggestions = select(2, C_TradeSkillUI.GetTradeSkillLine())
   local tradeskill = LBIR[TradeskillSuggestions]
-  if (not ACHID_TRADESKILL[tradeskill] and IsEquippedItemType("Fishing Poles")) then
+  if (not ACHID_TRADESKILL[tradeskill] and IsEquippedItemType(LBI["Fishing Poles"])) then
     TradeskillSuggestions, tradeskill = LBI["Fishing"], "Fishing"
   end
   if (ACHID_TRADESKILL[tradeskill]) then
@@ -1381,9 +1463,9 @@ local function Refresh(self)
 
       if (heroicD or heroicR) then
         if (twentyfive) then
-          Refresh_Add(ACHID_INSTANCES_HEROIC[zone], ACHID_INSTANCES_25[zone], ACHID_INSTANCES_25_HEROIC[zone])
+          Refresh_Add(ACHID_INSTANCES_HEROIC[zone], ACHID_INSTANCES_HEROIC_PLUS[zone], ACHID_INSTANCES_25[zone], ACHID_INSTANCES_25_HEROIC[zone])
         else
-          Refresh_Add(ACHID_INSTANCES_HEROIC[zone], ACHID_INSTANCES_10[zone], ACHID_INSTANCES_10_HEROIC[zone])
+          Refresh_Add(ACHID_INSTANCES_HEROIC[zone], ACHID_INSTANCES_HEROIC_PLUS[zone], ACHID_INSTANCES_10[zone], ACHID_INSTANCES_10_HEROIC[zone])
         end
       else
         if (twentyfive) then
@@ -1394,7 +1476,7 @@ local function Refresh(self)
       end
 
 	  if (mythicD or mythicR) then
-	    Refresh_Add(ACHID_INSTANCES_MYTHIC[zone])
+	    Refresh_Add(ACHID_INSTANCES_MYTHIC[zone], ACHID_INSTANCES_HEROIC_PLUS[zone])
 		-- No need to check twentyfive; that's a legacy classification and the dungeons/raids with mythic-only achievements don't use it.
 	  end
 
@@ -1413,9 +1495,13 @@ local function Refresh(self)
       -- If there are 10-man or 25-man specific achievements, this is a raid:
         if (heroicR) then
           if (twentyfive) then
-            Refresh_Add(ACHID_INSTANCES_HEROIC[CurrentSubzone] or ACHID_INSTANCES_HEROIC[zone], ach25, achH25)
+            Refresh_Add(ACHID_INSTANCES_HEROIC[CurrentSubzone] or ACHID_INSTANCES_HEROIC[zone],
+				ACHID_INSTANCES_HEROIC_PLUS[CurrentSubzone] or ACHID_INSTANCES_HEROIC_PLUS[zone],
+				ach25, achH25)
           else
-            Refresh_Add(ACHID_INSTANCES_HEROIC[CurrentSubzone] or ACHID_INSTANCES_HEROIC[zone], ach10, achH10)
+            Refresh_Add(ACHID_INSTANCES_HEROIC[CurrentSubzone] or ACHID_INSTANCES_HEROIC[zone],
+				ACHID_INSTANCES_HEROIC_PLUS[CurrentSubzone] or ACHID_INSTANCES_HEROIC_PLUS[zone],
+				ach10, achH10)
           end
         else
           if (twentyfive) then
@@ -1426,14 +1512,15 @@ local function Refresh(self)
         end
       -- Not a raid (or at least no 10-man vs 25-man specific suggestions):
       elseif (heroicD) then
-        Refresh_Add(ACHID_INSTANCES_HEROIC[CurrentSubzone] or ACHID_INSTANCES_HEROIC[zone])
+        Refresh_Add(ACHID_INSTANCES_HEROIC[CurrentSubzone] or ACHID_INSTANCES_HEROIC[zone],
+			ACHID_INSTANCES_HEROIC_PLUS[CurrentSubzone] or ACHID_INSTANCES_HEROIC_PLUS[zone])
       else
         Refresh_Add(ACHID_INSTANCES_NORMAL[CurrentSubzone] or ACHID_INSTANCES_NORMAL[zone])
       end
 
 	  if (mythicD or mythicR) then
-	    local achM = ACHID_INSTANCES_MYTHIC[CurrentSubzone] or ACHID_INSTANCES_MYTHIC[zone]
-	    if (achM) then  Refresh_Add(achM);  end
+	    Refresh_Add(ACHID_INSTANCES_MYTHIC[CurrentSubzone] or ACHID_INSTANCES_MYTHIC[zone],
+			ACHID_INSTANCES_HEROIC_PLUS[CurrentSubzone] or ACHID_INSTANCES_HEROIC_PLUS[zone])
 	  end
     end
 
@@ -1441,12 +1528,12 @@ local function Refresh(self)
       Refresh_Add(ACHID_HOLIDAY[zone])
     end
 
-    -- Suggestions from recent reminders:
-    Overachiever.RecentReminders_Check()
-    for id in pairs(RecentReminders) do
-      suggested[id] = true
-    end
-
+  end
+  
+  -- Suggestions from recent reminders:
+  Overachiever.RecentReminders_Check()
+  for id in pairs(RecentReminders) do
+    suggested[id] = true
   end
 
   local list, count = frame.AchList, 0
@@ -1527,6 +1614,7 @@ Overachiever.SUGGESTIONS = {
 	bg = ACHID_BATTLEGROUNDS,
 	instance_normal = ACHID_INSTANCES_NORMAL,
 	instance_heroic = ACHID_INSTANCES_HEROIC,
+	instance_heroic_plus = ACHID_INSTANCES_HEROIC_PLUS,
 	instance_10 = ACHID_INSTANCES_10,
 	instance_25 = ACHID_INSTANCES_25,
 	instance_10_normal = ACHID_INSTANCES_10_NORMAL,
@@ -1580,7 +1668,7 @@ do
 	  end
     end
   end
-  addtolist(suggested, ACHID_INSTANCES, ACHID_INSTANCES_NORMAL, ACHID_INSTANCES_HEROIC,
+  addtolist(suggested, ACHID_INSTANCES, ACHID_INSTANCES_NORMAL, ACHID_INSTANCES_HEROIC, ACHID_INSTANCES_HEROIC_PLUS,
             ACHID_INSTANCES_10, ACHID_INSTANCES_25, ACHID_INSTANCES_10_NORMAL, ACHID_INSTANCES_25_NORMAL,
             ACHID_INSTANCES_10_HEROIC, ACHID_INSTANCES_25_HEROIC, ACHID_INSTANCES_MYTHIC)
   addtolist(suggested, ACHID_ZONE_MISC); -- Required for "unlisted" zones like Molten Front (doesn't appear in GetMapContinents/GetMapZones scan)
@@ -1704,7 +1792,7 @@ do
       if (tab) then
         for k in pairs(tab) do
           if (strsub(k, 1, 1) == "*") then
-            for subz in gmatch(k, "%*([^%*]+)%*") do  list[ L.SUBZONES[subz] or subz ] = true;  end
+            for subz in gmatch(k, "%*?([^%*]+)%*") do  list[ L.SUBZONES[subz] or subz ] = true;  end
           else
             list[ L.SUBZONES[k] or k ] = true
           end
@@ -1962,4 +2050,8 @@ function Overachiever.Debug_GetMissingAch()
   print("Overachiever.Debug_GetMissingAch():",count,"problems found.")
 end
 --]]
+
+
+-- Thanks to chrisnolanca for many of the WoD changes.
+-- https://github.com/ChrisNolan/OverachieverContinued/compare/WoDchanges
 

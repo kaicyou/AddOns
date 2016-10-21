@@ -396,6 +396,12 @@ Pawn vient avec les \195\169chelles de Wowhead pour chaque classe et sp\195\169.
 		OptionsAdvisorHeader = "Options conseill\195\169es",
 		OptionsAlignRight = "Aligne les valeurs sur le bord droit du tooltips",
 		OptionsAlignRightTooltip = "Cette option permet d'aligner les valeurs de Pawn et vos informations d'information sur le bord droit du tooltips au lieu de la gauche",
+		OptionsBagUpgradeAdvisor = "Show bag upgrade advisor",
+		OptionsBagUpgradeAdvisorTooltip = [=[Enable this option to have Pawn take over the in-bag upgrade arrows.
+
+If checked, Pawn will find upgrades in your bags and mark items that are an upgrade for any of your active scales with green arrows. 
+
+If unchecked, WoW will mark items with a higher item level than what you're currently wearing, and Pawn will not interfere with the built-in feature.]=],
 		OptionsBlankLine = "Ajoute une ligne vide avant les valeurs",
 		OptionsBlankLineTooltip = "Cette option permet de s\195\169parer les informations de Pawn, en ajoutant une ligne vide",
 		OptionsButtonHidden = "Cach\195\169",

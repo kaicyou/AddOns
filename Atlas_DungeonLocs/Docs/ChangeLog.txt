@@ -1,4 +1,4 @@
-ˇ$Id: ChangeLog.txt 30 2016-10-04 16:06:47Z arith $
+ˇ$Id: ChangeLog.txt 32 2016-10-19 08:30:21Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,11 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.34.04 (Oct. 19, 2016)
+------------------------
+- Remove Broken Isles' PVP areas' faction info as it's rotated
+
 
 v1.34.03 (Oct. 04, 2016)
 ------------------------

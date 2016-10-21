@@ -1370,12 +1370,15 @@ function FishLib:InvokeLuring(id, itemtype, targetslot)
 		return;
 	end
 	if ( id ) then
+		if (string.match(id, "^%d+$")) then
+			id = "item:"..id;
+		end
 		if (not itemtype) then
 			itemtype = "item";
 			targetslot = INVSLOT_MAINHAND;
 		end
 		btn:SetAttribute("type", itemtype);
-		btn:SetAttribute("item", "item:"..id);
+		btn:SetAttribute("item", id);
 		btn:SetAttribute("target-slot", targetslot);
 	else
 		btn:SetAttribute("type", nil);

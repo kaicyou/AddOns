@@ -467,6 +467,7 @@ function RaidGroups.BuildOptions (frame)
 			slot:SetMovable (true)
 			slot:SetSize (group_sizeX-2, slot_height)
 			slot:RegisterForDrag ("LeftButton")
+			slot:EnableMouse (true)
 			slot:SetBackdrop (slot_backdrop)
 			slot:SetBackdropColor (unpack (slot_backdropcolor))
 			slot:SetBackdropBorderColor (unpack (slot_bordercolor))
@@ -591,30 +592,38 @@ function RaidGroups.BuildOptions (frame)
 				
 				--print (index, playerVirtual [ROSTER_PLAYERNAME], playerVirtual [ROSTER_RAIDGROUP], subgroup, name)
 				
-				--> if the player is on a different group on the virtual roster, we need to move he on the original roster
-				if (subgroup ~= playerVirtual [ROSTER_RAIDGROUP]) then
-					local amt = get_amtPlayers_onRaidGroup (playerVirtual [ROSTER_RAIDGROUP])
-					
-					--print (name, amt, "do grupo", subgroup, "para", playerVirtual [ROSTER_RAIDGROUP])
-					
-					if (amt == 5) then
-						--need to swap somebody, find who don't belong to the group and remove him
-						local intruder = get_groupIntruderIndex (playerVirtual [ROSTER_RAIDGROUP]) -- is 1
-						if (not UnitAffectingCombat ("raid" .. raidIndex)) then
-							SwapRaidSubgroup (raidIndex, intruder)
+				if (raidIndex) then
+					--> algo saiu errado, o grupo não foi atualizado?
+					--RaidGroups.Sync()
+					--apply_frame:SetScript ("OnUpdate", nil)
+					--print ("Algo saiu errado, o grupo não era o mesmo...")
+					--return
+
+					--> if the player is on a different group on the virtual roster, we need to move he on the original roster
+					if (subgroup ~= playerVirtual [ROSTER_RAIDGROUP]) then
+						local amt = get_amtPlayers_onRaidGroup (playerVirtual [ROSTER_RAIDGROUP])
+						
+						--print (name, amt, "do grupo", subgroup, "para", playerVirtual [ROSTER_RAIDGROUP])
+						
+						if (amt == 5) then
+							--need to swap somebody, find who don't belong to the group and remove him
+							local intruder = get_groupIntruderIndex (playerVirtual [ROSTER_RAIDGROUP]) -- is 1
+							if (not UnitAffectingCombat ("raid" .. raidIndex)) then
+								SwapRaidSubgroup (raidIndex, intruder)
+							else
+								RaidGroups:Msg ("Could not move " .. (UnitName ("raid" .. raidIndex) or "") .. " (unit in combat).")
+							end
+							RaidGroups.CanGoNext = false
 						else
-							RaidGroups:Msg ("Could not move " .. (UnitName ("raid" .. raidIndex) or "") .. " (unit in combat).")
+							-- keyspell esta sendo movido do grupo 1 para o 8.
+							--print ("setting raid group for ", name, raidIndex, playerVirtual [ROSTER_RAIDGROUP], "PPL on group:", amt)
+							if (not UnitAffectingCombat ("raid" .. raidIndex)) then
+								SetRaidSubgroup (raidIndex, playerVirtual [ROSTER_RAIDGROUP])
+							else
+								RaidGroups:Msg ("Could not move " .. (UnitName ("raid" .. raidIndex) or "") .. " (unit in combat).")
+							end
+							RaidGroups.CanGoNext = false
 						end
-						RaidGroups.CanGoNext = false
-					else
-						-- keyspell esta sendo movido do grupo 1 para o 8.
-						--print ("setting raid group for ", name, raidIndex, playerVirtual [ROSTER_RAIDGROUP], "PPL on group:", amt)
-						if (not UnitAffectingCombat ("raid" .. raidIndex)) then
-							SetRaidSubgroup (raidIndex, playerVirtual [ROSTER_RAIDGROUP])
-						else
-							RaidGroups:Msg ("Could not move " .. (UnitName ("raid" .. raidIndex) or "") .. " (unit in combat).")
-						end
-						RaidGroups.CanGoNext = false
 					end
 				end
 				
@@ -680,7 +689,7 @@ function RaidGroups.BuildOptions (frame)
 		RaidGroups.Sync()
 		RaidGroups.lock_frame:Hide()
 	end
-	local sync_button =  RaidGroups:CreateButton (frame, sync_func, 100, 20, "Sync", _, _, _, "button_sync", _, _, RaidGroups:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), RaidGroups:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
+	local sync_button =  RaidGroups:CreateButton (frame, sync_func, 100, 20, "Refresh", _, _, _, "button_sync", _, _, RaidGroups:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), RaidGroups:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 	sync_button:SetPoint ("left", apply_button, "right", 6, 0)
 	sync_button:SetIcon ([[Interface\BUTTONS\UI-RefreshButton]], 14, 14, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 2, 1, 0)
 
@@ -1084,6 +1093,18 @@ function RaidGroups:GROUP_ROSTER_UPDATE()
 		--end
 		--RaidGroups.Sync()
 	end
+	
+	--> verifica pessoas que sairam do grupo e atualiza automaticamente
+--[[
+	for i = #RaidGroups.VirtualGroups, 1, -1 do
+		local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML = unpack (RaidGroups.VirtualGroups [i])
+		
+		if (not UnitInRaid (name)) then
+			tremove ()
+		end
+	end
+	RaidGroups.VirtualGroups, {GetRaidRosterInfo (i)}
+--]]	
 end
 
 

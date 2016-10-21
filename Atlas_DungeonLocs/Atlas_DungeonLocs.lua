@@ -1,4 +1,4 @@
--- $Id: Atlas_DungeonLocs.lua 30 2016-10-04 16:06:47Z arith $
+-- $Id: Atlas_DungeonLocs.lua 32 2016-10-19 08:30:21Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -267,13 +267,13 @@ local myData = {
 		{ WHIT.."12) "..BZ["The Nighthold"]..ALC["Comma"].._RED..BZ["Suramar"]..GREY.." (44.1, 59.8)", 10012 };
 		{ INDENT..GREY..ALC["L-Parenthesis"]..L["Raid entrance is inside the Sanctum Depths of Sanctum of Order"]..ALC["R-Parenthesis"].." (45.9, 64.5)" };
 		{ "" };
-		{ GREN.." 1) "..BZ["Darkfollow's Spire"]..HRDE..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"]..GREY..ALC["Comma"].._RED..BZ["Val'sharah"]..GREY.." (37.7, 73.2)", 10101 };
-		{ GREN.." 2) "..BZ["Starstalker's Point"]..ALAN..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"]..GREY..ALC["Comma"].._RED..BZ["Val'sharah"]..GREY.." (33.6, 40.7)", 10102 };
+		{ GREN.." 1) "..BZ["Darkfollow's Spire"]..GREY..ALC["Comma"].._RED..BZ["Val'sharah"]..GREY.." (37.7, 73.2)", 10101 };
+		{ GREN.." 2) "..BZ["Starstalker's Point"]..GREY..ALC["Comma"].._RED..BZ["Val'sharah"]..GREY.." (33.6, 40.7)", 10102 };
 		{ GREN.." 3) "..BZ["Black Rook Hold Arena"]..GREY..ALC["Comma"].._RED..BZ["Val'sharah"]..GREY.." (42.4, 48.8)", 10103 };
-		{ GREN.." 4) "..BZ["Nightwatcher's Perch"]..HRDE..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"]..GREY..ALC["Comma"].._RED..BZ["Highmountain"]..GREY.." (25.6, 54.2)", 10104 };
-		{ GREN.." 5) "..BZ["Cordana's Apex"]..ALAN..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"]..GREY..ALC["Comma"].._RED..BZ["Stormheim"]..GREY.." (61.2, 56.4)", 10105 };
-		{ GREN.." 6) "..BZ["Whisperwind's Citadel"]..ALAN..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"]..GREY..ALC["Comma"].._RED..BZ["Stormheim"]..GREY.." (48.4, 20.7)", 10106 };
-		{ GREN.." 7) "..BZ["Blackhawk's Bulwark"]..HRDE..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"]..GREY..ALC["Comma"].._RED..BZ["Stormheim"]..GREY.." (61.2, 89.7)", 10107 };
+		{ GREN.." 4) "..BZ["Nightwatcher's Perch"]..GREY..ALC["Comma"].._RED..BZ["Highmountain"]..GREY.." (25.6, 54.2)", 10104 };
+		{ GREN.." 5) "..BZ["Cordana's Apex"]..GREY..ALC["Comma"].._RED..BZ["Stormheim"]..GREY.." (61.2, 56.4)", 10105 };
+		{ GREN.." 6) "..BZ["Whisperwind's Citadel"]..GREY..ALC["Comma"].._RED..BZ["Stormheim"]..GREY.." (48.4, 20.7)", 10106 };
+		{ GREN.." 7) "..BZ["Blackhawk's Bulwark"]..GREY..ALC["Comma"].._RED..BZ["Stormheim"]..GREY.." (61.2, 89.7)", 10107 };
 		{ "" };
 		{ WHIT..L["White"]..ALC["Colon"]..ORNG..L["Instances"] };
 		{ GREN..L["Green"]..ALC["Colon"]..ORNG..PVP };

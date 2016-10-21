@@ -4,13 +4,19 @@ local B = LibStub("LibBabble-SubZone-3.0")
 local BL = B:GetLookupTable()
 local ObjectiveTracker_Expand, ObjectiveTracker_Collapse = ObjectiveTracker_Expand, ObjectiveTracker_Collapse
 local IsResting = IsResting
+local _G = _G
+
+local minimizeButton = _G["ObjectiveTrackerFrame"].HeaderMenu.MinimizeButton
+
 local statedriver = {
 	["FULL"] = function(frame) 
 		ObjectiveTracker_Expand()
+		minimizeButton.text:SetText("-")
 		frame:Show()
 	end,
 	["COLLAPSED"] = function(frame)
 		ObjectiveTracker_Collapse()
+		minimizeButton.text:SetText("+")
 		frame:Show()
 	end,
 	["HIDE"] = function(frame)
@@ -98,7 +104,7 @@ function Q:QUEST_COMPLETE()
 	for index = 1, num do
 		local link = GetQuestItemLink("choice", index);
 		if link then
-			local price = select(11, GetItemInfo(link))
+			local price = T.select(11, GetItemInfo(link))
 			if price and price > highest then
 				highest = price
 				choice = index

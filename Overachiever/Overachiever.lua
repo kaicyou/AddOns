@@ -486,6 +486,8 @@ local function changeAchFrameDragging(enable)
   end
 end
 
+local orig_AchievementFrame_area
+
 local function CheckDraggable_AchFrame(self, key, val, clicked, LoadPos)
   if (AchievementFrame) then
     -- Check if draggable:
@@ -509,12 +511,14 @@ local function CheckDraggable_AchFrame(self, key, val, clicked, LoadPos)
           Overachiever_CharVars.Pos_AchievementFrame = Overachiever_CharVars_Default and Overachiever_CharVars_Default.Pos_AchievementFrame or {}
         end
         TjDragIt.EnablePositionSaving(AchievementFrame, Overachiever_CharVars.Pos_AchievementFrame, LoadPos)
-        AchievementFrame:SetAttribute("UIPanelLayout-enabled", false);
+        --AchievementFrame:SetAttribute("UIPanelLayout-enabled", false);
+		SetUIPanelAttribute(AchievementFrame, "area", nil);
         MadeDragSave_AchFrame = true
       end
     elseif (MadeDragSave_AchFrame) then
       TjDragIt.DisablePositionSaving(AchievementFrame)
-      AchievementFrame:SetAttribute("UIPanelLayout-enabled", true);
+      --AchievementFrame:SetAttribute("UIPanelLayout-enabled", true);
+	  SetUIPanelAttribute(AchievementFrame, "area", orig_AchievementFrame_area);
       MadeDragSave_AchFrame = nil
     end
   end
@@ -529,7 +533,7 @@ function Overachiever.CheckDraggable_AchFrame_redo()
   end
 end
 
-local orig_AchievementFrame_OnShow, orig_AchievementFrame_area
+local orig_AchievementFrame_OnShow
 
 local function AchievementUI_FirstShown_post()
   Overachiever.MainFrame:Hide()
@@ -543,9 +547,16 @@ local function AchievementUI_FirstShown_post()
       -- This should prevent the error that otherwise occurs when we try to reference a member of UIPanelWindows["AchievementFrame"], below.
       AchievementFrame_LoadUI()
     end
-    UIPanelWindows["AchievementFrame"].area = orig_AchievementFrame_area
-    AchievementFrame:SetAttribute("UIPanelLayout-area", orig_AchievementFrame_area);
-    orig_AchievementFrame_area = nil
+    if (UIPanelWindows["AchievementFrame"]) then -- Prevent error message due to other addons doing something... weird? This breaks functionality but maybe it's okay since the problem might happen with other addons that duplicate this functionality (movable achievement frame) anyway.
+      UIPanelWindows["AchievementFrame"].area = orig_AchievementFrame_area
+      if (not Overachiever_Settings.DragSave_AchFrame) then
+        --AchievementFrame:SetAttribute("UIPanelLayout-area", orig_AchievementFrame_area);
+        SetUIPanelAttribute(AchievementFrame, "area", orig_AchievementFrame_area);
+      end
+    elseif (Overachiever_Debug) then
+      chatprint('Error: UIPanelWindows["AchievementFrame"] not found.')
+    end
+    --orig_AchievementFrame_area = nil
   end
   CheckDraggable_AchFrame(nil, nil, nil, nil, true)
   if (not Overachiever_Settings.DragSave_AchFrame) then
@@ -1199,11 +1210,11 @@ function Overachiever.OnEvent(self, event, arg1, ...)
     AchievementButton_GetMeta = new_AchievementButton_GetMeta
     -- Add "series" tooltip to default achievement buttons:
     Overachiever.UI_HookAchButtons(AchievementFrameAchievementsContainer.buttons, AchievementFrameAchievementsContainerScrollBar)
-    -- Allow closing frame with Escape even when UIPanelLayout-enabled is set to false:
+    -- Allow closing frame with Escape even when UIPanelLayout-area is nil:
     tinsert(UISpecialFrames, "AchievementFrame");
 
     -- Make main achievement UI draggable:
-    -- - Prevent UIParent.lua from seeing area field (or it'll do things that mess up making the frame draggable).
+    -- - Prevent UIParent.lua from seeing area field (or it'll do things that mess up making the frame draggable). (Not sure if that's true any more, but setting orig_AchievementFrame_area is still useful.)
     if (UIPanelWindows["AchievementFrame"]) then  -- This if statement prevents error messages when the addon MoveAnything is used to move AchievementFrame.
       orig_AchievementFrame_area = UIPanelWindows["AchievementFrame"].area
       UIPanelWindows["AchievementFrame"].area = nil

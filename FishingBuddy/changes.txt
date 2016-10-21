@@ -1,4 +1,10 @@
-﻿Version 1.7.9
+﻿Version 1.7.10
+- Force null 'name' reference to not happen (no idea why yet, other than caching issues)
+- Add Arcane lure to "special" lure handling
+- Display available Legion world fishing quests
+- Support the new raft toy
+
+Version 1.7.9
 - Another set if nil handling changes (found a major one)
 
 Version 1.7.8

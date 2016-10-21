@@ -391,6 +391,12 @@ Pawn enthält Bewertungsprofile von Wowhead für jede Klasse und Spezialisierung
 		OptionsAdvisorHeader = "Ratgeber Optionen",
 		OptionsAlignRight = "Wertungen im Tooltip rechts ausrichten",
 		OptionsAlignRightTooltip = "Aktiviere diese Option um Pawn-Wertungen und Upgradeinformationen an der rechten anstatt der linken Seite des Tooltips auszurichten.",
+		OptionsBagUpgradeAdvisor = "Show bag upgrade advisor",
+		OptionsBagUpgradeAdvisorTooltip = [=[Enable this option to have Pawn take over the in-bag upgrade arrows.
+
+If checked, Pawn will find upgrades in your bags and mark items that are an upgrade for any of your active scales with green arrows. 
+
+If unchecked, WoW will mark items with a higher item level than what you're currently wearing, and Pawn will not interfere with the built-in feature.]=],
 		OptionsBlankLine = "Leerzeile vor Wertungen",
 		OptionsBlankLineTooltip = "Halte die Tooltips übersichtlich, in dem du eine extra Leerzeile vor den Pawn-Wertungen einführst.",
 		OptionsButtonHidden = "verstecken",

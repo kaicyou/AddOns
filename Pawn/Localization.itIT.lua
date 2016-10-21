@@ -391,6 +391,12 @@ Quando ricevi ricompense da una missione o bottino da una spedizione che può es
 		OptionsAdvisorHeader = "Opzioni avvisi",
 		OptionsAlignRight = "Allinea i valori a destra",
 		OptionsAlignRightTooltip = "Abilita questa opzione per allineare i valori di Pawn e le informazioni di miglioramento al bordo destro della tooltip invece che a sinistra.",
+		OptionsBagUpgradeAdvisor = "Show bag upgrade advisor",
+		OptionsBagUpgradeAdvisorTooltip = [=[Enable this option to have Pawn take over the in-bag upgrade arrows.
+
+If checked, Pawn will find upgrades in your bags and mark items that are an upgrade for any of your active scales with green arrows. 
+
+If unchecked, WoW will mark items with a higher item level than what you're currently wearing, and Pawn will not interfere with the built-in feature.]=],
 		OptionsBlankLine = "Aggiungi una riga vuota prima dei valori",
 		OptionsBlankLineTooltip = "Mantieni la tooltip dei tuoi oggetti estremamente ordinata abilitando questa opzione. Essa aggiungerà una riga vuota prima dei valori di Pawn.",
 		OptionsButtonHidden = "Nascondilo",

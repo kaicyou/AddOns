@@ -1,7 +1,7 @@
-## Interface: 70000
+## Interface: 70100
 ## Title: Lib: NoTaint_UIDropDownMenu
 ## Notes: Replacement for standard UIDropDownMenu
-## Version: 7.0.3.22248
+## Version: 7.1.0.22908
 ## X-Category: Libraries
 
 # ## Check out the following page for more details: 

@@ -229,6 +229,9 @@ Overachiever.ZONE_RENAME = {
 		[477] = "Nagrand (Outland)",
 		[950] = "Nagrand (Draenor)",
 	},
+	["Karazhan"] = { -- !! double check
+		[1115] = "Return to Karazhan",
+	},
 }
 -- If adding to this, don't forget to add to ZONE_RENAME_REV in Overachiever_Tabs\Suggestions.lua as well.
 

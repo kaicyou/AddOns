@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas-zhTW.lua 100 2016-09-20 03:46:42Z arith $
+﻿-- $Id: Atlas-zhTW.lua 110 2016-10-27 05:18:21Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser

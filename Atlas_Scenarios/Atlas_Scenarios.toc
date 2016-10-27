@@ -1,4 +1,4 @@
-﻿## Interface: 70000
+﻿## Interface: 70100
 #@non-debug@
 ## Title: Atlas |r|cFF0099FF[Scenarios]|r
 ## Title-deDE: Atlas |r|cFF0099FF[Szenarien]|r
@@ -29,15 +29,15 @@
 # ## Notes: Scenarios Maps
 # ## Notes-zhTW: Atlas 史詩情境事件模式地圖插件
 #@end-debug@
-## Version: 1.34.02
+## Version: 1.35.00
 ## OptionalDeps: Lib-Scenarios
 ## Author: arith, Dynaletik, dubcat
-## X-Date: 2016-10-06T03:47:55Z
+## X-Date: 2016-10-27T05:10:53Z
 ## X-Email: atlas.addon at gmail.com
 ## X-Website: http://www.atlasmod.com
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v1.34.02
+## X-Curse-Packaged-Version: v1.35.00
 ## X-Curse-Project-Name: Atlas Scenarios
 ## X-Curse-Project-ID: atlas-scenarios
 ## X-Curse-Repository-ID: wow/atlas-scenarios/mainline

@@ -23,7 +23,7 @@ local BisList = {version = "v0.1", pluginname = "BisList"}
 _G ["RaidAssistBisList"] = BisList
 
 BisList.IsDisabled = true
-BisList.IsDisabled = false
+--BisList.IsDisabled = false
 
 local can_install = false
 local can_install = true
@@ -230,10 +230,13 @@ function BisList.BuildOptions (frame)
 		L["S_EQUIPSLOT_13"],--12
 		L["S_EQUIPSLOT_13"],--13
 		L["S_EQUIPSLOT_15"],--14
-		L["S_EQUIPSLOT_16"],--15
-		L["S_EQUIPSLOT_16"],--16
+		"Relic", 
+		"Relic", 
+		"Relic", 
+		--L["S_EQUIPSLOT_16"],--15
+		--L["S_EQUIPSLOT_16"],--16
 	}
-	local slot_indexes = {1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 11, 13, 13, 15, 16, 16}
+	local slot_indexes = {1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 11, 13, 13, 15, 16, 16, 16, 18, 19, 20, 20, 20} --16, 16
 	local armor_slots = {[1]=true, [3]=true, [5]=true, [6]=true, [7]=true, [8]=true, [9]=true, [10]=true}
 	local player_armor_type, armor_types = GetPlayerArmorType()
 	

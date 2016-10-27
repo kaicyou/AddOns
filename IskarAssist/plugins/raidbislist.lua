@@ -31,7 +31,7 @@ local BisListRaid = {version = "v0.1", pluginname = "BisListRaid"}
 _G ["RaidAssistBisListRaid"] = BisListRaid
 
 BisListRaid.IsDisabled = true
-BisListRaid.IsDisabled = false
+--BisListRaid.IsDisabled = false
 
 local BisList = _G ["RaidAssistBisList"]
 

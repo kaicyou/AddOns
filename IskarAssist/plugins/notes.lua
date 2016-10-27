@@ -211,7 +211,7 @@ Notepad.OnInstall = function (plugin)
 	
 	local f_anim = CreateFrame ("frame", nil, screen_frame)
 	local t = f_anim:CreateTexture (nil, "overlay")
-	t:SetTexture (1, 1, 1, 0.25)
+	t:SetColorTexture (1, 1, 1, 0.25)
 	t:SetAllPoints()
 	t:SetBlendMode ("ADD")
 	local animation = t:CreateAnimationGroup()
@@ -430,13 +430,14 @@ function Notepad.CreateNewNotepad (self, button, name)
 	
 end
 
+-- ~boss
 function Notepad:BuildBossList()
 	local t = {}
 	
-	--> hellfire citadel
-	EJ_SelectInstance (669)
-	for i = 1, 13 do
-		t [#t+1] = {label = EJ_GetEncounterInfoByIndex (i, 669), value = "669_" .. i, onclick = Notepad.OnBossSelection}
+	--> Emerald Nightmare
+	EJ_SelectInstance (768)
+	for i = 1, 7 do
+		t [#t+1] = {label = EJ_GetEncounterInfoByIndex (i, 768), value = "768_" .. i, onclick = Notepad.OnBossSelection}
 	end
 	
 	return t
@@ -1210,13 +1211,14 @@ function Notepad.BuildOptions (frame)
 			local color_button =  Notepad:CreateButton (colors_panel, on_color_selection, 16, 16, "", colors [index], _, _, "button_color" .. index, _, _, Notepad:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Notepad:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 			color_button:SetPoint ("topleft", editbox_notes, "topright", 10 + ((i-1)*17), -20 + (o*17*-1))
 			local color_texture = color_button:CreateTexture (nil, "background")
-			color_texture:SetTexture (Notepad:ParseColors (colors [index]))
+			color_texture:SetColorTexture (Notepad:ParseColors (colors [index]))
 			color_texture:SetAlpha (0.7)
 			color_texture:SetAllPoints()
 			index = index + 1
 		end
 	end
 	
+	--~colors
 	local current_color = Notepad:CreateLabel (colors_panel, "A", 14, "white", nil, "current_font")
 	current_color:SetPoint ("bottomright", dropdown_colors, "topright")
 	local do_text_format = function (self, elapsed)

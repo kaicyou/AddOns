@@ -1,4 +1,4 @@
- 
+
 -- raid control
 
 local DF = _G ["DetailsFramework"]
@@ -250,6 +250,125 @@ function RA.OnInit (self)
 	RA:RefreshMainAnchor()
 	
 	RA:RefreshMacros()
+	
+	C_Timer.After (10, function()
+		if (RA.db and not RA.db.profile.patch_71) then
+			RA.db.profile.patch_71 = true
+			
+			if (_G ["RaidAssistReadyCheck"] and _G ["RaidAssistReadyCheck"].db) then
+				_G ["RaidAssistReadyCheck"].db.enabled = true
+			end
+			
+		end
+	end)
+	
+	C_Timer.After (10, function()
+		--RA.db.profile.welcome_screen1 = false
+		if (not RA.db.profile.welcome_screen1) then
+			
+			local button_template = {
+				backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
+				backdropcolor = {1, 1, 1, .5},
+				backdropbordercolor = {1, .9, 0, 1},
+				onentercolor = {1, 1, 1, .5},
+				onenterbordercolor = {1, .9, 1, 1},
+			}
+			
+			local f = CreateFrame ("frame", nil, UIParent)
+			f:SetSize (600, 430)
+			f:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
+			f:SetBackdropColor (0, 0, 0)
+			f:SetBackdropBorderColor (1, .7, 0, .8)
+			
+			f:SetScript ("OnUpdate", function()
+				if (RaidAssistOptionsPanel and RaidAssistOptionsPanel:IsShown()) then
+					f:SetAlpha (0)
+				else
+					f:SetAlpha (1)
+				end
+			end)
+			
+			local logo = DF:CreateImage (f, [[Interface\TUTORIALFRAME\UI-TUTORIALFRAME-SPIRITREZ]], 221*.4, 128*.4, "overlay", {82/512, 303/512, 0, 1})
+			logo:SetPoint ("topleft", f, "topleft", 0, -2)
+			
+			local title = DF:CreateLabel (f, "Welcome to Raid Assist", 16, "yellow")
+			local subtitle = DF:CreateLabel (f, "formerly known as 'iskar assist'", 10, "white")
+			subtitle:SetAlpha (0.8)
+			title:SetPoint (221*.4 + 10, -12)
+			subtitle:SetPoint ("topleft", title, "bottomleft", 0, -2)
+			
+			local label_command = DF:CreateLabel (f, "[/raa to open raid assist at any time]", 14, "orange")
+			label_command:SetPoint ("topright", f, "topright", -10, -12)
+			
+			local label_SetupSchedule = DF:CreateLabel (f, "Setup Raid Time Schedule", 12, "yellow")
+			local label_SetupSchedule_Desc = DF:CreateLabel (f, "If Raid Assist does know which time you raid,\nit'll record the attendance of players for you.", 10, "white")
+			local button_SetupSchedule = DF:CreateButton (f, function() RA.OpenMainOptions (_G ["RaidAssistRaidSchedule"]) end, 80, 40, "Setup\nSchedule")
+			button_SetupSchedule:SetPoint ("topleft", subtitle, "bottomleft", (-221*.4) - 5, -30)
+			button_SetupSchedule:SetTemplate (button_template)
+			label_SetupSchedule:SetPoint ("topleft", button_SetupSchedule, "topright", 10, -2)
+			label_SetupSchedule_Desc:SetPoint ("topleft", label_SetupSchedule, "bottomleft", 0, -2)
+			
+			local label_SetupInvites = DF:CreateLabel (f, "Are you an Officer? - Setup Auto Start Invites", 12, "yellow")
+			local label_SetupInvites_Desc = DF:CreateLabel (f, "When Raid Assist knows your raid schedule,\nit can automatically start invites 15 minutes before the raid start.", 10, "white")
+			local button_SetupInvites = DF:CreateButton (f, function() RA.OpenMainOptions (_G ["RaidAssistInvite"]) end, 80, 40, "Setup\nInvites")
+			button_SetupInvites:SetPoint ("topleft", button_SetupSchedule, "bottomleft", 0, -8)
+			button_SetupInvites:SetTemplate (button_template)
+			label_SetupInvites:SetPoint ("topleft", button_SetupInvites, "topright", 10, -2)
+			label_SetupInvites_Desc:SetPoint ("topleft", label_SetupInvites, "bottomleft", 0, -2)
+			
+			local label_SetupCooldowns = DF:CreateLabel (f, "Raid Cooldown Monitor", 12, "yellow")
+			local label_SetupCooldowns_Desc = DF:CreateLabel (f, "Setup a cooldown monitor to track raid defensive cooldowns.", 10, "white")
+			local button_SetupCooldowns = DF:CreateButton (f, function() RA.OpenMainOptions (_G ["RaidAssistCooldowns"]) end, 80, 40, "Cooldown\nMonitor")
+			button_SetupCooldowns:SetPoint ("topleft", button_SetupInvites, "bottomleft", 0, -8)
+			button_SetupCooldowns:SetTemplate (button_template)
+			label_SetupCooldowns:SetPoint ("topleft", button_SetupCooldowns, "topright", 10, -2)
+			label_SetupCooldowns_Desc:SetPoint ("topleft", label_SetupCooldowns, "bottomleft", 0, -2)
+			
+			local label_SetupBattleRes = DF:CreateLabel (f, "BattleRes Monitor", 12, "yellow")
+			local label_SetupBattleRes_Desc = DF:CreateLabel (f, "Setup a battle res monitor.", 10, "white")
+			local button_SetupBattleRes = DF:CreateButton (f, function() RA.OpenMainOptions (_G ["RaidAssistBattleRes"]) end, 80, 40, "BattleRes\nMonitor")
+			button_SetupBattleRes:SetPoint ("topleft", button_SetupCooldowns, "bottomleft", 0, -8)
+			button_SetupBattleRes:SetTemplate (button_template)
+			label_SetupBattleRes:SetPoint ("topleft", button_SetupBattleRes, "topright", 10, -2)
+			label_SetupBattleRes_Desc:SetPoint ("topleft", label_SetupBattleRes, "bottomleft", 0, -2)
+			
+			--plus
+			local label_Plus = DF:CreateLabel (f, "More Tools (require all raid members using Raid Assist):", 12, "yellow")
+			label_Plus:SetPoint ("topleft", button_SetupBattleRes, "bottomleft", 0, -20)
+			
+			local label_WeakAuras = DF:CreateLabel (f, "|cFFFFAA00Weakauras Check|r|cFFFFFFFF: see if all raid members are using an specific aura you want they use.", 12, "yellow")
+			local button_WeakAuras = DF:CreateButton (f, function() RA.OpenMainOptions (_G ["RaidAssistAuraCheck"]) end, 16, 16, ">")
+			button_WeakAuras:SetTemplate (button_template)
+			button_WeakAuras:SetPoint ("topleft", label_Plus, "bottomleft", 0, -8)
+			label_WeakAuras:SetPoint ("left", button_WeakAuras, "right", 2, 0)
+			
+			local label_AddonsCheck = DF:CreateLabel (f, "|cFFFFAA00AddOns Check|r|cFFFFFFFF: check if raid members are using required addons by your guild.", 12, "yellow")
+			local button_AddonsCheck = DF:CreateButton (f, function() RA.OpenMainOptions (_G ["RaidAssistAddonsCheck"]) end, 16, 16, ">")
+			button_AddonsCheck:SetTemplate (button_template)
+			button_AddonsCheck:SetPoint ("topleft", button_WeakAuras, "bottomleft", 0, -8)
+			label_AddonsCheck:SetPoint ("left", button_AddonsCheck, "right", 2, 0)
+			
+			local label_RaidAssignments = DF:CreateLabel (f, "|cFFFFAA00Raid Assignments|r|cFFFFFFFF: help on building assignments for each boss, e.g. cooldown order.", 12, "yellow")
+			local button_RaidAssignments = DF:CreateButton (f, function() RA.OpenMainOptions (_G ["RaidAssistNotepad"]) end, 16, 16, ">")
+			button_RaidAssignments:SetTemplate (button_template)
+			button_RaidAssignments:SetPoint ("topleft", button_AddonsCheck, "bottomleft", 0, -8)
+			label_RaidAssignments:SetPoint ("left", button_RaidAssignments, "right", 2, 0)
+			
+			local label_SendText = DF:CreateLabel (f, "|cFFFFAA00Paste Text|r|cFFFFFFFF: send Urls to your raid (e.g. discord/teamspeak), paste a strategy guide.", 12, "yellow")
+			local button_SendText = DF:CreateButton (f, function() RA.OpenMainOptions (_G ["RaidAssistPasteText"]) end, 16, 16, ">")
+			button_SendText:SetTemplate (button_template)
+			button_SendText:SetPoint ("topleft", button_RaidAssignments, "bottomleft", 0, -8)
+			label_SendText:SetPoint ("left", button_SendText, "right", 2, 0)
+			
+			--close
+			local close = DF:CreateButton (f, function() f:Hide(); RA.db.profile.welcome_screen1 = true; end, 80, 20, "close")
+			close:SetPoint ("bottomright", f, "bottomright", -12, 12)
+			close:InstallCustomTexture()
+			f:SetPoint ("center")
+			f:Show()
+			--f:Hide()
+		end
+	end)
 	
 end
 

@@ -5,6 +5,9 @@ Copyright 2011 ~ 2016 - Arith Hsu
 = Change Log =
 ==============
 
+* 3.17 (2016/10/27)
+- Toc update to support WoW 7.1.0
+
 * 3.16 (2016/10/06)
 - Translation update:
   - Russian (dartraiden)

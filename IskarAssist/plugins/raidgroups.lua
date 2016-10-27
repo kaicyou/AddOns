@@ -253,6 +253,18 @@ function RaidGroups.BuildOptions (frame)
 	
 	frame:SetScript ("OnShow", OnShowPanel)
 	
+	local help_frame = CreateFrame ("frame", nil, frame)
+	help_frame:SetSize (320, 100)
+	help_frame:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
+	help_frame:SetBackdropColor (0, 0, 0, .3)
+	help_frame:SetBackdropBorderColor (.3, .3, .3, .3)
+	local label =  RA:CreateLabel (help_frame, "Tips:\n\n- You can modify raid groups while your raid clear trash mobs and apply the changes when all players are out of combat, saving a lot of time on organizing the raid.\n\n- Use as a backup if need to make many changes to the roster layout.", 10, "orange")
+	label:SetPoint ("topleft", help_frame, "topleft", 10, -10)
+	label:SetSize (300, 90)
+	label:SetAlpha (.8)
+	label:SetJustifyV ("top")
+	help_frame:SetPoint ("bottomright", RaidAssistOptionsPanel, "bottomright", -10, 10)
+	
 	local OnDragStart = function (self)
 		local cursorX, cursorY = GetCursorPosition()
 		local uiScale = UIParent:GetScale()

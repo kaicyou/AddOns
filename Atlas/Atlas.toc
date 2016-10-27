@@ -1,4 +1,4 @@
-﻿## Interface: 70000
+﻿## Interface: 70100
 #@non-debug@
 ## Title: Atlas
 ## Title-deDE: Atlas
@@ -18,7 +18,7 @@
 ## Notes-frFR: Navigateur de cartes d'instances
 ## Notes-itIT: Instance Map Browser
 ## Notes-koKR: 인스턴스 지도 탐색기
-## Notes-ptBR: Instance Map Browser
+## Notes-ptBR: Buscador de Mapas de Instância
 ## Notes-ruRU: Обозреватель подземелий
 ## Notes-zhCN: |cff00CC33副本地图浏览器|r
 ## Notes-zhTW: |cff00CC33Atlas 地圖集主程式|r
@@ -34,11 +34,11 @@
 # ## Notes-zhTW: Atlas 地圖集主程式
 #@end-debug@
 ## Author: arith, Dynaletik, dubcat
-## Version: 1.34.05
+## Version: 1.35.00
 ## OptionalDeps: Ace3, LibBabble-Boss-3.0, LibBabble-SubZone-3.0, LibBabble-Faction-3.0, LibDataBroker-1.1, LibAboutPanel, CallbackHandler-1.0, LibDBIcon-1.0, LibDialog-1.0
 ## X-Category: Map
 ## X-Credits: Dan Gilbert, Lothaer
-## X-Date: 2016-10-12T09:38:23Z
+## X-Date: 2016-10-27T05:18:21Z
 ## X-Donate: http://pledgie.com/campaigns/14729
 ## X-Email: atlas.addon@gmail.com
 ## X-Feedback: http://www.atlasmod.com/phpBB3/
@@ -47,7 +47,7 @@
 ## X-Website: http://www.atlasmod.com
 ## X-OptionsFrame: AtlasOptionsFrame
 ## SavedVariables: AtlasOptions, AtlasDB
-## X-Curse-Packaged-Version: v1.34.05
+## X-Curse-Packaged-Version: v1.35.00
 ## X-Curse-Project-Name: Atlas
 ## X-Curse-Project-ID: atlas
 ## X-Curse-Repository-ID: wow/atlas/mainline

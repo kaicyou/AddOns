@@ -1,5 +1,5 @@
 
-Overachiever v0.97
+Overachiever v0.98
 ==============================
 
 Author: Tuhljin
@@ -107,6 +107,11 @@ Change log
 ==========
 
 The change log lists changes of particular note to users, not every change made.
+
+v0.98
+- Updated for WoW patch 7.1.
+- Suggestions Tab: Added suggestions for Return to Karazhan (dungeon), Trial of Valor (raid), and the new Suramar storylines ("Insurrection").
+- Search Tab: "Name" field is now "Name or ID", allowing searches by achievement ID.
 
 v0.97
 - Suggestions Tab: Added additional suggestions for Draenor zones/dungeons/raids and Cataclysm raids. (Thanks to chrisnolanca for many of these.)

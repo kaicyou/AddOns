@@ -1,8 +1,8 @@
-## Interface: 70000
-## Title: Raid Assist (iskar assist)
-## Notes: iskar assist got evolved, type /raa to see our toys. Further boss mods will be added here instead of creating new addons.
+## Interface: 70100
+## Title: Raid Assist
+## Notes: Former 'Iskar' Assist, our further mods and tools will be added here, for now there's 16 raiding tools, type /raa to see.
 ## SavedVariables: IskarAssistDB, RADataBase
-## X-Curse-Packaged-Version: r102
+## X-Curse-Packaged-Version: r103
 ## X-Curse-Project-Name: Raid Assist
 ## X-Curse-Project-ID: iskar-assist
 ## X-Curse-Repository-ID: wow/iskar-assist/mainline

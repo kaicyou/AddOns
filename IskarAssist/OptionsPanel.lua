@@ -18,7 +18,8 @@ function RA.OpenMainOptions (plugin)
 	end
 
 	RA.db.options_panel = RA.db.options_panel or {}
-	local f = RA:CreateStandardFrame (UIParent, 1000, 500, "Raid Assist", "RaidAssistOptionsPanel", RA.db.options_panel)
+	local f = RA:CreateStandardFrame (UIParent, 1000, 500, "Raid Assist (|cFFFFAA00/raa|r)", "RaidAssistOptionsPanel", RA.db.options_panel)
+	f:SetBackdropBorderColor (1, .7, 0, .8)
 	
 	local label_plugins = RA:CreateLabel (f, "Plugins:")
 	label_plugins:SetPoint (10, -35)	

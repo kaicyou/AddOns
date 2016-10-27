@@ -403,34 +403,45 @@ end
 
 -- Display world quests
 local legionmaps = {
-	[1015] = true,
-	[1024] = true,
-	[1017] = true,
-	[1033] = true,
-	[1018] = true,
-	[1096] = true,
+	[1015] = "Azsuna",
+	[1024] = "High Mountain",
+	[1017] = "Stormheim",
+	[1033] = "Suramar",
+	[1018] = "Valsharah",
+	[1096] = "Eye of Azshara",
 }
 
 function DisplayFishingWorldQuests()
 	local GetQuestsForPlayerByMapID = C_TaskQuest.GetQuestsForPlayerByMapID
 	local line = nil;
 
-	for mapId, configTable in pairs (legionmaps) do
-		local taskInfo = GetQuestsForPlayerByMapID (mapId)
-		local shownQuests = 0
-				
+	local questdone = {};
+	local id = 10598;
+	local numCriteria = GetAchievementNumCriteria(id);
+	for i = 1,numCriteria do 
+		local criteriaString, _, completed, _, _, _, _, _, _ = GetAchievementCriteriaInfo(id, i);
+		questdone[criteriaString] = completed;
+	end
+
+	local prof1, prof2, arch, fish, cook, firstAid = GetProfessions();
+
+	for mapId, name in pairs (legionmaps) do
+		local taskInfo = GetQuestsForPlayerByMapID (mapId);
 		if (taskInfo and #taskInfo > 0) then
 			for i, info in ipairs (taskInfo) do
-				local questID = info.questId
+				local questID = info.questId;
 				if (HaveQuestData (questID)) then
 					local tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = GetQuestTagInfo (questID)
 					if ( worldQuestType == LE_QUEST_TAG_TYPE_PROFESSION ) then
-						local prof1, prof2, arch, fish, cook, firstAid = GetProfessions();
 						if ( tradeskillLineIndex == fish ) then
 							local title, factionID, capped = C_TaskQuest.GetQuestInfoByQuestID(questID);
-							title = Crayon:Green(title);
+							if (questdone[title]) then
+								title = Crayon:Green(title);
+							else
+								title = Crayon:Red(title);
+							end
 							if (line) then
-								line = line..", "..title
+								line = line..", "..title;
 							else
 								line = title;
 							end

@@ -235,7 +235,7 @@ function Invite.BuildOptions (frame)
 		editbox_preset_name:SetPoint ("left", label_preset_name, "right", 2, 0)
 
 		--guild rank to invite
-		local welcome_text_create1 = RA:CreateLabel (panel, "Select here, which ranks will be invited, the raid difficulty and who is the master looter (if any):", Invite:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
+		local welcome_text_create1 = RA:CreateLabel (panel, "When editing a profile, select here, which ranks will be invited,\nthe raid difficulty and who is the master looter (if any):", Invite:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
 		welcome_text_create1:SetPoint ("topleft", panel, "topleft", 10, -35)
 		
 		local switchers = {}
@@ -529,7 +529,7 @@ function Invite.BuildOptions (frame)
 		local x_start = 400
 		
 		--> welcome text
-		local welcome_text1 = RA:CreateLabel (main_frame, "Select the preset you want to use to start the invites.", Invite:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
+		local welcome_text1 = RA:CreateLabel (main_frame, "Create or select a invite preset. If the preset isn't set to auto start invites,\nclicking on it starts the inviting process.", Invite:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
 		welcome_text1:SetPoint ("topleft", main_frame, "topleft", x_start, 0)
 		
 		--> hold all preset buttons created

@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation_DB.lua 48 2016-09-23 08:41:48Z arith $
+-- $Id: Atlas_Transportation_DB.lua 56 2016-10-25 15:58:44Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -102,6 +102,19 @@ local myDB = {
 		{ "1", 10100, 110, 112 }; -- The Dreamgrove
 		{ "2", 10101, 193, 91}; -- Trueshot Lodge
 		{ "3", 10102, 387, 365 }; -- Acherus: The Ebon Hold
+		{ "1", 10201, 169, 245 }; -- Ley-Ruins of Zarkhenar
+		{ "2", 10202, 193, 118 }; -- Sylvan Falls
+		{ "3", 10203, 298, 170 }; -- Weeping Bluffs
+		{ "4", 10204, 139, 172 }; -- Temple of Elune
+		{ "5", 10205, 226, 238 }; -- Meredil
+		{ "1", 10301, 123, 104 }; -- The Dreamgrove
+		{ "2", 10302,  77, 301 }; -- Faronaar
+		{ "3", 10303, 156, 371 }; -- Isle of the Watchers
+		{ "4", 10304, 247, 282 }; -- Western Suramar
+		{ "5", 10305, 316, 260 }; -- Eastern Suramar
+		{ "6", 10306, 312, 204 }; -- Thorim's Peak
+		{ "7", 10307, 333, 131 }; -- Nastrondir
+		{ "8", 10308, 275, 130 }; -- Eastern Highmountain
 	};
 	TransHordeBrokenIsles = {
 		{ "A", 10038, 239, 336 }; -- Windrunner's Sanctuary
@@ -147,6 +160,19 @@ local myDB = {
 		{ "1", 10100, 110, 112 }; -- The Dreamgrove
 		{ "2", 10101, 193, 91}; -- Trueshot Lodge
 		{ "3", 10102, 387, 365 }; -- Acherus: The Ebon Hold
+		{ "1", 10201, 169, 245 }; -- Ley-Ruins of Zarkhenar
+		{ "2", 10202, 193, 118 }; -- Sylvan Falls
+		{ "3", 10203, 298, 170 }; -- Weeping Bluffs
+		{ "4", 10204, 139, 172 }; -- Temple of Elune
+		{ "5", 10205, 226, 238 }; -- Meredil
+		{ "1", 10301, 123, 104 }; -- The Dreamgrove
+		{ "2", 10302,  77, 301 }; -- Faronaar
+		{ "3", 10303, 156, 371 }; -- Isle of the Watchers
+		{ "4", 10304, 247, 282 }; -- Western Suramar
+		{ "5", 10305, 316, 260 }; -- Eastern Suramar
+		{ "6", 10306, 312, 204 }; -- Thorim's Peak
+		{ "7", 10307, 333, 131 }; -- Nastrondir
+		{ "8", 10308, 275, 130 }; -- Eastern Highmountain
 	};
 	TransAllianceDraenor = {
 		{ "A", 10052, 278, 259 }; -- Khadgar's Tower

@@ -1,4 +1,4 @@
-﻿## Interface: 70000
+﻿## Interface: 70100
 #@non-debug@
 ## Title: Atlas |r|cFF0099FF[Cataclysm]|r
 ## Title-deDE: Atlas |r|cFF0099FF[Cataclysm]|r
@@ -29,15 +29,15 @@
 # ## Notes: Cataclysm Dungeon Maps
 # ## Notes-zhTW: 浩劫與重生副本地圖模組
 #@end-debug@
-## Version: 1.34.00
+## Version: 1.35.00
 ## Author: arith, Dynaletik, dubcat
-## X-Date: 2016-09-09T08:17:29Z
+## X-Date: 2016-10-27T05:00:50Z
 ## X-Credits: Dan Gilbert, Lothaer
 ## X-Email: atlas.addon at gmail.com
 ## X-Website: http://www.atlasmod.com
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v1.34.00
+## X-Curse-Packaged-Version: v1.35.00
 ## X-Curse-Project-Name: Atlas Cataclysm
 ## X-Curse-Project-ID: atlas-cataclysm
 ## X-Curse-Repository-ID: wow/atlas-cataclysm/mainline

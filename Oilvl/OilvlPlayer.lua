@@ -177,7 +177,7 @@ function OiLvlPlayer_Update(sw)
 							end
 							_G["oilvlrelic"..Value]:SetScript("OnEnter", function(self)
 								local n = tonumber(self:GetName():gsub("oilvlrelic","").."")
-								if xname[n] and OTCheckartifactwep(tonumber(xname[n])) then
+								if xname[n] and OTCheckartifactwep(tonumber(xname[n])) and GetInventoryItemLink("player", n) then
 									for aw = 1, 3 do 
 										local reliclink = select(2,GetItemGem(GetInventoryItemLink("player", n),aw))
 										if reliclink then

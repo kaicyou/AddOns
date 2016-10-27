@@ -57,6 +57,7 @@ end
 
 function Overachiever.ResetHiddenHolidayNotices()
 	hiddenEvents = nil
+	lastEvents = nil
 end
 
 

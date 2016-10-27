@@ -1,0 +1,43 @@
+------------------------------------------------------------------------
+r4468 | proteyer | 2016-10-26 10:02:14 +0000 (Wed, 26 Oct 2016) | 8 lines
+Changed paths:
+   A /tags/v8.01.05 (from /trunk:4467)
+
+Tagging as v8.01.05
+
+- updated TOC version to 7.1
+- added Dungeon "Return To Karazhan" to Legion Content
+- added Raid "Trial Of Valor" to Legion Content
+- added zhTW description to TOC of AtlasLoot_Options.toc
+## information for Devs
+- added 2nd mythic dungeon bonusID to ItemString.lua
+------------------------------------------------------------------------
+r4467 | proteyer | 2016-10-26 09:54:18 +0000 (Wed, 26 Oct 2016) | 1 line
+Changed paths:
+   M /trunk
+   M /trunk/AtlasLoot/AtlasLoot.toc
+   M /trunk/AtlasLoot/Core/ItemString.lua
+   M /trunk/AtlasLoot/Libs/LibStub/LibStub.toc
+   M /trunk/AtlasLoot_BurningCrusade/AtlasLoot_BurningCrusade.toc
+   M /trunk/AtlasLoot_Cataclysm/AtlasLoot_Cataclysm.toc
+   M /trunk/AtlasLoot_Classic/AtlasLoot_Classic.toc
+   M /trunk/AtlasLoot_Collections/AtlasLoot_Collections.toc
+   M /trunk/AtlasLoot_Crafting/AtlasLoot_Crafting.toc
+   M /trunk/AtlasLoot_Factions/AtlasLoot_Factions.toc
+   M /trunk/AtlasLoot_Legion/AtlasLoot_Legion.toc
+   M /trunk/AtlasLoot_Legion/data.lua
+   M /trunk/AtlasLoot_MistsofPandaria/AtlasLoot_MistsofPandaria.toc
+   M /trunk/AtlasLoot_Options/AtlasLoot_Options.toc
+   M /trunk/AtlasLoot_PvP/AtlasLoot_PvP.toc
+   M /trunk/AtlasLoot_WarlordsofDraenor/AtlasLoot_WarlordsofDraenor.toc
+   M /trunk/AtlasLoot_WorldEvents/AtlasLoot_WorldEvents.toc
+   M /trunk/AtlasLoot_WrathoftheLichKing/AtlasLoot_WrathoftheLichKing.toc
+
+- merged branch Legion into Trunk
+------------------------------------------------------------------------
+r4463 | arith | 2016-09-22 03:43:02 +0000 (Thu, 22 Sep 2016) | 1 line
+Changed paths:
+   M /trunk/AtlasLoot_Options/AtlasLoot_Options.toc
+
+added zhTW description to TOC
+------------------------------------------------------------------------

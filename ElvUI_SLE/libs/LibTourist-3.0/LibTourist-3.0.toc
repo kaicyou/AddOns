@@ -8,7 +8,7 @@
 ## X-Curse-Project-Name: LibTourist-3.0
 ## X-Curse-Project-ID: libtourist-3-0
 ## X-Curse-Repository-ID: wow/libtourist-3-0/mainline
-## X-Curse-Packaged-Version: v3.14-43-gae84a84
+## X-Curse-Packaged-Version: v3.15
 ## X-Curse-Project-Name: ElvUI Shadow & Light Edit
 ## X-Curse-Project-ID: shadow-and-light-edit
 ## X-Curse-Repository-ID: wow/shadow-and-light-edit/mainline

@@ -179,6 +179,7 @@ do
   local found
   
   local function get_arg1_argN(n, arg1, ...)
+	--if (n == 1) then  return arg1, arg1;  end -- Unnecessary since it's never 1. Required if that's possible, though, or you could have errors.
     return arg1, select(n-1, ...)
   end
 

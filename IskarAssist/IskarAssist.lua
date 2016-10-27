@@ -1,4 +1,4 @@
-  
+ 
 local DF = _G ["DetailsFramework"]
 if (not DF) then
 	print ("|cFFFFAA00Please restart your client to finish update some AddOns.|r")
@@ -34,7 +34,7 @@ local anzu_texture
 local player_class
 local block_backdrop_eye = {bgFile = [[Interface\RaidFrame\Raid-Bar-Hp-Fill]], tile = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0},
 edgeFile = "Interface\\AddOns\\IskarAssist\\border_2", edgeSize = 20}
-local iskar_version = "v0.24"
+local iskar_version = "v0.23"
 
 local iskar_encounter_id = 1788 --iskar
 local iskar_npcid = 90316 --iskar

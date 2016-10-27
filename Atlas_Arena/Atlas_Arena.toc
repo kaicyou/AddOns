@@ -1,4 +1,4 @@
-## Interface: 70000
+## Interface: 70100
 #@non-debug@
 ## Title: Atlas |r|cFF0099FF[Arena]|r
 ## Title-deDE: Atlas |r|cFF0099FF[Arena]|r
@@ -29,11 +29,11 @@
 # ## Notes: An Atlas Plugin that displays arena maps.
 # ## Notes-zhTW: Atlas 競技場地圖
 #@end-debug@
-## Version: 1.06.02
-## X-Date: 2016-10-06T04:15:27Z
+## Version: 1.06.03
+## X-Date: 2016-10-27T05:23:19Z
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v1.06.02
+## X-Curse-Packaged-Version: v1.06.03
 ## X-Curse-Project-Name: Atlas Arena
 ## X-Curse-Project-ID: atlas_arena
 ## X-Curse-Repository-ID: wow/atlas_arena/mainline

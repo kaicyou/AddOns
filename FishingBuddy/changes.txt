@@ -1,4 +1,7 @@
-﻿Version 1.7.10
+﻿Version 1.7.11
+- Update TOC
+
+Version 1.7.10
 - Force null 'name' reference to not happen (no idea why yet, other than caching issues)
 - Add Arcane lure to "special" lure handling
 - Display available Legion world fishing quests

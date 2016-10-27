@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation-zhTW.lua 53 2016-10-17 06:42:14Z arith $
+-- $Id: Atlas_Transportation-zhTW.lua 56 2016-10-25 15:58:44Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -41,6 +41,7 @@ L["Death Knight Only"] = "僅限死亡騎士"
 L["Druid Only"] = "僅限德魯伊"
 L["Flight to Trueshot Lodge"] = "飛行到神獵廳"
 L["From sea level to ground level"] = "從海平面到地面"
+L["Great Eagle"] = "巨鷹"
 L["Green"] = "綠"
 L["Gryphon"] = "獅鷲獸"
 L["Gryphon Master"] = "獅鷲獸管理員"
@@ -62,7 +63,9 @@ L["Portal / Waygate Path to the destination"] = "傳送門 / 甬道之門傳往�
 L["Purple"] = "紫"
 L["Rappelling Rope"] = "垂降繩"
 L["Red"] = "紅"
+L["Requires Eagle Ally Advancement"] = "需要升級飛鷹盟友"
 L["Requires honored faction with Sha'tari Skyguard"] = "需薩塔空防陣營榮譽"
+L["Requires Teleportation Nexus Advancement"] = "需要升級傳送網路"
 L["Require to complete \"Meet the Scout\" quest line first."] = "需要先完成“和斥候會面”任務線。"
 L["Seahorse"] = "海馬"
 L["Shado-Pan Rope"] = "影潘索 "
@@ -71,6 +74,7 @@ L["South of the path along Lake Elune'ara"] = "月神湖南方小徑"
 L["Special transportation"] = "特殊運輸工具"
 L["Talua <Eagle Keeper>"] = "塔陸亞 <飼鷹者>"
 L["Taxi Nodes"] = "航行點"
+L["Teleportation Nexus"] = "傳送網路"
 L["The Bogpaddle Bullet"] = "沼槳火箭"
 L["Transportation Maps"] = "交通網路地圖"
 L["Transporter"] = "輸送者"

@@ -31,6 +31,7 @@ local ZONE_RENAME_REV = { -- lookup table so localizations can use their own ren
 	[L.SUGGESTIONS_ZONERENAME_SHADOWMOONVALLEY_DRAENOR] = "Shadowmoon Valley (Draenor)",
 	[L.SUGGESTIONS_ZONERENAME_NAGRAND_OUTLAND] = "Nagrand (Outland)",
 	[L.SUGGESTIONS_ZONERENAME_NAGRAND_DRAENOR] = "Nagrand (Draenor)",
+	[L.SUGGESTIONS_ZONERENAME_KARAZHAN_LEGION] = "Return to Karazhan",
 }
 
 --[[
@@ -544,6 +545,7 @@ local ACHID_ZONE_MISC = {
 		11260, -- Treasures of Suramar
 		10778, -- The Nightfallen
 		11133, -- Why Can't I Hold All This Mana?
+		11340, -- Insurrection
 	},
 	["Dalaran Sewers"] = {
 		11066, -- Underbelly Tycoon
@@ -776,6 +778,14 @@ local ACHID_INSTANCES = {
 		10804, -- "Black Rook Hold" (chain)
 	},
 	["Maw of Souls"] = 10807,
+	["Return to Karazhan"] = { -- RENAMED ZONE.  !! Double check
+		11429, -- Return to Karazhan
+		11433, -- Burn After Reading
+		11338, -- Dine and Bash
+		11430, -- One Night in Karazhan
+		11432, -- Scared Straight
+		11335, -- Season Tickets
+	},
 -- Legion Raids
 	["The Emerald Nightmare"] = {
 		10555, -- Buggy Fight
@@ -804,6 +814,11 @@ local ACHID_INSTANCES = {
 		10838, -- Nightspire
 		10839, -- Betrayer's Rise
 		10851, -- Elementalry!
+	},
+	["Trial of Valor"] = { -- !! double check this zone name
+		11394, -- Trial of Valor (series)
+		11386, -- Boneafide Tri Tip
+		11377, -- Patient Zero
 	},
 }
 -- Aliases
@@ -1144,6 +1159,13 @@ local ACHID_INSTANCES_MYTHIC = {
 		10848, -- Mythic: Krosus
 		10849, -- Mythic: Grand Magistrix Elisande
 		10850, -- Mythic: Gul'dan
+	},
+	["Trial of Valor"] = { -- !! double check this zone name
+		11397, -- Mythic: Guarm
+		11398, -- Mythic: Helya
+		11396, -- Mythic: Odyn
+		11387, -- The Chosen
+		11337, -- You Runed Everything!
 	},
 }
 

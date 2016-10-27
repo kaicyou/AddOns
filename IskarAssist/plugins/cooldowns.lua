@@ -1322,12 +1322,12 @@ function Cooldowns.BuildOptions (frame)
 	advise_panel:SetPoint ("topleft", f, "topleft", 120, -22)
 	advise_panel:SetSize (260, 58)
 	advise_panel:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-	advise_panel:SetBackdropColor (1, 1, 1, .5)
-	advise_panel:SetBackdropBorderColor (0, 0, 0, 1)
+	advise_panel:SetBackdropColor (0, 0, 0, .3)
+	advise_panel:SetBackdropBorderColor (.3, .3, .3, .3)
 	local advise_panel_text = advise_panel:CreateFontString (nil, "overlay", "GameFontNormal")
 	advise_panel_text:SetPoint ("center", advise_panel, "center")
 	advise_panel_text:SetText ("You may create a new panel if you want\nseparate Raid Cooldowns and\nExternal Cooldowns in two panels.")
-	Cooldowns:SetFontSize (advise_panel_text, 11)
+	Cooldowns:SetFontSize (advise_panel_text, 10)
 	
 	--> options:
 	local options_list = {

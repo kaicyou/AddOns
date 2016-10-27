@@ -17,6 +17,7 @@ local default_config = {
 	raidschedules = {},
 	playerids = {},
 	menu_priority = 2,
+	sorting_by = 1,
 }
 
 if (_G ["RaidAssistAttendance"]) then
@@ -148,6 +149,9 @@ function Attendance.BuildOptions (frame)
 	end
 	frame.FirstRun = true
 	
+	local sort_alphabetical = function(a,b) return a[1] < b[1] end
+	local sort_bigger = function (a,b) return a[2] > b[2] end
+	
 	local fill_panel = Attendance:CreateFillPanel (frame, {}, 790, 400, false, false, false, {rowheight = 16}, "fill_panel", "AttendanceFillPanel")
 	fill_panel:SetPoint ("topleft", frame, "topleft", 10, -30)
 	
@@ -190,17 +194,22 @@ function Attendance.BuildOptions (frame)
 			local amt_days = 0
 			local sort = table.sort
 			
+			local maxDays = 20
+			
 			for i, table in ipairs (alphabetical_months) do
 
 				local month = table [1]
 				local att_table = table [2]
 			
 				amt_days = amt_days + 1
+				if (amt_days > maxDays) then
+					break
+				end
 				
 				--add the header for this vertical row
 				local time_at = date ("%a", att_table.t)
 				
-				tinsert (header, {name = table[1] .. " (" .. time_at .. ")", type = "text", width = 60})
+				tinsert (header, {name = table[1] .. "\n" .. time_at .. "", type = "text", width = 30, textsize = 9, textalign = "center", header_textsize = 9, header_textalign = "center"})
 				
 				for player_id, player_points in pairs (att_table.players) do
 					local index = players_index [player_id]
@@ -238,10 +247,13 @@ function Attendance.BuildOptions (frame)
 					tinsert (player_table, "-")
 				end
 			end
-
-			local sort_alphabetical = function(a,b) return a[1] < b[1] end
-			sort (players, sort_alphabetical)
-
+			
+			if (not Attendance.db.sorting_by or Attendance.db.sorting_by == 1) then
+				sort (players, sort_alphabetical)
+			elseif (Attendance.db.sorting_by == 2) then
+				sort (players, sort_bigger)
+			end
+			
 			frame.fill_panel:SetFillFunction (function (index) return players [index] end)
 			frame.fill_panel:SetTotalFunction (function() return #players end)
 			
@@ -252,7 +264,7 @@ function Attendance.BuildOptions (frame)
 			
 			frame.fill_panel:UpdateRows (header)
 			frame.fill_panel:Refresh()
-
+			
 			advise_panel:Hide()
 			frame.fill_panel:Show()
 		else
@@ -315,6 +327,14 @@ function Attendance.BuildOptions (frame)
 	local reset_button =  Attendance:CreateButton (frame, reset_func, 80, 20, "Reset", _, _, _, "button_reset", _, _, Attendance:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Attendance:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 	reset_button:SetPoint ("left", dropdown_raidschedule, "right", 10, 0)
 	reset_button:SetIcon ([[Interface\BUTTONS\UI-StopButton]], 14, 14, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 2, 1, 0)
+
+	local sort1_button =  Attendance:CreateButton (frame, function() Attendance.db.sorting_by = 1; Attendance.update_attendance() end, 80, 20, "Sort A-Z", _, _, _, "button_sort1", _, _, Attendance:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Attendance:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
+	sort1_button:SetPoint ("left", reset_button, "right", 2, 0)
+	sort1_button:SetIcon ([[Interface\BUTTONS\UI-StopButton]], 14, 14, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 2, 1, 0)
+
+	local sort2_button =  Attendance:CreateButton (frame, function() Attendance.db.sorting_by = 2; Attendance.update_attendance() end, 80, 20, "Sort ATT", _, _, _, "button_sort2", _, _, Attendance:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Attendance:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
+	sort2_button:SetPoint ("left", sort1_button, "right", 2, 0)
+	sort2_button:SetIcon ([[Interface\BUTTONS\UI-StopButton]], 14, 14, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 2, 1, 0)
 	
 	frame:SetScript ("OnShow", function()
 		Attendance.update_attendance()
@@ -422,7 +442,7 @@ local do_capture_tick = function (tick_object)
 		
 		for i = 1, GetNumGroupMembers() do
 			local player_guild = GetGuildInfo ("raid" .. i)
-			--if (player_guild == Attendance.guild_name) then
+			if (player_guild == Attendance.guild_name) then
 				local id = Attendance:GetPlayerID ("raid" .. i)
 				if (id) then
 					player_table [id] = (player_table [id] or 0) + 1
@@ -431,7 +451,7 @@ local do_capture_tick = function (tick_object)
 						name_pool [id] = GetUnitName ("raid" .. i, true)
 					end
 				end
-			--end
+			end
 		end
 	end
 	

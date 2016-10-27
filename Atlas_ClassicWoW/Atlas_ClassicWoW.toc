@@ -1,4 +1,4 @@
-﻿## Interface: 70000
+﻿## Interface: 70100
 #@non-debug@
 ## Title: Atlas |r|cFF0099FF[Classic WoW]|r
 ## Title-deDE: Atlas |r|cFF0099FF[Classic-WoW]|r
@@ -6,7 +6,7 @@
 ## Title-esMX: Atlas |r|cFF0099FF[Classic WoW]|r
 ## Title-frFR: Atlas |r|cFF0099FF[Classic WoW]|r
 ## Title-itIT: Atlas |r|cFF0099FF[Classic WoW]|r
-## Title-koKR: Atlas |r|cFF0099FF[Classic WoW]|r
+## Title-koKR: Atlas |r|cFF0099FF[오리지널]|r
 ## Title-ptBR: Atlas |r|cFF0099FF[Classic WoW]|r
 ## Title-ruRU: Atlas |r|cFF0099FF[Classic WoW]|r
 ## Title-zhCN: Atlas |r|cFF0099FF[经典旧世]|r
@@ -17,7 +17,7 @@
 ## Notes-esMX: Classic WoW Instances' Maps
 ## Notes-frFR: Classic WoW Instances' Maps
 ## Notes-itIT: Classic WoW Instances' Maps
-## Notes-koKR: Classic WoW Instances' Maps
+## Notes-koKR: 오리지널 인스턴스 지도
 ## Notes-ptBR: Classic WoW Instances' Maps
 ## Notes-ruRU: Classic WoW Instances' Maps
 ## Notes-zhCN: 经典旧世副本地图
@@ -29,15 +29,15 @@
 # ## Notes: Classic WoW Dungeon Maps
 # ## Notes-zhTW: 艾澤拉斯副本地圖模組
 #@end-debug@
-## Version: 1.34.00
+## Version: 1.35.00
 ## Author: arith, Dynaletik, dubcat
-## X-Date: 2016-09-09T08:16:49Z
+## X-Date: 2016-10-27T04:30:25Z
 ## X-Credits: Dan Gilbert, Lothaer
 ## X-Email: atlas.addon at gmail.com
 ## X-Website: http://www.atlasmod.com
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v1.34.00
+## X-Curse-Packaged-Version: v1.35.00
 ## X-Curse-Project-Name: Atlas Classic WoW
 ## X-Curse-Project-ID: atlas-classicwow
 ## X-Curse-Repository-ID: wow/atlas-classicwow/mainline

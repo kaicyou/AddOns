@@ -162,7 +162,6 @@ local classcolor = {
 
 local Oilvlrole = {};
 local Oilvlrank = {};
-local ItemUpgradeInfo = LibStub("LibItemUpgradeInfo-1.0")
 local Oilvltimer = LibStub("AceAddon-3.0"):NewAddon("OilvlTimer", "AceTimer-3.0")
 
 local OILVL = CreateFrame("Frame");
@@ -220,6 +219,7 @@ local otooltip6gearsw2=false; -- show only specific raider
 local Legion, _, _ = EJ_GetTierInfo(7);
 local TENname, _, _, _, _, _, _ = EJ_GetInstanceInfo(768)
 local TNname, _, _, _, _, _, _ = EJ_GetInstanceInfo(786)
+local TOVname, _, _, _, _, _, _ = EJ_GetInstanceInfo(861)
 
 local OSTATTEN = {
 	{
@@ -327,6 +327,27 @@ local OSTATTN = {
 		10979, -- [3]
 		10980, -- [4]
 	}, -- [10]
+}
+
+local OSTATTOV = {
+	{
+		11407, -- [1]
+		11408, -- [2]
+		11409, -- [3]
+		11410, -- [4]
+	}, -- [1]
+	{
+		11411, -- [1]
+		11412, -- [2]
+		11413, -- [3]
+		11414, -- [4]
+	}, -- [2]
+	{
+		11415, -- [1]
+		11416, -- [2]
+		11417, -- [3]
+		11418, -- [4]
+	}, -- [3]
 }
 
 local function round(number, digits)
@@ -2782,6 +2803,7 @@ end
 
 -- OilvlGetStatisticId(Legion, TENname:sub(4,strlen(TENname)), OSTATTEN, false)
 -- OilvlGetStatisticId(Legion, TNname:sub(4,strlen(TNname)), OSTATTN, false)
+-- OilvlGetStatisticId(Legion, TOVname, OSTATTOV, false)
 
 function oilvlSetOSTATTEN()
 	for i = 1,7 do
@@ -2792,6 +2814,12 @@ end
 function oilvlSetOSTATTN()
 	for i = 1,10 do
 		OSTATTN[i][5] = select(2,GetAchievementInfo(OSTATTN[i][1])):gsub(" %(.*%)","")..""
+	end
+end
+
+function oilvlSetOSTATTOV()
+	for i = 1,3 do
+		OSTATTOV[i][5] = select(2,GetAchievementInfo(OSTATTOV[i][1])):gsub(" %(.*%)","")..""
 	end
 end
 
@@ -3160,6 +3188,8 @@ function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses)
 	
 	bigorp[TNname] = Save_orp(TNname, OSTATTN, 10)
 	bigorp[TENname] = Save_orp(TENname, OSTATTEN, 7)
+	bigorp[TOVname] = Save_orp(TOVname, OSTATTOV, 3)
+	
 	local function Save_orp_vars(raidname3)
 		OSTAT, NumRaidBosses, twohighest, progression, orp["raidname"], orp["progression"], orp["LFR"], orp["Normal"], orp["Heroic"], orp["Mythic"] = bigorp[raidname3][1],bigorp[raidname3][2],bigorp[raidname3][3],bigorp[raidname3][4],bigorp[raidname3][5],bigorp[raidname3][6],bigorp[raidname3][7],bigorp[raidname3][8],bigorp[raidname3][9],bigorp[raidname3][10]
 	end
@@ -3251,6 +3281,12 @@ function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses)
 		otooltip2:SetCell(3,4,"|cffffffff"..TENname,"LEFT",2)
 		otooltip2:SetCellScript(3,4,"OnMouseUp",function(s) 
 			Save_orp_vars(TENname)
+			otooltip2:Clear()
+			DrawOTooltip2()
+		end)
+		otooltip2:SetCell(4,4,"|cffffffff"..TOVname,"LEFT",2)
+		otooltip2:SetCellScript(4,4,"OnMouseUp",function(s) 
+			Save_orp_vars(TOVname)
 			otooltip2:Clear()
 			DrawOTooltip2()
 		end)
@@ -3395,11 +3431,13 @@ function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses)
 			end			
 		end)
 		otooltip2:AddSeparator()
-		for i = 1, #RaidAchiv[orp["raidname"]],5 do
-			if RaidAchiv[orp["raidname"]][i] then
-				line = otooltip2:AddLine()
-				line = otooltip2:SetCell(line, 1, "|cFFFF8000"..RaidAchiv[orp["raidname"]][i+4].." - |cFFFFFFFF"..RaidAchiv[orp["raidname"]][i+1].."/"..RaidAchiv[orp["raidname"]][i+2].."/"..RaidAchiv[orp["raidname"]][i+3])
-				otooltip2:AddSeparator()
+		if RaidAchiv[orp["raidname"]] then
+			for i = 1, #RaidAchiv[orp["raidname"]],5 do
+				if RaidAchiv[orp["raidname"]][i] then
+					line = otooltip2:AddLine()
+					line = otooltip2:SetCell(line, 1, "|cFFFF8000"..RaidAchiv[orp["raidname"]][i+4].." - |cFFFFFFFF"..RaidAchiv[orp["raidname"]][i+1].."/"..RaidAchiv[orp["raidname"]][i+2].."/"..RaidAchiv[orp["raidname"]][i+3])
+					otooltip2:AddSeparator()
+				end
 			end
 		end
 		otooltip2:Show();
@@ -3595,6 +3633,7 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses)
 	end
 	bigorp[TNname] = Save_orp(TNname, OSTATTN, 10)
 	bigorp[TENname] = Save_orp(TENname, OSTATTEN, 7)
+	bigorp[TOVname] = Save_orp(TOVname, OSTATTOV, 3)
 	local function Save_orp_vars(raidname3)
 		OSTAT, NumRaidBosses, twohighest, progression, orp["raidname"], orp["progression"], orp["LFR"], orp["Normal"], orp["Heroic"], orp["Mythic"] = bigorp[raidname3][1],bigorp[raidname3][2],bigorp[raidname3][3],bigorp[raidname3][4],bigorp[raidname3][5],bigorp[raidname3][6],bigorp[raidname3][7],bigorp[raidname3][8],bigorp[raidname3][9],bigorp[raidname3][10]
 	end
@@ -3612,7 +3651,8 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses)
 
 	local RaidAchiv = {}
 	RaidAchiv[TNname],RaidAchiv[TENname]={},{}
-	SaveAOTCCE(RaidAchiv[TNname],11195,11192) SaveAOTCCE(RaidAchiv[TENname],11194,11191)
+	SaveAOTCCE(RaidAchiv[TNname],11195,11192) 
+	SaveAOTCCE(RaidAchiv[TENname],11194,11191)
 
 	local oilvltooltiptexts = {}
 	for i = 1, OilvlTooltip:NumLines() do
@@ -3712,6 +3752,12 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses)
 			otooltip2:Clear()
 			DrawOTooltip2()
 		end)
+		otooltip2:SetCell(4,4,"|cffffffff"..TOVname,"LEFT",2)
+		otooltip2:SetCellScript(4,4,"OnMouseUp",function(s) 
+			Save_orp_vars(TOVname)
+			otooltip2:Clear()
+			DrawOTooltip2()
+		end)
 
 		line = otooltip2:AddLine()
 		otooltip2:SetCell(line, 1, "|cffffffff" ..orp["unitname"].."("..orp["ilvl"].." "..orp["spec"].." "..orp["class"]..") "..orp["progression"].." "..orp["raidname"].. "|r", "LEFT", 5)
@@ -3800,13 +3846,15 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses)
 			line = otooltip2:SetCell(line, 5, orp["Mythic"][m])
 		end	
 		otooltip2:AddSeparator()
-		for i = 1, #RaidAchiv[orp["raidname"]],5 do
-			if RaidAchiv[orp["raidname"]][i] then
-				line = otooltip2:AddLine()
-				line = otooltip2:SetCell(line, 1, "|cFFFF8000"..RaidAchiv[orp["raidname"]][i+4].." - |cFFFFFFFF"..RaidAchiv[orp["raidname"]][i+1].."/"..RaidAchiv[orp["raidname"]][i+2].."/"..RaidAchiv[orp["raidname"]][i+3])
-				otooltip2:AddSeparator()
+		if RaidAchiv[orp["raidname"]] then
+			for i = 1, #RaidAchiv[orp["raidname"]],5 do
+				if RaidAchiv[orp["raidname"]][i] then
+					line = otooltip2:AddLine()
+					line = otooltip2:SetCell(line, 1, "|cFFFF8000"..RaidAchiv[orp["raidname"]][i+4].." - |cFFFFFFFF"..RaidAchiv[orp["raidname"]][i+1].."/"..RaidAchiv[orp["raidname"]][i+2].."/"..RaidAchiv[orp["raidname"]][i+3])
+					otooltip2:AddSeparator()
+				end
 			end
-		end		
+		end
 		otooltip2:Show();
 	end
 	DrawOTooltip2()
@@ -4783,11 +4831,8 @@ function OTgathertil(guid, unitid)
 		if(i ~= 4) then
 			OILVLFrame:SetInventoryItem(unitid, i)
 			
-			local _,item = OILVLFrame:GetItem()
-			
+			local item = GetInventoryItemLink(unitid, i)
 			if(item) then
-				local upgradeID = ItemUpgradeInfo:GetUpgradeID(item)
-				local upgrade = ItemUpgradeInfo:GetCurrentUpgrade(upgradeID)
 				_,_,_,itemLevel,_,itemClass,_,_,equipType = GetItemInfo(item)
 				
 				if(itemLevel) then
@@ -4879,14 +4924,12 @@ function OTgathertil(guid, unitid)
 					elseif(upgrade == 4) then
 						itemLevel = itemLevel + 16
 					end
-					-- check HeirLoom
-					local trueHilvl, isheirloom = ItemUpgradeInfo:GetHeirloomTrueLevel(item)
-					if isheirloom then itemLevel = trueHilvl; end
 					
 					-- check item level
 					if OItemAnalysis_CheckILVLGear(unitid,i) ~= 0 then
-						itemLevel, xupgrade = OItemAnalysis_CheckILVLGear(unitid,i)
+						itemLevel, xupgrade = OItemAnalysis_CheckILVLGear(unitid,i)						
 					end
+					
 					if cgear[16] and cgear[16][1] and i == 17 and OTCheckartifactwep(tonumber(itemID)) then
 						if cgear[16][1] > itemLevel then
 							itemLevel, xupgrade = cgear[16][1], cgear[16][9]
@@ -5265,6 +5308,7 @@ function events:INSPECT_ACHIEVEMENT_READY(...)
 				if UnitExists(rpunit) and CheckInteractDistance(rpunit, 1) and rpsw then
 					if cfg.oilvlten then OGetRaidProgression2(TENname, OSTATTEN, 7); end
 					if cfg.oilvltn then OGetRaidProgression2(TNname, OSTATTN, 10); end
+					if cfg.oilvltov then OGetRaidProgression2(TOVname, OSTATTOV, 3); end
 				else
 					ClearAchievementComparisonUnit();
 					rpsw=false;
@@ -5275,6 +5319,7 @@ function events:INSPECT_ACHIEVEMENT_READY(...)
 				if UnitExists(rpunit) and CheckInteractDistance(rpunit, 1) and rpsw then
 					if cfg.oilvlten then OGetRaidProgression3(TENname, OSTATTEN, 7); end
 					if cfg.oilvltn then OGetRaidProgression3(TNname, OSTATTN, 10); end
+					if cfg.oilvltov then OGetRaidProgression3(TOVname, OSTATTOV, 3); end
 				else
 					ClearAchievementComparisonUnit();
 					rpsw=false;
@@ -5285,6 +5330,7 @@ function events:INSPECT_ACHIEVEMENT_READY(...)
 				if UnitExists("target") and CheckInteractDistance("target", 1)  and rpsw then
 					if cfg.oilvlten then OGetRaidProgression(TENname, OSTATTEN, 7); end
 					if cfg.oilvltn then OGetRaidProgression(TNname, OSTATTN, 10); end
+					if cfg.oilvltov then OGetRaidProgression(TOVname, OSTATTOV, 3); end
 				else
 					ClearAchievementComparisonUnit();
 					rpsw=false;
@@ -5334,6 +5380,7 @@ function events:ADDON_LOADED(...)
 	if cfg.oilvlalpha  == nil then cfg.oilvlalpha = 1; end
 	if cfg.oilvlten == nil then cfg.oilvlten = true; end
 	if cfg.oilvltn == nil then cfg.oilvltn = false; end
+	if cfg.oilvltov == nil then cfg.oilvltov = false; end
 	if cfg.oilvlms == nil then cfg.oilvlms = true; end
 	if cfg.oilvlme == nil then cfg.oilvlme = true; end
 	if cfg.oilvlme2 == nil then cfg.oilvlme2 = false; end
@@ -5370,7 +5417,8 @@ function events:ADDON_LOADED(...)
 	end	
 	oilvlSetOSTATTEN()
 	oilvlSetOSTATTN()
-	-- cfg.progression = {OSTATTEN,OSTATTN}
+	oilvlSetOSTATTOV()
+	--cfg.progression = {OSTATTOV}
 	OILVL:UnregisterEvent("ADDON_LOADED");
 end
 
@@ -5657,12 +5705,12 @@ function OilvlConfigFrame()
 		if oicb1:GetChecked() then
 			oicb2:Enable();
 			oicb3:Enable();
---			oicb4:Enable();
+			oicb4:Enable();
 			oicb5:Enable();
 		else
 			oicb2:Disable();
 			oicb3:Disable();
---			oicb4:Disable();
+			oicb4:Disable();
 			oicb5:Disable();
 		end
 	end);
@@ -5676,6 +5724,8 @@ function OilvlConfigFrame()
 		if cfg.oilvlten then 
 			oicb3:SetChecked(false) 
 			cfg.oilvltn = false; 
+			oicb4:SetChecked(false) 
+			cfg.oilvltov = false; 
 		end
 		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
 		ClearAchievementComparisonUnit();
@@ -5684,7 +5734,7 @@ function OilvlConfigFrame()
 		Omover=0
 		Omover2 = 0;		
 	end);
-	if cfg.oilvlten then tencb:SetChecked(true) cfg.oilvltn = false; end
+	if cfg.oilvlten then tencb:SetChecked(true) cfg.oilvltn = false; cfg.oilvltov = false; end
 
 	-- TN check button
 	local tncb = createCheckbutton(cfg.frame, 16+25, -230, " "..TNname);
@@ -5694,6 +5744,8 @@ function OilvlConfigFrame()
 		if cfg.oilvltn then 
 			oicb2:SetChecked(false) 
 			cfg.oilvlten = false; 
+			oicb4:SetChecked(false) 
+			cfg.oilvltov = false; 
 		end 
 		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
 		ClearAchievementComparisonUnit();
@@ -5702,10 +5754,27 @@ function OilvlConfigFrame()
 		Omover=0
 		Omover2 = 0;		
 	end);	
-	if cfg.oilvltn then tncb:SetChecked(true) cfg.oilvlten = false; end
+	if cfg.oilvltn then tncb:SetChecked(true) cfg.oilvlten = false; cfg.oilvltov = false; end
 
-	-- Hellfire Citadel check button
-	uniquealyzer = uniquealyzer + 1
+	-- Trial of Valor check button
+	local tovcb = createCheckbutton(cfg.frame, 16+25+200, -200, " "..TOVname);
+	tovcb:SetSize(30,30);
+	tovcb:SetScript("PostClick", function() 
+		cfg.oilvltov = oicb4:GetChecked() 
+		if cfg.oilvltov then 
+			oicb2:SetChecked(false) 
+			cfg.oilvlten = false; 
+			oicb3:SetChecked(false) 
+			cfg.oilvltn = false; 
+		end 
+		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
+		ClearAchievementComparisonUnit();
+		rpsw=false;
+		rpunit="";
+		Omover=0
+		Omover2 = 0;		
+	end);	
+	if cfg.oilvltov then tovcb:SetChecked(true) cfg.oilvlten = false; cfg.oilvltn = false; end
 
 	-- Raid Progression Details
 	local rpdcb = createCheckbutton(cfg.frame, 16+25, -260, " "..L["Enable Showing Raid Progression Details on tooltips"]);

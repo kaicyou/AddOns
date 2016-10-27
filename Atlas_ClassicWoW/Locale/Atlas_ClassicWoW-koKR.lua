@@ -31,11 +31,11 @@ if L then
 -- L["Abandonded Mole Machine"] = ""
 -- L["Acride <Scarshield Legion>"] = ""
 -- L["Altar of Blood"] = ""
--- L["\"Ambassador\" Dagg'thol"] = ""
+L["\"Ambassador\" Dagg'thol"] = "\"대사\" 다그톨"
 -- L["Amnennar's Phylactery"] = ""
 -- L["Ancient Equine Spirit"] = ""
 -- L["Ancient Treasure"] = ""
--- L["Andorgos <Brood of Malygos>"] = ""
+L["Andorgos <Brood of Malygos>"] = "안도르고스 <말리고스의 혈족>"
 -- L["Aoren Sunglow <The Reliquary>"] = ""
 -- L["AQ"] = ""
 -- L["AQ10"] = ""
@@ -191,7 +191,7 @@ if L then
 -- L["Yuka Screwspigot <Engineering Supplies>"] = ""
 -- L["Zeya"] = ""
 -- L["ZF"] = ""
--- L["ToC/Description"] = ""
--- L["ToC/Title"] = ""
+L["ToC/Description"] = "오리지널 인스턴스 지도"
+L["ToC/Title"] = "Atlas |r|cFF0099FF[오리지널]|r"
 
 end

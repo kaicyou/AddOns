@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation.lua 53 2016-10-17 06:42:14Z arith $
+-- $Id: Atlas_Transportation.lua 56 2016-10-25 15:58:44Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -225,6 +225,25 @@ local myData = {
 		{ NUTL.."37) "..BZ["Illidari Camp"]..GREY.." (49.7, 21.1)", 10037 };
 		{ GREN.." 3) "..BZ["Acherus: The Ebon Hold"]..CL["DEATHKNIGHT"]..ALC["L-Parenthesis"]..L["Death Knight Only"]..ALC["R-Parenthesis"], 10102 };
 		{ "" };
+		{ CL["MAGE"]..Atlas_GetClassName("MAGE")..ALC["Hyphen"]..L["Teleportation Nexus"] };
+		{ INDENT..GREY..ALC["L-Parenthesis"]..L["Requires Teleportation Nexus Advancement"]..ALC["R-Parenthesis"] };
+		{ INDENT..CL["MAGE"].." 1) "..BZ["Ley-Ruins of Zarkhenar"]..GREY.." (57.9, 15.1)", 10201 };
+		{ INDENT..CL["MAGE"].." 2) "..BZ["Sylvan Falls"]..GREY.." (31.4, 63.8)", 10202 };
+		{ INDENT..CL["MAGE"].." 3) "..BZ["Weeping Bluffs"]..GREY.." (52.5, 35.2)", 10203 };
+		{ INDENT..CL["MAGE"].." 4) "..BZ["Temple of Elune"]..GREY.." (33.5, 34.7)", 10204 };
+		{ INDENT..CL["MAGE"].." 5) "..BZ["Meredil"]..GREY.." (33.4, 50.4)", 10205 };
+		{ "" };
+		{ CL["HUNTER"]..Atlas_GetClassName("HUNTER")..ALC["Hyphen"]..L["Great Eagle"] };
+		{ INDENT..GREY..ALC["L-Parenthesis"]..L["Requires Eagle Ally Advancement"]..ALC["R-Parenthesis"] };
+		{ INDENT..CL["HUNTER"].." 1) "..BZ["The Dreamgrove"]..GREY.." (44.1, 15.0)", 10301 };
+		{ INDENT..CL["HUNTER"].." 2) "..BZ["Faronaar"]..GREY.." (25.4, 43.1)", 10302 };
+		{ INDENT..CL["HUNTER"].." 3) "..BZ["Isle of the Watchers"]..GREY.." (51.0, 79.9)", 10303 };
+		{ INDENT..CL["HUNTER"].." 4) "..BZ["Western Suramar"]..GREY.." (41.3, 82.8)", 10304 };
+		{ INDENT..CL["HUNTER"].." 5) "..BZ["Eastern Suramar"]..GREY.." (70.2, 71.1)", 10305 };
+		{ INDENT..CL["HUNTER"].." 6) "..BZ["Thorim's Peak"]..GREY.." (38.1, 79.2)", 10306 };
+		{ INDENT..CL["HUNTER"].." 7) "..BZ["Nastrondir"]..GREY.." (45.9, 35.8)", 10307 };
+		{ INDENT..CL["HUNTER"].." 8) "..BZ["Eastern Highmountain"]..GREY.." (56.7, 67.8)", 10308 };
+		{ "" };
 		{ _RED..L["Legend"] };
 		{ PURP..L["Purple"]..ALC["Colon"]..L["Portals"] };
 		{ NUTL..L["Yellow"]..ALC["Colon"]..L["Taxi Nodes"]..ALC["Hyphen"]..L["Nutral"] };
@@ -309,6 +328,25 @@ local myData = {
 		{ BLUE..BZ["Broken Shore"] };
 		{ NUTL.."37) "..BZ["Illidari Camp"]..GREY.." (49.7, 21.1)", 10037 };
 		{ GREN.." 3) "..BZ["Acherus: The Ebon Hold"]..ALC["L-Parenthesis"]..L["Death Knight Only"]..ALC["R-Parenthesis"], 10102 };
+		{ "" };
+		{ CL["MAGE"]..Atlas_GetClassName("MAGE")..ALC["Hyphen"]..L["Teleportation Nexus"] };
+		{ INDENT..GREY..ALC["L-Parenthesis"]..L["Requires Teleportation Nexus Advancement"]..ALC["R-Parenthesis"] };
+		{ INDENT..CL["MAGE"].." 1) "..BZ["Ley-Ruins of Zarkhenar"]..GREY.." (57.9, 15.1)", 10201 };
+		{ INDENT..CL["MAGE"].." 2) "..BZ["Sylvan Falls"]..GREY.." (31.4, 63.8)", 10202 };
+		{ INDENT..CL["MAGE"].." 3) "..BZ["Weeping Bluffs"]..GREY.." (52.5, 35.2)", 10203 };
+		{ INDENT..CL["MAGE"].." 4) "..BZ["Temple of Elune"]..GREY.." (33.5, 34.7)", 10204 };
+		{ INDENT..CL["MAGE"].." 5) "..BZ["Meredil"]..GREY.." (33.4, 50.4)", 10205 };
+		{ "" };
+		{ CL["HUNTER"]..Atlas_GetClassName("HUNTER")..ALC["Hyphen"]..L["Great Eagle"] };
+		{ INDENT..GREY..ALC["L-Parenthesis"]..L["Requires Eagle Ally Advancement"]..ALC["R-Parenthesis"] };
+		{ INDENT..CL["HUNTER"].." 1) "..BZ["The Dreamgrove"]..GREY.." (44.1, 15.0)", 10301 };
+		{ INDENT..CL["HUNTER"].." 2) "..BZ["Faronaar"]..GREY.." (25.4, 43.1)", 10302 };
+		{ INDENT..CL["HUNTER"].." 3) "..BZ["Isle of the Watchers"]..GREY.." (51.0, 79.9)", 10303 };
+		{ INDENT..CL["HUNTER"].." 4) "..BZ["Western Suramar"]..GREY.." (41.3, 82.8)", 10304 };
+		{ INDENT..CL["HUNTER"].." 5) "..BZ["Eastern Suramar"]..GREY.." (70.2, 71.1)", 10305 };
+		{ INDENT..CL["HUNTER"].." 6) "..BZ["Thorim's Peak"]..GREY.." (38.1, 79.2)", 10306 };
+		{ INDENT..CL["HUNTER"].." 7) "..BZ["Nastrondir"]..GREY.." (45.9, 35.8)", 10307 };
+		{ INDENT..CL["HUNTER"].." 8) "..BZ["Eastern Highmountain"]..GREY.." (56.7, 67.8)", 10308 };
 		{ "" };
 		{ _RED..L["Legend"] };
 		{ PURP..L["Purple"]..ALC["Colon"]..L["Portals"] };

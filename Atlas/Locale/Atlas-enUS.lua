@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas-enUS.lua 97 2016-09-05 14:59:04Z arith $
+﻿-- $Id: Atlas-enUS.lua 112 2016-10-27 14:30:34Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -184,6 +184,7 @@ L["ATLAS_SLASH_OPTIONS"] = "options"
 L["ATLAS_STRING_CLEAR"] = "Clear"
 L["ATLAS_STRING_LEVELRANGE"] = "Level Range"
 L["ATLAS_STRING_LOCATION"] = "Location"
+L["ATLAS_STRING_MINGEARLEVEL"] = "Minimum Gear Level"
 L["ATLAS_STRING_MINLEVEL"] = "Minimum Level"
 L["ATLAS_STRING_PLAYERLIMIT"] = "Player Limit"
 L["ATLAS_STRING_RECLEVELRANGE"] = "Recommended Level"
@@ -329,6 +330,7 @@ L["ToC/Title"] = "Atlas"
 	L["ATLAS_STRING_SEARCH"] = "Search";
 	L["ATLAS_STRING_CLEAR"] = "Clear";
 	L["ATLAS_STRING_MINLEVEL"] = "Minimum Level";
+	L["ATLAS_STRING_MINGEARLEVEL"] = "Minimum Gear Level";
 
 	L["ATLAS_OPTIONS_BUTTON"] = "Options";
 	L["ATLAS_OPTIONS_SHOWBUT"] = "Show Button on Minimap";

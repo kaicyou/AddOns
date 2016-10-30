@@ -6,7 +6,7 @@ if GetLocale()=="deDE" or GetLocale()=="ruRU" or GetLocale()=="zhTW" or GetLocal
 pslocalepanda1()
 end
 
-psPandaversion=7.000
+psPandaversion=7.001
 
 --description of the menu
 psraidoptionstxtp1={}

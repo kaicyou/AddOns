@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 110 2016-10-27 05:18:21Z arith $
+$Id: ChangeLog.txt 116 2016-10-28 14:18:43Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -8,6 +8,25 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 = Change Log =
 ==============
 
+v1.35.03 (Oct. 28, 2016)
+------------------------
+- Added Xavius to the Emerald Nightmare
+- Added feature to show player's current gear level when hovering over the 
+  instance's minimum gear level line
+- Library update: 
+  - LibBabble-SubZone-3.0
+
+v1.35.02 (Oct. 28, 2016)
+------------------------
+- Added Gul'dan to the Nighthold
+- Translation update: 
+  - Simplified Chinese (ananhaid)
+
+v1.35.01 (Oct. 27, 2016)
+------------------------
+- Updated to support Trial of Valor
+- Added instance's minimum gear level
+
 v1.35.00 (Oct. 27, 2016)
 ------------------------
 - Toc update to support WoW 7.1.0
@@ -15,6 +34,9 @@ v1.35.00 (Oct. 27, 2016)
   - LibBabble-SubZone-3.0
   - LibBabble-Boss-3.0
   - NoTaint_UIDropDownMenu
+- Translation update:
+  - Korean (wooyekim)
+  - Portuguese (MetalFlavio)
 
 v1.34.05 (Oct. 12, 2016)
 ------------------------

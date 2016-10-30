@@ -695,7 +695,7 @@ function ArkInventory.LDB.Mounts.IsFlyable( useMapZone )
 			
 		else
 			
-			if ( useMapZone ) or ( not WorldMapFrame:IsVisible( ) ) then
+			if useMapZone or ( not WorldMapFrame:IsVisible( ) ) then
 				
 				-- only set the map zone if the world map is not open or we need to force it
 				

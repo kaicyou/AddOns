@@ -1,4 +1,4 @@
--- $Id: AtlasDropDown.lua 101 2016-09-20 05:02:33Z arith $
+-- $Id: AtlasDropDown.lua 116 2016-10-28 14:18:43Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -103,6 +103,7 @@ Atlas_DropDownLayouts = {
 			"UpperBlackrockSpire",		-- Draenor
 		},
 		[ATLAS_DDL_CONTINENT_EASTERN2] = {
+			-- "ReturntoKarazhan", 		-- Legion
 			"ShadowfangKeep",		-- Classic WoW, Catalysm
 			"TheDeadmines",			-- Classic WoW, Catalysm
 			"TheDeadminesEnt",		-- Classic WoW, Catalysm
@@ -291,6 +292,7 @@ Atlas_DropDownLayouts = {
 			"TheEmeraldNightmareE",
 			"TheEmeraldNightmareF",
 			"TheEmeraldNightmareG",
+			"TheEmeraldNightmareH",
 			"TheNightholdEnt",
 			"TheNightholdA",
 			"TheNightholdB",
@@ -298,7 +300,9 @@ Atlas_DropDownLayouts = {
 			"TheNightholdD",
 			"TheNightholdE",
 			"TheNightholdF",
-			-- "TheNightholdG",
+			"TheNightholdG",
+			"TrialofValorA",
+			"TrialofValorB",
 		},
 	},
 	[ATLAS_DDL_LEVEL] = {
@@ -520,6 +524,7 @@ Atlas_DropDownLayouts = {
 			"TheEmeraldNightmareE",
 			"TheEmeraldNightmareF",
 			"TheEmeraldNightmareG",
+			"TheEmeraldNightmareH",
 			"TheNightholdEnt",
 			"TheNightholdA",
 			"TheNightholdB",
@@ -527,7 +532,10 @@ Atlas_DropDownLayouts = {
 			"TheNightholdD",
 			"TheNightholdE",
 			"TheNightholdF",
-			-- "TheNightholdG",
+			"TheNightholdG",
+			-- "ReturntoKarazhan", 		-- Legion
+			"TrialofValorA",
+			"TrialofValorB",
 		},
 	},
 	[ATLAS_DDL_PARTYSIZE] = {
@@ -630,6 +638,7 @@ Atlas_DropDownLayouts = {
 			"MawofSoulsA",		-- Legion
 			"MawofSoulsB",		-- Legion
 			"NeltharionsLair",	-- Legion
+			-- "ReturntoKarazhan", 		-- Legion
 		},
 		[ATLAS_DDL_PARTYSIZE_5_TZ] = {
 			"Uldaman",				-- Classic WoW
@@ -694,6 +703,7 @@ Atlas_DropDownLayouts = {
 			"TheEmeraldNightmareE",		-- Legion
 			"TheEmeraldNightmareF",		-- Legion
 			"TheEmeraldNightmareG",		-- Legion
+			"TheEmeraldNightmareH",		-- Legion
 			"TheNightholdEnt",
 			"TheNightholdA",		-- Legion
 			"TheNightholdB",		-- Legion
@@ -701,7 +711,7 @@ Atlas_DropDownLayouts = {
 			"TheNightholdD",		-- Legion
 			"TheNightholdE",		-- Legion
 			"TheNightholdF",		-- Legion
-			-- "TheNightholdG",		-- Legion
+			"TheNightholdG",		-- Legion
 		},
 		[ATLAS_DDL_PARTYSIZE_10_OZ] = {
 			"TheRuinsofAhnQiraj",		-- Classic WoW
@@ -770,6 +780,7 @@ Atlas_DropDownLayouts = {
 			"TheEmeraldNightmareE",		-- Legion
 			"TheEmeraldNightmareF",		-- Legion
 			"TheEmeraldNightmareG",		-- Legion
+			"TheEmeraldNightmareH",		-- Legion
 		},
 		[ATLAS_DDL_PARTYSIZE_20TO40IZ] = {
 			"Naxxramas",			-- Burning Crusade
@@ -807,7 +818,9 @@ Atlas_DropDownLayouts = {
 			"TheNightholdD",		-- Legion
 			"TheNightholdE",		-- Legion
 			"TheNightholdF",		-- Legion
-			-- "TheNightholdG",		-- Legion
+			"TheNightholdG",		-- Legion
+			"TrialofValorA",
+			"TrialofValorB",
 		},
 	},
 	[ATLAS_DDL_EXPANSION] = {
@@ -1024,6 +1037,7 @@ Atlas_DropDownLayouts = {
 			"TheEmeraldNightmareE",
 			"TheEmeraldNightmareF",
 			"TheEmeraldNightmareG",
+			"TheEmeraldNightmareH",		-- Legion
 			"TheNightholdEnt",
 			"TheNightholdA",
 			"TheNightholdB",
@@ -1031,7 +1045,10 @@ Atlas_DropDownLayouts = {
 			"TheNightholdD",
 			"TheNightholdE",
 			"TheNightholdF",
-			-- "TheNightholdG",
+			"TheNightholdG",
+			-- "ReturntoKarazhan", 		-- Legion
+			"TrialofValorA",
+			"TrialofValorB",
 		},
 	},
 	[ATLAS_DDL_TYPE] = {
@@ -1105,6 +1122,7 @@ Atlas_DropDownLayouts = {
 			"TheEmeraldNightmareE",		-- Legion
 			"TheEmeraldNightmareF",		-- Legion
 			"TheEmeraldNightmareG",		-- Legion
+			"TheEmeraldNightmareH",		-- Legion
 			"EyeofAzshara",			-- Legion
 		},
 		[ATLAS_DDL_TYPE_INSTANCE_GM] = {
@@ -1185,7 +1203,8 @@ Atlas_DropDownLayouts = {
 			"TheNightholdD",		-- Legion
 			"TheNightholdE",		-- Legion
 			"TheNightholdF",		-- Legion
-			-- "TheNightholdG",		-- Legion
+			"TheNightholdG",		-- Legion
+			-- "ReturntoKarazhan", 		-- Legion
 		},
 		[ATLAS_DDL_TYPE_INSTANCE_TZ] = {
 			"Uldaman",			-- Classic WoW
@@ -1220,6 +1239,8 @@ Atlas_DropDownLayouts = {
 			"VaultoftheWardensA",		-- Legion
 			"VaultoftheWardensB",		-- Legion
 			"VaultoftheWardensC",		-- Legion
+			"TrialofValorA",
+			"TrialofValorB",
 		},
 		[ATLAS_DDL_TYPE_ENTRANCE] = {
 			"BlackrockMountainEnt",		-- Classic WoW, Catalysm, Draenor

@@ -1,7 +1,7 @@
 ﻿--[[
-$Id: LibBabble-SubZone-3.0.lua 196 2016-10-26 15:07:26Z arith $
+$Id: LibBabble-SubZone-3.0.lua 199 2016-10-28 09:41:22Z arith $
 Name: LibBabble-SubZone-3.0
-Revision: $Rev: 196 $
+Revision: $Rev: 199 $
 Maintainers: arith
 Last updated by: $Author: arith $
 Website: http://www.wowace.com/addons/libbabble-subzone-3-0/
@@ -10,7 +10,7 @@ License: MIT
 ]]
 
 local MAJOR_VERSION = "LibBabble-SubZone-3.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 196 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 199 $"):match("%d+"))
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local _, private = ...
@@ -1859,6 +1859,7 @@ lib:SetBaseTranslations
 	["Gruul's Lair"] = "Gruul's Lair",
 	["Gryphon Roost"] = "Gryphon Roost",
 	["Guardian's Library"] = "Guardian's Library",
+	["Guardian's Study"] = "Guardian's Study",
 	["Gul'dan's Overlook"] = "Gul'dan's Overlook",
 	["Gull Rock"] = "Gull Rock",
 	["Gul'rok"] = "Gul'rok",

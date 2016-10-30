@@ -1292,20 +1292,20 @@
 	</Frame>
 
 	<Frame virtual="true" name="ARKINV_TemplateFrameVaultLog" inherits="ARKINV_TemplateFrameStandard" hidden="true">
-
+		
 		<Anchors>
 			<Anchor point="TOPLEFT" relativeTo="$parentScroll" />
 			<Anchor point="BOTTOMRIGHT" relativeTo="$parentScroll" />
 		</Anchors>
-	
+		
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString name="$parentText" inherits="ARKINV_GameFontNormal" text="Height" hidden="true">
+				<FontString name="$parentText" inherits="ARKINV_GameFontNormal" text="TEXT" hidden="true">
 					<Anchor point="TOPLEFT" />
 				</FontString>
 			</Layer>
 		</Layers>
-
+		
 		<Frames>
 			
 			<ScrollingMessageFrame name="$parentList" fade="false" enableMouse="true">

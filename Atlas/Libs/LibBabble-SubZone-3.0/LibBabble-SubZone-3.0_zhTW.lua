@@ -1,7 +1,7 @@
 ﻿ --[[
-$Id: LibBabble-SubZone-3.0_zhTW.lua 196 2016-10-26 15:07:26Z arith $
+$Id: LibBabble-SubZone-3.0_zhTW.lua 199 2016-10-28 09:41:22Z arith $
 Name: LibBabble-SubZone-3.0
-Revision: $Rev: 196 $
+Revision: $Rev: 199 $
 Maintainers: arith, dynaletik
 Last updated by: $Author: arith $
 Website: http://www.wowace.com/addons/libbabble-subzone-3-0/
@@ -1626,7 +1626,7 @@ lib:SetCurrentTranslations
 	["Gallywix's Villa"] = "加里維克斯的別墅",
 	["Gallywix's Yacht"] = "加里維克斯的遊艇",
 	["Galus' Chamber"] = "加魯斯的房間",
-	["Gamesman's Hall"] = "投機者大廳",
+	["Gamesman's Hall"] = "棋戲大廳",
 	Gammoth = "甘默斯",
 	["Gangamesh's Den"] = "岡加梅許的巢穴",
 	["Gao-Ran Battlefront"] = "高仁前線",
@@ -1850,6 +1850,7 @@ lib:SetCurrentTranslations
 	["Gruul's Lair"] = "戈魯爾之巢",
 	["Gryphon Roost"] = "獅鷲獸棲息處",
 	["Guardian's Library"] = "守護者圖書館",
+	["Guardian's Study"] = "守護者書房",
 	["Gul'dan's Overlook"] = "古爾丹的瞰臺",
 	["Gull Rock"] = "海鷗岩",
 	["Gul'rok"] = "古爾拉克",

@@ -12,7 +12,11 @@
  
 
 
-*3.07.17 (26-OCT-2016)*
+*3.07.18 (28-OCT-2016)*
+ * fixed - issue with default font size not applying for some objects (rule column headers, guild bank money and info logs)
+ * fixed - issue with tackle container slots not being recognised properly
+ 
+ 3.07.17 (26-OCT-2016)*
  * changed - toc updated to 70100
  * workaround - issue with increased item level due to GetItemInfo returning a slightly different hyperlink than the one passed in (only seems to impact artifacts).  presumably blizzard will fix it at some point
 

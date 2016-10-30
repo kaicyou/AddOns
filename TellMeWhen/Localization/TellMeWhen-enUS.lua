@@ -880,6 +880,7 @@ This option is account-wide: all of your profiles will share this setting.
 
 |cffff5959Changes will only be reflected after you |cff7fffffreload your UI|cffff5959.|r]]
 L["UIPANEL_BARTEXTURE"] = "Bar Texture"
+L["UIPANEL_USE_PROFILE"] = "Use Profile Setting"
 L["UIPANEL_PERFORMANCE"] = "Performance"
 L["UIPANEL_UPDATEINTERVAL"] = "Update Interval"
 L["UIPANEL_TOOLTIP_UPDATEINTERVAL"] = [[Sets how often (in seconds) icons are checked for show/hide, alpha, conditions, etc.
@@ -2178,12 +2179,12 @@ L["EVENTS_SETTINGS_PASSINGCNDT_DESC"] = "Prevents the notification from being ha
 L["EVENTS_SETTINGS_CNDTJUSTPASSED"] = "And it just began passing"
 L["EVENTS_SETTINGS_CNDTJUSTPASSED_DESC"] = "Prevents the notification from being handled unless the condition configured above has just begun succeeding."
 
-L["EVENTS_SETTINGS_PASSTHROUGH"] = "Continue to lower events"
+L["EVENTS_SETTINGS_PASSTHROUGH"] = "Continue to lower notifications"
 L["EVENTS_SETTINGS_PASSTHROUGH_DESC"] = [[Check to allow another event-triggered notification to be handled after this one.
 
-If left unchecked, the icon will not process any more events after this event if it successfully processes and outputs/displays something.
+If left unchecked, the icon will not process any more notifications after this notifications if it successfully processes and outputs/displays something.
 
-Exeptions may apply, see individual event descriptions for details.]]
+Exeptions may apply, see individual trigger descriptions for details.]]
 
 
 

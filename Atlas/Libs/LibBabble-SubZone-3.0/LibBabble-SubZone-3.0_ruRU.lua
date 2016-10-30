@@ -1,7 +1,7 @@
 ﻿ --[[
-$Id: LibBabble-SubZone-3.0_ruRU.lua 196 2016-10-26 15:07:26Z arith $
+$Id: LibBabble-SubZone-3.0_ruRU.lua 199 2016-10-28 09:41:22Z arith $
 Name: LibBabble-SubZone-3.0
-Revision: $Rev: 196 $
+Revision: $Rev: 199 $
 Maintainers: arith, dynaletik
 Last updated by: $Author: arith $
 Website: http://www.wowace.com/addons/libbabble-subzone-3-0/
@@ -1850,6 +1850,7 @@ lib:SetCurrentTranslations
 	["Gruul's Lair"] = "Логово Груула",
 	["Gryphon Roost"] = "Грифоний насест",
 	["Guardian's Library"] = "Библиотека Хранителя",
+	["Guardian's Study"] = "Кабинет Хранителя",
 	["Gul'dan's Overlook"] = "Дозор Гул'дана",
 	["Gull Rock"] = "Скала чаек",
 	["Gul'rok"] = "Гул'рок",

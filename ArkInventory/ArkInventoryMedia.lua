@@ -99,7 +99,7 @@ function ArkInventory.MediaObjectFontSet( obj, face, size )
 	size_old = helper_fontsize( size_old )
 	
 	local path = path_old
-	local size = size or size_old
+	local size = size or ( ArkInventory.db and ArkInventory.db.option.font.height ) or 10
 	
 	if face then
 		path, face, size = helper_fontinfo( face, size )
@@ -110,6 +110,7 @@ function ArkInventory.MediaObjectFontSet( obj, face, size )
 	
 	if path_old ~= path or size_old ~= size then
        	obj:SetFont( path, size, flags )
+		--ArkInventory.Output( obj:GetName( ), ":SetFont( ", path, ", ", size, ", ", flags, " )" )
 	end
 	
 end

@@ -1,16 +1,21 @@
 ------------------------------------------------------------------------
-r4468 | proteyer | 2016-10-26 10:02:14 +0000 (Wed, 26 Oct 2016) | 8 lines
+r4472 | proteyer | 2016-10-27 07:09:28 +0000 (Thu, 27 Oct 2016) | 4 lines
 Changed paths:
-   A /tags/v8.01.05 (from /trunk:4467)
+   A /tags/v8.01.06 (from /trunk:4471)
 
-Tagging as v8.01.05
+Tagging as v8.01.06
 
-- updated TOC version to 7.1
-- added Dungeon "Return To Karazhan" to Legion Content
-- added Raid "Trial Of Valor" to Legion Content
-- added zhTW description to TOC of AtlasLoot_Options.toc
-## information for Devs
-- added 2nd mythic dungeon bonusID to ItemString.lua
+- added missing boss "Shade of Medivh" to "Return to Karazhan"
+- changed order of bosses in Legion to reflect the Adventure Guide
+------------------------------------------------------------------------
+r4471 | proteyer | 2016-10-27 07:05:24 +0000 (Thu, 27 Oct 2016) | 2 lines
+Changed paths:
+   M /trunk
+   M /trunk/AtlasLoot_Legion/data.lua
+   M /trunk/AtlasLoot_WorldEvents/data.lua
+
+- merged branch Legion into Trunk
+
 ------------------------------------------------------------------------
 r4467 | proteyer | 2016-10-26 09:54:18 +0000 (Wed, 26 Oct 2016) | 1 line
 Changed paths:

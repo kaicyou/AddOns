@@ -47,7 +47,7 @@ for i = 1,maxnick do
 
 
 local colorname=pssidamageinf_damageinfo[play][ar1][ar2][1][i]
-local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","","|cff999999"}
+local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|cff999999","|CFFA330C9"}
 
 if rsccodeclass==nil then rsccodeclass=12 end
 

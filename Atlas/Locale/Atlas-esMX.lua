@@ -180,6 +180,7 @@ L["ATLAS_SLASH_OPTIONS"] = "opciones"
 L["ATLAS_STRING_CLEAR"] = "Limpiar"
 L["ATLAS_STRING_LEVELRANGE"] = "Rango de nivel" -- Needs review
 L["ATLAS_STRING_LOCATION"] = "Localización"
+-- L["ATLAS_STRING_MINGEARLEVEL"] = ""
 L["ATLAS_STRING_MINLEVEL"] = "Nivel mínimo"
 L["ATLAS_STRING_PLAYERLIMIT"] = "Límite de Jugadores"
 L["ATLAS_STRING_RECLEVELRANGE"] = "Rng. nivel" -- Needs review

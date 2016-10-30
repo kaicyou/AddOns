@@ -1156,8 +1156,8 @@ function ArkInventory:EVENT_WOW_CVAR_UPDATE( event, cvar, value )
 end
 
 function ArkInventory:EVENT_ARKINV_ZONE_CHANGED_BUCKET( )
-	--ArkInventory.LDB.Mounts:Update( )
-	ArkInventory.ScanCollectionMount( )
+	ArkInventory.LDB.Mounts:Update( )
+	--ArkInventory.ScanCollectionMount( )
 end
 
 function ArkInventory:EVENT_WOW_ZONE_CHANGED( )
@@ -1321,7 +1321,7 @@ function ArkInventory.BagType( blizzard_id )
 					return ArkInventory.Const.Slot.Type.Leatherworking
 				elseif s == ArkInventory.Const.ItemClass.CONTAINER_MINING then
 					return ArkInventory.Const.Slot.Type.Mining
-				elseif s == ArkInventory.Const.ItemClass.CONTAINER_TACKLE then
+				elseif s == ArkInventory.Const.ItemClass.CONTAINER_FISHING then
 					return ArkInventory.Const.Slot.Type.Tackle
 				elseif s == ArkInventory.Const.ItemClass.CONTAINER_COOKING then
 					return ArkInventory.Const.Slot.Type.Cooking

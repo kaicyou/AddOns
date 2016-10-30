@@ -2,6 +2,34 @@
 Changelog
 =========
 
+Version 4.10.20  (October 28, 2016)
+
+- TOC file updated for Patch 7.1
+- German translation updated, but not complete.  Still a work in progress.
+- Removed Non-Mythic Quests from Court of Stars and The Arcway.  These quests don't seem to actually exist.  Not sure why Wowhead lists them.
+
+- Added quests:
+	- Assault on the Violet Hold:  Uncovering Orders
+	- Black Rook Hold: Uncovering Orders
+	- Eye of Azshara: The Heart of Zin-Azshari
+	- Halls of Valor: Edict of the God-King
+	- Halls of Valor: Unwanted Evidence
+	- Neltharion's Lair: Misdirected
+	- The Arcway: Opening the Arcway
+	- The Arcway: Long Buried Knowledge
+	- Vault of the Wardens: Startup Sequence
+	- Vault of the Wardens: More Than Just A Food Vendor
+	- Vault of the Wardens: The Enemy of My Enemy...
+	- Vault of the Wardens: Unleashing Judgment
+	- Vault of the Wardens: Uncovering Order
+	- Emerald Nightmare: Piercing the Veil (Normal)
+	- Emerald Nightmare: Piercing the Veil (Heroic)
+	- Emerald Nightmare: Piercing the Veil (Mythic)
+	- Emerald Nightmare: The Stuff of Dreams
+	
+	
+
+
 Version 4.10.10  (October 2, 2016)
 
 - Updates for Atlas 1.34.02 changes.

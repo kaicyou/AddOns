@@ -1,4 +1,4 @@
--- $Id: AtlasMapsAssociation.lua 101 2016-09-20 05:02:33Z arith $
+-- $Id: AtlasMapsAssociation.lua 116 2016-10-28 14:18:43Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -69,6 +69,7 @@ Atlas_AssocDefaults = {
 	[BZ["The Emerald Nightmare"]] = 	"TheEmeraldNightmareA";
 	[BZ["The Nighthold"]] = 		"TheNightholdC";
 	[BZ["Vault of the Wardens"]] = 		"VaultoftheWardensA";
+	[BZ["Trial of Valor"]] = 		"TrialofValorA";
 };
 
 --[[
@@ -591,11 +592,9 @@ Atlas_SubZoneData = {
 		["TheEmeraldNightmareG"] = {
 			BZ["Moonglade"],
 		},
---[[
 		["TheEmeraldNightmareH"] = {
 			BZ["Rift of Aln"],
 		},
-]]
 			-- BZ["The Emerald Dream"],
 			-- BZ["Bough Shadow"],
 			-- BZ["Seradane"],
@@ -633,11 +632,9 @@ Atlas_SubZoneData = {
 			BZ["The Nightspire"], -- upper floor
 		},
 		-- Gul'dan
---[[
 		["TheNightholdG"] = {
+			BZ["The Font of Night"],
 		},
-]]
-			-- BZ["The Font of Night"],
 	},
 	[BZ["Vault of the Wardens"]] = {
 		["VaultoftheWardensA"] = {
@@ -656,6 +653,16 @@ Atlas_SubZoneData = {
 			BZ["Vault of the Betrayer"],
 		},
 	},
+
+--	[BZ["Trial of Valor"]] = {
+--		["TrialofValorA"] = {
+--		
+--		},
+--		["TrialofValorB"] = {
+--		
+--		},
+--	},
+
 };
 
 --[[
@@ -835,7 +842,7 @@ Atlas_InstToEntMatches = {
 	["TheNightholdD"] = 			{"TheNightholdEnt"};
 	["TheNightholdE"] = 			{"TheNightholdEnt"};
 	["TheNightholdF"] = 			{"TheNightholdEnt"};
---	["TheNightholdG"] = 			{"TheNightholdEnt"};
+	["TheNightholdG"] = 			{"TheNightholdEnt"};
 };
 
 -- Defines the instance which have multiple maps
@@ -879,21 +886,23 @@ Atlas_MapSeries = {
 	["HallsofValorC"] = 			{"HallsofValorA", "HallsofValorB", "HallsofValorC" };
 	["MawofSoulsA"] = 			{"MawofSoulsA", "MawofSoulsB" };
 	["MawofSoulsB"] = 			{"MawofSoulsA", "MawofSoulsB" };
-	["TheEmeraldNightmareA"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG"--[[, "TheEmeraldNightmareH"]] };
-	["TheEmeraldNightmareB"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG"--[[, "TheEmeraldNightmareH"]] };
-	["TheEmeraldNightmareC"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG"--[[, "TheEmeraldNightmareH"]] };
-	["TheEmeraldNightmareD"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG"--[[, "TheEmeraldNightmareH"]] };
-	["TheEmeraldNightmareE"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG"--[[, "TheEmeraldNightmareH"]] };
-	["TheEmeraldNightmareF"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG"--[[, "TheEmeraldNightmareH"]] };
-	["TheEmeraldNightmareG"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG"--[[, "TheEmeraldNightmareH"]] };
--- 	["TheEmeraldNightmareH"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG", "TheEmeraldNightmareH" };
-	["TheNightholdA"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF"--[[, "TheNightholdG"]] };
-	["TheNightholdB"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF"--[[, "TheNightholdG"]] };
-	["TheNightholdC"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF"--[[, "TheNightholdG"]] };
-	["TheNightholdD"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF"--[[, "TheNightholdG"]] };
-	["TheNightholdE"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF"--[[, "TheNightholdG"]] };
-	["TheNightholdF"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF"--[[, "TheNightholdG"]] };
--- 	["TheNightholdG"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF", "TheNightholdG" };
+	["TheEmeraldNightmareA"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG", "TheEmeraldNightmareH" };
+	["TheEmeraldNightmareB"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG", "TheEmeraldNightmareH" };
+	["TheEmeraldNightmareC"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG", "TheEmeraldNightmareH" };
+	["TheEmeraldNightmareD"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG", "TheEmeraldNightmareH" };
+	["TheEmeraldNightmareE"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG", "TheEmeraldNightmareH" };
+	["TheEmeraldNightmareF"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG", "TheEmeraldNightmareH" };
+	["TheEmeraldNightmareG"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG", "TheEmeraldNightmareH" };
+ 	["TheEmeraldNightmareH"] = 		{"TheEmeraldNightmareA", "TheEmeraldNightmareB", "TheEmeraldNightmareC", "TheEmeraldNightmareD", "TheEmeraldNightmareE", "TheEmeraldNightmareF", "TheEmeraldNightmareG", "TheEmeraldNightmareH" };
+	["TheNightholdA"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF", "TheNightholdG" };
+	["TheNightholdB"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF", "TheNightholdG" };
+	["TheNightholdC"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF", "TheNightholdG" };
+	["TheNightholdD"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF", "TheNightholdG" };
+	["TheNightholdE"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF", "TheNightholdG" };
+	["TheNightholdF"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF", "TheNightholdG" };
+ 	["TheNightholdG"] = 			{"TheNightholdA", "TheNightholdB", "TheNightholdC", "TheNightholdD", "TheNightholdE", "TheNightholdF", "TheNightholdG" };
+	["TrialofValorA"] = 			{"TrialofValorA", "TrialofValorB"};
+	["TrialofValorB"] = 			{"TrialofValorA", "TrialofValorB"};
 	["VaultoftheWardensA"] = 		{"VaultoftheWardensA", "VaultoftheWardensB", "VaultoftheWardensC" };
 	["VaultoftheWardensB"] = 		{"VaultoftheWardensA", "VaultoftheWardensB", "VaultoftheWardensC" };
 	["VaultoftheWardensC"] = 		{"VaultoftheWardensA", "VaultoftheWardensB", "VaultoftheWardensC" };
@@ -975,7 +984,9 @@ Atlas_SubZoneAssoc = {
 	["TheNightholdD"] = 			BZ["The Nighthold"];
 	["TheNightholdE"] = 			BZ["The Nighthold"];
 	["TheNightholdF"] = 			BZ["The Nighthold"];
--- 	["TheNightholdG"] = 			BZ["The Nighthold"];
+ 	["TheNightholdG"] = 			BZ["The Nighthold"];
+	["TrialofValorA"] = 			BZ["Trial of Valor"];
+	["TrialofValorB"] = 			BZ["Trial of Valor"];
 	["VaultoftheWardensA"] = 		BZ["Vault of the Wardens"];
 	["VaultoftheWardensB"] = 		BZ["Vault of the Wardens"];
 	["VaultoftheWardensC"] = 		BZ["Vault of the Wardens"];

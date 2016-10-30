@@ -1,4 +1,4 @@
-<!-- $Id: Atlas.xml 91 2016-09-02 17:56:36Z arith $ -->
+<!-- $Id: Atlas.xml 116 2016-10-28 14:18:43Z arith $ -->
 <!--
 
 	Atlas, a World of Warcraft instance map browser
@@ -270,7 +270,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="546" y="-92"/>
+							<AbsDimension x="546" y="-84"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -352,7 +352,7 @@
 			</Frame>
 			<Frame name="AtlasText_RecommendedRange">
 				<Size>
-					<AbsDimension x="400" y="15" />
+					<AbsDimension x="450" y="15" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="AtlasText_LevelRange" relativePoint="TOPLEFT">
@@ -365,7 +365,7 @@
 					<Layer level="OVERLAY">
 						<FontString name="$parent_Text" inherits="GameFontNormal" justifyH="LEFT">
 							<Size>
-								<AbsDimension x="400" y="15"/>
+								<AbsDimension x="450" y="15"/>
 							</Size>
 						</FontString>
 					</Layer>
@@ -381,7 +381,7 @@
 			</Frame>
 			<Frame name="AtlasText_MinLevel">
 				<Size>
-					<AbsDimension x="400" y="15" />
+					<AbsDimension x="450" y="15" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="AtlasText_RecommendedRange" relativePoint="TOPLEFT">
@@ -394,7 +394,7 @@
 					<Layer level="OVERLAY">
 						<FontString name="$parent_Text" inherits="GameFontNormal" justifyH="LEFT">
 							<Size>
-								<AbsDimension x="400" y="15"/>
+								<AbsDimension x="450" y="15"/>
 							</Size>
 						</FontString>
 					</Layer>
@@ -410,7 +410,7 @@
 			</Frame>
 			<Frame name="AtlasText_PlayerLimit">
 				<Size>
-					<AbsDimension x="300" y="15" />
+					<AbsDimension x="450" y="15" />
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="AtlasText_MinLevel" relativePoint="TOPLEFT">
@@ -423,7 +423,7 @@
 					<Layer level="OVERLAY">
 						<FontString name="$parent_Text" inherits="GameFontNormal" justifyH="LEFT">
 							<Size>
-								<AbsDimension x="300" y="15"/>
+								<AbsDimension x="450" y="15"/>
 							</Size>
 						</FontString>
 					</Layer>
@@ -432,6 +432,38 @@
 					<OnUpdate>
 						AtlasEntryTemplate_OnUpdate(self);
 					</OnUpdate>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Frame>
+			<Frame name="AtlasText_MinGearLevel">
+				<Size>
+					<AbsDimension x="450" y="15" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="AtlasText_PlayerLimit" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-15"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parent_Text" inherits="GameFontNormal" justifyH="LEFT">
+							<Size>
+								<AbsDimension x="450" y="15"/>
+							</Size>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnUpdate>
+						AtlasEntryTemplate_OnUpdate(self);
+					</OnUpdate>
+					<OnEnter>
+						Atlas_DungeonMinGearLevelToolTip(self);
+					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide();
 					</OnLeave>

@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1743 $
-$Date: 2016-10-21 17:13:53 +1100 (Fri, 21 Oct 2016) $
+$Revision: 1755 $
+$Date: 2016-10-28 10:46:30 +1100 (Fri, 28 Oct 2016) $
 
 ]]--
 
@@ -790,8 +790,8 @@ ArkInventory.Const.Slot.Data = {
 	},
 	[ArkInventory.Const.Slot.Type.Tackle] = {
 		["name"] = ArkInventory.Localise["STATUS_SHORTNAME_TACKLE"],
-		["long"] = ArkInventory.Localise["WOW_ITEM_CLASS_CONTAINER_TACKLE"],
-		["type"] = ArkInventory.Localise["WOW_ITEM_CLASS_CONTAINER_TACKLE"],
+		["long"] = ArkInventory.Localise["WOW_ITEM_CLASS_CONTAINER_FISHING"],
+		["type"] = ArkInventory.Localise["WOW_ITEM_CLASS_CONTAINER_FISHING"],
 	},
 	[ArkInventory.Const.Slot.Type.Void] = {
 		["name"] = ArkInventory.Localise["LOCATION_VOIDSTORAGE"],

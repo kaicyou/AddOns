@@ -1,4 +1,4 @@
-﻿-- $Id: AtlasMaps.lua 101 2016-09-20 05:02:33Z arith $
+﻿-- $Id: AtlasMaps.lua 116 2016-10-28 14:18:43Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -954,13 +954,10 @@ Syntax:
 		ZoneName = { BZ["The Emerald Nightmare"]..L["MapG"] };
 		Module = "Atlas_Legion";
 	};
-	-- Map TODO
---[[
 	TheEmeraldNightmareH = {
 		ZoneName = { BZ["The Emerald Nightmare"]..L["MapH"] };
 		Module = "Atlas_Legion";
 	};
-]]
 	TheNightholdA = {
 		ZoneName = { BZ["The Nighthold"]..L["MapA"] };
 		Module = "Atlas_Legion";
@@ -985,13 +982,10 @@ Syntax:
 		ZoneName = { BZ["The Nighthold"]..L["MapF"] };
 		Module = "Atlas_Legion";
 	};
-	-- Map TODO
---[[
 	TheNightholdG = {
 		ZoneName = { BZ["The Nighthold"]..L["MapG"] };
 		Module = "Atlas_Legion";
 	};
-]]
 	VaultoftheWardensA = {
 		ZoneName = { BZ["Vault of the Wardens"]..L["MapA"] };
 		Module = "Atlas_Legion";
@@ -1002,6 +996,14 @@ Syntax:
 	};
 	VaultoftheWardensC = {
 		ZoneName = { BZ["Vault of the Wardens"]..L["MapC"] };
+		Module = "Atlas_Legion";
+	};
+	TrialofValorA = { 
+		ZoneName = { BZ["Trial of Valor"]..L["MapA"] };
+		Module = "Atlas_Legion";
+	};
+	TrialofValorB = { 
+		ZoneName = { BZ["Trial of Valor"]..L["MapB"] };
 		Module = "Atlas_Legion";
 	};
 };

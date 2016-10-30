@@ -1,4 +1,4 @@
-﻿## Interface: 70000
+﻿## Interface: 70100
 ## Title: Phoenix|cff7fff7fStyle|r - Firelands
 ## Title-ruRU: Phoenix|cff7fff7fStyle|r - Огненные просторы
 ## Author: Shurshik

@@ -139,6 +139,7 @@ local AMC_FrameLabel;
 local AMC_TableMaxWidth = 430;
 
 -- counted number of displayed map labels
+local AMC_NumFramesSmall = 0;
 local AMC_NumFrames = 0;
 
 -- some saved hooks
@@ -150,7 +151,9 @@ local AMC_AtlasMainMenuIndex = 1;
 
 -- texture of the player arrow
 local AMC_PlayerArrow_Frame;
+local AMC_PlayerArrow_FrameSmall;
 local AMC_PlayerArrow_Tex;
+local AMC_PlayerArrow_TexSmall;
 
 -- key bindings
 BINDING_HEADER_AMC_TITLE  = "AtlasMajorCities Enhanced";
@@ -284,17 +287,27 @@ local function FAMC_GetActual_LC_MapName()
 end
 
 -- set the frame position at the AtlasMap
-local function FAMC_SetMapFramePosition(valx, valy, mapframe)
+local function FAMC_SetMapFramePosition(valx, valy, mapframe, small)
 	-- compute and set position of frame object at the map
 	local x1 = AtlasMajorCities_XMapCoordSkip[AtlasMajorCities_ShownCity.."1"];
 	local x2 = AtlasMajorCities_XMapCoordSkip[AtlasMajorCities_ShownCity.."2"];
 	local xpos = (valx - x1) / (100.0 - x1 - x2);
 	local ypos = valy / 100.0;
-	local wmap = AtlasMap:GetWidth();
-	local hmap = AtlasMap:GetHeight();
+	local wmap, hmap;
+	if ( small ) then
+		wmap = AtlasMapSmall:GetWidth();
+		hmap = AtlasMapSmall:GetHeight();
+	else
+		wmap = AtlasMap:GetWidth();
+		hmap = AtlasMap:GetHeight();
+	end
 	local xoff = math.floor(wmap*xpos+0.5);
 	local yoff = math.floor(hmap*(-ypos)+0.5);
-	mapframe:SetPoint("CENTER", AtlasMap, "TOPLEFT", xoff, yoff);
+	if ( small ) then
+		mapframe:SetPoint("CENTER", AtlasMapSmall, "TOPLEFT", xoff, yoff);
+	else
+		mapframe:SetPoint("CENTER", AtlasMap, "TOPLEFT", xoff, yoff);
+	end
 	return xoff, yoff;
 end
 
@@ -308,7 +321,7 @@ end
 
 -- create the player arrow frame
 local function FAMC_InitPlayerArrow()
-	AMC_PlayerArrow_Frame = CreateFrame("FRAME", "AMC_PlayerArrow_Frame", AtlasFrame);
+	AMC_PlayerArrow_Frame = CreateFrame("FRAME", "AMC_PlayerArrow_Frame",      AtlasFrame);
 	AMC_PlayerArrow_Tex = AMC_PlayerArrow_Frame:CreateTexture("AMC_PlayerArrow_Tex", "ARTWORK");
 	AMC_PlayerArrow_Tex:SetWidth(42);
 	AMC_PlayerArrow_Tex:SetHeight(42);
@@ -320,6 +333,20 @@ local function FAMC_InitPlayerArrow()
 	AMC_PlayerArrow_Frame:SetPoint("CENTER", AtlasMap, "TOPLEFT", 0, 0);
 	AMC_PlayerArrow_Frame:SetFrameStrata("HIGH");
 	AMC_PlayerArrow_Frame:Hide();
+
+	-- setup small frame
+	AMC_PlayerArrow_FrameSmall = CreateFrame("FRAME", "AMC_PlayerArrow_FrameSmall", AtlasFrameSmall);
+	AMC_PlayerArrow_TexSmall = AMC_PlayerArrow_FrameSmall:CreateTexture("AMC_PlayerArrow_TexSmall", "ARTWORK");
+	AMC_PlayerArrow_TexSmall:SetWidth(42);
+	AMC_PlayerArrow_TexSmall:SetHeight(42);
+	AMC_PlayerArrow_TexSmall:SetPoint("CENTER", AMC_PlayerArrow_FrameSmall, "CENTER", 0, 0);
+	AMC_PlayerArrow_TexSmall:SetTexture("Interface\\Minimap\\MinimapArrow");
+	AMC_PlayerArrow_FrameSmall:SetWidth(42);
+	AMC_PlayerArrow_FrameSmall:SetHeight(42);
+	AMC_PlayerArrow_FrameSmall:ClearAllPoints();
+	AMC_PlayerArrow_FrameSmall:SetPoint("CENTER", AtlasMapSmall, "TOPLEFT", 0, 0);
+	AMC_PlayerArrow_FrameSmall:SetFrameStrata("HIGH");
+	AMC_PlayerArrow_FrameSmall:Hide();
 end
 
 -- vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -440,9 +467,9 @@ end
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -- set the player arrow on the Atlas map
-local function FAMC_SetPlayerArrow()
+local function FAMC_SetPlayerArrow(small)
 	if ( AMC_AtlasMainMenuIndex == 1 ) then return; end
-	if ( not AtlasFrame:IsVisible() ) then return; end
+	if ( not AtlasFrame:IsShown() and not AtlasFrameSmall:IsShown() ) then return; end
 
 	local Pshow = true;
 	if ( AtlasOptions.AtlasType ~= AMC_AtlasMainMenuIndex ) then Pshow = false; end
@@ -454,53 +481,38 @@ local function FAMC_SetPlayerArrow()
 		-- set player arrow to its map position
 		local posX, posY = GetPlayerMapPosition("player");
 		AMC_PlayerArrow_Frame:ClearAllPoints();
-		posX, posY = FAMC_SetMapFramePosition(posX * 100, posY * 100, AMC_PlayerArrow_Frame);
+		AMC_PlayerArrow_FrameSmall:ClearAllPoints();
+		if ( small ) then
+			posX, posY = FAMC_SetMapFramePosition(posX * 100, posY * 100, AMC_PlayerArrow_FrameSmall, true);
+		else
+			posX, posY = FAMC_SetMapFramePosition(posX * 100, posY * 100, AMC_PlayerArrow_Frame);
+		end
 
 		if ( posX > 0 and posY < 0 and posX < 512 and posY > -512 ) then
 			-- turn player arrow to its facing angle (-PI < North (=0) < PI)
 			local FacingAngleRad = GetPlayerFacing();
-			AMC_PlayerArrow_Tex:SetRotation(FacingAngleRad,0.485,0.65);
+			if ( small ) then
+				AMC_PlayerArrow_TexSmall:SetRotation(FacingAngleRad,0.485,0.65);
+			else
+				AMC_PlayerArrow_Tex:SetRotation(FacingAngleRad,0.485,0.65);
+			end
 
-			AMC_PlayerArrow_Frame:Show();
+			if ( small ) then
+				AMC_PlayerArrow_FrameSmall:Show();
+				AMC_PlayerArrow_Frame:Hide();
+			else
+				AMC_PlayerArrow_FrameSmall:Hide();
+				AMC_PlayerArrow_Frame:Show();
+			end
 		else
+			AMC_PlayerArrow_FrameSmall:Hide();
 			AMC_PlayerArrow_Frame:Hide();
 		end
 	else
+		AMC_PlayerArrow_FrameSmall:Hide();
 		AMC_PlayerArrow_Frame:Hide();
 	end
 end
-
--- vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- definition of the AMC-Frame
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
--- set the player arrow on the Atlas map
-local function FAMC_OnUpdate(self, elapsed)
-	if ( AtlasMajorCities_EditMode ) then
-		AtlasMajorCities_Edit_OnUpdate(self, elapsed);
-	end
-
-	FAMC_SetPlayerArrow();
-end
-
--- start initialization of the addon
-local function FAMC_OnEvent(self, event, addon)
-	if ( (event == "ADDON_LOADED") and (addon == AMC_thisAddonName) ) then
-		self:UnregisterEvent("ADDON_LOADED");
-		FAMC_OnLoad(self);
-		if ( AtlasMajorCities_EditMode ) then
-			AtlasMajorCities_Edit_OnLoad(self);
-		end
-		self:SetScript("OnUpdate", FAMC_OnUpdate);
-	end
-end
-
--- define the AMC main frame (invisible)
-local AtlasMajorCities_Frame = CreateFrame("Frame", "AtlasMajorCities_Frame");
-AtlasMajorCities_Frame:RegisterEvent("ADDON_LOADED");
-AtlasMajorCities_Frame:SetScript("OnEvent", FAMC_OnEvent);
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- definition of the hooks for Atlas pull-down menu handling
@@ -538,7 +550,7 @@ function AtlasMajorCities_AtlasFrameDropDownType_OnClick_Hook(self)
 			for _,v in pairs(ATLAS_DROPDOWNS[thisID]) do
 				idx = idx + 1;
 				if ( AtlasMaps[v].ZoneName[1] == MapName ) then
-					UIDropDownMenu_SetSelectedID(AtlasFrameDropDownType, thisID);
+					Lib_UIDropDownMenu_SetSelectedID(AtlasFrameDropDownType, thisID);
 					AtlasOptions.AtlasType = thisID;
 					AtlasOptions.AtlasZone = idx;
 					AtlasFrameDropDown_OnShow();
@@ -562,8 +574,12 @@ end
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -- insert the actual city map image in the AtlasMap-Frame
-local function FAMC_InsertCityMap(city)
-	AtlasMap:SetTexture("");
+local function FAMC_InsertCityMap(city, small)
+	if ( small ) then
+		AtlasMapSmall:SetTexture("");
+	else
+		AtlasMap:SetTexture("");
+	end
 
 	-- tiles size scaled to 512 pixel map hight (AtlasMap size) -> 769 pixel width of whole map
 	-- original size: 256x256 (233x155) = 1001x667 -> 197x197 (178x118) = 769x512
@@ -579,8 +595,14 @@ local function FAMC_InsertCityMap(city)
 
 	local idx;
 	for idx = 1, 12 do
-		local tex = getglobal("AMC_Atlas_Map_"..idx);
-		if ( not tex ) then tex = AtlasFrame:CreateTexture("AMC_Atlas_Map_"..idx, "BACKGROUND"); end
+		local tex;
+		if ( small ) then
+			tex = getglobal("AMC_Atlas_MapSmall_"..idx);
+			if ( not tex ) then tex = AtlasFrameSmall:CreateTexture("AMC_Atlas_MapSmall_"..idx, "BACKGROUND"); end
+		else
+			tex = getglobal("AMC_Atlas_Map_"..idx);
+			if ( not tex ) then tex = AtlasFrame:CreateTexture("AMC_Atlas_Map_"..idx, "BACKGROUND"); end
+		end
 
 		-- set the tile size, include xskip
 		if ( idx == 1 or idx == 5 or idx == 9 ) then
@@ -613,7 +635,11 @@ local function FAMC_InsertCityMap(city)
 		local xpos = flt * tsize - xskip1;
 		if ( xpos < 0 ) then xpos = 0; end
 		local ypos = int * tsize;
-		tex:SetPoint("TOPLEFT", "AtlasFrame", "TOPLEFT", 18 + xpos, -84 - ypos);
+		if ( small ) then
+			tex:SetPoint("TOPLEFT", "AtlasFrameSmall", "TOPLEFT", 18 + xpos, -84 - ypos);
+		else
+			tex:SetPoint("TOPLEFT", "AtlasFrame", "TOPLEFT", 18 + xpos, -84 - ypos);
+		end
 
 		-- set region for tiles, include xskip and border
 		local xstart = 0.0;
@@ -648,22 +674,45 @@ local function FAMC_InsertCityMap(city)
 end
 
 -- clean the AtlasMap-Frame to show the map display of Atlas
-local function FAMC_CleanOldCityMap()
-	if ( AMC_NumFrames == 0 ) then return; end
+local function FAMC_CleanOldCityMap(small)
+	local numFrames;
+	if ( small ) then
+		if ( AMC_NumFramesSmall == 0 ) then return; end
+		numFrames = AMC_NumFramesSmall;
+	else
+		if ( AMC_NumFrames == 0 ) then return; end
+		numFrames = AMC_NumFrames;
+	end
 
 	local mapframe, maplabel, idx;
-	for idx = 1, AMC_NumFrames do
-		mapframe = getglobal("AMC_Atlas_Frame"..idx);
+	for idx = 1, numFrames do
+		if ( small ) then
+			mapframe = getglobal("AMC_Atlas_FrameSmall"..idx);
+		else
+			mapframe = getglobal("AMC_Atlas_Frame"..idx);
+		end
 		mapframe:Hide();
 		mapframe:ClearAllPoints();
 
-		maplabel = getglobal("AMC_Atlas_Image"..idx);
+		if ( small ) then
+			maplabel = getglobal("AMC_Atlas_ImageSmall"..idx);
+		else
+			maplabel = getglobal("AMC_Atlas_Image"..idx);
+		end
 		if ( maplabel ) then maplabel:SetTexture(""); end
 
-		maplabel = getglobal("AMC_Atlas_Label"..idx);
+		if ( small ) then
+			maplabel = getglobal("AMC_Atlas_LabelSmall"..idx);
+		else
+			maplabel = getglobal("AMC_Atlas_Label"..idx);
+		end
 		if ( maplabel ) then maplabel:SetText(""); end
 	end
-	AMC_NumFrames = 0;
+	if ( small ) then
+		AMC_NumFramesSmall = 0;
+	else
+		AMC_NumFrames = 0;
+	end
 	AtlasMajorCities_ShownCity = "";
 end
 
@@ -681,17 +730,22 @@ local function FAMC_UpdateMapFrame()
 	-- update the map display
 	if ( city ) then
 		-- use internal maps -> empty provided map
+		FAMC_InsertCityMap(city, true);
 		FAMC_InsertCityMap(city);
 	else
 		-- clear internal maps -> use provided map
 		local idx;
 		for idx = 1, 12 do
-			local tex = getglobal("AMC_Atlas_Map_"..idx);
+			local tex;
+			tex = getglobal("AMC_Atlas_MapSmall_"..idx);
+			if ( tex ) then tex:ClearAllPoints(); tex:SetTexture(""); end
+			tex = getglobal("AMC_Atlas_Map_"..idx);
 			if ( tex ) then tex:ClearAllPoints(); tex:SetTexture(""); end
 		end
 	end
 
 	-- remove labels and images of old map
+	FAMC_CleanOldCityMap(true);
 	FAMC_CleanOldCityMap();
 end
 
@@ -700,20 +754,36 @@ end
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -- create a label texture or string to insert in the label frame
-local function FAMC_SetupLabelFrame(label, mapframe)
+local function FAMC_SetupLabelFrame(label, mapframe, small)
 	local maplabel;
 	if ( string.sub(label,11) == "@" ) then  -- (the label starts behind the color string)
-		maplabel = getglobal("AMC_Atlas_Image"..AMC_NumFrames);
+		if ( small ) then
+			maplabel = getglobal("AMC_Atlas_ImageSmall"..AMC_NumFramesSmall);
+		else
+			maplabel = getglobal("AMC_Atlas_Image"..AMC_NumFrames);
+		end
 		if ( not maplabel ) then
-			maplabel = mapframe:CreateTexture("AMC_Atlas_Image"..AMC_NumFrames, "BACKGROUND")
+			if ( small ) then
+				maplabel = mapframe:CreateTexture("AMC_Atlas_ImageSmall"..AMC_NumFramesSmall, "BACKGROUND")
+			else
+				maplabel = mapframe:CreateTexture("AMC_Atlas_Image"..AMC_NumFrames, "BACKGROUND")
+			end
 			maplabel:SetWidth(15);
 			maplabel:SetHeight(15);
 			maplabel:SetPoint("CENTER", mapframe, "CENTER", 0, 0);
 		end
 	else
-		maplabel = getglobal("AMC_Atlas_Label"..AMC_NumFrames);
+		if ( small ) then
+			maplabel = getglobal("AMC_Atlas_LabelSmall"..AMC_NumFramesSmall);
+		else
+			maplabel = getglobal("AMC_Atlas_Label"..AMC_NumFrames);
+		end
 		if ( not maplabel ) then
-			maplabel = mapframe:CreateFontString("AMC_Atlas_Label"..AMC_NumFrames, "MEDIUM", "SystemFont_Outline");
+			if ( small ) then
+				maplabel = mapframe:CreateFontString("AMC_Atlas_LabelSmall"..AMC_NumFramesSmall, "MEDIUM", "SystemFont_Outline");
+			else
+				maplabel = mapframe:CreateFontString("AMC_Atlas_Label"..AMC_NumFrames, "MEDIUM", "SystemFont_Outline");
+			end
 			maplabel:SetPoint("CENTER", mapframe, "CENTER", 0, 0);
 		end
 	end
@@ -785,20 +855,32 @@ end
 -- vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
 -- set the labels for the actual map
-local function FAMC_SetMapLabels(label, x, y, id)
-	AMC_NumFrames = AMC_NumFrames + 1;
+local function FAMC_SetMapLabels(label, x, y, id, small)
+	if ( small ) then
+		AMC_NumFramesSmall = AMC_NumFramesSmall + 1;
+	else
+		AMC_NumFrames = AMC_NumFrames + 1;
+	end
 
 	-- get or create next label frame at the map
-	local mapframe = getglobal("AMC_Atlas_Frame"..AMC_NumFrames);
-	if ( not mapframe ) then
-		mapframe = CreateFrame("FRAME", "AMC_Atlas_Frame"..AMC_NumFrames, AtlasFrame);
+	local mapframe;
+	if ( small ) then
+		mapframe = getglobal("AMC_Atlas_FrameSmall"..AMC_NumFramesSmall);
+		if ( not mapframe ) then
+			mapframe = CreateFrame("FRAME", "AMC_Atlas_FrameSmall"..AMC_NumFramesSmall, AtlasFrameSmall);
+		end
+	else
+		mapframe = getglobal("AMC_Atlas_Frame"..AMC_NumFrames);
+		if ( not mapframe ) then
+			mapframe = CreateFrame("FRAME", "AMC_Atlas_Frame"..AMC_NumFrames, AtlasFrame);
+		end
 	end
 
 	-- create label object
-	local maplabel = FAMC_SetupLabelFrame(label, mapframe);
+	local maplabel = FAMC_SetupLabelFrame(label, mapframe, small);
 
 	-- compute and set position of frame object at the map
-	FAMC_SetMapFramePosition(x, y, mapframe);
+	FAMC_SetMapFramePosition(x, y, mapframe, small);
 
 	mapframe:EnableMouse(true);
 	mapframe:SetID(tonumber(id));
@@ -818,7 +900,7 @@ local function FAMC_SetMapLabels(label, x, y, id)
 		mapframe:SetScript("OnEnter",AtlasMajorCities_Label_ShowTT);
 		mapframe:SetScript("OnLeave",AtlasMajorCities_Label_HideTT);
 
-		if ( AtlasMajorCities_LabelAtPos == -1 ) then
+		if ( (AtlasMajorCities_LabelAtPos == -1) and not small ) then
 			FAMC_AllowMovableLabel(mapframe);
 		else
 			FAMC_DisableMovableLabel(mapframe);
@@ -1177,6 +1259,7 @@ local function FAMC_AddShopToAtlasList(islist, search_text, shownAreaTitle, addS
 			-- add the labels to the map
 			local xpos, ypos = FAMC_GetLabelPos(islist.PosX, islist.PosY, shop, islist.sID);
 			if ( xpos and ypos ) then
+				FAMC_SetMapLabels(color..labelName, xpos, ypos, shop, true);
 				FAMC_SetMapLabels(color..labelName, xpos, ypos, shop);
 			end
 		else
@@ -1207,6 +1290,50 @@ local function FAMC_AddShopToAtlasList(islist, search_text, shownAreaTitle, addS
 	return n, shownAreaTitle, addSeparator;
 end
 
+-- ***********************************************************************************************************************************
+-- sub-routines for OnUpdate and OnEvent
+-- ***********************************************************************************************************************************
+
+-- set the player arrow on the Atlas map
+local AMC_AtlasFrame_IsSmall = false;
+local function FAMC_OnUpdate(self, elapsed)
+	-- check for change of AtlasFrame to AtlasFrameSmall
+	if ( (AMC_AtlasFrame_IsSmall and not ATLAS_SMALLFRAME_SELECTED) or (not AMC_AtlasFrame_IsSmall and ATLAS_SMALLFRAME_SELECTED) ) then
+		AMC_AtlasFrame_IsSmall = ATLAS_SMALLFRAME_SELECTED;
+	end
+
+	if ( AtlasMajorCities_EditMode ) then
+		AtlasMajorCities_Edit_OnUpdate(self, elapsed);
+	end
+
+	if ( AMC_AtlasFrame_IsSmall ) then
+		FAMC_SetPlayerArrow(true);
+	else
+		FAMC_SetPlayerArrow();
+	end
+end
+
+-- start initialization of the addon
+local function FAMC_OnEvent(self, event, addon)
+	if ( (event == "ADDON_LOADED") and (addon == AMC_thisAddonName) ) then
+		self:UnregisterEvent("ADDON_LOADED");
+		FAMC_OnLoad(self);
+		if ( AtlasMajorCities_EditMode ) then
+			AtlasMajorCities_Edit_OnLoad(self);
+		end
+		self:SetScript("OnUpdate", FAMC_OnUpdate);
+	end
+end
+
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- definition of the AMC-Frame
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-- define the AMC main frame (invisible)
+local AtlasMajorCities_Frame = CreateFrame("Frame", "AtlasMajorCities_Frame");
+AtlasMajorCities_Frame:RegisterEvent("ADDON_LOADED");
+AtlasMajorCities_Frame:SetScript("OnEvent", FAMC_OnEvent);
+
 -- ###################################################################################################################################
 -- main routine, called from Atlas
 -- ###################################################################################################################################
@@ -1224,7 +1351,7 @@ function AtlasMajorCities_SearchCall(data, text)
 			AMC_LabelMode_PullDown:Hide();
 		end
 
-		if ( search_text == "" ) then
+		if ( text == "" ) then
 			new = data;
 		else
 			new = AtlasSimpleSearch(data, text);

@@ -385,3 +385,4 @@ function ArkInventory.TranslateTryAgain( )
 	frame.timer = 0
 	frame:Show( )
 end
+

@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation-enUS.lua 56 2016-10-25 15:58:44Z arith $
+-- $Id: Atlas_Transportation-enUS.lua 59 2016-11-09 10:16:14Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -64,6 +64,7 @@ if L then
 	L["Portals"] = "Portals";
 	L["Portal / Waygate Path to the destination"] = "Portal / Waygate Path to the destination";
 	L["Ship / Zeppelin sailing path to destination"] = "Ship / Zeppelin sailing path to destination";
+	L["Two ways portal"] = "Two ways portal";
 	L["Requires honored faction with Sha'tari Skyguard"] = "Requires honored faction with Sha'tari Skyguard";
 	L["Seahorse"] = "Seahorse";
 	L["South of the path along Lake Elune'ara"] = "South of the path along Lake Elune'ara";
@@ -92,4 +93,5 @@ if L then
 	L["Requires Eagle Ally Advancement"] = "Requires Eagle Ally Advancement";
 	L["Teleportation Nexus"] = "Teleportation Nexus";
 	L["Requires Teleportation Nexus Advancement"] = "Requires Teleportation Nexus Advancement";
+	L["Gleep Chatterswitch"] = "Gleep Chatterswitch"; -- NPC: 71336
 end

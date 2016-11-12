@@ -20,9 +20,9 @@ local default_config = {
 	text_face = "Friz Quadrata TT",
 	text_justify = "left",
 	text_shadow = false,
-	framestrata = "DIALOG",
+	framestrata = "LOW",
 	locked = false,
-	background = {r=0, g=0, b=0, a=0.5, show = false},
+	background = {r=0, g=0, b=0, a=0.3, show = true},
 	hide_on_combat = false,
 	auto_format = true,
 	auto_complete = true,
@@ -37,6 +37,17 @@ local COMM_QUERY_SEED = "NOQI"
 local COMM_QUERY_NOTE = "NOQN"
 local COMM_RECEIVED_SEED = "NORI"
 local COMM_RECEIVED_FULLNOTE = "NOFN"
+
+local is_raid_leader = function (sourceUnit)
+	if (type (sourceUnit) == "string") then
+		return UnitIsGroupLeader (sourceUnit) or UnitIsGroupLeader (sourceUnit:gsub ("%-.*", "")) or Notepad:UnitHasAssist (sourceUnit) or Notepad:UnitHasAssist (sourceUnit:gsub ("%-.*", ""))
+	end
+end
+local is_connected = function (sourceUnit)
+	if (type (sourceUnit) == "string") then
+		return UnitIsConnected (sourceUnit) or UnitIsConnected (sourceUnit:gsub ("%-.*", ""))
+	end
+end
 
 if (UnitFactionGroup("player") == "Horde") then
 	icon_texture = [[Interface\WorldStateFrame\HordeFlag]]
@@ -86,7 +97,7 @@ Notepad.OnInstall = function (plugin)
 	-------
 	
 	local title_text = screen_frame:CreateFontString (nil, "overlay", "GameFontNormal")
-	title_text:SetText ("Raid Assignments")
+	title_text:SetText ("Raid Assignments (/raa)")
 	title_text:SetTextColor (.8, .8, .8, 1)
 	title_text:SetPoint ("center", screen_frame, "center")
 	screen_frame.title_text = title_text
@@ -203,7 +214,7 @@ Notepad.OnInstall = function (plugin)
 	close:GetNormalTexture():SetTexCoord (0/128, 16/128, 0, 1)
 	close:GetHighlightTexture():SetTexCoord (0/128, 16/128, 0, 1)
 	close:SetScript ("OnClick", function()
-		Notepad.UnshowNoteOnScreen()
+		Notepad.UnshowNoteOnScreen (true)
 	end)
 	screen_frame.close = close
 	
@@ -247,14 +258,13 @@ Notepad.OnInstall = function (plugin)
 		f_anim:SetPoint ("bottomright", editbox_notes, "bottomright")
 		animation:Play()
 
-		if (Notepad.PlayerAFKTicker and Notepad.MouseCursorX and Notepad.MouseCursorY and Notepad.CharacterX and Notepad.CharacterY) then
+		if (Notepad.PlayerAFKTicker and Notepad.MouseCursorX and Notepad.MouseCursorY) then
 			local x, y = GetCursorPosition()
-			local xx, yy = GetPlayerMapPosition ("player")
-			if (Notepad.MouseCursorX ~= x or Notepad.MouseCursorY ~= y or Notepad.CharacterX ~= xx or Notepad.CharacterY ~= yy) then
-				if (not Notepad.PlayerAFKTicker._cancelled) then
+			if (Notepad.MouseCursorX ~= x or Notepad.MouseCursorY ~= y) then
+				if (Notepad.PlayerAFKTicker) then
 					Notepad.PlayerAFKTicker:Cancel()
+					Notepad.PlayerAFKTicker = nil
 				end
-				Notepad.PlayerAFKTicker = nil
 			end
 		end
 	end
@@ -292,10 +302,10 @@ end
 function Notepad:UpdateScreenFrameBackground()
 	local bg = Notepad.db.background
 	if (bg.show) then
-		Notepad.screen_frame.background:SetTexture (bg.r, bg.g, bg.b, bg.a)
+		Notepad.screen_frame.background:SetColorTexture (bg.r, bg.g, bg.b, bg.a)
 		Notepad.screen_frame.background:SetHeight (Notepad.screen_frame.text:GetHeight())
 	else
-		Notepad.screen_frame.background:SetTexture (0, 0, 0, 0)
+		Notepad.screen_frame.background:SetColorTexture (0, 0, 0, 0)
 	end
 end
 
@@ -431,13 +441,20 @@ function Notepad.CreateNewNotepad (self, button, name)
 end
 
 -- ~boss
+local list_colors = {{1, .8, .2}, {1, 1, .4}, {.8, 1, .2}}
 function Notepad:BuildBossList()
 	local t = {}
 	
-	--> Emerald Nightmare
-	EJ_SelectInstance (768)
-	for i = 1, 7 do
-		t [#t+1] = {label = EJ_GetEncounterInfoByIndex (i, 768), value = "768_" .. i, onclick = Notepad.OnBossSelection}
+	--get the list of raids
+	local raids = RA:GetRegisteredRaids()
+	local index = 1
+	for EJ_ID, bossList in pairs (raids) do
+		EJ_SelectInstance (EJ_ID)
+		local color = list_colors [index]
+		for i = 1, #bossList do
+			t [#t+1] = {label = EJ_GetEncounterInfoByIndex (i, EJ_ID), value = EJ_ID .. "_" .. i, onclick = Notepad.OnBossSelection, color = color}
+		end
+		index = index + 1
 	end
 	
 	return t
@@ -466,7 +483,7 @@ end
 function Notepad.DeleteCurrentNote()
 	--> check if the note isn't the one currently showing on screen.
 	if (Notepad.db.currently_shown == Notepad.notepad_editing_id) then
-		Notepad:UnshowNoteOnScreen()
+		Notepad.UnshowNoteOnScreen()
 	end
 	
 	local id = Notepad.notepad_editing_id
@@ -552,12 +569,10 @@ Notepad.update_scroll_bar = update_scroll_bar
 
 local track_mouse_position = function()
 	local x, y = GetCursorPosition()
-	xx, yy = GetPlayerMapPosition ("player")
-
-	if (Notepad.MouseCursorX == x and Notepad.MouseCursorY == y and Notepad.CharacterX == xx and Notepad.CharacterY == yy) then
+	if (Notepad.MouseCursorX == x and Notepad.MouseCursorY == y) then
 		--> player afk?
 		if (not Notepad.PlayerAFKTicker) then
-			Notepad.PlayerAFKTicker = C_Timer.NewTicker (5, Notepad.DoFlashAnim)
+			Notepad.PlayerAFKTicker = C_Timer.NewTicker (5, Notepad.DoFlashAnim, 10)
 		end
 	end
 end
@@ -601,7 +616,7 @@ function Notepad:ShowNoteOnScreen (note_id)
 	end
 end
 
-function Notepad:UnshowNoteOnScreen()
+function Notepad.UnshowNoteOnScreen (from_close_button)
 	if (Notepad.db.currently_shown) then
 		Notepad.db.currently_shown = false
 		
@@ -614,8 +629,12 @@ function Notepad:UnshowNoteOnScreen()
 		if (Notepad.main_frame.frame_note_shown) then
 			Notepad.main_frame.frame_note_shown:Hide()
 		end
-		
-		Notepad:SendUnShowNote()
+
+		if (from_close_button and type (from_close_button) == "boolean") then
+			if (is_raid_leader ("player")) then
+				RA:ShowPromptPanel ("Close it on All Raid Members as Well?", function() Notepad:SendUnShowNote() end, function() end)
+			end
+		end
 	end
 end
 
@@ -623,14 +642,14 @@ function Notepad:ValidateNoteCurrentlyShown()
 	if (IsInRaid()) then
 		return Notepad:ZONE_CHANGED_NEW_AREA() --has been removed
 	elseif (not IsInRaid()) then
-		return Notepad:UnshowNoteOnScreen()
+		return Notepad.UnshowNoteOnScreen()
 	end
 end
 
 function Notepad:GROUP_ROSTER_UPDATE()
 	if (Notepad.in_group and not IsInGroup()) then
 		--> left the group
-		Notepad:UnshowNoteOnScreen()
+		Notepad.UnshowNoteOnScreen()
 	elseif (not Notepad.in_group and IsInGroup()) then
 		--> joined a group
 		local _, instanceType = GetInstanceInfo()
@@ -647,7 +666,7 @@ function Notepad:ZONE_CHANGED_NEW_AREA()
 --	if (Notepad.in_group and Notepad.current_instanceType ~= "raid") then -- instanceType == "raid" and 
 --		Notepad:AskForEnabledNote()
 --	else
---		Notepad:UnshowNoteOnScreen()
+--		Notepad.UnshowNoteOnScreen()
 --	end
 	
 --	local _, instanceType = GetInstanceInfo()
@@ -1384,9 +1403,13 @@ function Notepad.BuildOptions (frame)
 			button:Hide()
 		end
 		local bossid = Notepad.boss_editing_id and Notepad.boss_editing_id:gsub (".*_", "")
+		local raidID = Notepad.boss_editing_id and Notepad.boss_editing_id:gsub ("_.*", "")
+		
 		bossid = tonumber (bossid)
+		raidID = tonumber (raidID)
+		
 		if (bossid) then
-			local ejid, combatlogid = Notepad:GetBossIds (bossid)
+			local ejid, combatlogid = Notepad:GetBossIds (raidID, bossid)
 			local spells = Notepad:GetBossSpellList (ejid)
 			if (spells) then
 				local button_index = 1
@@ -1398,14 +1421,13 @@ function Notepad.BuildOptions (frame)
 						button =  Notepad:CreateButton (colors_panel, on_bossspell_selection, 18, 18, "", spellid, _, _, "button_bossspell" .. button_index)
 						button.spell_texture = button:CreateTexture (nil, "background")
 						boss_abilities_buttons [button_index] = button
+						button:SetHook ("OnEnter", on_enter_bossspell)
+						button:SetHook ("OnLeave", on_leave_bossspell)
+						button:SetBackdrop (button_bossspell_backdrop)
+						button:SetPoint ("topleft", editbox_notes, "topright", 10 + ((i-1)*19), -218 + (o*19*-1))
 					end
 					
-					button:SetBackdrop (button_bossspell_backdrop)
-					button:SetPoint ("topleft", editbox_notes, "topright", 10 + ((i-1)*19), -218 + (o*19*-1))
-					button:SetHook ("OnEnter", on_enter_bossspell)
-					button:SetHook ("OnLeave", on_leave_bossspell)
 					button.spellid = spellid
-					
 					local spellname, rank, spellicon = GetSpellInfo (spellid)
 					
 					button.spell_texture:SetTexture (spellicon)
@@ -1479,62 +1501,7 @@ function Notepad.BuildOptions (frame)
 	
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	function Notepad:FormatText (mytext)
-		local text = mytext
-		if (not text) then
-			text = main_frame.editbox_notes.editbox:GetText()
-		end
-		
-		if (Notepad.db.auto_format or mytext) then
-			-- format the text, show icons
-			text = text:gsub ("{Star}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_1:0|t]])
-			text = text:gsub ("{Circle}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_2:0|t]])
-			text = text:gsub ("{Diamond}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_3:0|t]])
-			text = text:gsub ("{Triangle}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_4:0|t]])
-			text = text:gsub ("{Moon}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_5:0|t]])
-			text = text:gsub ("{Square}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_6:0|t]])
-			text = text:gsub ("{Cross}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_7:0|t]])
-			text = text:gsub ("{Skull}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_8:0|t]])
-			text = text:gsub ("{rt1}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_1:0|t]])
-			text = text:gsub ("{rt2}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_2:0|t]])
-			text = text:gsub ("{rt3}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_3:0|t]])
-			text = text:gsub ("{rt4}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_4:0|t]])
-			text = text:gsub ("{rt5}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_5:0|t]])
-			text = text:gsub ("{rt6}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_6:0|t]])
-			text = text:gsub ("{rt7}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_7:0|t]])
-			text = text:gsub ("{rt8}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_8:0|t]])
-			
-			text = text:gsub ("||c", "|c")
-			text = text:gsub ("||r", "|r")
-			text = text:gsub ("||t", "|t")
-			text = text:gsub ("||T", "|T")
-			
-		else
-			--> show plain text
-			--> replace the raid target icons:
-			text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_1:0|t]], "{Star}")
-			text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_2:0|t]], "{Circle}")
-			text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_3:0|t]], "{Diamond}")
-			text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_4:0|t]], "{Triangle}")
-			text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_5:0|t]], "{Moon}")
-			text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_6:0|t]], "{Square}")
-			text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_7:0|t]], "{Cross}")
-			text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_8:0|t]], "{Skull}")
 
-			--> escape sequences
-			text = text:gsub ("|c", "||c")
-			text = text:gsub ("|r", "||r")
-			text = text:gsub ("|t", "||t")
-			text = text:gsub ("|T", "||T")
-		end
-
-		--> passed a text, so just return a formated text
-		if (mytext) then
-			return text
-		else
-			main_frame.editbox_notes.editbox:SetText (text)
-		end
-	end
 
 	local func = function (self, fixedparam, value) 
 		Notepad.db.auto_format = value
@@ -1665,6 +1632,62 @@ function Notepad.BuildOptions (frame)
 	
 end
 
+function Notepad:FormatText (mytext)
+	local text = mytext
+	if (not text) then
+		text = Notepad.main_frame.editbox_notes.editbox:GetText()
+	end
+	
+	if (Notepad.db.auto_format or mytext) then
+		-- format the text, show icons
+		text = text:gsub ("{Star}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_1:0|t]])
+		text = text:gsub ("{Circle}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_2:0|t]])
+		text = text:gsub ("{Diamond}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_3:0|t]])
+		text = text:gsub ("{Triangle}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_4:0|t]])
+		text = text:gsub ("{Moon}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_5:0|t]])
+		text = text:gsub ("{Square}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_6:0|t]])
+		text = text:gsub ("{Cross}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_7:0|t]])
+		text = text:gsub ("{Skull}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_8:0|t]])
+		text = text:gsub ("{rt1}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_1:0|t]])
+		text = text:gsub ("{rt2}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_2:0|t]])
+		text = text:gsub ("{rt3}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_3:0|t]])
+		text = text:gsub ("{rt4}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_4:0|t]])
+		text = text:gsub ("{rt5}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_5:0|t]])
+		text = text:gsub ("{rt6}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_6:0|t]])
+		text = text:gsub ("{rt7}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_7:0|t]])
+		text = text:gsub ("{rt8}", [[|TInterface\TargetingFrame\UI-RaidTargetingIcon_8:0|t]])
+		
+		text = text:gsub ("||c", "|c")
+		text = text:gsub ("||r", "|r")
+		text = text:gsub ("||t", "|t")
+		text = text:gsub ("||T", "|T")
+		
+	else
+		--> show plain text
+		--> replace the raid target icons:
+		text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_1:0|t]], "{Star}")
+		text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_2:0|t]], "{Circle}")
+		text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_3:0|t]], "{Diamond}")
+		text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_4:0|t]], "{Triangle}")
+		text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_5:0|t]], "{Moon}")
+		text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_6:0|t]], "{Square}")
+		text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_7:0|t]], "{Cross}")
+		text = text:gsub ([[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_8:0|t]], "{Skull}")
+
+		--> escape sequences
+		text = text:gsub ("|c", "||c")
+		text = text:gsub ("|r", "||r")
+		text = text:gsub ("|t", "||t")
+		text = text:gsub ("|T", "||T")
+	end
+
+	--> passed a text, so just return a formated text
+	if (mytext) then
+		return text
+	else
+		Notepad.main_frame.editbox_notes.editbox:SetText (text)
+	end
+end
 
 local install_status = RA:InstallPlugin ("Raid Assignments", "RANotepad", Notepad, default_config)
 
@@ -1693,17 +1716,6 @@ function Notepad:AskForEnabledNote()
 	end
 end
 
-local is_raid_leader = function (sourceUnit)
-	if (type (sourceUnit) == "string") then
-		return UnitIsGroupLeader (sourceUnit) or UnitIsGroupLeader (sourceUnit:gsub ("%-.*", ""))
-	end
-end
-local is_connected = function (sourceUnit)
-	if (type (sourceUnit) == "string") then
-		return UnitIsConnected (sourceUnit) or UnitIsConnected (sourceUnit:gsub ("%-.*", ""))
-	end
-end
-
 function Notepad.OnReceiveComm (prefix, sourcePluginVersion, sourceUnit, fullNote, noteSeed, noteDate)
 	
 	local ZoneName, InstanceType, DifficultyID = GetInstanceInfo()
@@ -1715,7 +1727,7 @@ function Notepad.OnReceiveComm (prefix, sourcePluginVersion, sourceUnit, fullNot
 	if (prefix == COMM_RECEIVED_FULLNOTE) then
 		--> check if the sender is the raid leader
 
-		if (not IsInRaid() or not is_raid_leader (sourceUnit)) then
+		if ((not IsInRaid() and not IsInGroup()) or not is_raid_leader (sourceUnit)) then
 			return
 		end
 		
@@ -1748,7 +1760,7 @@ function Notepad.OnReceiveComm (prefix, sourcePluginVersion, sourceUnit, fullNot
 	--> Query note current status - the user sent to the raid leader a query about the current note
 	elseif (prefix == COMM_QUERY_SEED) then --"NOQI"
 		--> check if I'm the raid leader
-		if (not IsInRaid() or not is_raid_leader ("player")) then
+		if ((not IsInRaid() and not IsInGroup()) or not is_raid_leader ("player")) then
 			return
 		end
 		
@@ -1766,10 +1778,10 @@ function Notepad.OnReceiveComm (prefix, sourcePluginVersion, sourceUnit, fullNot
 	--> Query hasn been answered by the raid leader - the user now has the current note state
 	elseif (prefix == COMM_RECEIVED_SEED) then --"NORI"
 		--> check if the answer came from the raid leader
-		if (not IsInRaid() or not is_raid_leader (sourceUnit)) then
+		if ((not IsInRaid() and not IsInGroup()) or not is_raid_leader (sourceUnit)) then
 			return
 		end
-		
+
 		--> no note is currently shown
 		if (not noteSeed or type (noteSeed) ~= "number" or not noteDate or type (noteDate) ~= "number") then
 			return
@@ -1802,7 +1814,7 @@ function Notepad.OnReceiveComm (prefix, sourcePluginVersion, sourceUnit, fullNot
 	--> Request Note - the user received the current state and doesn't have the current note, request it from the raid leader
 	elseif (prefix == COMM_QUERY_NOTE) then --"NOQN"
 		--> check if I'm the raid leader
-		if (not IsInRaid() or not is_raid_leader ("player")) then
+		if ((not IsInRaid() and not IsInGroup()) or not is_raid_leader ("player")) then
 			return
 		end
 		
@@ -1823,6 +1835,7 @@ end
 
 --> send and receive notes:
 	-- Full Note - the raid leader sent a note to be shown on the screen
+	
 	RA:RegisterPluginComm (COMM_RECEIVED_FULLNOTE, Notepad.OnReceiveComm)
 --> query a Note or ID and Time:
 	-- Request Current ID - received by the raid leader, asking about the current note state (id and time)
@@ -1836,8 +1849,12 @@ function Notepad:SendUnShowNote()
 	-- send a signal to hide the current note shown
 	
 	-- is raid leader?
-	if (is_raid_leader ("player") and IsInRaid()) then
-		Notepad:SendPluginCommMessage (COMM_RECEIVED_FULLNOTE, "RAID", nil, nil, Notepad:GetPlayerNameWithRealm(), nil)
+	if (is_raid_leader ("player") and (IsInRaid() or IsInGroup())) then
+		if (IsInRaid()) then
+			Notepad:SendPluginCommMessage (COMM_RECEIVED_FULLNOTE, "RAID", nil, nil, Notepad:GetPlayerNameWithRealm(), nil)
+		else
+			Notepad:SendPluginCommMessage (COMM_RECEIVED_FULLNOTE, "PARTY", nil, nil, Notepad:GetPlayerNameWithRealm(), nil)
+		end
 	end
 end
 
@@ -1845,7 +1862,7 @@ function Notepad:SendNote (note_id)
 	-- send the note for other people in the raid
 	
 	-- is raid leader?
-	if (is_raid_leader ("player") and IsInRaid()) then
+	if (is_raid_leader ("player") and (IsInRaid() or IsInGroup())) then
 	
 		local ZoneName, InstanceType, DifficultyID, _, _, _, _, ZoneMapID = GetInstanceInfo()
 		if (DifficultyID and DifficultyID == 17) then
@@ -1856,7 +1873,11 @@ function Notepad:SendNote (note_id)
 		-- send the note?
 		local note = Notepad:GetNote (note_id)
 		if (note) then
-			Notepad:SendPluginCommMessage (COMM_RECEIVED_FULLNOTE, "RAID", nil, nil, Notepad:GetPlayerNameWithRealm(), note)
+			if (IsInRaid()) then
+				Notepad:SendPluginCommMessage (COMM_RECEIVED_FULLNOTE, "RAID", nil, nil, Notepad:GetPlayerNameWithRealm(), note)
+			else
+				Notepad:SendPluginCommMessage (COMM_RECEIVED_FULLNOTE, "PARTY", nil, nil, Notepad:GetPlayerNameWithRealm(), note)
+			end
 		end
 	end
 	

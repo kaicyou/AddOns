@@ -1,5 +1,5 @@
 Rarity = LibStub("AceAddon-3.0"):NewAddon("Rarity", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "LibSink-2.0", "AceBucket-3.0", "LibBars-1.0", "AceSerializer-3.0")
-Rarity.MINOR_VERSION = tonumber(("$Revision: 577 $"):match("%d+"))
+Rarity.MINOR_VERSION = tonumber(("$Revision: 581 $"):match("%d+"))
 local FORCE_PROFILE_RESET_BEFORE_REVISION = 1 -- Set this to one higher than the Revision on the line above this
 local L = LibStub("AceLocale-3.0"):GetLocale("Rarity")
 local R = Rarity
@@ -1515,7 +1515,7 @@ function R:OnEvent(event, ...)
   end
 
   -- Handle opening Snow Mound
-  if fishing and opening and lastNode and (lastNode == L["Snow Mound"]) then
+  if fishing and opening and lastNode and (lastNode == L["Snow Mound"]) and GetCurrentMapAreaID() == 941 then -- Make sure we're in Frostfire Ridge (there are Snow Mounds in other zones, particularly Ulduar in the Hodir room)
    local v = self.db.profile.groups.pets["Grumpling"]
    if v and type(v) == "table" and v.enabled ~= false then
     if v.attempts == nil then v.attempts = 1 else v.attempts = v.attempts + 1 end

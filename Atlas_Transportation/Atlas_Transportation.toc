@@ -29,15 +29,15 @@
 # ## Notes: Transportation Maps
 # ## Notes-zhTW: Atlas 交通網路圖插件，顯示各大陸的海陸空交通節點
 #@end-debug@
-## Version: 1.35.00
+## Version: 1.35.01
 ## Author: arith, Dynaletik, dubcat
-## X-Date: 2016-10-27T05:11:53Z
+## X-Date: 2016-11-11T05:19:19Z
 ## X-Credits: Dan Gilbert, Lothaer
 ## X-Email: atlas.addon at gmail.com
 ## X-Website: http://www.atlasmod.com
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v1.35.00
+## X-Curse-Packaged-Version: v1.35.01
 ## X-Curse-Project-Name: Atlas Transportation
 ## X-Curse-Project-ID: atlas-transportation
 ## X-Curse-Repository-ID: wow/atlas-transportation/mainline

@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation.lua 56 2016-10-25 15:58:44Z arith $
+-- $Id: Atlas_Transportation.lua 59 2016-11-09 10:16:14Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -61,6 +61,105 @@ local CL = {
 };
 
 local myData = {
+	TransAllianceCosmos = {
+		ZoneName = { WORLD..ALAN..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
+		-- WorldMapID = "";
+		{ BLUE..BZ["Eastern Kingdoms"] };
+		{ ORNG.." 1) "..BZ["Stormwind City"].."\n<--> "..BZ["Ironforge"].."\n<--> "..BZ["The Stair of Destiny"]..ALC["Comma"]..BZ["Hellfire Peninsula"].."\n<--> "..BZ["Highbank"]..ALC["Comma"]..BZ["Twilight Highlands"].."\n<--> "..BZ["Shattered Beachhead"]..ALC["Comma"]..BZ["Blasted Lands"].."\n<--> "..BZ["Paw'Don Village"]..ALC["Comma"]..BZ["The Jade Forest"].."\n --> "..BZ["Ramkahen"]..ALC["Comma"]..BZ["Uldum"].."\n<--> "..BZ["Rut'theran Village"]..ALC["Comma"]..BZ["Teldrassil"].."\n<--> "..BZ["Nordrassil"]..ALC["Comma"]..BZ["Mount Hyjal"].."\n<--> "..BZ["Valiance Keep"]..ALC["Comma"]..BZ["Borean Tundra"].."\n<--> "..BZ["Dalaran"].."\n<--> "..BZ["Stormshield"]..ALC["Comma"]..BZ["Ashran"], 10001 };
+		{ ORNG.." 2) "..BZ["Ironforge"], 10002 };
+		{ WHIT.." 3) "..BZ["Menethil Harbor"]..ALC["Comma"]..BZ["Wetlands"], 10003 };
+		{ WHIT.." 4) "..BZ["Highbank"]..ALC["Comma"]..BZ["Twilight Highlands"], 10004 };
+		{ WHIT.." 5) "..BZ["Shattered Beachhead"]..ALC["Comma"]..BZ["Blasted Lands"], 10005 };
+		{ WHIT.." 6) "..BZ["Karazhan"]..ALC["Comma"]..BZ["Deadwind Pass"], 10006 };
+		{ WHIT.." 7) "..BZ["Booty Bay"]..ALC["Comma"]..BZ["The Cape of Stranglethorn"], 10007 };
+		{ WHIT.." 8) "..BZ["Dalaran Crater"]..ALC["Comma"]..BZ["Hillsbrad Foothills"], 10008 };
+		{ WHIT.." 9) "..BZ["Shattered Sun Staging Area"]..ALC["Comma"]..BZ["Isle of Quel'Danas"], 10009 };
+		{ "" };
+		{ BLUE..BZ["Kalimdor"] };
+		{ ORNG.."10) "..BZ["Darnassus"], 10010 };
+		{ WHIT.."11) "..BZ["Rut'theran Village"]..ALC["Comma"]..BZ["Teldrassil"], 10011 };
+		{ ORNG.."12) "..BZ["The Exodar"], 10012 };
+		{ WHIT.."13) "..BZ["Nordrassil"]..ALC["Comma"]..BZ["Mount Hyjal"], 10013 };
+		{ WHIT.."14) "..BZ["Ratchet"]..ALC["Comma"]..BZ["Northern Barrens"], 10014 };
+		{ WHIT.."15) "..BZ["Theramore"]..ALC["Comma"]..BZ["Dustwallow Marsh"], 10015 };
+		{ WHIT.."16) "..BZ["Caverns of Time"]..ALC["Comma"]..BZ["Tanaris"], 10016 };
+		{ WHIT.."17) "..BZ["Ramkahen"]..ALC["Comma"]..BZ["Uldum"], 10017 };
+		{ "" };
+		{ BLUE..BZ["Outland"] };
+		{ WHIT.."18) "..BZ["The Stair of Destiny"]..ALC["Comma"]..BZ["Hellfire Peninsula"], 10018 };
+		{ ORNG.."19) "..BZ["Shattrath City"], 10019 };
+		{ "" };
+		{ BLUE..BZ["Northrend"] };
+		{ WHIT.."20) "..BZ["Valiance Keep"]..ALC["Comma"]..BZ["Borean Tundra"], 10020 };
+		{ WHIT.."21) "..BZ["Valgarde"]..ALC["Comma"]..BZ["Howling Fjord"], 10021 };
+		{ ORNG.."22) "..BZ["Dalaran (Northrend)"], 10022 };
+		{ WHIT.."23) "..BZ["Wyrmrest Temple"]..ALC["Comma"]..BZ["Dragonblight"], 10023 };
+		{ "" };
+		{ BLUE..BZ["Pandaria"] };
+		{ WHIT.."24) "..BZ["Paw'Don Village"]..ALC["Comma"]..BZ["The Jade Forest"], 10024 };
+		{ ORNG.."25) "..BZ["Shrine of Seven Stars"], 10025 };
+		{ "" };
+		{ BLUE..BZ["Draenor"] };
+		{ WHIT.."26) "..BZ["Stormshield"]..ALC["Comma"]..BZ["Ashran"], 10026 };
+		{ WHIT.."27) "..BZ["Lunarfall"]..ALC["Comma"]..BZ["Shadowmoon Valley"], 10027 };
+		{ "" };
+		{ BLUE..BZ["Broken Isles"] };
+		{ ORNG.."28) "..BZ["Dalaran"], 10028 };
+		{ "" };
+		{ _RED..L["Legend"] };
+		{ PURP.."-- : "..L["Portal / Waygate Path to the destination"] };
+		{ ORNG.."-- : "..L["Two ways portal"] };
+		{ CYAN.."-- : "..L["Ship / Zeppelin sailing path to destination"] };
+	};
+	TransHordeCosmos = {
+		ZoneName = { WORLD..HRDE..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
+		-- WorldMapID = "";
+		{ BLUE..BZ["Kalimdor"] };
+		{ ORNG.." 1) "..BZ["Orgrimmar"], 10001 };
+		{ ORNG.." 2) "..BZ["Thunder Bluff"], 10002 };
+		{ WHIT.." 3) "..BZ["Nordrassil"]..ALC["Comma"]..BZ["Mount Hyjal"], 10003 };
+		{ WHIT.." 4) "..BZ["Ratchet"]..ALC["Comma"]..BZ["Northern Barrens"], 10004 };
+		{ WHIT.." 5) "..BZ["Caverns of Time"]..ALC["Comma"]..BZ["Tanaris"], 10005 };
+		{ WHIT.." 6) "..BZ["Ramkahen"]..ALC["Comma"]..BZ["Uldum"], 10006 };
+		{ "" };
+		{ BLUE..BZ["Eastern Kingdoms"] };
+		{ WHIT.." 7) "..BZ["Shattered Sun Staging Area"]..ALC["Comma"]..BZ["Isle of Quel'Danas"], 10007 };
+		{ ORNG.." 8) "..BZ["Silvermoon City"], 10008 };
+		{ WHIT.." 9) "..BZ["Brill"]..ALC["Comma"]..BZ["Tirisfal Glades"], 10009 };
+		{ ORNG.."10) "..BZ["Undercity"], 10010 };
+		{ WHIT.."11) "..BZ["Dalaran Crater"]..ALC["Comma"]..BZ["Hillsbrad Foothills"], 10011 };
+		{ WHIT.."12) "..BZ["Dragonmaw Port"]..ALC["Comma"]..BZ["Twilight Highlands"], 10012 };
+		{ WHIT.."13) "..BZ["Shattered Landing"]..ALC["Comma"]..BZ["Blasted Lands"], 10013 };
+		{ WHIT.."14) "..BZ["Karazhan"]..ALC["Comma"]..BZ["Deadwind Pass"], 10014 };
+		{ WHIT.."15) "..BZ["Grom'gol Base Camp"]..ALC["Comma"]..BZ["Northern Stranglethorn"], 10015 };
+		{ WHIT.."16) "..BZ["Booty Bay"]..ALC["Comma"]..BZ["The Cape of Stranglethorn"], 10016 };
+		{ "" };
+		{ BLUE..BZ["Outland"] };
+		{ WHIT.."17) "..BZ["The Stair of Destiny"]..ALC["Comma"]..BZ["Hellfire Peninsula"], 10017 };
+		{ ORNG.."18) "..BZ["Shattrath City"], 10018 };
+		{ "" };
+		{ BLUE..BZ["Northrend"] };
+		{ WHIT.."19) "..BZ["Warsong Hold"]..ALC["Comma"]..BZ["Borean Tundra"], 10019 };
+		{ WHIT.."20) "..BZ["Vengeance Landing"]..ALC["Comma"]..BZ["Howling Fjord"], 10020 };
+		{ ORNG.."21) "..BZ["Dalaran (Northrend)"], 10021 };
+		{ WHIT.."22) "..BZ["Wyrmrest Temple"]..ALC["Comma"]..BZ["Dragonblight"], 10022 };
+		{ "" };
+		{ BLUE..BZ["Pandaria"] };
+		{ WHIT.."23) "..BZ["Honeydew Village"]..ALC["Comma"]..BZ["The Jade Forest"], 10023 };
+		{ ORNG.."24) "..BZ["Shrine of Two Moons"], 10024 };
+		{ "" };
+		{ BLUE..BZ["Draenor"] };
+		{ WHIT.."25) "..BZ["Warspear"]..ALC["Comma"]..BZ["Ashran"], 10025 };
+		{ WHIT.."26) "..BZ["Frostwall Garrison"]..ALC["Comma"]..BZ["Frostfire Ridge"], 10026 };
+		{ "" };
+		{ BLUE..BZ["Broken Isles"] };
+		{ ORNG.."27) "..BZ["Dalaran"], 10027 };
+		{ "" };
+		{ _RED..L["Legend"] };
+		{ PURP.."-- : "..L["Portal / Waygate Path to the destination"] };
+		{ ORNG.."-- : "..L["Two ways portal"] };
+		{ CYAN.."-- : "..L["Ship / Zeppelin sailing path to destination"] };
+	};
 	TransSuramar = {
 		ZoneName = { BZ["Suramar"] };
 		WorldMapID = "1033";
@@ -582,7 +681,7 @@ local myData = {
 		{ PURP.." G') "..BZ["Paw'Don Village"]..ALC["Comma"]..BZ["The Jade Forest"]..ALC["Comma"]..BZ["Pandaria"] };
 		{ WHIT.."29) "..BZ["The Mystic Ward"]..ALC["Comma"]..BZ["Ironforge"]..ALC["Comma"]..BZ["Dun Morogh"] };
 		{ WHIT.."43) "..BZ["Mage Quarter"]..ALC["Comma"]..BZ["Stormwind"]..ALC["Comma"]..BZ["Elwynn Forest"] };
-		{ WHIT.."61) "..BZ["Shattered Beachhead"]..ALC["Comma"]..BZ["Blasted Lands"] };
+		{ WHIT.."62) "..BZ["Shattered Beachhead"]..ALC["Comma"]..BZ["Blasted Lands"] };
 		{ "" };
 		{ _RED..L["Portals"]..ALC["Hyphen"]..L["Druid Only"] };
 		{ GREN.." A) "..BZ["Seradane"]..ALC["Comma"]..BZ["The Hinterlands"] };
@@ -760,6 +859,7 @@ local myData = {
 		{ WHIT.." 2) "..BZ["Temple of the Moon"]..ALC["Comma"]..BZ["Darnassus"]..ALC["Comma"]..BZ["Teldrassil"] };
 		{ WHIT.." 3) "..BZ["Rut'theran Village"]..ALC["Comma"]..BZ["Teldrassil"] };
 		{ WHIT.." 5) "..BZ["The Vault of Lights"]..ALC["Comma"]..BZ["The Exodar"]..ALC["Comma"]..BZ["Azuremyst Isle"] };
+		{ WHIT.."48) "..BZ["Nordrassil"]..ALC["Comma"]..BZ["Mount Hyjal"] };
 		{ "" };
 		{ _RED..L["Portals"]..ALC["Hyphen"]..L["Druid Only"] };
 		{ GREN.." A) "..BZ["Stormrage Barrow Dens"]..ALC["Comma"]..BZ["Moonglade"] };
@@ -887,11 +987,6 @@ local myData = {
 		{ WHIT.." 3) "..BZ["Sunfury Spire"]..ALC["Comma"]..BZ["Silvermoon City"]..ALC["Comma"]..BZ["Eversong Woods"] };
 		{ WHIT.."20) "..BZ["Magic Quarter"]..ALC["Comma"]..BZ["Undercity"]..ALC["Comma"]..BZ["Tirisfal Glades"] };
 		{ WHIT.."51) "..BZ["Shattered Landing"]..ALC["Comma"]..BZ["Blasted Lands"] };
-		{ "" };
-		{ _RED..L["Portals"]..ALC["Hyphen"]..L["Druid Only"] };
-		{ GREN.." A) "..BZ["Stormrage Barrow Dens"]..ALC["Comma"]..BZ["Moonglade"] };
-		{ GREN.." B) "..BZ["Nordrassil"]..ALC["Comma"]..BZ["Mount Hyjal"] };
-		{ GREN.." C) "..BZ["Dream Bough"]..ALC["Comma"]..BZ["Feralas"] };
 		{ "" };
 		{ _RED..L["Portals"]..ALC["Hyphen"]..L["Druid Only"] };
 		{ GREN.." A) "..BZ["Seradane"]..ALC["Comma"]..BZ["The Hinterlands"] };
@@ -1177,9 +1272,8 @@ local myData = {
 		Faction = "Alliance";
 		{ _RED..L["Portals"]..ALC["Slash"]..L["Transporter"] };
 		{ PURP.." A') "..BZ["Stormwind City"]..ALC["Comma"]..BZ["Elwynn Forest"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
-		{ PURP.." B') "..BZ["The Stair of Destiny"]..ALC["Comma"]..BZ["Hellfire Peninsula"]..ALC["Comma"]..BZ["Outland"] };
-		{ PURP.." C') "..BZ["Sun's Reach Sanctum"]..ALC["Comma"]..BZ["Isle of Quel'Danas"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
-		{ PURP.." D') "..BZ["Caverns of Time"]..ALC["Comma"]..BZ["Tanaris"]..ALC["Comma"]..BZ["Kalimdor"] };
+		{ PURP.." B') "..BZ["Sun's Reach Sanctum"]..ALC["Comma"]..BZ["Isle of Quel'Danas"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
+		{ PURP.." C') "..BZ["Caverns of Time"]..ALC["Comma"]..BZ["Tanaris"]..ALC["Comma"]..BZ["Kalimdor"] };
 		{ WHIT.." 1) "..BZ["The Stair of Destiny"]..ALC["Comma"]..BZ["Hellfire Peninsula"] };
 		{ WHIT.." 9) "..BZ["Shattrath City"]..ALC["Comma"]..BZ["Terokkar Forest"] };
 		{ "" };
@@ -1227,9 +1321,8 @@ local myData = {
 		Faction = "Horde";
 		{ _RED..L["Portals"]..ALC["Slash"]..L["Transporter"] };
 		{ PURP.." A') "..BZ["Orgrimmar"]..ALC["Comma"]..BZ["Durotar"]..ALC["Comma"]..BZ["Kalimdor"] };
-		{ PURP.." B') "..BZ["The Stair of Destiny"]..ALC["Comma"]..BZ["Hellfire Peninsula"]..ALC["Comma"]..BZ["Outland"] };
-		{ PURP.." C') "..BZ["Sun's Reach Sanctum"]..ALC["Comma"]..BZ["Isle of Quel'Danas"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
-		{ PURP.." D') "..BZ["Caverns of Time"]..ALC["Comma"]..BZ["Tanaris"]..ALC["Comma"]..BZ["Kalimdor"] };
+		{ PURP.." B') "..BZ["Sun's Reach Sanctum"]..ALC["Comma"]..BZ["Isle of Quel'Danas"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
+		{ PURP.." C') "..BZ["Caverns of Time"]..ALC["Comma"]..BZ["Tanaris"]..ALC["Comma"]..BZ["Kalimdor"] };
 		{ WHIT.." 1) "..BZ["The Stair of Destiny"]..ALC["Comma"]..BZ["Hellfire Peninsula"] };
 		{ WHIT.." 8) "..BZ["Shattrath City"]..ALC["Comma"]..BZ["Terokkar Forest"] };
 		{ "" };
@@ -1492,6 +1585,7 @@ local myData = {
 		{ PURP.." D') "..BZ["The Exodar"]..ALC["Comma"]..BZ["Azuremyst Isle"]..ALC["Comma"]..BZ["Kalimdor"] };
 		{ PURP.." E') "..BZ["Darnassus"]..ALC["Comma"]..BZ["Teldrassil"]..ALC["Comma"]..BZ["Kalimdor"] };
 		{ PURP.." F') "..BZ["Ratchet"]..ALC["Comma"]..BZ["Northern Barrens"]..ALC["Comma"]..BZ["Kalimdor"] };
+		{ INDENT..GREY..ALC["L-Parenthesis"]..L["Gleep Chatterswitch"]..ALC["R-Parenthesis"] };
 		{ PURP.." G') "..BZ["Shattrath City"]..ALC["Comma"]..BZ["Terokkar Forest"]..ALC["Comma"]..BZ["Outland"] };
 		{ "" };
 		{ _RED..L["Special transportation"] };
@@ -1586,11 +1680,10 @@ local myData = {
 		{ PURP.." E) "..BZ["Ruins of Ogudei"]..ALC["Comma"]..BZ["Krasarang Wilds"] };
 		{ PURP.." A') "..BZ["Orgrimmar"]..ALC["Comma"]..BZ["Durotar"]..ALC["Comma"]..BZ["Kalimdor"] };
 		{ PURP.." B') "..BZ["Thunder Bluff"]..ALC["Comma"]..BZ["Mulgore"]..ALC["Comma"]..BZ["Kalimdor"] };
-		{ PURP.." C') "..BZ["Ratchet"]..ALC["Comma"]..BZ["Northern Barrens"]..ALC["Comma"]..BZ["Kalimdor"] };
-		{ PURP.." D') "..BZ["Shattrath City"]..ALC["Comma"]..BZ["Terokkar Forest"]..ALC["Comma"]..BZ["Outland"] };
-		{ PURP.." E') "..BZ["Dalaran"]..ALC["Comma"]..BZ["Crystalsong Forest"]..ALC["Comma"]..BZ["Northrend"] };
-		{ PURP.." F') "..BZ["Silvermoon City"]..ALC["Comma"]..BZ["Eversong Woods"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
-		{ PURP.." G') "..BZ["Undercity"]..ALC["Comma"]..BZ["Tirisfal Glades"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
+		{ PURP.." C') "..BZ["Shattrath City"]..ALC["Comma"]..BZ["Terokkar Forest"]..ALC["Comma"]..BZ["Outland"] };
+		{ PURP.." D') "..BZ["Dalaran"]..ALC["Comma"]..BZ["Crystalsong Forest"]..ALC["Comma"]..BZ["Northrend"] };
+		{ PURP.." E') "..BZ["Silvermoon City"]..ALC["Comma"]..BZ["Eversong Woods"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
+		{ PURP.." F') "..BZ["Undercity"]..ALC["Comma"]..BZ["Tirisfal Glades"]..ALC["Comma"]..BZ["Eastern Kingdoms"] };
 		{ "" };
 		{ _RED..L["Special transportation"] };
 		{ ORNG.." A) "..BZ["The Arboretum"]..ALC["Comma"]..BZ["The Jade Forest"] };

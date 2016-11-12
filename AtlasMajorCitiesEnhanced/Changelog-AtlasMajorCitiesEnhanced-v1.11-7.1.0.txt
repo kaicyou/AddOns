@@ -1,0 +1,39 @@
+------------------------------------------------------------------------
+r67 | andymon | 2016-10-31 20:31:29 +0000 (Mon, 31 Oct 2016) | 1 line
+Changed paths:
+   A /tags/v1.11-7.1.0 (from /trunk:66)
+
+Tagging as v1.11-7.1.0
+------------------------------------------------------------------------
+r66 | andymon | 2016-10-31 20:30:04 +0000 (Mon, 31 Oct 2016) | 1 line
+Changed paths:
+   M /trunk/AtlasMajorCitiesEnhanced.toc
+
+toc
+------------------------------------------------------------------------
+r65 | andymon | 2016-10-31 20:20:11 +0000 (Mon, 31 Oct 2016) | 3 lines
+Changed paths:
+   M /trunk/AtlasMajorCities.lua
+   M /trunk/AtlasMajorCitiesEnhanced.toc
+
+- Added support for small Atlas window
+- Fixed Atlas menu to show AMC title
+- Fix to skip a search with empty string
+------------------------------------------------------------------------
+r63 | andymon | 2016-10-11 19:01:26 +0000 (Tue, 11 Oct 2016) | 2 lines
+Changed paths:
+   M /trunk/AtlasMajorCities_db.lua
+   M /trunk/Locale/AtlasMajorCities_deDE.lua
+   M /trunk/Locale/AtlasMajorCities_enUS.lua
+   M /trunk/Locale/AtlasMajorCities_esES.lua
+   M /trunk/Locale/AtlasMajorCities_frFR.lua
+
+* Added Illidari to Orgrimmar
+* Localization for esES and frFR
+------------------------------------------------------------------------
+r62 | arith | 2016-09-28 15:39:29 +0000 (Wed, 28 Sep 2016) | 1 line
+Changed paths:
+   M /trunk/AtlasMajorCities.lua
+
+fixed the issue that worldmap was always forced to current-map when Atlas is opened.
+------------------------------------------------------------------------

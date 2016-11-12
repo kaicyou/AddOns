@@ -247,7 +247,11 @@ ArkInventory.Const = { -- constants
 	PlayerIDSep = " - ",
 	
 	ItemClass = {
+		
+		["UNKNOWN"] = -2,
+		
 		["EMPTY"] = -1,
+		
 		["CONSUMABLE"] = LE_ITEM_CLASS_CONSUMABLE,
 		["CONSUMABLE_EXPLOSIVES_AND_DEVICES"] = 0,
 		["CONSUMABLE_POTION"] = 1,
@@ -259,6 +263,7 @@ ArkInventory.Const = { -- constants
 		["CONSUMABLE_BANDAGE"] = 7,
 		["CONSUMABLE_OTHER"] = 8,
 		["CONSUMABLE_VANTUSRUNE"] = 9,
+		
 		["CONTAINER"] = LE_ITEM_CLASS_CONTAINER,
 		["CONTAINER_BAG"] = 0,
 		["CONTAINER_SOUL"] = 1,
@@ -271,18 +276,26 @@ ArkInventory.Const = { -- constants
 		["CONTAINER_INSCRIPTION"] = 8,
 		["CONTAINER_FISHING"] = 9,
 		["CONTAINER_COOKING"] = 10,
+		
 		["WEAPON"] = LE_ITEM_CLASS_WEAPON,
 		["WEAPON_FISHING"] = 20,
+		
 		["GEM"] = LE_ITEM_CLASS_GEM,
 		["GEM_ARTIFACT_RELIC"] = 11,
+		
 		["ARMOR"] = LE_ITEM_CLASS_ARMOR,
-		["REAGENT"] = 5,
-		["PROJECTILE"] = 6,
+		
+		["REAGENT"] = LE_ITEM_CLASS_REAGENT,
+		["REAGENT_REAGENT"] = 0,
+		["REAGENT_KEYSTONE"] = 1,
+		
+		["PROJECTILE"] = LE_ITEM_CLASS_PROJECTILE,
 		["PROJECTILE_WAND"] = 0, -- OBSOLETE
 		["PROJECTILE_BOLT"] = 1, -- OBSOLETE
 		["PROJECTILE_ARROW"] = 2,
 		["PROJECTILE_BULLET"] = 3,
 		["PROJECTILE_THROWN"] = 4, -- OBSOLETE
+		
 		["TRADEGOODS"] = LE_ITEM_CLASS_TRADEGOODS,
 		["TRADEGOODS_TRADEGOODS"] = 0, -- OBSOLETE
 		["TRADEGOODS_PARTS"] = 1,
@@ -302,30 +315,36 @@ ArkInventory.Const = { -- constants
 		["TRADEGOODS_WEAPON_ENCHANTMENT"] = 15, --OBSOLETE
 		["TRADEGOODS_INSCRIPTION"] = 16,
 		["TRADEGOODS_EXPLOSIVES_AND_DEVICES"] = 17, -- OBSOLETE
-		["ITEM_ENHANCEMENT"] = 8,
+		
+		["ITEM_ENHANCEMENT"] = LE_ITEM_CLASS_ITEM_ENHANCEMENT,
+		
 		["RECIPE"] = LE_ITEM_CLASS_RECIPE,
-		["RECIPE_BOOK"] = 0,
+		["RECIPE_BOOK"] = LE_ITEM_RECIPE_BOOK,
 		["RECIPE_LEATHERWORKING"] = LE_ITEM_RECIPE_LEATHERWORKING,
 		["RECIPE_TAILORING"] = LE_ITEM_RECIPE_TAILORING,
 		["RECIPE_ENGINEERING"] = LE_ITEM_RECIPE_ENGINEERING,
 		["RECIPE_BLACKSMITHING"] = LE_ITEM_RECIPE_BLACKSMITHING,
-		["RECIPE_COOKING"] = 5,
+		["RECIPE_COOKING"] = LE_ITEM_RECIPE_COOKING,
 		["RECIPE_ALCHEMY"] = LE_ITEM_RECIPE_ALCHEMY,
-		["RECIPE_FIRST_AID"] = 7,
-		["RECIPE_ENCHANTING"] = 8,
-		["RECIPE_FISHING"] = 9,
-		["RECIPE_JEWELCRAFTING"] = 10,
+		["RECIPE_FIRST_AID"] = LE_ITEM_RECIPE_FIRST_AID,
+		["RECIPE_ENCHANTING"] = LE_ITEM_RECIPE_ENCHANTING,
+		["RECIPE_FISHING"] = LE_ITEM_RECIPE_FISHING,
+		["RECIPE_JEWELCRAFTING"] = LE_ITEM_RECIPE_JEWELCRAFTING,
 		["RECIPE_INSCRIPTION"] = LE_ITEM_RECIPE_INSCRIPTION,
-		["QUIVER"] = 11,
---		"0 Quiver(OBSOLETE)", -- [131]
+		
+		["QUIVER"] = LE_ITEM_CLASS_QUIVER,
+		["QUIVER_QUIVER"] = 0,  -- OBSOLETE
 		["QUIVER_BOLT"] = 1, -- OBSOLETE
 		["QUIVER_QUIVER"] = 2,
 		["QUIVER_AMMO_POUCH"] = 3,
+		
 		["QUEST"] = LE_ITEM_CLASS_QUESTITEM,
 		["QUEST_QUEST"] = 0,
-		["KEY"] = 13,
+		
+		["KEY"] = LE_ITEM_CLASS_KEY,
 		["KEY_KEY"] = 0,
 		["KEY_LOCKPICK"] = 1,
+		
 		["MISC"] = LE_ITEM_CLASS_MISCELLANEOUS,
 		["MISC_JUNK"] = 0,
 		["MISC_REAGENT"] = 1,
@@ -333,7 +352,9 @@ ArkInventory.Const = { -- constants
 		["MISC_HOLIDAY"] = 3,
 		["MISC_OTHER"] = 4,
 		["MISC_MOUNT"] = 5,
+		
 		["GLYPH"] = LE_ITEM_CLASS_GLYPH,
+		
 		["BATTLEPET"] = LE_ITEM_CLASS_BATTLEPET,
 --		"0 Humanoid", -- [163]
 --		"1 Dragonkin", -- [164]
@@ -345,6 +366,7 @@ ArkInventory.Const = { -- constants
 --		"7 Beast", -- [170]
 --		"8 Aquatic", -- [171]
 --		"9 Mechanical", -- [172]
+		
 		["WOW_TOKEN"] = ITEM_CLASS_WOW_TOKEN,
 --		"0 WoW Token", -- [174]
 	
@@ -768,22 +790,18 @@ function ArkInventory.spairs( tbl, cf )
 end
 
 
-
-
 --[[
-local z = { }
 for x = 0, 50 do
 	local n = GetItemClassInfo( x )
 	if n and n ~= "" then
-		table.insert( z, "----------" )
-		table.insert( z, ( x .. " " .. n ) )
+		ArkInventory.Output( "----------" )
+		ArkInventory.Output( x, " ", n )
 	end
 	for y = 0, 50 do
 		n = GetItemSubClassInfo( x, y )
 		if n and n ~= "" then
-			table.insert( z, ( y .. " " .. n ) )
+			ArkInventory.Output( y, " ", n )
 		end
 	end
 end
-ARKINVDB.test = z
 ]]--

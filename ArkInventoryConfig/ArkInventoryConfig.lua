@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1707 $
-$Date: 2016-08-14 23:47:44 +1000 (Sun, 14 Aug 2016) $
+$Revision: 1756 $
+$Date: 2016-11-08 11:21:30 +1100 (Tue, 08 Nov 2016) $
 
 ]]--
 
@@ -1274,6 +1274,27 @@ function ArkInventory.ConfigInternal( )
 							},
 						},
 ]]--
+						bagunknown = {
+							order = 500,
+							name = ArkInventory.Localise["CONFIG_SYSTEM_MESSAGES_BAG_UNKNOWN"],
+							type = "group",
+							inline = true,
+							args = {
+								enabled = {
+									order = 100,
+									name = ArkInventory.Localise["ENABLED"],
+									desc = ArkInventory.Localise["CONFIG_SYSTEM_MESSAGES_BAG_UNKNOWN_TEXT"],
+									type = "toggle",
+									get = function( info )
+										return ArkInventory.db.option.message.bag.unknown
+									end,
+									set = function( info, v )
+										ArkInventory.db.option.message.bag.unknown = v
+									end,
+								},
+							},
+						},
+
 					},
 				},
 				

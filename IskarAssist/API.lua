@@ -479,7 +479,10 @@ end
 
 local raid_list = {
 	[1448] = {669, {1778, 1785, 1787, 1798, 1786, 1783, 1788, 1794, 1777, 1800, 1784, 1795, 1799}}, --mapid / EJ_id / encounter ids (hellfire citadel)
+	[1520] = {768, {1853, 1876, 1873, 1841, 1854, 1877, 1864}}, --mapid / EJ_id / encounter ids (emerald nightmare)
+	[1648] = {861, {1958, 1962, 2008}}, --mapid / EJ_id / encounter ids (trials of valor)
 }
+
 local empty_table = {}
 function RA:GetCurrentRaidEncounterList (mapid)
 	local zoneName, zoneType, _, _, _, _, _, zoneMapID = GetInstanceInfo()
@@ -604,7 +607,45 @@ local boss_spells = {
 	[1750] = {}, 
 	--Xavius
 	[1726] = {}, 
+	
+	--odyn
+	[1819] = {
+		228915, --/stormforged-spear
+		230990,--/unerring-blast
+		228932,--/stormforged-spear
+		229255,--/arcing-storm
+		227712,--/ spear-of-light
+		231016,--/shatter
+		228162,
+		228030,--/expel-light
+		228012,--/horn-of-valor
+	}, 
+	
+	--guarm
+	[1830] = {
+		228344, --headlong-charge
+		227642, --multi-headed
+		232800, --dark-discharge
+		232798, --salty-spittle
+		232777, --fiery-phlegm
+		227514, --flashing-fangs
+		227902, --roaring-leap
+		228228, --flame-lick
+	}, 
+	
+	--helya
+	[1829] = {
+		228053, --tainted-explosion
+		228127, --decay
+		228054, --taint-of-the-sea
+		228055, --fury-of-the-maw
+		227930, --orb-of-corruption
+		228566, --corrupted-breath
+		228063, --orb-of-corrosion
+		228514, --torrent
+	}, 
 }
+
 function RA:GetBossSpellList (ej_id)
 
 	return boss_spells [ej_id]
@@ -615,30 +656,51 @@ end
 	return the encounter id from the journal and for the combatlog
 --]=]
 local encounter_journal = {
-	1703, 1744, 1738, 1667, 1704, 1750, 1726,
-	[1703] = 1853, --Nythendra
-	[1744] = 1876, --Elerethe Renferal
-	[1738] = 1873, --Il'gynoth, Heart of Corruption
-	[1667] = 1841, --Ursoc
-	[1704] = 1854, --Dragons of Nightmare
-	[1750] = 1877, --Cenarius
-	[1726] = 1864, --Xavius
+	[861] = {
+		1819, 1830, 1829,
+		[1819] = 1958, --Odyn	
+		[1830] = 1962, --Guarm
+		[1829] = 2008, --Helya
+	},
+	
+	[768] = {
+		1703, 1744, 1738, 1667, 1704, 1750, 1726,
+		[1703] = 1853, --Nythendra
+		[1744] = 1876, --Elerethe Renferal
+		[1738] = 1873, --Il'gynoth, Heart of Corruption
+		[1667] = 1841, --Ursoc
+		[1704] = 1854, --Dragons of Nightmare
+		[1750] = 1877, --Cenarius
+		[1726] = 1864, --Xavius	
+	},
 }
 
 local combat_log_ids = {
-	1853, 1876, 1873, 1841, 1854, 1877, 1864,
-	[1853] = 1703, --Nythendra
-	[1876] = 1744, --Elerethe Renferal
-	[1873] = 1738, --Il'gynoth, Heart of Corruption
-	[1841] = 1667, --Ursoc
-	[1854] = 1704, --Dragons of Nightmare
-	[1877] = 1750, --Cenarius
-	[1864] = 1726, --Xavius	
+	[861] = {
+		[1958] = 1819, --Odyn
+		[1962] = 1830, --Guarm
+		[2008] = 1829, --Helya
+	},
+	
+	[768] = {
+		1853, 1876, 1873, 1841, 1854, 1877, 1864,
+		[1853] = 1703, --Nythendra
+		[1876] = 1744, --Elerethe Renferal
+		[1873] = 1738, --Il'gynoth, Heart of Corruption
+		[1841] = 1667, --Ursoc
+		[1854] = 1704, --Dragons of Nightmare
+		[1877] = 1750, --Cenarius
+		[1864] = 1726, --Xavius
+	},
 }
 
-function RA:GetBossIds (bossid)
-	local ejid = encounter_journal [bossid] or bossid
-	local combatlog = combat_log_ids [bossid] or bossid
+function RA:GetRegisteredRaids()
+	return encounter_journal
+end
+
+function RA:GetBossIds (raidID, bossid)
+	local ejid = encounter_journal [raidID] and encounter_journal [raidID] [bossid] or bossid
+	local combatlog = combat_log_ids [raidID] and combat_log_ids [raidID] [bossid] or bossid
 	return ejid, combatlog
 end
 

@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation_DB.lua 56 2016-10-25 15:58:44Z arith $
+-- $Id: Atlas_Transportation_DB.lua 59 2016-11-09 10:16:14Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -26,6 +26,65 @@
 
 
 local myDB = {
+	TransAllianceCosmos = {
+		{  1, 10001, 424, 395 }; -- Stormwind City
+		{  2, 10002, 436, 356 }; -- Ironforge
+		{  3, 10003, 441, 337 }; -- Menethil Harbor
+		{  4, 10004, 496, 351 }; -- Highbank
+		{  5, 10005, 467, 410 }; -- Shattered Beachhead
+		{  6, 10006, 448, 423 }; -- Karazhan
+		{  7, 10007, 420, 451 }; -- Booty Bay
+		{  8, 10008, 424, 300 }; -- Dalaran Crater
+		{  9, 10009, 474, 193 }; -- Shattered Sun Staging Area
+		{ 10, 10010,  60, 219 }; -- Darnassus
+		{ 11, 10011,  77, 232 }; -- Rut'theran Village
+		{ 12, 10012,  24, 256 }; -- The Exodar
+		{ 13, 10013, 131, 268 }; -- Nordrassil
+		{ 14, 10014, 130, 342 }; -- Ratchet
+		{ 15, 10015, 140, 374 }; -- Theramore
+		{ 16, 10016, 136, 422 }; -- Caverns of Time
+		{ 17, 10017,  98, 441 }; -- Ramkahen
+		{ 18, 10018, 464,  91 }; -- The Stair of Destiny
+		{ 19, 10019, 409, 116 }; -- Shattrath City
+		{ 20, 10020, 221, 167 }; -- Valiance Keep
+		{ 21, 10021, 331, 181 }; -- Valgarde
+		{ 22, 10022, 275, 130 }; -- Dalaran (Northrend)
+		{ 23, 10023, 274, 151 }; -- Wyrmrest Temple
+		{ 24, 10024, 296, 466 }; -- Paw'Don Village
+		{ 25, 10025, 262, 452 }; -- Shrine of Seven Stars
+		{ 26, 10026, 190,  84 }; -- Stormshield
+		{ 27, 10027, 130, 117 }; -- Lunarfall
+		{ 28, 10028, 314, 299 }; -- Dalaran
+	};
+	TransHordeCosmos = {
+		{  1, 10001, 135, 307 }; -- Orgrimmar
+		{  2, 10002,  89, 344 }; -- Thunder Bluff
+		{  3, 10003, 128, 267 }; -- Nordrassil
+		{  4, 10004, 127, 343 }; -- Ratchet
+		{  5, 10005, 133, 424 }; -- Caverns of Time
+		{  6, 10006,  95, 441 }; -- Ramkahen
+		{  7, 10007, 473, 191 }; -- Shattered Sun Staging Area
+		{  8, 10008, 478, 228 }; -- Silvermoon City
+		{  9, 10009, 417, 278 }; -- Brill
+		{ 10, 10010, 427, 285 }; -- Undercity
+		{ 11, 10011, 425, 300 }; -- Dalaran Crater
+		{ 12, 10012, 497, 342 }; -- Dragonmaw Port
+		{ 13, 10013, 468, 415 }; -- Shattered Landing
+		{ 14, 10014, 453, 422 }; -- Karazhan
+		{ 15, 10015, 427, 431 }; -- Grom'gol Base Camp
+		{ 16, 10016, 426, 451 }; -- Booty Bay
+		{ 17, 10017, 463,  90 }; -- The Stair of Destiny
+		{ 18, 10018, 409, 114 }; -- Shattrath City
+		{ 19, 10019, 214, 160 }; -- Warsong Hold
+		{ 20, 10020, 341, 173 }; -- Vengeance Landing
+		{ 21, 10021, 274, 130 }; -- Dalaran (Northrend)
+		{ 22, 10022, 276, 152 }; -- Wyrmrest Temple
+		{ 23, 10023, 279, 422 }; -- Honeydew Village
+		{ 24, 10024, 262, 446 }; -- Shrine of Two Moons
+		{ 25, 10025, 190,  73 }; -- Warspear
+		{ 26, 10026,  66,  66 }; -- Frostwall Garrison
+		{ 27, 10027, 313, 299 }; -- Dalaran
+	};
 	TransSuramar = {
 		{ "A", 10001, 155, 248 }; -- Ruins of Elune'eth
 		{ "B", 10002, 209, 175 }; -- Tel'anor

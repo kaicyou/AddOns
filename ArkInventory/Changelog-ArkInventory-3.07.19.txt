@@ -1,0 +1,87 @@
+------------------------------------------------------------------------
+r615 | arkayenro | 2016-11-12 04:23:14 +0000 (Sat, 12 Nov 2016) | 1 line
+Changed paths:
+   A /tags/3.07.19 (from /trunk:614)
+
+Tagging as 3.07.19
+------------------------------------------------------------------------
+r614 | arkayenro | 2016-11-11 12:23:42 +0000 (Fri, 11 Nov 2016) | 6 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryConst.lua
+   M /trunk/ArkInventoryMenu.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryTranslate.lua
+   M /trunk/Locale/deDE.lua
+   M /trunk/Locale/enUS.lua
+   M /trunk/Locale/esES.lua
+   M /trunk/Locale/esMX.lua
+   M /trunk/Locale/frFR.lua
+   M /trunk/Locale/game.lua
+   M /trunk/Locale/itIT.lua
+   M /trunk/Locale/koKR.lua
+   M /trunk/Locale/ptBR.lua
+   M /trunk/Locale/ruRU.lua
+   M /trunk/Locale/zhCN.lua
+   M /trunk/Locale/zhTW.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.19 (11-NOV-2016)*
+ * changed - default itemtype/subtype returns changed from 0/0 to -2/0 so that they dont conflict with consumable/explosives (which is 0/0)
+ * changed - items ending up with default itemtype/subtype values will be assigned to the system > unknown category (it should only be temporary until the game returns the correct information)
+ * changed - items in the system > unknown category are no longer cached and should update to their correct category (and get cached) once the game returns the correct information
+ * added - option to disable warning for unknown bag type rescans
+
+------------------------------------------------------------------------
+r612 | arkayenro | 2016-10-27 23:47:28 +0000 (Thu, 27 Oct 2016) | 4 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventory.xml
+   M /trunk/ArkInventoryLDB.lua
+   M /trunk/ArkInventoryMedia.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/Locale/game.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.18 (28-OCT-2016)*
+ * fixed - issue with default font size not applying for some objects (rule column headers, guild bank money and info logs)
+ * fixed - issue with tackle container slots not being recognised properly
+
+------------------------------------------------------------------------
+r610 | arkayenro | 2016-10-26 00:24:00 +0000 (Wed, 26 Oct 2016) | 4 lines
+Changed paths:
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.toc
+   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.toc
+   M /trunk/Modules/ArkInventoryRules_Example/ArkInventoryRules_Example.toc
+   M /trunk/Modules/ArkInventorySearch/ArkInventorySearch.toc
+   M /trunk/VersionHistory.txt
+
+*3.07.17 (26-OCT-2016)*
+ * changed - toc updated to 70100
+ * workaround - issue with increased item level due to GetItemInfo returning a slightly different hyperlink than the one passed in (only seems to impact artifacts).  presumably blizzard will fix it at some point
+
+------------------------------------------------------------------------
+r609 | arkayenro | 2016-10-21 08:47:19 +0000 (Fri, 21 Oct 2016) | 5 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventory.xml
+   M /trunk/ArkInventoryConst.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryTooltip.lua
+   M /trunk/Locale/enUS.lua
+   M /trunk/Locale/game.lua
+   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.16 (21-OCT-2016)*
+ * fixed - issue with regex matching against some of the globalstrings that contain special regex characters
+ * fixed - issue with sorting by id as id was not a zero padded in the string
+ * fixed - issue where the window would recalculate whenever leaving combat
+
+------------------------------------------------------------------------

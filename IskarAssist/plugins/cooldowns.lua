@@ -7,6 +7,7 @@ local _
 
 local GetUnitName = GetUnitName
 local Ambiguate = Ambiguate
+local UnitExists = UnitExists
 
 --battle res default config
 local default_config = {
@@ -844,10 +845,13 @@ local player_health_check = function()
 end
 
 local player_health_event = function (event, unit)
+	if (not UnitExists (unit)) then
+		return
+	end
 	local health = UnitHealth (unit)
 	local name = get_unit_name (unit)
 	if (not health) then
-		print (unit, UnitName(unit))
+		--print (unit, UnitName(unit))
 	end
 	if (health and health < 2) then
 		if (not Cooldowns.Deaths [name]) then

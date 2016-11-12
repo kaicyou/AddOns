@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1755 $
-$Date: 2016-10-28 10:46:30 +1100 (Fri, 28 Oct 2016) $
+$Revision: 1758 $
+$Date: 2016-11-11 23:12:57 +1100 (Fri, 11 Nov 2016) $
 
 ]]--
 
@@ -1899,6 +1899,9 @@ ArkInventory.Const.DatabaseDefaults.global = {
 			["mount"] = {
 				["warnings"] = true,
 			},
+			["bag"] = {
+				["unknown"] = true,
+			},
 		},
 		["combat"] = {
 			["yieldafter"] = 30,
@@ -3100,8 +3103,13 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 		return
 	end
 	
+	-- unknown items
+	if info.itemtypeid == ArkInventory.Const.ItemClass.UNKNOWN then
+		return ArkInventory.CategoryGetSystemID( "SYSTEM_UNKNOWN" )
+	end
+	
+	-- starlight rose dust
 	if info.id == 129158 then
-		-- starlight rose dust
 		return ArkInventory.CategoryGetSystemID( "SYSTEM_QUEST" )
 	end
 	
@@ -3421,7 +3429,6 @@ end
 function ArkInventory.ItemCategoryGetDefaultEmpty( loc_id, bag_id )
 	
 	local codex = ArkInventory.GetLocationCodex( loc_id )
-	
 	local clump = codex.style.slot.empty.clump
 	
 	local blizzard_id = ArkInventory.BagID_Blizzard( loc_id, bag_id )
@@ -3532,16 +3539,44 @@ function ArkInventory.ItemCategoryGetDefault( i )
 	-- items cache id
 	local cid = ArkInventory.ObjectIDCategory( i )
 	
-	-- if the value has not been cached yet then get it and cache it
-	if ArkInventory.TranslationsLoaded and not ArkInventory.Global.Cache.Default[cid] then
-		if i.h then
-			ArkInventory.Global.Cache.Default[cid] = ArkInventory.ItemCategoryGetDefaultActual( i )
+	if ArkInventory.TranslationsLoaded then
+		
+		if ArkInventory.Global.Cache.Default[cid] then
+			
+			-- if the value has been cached then use it
+			return ArkInventory.Global.Cache.Default[cid]
+			
 		else
-			ArkInventory.Global.Cache.Default[cid] = ArkInventory.ItemCategoryGetDefaultEmpty( i.loc_id, i.bag_id )
+			
+			local cat
+			
+			if i.h then
+				
+				cat = ArkInventory.ItemCategoryGetDefaultActual( i )
+				
+				if cat ~= ArkInventory.CategoryGetSystemID( "SYSTEM_UNKNOWN" ) then
+					ArkInventory.Global.Cache.Default[cid] = cat
+				end
+				
+			else
+				
+				cat = ArkInventory.ItemCategoryGetDefaultEmpty( i.loc_id, i.bag_id )
+				
+				if cat ~= ArkInventory.CategoryGetSystemID( "EMPTY_UNKNOWN" ) then
+					ArkInventory.Global.Cache.Default[cid] = cat
+				end
+				
+			end
+			
+			return cat
+			
 		end
+		
+	else
+		
+		return ArkInventory.CategoryGetSystemID( "SYSTEM_UNKNOWN" )
+		
 	end
-	
-	return ArkInventory.Global.Cache.Default[cid]
 	
 end
 
@@ -8187,6 +8222,7 @@ function ArkInventory.Frame_Changer_Vault_Tab_OnEnter( frame )
 			if bag.withdraw then
 				GameTooltip:AddLine( string.format( ArkInventory.Localise["VAULT_TAB_REMAINING_WITHDRAWALS"], bag.withdraw ) )
 			end
+			--GameTooltip:AddLine( string.format( NUM_GUILDBANK_TABS_PURCHASED, GetNumGuildBankTabs( ), MAX_BUY_GUILDBANK_TABS ) )
 			GameTooltip:Show( )
 		else
 			GameTooltip:Hide( )
@@ -8229,7 +8265,9 @@ function ArkInventory.Frame_Changer_Vault_Tab_OnClick( frame, button, mode )
 	if tab.status == ArkInventory.Const.Bag.Status.Purchase then
 		
 		if button == "LeftButton" then
-			StaticPopup_Show( "CONFIRM_BUY_GUILDBANK_TAB" )
+			if bag_id <= MAX_BUY_GUILDBANK_TABS then
+				StaticPopup_Show( "CONFIRM_BUY_GUILDBANK_TAB" )
+			end
 		end
 		
 	else

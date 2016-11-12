@@ -12,6 +12,12 @@
  
 
 
+*3.07.19 (11-NOV-2016)*
+ * changed - default itemtype/subtype returns changed from 0/0 to -2/0 so that they dont conflict with consumable/explosives (which is 0/0)
+ * changed - items ending up with default itemtype/subtype values will be assigned to the system > unknown category (it should only be temporary until the game returns the correct information)
+ * changed - items in the system > unknown category are no longer cached and should update to their correct category (and get cached) once the game returns the correct information
+ * added - option to disable warning for unknown bag type rescans
+ 
 *3.07.18 (28-OCT-2016)*
  * fixed - issue with default font size not applying for some objects (rule column headers, guild bank money and info logs)
  * fixed - issue with tackle container slots not being recognised properly

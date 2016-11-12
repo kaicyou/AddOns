@@ -1,4 +1,4 @@
--- $Id: Atlas_Transportation-zhTW.lua 56 2016-10-25 15:58:44Z arith $
+-- $Id: Atlas_Transportation-zhTW.lua 59 2016-11-09 10:16:14Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -41,6 +41,7 @@ L["Death Knight Only"] = "僅限死亡騎士"
 L["Druid Only"] = "僅限德魯伊"
 L["Flight to Trueshot Lodge"] = "飛行到神獵廳"
 L["From sea level to ground level"] = "從海平面到地面"
+L["Gleep Chatterswitch"] = "格里坡·恰恰開關"
 L["Great Eagle"] = "巨鷹"
 L["Green"] = "綠"
 L["Gryphon"] = "獅鷲獸"
@@ -79,6 +80,7 @@ L["The Bogpaddle Bullet"] = "沼槳火箭"
 L["Transportation Maps"] = "交通網路地圖"
 L["Transporter"] = "輸送者"
 L["Transporters by the sea and on the cliff"] = "傳送器位於懸崖上與懸崖下"
+L["Two ways portal"] = "雙向傳送門"
 L["Warning: Drop"] = "小心輕放"
 L["Warrior's landing / jumping point (from or back to Skyhold)"] = "戰士的降落 / 跳躍點（往返擎天堡）"
 L["West of the path to Timbermaw Hold"] = "往木喉要塞小徑西方"

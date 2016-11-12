@@ -1,5 +1,5 @@
 ## Author: Allara
-## Interface: 70000
+## Interface: 70100
 ## Notes: Rarity configuration. Use AddonLoader to load this on demand.
 ## Title: Rarity [|caaedc99fOptions|r]
 ## Dependencies: Rarity
@@ -7,7 +7,7 @@
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Slash: /rarity, /rare
 ## X-LoadOn-InterfaceOptions: Rarity
-## X-Curse-Packaged-Version: r577-release
+## X-Curse-Packaged-Version: r581-release
 ## X-Curse-Project-Name: Rarity
 ## X-Curse-Project-ID: rarity
 ## X-Curse-Repository-ID: wow/rarity/mainline

@@ -1721,10 +1721,11 @@ function ArkInventory.ScanBag( blizzard_id )
 	
 	if bt == ArkInventory.Const.Slot.Type.Unknown and status == ArkInventory.Const.Bag.Status.Active then
 		
-		if ArkInventory.TranslationsLoaded then
-			-- print the warning only after the translations are loaded
+		if ArkInventory.TranslationsLoaded and ArkInventory.db.option.message.bag.unknown then
+			-- print the warning only after the translations are loaded (and the user wants to see them)
 			ArkInventory.OutputWarning( "bag [", bag_id, "] in location ", loc_id, " [", ArkInventory.Global.Location[loc_id].Name, "] type is unknown, queuing for rescan" )
 		end
+		
 		ArkInventory:SendMessage( "EVENT_ARKINV_BAG_UPDATE_BUCKET", blizzard_id )
 		
 	end
@@ -3592,14 +3593,14 @@ function ArkInventory.ObjectInfoArray( h, i )
 	info.q = 1
 	info.ilvl = 0
 	info.uselevel = 0
-	info.itemtype = ""
-	info.itemsubtype = ""
+	info.itemtype = ArkInventory.Localise["UNKNOWN"]
+	info.itemsubtype = ArkInventory.Localise["UNKNOWN"]
 	info.stacksize = 1
 	info.equiploc = ""
 	info.texture = ArkInventory.Const.Texture.Missing
 	info.vendorprice = -1
-	info.itemtypeid = 0
-	info.itemsubtypeid = 0
+	info.itemtypeid = -2
+	info.itemsubtypeid = -2
 	
 	if info.class == "item" then
 		
@@ -3738,9 +3739,9 @@ function ArkInventory.ObjectStringDecode( h, i )
 	
 	v.slottype = 0
 	if i then
-		if not i.loc_id then
-			ArkInventory.Output( i )
-		end
+--		if not i.loc_id then
+--			ArkInventory.Output( i )
+--		end
 		local blizzard_id = ArkInventory.BagID_Blizzard( i.loc_id, i.bag_id )
 		v.slottype = ArkInventory.BagType( blizzard_id )
 	end

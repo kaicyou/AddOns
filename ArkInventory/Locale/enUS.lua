@@ -292,6 +292,8 @@ if not L then return end
 	L["CONFIG_SYSTEM_MESSAGES_TRANSLATION_FINAL_TEXT"] = "Show final message for successful translation"
 	L["CONFIG_SYSTEM_MESSAGES_BATTLEPET_OPPONENT"] = "Opponent Details"
 	L["CONFIG_SYSTEM_MESSAGES_BATTLEPET_OPPONENT_TEXT"] = "Display Opponent Details upon entering a pet battle"
+	L["CONFIG_SYSTEM_MESSAGES_BAG_UNKNOWN"] = "Unknown Bag Type"
+	L["CONFIG_SYSTEM_MESSAGES_BAG_UNKNOWN_TEXT"] = "Show a warning message when a bag does not have a valid type and needs to be requeued for scanning"
 	
 	L["CONFIG_SYSTEM_TIMERS"] = "Update Timers"
 	L["CONFIG_SYSTEM_TIMERS_TEXT"] = "use a custom value for the %1$s update timer"

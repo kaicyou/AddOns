@@ -2137,7 +2137,7 @@ function ArkInventory.MenuChangerVaultActionOpen( frame )
 						local numSlots = GetNumGuildBankTabs( )
 						amount = GetGuildBankTabCost( )
 						
-						if not amount or numSlots >= 6 then
+						if not amount or amount == 0 or numSlots >= MAX_BUY_GUILDBANK_TABS then
 							
 							amount = 0
 							ok = false

@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 57 2016-10-27 05:11:53Z arith $
+$Id: ChangeLog.txt 60 2016-11-11 05:19:19Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,14 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.35.01 (Nov. 11, 2016)
+------------------------
+- Map revamped:
+  - Dalaran
+- Remove portal path from Outland to Badlands
+- Remove portal path from Shrine of Two Moons to Ratchet
+- Added the cosmos maps
 
 v1.35.00 (Oct. 27, 2016)
 ------------------------

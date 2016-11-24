@@ -1,4 +1,4 @@
-<!-- $Id: AtlasTemplates.xml 91 2016-09-02 17:56:36Z arith $ -->
+<!-- $Id: AtlasTemplates.xml 118 2016-11-14 08:07:44Z arith $ -->
 <!--
 
 	Atlas, a World of Warcraft instance map browser
@@ -65,6 +65,10 @@
 					if (self.overviewDescription) then
 						GameTooltip:AddLine("\n"..OVERVIEW, 1, 1, 1, 1)
 						GameTooltip:AddLine(self.overviewDescription, nil, nil, nil, 1);
+						local disabled = not C_AdventureJournal.CanBeShown();
+						if (not disabled) then
+							GameTooltip:AddLine(ATLAS_OPEN_ADVENTURE, 0.5, 0.5, 1, true);
+						end
 					end
 					GameTooltip:SetScale(AtlasOptions["AtlasBossDescScale"] * AtlasOptions["AtlasScale"]);
 					GameTooltip:Show();

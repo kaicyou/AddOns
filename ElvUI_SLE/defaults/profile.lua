@@ -358,6 +358,7 @@ P["sle"] = {
 		},
 		["legion"] = {
 			["nightmare"] = false,
+			["trial"] = false,
 			["palace"] = false,
 		},
 	},
@@ -694,6 +695,11 @@ P["sle"] = {
 			["enable"] = false,
 			["NameStyle"] = "SHORT",
 			["DifStyle"] = "SHORT",
+			["raids"] = {
+				["nightmare"] = true,
+				["trial"] = true,
+				["nighthold"] = true,
+			},
 		},
 	},
 	--UI Buttons

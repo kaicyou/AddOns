@@ -1,4 +1,4 @@
-﻿-- $Id: LibBabble.lua 48 2016-07-19 14:03:11Z arith $
+-- $Id: LibBabble.lua 48 2016-07-19 14:03:11Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser

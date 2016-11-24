@@ -70,6 +70,7 @@ L["This option have been disabled by Shadow & Light. To return it you need to di
 --Core
 L["SLE_LOGIN_MSG"] = "|cff9482c9Shadow & Light|r version |cff1784d1%s%s|r for ElvUI is loaded. Thanks for the usage."
 L["Plugin for |cff1784d1ElvUI|r by\nDarth Predator and Repooc."] = true
+L["Reset All"] = true
 L["Resets all movers & options for S&L."] = true
 L["Reset these options to defaults"] = true
 L["Modules designed for older expantions"] = true
@@ -168,6 +169,7 @@ L["Color of Average"] = true
 L["Sets the color of avarage item level."] = true
 L["Only Relevant Stats"] = true
 L["Show only those primary stats relevant to your spec."] = true
+L["SLE_ARMORY_POINTS_AVAILABLE"] = "%s Point(s) Available!!"
 
 --AFK
 L["You Are Away From Keyboard for"] = true
@@ -767,9 +769,12 @@ L["Offset the tooltip on the X-axis."] = true
 L["Tooltip Y-offset"] = true
 L["Offset the tooltip on the Y-axis."] = true
 L["RAID_NH"] = "NH"
+L["RAID_TOV"] = "ToV"
 L["RAID_EN"] = "EN"
 L["Raid Progression"] = true
 L["Show raid experience of character in tooltip (requires holding shift)."] = true
+L["Name Style"] = true
+L["Difficulty Style"] = true
 
 --UI Buttons
 L["S&L UI Buttons"] = true

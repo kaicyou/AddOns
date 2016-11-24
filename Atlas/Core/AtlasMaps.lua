@@ -1,4 +1,4 @@
-﻿-- $Id: AtlasMaps.lua 116 2016-10-28 14:18:43Z arith $
+-- $Id: AtlasMaps.lua 116 2016-10-28 14:18:43Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser

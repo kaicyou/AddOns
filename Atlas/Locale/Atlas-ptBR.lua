@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas-ptBR.lua 31 2016-06-23 07:30:35Z arith $
+-- $Id: Atlas-ptBR.lua 31 2016-06-23 07:30:35Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -163,6 +163,7 @@ L["ATLAS_STRING_SEARCH"] = "Pesquisa"
 L["ATLAS_STRING_SELECT_CAT"] = "Selecione a Categoria"
 L["ATLAS_STRING_SELECT_MAP"] = "Selecione o Mapa"
 L["ATLAS_TITLE"] = "Atlas"
+-- L["ATLAS_TOGGLE_LOOT"] = ""
 -- L["Attunement Required"] = ""
 -- L["Back"] = ""
 L["Basement"] = "Porão"

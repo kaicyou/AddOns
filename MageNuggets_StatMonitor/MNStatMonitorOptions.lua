@@ -1,4 +1,4 @@
-﻿
+
 
  mageNuggetsStatMonitor = {
     spellpower = true;

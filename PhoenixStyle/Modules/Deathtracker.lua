@@ -533,6 +533,14 @@ function psdeathrepfindactiveboss()
     elseif pswasonbossLegion210 then
 	  psdeathrepbossnametemp=psbossnames[4][2][10]
 	end
+	
+    if pswasonbossLegion31 then
+      psdeathrepbossnametemp=psbossnames[4][3][1]
+    elseif pswasonbossLegion32 then
+      psdeathrepbossnametemp=psbossnames[4][3][2]
+    elseif pswasonbossLegion33 then
+      psdeathrepbossnametemp=psbossnames[4][3][3]
+	end
   end
 end
 

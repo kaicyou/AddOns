@@ -11,7 +11,7 @@ pslocale()
 end
 
 
-	psversion=7.009
+	psversion=7.010
 
 
 	psverstiptext="alpha"
@@ -164,9 +164,9 @@ psdeathgriplocal=GetSpellInfo(49560)
 
 
 --cataclysm & Panda data
-pslocations={{752,754,758,773,800,824},{77777,897,896,886,930,953},{994,988,1026},{1094,1088}}
-pslocationnamesdef={{"Baradin Hold","Blackwing Descent","The Bastion of Twilight","Throne of the Four Winds","Firelands", "Dragon Soul"},{"New Baradin Hold","Heart of Fear","Mogu'shan Vaults","Terrace of Endless Spring","Throne of Thunder","Siege of Orgrimmar"},{"Highmaul", "Blackrock Foundry","Hellfire Citadel"},{"The Emerald Nightmare","The Nighthold"}}
-psaddontoload={{"PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_Firelands","PhoenixStyleMod_DragonSoul"},{"PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier2","PhoenixStyleMod_Panda_tier3"},{"PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1"},{"PhoenixStyleMod_Legion","PhoenixStyleMod_Legion"}}
+pslocations={{752,754,758,773,800,824},{77777,897,896,886,930,953},{994,988,1026},{1094,1088,1114}}
+pslocationnamesdef={{"Baradin Hold","Blackwing Descent","The Bastion of Twilight","Throne of the Four Winds","Firelands", "Dragon Soul"},{"New Baradin Hold","Heart of Fear","Mogu'shan Vaults","Terrace of Endless Spring","Throne of Thunder","Siege of Orgrimmar"},{"Highmaul", "Blackrock Foundry","Hellfire Citadel"},{"The Emerald Nightmare","The Nighthold","Trial of Valor"}}
+psaddontoload={{"PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_Firelands","PhoenixStyleMod_DragonSoul"},{"PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier2","PhoenixStyleMod_Panda_tier3"},{"PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1"},{"PhoenixStyleMod_Legion","PhoenixStyleMod_Legion","PhoenixStyleMod_Legion"}}
 
 psbossnamesdef={
 {{"Argaloth","Occu'thar", "Alizabal, Mistress of Hate"},{"Magmaw","Omnitron Defense System","Maloriak","Atramedes","Chimaeron","Nefarian"},{"Halfus Wyrmbreaker","Valiona & Theralion","Twilight Ascendant Council","Cho'gall","Sinestra"},{"Conclave of Wind", "Al'Akir"},{"Beth'tilac", "Lord Rhyolith","Alysrazor","Shannox","Baleroc","Majordomo Staghelm","Ragnaros"},{"Morchok","Warlord Zon'ozz","Yor'sahj the Unsleeping","Hagara the Stormbinder","Ultraxion","Warmaster Blackhorn","Spine of Deathwing","Madness of Deathwing"}},
@@ -181,7 +181,8 @@ psbossnamesdef={
 },
 
 {{"Nythendra","Il´gynoth, the Heart of Corruption","Elerethe Renferal","Ursoc","Dragons of Nightmare","Cenarius","Xavius"},
-{"Skorpyron","Chronomatic Anomaly","Trilliax","Spellblade Aluriel","High Botanist Tel'arn","Star Augur Etraeus","Tichondrius","Krosus","Grand Magistrix Elisande","Gul'dan"}
+{"Skorpyron","Chronomatic Anomaly","Trilliax","Spellblade Aluriel","High Botanist Tel'arn","Star Augur Etraeus","Tichondrius","Krosus","Grand Magistrix Elisande","Gul'dan"},
+{"Odyn","Guarm","Helya"}
 }
 
 
@@ -199,6 +200,7 @@ psbossid={
 
 {{{102672},{105393},{106087},{100497},{39407},{106912,104636},{103769}},
 {{102263},{104415},{104288},{110908},{104528},{103758},{103685},{101002},{110965},{110533}},
+{{114263},{114344},{96759}}
 }
 
 }
@@ -218,7 +220,8 @@ ps_modelid={
 },
 
 {{{0},{0},{0},{0},{0},{0},{0}},
-{{0},{0},{0},{0},{0},{0},{0},{0},{0},{0}}
+{{0},{0},{0},{0},{0},{0},{0},{0},{0},{0}},
+{{0},{0},{0}}
 }
 
 
@@ -242,6 +245,7 @@ ps_sa_id={
 
 {{{},{},{},{},{},{},{}},
 {{},{},{},{},{},{},{},{},{},{}},
+{{},{},{}},
 }
 
 }

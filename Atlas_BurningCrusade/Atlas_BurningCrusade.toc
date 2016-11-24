@@ -29,15 +29,15 @@
 # ## Notes: Burning Crusade Dungeon Maps
 # ## Notes-zhTW: 燃燒的遠征副本地圖模組
 #@end-debug@
-## Version: 1.35.00
+## Version: 1.35.01
 ## Author: arith, Dynaletik, dubcat
-## X-Date: 2016-10-27T04:57:53Z
+## X-Date: 2016-11-15T15:00:15Z
 ## X-Credits: Dan Gilbert, Lothaer
 ## X-Email: atlas.addon at gmail.com
 ## X-Website: http://www.atlasmod.com
 ## X-Category: Map
 ## RequiredDeps: Atlas
-## X-Curse-Packaged-Version: v1.35.00
+## X-Curse-Packaged-Version: v1.35.01
 ## X-Curse-Project-Name: Atlas Burning Crusade
 ## X-Curse-Project-ID: atlas-burningcrusade
 ## X-Curse-Repository-ID: wow/atlas-burningcrusade/mainline

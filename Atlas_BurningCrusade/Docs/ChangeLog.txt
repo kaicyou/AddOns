@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 15 2016-10-27 04:57:53Z arith $
+$Id: ChangeLog.txt 18 2016-11-15 15:00:15Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,13 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+
+v1.35.01 (Nov. 15, 2016)
+------------------------
+- Corrected Maiden of Virtue's ID in Karazhan
+- Nightbane is no longer a major boss in Karazhan
+
 
 v1.35.00 (Oct. 27, 2016)
 ------------------------

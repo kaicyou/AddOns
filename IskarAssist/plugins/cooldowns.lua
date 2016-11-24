@@ -52,6 +52,7 @@ local default_config = {
 	
 	panel_background_color = {r=0, g=0, b=0, a=0.3},
 	panel_background_border_color = {r=0, g=0, b=0, a=1},
+	panel_width = 200,
 	
 	only_in_group = true,
 	only_inside_instances = false,
@@ -693,6 +694,7 @@ local refresh_bar_settings = function (self)
 	--bar settings
 	local height = Cooldowns.db.bar_height
 	self.height = height
+	self.width = self:GetParent():GetWidth()
 	self.BarIsInverse = not Cooldowns.db.bar_grow_inverse
 	if (not Cooldowns.db.bar_class_color) then
 		self.color = Cooldowns.db.bar_fixed_color
@@ -950,6 +952,7 @@ function Cooldowns.ShowPanelInScreen (panel, show, event)
 	end
 end
 
+-- ~panel ~frame ~updatepanel
 function Cooldowns.UpdatePanels()
 	local frame_color = Cooldowns.db.panel_background_color
 	local frame_border_color = Cooldowns.db.panel_background_border_color
@@ -966,6 +969,7 @@ function Cooldowns.UpdatePanels()
 		end
 		
 		panel:SetLocked (Cooldowns.db.locked)
+		panel:SetWidth (Cooldowns.db.panel_width)
 	end
 end
 
@@ -1365,6 +1369,19 @@ function Cooldowns.BuildOptions (frame)
 			set = function (self, fixedparam, value) Cooldowns.db.locked = value; Cooldowns.UpdatePanels(); end,
 			name = L["S_PLUGIN_FRAME_LOCKED"],
 		},
+		{
+			type = "range",
+			get = function() return Cooldowns.db.panel_width end,
+			set = function (self, fixedparam, value) 
+				Cooldowns.db.panel_width = value
+				Cooldowns.UpdatePanels()
+			end,
+			min = 50,
+			max = 500,
+			step = 1,
+			name = "Width",
+		},
+
 		
 		{type = "blank"},
 		{type = "label", get = function() return "Show Cooldown Panels When:" end, text_template = Cooldowns:GetTemplate ("font", "ORANGE_FONT_TEMPLATE")},

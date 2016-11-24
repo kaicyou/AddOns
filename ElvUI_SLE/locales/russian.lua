@@ -67,6 +67,7 @@ L["This option have been disabled by Shadow & Light. To return it you need to di
 --Core
 L["SLE_LOGIN_MSG"] = "|cff9482c9Shadow & Light|r версии |cff1784d1%s%s|r для ElvUI загружен. Спасибо за использование."
 L["Plugin for |cff1784d1ElvUI|r by\nDarth Predator and Repooc."] = "Плагин для |cff1784d1ElvUI|r  от\nDarth Predator'а и Repooc'а"
+L["Reset All"] = "Сбросить все"
 L["Resets all movers & options for S&L."] = "Сбросить все фиксаторы и опции S&L"
 L["Reset these options to defaults"] = "Восстановить умолчания для этих опций"
 L["Modules designed for older expantions"] = "Модули для предыдущих дополнений"
@@ -165,6 +166,7 @@ L["Color of Average"] = "Цвет стреднего"
 L["Sets the color of avarage item level."] = "Устанавливает цвет среднего уровня предметов."
 L["Only Relevant Stats"] = "Только подходящие"
 L["Show only those primary stats relevant to your spec."] = "Отображает только те основные характеристики, что подходят вашей текущей специализации."
+L["SLE_ARMORY_POINTS_AVAILABLE"] = "Очков доступно: %s"
 
 --AFK
 L["You Are Away From Keyboard for"] = "Вы отошли на"
@@ -637,7 +639,7 @@ L["From Mount"] = "С маунта"
 L["Start fishing even if you are mounted."] = "Забрасывать удочку даже, если вы на средстве передвижения."
 L["Apply Lures"] = "Наживка"
 L["Automatically apply lures."] = "Автоматически насаживать наживку."
-L["Ingore Poles"] = "Без удочки"
+L["Ignore Poles"] = "Без удочки"
 L["If enabled will start fishing even if you don't have fishing pole equipped. Will not work if you have fish key set to \"None\"."] = "При включении будет начинать рыбачить даже без надетой удочки. Не будет работать, если модификатор рыбалки выставлен на \"Нет\"."
 L["Fish Key"] = "Модификатор рыбалки"
 L["Hold this button while clicking to allow fishing action."] = "Удерживайте эту кнопку для быстрой рыбалки."
@@ -757,9 +759,12 @@ L["Offset the tooltip on the X-axis."] = "Смещает подсказку по
 L["Tooltip Y-offset"] = "Смещение подсказки по Y"
 L["Offset the tooltip on the Y-axis."] = "Смещает подсказку по оси Y относительно выбранной точки крепления."
 L["RAID_NH"] = "ЦН"
+L["RAID_TOV"] = "ИД"
 L["RAID_EN"] = "ИК"
 L["Raid Progression"] = "Рейдовый прогресс"
 L["Show raid experience of character in tooltip (requires holding shift)."] = "Отображает рейдовый опыт данного персонажа (требуется зажатый shift)"
+L["Name Style"] = "Стиль названия"
+L["Difficulty Style"] = "Стиль сложности"
 
 --UI Buttons
 L["S&L UI Buttons"] = "Меню S&L"

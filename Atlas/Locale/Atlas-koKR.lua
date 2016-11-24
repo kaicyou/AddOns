@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas-koKR.lua 31 2016-06-23 07:30:35Z arith $
+-- $Id: Atlas-koKR.lua 31 2016-06-23 07:30:35Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -186,6 +186,7 @@ L["ATLAS_STRING_SEARCH"] = "검색"
 L["ATLAS_STRING_SELECT_CAT"] = "카테고리 선택"
 L["ATLAS_STRING_SELECT_MAP"] = "지도 선택"
 L["ATLAS_TITLE"] = "Atlas"
+-- L["ATLAS_TOGGLE_LOOT"] = ""
 -- L["Attunement Required"] = ""
 L["Back"] = "뒤로"
 L["Basement"] = "지하"
@@ -280,7 +281,7 @@ L["Steward of Time <Keepers of Time>"] = "시간의 청지기 <시간의 수호�
 L["Summon"] = "소환"
 L["Teleporter"] = "순간이동기"
 L["Teleporter destination"] = "순간이동 목적지"
--- L["The Behemoth"] = ""
+L["The Behemoth"] = "거수"
 -- L["Third Stop"] = ""
 -- L["Top"] = ""
 -- L["Transport"] = ""

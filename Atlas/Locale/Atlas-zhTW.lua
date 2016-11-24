@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas-zhTW.lua 112 2016-10-27 14:30:34Z arith $
+-- $Id: Atlas-zhTW.lua 112 2016-10-27 14:30:34Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -187,6 +187,7 @@ L["ATLAS_STRING_SEARCH"] = "搜尋"
 L["ATLAS_STRING_SELECT_CAT"] = "選擇類別"
 L["ATLAS_STRING_SELECT_MAP"] = "選擇地圖"
 L["ATLAS_TITLE"] = "Atlas 地圖集"
+-- L["ATLAS_TOGGLE_LOOT"] = ""
 L["Attunement Required"] = "需完成傳送門/鑰匙前置任務"
 L["Back"] = "後方"
 L["Basement"] = "地下室"

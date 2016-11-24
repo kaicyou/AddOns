@@ -1,4 +1,4 @@
--- $Id: Atlas_Battlegrounds.lua 1541 2016-08-31 05:17:16Z arith $
+-- $Id: Atlas_Battlegrounds.lua 1545 2016-11-15 13:52:50Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -172,7 +172,7 @@ local myData = {
 	};
 	SilithystMustFlow = {
 		ZoneName = { BZ["Silithus"]..ALC["Hyphen"]..L["The Silithyst Must Flow"] };
-		--Location = { BZ["Silithus"] };
+		Location = { BZ["Silithus"] };
 		LevelRange = "55-85";
 		MinLevel = "55";
 		WorldMapID = "261";
@@ -292,7 +292,7 @@ local myData = {
 	};
 	WintergraspPvP = {
 		ZoneName = { BZ["Wintergrasp"] };
-		--Location = { BZ["Wintergrasp"] };
+		Location = { BZ["Wintergrasp"] };
 		LevelRange = "73-85";
 		MinLevel = "73";
 		WorldMapID = "501";
@@ -324,10 +324,11 @@ local myData = {
 	};
 	TheBattleForGilneas = {
 		ZoneName = { BZ["Gilneas"]..ALC["Hyphen"]..BZ["The Battle for Gilneas"] };
-		--Location = { BZ["Gilneas"] };
+		Location = { BZ["Gilneas"] };
 		LevelRange = "85+";
 		MinLevel = "85";
 		WorldMapID = "736";
+		PlayerLimit = "10";
 		{ BLUE.."A) "..BZ["Gilnean Stronghold"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"], 10001 };
 		{ ORNG..INDENT..L["Alliance Graveyard"] };
 		{ BLUE.."B) "..BZ["Horde Landing"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"], 10002 };
@@ -339,7 +340,7 @@ local myData = {
 	};
 	TolBarad = {
 		ZoneName = { BZ["Tol Barad"] };
-		--Location = { BZ["Tol Barad"] };
+		Location = { BZ["Tol Barad"] };
 		LevelRange = "80-85";
 		MinLevel = "80";
 		WorldMapID = "708";
@@ -375,6 +376,7 @@ local myData = {
 		LevelRange = "85+";
 		MinLevel = "85";
 		WorldMapID = "626";
+		PlayerLimit = "10";
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Wildhammer Clan"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"] };
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["Dragonmaw Clan"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] };
 		{ BLUE.."A) "..L["Wildhammer Longhouse"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"], 10001 };
@@ -421,7 +423,7 @@ local myData = {
 	};
 	Ashran = {
 		ZoneName = { BZ["Ashran"] };
-		Location = { BZ["Draenor"] };
+		Location = { BZ["Ashran"]..ALC["Comma"]..BZ["Draenor"] };
 		LevelRange = "100";
 		MinLevel = "100";
 		PlayerLimit = "100";

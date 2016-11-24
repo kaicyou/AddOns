@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 116 2016-10-28 14:18:43Z arith $
+$Id: ChangeLog.txt 123 2016-11-16 08:20:49Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -7,6 +7,21 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 ==============
 = Change Log =
 ==============
+
+v1.35.04 (Nov. 16, 2016)
+------------------------
+- Enhanced Journal Encounter related codes to prevent from trying to open 
+  adventure journal when it's not yet available due to user's level is too low
+- Enhanced gear level's tooltip and prevent it from showing up when the map 
+  is non-relative to gear level
+- Added dungeon / raid / heroci / mythic icon text to instance maps' information panel
+- Enhanced codes related to Atlas' dropdown and instance map's level related 
+  information displaying to better deal with the situation that only heroic 
+  or mythic mode is available for specific instance
+- Fixed issues that NavBar in Adventure Journal window was wrongly nested while
+  launching from Atlas multiple times with different instances / bosses
+- Translation update:
+  - Korean (netaras)
 
 v1.35.03 (Oct. 28, 2016)
 ------------------------

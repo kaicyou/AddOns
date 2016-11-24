@@ -433,7 +433,8 @@
                 </Anchors>
                 <Scripts>
                     <OnLoad>
-                        --Spellsteal Monitor Size getglobal(self:GetName().."High"):SetText("6"); getglobal(self:GetName().."Low"):SetText("0"); self:SetMinMaxValues(0,6); self:SetValueStep(1);
+                        --Spellsteal Monitor Size
+                        getglobal(self:GetName().."High"):SetText("6"); getglobal(self:GetName().."Low"):SetText("0"); self:SetMinMaxValues(0,6); self:SetValueStep(1);
                     </OnLoad>
                     <OnValueChanged>
                         MageNugSSMonitorSize();
@@ -459,16 +460,17 @@
                 </Anchors>
                 <Scripts>
                     <OnLoad>
-                        --Living Bomb Counter Size getglobal(self:GetName().."High"):SetText("10"); getglobal(self:GetName().."Low"):SetText("0"); self:SetMinMaxValues(0,10); self:SetValueStep(1);
+                        --Arcane Blast Size
+                        getglobal(self:GetName().."High"):SetText("10"); getglobal(self:GetName().."Low"):SetText("0"); self:SetMinMaxValues(0,10); self:SetValueStep(1);
                     </OnLoad>
                     <OnValueChanged>
                         MageNugArcaneBlastSize();
                     </OnValueChanged>
                     <OnMouseDown>
-                        MageNugAB_Frame:Show(); MageNugIgnite_Frame:Show();
+                        MageNugAB_Frame:Show();
                     </OnMouseDown>
                     <OnMouseUp>
-                        MageNugAB_Frame:Hide(); MageNugIgnite_Frame:Hide();
+                        MageNugAB_Frame:Hide();
                     </OnMouseUp>
                 </Scripts>
             </Slider>
@@ -511,7 +513,8 @@
                 </Anchors>
                 <Scripts>
                     <OnLoad>
-                        --Cauterize Size getglobal(self:GetName().."High"):SetText("6"); getglobal(self:GetName().."Low"):SetText("0"); self:SetMinMaxValues(0,6); self:SetValueStep(1);
+                        --Cauterize Size
+                        getglobal(self:GetName().."High"):SetText("6"); getglobal(self:GetName().."Low"):SetText("0"); self:SetMinMaxValues(0,6); self:SetValueStep(1);
                     </OnLoad>
                     <OnValueChanged>
                         MageNugCauterizeSize();

@@ -1,4 +1,4 @@
-﻿local cfg
+local cfg
 local L = OILVL_L
 
 local HELM, NECK, SHOULDER, SHIRT, CHEST, WAIST, LEGS, FEET, WRISTS, HANDS, RING1, RING2, TRINK1, TRINK2, BACK, WEP, OFFHAND = 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17;
@@ -5213,99 +5213,97 @@ end
 local events = {}
 
 function events:INSPECT_READY(...)
-	if not UnitAffectingCombat("player") and not (InspectFrame and InspectFrame.unit) then
-		oilvlSaveItemLevel(0)
-		C_Timer.After(1,function() oilvlSaveItemLevel(1) end)
-		C_Timer.After(2,function() oilvlSaveItemLevel(2) end)
-		-- GameTooltip		
-		if (Omover ==1) and cfg.oilvlms then
-			Omover=0;
-			if not UnitAffectingCombat("player") and cfg.oilvlms and UnitExists("target") and CheckInteractDistance("target", 1) then
-				local oname, _ = GameTooltip:GetUnit();
-				if oname ~= nil then oname = oname:gsub("%-.+", ""); else return -1; end
-				if oname ~= GetUnitName("target",""):gsub("%-.+", "") then return -1; end
-				local OTilvl2, OTmia2, missenchant, missgem = OTgathertil(UnitGUID("target"),"target")				
-				if (OTmia2 == 0) then
-					local i=0;
-					local omatch=false;
-					local oospec = ospec[GetInspectSpecialization("target")];
-					if oospec then
-						-- spec
-						for i = 2, GameTooltip:NumLines() do
-							local msg = _G["GameTooltipTextLeft"..i]:GetText();
-							if msg then
-								msg = msg:find(SPECIALIZATION..":");
-							end
-							if msg then
-								_G["GameTooltipTextLeft"..i]:SetText(SPECIALIZATION..": |r|cFF00FF00"..oospec);
-								omatch=true;
-								break;
-							end
-						end	
-						if not omatch then
-							GameTooltip:SetHeight(GameTooltip:GetHeight()+15);
-							GameTooltip:AddLine(SPECIALIZATION..": |r|cFF00FF00"..oospec);	
-						end
-						-- item level
-						omatch=false;
-						for i = 2, GameTooltip:NumLines() do
-							local msg = _G["GameTooltipTextLeft"..i]:GetText();
-							if msg then
-								msg = msg:find(L["Item Level"]..":");
-							end
-							if msg then
-								_G["GameTooltipTextLeft"..i]:SetText(L["Item Level"]..": |r|cFF00FF00"..OTilvl2);
-								omatch=true;
-								break;
-							end
-						end	
-						if not omatch then
-							GameTooltip:SetHeight(GameTooltip:GetHeight()+15);
-							GameTooltip:AddLine(L["Item Level"]..": |r|cFF00FF00"..OTilvl2);	
-						end
-					end
-				else
-					local i=0;
-					local omatch=false;
-					local oospec = ospec[GetInspectSpecialization("target")];
+	oilvlSaveItemLevel(0)
+	C_Timer.After(1,function() oilvlSaveItemLevel(1) end)
+	C_Timer.After(2,function() oilvlSaveItemLevel(2) end)
+	-- GameTooltip		
+	if (Omover ==1) and cfg.oilvlms then
+		Omover=0;
+		if not UnitAffectingCombat("player") and cfg.oilvlms and UnitExists("target") and CheckInteractDistance("target", 1) then
+			local oname, _ = GameTooltip:GetUnit();
+			if oname ~= nil then oname = oname:gsub("%-.+", ""); else return -1; end
+			if oname ~= GetUnitName("target",""):gsub("%-.+", "") then return -1; end
+			local OTilvl2, OTmia2, missenchant, missgem = OTgathertil(UnitGUID("target"),"target")				
+			if (OTmia2 == 0) then
+				local i=0;
+				local omatch=false;
+				local oospec = ospec[GetInspectSpecialization("target")];
+				if oospec then
 					-- spec
 					for i = 2, GameTooltip:NumLines() do
 						local msg = _G["GameTooltipTextLeft"..i]:GetText();
 						if msg then
-							msg = msg:find("Spec:");
+							msg = msg:find(SPECIALIZATION..":");
 						end
-						if msg and oospec ~= nil then
-							_G["GameTooltipTextLeft"..i]:SetText(L["Item Level"]..": |r|cFF00FF00"..oospec);
+						if msg then
+							_G["GameTooltipTextLeft"..i]:SetText(SPECIALIZATION..": |r|cFF00FF00"..oospec);
 							omatch=true;
 							break;
 						end
 					end	
-					if not omatch and oospec ~= nil then
+					if not omatch then
 						GameTooltip:SetHeight(GameTooltip:GetHeight()+15);
-						GameTooltip:AddLine(L["Item Level"]..":".."|r|cFF00FF00"..oospec);	
+						GameTooltip:AddLine(SPECIALIZATION..": |r|cFF00FF00"..oospec);	
 					end
 					-- item level
-					omatch=false;						
+					omatch=false;
 					for i = 2, GameTooltip:NumLines() do
 						local msg = _G["GameTooltipTextLeft"..i]:GetText();
 						if msg then
 							msg = msg:find(L["Item Level"]..":");
-						end						
-						if msg and OTilvl2 then
-							_G["GameTooltipTextLeft"..i]:SetText(L["Item Level"]..": |r|cFFFF0000"..OTilvl2);
+						end
+						if msg then
+							_G["GameTooltipTextLeft"..i]:SetText(L["Item Level"]..": |r|cFF00FF00"..OTilvl2);
 							omatch=true;
 							break;
 						end
 					end	
-					if not omatch and OTilvl2 then
+					if not omatch then
 						GameTooltip:SetHeight(GameTooltip:GetHeight()+15);
-						GameTooltip:AddLine(L["Item Level"]..": |r|cFFFF0000"..OTilvl2);	
+						GameTooltip:AddLine(L["Item Level"]..": |r|cFF00FF00"..OTilvl2);	
 					end
-					Oilvltimer:ScheduleTimer(OMouseover,1);
 				end
+			else
+				local i=0;
+				local omatch=false;
+				local oospec = ospec[GetInspectSpecialization("target")];
+				-- spec
+				for i = 2, GameTooltip:NumLines() do
+					local msg = _G["GameTooltipTextLeft"..i]:GetText();
+					if msg then
+						msg = msg:find("Spec:");
+					end
+					if msg and oospec ~= nil then
+						_G["GameTooltipTextLeft"..i]:SetText(L["Item Level"]..": |r|cFF00FF00"..oospec);
+						omatch=true;
+						break;
+					end
+				end	
+				if not omatch and oospec ~= nil then
+					GameTooltip:SetHeight(GameTooltip:GetHeight()+15);
+					GameTooltip:AddLine(L["Item Level"]..":".."|r|cFF00FF00"..oospec);	
+				end
+				-- item level
+				omatch=false;						
+				for i = 2, GameTooltip:NumLines() do
+					local msg = _G["GameTooltipTextLeft"..i]:GetText();
+					if msg then
+						msg = msg:find(L["Item Level"]..":");
+					end						
+					if msg and OTilvl2 then
+						_G["GameTooltipTextLeft"..i]:SetText(L["Item Level"]..": |r|cFFFF0000"..OTilvl2);
+						omatch=true;
+						break;
+					end
+				end	
+				if not omatch and OTilvl2 then
+					GameTooltip:SetHeight(GameTooltip:GetHeight()+15);
+					GameTooltip:AddLine(L["Item Level"]..": |r|cFFFF0000"..OTilvl2);	
+				end
+				Oilvltimer:ScheduleTimer(OMouseover,1);
 			end
-			OILVL:UnregisterEvent("INSPECT_READY")
 		end
+		OILVL:UnregisterEvent("INSPECT_READY")
 	end
 end
 

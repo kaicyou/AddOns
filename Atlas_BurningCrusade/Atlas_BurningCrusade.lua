@@ -1,4 +1,4 @@
--- $Id: Atlas_BurningCrusade.lua 12 2016-09-05 14:43:26Z arith $
+-- $Id: Atlas_BurningCrusade.lua 17 2016-11-15 14:58:46Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -625,7 +625,7 @@ local myMaps = {
 		{ ORNG..INDENT..Atlas_GetBossName("Romulo & Julianne")..ALC["L-Parenthesis"]..ALC["Random"]..ALC["R-Parenthesis"] };
 		{ WHIT..INDENT..INDENT..Atlas_GetBossName("Romulo") };
 		{ WHIT..INDENT..INDENT..Atlas_GetBossName("Julianne") };
-		{ WHIT.." 5 ) "..Atlas_GetBossName("Nightbane", 1558)..ALC["L-Parenthesis"]..ALC["Summon"]..ALC["R-Parenthesis"], 1558 };
+		{ WHIT.." 5 ) "..Atlas_GetBossName("Nightbane")..ALC["L-Parenthesis"]..ALC["Summon"]..ALC["R-Parenthesis"], 10018 };
 		{ GREN..INDENT..L["The Master's Terrace"] };
 		{ ORNG.." 1) "..Atlas_GetBossName("Servant Quarters", 1552), 1552 };
 		{ ORNG..INDENT..Atlas_GetBossName("Hyakiss the Lurker")..ALC["L-Parenthesis"]..ALC["Rare"]..ALC["Comma"]..ALC["Random"]..ALC["R-Parenthesis"] };

@@ -1,6 +1,6 @@
-﻿--Mage Nuggets by B-Buck (Bbuck of Eredar)
+--Mage Nuggets by B-Buck (Bbuck of Eredar)
 
-local magenugVer = "5.5.4"
+local magenugVer = "5.5.6"
 local mirrorImageTime = 0;
 local spellStealTog = 0;
 local polyTimer = 0;

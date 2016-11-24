@@ -1,4 +1,4 @@
--- $Id: Atlas_GlobalStrings.lua 77 2016-08-14 16:51:12Z arith $
+-- $Id: Atlas_GlobalStrings.lua 118 2016-11-14 08:07:44Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -151,6 +151,7 @@ ATLAS_DEP_OK			= L["ATLAS_DEP_OK"];
 ATLAS_INFO			= L["ATLAS_INFO"];
 ATLAS_INFO_MSG			= L["ATLAS_INFO"].." - v1.22.01\n\n"..L["ATLAS_INFO_12201"];
 
+ATLAS_OPEN_ADVENTURE		= L["ATLAS_OPEN_ADVENTURE"];
 ATLAS_CLICK_TO_OPEN		= L["ATLAS_CLICK_TO_OPEN"];
 ATLAS_OPEN_WOWMAP_WINDOW	= L["ATLAS_OPEN_WOWMAP_WINDOW"];
 ATLAS_COLLAPSE_BUTTON		= L["ATLAS_COLLAPSE_BUTTON"];

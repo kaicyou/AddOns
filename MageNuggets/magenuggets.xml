@@ -1,4 +1,4 @@
-﻿<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
  <Script file="magenuggets.lua" ></Script>
 
  <Frame name="MageNuggets">
@@ -155,6 +155,7 @@
 	   <OnDragStop> self:StopMovingOrSizing(); self.isMoving = false; </OnDragStop>
     </Scripts>
 </Frame>
+
 
 <Frame name="MageNugIgnite_Frame" parent="UIParent" frameStrata="LOW" hidden="true" enableMouse="true" movable="true">
     <Size x="36" y="36" />
@@ -840,7 +841,6 @@
         </OnUpdate>
     </Scripts>
 </Frame>
-
 
 <Frame name="MageNugPolyFrame" parent="UIParent" hidden="true" enableMouse="true" movable="true">
     <Size x="140" y="30" />
@@ -2188,18 +2188,32 @@
             </Offset>
         </Anchor>
     </Anchors>
-    <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface/Tooltips/UI-Tooltip-Border" tile="true">
+    <Backdrop edgeFile="Interface/Tooltips/UI-Tooltip-Border" tile="true">
     <TileSize>
         <AbsValue val="32"/>
     </TileSize>
     <EdgeSize>
-        <AbsValue val="13"/>
+        <AbsValue val="24"/>
     </EdgeSize>
     <BackgroundInsets>
         <AbsInset left="2" right="2" top="2" bottom="2"/>
     </BackgroundInsets>
     </Backdrop>
     <Layers>
+        <Layer level="BACKGROUND">
+            <Texture name="$parentTexture1" file="Interface\LFGFrame\UI-LFG-BACKGROUND-MALYGOS">
+                <Size>
+                    <AbsDimension x="365" y="115"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="CENTER">
+                      <Offset>
+                            <AbsDimension x="0" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Texture>
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parentText" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal" text="Portals">
                 <Anchors>
@@ -2265,7 +2279,7 @@
   		</Anchors>
   		<Layers>
   			<Layer level="BACKGROUND">
-  				<Texture name="$parentTelDalTexture" file="Interface\Icons\Spell_Arcane_PortalDalaran"/>
+  				<Texture name="$parentTelDalTexture" file="Interface\Icons\spell_arcane_portaldalaranbrokenisles"/>
   			</Layer>
   		</Layers>
   		<Scripts>
@@ -2647,7 +2661,7 @@
 		</Anchors>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentTelDalTexture" file="Interface\Icons\Spell_Arcane_TeleportDalaran"/>
+				<Texture name="$parentTelDalTexture" file="Interface\Icons\spell_arcane_teleportdalaranbrokenisles"/>
 			</Layer>
 		</Layers>
 		<Scripts>
@@ -3021,7 +3035,7 @@
     </Anchors>
     <Layers>
       <Layer level="BACKGROUND">
-        <Texture name="$parentTelDalTexture" file="Interface\Icons\spell_arcane_teleportdalaran"/>
+        <Texture name="$parentTelDalTexture" file="Interface\Icons\spell_arcane_teleporthalloftheguardian"/>
       </Layer>
     </Layers>
     <Scripts>
@@ -3242,18 +3256,32 @@
             </Offset>
         </Anchor>
     </Anchors>
-    <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface/Tooltips/UI-Tooltip-Border" tile="true">
+    <Backdrop edgeFile="Interface/Tooltips/UI-Tooltip-Border" tile="true">
     <TileSize>
         <AbsValue val="32"/>
     </TileSize>
     <EdgeSize>
-        <AbsValue val="13"/>
+        <AbsValue val="24"/>
     </EdgeSize>
     <BackgroundInsets>
         <AbsInset left="2" right="2" top="2" bottom="2"/>
     </BackgroundInsets>
     </Backdrop>
     <Layers>
+        <Layer level="BACKGROUND">
+            <Texture name="$parentTexture1" file="Interface\LFGFrame\UI-LFG-BACKGROUND-MALYGOS">
+                <Size>
+                    <AbsDimension x="365" y="115"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="CENTER">
+                      <Offset>
+                            <AbsDimension x="0" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Texture>
+        </Layer>
         <Layer level="ARTWORK">
             <FontString name="$parentText" font="Fonts\FRIZQT__.TTF" inherits="GameFontNormal" text="Portals">
                 <Anchors>
@@ -3319,7 +3347,7 @@
       </Anchors>
       <Layers>
         <Layer level="BACKGROUND">
-          <Texture name="$parentTelDalTexture" file="Interface\Icons\Spell_Arcane_PortalDalaran"/>
+          <Texture name="$parentTelDalTexture" file="Interface\Icons\spell_arcane_portaldalaranbrokenisles"/>
         </Layer>
       </Layers>
       <Scripts>
@@ -3700,7 +3728,7 @@
 		</Anchors>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentTelDalTexture" file="Interface\Icons\Spell_Arcane_TeleportDalaran"/>
+				<Texture name="$parentTelDalTexture" file="Interface\Icons\spell_arcane_teleportdalaranbrokenisles"/>
 			</Layer>
 		</Layers>
 		<Scripts>
@@ -4074,7 +4102,7 @@
     </Anchors>
     <Layers>
       <Layer level="BACKGROUND">
-        <Texture name="$parentTelDalTexture" file="Interface\Icons\spell_arcane_teleportdalaran"/>
+        <Texture name="$parentTelDalTexture" file="Interface\Icons\spell_arcane_teleporthalloftheguardian"/>
       </Layer>
     </Layers>
     <Scripts>

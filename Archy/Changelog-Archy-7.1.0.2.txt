@@ -1,0 +1,11 @@
+tag 7.1.0.2
+6b109d1e65e3304c80125e1283cab512a7552377
+James D. Callahan III <jcallahan@curse.com>
+2016-11-13 10:58:37 -0600
+
+
+
+--------------------
+
+sidji:
+	- Added Val'sharah coordinates and races

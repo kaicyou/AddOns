@@ -1,4 +1,4 @@
-﻿-- $Id: Atlas-enUS.lua 112 2016-10-27 14:30:34Z arith $
+-- $Id: Atlas-enUS.lua 123 2016-11-16 08:20:49Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -192,6 +192,7 @@ L["ATLAS_STRING_SEARCH"] = "Search"
 L["ATLAS_STRING_SELECT_CAT"] = "Select Category"
 L["ATLAS_STRING_SELECT_MAP"] = "Select Map"
 L["ATLAS_TITLE"] = "Atlas"
+L["ATLAS_TOGGLE_LOOT"] = "Right-click to toggle loot panel."
 L["Attunement Required"] = "Attunement Required"
 L["Back"] = "Back"
 L["Basement"] = "Basement"
@@ -432,6 +433,7 @@ L["ToC/Title"] = "Atlas"
 	L["ATLAS_OPEN_WOWMAP_WINDOW"] = "Click to open Adventure Journal Map window.";
 	L["ATLAS_COLLAPSE_BUTTON"] = "Click to close Atlas' legend panel.";
 	L["ATLAS_EXPAND_BUTTON"] = "Click to open Atlas' legend panel.";
+	L["ATLAS_TOGGLE_LOOT"] = "Right-click to toggle loot panel.";
 
 --************************************************
 -- Zone Names, Acronyms, and Common Strings

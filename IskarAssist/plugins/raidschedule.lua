@@ -645,7 +645,7 @@ local day_seconds = 86400
 local get_epoch_raid_time = function (attendance, current_time, today)
 	current_time = current_time or time()
 
-	-- horario de hoje onde irá iniciar a captura do attendance
+	-- horario de hoje onde irï¿½ iniciar a captura do attendance
 	local raid_start = date ("*t", current_time)
 	raid_start.hour = attendance.start_hour
 	raid_start.min = attendance.start_min
@@ -653,7 +653,7 @@ local get_epoch_raid_time = function (attendance, current_time, today)
 	local day, month = raid_start.month, raid_start.day
 	raid_start = time (raid_start)
 
-	-- horario em que a raide terminará
+	-- horario em que a raide terminarï¿½
 	local raid_end
 	if (attendance.end_day == today) then
 		raid_end = date ("*t", current_time)

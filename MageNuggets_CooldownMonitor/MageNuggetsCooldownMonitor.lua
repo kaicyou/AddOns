@@ -1,4 +1,4 @@
-﻿--Mage Nuggets Cooldown Monitor by B-Buck (Bbuck of Eredar)
+--Mage Nuggets Cooldown Monitor by B-Buck (Bbuck of Eredar)
 
 local combatTextCvar = GetCVar("enableCombatText");
 

@@ -1,4 +1,4 @@
-﻿local magenugVer = "5.5.4"
+local magenugVer = "5.5.6"
 
 MageNuggets = {
     ssMonitorToggle = true;
@@ -199,7 +199,6 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     else
         MageNugOptionsFrame_CheckButton6:SetChecked(true);
     end
-
     if(MageNuggets.abCastTimeToggle == nil) then
         MageNuggets.abCastTimeToggle = true;
     end
@@ -239,6 +238,13 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
     else
         MageNugOptionsFrame_Slider2:SetValue(MageNuggets.ssMonitorSize)
     end
+
+    if (MageNuggets.polyFrameSize == nil) then
+        MageNugOptionsFrame_Slider1:SetValue(3)
+    else
+        MageNugOptionsFrame_Slider1:SetValue(MageNuggets.polyFrameSize)
+    end
+
     if (MageNuggets.cautSize == nil) then
         MageNugOptionsFrame_Slider5:SetValue(3)
     else
@@ -376,11 +382,7 @@ function loadMageNuggetOptionsVariables_OnLoadEvent()
         MageNugOption2Frame_SimpleUICheckButton:SetChecked(false);
     end
     MNsimpleUItoggle();
-    if (MageNuggets.polyFrameSize == nil) then
-        MageNugOptionsFrame_Slider1:SetValue(3)
-    else
-        MageNugOptionsFrame_Slider1:SetValue(MageNuggets.polyFrameSize)
-    end
+
     if (MageNuggets.cauterizeToggle == true) or (MageNuggets.cauterizeToggle == nil) then
         CauterizeCheckButton:SetChecked(true);
         MageNuggets.cauterizeToggle = true;

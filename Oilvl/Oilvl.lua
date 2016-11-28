@@ -2179,8 +2179,8 @@ function oilvlminbutton(parent, mname, func, x,y)
 end
 	
 CopyEditBox("OIlvlCopyEB", 0, 250, 500, 300)
-CopyEditBox2("OIlvlInspect", 0, 250, 400, 250, function(self) OIlvlInspect:Hide() end)
-CopyEditBox2("OIlvlInspect2", 0, -10, 400, 250, function(self) OIlvlInspect2:Hide() end)
+CopyEditBox2("OIlvlInspect", 0, 250, 400, 260, function(self) OIlvlInspect:Hide() end)
+CopyEditBox2("OIlvlInspect2", 0, -20, 400, 260, function(self) OIlvlInspect2:Hide() end)
 
 local function obfbutton2(btnName, btnText, btnParent, btnTemplate, btnPoint, btnX, btnY, btnW, btnH, btnFunc)
 	local button = CreateFrame("Button", btnName, btnParent, btnTemplate)
@@ -2693,7 +2693,8 @@ function oilvlframe()
 					if (button == "LeftButton" or button == "LeftButtonDown") and IsAltKeyDown() then
 						local nn = tonumber(self:GetName():gsub("OILVLRAIDFRAME","").."");
 						if oilvlframedata.gear[nn] ~= "" then
-							OIlvlInspectFrame:Clear();							
+							OIlvlInspectFrame:Clear();	
+							local nline = 0
 							for crg = 17,1,-1 do
 								if oilvlframedata.gear[nn][crg] ~= nil then
 									if pvpsw then
@@ -2705,9 +2706,10 @@ function oilvlframe()
 									else
 										OIlvlInspectFrame:AddMessage(oilvlframedata.gear[nn][crg][1].." "..oilvlframedata.gear[nn][crg][2].."  ("..oenchantItem[crg][2]..")",oilvlframedata.gear[nn][crg][3]*oilvlframedata.gear[nn][crg][5],1,oilvlframedata.gear[nn][crg][4]*oilvlframedata.gear[nn][crg][6]);
 									end
+									nline = nline + 1
 								end
 							end
-							OIlvlInspectFrame:AddMessage(oilvlframedata.ilvl[nn][1].." "..oilvlframedata.name[nn])
+							OIlvlInspectFrame:AddMessage(oilvlframedata.ilvl[nn][1].." "..oilvlframedata.name[nn].."\n")
 							OIlvlInspect:Show();
 						end
 					end
@@ -2728,7 +2730,7 @@ function oilvlframe()
 									end
 								end
 							end
-							OIlvlInspect2Frame:AddMessage(oilvlframedata.ilvl[nn][1].." "..oilvlframedata.name[nn])
+							OIlvlInspect2Frame:AddMessage(oilvlframedata.ilvl[nn][1].." "..oilvlframedata.name[nn].."\n")
 							OIlvlInspect2:Show();
 						end
 					end
@@ -4012,7 +4014,7 @@ function otooltip5func()
 							OIlvlInspectFrame:AddMessage(cfg.oilvlgears[nn][4][crg][1].." "..cfg.oilvlgears[nn][4][crg][2].."  ("..oenchantItem[crg][2]..")",cfg.oilvlgears[nn][4][crg][3]*cfg.oilvlgears[nn][4][crg][5],1,cfg.oilvlgears[nn][4][crg][4]*cfg.oilvlgears[nn][4][crg][6]);
 						end
 					end
-					OIlvlInspectFrame:AddMessage(cfg.oilvlgears[m][3].." "..cfg.oilvlgears[m][1].."-"..cfg.oilvlgears[m][2])
+					OIlvlInspectFrame:AddMessage(cfg.oilvlgears[m][3].." "..cfg.oilvlgears[m][1].."-"..cfg.oilvlgears[m][2].."\n")
 					OIlvlInspect:Show();
 				end
 			end
@@ -4025,7 +4027,7 @@ function otooltip5func()
 							OIlvlInspect2Frame:AddMessage(cfg.oilvlgears[nn][4][crg][1].." "..cfg.oilvlgears[nn][4][crg][2].."  ("..oenchantItem[crg][2]..")",cfg.oilvlgears[nn][4][crg][3]*cfg.oilvlgears[nn][4][crg][5],1,cfg.oilvlgears[nn][4][crg][4]*cfg.oilvlgears[nn][4][crg][6]);
 						end
 					end
-					OIlvlInspect2Frame:AddMessage(cfg.oilvlgears[m][3].." "..cfg.oilvlgears[m][1].."-"..cfg.oilvlgears[m][2])
+					OIlvlInspect2Frame:AddMessage(cfg.oilvlgears[m][3].." "..cfg.oilvlgears[m][1].."-"..cfg.oilvlgears[m][2].."\n")
 					OIlvlInspect2:Show();
 				end
 			end
@@ -4679,7 +4681,7 @@ function otooltip7func()
 							end
 						end
 					end
-					OIlvlInspectFrame:AddMessage(cfg.oilvlcache[m].oilvl.." "..cfg.oilvlcache[m].oname.."-"..cfg.oilvlcache[m].orealm)
+					OIlvlInspectFrame:AddMessage(cfg.oilvlcache[m].oilvl.." "..cfg.oilvlcache[m].oname.."-"..cfg.oilvlcache[m].orealm.."\n")
 					OIlvlInspect:Show();
 				end
 			end
@@ -4700,7 +4702,7 @@ function otooltip7func()
 							end
 						end
 					end
-					OIlvlInspect2Frame:AddMessage(cfg.oilvlcache[m].oilvl.." "..cfg.oilvlcache[m].oname.."-"..cfg.oilvlcache[m].orealm)
+					OIlvlInspect2Frame:AddMessage(cfg.oilvlcache[m].oilvl.." "..cfg.oilvlcache[m].oname.."-"..cfg.oilvlcache[m].orealm.."\n")
 					OIlvlInspect2:Show();
 				end
 			end
@@ -5135,24 +5137,22 @@ function oilvlSaveItemLevel(n)
 				ntex4:SetColorTexture(0.2,0.2,0.2,0.5)
 				ntex4:SetAllPoints()	
 				_G[OTCurrent]:SetNormalTexture(ntex4)
+				_G[OTCurrent]:SetText(oClassColor(OTCurrent2)..GetUnitName(OTCurrent2,""):gsub("%-.+", ""));
+				oilvlframedata.name[OTCurrent3] = GetUnitName(OTCurrent2,""):gsub("%-.+", "");
+				oilvlframedata.me[OTCurrent3] = "";
+				oilvlframedata.mg[OTCurrent3] = "";
+				oilvlframedata.spec[OTCurrent3] = "";
 				if missenchant ~= "" or missgem ~= "" then
-					oilvlframedata.name[OTCurrent3] = oilvlframedata.name[OTCurrent3]:gsub("!","");
 					oilvlframedata.name[OTCurrent3] = "! "..oilvlframedata.name[OTCurrent3]
 					oilvlframedata.me[OTCurrent3] = {missenchant,missenchant2};
 					oilvlframedata.mg[OTCurrent3] = {missgem,missgem2};
 				elseif missenchant2 ~= "" or missgem2 ~= "" then
-					oilvlframedata.name[OTCurrent3] = oilvlframedata.name[OTCurrent3]:gsub("~","");
 					oilvlframedata.name[OTCurrent3] = "~ "..oilvlframedata.name[OTCurrent3]
 					oilvlframedata.me[OTCurrent3] = {missenchant,missenchant2};
 					oilvlframedata.mg[OTCurrent3] = {missgem,missgem2};
-				else
-					oilvlframedata.name[OTCurrent3] = oilvlframedata.name[OTCurrent3]:gsub("!",""):gsub("~",""):gsub(" ","");
-					oilvlframedata.me[OTCurrent3] = "";
-					oilvlframedata.mg[OTCurrent3] = "";
-					oilvlframedata.spec[OTCurrent3] = "";
 				end
 				if oilvlframedata.name[OTCurrent3] ~= "" then
-				-- check legendary ring
+				-- check legendary
 					if legendary2 > 0 then
 						_G[OTCurrent]:SetText(oClassColor(OTCurrent2)..oilvlframedata.name[OTCurrent3].."\n|r|cFFFF8000"..OTilvl);
 					else
@@ -6139,11 +6139,9 @@ function oilvlCheckUpgrade(i)
 	local upgrade=0;
 	local n = 0;
 	for j = 1, 17 do
-		if oilvlframedata.gear[i][j] then 
-			if oilvlframedata.gear[i][j][9] then 
-				upgrade = upgrade +  oilvlframedata.gear[i][j][9] / 2;
-				n = n + 1;
-			end 
+		if oilvlframedata.gear[i] and oilvlframedata.gear[i][j] and oilvlframedata.gear[i][j][9] then 
+			upgrade = upgrade +  oilvlframedata.gear[i][j][9] / 2;
+			n = n + 1;
 		end
 	end
 	if n == 0 then return "" end

@@ -604,16 +604,16 @@ function CA:Setup_CharacterArmory()
 		
 		-- Current Artifact Power
 		KF:TextSetting(self.ArtifactMonitor, ARTIFACT_POWER..' : ', { Tag = 'PowerTitle',
-			Font = E.db.sle.Armory.Character.Enchant.Font,
-			FontSize = 9,
-			FontStyle = E.db.sle.Armory.Character.Enchant.FontStyle,
+			Font = E.db.sle.Armory.Character.Artifact.Font,
+			FontSize = E.db.sle.Armory.Character.Artifact.FontSize,
+			FontStyle = E.db.sle.Armory.Character.Artifact.FontStyle,
 			directionH = 'LEFT'
 		}, 'BOTTOMLEFT', self.ArtifactMonitor.BarBorder, 'TOPLEFT', 0, 4 + E.Border)
 		
 		KF:TextSetting(self.ArtifactMonitor, nil, { Tag = 'CurrentPower',
-			Font = E.db.sle.Armory.Character.Enchant.Font,
-			FontSize = 9,
-			FontStyle = E.db.sle.Armory.Character.Enchant.FontStyle,
+			Font = E.db.sle.Armory.Character.Artifact.Font,
+			FontSize = E.db.sle.Armory.Character.Artifact.FontSize,
+			FontStyle = E.db.sle.Armory.Character.Artifact.FontStyle,
 			directionH = 'LEFT'
 		}, 'LEFT', self.ArtifactMonitor.PowerTitle, 'RIGHT', 0, 0)
 		Mixin(self.ArtifactMonitor.CurrentPower, AnimatedNumericFontStringMixin)
@@ -621,25 +621,25 @@ function CA:Setup_CharacterArmory()
 		
 		-- Available Artifact Power
 		KF:TextSetting(self.ArtifactMonitor.BarExpected, nil, { Tag = 'AvailablePower',
-			Font = E.db.sle.Armory.Character.Enchant.Font,
-			FontSize = 9,
-			FontStyle = E.db.sle.Armory.Character.Enchant.FontStyle,
+			Font = E.db.sle.Armory.Character.Artifact.Font,
+			FontSize = E.db.sle.Armory.Character.Artifact.FontSize,
+			FontStyle = E.db.sle.Armory.Character.Artifact.FontStyle,
 			directionH = 'LEFT'
 		}, 'TOPRIGHT', self.ArtifactMonitor.BarBorder, 'BOTTOMRIGHT', 0, -1)
 		
 		-- Artifact Traits Rank
 		KF:TextSetting(self.ArtifactMonitor, nil, { Tag = 'TraitRank',
-			Font = E.db.sle.Armory.Character.Level.Font,
-			FontSize = 9,
-			FontStyle = E.db.sle.Armory.Character.Level.FontStyle,
+			Font = E.db.sle.Armory.Character.Artifact.Font,
+			FontSize = E.db.sle.Armory.Character.Artifact.FontSize,
+			FontStyle = E.db.sle.Armory.Character.Artifact.FontStyle,
 			directionH = 'LEFT'
 		}, 'BOTTOMLEFT', self.ArtifactMonitor.PowerTitle, 'TOPLEFT', 0, 3)
 		
 		-- Require Artifact Power
 		KF:TextSetting(self.ArtifactMonitor, nil, { Tag = 'RequirePower',
-			Font = E.db.sle.Armory.Character.Enchant.Font,
-			FontSize = 9,
-			FontStyle = E.db.sle.Armory.Character.Enchant.FontStyle,
+			Font = E.db.sle.Armory.Character.Artifact.Font,
+			FontSize = E.db.sle.Armory.Character.Artifact.FontSize,
+			FontStyle = E.db.sle.Armory.Character.Artifact.FontStyle,
 			directionH = 'RIGHT'
 		}, 'BOTTOM', self.ArtifactMonitor.BarBorder, 'TOP', 0, 4 + E.Border)
 		self.ArtifactMonitor.RequirePower:Point('RIGHT', self.ArtifactMonitor)
@@ -647,9 +647,9 @@ function CA:Setup_CharacterArmory()
 		
 		-- Message
 		KF:TextSetting(self.ArtifactMonitor.BarExpected, nil, { Tag = 'Message',
-			Font = E.db.sle.Armory.Character.Level.Font,
-			FontSize = 11,
-			FontStyle = E.db.sle.Armory.Character.Level.FontStyle,
+			Font = E.db.sle.Armory.Character.Artifact.Font,
+			FontSize = E.db.sle.Armory.Character.Artifact.FontSize,
+			FontStyle = E.db.sle.Armory.Character.Artifact.FontStyle,
 			directionH = 'RIGHT'
 		}, 'BOTTOMRIGHT', self.ArtifactMonitor.RequirePower, 'TOPRIGHT', 0, 2)
 		
@@ -1161,6 +1161,7 @@ do --<< Artifact Monitor >>
 		if Legion_ArtifactData.ItemID then
 			self.SecondaryHandSlot.Gradation:SetAlpha(0)
 			self.SecondaryHandSlot.ItemLevel:SetAlpha(0)
+			self.SecondaryHandSlot.ItemEnchant:SetAlpha(0)
 			self.SecondaryHandSlot.EnchantWarning:SetAlpha(0)
 			self.SecondaryHandSlot.EnchantWarning:Disable()
 			self.SecondaryHandSlot.SocketWarning:SetAlpha(0)
@@ -1229,6 +1230,7 @@ do --<< Artifact Monitor >>
 		else
 			self.SecondaryHandSlot.Gradation:SetAlpha(1)
 			self.SecondaryHandSlot.ItemLevel:SetAlpha(1)
+			self.SecondaryHandSlot.ItemEnchant:SetAlpha(1)
 			self.SecondaryHandSlot.EnchantWarning:SetAlpha(1)
 			self.SecondaryHandSlot.EnchantWarning:Enable()
 			self.SecondaryHandSlot.SocketWarning:SetAlpha(1)
@@ -1255,9 +1257,15 @@ do --<< Artifact Monitor >>
 		if Artifact_ItemID then
 			Legion_ArtifactData.ItemID = Artifact_ItemID
 			Legion_ArtifactData.Rank = Artifact_Rank
-			Legion_ArtifactData.Power = Artifact_Power
 			Legion_ArtifactData.AvailablePoint, Legion_ArtifactData.XP, Legion_ArtifactData.XPForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(Artifact_Rank, Artifact_Power)
-			Legion_ArtifactData.RemainXP = Legion_ArtifactData.XPForNextPoint - Legion_ArtifactData.XP
+			-- Legion_ArtifactData.RemainXP = Legion_ArtifactData.XPForNextPoint - Legion_ArtifactData.XP --We don't actually use it
+			if E.db.sle.Armory.Character.Artifact.ShortValues then
+				Legion_ArtifactData.Power = E:ShortValue(Legion_ArtifactData.XP)
+			else
+				Legion_ArtifactData.Power = Legion_ArtifactData.XP
+			end
+			
+			if E.db.sle.Armory.Character.Artifact.ShortValues then Legion_ArtifactData.XPForNextPointShort = E:ShortValue(Legion_ArtifactData.XPForNextPoint) end
 			
 			self.ArtifactMonitor:Show()
 			if (GetLocale() == "ruRU") then
@@ -1265,15 +1273,20 @@ do --<< Artifact Monitor >>
 			else
 				self.ArtifactMonitor.TraitRank:SetText(RANK..' : '..COLORSTRING_ARTIFACT..Artifact_Rank)
 			end
-			self.ArtifactMonitor.CurrentPower:SetAnimatedValue(Legion_ArtifactData.Power)
-			self.ArtifactMonitor.RequirePower:SetText(BreakUpLargeNumbers(Legion_ArtifactData.XPForNextPoint))
-			
+			if E.db.sle.Armory.Character.Artifact.ShortValues then
+				self.ArtifactMonitor.CurrentPower:SetText(Legion_ArtifactData.Power)
+				self.ArtifactMonitor.RequirePower:SetText(Legion_ArtifactData.XPForNextPointShort)
+			else
+				self.ArtifactMonitor.CurrentPower:SetAnimatedValue(Legion_ArtifactData.Power)
+				self.ArtifactMonitor.RequirePower:SetText(BreakUpLargeNumbers(Legion_ArtifactData.XPForNextPoint))
+			end
+
 			if Legion_ArtifactData.AvailablePoint > 0 then
 				self.ArtifactMonitor.BarExpected.Message:SetText(format(L["SLE_ARMORY_POINTS_AVAILABLE"], KF:Color_Value(Legion_ArtifactData.AvailablePoint)))
 			else
 				self.ArtifactMonitor.BarExpected.Message:SetText()
 			end
-			
+
 			self.ArtifactMonitor.Bar:SetAnimatedValues(Legion_ArtifactData.XP, 0, Legion_ArtifactData.XPForNextPoint, Legion_ArtifactData.Rank + Legion_ArtifactData.AvailablePoint)
 			self.ArtifactMonitor.BarExpected:SetMinMaxValues(0, Legion_ArtifactData.XPForNextPoint)
 		else
@@ -1353,7 +1366,11 @@ do --<< Artifact Monitor >>
 				self.ArtifactMonitor.AddPower.Button.Link = LowestPower_Link
 				
 				if LowestPower > 0 then
-					self.ArtifactMonitor.BarExpected.AvailablePower:SetText(KF:Color_Value('+'..BreakUpLargeNumbers(TotalPower)))
+					if E.db.sle.Armory.Character.Artifact.ShortValues then
+						self.ArtifactMonitor.BarExpected.AvailablePower:SetText(KF:Color_Value('+'..E:ShortValue(TotalPower)))
+					else
+						self.ArtifactMonitor.BarExpected.AvailablePower:SetText(KF:Color_Value('+'..BreakUpLargeNumbers(TotalPower)))
+					end
 				else
 					self.ArtifactMonitor.BarExpected.AvailablePower:SetText()
 				end
@@ -1536,6 +1553,16 @@ function CA:UpdateSettings(part)
 		_G["CharacterArmory"]:Update_Gear()
 		_G["CharacterArmory"]:Update_Display(true)
 	end
+	if part == "art" or part == "all" then
+		_G["CharacterArmory"].ArtifactMonitor.TraitRank:FontTemplate(E.LSM:Fetch('font', db.Artifact.Font),db.Artifact.FontSize,db.Artifact.FontStyle)
+		_G["CharacterArmory"].ArtifactMonitor.PowerTitle:FontTemplate(E.LSM:Fetch('font', db.Artifact.Font),db.Artifact.FontSize,db.Artifact.FontStyle)
+		_G["CharacterArmory"].ArtifactMonitor.CurrentPower:FontTemplate(E.LSM:Fetch('font', db.Artifact.Font),db.Artifact.FontSize,db.Artifact.FontStyle)
+		_G["CharacterArmory"].ArtifactMonitor.RequirePower:FontTemplate(E.LSM:Fetch('font', db.Artifact.Font),db.Artifact.FontSize,db.Artifact.FontStyle)
+		_G["CharacterArmory"].ArtifactMonitor.BarExpected.AvailablePower:FontTemplate(E.LSM:Fetch('font', db.Artifact.Font),db.Artifact.FontSize,db.Artifact.FontStyle)
+		_G["CharacterArmory"].ArtifactMonitor.BarExpected.Message:FontTemplate(E.LSM:Fetch('font', db.Artifact.Font),db.Artifact.FontSize,db.Artifact.FontStyle)
+		CA:LegionArtifactMonitor_UpdateData()
+		CA:LegionArtifactMonitor_SearchPowerItem()
+	end
 end
 
 function CA:UpdateIlvlFont()
@@ -1546,6 +1573,14 @@ function CA:UpdateIlvlFont()
 	if _G["CharacterStatsPane"].ItemLevelFrame.leftGrad then
 		_G["CharacterStatsPane"].ItemLevelFrame.leftGrad:SetHeight((db.size or 12) + 4)
 		_G["CharacterStatsPane"].ItemLevelFrame.rightGrad:SetHeight((db.size or 12) + 4)
+	end
+end
+
+function CA:ElvOverlayToggle()
+	if E.db.sle.Armory.Character.Backdrop.Overlay then
+		_G["CharacterModelFrameBackgroundOverlay"]:Show()
+	else
+		_G["CharacterModelFrameBackgroundOverlay"]:Hide()
 	end
 end
 
@@ -1607,6 +1642,8 @@ KF.Modules.CharacterArmory = function()
 		KF_KnightArmory_NoticeMissing.text:SetTextColor(1, 1, 1)
 		KF_KnightArmory_NoticeMissing.CheckButton:SetTexture('Interface\\Buttons\\UI-CheckBox-Check')
 		]]
+		_G["CharacterModelFrameBackgroundOverlay"]:SetPoint('TOPLEFT', CharacterArmory, -8, 0)
+		_G["CharacterModelFrameBackgroundOverlay"]:SetPoint('BOTTOMRIGHT', CharacterArmory, 8, 0)
 	elseif Info.CharacterArmory_Activate then
 		Info.CharacterArmory_Activate = nil
 		
@@ -1642,6 +1679,8 @@ KF.Modules.CharacterArmory = function()
 		KF_KnightArmory_NoticeMissing.text:SetTextColor(0.31, 0.31, 0.31)
 		KF_KnightArmory_NoticeMissing.CheckButton:SetTexture('Interface\\Buttons\\UI-CheckBox-Check-Disabled')
 		]]
+		_G["CharacterModelFrameBackgroundOverlay"]:SetPoint('TOPLEFT', CharacterModelFrame, 0, 0)
+		_G["CharacterModelFrameBackgroundOverlay"]:SetPoint('BOTTOMRIGHT', CharacterModelFrame, 0, 0)
 	end
 	if SLE._Compatibility["DejaCharacterStats"] then return end
 	--Resize and reposition god damned ilevel text
@@ -1650,4 +1689,5 @@ KF.Modules.CharacterArmory = function()
 	hooksecurefunc("PaperDollFrame_UpdateStats", CA.PaperDollFrame_UpdateStats)
 	-- PaperDollFrame_UpdateStats = CA.PaperDollFrame_UpdateStats()
 	CA:ToggleStats()
+	CA:ElvOverlayToggle()
 end

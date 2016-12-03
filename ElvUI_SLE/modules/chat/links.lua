@@ -1,4 +1,4 @@
-﻿local SLE, T, E, L, V, P, G = unpack(select(2, ...))
+local SLE, T, E, L, V, P, G = unpack(select(2, ...))
 local C = SLE:GetModule("Chat")
 local ItemRefTooltip = ItemRefTooltip
 local ShowUIPanel = ShowUIPanel

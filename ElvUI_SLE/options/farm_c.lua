@@ -1,4 +1,4 @@
-﻿local SLE, T, E, L, V, P, G = unpack(select(2, ...))
+local SLE, T, E, L, V, P, G = unpack(select(2, ...))
 local Tools = SLE:GetModule("Toolbars")
 local EXPANSION_NAME4 = EXPANSION_NAME4
 

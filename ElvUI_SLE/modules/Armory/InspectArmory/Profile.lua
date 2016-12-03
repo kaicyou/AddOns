@@ -1,4 +1,4 @@
-﻿if select(2, GetAddOnInfo('ElvUI_KnightFrame')) and IsAddOnLoaded('ElvUI_KnightFrame') then return end
+if select(2, GetAddOnInfo('ElvUI_KnightFrame')) and IsAddOnLoaded('ElvUI_KnightFrame') then return end
 
 local E, L, V, P, G = unpack(ElvUI)
 local KF, Info, Timer = unpack(ElvUI_KnightFrame)
@@ -18,7 +18,8 @@ P.sle.Armory.Inspect = {
 	
 	Gradation = {
 		Display = true,
-		Color = { .41, .83, 1 }
+		Color = { .41, .83, 1 },
+		CurrentClassColor = false
 	},
 	
 	Level = {

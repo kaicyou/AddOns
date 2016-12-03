@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 Name: LibTourist-3.0
 Revision: $Rev: 181 $
 Author(s): ckknight (ckknight@gmail.com), Arrowmaster, Odica (maintainer)

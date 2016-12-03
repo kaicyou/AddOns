@@ -3,9 +3,5 @@
 ## Version: 2.01
 ## Title: LibAnim
 ## Notes: Animations!
-## X-Curse-Packaged-Version: v3.16
-## X-Curse-Project-Name: ElvUI Shadow & Light Edit
-## X-Curse-Project-ID: shadow-and-light-edit
-## X-Curse-Repository-ID: wow/shadow-and-light-edit/mainline
 
 LibAnim.lua

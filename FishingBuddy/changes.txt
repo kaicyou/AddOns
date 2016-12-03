@@ -1,4 +1,9 @@
-﻿Version 1.7.11
+﻿Version 1.7.12
+- Add support for new fishing bobbers
+- Temporarily remove macro support while it gets rewritten
+- Update support libraries
+
+Version 1.7.11
 - Update TOC
 
 Version 1.7.10

@@ -1,4 +1,4 @@
-﻿## Interface: 60200
+## Interface: 60200
 ## LoadOnDemand: 1
 ## Title: Lib: Tourist-3.0
 ## Notes: A library to provide information about zones and instances.
@@ -8,10 +8,6 @@
 ## X-Curse-Project-Name: LibTourist-3.0
 ## X-Curse-Project-ID: libtourist-3-0
 ## X-Curse-Repository-ID: wow/libtourist-3-0/mainline
-## X-Curse-Packaged-Version: v3.16
-## X-Curse-Project-Name: ElvUI Shadow & Light Edit
-## X-Curse-Project-ID: shadow-and-light-edit
-## X-Curse-Repository-ID: wow/shadow-and-light-edit/mainline
 
 LibStub\LibStub.lua
 lib.xml

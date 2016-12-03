@@ -1,4 +1,4 @@
-﻿local SLE, T, E, L, V, P, G = unpack(select(2, ...)) 
+local SLE, T, E, L, V, P, G = unpack(select(2, ...)) 
 local UF = E:GetModule('UnitFrames');
 local SUF = SLE:GetModule("UnitFrames")
 local texPath = [[Interface\AddOns\ElvUI_SLE\media\textures\role\]]
@@ -88,6 +88,7 @@ local function configTable()
 					["SupervillainUI"] = "Supervillain UI ".."|T"..texPath.."svui-tank:15:15:0:0:64:64:2:56:2:56|t ".."|T"..texPath.."svui-healer:15:15:0:0:64:64:2:56:2:56|t ".."|T"..texPath.."svui-dps:15:15:0:0:64:64:2:56:2:56|t ",
 					["Blizzard"] = "Blizzard ".."|T"..texPath.."blizz-tank:15:15:0:0:64:64:2:56:2:56|t ".."|T"..texPath.."blizz-healer:15:15:0:0:64:64:2:56:2:56|t ".."|T"..texPath.."blizz-dps:15:15:0:0:64:64:2:56:2:56|t ",
 					["MiirGui"] = "MiirGui ".."|T"..texPath.."mg-tank:15:15:0:0:64:64:2:56:2:56|t ".."|T"..texPath.."mg-healer:15:15:0:0:64:64:2:56:2:56|t ".."|T"..texPath.."mg-dps:15:15:0:0:64:64:2:56:2:56|t ",
+					["Lyn"] = "Lyn ".."|T"..texPath.."lyn-tank:15:15:0:0:64:64:2:56:2:56|t ".."|T"..texPath.."lyn-healer:15:15:0:0:64:64:2:56:2:56|t ".."|T"..texPath.."lyn-dps:15:15:0:0:64:64:2:56:2:56|t ",
 				},
 			},
 			player = {

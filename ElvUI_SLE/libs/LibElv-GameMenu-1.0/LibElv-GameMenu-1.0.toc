@@ -3,9 +3,5 @@
 ## Version: 1.0
 ## Title: Lib GameMenu 1.0
 ## RequiredDeps: ElvUI
-## X-Curse-Packaged-Version: v3.16
-## X-Curse-Project-Name: ElvUI Shadow & Light Edit
-## X-Curse-Project-ID: shadow-and-light-edit
-## X-Curse-Repository-ID: wow/shadow-and-light-edit/mainline
 
 LibElv-GameMenu-1.0.lua

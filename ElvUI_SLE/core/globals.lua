@@ -1,4 +1,4 @@
-﻿local SLE, T, E, L, V, P, G = unpack(select(2, ...))
+local SLE, T, E, L, V, P, G = unpack(select(2, ...))
 local format = format
 
 --Chat icon paths--
@@ -48,6 +48,11 @@ SLE.rolePaths = {
 		TANK = [[Interface\AddOns\ElvUI_SLE\media\textures\role\mg-tank]],
 		HEALER = [[Interface\AddOns\ElvUI_SLE\media\textures\role\mg-healer]],
 		DAMAGER = [[Interface\AddOns\ElvUI_SLE\media\textures\role\mg-dps]]
+	},
+	["Lyn"] = {
+		TANK = [[Interface\AddOns\ElvUI_SLE\media\textures\role\lyn-tank]],
+		HEALER = [[Interface\AddOns\ElvUI_SLE\media\textures\role\lyn-healer]],
+		DAMAGER = [[Interface\AddOns\ElvUI_SLE\media\textures\role\lyn-dps]]
 	},
 }
 

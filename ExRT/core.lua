@@ -1,6 +1,19 @@
---	1:03 01.12.2016
+--	15:09 04.12.2016
 
 --[[
+3827
+* Fix artifact window on load
+
+3826
+* Major fixes
+
+
+3825
+* Fight log: Bugfixes
+* Raid Check: added mainstat food
+* Minor fixes
+
+
 3820
 * Fight log: Interface improvements
 * Notes: minor interface improvements
@@ -17,7 +30,7 @@ WhoPulled print clear
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3820
+ExRT.V = 3827
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

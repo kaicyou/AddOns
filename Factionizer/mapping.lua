@@ -4,7 +4,7 @@ local numFactions = GetNumFactions()
 		local name, _, _, _, _, _, _, _, isHeader, _, _hasRep, _, _, factionID = GetFactionInfo(i)
 		if (not isHeader) then
 		--if (not isHeader or hasRep) then
-			FIZ:AddMapping(name, factionID)
+			FIZ_AddMapping(name, factionID)
 		end
 	end
 end

@@ -185,7 +185,7 @@ function Overachiever.GetDifficulty()
 	--local difficultyName, instanceType, isHeroic, isChallengeMode, displayHeroic, displayMythic, toggleDifficultyID = GetDifficultyInfo(difficultyID);
 	local _, itype, difficultyID = GetInstanceInfo()
 	local _, _, isHeroic, isChallengeMode, _, displayMythic, toggleDifficultyID = GetDifficultyInfo(difficultyID)
-	if (itype == "raid") then  return itype, isHeroic, displayMythic, isChallengeMode, isHeroic, displayMythic, isTwentyFiver(difficultyID);  end
+	if (itype == "raid") then  return itype, isHeroic, displayMythic, isChallengeMode, isTwentyFiver(difficultyID), isHeroic, displayMythic;  end
 	return itype, isHeroic, displayMythic, isChallengeMode, nil, nil, nil
   else
   -- IF NOT IN AN INSTANCE:
@@ -905,6 +905,7 @@ local function BagUpdate(...)
   numFoodConsumed = tonumber((GetStatistic(OVERACHIEVER_ACHID.Stat_ConsumeFood))) or 0
   numDrinksConsumed = tonumber((GetStatistic(OVERACHIEVER_ACHID.Stat_ConsumeDrinks))) or 0
 
+  --print("BagUpdate",...)
   --print("BagUpdate?",numFoodConsumed,oldF < numFoodConsumed, numDrinksConsumed,oldD < numDrinksConsumed)
 
   local changeF, changeD = oldF < numFoodConsumed, oldD < numDrinksConsumed -- This isn't reliable any more. At least, it doesn't work for the newer achievements I've tried. Probably should rewrite this, not even bother grabbing these numbers, etc.

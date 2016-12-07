@@ -1,4 +1,7 @@
-﻿Version 1.7.12
+﻿Version 1.7.12a
+-  Default drowned mana quests to false
+
+Version 1.7.12
 - Add support for new fishing bobbers
 - Temporarily remove macro support while it gets rewritten
 - Update support libraries

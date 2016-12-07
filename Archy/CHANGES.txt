@@ -1,0 +1,16 @@
+tag c25a3b61ccf8bb9e77b520e367d3bc42c32ebb68 7.1.0.3
+Author:	James D. Callahan III <jcallahan@curse.com>
+Date:	Sun Dec 4 17:03:07 2016 -0600
+
+commit 459141739392cc789841638606ce659833e48a15
+Author: sidji <codeguide@gmx.net>
+Date:   Thu Nov 24 07:44:50 2016 +0100
+
+    changed some races for Azsuna digsites
+
+commit 421dcb4244bee37d19f62c6c47b16f2829701360
+Author: sidji <codeguide@gmx.net>
+Date:   Wed Nov 23 08:30:06 2016 +0100
+
+    added missing Azsuna digsites
+

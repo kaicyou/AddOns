@@ -1,5 +1,5 @@
 
-Overachiever v0.98
+Overachiever v0.99
 ==============================
 
 Author: Tuhljin
@@ -107,6 +107,20 @@ Change log
 ==========
 
 The change log lists changes of particular note to users, not every change made.
+
+v0.99
+* HIGHLIGHT: New feature! You can now hide specific suggestions so they aren't shown to the current character. Use the "Show Hidden" checkbox or enter "hidden" into the Location field to see what you've hidden and "unhide" it, as needed.
+- Moved key bindings to AddOns category.
+- Overachiever's dropdown menus now respond to clicks anywhere instead of only on the down-arrow button.
+- Made the default UI's "Achievement Filter" dropdown respond to clicks anywhere instead of only on the down-arrow button.
+- "Adventurer of Highmountain", "Adventurer of Stormheim", "Adventurer of Suramar": Added "need to kill" reminders for these achievements. (Unlike the other Legion "Adventurer" achievements, they require mob IDs to be entered manually.) At this time, their reminders are only for NPCs that need to be killed; does not show a tooltip for interacting with objects (but if an object spawns an NPC that should be killed, it will show on the NPC).
+- Suggestions Tab:
+-- Ability to hide suggestions, as mentioned above.
+-- Fix issue where the current instance's difficulty could be improperly detected, resulting in missing/wrong suggestions.
+-- Suggest "Underbelly Tycoon" in correct zone (Dalaran (Broken Isles)).
+-- Updated player garrison suggestions.
+-- Fix failure to show suggestions for subzones of Shadowmoon Valley (Draenor) and Frostfire Ridge other than the garrison.
+- Make TjBagWatch library a little more CPU efficient.
 
 v0.98
 - Updated for WoW patch 7.1.
@@ -543,8 +557,7 @@ v0.32
   names of any meta-achievements that list this achievement as a criteria.
 - Changed achievement sorting so that two strings beginning with numbers compare the numbers first. This means
   "5 Exalted Reputations" is now listed before "20 Exalted Reputations," for example.
-- Updated most localizations. Translations are generously provided by users like you! Please help contribute if you
-  are able: http://wow.curseforge.com/projects/overachiever/localization/
+- Updated most localizations. Translations are generously provided by users like you! Please help contribute if you  are able: http://wow.curseforge.com/projects/overachiever/localization/
 
 v0.31
 - Suggestions Tab: Many new suggestions based on your current location are possible, including those for: completing

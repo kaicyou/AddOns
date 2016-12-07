@@ -452,18 +452,38 @@ local AchLookup_metaach, AchLookup_kill
 local function BuildCriteriaLookupTab_check(forceMeta)
   local meta = not AchLookup_metaach and (Overachiever_Settings.UI_RequiredForMetaTooltip or forceMeta)
   local kill = not AchLookup_kill and Overachiever_Settings.CreatureTip_killed
+  if (kill) then
+    AchLookup_kill = OVERACHIEVER_MOB_CRIT -- Use this as the baseline. Build the rest of the lookup table upon it.
+    OVERACHIEVER_MOB_CRIT = nil
+  end
   if (meta and kill) then
-    AchLookup_metaach, AchLookup_kill = {}, {}
+    AchLookup_metaach = {}
+	--AchLookup_kill = {}
     BuildCriteriaLookupTab(8, AchLookup_metaach, nil, 0, AchLookup_kill, true)
     Overachiever.AchLookup_kill = AchLookup_kill
   elseif (meta) then
     AchLookup_metaach = {}
     BuildCriteriaLookupTab(8, AchLookup_metaach)
   elseif (kill) then
-    AchLookup_kill = {}
+    --AchLookup_kill = {}
     BuildCriteriaLookupTab(0, AchLookup_kill, true)
     Overachiever.AchLookup_kill = AchLookup_kill
   end
+  --[[
+  if (kill and OVERACHIEVER_MOB_CRIT) then
+    for mobID,arr in pairs(OVERACHIEVER_MOB_CRIT) do
+	  if (AchLookup_kill[mobID]) then
+	    local v = AchLookup_kill[mobID]
+		local size = #v
+		v[size+1] = arr[1]
+		v[size+2] = arr[2]
+	  else
+		AchLookup_kill[mobID] = { arr[1], arr[2] }
+	  end
+	end
+	OVERACHIEVER_MOB_CRIT = nil
+  end
+  --]]
 end
 
 function Overachiever.GetMetaCriteriaLookup()
@@ -1100,10 +1120,12 @@ function Overachiever.OnEvent(self, event, arg1, ...)
     Overachiever.CreateOptions = nil
 
     if (oldver and oldver ~= THIS_VERSION) then
+      oldver = tonumber(oldver)
       Overachiever_Settings.Version = THIS_VERSION
 	  toast = L.OVERACHIEVER_UPDATED_TOAST
 	  msg = L.OVERACHIEVER_UPDATED_MSG:format(THIS_VERSION)
       local def, settings = Overachiever.DefaultSettings, Overachiever_Settings
+
       -- Remove options no longer in this version:
       for k,v in pairs(settings) do
         if (def[k] == nil) then  settings[k] = nil;  end
@@ -1113,7 +1135,7 @@ function Overachiever.OnEvent(self, event, arg1, ...)
         if (settings[k] == nil) then  settings[k] = v;  end
       end
 
-      if (tonumber(oldver) < 0.40 and Overachiever_CharVars_Default) then
+      if (oldver < 0.40 and Overachiever_CharVars_Default) then
         Overachiever_CharVars_Default.Pos_AchievementWatchFrame = nil
       end
 
@@ -1229,6 +1251,14 @@ function Overachiever.OnEvent(self, event, arg1, ...)
     AchievementFrame_OnShow = AchievementUI_FirstShown
     --]]
 
+    -- Make the default UI's "Achievement Filter" dropdown respond to clicks anywhere instead of only on the down-arrow button:
+    --AchievementFrameFilterDropDownButton:SetWidth( AchievementFrameFilterDropDown:GetWidth() )
+    if (AchievementFrameFilterDropDownButton and AchievementFrameFilterDropDownMouseOver) then -- failsafe
+      AchievementFrameFilterDropDownButton:SetWidth( AchievementFrameFilterDropDownMouseOver:GetWidth() )
+      AchievementFrameFilterDropDownButton:HookScript("OnEnter", AchievementFrameFilterDropDownMouseOver:GetScript("OnEnter"))
+      AchievementFrameFilterDropDownButton:HookScript("OnLeave", AchievementFrameFilterDropDownMouseOver:GetScript("OnLeave"))
+    end
+
   elseif (event == "PLAYER_LOGOUT") then
     if (Overachiever_CharVars.Pos_AchievementFrame) then
     -- Set standard location for this frame for other characters that don't have positions saved yet:
@@ -1334,7 +1364,7 @@ function Overachiever.UI_SelectAchievement(id, failFunc, ...)
     if (parentID == -1) then
       expandCategory(category)
     end
-	return true
+    return true
   else
     chatprint(L.MSG_ACHNOTFOUND)
     if (Overachiever_Debug) then

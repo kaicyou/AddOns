@@ -570,6 +570,12 @@ FishingItems[116755] = {
 	spell = 171740,
 	usable = IsQuestFishing,
 };
+-- Special bobbers
+local Bobbers = {}
+local function CanUseSpecialBobber()
+	return CanUseFishingItem("SpecialBobbers", Bobbers) and not FL:HasBuff(FishingItems[136377].buff);
+end
+
 FishingItems[136377] = {
 	["enUS"] = "Oversized Bobber",
 	setting = "UseOversizedBobber",
@@ -577,14 +583,9 @@ FishingItems[136377] = {
 	visible = function(option)
 			return true;
 		end,
+	usable = CanUseSpecialBobber,
 	["default"] = true,
 };
-
--- Special bobbers
-local Bobbers = {}
-local function CanUseSpecialBobber()
-	return CanUseFishingItem("SpecialBobbers", Bobbers);
-end
 
 local function PickRandomBait(info, buff, doit, itemid)
 	local baits = {};
@@ -1135,10 +1136,15 @@ local function UpdateItemOptions()
 	FishingBuddy.FluffOptions = FluffOptions;
 end
 
+local function SetupSpecialItem(info)
+	info.buff = GetSpellInfo(info.spell);
+	return info;
+end
+
 local function SetupSpecialItems(items)
 	for id,info in pairs(items) do
-		info.buff = GetSpellInfo(info.spell);
-		FishingItems[id] = info;
+		info = SetupSpecialItem(info);
+		items[id] = info;
 	end
 end
 
@@ -1175,6 +1181,8 @@ FluffEvents["VARIABLES_LOADED"] = function(started)
 
 	SetupSpecialItems(CoinLures);
 	SetupSpecialItems(Bobbers);
+	-- Setup Oversized Bobber buff
+	SetupSpecialItem(FishingItems[136377]);
 
 	-- we have to wait until the toys are actually available
 	local toydelayframe = CreateFrame("Frame");

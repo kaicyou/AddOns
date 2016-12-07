@@ -339,6 +339,28 @@ local function displayAchievement(button, frame, achievement, index, selectionID
     button.hiddenDescription:Hide();
   end
 
+  if (frame.ShouldCrossOut and frame.ShouldCrossOut(id)) then
+    if (not button.CrossOut) then
+      button.CrossOut = CreateFrame("frame", nil, button) --button.icon
+	  local overPos = button --alternatively: button.shield OR button.icon
+	  local tl = button.CrossOut:CreateTexture(nil, "OVERLAY", nil, 5) --, 1)
+	  button.CrossOut.Left = tl
+	  tl:SetPoint("CENTER", overPos)
+	  tl:SetAtlas("GarrMission_EncounterBar-Xleft")
+	  tl:SetHeight(72) --48
+	  tl:SetWidth(72) --48
+	  local tr = button.CrossOut:CreateTexture(nil, "OVERLAY", nil, 1)
+	  button.CrossOut.Right = tr
+	  tr:SetPoint("CENTER", overPos)
+	  tr:SetAtlas("GarrMission_EncounterBar-Xright")
+	  tr:SetHeight(72)
+	  tr:SetWidth(72)
+	end
+	button.CrossOut:Show()
+  elseif (button.CrossOut) then
+    button.CrossOut:Hide()
+  end
+
   --if (Overachiever_Debug) then  print("- Last bit took for \""..name.."\" took "..(debugprofilestop() - StartTime) .." ms.");  end
 
   return id;
@@ -637,6 +659,11 @@ local function compheader_OnShow(...)
 end
 
 local function achbtnOnClick(self, button)
+  if (button == "RightButton") then
+    local frame = getFrameOfButton(self)
+	if (frame.HandleRightClick) then  frame.HandleRightClick(self.id);  end
+    return;
+  end
   local id = self.id
   if ( IsShiftKeyDown() and IsControlKeyDown() and Overachiever.OpenRelatedTab ) then
     Overachiever.OpenRelatedTab(id)
@@ -690,6 +717,10 @@ local function post_AchievementButton_OnLoad(self)
     tinsert(redir_btn_tinsert, self);
     -- Our button isn't put into this table as of WoW 4.0.1, so this line is unneeded:
     -- tremove(AchievementFrameAchievementsContainer.buttons);
+
+	-- Add right click feature:
+	self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	--shield:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 
     if ( not ACHIEVEMENTUI_FONTHEIGHT ) then
       local _, fontHeight = self.description:GetFont();
@@ -811,9 +842,10 @@ function Overachiever.BuildNewTab(name, text, watermark, helptip, loadFunc, filt
 
   if (varsLoaded and tab.loadFunc) then
 	local v = Overachiever_Tabs_Settings
+	local vc = Overachiever_Tabs_CharVars
 	local AchFilters = v.AchFilters
 	if (AchFilters[name]) then  FilterByTab[tab.frame] = AchFilters[name];  end
-	tab.loadFunc(v, oldver)
+	tab.loadFunc(v, oldver, vc)
 	tab.loadFunc = nil
   end
 
@@ -977,6 +1009,10 @@ do
       v.Version = GetAddOnMetadata("Overachiever_Tabs", "Version")
       if (oldver == v.Version) then  oldver = false;  end
 
+	  Overachiever_Tabs_CharVars = Overachiever_Tabs_CharVars or {}
+	  local vc = Overachiever_Tabs_CharVars
+	  vc.Version = v.Version
+
       v.AchFilters = v.AchFilters or {}
       local AchFilters = v.AchFilters
       if (AchFilters["AchievementFrameAchievements"]) then
@@ -988,7 +1024,7 @@ do
           name = tab.frame:GetName()
           if (AchFilters[name]) then  FilterByTab[tab.frame] = AchFilters[name];  end
           if (tab.loadFunc) then
-            tab.loadFunc(v, oldver)
+            tab.loadFunc(v, oldver, vc)
             tab.loadFunc = nil
           end
         end

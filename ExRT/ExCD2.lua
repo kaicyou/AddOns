@@ -9408,17 +9408,29 @@ local function ScanArtifactData()
 	end
 end
 
-local function UpdateArtifactData()
-	if not C_ArtifactUI.GetEquippedArtifactInfo() then
-		return
-	end
-	local isArtifactFrameShown = ArtifactFrame and ArtifactFrame:IsShown()
-	if not isArtifactFrameShown then
-		SocketInventoryItem(16)
-	end
-	ScanArtifactData()
-	if not isArtifactFrameShown then
-		C_ArtifactUI.Clear()
+local UpdateArtifactData
+do
+	local ReregTimer
+	function UpdateArtifactData()
+		if not C_ArtifactUI.GetEquippedArtifactInfo() then
+			return
+		end
+		UIParent:UnregisterEvent("ARTIFACT_UPDATE")
+		ReregTimer = C_Timer.NewTimer(.2,function()
+			UIParent:RegisterEvent("ARTIFACT_UPDATE")
+		end)
+		local isArtifactFrameShown = ArtifactFrame and ArtifactFrame:IsShown()
+		if not isArtifactFrameShown then
+			SocketInventoryItem(16)
+		end
+		ScanArtifactData()
+		if not isArtifactFrameShown then
+			C_ArtifactUI.Clear()
+		end
+		if ReregTimer then
+			ReregTimer:Cancel()
+		end
+		UIParent:RegisterEvent("ARTIFACT_UPDATE")
 	end
 end
 
@@ -9435,21 +9447,39 @@ do
 end
 
 local artifactUIfixTimer
+local artifactUIfixTimerFirstLoad
 local function artifactUI_CheckMajorFrames(self)
-	if (not WorldMapFrame or not WorldMapFrame:IsVisible()) and (not PlayerTalentFrame or not PlayerTalentFrame:IsVisible()) and (not OrderHallMissionFrame or not OrderHallMissionFrame:IsVisible()) then
+	if (not WorldMapFrame or not WorldMapFrame:IsVisible()) and (not PlayerTalentFrame or not PlayerTalentFrame:IsVisible()) and (not OrderHallMissionFrame or not OrderHallMissionFrame:IsVisible()) and (not MailFrame or not MailFrame:IsVisible()) then
 		if artifactUIfixTimer then
 			artifactUIfixTimer:Cancel()
 		end
 		if self then
 			self:Cancel()
 		end
-		
-		UIParent:UnregisterEvent("ARTIFACT_UPDATE")
-		C_Timer.After(.1,function()
-			UIParent:RegisterEvent("ARTIFACT_UPDATE")
-		end)
-		
+
+		ExRT.F.dprint('Check aftifact traits')
+		local allAUframes = nil
+		if self and self.firstLoad then
+			allAUframes = {GetFramesRegisteredForEvent("ARTIFACT_UPDATE")}
+			for i=1,#allAUframes do
+				allAUframes[i]:UnregisterEvent("ARTIFACT_UPDATE")
+			end
+			artifactUIfixTimerFirstLoad = C_Timer.NewTimer(.1,function()
+				for i=1,#allAUframes do
+					allAUframes[i]:RegisterEvent("ARTIFACT_UPDATE")
+				end
+			end)
+		end
+			
 		UpdateArtifactData()
+		
+		if self and self.firstLoad then
+			artifactUIfixTimerFirstLoad:Cancel()
+			for i=1,#allAUframes do
+				allAUframes[i]:RegisterEvent("ARTIFACT_UPDATE")
+			end
+			ExRT.F.dprint('firstload done',#allAUframes)
+		end
 		return true
 	end
 end
@@ -9459,6 +9489,7 @@ artifactUIfix:RegisterEvent('LOADING_SCREEN_DISABLED')
 artifactUIfix:SetScript("OnEvent",function(self)
 	C_Timer.NewTimer(9,function()
 		artifactUIfixTimer = C_Timer.NewTicker(1,artifactUI_CheckMajorFrames)
+		artifactUIfixTimer.firstLoad = true
 		moduleInspect:RegisterEvents('ARTIFACT_XP_UPDATE')
 	end)
 	self:UnregisterAllEvents()
@@ -9510,11 +9541,18 @@ function moduleInspect.main:ENCOUNTER_START()
 	end)
 end
 
-function moduleInspect.main:ARTIFACT_XP_UPDATE()	
-	artifactUIfixTimer = nil
+local function Artifact_ScanTimer()
+	if artifactUIfixTimer then
+		artifactUIfixTimer:Cancel()
+	end
+	artifactUIfixTimer = nil	
 	if not artifactUI_CheckMajorFrames() then
 		artifactUIfixTimer = C_Timer.NewTicker(1,artifactUI_CheckMajorFrames)
 	end
+end
+
+function moduleInspect.main:ARTIFACT_XP_UPDATE()
+	Artifact_ScanTimer()
 end
 
 local function Inspect_ParseArtifactString(db,string)
@@ -9578,12 +9616,6 @@ function Inspect_Artifact_ADDON_LOADED()
 		Inspect_ParseArtifactString(db, data[1])
 		UpdateArtifactToTalentsData(player)
 	end
-	--LoadAddOn("Blizzard_ArtifactUI")
-	
-	--Rewrite default function, cuz GetTotalPurchasedRanks return nil after log on char
-	--function ArtifactUI_CanViewArtifact()
-	--	return C_ArtifactUI.IsAtForge() or (C_ArtifactUI.GetTotalPurchasedRanks() or 0) > 0 or C_ArtifactUI.GetNumObtainedArtifacts() > 1;
-	--end
 end
 
 local UpdateArtifactInfoTimer
@@ -9591,12 +9623,15 @@ function Inspect_Artifact_PLAYER_EQUIPMENT_CHANGED(slot)
 	if not (slot == 16 or slot == 17) then
 		return
 	end
+	if not moduleInspect.main:IsEventRegistered("ARTIFACT_XP_UPDATE") then	--OnLoad fix
+		return
+	end
 	if UpdateArtifactInfoTimer then
 		UpdateArtifactInfoTimer:Cancel()
 	end
 	UpdateArtifactInfoTimer = C_Timer.NewTimer(2,function()
 		UpdateArtifactInfoTimer = nil
-		UpdateArtifactData()
+		Artifact_ScanTimer()
 	end)
 end
 
@@ -9694,3 +9729,5 @@ function moduleInspect:addonMessage(sender, prefix, prefix2, ...)
 		end
 	end
 end
+
+

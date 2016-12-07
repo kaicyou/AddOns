@@ -1,13 +1,13 @@
 
 OVERACHIEVER_ACHID = {
 	WorldExplorer = 46,		-- "World Explorer"
-	LoveCritters = 1206,		-- "To All The Squirrels I've Loved Before"
-	LoveCritters2 = 2557,		-- "To All The Squirrels Who Shared My Life"
-	LoveCritters3 = 5548,		-- "To All the Squirrels Who Cared for Me"
-	LoveCritters4 = 6350,		-- "To All the Squirrels I Once Caressed?"
+	LoveCritters = 1206,	-- "To All The Squirrels I've Loved Before"
+	LoveCritters2 = 2557,	-- "To All The Squirrels Who Shared My Life"
+	LoveCritters3 = 5548,	-- "To All the Squirrels Who Cared for Me"
+	LoveCritters4 = 6350,	-- "To All the Squirrels I Once Caressed?"
 	PestControl = 2556,		-- "Pest Control"
 	WellRead = 1244,		-- "Well Read"
-	HigherLearning = 1956,		-- "Higher Learning"
+	HigherLearning = 1956,	-- "Higher Learning"
 
 	TastesLikeChicken = 1832,	-- "Takes Like Chicken"
 	HappyHour = 1833,		-- "It's Happy Hour Somewhere"
@@ -17,7 +17,7 @@ OVERACHIEVER_ACHID = {
 	PandarenDelicacies = 7330,	-- "Pandaren Delicacies"
 	DraenorCuisine = 9502,		-- "Draenor Cuisine"
 	BrewfestDiet = 1185,		-- "The Brewfest Diet"
-	DarkmoonFaireFeast = 6026,		-- "Fairegoer's Feast"
+	DarkmoonFaireFeast = 6026,	-- "Fairegoer's Feast"
 
 	RightAsRain = 5779,		-- "You'll Feel Right as Rain"
 
@@ -37,25 +37,129 @@ OVERACHIEVER_ACHID = {
 	GourmetDraenor = 9501,		-- "The Draenor Gourmet"
 	LegionMenu = 10762,			-- "The Legion Menu"
 
-	MediumRare = 1311,		-- "Medium Rare"
-	BloodyRare = 1312,		-- "Bloody Rare"
+	MediumRare = 1311,			-- "Medium Rare"
+	BloodyRare = 1312,			-- "Bloody Rare"
 	NorthernExposure = 2256,	-- "Northern Exposure"
-	Frostbitten = 2257,		-- "Frostbitten"
-	Glorious = 7439,		-- "Glorious!"
+	Frostbitten = 2257,			-- "Frostbitten"
+	Glorious = 7439,			-- "Glorious!"
 
 	StoodInTheFire = 5518,		-- "Stood in the Fire"
 	SurveyingTheDamage = 4827,	-- "Surveying the Damage"
-	WhaleShark = 4975,		-- "From Hell's Heart I Stab at Thee"
+	WhaleShark = 4975,			-- "From Hell's Heart I Stab at Thee"
 
 	LetItSnow = 1687,		-- "Let It Snow"
-	FistfulOfLove = 1699,		-- "Fistful of Love"
+	FistfulOfLove = 1699,	-- "Fistful of Love"
 	BunnyMaker = 2422,		-- "Shake Your Bunny-Maker"
-	CheckYourHead = 291,		-- "Check Your Head"
-	TurkeyLurkey = 3559,		-- "Turkey Lurkey"
+	CheckYourHead = 291,	-- "Check Your Head"
+	TurkeyLurkey = 3559,	-- "Turkey Lurkey"
 
 	-- Statistics:
 	Stat_ConsumeDrinks = 346,	-- "Beverages consumed"
 	Stat_ConsumeFood = 347,		-- "Food eaten"
+	--1774 "Different beverages consumed"
+	--1775 "Different foods eaten"
+};
+
+local IsAlliance = UnitFactionGroup("player") == "Alliance"
+
+OVERACHIEVER_MOB_CRIT = {
+	-- For achievements where Overachiever.AchLookup_kill doesn't work, e.g. due to the asset ID being for quests instead of NPCs for some reason.
+	-- Format: <mob ID> = { <achievement ID>, <ach's criteria index>[, <2nd achievement ID>, <2nd ach's criteria index>[, ...]] }  ()
+
+	-- Adventurer of Highmountain:
+	[101077] = { 11264, 1 }, -- Sekhan
+	[97653] = { 11264, 2 }, -- The Beastly Boxer
+	[97933] = { 11264, 3 }, -- Crab Rider Grmlrml
+	[96590] = { 11264, 4 }, -- Gurbog da Basher
+	[97345] = { 11264, 5 }, -- Crawshuk the Hungry
+	[97326] = { 11264, 6 }, -- Hartli the Snatcher
+	[95872] = { 11264, 7 }, -- Skywhisker Taskmaster
+	[100302] = { 11264, 8 }, -- Unethical Adventurers (1/5)
+	[109498] = { 11264, 8 }, -- Unethical Adventurers (2/5)
+	[100303] = { 11264, 8 }, -- Unethical Adventurers (3/5)
+	[109501] = { 11264, 8 }, -- Unethical Adventurers (4/5)
+	[109500] = { 11264, 8 }, -- Unethical Adventurers (5/5)
+	[97203] = { 11264, 9 }, -- The Exiled Shaman
+	--[] = { 11264, 10 }, -- Beastmaster Pao'lek (friendly NPC starts: 97215)
+	[96410] = { 11264, 11 }, -- Majestic Elderhorn
+	[97449] = { 11264, 13 }, -- Bristlemaul
+	[97593] = { 11264, 14 }, -- Scout Harefoot (start w/friendly NPC)
+	[95204] = { 11264, 15 }, -- Oubdob da Smasher
+	[98299] = { 11264, 16 }, -- Bodash the Hoarder
+	[100232] = { 11264, 17 }, -- Amateur Hunters (1/3)
+	[100230] = { 11264, 17 }, -- Amateur Hunters (2/3)
+	[100231] = { 11264, 17 }, -- Amateur Hunters (3/3)
+	[97102] = { 11264, 18 }, -- Totally Safe Treasure Chest (start w/object)
+	[100495] = { 11264, 19 }, -- Devouring Darkness (start w/object)
+	[96621] = { 11264, 20 }, -- Mellok, Son of Torok
+	[98024] = { 11264, 21 }, -- Luggut the Eggeater
+	[97093] = { 11264, 22 }, -- Shara Felbreath
+	[98890] = { 11264, 23 }, -- Slumbering Bear
+	[98311] = { 11264, 23 }, -- Captured Survivor (start w/friendly NPC)
+	-- Adventurer of Stormheim:
+	[91529] = { 11263, 1 }, -- Glimar Ironfist
+	[91795] = { 11263, 2 }, -- Stormwing Matriarch
+	[98225] = { 11263, 3 }, -- Fathnyr
+	[91874] = { 11263, 4 }, -- Bladesquall
+	[91895] = { 11263, 5 }, -- Thane's Mead Hall (1/4)
+	[91893] = { 11263, 5 }, -- Thane's Mead Hall (2/4)
+	[91894] = { 11263, 5 }, -- Thane's Mead Hall (3/4)
+	[91892] = { 11263, 5 }, -- Thane's Mead Hall (4/4)
+	[92040] = { 11263, 6 }, -- Fenri
+	[92152] = { 11263, 7 },	-- Whitewater Typhoon
+	[92599] = { 11263, 8 }, -- Worg Pack
+	[IsAlliance and 92631 or 92604] = { 11263, 9 }, -- Worgen Stalkers or Forsaken Deathsquad (1/4)
+	[IsAlliance and 92634 or 92613] = { 11263, 9 }, -- Worgen Stalkers or Forsaken Deathsquad (2/4)
+	[IsAlliance and 92626 or 92609] = { 11263, 9 }, -- Worgen Stalkers or Forsaken Deathsquad (3/4)
+	[IsAlliance and 92633 or 92611] = { 11263, 9 }, -- Worgen Stalkers or Forsaken Deathsquad (4/4)
+	[92685] = { 11263, 10 }, -- Helmouth Raiders (start w/object)
+	[92751] = { 11263, 11 }, -- Ivory Sentinel
+	[92763] = { 11263, 12 }, -- The Nameless King (start w/object)
+	[93166] = { 11263, 13 }, -- Lost Ettin
+	[93371] = { 11263, 14 }, -- Mordvigbjorn
+	[93401] = { 11263, 15 }, -- Urgev the Flayer
+	[94413] = { 11263, 16 }, -- Isel the Hammer
+	[97630] = { 11263, 17 }, -- Soulthirster
+	[98188] = { 11263, 18 }, -- Egyl the Enduring
+	[98268] = { 11263, 19 }, -- Tarben
+	[98421] = { 11263, 20 }, -- Kottr Vondyr
+	[98503] = { 11263, 21 }, -- Grrvrgull the Conquerer
+	[107926] = { 11263, 22 }, -- Hannval the Butcher
+	[110363] = { 11263, 23 }, -- Roteye
+	[90139] = { 11263, 24 }, -- Marius & Tehd versus an Inquisitor
+	-- Adventurer of Suramar:
+	[99610] = { 11265, 1 }, -- Garvulg
+	[99792] = { 11265, 2 }, -- Elfbane
+	[100864] = { 11265, 3 }, -- Cora'kar
+	[103183] = { 11265, 4 }, -- Rok'nash
+	[103214] = { 11265, 5 }, -- Har'kess the Insatiable
+	[103223] = { 11265, 6 }, -- Hertha Grimdottir
+	[103575] = { 11265, 7 }, -- Reef Lord Raj'his
+	[103841] = { 11265, 8 }, -- Shadowquil
+	[105547] = { 11265, 9 }, -- Rauren
+	[106351] = { 11265, 10 }, -- Artificer Lothaire
+	[107846] = { 11265, 11 }, -- Pinchshank
+	[109054] = { 11265, 12 }, -- Shal'an
+	[109954] = { 11265, 13 }, -- Magister Phaedris
+	[110024] = { 11265, 14 }, -- Mal'Dreth the Corrupter
+	[110340] = { 11265, 15 }, -- Myonix
+	[110438] = { 11265, 16 }, -- Seigemaster Aedrin
+	[110577] = { 11265, 17 }, -- Oreth the Vile
+	[110656] = { 11265, 18 }, -- Arcanist Lylandre
+	[110726] = { 11265, 19 }, -- Cadraeus
+	[110824] = { 11265, 20 }, -- Tideclaw
+	[110832] = { 11265, 21 }, -- Gorgroth (summoned by an item?)
+	[110870] = { 11265, 22 }, -- Apothecary Faldren
+	[110944] = { 11265, 23 }, -- Guardian Thor'el
+	[111063] = { 11265, 24 }, -- Randril
+	[111197] = { 11265, 25 }, -- Anax
+	[111329] = { 11265, 26 }, -- Matron Hagatha
+	[111649] = { 11265, 27 }, -- Ambassador D'vwinn
+	[111651] = { 11265, 28 }, -- Degren
+	[111653] = { 11265, 29 }, -- Miasu
+	[112497] = { 11265, 30 }, -- Maia the White
+	[112802] = { 11265, 31 }, -- Mar'tura
+	[102303] = { 11265, 32 }, -- Lieutenant Strathmar
 };
 
 

@@ -1,4 +1,4 @@
-﻿-- loaded first, locale is loaded next, so no localisations can be used here
+-- loaded first, locale is loaded next, so no localisations can be used here
 
 local _G = _G
 local select = _G.select

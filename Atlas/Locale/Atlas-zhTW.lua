@@ -1,10 +1,10 @@
--- $Id: Atlas-zhTW.lua 112 2016-10-27 14:30:34Z arith $
+-- $Id: Atlas-zhTW.lua 126 2016-12-27 17:45:39Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2017 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -52,8 +52,8 @@ L["Arazmodu <The Scale of Sands>"] = "阿拉斯莫杜 <流沙之鱗>"
 L["Arcane Container"] = "秘法容器"
 L["Arms Warrior"] = "武戰"
 L["ATLAS_BUTTON_CLOSE"] = "關閉"
-L["ATLAS_CLICK_TO_OPEN"] = "按下以開啟 Atlas 地圖視窗."
-L["ATLAS_COLLAPSE_BUTTON"] = "按下以收起 Atlas 的地圖說明窗格."
+L["ATLAS_CLICK_TO_OPEN"] = "按下以開啟 Atlas 地圖視窗。"
+L["ATLAS_COLLAPSE_BUTTON"] = "按下以收起 Atlas 的地圖說明窗格。"
 L["ATLAS_DDL_CONTINENT"] = "依不同大陸分類"
 L["ATLAS_DDL_CONTINENT_BROKENISLES"] = "破碎群島副本"
 L["ATLAS_DDL_CONTINENT_DEEPHOLM"] = "地深之源副本"
@@ -103,7 +103,7 @@ L["ATLAS_DEP_MSG2"] = "這些模組已從這個角色被停用"
 L["ATLAS_DEP_MSG3"] = "請將這些模組從 AddOns 目錄移除"
 L["ATLAS_DEP_OK"] = "OK"
 L["ATLAS_ENTRANCE_BUTTON"] = "入口"
-L["ATLAS_EXPAND_BUTTON"] = "按下以展開 Atlas 的地圖說明窗格."
+L["ATLAS_EXPAND_BUTTON"] = "按下以展開 Atlas 的地圖說明窗格。"
 L["ATLAS_INFO"] = "Atlas 訊息"
 L["ATLAS_INFO_12200"] = [=[重要提示：
 
@@ -126,12 +126,12 @@ L["ATLAS_INFO_12201"] = [=[我們最近新增了一個新的 Atlas 插件 - |cff
 請參見我們的網站以取得更詳細的資訊，並請記得分別下載並安裝此插件。
 |cff6666ffhttp://www.atlasmod.com/|cffffffff]=]
 L["ATLAS_INSTANCE_BUTTON"] = "副本"
-L["ATLAS_LDB_HINT"] = [=[左鍵開啟 Atlas.
-中鍵開啟 Atlas 選項.
-右鍵打開顯示選單.]=]
-L["ATLAS_MINIMAPLDB_HINT"] = [=[左鍵開啟 Atlas.
-右鍵開啟 Atlas 選項.
-左鍵並拖曳以移動圖示按鈕位置.]=]
+L["ATLAS_LDB_HINT"] = [=[左鍵開啟 Atlas。
+中鍵開啟 Atlas 選項。
+右鍵打開顯示選單。]=]
+L["ATLAS_MINIMAPLDB_HINT"] = [=[左鍵開啟 Atlas。
+右鍵開啟 Atlas 選項。
+左鍵並拖曳以移動圖示按鈕位置。]=]
 L["ATLAS_MISSING_MODULE"] = [=[Atlas 已偵測到遺失的模組／插件。
 
 這有可能是因為先前您有過期的模組／插件而被 Atlas 停用。
@@ -142,15 +142,15 @@ L["ATLAS_MISSING_MODULE"] = [=[Atlas 已偵測到遺失的模組／插件。
 以下是遺失的模組／插件列表：
 ]=]
 L["ATLAS_OPEN_ADDON_LIST"] = "開啟插件列表"
-L["ATLAS_OPEN_ADVENTURE"] = "按下以開啟冒險指南視窗."
-L["ATLAS_OPEN_WOWMAP_WINDOW"] = "按下以開啟冒險指南地圖視窗."
+L["ATLAS_OPEN_ADVENTURE"] = "按下以開啟冒險指南視窗。"
+L["ATLAS_OPEN_WOWMAP_WINDOW"] = "按下以開啟冒險指南地圖視窗。"
 L["ATLAS_OPTIONS_ACRONYMS"] = "顯示副本縮寫"
 L["ATLAS_OPTIONS_ACRONYMS_TIP"] = "在地圖的詳盡敘述中顯示副本的縮寫"
 L["ATLAS_OPTIONS_AUTOSEL"] = "自動選擇副本地圖"
 L["ATLAS_OPTIONS_AUTOSEL_TIP"] = "Atlas 可偵測您目前所在的副區域以顯示一個最佳的副本地圖"
-L["ATLAS_OPTIONS_BOSS_DESC"] = "當首領資訊可獲取時, 顯示該資訊"
+L["ATLAS_OPTIONS_BOSS_DESC"] = "當首領資訊可獲取時，顯示該資訊"
 L["ATLAS_OPTIONS_BOSS_DESC_SCALE"] = "首領資訊提示視窗大小比率"
-L["ATLAS_OPTIONS_BOSS_DESC_TIP"] = "當滑鼠游標移動到地圖上首領的標號時, 並且首領資訊可獲取時, 顯示該首領的相關資訊."
+L["ATLAS_OPTIONS_BOSS_DESC_TIP"] = "當滑鼠游標移動到地圖上首領的標號時，並且首領資訊可獲取時，顯示該首領的相關資訊。"
 L["ATLAS_OPTIONS_BUTPOS"] = "按鈕位置"
 L["ATLAS_OPTIONS_BUTRAD"] = "按鈕半徑範圍"
 L["ATLAS_OPTIONS_BUTTON"] = "選項"
@@ -158,11 +158,11 @@ L["ATLAS_OPTIONS_CATDD"] = "副本地圖分類方式:"
 L["ATLAS_OPTIONS_CHECKMODULE"] = "提醒我是否有遺失的模組或插件"
 L["ATLAS_OPTIONS_CHECKMODULE_TIP"] = "勾選以在每次登入 WoW 時檢查是否有遺失的 Atlas 模組或插件。"
 L["ATLAS_OPTIONS_CLAMPED"] = "使 Atlas 視窗不超出遊戲畫面"
-L["ATLAS_OPTIONS_CLAMPED_TIP"] = "使 Atlas 視窗被拖曳時不會超出遊戲主畫面的邊界, 關閉此選項則可將 Atlas 視窗拖曳並超出遊戲畫面邊界"
+L["ATLAS_OPTIONS_CLAMPED_TIP"] = "使 Atlas 視窗被拖曳時不會超出遊戲主畫面的邊界，關閉此選項則可將 Atlas 視窗拖曳並超出遊戲畫面邊界"
 L["ATLAS_OPTIONS_COLORINGDROPDOWN"] = "副本清單以難易度色彩顯示"
 L["ATLAS_OPTIONS_COLORINGDROPDOWN_TIP"] = "依據副本建議的最低進入等級、以及玩家現今等級的差異，將副本清單以難易度色彩顯示。"
 L["ATLAS_OPTIONS_CTRL"] = "按住 Ctrl 鍵以顯示工具提示"
-L["ATLAS_OPTIONS_CTRL_TIP"] = "勾選後, 當滑鼠移到地圖資訊欄位時, 按下 Ctrl 控制鍵, 則會將資訊的完整資訊以提示型態顯示. 當資訊過長而被截斷時很有用."
+L["ATLAS_OPTIONS_CTRL_TIP"] = "勾選後，當滑鼠移到地圖資訊欄位時，按下 Ctrl 控制鍵，則會將資訊的完整資訊以提示型態顯示。當資訊過長而被截斷時很有用。"
 L["ATLAS_OPTIONS_DONTSHOWAGAIN"] = "不再顯示相同訊息。"
 L["ATLAS_OPTIONS_LOCK"] = "鎖定 Atlas 視窗位置"
 L["ATLAS_OPTIONS_LOCK_TIP"] = "設定將 Atlas 視窗位置鎖定或不鎖定"
@@ -187,7 +187,7 @@ L["ATLAS_STRING_SEARCH"] = "搜尋"
 L["ATLAS_STRING_SELECT_CAT"] = "選擇類別"
 L["ATLAS_STRING_SELECT_MAP"] = "選擇地圖"
 L["ATLAS_TITLE"] = "Atlas 地圖集"
--- L["ATLAS_TOGGLE_LOOT"] = ""
+L["ATLAS_TOGGLE_LOOT"] = "右鍵點擊以開啟首領戰利品視窗。"
 L["Attunement Required"] = "需完成傳送門/鑰匙前置任務"
 L["Back"] = "後方"
 L["Basement"] = "地下室"
@@ -241,9 +241,9 @@ L["MapG"] = " [7]"
 L["MapH"] = " [8]"
 L["MapI"] = " [9]"
 L["MapJ"] = " [10]"
-L["MapsNotFound"] = [=[目前的副本找不到對應的地圖影像檔.
+L["MapsNotFound"] = [=[目前的副本找不到對應的地圖影像檔。
 
-請確認您是否有安裝 Atlas 相關的副本地圖模組.]=]
+請確認您是否有安裝 Atlas 相關的副本地圖模組。]=]
 L["Meeting Stone"] = "集合石"
 L["Middle"] = "中間"
 L["Midsummer Festival"] = "仲夏節慶"
@@ -258,7 +258,7 @@ L["Orb of Command"] = "命令寶珠"
 L["Outside"] = "戶外"
 L["Period"] = "。"
 L["Portal"] = "傳送門"
-L["PossibleMissingModule"] = "遺失的地圖應是來自以下的模組: "
+L["PossibleMissingModule"] = "遺失的地圖應是來自以下的模組："
 L["Protection Warrior"] = "防戰"
 L["Purple"] = "紫"
 L["Random"] = "隨機"
@@ -299,8 +299,4 @@ L["Wave 6"] = "第 6 波"
 L["West"] = "西"
 L["Yarley <Armorer>"] = "亞利 <護甲商>"
 L["Zaladormu"] = "薩拉多姆"
-L["ToC/Description"] = "|cff00CC33Atlas 地圖集主程式|r"
-L["ToC/Title"] = "|r|cFF0099FF[地圖]|rAtlas 地圖集 |cFF0099FF[主程式]|r"
-
-
 end

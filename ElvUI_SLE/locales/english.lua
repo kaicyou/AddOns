@@ -46,17 +46,14 @@ L["Darth's Default Set"] = true
 L["Repooc's Default Set"] = true
 L["Affinitii's Default Set"] = true
 L["Layout & Settings Import"] = true
-L["You have selected to use %s."] = true
+L["You have selected to use %s and role %s."] = true
 L["SLE_INSTALL_LAYOUT_TEXT2"] = [[Following buttons will import layout/addon settings for the selected config and role.
 Please not that this configs may include some settings you may not yet being familiar with.
 
 Also it may reset/change some options you set in previous steps.]]
 L["|cff1784d1%s|r role was chosen"] = true
-L["Author Presets"] = true
-L["Moving Frames"] = true
 L["Import Profile"] = true
 L["AFK Mode"] = true
-L["You have selected to use %s and role %s."] = true
 L["SLE_INSTALL_SETTINGS_LAYOUT_TEXT"] = [[This action can cause you to lose some of your settings.
 Continue?]]
 L["SLE_INSTALL_SETTINGS_ADDONS_TEXT"] = [[This will create a profile for these addons (if enabled) and switch to it:
@@ -125,7 +122,7 @@ L["S&L: Misc"] = true
 L["OOR as Bind Text"] = true
 L["Out Of Range indication will use keybind text instead of the whole icon."] = true
 L["Checked Texture"] = true
-L["Highlight the button of the spell with areal effect untill the area is selected."] = true
+L["Highlight the button of the spell with areal effect until the area is selected."] = true
 L["Checked Texture Color"] = true
 L["Transparent Backdrop"] = true
 L["Sets actiobars' backgrounds to transparent template."] = true
@@ -243,7 +240,7 @@ L["Sets height of the frame"] = true
 L["Set the texture to use in this frame. Requirements are the same as the chat textures."] = true
 L["Backdrop Template"] = true
 L["Change the template used for this backdrop."] = true
-L["Hide in Pet Batlle"] = true
+L["Hide in Pet Battle"] = true
 L["Show/Hide this frame during Pet Battles."] = true
 
 --Bags
@@ -261,7 +258,7 @@ L["Vehicle Seat Scale"] = true
 
 --Chat
 L["Reported by %s"] = true
-L["Reset Chat History"]= true
+L["Reset Chat History"] = true
 L["Clears your chat history and will reload your UI."] = true
 L["Reset Editbox History"] = true
 L["Clears the editbox history and will reload your UI."] = true
@@ -333,6 +330,7 @@ L["Replace massages about honor points being awarded."] = true
 L["Defines the style of changed string. Colored parts will be shown with your selected value color in chat."] = true
 L["Award Style"] = true
 L["HK Style"] = true
+L["Honor Style"] = true
 
 --Datatexts
 L["D"] = true
@@ -427,11 +425,10 @@ L["Delete character info"] = true
 L["Remove selected character from the stored gold values"] = true
 L["Are you sure you want to remove |cff1784d1%s|r from currency datatexts?"] = true
 L["Hide panel background"] = true
-L["Don't show this panel, only datatexts assinged to it"] = true
 L["SLE_DT_CURRENCY_WARNING_GOLD"] = [[Your datapanel %s has ElvUI's "Gold" datatext active while "S&L Currency" datatext is selected elsewhere. To ensure the correct functioning of "S&L Currency" datatext we are disabling some functions of "Gold" datatext. To avoid this conflict you need to replace one of conflicting datatexts.]]
 L["Gold Sorting"] = true
 L["Normal"] = true
-L["Reverced"] = true
+L["Reversed"] = true
 L["Amount"] = true
 L["Order of each toon. Smaller numbers will go first"] = true
 

@@ -1,5 +1,29 @@
-changeset:   102:a20ce6cc845b
+changeset:   106:37cee6804300
 tag:         tip
+user:        Tercio
+date:        Thu Dec 29 19:14:57 2016 -0200
+summary:     - added integration with World Quest Group Finder.
+
+
+changeset:   105:7a6b68adb172
+user:        Tercio
+date:        Mon Dec 19 12:58:08 2016 -0200
+summary:     - Ticket #252: "Add negative scale options to Tracker".
+
+
+changeset:   104:4cc9d974fcce
+user:        Tercio
+date:        Fri Dec 09 16:39:18 2016 -0200
+summary:     - ticked #240: "Blizzard arrow keeps switching rapidly between WQ and log quest".
+
+
+changeset:   103:2bac07d5c7b6
+user:        Tercio
+date:        Mon Nov 28 15:22:34 2016 -0200
+summary:     - attempt to fix an issue with quest coordinates.
+
+
+changeset:   102:a20ce6cc845b
 user:        Tercio
 date:        Mon Nov 28 15:15:07 2016 -0200
 summary:     -several localization updates.
@@ -579,29 +603,5 @@ changeset:   6:98bb2d329d26
 user:        Tercio
 date:        Wed Jul 06 19:15:39 2016 -0300
 summary:     - fixed an issue with artifact power above 1.000.
-
-
-changeset:   5:cf4f19ee4c77
-user:        Tercio
-date:        Mon Jun 27 03:44:08 2016 -0300
-summary:     - bug fixes.
-
-
-changeset:   4:f51603a190e7
-user:        Tercio
-date:        Sun Jun 26 03:16:24 2016 -0300
-summary:     - another round of updates.
-
-
-changeset:   3:4a8eae1778df
-user:        Tercio
-date:        Sat Jun 25 20:06:44 2016 -0300
-summary:     - more progress done on the addon.
-
-
-changeset:   2:51a2a4bb6825
-user:        Tercio
-date:        Tue Jun 21 01:36:45 2016 -0300
-summary:     - more fixes.
 
 

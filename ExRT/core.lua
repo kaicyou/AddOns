@@ -1,6 +1,12 @@
---	15:09 04.12.2016
+--	0:28 08.12.2016
 
 --[[
+3830
+* Finally, no more artifact window on load for some users (I hope)
+* Who Pulled: new method for checks (first player who entered combat)
+* Minor fixes
+
+
 3827
 * Fix artifact window on load
 
@@ -30,7 +36,7 @@ WhoPulled print clear
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3827
+ExRT.V = 3830
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

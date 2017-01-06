@@ -7,12 +7,19 @@ local getCalendarTextureFile
 Overachiever.HOLIDAY_REV = { -- lookup table to support localization
 --	["Localized holiday/event name"] = "The key we're using for this holiday/event",
 	[L.HOLIDAY_DARKMOONFAIRE] = "Darmoon Faire",
+	[L.HOLIDAY_LUNARFESTIVAL] = "Lunar Festival",
+	[L.HOLIDAY_LOVEISINTHEAIR] = "Love is in the Air",
+	[L.HOLIDAY_NOBLEGARDEN] = "Noblegarden",
+	[L.HOLIDAY_CHILDRENSWEEK] = "Children's Week",
+	[L.HOLIDAY_MIDSUMMER] = "Midsummer Fire Festival",
+	[L.HOLIDAY_PIRATESDAY] = "Pirates' Day",
 	[L.HOLIDAY_BREWFEST] = "Brewfest",
 	[L.HOLIDAY_HALLOWSEND] = "Hallow's End",
 	[L.HOLIDAY_DAYOFTHEDEAD] = "Day of the Dead",
 	[L.HOLIDAY_PIGRIMSBOUNTY] = "Pilgrim's Bounty",
 	[L.HOLIDAY_WINTERVEIL] = "Feast of Winter Veil",
 	-- Aliases: (used by Suggestions tab but not the title the in-game calendar uses)
+	[L.HOLIDAY_MIDSUMMER_SHORT] = "Midsummer",
 	[L.HOLIDAY_WINTERVEIL_SHORT] = "Winter Veil",
 }
 

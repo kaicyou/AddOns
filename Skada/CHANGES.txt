@@ -1,0 +1,17 @@
+------------------------------------------------------------------------
+r713 | zarnivoop | 2017-01-04 16:02:04 -0600 (Wed, 04 Jan 2017) | 1 line
+Changed paths:
+   M /trunk/Options.lua
+   M /trunk/Skada.lua
+
+doubled update frequency (looks nice with smooth bars - performance testing might be needed)
+------------------------------------------------------------------------
+r712 | zarnivoop | 2017-01-04 14:59:50 -0600 (Wed, 04 Jan 2017) | 1 line
+Changed paths:
+   M /trunk/BarDisplay.lua
+   M /trunk/lib/SpecializedLibBars-1.0/SpecializedLibBars-1.0.lua
+   M /trunk/locale/enUS.lua
+
+added a smooth bars option
+------------------------------------------------------------------------
+

@@ -66,6 +66,35 @@ OVERACHIEVER_MOB_CRIT = {
 	-- For achievements where Overachiever.AchLookup_kill doesn't work, e.g. due to the asset ID being for quests instead of NPCs for some reason.
 	-- Format: <mob ID> = { <achievement ID>, <ach's criteria index>[, <2nd achievement ID>, <2nd ach's criteria index>[, ...]] }  ()
 
+	-- Adventurer of Azsuna:
+	[90244] = { 11261, 10 }, -- Unbound Rift (start w/object)
+	[90505] = { 11261, 11 }, -- Syphonus & Leodrath
+	[90803] = { 11261, 12 }, -- Cache of Infernals (start w/object)
+	[91115] = { 11261, 14 }, -- Tide Behemoth
+	[91100] = { 11261, 16 }, -- Marius & Tehd versus a Fel Lord
+	[91579] = { 11261, 17 }, -- Marius & Tehd versus a Doomlord
+	[105938] = { 11261, 18 }, -- Marius & Tehd versus Felbats
+	[112637] = { 11261, 22 }, -- Treacherous Stallions (1/2)
+	[112636] = { 11261, 22 }, -- Treacherous Stallions (2/2)
+	[107657] = { 11261, 23 }, -- Arcanist Shal'iman
+	[107113] = { 11261, 24 }, -- Vorthax
+	[107269] = { 11261, 25 }, -- Inquisitor Tivos (mark portal object?)
+	[89016] = { 11261, 26 }, -- Ravyn-Drath
+	-- Adventurer of Val'sharah
+	[93654] = { 11262, 7 }, -- Elindya Featherlight (start w/friendly NPC)
+	--[] = { 11262, 8 }, -- Antydas Nightcaller
+	[94414] = { 11262, 9 }, -- Haunted Manor (start w/object)
+	[94485] = { 11262, 10 }, -- Purging the River (start w/friendly NPC? though I usually just see it wandering)
+	[95123] = { 11262, 11 }, -- Grelda the Hag
+	[95221] = { 11262, 12 }, -- Old Bear Trap (start w/object (or NPC-thing?))
+	[95318] = { 11262, 13 }, -- Perrexx the Corruptor
+	[97504] = { 11262, 14 }, -- Wraithtalon
+	[97517] = { 11262, 15 }, -- Dreadbog
+	[98241] = { 11262, 16 }, -- Lyrath Moonfeather
+	[109708] = { 11262, 17 }, -- Undgrell Attack
+	[110562] = { 11262, 18 }, -- Bahagar
+	[92104] = { 11262, 19 }, -- Unguarded Thistleleaf Treasure (start w/object, end w/object)
+	[93679] = { 11262, 20 }, -- Marius & Tehd versus a Satyr
 	-- Adventurer of Highmountain:
 	[101077] = { 11264, 1 }, -- Sekhan
 	[97653] = { 11264, 2 }, -- The Beastly Boxer
@@ -82,19 +111,19 @@ OVERACHIEVER_MOB_CRIT = {
 	[97203] = { 11264, 9 }, -- The Exiled Shaman
 	--[] = { 11264, 10 }, -- Beastmaster Pao'lek (friendly NPC starts: 97215)
 	[96410] = { 11264, 11 }, -- Majestic Elderhorn
-	[97449] = { 11264, 13 }, -- Bristlemaul
-	[97593] = { 11264, 14 }, -- Scout Harefoot (start w/friendly NPC)
-	[95204] = { 11264, 15 }, -- Oubdob da Smasher
-	[98299] = { 11264, 16 }, -- Bodash the Hoarder
-	[100232] = { 11264, 17 }, -- Amateur Hunters (1/3)
-	[100230] = { 11264, 17 }, -- Amateur Hunters (2/3)
-	[100231] = { 11264, 17 }, -- Amateur Hunters (3/3)
-	[97102] = { 11264, 18 }, -- Totally Safe Treasure Chest (start w/object)
-	[100495] = { 11264, 19 }, -- Devouring Darkness (start w/object)
-	[96621] = { 11264, 20 }, -- Mellok, Son of Torok
-	[98024] = { 11264, 21 }, -- Luggut the Eggeater
-	[97093] = { 11264, 22 }, -- Shara Felbreath
-	[98890] = { 11264, 23 }, -- Slumbering Bear
+	[97449] = { 11264, 12 }, -- Bristlemaul
+	[97593] = { 11264, 13 }, -- Scout Harefoot (start w/friendly NPC)
+	[95204] = { 11264, 14 }, -- Oubdob da Smasher
+	[98299] = { 11264, 15 }, -- Bodash the Hoarder
+	[100232] = { 11264, 16 }, -- Amateur Hunters (1/3)
+	[100230] = { 11264, 16 }, -- Amateur Hunters (2/3)
+	[100231] = { 11264, 16 }, -- Amateur Hunters (3/3)
+	[97102] = { 11264, 17 }, -- Totally Safe Treasure Chest (start w/object)
+	[100495] = { 11264, 18 }, -- Devouring Darkness (start w/object)
+	[96621] = { 11264, 19 }, -- Mellok, Son of Torok
+	[98024] = { 11264, 20 }, -- Luggut the Eggeater
+	[97093] = { 11264, 21 }, -- Shara Felbreath
+	[98890] = { 11264, 22 }, -- Slumbering Bear
 	[98311] = { 11264, 23 }, -- Captured Survivor (start w/friendly NPC)
 	-- Adventurer of Stormheim:
 	[91529] = { 11263, 1 }, -- Glimar Ironfist
@@ -161,6 +190,32 @@ OVERACHIEVER_MOB_CRIT = {
 	[112802] = { 11265, 31 }, -- Mar'tura
 	[102303] = { 11265, 32 }, -- Lieutenant Strathmar
 };
+
+--[[
+function Overachiever.Debug_WHICHCRIT(id)
+	print("Examining "..id..".")
+	local c, name, crittype = 0
+	local s = ""
+	local num = GetAchievementNumCriteria(id)
+	for i=1,num do
+		name, crittype = GetAchievementCriteriaInfo(id, i)
+		if (crittype == 27) then
+			print("- quest type:|cff7eff00", id, i, name)
+			c = c + 1
+			s = s.."\n  [] = { "..id..", "..i.." }, -- "..name
+		elseif (crittype == 0) then  --print("- kill type:", id, i, name);
+		else  print("! unexpected type ("..crittype.."):", id, i, name);
+		end
+	end
+	print("Done.",c,"out of",num,"are quest type.")
+	return s
+end
+--/run error(WHICHCRIT(11261)) -- Adventurer of Azsuna
+--/run error(WHICHCRIT(11262)) -- Adventurer of Val'sharah
+--/run error(WHICHCRIT(11264)) -- Adventurer of Highmountain
+--/run error(WHICHCRIT(11263)) -- Adventurer of Stormheim
+--/run error(WHICHCRIT(11265)) -- Adventurer of Suramar
+--]]
 
 
 -- Look up the achievement ID of the given zone's exploration achievement, whatever the localization.

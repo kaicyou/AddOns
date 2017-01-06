@@ -1,4 +1,4 @@
-﻿if ( AtlasMajorCities_EditMode ) then
+if ( AtlasMajorCities_EditMode ) then
 
 -- define the shop size in % of map size (this influences the shop-ID and sign-ID)
 local AMC_ShopSize = {

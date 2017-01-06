@@ -308,8 +308,7 @@ do
     return true, iconBL, handletip, xOffset + 4, yOffset - 6, btmBuffer + lbl_yOffset
   end
 
-  TjOptions.RegisterItemType("Oa_AchLabel", tonumber(THIS_VERSION) or 0, "labelwrap",
-    { create_prehook = CreateAchLabel_pre, create_posthook = CreateAchLabel_post })
+  TjOptions.RegisterItemType("Oa_AchLabel", 1, "labelwrap", { create_prehook = CreateAchLabel_pre, create_posthook = CreateAchLabel_post })
 end
 
 

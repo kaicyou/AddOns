@@ -1,4 +1,4 @@
-﻿-- forcibly load required libraries if not already loaded - required when running disembedded (some curse users)
+-- forcibly load required libraries if not already loaded - required when running disembedded (some curse users)
 
 local function loadExternal( addonname )
 	if not IsAddOnLoaded( addonname ) then

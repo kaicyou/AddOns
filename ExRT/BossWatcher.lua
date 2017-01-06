@@ -22,7 +22,6 @@ local pairs = pairs
 local GetTime = GetTime
 local UnitIsFriendlyByUnitFlag = ExRT.F.UnitIsFriendlyByUnitFlag
 local wipe = wipe
-local UnitPosition = UnitPosition
 local bit_band = bit.band
 local tremove = tremove
 local strsplit = strsplit
@@ -324,7 +323,9 @@ module.db.def_trackingDamageSpells = {
 	[210074]=1849,	--Crystal Scorpion: Shockwave
 	[204733]=1849,	--Crystal Scorpion: Volatile Chitin
 	[207328]=1867,	--Trillax: Cleansing Destruction
-
+	[206376]=1842,	--Krosus: Burning Pitch
+	[206938]=1863,	--Etraeus: Shatter
+	
 	--[2812]=true,	--Test
 }
 
@@ -876,6 +877,86 @@ local BossPhasesData = {
 			[3] = -13380,
 		},
 	},	--NH: Aluriel
+	[1842] = {
+		events = {{"UNIT_SPELLCAST_SUCCEEDED","boss1"}},
+		func = function(_, event, unit, spellName, _, _, spellId)
+			if spellId == 205862 then
+				encounterSpecial.slam = (encounterSpecial.slam or 0) + 1
+				if (encounterSpecial.slam % 3) == 0 then
+					active_phase = active_phase + 1
+				end
+			end
+		end,
+		names = {
+			[1] = 1,
+			[2] = 2,
+			[3] = 3,
+			[4] = 4,
+			[5] = 5,
+			[6] = 6,
+		},		
+	},	--NH: Krosus
+	[1862] = {
+		events = {{"UNIT_SPELLCAST_SUCCEEDED","boss1"}},
+		func = function(_, event, unit, spellName, _, _, spellId)
+			if spellId == 206311 then
+				active_phase = 2
+				C_Timer.After(30,function()
+					if fightData then
+						active_phase = 1
+					end
+				end)
+			end
+		end,
+		names = {
+			[1] = -13552,
+			[2] = -13553,
+		},		
+	},	--NH: Tichondrius
+	[1863] = {
+		events = {{"UNIT_SPELLCAST_SUCCEEDED","boss1"}},
+		func = function(_, event, unit, spellName, _, _, spellId)
+			if spellId == 222130 then
+				active_phase = 2
+			elseif spellId == 222133 then
+				active_phase = 3
+			elseif spellId == 222134 then
+				active_phase = 4
+			end
+		end,
+		names = {
+			[1] = -13033,
+			[2] = -13036,
+			[3] = -13046,
+			[4] = -13053,
+		},		
+	},	--NH: Etraeus
+	[1886] = {
+		events = {{"UNIT_SPELLCAST_SUCCEEDED","boss1"},{"UNIT_SPELLCAST_SUCCEEDED","boss2"},{"UNIT_SPELLCAST_SUCCEEDED","boss3"}},
+		func = function(_, event, unit, spellName, _, _, spellId)
+			if (spellId == 216897 and unit == "boss1") or spellId == 70628 then
+				active_phase = active_phase + 1
+			end
+		end,
+		names = {
+			[1] = -13679,
+			[2] = -13681,
+			[3] = -13683,
+		},		
+	},	--NH: Telarn	
+	[1872] = {
+		events = {{"UNIT_SPELLCAST_SUCCEEDED","boss1"}},
+		func = function(_, event, unit, spellName, _, _, spellId)
+			if spellId == 208861 then
+				active_phase = active_phase + 1
+			end
+		end,
+		names = {
+			[1] = -13222,
+			[2] = -13235,
+			[3] = -13232,
+		},		
+	},	--NH: Elisande
 }
 local BossPhasesFrame = CreateFrame("Frame")
 
@@ -958,6 +1039,7 @@ function _BW_Start(encounterID,encounterName)
 	
 	wipe(deathLog)
 	wipe(damageTakenLog)
+	wipe(encounterSpecial)
 	
 	raidGUIDs = fightData.raidguids
 	guidData = fightData.guids
@@ -4351,7 +4433,7 @@ function BWInterfaceFrameLoad()
 												sourceDamage.parry = sourceDamage.parry + spellAmount.parry/blessingCount
 												sourceDamage.dodge = sourceDamage.dodge + spellAmount.dodge/blessingCount
 												sourceDamage.miss = sourceDamage.miss + spellAmount.miss/blessingCount
-												total = total + spellAmount.amount - spellAmount.overkill/blessingCount
+												total = total + (spellAmount.amount - spellAmount.overkill)/blessingCount
 												totalOver = totalOver + (spellAmount.overkill + spellAmount.blocked + spellAmount.absorbed)/blessingCount
 												
 												local damgeCount = (spellAmount.amount + (DamageTab_Variables.ShowAll and (spellAmount.blocked+spellAmount.absorbed) or -spellAmount.overkill))/blessingCount
@@ -4432,7 +4514,7 @@ function BWInterfaceFrameLoad()
 			if isDoT then
 				spellName = spellName .. " ["..L.BossWatcherDoT.."]"
 			end
-			if damageLine.info then
+			if damageLine.info and damageLine.info ~= "pet" then
 				spellName = GetGUID(damageLine.info)..": "..spellName
 			end
 			local school = module.db.spellsSchool[ spellID ] or 0
@@ -4487,7 +4569,7 @@ function BWInterfaceFrameLoad()
 				check = BWInterfaceFrame.GraphFrame:IsShown(),
 				checkState = i <= 3,
 			})
-			reportData[1][#reportData[1]+1] = i..". "..(isPetAbility and L.BossWatcherPetText..": " or "")..GetSpellLink(spellID).." - "..ExRT.F.shortNumber(currDamage).."@1@ ("..floor(dps)..")@1#"
+			reportData[1][#reportData[1]+1] = i..". "..(isPetAbility and L.BossWatcherPetText..": " or "")..(damageLine.info and damageLine.info ~= "pet" and GetGUID(damageLine.info)..": " or "")..GetSpellLink(spellID).." - "..ExRT.F.shortNumber(currDamage).."@1@ ("..floor(dps)..")@1#"
 		end
 		for i=#damage+2,#BWInterfaceFrame.tab.tabs[1].lines do
 			BWInterfaceFrame.tab.tabs[1].lines[i]:Hide()
@@ -6142,7 +6224,7 @@ function BWInterfaceFrameLoad()
 					CreateRedDeathLine(j)
 					local time_ = timestampToFightTime( CurrentFight.dies[i][3] )
 					local pos = AurasTab_Variables.NameWidth + time_/fightDuration*AurasTab_Variables.WorkWidth - 1
-					BWInterfaceFrame.tab.tabs[3].redDeathLine[j]:SetPoint("TOPLEFT",pos,-42)
+					BWInterfaceFrame.tab.tabs[3].redDeathLine[j]:SetPoint("TOPLEFT",pos,-42-25)
 					BWInterfaceFrame.tab.tabs[3].redDeathLine[j]:Show()
 				end
 			end

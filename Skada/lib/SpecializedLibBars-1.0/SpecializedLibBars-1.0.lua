@@ -315,7 +315,7 @@ function barListPrototype:AddButton(title, description, normaltex, highlighttex,
 	btn:SetWidth(12)
 	btn:SetNormalTexture(normaltex)
 	btn:SetHighlightTexture(highlighttex, 1.0)
-	btn:SetAlpha(0.5)
+	btn:SetAlpha(0.25)
 	btn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	btn:SetScript("OnClick", clickfunc)
 	btn:SetScript("OnEnter",
@@ -332,6 +332,45 @@ function barListPrototype:AddButton(title, description, normaltex, highlighttex,
 	tinsert(self.buttons, btn)
 
 	self:AdjustButtons()
+end
+
+function barListPrototype:SetSmoothing(smoothing)
+    self.smoothing = smoothing
+    
+    if smoothing then
+        self:SetScript("OnUpdate", function()
+        
+            if bars[self] then
+                for k, v in pairs(bars[self]) do
+                    if v.targetamount then
+                        
+                        local amt
+                        if v.targetamount > v.lastamount then
+                            amt = math.min(((v.targetamount - v.lastamount) / 10) + v.lastamount, v.targetamount)
+                        else
+                            amt = math.max(v.lastamount - ((v.lastamount - v.targetamount) / 10), v.targetamount)
+                        end
+                        v.lastamount = amt
+                        if amt == v.targetamount then
+                            v.targetamount = nil
+                        end
+                        v:SetTextureValue(amt, v.targetdist)
+                        
+                    end
+                end
+            end
+
+        end)
+        
+    else
+        self:SetScript("OnUpdate", nil)
+    end
+end
+
+function barListPrototype:SetButtonsOpacity(alpha)
+	for i, btn in ipairs(self.buttons) do
+        btn:SetAlpha(alpha)
+	end
 end
 
 function barListPrototype:AdjustButtons()
@@ -1015,8 +1054,6 @@ do
 	end
 end
 
-
-
 --[[
 ****************************************************************
 ***	Bar methods
@@ -1080,12 +1117,6 @@ do
 
 		self:SetScale(1)
 		self:SetAlpha(1)
-		--[[
-		self.texture:SetAlpha(1)
-		self.bgtexture:SetAlpha(0.6)
-		self.icon:SetAlpha(1)
-		]]--
-
 
 		self.length = length or 200
 		self.thickness = thickness or 15
@@ -1471,8 +1502,20 @@ function barPrototype:SetValue(val)
 	end
 	local amt = min(1, val / max(displayMax, 0.000001))
 	local dist = (ownerGroup and ownerGroup:GetLength()) or self.length
-	self:SetTextureValue(max(amt, 0.000001), dist)
+    amt = max(amt, 0.000001)
+    
+    if ownerGroup and ownerGroup.smoothing and self.lastamount then
+        self:SetTextureTarget(amt, dist)
+    else
+        self.lastamount = amt
+        self:SetTextureValue(amt, dist)
+    end
 	self:UpdateColor()
+end
+
+function barPrototype:SetTextureTarget(amt, dist)
+    self.targetamount = amt
+    self.targetdist = dist
 end
 
 function barPrototype:SetTextureValue(amt, dist)

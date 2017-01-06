@@ -1,5 +1,5 @@
 
-Overachiever v0.99
+Overachiever v0.99.3
 ==============================
 
 Author: Tuhljin
@@ -108,12 +108,31 @@ Change log
 
 The change log lists changes of particular note to users, not every change made.
 
+v0.99.3
+- Fix error on startup for characters Overachiever hasn't seen before.
+
+v0.99.2
+- There can now be multiple objectives per achievement marked as a "Recently spotted objective", each individually tracked for the purposes of the Recent Reminders expiration time.
+- Improved the way tooltip reminders are handled when the moused-over item has multiple associated achievements. Multiple lines should more reliably appear when applicable, and if two lines would be the same, they are consolidated (with extra text indicating the number of achievements that line applies to). (This should be extended to objects and players/NPCs in a future release.)
+- Recent Reminders now expire after 3 minutes, up from 2.
+- Suggestions Tab:
+-- Added suggestions for these holidays/events: Lunar Festival, Love is in the Air, Noblegarden, Children's Week, Midsummer Fire Festival, Pirates' Day.
+-- Fix suggestions for Assault on Violet Hold (dungeon) not showing automatically.
+-- Suggest "The Garrison Campaign" at the player garrison.
+-- When looking up suggestions while in an instance, try to first use instance name instead of zone name.
+- Attempt to prevent unneeded calls to time-consuming statistic-reading related to the consumed item tracking system by only proceeding if we detect a possible statistic change.
+
+v0.99.1
+- "Adventurer of Azsuna", "Adventurer of Val'sharah": Added "need to kill" reminders for the criteria that needed manual entry of mob IDs.
+- "Adventurer of Highmountain": Fixed incorrect "Recently spotted objective" text.
+- Suggestions Tab: Fix inconsistency with the filter where a complete achievement is considered incomplete if it was suggested because of a criteria (the criteria being specific to your location while the achievement's other criteria are for elsewhere) and that criteria is incomplete for the current character.
+
 v0.99
 * HIGHLIGHT: New feature! You can now hide specific suggestions so they aren't shown to the current character. Use the "Show Hidden" checkbox or enter "hidden" into the Location field to see what you've hidden and "unhide" it, as needed.
 - Moved key bindings to AddOns category.
 - Overachiever's dropdown menus now respond to clicks anywhere instead of only on the down-arrow button.
 - Made the default UI's "Achievement Filter" dropdown respond to clicks anywhere instead of only on the down-arrow button.
-- "Adventurer of Highmountain", "Adventurer of Stormheim", "Adventurer of Suramar": Added "need to kill" reminders for these achievements. (Unlike the other Legion "Adventurer" achievements, they require mob IDs to be entered manually.) At this time, their reminders are only for NPCs that need to be killed; does not show a tooltip for interacting with objects (but if an object spawns an NPC that should be killed, it will show on the NPC).
+- "Adventurer of Highmountain", "Adventurer of Stormheim", "Adventurer of Suramar": Added "need to kill" reminders for these achievements. (Unlike the other Legion "Adventurer" achievements, they require every mob ID to be entered manually.) At this time, their reminders are only for NPCs that need to be killed; does not show a tooltip for interacting with objects (but if an object spawns an NPC that should be killed, it will show on the NPC).
 - Suggestions Tab:
 -- Ability to hide suggestions, as mentioned above.
 -- Fix issue where the current instance's difficulty could be improperly detected, resulting in missing/wrong suggestions.

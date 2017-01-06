@@ -1,10 +1,10 @@
-﻿-- $Id: Atlas_Transportation-ptBR.lua 23 2016-07-01 10:20:35Z arith $
+-- $Id: Atlas_Transportation-ptBR.lua 62 2017-01-01 10:46:23Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2017 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 	This file is part of Atlas.
 
@@ -32,41 +32,24 @@ L["Abandoned Kite"] = "Pipa abandonada"
 L["Airship"] = "Dirigível"
 L["Aludane Whitecloud <Flight Master>"] = "Aludane Albanuvem <Mestre de Voo>"
 L["Blue"] = "Azul"
--- L["Class Order Halls"] = ""
--- L["Class Specific Only"] = ""
 L["Climbing Rope"] = "Corda de escalar"
--- L["Connection to the Hall of Shadows"] = ""
 L["Death Knight Only"] = "Apenas Cavaleiros da Morte"
-L["Druid Only"] = "Apenas Druidas" -- Needs review
--- L["Flight to Trueshot Lodge"] = ""
+L["Druid Only"] = "Apenas Druidas"
 L["From sea level to ground level"] = "Do nível do mar para nível do solo"
--- L["Gleep Chatterswitch"] = ""
--- L["Great Eagle"] = ""
 L["Green"] = "Verde"
 L["Gryphon"] = "Grifo"
--- L["Gryphon Master"] = ""
--- L["Hunter Only"] = ""
--- L["Illidari Gateway"] = ""
--- L["Jump to Skyhold"] = ""
 L["Legend"] = "Lenda"
 L["Nutral"] = "Nutral"
 L["Only available after winning the PvP battle"] = "Apenas disponível após vencer uma batalha PvP"
 L["Orange"] = "Laranja"
 L["Orb of Translocation"] = "Orb de translocação"
-L["Portals"] = "Portais"
--- L["Portal to Dalaran"] = ""
--- L["Portal to Dreadscar Rift"] = ""
--- L["Portal to Netherlight Temple"] = ""
--- L["Portal to Sanctum of Light"] = ""
--- L["Portal to the Maelstrom"] = ""
 L["Portal / Waygate Path to the destination"] = "Portal / Waygate para o destino"
+L["Portals"] = "Portais"
 L["Purple"] = "Roxo"
 L["Rappelling Rope"] = "Corda de rapel"
 L["Red"] = "Vermelho"
--- L["Requires Eagle Ally Advancement"] = ""
-L["Requires honored faction with Sha'tari Skyguard"] = "Requer honrado com a facção Guarda Aérea Sha'tari"
--- L["Requires Teleportation Nexus Advancement"] = ""
 L["Require to complete \"Meet the Scout\" quest line first."] = "Exigido para completar a sequência de quest \"Conheça a batedora\"."
+L["Requires honored faction with Sha'tari Skyguard"] = "Requer honrado com a facção Guarda Aérea Sha'tari"
 L["Seahorse"] = "Cavalo-Marinho"
 L["Shado-Pan Rope"] = "Corda Shado-Pan"
 L["Ship / Zeppelin sailing path to destination"] = "Caminho do Navio / Zeppelin para o destino"
@@ -74,23 +57,16 @@ L["South of the path along Lake Elune'ara"] = "Caminho sul ao longo do lago Elun
 L["Special transportation"] = "Transporte especial"
 L["Talua <Eagle Keeper>"] = "Talua <Tratadora de Águias>"
 L["Taxi Nodes"] = "Nódulos de táxi"
--- L["Teleportation Nexus"] = ""
 L["The Bogpaddle Bullet"] = "O Balaço do Brejo"
 L["Transportation Maps"] = "Mapas de transporte"
 L["Transporter"] = "Transportador"
 L["Transporters by the sea and on the cliff"] = "Transportadores pelo mar sobre a falésia"
--- L["Two ways portal"] = ""
 L["Warning: Drop"] = "Atenção: Soltando"
--- L["Warrior's landing / jumping point (from or back to Skyhold)"] = ""
 L["West of the path to Timbermaw Hold"] = "Oeste do caminho para Domínio dos Presamatos"
 L["Whispercloud's Balloon"] = "Balão Nuvem Sussurrante"
 L["White"] = "Branco"
 L["Wind Rider"] = "Mantícoras"
--- L["Wind Rider Master"] = ""
 L["Won't be available once the Battle for Andorhal chain is finished."] = "Não estará disponível uma vez que a sequência da Batalha de Andorhal terminar."
 L["Yellow"] = "Amarelo"
 L["Zeppelin Towers"] = "Torres de Zeppelin"
-L["ToC/Description"] = "Mapas de Transporte"
-L["ToC/Title"] = "Atlas |r|cFF0099FF[Transporte]|r"
-
 end

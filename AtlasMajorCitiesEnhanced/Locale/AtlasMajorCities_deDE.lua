@@ -1,4 +1,4 @@
-﻿if ( GetLocale() == "deDE" ) then
+if ( GetLocale() == "deDE" ) then
 
 local L
 L = AtlasMajorCities_Continent0

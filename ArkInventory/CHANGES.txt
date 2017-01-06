@@ -1,0 +1,21 @@
+------------------------------------------------------------------------
+r617 | arkayenro | 2017-01-03 02:21:22 -0600 (Tue, 03 Jan 2017) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/VersionHistory.txt
+
+pkgmeta test
+------------------------------------------------------------------------
+r616 | arkayenro | 2017-01-02 18:33:44 -0600 (Mon, 02 Jan 2017) | 4 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.20 (03-JAN-2017)*
+ * added - rule function tsm( ) allows for regex matching on tsm group names
+ * fixed - issue with outfit( ) rule and blizzard equipment manager after changing specs
+
+------------------------------------------------------------------------
+

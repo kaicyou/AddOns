@@ -1,10 +1,10 @@
--- $Id: Atlas-zhCN.lua 97 2016-09-05 14:59:04Z arith $
+-- $Id: Atlas-zhCN.lua 126 2016-12-27 17:45:39Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2017 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -189,7 +189,7 @@ L["ATLAS_STRING_SEARCH"] = "搜索"
 L["ATLAS_STRING_SELECT_CAT"] = "选择分类"
 L["ATLAS_STRING_SELECT_MAP"] = "选择地图"
 L["ATLAS_TITLE"] = "Atlas"
--- L["ATLAS_TOGGLE_LOOT"] = ""
+L["ATLAS_TOGGLE_LOOT"] = "右击切换拾取面板。"
 L["Attunement Required"] = "需要完成入口任务"
 L["Back"] = "后门"
 L["Basement"] = "底层"
@@ -303,8 +303,4 @@ L["Wave 6"] = "第6波"
 L["West"] = "西"
 L["Yarley <Armorer>"] = "亚尔雷 <护甲商>"
 L["Zaladormu"] = "扎拉多姆"
-L["ToC/Description"] = "|cff00CC33副本地图浏览器|r"
-L["ToC/Title"] = "Atlas |cFF0099FF[主程式]|r"
-
-
 end

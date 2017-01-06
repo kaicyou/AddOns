@@ -11,7 +11,8 @@ local THIS_TITLE = GetAddOnMetadata("Overachiever", "Title")
 
 local ACHINFO_NAME = 2
 
-Overachiever = {};
+Overachiever = {}
+local Overachiever = Overachiever
 
 local L = OVERACHIEVER_STRINGS
 
@@ -804,7 +805,7 @@ local function ReactToCriteriaToast(achievementID, criteriaString)
     chatprint("", L.MSG_CRITERIAPROGRESS:format(link, criteriaString))
   end
   if (Overachiever_Settings.ProgressToast_Suggest) then
-    Overachiever.RecentReminders[achievementID] = time()
+    Overachiever.FlagReminder(achievementID, criteriaString)
   end
   if (Overachiever_Settings.ProgressToast_AutoTrack) then
     setTracking(achievementID)
@@ -1013,14 +1014,16 @@ do
 	  end
     end
 
-    if (Overachiever.RecentReminders[id] and Overachiever.RecentReminders_Criteria[id]) then
+    local reminders = Overachiever.GetRecentReminders(id, true)
+    if (reminders) then
       if (tipset == 1) then  GameTooltip:AddLine(" ");  end
       tipset = 2 --tipset + 1
       GameTooltip:AddLine(L.RECENTREMINDERCRITERIA)
       GameTooltip:AddLine(" ")
-	  local s = Overachiever.RecentReminders_Criteria[id]
-	  if (type(s) == "number") then  s = GetAchievementCriteriaInfo(id, s);  end
-      GameTooltip:AddLine(s, 1, 1, 1)
+      for i,s in ipairs(reminders) do
+        --if (type(s) == "number") then  s = GetAchievementCriteriaInfo(id, s);  end
+		GameTooltip:AddLine(s, 1, 1, 1)
+      end
       GameTooltip:AddLine(" ")
     end
 
@@ -1107,10 +1110,11 @@ end
 -----------------------
 
 function Overachiever.OnEvent(self, event, arg1, ...)
-  --chatprint(event)
+  --print("[Oa]", event, arg1, ...)
   if (event == "PLAYER_ENTERING_WORLD") then
     Overachiever.MainFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
     Overachiever.MainFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+	Overachiever.MainFrame:RegisterEvent("CRITERIA_UPDATE") -- used by GameTip.lua
 
     BuildCategoryInfo()
     BuildCategoryInfo = nil
@@ -1120,7 +1124,6 @@ function Overachiever.OnEvent(self, event, arg1, ...)
     Overachiever.CreateOptions = nil
 
     if (oldver and oldver ~= THIS_VERSION) then
-      oldver = tonumber(oldver)
       Overachiever_Settings.Version = THIS_VERSION
 	  toast = L.OVERACHIEVER_UPDATED_TOAST
 	  msg = L.OVERACHIEVER_UPDATED_MSG:format(THIS_VERSION)
@@ -1135,7 +1138,7 @@ function Overachiever.OnEvent(self, event, arg1, ...)
         if (settings[k] == nil) then  settings[k] = v;  end
       end
 
-      if (oldver < 0.40 and Overachiever_CharVars_Default) then
+      if (oldver < "0.40" and Overachiever_CharVars_Default) then
         Overachiever_CharVars_Default.Pos_AchievementWatchFrame = nil
       end
 
@@ -1147,10 +1150,19 @@ function Overachiever.OnEvent(self, event, arg1, ...)
 	  Overachiever_Settings.Version = THIS_VERSION
     end
 
-    if (Overachiever_CharVars) then
-      oldver = tonumber(Overachiever_CharVars.Version)
-      if (oldver < 0.40) then  Overachiever_CharVars.Pos_AchievementWatchFrame = nil;  end
-      if (oldver < 0.55) then  Overachiever_CharVars.TrackedAch = nil;  end  -- No longer necessary as between-session objective tracking is now done by WoW itself.
+    if (Overachiever_CharVars and Overachiever_CharVars.Version ~= THIS_VERSION) then
+      local oldver_char = Overachiever_CharVars.Version or "0"
+      if (oldver_char < "0.40") then  Overachiever_CharVars.Pos_AchievementWatchFrame = nil;  end
+      if (oldver_char < "0.55") then  Overachiever_CharVars.TrackedAch = nil;  end  -- No longer necessary as between-session objective tracking is now done by WoW itself.
+
+      if (oldver_char < "0.99.2" and Overachiever_CharVars_Consumed) then
+        for k,v in pairs(Overachiever_CharVars_Consumed) do
+          if (k ~= "Drink" and k ~= "Food" and k ~= "LastBuilt") then
+            Overachiever_CharVars_Consumed[k] = nil
+            --chatprint("Overachiever_CharVars_Consumed["..k.."] removed.")
+          end
+        end
+      end
 
      --[[  No longer necessary as this is now done by WoW itself:
       local tracked = Overachiever_CharVars.TrackedAch
@@ -1182,7 +1194,7 @@ function Overachiever.OnEvent(self, event, arg1, ...)
     
     local StartTime
     if (Overachiever_Debug) then  StartTime = debugprofilestop();  end
-    
+
     Overachiever.BuildItemLookupTab(THIS_VERSION)
     Overachiever.BuildItemLookupTab = nil
 
@@ -1203,14 +1215,17 @@ function Overachiever.OnEvent(self, event, arg1, ...)
 	  end)
 	end
 
+  elseif (event == "CRITERIA_UPDATE") then
+    Overachiever.Criteria_Updated = true  -- used by GameTip.lua
+
   elseif (event == "ZONE_CHANGED_NEW_AREA") then
     AutoTrackCheck_Explore()
 
   elseif (event == "TRACKED_ACHIEVEMENT_UPDATE") then
     if (arg1 and arg1 > 0) then  -- Attempt to work around an apparent WoW bug. May prevent errors but if the given ID is 0, we have no way of knowing what the achievement really was so we can't track it (unless there's another call with the correct data).
       local criteriaID, elapsed, duration = ...
-      if (duration and elapsed < duration) then
-        Overachiever.RecentReminders[arg1] = time()
+      if (elapsed and duration and elapsed < duration) then
+        Overachiever.FlagReminder(arg1)
         if (Overachiever_Settings.Tracker_AutoTimer and
             not setTracking(arg1) and AutoTrackedAch_explore and IsTrackedAchievement(AutoTrackedAch_explore)) then
           -- If failed to track this, remove an exploration achievement that was auto-tracked and try again:
@@ -1421,9 +1436,9 @@ local function slashHandler(msg, self, silent, func_nomsg)
   if (msg == "") then
     func_nomsg = func_nomsg or ToggleAchievementFrame
     func_nomsg();
-  elseif (msg == "!!rebuild") then
-    Overachiever_CharVars_Consumed.LastBuilt = nil
-    chatprint("Food/drink lookup table will be rebuilt the next time Overachiever loads. Use the /reload command to do so now.")
+  --elseif (msg == "!!rebuild") then
+    --Overachiever_CharVars_Consumed.LastBuilt = nil
+    --chatprint("Food/drink lookup table will be rebuilt the next time Overachiever loads. Use the /reload command to do so now.")
   else
     if (strsub(msg, 1,1) == "#") then
       local id = tonumber(strsub(msg, 2))

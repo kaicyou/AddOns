@@ -486,10 +486,9 @@ local function applyAchievementFilter(list, completed, built, checkprev, critlis
   end
   local count, _, c = 0
   for i,id in pairs(list) do  -- Using pairs instead of ipairs so we can safely nil things out.
-    if (critlist and critlist[id]) then
+    _, _, _, c = GetAchievementInfo(id)
+    if (not c and critlist and critlist[id]) then
       _, _, c = GetAchievementCriteriaInfo(id, critlist[id])
-    else
-      _, _, _, c = GetAchievementInfo(id)
     end
     if (c == completed) then
       count = count + 1

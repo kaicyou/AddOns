@@ -1,4 +1,4 @@
-﻿local L = LibStub( "AceLocale-3.0" ):NewLocale( "ArkInventory", "ptBR" )
+local L = LibStub( "AceLocale-3.0" ):NewLocale( "ArkInventory", "ptBR" )
 if not L then return end
 
 -- post updated translations at http://groups.google.com/group/wow-arkinventory (modify this file and include as an attachment)

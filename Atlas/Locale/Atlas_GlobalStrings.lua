@@ -1,10 +1,10 @@
--- $Id: Atlas_GlobalStrings.lua 118 2016-11-14 08:07:44Z arith $
+-- $Id: Atlas_GlobalStrings.lua 126 2016-12-27 17:45:39Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2017 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -156,3 +156,4 @@ ATLAS_CLICK_TO_OPEN		= L["ATLAS_CLICK_TO_OPEN"];
 ATLAS_OPEN_WOWMAP_WINDOW	= L["ATLAS_OPEN_WOWMAP_WINDOW"];
 ATLAS_COLLAPSE_BUTTON		= L["ATLAS_COLLAPSE_BUTTON"];
 ATLAS_EXPAND_BUTTON		= L["ATLAS_EXPAND_BUTTON"];
+ATLAS_TOGGLE_LOOT		= L["ATLAS_TOGGLE_LOOT"];

@@ -1,10 +1,10 @@
--- $Id: AtlasOptions.lua 77 2016-08-14 16:51:12Z arith $
+-- $Id: AtlasOptions.lua 126 2016-12-27 17:45:39Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2017 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -49,101 +49,55 @@ end
 
 
 function AtlasOptions_AutoSelectToggle()
-	if (AtlasOptions.AtlasAutoSelect) then
-		AtlasOptions.AtlasAutoSelect = false;
-	else
-		AtlasOptions.AtlasAutoSelect = true;
-	end
-	AtlasOptions_Init();
+	AtlasOptions.AtlasAutoSelect = not AtlasOptions.AtlasAutoSelect;
 end
 
 
 function AtlasOptions_RightClickToggle()
-	if (AtlasOptions.AtlasRightClick) then
-		AtlasOptions.AtlasRightClick = false;
-	else
-		AtlasOptions.AtlasRightClick = true;
-	end
-	AtlasOptions_Init();
+	AtlasOptions.AtlasRightClick = not AtlasOptions.AtlasRightClick;
 end
 
 
 function AtlasOptions_AcronymsToggle()
-	if (AtlasOptions.AtlasAcronyms) then
-		AtlasOptions.AtlasAcronyms = false;
-	else
-		AtlasOptions.AtlasAcronyms = true;
-	end
-	AtlasOptions_Init();
+	AtlasOptions.AtlasAcronyms = not AtlasOptions.AtlasAcronyms;
 	Atlas_Refresh();
 end
 
 
 function AtlasOptions_ClampedToggle()
-	if (AtlasOptions.AtlasClamped) then
-		AtlasOptions.AtlasClamped = false;
-	else
-		AtlasOptions.AtlasClamped = true;
-	end
+	AtlasOptions.AtlasClamped = not AtlasOptions.AtlasClamped;
 	AtlasFrame:SetClampedToScreen(AtlasOptions.AtlasClamped);
-	AtlasOptions_Init();
 	Atlas_Refresh();
 end
 
 
 function AtlasOptions_CtrlToggle()
-	if (AtlasOptions.AtlasCtrl) then
-		AtlasOptions.AtlasCtrl = false;
-	else
-		AtlasOptions.AtlasCtrl = true;
-	end
-	AtlasOptions_Init();
+	AtlasOptions.AtlasCtrl = not AtlasOptions.AtlasCtrl;
 	Atlas_Refresh();
 end
 
 
 function AtlasOptions_ToggleLock()
-	if (AtlasOptions.AtlasLocked) then
-		AtlasOptions.AtlasLocked = false;
-		Atlas_UpdateLock();
-	else
-		AtlasOptions.AtlasLocked = true;
-		Atlas_UpdateLock();
-	end
-	AtlasOptions_Init();
+	AtlasOptions.AtlasLocked = not AtlasOptions.AtlasLocked;
+	Atlas_UpdateLock();
 	Atlas_Refresh();
 end
 
 
 function AtlasOptions_ToggleBossDesc()
-	if (AtlasOptions.AtlasBossDesc) then
-		AtlasOptions.AtlasBossDesc = false;
-	else
-		AtlasOptions.AtlasBossDesc = true;
-	end
-	AtlasOptions_Init();
+	AtlasOptions.AtlasBossDesc = not AtlasOptions.AtlasBossDesc;
 	Atlas_Refresh();
 end
 
 
 function AtlasOptions_ToggleCheckModule()
-	if (AtlasOptions.AtlasCheckModule) then
-		AtlasOptions.AtlasCheckModule = false;
-	else
-		AtlasOptions.AtlasCheckModule = true;
-	end
-	AtlasOptions_Init();
+	AtlasOptions.AtlasCheckModule = not AtlasOptions.AtlasCheckModule;
 	Atlas_Refresh();
 end
 
 --[[
 function AtlasOptions_ToggleColoringDropDown()
-	if (AtlasOptions.AtlasColoringDropDown) then
-		AtlasOptions.AtlasColoringDropDown = false;
-	else
-		AtlasOptions.AtlasColoringDropDown = true;
-	end
-	AtlasOptions_Init();
+	AtlasOptions.AtlasColoringDropDown = not AtlasOptions.AtlasColoringDropDown;
 	Atlas_Refresh();
 end
 ]]
@@ -176,8 +130,7 @@ function AtlasOptions_OnLoad(panel)
 	end
 end
 
-
-function AtlasOptions_Init()
+function AtlasOptions_OnShow(self)
 	AtlasOptionsFrameToggleButton:SetChecked(AtlasOptions.AtlasButtonShown);
 	AtlasOptionsFrameAutoSelect:SetChecked(AtlasOptions.AtlasAutoSelect);
 	AtlasOptionsFrameRightClick:SetChecked(AtlasOptions.AtlasRightClick);
@@ -198,7 +151,9 @@ function AtlasOptions_Init()
 		AtlasOptionsFrameSliderBossDescScale:Hide();
 	end
 	]]
-	AtlasOptionsFrameDropDownCats_OnShow();
+	Lib_UIDropDownMenu_Initialize(AtlasOptionsFrameDropDownCats, AtlasOptionsFrameDropDownCats_Initialize);
+	Lib_UIDropDownMenu_SetSelectedID(AtlasOptionsFrameDropDownCats, AtlasOptions.AtlasSortBy);
+	Lib_UIDropDownMenu_SetWidth(AtlasOptionsFrameDropDownCats, 160);
 end
 
 
@@ -223,20 +178,18 @@ end
 
 function AtlasOptionsFrameDropDownCats_Initialize()
 	for i = 1, getn(Atlas_DropDownLayouts_Order) do
-		info = {
-			text = Atlas_DropDownLayouts_Order[i];
-			func = AtlasOptionsFrameDropDownCats_OnClick;
-		};
-		Lib_UIDropDownMenu_AddButton(info);
+		local info = Lib_UIDropDownMenu_CreateInfo();
+		info.text = Atlas_DropDownLayouts_Order[i];
+		info.func = AtlasOptionsFrameDropDownCats_OnClick;
+		info.arg1 = i;
+		if (AtlasOptions.AtlasSortBy == i) then
+			info.checked = true;
+		else
+			info.checked = nil;
+		end
+		Lib_UIDropDownMenu_AddButton(info, 1);
 	end
 end
-
-function AtlasOptionsFrameDropDownCats_OnShow()
-	Lib_UIDropDownMenu_Initialize(AtlasOptionsFrameDropDownCats, AtlasOptionsFrameDropDownCats_Initialize);
-	Lib_UIDropDownMenu_SetSelectedID(AtlasOptionsFrameDropDownCats, AtlasOptions.AtlasSortBy);
-	Lib_UIDropDownMenu_SetWidth(AtlasOptionsFrameDropDownCats, 160);
-end
-
 
 function AtlasOptionsFrameDropDownCats_OnClick(self)
 	local thisID = self:GetID();
@@ -246,7 +199,7 @@ function AtlasOptionsFrameDropDownCats_OnClick(self)
 end
 
 function AtlasOptions_OnMouseWheel(self, delta)
-	if delta > 0 then
+	if (delta > 0) then
 		self:SetValue(self:GetValue() + self:GetValueStep())
 	else
 		self:SetValue(self:GetValue() - self:GetValueStep())

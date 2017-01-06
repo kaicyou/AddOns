@@ -1,4 +1,4 @@
-ï»¿local L = LibStub( "AceLocale-3.0" ):NewLocale( "ArkInventory", "esMX" )
+local L = LibStub( "AceLocale-3.0" ):NewLocale( "ArkInventory", "esMX" )
 if not L then return end
 
 -- post updated translations at http://groups.google.com/group/wow-arkinventory (modify this file and include as an attachment)
@@ -21,7 +21,7 @@ if not L then return end
 --	L["WOW_ZONE_AHNQIRAJ"] = ""
 --	L["WOW_ZONE_VASHJIR"] = ""
 	L["WOW_ZONE_KELPTHAR_FOREST"] = "Bosque Kelp'thar"
-	L["WOW_ZONE_SHIMMERING_EXPANSE"] = "Extensión Bruñida"
+	L["WOW_ZONE_SHIMMERING_EXPANSE"] = "Extensiï¿½n Bruï¿½ida"
 	L["WOW_ZONE_ABYSSAL_DEPTHS"] = "Profundidades Abisales"
 	
 	

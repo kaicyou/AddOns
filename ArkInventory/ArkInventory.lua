@@ -1,9 +1,9 @@
-﻿--[[
+--[[
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1758 $
-$Date: 2016-11-11 23:12:57 +1100 (Fri, 11 Nov 2016) $
+$Revision: 1761 $
+$Date: 2017-01-03 11:00:50 +1100 (Tue, 03 Jan 2017) $
 
 ]]--
 
@@ -9407,6 +9407,7 @@ end
 
 function ArkInventory.GameTooltipSetPosition( frame, bottom )
 	
+	local frame = frame or UIParent
 	GameTooltip:SetOwner( frame, "ANCHOR_NONE" )
 	
 	local anchorFromLeft = frame:GetLeft( ) + ( frame:GetRight( ) - frame:GetLeft( ) ) / 2 < GetScreenWidth( ) / 2

@@ -1,10 +1,10 @@
--- $Id: AtlasJournalEncounter.lua 119 2016-11-14 08:55:41Z arith $
+-- $Id: AtlasJournalEncounter.lua 129 2016-12-28 08:24:34Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2017 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -30,19 +30,15 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Atlas");
 local BB = Atlas_GetLocaleLibBabble("LibBabble-Boss-3.0");
 
 function Atlas_AdventureJournalButton_OnClick(frame)
+	local instanceID = frame.instanceID;
 	local disabled = not C_AdventureJournal.CanBeShown();
 	if (disabled) then return; end
 	
-	local zoneID = ATLAS_DROPDOWNS[AtlasOptions.AtlasType][AtlasOptions.AtlasZone];
-	if (not zoneID) then return; end
-	local data = AtlasMaps;
-	local base = data[zoneID];
-	
-	if (not base.JournalInstanceID) then
+	if (not instanceID) then
 		return;
 	end
 
-	if (not EJ_GetInstanceInfo(base.JournalInstanceID)) then
+	if (not EJ_GetInstanceInfo(instanceID)) then
 		return;
 	end
 
@@ -51,7 +47,7 @@ function Atlas_AdventureJournalButton_OnClick(frame)
 	end
 	-- EncounterJournal_ListInstances();
 	NavBar_Reset(EncounterJournal.navBar);
-	EncounterJournal_DisplayInstance(base.JournalInstanceID);
+	EncounterJournal_DisplayInstance(instanceID);
 
 	Atlas_Toggle();
 	if (not EncounterJournal:IsShown()) then
@@ -62,21 +58,13 @@ function Atlas_AdventureJournalButton_OnClick(frame)
 	end
 end
 
-function Atlas_AdventureJournal_EncounterButton_OnClick(encounterID)
-	if (not encounterID) then return; end
-
+function Atlas_AdventureJournal_EncounterButton_OnClick(instanceID, encounterID, keepAtlas)
+	if (not instanceID or not encounterID) then return; end
+	
 	local disabled = not C_AdventureJournal.CanBeShown();
 	if (disabled) then return; end
 
-	local zoneID = ATLAS_DROPDOWNS[AtlasOptions.AtlasType][AtlasOptions.AtlasZone];
-	if (not zoneID) then return; end
-	local data = AtlasMaps;
-	local base = data[zoneID];
-
-	if (not base.JournalInstanceID) then
-		return;
-	end
-	if (not EJ_GetInstanceInfo(base.JournalInstanceID)) then
+	if (not EJ_GetInstanceInfo(instanceID)) then
 		return;
 	end
 	if (not EJ_GetEncounterInfo(encounterID)) then
@@ -88,10 +76,12 @@ function Atlas_AdventureJournal_EncounterButton_OnClick(encounterID)
 	end
 	-- EncounterJournal_ListInstances();
 	NavBar_Reset(EncounterJournal.navBar);
-	EncounterJournal_DisplayInstance(base.JournalInstanceID);
+	EncounterJournal_DisplayInstance(instanceID);
 	EncounterJournal_DisplayEncounter(encounterID);
 
-	Atlas_Toggle();
+	if (not keepAtlas) then
+		Atlas_Toggle();
+	end
 	if (not EncounterJournal:IsShown()) then
 		EncounterJournal:Show();
 	else
@@ -100,20 +90,13 @@ function Atlas_AdventureJournal_EncounterButton_OnClick(encounterID)
 	end
 end
 
-
 function AtlasFrameAdventureJournalButton_OnEnter(frame)
-	local zoneID = ATLAS_DROPDOWNS[AtlasOptions.AtlasType][AtlasOptions.AtlasZone];
-	if (not zoneID) then return; end
-	local data = AtlasMaps;
-	local base = data[zoneID];
-
-	if (not base.JournalInstanceID) then
-		return;
-	end
+	local instanceID = frame.instanceID;
+	if (not instanceID) then return; end
 
 	if (MouseIsOver(frame)) then
-		if (EJ_GetInstanceInfo(base.JournalInstanceID)) then
-			EJ_SelectInstance(base.JournalInstanceID);
+		if (EJ_GetInstanceInfo(instanceID)) then
+			EJ_SelectInstance(instanceID);
 
 			local name, description = EJ_GetInstanceInfo();
 			local disabled = not C_AdventureJournal.CanBeShown();
@@ -195,10 +178,9 @@ function Atlas_EncounterJournal_Binding()
 	end
 end
 
-function AtlasFrameAdventureJournalMapButton_OnClick()
-	local zoneID = ATLAS_DROPDOWNS[AtlasOptions.AtlasType][AtlasOptions.AtlasZone];
-	local data = AtlasMaps;
-	local base = data[zoneID];
+function AtlasFrameAdventureJournalMapButton_OnClick(frame)
+	local mapID = frame.mapID;
+	local dungeonLevel = frame.dungeonLevel;
 
 	HideUIPanel(AtlasFrame);
 	local disabled = not C_AdventureJournal.CanBeShown();
@@ -208,11 +190,11 @@ function AtlasFrameAdventureJournalMapButton_OnClick()
 		WorldMapFrame.fromJournal = true;
 	end
 	ShowUIPanel(WorldMapFrame);
-	if (base.WorldMapID) then
-		SetMapByID(base.WorldMapID);
+	if (mapID) then
+		SetMapByID(mapID);
 	end
-	if (base.DungeonLevel) then
-		SetDungeonMapLevel(base.DungeonLevel);
+	if (dungeonLevel) then
+		SetDungeonMapLevel(dungeonLevel);
 	end
 end
 

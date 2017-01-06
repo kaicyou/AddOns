@@ -1,10 +1,10 @@
-<!-- $Id: Atlas.xml 116 2016-10-28 14:18:43Z arith $ -->
+<!-- $Id: Atlas.xml 129 2016-12-28 08:24:34Z arith $ -->
 <!--
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2017 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -494,7 +494,7 @@
 					</Layer>
 				</Layers>
 			</Button>
-			<Button name="$parentAdventureJournalMapButton" hidden="true">
+			<Button name="$parentAdventureJournalMapButton" parentKey="AdventureJournalMap" hidden="true">
 				<Size x="32" y="32"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent">
@@ -504,10 +504,12 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick function="AtlasFrameAdventureJournalMapButton_OnClick" />
+					<OnClick>
+						AtlasFrameAdventureJournalMapButton_OnClick(self);
+					</OnClick>
 					<OnEnter>
 						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
-						GameTooltip:SetText(ATLAS_OPEN_WOWMAP_WINDOW, nil, nil, nil, nil, 1);
+						GameTooltip:SetText(ATLAS_OPEN_WOWMAP_WINDOW, nil, nil, nil, nil, false);
 					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide();
@@ -522,7 +524,7 @@
 					</Anchors>
 				</HighlightTexture>
 			</Button>
-			<Button name="$parentAdventureJournalButton" hidden="true" toplevel="true">
+			<Button name="$parentAdventureJournalButton" parentKey="AdventureJournal" hidden="true" toplevel="true">
 				<Size>
 					<AbsDimension x="32" y="32" />
 				</Size>
@@ -833,7 +835,7 @@
 				<PushedTexture file="Interface\Buttons\UI-Panel-SmallerButton-Down"/>
 				<HighlightTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Highlight" alphaMode="ADD"/>
 			</Button>
-			<Button name="$parentAdventureJournalMapButton" hidden="true">
+			<Button name="$parentAdventureJournalMapButton" parentKey="AdventureJournalMap" hidden="true">
 				<Size x="32" y="32"/>
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
@@ -843,10 +845,12 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick function="AtlasFrameAdventureJournalMapButton_OnClick" />
+					<OnClick>
+						AtlasFrameAdventureJournalMapButton_OnClick(self);
+					</OnClick>
 					<OnEnter>
 						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
-						GameTooltip:SetText(ATLAS_OPEN_WOWMAP_WINDOW, nil, nil, nil, nil, 1);
+						GameTooltip:SetText(ATLAS_OPEN_WOWMAP_WINDOW, nil, nil, nil, nil, false);
 					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide();
@@ -861,7 +865,7 @@
 					</Anchors>
 				</HighlightTexture>
 			</Button>
-			<Button name="$parentAdventureJournalButton" hidden="true" toplevel="true">
+			<Button name="$parentAdventureJournalButton" parentKey="AdventureJournal" hidden="true" toplevel="true">
 				<Size>
 					<AbsDimension x="32" y="32" />
 				</Size>
@@ -1339,7 +1343,7 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Button name="$parentAdventureJournalMapButton" hidden="true">
+			<Button name="$parentAdventureJournalMapButton" parentKey="AdventureJournalMap" hidden="true">
 				<Size x="32" y="32"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent">
@@ -1349,10 +1353,12 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick function="AtlasFrameAdventureJournalMapButton_OnClick" />
+					<OnClick>
+						AtlasFrameAdventureJournalMapButton_OnClick(self);
+					</OnClick>
 					<OnEnter>
 						GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
-						GameTooltip:SetText(ATLAS_OPEN_WOWMAP_WINDOW, nil, nil, nil, nil, 1);
+						GameTooltip:SetText(ATLAS_OPEN_WOWMAP_WINDOW, nil, nil, nil, nil, false);
 					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide();
@@ -1367,7 +1373,7 @@
 					</Anchors>
 				</HighlightTexture>
 			</Button>
-			<Button name="$parentAdventureJournalButton" hidden="true" toplevel="true">
+			<Button name="$parentAdventureJournalButton" parentKey="AdventureJournal" hidden="true" toplevel="true">
 				<Size>
 					<AbsDimension x="32" y="32" />
 				</Size>

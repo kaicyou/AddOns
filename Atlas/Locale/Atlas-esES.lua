@@ -1,10 +1,10 @@
--- $Id: Atlas-esES.lua 97 2016-09-05 14:59:04Z arith $
+-- $Id: Atlas-esES.lua 126 2016-12-27 17:45:39Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2017 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -49,7 +49,7 @@ end
 
 if L then
 L["Adult"] = "Adulto"
-L["AKA"] = "AKA" -- Needs review
+L["AKA"] = "AKA"
 L["Alexston Chrome <Tavern of Time>"] = "Alexston Cromo <La Taberna del Tiempo>"
 L["Alurmi <Keepers of Time Quartermaster>"] = "Alurmi <Intendente de los Vigilantes del Tiempo>"
 L["Anachronos <Keepers of Time>"] = "Anacronos <Vigilantes del Tiempo>"
@@ -58,8 +58,6 @@ L["Arazmodu <The Scale of Sands>"] = "Arazmodu <La Escama de las Arenas>"
 L["Arcane Container"] = "Contenedor Arcano"
 L["Arms Warrior"] = "Guerrero Armas"
 L["ATLAS_BUTTON_CLOSE"] = "Cerrar"
--- L["ATLAS_CLICK_TO_OPEN"] = ""
--- L["ATLAS_COLLAPSE_BUTTON"] = ""
 L["ATLAS_DDL_CONTINENT"] = "Continente"
 L["ATLAS_DDL_CONTINENT_BROKENISLES"] = "Mazmorras de las Islas Abruptas"
 L["ATLAS_DDL_CONTINENT_DEEPHOLM"] = "Mazmorras de Infralar"
@@ -109,7 +107,6 @@ L["ATLAS_DEP_MSG2"] = "Se han sido desactivados para este personaje."
 L["ATLAS_DEP_MSG3"] = "Borralos de tu directorio AddOns."
 L["ATLAS_DEP_OK"] = "Vale"
 L["ATLAS_ENTRANCE_BUTTON"] = "Entrada"
--- L["ATLAS_EXPAND_BUTTON"] = ""
 L["ATLAS_INFO"] = "Información de Atlas"
 L["ATLAS_INFO_12200"] = [=[Aviso importante:
 
@@ -141,10 +138,8 @@ Click derecho para mostrar el menú.]=]
 L["ATLAS_MINIMAPLDB_HINT"] = [=[Click izquierdo para abrir Atlas.
 Click derecho para mostrar las opciones.
 Click izquierdo y arrastrar para mover este botón.]=]
-L["ATLAS_MISSING_MODULE"] = "Atlas has detected missing module(s) / plugin(s): " -- Needs review
--- L["ATLAS_OPEN_ADDON_LIST"] = ""
+L["ATLAS_MISSING_MODULE"] = "Atlas has detected missing module(s) / plugin(s): "
 L["ATLAS_OPEN_ADVENTURE"] = "Click para abrir la ventana de la Guía de mazmorras."
--- L["ATLAS_OPEN_WOWMAP_WINDOW"] = ""
 L["ATLAS_OPTIONS_ACRONYMS"] = "Mostrar acrónimos"
 L["ATLAS_OPTIONS_ACRONYMS_TIP"] = "Muestra el acrónimo de la mazmorra en los detalles del mapa."
 L["ATLAS_OPTIONS_AUTOSEL"] = "Auto-Seleccionar mazmorra"
@@ -180,7 +175,6 @@ L["ATLAS_SLASH_OPTIONS"] = "opciones"
 L["ATLAS_STRING_CLEAR"] = "Limpiar"
 L["ATLAS_STRING_LEVELRANGE"] = "Rango de nivel"
 L["ATLAS_STRING_LOCATION"] = "Localización"
--- L["ATLAS_STRING_MINGEARLEVEL"] = ""
 L["ATLAS_STRING_MINLEVEL"] = "Nivel mínimo"
 L["ATLAS_STRING_PLAYERLIMIT"] = "Límite de Jugadores"
 L["ATLAS_STRING_RECLEVELRANGE"] = "Rng. nivel"
@@ -188,7 +182,6 @@ L["ATLAS_STRING_SEARCH"] = "Buscar"
 L["ATLAS_STRING_SELECT_CAT"] = "Seleccionar Categoría"
 L["ATLAS_STRING_SELECT_MAP"] = "Seleccionar Mapa"
 L["ATLAS_TITLE"] = "Atlas"
--- L["ATLAS_TOGGLE_LOOT"] = ""
 L["Attunement Required"] = "Armonización requerida"
 L["Back"] = "Atras"
 L["Basement"] = "Sótano"
@@ -202,7 +195,6 @@ L["Bortega <Reagents & Poison Supplies>"] = "Bortega <Suministros de venenos y c
 L["Brewfest"] = "Festival de la cerveza"
 L["Child"] = "Niño"
 L["Colon"] = ": "
--- L["Comma"] = ""
 L["Connection"] = "Conexión"
 L["East"] = "Este"
 L["Elevator"] = "Ascensor"
@@ -219,18 +211,13 @@ L["Ghost"] = "Fantasma"
 L["Graveyard"] = "Cementerio"
 L["Hallow's End"] = "Halloween"
 L["Heroic"] = "Heróico"
--- L["Heroic_Symbol"] = ""
 L["Holy Paladin"] = "Paladín Sagrado"
 L["Holy Priest"] = "Sacerdote Sagrado"
--- L["Hyphen"] = ""
 L["Imp"] = "Duendecillo"
 L["Key"] = "Llave"
--- L["L-DQuote"] = ""
 L["Lothos Riftwaker"] = "Lothos Levantagrietas"
 L["Love is in the Air"] = "Amor en el aire"
 L["Lower"] = "Abajo"
--- L["L-Parenthesis"] = ""
--- L["L-SBracket"] = ""
 L["Lunar Festival"] = "Festival lunar"
 L["MapA"] = " [A]"
 L["MapB"] = " [B]"
@@ -238,10 +225,6 @@ L["MapC"] = " [C]"
 L["MapD"] = " [D]"
 L["MapE"] = " [E]"
 L["MapF"] = " [F]"
--- L["MapG"] = ""
--- L["MapH"] = ""
--- L["MapI"] = ""
--- L["MapJ"] = ""
 L["MapsNotFound"] = [=[La mazmorra actual no dispone de su 
 imagen de mapa correspondiente. 
 
@@ -251,32 +234,24 @@ L["Meeting Stone"] = "Piedra de encuentro"
 L["Middle"] = "Medio"
 L["Midsummer Festival"] = "Festival del solsticio de verano"
 L["Moonwell"] = "Claro de la luna"
--- L["Mythic"] = ""
--- L["Mythic_Symbol"] = ""
 L["North"] = "Norte"
 L["Nozari <Keepers of Time>"] = "Nozari <Vigilantes del Tiempo>"
 L["Optional"] = "Opcional"
 L["Orange"] = "Naranja"
 L["Orb of Command"] = "Orbe de orden"
 L["Outside"] = "Fuera"
--- L["Period"] = ""
 L["Portal"] = "Portal"
 L["PossibleMissingModule"] = "Posiblemente este mapa es de este módulo: "
 L["Protection Warrior"] = "Guerrero Protección"
 L["Purple"] = "Morado"
 L["Random"] = "Aleatorio"
 L["Rare"] = "Raro"
--- L["R-DQuote"] = ""
 L["Repair"] = "Reparar"
 L["Retribution Paladin"] = "Paladín Reprensión"
 L["Rewards"] = "Recompensas"
--- L["R-Parenthesis"] = ""
--- L["R-SBracket"] = ""
 L["Scarshield Quartermaster <Scarshield Legion>"] = "Intendente del Escudo del Estigma <Legión Escudo del Estigma>"
 L["Second Stop"] = "Segunda parada"
--- L["Semicolon"] = ""
 L["Shadow Priest"] = "Sacerdote Sombras"
--- L["Slash"] = ""
 L["Soridormi <The Scale of Sands>"] = "Soridormi <La Escama de las Arenas>"
 L["South"] = "Sur"
 L["Spawn Point"] = "Punto de aparición"
@@ -288,7 +263,6 @@ L["Teleporter destination"] = "Teletransportador de destino"
 L["The Behemoth"] = "El Behemoth"
 L["Third Stop"] = "Tercera parada"
 L["Top"] = "Arriba"
--- L["Transport"] = ""
 L["Tunnel"] = "Túnel"
 L["Underwater"] = "Bajo el agua"
 L["Upper"] = "Arriba"
@@ -302,8 +276,4 @@ L["Wave 6"] = "Ola 6"
 L["West"] = "Oeste"
 L["Yarley <Armorer>"] = "Yarley <Armero>"
 L["Zaladormu"] = "Zaladormu"
-L["ToC/Description"] = "Navegador de Mapas de Mazmorras"
-L["ToC/Title"] = "Atlas"
-
-
 end

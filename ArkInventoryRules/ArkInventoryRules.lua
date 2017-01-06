@@ -1,9 +1,9 @@
-﻿--[[
+--[[
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1742 $
-$Date: 2016-10-21 17:13:43 +1100 (Fri, 21 Oct 2016) $
+$Revision: 1760 $
+$Date: 2017-01-03 11:00:41 +1100 (Tue, 03 Jan 2017) $
 
 ]]--
 
@@ -753,7 +753,11 @@ function ArkInventoryRules.System.outfit( ... )
 		return true
 	end
 	
-	return ArkInventoryRules.System.outfit_blizzard( ... )
+	if CanUseEquipmentSets( ) then
+		return ArkInventoryRules.System.outfit_blizzard( ... )
+	end
+	
+	return false
 	
 end
 
@@ -864,6 +868,95 @@ function ArkInventoryRules.System.outfit_itemrack( ... )
 end
 
 function ArkInventoryRules.System.outfit_blizzard( ... )
+
+	-- blizzard equipment manager
+	
+	local equipsets = GetNumEquipmentSets( )
+	if equipsets == 0 then
+		return false
+	end
+	
+	local Outfits = { }
+	
+	-- get a list of outfits the item is in
+	for setnum = 1, equipsets do 
+		
+		local setname = GetEquipmentSetInfo( setnum )
+		local set = GetEquipmentSetLocations( setname )
+		
+		local id, player, bank, bags, void, slot, bag, voidtab, voidslot
+		
+		for k, location in pairs( set ) do
+			
+			id = nil
+			player, bank, bags, void, slot, bag, voidtab, voidslot = EquipmentManager_UnpackLocation( location )
+			--ArkInventory.Output( setname, ":", k, " -> [", player, ", ", bank, ", ", bags, ", ", void, "] [", bag, ".", slot, "] [", voidtab, ".", voidslot, "]" )
+			
+			if bank then
+				if ArkInventoryRules.Object.loc_id == ArkInventory.Const.Location.Bank then
+					id = GetContainerItemID( bag, slot )
+				end
+			elseif void then
+				if ArkInventoryRules.Object.loc_id == ArkInventory.Const.Location.Void then
+					id = GetVoidItemInfo( voidtab, voidslot )
+				end
+			elseif bags then
+				if ArkInventoryRules.Object.loc_id == ArkInventory.Const.Location.Bag then
+					id = GetContainerItemID( bag, slot )
+				end
+			elseif player then
+				if ArkInventoryRules.Object.loc_id == ArkInventory.Const.Location.Wearing then
+					id = GetInventoryItemID( "player", slot )
+				end
+			end
+			
+			if id and ArkInventoryRules.Object.info.id and id == ArkInventoryRules.Object.info.id then
+				--ArkInventory.Output( setname, ":", k, " -> [", ArkInventoryRules.Object.h, " / ", id )
+				tinsert( Outfits, string.trim( setname ) )
+				--ArkInventory.Output( "found ", ArkInventoryRules.Object.h, " in set [", setname, ":", k, "] [", ArkInventoryRules.Object.loc_id, ".", ArkInventoryRules.Object.bag_id, ".", ArkInventoryRules.Object.slot_id, "]" )
+				break
+			end
+			
+		end
+		
+	end
+	
+	-- not in any outfit
+	if next( Outfits ) == nil then
+		return false
+	end
+	
+	local ac = select( '#', ... )
+	
+	if ac == 0 then
+		return true
+	end
+	
+	for ax = 1, ac do
+		
+		local arg = select( ax, ... )
+		
+		if not arg then
+			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NIL"], fn, ax ), 0 )
+		end
+		
+		if type( arg ) ~= "string" then
+			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, ax, ArkInventory.Localise["STRING"] ), 0 )
+		end
+		
+		for _, o in pairs( Outfits ) do
+			if o and string.lower( string.trim( o ) ) == string.lower( string.trim( arg ) ) then
+				return true
+			end
+		end
+		
+	end	
+	
+	return false
+
+end
+
+function ArkInventoryRules.System.outfit_blizzard_old( ... )
 
 	-- blizzard equipment manager
 	
@@ -1459,14 +1552,14 @@ function ArkInventoryRules.System.tsmgroup( ... )
 	
 	local ac = select( '#', ... )
 	
-	if ( ac == 0 ) then
+	if ac == 0 then
 		-- no groupnames listed, so any group is ok
 		return true
 	end
 	
 	local arg
 	
-	-- loop through listed groupnames
+	-- loop through arguments
 	for ax = 1, ac do
 		
 		arg = select( ax, ... )
@@ -1521,6 +1614,76 @@ function ArkInventoryRules.System.tsmgroup( ... )
 	
 end
 
+function ArkInventoryRules.System.tsm( ... )
+	
+	-- always check for a hyperlink and that it's an item
+	if not ArkInventoryRules.Object.h or ArkInventoryRules.Object.class ~= "item" then
+		return false
+	end
+	
+	local fn = "tsm"
+	
+	if not IsAddOnLoaded( "TradeSkillMaster" ) then
+		return false
+	end
+	
+	-- full item string
+	local itemString = TSMAPI.Item:ToItemString( ArkInventoryRules.Object.h )
+	
+	if not itemString then
+		return false
+	end
+	
+	local group = TSMAPI.Groups:FormatPath( TSMAPI.Groups:GetPath( itemString ) )
+	
+	if not group then
+		
+		-- full item was not in any group, check base item
+		itemString = TSMAPI.Item:ToBaseItemString( ArkInventoryRules.Object.h )
+		
+		if not itemString then
+			return false
+		end
+		
+		group = TSMAPI.Groups:FormatPath( TSMAPI.Groups:GetPath( itemString ) )
+		
+		if not group then
+			return false
+		end
+		
+	end
+	
+	local ac = select( '#', ... )
+	
+	if ac == 0 then
+		-- no groupnames listed, so any group is ok
+		return true
+	end
+	
+	local arg
+	
+	-- loop through arguments
+	for ax = 1, ac do
+		
+		arg = select( ax, ... )
+		
+		if not arg then
+			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NIL"], fn, ax ), 0 )
+		end
+		
+		if type( arg ) ~= "string" then
+			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, ax, ArkInventory.Localise["STRING"] ), 0 )
+		end
+		
+		if string.find( string.lower( group ), arg ) then
+			return true
+		end
+		
+	end
+	
+	return false
+	
+end
 
 
 
@@ -1602,7 +1765,9 @@ ArkInventoryRules.Environment = {
 	-- 3rd party addons requried for the following functions to work
 	
 	trash = ArkInventoryRules.System.trash,
+	
 	tsmgroup = ArkInventoryRules.System.tsmgroup,
+	tsm = ArkInventoryRules.System.tsm,
 	
 }
 

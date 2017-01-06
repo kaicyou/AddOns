@@ -3,6 +3,13 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="6.2.6"
 
 TMW.CHANGELOG = [==[
+===v8.2.4===
+* Changed behavior of the On Combat Event notification trigger slightly to avoid occasional undesired timing issues (Ticket 1352).
+* Added conditions for Monks to check their stagger under the Resources condition category.
+
+====Bug Fixes====
+* Fixed BigWigs conditions for the latest BigWigs update.
+
 ===v8.2.3===
 * Improved behavior of exporting to other players.
 

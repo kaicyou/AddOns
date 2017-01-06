@@ -1,4 +1,4 @@
-﻿AtlasMajorCities_Continent0 = {
+AtlasMajorCities_Continent0 = {
 	["AshranAllianceFactionHub"] = "Draenor",
 	["AshranHordeFactionHub"] = "Draenor",
 	["Dalaran1_"] = "Northrend",

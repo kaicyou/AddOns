@@ -1,10 +1,10 @@
--- $Id: Atlas-frFR.lua 121 2016-11-14 09:56:53Z arith $
+-- $Id: Atlas-frFR.lua 126 2016-12-27 17:45:39Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2017 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -32,8 +32,8 @@ local L = AceLocale:NewLocale("Atlas", "frFR", false);
 -- Atlas French Localization
 -- Sur un travail de Wysiwyg, Khiria, Trasher entre 2007 et 2014
 -- Many thanks to all contributors!
--- $Date: 2016-11-14 09:56:53 +0000 (Mon, 14 Nov 2016) $
--- $Revision: 121 $
+-- $Date: 2016-12-27 11:45:39 -0600 (Tue, 27 Dec 2016) $
+-- $Revision: 126 $
 
 if ( GetLocale() == "frFR" ) then
 -- Define the leading strings to be ignored while sorting
@@ -63,8 +63,6 @@ L["Arazmodu <The Scale of Sands>"] = "Arazmodu <La Balance des sables>"
 L["Arcane Container"] = "Récipient arcanique"
 L["Arms Warrior"] = "Guerrier Armes"
 L["ATLAS_BUTTON_CLOSE"] = "Fermer"
--- L["ATLAS_CLICK_TO_OPEN"] = ""
--- L["ATLAS_COLLAPSE_BUTTON"] = ""
 L["ATLAS_DDL_CONTINENT"] = "Continent"
 L["ATLAS_DDL_CONTINENT_BROKENISLES"] = "Instances Îles Brisées"
 L["ATLAS_DDL_CONTINENT_DEEPHOLM"] = "Instances du Tréfonds"
@@ -114,7 +112,6 @@ L["ATLAS_DEP_MSG2"] = "Ils ont été désactivés pour ce personnage."
 L["ATLAS_DEP_MSG3"] = "Les supprimer de votre dossier AddOns."
 L["ATLAS_DEP_OK"] = "Ok"
 L["ATLAS_ENTRANCE_BUTTON"] = "Entrée"
--- L["ATLAS_EXPAND_BUTTON"] = ""
 L["ATLAS_INFO"] = "Atlas Information"
 L["ATLAS_INFO_12200"] = [=[Information importante : 
 
@@ -148,9 +145,7 @@ Clic-Droit pour les options d'Atlas.
 Clic-Gauche et glisser pour déplacer ce bouton.
 |cff6666ffhttp://www.atlasmod.com/|cffffffff]=]
 L["ATLAS_MISSING_MODULE"] = "Atlas a détecté des module(s)/plug-in(s) manquant : "
--- L["ATLAS_OPEN_ADDON_LIST"] = ""
 L["ATLAS_OPEN_ADVENTURE"] = "Cliquer pour ouvrir la fenêtre du Guilde de l'aventurier"
--- L["ATLAS_OPEN_WOWMAP_WINDOW"] = ""
 L["ATLAS_OPTIONS_ACRONYMS"] = "Afficher les acronymes VO/VF"
 L["ATLAS_OPTIONS_ACRONYMS_TIP"] = "Afficher les acronymes de l'instance dans les détails de la carte"
 L["ATLAS_OPTIONS_AUTOSEL"] = "Sélection automatique de la carte"
@@ -186,7 +181,6 @@ L["ATLAS_SLASH_OPTIONS"] = "options"
 L["ATLAS_STRING_CLEAR"] = "Nettoyer"
 L["ATLAS_STRING_LEVELRANGE"] = "Niveau"
 L["ATLAS_STRING_LOCATION"] = "Lieu"
--- L["ATLAS_STRING_MINGEARLEVEL"] = ""
 L["ATLAS_STRING_MINLEVEL"] = "Niveau Minimum"
 L["ATLAS_STRING_PLAYERLIMIT"] = "Limite de joueurs"
 L["ATLAS_STRING_RECLEVELRANGE"] = "Niveau recommandé"
@@ -194,7 +188,6 @@ L["ATLAS_STRING_SEARCH"] = "Rechercher"
 L["ATLAS_STRING_SELECT_CAT"] = "Choix de la catégorie"
 L["ATLAS_STRING_SELECT_MAP"] = "Choix de la carte"
 L["ATLAS_TITLE"] = "Atlas"
--- L["ATLAS_TOGGLE_LOOT"] = ""
 L["Attunement Required"] = "Harmonisation requise"
 L["Back"] = "de derrière"
 L["Basement"] = "Sous-sol"
@@ -264,7 +257,6 @@ L["Orb of Command"] = "Orbe de Commandement"
 L["Outside"] = "Extérieur"
 L["Period"] = "."
 L["Portal"] = "Portail"
--- L["PossibleMissingModule"] = ""
 L["Protection Warrior"] = "Guerrier Protection"
 L["Purple"] = "Violet"
 L["Random"] = "Aléatoire"
@@ -305,8 +297,4 @@ L["Wave 6"] = "Vague 6"
 L["West"] = "Ouest"
 L["Yarley <Armorer>"] = "Yarley <Armurier>"
 L["Zaladormu"] = "Zaladormu"
-L["ToC/Description"] = "Navigateur de cartes d'instances"
-L["ToC/Title"] = "Titre"
-
-
 end

@@ -1,4 +1,4 @@
-﻿<Bindings>
+<Bindings>
 	<Binding name="ARKINV_CONFIG" header="ARKINV" category="ADDONS">
 		ArkInventory.Frame_Config_Toggle( )
 	</Binding>

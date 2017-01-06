@@ -1,4 +1,4 @@
-﻿AtlasMajorCities_Strings = {
+AtlasMajorCities_Strings = {
 	Atlas_Category = "Major Cities";
 
 	-- key bindings

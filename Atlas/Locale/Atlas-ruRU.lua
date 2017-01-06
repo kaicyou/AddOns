@@ -1,10 +1,10 @@
--- $Id: Atlas-ruRU.lua 97 2016-09-05 14:59:04Z arith $
+-- $Id: Atlas-ruRU.lua 126 2016-12-27 17:45:39Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2017 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -30,8 +30,8 @@ local L = AceLocale:NewLocale("Atlas", "ruRU", false);
 -- Atlas Russian Localization
 -- Compiled by Eugene Filatov, bigoblin, StingerSoft
 -- Last Update: 23.01.2011
--- $Date: 2016-09-05 14:59:04 +0000 (Mon, 05 Sep 2016) $
--- $Revision: 97 $
+-- $Date: 2016-12-27 11:45:39 -0600 (Tue, 27 Dec 2016) $
+-- $Revision: 126 $
 
 if ( GetLocale() == "ruRU" ) then
 -- Define the leading strings to be ignored while sorting
@@ -49,7 +49,7 @@ end
 
 if L then
 L["Adult"] = "Взрослый"
-L["AKA"] = "AKA" -- Needs review
+L["AKA"] = "AKA"
 L["Alexston Chrome <Tavern of Time>"] = "Алекстон Хром <Таверна Времени>"
 L["Alurmi <Keepers of Time Quartermaster>"] = "Алурми <Начальник снабжения Хранителей Времени>"
 L["Anachronos <Keepers of Time>"] = "Анахронос <Хранители Времени>"
@@ -194,7 +194,6 @@ L["ATLAS_STRING_SEARCH"] = "Поиск"
 L["ATLAS_STRING_SELECT_CAT"] = "Выбор категории"
 L["ATLAS_STRING_SELECT_MAP"] = "Выбор карты"
 L["ATLAS_TITLE"] = "Atlas"
--- L["ATLAS_TOGGLE_LOOT"] = ""
 L["Attunement Required"] = "Необходима подготовка"
 L["Back"] = "Назад"
 L["Basement"] = "Подвал"
@@ -308,9 +307,5 @@ L["Wave 6"] = "6-ая волна"
 L["West"] = "Запад"
 L["Yarley <Armorer>"] = "Ярли <Бронник>"
 L["Zaladormu"] = "Заладорму"
-L["ToC/Description"] = "Обозреватель подземелий"
-L["ToC/Title"] = "Atlas"
-
-
 
 end

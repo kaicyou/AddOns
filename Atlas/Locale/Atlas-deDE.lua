@@ -1,10 +1,10 @@
--- $Id: Atlas-deDE.lua 97 2016-09-05 14:59:04Z arith $
+-- $Id: Atlas-deDE.lua 126 2016-12-27 17:45:39Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2017 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -192,7 +192,7 @@ L["ATLAS_STRING_SEARCH"] = "Suchen"
 L["ATLAS_STRING_SELECT_CAT"] = "Kategorie wählen"
 L["ATLAS_STRING_SELECT_MAP"] = "Karte wählen"
 L["ATLAS_TITLE"] = "Atlas"
--- L["ATLAS_TOGGLE_LOOT"] = ""
+L["ATLAS_TOGGLE_LOOT"] = "Rechtsklick, um die Beute ein-/auszublenden."
 L["Attunement Required"] = "Zugangsquest erforderlich"
 L["Back"] = "Hinten"
 L["Basement"] = "Keller"
@@ -306,9 +306,5 @@ L["Wave 6"] = "Welle 6"
 L["West"] = "Westen"
 L["Yarley <Armorer>"] = "Yarley <Rüstungsschmied>"
 L["Zaladormu"] = "Zaladormu"
-L["ToC/Description"] = "Instanzkarten-Browser"
-L["ToC/Title"] = "Atlas"
-
-
 
 end

@@ -1,10 +1,10 @@
--- $Id: Atlas_Transportation-zhTW.lua 59 2016-11-09 10:16:14Z arith $
+-- $Id: Atlas_Transportation-zhTW.lua 62 2017-01-01 10:46:23Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2017 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 	This file is part of Atlas.
 
@@ -28,7 +28,6 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("Atlas_Transportation", "zhTW", false);
 
 if L then
-
 L["Abandoned Kite"] = "被遺棄的鳶"
 L["Airship"] = "飛行器"
 L["Aludane Whitecloud <Flight Master>"] = "艾魯丹·白雲 <飛行管理員>"
@@ -54,20 +53,20 @@ L["Nutral"] = "中立"
 L["Only available after winning the PvP battle"] = "僅限贏得戰場勝利後"
 L["Orange"] = "橙"
 L["Orb of Translocation"] = "傳送之門"
-L["Portals"] = "傳送門"
+L["Portal / Waygate Path to the destination"] = "傳送門 / 甬道之門傳往目的地的路徑"
 L["Portal to Dalaran"] = "到達拉然的傳送門"
 L["Portal to Dreadscar Rift"] = "懼痕裂隙傳送門"
 L["Portal to Netherlight Temple"] = "虛空之光神殿傳送門"
 L["Portal to Sanctum of Light"] = "聖光會堂傳送門"
 L["Portal to the Maelstrom"] = "大漩渦傳送門"
-L["Portal / Waygate Path to the destination"] = "傳送門 / 甬道之門傳往目的地的路徑"
+L["Portals"] = "傳送門"
 L["Purple"] = "紫"
 L["Rappelling Rope"] = "垂降繩"
 L["Red"] = "紅"
+L["Require to complete \"Meet the Scout\" quest line first."] = "需要先完成“和斥候會面”任務線。"
 L["Requires Eagle Ally Advancement"] = "需要升級飛鷹盟友"
 L["Requires honored faction with Sha'tari Skyguard"] = "需薩塔空防陣營榮譽"
 L["Requires Teleportation Nexus Advancement"] = "需要升級傳送網路"
-L["Require to complete \"Meet the Scout\" quest line first."] = "需要先完成“和斥候會面”任務線。"
 L["Seahorse"] = "海馬"
 L["Shado-Pan Rope"] = "影潘索 "
 L["Ship / Zeppelin sailing path to destination"] = "船隻 / 飛船航向目的地的路徑"
@@ -91,8 +90,5 @@ L["Wind Rider Master"] = "蠍尾獅管理員"
 L["Won't be available once the Battle for Andorhal chain is finished."] = "安多哈爾任務線完成後飛行點將會消失"
 L["Yellow"] = "黃"
 L["Zeppelin Towers"] = "飛船空塔"
-L["ToC/Description"] = "|cff00CC33Atlas 交通網路圖插件，顯示各大陸的海陸空交通節點|r"
-L["ToC/Title"] = "|r|cFF0099FF[地圖]|rAtlas 交通網路圖"
-
 end
 

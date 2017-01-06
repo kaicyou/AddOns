@@ -1,10 +1,10 @@
--- $Id: Atlas_Transportation_DB.lua 59 2016-11-09 10:16:14Z arith $
+-- $Id: Atlas_Transportation_DB.lua 65 2017-01-03 10:01:01Z arith $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 	Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
-	Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
+	Copyright 2011 ~ 2017 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 
 	This file is part of Atlas.
 
@@ -95,6 +95,8 @@ local myDB = {
 		{ "G", 10007, 220, 450 }; -- Lunastre Estate
 		{ "H", 10008, 263, 464 }; -- The Waning Crescent
 		{ "I", 10009, 414, 329 }; -- Twilight Vineyards
+		{ "J", 10010, 301, 445 }; -- Evermoon Terrace
+		{ "K", 10011, 326, 388 }; -- Astravar Harbor
 		{ "1", 10101,  58, 156 }; -- Irongrove Retreat
 		{ "2", 10102, 134, 263 }; -- Meredil
 		{ "3", 10103, 414, 216 }; -- Crimson Thicket

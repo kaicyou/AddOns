@@ -261,6 +261,7 @@ local achDarkmoonFaire = {
 
 local achDraenorGarrison = {
 	IsAlliance and 9564 or 9562, -- Securing Draenor
+	IsAlliance and 9491 or 9492, -- The Garrison Campaign
 
 	IsAlliance and 9100 or 9545, -- More Plots
 	IsAlliance and 9210 or 9132, -- Garrison Buddies
@@ -843,6 +844,7 @@ local ACHID_INSTANCES = {
 -- Aliases
 ACHID_INSTANCES["Molten Core"] = ACHID_INSTANCES["The Molten Core"]
 ACHID_INSTANCES["Hall of Blackhand"] = ACHID_INSTANCES["Upper Blackrock Spire"]
+ACHID_INSTANCES["Violet Hold"] = ACHID_INSTANCES["Assault on Violet Hold"]
 
 -- Battlegrounds
 ACHID_INSTANCES["The Battle for Gilneas"] = 5258
@@ -1190,6 +1192,40 @@ local ACHID_INSTANCES_MYTHIC = {
 
 
 local ACHID_HOLIDAY = {
+	["Darkmoon Faire"] = achDarkmoonFaire,
+	["Lunar Festival"] = {
+		913, -- To Honor One's Elders
+		605, -- A Coin of Ancestry
+	},
+	["Love is in the Air"] = {
+		1693, -- Fool For Love
+		1694, -- Lovely Luck Is On Your Side
+		1700, -- Perma-Peddle
+		4624, -- Tough Love
+		9389, -- It Might Just Save Your Life
+		9394, -- They Really Love Me! (last of series starting with "Love Magnet"; put here directly since it has a reward)
+	},
+	["Noblegarden"] = {
+		2798, -- Noble Gardener
+		249, -- Dressed for the Occasion
+		248, -- Sunday's Finest
+	},
+	["Children's Week"] = {
+		1793, -- For the Children
+		275, -- Veteran Nanny
+	},
+	["Midsummer Fire Festival"] = {
+		IsAlliance and 1038 or 1039, -- "The Flame Warden" or "The Flame Keeper"
+		IsAlliance and 1034 or 1036, -- The Fires of Azeroth
+		IsAlliance and 8045 or 8044, -- "Flame Warden of Pandaria" or "Flame Keeper of Pandaria"
+		IsAlliance and 11283 or 11284, -- "Flame Warden of Draenor" or "Flame Keeper of Draenor"
+		IsAlliance and 11280 or 11282, -- "Flame Warden of the Broken Isles" or "Flame Keeper of the Broken Isles"
+		IsAlliance and 1035 or 1037, -- "Desecration of the Horde" or "Desecration of the Alliance"
+		IsAlliance and 8042 or 8043, -- Extinguishing Pandaria
+		IsAlliance and 11276 or 11277, -- Extinguishing Draenor
+		IsAlliance and 11278 or 11279, -- Extinguishing the Broken Isles
+	},
+	["Pirates' Day"] = 3457, -- The Captain's Booty
 	["Brewfest"] = {
 		1683, -- Brewmaster (includes many other achievements)
 		1183, -- Brew of the Year
@@ -1197,7 +1233,6 @@ local ACHID_HOLIDAY = {
 		1260, -- Almost Blind Luck
 		293,  -- Disturbing the Peace
 	},
-	["Darkmoon Faire"] = achDarkmoonFaire,
 	["Hallow's End"] = {
 		1656,  -- Hallowed By Thy Name
 		971,   -- Tricks and Treats of Azeroth
@@ -1236,6 +1271,7 @@ local ACHID_HOLIDAY = {
 }
 -- Aliases:
 ACHID_HOLIDAY["Winter Veil"] = ACHID_HOLIDAY["Feast of Winter Veil"]
+ACHID_HOLIDAY["Midsummer"] = ACHID_HOLIDAY["Midsummer Fire Festival"]
 
 
 -- Create reverse lookup table for L.SUBZONES:
@@ -1446,7 +1482,7 @@ local TradeskillSuggestions
 
 local Refresh_lastcount, Refresh_stoploop = 0
 
-local function Refresh(self)
+local function Refresh(self, instanceRetry)
   if (not frame:IsVisible() or Refresh_stoploop) then  return;  end
   if (self == RefreshBtn or self == EditZoneOverride) then  PlaySound("igMainMenuOptionCheckBoxOn");  end
   Refresh_stoploop = true
@@ -1457,6 +1493,7 @@ local function Refresh(self)
   local inputtext = strtrim(EditZoneOverride:GetText())
   local zone = LocationsList[ strlower(inputtext) ]
   local textoverride = false
+  local instanceTry
   if (zone) then
     textoverride = true
     zone = LocationsList[zone]
@@ -1466,13 +1503,25 @@ local function Refresh(self)
     local subz = subzdrop:GetSelectedValue()
     if (subz ~= 0) then  CurrentSubzone = subz;  end
   else
-    zone = GetZoneSpecialOverride() or ZoneLookup(GetRealZoneText(), nil, CurrentSubzone)
+    if (instanceRetry ~= true) then -- check specifically against true because it could be "LeftButton"
+      zone = GetZoneSpecialOverride()
+      if (not zone and IsInInstance()) then
+	    instanceTry = true
+	    zone = ZoneLookup(GetInstanceInfo(), nil, CurrentSubzone)
+		--zone = "fake place force retry"
+	  end
+	end
+    if (not zone) then
+	  instanceTry = false
+	  zone = ZoneLookup(GetRealZoneText(), nil, CurrentSubzone)
+	end
     if (inputtext and inputtext ~= "") then  EditZoneOverride:SetTextColor(0.75, 0.1, 0.1);  end
     --Refresh_stoploop = true
     subzdrop:SetMenu(subzdrop_menu)
     --Refresh_stoploop = nil
     subzdrop:Disable()
   end
+  --print(zone)
 
   local instype, heroicD, mythicD, challenge, twentyfive, heroicR, mythicR = Overachiever.GetDifficulty()
 
@@ -1590,7 +1639,7 @@ local function Refresh(self)
     end
 
   end
-  
+
   -- Suggestions from recent reminders:
   Overachiever.RecentReminders_Check()
   for id in pairs(RecentReminders) do
@@ -1610,6 +1659,11 @@ local function Refresh(self)
     if (v ~= true) then
       critlist[id] = v
     end
+  end
+
+  if (count == 0 and instanceTry) then
+    Refresh_stoploop = nil
+    return Refresh(nil, true)
   end
 
   if (self ~= panel or Refresh_lastcount ~= count) then

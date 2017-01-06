@@ -1,84 +1,13 @@
 ------------------------------------------------------------------------
-r167 | Tuhljin | 2016-12-06 15:18:22 -0600 (Tue, 06 Dec 2016) | 1 line
-Changed paths:
-   M /trunk/AchieveID.lua
-   M /trunk/localization.lua
-   M /trunk/readme.txt
-
-- "Adventurer of Highmountain", "Adventurer of Stormheim", "Adventurer of Suramar": Added "need to kill" reminders for these achievements. (Unlike the other Legion "Adventurer" achievements, they require mob IDs to be entered manually.) At this time, their reminders are only for NPCs that need to be killed; does not show a tooltip for interacting with objects (but if an object spawns an NPC that should be killed, it will show on the NPC).
-------------------------------------------------------------------------
-r166 | Tuhljin | 2016-12-02 09:03:52 -0600 (Fri, 02 Dec 2016) | 2 lines
-Changed paths:
-   M /trunk/Bindings.xml
-   M /trunk/Overachiever_Tabs/Suggestions.lua
-   M /trunk/Overachiever_Tabs/localization.lua
-   M /trunk/readme.txt
-
-- Moved key bindings to AddOns category.
-- Suggestions Tab: Updated player garrison suggestions.
-------------------------------------------------------------------------
-r165 | Tuhljin | 2016-11-26 02:43:26 -0600 (Sat, 26 Nov 2016) | 1 line
-Changed paths:
-   M /trunk/AchieveID.lua
-   M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
-   M /trunk/Overachiever_Tabs/Suggestions.lua
-   M /trunk/Overachiever_Tabs/build.lua
-   M /trunk/Overachiever_Tabs/localization.lua
-   M /trunk/readme.txt
-
-- Suggestions Tab: New feature! You can now hide specific suggestions so they aren't shown to the current character. There is a "Show Hidden" checkbox allowing you to see what you've hidden and "unhide" them, as desired.
-------------------------------------------------------------------------
-r164 | Tuhljin | 2016-11-18 21:02:21 -0600 (Fri, 18 Nov 2016) | 1 line
-Changed paths:
-   M /trunk/AchieveID.lua
-
-Commit to deal with repo issue.
-------------------------------------------------------------------------
-r163 | Tuhljin | 2016-11-18 16:44:03 -0600 (Fri, 18 Nov 2016) | 1 line
-Changed paths:
-   M /trunk/AchieveID.lua
-   M /trunk/Overachiever.lua
-   M /trunk/libs/TjBagWatch.lua
-   M /trunk/localization.lua
-   M /trunk/readme.txt
-
-- Another adjustment to TjBagWatch library to make it a more CPU efficient. (Use C_Timer instead of OnUpdate.)
-------------------------------------------------------------------------
-r162 | tuhljin | 2016-11-11 10:01:52 -0600 (Fri, 11 Nov 2016) | 1 line
+r176 | Tuhljin | 2016-12-24 13:15:54 -0600 (Sat, 24 Dec 2016) | 1 line
 Changed paths:
    M /trunk/GameTip.lua
-   M /trunk/libs/TjBagWatch.lua
-
-- Make TjBagWatch library a little more CPU efficient.
-------------------------------------------------------------------------
-r161 | tuhljin | 2016-11-01 08:41:50 -0500 (Tue, 01 Nov 2016) | 6 lines
-Changed paths:
-   M /trunk/AchieveID.lua
    M /trunk/Overachiever.lua
-   M /trunk/Overachiever_Tabs/Suggestions.lua
-   M /trunk/libs/TjOptions.lua
-   M /trunk/libs/TjOptions.txt
-   M /trunk/libs/TjSharedMediaDropDown/TjDropDownMenu.lua
-   M /trunk/readme.txt
-
-- Overachiever's dropdown menus now respond to clicks anywhere instead of only on the down-arrow button.
-- Made the default UI's "Achievement Filter" dropdown respond to clicks anywhere instead of only on the down-arrow button.
-- Added initial support for "need to kill" achievement reminders that require mob IDs to be entered manually (due to the WoW API not providing them) and began entering IDs for criteria of "Adventurer of Stormheim". WIP.
-- Suggestions Tab:
--- Suggest "Securing Draenor" at the player garrison.
--- Fix failure to show suggestions for subzones of Shadowmoon Valley (Draenor) and Frostfire Ridge other than the garrison.
-------------------------------------------------------------------------
-r160 | tuhljin | 2016-10-28 19:39:29 -0500 (Fri, 28 Oct 2016) | 3 lines
-Changed paths:
-   M /trunk/GameTip.lua
    M /trunk/Overachiever.toc
    M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
-   M /trunk/Overachiever_Tabs/Suggestions.lua
    M /trunk/Overachiever_Trade/Overachiever_Trade.toc
    M /trunk/readme.txt
 
-- Suggestions Tab:
--- Fix issue where the current instance's difficulty could be improperly detected, resulting in missing/wrong suggestions.
--- Suggest "Underbelly Tycoon" in correct zone (Dalaran (Broken Isles)).
+- Fix error on startup for characters Overachiever hasn't seen before.
 ------------------------------------------------------------------------
 

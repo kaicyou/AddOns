@@ -1,7 +1,7 @@
 ﻿Atlas, un navegador de mapas de mazmorras para World of Warcraft
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, equipo de Atlas
-Copyright 2011 ~ 2016 - Arith Hsu, equipo de Atlas <atlas.addon@gmail.com>
+Copyright 2011 ~ 2017 - Arith Hsu, equipo de Atlas <atlas.addon at gmail dot com>
 
 
 ===================
@@ -53,7 +53,7 @@ http://www.atlasmod.com/phpBB3/
 ============
 
 Puedes contactar con el propietario del proyecto en la siguiente dirección:
-atlas.addon@gmail.com
+atlas.addon at gmail dot com
 O visitar nuestro foro y dejar un mensaje.
 
 

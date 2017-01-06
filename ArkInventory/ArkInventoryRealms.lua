@@ -1,4 +1,4 @@
-﻿local portal = GetCVar( "Portal" ) or ""
+local portal = GetCVar( "Portal" ) or ""
 
 local ConnectedRealms = { }
 

@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 
 License: All Rights Reserved, (c) 2006-2016
 

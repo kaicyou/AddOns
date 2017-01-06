@@ -1,4 +1,4 @@
-﻿	
+	
 ArkInventory.Const.MoneyTypeInfo = { }
 
 ArkInventory.Const.MoneyTypeInfo["PLAYER"] = {

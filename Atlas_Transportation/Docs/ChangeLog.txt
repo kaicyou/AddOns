@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 60 2016-11-11 05:19:19Z arith $
+$Id: ChangeLog.txt 65 2017-01-03 10:01:01Z arith $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert@gmail.com>
 Copyright 2010 - Lothaer <lothayer@gmail.com>, Atlas Team
@@ -8,6 +8,17 @@ Copyright 2011 ~ 2016 - Arith Hsu, Atlas Team <atlas.addon@gmail.com>
 = Change Log =
 ==============
 
+v1.36.01 (Jan. 03, 2017)
+------------------------
+- Added Astravar Harbor in Suramar
+
+v1.36.00 (Jan. 01, 2017)
+------------------------
+- Added Evermoon Terrace, this is available after the Waning Crescent is destroyed
+- Translation update:
+  - Korean (netaras)
+  - German (pas06)
+  
 v1.35.01 (Nov. 11, 2016)
 ------------------------
 - Map revamped:

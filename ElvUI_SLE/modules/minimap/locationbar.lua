@@ -56,6 +56,7 @@ end
 LP.PortItems = {
 	{6948}, --Hearthstone
 	{64488, nil, true}, --The Innkeeper's Daughter
+	{142542, nil, true}, --Tome of Town Portal (Diablo Event)
 	{110560, GARRISON_LOCATION_TOOLTIP}, --Garrison Hearthstone
 	{128353}, --Admiral's Compass
 	{140192, DUNGEON_FLOOR_DALARAN1}, --Dalaran Hearthstone

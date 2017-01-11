@@ -393,6 +393,8 @@ function module.options:Load()
 				end
 			end
 		end
+		
+		module.options.buttonsend:Anim(false)
 	end) 
 	
 	function self.buttonsend:Anim(on)
@@ -1212,6 +1214,10 @@ end
 do
 	local encountersUsed = {}
 	function module.main:ENCOUNTER_START(encounterID,encounterName)
+		local _, zoneType, difficulty, _, _, _, _, mapID = GetInstanceInfo()
+		if difficulty == 7 or difficulty == 17 then	--Disable if LFR
+			return false
+		end
 		if encountersUsed[encounterID] then
 			return
 		end

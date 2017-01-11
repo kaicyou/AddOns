@@ -693,26 +693,7 @@ function CA:Setup_CharacterArmory()
 	self.Setup_CharacterArmory = nil
 end
 
--- function CA:ScanData()
-	-- self.NeedUpdate = nil
-	
-	-- if not self.DurabilityUpdated then
-		-- self.NeedUpdate = self:Update_Durability() or self.NeedUpdate
-	-- end
-	
-	-- if self.GearUpdated ~= true then
-		-- self.NeedUpdate = self:Update_Gear() or self.NeedUpdate
-	-- end
-	
-	-- if not self.NeedUpdate and self:IsShown() then
-		-- self:SetScript('OnUpdate', nil)
-		-- self:Update_Display(true)
-	-- elseif self.NeedUpdate then
-		-- self:SetScript('OnUpdate', self.ScanData)
-	-- end
--- end
-
-function CA:ScanData(...)
+function CA:ScanData()
 	self.NeedUpdate = nil
 	
 	if not self.DurabilityUpdated then
@@ -725,17 +706,9 @@ function CA:ScanData(...)
 	
 	if not self.NeedUpdate and self:IsShown() then
 		self:SetScript('OnUpdate', nil)
+		self:Update_Display(true)
 	elseif self.NeedUpdate then
 		self:SetScript('OnUpdate', self.ScanData)
-	end
-
-	if DCS_Check then DCS_Check() end
-end
-
-local function DCS_Check()
-	if _G["DCS_ExpandCheck"] then
-		_G["DCS_ExpandCheck"]:SetFrameLevel(_G["CharacterModelFrame"]:GetFrameLevel() + 2)
-		DCS_Check = nil
 	end
 end
 
@@ -1682,12 +1655,19 @@ KF.Modules.CharacterArmory = function()
 		_G["CharacterModelFrameBackgroundOverlay"]:SetPoint('TOPLEFT', CharacterModelFrame, 0, 0)
 		_G["CharacterModelFrameBackgroundOverlay"]:SetPoint('BOTTOMRIGHT', CharacterModelFrame, 0, 0)
 	end
-	if SLE._Compatibility["DejaCharacterStats"] then return end
+
+	CA:ElvOverlayToggle()
+	if SLE._Compatibility["DejaCharacterStats"] then
+		PaperDollFrame.ExpandButton:SetFrameLevel(_G["CharacterModelFrame"]:GetFrameLevel() + 2)
+		PaperDollFrame.ExpandButton:ClearAllPoints()
+		PaperDollFrame.ExpandButton:SetPoint("TOPRIGHT", CA, 14, 8)
+		PaperDollFrame.ExpandButton:SetSize(32, 32)
+		return
+	end
 	--Resize and reposition god damned ilevel text
 	_G["CharacterStatsPane"].ItemLevelFrame:SetPoint("TOP", _G["CharacterStatsPane"].ItemLevelCategory, "BOTTOM", 0, 6)
 	CA:UpdateIlvlFont()
 	hooksecurefunc("PaperDollFrame_UpdateStats", CA.PaperDollFrame_UpdateStats)
 	-- PaperDollFrame_UpdateStats = CA.PaperDollFrame_UpdateStats()
 	CA:ToggleStats()
-	CA:ElvOverlayToggle()
 end

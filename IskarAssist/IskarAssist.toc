@@ -2,10 +2,6 @@
 ## Title: Raid Assist
 ## Notes: Former 'Iskar' Assist, our further mods and tools will be added here, for now there's 16 raiding tools, type /raa to see.
 ## SavedVariables: IskarAssistDB, RADataBase
-## X-Curse-Packaged-Version: r107
-## X-Curse-Project-Name: Raid Assist
-## X-Curse-Project-ID: iskar-assist
-## X-Curse-Repository-ID: wow/iskar-assist/mainline
 
 #@no-lib-strip@
 Libs\libs.xml

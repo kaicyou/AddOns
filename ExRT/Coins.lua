@@ -374,7 +374,7 @@ function module.options:Load()
 			return 2
 		elseif (spellID and (tostring(spellID)):match(currFilter) ) then
 			return 3
-		elseif timestamp:lower():match(currFilter) then
+		elseif timestamp and timestamp:lower():match(currFilter) then
 			return 4
 		end
 	end

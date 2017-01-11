@@ -592,33 +592,95 @@ end
 local boss_spells = {
 	--"Hellfire Assault"
 	[1426] = {181155, 180417, 181968, 186737, 188884, 185806, 185021, 180945,185156,187655,187638,184065,186883,180080,190728,184243,190748,190739,181120,184394,184370},
-
+		
 	--Nythendra
-	[1703] = {}, 
+	[1703] = {
+		204506, --infested
+		202978, --infested-breath
+		204470, --volatile-rot
+		203045, --infested-ground
+		203646, --burst-of-corruption
+	}, 
 	--Elerethe Renferal
-	[1744] = {}, 
+	[1744] = {
+		214348, --vile-ambush
+		218144, --violent-winds
+		212709, --gathering-clouds
+		222037, --raking-talons
+		213124, --venomous-pool
+		215306, --pain-lash
+		213936, --dark-storm
+		233434, --necrotic-venom
+		210850, --twisting-shadows
+		210228, --dripping-fangs
+	}, 
 	--Il'gynoth, Heart of Corruption
-	[1738] = {}, 
+	[1738] = {
+		209471, --nightmare-explosion
+		209469, --touch-of-corruption
+		210931, --nightmare-gaze
+		215233, --nightmarish-fury
+		208689, --ground-slam
+		215836, --death-blossom
+		210984, --eye-of-fate
+		208929, --spew-corruption
+		215128, --cursed-blood
+		212886, --nightmare-corruption
+		208697, --mind-flay
+	}, 
 	--Ursoc
-	[1667] = {}, 
+	[1667] = {
+		198109, --barreling-impact
+		197969, --roaring-cacophony
+		204859, --rend-flesh
+		198099, --momentum
+		197943, --overwhelm
+		199237, --trampling-slam
+	}, 
 	--Dragons of Nightmare
-	[1704] = {}, 
+	[1704] = {
+		203102, --mark-of-ysondre
+		203121, --mark-of-taerar
+		203125, --mark-of-emeriss
+		203124, --mark-of-lethon
+		203028, --corrupted-breath
+		203153, --nightmare-blast
+		204122, --tail-lash
+		205870, --gloom
+		204044, --shadow-burst
+		203690, --nightmare-bloom
+		203771, --defiled-eruption
+		203817, --corrupted-burst
+		205300, --corruption
+		205341, --seeping-fog
+	}, 
 	--Cenarius
-	[1750] = {}, 
+	[1750] = {
+		210342, --dread-thorns
+		214529, --spear-of-nightmares
+		211196, --rotten-breath
+		210342, --dread-thorns
+		211507, --nightmare-javelin
+	}, 
 	--Xavius
-	[1726] = {}, 
+	[1726] = {
+		206369, --corruption-meteor
+		209158, --blackening-soul
+		206651, --darkening-soul
+		207830, --corrupting-nova
+	}, 
 	
 	--odyn
 	[1819] = {
-		228915, --/stormforged-spear
-		230990,--/unerring-blast
-		228932,--/stormforged-spear
-		229255,--/arcing-storm
-		227712,--/ spear-of-light
-		231016,--/shatter
+		228915, --stormforged-spear
+		230990,--unerring-blast
+		228932,--stormforged-spear
+		229255,--arcing-storm
+		227712,--spear-of-light
+		231016,--shatter
 		228162,
-		228030,--/expel-light
-		228012,--/horn-of-valor
+		228030,--expel-light
+		228012,--horn-of-valor
 	}, 
 	
 	--guarm
@@ -677,6 +739,7 @@ local encounter_journal = {
 
 local combat_log_ids = {
 	[861] = {
+		1958, 1962, 2008,
 		[1958] = 1819, --Odyn
 		[1962] = 1830, --Guarm
 		[2008] = 1829, --Helya

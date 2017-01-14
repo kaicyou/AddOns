@@ -1,6 +1,6 @@
 --[[
 	Auctioneer
-	Version: 7.2.5688 (TasmanianThylacine)
+	Version: 7.3a.5701 (TasmanianThylacine)
 	Revision: $Id: CoreScan.lua 5682 2016-10-27 19:05:14Z brykrys $
 	URL: http://auctioneeraddon.com/
 
@@ -3264,5 +3264,5 @@ function internal.Scan.NotifyOwnedListUpdated()
 --	end
 end
 
-AucAdvanced.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.2/Auc-Advanced/CoreScan.lua $", "$Rev: 5682 $")
+AucAdvanced.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.3a/Auc-Advanced/CoreScan.lua $", "$Rev: 5682 $")
 AucAdvanced.CoreFileCheckOut("CoreScan")

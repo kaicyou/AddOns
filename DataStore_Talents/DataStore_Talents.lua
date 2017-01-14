@@ -1,4 +1,4 @@
-﻿--[[	*** DataStore_Talents ***
+--[[	*** DataStore_Talents ***
 Written by : Thaoky, EU-Marécages de Zangar
 June 23rd, 2009
 --]]
@@ -153,6 +153,10 @@ local function RightShift(value, numBits)
 	return math.floor(value / 2^numBits)
 end
 
+local function GetArtifactName()
+	return select(2, C_ArtifactUI.GetArtifactArtInfo())
+end
+
 
 -- *** Scanning functions ***
 local function ScanTalents()
@@ -219,7 +223,7 @@ end
 local function ScanArtifact()
 	local char = addon.ThisCharacter
 
-	local artifactName = select(2, C_ArtifactUI.GetArtifactArtInfo())
+	local artifactName = GetArtifactName()
 
 	-- only save the name if the item viewed is the one equipped (since you can right-click an artifact in the bags)
 	if C_ArtifactUI.IsViewedArtifactEquipped() then
@@ -238,8 +242,14 @@ end
 local function ScanArtifactXP()
 	local char = addon.ThisCharacter
 	
-	local _, _, artifactName, _, remaining = C_ArtifactUI.GetEquippedArtifactInfo()
-	local artifact = char.Artifacts[artifactName]
+	-- This method provides the right data, except the name because Blizzard is "AGAIN" not consistent in the names it returns.
+	-- Ex: Arcane mage: 
+	--   C_ArtifactUI.GetArtifactArtInfo() => returns Aluneth, Great staff of ...
+	--   C_ArtifactUI.GetEquippedArtifactInfo() => returns only "Aluneth"
+	-- local _, _, artifactName, _, remaining = C_ArtifactUI.GetEquippedArtifactInfo()
+	
+	local _, _, _, _, remaining = C_ArtifactUI.GetEquippedArtifactInfo()
+	local artifact = char.Artifacts[GetArtifactName()]
 	if artifact then
 		artifact.pointsRemaining = remaining
 	end

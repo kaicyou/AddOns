@@ -3207,10 +3207,12 @@ function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses)
 		end
 	end
 
-	-- check Achivements for 2 raids
+	-- check Achivements for 3 raids
 	local RaidAchiv = {}
-	RaidAchiv[TNname],RaidAchiv[TENname]={},{}
-	SaveAOTCCE(RaidAchiv[TNname],11195,11192) SaveAOTCCE(RaidAchiv[TENname],11194,11191)
+	RaidAchiv[TNname],RaidAchiv[TENname], RaidAchiv[TOVname]={},{},{}
+	SaveAOTCCE(RaidAchiv[TNname],11195,11192) 
+	SaveAOTCCE(RaidAchiv[TENname],11194,11191) 
+	SaveAOTCCE(RaidAchiv[TOVname],11581,11580)
 	
 	local oilvltooltiptexts = {}
 	for i = 1, OilvlTooltip:NumLines() do
@@ -3652,9 +3654,10 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses)
 	end
 
 	local RaidAchiv = {}
-	RaidAchiv[TNname],RaidAchiv[TENname]={},{}
+	RaidAchiv[TNname],RaidAchiv[TENname], RaidAchiv[TOVname]={},{},{}
 	SaveAOTCCE(RaidAchiv[TNname],11195,11192) 
-	SaveAOTCCE(RaidAchiv[TENname],11194,11191)
+	SaveAOTCCE(RaidAchiv[TENname],11194,11191) 
+	SaveAOTCCE(RaidAchiv[TOVname],11581,11580)
 
 	local oilvltooltiptexts = {}
 	for i = 1, OilvlTooltip:NumLines() do

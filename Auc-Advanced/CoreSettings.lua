@@ -1,6 +1,6 @@
 ﻿--[[
 	Auctioneer
-	Version: 7.2.5688 (TasmanianThylacine)
+	Version: 7.3a.5701 (TasmanianThylacine)
 	Revision: $Id: CoreSettings.lua 5670 2016-09-03 11:59:41Z brykrys $
 	URL: http://auctioneeraddon.com/
 
@@ -796,5 +796,5 @@ function private.CheckObsolete()
 	end
 end
 
-AucAdvanced.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.2/Auc-Advanced/CoreSettings.lua $", "$Rev: 5670 $")
+AucAdvanced.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.3a/Auc-Advanced/CoreSettings.lua $", "$Rev: 5670 $")
 AucAdvanced.CoreFileCheckOut("CoreSettings")

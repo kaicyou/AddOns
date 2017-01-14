@@ -4,7 +4,7 @@
 ## Interface: 70100
 ## LoadOnDemand: 0
 ##
-## Version: 7.2.5688 (TasmanianThylacine)
+## Version: 7.3a.5701 (TasmanianThylacine)
 ## Revision: $Id: LibExtraTip.toc 419 2016-10-27 11:33:18Z brykrys $
 ## Author: Norganna's AddOns
 ## X-Part-Of: Libraries

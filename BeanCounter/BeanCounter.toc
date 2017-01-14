@@ -6,7 +6,7 @@
 ## OptionalDeps: !nLog, Babylonian, DebugLib, SlideBar, Auc-Advanced, Configator, LibExtraTip, TipHelper, LibDataBroker
 ## SavedVariables: BeanCounterDB, BeanCounterDBSettings, BeanCounterDBNames, BeanCounterAccountDB, BeanCounterMailPatch
 ##
-## Version: 7.2.5688 (TasmanianThylacine)
+## Version: 7.3a.5701 (TasmanianThylacine)
 ## Revision: $Id: BeanCounter.toc 5681 2016-10-27 11:39:11Z brykrys $
 ## Author: Norganna's AddOns
 ## X-Part-Of: Auctioneer

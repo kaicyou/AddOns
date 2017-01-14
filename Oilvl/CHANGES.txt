@@ -1,9 +1,9 @@
 ------------------------------------------------------------------------
-r649 | olzenkhaw | 2017-01-08 19:01:07 -0600 (Sun, 08 Jan 2017) | 1 line
+r651 | olzenkhaw | 2017-01-13 22:05:46 -0600 (Fri, 13 Jan 2017) | 1 line
 Changed paths:
    M /trunk/Oilvl.lua
    M /trunk/Oilvl.toc
 
-v6.4.0 - Show The Nighthold tier pcs bonus (2 or 4) in OiLvL window and Minimap button tooltip.
+6.4.1 - added ATOC and Cutting Edge: Helya in raid progression detail
 ------------------------------------------------------------------------
 

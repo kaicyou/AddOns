@@ -1,6 +1,6 @@
 --[[
 	Auctioneer - Search UI - Filter IgnoreItemPrice
-	Version: 7.2.5688 (TasmanianThylacine)
+	Version: 7.3a.5701 (TasmanianThylacine)
 	Revision: $Id: FilterItemPrice.lua 5556 2015-04-15 11:20:29Z brykrys $
 	URL: http://auctioneeraddon.com/
 
@@ -288,4 +288,4 @@ function lib.PostFilter(item, searcher, buyorbid)
 	end
 end
 
-AucAdvanced.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.2/Auc-Util-SearchUI/FilterItemPrice.lua $", "$Rev: 5556 $")
+AucAdvanced.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.3a/Auc-Util-SearchUI/FilterItemPrice.lua $", "$Rev: 5556 $")

@@ -2,7 +2,7 @@
 ## Interface: 70100
 ## Dependancies: Auc-Advanced
 ##
-## Version: 7.2.5688 (TasmanianThylacine)
+## Version: 7.3a.5701 (TasmanianThylacine)
 ## Revision: $Id: Auc-Util-ScanButton.toc 5681 2016-10-27 11:39:11Z brykrys $
 ## Author: Norganna's AddOns
 ## X-Part-Of: Auctioneer

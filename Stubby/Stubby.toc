@@ -5,7 +5,7 @@
 ## OptionalDeps: !nLog, DebugLib
 ## SavedVariables: StubbyConfig
 ##
-## Version: 7.2.5688 (TasmanianThylacine)
+## Version: 7.3a.5701 (TasmanianThylacine)
 ## Revision: $Id: Stubby.toc 419 2016-10-27 11:33:18Z brykrys $
 ## Author: Norganna's AddOns
 ## X-Part-Of: Libraries

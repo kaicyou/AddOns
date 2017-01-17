@@ -302,8 +302,8 @@ module.db.reductionAuras = {
 }
 module.db.reductionBySpec = {
 	[63] = {30482,	0.94,	ReductionAurasFunctions.physical,	0x4},	--Mage fire;  16% with artifact trait, 6% without
-	[104] = {16931,	0.94},		--Druid bear
-	[581] = {203513,0.9,	ReductionAurasFunctions.magic}			--Demonic Wards
+	[104] = {16931,	0.94},			--Druid bear
+	[581] = {203513,0.9},			--Demonic Wards
 }
 module.db.reductionCurrent = {}
 module.db.reductionPowerWordBarrierCaster = nil
@@ -535,6 +535,9 @@ SLTReductionFrame:SetScript("OnEvent",function(_,_,unit)
 	if not guid then
 		return
 	elseif name and not SLTReductionAuraData[ guid ] then
+		if not fightData_auras then
+			return
+		end
 		local destData = var_reductionCurrent[ guid ]
 		if not destData then
 			destData = {}
@@ -557,6 +560,9 @@ SLTReductionFrame:SetScript("OnEvent",function(_,_,unit)
 		
 		fightData_auras[ #fightData_auras + 1 ] = {GetTime() - module.db.timeFix[1] + module.db.timeFix[2],SLTReductionSourceGUID,UnitGUID(unit),true,true,SLTReductionAuraSpellID,"BUFF",1,1}		
 	elseif not name and SLTReductionAuraData[ guid ] then
+		if not fightData_auras then
+			return
+		end
 		local destData = var_reductionCurrent[ guid ]
 		if not destData then
 			return
@@ -959,8 +965,7 @@ local BossPhasesData = {
 local BossPhasesFrame = CreateFrame("Frame")
 local BossPhasesBossmodPhaseCounter, BossPhasesBossmodPhase, BossPhasesBossmodEnabled = 1
 local BossPhasesBossmod = function ()
-	if BigWigs then
-		BigWigs:Enable()
+	if BigWigsLoader and type(BigWigsLoader)=='table' and BigWigsLoader.RegisterMessage then
 		local r = {}
 		function r:BigWigs_Message (event, module, key, text, ...)
 			
@@ -989,7 +994,7 @@ local BossPhasesBossmod = function ()
 			end
 		end
 		
-		BigWigs.RegisterMessage (r, "BigWigs_Message")
+		BigWigsLoader.RegisterMessage (r, "BigWigs_Message")
 		
 		BossPhasesBossmod = nil
 	end
@@ -1226,7 +1231,7 @@ function _BW_End(encounterID)
 	
 	active_phase = nil
 	
-	if BossPhasesBossmodEnabled and ExRT.F.table_len(segmentsData.phaseNames) == 1 then
+	if BossPhasesBossmodEnabled and segmentsData.phaseNames and ExRT.F.table_len(segmentsData.phaseNames) == 1 then
 		segmentsData.phaseNames = nil
 	end
 	BossPhasesBossmodEnabled = nil

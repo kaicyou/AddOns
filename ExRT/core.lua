@@ -1,9 +1,13 @@
---	14:41 11.01.2017
+--	0:20 17.01.2017
 
 --[[
+3842
+* Note: added Nighthold icons
+* Timers: fixed sync with BW
+* Minor fixes
+
 3841
 * Major fixes
-
 
 3840
 * Fixed pull timer for party group
@@ -17,7 +21,7 @@
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3841
+ExRT.V = 3842
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции
@@ -579,7 +583,7 @@ do
 	end
 end
 
--- Заметка: сообщение в приват на другой сервер почему-то игнорируется
+-- Заметка: сообщение в приват на другой сервер игнорируется
 
 function ExRT.F.SendExMsg(prefix, msg, tochat, touser, addonPrefix)
 	addonPrefix = addonPrefix or "EXRTADD"

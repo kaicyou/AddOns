@@ -75,11 +75,11 @@ local function CreateTimers(ctime,cname)
 	local chat_type,playerName = ExRT.F.chatType()
 
 	if cname == L.timerattack then
-		SendAddonMessage("BigWigs", "T:BWPull "..ctime, chat_type,playerName)
+		SendAddonMessage("BigWigs", "P^Pull^"..ctime, chat_type,playerName)
 		local _,_,_,_,_,_,_,mapID = GetInstanceInfo()
 		SendAddonMessage("D4", ("PT\t%d\t%d"):format(ctime,mapID or -1), chat_type,playerName)
 	else
-		SendAddonMessage("BigWigs", "T:BWCustomBar "..ctime.." "..cname, chat_type,playerName)
+		SendAddonMessage("BigWigs", "P^CBar^"..ctime.." "..cname, chat_type,playerName)
 		if ctime == 0 then
 			ctime = 1
 		end
@@ -290,7 +290,7 @@ function module.options:Load()
 		end
 	end)
 	
-	self.sliderTimeToKill = ELib:Slider(self.TabTimerFrame,L.TimerTimeToKillTime):Size(100):Point("LEFT",self.chkTimeToKill,"LEFT",180,5):Range(5,30):SetTo(VExRT.Timers.timeToKillAnalyze):OnChange(function(self,event) 
+	self.sliderTimeToKill = ELib:Slider(self.TabTimerFrame,L.TimerTimeToKillTime):Size(100):Point("LEFT",self.chkTimeToKill,"LEFT",180,5):Range(5,40):SetTo(VExRT.Timers.timeToKillAnalyze):OnChange(function(self,event) 
 		event = event - event%1
 		VExRT.Timers.timeToKillAnalyze = event
 		self.tooltipText = event
@@ -485,7 +485,7 @@ do
 	local hpSnapshots,timeSnapshots,iSnapshot,guidSnapshot = {},{},0
 	local tmr = 0
 	local tmr2 = 0
-	local MAX_SEGMENTS = 70
+	local MAX_SEGMENTS = 90
 	
 	function module.frame.OnUpdateFunc(self,elapsed)
 		tmr2 = tmr2 + elapsed
@@ -508,7 +508,13 @@ do
 				local currHp,maxHP = UnitHealth('target'),UnitHealthMax('target')
 				local targetGUID = UnitGUID('target')
 				if guidSnapshot ~= targetGUID then
-					wipe(hpSnapshots)
+					--wipe(hpSnapshots)
+					for i=1,MAX_SEGMENTS do
+						if not hpSnapshots[i] then
+							break
+						end
+						hpSnapshots[i] = nil
+					end
 					iSnapshot = 1
 					guidSnapshot = targetGUID
 				end

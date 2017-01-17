@@ -632,12 +632,10 @@ function ExRT.F.GetPlayerRole()
 	else
 		local _,class = UnitClass('player')
 		local isMelee = (class == "WARRIOR" or class == "PALADIN" or class == "ROGUE" or class == "DEATHKNIGHT" or class == "MONK" or class == "DEMONHUNTER")
-		if class == "SHAMAN" or class == "DRUID" then
-			if (UnitPowerMax('player',0) or 500001) < 500000 then
-				isMelee = true
-			else
-				isMelee = false
-			end
+		if class == "DRUID" then
+			isMelee = GetSpecialization() ~= 1
+		elseif class == "SHAMAN" then
+			isMelee = GetSpecialization() == 2
 		elseif class == "HUNTER" then
 			isMelee = GetSpecialization() == 3
 		end

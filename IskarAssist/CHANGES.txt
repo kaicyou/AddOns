@@ -1,5 +1,11 @@
-changeset:   112:412ba41fdfd5
+changeset:   113:87ba10003a0f
 tag:         tip
+user:        Tercio
+date:        Mon Jan 16 14:00:31 2017 -0200
+summary:     - invite keywords are no longer case sensitive.
+
+
+changeset:   112:412ba41fdfd5
 user:        Tercio
 date:        Sun Jan 08 17:23:37 2017 -0200
 summary:     - after receiving a readycheck, the window shall popup a faster.
@@ -597,11 +603,5 @@ changeset:   13:f8fd38081fb2
 user:        Tercio
 date:        Tue Jun 30 18:33:30 2015 -0300
 summary:     - middle click now select the player.
-
-
-changeset:   12:ef7381b3d334
-user:        Tercio
-date:        Fri Jun 26 16:56:38 2015 -0300
-summary:     - added missing libraries.
 
 

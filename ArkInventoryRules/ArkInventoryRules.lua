@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1760 $
-$Date: 2017-01-03 11:00:41 +1100 (Tue, 03 Jan 2017) $
+$Revision: 1767 $
+$Date: 2017-01-18 18:42:35 +1100 (Wed, 18 Jan 2017) $
 
 ]]--
 
@@ -46,12 +46,19 @@ function ArkInventoryRules.OnInitialize( )
 	-- scrap: http://wow.curse.com/downloads/wow-addons/details/scrap.aspx
 	if IsAddOnLoaded( "Scrap" ) then
 		
-		ArkInventory.Output( string.format( "%s: Scrap %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+		if ArkInventory.db.option.message.rules.hooked then
+			ArkInventory.Output( string.format( "%s: Scrap %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+		end
 		
 		if IsAddOnLoaded( "Scrap_Merchant" ) then
 			if Scrap.ToggleJunk then
-				ArkInventory.Output( string.format( "%s: Scrap Merchant %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+			
+				if ArkInventory.db.option.message.rules.hooked then
+					ArkInventory.Output( string.format( "%s: Scrap Merchant %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+				end
+				
 				ArkInventory.MySecureHook( Scrap, "ToggleJunk", ArkInventoryRules.ItemCacheClear )
+				
 			end
 		end
 		
@@ -60,18 +67,28 @@ function ArkInventoryRules.OnInitialize( )
 	-- selljunk: http://wow.curse.com/downloads/wow-addons/details/sell-junk.aspx
 	if IsAddOnLoaded( "SellJunk" ) then
 		if SellJunk.Add and SellJunk.Rem then
-			ArkInventory.Output( string.format( "%s: SellJunk %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+			
+			if ArkInventory.db.option.message.rules.hooked then
+				ArkInventory.Output( string.format( "%s: SellJunk %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+			end
+			
 			ArkInventory.MySecureHook( SellJunk, "Add", ArkInventoryRules.ItemCacheClear )
 			ArkInventory.MySecureHook( SellJunk, "Rem", ArkInventoryRules.ItemCacheClear )
+			
 		end
 	end
 	
 	-- reagent restocker: http://wow.curse.com/downloads/wow-addons/details/reagent_restocker.aspx
 	if IsAddOnLoaded( "ReagentRestocker" ) then
 		if ReagentRestocker.addItemToSellingList and ReagentRestocker.deleteItem then
-			ArkInventory.Output( string.format( "%s: ReagentRestocker %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+			
+			if ArkInventory.db.option.message.rules.hooked then
+				ArkInventory.Output( string.format( "%s: ReagentRestocker %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Localise["ENABLED"] ) )
+			end
+			
 			ArkInventory.MySecureHook( ReagentRestocker, "addItemToSellingList", ArkInventoryRules.ItemCacheClear )
 			ArkInventory.MySecureHook( ReagentRestocker, "deleteItem", ArkInventoryRules.ItemCacheClear )
+			
 		end
 	end
 	
@@ -719,11 +736,11 @@ function ArkInventoryRules.System.outfit( ... )
 		return false
 	end
 	
-	if ArkInventoryRules.Object.loc_id and ArkInventory.Global.Location[ArkInventoryRules.Object.loc_id].isOffline then
+	if ArkInventoryRules.Object.info.equiploc == "" then
 		return false
 	end
 	
-	if ArkInventoryRules.Object.info.equiploc == "" then
+	if ArkInventoryRules.Object.loc_id and ArkInventory.Global.Location[ArkInventoryRules.Object.loc_id].isOffline then
 		return false
 	end
 	
@@ -868,7 +885,7 @@ function ArkInventoryRules.System.outfit_itemrack( ... )
 end
 
 function ArkInventoryRules.System.outfit_blizzard( ... )
-
+	
 	-- blizzard equipment manager
 	
 	local equipsets = GetNumEquipmentSets( )
@@ -890,24 +907,17 @@ function ArkInventoryRules.System.outfit_blizzard( ... )
 			
 			id = nil
 			player, bank, bags, void, slot, bag, voidtab, voidslot = EquipmentManager_UnpackLocation( location )
-			--ArkInventory.Output( setname, ":", k, " -> [", player, ", ", bank, ", ", bags, ", ", void, "] [", bag, ".", slot, "] [", voidtab, ".", voidslot, "]" )
 			
-			if bank then
-				if ArkInventoryRules.Object.loc_id == ArkInventory.Const.Location.Bank then
-					id = GetContainerItemID( bag, slot )
-				end
-			elseif void then
-				if ArkInventoryRules.Object.loc_id == ArkInventory.Const.Location.Void then
-					id = GetVoidItemInfo( voidtab, voidslot )
-				end
-			elseif bags then
-				if ArkInventoryRules.Object.loc_id == ArkInventory.Const.Location.Bag then
-					id = GetContainerItemID( bag, slot )
-				end
-			elseif player then
-				if ArkInventoryRules.Object.loc_id == ArkInventory.Const.Location.Wearing then
-					id = GetInventoryItemID( "player", slot )
-				end
+--			if void then
+--				ArkInventory.Output( setname, ":", k, " -> [", player, ", ", bank, ", ", bags, ", ", void, "] [", bag, ".", slot, "] [", voidtab, ".", voidslot, "]" )
+--			end
+			
+			if void and voidtab and voidslot then
+				id = GetVoidItemInfo( voidtab, voidslot )
+			elseif ( not bags ) and slot then
+				id = GetInventoryItemID( "player", slot )
+			elseif bag and slot then
+				id = GetContainerItemID( bag, slot )
 			end
 			
 			if id and ArkInventoryRules.Object.info.id and id == ArkInventoryRules.Object.info.id then
@@ -1786,7 +1796,10 @@ function ArkInventoryRules.Register( a, n , f, o ) -- addon, rule name, function
 	end
 	
 	ArkInventoryRules.Environment[n] = f
-	ArkInventory.Output( "Successful rule registration from ", a:GetName( ), " - rule function [", n, "] is now active" )
+	if ArkInventory.db.option.message.rules.registration then
+		ArkInventory.Output( "Successful rule registration from ", a:GetName( ), " - rule function [", n, "] is now active" )
+	end
+	
 	return true
 	
 end

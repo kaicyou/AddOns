@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1756 $
-$Date: 2016-11-08 11:21:30 +1100 (Tue, 08 Nov 2016) $
+$Revision: 1768 $
+$Date: 2017-01-18 18:42:43 +1100 (Wed, 18 Jan 2017) $
 
 ]]--
 
@@ -1294,6 +1294,42 @@ function ArkInventory.ConfigInternal( )
 								},
 							},
 						},
+						
+						
+						
+						rules = {
+							order = 600,
+							name = ArkInventory.Localise["CONFIG_RULE_PLURAL"],
+							type = "group",
+							inline = true,
+							args = {
+								hooked = {
+									order = 100,
+									name = ArkInventory.Localise["CONFIG_SYSTEM_MESSAGES_RULES_HOOKED"],
+									desc = ArkInventory.Localise["CONFIG_SYSTEM_MESSAGES_RULES_HOOKED_TEXT"],
+									type = "toggle",
+									get = function( info )
+										return ArkInventory.db.option.message.rules.hooked
+									end,
+									set = function( info, v )
+										ArkInventory.db.option.message.rules.hooked = v
+									end,
+								},
+								registration = {
+									order = 200,
+									name = ArkInventory.Localise["CONFIG_SYSTEM_MESSAGES_RULES_REGISTRATION"],
+									desc = ArkInventory.Localise["CONFIG_SYSTEM_MESSAGES_RULES_REGISTRATION_TEXT"],
+									type = "toggle",
+									get = function( info )
+										return ArkInventory.db.option.message.rules.registration
+									end,
+									set = function( info, v )
+										ArkInventory.db.option.message.rules.registration = v
+									end,
+								},
+							},
+						},
+
 
 					},
 				},

@@ -1,0 +1,272 @@
+﻿	r36-beta
+FIX: [Elemental] Stacks for Lava Burst should once again appear correctly. (Thanks, Supermiikes!)
+
+	r35-beta
+NEW: Elemental has been updated to reflect the new talent tree adjustments.
+NEW: Timer durations for Earth Elemental and Storm Elemental have been updated to reflect the new duration adjustments.
+
+FIX: [Enhancement] A random bug should be fixed.
+
+	r34-beta
+NEW: The aura movement tool has been completely redesigned to be more user-friendly.
+	
+	r33-beta
+FIX: [Restoration] The second Healing Stream Totem duration bar should no longer freeze and stay visible.
+FIX: [Restoration] The Tidal Waves indicator bar should no longer stay visible when switching to other specs.
+FIX: [Enhancement] The ability to adjust the maelstrom bar's height should now be working.
+
+NEW: [Restoration] New options are available to set the preferred method in which the Tidal Waves indicator bar will display in and out of combat.
+	
+	r32-beta
+FIX: [Elemental] Earthquake's aura should stop glowing when Echoes of the Great Sundering's buff is removed.
+FIX: [Elemental] Lava Burst's glow should now stop glowing after a Lava Surge proc while Ascendance is active.
+FIX: [UI] Fixed an error that would occur if a buff timer was active upon dying.
+FIX: [UI] The following fixes have been applied to Elemental's aura customization auras.
+		-Lava Burst's checkbox should now work correctly.
+		-A checkbox for Earthquake has been added. (Thanks, Grailerpro!)
+		-A checkbox for Gust of Wind has been added. (Thanks, keyia_aggramar!)
+FIX: [UI] The following changes have been made to the duration timer bar config options
+		-[All] Added Bloodust, Heroism, and Time Warp.
+		-[Elemental] Added Elemental Mastery.
+		-[Elemental] Earth, Fire, and Storm Elementals have been moved to their own group.
+		-[Enhancement] Duplicate bar options have been removed.
+		-[Enhancement] Changed Spirit Walk's bar color to brown.
+FIX: [Enhancement] The correct buff duration bars should display.
+	
+	r31.2-beta
+FIX: "Testing" should no longer spam your chatbox
+
+	r31.1-beta
+FIX: Hid random frame (I use this frame for debugging; apologies!)
+	
+	r31-beta
+FIX: [UI] Auras from inactive specs should no longer appear. (Thanks, Theranon!)
+FIX: [UI] Certain progress bars should once appear correctly when switching specs.
+FIX: [Enhancement] Stormstrike should fade when you don't have enough maelstrom. (Thanks, Theranon!)
+FIX: [Enhancement] Stormstrike should now display a cooldown. (Thanks, Theranon!)
+	
+	r30-beta
+FIX: [UI] Progress bars and cooldown values should now be affect by custom Out of Combat opacity. (Thanks, Doomst4!)
+
+NEW: [Enhancement] An aura for Lava Lash has been added.
+NEW: [All] All auras and duration timer bars have been re-coded to be far more responsive and accurate.
+NEW: "Main" and "Utility" duration timer bars have been grouped together, but separated by a space.
+
+	r29-beta
+FIX: [UI] Various bug fixes.
+FIX: [UI] Duration timer bars should correctly appear when switching specs.
+FIX: [Elemental] Liquid Magma Totem's duration timer bar should now have a duration of 15 seconds.
+FIX: [Restoration] Healing Stream Totem duration timer bars should be working correctly again.
+
+	r28-beta
+FIX: [UI] Timer bars for non-buff abilities should be working correctly again.
+
+	r27-beta
+FIX: [UI] The following UI objects should no longer stop appearing unexpectedly (99% certain; crossing fingers)
+		-Stormkeeper Charges
+		-Stormstrike Charges
+		-Maelstrom Bar Lightning Animation
+		-Cloudburst Absorption Tracker
+FIX: [Enhancement] The Frostbrand duration bar should no longer overlap the other duration bars.
+FIX: [Enhancement] The duration timers for Boulderfist, Flametongue, and Frostbrand should now display the proper total duration of their buffs upon refreshing them.
+FIX: [Enhancement] The Frostband aura will now show the Frostbrand icon (Thanks, Youtube_attillee!)
+FIX: [Enhancement] Stormstrike's visual charges should now disappear appropriately.
+FIX: [Enhancement] Stormstrike's cooldown information should disappear when Stormbringer procs
+FIX: [Enhancement] Stormstrike and Frostbrand's icons should fade out when there is not enough Maelstrom to use them.
+		
+NEW: The Cloudburst Absorption Tracker's icon now shows timer text of the remaining time left on Cloudburst Totem.
+
+	r26-beta
+FIX: The textures for the Cloudburst Absorption Tracker should now correctly appear.
+
+	r25-beta
+FIX: Hiding an entire spec's auras should now persist through UI reloads.
+
+	r24-beta
+NEW: [UI] The following status bars can now be resized
+		-Maelstrom Bar (Elemental & Enhancement)
+		-Icefury Bar
+		-Earthen Shield Bar
+		-Tidal Waves Bar
+NEW: [UI] The Tidal Waves' bar color can now be changed for when the bar is empty.
+
+
+	r23-beta
+FIX: [Elemental] Stormkeeper's charges should no longer stop appearing (not 100% tested)
+FIX: [Elemental] Maelstrom's lightning animation should no longer stop appearing (not 100% tested)
+FIX: [Restoration] The Cloudburst absorption tracker should now always appear.
+FIX: [Restoration] The Cloudburst timer bar should now disappear when releasing Cloudburst early.
+FIX: [Restoration] The Earthen Shield Totem bar should once again correctly track
+FIX: [UI] Showing and hiding certain spec's auras should now work in the config options. (Thanks, Melianthe!)
+
+
+	r22-beta
+NEW: Update Interface Code to 7.1
+
+	r21.2-beta
+FIX: The Move Utility should once again be working for Enhancement and Restoration
+FIX: The Move Utility buttons for Elemental and Enhancement should once again read their respective spec names.
+	
+	r21-beta
+FIX: [UI] An issue that r20-beta caused that prevented the addon from loading correctly should be fixed (Needs testing)
+FIX: [UI] The Cloudburst Totem icon should now appear correctly in the Cloudburst Absorption Tracker.
+FIX: [UI] "Cleanse Spirit" checkbox has been added for Elemental and Enhancement configuration options. (Thanks, Demofoner!)
+FIX: [UI] "Hex" checkbox has been added for Enhancement and Restoration configuration options. (Thanks, Demofoner!)
+FIX: [Elemental] Earthquake's aura should now remain opaque when "Echoes of the Great Sundering" procs.
+
+NEW: [UI] A large portion of the aura movement utility has been re-coded to offer myself better control for future updates.
+	  • Any progress bars (Maelstrom, Earthen Shield, etc) will now show fully textures as they would while showing in combat.
+NEW: [UI] To avoid confusion, settings for specs that aren't currently active are now disabled.
+NEW: [UI] Aura sizing and spacing is now available!
+	  • The Interface Options Frame is now movable to help with aura customizations.
+
+	  
+	r20-beta
+FIX: [Elemental] The Totem Mastery texture alert should no longer appear on opposing faction players when in a sanctuary.
+FIX: [Restoration] The Earthen Shield Totem progress bar should once again appear after moving resto auras.
+NEW: [Restoration] A visual indicator has been added to track healing absorbed by Cloudburst Totem
+
+	r19-beta
+FIX: [UI] Moving all the auras as a group now works again. (Thanks, Stxfreak & C.Damm!)
+FIX: [UI] The "Move All" checkbox should disable and enable correctly.
+FIX: [UI] The "Move All" text's font has been updated to match the rest of the text.
+FIX: [UI] The Maelstrom Bar should no longer turn white after moving any auras.
+
+	r18-beta
+FIX: [UI] An issue that would cause the database to become corrupted has been fixed
+        - An alert popup will appear instructing you on how to correct a corrupted database.
+	
+	r17-beta
+FIX: [UI] When typing an invalid slash command, the grid should no longer appear.
+FIX: [UI] Typing slash commands should once again be working correctly.
+FIX: [Resto] Closing the move utility should no longer cause an error and should now exit correctly.
+
+	r16-beta
+FIX: [Elemental] The Totem Mastery texture alert show now disappear when switching specs while targetting an enemy
+FIX: [Resto] Removed "Undulation" text that would appear when Undulation was applied.
+FIX: [UI] You should once again be able to move the "Top" auras group.
+FIX: [UI] The Maelstrom Bar should now correctly appear when moving auras.
+
+NEW: Enhancement auras are now available!
+	
+	
+	r15-beta
+FIX: [Resto] Earthen Shield Totem from other Shamans will no longer activate the progress bar.
+FIX: [Resto] The Tidal Waves bar should correctly re-appear after using the aura moving utility.
+FIX: [Resto] The Tidal Waves bar should correctly appear while using the aura moving utility.
+FIX: [Resto] The button "glow" that randomly appears should no longer occur (not 100% tested)
+FIX: [UI] Forced font in Move Checkbox list to "PT_Sans_Narrow". The text should properly fit in the frame now.
+NEW: [Ele/Resto] Due to being redundant, Lava Surge visual alert has been removed.
+NEW: [Resto] A new animated orb appears when Undulation is applied.
+NEW: [UI] You will no longer be able to configure the auras during combat.
+NEW: [UI] A visual grid has been added to assist in aura movement. (Can be toggled on or off)
+NEW: [UI] Special shift-click functionality has been added to assist with precision aura movement.
+		- Shift+Left-Click: Aura moved to horizontal center
+		- Shift+Right-Click: Aura moved to vertical center
+		- Shift:Middle-Click: Aura moved to horizontal and vertical center.
+
+
+
+	r14-beta
+FIX: [Resto] The Tidal Waves bar should no longer appear when you have no target while out of combat. (Thanks Cusacki!)
+FIX: [UI] Typing "/ssa" will now correctly show the addon's "home page".
+NEW: [Resto] An option has been added to enable or disable the Tidal Waves' pulsing animation (Thanks Cusacki!)
+NEW: [UI] You can now check the addon's version by typing "/ssa version"
+NEW: [UI] Inputting an invalid slash command entry will print out valid slash command options.
+
+	r13-beta
+FIX: [Resto] Flame Shock's cooldown swipe should now appear correctly.
+FIX: [All] "Minor" auras are now affected by target checking (valid target, in range, etc)
+FIX: [All] The "Out of Range" opacity should correctly adjust when in and out of combat
+
+
+	r12-beta
+FIX: [Resto] A bug has been fixed that would occur when placing Cloudburst Totem
+FIX: [Resto] The cooldown for Cloudburst Totem is working correctly now.
+FIX: [All] The addon's auras will no longer appear on characters that are not shamans. (Thanks Montromarth!)
+NEW: [All] A Bloodlust duration timer bar has been added.
+NEW: [All] A Heroism duration timer bar has been added. (Thanks Cetrus!)
+NEW: [All] A Time Warp duration timer bar has been added. (Thanks Cetrus!)
+
+
+	r11-beta
+FIX: An issue from summoning elementals has been fixed and their cooldowns now work correctly.
+FIX: Icefury's progress bar once again works correctly.
+NEW: Bloodlust duration timer bar.
+
+	r10-beta
+NEW: Duration timer bars have been added for Primal Earth,Fire, and Storm Elementals
+NEW: The cooldown system has been completely redesigned.
+	• The Fire Elemental cooldown will now correctly adjust its cooldown when Lava Burst is cast; as part of the "Elementalist" artifact perk.
+	• All cooldowns that reset after a boss fight will now correctly reset.
+	
+	r9-beta
+
+FIX: An issue when trying to load the addon should be fixed.
+
+
+	r8-beta
+
+NOTE: Apologies, everyone! I had to leave town and rushed r7-beta out the door without testing it. I'll be sure to avoid doing this in the future!
+
+Elemental
+
+FIX: The Earthquake icon will now properly fade in and out depending on your Maelstrom amount.
+NEW: A new glow alert has been added for Earthquake for the legendary shoulders "Echoes of the Great Sundering" proc.
+
+	r7-beta
+FIXES:
+
+--- Elemental ---
+• An issue that caused the maelstrom bar to not show when switching from resto to elemental has been fixed
+• A new icon has been added for Earthquake. The icon will fade in and out based on whether or not you have enough Maelstrom to cast an Earthquake.
+• The cooldown text and animation will now disappear when Lava Surge procs and Ascendance is casted
+
+--- Restoration ---
+• When Echo of the Elements is learned, two separate duration timer bars will appear for both Healing Stream Totems
+
+	r6-beta
+APPENDED:
+
+• For some reason "Libs/LibAboutPanel" wasn't uploaded with the recent updates. This should [hopefully] fix the interface panel issue(s) as well as any other potential bugs.
+	
+	r5-beta
+NEW FEATURES:
+
+--- User Interface ---
+• Users can now change the opacity of the auras when out of combat.
+• Resetting default options for all settings is now available.
+    • Elemental & Enhancement
+        • Users can now change the "Out of Range" color for harmful abilities.
+		
+	r4-beta
+FIXES:
+
+--- Elemental ---
+• An error will no longer occur when using Bloodlust.
+• The progress bars for the 3 elementals will now be their correct size.
+• The 3 lightning orbs will now always appear when using Stormseeker.
+
+--- Restoration ---
+• Lightning Surge Totem's icon now properly appears
+• Earthen Shield Totem's health/progress bar now correctly appears
+• An Earthen Shield Totem icon has been added to the "left" column of small icons.
+• All icons will become opaque when in combat, or targeting a friendly target.
+• The Tidal Waves bar will now appear and disappear appropriately.
+• Spiritwalker's Grace's duration timer bar now correctly appears.
+
+--- User Interface ---
+• The interface option category should now appear in the navigation panel properly.
+
+	r3-beta
+FIXES:
+
+• Various errors that occurred while in Enhancement.
+• [In Testing]: Fixed Interface Options display issues.
+
+	r2-beta
+FIXED:
+
+• The "Totem Mastery" texture alert show now appear and disappear as intended.
+• The Maelstrom Bar "Lightning" animation should now be working.
+• Reloading the UI is no longer required when adjusting the Maelstrom Bar "Lightning" animation trigger.

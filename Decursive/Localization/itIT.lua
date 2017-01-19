@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
     
-    Decursive (v 2.7.5) add-on for World of Warcraft UI
+    Decursive (v 2.7.5.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2014 John Wellesz (archarodim AT
     teaser.fr) ( http://www.2072productions.com/to/decursive.php )
 
@@ -21,7 +21,7 @@
     Decursive is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY.
 
-    This file was last updated on 2014-10-13T09:20:46Z
+    This file was last updated on 2014-10-13T14:20:46Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -73,12 +73,11 @@ end
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "itIT");
 
 if not L then 
-    T._LoadedFiles["itIT.lua"] = "2.7.5";
+    T._LoadedFiles["itIT.lua"] = "2.7.5.1";
     return;
 end
 
 
 
-
-T._LoadedFiles["itIT.lua"] = "2.7.5";
+T._LoadedFiles["itIT.lua"] = "2.7.5.1";
 

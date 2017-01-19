@@ -5940,6 +5940,19 @@ GameTooltip:HookScript("OnTooltipSetUnit", function()
 	end 
 end); 
 
+BINDING_HEADER_OiLvL = "O Item Level"
+BINDING_NAME_OILVL_RAID_PROGRESSION = L["Raid Progression"]
+
+function OMouseover2()
+	if not UnitAffectingCombat("player") and cfg.oilvlms and UnitExists("target") then
+		local oname, _ = GameTooltip:GetUnit()
+		if oname ~= nil then oname = oname:gsub("%-.+", ""); else return -1; end
+		if  oname == GetUnitName("target",""):gsub("%-.+", "") then
+			OMouseover();
+		end
+	end 
+end
+
 function oilvlaltc()
 	lootslotSW = true;
 	for i = 1, LOOTFRAME_NUMBUTTONS do
@@ -6141,6 +6154,7 @@ function oilvlCheckUpgrade(i)
 	if n == 0 then return "" end
 	return upgrade.."/"..n;
 end
+
 
 
 SLASH_OILVL_OIT1 = "/oit"

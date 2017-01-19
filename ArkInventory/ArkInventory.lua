@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1761 $
-$Date: 2017-01-03 11:00:50 +1100 (Tue, 03 Jan 2017) $
+$Revision: 1769 $
+$Date: 2017-01-18 18:43:00 +1100 (Wed, 18 Jan 2017) $
 
 ]]--
 
@@ -1902,6 +1902,10 @@ ArkInventory.Const.DatabaseDefaults.global = {
 			["bag"] = {
 				["unknown"] = true,
 			},
+			["rules"] = {
+				["hooked"] = true,
+				["registration"] = true,
+			},
 		},
 		["combat"] = {
 			["yieldafter"] = 30,
@@ -3204,8 +3208,12 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	
 	
 	-- toys
-	if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ITEM_TOY_ONUSE, false, true, true ) then
-		return ArkInventory.CategoryGetSystemID( "SYSTEM_TOY" )
+	if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ITEM_TOY_ONUSE, false, true, true, true ) then
+		if i.sb and ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["ALREADY_KNOWN"], false, true, true, true ) then
+			return ArkInventory.CategoryGetSystemID( "SYSTEM_TRASH" )
+		else
+			return ArkInventory.CategoryGetSystemID( "SYSTEM_TOY" )
+		end
 	end
 	
 	local codex = ArkInventory.GetLocationCodex( i.loc_id )

@@ -11,6 +11,15 @@
  
 
 
+*3.07.22 (18-JAN-2017)*
+ * added - option to disable rule 3rd party mod load messages
+ * added - option to disable rule registration messages
+ * fixed - (maybe) issue with outfit( ) rule and blizzard equipment manager
+
+*3.07.21 (18-JAN-2017)*
+ * changed - souldbound toys that you already know are now classified as trash
+ * fixed - issue with outfit( ) rule and blizzard equipment manager with items in your bank
+
 *3.07.20 (03-JAN-2017)*
  * added - rule function tsm( ) allows for regex matching on tsm group names
  * fixed - issue with outfit( ) rule and blizzard equipment manager after changing specs

@@ -1,0 +1,164 @@
+------------------------------------------------------------------------
+r90 | SweetsourDev | 2017-01-11 18:03:31 -0600 (Wed, 11 Jan 2017) | 2 lines
+Changed paths:
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r36-beta
+FIX: [Elemental] Stacks for Lava Burst should once again appear correctly. (Thanks, Supermiikes!)
+------------------------------------------------------------------------
+r89 | SweetsourDev | 2017-01-10 17:02:28 -0600 (Tue, 10 Jan 2017) | 5 lines
+Changed paths:
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/SA_Init.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r35-beta
+NEW: Elemental has been updated to reflect the new talent tree adjustments.
+NEW: Timer durations for Earth Elemental and Storm Elemental have been updated to reflect the new duration adjustments.
+
+FIX: [Enhancement] A random bug should be fixed.
+------------------------------------------------------------------------
+r88 | SweetsourDev | 2016-12-18 23:09:35 -0600 (Sun, 18 Dec 2016) | 2 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/changelog.txt
+
+	r34-beta
+NEW: The aura movement tool has been completely redesigned to be more user-friendly.
+------------------------------------------------------------------------
+r87 | SweetsourDev | 2016-12-09 14:49:19 -0600 (Fri, 09 Dec 2016) | 6 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r33-beta
+FIX: [Restoration] The second Healing Stream Totem duration bar should no longer freeze and stay visible.
+FIX: [Restoration] The Tidal Waves indicator bar should no longer stay visible when switching to other specs.
+FIX: [Enhancement] The ability to adjust the maelstrom bar's height should now be working.
+
+NEW: [Restoration] New options are available to set the preferred method in which the Tidal Waves indicator bar will display in and out of combat.
+------------------------------------------------------------------------
+r86 | SweetsourDev | 2016-12-01 14:45:02 -0600 (Thu, 01 Dec 2016) | 15 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Init.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r32-beta
+FIX: [Elemental] Earthquake's aura should stop glowing when Echoes of the Great Sundering's buff is removed.
+FIX: [Elemental] Lava Burst's glow should now stop glowing after a Lava Surge proc while Ascendance is active.
+FIX: [UI] Fixed an error that would occur if a buff timer was active upon dying.
+FIX: [UI] The following fixes have been applied to Elemental's aura customization auras.
+	-Lava Burst's checkbox should now work correctly.
+	-A checkbox for Earthquake has been added. (Thanks, Grailerpro!)
+	-A checkbox for Gust of Wind has been added. (Thanks, keyia_aggramar!)
+FIX: [UI] The following changes have been made to the duration timer bar config options
+	-[All] Added Bloodust, Heroism, and Time Warp.
+	-[Elemental] Added Elemental Mastery.
+	-[Elemental] Earth, Fire, and Storm Elementals have been moved to their own group.
+	-[Enhancement] Duplicate bar options have been removed.
+	-[Enhancement] Changed Spirit Walk's bar color to brown.
+FIX: [Enhancement] The correct buff duration bars should display.
+------------------------------------------------------------------------
+r85 | SweetsourDev | 2016-11-27 11:50:07 -0600 (Sun, 27 Nov 2016) | 2 lines
+Changed paths:
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r31.2-beta
+FIX: "Testing" should no longer spam your chatbox
+------------------------------------------------------------------------
+r84 | SweetsourDev | 2016-11-26 23:20:57 -0600 (Sat, 26 Nov 2016) | 2 lines
+Changed paths:
+   M /trunk/SA_Core.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r31.1-beta
+FIX: Hid random frame (I use this frame for debugging; apologies!)
+------------------------------------------------------------------------
+r83 | SweetsourDev | 2016-11-26 21:57:20 -0600 (Sat, 26 Nov 2016) | 5 lines
+Changed paths:
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r31-beta
+FIX: [UI] Auras from inactive specs should no longer appear.
+FIX: [UI] Certain progress bars should once appear correctly when switching specs.
+FIX: [Enhancement] Stormstrike should fade when you don't have enough maelstrom. (Thanks, Theranon!)
+FIX: [Enhancement] Stormstrike should now display a cooldown. (Thanks, Theranon!)
+------------------------------------------------------------------------
+r82 | SweetsourDev | 2016-11-23 14:54:38 -0600 (Wed, 23 Nov 2016) | 6 lines
+Changed paths:
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/changelog.txt
+
+	r30-beta
+FIX: [UI] Progress bars and cooldown values should now be affect by custom Out of Combat opacity. (Thanks, Doomst4!)
+
+NEW: [Enhancement] An aura for Lava Lash has been added.
+NEW: [All] All auras and duration timer bars have been re-coded to be far more responsive and accurate.
+NEW: "Main" and "Utility" duration timer bars have been grouped together, but separated by a space.
+------------------------------------------------------------------------
+r81 | SweetsourDev | 2016-11-22 22:35:45 -0600 (Tue, 22 Nov 2016) | 7 lines
+Changed paths:
+   M /trunk/SA_Core.lua
+   M /trunk/ShamanAuras.toc
+
+	r30-beta
+FIX: [UI] Progress bars and cooldown values should now be affect by custom Out of Combat opacity. (Thanks, Doomst4!)
+
+NEW: [Elemental] The Lava Burst aura will now glow through the entire duration of Ascendance.
+NEW: [Enhancement] An aura for Lava Lash has been added.
+NEW: [All] All auras and duration timer bars have been re-coded to be far more responsive and accurate.
+NEW: "Main" and "Utility" duration timer bars have been grouped together, but separated by a space.
+------------------------------------------------------------------------
+r80 | SweetsourDev | 2016-11-22 22:32:41 -0600 (Tue, 22 Nov 2016) | 7 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/changelog.txt
+
+	r30-beta
+FIX: [UI] Progress bars and cooldown values should now be affect by custom Out of Combat opacity. (Thanks, Doomst4!)
+
+NEW: [Elemental] The Lava Burst aura will now glow through the entire duration of Ascendance.
+NEW: [Enhancement] An aura for Lava Lash has been added.
+NEW: [All] All auras and duration timer bars have been re-coded to be far more responsive and accurate.
+NEW: "Main" and "Utility" duration timer bars have been grouped together, but separated by a space.
+------------------------------------------------------------------------
+

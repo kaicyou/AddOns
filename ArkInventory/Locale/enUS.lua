@@ -294,6 +294,10 @@ if not L then return end
 	L["CONFIG_SYSTEM_MESSAGES_BATTLEPET_OPPONENT_TEXT"] = "Display Opponent Details upon entering a pet battle"
 	L["CONFIG_SYSTEM_MESSAGES_BAG_UNKNOWN"] = "Unknown Bag Type"
 	L["CONFIG_SYSTEM_MESSAGES_BAG_UNKNOWN_TEXT"] = "Show a warning message when a bag does not have a valid type and needs to be requeued for scanning"
+	L["CONFIG_SYSTEM_MESSAGES_RULES_HOOKED"] = "Hooks"
+	L["CONFIG_SYSTEM_MESSAGES_RULES_HOOKED_TEXT"] = "Show a message when a 3rd party mod is loaded/hooked"
+	L["CONFIG_SYSTEM_MESSAGES_RULES_REGISTRATION"] = "Registration"
+	L["CONFIG_SYSTEM_MESSAGES_RULES_REGISTRATION_TEXT"] = "Show a message for each rule registration"
 	
 	L["CONFIG_SYSTEM_TIMERS"] = "Update Timers"
 	L["CONFIG_SYSTEM_TIMERS_TEXT"] = "use a custom value for the %1$s update timer"

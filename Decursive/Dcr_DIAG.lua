@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.5) add-on for World of Warcraft UI
+    Decursive (v 2.7.5.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2014 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -17,7 +17,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2016-10-06T20:58:51Z
+    This file was last updated on 2017-01-16T2:09:54Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -34,6 +34,10 @@ local strjoin           = _G.strjoin;
 local GetCVarBool       = _G.GetCVarBool;
 local IsAddOnLoaded     = _G.IsAddOnLoaded;
 local GetAddOnMetadata  = _G.GetAddOnMetadata;
+local time              = _G.time;
+local pcall             = _G.pcall;
+local pairs             = _G.pairs;
+local ipairs            = _G.ipairs;
 
 local addonName, T = ...;
 DecursiveRootTable = T; -- needed until we get rid of the xml based UI. -- Also used by HHTD from 2013-04-05
@@ -84,7 +88,7 @@ local DebugTextTable    = T._DebugTextTable;
 local Reported          = {};
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.7.5";
+local VERSION = "2.7.5.1";
 
 T._LoadedFiles = {};
 T._LoadedFiles["Dcr_DIAG.lua"] = false; -- here for consistency but useless in this particular file
@@ -269,7 +273,7 @@ do
         end
 
         if T._HHTDErrors ~= 0 then
-            instructionsHeader = instructionsHeader:gsub('ecursive', 'ecursive / Healers Have To Die');
+            instructionsHeader = instructionsHeader:gsub('ecursive', 'ecursive / H.H.T.D.');
         end
 
         local TIandBI = T.Dcr.GetTimersInfo and {T.Dcr:GetTimersInfo()} or {-1,-1,-1,-1,-1,0};
@@ -277,9 +281,7 @@ do
         _Debug(unpack(TIandBI));
 
 
-        -- TODO: add add-on memory usage stats and prevent grabage creation in critical part to avoid triggering the grabage collector...
-
-        DebugHeader = ("%s\n2.7.5  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        DebugHeader = ("%s\n2.7.5.1  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
@@ -310,15 +312,14 @@ do
         end
 
         -- get running add-ons list
-        local ALASsuccess, ALASerrorm, loadedAddonList;
-        ALASsuccess, ALASerrorm, loadedAddonList = pcall(GetAddonListAsString);
+        local ALASsuccess, loadedAddonList = pcall(GetAddonListAsString);
 
-        
-        local ACsuccess, ACerrorm, actionsConfiguration;
-        ACsuccess, ACerrorm, actionsConfiguration = pcall(T._ExportActionsConfiguration);
+        local ACsuccess, actionsConfiguration = pcall(T._ExportActionsConfiguration);
 
-        local CSCsuccess, CSCerrorm, customSpellConfiguration;
-        CSCsuccess, CSCerrorm, customSpellConfiguration = pcall(T._ExportCustomSpellConfiguration);
+        local CSCsuccess, customSpellConfiguration = pcall(T._ExportCustomSpellConfiguration);
+
+        local SRTOLEsuccess, SRTOLErrors =
+            pcall(function() return "Script ran too long errors:\n" .. T.Dcr:tAsString(T.Dcr.db.global.SRTLerrors) end);
 
         local headerSucess, headerGenErrorm;
         if not DebugHeader then
@@ -330,9 +331,10 @@ do
 
         T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (headerGenErrorm and headerGenErrorm or "")))
         .. table.concat(T._DebugTextTable, "")
-        .. "\n\n-- --\n" .. (ACsuccess and actionsConfiguration or ACerrorm) .. "\n-- --"
-        .. (CSCsuccess and customSpellConfiguration or CSCerrorm) .. "\n-- --"
-        .. "\n\nLoaded Addons:\n\n" .. (ALASsuccess and loadedAddonList or ALASerrorm) .. "\n-- --";
+        .. "\n\n-- --\n" .. actionsConfiguration .. "\n-- --"
+        .. customSpellConfiguration .. "\n-- --"
+        .. SRTOLErrors .. "\n-- --"
+        .. "\n\nLoaded Addons:\n\n" .. loadedAddonList .. "\n-- --";
 
         if _G.DecursiveDebuggingFrameText then
             _G.DecursiveDebuggingFrameText:SetText(T._DebugText);
@@ -368,13 +370,8 @@ local function PlaySoundFile_RanTooLongheck(message)
 end
 
 local function CheckHHTD_Error(errorm, errorml)
-    if errorml:find("healers%-have%-to%-die") and -- first, make a general test to see if it's worth looking further
-        (
-        not errorml:find("\\libs\\")
-        --or ( errorm:find("[\"']healers%-have%-to%-die[\"']") ) -- events
-        --or ( errorm:find("healers%-have%-to%-die:") ) -- libraries error (AceLocal)
-        --or ( errorml:find("healers%-have%-to%-die%.")) -- Aceconfig
-        )
+    if (errorml:find("healers%-have%-to%-die") or errorml:find("hhtd"))
+        and not errorml:find("\\libs\\")
         or errorml:find("\\libnameplateregistry") then
         _Debug("CheckHHTD_Error()", true);
         return true;
@@ -400,6 +397,54 @@ T._HHTDErrors = 0;
 
 local InCombatLockdown  = _G.InCombatLockdown;
 local LastErrorMessage = "!NotSet!";
+
+-- a special handler for these random "Script ran too long" error
+-- returns true when a resport should be shown, false otherwise
+local function continueErrorReporting (lowerCaseErrorMsg)
+    local isSRTLE = lowerCaseErrorMsg:find("script ran too long")
+
+    if not isSRTLE then
+        return true;
+    end
+
+    -- these tests appear redundant but this function must never crash...
+    if not T.Dcr.db or not T.Dcr.db.global or not T.Dcr.db.global.SRTLerrors then
+        return false;
+    end
+
+    local fname_line = lowerCaseErrorMsg:match('(%w+%.[xl][mu][la]:%d+)');
+
+    if not fname_line then
+        return false;
+    end
+
+    local SRTLerrors = T.Dcr.db.global.SRTLerrors;
+
+    SRTLerrors["total"] = SRTLerrors["total"] + 1;
+
+    if not SRTLerrors[fname_line] then
+        SRTLerrors[fname_line] = {};
+    end
+
+    local ctime = time();
+
+    while(SRTLerrors[fname_line][1] and ctime - SRTLerrors[fname_line][1] > 86400 * 30) do
+        table.remove(SRTLerrors[fname_line], 1);
+    end
+
+    table.insert(SRTLerrors[fname_line], ctime);
+
+    if lowerCaseErrorMsg:find("dcr_diag.lua") then
+        return false;
+    end
+
+    if #SRTLerrors[fname_line] > 1 then
+        return true;
+    else
+        return false;
+    end
+end
+
 function T._onError(event, errorObject)
     local errorm = errorObject.message;
     local mine = false;
@@ -423,8 +468,7 @@ function T._onError(event, errorObject)
         )
         )) then
 
-        if errorml:find("dcr_diag.lua") and errorml:find("script ran too long") then
-            -- don't create report for these 'errors'...
+        if not continueErrorReporting(errorml) then
             return;
         end
 
@@ -457,6 +501,11 @@ function T._onError(event, errorObject)
             T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
 
             if CheckHHTD_Error(errorm, errorml) then
+
+                if not continueErrorReporting(errorml) then
+                    return;
+                end
+
                 IsReporting = true;
                 AddDebugText(errorObject.message, "\n|cff00aa00STACK:|r\n", errorObject.stack, "\n|cff00aa00LOCALS:|r\n", errorObject.locals);
                 IsReporting = false;
@@ -546,8 +595,7 @@ function T._DecursiveErrorHandler(err, ...)
     local mine = false;
     if not IsReporting and (T._CatchAllErrors or errl:find("decursive") and not errl:find("\\libs\\")) then
 
-        if errl:find("dcr_diag.lua") and errl:find("script ran too long") then
-            -- don't create report for these 'errors'...
+        if not continueErrorReporting(errl) then
             return;
         end
 
@@ -560,7 +608,7 @@ function T._DecursiveErrorHandler(err, ...)
         IsReporting = true;
         AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(3), "\n|cff00aa00LOCALS:|r\n", debuglocals(3), ...);
         IsReporting = false;
-	T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
+        T._CatchAllErrors = false; -- Errors are unacceptable so one is enough, no need to get all subsequent errors.
         mine = true;
         _Debug("Error recorded");
     else
@@ -571,6 +619,11 @@ function T._DecursiveErrorHandler(err, ...)
             T._NonDecursiveErrors = T._NonDecursiveErrors + 1;
 
             if CheckHHTD_Error(err, errl) then
+
+                if not continueErrorReporting(errl) then
+                    return;
+                end
+
                 IsReporting = true;
                 AddDebugText(err, "\n|cff00aa00STACK:|r\n", debugstack(3), "\n|cff00aa00LOCALS:|r\n", debuglocals(3), ...);
                 IsReporting = false;
@@ -1007,4 +1060,4 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.5";
+T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.5.1";

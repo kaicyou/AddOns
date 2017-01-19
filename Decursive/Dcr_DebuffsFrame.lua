@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
     
-    Decursive (v 2.7.5) add-on for World of Warcraft UI
+    Decursive (v 2.7.5.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2014 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -18,7 +18,7 @@
     but WITHOUT ANY WARRANTY.
 
     
-    This file was last updated on 2016-10-06T21:19:47Z
+    This file was last updated on 2016-10-07T2:19:47Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -1862,6 +1862,6 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.5";
+T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.5.1";
 
 -- Heresy

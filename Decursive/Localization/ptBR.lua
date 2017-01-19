@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
     
-    Decursive (v 2.7.5) add-on for World of Warcraft UI
+    Decursive (v 2.7.5.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2014 John Wellesz (archarodim AT teaser.fr) ( http://www.2072productions.com/to/decursive.php )
 
     Starting from 2009-10-31 and until said otherwise by its author, Decursive
@@ -20,7 +20,7 @@
     Decursive is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY.
 
-    This file was last updated on 2014-10-13T09:20:46Z
+    This file was last updated on 2014-10-13T14:20:46Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -72,52 +72,51 @@ end
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "ptBR");
 
 if not L then 
-    T._LoadedFiles["ptBR.lua"] = "2.7.5";
+    T._LoadedFiles["ptBR.lua"] = "2.7.5.1";
     return;
 end
 
 L["ABOLISH_CHECK"] = "Verifique se há \"Abolir\" antes de curar"
-L["ABOUT_LICENSE"] = "Licensa" -- Needs review
-L["ABOUT_OFFICIALWEBSITE"] = "WEBSITE OFFICIAL" -- Needs review
+L["ABOUT_LICENSE"] = "Licensa"
+L["ABOUT_OFFICIALWEBSITE"] = "WEBSITE OFFICIAL"
 L["ABSENT"] = "Faltando (%s)"
-L["AFFLICTEDBY"] = "%s Afligido" -- Needs review
+L["AFFLICTEDBY"] = "%s Afligido"
 L["ALT"] = "Alt"
-L["AMOUNT_AFFLIC"] = "A quantidade afligida para exibir" -- Needs review
-L["ANCHOR"] = "Âncora de texto do Decursive" -- Needs review
-L["BINDING_NAME_DCRMUFSHOWHIDE"] = "Mostrar ou esconder os micro quadros de unidades." -- Needs review
+L["AMOUNT_AFFLIC"] = "A quantidade afligida para exibir"
+L["ANCHOR"] = "Âncora de texto do Decursive"
+L["BINDING_NAME_DCRMUFSHOWHIDE"] = "Mostrar ou esconder os micro quadros de unidades."
 L["BINDING_NAME_DCRPRADD"] = "Adicionar alvo na lista de prioridades"
 L["BINDING_NAME_DCRPRCLEAR"] = "Limpar a lista de prioridades"
 L["BINDING_NAME_DCRPRLIST"] = "Imprimir a lista de prioridades"
-L["BINDING_NAME_DCRPRSHOW"] = "Mostrar ou esconder a lista de prioridade" -- Needs review
+L["BINDING_NAME_DCRPRSHOW"] = "Mostrar ou esconder a lista de prioridade"
 L["BINDING_NAME_DCRSHOW"] = [=[Mostrar ou esconder a Barra Principal do Decursive
-(âncora de lista ao vivo)]=] -- Needs review
-L["BINDING_NAME_DCRSHOWOPTION"] = "Mostrar opção de painel estático" -- Needs review
-L["BINDING_NAME_DCRSKADD"] = "Adiciona alvo à lista de passe" -- Needs review
-L["BINDING_NAME_DCRSKCLEAR"] = "Limpar a lista de passe" -- Needs review
-L["BINDING_NAME_DCRSKLIST"] = "Mostrar a lista de passe" -- Needs review
-L["BINDING_NAME_DCRSKSHOW"] = "Mostra ou oculta a lista de passe" -- Needs review
-L["BLACK_LENGTH"] = "Segundos na lista negra" -- Needs review
-L["BLACKLISTED"] = "Lista negra" -- Needs review
-L["CHARM"] = "Encantar" -- Needs review
+(âncora de lista ao vivo)]=]
+L["BINDING_NAME_DCRSHOWOPTION"] = "Mostrar opção de painel estático"
+L["BINDING_NAME_DCRSKADD"] = "Adiciona alvo à lista de passe"
+L["BINDING_NAME_DCRSKCLEAR"] = "Limpar a lista de passe"
+L["BINDING_NAME_DCRSKLIST"] = "Mostrar a lista de passe"
+L["BINDING_NAME_DCRSKSHOW"] = "Mostra ou oculta a lista de passe"
+L["BLACK_LENGTH"] = "Segundos na lista negra"
+L["BLACKLISTED"] = "Lista negra"
+L["CHARM"] = "Encantar"
 L["CLASS_HUNTER"] = "Caçador"
-L["COLORCHRONOS"] = "Cronometros" -- Needs review
-L["CTRL"] = "Ctrl" -- Needs review
-L["CURSE"] = "Maldição" -- Needs review
-L["GLOR1"] = "Em memoria de Glorfindal" -- Needs review
+L["COLORCHRONOS"] = "Cronometros"
+L["CTRL"] = "Ctrl"
+L["CURSE"] = "Maldição"
+L["GLOR1"] = "Em memoria de Glorfindal"
 L["GLOR2"] = [=[Decursive é dedicado a memoria de Bertrand que nós deixou muito cedo.
-Ele sempre sera lembrado.]=] -- Needs review
+Ele sempre sera lembrado.]=]
 L["GLOR3"] = [=[Em memoria de Bertrand Sense
-1969-2007]=] -- Needs review
-L["HIDESHOW_BUTTONS"] = "Mostrar/Esconder Buttoes" -- Needs review
-L["OPT_NOSTARTMESSAGES"] = "Desativar mensagens de iniciar" -- Needs review
-L["SHIFT"] = "Shift" -- Needs review
-L["SHOW_MSG"] = "Para amostrar a janela do Decursive, escreve /dcrshow" -- Needs review
-L["SKIP_SHOW"] = "S" -- Needs review
-L["SPELL_FOUND"] = "%s feitiço nao foi encontrado" -- Needs review
-L["STR_CLOSE"] = "Fechar" -- Needs review
-L["STR_DCR_PRIO"] = "Prioridade do Decursive" -- Needs review
+1969-2007]=]
+L["HIDESHOW_BUTTONS"] = "Mostrar/Esconder Buttoes"
+L["OPT_NOSTARTMESSAGES"] = "Desativar mensagens de iniciar"
+L["SHIFT"] = "Shift"
+L["SHOW_MSG"] = "Para amostrar a janela do Decursive, escreve /dcrshow"
+L["SKIP_SHOW"] = "S"
+L["SPELL_FOUND"] = "%s feitiço nao foi encontrado"
+L["STR_CLOSE"] = "Fechar"
+L["STR_DCR_PRIO"] = "Prioridade do Decursive"
 
 
-
-T._LoadedFiles["ptBR.lua"] = "2.7.5";
+T._LoadedFiles["ptBR.lua"] = "2.7.5.1";
 

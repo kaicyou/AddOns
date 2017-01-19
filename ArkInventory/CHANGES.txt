@@ -1,21 +1,27 @@
 ------------------------------------------------------------------------
-r617 | arkayenro | 2017-01-03 02:21:22 -0600 (Tue, 03 Jan 2017) | 1 line
-Changed paths:
-   M /trunk/.pkgmeta
-   M /trunk/VersionHistory.txt
-
-pkgmeta test
-------------------------------------------------------------------------
-r616 | arkayenro | 2017-01-02 18:33:44 -0600 (Mon, 02 Jan 2017) | 4 lines
+r621 | arkayenro | 2017-01-18 01:44:35 -0600 (Wed, 18 Jan 2017) | 5 lines
 Changed paths:
    M /trunk/ArkInventory.lua
    M /trunk/ArkInventory.toc
+   M /trunk/Locale/deDE.lua
+   M /trunk/Locale/enUS.lua
+   M /trunk/Locale/esES.lua
+   M /trunk/Locale/esMX.lua
+   M /trunk/Locale/frFR.lua
+   M /trunk/Locale/itIT.lua
+   M /trunk/Locale/koKR.lua
+   M /trunk/Locale/ptBR.lua
+   M /trunk/Locale/ruRU.lua
+   M /trunk/Locale/zhCN.lua
+   M /trunk/Locale/zhTW.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
    M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
    M /trunk/VersionHistory.txt
 
-*3.07.20 (03-JAN-2017)*
- * added - rule function tsm( ) allows for regex matching on tsm group names
- * fixed - issue with outfit( ) rule and blizzard equipment manager after changing specs
+*3.07.22 (18-JAN-2017)*
+ * added - option to disable rule 3rd party mod load messages
+ * added - option to disable rule registration messages
+ * fixed - (maybe) issue with outfit( ) rule and blizzard equipment manager
 
 ------------------------------------------------------------------------
 

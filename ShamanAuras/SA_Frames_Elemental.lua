@@ -1156,7 +1156,7 @@ _G["SSA_WindRushTotemBarEle"] = SSA.WindRushTotemBarEle;
 
 local buffIDs = {
 	[114050] = SSA.AscendanceBarEle,
-	[108281] = SSA.GuidanceBarEle,
+	[108281] = SSA.AncestralGuidanceBarEle,
 	[108271] = SSA.AstralShiftBarEle,
 	[2825]   = SSA.BloodlustBarEle,
 	[118522] = SSA.ElementalBlastCritBar,
@@ -1211,6 +1211,7 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		SSA.DataFrame.text:SetText('Num Buffs: '..getn(buffTable).."\n\n");
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
+		local xPosCtr = 1;
 		for i=1,getn(buffTable) do
 			local buff,_,_,_,_,duration,expires = UnitBuff('player',Auras:GetSpellName(buffTable[i]));
 			SSA.DataFrame.text:SetText(Auras:CurText('DataFrame')..i..". "..tostring(Auras:GetSpellName(buffTable[i])).."\n");
@@ -1221,11 +1222,12 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 					buffIDs[buffTable[i]]:SetMinMaxValues(0,duration);
 					buffIDs[buffTable[i]]:SetValue(seconds);
 					buffIDs[buffTable[i]].timetext:SetText(timer);
-					buffIDs[buffTable[i]]:SetPoint("LEFT",xPos[i],0);
+					buffIDs[buffTable[i]]:SetPoint("LEFT",xPos[xPosCtr],0);
 					buffIDs[buffTable[i]]:Show();
+					xPosCtr = xPosCtr + 1;
 				else
 					buffIDs[buffTable[i]]:Hide();
-					table.remove(buffTable,i);
+					--table.remove(buffTable,i);
 				end
 			end
 		end
@@ -1287,27 +1289,40 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		for i=1,5 do
 			local _,name,start,duration = GetTotemInfo(i);
 			
-			if (duration > 0) then
-				local timer,seconds = Auras:parseTime((start + duration) - GetTime(),true);
+			if ((duration or 0) > 0 and name) then
+				local barSuffix = '';
+				if (name == "Liquid Magma Totem") then
+					barSuffix = "Bar";
+				else
+					barSuffix = "BarEle";
+				end
 				
-				if (utilIDs[name]) then
-					totemCtr = totemCtr + 1;
+				if (Auras.db.char.aura[1][gsub(name," ",'')..barSuffix]) then
+					local timer,seconds = Auras:parseTime((start + duration) - GetTime(),true);
 					
-					if (getn(mainTable) > 0) then
-						x = xOffset[getn(mainTable) + (totemCtr - 1)];
-					else
-						x = (xPos[totemCtr] * -1);
+					if (utilIDs[name]) then
+						totemCtr = totemCtr + 1;
+						
+						if (getn(mainTable) > 0) then
+							x = xOffset[getn(mainTable) + (totemCtr - 1)];
+						else
+							x = (xPos[totemCtr] * -1);
+						end
+					
+						if (seconds > 0.1) then
+							utilIDs[name]:SetMinMaxValues(0,duration);
+							utilIDs[name]:SetValue(seconds);
+							utilIDs[name].timetext:SetText(timer);
+							utilIDs[name]:SetPoint("RIGHT",x,0);
+							utilIDs[name]:Show();
+						else
+							totemCtr = totemCtr - 1;
+							utilIDs[name]:SetValue(0);
+							utilIDs[name]:Hide();
+						end
 					end
-				
-					if (seconds > 0.1) then
-						utilIDs[name]:SetMinMaxValues(0,duration);
-						utilIDs[name]:SetValue(seconds);
-						utilIDs[name].timetext:SetText(timer);
-						utilIDs[name]:SetPoint("RIGHT",x,0);
-						utilIDs[name]:Show();
-					else
-						totemCtr = totemCtr - 1;
-						utilIDs[name]:SetValue(0);
+				else
+					if (name and name ~= '') then
 						utilIDs[name]:Hide();
 					end
 				end
@@ -1784,7 +1799,15 @@ EventFrame:SetScript("OnEvent",function(self,event,...)
 		if (sGUID == UnitGUID('player')) then
 			if (subevent == "SPELL_AURA_APPLIED") then
 				if (buffIDs[spellID]) then
-					table.insert(buffTable,spellID);
+					local isValidBuff = false;
+
+					if ((spellID == 108271 and Auras.db.char.aura[1].AstralShiftBarEle) or (spellID == 114050 and Auras.db.char.aura[1].AscendanceBarEle) or (spellID == 108281 and Auras.db.char.aura[1].AncestralGuidanceBarEle) or (spellID == 2825 and Auras.db.char.aura[1].BloodlustBarEle) or ((spellID == 173183 or spellID == 173184 or spellID == 118522) and Auras.db.char.aura[1].ElementalBlastCritBar) or (spellID == 16166 and Auras.db.char.aura[1].ElementalMasteryBar) or (spellID == 32182 and Auras.db.char.aura[1].HeroismBarEle) or (spellID == 80353 and Auras.db.char.aura[1].TimeWarpBarEle)) then
+						isValidBuff = true;
+					end
+					
+					if (isValidBuff) then
+						table.insert(buffTable,spellID);
+					end
 				end
 			elseif (subevent == "SPELL_AURA_REMOVED") then
 				if (buffIDs[spellID]) then
@@ -1797,13 +1820,19 @@ EventFrame:SetScript("OnEvent",function(self,event,...)
 				end
 			elseif (subevent == "SPELL_SUMMON") then
 				if (mainIDs[spellID]) then
-					table.insert(mainTable,spellID);
-					table.insert(mainGUIDs,petGUID);
-					table.insert(mainStart,GetTime());
-					if (spellID == 188616 or spellID == 118323) then
-						table.insert(mainDuration,15);
-					else
+					local isValidElemental = false;
+					
+					if ((spellID == 157319 or spellID == 157299) and Auras.db.char.aura[1].StormElementalBar) then
+						isValidElemental = true;
+						table.insert(mainDuration,30);
+					elseif (((spellID == 118291 or spellID == 188592) and Auras.db.char.aura[1].FireElementalBar) or ((spellID == 118323 or spellID == 188616) and Auras.db.char.aura[1].EarthElementalBar)) then
+						isValidElemental = true;
 						table.insert(mainDuration,60);
+					end
+					if (isValidElemental) then
+						table.insert(mainTable,spellID);
+						table.insert(mainGUIDs,petGUID);
+						table.insert(mainStart,GetTime());
 					end
 				end
 			elseif (subevent == "UNIT_DIED") then

@@ -99,7 +99,7 @@ InitializeFrames("EarthenSpike",LargeIconGrpBot,"enhancement\\earthen_spike",lgI
 InitializeFrames("FeralSpirit",LargeIconGrpBot,"enhancement\\feral_spirit",lgIcon);
 InitializeFrames("Flametongue",LargeIconGrpTop,"enhancement\\flametongue",lgIcon,lgGlow);
 InitializeFrames("Frostbrand",LargeIconGrpTop,"enhancement\\frostbrand",lgIcon,lgGlow);
-InitializeFrames("LavaLash",LargeIconGrpTop,"enhancement\\lava_lash",lgIcon);
+InitializeFrames("LavaLash",LargeIconGrpTop,"enhancement\\lava_lash",lgIcon,lgGlow);
 InitializeFrames("Stormstrike",LargeIconGrpTop,"enhancement\\stormstrike",lgIcon,lgGlow,true);
 InitializeFrames("Sundering",LargeIconGrpBot,"enhancement\\sundering",lgIcon);
 InitializeFrames("Windsong",LargeIconGrpBot,"enhancement\\windsong",lgIcon,lgGlow);
@@ -543,6 +543,8 @@ end);
 SSA.LavaLash:SetScript("OnUpdate", function(self)
 	if (Auras:CharacterCheck(2)) then
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(60103))
+		local buff = UnitBuff('player',Auras:GetSpellName(201900));
+		
 		local power = UnitPower('player',11);
 		
 		Auras:SpellRangeCheck(self,60103,true);
@@ -552,8 +554,14 @@ SSA.LavaLash:SetScript("OnUpdate", function(self)
 			Auras:ExecuteCooldown(self,start,duration,false);
 		end
 		
+		if (buff) then
+			Auras:ToggleOverlayGlow(self.glow,true);
+		else
+			Auras:ToggleOverlayGlow(self.glow,false);
+		end
+		
 		if (UnitAffectingCombat('player')) then
-			if (power >= 30) then
+			if (power >= 30 or buff) then
 				self:SetAlpha(1);
 			else
 				self:SetAlpha(0.5);
@@ -916,7 +924,7 @@ UtilTimerBarGrp:Show();
 
 SSA.AscendanceBarEnh = CreateFrame("StatusBar","AscendanceBarEnh",BuffTimerBarGrp);
 SSA.AstralShiftBarEnh = CreateFrame("StatusBar","AstralShiftBarEnh",BuffTimerBarGrp);
---SSA.BloodlustBarEnh = CreateFrame("StatusBar","BloodlustBarEnh",BuffTimerBarGrp);
+SSA.BloodlustBarEnh = CreateFrame("StatusBar","BloodlustBarEnh",BuffTimerBarGrp);
 SSA.BoulderfistBar = CreateFrame("StatusBar","BoulderfistBar",MainTimerBarGrp);
 SSA.CrashLightningBar = CreateFrame("StatusBar","CrashLightningBar",MainTimerBarGrp);
 SSA.EarthgrabTotemBarEnh = CreateFrame("StatusBar","EarthgrabTotemBarEnh",UtilTimerBarGrp);
@@ -948,7 +956,7 @@ local mainIDs = {
 }
 local utilIDs = {
 	["Earthgrab Totem"]  = SSA.EarthgrabTotemBarEnh,
-	[51514]  = SSA.HexBarEle,
+	--[51514]  = SSA.HexBarEle,
 	["Voodoo Totem"] = SSA.VoodooTotemBarEnh,
 	["Wind Rush Totem"] = SSA.WindRushTotemBarEnh,
 }
@@ -996,7 +1004,7 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 					buffIDs[buffTable[i]]:Show();
 				else
 					buffIDs[buffTable[i]]:Hide();
-					table.remove(buffTable,i);
+					--table.remove(buffTable,i);
 				end
 			end
 		end
@@ -1017,17 +1025,23 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	if (Auras:CharacterCheck(2)) then
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
+		local xPosCtr = 1;
 		for i=1,getn(mainTable) do
 			local buff,_,_,_,_,duration,expires = UnitBuff('player',Auras:GetSpellName(mainTable[i]));
 			
 			if (expires) then
-				local timer,seconds = Auras:parseTime(expires - GetTime(),true);
-				
-				mainIDs[mainTable[i]]:SetMinMaxValues(0,duration);
-				mainIDs[mainTable[i]]:SetValue(seconds);
-				mainIDs[mainTable[i]].timetext:SetText(timer);
-				mainIDs[mainTable[i]]:SetPoint("RIGHT",(xPos[i] * -1),0);
-				mainIDs[mainTable[i]]:Show();
+				if (Auras.db.char.aura[2][mainIDs[mainTable[i]]:GetName()]) then
+					local timer,seconds = Auras:parseTime(expires - GetTime(),true);
+					
+					mainIDs[mainTable[i]]:SetMinMaxValues(0,duration);
+					mainIDs[mainTable[i]]:SetValue(seconds);
+					mainIDs[mainTable[i]].timetext:SetText(timer);
+					mainIDs[mainTable[i]]:SetPoint("RIGHT",(xPos[xPosCtr] * -1),0);
+					mainIDs[mainTable[i]]:Show();
+					xPosCtr = xPosCtr + 1;
+				else
+					mainIDs[mainTable[i]]:Hide();
+				end
 			end
 		end
 		
@@ -1052,27 +1066,34 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		for i=1,5 do
 			local _,name,start,duration = GetTotemInfo(i);
 			
-			if (duration > 0) then
+			if ((duration or 0) > 0 and name) then
 				local timer,seconds = Auras:parseTime((start + duration) - GetTime(),true);
 				
-				if (utilIDs[name]) then
-					totemCtr = totemCtr + 1;
+				if (Auras.db.char.aura[2][gsub(name," ","").."BarEnh"]) then
+					if (utilIDs[name]) then
+						totemCtr = totemCtr + 1;
+						
 					
-					if (getn(mainTable) > 0) then
-						x = xOffset[getn(mainTable) + (totemCtr - 1)];
-					else
-						x = (xPos[totemCtr] * -1);
+						if (getn(mainTable) > 0) then
+							x = xOffset[getn(mainTable) + (totemCtr - 1)];
+						else
+							x = (xPos[totemCtr] * -1);
+						end
+					
+						if (seconds > 0.1) then
+							utilIDs[name]:SetMinMaxValues(0,duration);
+							utilIDs[name]:SetValue(seconds);
+							utilIDs[name].timetext:SetText(timer);
+							utilIDs[name]:SetPoint("RIGHT",x,0);
+							utilIDs[name]:Show();
+						else
+							totemCtr = totemCtr - 1;
+							utilIDs[name]:SetValue(0);
+							utilIDs[name]:Hide();
+						end
 					end
-				
-					if (seconds > 0.1) then
-						utilIDs[name]:SetMinMaxValues(0,duration);
-						utilIDs[name]:SetValue(seconds);
-						utilIDs[name].timetext:SetText(timer);
-						utilIDs[name]:SetPoint("RIGHT",x,0);
-						utilIDs[name]:Show();
-					else
-						totemCtr = totemCtr - 1;
-						utilIDs[name]:SetValue(0);
+				else
+					if (name and name ~= '') then
 						utilIDs[name]:Hide();
 					end
 				end

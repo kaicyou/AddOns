@@ -173,6 +173,18 @@ local function GetElementalOptions()
 								Auras:UpdateTalents()
 							end,
 						},
+						Stormkeeper = {
+							order = 12,
+							type = "toggle",
+							name = L["Stormkeeper"],
+							get = function() 
+								return Auras.db.char.aura[1].Stormkeeper;
+							end,
+							set = function(_, value)
+								Auras.db.char.aura[1].Stormkeeper = value
+								Auras:UpdateTalents()
+							end,
+						},
 					},
 				},
 				MinorAuras = {
@@ -546,7 +558,7 @@ local function GetElementalOptions()
 						Stormkeeper = {
 							order = 2,
 							type = "toggle",
-							name = L["Stormkeeper"],
+							name = L["Stormkeeper Orbs"],
 							get = function() 
 								return Auras.db.char.aura[1].StormkeeperChargeGrp;
 							end,
@@ -893,18 +905,8 @@ local function GetEnhancementOptions()
 								Auras.db.char.aura[2].MaelstromBarEnh = value
 							end,
 						},
-						StormstrikeOrbs = {
-							order = 2,
-							type = "toggle",
-							name = L["Stormstrike Lightning Orbs"],
-							get = function() 
-								return Auras.db.char.aura[2].StormstrikeChargeGrp;
-							end,
-							set = function(_, value)
-								Auras.db.char.aura[2].StormstrikeChargeGrp = value
-							end,
-						},
-						ShowBuffTimersEnh = {
+						
+						--[[ShowBuffTimersEnh = {
 							order = 1,
 							type = "toggle",
 							name = L["Show Buff Timers"],
@@ -936,11 +938,11 @@ local function GetEnhancementOptions()
 							set = function(_, value)
 								Auras.db.char.frames.timerbars.util[2] = value
 							end,
-						},
+						},]]
 						BuffTimerBars = {
 							name = L["Buff Duration Timers"],
 							type = "group",
-							order = 4,
+							order = 2,
 							guiInline = true,
 							args = {
 								AscendanceBarEnh = {
@@ -1027,7 +1029,7 @@ local function GetEnhancementOptions()
 						MainTimerBars = {
 							name = L["Ability Duration Timers"],
 							type = "group",
-							order = 6,
+							order = 3,
 							guiInline = true,
 							--disabled = function() return (generalSettings.theme == "Graphical") end,
 							args = {
@@ -1102,7 +1104,7 @@ local function GetEnhancementOptions()
 						TotemTimerBars = {
 							name = L["Totem Duration Timers"],
 							type = "group",
-							order = 7,
+							order = 4,
 							guiInline = true,
 							args = {
 								EarthgrabTotemBarEnh = {
@@ -1157,6 +1159,17 @@ local function GetEnhancementOptions()
 							end,
 							set = function(_, value)
 								Auras.db.char.aura[2].DoomWindsTexture = value
+							end,
+						},
+						StormstrikeOrbs = {
+							order = 2,
+							type = "toggle",
+							name = L["Stormstrike Lightning Orbs"],
+							get = function() 
+								return Auras.db.char.aura[2].StormstrikeChargeGrp;
+							end,
+							set = function(_, value)
+								Auras.db.char.aura[2].StormstrikeChargeGrp = value
 							end,
 						},
 					},
@@ -1486,10 +1499,32 @@ local function GetRestorationOptions()
 					order = 4,
 					guiInline = true,
 					args = {
+						EarthenShieldTotemBar = {
+							order = 1,
+							type = "toggle",
+							name = L["Earthen Shield Totem Bar"],
+							get = function() 
+								return Auras.db.char.aura[3].EarthenShieldTotemBar;
+							end,
+							set = function(_, value)
+								Auras.db.char.aura[3].EarthenShieldTotemBar = value
+							end,
+						},
+						TidalWavesBar = {
+							order = 2,
+							type = "toggle",
+							name = L["Tidal Waves Bar"],
+							get = function() 
+								return Auras.db.char.aura[3].TidalWavesBar;
+							end,
+							set = function(_, value)
+								Auras.db.char.aura[3].TidalWavesBar = value
+							end,
+						},
 						BuffTimerBars = {
 							name = L["Buff Duration Timers"],
 							type = "group",
-							order = 1,
+							order = 3,
 							guiInline = true,
 							args = {
 								AncestralGuidanceBarRes = {
@@ -1571,8 +1606,19 @@ local function GetRestorationOptions()
 										Auras.db.char.aura[3].TimeWarpBarRes = value
 									end,
 								},
-								UnleashLifeBar = {
+								TimeWarp = {
 									order = 8,
+									type = "toggle",
+									name = L["Time Warp"],
+									get = function() 
+										return Auras.db.char.aura[3].TimeWarpBarRes;
+									end,
+									set = function(_, value)
+										Auras.db.char.aura[3].TimeWarpBarRes = value
+									end,
+								},
+								UnleashLifeBar = {
+									order = 9,
 									type = "toggle",
 									name = L["Fire Elemental"],
 									get = function() 
@@ -1587,7 +1633,7 @@ local function GetRestorationOptions()
 						TotemTimerBars = {
 							name = L["Totem Duration Timers"],
 							type = "group",
-							order = 2,
+							order = 4,
 							guiInline = true,
 							args = {
 								AncestralProtectionTotemBar = {
@@ -1612,19 +1658,8 @@ local function GetRestorationOptions()
 										Auras.db.char.aura[3].CloudburstTotemBar = value
 									end,
 								},
-								EarthenShieldTotemBar = {
-									order = 3,
-									type = "toggle",
-									name = L["Earthen Shield Totem"],
-									get = function() 
-										return Auras.db.char.aura[3].EarthenShieldTotemBar;
-									end,
-									set = function(_, value)
-										Auras.db.char.aura[3].EarthenShieldTotemBar = value
-									end,
-								},
 								EarthgrabTotemBarRes = {
-									order = 4,
+									order = 3,
 									type = "toggle",
 									name = L["Earthgrab Totem"],
 									get = function() 
@@ -1635,7 +1670,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								HealingStreamTotemBar = {
-									order = 5,
+									order = 4,
 									type = "toggle",
 									name = L["Healing Stream Totem"],
 									get = function() 
@@ -1646,7 +1681,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								HealingTideTotemBar = {
-									order = 6,
+									order = 5,
 									type = "toggle",
 									name = L["Healing Tide Totem"],
 									get = function() 
@@ -1657,7 +1692,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								SpiritLinkTotemBar = {
-									order = 7,
+									order = 6,
 									type = "toggle",
 									name = L["Spirit Link Totem"],
 									get = function() 
@@ -1668,7 +1703,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								VoodooTotemBarRes = {
-									order = 8,
+									order = 7,
 									type = "toggle",
 									name = L["Voodoo Totem"],
 									get = function() 
@@ -1679,7 +1714,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								WindRushTotemBarRes = {
-									order = 9,
+									order = 8,
 									type = "toggle",
 									name = L["Wind Rush Totem"],
 									get = function() 

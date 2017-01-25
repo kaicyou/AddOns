@@ -31,7 +31,7 @@ Auras:CreateVerticalStatusBar(SSA.WindRushTotemBarEle,"RIGHT",-5,174,195,86,L["W
 -- Initialize Enhancement Vertical Bars
 Auras:CreateVerticalStatusBar(SSA.AscendanceBarEnh,"LEFT",5,251,147,255,L["Ascendance"],15);
 Auras:CreateVerticalStatusBar(SSA.AstralShiftBarEnh,"LEFT",5,240,56,255,L["Astral Shift"],8);
---Auras:CreateVerticalStatusBar(SSA.BloodlustBarEnh,"LEFT",5,255,18,76,L["Bloodlust"],40);
+Auras:CreateVerticalStatusBar(SSA.BloodlustBarEnh,"LEFT",5,255,18,76,L["Bloodlust"],40);
 Auras:CreateVerticalStatusBar(SSA.BoulderfistBar,"RIGHT",-5,201,169,139,L["Boulderfist"],10);
 Auras:CreateVerticalStatusBar(SSA.CrashLightningBar,"RIGHT",-5,0,133,255,L["Crash Lightning"],10);
 Auras:CreateVerticalStatusBar(SSA.EarthgrabTotemBarEnh,"RIGHT",-5,127,175,97,L["Earthgrab"],20);
@@ -54,8 +54,8 @@ Auras:CreateVerticalStatusBar(SSA.BloodlustBarRes,"LEFT",5,255,18,76,L["Bloodlus
 Auras:CreateVerticalStatusBar(SSA.CloudburstTotemBar,"RIGHT",-5,117,208,255,L["Cloudburst"],15);
 Auras:CreateVerticalStatusBar(SSA.EarthgrabTotemBarRes,"RIGHT",-5,127,175,97,L["Earthgrab"],20);
 Auras:CreateVerticalStatusBar(SSA.AncestralGuidanceBarRes,"LEFT",5,51,108,255,L["Ancestral Guidance"],10);
-Auras:CreateVerticalStatusBar(SSA.HealingStreamTotemBarOne,"RIGHT",-5,55,205,255,L["Healing Stream"],15);
-Auras:CreateVerticalStatusBar(SSA.HealingStreamTotemBarTwo,"RIGHT",-5,55,205,255,L["Healing Stream"],15);
+Auras:CreateVerticalStatusBar(SSA.HealingStreamTotemOneBar,"RIGHT",-5,55,205,255,L["Healing Stream"],15);
+Auras:CreateVerticalStatusBar(SSA.HealingStreamTotemTwoBar,"RIGHT",-5,55,205,255,L["Healing Stream"],15);
 Auras:CreateVerticalStatusBar(SSA.HealingTideTotemBar,"RIGHT",-5,0,255,207,L["Healing Tide"],10);
 Auras:CreateVerticalStatusBar(SSA.HeroismBarRes,"LEFT",5,0,121,255,L["Heroism"],40);
 Auras:CreateVerticalStatusBar(SSA.HexBarRes,"RIGHT",-5,76,195,71,L["Hex"],60);

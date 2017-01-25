@@ -1,5 +1,30 @@
-﻿	r36-beta
-FIX: [Elemental] Stacks for Lava Burst should once again appear correctly. (Thanks, Supermiikes!)
+﻿	r39-beta
+NEW: [Elemental] Stormkeeper's Aura can now be toggled. (Thanks, qoomindahouse!)
+
+FIX: [Restoration] Using Earthgrab, Voodoo, or Wind Rush Totems should no longer cause Lua errors. (Thanks, Grumbledore!)
+	
+	r38-beta
+NEW: [Restoration] The Earthen Shield Totem bar can now be toggled on or off.
+NEW: [Restoration] The Tidal Waves bar can now be toggled on or off.
+
+FIX: [All] All timer duration bars should no longer appear when the respective bars have been unchecked in the settings.
+FIX: [All] Grouped timer duration bar organization placement should be more accurate.
+FIX: [Enhancement] The timer duration bar for Bloodlust should appear correctly now.
+FIX: [Elemental] Ancestral Guidance's timer duration bar should now correctly appear when enabled.
+	
+	r37-beta
+NEW: [Ehancement] Lava Lash's aura will now glow when Hot Hand procs. (Thanks, Gaffles123!)
+
+FIX: [Elemental] Timer durations for Earth Elemental and Storm Elemental should now correctly be display the new duration times.
+
+FIX: [Restoration] Cloudburst Totem's timer duration bar should now disappear when recalling the totem. (Thanks, r04dw4rri0r!)
+FIX: [Restoration] Cloudburst Totem's healing tracker should appear correctly.
+FIX: [Restoration] Tidal Wave's indicator bar should appear correctly after using the aura movement utility. (Thanks, Lamals!)
+FIX: [Restoration] Flame Shock's glow animation should disappear correctly. (Thanks, r04dw4rri0r!)
+FIX: [Restoration] Flame Shock's duration text should continue to countdown when out of combat. (Thanks, r04dw4rri0r!)
+
+	r36-beta
+FIX: [Elemental] Stacks for Lava Burst should once again appear correctly. (Thanks, Supermiikes!) 
 
 	r35-beta
 NEW: Elemental has been updated to reflect the new talent tree adjustments.

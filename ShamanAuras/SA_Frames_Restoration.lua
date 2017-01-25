@@ -182,8 +182,9 @@ end);
 -- Flame Shock
 SSA.FlameShockRes:SetScript("OnUpdate", function(self)
 	if (Auras:CharacterCheck(3)) then
-		local debuff,_,_,_,_,duration,expires,caster = UnitDebuff('target',Auras:GetSpellName(188838));
+		local debuff,_,_,_,_,_,expires,caster = UnitDebuff('target',Auras:GetSpellName(188838));
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(188838));
+		local timer,seconds
 		
 		if (not self.text) then
 			self.text = self:CreateFontString(nil, "HIGH", "GameFontHighlightLarge");
@@ -197,18 +198,25 @@ SSA.FlameShockRes:SetScript("OnUpdate", function(self)
 		
 		if ((duration or 0) > 2) then
 			Auras:ExecuteCooldown(self,start,duration,true,true);
+			--timer,seconds = Auras:parseTime((start + duration) - GetTime(),false);
+			--self.text:SetText(timer);
+		end
+		
+		if (expires) then
+			timer,seconds = Auras:parseTime(expires - GetTime(),false);
 		end
 		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
+			self:SetAlpha(1);
 			if (debuff and caster == 'player') then
-				local timer,seconds = Auras:parseTime(expires - GetTime(),false);
-				self.text:SetText(timer);
+				--timer,seconds = Auras:parseTime(expires - GetTime(),false);
+				--self.text:SetText(timer);
 				
-				if (seconds <= Auras.db.char.triggers.res.flameShock and UnitAffectingCombat('player')) then
+				if ((seconds or 0) <= Auras.db.char.triggers.res.flameShock and UnitAffectingCombat('player')) then
 					Auras:ToggleOverlayGlow(self.glow,true,true);
 					--isGlowActive = true;
-				elseif (seconds == 0) then
-					self.text:SetText('');
+				--elseif (seconds == 0) then
+					--self.text:SetText('');
 				else
 					Auras:ToggleOverlayGlow(self.glow,false);
 					--isGlowActive = false;
@@ -219,20 +227,29 @@ SSA.FlameShockRes:SetScript("OnUpdate", function(self)
 					self.text:SetText(timer);
 				end]]
 			else
-				self.text:SetText('');
+				--self.text:SetText('');
 				if (Auras:IsTargetEnemy()) then
 					Auras:ToggleOverlayGlow(self.glow,	true,true);
 				else
 					Auras:ToggleOverlayGlow(self.glow,false);
 				end
 			end
+		else
+			self:SetAlpha(Auras.db.char.triggers.ele.OoCAlpha)
+			Auras:ToggleOverlayGlow(self.glow,false);
+			--self.text:SetText('');
 		end
-			
-		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
+		
+		if ((seconds or 0) >= 0.1) then
+			self.text:SetText(timer)
+		else
+			self.text:SetText('')
+		end
+		--[[if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
 			self:SetAlpha(Auras.db.char.triggers.ele.OoCAlpha)
-		end
+		end]]
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
 	end
@@ -546,7 +563,7 @@ SSA.HealingStreamTotem:SetScript("OnUpdate", function(self)
 			end
 		else
 			self.Charges.text:SetText('');
-			if (duration > 2 and not buff) then
+			if ((duration or 0) > 2 and not buff) then
 				Auras:ToggleCooldownSwipe(self.CD,true)
 				Auras:ExecuteCooldown(self,start,duration,false);
 				self.CD:Show();
@@ -690,7 +707,7 @@ SSA.Riptide:SetScript("OnUpdate", function(self)
 			end
 		else
 			self.Charges.text:SetText('');
-			if (duration > 2 and not buff) then
+			if ((duration or 0) > 2 and not buff) then
 				Auras:ToggleCooldownSwipe(self.CD,true)
 				Auras:ExecuteCooldown(self,start,duration,false);
 				self.CD:Show();
@@ -1000,78 +1017,84 @@ TidalWavesBar:SetScript("OnUpdate",function(self)
 		self:SetWidth(Auras.db.char.layout[3].tidalWavesBar.width);
 		self:SetHeight(Auras.db.char.layout[3].tidalWavesBar.height);
 		
-		
-		if (not Auras.db.char.layout[3].isMoving) then
-			if (UnitAffectingCombat('player')) then
-				if (Auras:IsTargetFriendly()) then
-					if (combatDisplay == "Never" or combatDisplay == "On Heal Only") then
-						--self:SetAlpha(0);
-						SetTidalWavesAnimationState(self,isAnimate,false,count,color)
-					else
-						--self:SetAlpha(1);
-						SetTidalWavesAnimationState(self,isAnimate,true,count,color)
-					end
-				else
-					if (combatDisplay == "Target Only") then
-						--self:SetAlpha(0);
-						SetTidalWavesAnimationState(self,isAnimate,false,count,color)
-					else
-						if (combatDisplay == "Always") then
+		if (Auras.db.char.aura[3].TidalWavesBar) then
+			if (not Auras.db.char.layout[3].isMoving) then
+				if (UnitAffectingCombat('player')) then
+					if (Auras:IsTargetFriendly()) then
+						if (combatDisplay == "Never" or combatDisplay == "On Heal Only") then
+							--self:SetAlpha(0);
+							SetTidalWavesAnimationState(self,isAnimate,false,count,color)
+						else
 							--self:SetAlpha(1);
 							SetTidalWavesAnimationState(self,isAnimate,true,count,color)
-						elseif (combatDisplay == "Never") then
+						end
+					else
+						if (combatDisplay == "Target Only") then
+							--self:SetAlpha(0);
 							SetTidalWavesAnimationState(self,isAnimate,false,count,color)
-						elseif (combatDisplay == "Target & On Heal" or combatDisplay == "On Heal Only") then
-							if ((progress or 0) <= Auras.db.char.triggers.res.TidalWaveTime and (progress or 0) ~= 0) then
+						else
+							if (combatDisplay == "Always") then
+								--self:SetAlpha(1);
 								SetTidalWavesAnimationState(self,isAnimate,true,count,color)
-							else
+							elseif (combatDisplay == "Never") then
 								SetTidalWavesAnimationState(self,isAnimate,false,count,color)
+							elseif (combatDisplay == "Target & On Heal" or combatDisplay == "On Heal Only") then
+								if ((progress or 0) <= Auras.db.char.triggers.res.TidalWaveTime and (progress or 0) ~= 0) then
+									SetTidalWavesAnimationState(self,isAnimate,true,count,color)
+								else
+									SetTidalWavesAnimationState(self,isAnimate,false,count,color)
+								end
 							end
 						end
 					end
-				end
-				--self:SetAlpha(1);
-			else
-				if (Auras:IsTargetFriendly()) then
-					if (OoCDisplay == "Never" or OoCDisplay == "On Heal Only") then
-						--ToggleAlpha(self,0);
-						SetTidalWavesAnimationState(self,isAnimate,false,count,color)
-					else
-						--ToggleAlpha(self,1);
-						SetTidalWavesAnimationState(self,isAnimate,true,count,color)
-					end
+					--self:SetAlpha(1);
 				else
-					if (OoCDisplay == "Target Only") then
-						--print("Target Only");
-						--self:SetAlpha(0);
-						SetTidalWavesAnimationState(self,isAnimate,false,count,color);
-						--ToggleAlpha(self,0);
-					else
-						if (OoCDisplay == "Always") then
-							SetTidalWavesAnimationState(self,isAnimate,true,count,color);
-							--ToggleAlpha(self,1);
-						elseif (OoCDisplay == "Never") then
-							SetTidalWavesAnimationState(self,isAnimate,false,count,color)
+					if (Auras:IsTargetFriendly()) then
+						if (OoCDisplay == "Never" or OoCDisplay == "On Heal Only") then
 							--ToggleAlpha(self,0);
-						elseif (OoCDisplay == "Target & On Heal" or OoCDisplay == "On Heal Only") then
-							if ((progress or 0) <= Auras.db.char.triggers.res.TidalWaveTime and (progress or 0) ~= 0) then
+							SetTidalWavesAnimationState(self,isAnimate,false,count,color)
+						else
+							--ToggleAlpha(self,1);
+							SetTidalWavesAnimationState(self,isAnimate,true,count,color)
+						end
+					else
+						if (OoCDisplay == "Target Only") then
+							--print("Target Only");
+							--self:SetAlpha(0);
+							SetTidalWavesAnimationState(self,isAnimate,false,count,color);
+							--ToggleAlpha(self,0);
+						else
+							if (OoCDisplay == "Always") then
+								SetTidalWavesAnimationState(self,isAnimate,true,count,color);
 								--ToggleAlpha(self,1);
-								--print("On: "..tostring((progress or 0).." - "..Auras.db.char.triggers.res.TidalWaveTime));
-								SetTidalWavesAnimationState(self,isAnimate,true,count,color)
-							else
-								--ToggleAlpha(self,0);
-								--print("Off: "..tostring((progress or 0).." - "..Auras.db.char.triggers.res.TidalWaveTime));
+							elseif (OoCDisplay == "Never") then
 								SetTidalWavesAnimationState(self,isAnimate,false,count,color)
+								--ToggleAlpha(self,0);
+							elseif (OoCDisplay == "Target & On Heal" or OoCDisplay == "On Heal Only") then
+								if ((progress or 0) <= Auras.db.char.triggers.res.TidalWaveTime and (progress or 0) ~= 0) then
+									--ToggleAlpha(self,1);
+									--print("On: "..tostring((progress or 0).." - "..Auras.db.char.triggers.res.TidalWaveTime));
+									SetTidalWavesAnimationState(self,isAnimate,true,count,color)
+								else
+									--ToggleAlpha(self,0);
+									--print("Off: "..tostring((progress or 0).." - "..Auras.db.char.triggers.res.TidalWaveTime));
+									SetTidalWavesAnimationState(self,isAnimate,false,count,color)
+								end
 							end
 						end
-					end
-				end	
+					end	
+				end
+			else
+				if (self.Flash:IsPlaying()) then
+					self.Flash:Stop();
+				end
+				self:SetAlpha(1);
 			end
 		else
 			if (self.Flash:IsPlaying()) then
 				self.Flash:Stop();
 			end
-			self:SetAlpha(1);
+			self:SetAlpha(0);
 		end
 	else
 		if (self.Flash:IsPlaying()) then
@@ -1197,6 +1220,10 @@ Cloudburst:SetScript("OnUpdate",function(self,elapsed)
 	
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 	
+		if (not self:IsShown()) then
+			self:Show();
+		end
+		
 		for i=1,5 do
 			_,name = GetTotemInfo(i);
 			if (name == "Cloudburst Totem") then
@@ -1373,8 +1400,8 @@ SSA.AstralShiftBarRes = CreateFrame("StatusBar","AstralShiftBarRes",BuffTimerBar
 SSA.BloodlustBarRes = CreateFrame("StatusBar","BloodlustBarRes",BuffTimerBarGrp);
 SSA.CloudburstTotemBar = CreateFrame("StatusBar","CloudburstTotemBar",MainTimerBarGrp);
 SSA.EarthgrabTotemBarRes = CreateFrame("StatusBar","EarthgrabTotemBarRes",UtilTimerBarGrp);
-SSA.HealingStreamTotemBarOne = CreateFrame("StatusBar","HealingStreamTotemBarOne",MainTimerBarGrp);
-SSA.HealingStreamTotemBarTwo = CreateFrame("StatusBar","HealingStreamTotemBarTwo",MainTimerBarGrp);
+SSA.HealingStreamTotemOneBar = CreateFrame("StatusBar","HealingStreamTotemOneBar",MainTimerBarGrp);
+SSA.HealingStreamTotemTwoBar = CreateFrame("StatusBar","HealingStreamTotemTwoBar",MainTimerBarGrp);
 SSA.HealingTideTotemBar = CreateFrame("StatusBar","HealingTideTotemBar",MainTimerBarGrp);
 SSA.HeroismBarRes = CreateFrame("StatusBar","HeroismBarRes",BuffTimerBarGrp);
 SSA.HexBarRes = CreateFrame("StatusBar","HexBarRes",UtilTimerBarGrp);
@@ -1398,8 +1425,8 @@ local buffIDs = {
 local mainIDs = {
 	["Ancestral Protection Totem"] = SSA.AncestralProtTotemBar,
 	["Cloudburst Totem"] = SSA.CloudburstTotemBar,
-	["Healing Stream Totem1"] = SSA.HealingStreamTotemBarOne,
-	["Healing Stream Totem2"] = SSA.HealingStreamTotemBarTwo,
+	["Healing Stream Totem One"] = SSA.HealingStreamTotemOneBar,
+	["Healing Stream Totem Two"] = SSA.HealingStreamTotemTwoBar,
 	["Healing Tide Totem"] = SSA.HealingTideTotemBar,
 	["Spirit Link Totem"]  = SSA.SpiritLinkTotemBar,
 }
@@ -1438,6 +1465,7 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	if (Auras:CharacterCheck(3)) then
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
+		local xPosCtr = 1;
 		for i=1,getn(buffTable) do
 			local buff,_,_,_,_,duration,expires = UnitBuff('player',Auras:GetSpellName(buffTable[i]));
 			--[[local timer,seconds = Auras:parseTime(expires - GetTime(),true);
@@ -1454,11 +1482,12 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 					buffIDs[buffTable[i]]:SetMinMaxValues(0,duration);
 					buffIDs[buffTable[i]]:SetValue(seconds);
 					buffIDs[buffTable[i]].timetext:SetText(timer);
-					buffIDs[buffTable[i]]:SetPoint("LEFT",xPos[i],0);
+					buffIDs[buffTable[i]]:SetPoint("LEFT",xPos[xPosCtr],0);
 					buffIDs[buffTable[i]]:Show();
+					xPosCtr = xPosCtr + 1;
 				else
 					buffIDs[buffTable[i]]:Hide();
-					table.remove(buffTable,i);
+					--table.remove(buffTable,i);
 				end
 			end
 		end
@@ -1494,7 +1523,7 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 				local timer,seconds = Auras:parseTime((start + duration) - GetTime(),true);
 
 				if (name == "Healing Stream Totem" and not selected) then
-					name = "Healing Stream Totem1";
+					name = "Healing Stream Totem One";
 				elseif (name == "Healing Stream Totem" and selected) then
 					streamCtr = streamCtr + 1;
 					
@@ -1504,24 +1533,27 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 					end
 					
 					if (secondTotemSlot > 0 and i == secondTotemSlot) then
-						name = "Healing Stream Totem2";
+						name = "Healing Stream Totem Two";
 					else
-						name = "Healing Stream Totem1";
+						name = "Healing Stream Totem One";
 					end
 				end
 
 				if (mainIDs[name]) then
-					totemCtr = totemCtr + 1;
-				
-					if (seconds > 0.1) then
-						mainIDs[name]:SetMinMaxValues(0,duration);
-						mainIDs[name]:SetValue(seconds);
-						mainIDs[name].timetext:SetText(timer);
-						mainIDs[name]:SetPoint("RIGHT",(xPos[totemCtr] * -1),0);
-						mainIDs[name]:Show();
+					if (Auras.db.char.aura[3][gsub(name," ","").."Bar"]) then
+						totemCtr = totemCtr + 1;
+						if (seconds > 0.1) then
+							mainIDs[name]:SetMinMaxValues(0,duration);
+							mainIDs[name]:SetValue(seconds);
+							mainIDs[name].timetext:SetText(timer);
+							mainIDs[name]:SetPoint("RIGHT",(xPos[totemCtr] * -1),0);
+							mainIDs[name]:Show();
+						else
+							totemCtr = totemCtr - 1;
+							mainIDs[name]:SetValue(0);
+							mainIDs[name]:Hide();
+						end
 					else
-						totemCtr = totemCtr - 1;
-						mainIDs[name]:SetValue(0);
 						mainIDs[name]:Hide();
 					end
 				end
@@ -1529,6 +1561,12 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 			SSA.DataFrame.text:SetText(Auras:CurText('DataFrame')..i..". "..tostring(name).."\n");
 		end
 		mainTotems = totemCtr;
+		
+		if (mainTotems == 0 and mainIDs["Cloudburst Totem"]:IsShown()) then
+			mainIDs["Cloudburst Totem"]:Hide();
+			mainIDs["Cloudburst Totem"]:SetValue(0);
+		end
+		
 		SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."\nNum Totems: "..tostring(mainTotems).."\nMemory Usage: "..GetAddOnMemoryUsage("ShamanAurasDev"));
 		if (Auras.db.char.layout[3].isMoving) then
 			self:SetBackdrop(backdrop);
@@ -1551,29 +1589,39 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		for i=1,5 do
 			local _,name,start,duration = GetTotemInfo(i);
 			
-			if (duration > 0) then
-				local timer,seconds = Auras:parseTime((start + duration) - GetTime(),true);
-				
-				if (utilIDs[name]) then
-					totemCtr = totemCtr + 1;
+			if ((duration or 0) > 0 and name) then
+				if (Auras.db.char.aura[3][gsub(name," ",'').."BarRes"]) then
+					local timer,seconds = Auras:parseTime((start + duration) - GetTime(),true);
 					
-					if (mainTotems > 0) then
-						x = xOffset[mainTotems + (totemCtr - 1)];
-					else
-						x = (xPos[totemCtr] * -1);
+					if (utilIDs[name]) then
+						totemCtr = totemCtr + 1;
+						
+						if (mainTotems > 0) then
+							x = xOffset[mainTotems + (totemCtr - 1)];
+						else
+							x = (xPos[totemCtr] * -1);
+						end
+					
+						if (seconds > 0.1) then
+							utilIDs[name]:SetMinMaxValues(0,duration);
+							utilIDs[name]:SetValue(seconds);
+							utilIDs[name].timetext:SetText(timer);
+							utilIDs[name]:SetPoint("RIGHT",x,0);
+							utilIDs[name]:Show();
+						else
+							totemCtr = totemCtr - 1;
+							utilIDs[name]:SetValue(0);
+							utilIDs[name]:Hide();
+						end
 					end
-				
-					if (seconds > 0.1) then
-						utilIDs[name]:SetMinMaxValues(0,duration);
-						utilIDs[name]:SetValue(seconds);
-						utilIDs[name].timetext:SetText(timer);
-						utilIDs[name]:SetPoint("RIGHT",x,0);
-						utilIDs[name]:Show();
-					else
-						totemCtr = totemCtr - 1;
-						utilIDs[name]:SetValue(0);
+				else
+					if (name and name ~= '') then
 						utilIDs[name]:Hide();
 					end
+				end
+			else
+				if (name and name ~= '') then
+					utilIDs[name]:Hide();
 				end
 			end
 		end
@@ -1685,7 +1733,15 @@ EventFrame:SetScript("OnEvent",function(self,event,...)
 				end
 			elseif (subevent == "SPELL_AURA_APPLIED") then
 				if (buffIDs[spellID]) then
-					table.insert(buffTable,spellID);
+					local isValidBuff = false;
+					
+					if ((spellID == 108271 and Auras.db.char.aura[3].AstralShiftBarRes) or (spellID == 114052 and Auras.db.char.aura[3].AscendanceBarRes) or (spellID == 108281 and Auras.db.char.aura[3].AncestralGuidanceBarRes) or (spellID == 2825 and Auras.db.char.aura[3].BloodlustBarRes) or (spellID == 79206 and Auras.db.char.aura[3].SpiritwalkersGraceBar) or (spellID == 32182 and Auras.db.char.aura[3].HeroismBarRes) or (spellID == 73685 and Auras.db.char.aura[3].UnleashLifeBar) or (spellID == 80353 and Auras.db.char.aura[3].TimeWarpBarRes)) then
+						isValidBuff = true;
+					end
+					
+					if (isValidBuff) then
+						table.insert(buffTable,spellID);
+					end
 				end
 			elseif (subevent == "SPELL_AURA_REMOVED") then
 				if (buffIDs[spellID]) then
@@ -1697,17 +1753,19 @@ EventFrame:SetScript("OnEvent",function(self,event,...)
 					buffIDs[spellID]:Hide();
 				end
 			elseif (subevent == "SPELL_SUMMON" and spellID == 198838) then
-				SSA.ErrorFrame.text:SetText("EST Summoned");
-				local EST = SSA.EarthenShieldTotemBar;
-				EST_Expires = GetTime() + 15;
-				SSA.EarthenShieldTotemBar:SetAlpha(1);
-				SSA.EarthenShieldTotemBar.Timer:SetAlpha(1);
-				SSA.EarthenShieldTotemBar:SetMinMaxValues(0,UnitHealthMax('player'));
-				SSA.EarthenShieldTotemBar.text:SetText("100%");
-				SSA.EarthenShieldTotemBar:SetValue(UnitHealthMax('player'));
-				Auras.db.char.info.totems.eShield.hp = UnitHealthMax('player');
-				Auras.db.char.info.totems.eShield.dmg = 0;
-				EST_GUID = petGUID;
+				if (Auras.db.char.aura[3].EarthenShieldTotemBar) then
+					SSA.ErrorFrame.text:SetText("EST Summoned");
+					local EST = SSA.EarthenShieldTotemBar;
+					EST_Expires = GetTime() + 15;
+					SSA.EarthenShieldTotemBar:SetAlpha(1);
+					SSA.EarthenShieldTotemBar.Timer:SetAlpha(1);
+					SSA.EarthenShieldTotemBar:SetMinMaxValues(0,UnitHealthMax('player'));
+					SSA.EarthenShieldTotemBar.text:SetText("100%");
+					SSA.EarthenShieldTotemBar:SetValue(UnitHealthMax('player'));
+					Auras.db.char.info.totems.eShield.hp = UnitHealthMax('player');
+					Auras.db.char.info.totems.eShield.dmg = 0;
+					EST_GUID = petGUID;
+				end
 			elseif ((subevent == "SPELL_DAMAGE" or subevent == "SWING_DAMAGE") and name == L["Earthen Shield Totem"]) then
 				Auras.db.char.info.totems.eShield.dmg = (Auras.db.char.info.totems.eShield.dmg or 0) + damage;
 				Auras:UpdateEarthenShield(EarthenShieldTotemBar);
@@ -1782,7 +1840,7 @@ SSA.AuraObjectsRes = {
 		},
 	},
 	[10] = {
-		alpha = false,
+		alpha = nil,
 		object = TidalWavesBar,
 		statusbar = {
 			r = 0.35,

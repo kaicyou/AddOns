@@ -6,7 +6,7 @@
 ## DefaultState: enabled
 ## RequiredDeps: DBM-Core
 ## Author: XF
-## Version: 7.0.1
+## Version: 7.0.2
 ## Notes: NIL  
 ## X-DBM-Voice: 1
 ## X-DBM-Voice-Name: XF

@@ -1615,7 +1615,7 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 						end
 					end
 				else
-					if (name and name ~= '') then
+					if (name and name ~= '' and utilIDs[name]) then
 						utilIDs[name]:Hide();
 					end
 				end

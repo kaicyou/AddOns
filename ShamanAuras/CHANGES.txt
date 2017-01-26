@@ -1,4 +1,27 @@
 ------------------------------------------------------------------------
+r96 | SweetsourDev | 2017-01-25 20:37:41 -0600 (Wed, 25 Jan 2017) | 4 lines
+Changed paths:
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r40-beta
+NEW: [UI] Non-shaman dialog popup no longer has an option to disable the option as this was causing issues. There is now a button to show the addon window. (Thanks, Cricketicecream!)
+
+FIX: [Restoration] The Healing Stream duration timer bars should be working correctly again. (Thanks, jayyced!)
+------------------------------------------------------------------------
+r95 | SweetsourDev | 2017-01-24 22:42:10 -0600 (Tue, 24 Jan 2017) | 2 lines
+Changed paths:
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r39.1-beta
+FIX: [Elemental] All timer duration bar related errors should be fixed.
+------------------------------------------------------------------------
 r94 | SweetsourDev | 2017-01-24 19:50:29 -0600 (Tue, 24 Jan 2017) | 4 lines
 Changed paths:
    M /trunk/SA_Frames_Elemental.lua

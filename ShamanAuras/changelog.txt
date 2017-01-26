@@ -1,4 +1,12 @@
-﻿	r39-beta
+﻿	r40-beta
+NEW: [UI] Non-shaman dialog popup no longer has an option to disable the option as this was causing issues. There is now a button to show the addon window. (Thanks, Cricketicecream!)
+
+FIX: [Restoration] The Healing Stream duration timer bars should be working correctly again. (Thanks, jayyced!)
+	
+	r39.1-beta
+FIX: [Elemental] All timer duration bar related errors should be fixed.
+	
+	r39-beta
 NEW: [Elemental] Stormkeeper's Aura can now be toggled. (Thanks, qoomindahouse!)
 
 FIX: [Restoration] Using Earthgrab, Voodoo, or Wind Rush Totems should no longer cause Lua errors. (Thanks, Grumbledore!)

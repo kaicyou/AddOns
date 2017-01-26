@@ -1208,7 +1208,7 @@ local xOffset = {
 
 BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	if (Auras:CharacterCheck(1)) then
-		SSA.DataFrame.text:SetText('Num Buffs: '..getn(buffTable).."\n\n");
+		--SSA.DataFrame.text:SetText('Num Buffs: '..getn(buffTable).."\n\n");
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		local xPosCtr = 1;
@@ -1322,7 +1322,7 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 						end
 					end
 				else
-					if (name and name ~= '') then
+					if (name and name ~= '' and utilIDs[name]) then
 						utilIDs[name]:Hide();
 					end
 				end

@@ -482,6 +482,7 @@ function Auras:OnInitialize()
 	local defaults = {
 		char = {
 			version = nil,
+			name = nil,
 			isEleFirst = true,
 			isEnhFirst = true,
 			isResFirst = true,
@@ -918,8 +919,8 @@ function Auras:OnInitialize()
 						HealingRain = true,
 						HealingStreamTotem = true,
 						HealingStreamTotemBar = true,
-						HealingStreamTotemBarOne = true,
-						HealingStreamTotemBarTwo = true,
+						HealingStreamTotemOneBar = true,
+						HealingStreamTotemTwoBar = true,
 						HealingStreamCharges = true,
 						HealingTideTotem = true,
 						HealingTideTotemBar = true,
@@ -1604,6 +1605,7 @@ end
 
 -- Event: PLAYER_LOGIN
 function Auras:OnEnable()
+	local _,_,classIndex = UnitClass('player');
 	--self:RegisterEvent("SPELL_UPDATE_COOLDOWN");
 	self:RegisterEvent("PLAYER_LEVEL_UP");
 	self:RegisterEvent("PLAYER_REGEN_DISABLED");
@@ -1723,21 +1725,20 @@ function Auras:OnEnable()
 		end
 	end
 
+	
 	StaticPopupDialogs["SSA_CLASS_CHECKER"] = {
-		text = "You are currently running the addon \"Sweetsour's Shaman Auras\" while on a non-shaman character. Would you like to disable this addon for this character?",
-		button1 = "Yes",
-		button2 = "No",
+		text = "You are currently running the addon \"Sweetsour's Shaman Auras\" while on a non-shaman character. It is recommended that you disable this addon.",
+		button1 = "Show Addon List",
+		button2 = "I'll disable it later",
 		OnAccept = function()
-			DisableAddOn("ShamanAuras");
-			DisableAddOn("ShamanAurasDev");
-			ReloadUI();
+			AddonList:Show();
 		end,
 		timeout = 0,
 		whileDead = true,
 		hideOnEscape = true,
 		preferredIndex = 3,
 	}
-	
+
 	if (not Auras:CharacterCheck(0)) then
 		StaticPopup_Show ("SSA_CLASS_CHECKER")
 	end

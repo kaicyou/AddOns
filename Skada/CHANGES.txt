@@ -1,18 +1,52 @@
 ------------------------------------------------------------------------
-r716 | zarnivoop | 2017-01-06 08:31:00 -0600 (Fri, 06 Jan 2017) | 1 line
+r724 | zarnivoop | 2017-01-25 11:05:43 -0600 (Wed, 25 Jan 2017) | 1 line
 Changed paths:
-   M /trunk/lib/SpecializedLibBars-1.0/SpecializedLibBars-1.0.lua
+   M /trunk/Skada.lua
 
-bump libbars minor version to get around issues for RealUI
+just a nudge to see if embedded works now
 ------------------------------------------------------------------------
-r715 | zarnivoop | 2017-01-06 06:38:09 -0600 (Fri, 06 Jan 2017) | 2 lines
+r723 | zarnivoop | 2017-01-24 15:44:59 -0600 (Tue, 24 Jan 2017) | 1 line
 Changed paths:
-   M /trunk/Menus.lua
+   A /trunk/Version.lua
+
+whoops
+------------------------------------------------------------------------
+r722 | zarnivoop | 2017-01-24 15:29:12 -0600 (Tue, 24 Jan 2017) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/Options.lua
+   M /trunk/Skada.lua
+   M /trunk/Skada.toc
+   M /trunk/embeds.xml
+
+changelog notifications
+------------------------------------------------------------------------
+r721 | zarnivoop | 2017-01-16 11:55:16 -0600 (Mon, 16 Jan 2017) | 1 line
+Changed paths:
+   D /trunk/lib/LibBossIDs-1.0.lua
+
+remove temporary lib
+------------------------------------------------------------------------
+r720 | zarnivoop | 2017-01-16 11:54:23 -0600 (Mon, 16 Jan 2017) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/embeds.xml
+
+sort out libbossid dependancy
+------------------------------------------------------------------------
+r719 | zarnivoop | 2017-01-08 09:14:17 -0600 (Sun, 08 Jan 2017) | 1 line
+Changed paths:
+   M /trunk/locale/enUS.lua
+
+missing localization
+------------------------------------------------------------------------
+r718 | zarnivoop | 2017-01-08 08:07:01 -0600 (Sun, 08 Jan 2017) | 2 lines
+Changed paths:
    M /trunk/Options.lua
    M /trunk/Skada.lua
    M /trunk/lib/SpecializedLibBars-1.0/SpecializedLibBars-1.0.lua
 
-few cases of non-local function references fixed in libbars
-moved configuration options out from Blizz options
+minor performance tweak for smooth bars
+added an update frequency option
 ------------------------------------------------------------------------
 

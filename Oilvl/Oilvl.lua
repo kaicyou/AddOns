@@ -497,7 +497,7 @@ end
 function oilvl(unit)
 	if InspectFrame and (InspectFrame.unit or InspectFrame:IsShown()) then return -1 end
 	if InspectFrame and InspectFrame.unit then return -1 end
-	if not UnitAffectingCombat("player") then 
+	if (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan) then 
 		OILVL_Unit=unit;
 		if CheckInteractDistance(OILVL_Unit, 1) and CanInspect(OILVL_Unit) then
 			OILVL:RegisterEvent("INSPECT_READY");
@@ -526,7 +526,7 @@ end
 function ORfbIlvl(ounit, ...)
 	local as = {...}
 	if InspectFrame and InspectFrame:IsShown() then return -1 end
-	if not UnitAffectingCombat("player") and ounit ~= "" then
+	if (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan) and ounit ~= "" then
 		local i=0;
 		OTCurrent3 = tonumber(ounit);
 		if IsInRaid() then
@@ -703,7 +703,7 @@ function oilvlcheckunknown()
 end
 
 function OILVLCheckUpdate()
-	if not UnitAffectingCombat("player") and OILVL_Unit == "" and oilvlframesw then
+	if (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan) and OILVL_Unit == "" and oilvlframesw then
 		oilvlcheckunknown();
 		ountrack=false;
 		for i = 1, 40 do
@@ -737,7 +737,7 @@ function OILVLCheckUpdate()
 end
 	
 function OVILRefresh()
-if not UnitAffectingCombat("player") and oilvlframesw then
+if (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan)  and oilvlframesw then
 	local i=0;
 	local rnum=0;
 	ountrack=true;
@@ -942,7 +942,7 @@ end
 end
 -- Same as OVILRefresh(), but do not clear item level.
 function OilvlCheckFrame()
-	if not UnitAffectingCombat("player") and oilvlframesw then
+	if (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan) and oilvlframesw then
 		local i=0;
 		local j=0;
 		local rnum=0;
@@ -1268,7 +1268,7 @@ function OilvlRPDTimeCheck()
 end
 
 function oilvlcheckrange()
-if not UnitAffectingCombat("player") and oilvlframesw then
+if (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan) and oilvlframesw then
 	local i=0;
 	local rnum=0;
 	local total=0;
@@ -1427,7 +1427,7 @@ if not UnitAffectingCombat("player") and oilvlframesw then
 		htex4:SetAllPoints()
 		_G[OTCurrent]:SetNormalTexture(htex4)	
 	end
-	if ountrack and not UnitAffectingCombat("player") and not (InspectFrame and InspectFrame:IsShown()) then
+	if ountrack and (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan) and not (InspectFrame and InspectFrame:IsShown()) then
 		OILVLCheckUpdate()
 	end
 	if OILVL_Unit ~= "" then ORfbIlvl(OTCurrent3,true); end
@@ -4399,7 +4399,7 @@ function otooltip6func()
 						otooltip6:SetCell(line,ot, "|cFFFF8000"..oicomp[m][ot6gear[ot-5]][1].." |cFF00FF00"..(oicomp[m][ot6gear[ot-5]][4] or ""))
 					else
 						otooltip6:SetCell(line,ot, oicomp[m][ot6gear[ot-5]][3]..oicomp[m][ot6gear[ot-5]][1].." |cFF00FF00"..(oicomp[m][ot6gear[ot-5]][4] or ""))
-						if ot >= 6 and ot <= 10 then
+						if (ot >= 6 and ot <= 10) or ot == 15 then
 							if checkMtier(oilvlframedata.gear[oicomp[m].id][ot6gear[ot-5]]) then
 								otooltip6:SetCellColor(line,ot,255/255, 127/255, 243/255,1)
 							elseif checkHtier(oilvlframedata.gear[oicomp[m].id][ot6gear[ot-5]]) then
@@ -5208,12 +5208,11 @@ local events = {}
 
 function events:INSPECT_READY(...)
 	oilvlSaveItemLevel(0)
-	C_Timer.After(1,function() oilvlSaveItemLevel(1) end)
-	C_Timer.After(2,function() oilvlSaveItemLevel(2) end)
+	C_Timer.After(3,function() oilvlSaveItemLevel(3) end)
 	-- GameTooltip		
 	if (Omover ==1) and cfg.oilvlms then
 		Omover=0;
-		if not UnitAffectingCombat("player") and cfg.oilvlms and UnitExists("target") and CheckInteractDistance("target", 1) then
+		if (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan)  and cfg.oilvlms and UnitExists("target") and CheckInteractDistance("target", 1) then
 			local oname, _ = GameTooltip:GetUnit();
 			if oname ~= nil then oname = oname:gsub("%-.+", ""); else return -1; end
 			if oname ~= GetUnitName("target",""):gsub("%-.+", "") then return -1; end
@@ -5302,7 +5301,7 @@ function events:INSPECT_READY(...)
 end
 
 function events:INSPECT_ACHIEVEMENT_READY(...)
-	if not UnitAffectingCombat("player") then
+	if (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan)  then
 		if cfg.oilvlms then
 			if Omover2 == 1 then
 				if UnitExists(rpunit) and CheckInteractDistance(rpunit, 1) and rpsw then
@@ -5348,7 +5347,7 @@ function events:INSPECT_ACHIEVEMENT_READY(...)
 end
 
 function events:GROUP_ROSTER_UPDATE(...)
-	if not UnitAffectingCombat("player") then
+	if (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan)  then
 		if oilvlframesw then OResetSendMark(); OilvlCheckFrame(); end
 		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
 		ClearAchievementComparisonUnit();
@@ -5360,7 +5359,7 @@ function events:GROUP_ROSTER_UPDATE(...)
 end
 
 function events:RAID_ROSTER_UPDATE(...)
-	if not UnitAffectingCombat("player") then
+	if (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan)  then
 		if oilvlframesw then OResetSendMark(); OilvlCheckFrame(); end
 		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
 		ClearAchievementComparisonUnit();
@@ -5396,6 +5395,7 @@ function events:ADDON_LOADED(...)
 	if cfg.oilvlaltclickroll == nil then cfg.oilvlaltclickroll = true end
 	if cfg.oilvlautoscan == nil then cfg.oilvlautoscan = true end
 	if cfg.oilvlsamefaction == nil then cfg.oilvlsamefaction = false end
+	if cfg.oilvlcombatcanscan == nil then cfg.oilvlcombatcanscan = false end
 	--if not cfg.oilvlautoscan then cfg.oilvlautoscan = true end
 	OilvlConfigFrame();
 	oilvlframe();
@@ -5439,66 +5439,70 @@ function events:PLAYER_ENTERING_WORLD(...)
 end
 
 function events:PLAYER_REGEN_DISABLED(...)
-	if oilvlframesw then
-		local nn=1;
-		for nn=1, 40 do
-			_G["OILVLRAIDFRAME"..nn]:Disable();
+	if not cfg.oilvlcombatcanscan then
+		if oilvlframesw then
+			local nn=1;
+			for nn=1, 40 do
+				_G["OILVLRAIDFRAME"..nn]:Disable();
+			end
+			OILVLREFRESH:Hide();
 		end
-		OILVLREFRESH:Hide();
+		rescanilvl = 0
+		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
+		ClearAchievementComparisonUnit();
+		rpsw=false;
+		rpunit="";
+		Omover2 = 0;
+		orollgear = ""
+		oilvlUpdateLDBTooltip()
+		otooltip6sw = false
+		
+		OILVL_Unit="";
+		if OTCurrent ~= "" then
+			local ntex4 = _G[OTCurrent]:CreateTexture()
+			ntex4:SetColorTexture(0.2,0.2,0.2,0.5)
+			ntex4:SetAllPoints()	
+			_G[OTCurrent]:SetNormalTexture(ntex4)
+		end
+		OTCurrent = "";
+		OTCurrent2 = "";
+		OTCurrent3 = "";
+		ountrack=true;	
 	end
-	rescanilvl = 0
-	OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
-	ClearAchievementComparisonUnit();
-	rpsw=false;
-	rpunit="";
-	Omover2 = 0;
-	orollgear = ""
-	oilvlUpdateLDBTooltip()
-	otooltip6sw = false
-	
-	OILVL_Unit="";
-	if OTCurrent ~= "" then
-		local ntex4 = _G[OTCurrent]:CreateTexture()
-		ntex4:SetColorTexture(0.2,0.2,0.2,0.5)
-		ntex4:SetAllPoints()	
-		_G[OTCurrent]:SetNormalTexture(ntex4)
-	end
-	OTCurrent = "";
-	OTCurrent2 = "";
-	OTCurrent3 = "";
-	ountrack=true;	
 end
 
 function events:PLAYER_REGEN_ENABLED(...)
-	if oilvlframesw then
-		local nn=1;
-		for nn=1, 40 do
-			if not _G["OILVLRAIDFRAME"..nn]  then break; end
-			_G["OILVLRAIDFRAME"..nn]:Disable();
-			_G["OILVLRAIDFRAME"..nn]:Enable();
+	if not cfg.oilvlcombatcanscan then
+		if oilvlframesw then
+			local nn=1;
+			for nn=1, 40 do
+				if not _G["OILVLRAIDFRAME"..nn]  then break; end
+				_G["OILVLRAIDFRAME"..nn]:Disable();
+				_G["OILVLRAIDFRAME"..nn]:Enable();
+			end
+			OILVLREFRESH:Show();
+			OilvlCheckFrame();
 		end
-		OILVLREFRESH:Show();
-		OilvlCheckFrame();
+		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
+		ClearAchievementComparisonUnit();
+		rpsw=false;
+		rpunit="";
+		Omover2 = 0;
+		orollgear = ""
+		oilvlUpdateLDBTooltip()
+		
+		OILVL_Unit="";
+		if OTCurrent ~= "" then
+			local ntex4 = _G[OTCurrent]:CreateTexture()
+			ntex4:SetColorTexture(0.2,0.2,0.2,0.5)
+			ntex4:SetAllPoints()	
+			_G[OTCurrent]:SetNormalTexture(ntex4)
+		end
+		OTCurrent = "";
+		OTCurrent2 = "";
+		OTCurrent3 = "";
+		ountrack=true;
 	end
-	OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
-	ClearAchievementComparisonUnit();
-	rpsw=false;
-	rpunit="";
-	Omover2 = 0;
-	orollgear = ""
-	oilvlUpdateLDBTooltip()
-	
-	OILVL_Unit="";
-	if OTCurrent ~= "" then
-		local ntex4 = _G[OTCurrent]:CreateTexture()
-		ntex4:SetColorTexture(0.2,0.2,0.2,0.5)
-		ntex4:SetAllPoints()	
-		_G[OTCurrent]:SetNormalTexture(ntex4)
-	end
-	OTCurrent = "";
-	OTCurrent2 = "";
-	OTCurrent3 = "";
-	ountrack=true;	
 end	
 
 function events:ROLE_CHANGED_INFORM(...)
@@ -5580,7 +5584,7 @@ function OMouseover()
 		return -1;
 	end
 	if InspectFrame and InspectFrame.unit then return -1 end
-	if not UnitAffectingCombat("player") and cfg.oilvlms and oilvlframesw then
+	if (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan)  and cfg.oilvlms and oilvlframesw then
 		if CheckInteractDistance("target", 1) and CanInspect("target") then
 			-- if (cfg.oilvlsamefaction and UnitFactionGroup("player") == UnitFactionGroup("target")) then
 			if not cfg.oilvlsamefaction then
@@ -5931,7 +5935,7 @@ end
 ------------------------------------------------------------------
 
 GameTooltip:HookScript("OnTooltipSetUnit", function() 
-	if not UnitAffectingCombat("player") and cfg.oilvlms and UnitExists("target") and not IsInRaid() and not IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and not IsInGroup(LE_PARTY_CATEGORY_HOME) then
+	if (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan)  and cfg.oilvlms and UnitExists("target") and not IsInRaid() and not IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and not IsInGroup(LE_PARTY_CATEGORY_HOME) then
 		local oname, _ = GameTooltip:GetUnit()
 		if oname ~= nil then oname = oname:gsub("%-.+", ""); else return -1; end
 		if  oname == GetUnitName("target",""):gsub("%-.+", "") then
@@ -5944,7 +5948,7 @@ BINDING_HEADER_OiLvL = "O Item Level"
 BINDING_NAME_OILVL_RAID_PROGRESSION = L["Raid Progression"]
 
 function OMouseover2()
-	if not UnitAffectingCombat("player") and cfg.oilvlms and UnitExists("target") then
+	if (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan)  and cfg.oilvlms and UnitExists("target") then
 		local oname, _ = GameTooltip:GetUnit()
 		if oname ~= nil then oname = oname:gsub("%-.+", ""); else return -1; end
 		if  oname == GetUnitName("target",""):gsub("%-.+", "") then
@@ -6139,7 +6143,7 @@ function oilvlCheckTierBonusSet(i)
 			if checktierID(oilvlframedata.gear[i][tiergears[j]][8]) then set = set + 1 end 
 		end
 	end
-	if set >=4 then return 4 elseif set >=2 then return 2 else	return "" end
+	if set >=4 then return 4 elseif set >= 2 then return 2 else	return "" end
 end
 
 function oilvlCheckUpgrade(i)
@@ -6179,6 +6183,18 @@ SlashCmdList["OILVL_OISF"] = function(msg)
 		StaticPopup_Show ("RELOAD")
 	end
 end
+
+SLASH_OILVL_OICS1 = "/oics"
+SlashCmdList["OILVL_OICS"] = function(msg)
+	if cfg.oilvlcombatcanscan then 
+		cfg.oilvlcombatcanscan = false
+		print("OiLvL: Combat Scan is disabled")
+	else
+		cfg.oilvlcombatcanscan = true
+		print("OiLvL: Combat Scan is enabled")
+	end
+end
+
 
 
 -- check who roll the gear

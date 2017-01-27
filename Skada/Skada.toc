@@ -7,7 +7,7 @@
 ## Notes-frFR: Un damage meter.
 ## Notes-zhCN: 模块化伤害统计。
 ## Author: Zarnivoop
-## Version: 1.6.4
+## Version: 1.6.5
 ## SavedVariables: SkadaDB
 ## SavedVariablesPerCharacter: SkadaPerCharDB
 
@@ -38,5 +38,3 @@ BrokerDisplay.lua
 Version.lua
 
 modules.xml
-
-

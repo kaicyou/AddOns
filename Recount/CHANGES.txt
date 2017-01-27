@@ -1,9 +1,11 @@
 ------------------------------------------------------------------------
-r1411 | Resike | 2017-01-04 18:13:37 -0600 (Wed, 04 Jan 2017) | 1 line
+r1413 | Resike | 2017-01-26 18:14:21 -0600 (Thu, 26 Jan 2017) | 2 lines
 Changed paths:
-   M /trunk
-   M /trunk/Recount.lua
+   M /trunk/.pkgmeta
+   M /trunk/Recount_Modes.lua
+   M /trunk/colors.lua
 
-- Fixing lib packaging.
+- Packager fixes.
+- Fixed an issue with color pickers.
 ------------------------------------------------------------------------
 

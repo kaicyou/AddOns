@@ -1,4 +1,49 @@
 ------------------------------------------------------------------------
+r100 | SweetsourDev | 2017-01-29 15:29:51 -0600 (Sun, 29 Jan 2017) | 3 lines
+Changed paths:
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r41.2-beta
+FIX: [Elemental] The aura glow for Lava Burst should now once again disappear correctly.
+FIX: [Elemental] The aura glow for Lava Burst should no longer display odd results when having no target while in combat while Lava Surge is available.
+------------------------------------------------------------------------
+r99 | SweetsourDev | 2017-01-28 21:02:40 -0600 (Sat, 28 Jan 2017) | 2 lines
+Changed paths:
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r41.1-beta
+FIX: [Elemental] Fixed an issue that would occur when using a specific totem.
+------------------------------------------------------------------------
+r98 | SweetsourDev | 2017-01-28 10:31:10 -0600 (Sat, 28 Jan 2017) | 5 lines
+Changed paths:
+   M /trunk/ShamanAuras.toc
+
+	r41-beta
+NEW: [All] Cooldown numbers and sweep animations can now be toggled on or off. (Thanks, 1SEBI1!)
+NEW: [Ele/Enh] The Maelstrom Bar can now have its alpha adjusted in multiple ways to provide flexibility on how it's displayed. (Thanks, bileblow!)
+
+FIX: [All] Totem duration bars should now disappear when the totem is destroyed prematurely.
+------------------------------------------------------------------------
+r97 | SweetsourDev | 2017-01-28 10:27:47 -0600 (Sat, 28 Jan 2017) | 5 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/changelog.txt
+
+	r41-beta
+NEW: [All] Cooldown numbers and sweep animations can now be toggled on or off. (Thanks, 1SEBI1!)
+NEW: [Ele/Enh] The Maelstrom Bar can now have its alpha adjusted in multiple ways to provide flexibility on how it's displayed. (Thanks, bileblow!)
+
+FIX: [All] Totem duration bars should now disappear when the totem is destroyed prematurely.
+------------------------------------------------------------------------
 r96 | SweetsourDev | 2017-01-25 20:37:41 -0600 (Wed, 25 Jan 2017) | 4 lines
 Changed paths:
    M /trunk/SA_Core.lua

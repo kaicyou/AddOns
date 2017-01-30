@@ -658,7 +658,7 @@ SSA.Stormstrike:SetScript("OnUpdate", function(self)
 		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			if (duration > 2) then
-				Auras:ToggleCooldownSwipe(self.CD,true)
+				--Auras:ToggleCooldownSwipe(self.CD,true)
 				Auras:ToggleOverlayGlow(self.glow,false);
 				Auras:ExecuteCooldown(self,start,duration,false);
 				if (power >= 40) then
@@ -881,16 +881,25 @@ SSA.MaelstromBarEnh:SetScript("OnUpdate",function(self,elaps)
 			if (isCombat) then
 				self:SetAlpha(1);
 				if (power >= Auras.db.char.triggers.enh.maelstrom and Auras.db.char.triggers.enh.MaelstromAnim) then
-					self.Lightning:SetAlpha(1);
-					self.bg:SetAlpha(1);
+					self.Lightning:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaCombat);
+					self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaCombat);
 				else
 					self.Lightning:SetAlpha(0);
 					self.bg:SetAlpha(0.5);
 				end
 			elseif (not isCombat and Auras:IsTargetEnemy()) then
-				MaelstromBar:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha);
+				--MaelstromBar:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha);
+				if (Auras.db.char.triggers.enh.maelstromAlphaOoC == 0) then
+					MaelstromBar:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaTar);
+					self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaTar);
+				else
+					MaelstromBar:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
+					self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
+				end
 			elseif (not isCombat and not Auras:IsTargetEnemy()) then
-				self:SetAlpha(0);
+				--self:SetAlpha(0);
+				self:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
+				self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
 			end
 		elseif (Auras.db.char.layout[2].maelstromBar.isAdjustable or Auras.db.char.layout[2].isMoving) then
 			self:SetAlpha(0.5);
@@ -955,10 +964,22 @@ local mainIDs = {
 	[201898] = SSA.WindsongBar,
 }
 local utilIDs = {
-	["Earthgrab Totem"]  = SSA.EarthgrabTotemBarEnh,
+	["Earthgrab Totem"]  = {
+		[1] = false,
+		[2] = SSA.EarthgrabTotemBarEnh,
+		[3] = false,
+	},
 	--[51514]  = SSA.HexBarEle,
-	["Voodoo Totem"] = SSA.VoodooTotemBarEnh,
-	["Wind Rush Totem"] = SSA.WindRushTotemBarEnh,
+	["Voodoo Totem"] = {
+		[1] = false,
+		[2] = SSA.VoodooTotemBarEnh,
+		[3] = false,
+	},
+	["Wind Rush Totem"] = {
+		[1] = false,
+		[2] = SSA.WindRushTotemBarEnh,
+		[3] = false,
+	},
 }
 
 local xPos = {
@@ -1063,6 +1084,10 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
+		utilIDs["Earthgrab Totem"][3] = false;
+		utilIDs["Voodoo Totem"][3] = false;
+		utilIDs["Wind Rush Totem"][3] = false;
+		
 		for i=1,5 do
 			local _,name,start,duration = GetTotemInfo(i);
 			
@@ -1071,6 +1096,7 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 				
 				if (Auras.db.char.aura[2][gsub(name," ","").."BarEnh"]) then
 					if (utilIDs[name]) then
+						utilIDs[name][3] = true;
 						totemCtr = totemCtr + 1;
 						
 					
@@ -1081,22 +1107,45 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 						end
 					
 						if (seconds > 0.1) then
-							utilIDs[name]:SetMinMaxValues(0,duration);
-							utilIDs[name]:SetValue(seconds);
-							utilIDs[name].timetext:SetText(timer);
-							utilIDs[name]:SetPoint("RIGHT",x,0);
-							utilIDs[name]:Show();
+							utilIDs[name][2]:SetMinMaxValues(0,duration);
+							utilIDs[name][2]:SetValue(seconds);
+							utilIDs[name][2].timetext:SetText(timer);
+							utilIDs[name][2]:SetPoint("RIGHT",x,0);
+							utilIDs[name][2]:Show();
+							utilIDs[name][1] = true;
 						else
 							totemCtr = totemCtr - 1;
-							utilIDs[name]:SetValue(0);
-							utilIDs[name]:Hide();
+							utilIDs[name][2]:SetValue(0);
+							utilIDs[name][2]:Hide();
+							utilIDs[name][1] = false;
 						end
 					end
 				else
 					if (name and name ~= '' and utilIDs[name]) then
-						utilIDs[name]:Hide();
+						utilIDs[name][2]:Hide();
 					end
 				end
+			end
+			
+			if (i==5) then
+				if (not utilIDs["Earthgrab Totem"][3] and utilIDs["Earthgrab Totem"][1]) then
+					utilIDs["Earthgrab Totem"][1] = false;
+				end
+				
+				if (not utilIDs["Voodoo Totem"][3] and utilIDs["Voodoo Totem"][1]) then
+					utilIDs["Voodoo Totem"][1] = false;
+				end
+				
+				if (not utilIDs["Wind Rush Totem"][3] and utilIDs["Wind Rush Totem"][1]) then
+					utilIDs["Wind Rush Totem"][1] = false;
+				end
+			end
+		end
+		
+		for utilObj in pairs(utilIDs) do
+			if (not utilIDs[utilObj][1] and utilIDs[utilObj][2]:IsShown()) then
+				utilIDs[utilObj][2]:Hide();
+				utilIDs[utilObj][1] = false;
 			end
 		end
 		

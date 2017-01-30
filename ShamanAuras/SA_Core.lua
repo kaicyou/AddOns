@@ -364,10 +364,10 @@ function Auras:ToggleCooldownSwipe(self,arg1)
 	local cooldown = _G[self:GetName()];
 	if (not arg1) then
 		cooldown:SetSwipeColor(0,0,0,0);
-		cooldown.text:Hide();
+		--cooldown.text:Hide();
 	else
 		cooldown:SetSwipeColor(1,1,1,1);
-		cooldown.text:Show();
+		--cooldown.text:Show();
 	end
 	cooldown:SetDrawSwipe(arg1)
 	cooldown:SetDrawEdge(arg1)
@@ -397,12 +397,18 @@ function Auras:ExecuteCooldown(self,start,duration,isSmallAura,isHideText)
 	self.CD.text:SetFont("Interface\\addons\\ShamanAuras\\media\\fonts\\PT_Sans_Narrow.TTF",fontSize,"OUTLINE");
 	
 	self.CD:SetCooldown(start,duration)
-	self.CD:Show();
+	--self.CD:Show();
 	
-	if (not isHideText) then
+	if (not isHideText and Auras.db.char.cooldowns.numbers) then
 		self.CD.text:SetText(Auras:parseTime(timer,false));
 	else
 		self.CD.text:SetText('');
+	end
+	
+	if (Auras.db.char.cooldowns.sweep) then
+		Auras:ToggleCooldownSwipe(self.CD,true)
+	else
+		Auras:ToggleCooldownSwipe(self.CD,false)
 	end
 end
 
@@ -487,7 +493,10 @@ function Auras:OnInitialize()
 			isEnhFirst = true,
 			isResFirst = true,
 			isMoveGrid = true,
-			cooldowns = {},
+			cooldowns = {
+				numbers = true,
+				sweep = true,
+			},
 			info = {
 				totems = {
 					eShield = {
@@ -661,6 +670,9 @@ function Auras:OnInitialize()
 				},
 				ele = {
 					MaelstromAnim = true,
+					maelstromAlphaOoC = 0,
+					maelstromAlphaTar = 0.5,
+					maelstromAlphaCombat = 1,
 					maelstrom = 90,
 					flameShock = 10,
 					totemMastery = 15,
@@ -674,6 +686,9 @@ function Auras:OnInitialize()
 				},
 				enh = {
 					MaelstromAnim = true,
+					maelstromAlphaOoC = 0,
+					maelstromAlphaTar = 0.5,
+					maelstromAlphaCombat = 1,
 					boulderfist = 5,
 					maelstrom = 130,
 					flametongue = 5,
@@ -1610,6 +1625,13 @@ function Auras:OnEnable()
 	self:RegisterEvent("PLAYER_LEVEL_UP");
 	self:RegisterEvent("PLAYER_REGEN_DISABLED");
 	self:RegisterEvent("PLAYER_TALENT_UPDATE");
+	
+	-- Check if cooldowns value is table
+	--[[if (type(Auras.db.char.cooldowns.numbers) == "table") then
+		Auras.db.char.cooldowns.numbers = true;
+	end]]
+	
+	
 	--self:RegisterEvent("SPELL_UPDATE_CHARGES","ChargeCooldown");
 
 	--InterfaceOptionsFrame:HookScript("OnShow",function(self)

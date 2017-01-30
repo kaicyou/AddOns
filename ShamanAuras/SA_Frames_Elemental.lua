@@ -321,8 +321,11 @@ SSA.LavaBurstEle:SetScript("OnUpdate", function(self)
 			else]]
 				--self.Charges.text:SetText('');
 				if (duration > 2) then
-					Auras:ToggleCooldownSwipe(self.CD,true)
-					Auras:ToggleOverlayGlow(self.glow,false);
+					--[[if (Auras.db.char.cooldowns.swipe) then
+						Auras:ToggleCooldownSwipe(self.CD,true)]]
+						Auras:ToggleOverlayGlow(self.glow,false);
+						--self.CD:Show();
+					--end
 					Auras:ExecuteCooldown(self,start,duration,false);
 					self.CD:Show();
 				elseif (buff or ascendance) then
@@ -349,7 +352,7 @@ SSA.LavaBurstEle:SetScript("OnUpdate", function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			if (buff) then
+			if (buff and Auras:IsTargetEnemy()) then
 				Auras:ToggleOverlayGlow(self.glow,false);
 			end
 			self:SetAlpha(Auras.db.char.triggers.ele.OoCAlpha)
@@ -837,7 +840,7 @@ SSA.WindShearEle:SetScript("OnUpdate",function(self)
 		Auras:SpellRangeCheck(self,57994,true);
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,false);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -963,17 +966,24 @@ SSA.MaelstromBarEle:SetScript("OnUpdate",function(self,elaps)
 			if (isCombat) then
 				self:SetAlpha(1);
 				if (power >= Auras.db.char.triggers.ele.maelstrom and Auras.db.char.triggers.ele.MaelstromAnim) then
-					self.Lightning:SetAlpha(1);
-					self.bg:SetAlpha(1);
+					self.Lightning:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaCombat);
+					self.bg:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaCombat);
 				else
 					self.Lightning:SetAlpha(0);
 					self.bg:SetAlpha(0.5);
 				end
 			elseif (not isCombat and Auras:IsTargetEnemy()) then
-				MaelstromBar:SetAlpha(Auras.db.char.triggers.ele.OoCAlpha);
+				--MaelstromBar:SetAlpha(Auras.db.char.triggers.ele.OoCAlpha);
+				if (Auras.db.char.triggers.ele.maelstromAlphaOoC == 0) then
+					MaelstromBar:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaTar);
+					self.bg:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaTar);
+				else
+					MaelstromBar:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaOoC);
+					self.bg:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaOoC);
+				end
 			elseif (not isCombat and not Auras:IsTargetEnemy()) then
-				self:SetAlpha(0);
-				self.bg:SetAlpha(0);
+				self:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaOoC);
+				self.bg:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaOoC);
 			end
 		elseif (Auras.db.char.layout[1].maelstromBar.isAdjustable or Auras.db.char.layout[1].isMoving) then
 			self:SetAlpha(0.5);
@@ -1175,10 +1185,26 @@ local mainIDs = {
 	[157319] = SSA.StormElementalBar,
 }
 local utilIDs = {
-	["Earthgrab Totem"]  = SSA.EarthgrabTotemBarEle,
-	["Liquid Magma Totem"] = SSA.LiquidMagmaTotemBar,
-	["Voodoo Totem"] = SSA.VoodooTotemBarEle,
-	["Wind Rush Totem"] = SSA.WindRushTotemBarEle,
+	["Earthgrab Totem"] = {
+		[1] = false,
+		[2] = SSA.EarthgrabTotemBarEle,
+		[3] = false,
+	},
+	["Liquid Magma Totem"] = {
+		[1] = false,
+		[2] = SSA.LiquidMagmaTotemBar,
+		[3] = false,
+	},
+	["Voodoo Totem"] = {
+		[1] = false,
+		[2] = SSA.VoodooTotemBarEle,
+		[3] = false,
+	},
+	["Wind Rush Totem"] = {
+		[1] = false,
+		[2] = SSA.WindRushTotemBarEle,
+		[3] = false,
+	},
 }
 
 local xPos = {
@@ -1214,7 +1240,7 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		local xPosCtr = 1;
 		for i=1,getn(buffTable) do
 			local buff,_,_,_,_,duration,expires = UnitBuff('player',Auras:GetSpellName(buffTable[i]));
-			SSA.DataFrame.text:SetText(Auras:CurText('DataFrame')..i..". "..tostring(Auras:GetSpellName(buffTable[i])).."\n");
+			--SSA.DataFrame.text:SetText(Auras:CurText('DataFrame')..i..". "..tostring(Auras:GetSpellName(buffTable[i])).."\n");
 			if (expires) then
 				if (Auras.db.char.aura[1][buffIDs[buffTable[i]]:GetName()]) then
 					local timer,seconds = Auras:parseTime(expires - GetTime(),true);
@@ -1286,10 +1312,16 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
+		utilIDs["Earthgrab Totem"][3] = false;
+		utilIDs["Liquid Magma Totem"][3] = false;
+		utilIDs["Voodoo Totem"][3] = false;
+		utilIDs["Wind Rush Totem"][3] = false;
+		
 		for i=1,5 do
 			local _,name,start,duration = GetTotemInfo(i);
 			
 			if ((duration or 0) > 0 and name) then
+				
 				local barSuffix = '';
 				if (name == "Liquid Magma Totem") then
 					barSuffix = "Bar";
@@ -1301,6 +1333,7 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 					local timer,seconds = Auras:parseTime((start + duration) - GetTime(),true);
 					
 					if (utilIDs[name]) then
+						utilIDs[name][3] = true;
 						totemCtr = totemCtr + 1;
 						
 						if (getn(mainTable) > 0) then
@@ -1310,24 +1343,67 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 						end
 					
 						if (seconds > 0.1) then
-							utilIDs[name]:SetMinMaxValues(0,duration);
-							utilIDs[name]:SetValue(seconds);
-							utilIDs[name].timetext:SetText(timer);
-							utilIDs[name]:SetPoint("RIGHT",x,0);
-							utilIDs[name]:Show();
+							utilIDs[name][2]:SetMinMaxValues(0,duration);
+							utilIDs[name][2]:SetValue(seconds);
+							utilIDs[name][2].timetext:SetText(timer);
+							utilIDs[name][2]:SetPoint("RIGHT",x,0);
+							utilIDs[name][2]:Show();
+							utilIDs[name][1] = true;
 						else
 							totemCtr = totemCtr - 1;
-							utilIDs[name]:SetValue(0);
-							utilIDs[name]:Hide();
+							utilIDs[name][2]:SetValue(0);
+							utilIDs[name][2]:Hide();
+							utilIDs[name][1] = false;
 						end
 					end
 				else
 					if (name and name ~= '' and utilIDs[name]) then
-						utilIDs[name]:Hide();
+						utilIDs[name][2]:Hide();
 					end
 				end
 			end
+			
+			if (i==5) then
+				if (not utilIDs["Earthgrab Totem"][3] and utilIDs["Earthgrab Totem"][1]) then
+					utilIDs["Earthgrab Totem"][1] = false;
+				end
+				
+				if (not utilIDs["Liquid Magma Totem"][3] and utilIDs["Liquid Magma Totem"][1]) then
+					utilIDs["Liquid Magma Totem"][1] = false;
+				end
+				
+				if (not utilIDs["Voodoo Totem"][3] and utilIDs["Voodoo Totem"][1]) then
+					utilIDs["Voodoo Totem"][1] = false;
+				end
+				
+				if (not utilIDs["Wind Rush Totem"][3] and utilIDs["Wind Rush Totem"][1]) then
+					utilIDs["Wind Rush Totem"][1] = false;
+				end
+			end
 		end
+
+		for utilObj in pairs(utilIDs) do
+			if (not utilIDs[utilObj][1] and utilIDs[utilObj][2]:IsShown()) then
+				utilIDs[utilObj][2]:Hide();
+				utilIDs[utilObj][1] = false;
+			end
+		end
+		
+		--[[if (not utilObj[1] and utilIDs["Earthgrab Totem"][2]:IsShown()) then
+			utilIDs["Earthgrab Totem"]:Hide();
+		end
+
+		if (not utilObj[2] and utilIDs["Liquid Magma Totem"][2]:IsShown()) then
+			utilIDs["Liquid Magma Totem"]:Hide();
+		end
+
+		if (not utilObj[3] and utilIDs["Voodoo Totem"][2]:IsShown()) then
+			utilIDs["Voodoo Totem"]:Hide();
+		end
+
+		if (not utilObj[4] and utilIDs["Wind Rush Totem"][2]:IsShown()) then
+			utilIDs["Wind Rush Totem"]:Hide();
+		end]]
 		
 		if (Auras.db.char.layout[1].isMoving) then
 			self:SetBackdrop(backdrop);

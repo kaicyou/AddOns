@@ -26,6 +26,16 @@ Boss14.lua
 Boss15.lua
 Boss16.lua
 Boss17.lua
+Boss21.lua
+Boss22.lua
+Boss23.lua
+Boss24.lua
+Boss25.lua
+Boss26.lua
+Boss27.lua
+Boss28.lua
+Boss29.lua
+Boss210.lua
 Boss31.lua
 Boss32.lua
 Boss33.lua

@@ -1,4 +1,17 @@
-﻿	r40-beta
+﻿	r41.2-beta
+FIX: [Elemental] The aura glow for Lava Burst should now once again disappear correctly.
+FIX: [Elemental] The aura glow for Lava Burst should no longer display odd results when having no target while in combat while Lava Surge is available.
+	
+	r41.1-beta
+FIX: [Elemental] Fixed an issue that would occur when using a specific totem.
+	
+	r41-beta
+NEW: [All] Cooldown numbers and sweep animations can now be toggled on or off. (Thanks, 1SEBI1!)
+NEW: [Ele/Enh] The Maelstrom Bar can now have its alpha adjusted in multiple ways to provide flexibility on how it's displayed. (Thanks, bileblow!)
+
+FIX: [All] Totem duration bars should now disappear when the totem is destroyed prematurely.
+	
+	r40-beta
 NEW: [UI] Non-shaman dialog popup no longer has an option to disable the option as this was causing issues. There is now a button to show the addon window. (Thanks, Cricketicecream!)
 
 FIX: [Restoration] The Healing Stream duration timer bars should be working correctly again. (Thanks, jayyced!)

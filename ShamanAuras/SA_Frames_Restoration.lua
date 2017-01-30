@@ -291,7 +291,7 @@ SSA.LavaBurstRes:SetScript("OnUpdate", function(self)
 		
 		if (UnitAffectingCombat('player')) then
 			if (duration > 2) then
-				Auras:ToggleCooldownSwipe(self.CD,true)
+				--Auras:ToggleCooldownSwipe(self.CD,true)
 				Auras:ToggleOverlayGlow(self.glow,false);
 				Auras:ExecuteCooldown(self,start,duration,false);
 				self.CD:Show();
@@ -1423,17 +1423,53 @@ local buffIDs = {
 	[73685]  = SSA.UnleashLifeBar,
 }
 local mainIDs = {
-	["Ancestral Protection Totem"] = SSA.AncestralProtTotemBar,
-	["Cloudburst Totem"] = SSA.CloudburstTotemBar,
-	["Healing Stream Totem One"] = SSA.HealingStreamTotemOneBar,
-	["Healing Stream Totem Two"] = SSA.HealingStreamTotemTwoBar,
-	["Healing Tide Totem"] = SSA.HealingTideTotemBar,
-	["Spirit Link Totem"]  = SSA.SpiritLinkTotemBar,
+	["Ancestral Protection Totem"] = {
+		[1] = false,
+		[2] = SSA.AncestralProtectionTotemBar,
+		[3] = false,
+	},
+	["Cloudburst Totem"] = {
+		[1] = false,
+		[2] = SSA.CloudburstTotemBar,
+		[3] = false,
+	},
+	["Healing Stream Totem One"] = {
+		[1] = false,
+		[2] = SSA.HealingStreamTotemOneBar,
+		[3] = false,
+	},
+	["Healing Stream Totem Two"] = {
+		[1] = false,
+		[2] = SSA.HealingStreamTotemTwoBar,
+		[3] = false,
+	},
+	["Healing Tide Totem"] = {
+		[1] = false,
+		[2] = SSA.HealingTideTotemBar,
+		[3] = false,
+	},
+	["Spirit Link Totem"] = {
+		[1] = false,
+		[2] = SSA.SpiritLinkTotemBar,
+		[3] = false,
+	},
 }
 local utilIDs = {
-	["Earthgrab Totem"]  = SSA.EarthgrabTotemBarRes,
-	["Voodoo Totem"] = SSA.VoodooTotemBarRes,
-	["Wind Rush Totem"] = SSA.WindRushTotemBarRes,
+	["Earthgrab Totem"] = {
+		[1] = false,
+		[2] = SSA.EarthgrabTotemBarRes,
+		[3] = false,
+	},
+	["Voodoo Totem"] = {
+		[1] = false,
+		[2] = SSA.VoodooTotemBarRes,
+		[3] = false,
+	},
+	["Wind Rush Totem"] = {
+		[1] = false,
+		[2] = SSA.WindRushTotemBarRes,
+		[3] = false,
+	},
 }
 
 local xPos = {
@@ -1510,6 +1546,15 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		local x
 		local _,_,_,selected = GetTalentInfo(6,3,1);
 	
+		mainIDs["Ancestral Protection Totem"][3] = false;
+		mainIDs["Cloudburst Totem"][3] = false;
+		mainIDs["Healing Stream Totem One"][3] = false;
+		mainIDs["Healing Stream Totem Two"][3] = false;
+		mainIDs["Healing Tide Totem"][3] = false;
+		mainIDs["Spirit Link Totem"][3] = false;
+		
+		
+		
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		SSA.DataFrame.text:SetText('');
 		for i=1,5 do
@@ -1540,31 +1585,68 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 				end
 
 				if (mainIDs[name]) then
+					mainIDs[name][3] = true;
 					if (Auras.db.char.aura[3][gsub(name," ","").."Bar"]) then
 						totemCtr = totemCtr + 1;
 						if (seconds > 0.1) then
-							mainIDs[name]:SetMinMaxValues(0,duration);
-							mainIDs[name]:SetValue(seconds);
-							mainIDs[name].timetext:SetText(timer);
-							mainIDs[name]:SetPoint("RIGHT",(xPos[totemCtr] * -1),0);
-							mainIDs[name]:Show();
+							mainIDs[name][2]:SetMinMaxValues(0,duration);
+							mainIDs[name][2]:SetValue(seconds);
+							mainIDs[name][2].timetext:SetText(timer);
+							mainIDs[name][2]:SetPoint("RIGHT",(xPos[totemCtr] * -1),0);
+							mainIDs[name][2]:Show();
+							mainIDs[name][1] = true;
 						else
 							totemCtr = totemCtr - 1;
-							mainIDs[name]:SetValue(0);
-							mainIDs[name]:Hide();
+							mainIDs[name][2]:SetValue(0);
+							mainIDs[name][2]:Hide();
+							mainIDs[name][1] = false;
 						end
 					else
-						mainIDs[name]:Hide();
+						mainIDs[name][2]:Hide();
 					end
 				end
 			end
-			SSA.DataFrame.text:SetText(Auras:CurText('DataFrame')..i..". "..tostring(name).."\n");
+			
+			if (i==5) then
+				if (not mainIDs["Ancestral Protection Totem"][3] and mainIDs["Ancestral Protection Totem"][1]) then
+					mainIDs["Ancestral Protection Totem"][1] = false;
+				end
+				
+				if (not mainIDs["Cloudburst Totem"][3] and mainIDs["Cloudburst Totem"][1]) then
+					mainIDs["Cloudburst Totem"][1] = false;
+				end
+				
+				if (not mainIDs["Healing Stream Totem One"][3] and mainIDs["Healing Stream Totem One"][1]) then
+					mainIDs["Healing Stream Totem One"][1] = false;
+				end
+				
+				if (not mainIDs["Healing Stream Totem Two"][3] and mainIDs["Healing Stream Totem Two"][1]) then
+					mainIDs["Healing Stream Totem Two"][1] = false;
+				end
+				
+				if (not mainIDs["Healing Tide Totem"][3] and mainIDs["Healing Tide Totem"][1]) then
+					mainIDs["Healing Tide Totem"][1] = false;
+				end
+				
+				if (not mainIDs["Spirit Link Totem"][3] and mainIDs["Spirit Link Totem"][1]) then
+					mainIDs["Spirit Link Totem"][1] = false;
+				end
+			end
 		end
+		
+		for mainObj in pairs(mainIDs) do
+			SSA_DataFrame.text:SetText(mainObj);
+			if (not mainIDs[mainObj][1] and mainIDs[mainObj][2]:IsShown()) then
+				mainIDs[mainObj][2]:Hide();
+				mainIDs[mainObj][1] = false;
+			end
+		end
+		
 		mainTotems = totemCtr;
 		
-		if (mainTotems == 0 and mainIDs["Cloudburst Totem"]:IsShown()) then
-			mainIDs["Cloudburst Totem"]:Hide();
-			mainIDs["Cloudburst Totem"]:SetValue(0);
+		if (mainTotems == 0 and mainIDs["Cloudburst Totem"][2]:IsShown()) then
+			mainIDs["Cloudburst Totem"][2]:Hide();
+			mainIDs["Cloudburst Totem"][2]:SetValue(0);
 		end
 		
 		SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."\nNum Totems: "..tostring(mainTotems).."\nMemory Usage: "..GetAddOnMemoryUsage("ShamanAurasDev"));
@@ -1586,6 +1668,10 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
+		utilIDs["Earthgrab Totem"][3] = false;
+		utilIDs["Voodoo Totem"][3] = false;
+		utilIDs["Wind Rush Totem"][3] = false;
+		
 		for i=1,5 do
 			local _,name,start,duration = GetTotemInfo(i);
 			
@@ -1594,6 +1680,7 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 					local timer,seconds = Auras:parseTime((start + duration) - GetTime(),true);
 					
 					if (utilIDs[name]) then
+						utilIDs[name][3] = true;
 						totemCtr = totemCtr + 1;
 						
 						if (mainTotems > 0) then
@@ -1603,26 +1690,49 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 						end
 					
 						if (seconds > 0.1) then
-							utilIDs[name]:SetMinMaxValues(0,duration);
-							utilIDs[name]:SetValue(seconds);
-							utilIDs[name].timetext:SetText(timer);
-							utilIDs[name]:SetPoint("RIGHT",x,0);
-							utilIDs[name]:Show();
+							utilIDs[name][2]:SetMinMaxValues(0,duration);
+							utilIDs[name][2]:SetValue(seconds);
+							utilIDs[name][2].timetext:SetText(timer);
+							utilIDs[name][2]:SetPoint("RIGHT",x,0);
+							utilIDs[name][2]:Show();
+							utilIDs[name][1] = true;
 						else
 							totemCtr = totemCtr - 1;
-							utilIDs[name]:SetValue(0);
-							utilIDs[name]:Hide();
+							utilIDs[name][2]:SetValue(0);
+							utilIDs[name][2]:Hide();
+							utilIDs[name][1] = false;
 						end
 					end
 				else
 					if (name and name ~= '' and utilIDs[name]) then
-						utilIDs[name]:Hide();
+						utilIDs[name][2]:Hide();
 					end
 				end
 			else
-				if (name and name ~= '') then
-					utilIDs[name]:Hide();
+				--[[if (name and name ~= '') then
+					utilIDs[name][2]:Hide();
+				end]]
+			end
+			
+			if (i==5) then
+				if (not utilIDs["Earthgrab Totem"][3] and utilIDs["Earthgrab Totem"][1]) then
+					utilIDs["Earthgrab Totem"][1] = false;
 				end
+				
+				if (not utilIDs["Voodoo Totem"][3] and utilIDs["Voodoo Totem"][1]) then
+					utilIDs["Voodoo Totem"][1] = false;
+				end
+				
+				if (not utilIDs["Wind Rush Totem"][3] and utilIDs["Wind Rush Totem"][1]) then
+					utilIDs["Wind Rush Totem"][1] = false;
+				end
+			end
+		end
+		
+		for utilObj in pairs(utilIDs) do
+			if (not utilIDs[utilObj][1] and utilIDs[utilObj][2]:IsShown()) then
+				utilIDs[utilObj][2]:Hide();
+				utilIDs[utilObj][1] = false;
 			end
 		end
 		

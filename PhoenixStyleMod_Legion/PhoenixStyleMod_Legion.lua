@@ -20,16 +20,16 @@ psraidoptionstxtLegion1[1]={
 {"|tip2 "..psmainmdamagefrom.." |sid206656|id"},
 }
 psraidoptionstxtLegion1[2]={
+{"|tip2 "..psmainmdamagefrom.." |sid210074|id","|tip2 "..psmainmdamagefrom.." |sid204483|id"},
+{"|tip2 "..psmainmdamagefrom.." |sid206612|id"},
+{"|tip2 "..psmainmdamagefrom.." |sid206792|id","|tip2 "..psmainmdamagefrom.." |sid206749|id","|tip2 "..psmainmdamagefrom.." |sid207631|id"}, 
+{"|tip2 "..psmainmdamagefrom.." |sid213278|id"},
+{"|tip2 "..psmainmdamagefrom.." |sid218155|id","|tip2 "..psmainmdamagefrom.." |sid219950|id"}, 
+{"|tip2 "..psdidfriendlyf.." |sid206938|id"},
 {},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
+{"|tip2 "..psmainmdamagefrom.." |sid205391|id"},
+{"|tip2 "..psmainmdamagefrom.." |sid209590|id"},
+{"|tip2 "..psmainmdamagefrom.." |sid206555|id","|tip2 "..psmainmdamagefrom.." |sid206515|id","|tip2 "..psmainmdamagefrom.." |sid167819|id (check info in the addon to see distance)"},  
 }
 psraidoptionstxtLegion1[3]={
 {"|tip2 "..psdidfriendlyf.." |sid228012|id","|tip2 "..psmainmdamagefrom.." |sid227781|id"},
@@ -58,16 +58,16 @@ psraidoptionschatdefLegion1[1]={
 {1},
 }
 psraidoptionschatdefLegion1[2]={
+{1,1},
+{1},
+{1,1,1},
+{1},
+{1,1},
+{1},
 {},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
+{1},
+{1},
+{1,1,1},
 }
 psraidoptionschatdefLegion1[3]={
 {1,1},
@@ -89,16 +89,16 @@ psraidoptionsondefLegion1[1]={
 {1},
 }
 psraidoptionsondefLegion1[2]={
+{1,1},
+{1},
+{1,1,1},
+{1},
+{1,1},
+{1},
 {},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
-{},
+{1},
+{1},
+{1,1,1},
 }
 psraidoptionsondefLegion1[3]={
 {1,1},
@@ -425,7 +425,7 @@ end
 
 
 --Inst 6 -- ЫЫТЕСТ ВРЕМЕННО ОТКЛЮЧЕН ВТОРОЙ ИНСТ ЧТОБ НЕ БЫЛО ОШИБОК.
-if GetCurrentMapAreaID()==pslocations[currentExpansion][2] and 1==2 then
+if GetCurrentMapAreaID()==pslocations[currentExpansion][2] then
 
 
 if pswasonbossLegion21 then

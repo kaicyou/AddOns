@@ -1764,6 +1764,45 @@ local function GetSettingsOptions()
 			name = L["Settings"],
 			desc = L["Advanced customization options"],
 			args = {
+				GenSettings = {
+					name = L["General"],
+					type = "group",
+					order = 1,
+					disabled = false,
+					args = {
+						Cooldowns = {
+							name = L["Cooldown Settings"],
+							type = "group",
+							order = 1,
+							--disabled = true,
+							guiInline = true,
+							args = {
+								DisplayNumbers = {
+									order = 1,
+									type = "toggle",
+									name = L["Cooldown Values"],
+									get = function() 
+										return Auras.db.char.cooldowns.numbers
+									end,
+									set = function(_, value)
+										Auras.db.char.cooldowns.numbers = value
+									end,
+								},
+								DisplaySweep = {
+									order = 2,
+									type = "toggle",
+									name = L["Cooldown Sweep Animation"],
+									get = function() 
+										return Auras.db.char.cooldowns.sweep
+									end,
+									set = function(_, value)
+										Auras.db.char.cooldowns.sweep = value
+									end,
+								},
+							},
+						},
+					},
+				},					
 				EleSettings = {
 					name = L["Elemental"],
 					type = "group",
@@ -1794,21 +1833,86 @@ local function GetSettingsOptions()
 							type = "description",
 							name = ' ',
 						},
-						MaelstromAnim = {
+						MaelstromSettings = {
+							name = L["Maelstrom Settings"],
+							type = "group",
 							order = 4,
-							type = "toggle",
-							name = L["Maelstrom Lightning"],
-							get = function() 
-								return Auras.db.char.triggers.ele.MaelstromAnim;
-							end,
-							set = function(_, value)
-								if (value == false) then
-									settings_options.args.EleSettings.args.EleTriggers.args.EarthShock.disabled = true;
-								else
-									settings_options.args.EleSettings.args.EleTriggers.args.EarthShock.disabled = false;
-								end
-								Auras.db.char.triggers.ele.MaelstromAnim = value
-							end,
+							--disabled = true,
+							guiInline = true,
+							args = {
+								MaelstromAlphaCombat = {
+									order = 1,
+									type = "range",
+									name = L["Maelstrom Alpha (In Combat)"],
+									desc = L["Determines how opaque or transparent the maelstrom bar appear while in combat"],
+									min = 0,
+									max = 1,
+									step = 0.1,
+									bigStep = 0.1,
+									--disabled = false,
+									get = function() return Auras.db.char.triggers.ele.maelstromAlphaCombat end,
+									set = function(_, value)
+										Auras.db.char.triggers.ele.maelstromAlphaCombat = value
+									end,
+								},
+								MaelstromAlphaOoC = {
+									order = 2,
+									type = "range",
+									name = L["Maelstrom Alpha (OoC - No Target)"],
+									desc = L["Determines how opaque or transparent the maelstrom bar appear when out of combat"],
+									min = 0,
+									max = 1,
+									step = 0.1,
+									bigStep = 0.1,
+									--disabled = false,
+									get = function() return Auras.db.char.triggers.ele.maelstromAlphaOoC end,
+									set = function(_, value)
+										Auras.db.char.triggers.ele.maelstromAlphaOoC = value
+										if (value > 0) then
+											settings_options.args.EleSettings.args.MaelstromSettings.args.MaelstromAlphaTar.disabled = true;
+										else
+											settings_options.args.EleSettings.args.MaelstromSettings.args.MaelstromAlphaTar.disabled = false;
+										end
+									end,
+								},
+								MaelstromAlphaTar = {
+									order = 3,
+									type = "range",
+									name = L["Maelstrom Alpha (OoC - Target)"],
+									desc = L["Determines how opaque or transparent the maelstrom bar appear when out of combat and targetting an enemyt"],
+									min = 0,
+									max = 1,
+									step = 0.1,
+									bigStep = 0.1,
+									disabled = false,
+									get = function() return Auras.db.char.triggers.ele.maelstromAlphaTar end,
+									set = function(_, value)
+										Auras.db.char.triggers.ele.maelstromAlphaTar = value
+									end,
+								},
+								filler = {
+									order = 4,
+									type = "description",
+									name = ' ',
+								},
+								MaelstromAnim = {
+									order = 5,
+									type = "toggle",
+									name = L["Maelstrom Lightning"],
+									get = function() 
+										return Auras.db.char.triggers.ele.MaelstromAnim;
+									end,
+									set = function(_, value)
+										if (value == false) then
+											settings_options.args.EleSettings.args.EleTriggers.args.EarthShock.disabled = true;
+										else
+											settings_options.args.EleSettings.args.EleTriggers.args.EarthShock.disabled = false;
+										end
+										Auras.db.char.triggers.ele.MaelstromAnim = value
+									end,
+								},
+								
+							},
 						},
 						fillerTwo = {
 							order = 5,
@@ -2377,7 +2481,82 @@ local function GetSettingsOptions()
 								Auras:ResetAuraGroups(Auras.db.char.frames.defaultPos.enhGrp,Auras.db.char.frames.enhGrp)
 							end,
 						},
-						MaelstromAnim = {
+						MaelstromSettings = {
+							name = L["Maelstrom Settings"],
+							type = "group",
+							order = 3,
+							--disabled = true,
+							guiInline = true,
+							args = {
+								MaelstromAlphaCombat = {
+									order = 1,
+									type = "range",
+									name = L["Maelstrom Alpha (In Combat)"],
+									desc = L["Determines how opaque or transparent the maelstrom bar appear while in combat"],
+									min = 0,
+									max = 1,
+									step = 0.1,
+									bigStep = 0.1,
+									--disabled = false,
+									get = function() return Auras.db.char.triggers.enh.maelstromAlphaCombat end,
+									set = function(_, value)
+										Auras.db.char.triggers.enh.maelstromAlphaCombat = value
+									end,
+								},
+								MaelstromAlphaOoC = {
+									order = 2,
+									type = "range",
+									name = L["Maelstrom Alpha (OoC - No Target)"],
+									desc = L["Determines how opaque or transparent the maelstrom bar appear when out of combat"],
+									min = 0,
+									max = 1,
+									step = 0.1,
+									bigStep = 0.1,
+									--disabled = false,
+									get = function() return Auras.db.char.triggers.enh.maelstromAlphaOoC end,
+									set = function(_, value)
+										Auras.db.char.triggers.enh.maelstromAlphaOoC = value
+										if (value > 0) then
+											settings_options.args.EnhSettings.args.MaelstromSettings.args.MaelstromAlphaTar.disabled = true;
+										else
+											settings_options.args.EnhSettings.args.MaelstromSettings.args.MaelstromAlphaTar.disabled = false;
+										end
+									end,
+								},
+								MaelstromAlphaTar = {
+									order = 3,
+									type = "range",
+									name = L["Maelstrom Alpha (OoC - Target)"],
+									desc = L["Determines how opaque or transparent the maelstrom bar appear when out of combat and targetting an enemyt"],
+									min = 0,
+									max = 1,
+									step = 0.1,
+									bigStep = 0.1,
+									disabled = false,
+									get = function() return Auras.db.char.triggers.enh.maelstromAlphaTar end,
+									set = function(_, value)
+										Auras.db.char.triggers.enh.maelstromAlphaTar = value
+									end,
+								},
+								filler = {
+									order = 4,
+									type = "description",
+									name = ' ',
+								},
+								MaelstromAnim = {
+									order = 5,
+									type = "toggle",
+									name = L["Maelstrom Lightning"],
+									get = function() 
+										return Auras.db.char.triggers.enh.MaelstromAnim;
+									end,
+									set = function(_, value)
+										Auras.db.char.triggers.enh.MaelstromAnim = value
+									end,
+								},								
+							},
+						},
+						--[[MaelstromAnim = {
 							order = 3,
 							type = "toggle",
 							name = L["Maelstrom Lightning"],
@@ -2392,7 +2571,7 @@ local function GetSettingsOptions()
 								end
 								Auras.db.char.triggers.enh.MaelstromAnim = value
 							end,
-						},
+						},]]
 						fillerOne = {
 							order = 4,
 							type = "description",
@@ -3468,8 +3647,20 @@ function Auras:UpdateInterfaceSettings()
 		settings.args.EleSettings.args.FreeMoveEle.name = "|cFFFFCC00"..L["Move Elemental Auras"].."|r";
 		settings.args.EleSettings.args.ResetEle.disabled = false;
 		settings.args.EleSettings.args.ResetEle.name = "|cFFFFCC00"..L["Reset Elemental Auras"].."|r";]]
+
+		if (Auras.db.char.triggers.ele.maelstromAlphaOoC > 0) then
+			settings_options.args.EleSettings.args.MaelstromSettings.args.MaelstromAlphaTar.disabled = true;
+		else
+			settings_options.args.EleSettings.args.MaelstromSettings.args.MaelstromAlphaTar.disabled = false;
+		end
 	elseif (spec == 2) then
 		ToggleConfigElements(GetSettingsOptions(),"Enhancement",false,'FFCC00',"Reset Maelstrom Bar");
+		
+		if (Auras.db.char.triggers.enh.maelstromAlphaOoC > 0) then
+			settings_options.args.EnhSettings.args.MaelstromSettings.args.MaelstromAlphaTar.disabled = true;
+		else
+			settings_options.args.EnhSettings.args.MaelstromSettings.args.MaelstromAlphaTar.disabled = false;
+		end
 		--[[settings.args.EnhSettings.args.FreeMoveEnh.disabled = false;
 		settings.args.EnhSettings.args.FreeMoveEnh.name = "|cFFFFCC00"..L["Move Enhancement Auras"].."|r";
 		settings.args.EnhSettings.args.ResetEnh.disabled = false;

@@ -1,3 +1,9 @@
+commit 8bbc322a2243236002a6ef594829459bf466da2d
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Thu Jan 26 21:22:53 2017 -0500
+
+    Updated APL to more aggressively use spinning_crane_kick, consistent with SimC APL.
+
 commit 5ba4a772e31e5af06df288147dea1ac6624853df
 Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Tue Jan 10 11:29:54 2017 -0500

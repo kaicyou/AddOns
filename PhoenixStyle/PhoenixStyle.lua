@@ -11,7 +11,7 @@ pslocale()
 end
 
 
-	psversion=7.012
+	psversion=7.101
 
 
 	psverstiptext="alpha"
@@ -34,7 +34,7 @@ end
   if pssichatrepdef==nil then pssichatrepdef="raid" end
   if pssiincombeventspririty==nil then pssiincombeventspririty={{},{}} end --предпочтения евентов
   if pssaveexpradiobutset==nil then pssaveexpradiobutset=1 end
-  if psannouncerun==nil then psannouncerun=0 end
+  if psannouncerun3==nil then psannouncerun3=0 end
   
   if pstrackbadsummons==nil then pstrackbadsummons=1 end
   
@@ -3966,7 +3966,7 @@ local atext=""
   end
   if GetLocale()=="itIT" then
     --atext="|cff00ff00Messaggio importante!|r\n\n Il progetto |cff00ff00PhoenixStyle|r forse sarà |cffff0000chiuso|r, per sappere cosa si può fare visita il sito\n\n|cff00ff00Evidenzia il link a clicca  Ctrl+C  per copiare|r"
-    atext="|cff00ff00Vacanze-Studio a Londra|r organizzate da Oxford Institute. Un'occasione unica per fare una vacanza, migliorare il suo inglese e scoprire altro lato di Londra. 720 euro / settimana (incluso: B&B, 5 ore di studio al aperto con professore di Oxford di Londra, parla anche italiano). |cff00ff00Sconto per PhoenixStyle: 10%|r. Per maggiori info, manda una mail: admin@phoenixstyle.com |cff00ff00Possiamo incontrarci a Londra ;)|r"
+    --atext="|cff00ff00Vacanze-Studio a Londra|r organizzate da Oxford Institute. Un'occasione unica per fare una vacanza, migliorare il suo inglese e scoprire altro lato di Londra. 720 euro / settimana (incluso: B&B, 5 ore di studio al aperto con professore di Oxford di Londra, parla anche italiano). |cff00ff00Sconto per PhoenixStyle: 10%|r. Per maggiori info, manda una mail: admin@phoenixstyle.com |cff00ff00Possiamo incontrarci a Londra ;)|r"
   end
 
   
@@ -4334,7 +4334,7 @@ end
 
 function out(text)
 DEFAULT_CHAT_FRAME:AddMessage(text)
-UIErrorsFrame:AddMessage(text, 1.0, 1.0, 0, 1, 10)
+UIErrorsFrame:AddMessage(text, 1.0, 1.0, 0, 1, 4)
 end
 
 function psout(n,text)
@@ -8714,14 +8714,20 @@ end
 
 
 --инфо о ДР
+_guildName = GetGuildInfo("player")
+_you="you"
+if (_guildName and string.len(_guildName)>2) then
+	_you="|cff00ff00".._guildName.."|r"
+end
+
 local _, month, day, year = CalendarGetDate()
-if (year==2016 and month==2 and (day==12 or day==13) and psannouncerun==0) then
+if (year==2017 and month==2 and (day==12 or day==13) and psannouncerun3==0) then
 	local text=""
-	text="|cff00ff00PhoenixStyle|r > Hello. |cff00ff00It's my birthday today! :)|r If you like this addon and would like to see it in the |cff00ff00Legion|r - please help to maintain it. In 2015 I got just 70 euro of donations and I don't play anymore.. More info: http://www.phoenixstyle.com/ (or on curse.com)"
+	text="|cff00ff00PhoenixStyle|r > I got WoW for my 20 years birthday, |cff00ff00today I celebrate 30|r. I created PS and RA addons 8 years ago, hope ".._you.." use and like them :) They got more than |cff00ff0010 mln downloads|r and I raised just 1200 euro in 8 years with the bigger one of 300$. Now, addon is dying as I don't play for last 5 years, if you want to help: http://www.phoenixstyle.com/ also you can find more info about me and Italy where I live :)"
 	
 	out (text)
 	
-	psannouncerun=1
+	psannouncerun3=1
 	psDoNotShowOtherAnnounces=1
 end
 

@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1769 $
-$Date: 2017-01-18 18:43:00 +1100 (Wed, 18 Jan 2017) $
+$Revision: 1774 $
+$Date: 2017-02-05 16:36:41 +1100 (Sun, 05 Feb 2017) $
 
 ]]--
 
@@ -2223,7 +2223,6 @@ function ArkInventory.OnInitialize( )
 	-- tooltip
 	ArkInventory.Global.Tooltip.Scan = ArkInventory.TooltipInit( "ARKINV_ScanTooltip" )	
 	
-	
 	ArkInventory.PlayerInfoSet( )
 	ArkInventory.MediaRegister( )
 	
@@ -2527,7 +2526,7 @@ end
 
 function ArkInventory.StripColourCodes( txt )
 	local txt = txt or ""
-	txt = gsub( txt, "|c........", "" )
+	txt = gsub( txt, "|c%x%x%x%x%x%x%x%x", "" )
 	txt = gsub( txt, "|r", "" )
 	return txt
 end
@@ -3207,6 +3206,12 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	ArkInventory.TooltipSetItem( ArkInventory.Global.Tooltip.Scan, blizzard_id, i.slot_id )
 	
 	
+--	if info.id == 140222 then
+--		ArkInventory.TooltipDump( ArkInventory.Global.Tooltip.Scan )
+--	end
+
+	
+	
 	-- toys
 	if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ITEM_TOY_ONUSE, false, true, true, true ) then
 		if i.sb and ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["ALREADY_KNOWN"], false, true, true, true ) then
@@ -3628,7 +3633,7 @@ function ArkInventory.ItemCategoryGetPrimary( i )
 	if ArkInventory.Global.Rules.Enabled then
 		
 		-- items rule cache id
-		local cid, id, codex = ArkInventory.ObjectIDRule( i )
+		local cid = ArkInventory.ObjectIDRule( i )
 		
 		-- if the value has already been cached then use it
 		if ArkInventory.Global.Cache.Rule[cid] == nil then
@@ -3740,14 +3745,12 @@ function ArkInventory.Frame_Main_DrawStatus( loc_id, level )
 end
 
 function ArkInventory.Frame_Main_Generate( location, drawstatus )
-	
 	for loc_id, loc_data in pairs( ArkInventory.Global.Location ) do
 		if loc_data.canView and ( not location or loc_id == location ) then
 			ArkInventory.Frame_Main_DrawStatus( loc_id, drawstatus )
 			ArkInventory.Frame_Main_DrawLocation( loc_id )
 		end
 	end
-	
 end
 
 function ArkInventory.Frame_Main_DrawLocation( loc_id )
@@ -6179,6 +6182,7 @@ function ArkInventory.Frame_Bar_DrawItems( frame )
 				ArkInventory.Frame_Item_Update_Fade( obj )
 				
 				ArkInventory.Frame_Item_Update_Quest( obj )
+				ArkInventory.Frame_Item_Update_UpgradeIcon( obj )
 				
 				ArkInventory.Frame_Item_Update_Cooldown( obj )
 				ArkInventory.Frame_Item_Update_Lock( obj )
@@ -6675,6 +6679,41 @@ function ArkInventory.Frame_Item_Update_Quest( frame )
 			elseif questId or isQuestItem then
 				ArkInventory.SetTexture( questTexture, TEXTURE_ITEM_QUEST_BORDER )
 				questTexture:Show( )
+			end
+			
+		end
+		
+	end
+	
+end
+
+function ArkInventory.Frame_Item_Update_UpgradeIcon( frame )
+	
+	--if true then return end
+	
+	if not ArkInventory.ValidFrame( frame, true ) then return end
+	
+	--frame.UpgradeIcon:SetShown( false )
+	frame.UpgradeIcon:Hide( )
+	
+	local loc_id = frame.ARK_Data.loc_id
+	if ArkInventory.Global.Location[loc_id].isOffline then
+		return
+	end
+	
+	if loc_id == ArkInventory.Const.Location.Bag or loc_id == ArkInventory.Const.Location.Bank then
+		
+		local i = ArkInventory.Frame_Item_GetDB( frame )
+		
+		if i and i.h then
+			
+			local blizzard_id = ArkInventory.BagID_Blizzard( i.loc_id, i.bag_id )
+			local itemIsUpgrade = IsContainerItemAnUpgrade( blizzard_id, i.slot_id )
+			
+			if itemIsUpgrade then
+				--ArkInventory.Output( "upgrade? ", itemIsUpgrade, " - ", i.loc_id, ".", i.bag_id, ".", i.slot_id )
+				frame.UpgradeIcon:Show( )
+				--frame.UpgradeIcon:SetShown( itemIsUpgrade )
 			end
 			
 		end
@@ -7721,6 +7760,10 @@ function ArkInventory.Frame_Item_OnLoad( frame )
 		obj:SetPoint( "LEFT", frame, "LEFT", 0, 0 )
 	end
 	
+	frame.UpgradeIcon:Hide( )
+	frame.UpgradeIcon:ClearAllPoints( )
+	frame.UpgradeIcon:SetPoint( "BOTTOMLEFT", frame )
+	
 	frame.UpdateTooltip = ArkInventory.Frame_Item_OnEnter
 	
 	frame.locked = false
@@ -7852,6 +7895,7 @@ function ArkInventory.Frame_Item_Update( loc_id, bag_id, slot_id )
 		ArkInventory.Frame_Item_Update_Fade( obj )
 		
 		ArkInventory.Frame_Item_Update_Quest( obj )
+		ArkInventory.Frame_Item_Update_UpgradeIcon( obj )
 		
 		ArkInventory.Frame_Item_Update_Cooldown( obj )
 		ArkInventory.Frame_Item_Update_Lock( obj )
@@ -9473,7 +9517,7 @@ function ArkInventory.GameTooltipHide( )
 	GameTooltip:Hide( )
 end
 
-function ArkInventory.PTItemSearch( item )
+function ArkInventory.PTItemSearch( h )
 
 	-- sourced from pt3.0 because someone decided that it didnt belong in pt3.1
 	

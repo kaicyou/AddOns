@@ -1,4 +1,10 @@
-﻿	r41.2-beta
+﻿	r42-beta
+NEW: [UI] The aura movement utility has been recoded...again...to be even more efficient.
+	
+FIX: [UI] Using Shift and Control with the aura movement utility should no longer cause unintended behavior. (Thanks, 1SEBI1!)
+FIX: [Restoration] Flame Shock's aura should now be affected by custom OoC Alpha.
+	
+	r41.2-beta
 FIX: [Elemental] The aura glow for Lava Burst should now once again disappear correctly.
 FIX: [Elemental] The aura glow for Lava Burst should no longer display odd results when having no target while in combat while Lava Surge is available.
 	

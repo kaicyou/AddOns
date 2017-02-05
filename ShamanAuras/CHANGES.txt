@@ -1,4 +1,20 @@
 ------------------------------------------------------------------------
+r101 | SweetsourDev | 2017-02-02 17:53:54 -0600 (Thu, 02 Feb 2017) | 5 lines
+Changed paths:
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r42-beta
+NEW: [UI] The aura movement utility has been recoded...again...to be even more efficient.
+	
+FIX: [UI] Using Shift and Control with the aura movement utility should no longer cause unintended behavior. (Thanks, 1SEBI1!)
+FIX: [Restoration] Flame Shock's aura should now be affected by custom OoC Alpha.
+------------------------------------------------------------------------
 r100 | SweetsourDev | 2017-01-29 15:29:51 -0600 (Sun, 29 Jan 2017) | 3 lines
 Changed paths:
    M /trunk/SA_Frames_Elemental.lua

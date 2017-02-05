@@ -1119,7 +1119,7 @@ end
 
 function ArkInventory:EVENT_WOW_BAG_UPDATE_COOLDOWN( event, arg1, arg2, arg3, arg4 )
 	
-	--ArkInventory.Output( "EVENT_WOW_BAG_UPDATE_COOLDOWN( ", arg1, ", ", arg2, ", ", arg3, ", ", arg4, " )" )
+	--ArkInventory.Output( "EVENT_WOW_BAG_UPDATE_COOLDOWN( ", arg1, " )" )
 	
 	if arg1 then
 		local loc_id = ArkInventory.BagID_Internal( arg1 )
@@ -1134,6 +1134,7 @@ function ArkInventory:EVENT_WOW_BAG_UPDATE_COOLDOWN( event, arg1, arg2, arg3, ar
 			end
 		end
 	end
+	
 end
 
 function ArkInventory:EVENT_ARKINV_QUEST_UPDATE_BUCKET( )
@@ -3718,6 +3719,7 @@ function ArkInventory.ObjectStringDecode( h, i )
 	local h = string.trim( h or "" )
 	
 	if h == "" and i and not i.h then
+		-- virtual hyperlink for empty slots
 		h = ArkInventory.ObjectIDCategory( i )
 	end
 	
@@ -3760,25 +3762,33 @@ function ArkInventory.ObjectStringDecode( h, i )
 			[09]uniqueid
 			[10]linklevel
 			[11]specid
-			[12]upgradeid
+			[12]upgradetypeid
+				4 = pandaria x/4
+				512 = timewarped
+				4587520 = keystone with 0 affixes
+				5111808 = keystone with 1 affixes
+				6160384 = keystone with 2 affixes
+				4063232 = keystone with 3 affixes
 			[13]sourceid
 			[14]numbonusids
 			[..]bonusids
-			[15]upgradelevel
+			[15]upgradevalue (or instance id for keystones)
 			
-			-- nothing past here is consistent
+			relic weapons
+			[16]numrelicids1
+			[..]relicids1
+			[17]numrelicids2
+			[..]relicids2
+			[18]numrelicids3
+			[..]relicids3
 			
-			[16]numbonusids2
-			[..]bonusids2
-			[17]numbonusids3
-			[..]bonusids3
-			[18]??
-			
-			[16]mythicKeystoneLevel
-			[17]depleted(?) 1=active, 2=depleted
-			[18]??
-			[19]??
-			[20]??
+			mythic keystones
+			[15]instanceid
+			[16]level
+			[..]affix1
+			[..]affix2
+			[..]affix3
+			[17]status (1=active, 2=depleted)
 			
 			
 		]]--
@@ -3792,10 +3802,17 @@ function ArkInventory.ObjectStringDecode( h, i )
 		end
 		
 		v.uniqueid = v[9]
+		
 		v.linklevel = v[10]
+		v[10] = 0
+		
 		v.specid = v[11]
+		v[11] = 0
+		
 		v.upgradeid = v[12]
+		
 		v.sourceid = v[13]
+		v[13] = 0
 		
 		local pos = 14
 		
@@ -3816,11 +3833,16 @@ function ArkInventory.ObjectStringDecode( h, i )
 		pos = pos + 1
 		
 		-- everything up to here should exist in the itemstring
-		-- below this, seems to be specific to the item
+		-- after this, seems to be specific to the item type
 		
 		if pos <= c then
 			-- record start position of custom values
 			v.custom = pos
+		end
+		
+		v.h2 = v[3]
+		for k = 4, pos - 1 do
+			v.h2 = string.format( "%s:%s", v.h2, v[k] or 0 )
 		end
 		
 	elseif v.class == "spell" then
@@ -3936,15 +3958,19 @@ function ArkInventory.ObjectIDCount( h )
 	return string.format( "%s:%s", osd.class, osd.id )
 end
 
-function ArkInventory.ObjectIDCategory( i )
+function ArkInventory.ObjectIDCategory( i, isRule )
 	
 	local soulbound = ( i.sb and 1 ) or 0
 	
-	local osd = ArkInventory.ObjectStringDecode( i.h )
+	local info = ArkInventory.ObjectInfoArray( i.h )
+	local osd = info.osd
 	local r
 	
 	if osd.class == "item" then
 		r = string.format( "%s:%i:%i", osd.class, osd.id, soulbound )
+		if isRule and info.equiploc ~= "" then
+			r = string.format( "%s:%s", r, osd.h2 )
+		end
 	elseif osd.class == "empty" then
 		local blizzard_id = ArkInventory.BagID_Blizzard( i.loc_id, i.bag_id )
 		soulbound = ArkInventory.BagType( blizzard_id ) -- allows for unique codes per bag type
@@ -3966,9 +3992,10 @@ function ArkInventory.ObjectIDCategory( i )
 end
 
 function ArkInventory.ObjectIDRule( i )
-	local id = string.format( "%i:%i:%i:%s", i.loc_id or 0, i.bag_id or 0, ( i.sb and 1 ) or 0, ArkInventory.ObjectIDCategory( i ) )
+	-- not saved, cached only, can be changed at any time
 	local codex = ArkInventory.GetLocationCodex( i.loc_id )
-	local cid = string.format( "%i:%s", codex.catset_id, id )
+	local id = ArkInventory.ObjectIDCategory( i, true )
+	local cid = string.format( "%i:%i:%i:%s", i.loc_id or 0, i.bag_id or 0, ( i.sb and 1 ) or 0, ArkInventory.ObjectIDCategory( i, true ) )
 	return cid, id, codex
 end
 

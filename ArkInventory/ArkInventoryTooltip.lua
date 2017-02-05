@@ -1088,3 +1088,15 @@ function ArkInventory.TooltipShowCompare( ... )
 	end
 	
 end
+
+function ArkInventory.TooltipDump( tooltip )
+--	/run ArkInventory.TooltipDump( ARKINV_ScanTooltip )
+	ArkInventory.Output( "----- ----- -----" )
+	for i = 1, ArkInventory.TooltipNumLines( tooltip ) do
+		local a, b = ArkInventory.TooltipGetLine( tooltip, i )
+		ArkInventory.Output( i, " left: ", a )
+		if b ~= "" then
+			ArkInventory.Output( i, " right: ", b )
+		end
+	end
+end

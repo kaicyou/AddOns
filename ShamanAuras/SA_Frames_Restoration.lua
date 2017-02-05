@@ -139,12 +139,36 @@ AuraGroup:SetScript("OnUpdate",function(self,button)
 	end
 end);
 
+AuraGroup:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'resGrp',button);
+	end
+end);
+
+AuraGroup:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseUp(self,'resGrp',button);
+	end
+end);
+
 LargeIconGrpTop:SetScript("OnUpdate",function(self,button)
 	if (Auras.db.char.layout[3].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.85);
 	else
 		self:SetBackdrop(nil);
+	end
+end);
+
+LargeIconGrpTop:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'resGrp',button);
+	end
+end);
+
+LargeIconGrpTop:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
 
@@ -157,6 +181,18 @@ LargeIconGrpBot:SetScript("OnUpdate",function(self,button)
 	end
 end);
 
+LargeIconGrpBot:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'resGrp',button);
+	end
+end);
+
+LargeIconGrpBot:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseUp(self,'resGrp',button);
+	end
+end);
+
 SmallIconGrpLeft:SetScript("OnUpdate",function(self,button)
 	if (Auras.db.char.layout[3].isMoving) then
 		self:SetBackdrop(backdrop);
@@ -166,12 +202,36 @@ SmallIconGrpLeft:SetScript("OnUpdate",function(self,button)
 	end
 end);
 
+SmallIconGrpLeft:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'resGrp',button);
+	end
+end);
+
+SmallIconGrpLeft:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseUp(self,'resGrp',button);
+	end
+end);
+
 SmallIconGrpRight:SetScript("OnUpdate",function(self,button)
 	if (Auras.db.char.layout[3].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.85);
 	else
 		self:SetBackdrop(nil);
+	end
+end);
+
+SmallIconGrpRight:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'resGrp',button);
+	end
+end);
+
+SmallIconGrpRight:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
 
@@ -235,7 +295,7 @@ SSA.FlameShockRes:SetScript("OnUpdate", function(self)
 				end
 			end
 		else
-			self:SetAlpha(Auras.db.char.triggers.ele.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
 			Auras:ToggleOverlayGlow(self.glow,false);
 			--self.text:SetText('');
 		end
@@ -1104,6 +1164,18 @@ TidalWavesBar:SetScript("OnUpdate",function(self)
 	end
 end);
 
+TidalWavesBar:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'resGrp',button);
+	end
+end);
+
+TidalWavesBar:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseUp(self,'resGrp',button);
+	end
+end);
+
 SSA.TidalWavesBar = TidalWavesBar;
 -- Build Cloudburst Totem Status Bar
 --[[SSA.CloudburstAbsorbBar = CreateFrame("StatusBar","CloudburstAbsorbBar",AuraGroup);
@@ -1248,6 +1320,19 @@ Cloudburst:SetScript("OnUpdate",function(self,elapsed)
 		Auras:ToggleAuraVisibility(self,false,'showhide');
 	end
 end);
+
+Cloudburst:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'resGrp',button);
+	end
+end);
+
+Cloudburst:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseUp(self,'resGrp',button);
+	end
+end);
+
 _G["SSA_Cloudburst"] = Cloudburst;
 SSA.Cloudburst = Cloudburst;
 --[[Cloudburst.icon.inner = CreateFrame("Frame",nil,Cloudburst);
@@ -1336,6 +1421,18 @@ EarthenShieldTotemBar:SetScript("OnUpdate",function(self,elapsed)
 		Auras:ToggleAuraVisibility(self,false,'alpha');
 	end
 end);
+
+EarthenShieldTotemBar:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'resGrp',button);
+	end
+end);
+
+EarthenShieldTotemBar:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseUp(self,'resGrp',button);
+	end
+end);
 --[[EarthenShieldTotemBar:SetScript("OnUpdate",function(self)
 	local buff,_,_,count,_,_,expires = UnitBuff('player',Auras:GetSpellName(210714));
 
@@ -1375,6 +1472,7 @@ BuffTimerBarGrp:SetWidth(131);
 BuffTimerBarGrp:SetHeight(180);
 BuffTimerBarGrp:SetBackdrop(nil);
 BuffTimerBarGrp:Show();
+_G["SSA_BuffTimerGrpRes"] = BuffTimerBarGrp;
 
 -- Build Main Timer Status Bar Group
 SSA.MainTimerBarGrpRes = CreateFrame("Frame","MainTimerBarGrpRes",AuraGroup);
@@ -1383,6 +1481,7 @@ MainTimerBarGrp:SetWidth(105);
 MainTimerBarGrp:SetHeight(180);
 MainTimerBarGrp:SetBackdrop(nil);
 MainTimerBarGrp:Show();
+_G["SSA_MainTimerBarGrpRes"] = MainTimerBarGrp;
 
 -- Build Utility Timer Status Bar Group
 SSA.UtilTimerBarGrpRes = CreateFrame("Frame","UtilTimerBarGrpRes",AuraGroup);
@@ -1391,6 +1490,7 @@ UtilTimerBarGrp:SetWidth(47);
 UtilTimerBarGrp:SetHeight(180);
 UtilTimerBarGrp:SetBackdrop(nil);
 UtilTimerBarGrp:Show();
+_G["SSA_UtilTimerBarGrpRes"] = UtilTimerBarGrp;
 
 -- Build Restoration Vertical Status Bars
 SSA.AncestralGuidanceBarRes = CreateFrame("StatusBar","AncestralGuidanceBarRes",BuffTimerBarGrp);
@@ -1539,6 +1639,18 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	end
 end);
 
+BuffTimerBarGrp:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'resGrp',button);
+	end
+end);
+
+BuffTimerBarGrp:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseUp(self,'resGrp',button);
+	end
+end);
+
 MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	if (Auras:CharacterCheck(3)) then
 		local totemCtr = 0
@@ -1661,6 +1773,18 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	end
 end);
 
+MainTimerBarGrp:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'resGrp',button);
+	end
+end);
+
+MainTimerBarGrp:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseUp(self,'resGrp',button);
+	end
+end);
+
 UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	if (Auras:CharacterCheck(3)) then
 		local totemCtr = 0
@@ -1747,6 +1871,18 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	end
 end);
 
+UtilTimerBarGrp:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'resGrp',button);
+	end
+end);
+
+UtilTimerBarGrp:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseUp(self,'resGrp',button);
+	end
+end);
+
 --[[-- Undulation Notification
 SSA.Undulation = CreateFrame("Frame","Undulation",AuraGroup);
 local Undulation = SSA.Undulation;
@@ -1824,6 +1960,19 @@ Undulation:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,false,'showhide');
 	end
 end);
+
+Undulation:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'resGrp',button);
+	end
+end);
+
+Undulation:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[3].isMoving) then
+		Auras:MoveOnMouseUp(self,'resGrp',button);
+	end
+end);
+
 SSA.Undulation = Undulation;
 _G["SSA_Undulation"] = Undulation;
 

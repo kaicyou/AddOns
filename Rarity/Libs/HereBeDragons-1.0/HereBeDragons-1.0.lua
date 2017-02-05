@@ -1,6 +1,6 @@
 -- HereBeDragons is a data API for the World of Warcraft mapping system
 
-local MAJOR, MINOR = "HereBeDragons-1.0", 29
+local MAJOR, MINOR = "HereBeDragons-1.0", 32
 assert(LibStub, MAJOR .. " requires LibStub")
 
 local HereBeDragons, oldversion = LibStub:NewLibrary(MAJOR, MINOR)
@@ -64,6 +64,7 @@ local instanceIDOverrides = {
     [1533] = 0,    -- Karazhan Artifact Scenario
     [1612] = 1220, -- Feral Druid Artifact Scenario (Suramar)
     [1626] = 1220, -- Suramar Withered Scenario
+    [1662] = 1220, -- Suramar Invasion Scenario
 }
 
 -- unregister and store all WORLD_MAP_UPDATE registrants, to avoid excess processing when
@@ -86,7 +87,7 @@ local function RestoreWMU()
 end
 
 -- gather map info, but only if this isn't an upgrade (or the upgrade version forces a re-map)
-if not oldversion or oldversion < 26 then
+if not oldversion or oldversion < 30 then
     -- wipe old data, if required, otherwise the upgrade path isn't triggered
     if oldversion then
         wipe(mapData)
@@ -111,6 +112,10 @@ if not oldversion or oldversion < 26 then
         -- main draenor garrison maps
         [971] = true,
         [976] = true,
+
+        -- legion class halls
+        [1072] = { Z = 10, mapFile = "TrueshotLodge" }, -- true shot lodge
+        [1077] = { Z = 7,  mapFile = "TheDreamgrove" }, -- dreamgrove
     }
 
     local function processTransforms()
@@ -181,7 +186,7 @@ if not oldversion or oldversion < 26 then
         -- store the original instance id (ie. not remapped for map transforms) for micro dungeons
         mapData[id].originalInstance = originalInstanceID
 
-        local mapFile = GetMapInfo()
+        local mapFile = type(REMAP_FIXUP_EXEMPT[id]) == "table" and REMAP_FIXUP_EXEMPT[id].mapFile or GetMapInfo()
         if mapFile then
             -- remove phased terrain from the map names
             mapFile = mapFile:gsub(TERRAIN_MATCH, "")
@@ -191,6 +196,13 @@ if not oldversion or oldversion < 26 then
         end
 
         local C, Z = GetCurrentMapContinent(), GetCurrentMapZone()
+
+        -- maps that remap generally have wrong C/Z info, so allow the fixup table to override it
+        if type(REMAP_FIXUP_EXEMPT[id]) == "table" then
+            C = REMAP_FIXUP_EXEMPT[id].C or C
+            Z = REMAP_FIXUP_EXEMPT[id].Z or Z
+        end
+
         mapData[id].C = C or -100
         mapData[id].Z = Z or -100
 

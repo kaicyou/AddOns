@@ -1531,8 +1531,15 @@ if (not UnitAffectingCombat("player") or cfg.oilvlcombatcanscan) and oilvlframes
 	-- Optimize Raid Progression Details
 	if otooltip2 then return -1 end
 	local oframe = GetMouseFocus();
-	if oframe == nil then return -1 end
-	if oframe:IsForbidden() then return -1 end
+	local function resetrpd()
+		ClearAchievementComparisonUnit();
+		rpsw=false;
+		rpunit="";
+		Omover2=0;
+	end
+	if oframe == nil then resetrpd() return -1 end
+	if oframe:IsForbidden() then resetrpd() return -1 end
+	if oframe:GetName() == nil and otooltip6 == nil then resetrpd() return -1 end
 	if oframe:GetName() == nil then return -1 end
 	if oframe:GetName():gsub("%d","").."" ~= "OILVLRAIDFRAME" then return -1; end
 	if OilvlTooltip:IsShown() then
@@ -4246,9 +4253,11 @@ function otooltip6func()
 			local ooname =_G["OILVLRAIDFRAME"..m]:GetText():sub(1,10).. oilvlframedata.name[m]:gsub("!",""):gsub("~",""):gsub(" ","");
 			local function CheckGearAvail(n,slot,pp)
 				if oilvlframedata.gear[n][slot] then
-					local eg = "|cFF"
-					if oilvlframedata.gear[n][slot][3]*oilvlframedata.gear[n][slot][5] == 1 then eg = eg.."FFFF" else eg = eg.."00FF" end
-					if oilvlframedata.gear[n][slot][4]*oilvlframedata.gear[n][slot][6] == 1 then eg = eg.."FF" else eg = eg.."00" end
+					local eg = "|cFFFFFFFF"
+					if oilvlframedata.gear[n][slot][3] == 0 then eg = "|cFF00FFFF"  -- missing echant
+					elseif oilvlframedata.gear[n][slot][4] == 0 then eg = "|cFF00FFFF"  -- missing gem
+					elseif oilvlframedata.gear[n][slot][5] == 0 then eg = "|cFFFFFF00"  -- low level enchant
+					elseif oilvlframedata.gear[n][slot][6] == 0 then eg = "|cFFFFFF00" end -- low level gem
 					if tonumber(oilvlframedata.gear[n][slot][pp]) == 0 then 
 						return {oilvlframedata.gear[n][slot][1],oilvlframedata.gear[n][slot][2],eg,oilvlframedata.gear[n][slot][9]}
 					else 

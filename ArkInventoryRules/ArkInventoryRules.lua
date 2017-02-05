@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1767 $
-$Date: 2017-01-18 18:42:35 +1100 (Wed, 18 Jan 2017) $
+$Revision: 1775 $
+$Date: 2017-02-05 16:38:11 +1100 (Sun, 05 Feb 2017) $
 
 ]]--
 
@@ -641,7 +641,7 @@ function ArkInventoryRules.System.periodictable( ... )
 	
 end
 
-function ArkInventoryRules.System.tooltipgeneric( ... )
+function ArkInventoryRules.System.tooltip_old( ... )
 	
 	if not ArkInventoryRules.Object or not ArkInventoryRules.Object.h or ArkInventoryRules.Object.bag_id == nil or ArkInventoryRules.Object.slot_id == nil then
 		return false
@@ -674,7 +674,7 @@ function ArkInventoryRules.System.tooltipgeneric( ... )
 		
 		arg = string.trim( arg )
 		if arg ~= "" then
-			if ArkInventory.TooltipContains( ArkInventoryRules.Tooltip, arg ) then
+			if ArkInventory.TooltipContains( ArkInventoryRules.Tooltip, arg, false, false, false, true ) then
 				return true
 			end
 		end
@@ -685,7 +685,7 @@ function ArkInventoryRules.System.tooltipgeneric( ... )
 
 end
 
-function ArkInventoryRules.System.tooltipslot( ... )
+function ArkInventoryRules.System.tooltip( ... )
 	
 	if not ArkInventoryRules.Object or not ArkInventoryRules.Object.h or ArkInventoryRules.Object.bag_id == nil or ArkInventoryRules.Object.slot_id == nil then
 		return false
@@ -700,7 +700,7 @@ function ArkInventoryRules.System.tooltipslot( ... )
 		ArkInventory.TooltipSetItem( ArkInventoryRules.Tooltip, bliz_id, ArkInventoryRules.Object.slot_id )
 	end
 	
-	local fn = "tooltipslot"
+	local fn = "tooltip"
 	
 	local ac = select( '#', ... )
 	
@@ -1726,8 +1726,8 @@ ArkInventoryRules.Environment = {
 	periodictable = ArkInventoryRules.System.periodictable,
 	pt = ArkInventoryRules.System.periodictable,
 	
-	tooltip = ArkInventoryRules.System.tooltipgeneric,
-	tt = ArkInventoryRules.System.tooltipgeneric,
+	tooltip = ArkInventoryRules.System.tooltip,
+	tt = ArkInventoryRules.System.tooltip,
 	
 	outfit = ArkInventoryRules.System.outfit,
 	

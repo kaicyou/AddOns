@@ -147,6 +147,19 @@ AuraGroup:SetScript("OnUpdate",function(self,button)
 	end
 end);
 
+AuraGroup:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+	end
+end);
+
+AuraGroup:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
+	end
+end);
+
+_G['SSA_AuraGroupEle'] = AuraGroup;
 LargeIconGrpTop:SetScript("OnUpdate",function(self,button)
 	if (Auras.db.char.layout[1].isMoving) then
 		self:SetBackdrop(backdrop);
@@ -156,12 +169,82 @@ LargeIconGrpTop:SetScript("OnUpdate",function(self,button)
 	end
 end);
 
+LargeIconGrpTop:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		--Auras:ParseClick(true,button,1);
+		--Auras:ShiftPressCheck(self);
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+		--if (not IsShiftKeyDown() and not IsControlKeyDown()) then
+		--[[if (not self.shift and not self.control) then
+			local framePt,_,parentPt,x,y = self:GetPoint(1)
+			self.framePt = framePt
+			self.parentPt = parentPt
+			self.frameX = x
+			self.frameY = y
+			self:StartMoving()
+			_,_,_,x,y = self:GetPoint(1)
+			self.screenX = x
+			self.screenY = y
+		elseif (not self.shift and self.control and button == "RightButton") then
+			Auras:ResetAuraGroupPosition('eleGrp',self:GetName())
+			--local frame = Auras.db.char.frames.defaultPos[name:lower().."Grp"][self:GetName()];
+
+			--self:SetPoint(frame.point,SSA[frame.relativeTo],frame.relativePoint,frame.x,frame.y);
+		end]]
+	end
+end);
+
+LargeIconGrpTop:SetScript("OnMouseUp",function(self,button)
+	--Auras:ParseClick(false,button,1);
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
+	end
+	--[[local framePt,_,parentPt,x,y = self:GetPoint(1)
+	if (self.shift and IsShiftKeyDown()) then
+		if (button == "LeftButton") then
+			self:SetPoint("CENTER",self:GetParent(),"CENTER",0,y);
+		elseif (button == "RightButton") then
+			self:SetPoint("CENTER",self:GetParent(),"CENTER",x,0);
+		elseif (button == "MiddleButton") then
+			self:SetPoint("CENTER",self:GetParent(),"CENTER",0,0);
+		end
+	elseif (self.shift and not IsShiftKeyDown()) then
+		Auras:ResetAuraGroupPosition('eleGrp',self:GetName())
+	else
+		if (not IsControlKeyDown()) then
+			self:StopMovingOrSizing()
+			x = (x - self.screenX) + self.frameX
+			y = (y - self.screenY) + self.frameY
+			self:ClearAllPoints()
+			self:SetPoint(self.framePt, self:GetParent(), self.parentPt, x, y)
+			self.framePt = nil
+			self.parentPt = nil
+			self.frameX = nil
+			self.frameY =nil
+			self.screenX = nil
+			self.screenY = nil
+		end
+	end]]
+end);
+
 LargeIconGrpBot:SetScript("OnUpdate",function(self,button)
 	if (Auras.db.char.layout[1].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.85);
 	else
 		self:SetBackdrop(nil);
+	end
+end);
+
+LargeIconGrpBot:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+	end
+end);
+
+LargeIconGrpBot:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
 	end
 end);
 
@@ -174,12 +257,36 @@ SmallIconGrpLeft:SetScript("OnUpdate",function(self,button)
 	end
 end);
 
+SmallIconGrpLeft:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+	end
+end);
+
+SmallIconGrpLeft:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
+	end
+end);
+
 SmallIconGrpRight:SetScript("OnUpdate",function(self,button)
 	if (Auras.db.char.layout[1].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.85);
 	else
 		self:SetBackdrop(nil);
+	end
+end);
+
+SmallIconGrpRight:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+	end
+end);
+
+SmallIconGrpRight:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
 	end
 end);
 
@@ -353,6 +460,8 @@ SSA.LavaBurstEle:SetScript("OnUpdate", function(self)
 			self:SetAlpha(1);
 		else
 			if (buff and Auras:IsTargetEnemy()) then
+				Auras:ToggleOverlayGlow(self.glow,true);
+			else
 				Auras:ToggleOverlayGlow(self.glow,false);
 			end
 			self:SetAlpha(Auras.db.char.triggers.ele.OoCAlpha)
@@ -938,8 +1047,8 @@ MaelstromBar.Lightning:SetAllPoints(MaelstromBar);
 MaelstromBar.Lightning:SetAlpha(0);
 MaelstromBar.Lightning:SetSequence(37);
 
-SSA.MaelstromBarEle = MaelstromBar;
-SSA.MaelstromBarEle:SetScript("OnUpdate",function(self,elaps)
+
+MaelstromBar:SetScript("OnUpdate",function(self,elaps)
 	local _,_,classIndex = UnitClass('player');
 	local spec = GetSpecialization();
 
@@ -987,12 +1096,27 @@ SSA.MaelstromBarEle:SetScript("OnUpdate",function(self,elaps)
 			end
 		elseif (Auras.db.char.layout[1].maelstromBar.isAdjustable or Auras.db.char.layout[1].isMoving) then
 			self:SetAlpha(0.5);
+			self:SetValue(75);
+			self.text:SetText(75);
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'alpha');
 	end	
 end);
 
+MaelstromBar:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+	end
+end);
+
+MaelstromBar:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
+	end
+end);
+
+SSA.MaelstromBarEle = MaelstromBar;
 _G["SSA_MaelstromBarEle"] = MaelstromBar;
 --MaelstromBar.Lightning:Show();
 --[[MaelstromBar.Lightning:SetScript("OnUpdate", function(self, elaps)
@@ -1073,11 +1197,26 @@ IcefuryBar:SetScript("OnUpdate",function(self)
 			end
 		elseif (Auras.db.char.layout[1].icefuryBar.isAdjustable or Auras.db.char.layout[1].isMoving) then
 			self:SetAlpha(0.5);
+			self:SetValue(3);
+			self.Timer:SetValue(5);
+			self.Timer.text:SetText(5);
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'alpha');
 	end
 end)
+
+IcefuryBar:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+	end
+end);
+
+IcefuryBar:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
+	end
+end);
 
 SSA.IcefuryBar = IcefuryBar;
 _G["SSA_IcefuryBar"] = IcefuryBar;
@@ -1269,6 +1408,18 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	end
 end);
 
+BuffTimerBarGrp:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+	end
+end);
+
+BuffTimerBarGrp:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
+	end
+end);
+
 MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	if (Auras:CharacterCheck(1)) then
 		Auras:ToggleAuraVisibility(self,true,'showhide');
@@ -1302,6 +1453,18 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
+	end
+end);
+
+MainTimerBarGrp:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+	end
+end);
+
+MainTimerBarGrp:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
 	end
 end);
 
@@ -1416,6 +1579,18 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	end
 end);
 
+UtilTimerBarGrp:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+	end
+end);
+
+UtilTimerBarGrp:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
+	end
+end);
+
 -- Totem Mastery Notification
 local TotemMastery = CreateFrame("Frame","TotemMastery",AuraGroup);
 TotemMastery:SetPoint("CENTER",0,-210);
@@ -1503,6 +1678,18 @@ TotemMastery:SetScript("OnUpdate",function(self)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
+	end
+end);
+
+TotemMastery:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+	end
+end);
+
+TotemMastery:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
 	end
 end);
 
@@ -1816,6 +2003,18 @@ StormkeeperCharges:SetScript("OnUpdate",function(self,elapsed)
 		SSA.ErrorFrame.text:SetText(Auras:CurText("ErrorFrame").."World Scale: "..string.format("%.4f",self.Charge2.Lightning:GetWorldScale()).."\n")
 	end
 	SSA.ErrorFrame.text:SetText(Auras:CurText("ErrorFrame").."X: "..x3..", Y: "..y3..", Z: "..z3.."\n\n");]]
+end);
+
+StormkeeperCharges:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+	end
+end);
+
+StormkeeperCharges:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[1].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
+	end
 end);
 
 --[[StormkeeperCharges.Charge2 = CreateFrame("Frame","StormkeeperCharge2",StormkeeperCharges);

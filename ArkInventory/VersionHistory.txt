@@ -4,6 +4,7 @@
 *known issues*
  * moving an item from one guild bank tab to another will leave a ghost item behind until you view that tab again (it also increases the tooltip count for that ghost item).
  * caged battle pets cannot be seen when placed in the guild bank, they appear as pet cages instead (api issue, default ui has same issue)
+ * your legion class tier set bonus for out of combat regeneration is triggering a cooldown event for all bags every 5 seconds
  
 *wiki pages*
  * main wiki page - https://github.com/arkayenro/arkinventory/wiki
@@ -11,6 +12,13 @@
  
 
 
+*3.07.23 (05-FEB-2017)*
+ * changed - internal rule id now includes all gem, enchant, suffix and bonusid data to be able to see the different variations (note: does not apply to categories)
+ * fixed - issue with debug and displaying which PT sets an item is in
+ * added - the green upgrade icon should display when blizzard think the item is an upgrade for you (note, the API is currently returning false for all items so its not actually going to show anything at this point but may later)
+ * changed - the green upgrade icon has been moved to the bottom left so as to not overlap the item level text
+ * fixed - issue with tooltip rule where it couldnt match against the green <Right click to ...> last line text
+ 
 *3.07.22 (18-JAN-2017)*
  * added - option to disable rule 3rd party mod load messages
  * added - option to disable rule registration messages

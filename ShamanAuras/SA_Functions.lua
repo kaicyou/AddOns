@@ -279,7 +279,25 @@ function Auras:BuildMoveUI(AuraObjects,MoveStrings,name)
 	Move.Unlock:Enable();
 	Move.Unlock:SetScript("OnClick",function(self,button)
 		if (self:GetText() == "Unlock Auras") then
+			local spec = GetSpecialization();
+			local AuraObjects = nil;
+			
 			self:SetText("Lock Auras");
+			print("Spec: "..tostring(spec));
+			if (spec == 1) then
+				AuraObjects = SSA.AuraObjectsEle;
+			elseif (spec == 2) then
+				AuraObjects = SSA.AuraObjectsEnh;
+			else
+				AuraObjects = SSA.AuraObjectsRes;
+			end
+			
+			Auras.db.char.layout[spec].isMoving = true;
+			
+			for i=1,getn(AuraObjects) do
+				AuraObjects[i].object:EnableMouse(true);
+				AuraObjects[i].object:SetMovable(true);
+			end
 			--[[local all,top,bot,left,right = false,false,false,false,false;
 			if (Move.CheckAll:GetChecked()) then
 				AuraObjects[1].object:EnableMouse(true);
@@ -291,8 +309,7 @@ function Auras:BuildMoveUI(AuraObjects,MoveStrings,name)
 				Move.CheckAll:Disable()
 			else]]
 				--AuraObjects[1].object:SetBackdropColor(0,0,0,0);
-				for i=1,getn(AuraObjects) do
-					--if (MoveCheckObj[i]:GetChecked()) then
+				--[[for i=1,getn(AuraObjects) do
 						AuraObjects[i].object:EnableMouse(true);
 						AuraObjects[i].object:SetMovable(true);
 						AuraObjects[i].object:SetScript("OnMouseDown",function(self,button)
@@ -337,7 +354,7 @@ function Auras:BuildMoveUI(AuraObjects,MoveStrings,name)
 									self.screenY = nil
 								end
 							end
-						end);
+						end);]]
 						if (i == 1) then
 							--AuraObjects[i].object:SetBackdropColor(0,0,0,0.5);
 						else
@@ -345,7 +362,7 @@ function Auras:BuildMoveUI(AuraObjects,MoveStrings,name)
 						end
 						--MoveCheckObj[i]:Disable()
 					--end
-				end
+				--end
 			--end
 			Move.Close:SetBackdropColor(1,0,0,0.4);
 			Move.Close:Disable();
@@ -400,11 +417,20 @@ function Auras:BuildMoveUI(AuraObjects,MoveStrings,name)
 	Move.Close:SetNormalFontObject("SSAButtonFont");
 	Move.Close:SetScript("OnClick",function(self,button)
 		local point,relativePoint,x,y
-		local spec = SSA.spec;
+		local spec = GetSpecialization();
+		local AuraObjects = nil;
 		
-		if (spec == 1 or spec == 2) then
-			Auras:GetMaelstromBarObj(spec):SetAlpha(0);
+		if (spec == 1) then
+			AuraObjects = SSA.AuraObjectsEle;
+		elseif (spec == 2) then
+			AuraObjects = SSA.AuraObjectsEnh;
+		else
+			AuraObjects = SSA.AuraObjectsRes;
 		end
+		
+		--[[if (spec == 1 or spec == 2) then
+			Auras:GetMaelstromBarObj(spec):SetAlpha(0);
+		end]]
 		Move:Hide();
 		SSA.grid:Hide();
 		SSA.IsMovingAuras = false;
@@ -416,17 +442,17 @@ function Auras:BuildMoveUI(AuraObjects,MoveStrings,name)
 		Auras.db.char.layout[spec].isMoving = false;
 		
 		for i=1,getn(AuraObjects) do
-			if (AuraObjects[i].backdrop) then
+			--[[if (AuraObjects[i].backdrop) then
 				--SSA[AuraObjects[i].object:GetName()]:SetBackdrop(nil);
-			end
+			end]]
 			
-			if (AuraObjects[i].alpha) then
+			--[[if (AuraObjects[i].alpha) then
 				AuraObjects[i].object:SetAlpha(0)
 			else
 				if (AuraObjects[i].alpha ~= nil) then
 					AuraObjects[i].object:Hide()
 				end
-			end
+			end]]
 			--[[if (AuraObjects[i].object:GetName() ~= "Cloudburst") then
 				AuraObjects[i].object:SetBackdrop(nil);
 			end]]
@@ -439,14 +465,14 @@ function Auras:BuildMoveUI(AuraObjects,MoveStrings,name)
 				end
 			end]]
 
-			if (AuraObjects[i].statusbar) then
+			--[[if (AuraObjects[i].statusbar) then
 				AuraObjects[i].object:SetValue(0);
 			end
 			if (AuraObjects[i].model) then
 				for j=1,getn(AuraObjects[i].model) do
 					AuraObjects[i].model[j]:SetAlpha(0)
 				end
-			end
+			end]]
 			--[[if (Auras.db.char.frames[name:lower().."Grp"][AuraObjects[i].object:GetName()].alpha) then
 				local r,g,b,a = AuraObjects[i].object:GetStatusBarColor();
 				AuraObjects[i].object.bg:SetAlpha(Auras.db.char.frames[name:lower().."Grp"][AuraObjects[i].object:GetName()].alpha);

@@ -1,27 +1,21 @@
 ------------------------------------------------------------------------
-r621 | arkayenro | 2017-01-18 01:44:35 -0600 (Wed, 18 Jan 2017) | 5 lines
+r623 | arkayenro | 2017-02-04 23:40:14 -0600 (Sat, 04 Feb 2017) | 7 lines
 Changed paths:
    M /trunk/ArkInventory.lua
    M /trunk/ArkInventory.toc
-   M /trunk/Locale/deDE.lua
-   M /trunk/Locale/enUS.lua
-   M /trunk/Locale/esES.lua
-   M /trunk/Locale/esMX.lua
-   M /trunk/Locale/frFR.lua
-   M /trunk/Locale/itIT.lua
-   M /trunk/Locale/koKR.lua
-   M /trunk/Locale/ptBR.lua
-   M /trunk/Locale/ruRU.lua
-   M /trunk/Locale/zhCN.lua
-   M /trunk/Locale/zhTW.lua
-   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
+   M /trunk/ArkInventoryLDB.lua
+   M /trunk/ArkInventoryMenu.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryTooltip.lua
    M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
    M /trunk/VersionHistory.txt
 
-*3.07.22 (18-JAN-2017)*
- * added - option to disable rule 3rd party mod load messages
- * added - option to disable rule registration messages
- * fixed - (maybe) issue with outfit( ) rule and blizzard equipment manager
+*3.07.23 (05-FEB-2017)*
+ * changed - internal rule id now includes all gem, enchant, suffix and bonusid data to be able to see the different variations (note: does not apply to categories)
+ * fixed - issue with debug and displaying which PT sets an item is in
+ * added - the green upgrade icon should display when blizzard think the item is an upgrade for you (note, the API is currently returning false for all items so its not actually going to show anything at this point but may later)
+ * changed - the green upgrade icon has been moved to the bottom left so as to not overlap the item level text
+ * fixed - issue with tooltip rule where it couldnt match against the green <Right click to ...> last line text
 
 ------------------------------------------------------------------------
 

@@ -710,6 +710,7 @@ function ArkInventory.LDB.Mounts.IsFlyable( useMapZone )
 				--  5 = maelstrom (deepholm)
 				--  6 = pandaria
 				--  7 = draenor
+				--  8 = legion
 				
 				
 				if zone == 1 or zone == 2 then
@@ -743,7 +744,18 @@ function ArkInventory.LDB.Mounts.IsFlyable( useMapZone )
 					
 					if not completed then
 						
-						--ArkInventory.Output( "draenor but you dont have the pathfinder achievement )
+						--ArkInventory.Output( "draenor but you dont have the draenor pathfinder achievement )
+						ArkInventory.IsFlyable = false
+						
+					end
+					
+				elseif zone == 8 then
+					
+					local _, _, _, completed = GetAchievementInfo( 11446 )
+					
+					if not completed then
+						
+						--ArkInventory.Output( "broken isles but you dont have the broken isles pathfinder part two achievement )
 						ArkInventory.IsFlyable = false
 						
 					end

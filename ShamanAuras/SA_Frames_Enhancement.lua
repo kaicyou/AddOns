@@ -129,12 +129,36 @@ AuraGroup:SetScript("OnUpdate",function(self,button)
 	end
 end);
 
+AuraGroup:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseDown(self,'enhGrp',button);
+	end
+end);
+
+AuraGroup:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseUp(self,'enhGrp',button);
+	end
+end);
+
 LargeIconGrpTop:SetScript("OnUpdate",function(self,button)
 	if (Auras.db.char.layout[2].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.85);
 	else
 		self:SetBackdrop(nil);
+	end
+end);
+
+LargeIconGrpTop:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseDown(self,'resGrp',button);
+	end
+end);
+
+LargeIconGrpTop:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
 
@@ -147,6 +171,18 @@ LargeIconGrpBot:SetScript("OnUpdate",function(self,button)
 	end
 end);
 
+LargeIconGrpBot:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseDown(self,'enhGrp',button);
+	end
+end);
+
+LargeIconGrpBot:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseUp(self,'enhGrp',button);
+	end
+end);
+
 SmallIconGrpLeft:SetScript("OnUpdate",function(self,button)
 	if (Auras.db.char.layout[2].isMoving) then
 		self:SetBackdrop(backdrop);
@@ -156,12 +192,36 @@ SmallIconGrpLeft:SetScript("OnUpdate",function(self,button)
 	end
 end);
 
+SmallIconGrpLeft:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseDown(self,'enhGrp',button);
+	end
+end);
+
+SmallIconGrpLeft:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseUp(self,'enhGrp',button);
+	end
+end);
+
 SmallIconGrpRight:SetScript("OnUpdate",function(self,button)
 	if (Auras.db.char.layout[2].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.85);
 	else
 		self:SetBackdrop(nil);
+	end
+end);
+
+SmallIconGrpRight:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseDown(self,'enhGrp',button);
+	end
+end);
+
+SmallIconGrpRight:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseUp(self,'enhGrp',button);
 	end
 end);
 
@@ -909,6 +969,17 @@ SSA.MaelstromBarEnh:SetScript("OnUpdate",function(self,elaps)
 	end
 end);
 
+MaelstromBar:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseDown(self,'enhGrp',button);
+	end
+end);
+
+MaelstromBar:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseUp(self,'enhGrp',button);
+	end
+end);
 
 SSA.BuffTimerBarGrpEnh = CreateFrame("Frame","BuffTimerBarGrpEnh",AuraGroup);
 local BuffTimerBarGrp = SSA.BuffTimerBarGrpEnh;
@@ -916,6 +987,7 @@ BuffTimerBarGrp:SetWidth(131);
 BuffTimerBarGrp:SetHeight(180);
 BuffTimerBarGrp:SetBackdrop(nil);
 BuffTimerBarGrp:Show();
+_G["SSA_BuffTimerGrpEnh"] = BuffTimerBarGrp;
 
 SSA.MainTimerBarGrpEnh = CreateFrame("Frame","MainTimerBarGrpEnh",AuraGroup);
 local MainTimerBarGrp = SSA.MainTimerBarGrpEnh;
@@ -923,6 +995,7 @@ MainTimerBarGrp:SetWidth(131);
 MainTimerBarGrp:SetHeight(180);
 BuffTimerBarGrp:SetBackdrop(nil);
 MainTimerBarGrp:Show();
+_G["SSA_MainTimerBarGrpEnh"] = MainTimerBarGrp;
 
 SSA.UtilTimerBarGrpEnh = CreateFrame("Frame","UtilTimerBarGrpEnh",AuraGroup);
 local UtilTimerBarGrp = SSA.UtilTimerBarGrpEnh;
@@ -930,6 +1003,7 @@ UtilTimerBarGrp:SetWidth(47);
 UtilTimerBarGrp:SetHeight(180);
 UtilTimerBarGrp:SetBackdrop(nil);
 UtilTimerBarGrp:Show();
+_G["SSA_UtilTimerBarGrpEnh"] = UtilTimerBarGrp;
 
 SSA.AscendanceBarEnh = CreateFrame("StatusBar","AscendanceBarEnh",BuffTimerBarGrp);
 SSA.AstralShiftBarEnh = CreateFrame("StatusBar","AstralShiftBarEnh",BuffTimerBarGrp);
@@ -1042,6 +1116,18 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	end
 end);
 
+BuffTimerBarGrp:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseDown(self,'enhGrp',button);
+	end
+end);
+
+BuffTimerBarGrp:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseUp(self,'enhGrp',button);
+	end
+end);
+
 MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	if (Auras:CharacterCheck(2)) then
 		Auras:ToggleAuraVisibility(self,true,'showhide');
@@ -1074,6 +1160,18 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
+	end
+end);
+
+MainTimerBarGrp:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseDown(self,'enhGrp',button);
+	end
+end);
+
+MainTimerBarGrp:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseUp(self,'enhGrp',button);
 	end
 end);
 
@@ -1160,6 +1258,18 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	end
 end);
 
+UtilTimerBarGrp:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseDown(self,'enhGrp',button);
+	end
+end);
+
+UtilTimerBarGrp:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseUp(self,'enhGrp',button);
+	end
+end);
+
 -- Doom Winds Alert Texture
 local DoomWindsTex = CreateFrame("Frame","DoomWindsTex",AuraGroup);
 DoomWindsTex:SetPoint("CENTER",AuraGroup,"CENTER",-150,0);
@@ -1230,6 +1340,18 @@ DoomWindsTex:SetScript("OnUpdate",function(self)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
+	end
+end);
+
+DoomWindsTex:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseDown(self,'enhGrp',button);
+	end
+end);
+
+DoomWindsTex:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseUp(self,'enhGrp',button);
 	end
 end);
 
@@ -1306,6 +1428,19 @@ StormstrikeCharges:SetScript("OnUpdate",function(self,elaps)
 		Auras:ToggleAuraVisibility(self,false,'showhide');
 	end
 end);
+
+StormstrikeCharges:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseDown(self,'enhGrp',button);
+	end
+end);
+
+StormstrikeCharges:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.layout[2].isMoving) then
+		Auras:MoveOnMouseUp(self,'enhGrp',button);
+	end
+end);
+
 SSA.StormstrikeChargeGrp = StormstrikeCharges;
 
 EventFrame:SetScript("OnEvent",function(self,event,...)

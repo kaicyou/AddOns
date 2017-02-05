@@ -462,6 +462,68 @@ function Auras:SpellRangeCheck(self,spellID,flag)
 	end
 end
 
+function Auras:ShiftPressCheck(self)
+	if (IsShiftKeyDown()) then
+		self.shift = true;
+	else
+		self.shift = false;
+	end
+end
+
+function Auras:ResetAuraGroupPosition(self,grp,name)
+	local frame = Auras.db.char.frames.defaultPos[grp][name];
+	self:SetPoint(frame.point,SSA[frame.relativeTo],frame.relativePoint,frame.x,frame.y);
+end
+
+function Auras:MoveOnMouseDown(self,grp,button)
+	local framePt,_,parentPt,x,y = self:GetPoint(1)
+
+	if (not IsShiftKeyDown() and not IsControlKeyDown() and button == 'LeftButton') then
+		self.framePt = framePt
+		self.parentPt = parentPt
+		self.frameX = x
+		self.frameY = y
+		self:StartMoving()
+		_,_,_,x,y = self:GetPoint(1)
+		self.screenX = x
+		self.screenY = y
+	elseif (IsShiftKeyDown() and not IsControlKeyDown()) then
+		if (button == "LeftButton") then
+			self:SetPoint("CENTER",self:GetParent(),"CENTER",0,y);
+		elseif (button == "RightButton") then
+			self:SetPoint("CENTER",self:GetParent(),"CENTER",x,0);
+		elseif (button == "MiddleButton") then
+			self:SetPoint("CENTER",self:GetParent(),"CENTER",0,0);
+		end
+	elseif (not IsShiftKeyDown() and IsControlKeyDown() and button == "RightButton") then
+		Auras:ResetAuraGroupPosition(self,grp,self:GetName())
+	end
+end
+
+function Auras:MoveOnMouseUp(self,grp,button)
+	local framePt,_,parentPt,x,y = self:GetPoint(1)
+
+	if (button == 'LeftButton' and self.framePt) then
+		self:StopMovingOrSizing()
+		x = (x - self.screenX) + self.frameX
+		y = (y - self.screenY) + self.frameY
+		self:ClearAllPoints()
+		self:SetPoint(self.framePt, self:GetParent(), self.parentPt, x, y)
+		self.framePt = nil
+		self.parentPt = nil
+		self.frameX = nil
+		self.frameY =nil
+		self.screenX = nil
+		self.screenY = nil
+	end
+end
+
+
+
+function Auras:ParseClick(isClicked,button,spec)
+	Auras.db.char.layout[spec][button] = isClicked;
+end
+
 local function GetVersionNumber()
 	return tonumber(string.sub(Auras.version,2,3));	
 end
@@ -487,6 +549,7 @@ end
 function Auras:OnInitialize()
 	local defaults = {
 		char = {
+			isR42FirstLoad = true,
 			version = nil,
 			name = nil,
 			isEleFirst = true,
@@ -507,8 +570,13 @@ function Auras:OnInitialize()
 				}
 			},
 			layout = {
+				LeftButton = false,
+				MiddleButton = false,
+				RightButton = false,
+				isShiftDown = false,
+				isCtrlDown = false,
 				[1] = {
-					isMoving = false,
+					isMoving = false,	
 					primary = {
 						top = {
 							icon = 32,
@@ -1043,28 +1111,28 @@ function Auras:OnInitialize()
 						height = 160,
 					},
 					BuffTimerBarGrpEle = {
-						point = "LEFT",
+						point = "CENTER",
 						relativeTo = "AuraGroupEle",
 						relativePoint = "CENTER",
-						x = 190,
+						x = 250,
 						y = -125,
 						width = 115,
 						height = 180,
 					},
 					MainTimerBarGrpEle = {
-						point = "RIGHT",
+						point = "CENTER",
 						relativeTo = "AuraGroupEle",
 						relativePoint = "CENTER",
-						x = -190,
+						x = -250,
 						y = -125,
 						width = 90,
 						height = 180,
 					},
 					UtilTimerBarGrpEle = {
-						point = "RIGHT",
+						point = "CENTER",
 						relativeTo = "AuraGroupEle",
 						relativePoint = "CENTER",
-						x = -190,
+						x = -240,
 						y = -125,
 						width = 70,
 						height = 180,
@@ -1171,28 +1239,28 @@ function Auras:OnInitialize()
 						height = 160,
 					},
 					BuffTimerBarGrpEnh = {
-						point = "LEFT",
+						point = "CENTER",
 						relativeTo = "AuraGroupEnh",
 						relativePoint = "CENTER",
-						x = 190,
+						x = 257,
 						y = -125,
 						width = 131,
 						height = 180,
 					},
 					MainTimerBarGrpEnh = {
-						point = "RIGHT",
+						point = "CENTER",
 						relativeTo = "AuraGroupEnh",
 						relativePoint = "CENTER",
-						x = -190,
+						x = -257,
 						y = -125,
 						width = 131,
 						height = 180,
 					},
 					UtilTimerBarGrpEnh = {
-						point = "RIGHT",
+						point = "CENTER",
 						relativeTo = "AuraGroupEnh",
 						relativePoint = "CENTER",
-						x = -190,
+						x = -215,
 						y = -125,
 						width = 47,
 						height = 180,
@@ -1273,28 +1341,28 @@ function Auras:OnInitialize()
 						height = 160,
 					},
 					BuffTimerBarGrpRes = {
-						point = "LEFT",
+						point = "CENTER",
 						relativeTo = "AuraGroupRes",
 						relativePoint = "CENTER",
-						x = 190,
+						x = 257,
 						y = -125,
 						width = 131,
 						height = 180,
 					},
 					MainTimerBarGrpRes = {
-						point = "RIGHT",
+						point = "CENTER",
 						relativeTo = "AuraGroupRes",
 						relativePoint = "CENTER",
-						x = -190,
+						x = -244,
 						y = -125,
 						width = 105,
 						height = 180,
 					},
 					UtilTimerBarGrpRes = {
-						point = "RIGHT",
+						point = "CENTER",
 						relativeTo = "AuraGroupRes",
 						relativePoint = "CENTER",
-						x = -190,
+						x = -215,
 						y = -125,
 						width = 47,
 						height = 180,
@@ -1380,24 +1448,24 @@ function Auras:OnInitialize()
 							y = -170,
 						},
 						BuffTimerBarGrpEle = {
-							point = "LEFT",
+							point = "CENTER",
 							relativeTo = "AuraGroupEle",
 							relativePoint = "CENTER",
-							x = 190,
+							x = 250,
 							y = -125,
 						},
 						MainTimerBarGrpEle = {
-							point = "RIGHT",
+							point = "CENTER",
 							relativeTo = "AuraGroupEle",
 							relativePoint = "CENTER",
-							x = -190,
+							x = -250,
 							y = -125,
 						},
 						UtilTimerBarGrpEle = {
-							point = "RIGHT",
+							point = "CENTER",
 							relativeTo = "AuraGroupEle",
 							relativePoint = "CENTER",
-							x = -190,
+							x = -240,
 							y = -125,
 						},
 						MaelstromBarEle = {
@@ -1473,24 +1541,24 @@ function Auras:OnInitialize()
 							y = -170,
 						},
 						BuffTimerBarGrpEnh = {
-							point = "LEFT",
+							point = "CENTER",
 							relativeTo = "AuraGroupEnh",
 							relativePoint = "CENTER",
-							x = 190,
+							x = 257,
 							y = -125,
 						},
 						MainTimerBarGrpEnh = {
-							point = "RIGHT",
+							point = "CENTER",
 							relativeTo = "AuraGroupEnh",
 							relativePoint = "CENTER",
-							x = -190,
+							x = -257,
 							y = -125,
 						},
 						UtilTimerBarGrpEnh = {
-							point = "RIGHT",
+							point = "CENTER",
 							relativeTo = "AuraGroupEnh",
 							relativePoint = "CENTER",
-							x = -190,
+							x = -215,
 							y = -125,
 						},
 						MaelstromBarEnh = {
@@ -1552,24 +1620,24 @@ function Auras:OnInitialize()
 							y = -170,
 						},
 						BuffTimerBarGrpRes = {
-							point = "LEFT",
+							point = "CENTER",
 							relativeTo = "AuraGroupRes",
 							relativePoint = "CENTER",
-							x = 190,
+							x = 257,
 							y = -125,
 						},
 						MainTimerBarGrpRes = {
-							point = "RIGHT",
+							point = "CENTER",
 							relativeTo = "AuraGroupRes",
 							relativePoint = "CENTER",
-							x = -190,
+							x = -244,
 							y = -125,
 						},
 						UtilTimerBarGrpRes = {
-							point = "RIGHT",
+							point = "CENTER",
 							relativeTo = "AuraGroupRes",
 							relativePoint = "CENTER",
-							x = -190,
+							x = -215,
 							y = -125,
 						},
 						EarthenShieldTotemBar = {
@@ -1627,11 +1695,9 @@ function Auras:OnEnable()
 	self:RegisterEvent("PLAYER_TALENT_UPDATE");
 	
 	-- Check if cooldowns value is table
-	--[[if (type(Auras.db.char.cooldowns.numbers) == "table") then
+	if (type(Auras.db.char.cooldowns.numbers) == "table") then
 		Auras.db.char.cooldowns.numbers = true;
-	end]]
-	
-	
+	end
 	--self:RegisterEvent("SPELL_UPDATE_CHARGES","ChargeCooldown");
 
 	--InterfaceOptionsFrame:HookScript("OnShow",function(self)
@@ -1747,6 +1813,17 @@ function Auras:OnEnable()
 		end
 	end
 
+	StaticPopupDialogs["SSA_R42_BAR_GROUP_NOTICE"] = {
+		text = "Due to large re-coding in r42, the placement of the vertical timer duration bars may be out of place. Be sure to take a moment to check their positions.",
+		button1 = "Ok, thanks!",
+		OnAccept = function()
+			--AddonList:Show();
+		end,
+		timeout = 0,
+		whileDead = true,
+		hideOnEscape = true,
+		preferredIndex = 3,
+	}
 	
 	StaticPopupDialogs["SSA_CLASS_CHECKER"] = {
 		text = "You are currently running the addon \"Sweetsour's Shaman Auras\" while on a non-shaman character. It is recommended that you disable this addon.",
@@ -1763,6 +1840,11 @@ function Auras:OnEnable()
 
 	if (not Auras:CharacterCheck(0)) then
 		StaticPopup_Show ("SSA_CLASS_CHECKER")
+	end
+	
+	if (Auras.db.char.isR42FirstLoad) then
+		Auras.db.char.isR42FirstLoad = false;
+		StaticPopup_Show ("SSA_R42_BAR_GROUP_NOTICE")
 	end
 end
 

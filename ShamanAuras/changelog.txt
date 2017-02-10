@@ -1,4 +1,16 @@
-﻿	r42-beta
+﻿	r43.1-beta
+FIX: [Enhancement] An error caused by the Maelstrom Bar during combat should be fixed. (Thanks, Paltaa!)
+	
+	r43-beta
+NEW: Auras can now be re-sized to 256 pixels (previously 64 pixels) (Thanks, 1SEBI1!)
+NEW: Aura spacing can now be set to 300 pixels (previously 100 pixels) (Thanks, 1SEBI1!)
+NEW: Aura charge text can now be set to 60 point (previously 20 point) (Thanks, 1SEBI1!)
+
+FIX: [Elemental] The Maelstrom and Icefury progress bars should no longer appear when toggled. (Thanks, morpe!)
+FIX: [Ele/Enh] The Maelstrom progress bar's alpha while in combat should set correctly. (Thanks, morpe!)
+FIX: [Enhancement] The Maelstrom progress bar should no longer appear when toggled. (Thanks, morpe!)
+	
+	r42-beta
 NEW: [UI] The aura movement utility has been recoded...again...to be even more efficient.
 	
 FIX: [UI] Using Shift and Control with the aura movement utility should no longer cause unintended behavior. (Thanks, 1SEBI1!)

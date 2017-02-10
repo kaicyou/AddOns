@@ -11,7 +11,7 @@ pslocale()
 end
 
 
-	psversion=7.101
+	psversion=7.102
 
 
 	psverstiptext="alpha"
@@ -1744,7 +1744,7 @@ end
     end
 	--end
 	
-	if psunitraidorparty(arg7,arg8) and not UnitIsFeignDeath(arg8) then
+  if (psunitraidorparty(arg7,arg8) or UnitInParty(arg8)) and not UnitIsFeignDeath(arg8) then
     --отправка в дес репорт инфо о смерти
     if UnitInRaid("player")==nil and UnitInParty("player") then
       if psdiedinparty then

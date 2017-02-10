@@ -610,6 +610,7 @@ function Invite.BuildOptions (frame)
 		local on_edit_select = function (_, _, preset)
 			Invite:ShowPreset (Invite:GetPreset (preset))
 			Invite:DisableCreatePanel()
+			InviteNewProfileFrame:Hide()
 		end
 		local dropdown_edit_fill = function()
 			local t = {}

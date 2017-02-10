@@ -1070,29 +1070,37 @@ MaelstromBar:SetScript("OnUpdate",function(self,elaps)
 		end
 
 		if (not Auras.db.char.layout[1].maelstromBar.isAdjustable and not Auras.db.char.layout[1].isMoving) then
-			self:SetValue(power);
-			self.text:SetText(power);
-			if (isCombat) then
-				self:SetAlpha(1);
-				if (power >= Auras.db.char.triggers.ele.maelstrom and Auras.db.char.triggers.ele.MaelstromAnim) then
-					self.Lightning:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaCombat);
-					self.bg:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaCombat);
-				else
-					self.Lightning:SetAlpha(0);
-					self.bg:SetAlpha(0.5);
-				end
-			elseif (not isCombat and Auras:IsTargetEnemy()) then
-				--MaelstromBar:SetAlpha(Auras.db.char.triggers.ele.OoCAlpha);
-				if (Auras.db.char.triggers.ele.maelstromAlphaOoC == 0) then
-					MaelstromBar:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaTar);
-					self.bg:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaTar);
-				else
-					MaelstromBar:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaOoC);
+			if (Auras.db.char.aura[1].MaelstromBarEle) then
+				self:SetValue(power);
+				self.text:SetText(power);
+				if (isCombat) then
+					self:SetAlpha(1);
+					if (power >= Auras.db.char.triggers.ele.maelstrom and Auras.db.char.triggers.ele.MaelstromAnim) then
+						self.Lightning:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaCombat);
+						--self.bg:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaCombat);
+						self.bg:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaCombat);
+					else
+						self.Lightning:SetAlpha(0);
+						--self.bg:SetAlpha(0.5);
+						self.bg:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaCombat / 2);
+					end
+					self:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaCombat);
+					
+				elseif (not isCombat and Auras:IsTargetEnemy()) then
+					--MaelstromBar:SetAlpha(Auras.db.char.triggers.ele.OoCAlpha);
+					if (Auras.db.char.triggers.ele.maelstromAlphaOoC == 0) then
+						self:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaTar);
+						self.bg:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaTar);
+					else
+						self:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaOoC);
+						self.bg:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaOoC);
+					end
+				elseif (not isCombat and not Auras:IsTargetEnemy()) then
+					self:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaOoC);
 					self.bg:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaOoC);
 				end
-			elseif (not isCombat and not Auras:IsTargetEnemy()) then
-				self:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaOoC);
-				self.bg:SetAlpha(Auras.db.char.triggers.ele.maelstromAlphaOoC);
+			else
+				self:SetAlpha(0);
 			end
 		elseif (Auras.db.char.layout[1].maelstromBar.isAdjustable or Auras.db.char.layout[1].isMoving) then
 			self:SetAlpha(0.5);
@@ -1179,7 +1187,7 @@ IcefuryBar:SetScript("OnUpdate",function(self)
 		end
 		
 		if (not Auras.db.char.layout[1].icefuryBar.isAdjustable and not Auras.db.char.layout[1].isMoving) then
-			if (buff) then
+			if (buff and Auras.db.char.aura[1].IcefuryBar) then
 				local timer,seconds = Auras:parseTime(expires - GetTime(),false);
 				
 				self:SetValue(count);

@@ -1,4 +1,29 @@
 ------------------------------------------------------------------------
+r103 | SweetsourDev | 2017-02-09 20:18:54 -0600 (Thu, 09 Feb 2017) | 2 lines
+Changed paths:
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r43.1-beta
+FIX: [Enhancement] An error caused by the Maelstrom Bar during combat should be fixed. (Thanks, Paltaa!)
+------------------------------------------------------------------------
+r102 | SweetsourDev | 2017-02-08 18:26:09 -0600 (Wed, 08 Feb 2017) | 8 lines
+Changed paths:
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r43-beta
+NEW: Auras can now be re-sized to 256 pixels (previously 64 pixels) (Thanks, 1SEBI1!)
+NEW: Aura spacing can now be set to 300 pixels (previously 100 pixels) (Thanks, 1SEBI1!)
+NEW: Aura charge text can now be set to 60 point (previously 20 point) (Thanks, 1SEBI1!)
+
+FIX: [Elemental] The Maelstrom and Icefury progress bars should no longer appear when toggled. (Thanks, morpe!)
+FIX: [Ele/Enh] The Maelstrom progress bar's alpha while in combat should set correctly. (Thanks, morpe!)
+FIX: [Enhancement] The Maelstrom progress bar should no longer appear when toggled. (Thanks, morpe!)
+------------------------------------------------------------------------
 r101 | SweetsourDev | 2017-02-02 17:53:54 -0600 (Thu, 02 Feb 2017) | 5 lines
 Changed paths:
    M /trunk/SA_Core.lua

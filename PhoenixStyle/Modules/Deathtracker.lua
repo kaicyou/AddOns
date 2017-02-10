@@ -1,11 +1,10 @@
-﻿function psdeathrepevent(type,marksource,mark,name,guid,spellid,spellname,dmg,overkill,crit,whokill,resist,block,absorbed,spellschool)
+﻿function psdeathrepevent(mtype,marksource,mark,name,guid,spellid,spellname,dmg,overkill,crit,whokill,resist,block,absorbed,spellschool)
 
 -- в ЛФР не трекерить !! psdeathrepsavemain[5]
 if (select(3,GetInstanceInfo())==17 or select(3,GetInstanceInfo())==18) and psdeathrepsavemain[5]==1 then
   return
 end
-
---type: 0=death, 1 - instakill, 2 - ENVIRONMENTAL_DAMAGE, 10 - normal damage
+--mtype: 0=death, 1 - instakill, 2 - ENVIRONMENTAL_DAMAGE, 10 - normal damage
 
 local chatname=name
 if chatname and string.find(chatname,"%-") then
@@ -15,7 +14,6 @@ if chatname and string.find(chatname,"%-") then
     chatname=string.sub(chatname,1,string.find(chatname,"%-")-1)
   end
 end
-
 --работать должно ТОЛЬКО в рейде или парти!
 local inInstance, instanceType = IsInInstance()
 if instanceType=="raid" or instanceType=="party" then
@@ -23,7 +21,6 @@ if instanceType=="raid" or instanceType=="party" then
 if pskillreport==nil then
   pskillreport={{},{},{},{}} --ник, фраза в ожидании, время записи, фраза для чата
 end
-
 
 --общие изменения
 if dmg and overkill then
@@ -66,7 +63,6 @@ local resisttxt1=""
 if string.len(resisttxt1)>2 then
   resisttxt1=", "..resisttxt1
 end
-
 local spellsk=""
 if spellschool and spellname~="Melee" then
   if spellschool==1 then
@@ -139,13 +135,12 @@ if string.len(spellsk)>2 then
   spellsk=" ("..spellsk..")"
 end
 
-
 --проверка на игрока в группе или пати
 psunitisplayer(guid,name)
-if psunitplayertrue and psunitraidorparty(guid,name) then
+if psunitplayertrue and (psunitraidorparty(guid,name) or UnitInParty(name)) then
   --проверка что его смерть не анонсили в течении 3 сек
         local anonsed=0
-        if type~=0 then
+        if mtype~=0 then
           if pskillreport and pskillreport[1] and #pskillreport[1]>0 then
             for hn=1,#pskillreport[1] do
               if pskillreport[1][hn]==name and GetTime()<=pskillreport[3][hn]+2 then
@@ -154,10 +149,9 @@ if psunitplayertrue and psunitraidorparty(guid,name) then
             end
           end
         end
-        
   --не анонсилось:
   if anonsed==0 then
-    --if addedtab==0 and type==0 then
+    --if addedtab==0 and mtype==0 then
     --  table.insert(pslastdeath[1],name)
     --  local tm=GetTime()
     --  table.insert(pslastdeath[2],tm)
@@ -173,7 +167,7 @@ if psunitplayertrue and psunitraidorparty(guid,name) then
         end
       end
     end
-    if type==0 then
+    if mtype==0 then
       if notdeath==0 then
         local dontknow=0
         local txt1=psaddcolortxt(1,name)..name..psaddcolortxt(2,name).." > |cffff0000"..psiccunknown.."|r"
@@ -244,13 +238,13 @@ if psunitplayertrue and psunitraidorparty(guid,name) then
       local txt2="PS "..psdieddeathrep..": "..psgetmarkforchat(mark)
       txt1=txt1..psaddcolortxt(1,name)..name..psaddcolortxt(2,name).." > "
       txt2=txt2..psaddcolortxt(1,chatname)..chatname..psaddcolortxt(2,chatname).." > "
-      if type==0 then
+      if mtype==0 then
         txt1=txt1.."|cffff0000"..psiccunknown.."|r"
         txt2=txt2.."|cffff0000"..psiccunknown.."|r"
-      elseif type==1 then
+      elseif mtype==1 then
         txt1=txt1..spellname.." (|cffff0000"..psdrinstakill.."|r)"
         txt2=txt2.."|s4id"..spellid.."|id (|cffff0000"..psdrinstakill.."|r)"
-      elseif type==2 then
+      elseif mtype==2 then
         txt1=txt1..psdamageceildeathrep(dmg)..", |cffff0000"..spellname.."|r"
         txt2=txt2..psdamageceildeathrep(dmg)..", |cffff0000"..spellname.."|r"
       else
@@ -297,13 +291,13 @@ if psunitplayertrue and psunitraidorparty(guid,name) then
         table.insert(pskillreport[2],txt1)
         local tmm=GetTime()
         --для падения замещение сразу возможно, так как нет овердамага..
-        if type==2 then
+        if mtype==2 then
           tmm=GetTime()-2.01
         end
         table.insert(pskillreport[3],tmm)
         table.insert(pskillreport[4],txt2)
       end 
-    end--type
+    end--mtype
   end
 end
     
@@ -653,7 +647,6 @@ if pstoomuchrepstopforfight==nil and (UnitInRaid("player") or UnitInParty("playe
     partyonly=1
     psnumdead=psdiedinparty
 	end
-	
 	if partyonly==0 then
     for i = 1,GetNumGroupMembers() do
       local nameee,_,subgroup,_,_,_,_,_,isDead = GetRaidRosterInfo(i)
@@ -662,7 +655,6 @@ if pstoomuchrepstopforfight==nil and (UnitInRaid("player") or UnitInParty("playe
       end
     end
   end
-
   --количество трупов меньше чем в настройке
   if psthiscombatstoprepd==nil and psnumdead<=psnumdeadmax and ((psdeathrepsavemain[4]==1 and psthiscombatwipe==nil) or (psdeathrepsavemain[4]==0)) then
     --плей саунд

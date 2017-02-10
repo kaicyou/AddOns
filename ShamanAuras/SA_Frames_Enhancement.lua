@@ -936,30 +936,36 @@ SSA.MaelstromBarEnh:SetScript("OnUpdate",function(self,elaps)
 		end
 		
 		if (not Auras.db.char.layout[2].maelstromBar.isAdjustable and not Auras.db.char.layout[2].isMoving) then
-			self:SetValue(power);
-			self.text:SetText(power);
-			if (isCombat) then
-				self:SetAlpha(1);
-				if (power >= Auras.db.char.triggers.enh.maelstrom and Auras.db.char.triggers.enh.MaelstromAnim) then
-					self.Lightning:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaCombat);
-					self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaCombat);
-				else
-					self.Lightning:SetAlpha(0);
-					self.bg:SetAlpha(0.5);
-				end
-			elseif (not isCombat and Auras:IsTargetEnemy()) then
-				--MaelstromBar:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha);
-				if (Auras.db.char.triggers.enh.maelstromAlphaOoC == 0) then
-					MaelstromBar:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaTar);
-					self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaTar);
-				else
-					MaelstromBar:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
+			if (Auras.db.char.aura[2].MaelstromBarEnh) then
+				self:SetValue(power);
+				self.text:SetText(power);
+				if (isCombat) then
+					self:SetAlpha(1);
+					if (power >= Auras.db.char.triggers.enh.maelstrom and Auras.db.char.triggers.enh.MaelstromAnim) then
+						self.Lightning:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaCombat);
+						self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaCombat);
+					else
+						self.Lightning:SetAlpha(0);
+						--self.bg:SetAlpha(0.5);
+						self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaCombat / 2);
+					end
+					self:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaCombat);
+				elseif (not isCombat and Auras:IsTargetEnemy()) then
+					--MaelstromBar:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha);
+					if (Auras.db.char.triggers.enh.maelstromAlphaOoC == 0) then
+						MaelstromBar:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaTar);
+						self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaTar);
+					else
+						MaelstromBar:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
+						self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
+					end
+				elseif (not isCombat and not Auras:IsTargetEnemy()) then
+					--self:SetAlpha(0);
+					self:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
 					self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
 				end
-			elseif (not isCombat and not Auras:IsTargetEnemy()) then
-				--self:SetAlpha(0);
-				self:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
-				self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
+			else
+				self:SetAlpha(0);
 			end
 		elseif (Auras.db.char.layout[2].maelstromBar.isAdjustable or Auras.db.char.layout[2].isMoving) then
 			self:SetAlpha(0.5);

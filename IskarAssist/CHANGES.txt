@@ -1,5 +1,11 @@
-changeset:   114:48ea1b9c1a8c
+changeset:   115:0b8ce060659c
 tag:         tip
+user:        Tercio
+date:        Thu Feb 16 14:21:11 2017 -0200
+summary:     - added boss ids for nighthold raid.
+
+
+changeset:   114:48ea1b9c1a8c
 user:        Tercio
 date:        Tue Feb 07 14:16:11 2017 -0200
 summary:     - raid groups and invite fixes.
@@ -597,11 +603,5 @@ changeset:   15:3ca3b642916f
 user:        Tercio
 date:        Thu Jul 16 21:24:46 2015 -0300
 summary:     - Added Darkbindings aura.
-
-
-changeset:   14:9b761c5ff6b4
-user:        Tercio
-date:        Mon Jul 13 18:20:49 2015 -0300
-summary:     - Added warlock dispell.
 
 

@@ -4,16 +4,15 @@
 -- o umlaut	  \195\182	 \195\150
 -- u umlaut	  \195\188	 \195\156
 -- sharp s	  \195\159
--- Š = \195\164 -- € = \195\132 
--- š = \195\182 -- … = \195\150 
--- Ÿ = \195\188 -- † = \195\156 
--- § = \195\159
+-- ï¿½ = \195\164 -- ï¿½ = \195\132 
+-- ï¿½ = \195\182 -- ï¿½ = \195\150 
+-- ï¿½ = \195\188 -- ï¿½ = \195\156 
+-- ï¿½ = \195\159
 
 
 FishingTranslations["deDE"] = {
 	ABOUT_TAB = "\195\156ber",
-	ADDFISHIEMSG = "%s zum Standort %s hinzuf\195\188gen.",
-	ADDSCHOOLMSG = "'%s' zum Standort %s hinzuf\195\188gen.",
+	ADDFISHINFOMSG = "'%s' zum Standort %s hinzuf\195\188gen.",
 	ALLZOMGPETS = "Schlie\195\159t alle Haustiere ein",
 	BINDING_NAME_FISHINGBUDDY_GOFISHING = "Anziehen und angeln gehen",
 	BINDING_NAME_FISHINGBUDDY_SWITCH = "Angelausr\195\188stung wechseln",

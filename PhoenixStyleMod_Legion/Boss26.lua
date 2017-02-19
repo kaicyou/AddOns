@@ -15,8 +15,8 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion26 and pswasonbossLeg
 			reportafterboitwotab(psraidchats3[psraidoptionschat[4][2][6][1]], true, vezaxname, vezaxcrash, 1)
 		end
 		if psraidoptionson[4][2][6][2]==1 then
-			--strochkavezcrash=psiccdmgfrom.." |s4id179897|id ("..psmainmtotal.."): "
-			--reportafterboitwotab(psraidchats3[psraidoptionschat[4][2][6][2]], true, vezaxname2, vezaxcrash2, 1)
+			strochkavezcrash=psiccdmgfrom.." |s4id206398|id ("..psmainmtotal.."): "
+			-reportafterboitwotab(psraidchats3[psraidoptionschat[4][2][6][2]], true, vezaxname2, vezaxcrash2, 1)
 		end
 
 
@@ -27,8 +27,8 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion26 and pswasonbossLeg
 
 		strochkavezcrash=psdidfriendlyf.." |s4id206938|id ("..psmainmtotal.."): "
 		reportafterboitwotab("raid", true, vezaxname, vezaxcrash, nil, nil,0,1)
-		--strochkavezcrash=psiccdmgfrom.." |s4id179897|id ("..psmainmtotal.."): "
-		--reportafterboitwotab("raid", true, vezaxname2, vezaxcrash2, nil, nil,0,1)
+		strochkavezcrash=psiccdmgfrom.." |s4id206398|id ("..psmainmtotal.."): "
+		reportafterboitwotab("raid", true, vezaxname2, vezaxcrash2, nil, nil,0,1)
 
 		psiccrefsvin()
 
@@ -87,7 +87,7 @@ if arg2=="SPELL_DAMAGE" and spellid==206938 and name1 and name2 and name1~=name2
   end
 end
 
-if arg2=="SPELL_DAMAGE" and spellid==99999999999999999 then
+if arg2=="SPELL_PERIODIC_DAMAGE" and spellid==206398 then
   if pswasonbossLegion26==nil then
     pswasonbossLegion26=1
   end

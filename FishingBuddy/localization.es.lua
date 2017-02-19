@@ -4,8 +4,7 @@
 
 FishingTranslations["esES"] = {
 	ABOUT_TAB = "Acerca de ",
-	ADDFISHIEMSG = "A\195\177adiendo %s a la zona %s.",
-	ADDSCHOOLMSG = "A\195\177adiendo '%s' a la zona %s.",
+	ADDFISHINFOMSG = "A\195\177adiendo '%s' a la zona %s.",
 	ALLZOMGPETS = "Incluye todas las mascotas",
 	BINDING_NAME_FISHINGBUDDY_GOFISHING = "V\195\173stete y a pescar.",
 	BINDING_NAME_FISHINGBUDDY_SWITCH = "Cambiar traje de pesca.",

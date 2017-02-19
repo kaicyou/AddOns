@@ -185,9 +185,11 @@ function Hekili:OnInitialize()
     self:RegisterChatCommand( "hekili", "CmdLine" )
     self:RegisterChatCommand( "hek", "CmdLine" )
 
-    if not self.DB.profile.Version or self.DB.profile.Version < 2 or not self.DB.profile.Release or self.DB.profile.Release < 20160000 then
+    if not self.DB.profile.Version or self.DB.profile.Version < 7 or not self.DB.profile.Release or self.DB.profile.Release < 20161000 then
         self.DB:ResetDB()
     end
+
+    self.DB.profile.Release = self.DB.profile.Release or 20161003.1
 
     initializeClassModule()
     refreshBindings()
@@ -201,7 +203,6 @@ function Hekili:OnInitialize()
 
     ns.primeTooltipColors()
 
-    self.DB.profile.Release = self.DB.profile.Release or 20161003.1
 
     callHook( "onInitialize" )
 
@@ -265,11 +266,6 @@ function Hekili:OnEnable()
     -- May want to refresh configuration options, key bindings.
     if self.DB.profile.Enabled then
 
-        --[[ for i = 1, #self.DB.profile.displays do
-            self:ProcessHooks( i )
-            updatedDisplays[ i ] = true
-        end ]]
-
         self:UpdateDisplays()
         ns.Audit()
 
@@ -325,7 +321,7 @@ local z_PVP = {
 
 local palStack = {}
 
-function Hekili:ProcessActionList( dispID, hookID, listID, slot  )
+function Hekili:ProcessActionList( dispID, hookID, listID, slot, depth )
     
     local list = self.DB.profile.actionLists[ listID ]
     
@@ -334,7 +330,7 @@ function Hekili:ProcessActionList( dispID, hookID, listID, slot  )
     else palStack[ list.Name ] = true end
     
     local chosen_action
-    local chosen_clash, chosen_wait = 0, 999
+    local chosen_clash, chosen_wait, chosen_depth = 0, 999, depth or 0
     local stop = false
 
     if ns.visible.list[ listID ] then
@@ -353,6 +349,7 @@ function Hekili:ProcessActionList( dispID, hookID, listID, slot  )
                 state.this_args = entry.Args
                 
                 state.delay = nil
+                depth = depth + 1
 
                 local ability = class.abilities[ entry.Ability ]
 
@@ -388,14 +385,14 @@ function Hekili:ProcessActionList( dispID, hookID, listID, slot  )
                                 break
                             end
                         end
-                        if called_list > 0 and checkScript( 'A', listID..':'..actID, nil, nil, wait_time ) then
-                            chosen_action, chosen_wait, chosen_clash = Hekili:ProcessActionList( dispID, listID..':'..actID, called_list, slot )
+                        if called_list > 0 and checkScript( 'A', listID..':'..actID ) then
+                            chosen_action, chosen_wait, chosen_clash, chosen_depth = Hekili:ProcessActionList( dispID, listID..':'..actID, called_list, slot, depth )
                         end
                     end
 
                 elseif entry.Ability == 'wait' then
 
-                    if checkScript( 'A', listID..':'..actID, nil, nil, wait_time ) then
+                    if checkScript( 'A', listID..':'..actID ) then
                         -- local args = ns.getModifiers( listID, actID )
                         if not state.args.sec then state.args.sec = 1 end
                         if state.args.sec > 0 then
@@ -411,7 +408,7 @@ function Hekili:ProcessActionList( dispID, hookID, listID, slot  )
                     local potionName = state.args.ModName or state.args.name or class.potion
                     local potion = class.potions[ potionName ]
 
-                    if potion and isUsable( state.this_action ) and max( 0, wait_time - clash ) < max( 0, chosen_wait - chosen_clash ) and checkScript( 'A', listID..':'..actID, nil, nil, wait_time ) then
+                    if potion and isUsable( state.this_action ) and max( 0, wait_time - clash ) < max( 0, chosen_wait - chosen_clash ) and checkScript( 'A', listID..':'..actID ) then
                         -- do potion things
                         
                         slot.scriptType = entry.ScriptType or 'simc'
@@ -436,10 +433,11 @@ function Hekili:ProcessActionList( dispID, hookID, listID, slot  )
                         chosen_action = state.this_action
                         chosen_wait = wait_time
                         chosen_clash = clash
+                        chosen_depth = depth
 
                     end
 
-                elseif isUsable( state.this_action ) and max( 0, wait_time - clash ) < max( 0, chosen_wait - chosen_clash ) and ns.hasRequiredResources( state.this_action ) and checkScript( 'A', listID..':'..actID, nil, nil, wait_time ) then
+                elseif isUsable( state.this_action ) and max( 0, wait_time - clash ) < max( 0, chosen_wait - chosen_clash ) and ns.hasRequiredResources( state.this_action ) and checkScript( 'A', listID..':'..actID ) then
 
                     slot.scriptType = entry.ScriptType or 'simc'
                     slot.display = dispID
@@ -463,6 +461,7 @@ function Hekili:ProcessActionList( dispID, hookID, listID, slot  )
                     chosen_action = state.this_action
                     chosen_wait = wait_time
                     chosen_clash = clash
+                    chosen_depth = depth
 
                 end
 
@@ -485,7 +484,7 @@ function Hekili:ProcessActionList( dispID, hookID, listID, slot  )
     end
     
     palStack[ list.Name ] = nil
-    return chosen_action, chosen_wait, chosen_clash
+    return chosen_action, chosen_wait, chosen_clash, chosen_depth
 
 end
 
@@ -519,7 +518,7 @@ function Hekili:ProcessHooks( dispID, solo )
                 for i = 1, display['Icons Shown'] do
 
                     local chosen_action
-                    local chosen_wait, chosen_clash = 999, 0
+                    local chosen_wait, chosen_clash, chosen_depth = 999, 0, 0
 
                     Queue[i] = Queue[i] or {}
 
@@ -533,10 +532,10 @@ function Hekili:ProcessHooks( dispID, solo )
                             if ns.visible.hook[ dispID..':'..hookID ] and hookID and checkScript( 'P', dispID..':'..hookID ) then
 
                                 local listID = hook[ 'Action List' ]
-                                local outcome, wait, clash = self:ProcessActionList( dispID, hookID, listID, slot )
+                                local outcome, wait, clash, depth = self:ProcessActionList( dispID, hookID, listID, slot, chosen_depth )
 
                                 if outcome then -- and wait < chosen_wait then
-                                    chosen_action, chosen_wait, chosen_clash = outcome, wait, clash
+                                    chosen_action, chosen_wait, chosen_clash, chosen_depth = outcome, wait, clash, depth
                                 end
 
                                 if chosen_wait == 0 then break end
@@ -558,8 +557,10 @@ function Hekili:ProcessHooks( dispID, solo )
                         if self.DB.profile.Debug then ns.implantDebugData( slot ) end
 
                         slot.time = state.offset + chosen_wait
+                        slot.exact_time = state.now + state.offset + chosen_wait
                         slot.since = i > 1 and slot.time - Queue[ i - 1 ].time or 0
                         slot.resources = slot.resources or {}
+                        slot.depth = chosen_depth
 
                         for k,v in pairs( class.resources ) do
                             slot.resources[k] = state[k].current
@@ -587,17 +588,17 @@ function Hekili:ProcessHooks( dispID, solo )
                             -- Put the action on cooldown.  (It's slightly premature, but addresses CD resets like Echo of the Elements.)
                             if class.abilities[ chosen_action ].charges and action.recharge > 0 then
                                 state.spendCharges( chosen_action, 1 )
-                                elseif chosen_action ~= 'global_cooldown' then
-                                    state.setCooldown( chosen_action, action.cooldown )
-                                end
+                            elseif chosen_action ~= 'global_cooldown' then
+                                state.setCooldown( chosen_action, action.cooldown )
+                            end
 
                             state.cycle = slot.indicator == 'cycle'
 
-                            -- Perform the action.
-                            ns.runHandler( chosen_action, slot.list, slot.action ) -- , ns.getModifiers( slot.actionlist, slot.action )  )
-
                             -- Spend resources.
                             ns.spendResources( chosen_action )
+
+                            -- Perform the action.
+                            ns.runHandler( chosen_action )
 
                             -- Advance the clock by cast_time.
                             if action.cast > 0 and action.channeled then
@@ -626,13 +627,11 @@ function Hekili:ProcessHooks( dispID, solo )
 
     end
 
--- if not solo then C_Timer.After( 1 / self.DB.profile['Updates Per Second'], self[ 'ProcessDisplay'..dispID ] ) end
-updatedDisplays[ dispID ] = true
--- Hekili:UpdateDisplay( dispID )
+    -- if not solo then C_Timer.After( 1 / self.DB.profile['Updates Per Second'], self[ 'ProcessDisplay'..dispID ] ) end
+    updatedDisplays[ dispID ] = true
+    -- Hekili:UpdateDisplay( dispID )
 
 end
-
-Hekili.ud = updatedDisplays
 
 
 local pvpZones = {
@@ -724,6 +723,8 @@ end
 
 
 local flashes = {}
+local checksums = {}
+local applied = {}
 
 function Hekili:UpdateDisplay( dispID )
 
@@ -753,10 +754,50 @@ function Hekili:UpdateDisplay( dispID )
             local Queue = ns.queue[ dispID ]
 
             local gcd_start, gcd_duration = GetSpellCooldown( class.abilities.global_cooldown.id )
+            local now = GetTime()
 
             _G[ "HekiliDisplay" .. dispID ]:Show()
 
-            for i, button in ipairs( ns.UI.Buttons[dispID] ) do
+
+            local checksum = ""
+
+            for i = 1, #Queue do
+                checksum = format( "%s%02d", checksum, Queue[i].depth )
+            end
+
+            checksum = tonumber(checksum)
+
+            checksums[ dispID ] = checksums[ dispID ] or {}
+
+            local different = false
+            local differences = 0
+            local snapbacks = 0
+
+            for i = 1, #checksums[ dispID ] do
+                if not different then
+                    if checksum ~= checksums[dispID][i] then
+                        different = true
+                        differences = differences + 1
+                    else
+                        different = false
+                    end
+                else
+                    if checksum ~= checksums[dispID][i] then
+                        different = true
+                        differences = differences + 1
+                    else
+                        snapbacks = snapbacks + 1
+                        different = false
+                    end
+                end
+            end
+
+            table.insert( checksums[ dispID ], 1, checksum )
+            checksums[ dispID ][ 10 ] = nil
+
+            -- if snapbacks > 0 then return end
+
+            for i, button in ipairs( ns.UI.Buttons[ dispID ] ) do
                 if not Queue or not Queue[i] and ( self.DB.profile.Enabled or self.Config ) then
                     for n = i, display['Icons Shown'] do
                         ns.UI.Buttons[dispID][n].Texture:SetTexture( 'Interface\\ICONS\\Spell_Nature_BloodLust' )
@@ -822,6 +863,13 @@ function Hekili:UpdateDisplay( dispID )
 
                         if detected < targets then targColor = '|cFFFF0000'
                         elseif detected > targets then targColor = '|cFF00C0FF' end
+
+                        if display['Show Keybindings'] then
+                            button.Keybinding:SetText( self:GetBindingForAction( aKey, display[ 'Keybinding Style' ] ~= 1 ) )
+                            button.Keybinding:Show()
+                        else
+                            button.Keybinding:Hide()
+                        end
 
                         if i == 1 then
                             if display.Overlay and IsSpellOverlayed( class.abilities[ aKey ].id ) then
@@ -912,9 +960,9 @@ function Hekili:UpdateDisplay( dispID )
                             flashes[dispID] = GetTime()
                         end
 
-                        if ( class.file == 'HUNTER' or class.file == 'MONK' ) and Queue[i].time and Queue[i].time ~= gcd_remains and Queue[i].time ~= start + duration - GetTime() then
+                        if ( class.file == 'HUNTER' or class.file == 'MONK' ) and Queue[i].exact_time and Queue[i].exact_time ~= gcd_start + gcd_duration and Queue[i].exact_time > now then
                                 -- button.Texture:SetDesaturated( Queue[i].time > 0 )
-                                button.Delay:SetText( Queue[i].time > 0 and format( "%.1f", Queue[i].time ) or nil )
+                                button.Delay:SetText( format( "%.1f", Queue[i].exact_time - now ) )
                         else
                                 -- button.Texture:SetDesaturated( false )
                                 button.Delay:SetText( nil )
@@ -971,8 +1019,8 @@ end
 
 
 function Hekili:UpdateDisplays()
-        for display in pairs( updatedDisplays ) do
-                Hekili:UpdateDisplay( display )
-                updatedDisplays[ display ] = nil
-        end
+    for display in pairs( updatedDisplays ) do
+        Hekili:UpdateDisplay( display )
+        updatedDisplays[ display ] = nil
+    end
 end

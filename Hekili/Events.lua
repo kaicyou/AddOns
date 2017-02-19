@@ -16,7 +16,7 @@ local formatKey = ns.formatKey
 local getSpecializationInfo = ns.getSpecializationInfo
 local getSpecializationKey = ns.getSpecializationKey
 
-local match = string.match
+local match, upper = string.match, string.upper
 
 -- Abandoning AceEvent in favor of darkend's solution from:
 -- http://andydote.co.uk/2014/11/23/good-design-in-warcraft-addons.html
@@ -232,13 +232,12 @@ RegisterEvent( "ENCOUNTER_END", function () state.boss = false end )
 
 
 local gearInitialized = false
+
 ns.updateGear = function ()
 
     for set, items in pairs( class.gearsets ) do
         state.set_bonus[ set ] = 0
         for item, _ in pairs( items ) do
-            local itemName = GetItemInfo( item )
-
             if IsEquippedItem( GetItemInfo( item ) ) then
                 state.set_bonus[ set ] = state.set_bonus[ set ] + 1
             end
@@ -355,7 +354,10 @@ end )
 
 
 RegisterEvent( "PLAYER_REGEN_DISABLED", function () state.combat = GetTime() end )
-RegisterEvent( "PLAYER_REGEN_ENABLED", function () state.combat = 0 end )
+RegisterEvent( "PLAYER_REGEN_ENABLED", function ()
+    ns.updateGear()
+    state.combat = 0
+end )
 
 local dynamic_keys = setmetatable( {}, {
     __index = function( t, k, v )
@@ -413,7 +415,7 @@ local function spellcastEvents( event, unit, spell, _, _, spellID )
             -- This is an ability with a travel time.
             if class.abilities[ spellID ] and class.abilities[ spellID ].velocity then
 
-                local lands = 1
+                local lands = 0.05
 
                 -- If we have a hostile target, we'll assume we're waiting for them to get hit.
                 if UnitExists( 'target' ) and not UnitIsFriend( 'player', 'target' ) then
@@ -421,7 +423,7 @@ local function spellcastEvents( event, unit, spell, _, _, spellID )
                     local _, range = RC:GetRange( 'target' )
 
                     if range then
-                        lands = range > 0 and range / class.abilities[ spellID ].velocity or 1
+                        lands = range > 0 and range / class.abilities[ spellID ].velocity or 0.05
                     end
                 end
 
@@ -434,14 +436,23 @@ local function spellcastEvents( event, unit, spell, _, _, spellID )
         end
 
         for i = 1, #Hekili.DB.profile.displays do
-            displayUpdates[ i ] = now - ( 1 / Hekili.DB.profile['Updates Per Second'] ) + 0.01
+            -- displayUpdates[ i ] = now - ( 1 / Hekili.DB.profile['Updates Per Second'] ) + 0.01
+            displayUpdates[ i ] = nil
         end
+
     end
 
 end
 
 RegisterEvent( "UNIT_SPELLCAST_SUCCEEDED", spellcastEvents )
 RegisterEvent( "UNIT_SPELLCAST_START", spellcastEvents )
+
+
+local function forceUpdate()
+    for i = 1, #Hekili.DB.profile.displays do
+        displayUpdates[ i ] = nil
+    end
+end
 
 
 
@@ -454,13 +465,51 @@ function ns.removeSpellFromFlight( spell )
 end
 
 
+local power_tick_data = {
+    focus_avg = 0.10,
+    focus_ticks = 1,
+
+    energy_avg = 0.10,
+    energy_ticks = 1,
+}
+
+
 RegisterEvent( "UNIT_POWER_FREQUENT", function( _, unit, power)
     if unit == 'player' then
-        for i = 1, #Hekili.DB.profile.displays do
-            displayUpdates[ i ] = GetTime() - ( ( 1 / Hekili.DB.profile['Updates Per Second'] ) / 2 )
+        if power == "FOCUS" and state.focus then
+            local now = GetTime()
+            local elapsed = now - state.focus.last_tick
+
+            elapsed = elapsed > power_tick_data.focus_avg * 1.5 and power_tick_data.focus_avg or elapsed
+
+            if elapsed > 0.09 then
+                power_tick_data.focus_avg = ( elapsed + ( power_tick_data.focus_avg * power_tick_data.focus_ticks ) ) / ( power_tick_data.focus_ticks + 1 )
+                power_tick_data.focus_ticks = power_tick_data.focus_ticks + 1
+                state.focus.last_tick = now
+            end
+
+        elseif power == "ENERGY" and state.energy then
+            local now = GetTime()
+            local elapsed = min( 0.12, now - state.energy.last_tick )
+
+            elapsed = elapsed > power_tick_data.energy_avg * 1.5 and power_tick_data.energy_avg or elapsed
+
+            if elapsed > 0.09 then
+                power_tick_data.energy_avg = ( elapsed + ( power_tick_data.energy_avg * power_tick_data.energy_ticks ) ) / ( power_tick_data.energy_ticks + 1 )
+                power_tick_data.energy_ticks = power_tick_data.energy_ticks + 1
+                state.energy.last_tick = now
+            end
+
         end
+
+        forceUpdate()
     end
 end )
+
+RegisterEvent( "PLAYER_TARGET_CHANGED", forceUpdate )
+RegisterEvent( "SPELL_UPDATE_USABLE", forceUpdate )
+RegisterEvent( "SPELL_UPDATE_COOLDOWN", forceUpdate )
+RegisterEvent( "SPELL_UPDATE_COOLDOWN", forceUpdate )
 
 
 -- Use dots/debuffs to count active targets.
@@ -634,3 +683,108 @@ RegisterEvent( "UNIT_HEALTH", function( _, unit )
     ttd.sec = projectedTTD
 
 end )
+
+
+local keys = ns.hotkeys
+local updatedKeys = {}
+
+
+local bindingSubs = {
+    ["CTRL%-"] = "c",
+    ["ALT%-"] = "a",
+    ["SHIFT%-"] = "s",
+    ["STRG%-"] = "st",
+    ["%s+"] = "",
+    ["NUMPAD"] = "n",
+    ["PLUS"] = "+",
+    ["MINUS"] = "-",
+    ["MULTIPLY"] = "*",
+    ["DIVIDE"] = "/"
+}
+
+local function improvedGetBindingText( binding )
+    if not binding then return "" end
+
+    for k, v in pairs( bindingSubs ) do
+        binding = binding:gsub( k, v )
+    end
+
+    return binding
+end
+
+
+local function StoreKeybindInfo( key, aType, id )
+
+    if not key then return end
+
+    local ability
+
+    if aType == "spell" then
+        ability = class.abilities[ id ] and class.abilities[ id ].key
+
+    elseif aType == "macro" then
+        local _, _, sID = GetMacroSpell( id )
+
+        ability = sID and class.abilities[ sID ] and class.abilities[ sID ].key
+
+    end
+
+    if ability then
+        keys[ ability ] = keys[ ability ] or {}
+        keys[ ability ].binding = improvedGetBindingText( key )
+        keys[ ability ].upper = upper( keys[ ability ].binding )
+        updatedKeys[ ability ] = true
+    end
+end        
+
+
+local function ReadKeybindings()
+
+    for k in pairs( updatedKeys ) do
+        updatedKeys[ k ] = nil
+    end
+
+    for i = 1, 12 do
+        StoreKeybindInfo( GetBindingKey( "ACTIONBUTTON" .. i ), GetActionInfo( i ) )
+    end
+
+    for i = 13, 24 do
+        StoreKeybindInfo( GetBindingKey( "ACTIONBUTTON" .. i - 12 ), GetActionInfo( i ) )
+    end
+
+    for i = 25, 36 do
+        StoreKeybindInfo( GetBindingKey( "MULTIACTIONBAR3BUTTON" .. i - 24 ), GetActionInfo( i ) )
+    end
+
+    for i = 37, 48 do
+        StoreKeybindInfo( GetBindingKey( "MULTIACTIONBAR4BUTTON" .. i - 36 ), GetActionInfo( i ) )
+    end
+
+    for i = 49, 60 do
+        StoreKeybindInfo( GetBindingKey( "MULTIACTIONBAR2BUTTON" .. i - 48 ), GetActionInfo( i ) )
+    end
+
+    for i = 61, 72 do
+        StoreKeybindInfo( GetBindingKey( "MULTIACTIONBAR1BUTTON" .. i - 60 ), GetActionInfo( i ) )
+    end
+
+    for i = 73, 120 do
+        StoreKeybindInfo( GetBindingKey( "ACTIONBUTTON" .. ( i - 60 ) % 12 ), GetActionInfo( i ) )
+    end
+
+    for k in pairs( keys ) do
+        if not updatedKeys[ k ] then keys[ k ] = nil end
+    end
+
+end    
+
+
+RegisterEvent( "UPDATE_BINDINGS", ReadKeybindings )
+RegisterEvent( "PLAYER_ENTERING_WORLD", ReadKeybindings )
+RegisterEvent( "ACTIONBAR_SLOT_CHANGED", ReadKeybindings )
+RegisterEvent( "ACTIONBAR_SHOWGRID", ReadKeybindings )
+
+
+function Hekili:GetBindingForAction( key, caps )
+    return ( key and keys[ key ] ) and ( caps and keys[ key ].upper or keys[ key ].binding ) or ""
+end

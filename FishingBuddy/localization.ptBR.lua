@@ -2,8 +2,7 @@
 
 FishingTranslations["ptBR"] = {
 	ABOUT_TAB = "Sobre", -- Needs review
-	ADDFISHIEMSG = "Adicionando %s para a localiza\195\167\195\163o %s.",
-	ADDSCHOOLMSG = "Adicionando '%s' para a localiza\195\167\195\163o %s.",
+	ADDFISHINFOMSG = "Adicionando '%s' para a localiza\195\167\195\163o %s.",
 	ALLZOMGPETS = "Incluir todos os mascotes", -- Needs review
 	BINDING_NAME_FISHINGBUDDY_GOFISHING = "Vista-se e v\195\161 pescar",
 	BINDING_NAME_FISHINGBUDDY_SWITCH = "Mudar Equipamento de Pesca",

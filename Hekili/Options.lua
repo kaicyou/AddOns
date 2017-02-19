@@ -22,7 +22,7 @@ function Hekili:GetDefaults()
   local defaults = {
     profile = {
       Version = 7,
-      Release = 20161003,
+      Release = 20170100,
       Legion = true,
       Enabled = true,
       Locked = false,
@@ -36,9 +36,10 @@ function Hekili:GetDefaults()
       Clash = 0,
       ['Audit Targets'] = 6,
       ['Count Nameplate Targets'] = true,
-      ['Nameplate Detection Range'] = 5,
+      ['Nameplate Detection Range'] = 8,
       ['Count Targets by Damage'] = true,
       ['Updates Per Second'] = 20,
+      ['Recommendation Window'] = 0.1,
 
       ['Notification Enabled'] = true,
       ['Notification Font'] = 'Arial Narrow',
@@ -138,6 +139,8 @@ ns.newDisplay = function( name )
     Spacing = 5,
     Zoom = 0.0,
     Overlay = false,
+    ['Show Keybindings'] = true,
+    ['Keybinding Style'] = 1,
     ['Range Checking'] = 'ability',
 
     Queues = {}
@@ -671,12 +674,11 @@ ns.newDisplayOption = function( key )
               return { a = 'Left', b = 'Right', c = 'Center' }
             end
           },
-          Overlay = {
-            type = "toggle",
-            name = "Show Blizzard Overlay",
-            desc = "If checked, the primary icon will glow if the ability has an active overlay (i.e., Stormbringer for Stormstrike or Hot Hand for Lava Lash).",
+          ['Blank I&L Space'] = {
+            type = 'description',
+            name = ' ',
             order = 08,
-
+            width = 'single',
           },
           ['Icons Shown'] = {
             type = 'range',
@@ -753,6 +755,33 @@ ns.newDisplayOption = function( key )
             max = 100,
             order = 33,
             step = 1,
+          },
+          ['Show Keybindings'] = {
+            type = 'toggle',
+            name = "Show Keybindings",
+            desc = "If checked, the addon will show keybindings for recommended actions.",
+            order = 34,
+          },
+          ['Keybinding Style'] = {
+            type = "select",
+            name = "Keybinding Style",
+            values = {
+                "Lowercase",
+                "Uppercase"
+            },
+            get = function( info )
+              local dispKey, display = info[2], tonumber( info[2]:match("^D(%d+)") )
+
+              return Hekili.DB.profile.displays[ display ]['Keybinding Style'] or 1
+            end,
+            order = 35,
+          },
+          Overlay = {
+            type = "toggle",
+            name = "Show Overlay Glow",
+            desc = "If checked, the primary icon will glow if the ability has an active overlay (i.e., Stormbringer for Stormstrike or Hot Hand for Lava Lash).",
+            order = 39,
+
           },
           captionHeader = {
             type = 'header',
@@ -1026,7 +1055,7 @@ ns.newActionList = function( name )
   Hekili.DB.profile.actionLists[index] = {
     Enabled = false,
     Name = name,
-    Release = Hekili.DB.profile.Release,
+    Release = tonumber( date("%Y%m%d.1") ),
     Specialization = ns.getSpecializationID() or 0,
     Script = '',
     Actions = {}
@@ -1363,6 +1392,7 @@ ns.newAction = function( aList, name )
   return ( 'A' .. index ), index
 
 end
+
 
 local function getActionKeys( info )
     return info[2], info[3]
@@ -2008,6 +2038,9 @@ ns.SimulationCraftImporter = function ()
     get = 'sciGet',
     set = 'sciSet',
     order = 75,
+    hidden = function ()
+        return Hekili.AllowSimCImports ~= true
+    end,
     args = {
       displayGroup = {
         type = 'group',
@@ -2262,9 +2295,7 @@ ns.SimulationCraftImporter = function ()
                     action.Indicator = "none"
                   end ]]
 
-
-
-                  if class.abilities[ entry.Ability ].toggle then
+                  if ability.toggle then
                     if entry.Script and entry.Script:len() > 0 then
                       action.Script = 'toggle.' .. ability.toggle .. '&(' .. entry.Script .. ')'
                     else
@@ -2560,6 +2591,15 @@ function Hekili:GetOptions()
                 step = 1,
                 width = 'full',
                 order = 1
+              },
+              ['Recommendation Window'] = {
+                type = 'range',
+                name = "Recommendation Window",
+                min = 0,
+                max = 0.25,
+                step = 0.01,
+                width = 'full',
+                order = 2
               }
             }
           },
@@ -3992,14 +4032,18 @@ function Hekili:SetOption( info, input, ... )
 end
 
 
+
 function Hekili:CmdLine( input )
-  if not input or input:trim() == "" or input:trim() == "makedefaults" or input:trim() == 'force' then
+  if not input or input:trim() == "" or input:trim() == "makedefaults" or input:trim() == 'force' or input:trim() == 'import' then
     if InCombatLockdown() and input:trim() ~= 'force' then
-      Hekili:Print( "This addon cannot be configured while in combat." )
-      return
+        Hekili:Print( "This addon cannot be configured while in combat." )
+        return
     end
     if input:trim() == 'makedefaults' then
-      Hekili.MakeDefaults = true
+        Hekili.MakeDefaults = true
+    end
+    if input:trim() == 'import' then
+        Hekili.AllowSimCImports = true
     end
     ns.StartConfiguration()
 

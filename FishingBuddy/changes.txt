@@ -1,4 +1,18 @@
-﻿Version 1.7.12c
+﻿Version 1.7.12g
+- Begin the great rewrite with a lot of code cleanup
+- Prepare to group options with their related tabs
+
+Version 1.7.12f
+- Don't use the Tuskaar spear while we have Surface Tension on (i.e. using the Legendary)
+
+Version 1.7.12e
+- Turn the special bobbers and such back on (typo during code cleanup)
+
+Version 1.7.12d
+- More library updates
+- Force LibBabble-SubZone to a different (larger) version so that our default updates win
+
+Version 1.7.12c
 - Turn on the default values for missing translations in LibBabble-Subzone
 
 Version 1.7.12b

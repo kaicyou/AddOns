@@ -11,7 +11,7 @@ pslocale()
 end
 
 
-	psversion=7.102
+	psversion=7.103
 
 
 	psverstiptext="alpha"

@@ -33,6 +33,11 @@ local function ManageFrame(target, tabname, tooltip, toggle)
 end
 FishingBuddy.ManageFrame = ManageFrame;
 
+local function ManageFrameGroup(icon, target, tabname, tooltip, toggle)
+	FishingBuddyFrame:ManageFrame(target, tabname, tooltip, toggle);
+end
+FishingBuddy.ManageFrameGroup = ManageFrameGroup;
+
 function ToggleFishingBuddyFrame(target)
 	FishingBuddyFrame:ToggleTab(target);
 end

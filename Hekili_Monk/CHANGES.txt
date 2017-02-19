@@ -1,3 +1,33 @@
+commit 76e9aababb62483c82af9851106374b204fe17f0
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Feb 12 22:51:07 2017 -0500
+
+    Add Energizing Elixir energy threshold.
+    
+    + Creates 'ee_maximum' value which is the maximum energy one can have
+    and use EE.
+
+commit 99dd0aeadaf3226ac111e10f6dc2949193ea73b3
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Feb 12 22:04:25 2017 -0500
+
+    SCK, Healing Spheres:  Update counts when needed.
+
+commit baedf286e86365b9578db5452c4ff7500f860918
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Feb 7 16:13:45 2017 -0500
+
+    Register Spear Hand Strike as an interrupt.
+
+commit 4f19918b2ff7e9a31aa78d43506b7342602158ca
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Feb 7 09:52:36 2017 -0500
+
+    Tweaks
+    
+    + Keg Smash has a velocity now.
+    + Tiger Palm padding is improved.
+
 commit 8bbc322a2243236002a6ef594829459bf466da2d
 Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Thu Jan 26 21:22:53 2017 -0500

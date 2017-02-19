@@ -115,7 +115,8 @@ credits[FBConstants.ROLE_HELP_BUGS] = {
 	["Bodar"] = { "Better Nat's quest handling", "Watch Bobber fix", },
 	["miss_kallistra"] = { "Pet handling fixes for Legion", },
 	["Baconslicer"] = { "Lure managment bug"},
-	["Gulduka"] = { "German language testing for LibBabble-SubZone" }
+	["Gulduka"] = { "German language testing for LibBabble-SubZone" },
+	["Mastigophoran"] = { "Help with Truthseeker/Oathbreaker issue" }
 };
 
 -- Ideas and suggestions
@@ -149,6 +150,7 @@ credits[FBConstants.ROLE_HELP_SUGGESTIONS] = {
 	["Ravynne"] = { "ZOMG *all* the pets!", },
 	["El's Extreme Anglin'"] = { "Subzone fishing levels", "Fishing skill up table" },
 	["brykrys"] = { "Corpse Worm" },
+	["Ross"] = { "Improved action button" },
 };
 
 credits[FBConstants.ROLE_ADDON_AUTHORS] = {

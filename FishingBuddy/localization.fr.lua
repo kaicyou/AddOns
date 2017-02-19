@@ -6,8 +6,7 @@
 
 FishingTranslations["frFR"] = {
 	ABOUT_TAB = "A propos",
-	ADDFISHIEMSG = "Ajout de %s au lieu %s.",
-	ADDSCHOOLMSG = "Ajout de '%s' au lieu %s.",
+	ADDFISHINFOMSG = "Ajout de '%s' au lieu %s.",
 	ALLZOMGPETS = "Inclure toutes les mascottes",
 	BINDING_NAME_FISHINGBUDDY_GOFISHING = "S'habiller et aller p\195\170cher",
 	BINDING_NAME_FISHINGBUDDY_SWITCH = "Porter l'\195\169quipement de p\195\170che",

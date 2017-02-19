@@ -137,7 +137,7 @@ local function CheckFishingPool(fishid, poolhint)
 		end
 		if ( AddFishingSchool(info.kind, fishid) and FishingBuddy.GetSettingBool("ShowNewSchools") ) then
 			local zone,_ = FL:GetZoneInfo();
-			FishingBuddy.Print(FBConstants.ADDSCHOOLMSG, text, zone);
+			FishingBuddy.Print(FBConstants.ADDFISHINFOMSG, text, zone);
 		end
 	end
 end

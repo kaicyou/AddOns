@@ -1015,7 +1015,7 @@ local function AddFishie(color, id, name, zone, subzone, texture, quantity, qual
 	if ( not fh[idx][id] ) then
 		fh[idx][id] = quantity;
 		if ( GSB("ShowNewFishies") ) then
-			FishingBuddy.Print(FBConstants.ADDFISHIEMSG, name or UNKNOWN, subzone or zone);
+			FishingBuddy.Print(FBConstants.ADDFISHINFOMSG, name or UNKNOWN, subzone or zone);
 		end
 	else
 		fh[idx][id] = fh[idx][id] + quantity;

@@ -7,7 +7,7 @@ local Hekili = _G[ addon ]
 local class = ns.class
 local formatKey = ns.formatKey
 local getSpecializationID = ns.getSpecializationID
-local round = ns.round
+local round, roundUp = ns.round, ns.roundUp
 local safeMin, safeMax = ns.safeMin, ns.safeMax
 local tableCopy = ns.tableCopy
 
@@ -21,10 +21,15 @@ state.iteration = 0
 
 state.now = 0
 state.offset = 0
+state.delay = 0
+state.latency = 0
+
+state.arena = false
+state.bg = false
+
 state.mainhand_speed = 0
 state.offhand_speed = 0
 
-state.delay = 0
 state.min_targets = 0
 state.max_targets = 0
 
@@ -680,9 +685,10 @@ end
 state.setDistance = setDistance
 
 
-local function gain( amount, resource )
+local function gain( amount, resource, overcap )
 
-  state[ resource ].actual = min( state[ resource ].max, state[ resource ].actual + amount )
+    if overcap then state[ resource ].actual = state[ resource ].actual + amount
+    else state[ resource ].actual = min( state[ resource ].max, state[ resource ].actual + amount ) end
 
 end
 state.gain = gain
@@ -1191,7 +1197,7 @@ local mt_pets = {
 
     end
 
-    error("UNK: " .. k)
+    return
 
   end, __newindex = function(t, k, v)
     if type(v) == 'table' then
@@ -1457,7 +1463,7 @@ local mt_default_cooldown = {
             t.true_expires = start and ( start + true_duration ) or 0
 
             if class.abilities[ t.key ].charges then
-                local charges, maxCharges, start, duration = GetSpellCharges( t.name )
+                local charges, maxCharges, start, duration = GetSpellCharges( t.id )
 
                 if class.abilities[ t.key ].toggle and not state.toggle[ class.abilities[ t.key ].toggle ] then
                     charges = 1
@@ -1490,10 +1496,22 @@ local mt_default_cooldown = {
         elseif k == 'charges_max' then
             return class.abilities[ t.key ].charges
 
-        elseif k == 'remains' then           
+        elseif k == 'remains' then
+
+            if t.key == 'global_cooldown' then
+                return max( 0, t.expires - state.query_time )
+            end
+
+            if not ns.isKnown( t.key ) then return 0 end
+
             local bonus_cdr = 0
-            bonus_cdr = t.key ~= 'global_cooldown' and ns.callHook( "cooldown_recovery", bonus_cdr ) or bonus_cdr
-            return ns.isKnown( t.key ) and max( 0, t.expires - state.query_time - bonus_cdr ) or 0
+            bonus_cdr = ns.callHook( "cooldown_recovery", bonus_cdr ) or bonus_cdr
+
+            --[[ if not class.interrupts[ t.key ] then
+                return max( 0, t.expires - state.query_time - bonus_cdr )
+            end ]]
+
+            return max( 0, t.expires - state.query_time - bonus_cdr )
 
         elseif k == 'true_remains' then
             return max( 0, t.true_expires - state.query_time )
@@ -1586,7 +1604,7 @@ local mt_cooldowns = {
     end
 
     if class.abilities[ k ].charges then
-      local charges, maxCharges, start, duration = GetSpellCharges( t[k].name )
+      local charges, maxCharges, start, duration = GetSpellCharges( t[k].id )
       t[ k ].charge = charge or 1
       if charges then
         if start + duration < state.query_time then
@@ -1687,7 +1705,7 @@ end
 
 local mt_resource = {
   __index = function(t, k)
-    local result = resource_meta_functions[ name ] and resource_meta_functions[ name ]( t ) or 'nofunc'
+    local result = resource_meta_functions[ k ] and resource_meta_functions[ k ]( t ) or 'nofunc'
 
     if result ~= 'nofunc' then
         return result
@@ -1710,8 +1728,18 @@ local mt_resource = {
       return t.max -- need to accommodate buffs that increase mana, etc.
 
     elseif k == 'time_to_max' then
-      if not t.regen or t.regen <= 0 then return 0 end
-      return ( t.max - t.current ) / t.regen
+      if not t.regen or t.regen <= 0 or t.current == t.max then return 0 end
+
+      if not t.tick_rate or not t.last_tick then
+        return roundUp( t.deficit / t.regen, 3 )
+      end
+
+      local time_to_next_tick = t.tick_rate - ( ( state.query_time - t.last_tick ) % t.tick_rate )
+      local ticks_to_ready = floor( ( t.max - t.current ) / t.regen )
+      local tick_time = time_to_next_tick + ( ticks_to_ready * t.tick_rate )
+
+      return roundUp( max( tick_time, t.deficit / t.regen ), 3 )
+      -- return roundUp( ( t.max - t.current ) / t.regen, 2 )
 
     elseif k == 'regen' then
       -- Not a regenerating resource.
@@ -1850,9 +1878,6 @@ local mt_default_aura = {
 
     elseif k == 'cooldown_remains' then
       return state.cooldown[ t.key ].remains
-
-    elseif k == 'duration' then
-      return class.auras[ t.key ].duration
 
     elseif k == 'max_stack' then
       return class.auras[ t.key ].max_stack or 1
@@ -2181,6 +2206,8 @@ local mt_set_bonuses = {
   __index = function(t, k)
     if type(k) == 'number' then return 0 end
 
+    if not class.artifacts[ k ] and ( state.bg or state.arena ) then return 0 end
+
     local set, pieces, class = k:match("^(.-)_"), tonumber( k:match("_(%d+)pc") ), k:match("pc(.-)$")
 
     if not pieces or not set then
@@ -2427,7 +2454,7 @@ local mt_default_action = {
       return 0
 
     elseif k == 'cast_regen' then
-      return max( t.gcd, t.cast_time ) * state[ class.primaryResource ].regen
+      return floor( max( t.gcd, t.cast_time ) * state[ class.primaryResource ].regen )
 
     else
         return class.abilities[ t.action ][ k ] or 0
@@ -2519,6 +2546,11 @@ function state.reset( dispID )
   state.cast_start = 0
   state.false_start = 0
 
+  local _, zone = GetInstanceInfo()
+
+  state.bg = zone == 'pvp'
+  state.arena = zone == 'arena'
+
   state.min_targets = 0
   state.max_targets = 0
 
@@ -2527,6 +2559,7 @@ function state.reset( dispID )
   state.true_active_enemies = nil
   state.true_my_enemies = nil
 
+  state.latency = select( 4, GetNetStats() ) / 1000
 
   local spells_in_flight = ns.spells_in_flight
 
@@ -2663,6 +2696,8 @@ function state.reset( dispID )
     state[ k ].actual = UnitPower( 'player', ns.getResourceID( k ) )
     state[ k ].max = UnitPowerMax( 'player', ns.getResourceID( k ) )
     state[ k ].resource = k
+    state[ k ].last_tick = rawget( state[ k ], 'last_tick' ) or 0
+    state[ k ].tick_rate = rawget( state[ k ], 'tick_rate' ) or 0.1
 
     if k == class.primaryResource then
       local active, inactive = GetPowerRegen()
@@ -2733,7 +2768,7 @@ function state.reset( dispID )
 
   delay = ns.callHook( "reset_postcast", delay )
 
-  if delay > 0 then -- and delay ~= state.cooldown.global_cooldown.remains 
+  if delay > 0 then
     state.advance( delay )
   end
 
@@ -2745,6 +2780,8 @@ function state.advance( time )
   if time <= 0 then
     return
   end
+
+  roundUp( time, 2 )
   
   time = ns.callHook( 'advance', time )
 
@@ -2765,7 +2802,8 @@ function state.advance( time )
 
         if proj.time > state.query_time and proj.time < state.query_time + time then
             state.offset = proj.time - state.query_time
-            ns.runHandler( proj.spell )
+            -- print( proj.spell, proj.time, state.query_time )
+            ns.runHandler( proj.spell, true )
         else
             break
         end
@@ -2801,13 +2839,26 @@ function state.advance( time )
     end
   end
 
-  for k, _ in pairs( class.resources ) do
+  for k in pairs( class.resources ) do
     local resource = state[ k ]
 
     local override = ns.callHook( 'advance_resource_regen', false, k, time )
 
     if not override and resource.regen and resource.regen ~= 0 then
-      resource.actual = min( resource.max, resource.actual + ( resource.regen * time ) )
+        if resource.last_tick and resource.tick_rate then 
+            -- We're using a ticking resource.
+            -- Only add what is actually generated in the interval.
+            local time_to_next_tick = resource.tick_rate - ( ( state.now + state.offset - resource.last_tick ) % resource.tick_rate )
+
+            if time >= time_to_next_tick then
+                local ticks_in_time = 1 + floor( ( time - time_to_next_tick ) / resource.tick_rate )
+                local gain_per_tick = resource.regen * resource.tick_rate
+
+                resource.actual = min( resource.max, resource.actual + ( gain_per_tick * ticks_in_time ) )
+            end
+        else
+            resource.actual = min( resource.max, resource.actual + floor( resource.regen * time ) )
+        end
     end
   end
 
@@ -2851,7 +2902,7 @@ ns.spendResources = function( ability )
             spend = action.spend
             resource = action.spend_type or class.primaryResource
         elseif type( action.spend ) == 'function' then
-            spend, resource = action.spend()
+            spend, resource = action.spend( true )
         end
 
         if spend > 0 and spend < 1 then
@@ -2942,6 +2993,10 @@ ns.hasRequiredResources = function( ability )
       -- Thought: We'll already delay CD based on time to get energy/focus.
       -- So let's leave it alone.
       return true
+    
+    elseif resource == 'holy_power' and state.equipped.liadrins_fury_unleashed and ( state.buff.crusade.up or state.buff.avenging_wrath.up ) then
+        -- Holy Power is a time-regen resource during AW/Crusade, if you have the legendary ring.
+        return true
     end
 
     if spend > 0 and spend < 1 then
@@ -2957,6 +3012,8 @@ ns.hasRequiredResources = function( ability )
 
 end
 
+
+local power_tick_rate = 0.115
 
 -- Needs to be expanded to handle energy regen before Rogue, Monk, Druid will work.
 function ns.timeToReady( action )
@@ -2984,9 +3041,30 @@ function ns.timeToReady( action )
 
         if type( ready ) ~= 'function' then
             if spend > state[ resource ].current then
+                local tick_ready = 0
+
                 if resource == 'focus' or resource == 'energy' then
-                    delay = max( delay, 0.1 + ( ( spend - state[ resource ].current ) / state[ resource ].regen ) )
+                    local time_to_next_tick = state[ resource ].tick_rate - ( ( state.query_time - state[ resource ].last_tick ) % state[ resource ].tick_rate )
+                    local ticks_to_ready = ceil( ( spend - state[ resource ].current ) / state[ resource ].regen ) - 1
+
+                    tick_ready = ticks_to_ready * state[ resource ].tick_rate
+                    -- delay = max( delay, state[ resource ].tick_rate + ( ticks_to_ready * state[ resource ].tick_rate ) )
+                
+                elseif resource == 'holy_power' and state.equipped.liadrins_fury_unleashed and ( state.buff.crusade.up or state.buff.avenging_wrath.up ) then
+                    local buff_remaining = state.buff.crusade.up and state.buff.crusade.remains or state.buff.avenging_wrath.remains
+                    local deficit = spend - state.holy_power.current
+                    
+                    local ticks_remain = math.floor( buff_remaining / 4 )
+                    
+                    if ticks_remain < deficit then
+                        -- We won't generate enough holy_power from Liadrin's.
+                        tick_ready = 999
+                    else
+                        tick_ready = buff_remaining - ( deficit * 4 )
+                    end
                 end
+
+                delay = roundUp( max( delay, tick_ready, ( spend - state[ resource ].current ) / state[ resource ].regen ), 3 )
             end
         else
             delay = max( delay, ready() )
@@ -3028,8 +3106,7 @@ end
 
 ns.clashOffset = function( action )
 
-  local clash = Hekili.DB.profile.Clash or 0
-
+  local clash = Hekili.DB.profile.Clash or Hekili.DB.profile['Recommendation Window'] or 0.1
   return ns.callHook( "clash", clash, action )
 
 end

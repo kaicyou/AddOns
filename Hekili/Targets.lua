@@ -7,7 +7,6 @@ local Hekili = _G[ addon ]
 
 local class = ns.class
 local state = ns.state
-local unitDB = state.unitDB
 
 local targetCount = 0
 local targets = {}
@@ -21,71 +20,8 @@ local nameplates = {}
 local npCount = 0
 local addMissingTargets = true
 
+local formatKey = ns.formatKey
 local RegisterEvent = ns.RegisterEvent
-
--- New Actor/Target System for 7.1.5
--- Keep actual live information stored at all times.
--- This lets 'cycle_targets' and such things work (mostly), as long as enemy nameplates are active.
-
-
---[[ RegisterEvent( "UNIT_AURA", )
-
-
-RegisterEvent( "COMBAT_LOG_EVENT_UNFILTERED", function( event, _, subtype, _, sourceGUID, sourceName, _, _, destGUID, destName, destFlags, _, spellID, spellName, _, amount, interrupt, a, b, c, d, offhand, multistrike, ... )
-
-    if subtype == 'UNIT_DIED' or subtype == 'UNIT_DESTROYED' and unitDB.IDs[ destGUID ] then
-        if orphans[ destGUID ] then
-            orphans[ destGUID ] = nil
-            num_orphans = num_orphans - 1
-        end
-
-        local debuffs, health = unitDB.debuff[ destGUID ], unitDB.health[ destGUID ]
-
-        for token in pairs( debuffs ) do
-            debuffs[ token ] = nil
-        end
-
-        for token in pairs( health ) do
-            health[ token ] = nil
-        end
-
-        debuffs = nil
-        health = nil
-        
-        unitDB.debuff[ destGUID ] = nil
-        unitDB.health[ destGUID ] = nil
-
-        local unit = unitDB.IDs[ destGUID ]
-
-        if unitDB.plates[ unit ] == destGUID then unitDB.plates[ unit ] = nil end
-        unitDB.IDs[ destGUID ] = nil
-    end
-
-end )
-
-
-ns.RegisterEvent( "NAME_PLATE_UNIT_ADDED", function( unit )
-
-    local unitID = UnitGUID( unit )
-
-    if unitID then
-        -- If they're an enemy, see if we already know them.
-        if actorMap[ unitID ] then
-            refreshActor( unitID )
-        else
-            actors[ unitID ] = newActor( unit, nameplate )
-        end        
-    end
-
-end )
-
-
-ns.RegisterEvent( "NAME_PLATE_UNIT_REMOVED", function( unit )
-
-    local unitID = UnitGUID( unit )
-    if unitID then actors[ unitID ] = nil end
-
-end ) ]]
 
 
 -- New Nameplate Proximity System
@@ -280,6 +216,38 @@ function ns.healingInLast( t )
 end
 
 
+local TTD = ns.TTD
+
+-- Borrowed TTD linear regression model from 'Nemo' by soulwhip (with permission).
+ns.initTTD = function( unit )
+
+  if not unit then return end
+
+  local GUID = UnitGUID( unit )
+
+  TTD[ GUID ] = TTD[ GUID ] or {}
+  TTD[ GUID ].n = 1
+  TTD[ GUID ].timeSum = GetTime()
+  TTD[ GUID ].healthSum = UnitHealth( unit ) or 0
+  TTD[ GUID ].timeMean = TTD[ GUID ].timeSum * TTD[ GUID ].timeSum
+  TTD[ GUID ].healthMean = TTD[ GUID ].timeSum * TTD[ GUID ].healthSum
+  TTD[ GUID ].name = UnitName( unit )
+  TTD[ GUID ].sec = 300
+
+end
+
+
+ns.getTTD = function( unit )
+
+  local GUID = UnitGUID( unit )
+
+  if not TTD[ GUID ] then return 300 end
+
+  return TTD[ GUID ].sec or 300
+
+end
+
+
 -- Auditor should clean things up for us.
 ns.Audit = function ()
 
@@ -324,33 +292,144 @@ ns.Audit = function ()
 end
 
 
-local TTD = ns.TTD
 
--- Borrowed TTD linear regression model from 'Nemo' by soulwhip (with permission).
-ns.initTTD = function( unit )
+-- More New Target Stuff.
+-- UGH.
 
-  if not unit then return end
+--[[
 
-  local GUID = UnitGUID( unit )
+local TargetDB = {
+    buffDB = {},
+    buff = {}
+}
 
-  TTD[ GUID ] = TTD[ GUID ] or {}
-  TTD[ GUID ].n = 1
-  TTD[ GUID ].timeSum = GetTime()
-  TTD[ GUID ].healthSum = UnitHealth( unit ) or 0
-  TTD[ GUID ].timeMean = TTD[ GUID ].timeSum * TTD[ GUID ].timeSum
-  TTD[ GUID ].healthMean = TTD[ GUID ].timeSum * TTD[ GUID ].healthSum
-  TTD[ GUID ].name = UnitName( unit )
-  TTD[ GUID ].sec = 300
+
+local mt_default_value = {
+    __index = function( t, k )
+        return t.default
+    end
+}
+
+
+local function setDefault( value )
+    return setmetatable( { default = value }, mt_default_value )
+end
+
+
+
+local mt_buff_q = {
+    __index = function( t, k )
+        -- Calculations.
+        local e, id = state.enemy, t.id
+    end
+}
+
+
+local mt_buff_attr = {
+    __index = function( t, k )
+        t[ k ] = t.db[ k ]
+        return t[ k ]
+    end
+}
+
+
+local function addQueryAttribute( spellID, attr )
+    return setmetatable( {
+        id = spellID,
+        attr = attr,
+        db = TargetDB.buffDB[ spellID ][ attr ]
+    }, mt_buff_attr )
+end
+
+
+local function newBuff( spellID, key )
+
+    -- Don't overwrite an existing DB.
+    if TargetDB.buffDB[ spellID ] then return end
+
+    local db = {
+        id = spellID,
+        key = key or ( class.auras[ spellID ] and class.auras[ spellID ].key ) or formatKey( GetSpellInfo( spellID ) ),
+
+        count = setDefault( 0 ),
+        duration = setDefault( 0 ),
+        expires = setDefault( 0 ),
+        caster = setDefault( 'nobody' ),
+        isStealable = setDefault( false ),
+        canApplyAura = setDefault( false ),
+        isBossDebuff = setDefault( false ),
+        timeMod = setDefault( 1 ),
+        v1 = setDefault( 0 ),
+        v2 = setDefault( 0 ),
+        v3 = setDefault( 0 )
+    }
+
+    TargetDB.buffDB[ spellID ] = db
+
+    -- Set up the buff query item.
+    local query = {
+        id = spellID,
+        key = key or ( class.auras[ spellID ] and class.auras[ spellID ].key )  or formatKey( GetSpellInfo( spellID ) ),
+
+        count           = addQueryAttribute( spellID, 'count' ),
+        duration        = addQueryAttribute( spellID, 'duration' ),
+        expires         = addQueryAttribute( spellID, 'expires' ),
+        caster          = addQueryAttribute( spellID, 'caster' ),
+        isStealable     = addQueryAttribute( spellID, 'isStealable' ),
+        canApplyAura    = addQueryAttribute( spellID, 'canApplyAura' ),
+        isBossDebuff    = addQueryAttribute( spellID, 'isBossDebuff' ),
+        timeMod         = addQueryAttribute( spellID, 'timeMod' ),
+        v1              = addQueryAttribute( spellID, 'v1' ),
+        v2              = addQueryAttribute( spellID, 'v2' ),
+        v3              = addQueryAttribute( spellID, 'v3' )
+    }
+
+    TargetDB.buffDB[ spellID ] = db
+    TargetDB.buff[ spellID ] = query
 
 end
 
 
-ns.getTTD = function( unit )
+RegisterEvent( "UNIT_AURA", function( event, unit )
+    if unit == "player" then
+        local guid = UnitGUID( unit )
 
-  local GUID = UnitGUID( unit )
+        for _, aura in pairs( TargetDB.buffDB ) do
+            aura.count[ guid ] = nil
+            aura.duration[ guid ] = nil
+            aura.expires[ guid ] = nil
+            aura.isStealable[ guid ] = nil
+            aura.isBossDebuff[ guid ] = nil
+            aura.timeMod[ guid ] = nil
+            aura.v1[ guid ] = nil
+            aura.v2[ guid ] = nil
+            aura.v3[ guid ] = nil
+        end
 
-  if not TTD[ GUID ] then return 300 end
+        local i = 1
+        while( true ) do
+            local name, _, _, count, _, duration, expires, caster, isStealable, _, sID, canApplyAura, isBossDebuff, _, _, timeMod, v1, v2, v3 = UnitBuff( 'player', i )
 
-  return TTD[ GUID ].sec or 300
+            if not name then break end
 
-end
+            if not TargetDB.buffDB[ sID ] then newBuff( sID ) end
+            local aura = TargetDB.buffDB[ sID ]
+
+            aura.count[ guid ] = count > 0 and count or 1
+            aura.duration[ guid ] = duration
+            aura.expires[ guid ] = expires
+            aura.caster[ guid ] = caster
+            aura.isStealable[ guid ] = isStealable
+            aura.canApplyAura[ guid ] = canApplyAura
+            aura.isBossDebuff[ guid ] = isBossDebuff
+            aura.timeMod[ guid ] = timeMod
+            aura.v1[ guid ] = v1
+            aura.v2[ guid ] = v2
+            aura.v3[ guid ] = v3
+
+            i = i + 1
+        end
+    end
+end )
+
+Hekili.TDB = TargetDB ]]

@@ -8,6 +8,8 @@ local class = ns.class
 local scripts = ns.scripts
 local state = ns.state
 
+local ceil = math.ceil
+local roundUp = ns.roundUp
 local safeMax = ns.safeMax
 
 local trim = string.trim
@@ -262,7 +264,7 @@ local convertScript = function( node, hasModifiers )
 end
 
 
-ns.checkScript = function( cat, key, action, override, delay )
+ns.checkScript = function( cat, key, action, recheck )
 
     if action then state.this_action = action end
 
@@ -278,31 +280,36 @@ ns.checkScript = function( cat, key, action, override, delay )
         return true
 
     else
-        delay = delay or 0
-
-        local offset = state.offset
-        state.offset = offset + delay
-
         local success, value = pcall( tblScript.Conditions )
 
-        state.offset = offset
-
         if success then
+
             return value
 
-            --[[ 0.2s recheck.
-            state.offset = state.offset + 0.2
+            -- This is presently too CPU expensive to use.
 
-            local recheck, revalue = pcall( tblScript.Conditions )
+            --[[ if not recheck then recheck = Hekili.DB.profile[ 'Recommendation Window' ] end
+            
+            if not recheck or recheck == 0 then return value end
 
-            if recheck and value == revalue then
-                state.offset = offset
-                return value
-            end ]]
+            local checks = ceil( recheck * Hekili.DB.profile[ 'Updates Per Second' ] )
+            local orig = state.delay
+
+            for i = 1, checks do
+                state.delay = orig + ( recheck * i / checks )
+
+                local resuccess, revalue = pcall( tblScript.Conditions )
+
+                if not resuccess or not revalue then
+                    state.delay = orig
+                    return false
+                end
+            end
+
+            state.delay = orig
+            return true ]]
 
         end
-
-        state.offset = offset
 
     end
 
@@ -320,7 +327,7 @@ function ns.checkTimeScript( entry, delay, spend, spend_type )
 
     local out = script.Ready( delay, spend, spend_type )
 
-    return out
+    return out and roundUp( out, 3 ) or 0
 
 end
 

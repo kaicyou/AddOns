@@ -207,7 +207,7 @@ end
 tinsert(copyfuncs, "ManageFrame");
 
 -- take up all of the "empty" space in a frame we created
-local function Embed(self, target)
+local function Expand(self, target)
 	local tf, _ = self:GetFrameInfo(target);
 	
 	tf:SetParent(self);
@@ -307,7 +307,7 @@ local function CreateEmbeddedScrollFrame(self)
 		end
 	end);
 	
-	self:Embed(scrollFrame);
+	self:Expand(scrollFrame);
 
 	scrollChild:SetWidth(scrollFrame:GetWidth());
 	
@@ -324,7 +324,7 @@ function FrameLib:CreateManagedFrame(framename, tabname, tooltip, toggle)
 	
 	-- client helper to take up all of the "space"
 	f.GetFrameInfo = self.GetFrameInfo;
-	f.Embed = Embed;
+	f.Expand = Expand;
 	f.CreateEmbeddedScrollFrame = CreateEmbeddedScrollFrame;
 	
 	return f;

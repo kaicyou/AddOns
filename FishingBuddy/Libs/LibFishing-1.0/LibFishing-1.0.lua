@@ -30,12 +30,30 @@ local _
 
 local Crayon = LibStub("LibCrayon-3.0");
 local LT = LibStub("LibTourist-3.0");
+
+-- Some code suggested by the author of LibBabble-SubZone so I don't have
+-- to add the overrides myself...
+function FishLib_GetLocaleLibBabble(typ)
+	local rettab = {}
+	local tab = LibStub(typ):GetBaseLookupTable()
+	local loctab = LibStub(typ):GetUnstrictLookupTable()
+	for k,v in pairs(loctab) do
+		rettab[k] = v;
+	end
+	for k,v in pairs(tab) do
+		if not rettab[k] then
+			rettab[k] = v;
+		end
+	end
+	return rettab;
+end
+
 -- These are now provided by LibTourist
 local BZ = LibStub("LibTourist-3.0"):GetLookupTable()
 local BZR = LibStub("LibTourist-3.0"):GetReverseLookupTable();
 
+local BSZ = FishLib_GetLocaleLibBabble("LibBabble-SubZone-3.0");
 local BSL = LibStub("LibBabble-SubZone-3.0"):GetBaseLookupTable();
-local BSZ = LibStub("LibBabble-SubZone-3.0"):GetLookupTable();
 local BSZR = LibStub("LibBabble-SubZone-3.0"):GetReverseLookupTable();
 
 FishLib.UNKNOWN = "UNKNOWN";
@@ -1125,19 +1143,14 @@ function FishLib:GetCaughtSoFar()
 end
 
 -- Find an action bar for fishing, if there is one
-local FISHINGTEXTURE = "Interface\\Icons\\Trade_Fishing";
+local FISHINGTEXTURE = 136245;
 function FishLib:GetFishingActionBarID(force)
 	if ( force or not self.ActionBarID ) then
 		for slot=1,72 do
-			if ( HasAction(slot) and not IsAttackAction(slot) ) then
-				local t,_,_ = GetActionInfo(slot);
-				if ( t == "spell" ) then
-					local tex = GetActionTexture(slot);
-					if ( tex and tex == FISHINGTEXTURE ) then
-						self.ActionBarID = slot;
-						break;
-					end
-				end
+			local tex = GetActionTexture(slot);
+			if ( tex and tex == FISHINGTEXTURE ) then
+				self.ActionBarID = slot;
+				break;
 			end
 		end
 	end

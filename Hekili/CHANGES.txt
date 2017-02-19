@@ -1,3 +1,327 @@
+commit 1f794d6301ca263fe592c1c2814d24fc3114af74
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Feb 17 17:33:01 2017 -0500
+
+    Stormbringer can stack to 2.
+
+commit f408de897c96d0a92957167bb45958ca2ab6f76b
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Feb 17 17:32:10 2017 -0500
+
+    Revert "LibArtifactData-1.0"
+    
+    This reverts commit 929f6b1a90ae5feaf742fe216a71de709498dea7.
+
+commit 8ac79b849b9ba208c0d2f8c577fcb4009095fa28
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Feb 17 09:13:48 2017 -0500
+
+    Resource Regen Fixes
+    
+    You should probably not gain resources at 10x their regeneration rate.
+
+commit 944cd2db9548c14f56f996e6b47abdcd82477b12
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Feb 17 08:25:04 2017 -0500
+
+    FIX:  Energy Time to Max Calculation
+
+commit eef19670d3833f5783ae5cf7bf68eabb813743f3
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Thu Feb 16 19:44:40 2017 -0500
+
+    Shaman Fixes
+    
+    o More tweaking to Elemental APLs.
+    o Default Elemental AOE display will assume a minimum of 2 targets,
+    rather than 3.
+    o Enhancement APL will use `true_active_enemies` value to determine
+    whether to apply/refresh Crash Lightning buff (so that if you set to
+    single-target mode for a fight like Mythic Botanist, it will still
+    encourage you to activate Crash Lightning for the buff).
+
+commit 929f6b1a90ae5feaf742fe216a71de709498dea7
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Thu Feb 16 19:29:40 2017 -0500
+
+    LibArtifactData-1.0
+    
+    o Going to try trusting LibArtifactData to stop leaving an empty
+    artifact frame open...
+
+commit 7a7300738496cb22565b55a3913be7f607cb89ba
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Thu Feb 16 19:20:42 2017 -0500
+
+    FIXES:  WW Monk, Focus/Energy
+    
+    o Arcane Torrent flagged as offGCD, will not interfere with WW Hit
+    Combo.
+    o Focus/Energy modeling will be ignored if your class module doesn't
+    have focus/energy models.
+    o Go away, new target system, you're not happening yet.
+
+commit 2fe6e7fc50a6808e03cb1bd047a47b1a416ea707
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Feb 12 21:09:10 2017 -0500
+
+    UPDATES, FIXES
+    
+    Shaman:  Fix `maelstrom` in Elemental APLs to use `maelstrom.current`.
+    o Fix cycle_targets indicators in some Elemental APLs.
+    - Retire broken SimC import APLs.
+    
+    Scripts:
+    o Time Scripts will round delays to the thousandth of a second.
+    
+    State:
+    o Fix for resource meta-functions (they were not being used; I don't
+    know that I use them anyway but now they'll work if I do).
+    o Resource `time_to_max` expr will try to factor resource regeneration
+    better (tick-based).
+    o When advancing the clock, resources will be generated if the clock
+    advances to the regeneration point (would previously only regenerate if
+    the clock passes the regen tick).
+    
+    Targets:  Insert initial framework for tracking buffs/health of enemies
+    live, this will be used to allow improved target-cycle recommendations.
+    
+    Utils:
+    + roundUp function now uses math instead of string functions for
+    efficiency's sake.
+
+commit e2cdb4995e1a80b675d2c7196bd67939f1102f47
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Thu Feb 9 10:53:52 2017 -0500
+
+    Improve imported action list version-tagging.
+    
+    Don't ask.
+
+commit ece2be03b2176610328411971b83f9293ec5c6d5
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Feb 7 22:50:07 2017 -0500
+
+    Round TimeScripts up to the hundredth of a second.
+
+commit ccfe3733e430b568bde8690ee95ca752568f676f
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Feb 7 16:10:48 2017 -0500
+
+    Assorted Timing Fixes
+    
+    + Registered more interrupts as interrupts; this enables them to ignore
+    the GCD.  (Other offGCD abilities will wait for the GCD to prevent
+    queue-jumping.)
+    + More resource regen tuning (uses worst case timing for abilities that
+    are waiting for resources).
+
+commit 5d0dc5e7ed9831d53cefc6721dd7dccb39bdac66
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Feb 7 13:25:39 2017 -0500
+
+    Disable Recommendation Window
+    
+    - It's too CPU intensive.
+
+commit c4713816d4658d6c48a15b6d77214e5bb6964e78
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Feb 7 13:21:07 2017 -0500
+
+    Changes
+    
+    - Revert query_time to not factor latency.
+    o more tweaking of resource regeneration
+    + Recommendation Window is getting changed to Clash...
+
+commit fe25e54ea55977fd139acc48e74b077ca4711a7c
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Feb 7 09:51:01 2017 -0500
+
+    More prediction stuff.
+    
+    Classes:  Keep a list of artifacts -- these are immune to the BG/arena
+    disabling of set_bonuses.
+    
+    State:  Abilities can use a custom spend() function for cases where
+    padding resources is needed.
+
+commit 10dc56f5b879cf2a2309b2f06724cfa0969a0fc8
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Feb 6 21:48:36 2017 -0500
+
+    Fix energy prediction some more.
+
+commit 1b88831a23578c0e3d1da8aa7cbf1bbdef7eeac4
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Feb 6 19:22:21 2017 -0500
+
+    More resource prediction updates.
+    
+    + Ticking resources will generate more consistent with their ticks when
+    the clock advances.
+
+commit 76379768baf7586ef5665ddd718e627b64ef10a3
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Feb 6 18:54:57 2017 -0500
+
+    Power forecasting adjustments.
+    
+    + The addon now keeps track of an average tick rate for energy/focus.
+    When predicting how long it will take for an ability to have enough
+    resources, the addon will project to the next tick.
+
+commit 2017c86944c20b0eb6c726ca57b1917877fb2d8d
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Feb 6 18:12:25 2017 -0500
+
+    Remove extraneous /
+
+commit 4d4bc82c1a9daa03b76577ebd704616c2d42ab8b
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Feb 6 18:11:55 2017 -0500
+
+    More resource prediction tuning...
+
+commit b8d13a3488924e8a3d5cde81618cdfc398412bcf
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Feb 6 18:03:58 2017 -0500
+
+    More Fixes
+    
+    1.  Turn off Flicker Protection, getting reports of freezing.
+    2.  Detect BGs/Arenas and turn off set-bonuses in those settings
+    (equipped.X will fail except for Artifacts).
+    3.  Track UNIT_POWER_FREQUENT ticks and round energy gains to the next
+    tick.
+
+commit 97ddad64812f9feab90457cced7fcb2b260d3b13
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Feb 6 11:31:28 2017 -0500
+
+    FIXES
+    
+    CORE
+    + spendResources() comes *before* runHandler() so that the handler
+    doesn't change the amount of resources to spend.  For instance,
+    runHandler could remove Divine Purpose or The Fires of Justice, which
+    would change the cost of Divine Storm or Templar's Verdict.
+    + Tweak the flicker protection a little bit.
+    
+    STATE
+    + Slight cleanup to timeToReady().
+
+commit c6b3fcf5d5a490d38c86735f6f70da5f580a92da
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Feb 6 10:11:43 2017 -0500
+
+    FIX:  Tiny error in flicker-protection code.
+
+commit 2912bff1c292a8e7249be1e1841a64d2ae90a01e
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Feb 6 01:01:55 2017 -0500
+
+    Assorted Fixes, Improvements for Hunter Support
+    
+    Classes:  Block a 'pseudo-start' of combat for actions that are "in-air"
+    and projected to land.
+    + Add Netherwinds to the list of Bloodlust buffs.
+    
+    Core:  Initial implementation of "flicker protection."
+    + Basically, if it sees that the addon's last several recommendations
+    have flickered between the newest actions and something else, it just
+    won't bother updating.  Will be iterating on this.
+    
+    Events:  Spells that have been cast and are projected to land will
+    default to a 0.05 travel time.
+    
+    State:  'query_time' will now incorporate latency into its
+    recommendation.  This will result in the addon making recommendations
+    based on a slightly later game-state.
+    + Holy Power is treated like a regenerating resource when Liadrin's Fury
+    Unleashed is equipped and AW/Crusade is up.  THIS NEEDS TESTING.
+    + Tried to improve ability "timeToReady" calculations for Survival
+    Hunters when using Spitting Cobra.
+
+commit e08f75682d33de3028b13802bc6cb9d9c5a6b9b1
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Feb 1 22:25:59 2017 -0500
+
+    Paladin:  Import updates for Retribution APLs.
+
+commit fa58f4651b5456718e9c386bea65a447dd0e45fc
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Feb 1 18:09:26 2017 -0500
+
+    Elemental:  Recommend Stormkeeper more often in one of the Ele builds.
+
+commit 4111653b17642a66a731119e01110b9f722f1948
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Feb 1 17:53:19 2017 -0500
+
+    Improve keybinding detection and labeling.
+
+commit a4bf55dca02774bac6f4e0903106a7ce4bd636e0
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Jan 29 20:26:30 2017 -0500
+
+    Harder, Faster, Better, Stronger
+    
+    Events:  The addon will respond more quickly to events that impact
+    ability recommendations.  This may require further tuning on a per-spec
+    basis, to make sure all abilities with a travel time are flagged
+    appropriately.
+    + The addon will now gather keybindings using the default API.  This
+    *should* work for any bar mod, but I'm not going to test them
+    personally.
+    
+    Paladins:  You can now specify the maximum amount of Holy Power that
+    you'll allow Wake of Ashes to waste.  The addon will not recommend Wake
+    of Ashes if you have more than the specified amount of Holy Power (and
+    have the Ashes to Ashes trait).
+    
+    Core:  The addon will do a better job of purging ancient profiles so it
+    will, you know, work.
+    + Display updates will occur more frequently (so Monk/Hunter timers will
+    be less...lurchy?).
+    + The addon will attempt to detect and display ability keybindings.
+    
+    Options:  Default Nameplate Detection Range increased to 8.
+    + Recommendation Window added, allows you to specify that an ability has
+    to be available for at least X seconds (by default, 0.1) in order to be
+    recommend.  This *may* reduce some ability flicker.
+    + Each display has its own independent settings for keybinds (show/don't
+    show, upper/lowercase).
+    o Renamed the "Blizzard Overlay" to "Overlay Glow" for slight clarity
+    improvement.
+    
+    State:  Keep track of latency, may factor it into buff.X.up,
+    buff.X.remains and similar criteria going forward.
+    - Removed the 0.05s padding from timeToReady() for focus/energy based
+    classes.
+
+commit 7197fb8ff0f6cb7c31c4e05047fd33bb3c7ec589
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sat Jan 28 11:15:47 2017 -0500
+
+    Tweaks and Fixes
+    
+    Classes:  Store item keys when storing gearsets.
+    - Hunters gain 15 Focus from Arcane Torrent.
+    
+    Core and Scripts:  Removed old override and delay arguments from
+    checkScript.
+    + Added 'recheck' as arg4 to checkScript.  recheck tells the addon to
+    see if the same script passes after `recheck' seconds, ostensibly to
+    confirm that the action will be recommended for at least that much time.
+    o recheck will need further config option support through the UI, it is
+    not yet used.
+    
+    State: Check GetSpellCharges() using spellID rather than spell name,
+    mainly to fix Storm, Earth, and Fire but will surely impact other
+    things.
+    o Built in padding on energy/focus regen reduced to 0.05s from 0.1s.
+
 commit 39a10f34f6839a9d28962246fbf3e6bce8d21b87
 Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Fri Jan 20 20:55:58 2017 -0500

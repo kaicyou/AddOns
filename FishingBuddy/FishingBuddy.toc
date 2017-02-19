@@ -1,6 +1,6 @@
 ## Interface: 70100
 ## Title: Fishing Buddy
-## Version: 1.7.12f
+## Version: 1.7.12g
 ## Notes: Help with fishing related tasks -- clothing, fish information, etc.
 ## Notes-deDE: Erleichtert das Angeln - Ausrüstung und Fish-Infos
 ## Notes-frFR: Vous facilite la vie de pecheur. Informations sur les poissons, changement d'habits, etc.
@@ -26,7 +26,7 @@ FishingSetup.lua
 FishingBuddy.xml
 FishingBuddyAPI.lua
 FishingBuddyFrame.xml
-FishingOptionsFrame.xml
+FishingOptionsFrame.lua
 FishingLocationsFrame.xml
 FishingOutfitManager.lua
 FishingOutfitter.xml

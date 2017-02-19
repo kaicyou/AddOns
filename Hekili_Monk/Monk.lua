@@ -36,6 +36,7 @@ local registerInterrupt = Retrieve( 'registerInterrupt' )
 
 local removeResource = Retrieve( 'removeResource' )
 
+local setArtifact = Retrieve( 'setArtifact' )
 local setClass = Retrieve( 'setClass' )
 local setPotion = Retrieve( 'setPotion' )
 local setRole = Retrieve( 'setRole' )
@@ -157,6 +158,9 @@ if select( 2, UnitClass( 'player' ) ) == 'MONK' then
         addGearSet( 'fists_of_the_heavens', 128940 )
         addGearSet( 'fu_zan_the_wanderers_companion', 128938 )
 
+        setArtifact( 'fists_of_the_heavens' )
+        setArtifact( 'fu_zan_the_wanderers_companion' )
+
         addGearSet( 'cenedril_reflector_of_hatred', 137019 )
         addGearSet( 'cinidaria_the_symbiote', 133976 )
         addGearSet( 'drinking_horn_cover', 137097 )
@@ -186,6 +190,8 @@ if select( 2, UnitClass( 'player' ) ) == 'MONK' then
             end
             rawset( state.healing_sphere, 'count', nil )
             state.stagger.amount = nil
+            state.spinning_crane_kick.count = nil
+            state.healing_sphere.count = nil
         end )
 
         addHook( 'spend', function( amt, resource )
@@ -202,14 +208,16 @@ if select( 2, UnitClass( 'player' ) ) == 'MONK' then
         state.spinning_crane_kick = setmetatable( {}, {
             __index = function( t, k, v )
                 if k == 'count' then
-                    return state.active_dot.mark_of_the_crane
+                    t[ k ] = max( GetSpellCount( state.action.spinning_crane_kick.id ), state.active_dot.mark_of_the_crane )
+                    return t[ k ]
                 end
             end } )
 
         state.healing_sphere = setmetatable( {}, {
             __index = function( t, k, v )
                 if k == 'count' then
-                    return GetSpellCount( state.action.expel_harm.id )
+                    t[ k ] = GetSpellCount( state.action.expel_harm.id )
+                    return t[ k ]
                 end
             end } )
 
@@ -347,6 +355,18 @@ if select( 2, UnitClass( 'player' ) ) == 'MONK' then
         addToggle( 'use_defensives', true, "Brewmaster: Use Defensives",
             "Set a keybinding to toggle your defensive abilities on/off in your priority lists." )
 
+        addSetting( 'elixir_energy', 20, {
+            name = "Windwalker: Energizing Elixir Energy Deficit",
+            type = "range",
+            min = 0,
+            max = 100,
+            step = 1,
+            desc = "Specify the amount of |cFFFF0000missing|r energy that must be missing before Energizing Elixir will be used.  The default is |cFFFFD10020|r.  If set to zero, Energizing Elixir " ..
+                "can be used regardless of how much energy you have.",
+            width = "full"
+        } )
+
+
         addSetting( 'purify_light', 60, {
             name = "Brewmaster: Light Stagger Purify Threshold",
             type = "range",
@@ -428,6 +448,10 @@ if select( 2, UnitClass( 'player' ) ) == 'MONK' then
         addMetaFunction( 'state', 'use_defensives', function()
             if not state.spec.brewmaster then return false end
             return state.toggle.use_defensives
+        end )
+
+        addMetaFunction( 'state', 'ee_maximum', function()
+            return state.energy.max * ( 100 - state.settings.elixir_energy ) / 100
         end )
 
 
@@ -625,6 +649,7 @@ if select( 2, UnitClass( 'player' ) ) == 'MONK' then
             cast = 1.5,
             gcdType = 'spell',
             cooldown = 0,
+            velocity = 60
         } )
 
 
@@ -635,7 +660,8 @@ if select( 2, UnitClass( 'player' ) ) == 'MONK' then
             cast = 0,
             gcdType = 'off',
             cooldown = 60,
-            known = function () return talent.energizing_elixir.enabled end
+            known = function () return talent.energizing_elixir.enabled end,
+            usable = function () return energy.current < ee_maximum end,
         } )
 
         addHandler( 'energizing_elixir', function ()
@@ -784,7 +810,8 @@ if select( 2, UnitClass( 'player' ) ) == 'MONK' then
             cast = 0,
             gcdType = 'melee',
             cooldown = 8,
-            cycle = 'keg_smash'
+            cycle = 'keg_smash',
+            velocity = 30
         } )
 
         modifyAbility( 'keg_smash', 'cooldown', function( x )
@@ -1034,6 +1061,8 @@ if select( 2, UnitClass( 'player' ) ) == 'MONK' then
             interrupt()
         end )
 
+        registerInterrupt( 'spear_hand_strike' )
+
 
         addAbility( 'spinning_crane_kick', {
             id = 101546,
@@ -1126,24 +1155,17 @@ if select( 2, UnitClass( 'player' ) ) == 'MONK' then
 
         addAbility( 'tiger_palm', {
             id = 100780,
-            spend = 50,
-            spend_type = 'energy',
+            spend = function( no_padding )
+                if not spec.brewmaster then return 50, 'energy' end
+                if no_padding then return 25, 'energy' end
+                return settings.tp_energy, 'energy'
+            end,
             cast = 0,
             gcdType = 'melee',
             ready = 50,
             cooldown = 0,
             cycle = 'mark_of_the_crane'
         } )
-
-        modifyAbility( 'tiger_palm', 'spend', function( x )
-            return spec.brewmaster and 25 or 50
-        end )
-
-        modifyAbility( 'tiger_palm', 'ready', function( x )
-            if spec.brewmaster then return settings.tp_energy or 25 end
-            return x
-        end )
-
 
         addHandler( 'tiger_palm', function ()
             if talent.eye_of_the_tiger.enabled then

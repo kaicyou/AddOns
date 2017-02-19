@@ -137,6 +137,13 @@ _G.mt_modifiers = mt_modifiers
 ns.setClass = function( name ) class.file = name end
 
 
+class.artifacts = {}
+
+ns.setArtifact = function( name, remove )
+    class.artifacts[ name ] = remove and false or true
+end
+
+
 function ns.setRange( value )
     class.range = value
 end
@@ -225,6 +232,7 @@ ns.addAbility = addAbility
 
 
 class.interrupts = {}
+
 function ns.registerInterrupt( key )
     if class.abilities[ key ] and class.abilities[ key ].toggle and class.abilities[ key ].toggle == 'interrupts' then
         class.interrupts[ key ] = true
@@ -378,7 +386,7 @@ local function addGearSet( name, ... )
     class.gearsets[ name ] = class.gearsets[ name ] or {}
 
     for i = 1, select( '#', ... ) do
-        class.gearsets[ name ][ select( i, ... ) ] = 1
+        class.gearsets[ name ][ select( i, ... ) ] = ns.formatKey( GetItemInfo( select( i, ... ) ) or "nothing" )
     end
 
     ns.commitKey( name )
@@ -415,7 +423,7 @@ end
 ns.addHandler = addHandler
 
 
-local function runHandler( key, ... )
+local function runHandler( key, no_start )
 
     local ability = class.abilities[ key ]
 
@@ -425,7 +433,7 @@ local function runHandler( key, ... )
     end
         
     if ability.elem[ 'handler' ] then
-        ability.elem[ 'handler' ]( ... )
+        ability.elem[ 'handler' ]()
     end
 
     state.prev.last = key
@@ -437,7 +445,7 @@ local function runHandler( key, ... )
     state.predictionsOn[6] = nil
     state.predictionsOff[6] = nil
     
-    if not ability.passive and state.time == 0 then
+    if state.time == 0 and not no_start and not ability.passive then
         state.false_start = state.query_time - 0.01
 
         -- Generate fake weapon swings.
@@ -453,7 +461,7 @@ local function runHandler( key, ... )
 
     state.cast_start = 0
     
-    ns.callHook( 'runHandler', key, ... )
+    ns.callHook( 'runHandler', key )
     
 end
 ns.runHandler = runHandler
@@ -523,10 +531,11 @@ end
 addAura( 'ancient_hysteria', 90355, 'duration', 40 )
 addAura( 'heroism', 32182, 'duration', 40 )
 addAura( 'time_warp', 80353, 'duration', 40 )
+addAura( 'netherwinds', 160452, 'duration', 40 )
 
 -- bloodlust is the "umbrella" aura for all burst haste effects.
 addAura( 'bloodlust', 2825, 'duration', 40, 'feign', function ()
-    local bloodlusts = { 'ancient_hysteria', 'heroism', 'time_warp' }
+    local bloodlusts = { 'ancient_hysteria', 'heroism', 'time_warp', 'netherwinds' }
     
     for i = 1, #bloodlusts do
         local aura = bloodlusts[ i ]
@@ -553,7 +562,8 @@ addAura( 'bloodlust', 2825, 'duration', 40, 'feign', function ()
     buff.bloodlust.expires = 0
     buff.bloodlust.applied = 0
     buff.bloodlust.caster = 'unknown'
-    end )
+
+end )
 
 -- Sated.
 addAura( 'exhaustion', 57723, 'duration', 600 )
@@ -681,7 +691,7 @@ addAbility( 'arcane_torrent', {
     id = 28730,
     spend = 0,
     cast = 0,
-    gcdType = 'spell',
+    gcdType = 'off',
     cooldown = 120,
     toggle = 'cooldowns'
     }, 50613, 80483, 129597, 155145, 25046, 69179 )
@@ -701,9 +711,12 @@ addHandler( 'arcane_torrent', function ()
     elseif class.monk then gain( 1, "chi" )
     elseif class.paladin then gain( 1, "holy_power" )
     elseif class.rogue then gain( 15, "energy" )
-    elseif class.warrior then gain( 15, "rage" ) end
+    elseif class.warrior then gain( 15, "rage" )
+    elseif class.hunter then gain( 15, "focus" ) end
 
 end )
+
+ns.registerInterrupt( 'arcane_torrent' )
 
 
 addAbility( 'call_action_list', {

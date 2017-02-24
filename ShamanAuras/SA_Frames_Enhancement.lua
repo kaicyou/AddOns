@@ -121,7 +121,7 @@ InitializeFrames("WindShearEnh",SmallIconGrpLeft,"shared\\wind_shear",smIcon);
 -------------------------------------------------------------------------------------------------------
 
 AuraGroup:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.5);
 	else
@@ -130,19 +130,19 @@ AuraGroup:SetScript("OnUpdate",function(self,button)
 end);
 
 AuraGroup:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseDown(self,'enhGrp',button);
 	end
 end);
 
 AuraGroup:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseUp(self,'enhGrp',button);
 	end
 end);
 
 LargeIconGrpTop:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.85);
 	else
@@ -151,19 +151,19 @@ LargeIconGrpTop:SetScript("OnUpdate",function(self,button)
 end);
 
 LargeIconGrpTop:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseDown(self,'resGrp',button);
 	end
 end);
 
 LargeIconGrpTop:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
 
 LargeIconGrpBot:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.85);
 	else
@@ -172,19 +172,19 @@ LargeIconGrpBot:SetScript("OnUpdate",function(self,button)
 end);
 
 LargeIconGrpBot:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseDown(self,'enhGrp',button);
 	end
 end);
 
 LargeIconGrpBot:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseUp(self,'enhGrp',button);
 	end
 end);
 
 SmallIconGrpLeft:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.85);
 	else
@@ -193,19 +193,19 @@ SmallIconGrpLeft:SetScript("OnUpdate",function(self,button)
 end);
 
 SmallIconGrpLeft:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseDown(self,'enhGrp',button);
 	end
 end);
 
 SmallIconGrpLeft:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseUp(self,'enhGrp',button);
 	end
 end);
 
 SmallIconGrpRight:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.85);
 	else
@@ -214,13 +214,13 @@ SmallIconGrpRight:SetScript("OnUpdate",function(self,button)
 end);
 
 SmallIconGrpRight:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseDown(self,'enhGrp',button);
 	end
 end);
 
 SmallIconGrpRight:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseUp(self,'enhGrp',button);
 	end
 end);
@@ -246,7 +246,7 @@ SSA.AscendanceEnh:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -270,7 +270,7 @@ SSA.AstralShiftEnh:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -284,15 +284,15 @@ SSA.Boulderfist:SetScript("OnUpdate", function(self)
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(201897))
 		local charges,maxCharges,chgStart,chgDuration = GetSpellCharges(201897)
 	
-		Auras:SpellRangeCheck(self,193786,true);
+		Auras:SpellRangeCheck(self,193786,true,2);
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 	
 		if (buff) then
 			local timer,seconds = Auras:parseTime((expires or 0) - GetTime(),false);
 			
-			if (seconds > Auras.db.char.triggers.enh.boulderfist) then
+			if (seconds > Auras.db.char.triggers[2].boulderfist) then
 				Auras:ToggleOverlayGlow(self.glow,false);
-			elseif (seconds <= Auras.db.char.triggers.enh.boulderfist and UnitAffectingCombat('player')) then
+			elseif (seconds <= Auras.db.char.triggers[2].boulderfist and UnitAffectingCombat('player')) then
 				Auras:ToggleOverlayGlow(self.glow,true);
 			end
 		end
@@ -316,7 +316,7 @@ SSA.Boulderfist:SetScript("OnUpdate", function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 			Auras:ToggleOverlayGlow(self.glow,false);
 		end
 	else
@@ -341,7 +341,7 @@ SSA.CleanseSpiritEnh:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -368,7 +368,7 @@ SSA.CrashLightning:SetScript("OnUpdate", function(self)
 				self:SetAlpha(0.5);
 			end
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 			Auras:ToggleOverlayGlow(self.glow,false);
 		end
 	else
@@ -393,7 +393,7 @@ SSA.DoomWinds:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -406,7 +406,7 @@ SSA.EarthenSpike:SetScript("OnUpdate", function(self)
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(188089))
 		local power = UnitPower('player',11);
 	
-		Auras:SpellRangeCheck(self,188089,true);
+		Auras:SpellRangeCheck(self,188089,true,2);
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
@@ -420,7 +420,7 @@ SSA.EarthenSpike:SetScript("OnUpdate", function(self)
 				self:SetAlpha(0.5);
 			end
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -444,7 +444,7 @@ SSA.EarthgrabTotemEnh:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -456,7 +456,7 @@ SSA.FeralLunge:SetScript("OnUpdate",function(self)
 	if (Auras:CharacterCheck(2)) then
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(196884));
 		
-		Auras:SpellRangeCheck(self,196884,true);
+		Auras:SpellRangeCheck(self,196884,true,2);
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
@@ -469,7 +469,7 @@ SSA.FeralLunge:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -493,7 +493,7 @@ SSA.FeralSpirit:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -506,7 +506,7 @@ SSA.Flametongue:SetScript("OnUpdate", function(self)
 		local buff,_,_,_,_,_,expires = UnitBuff('player',Auras:GetSpellName(193796));
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(193796));
 		
-		Auras:SpellRangeCheck(self,193796,true);
+		Auras:SpellRangeCheck(self,193796,true,2);
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
@@ -519,9 +519,9 @@ SSA.Flametongue:SetScript("OnUpdate", function(self)
 		if (buff) then
 			local timer,seconds = Auras:parseTime((expires or 0) - GetTime(),false);
 			
-			if (seconds > Auras.db.char.triggers.enh.flametongue) then
+			if (seconds > Auras.db.char.triggers[2].flametongue) then
 				Auras:ToggleOverlayGlow(self.glow,false);
-			elseif (seconds <= Auras.db.char.triggers.enh.flametongue and UnitAffectingCombat('player')) then
+			elseif (seconds <= Auras.db.char.triggers[2].flametongue and UnitAffectingCombat('player')) then
 				Auras:ToggleOverlayGlow(self.glow,true);
 			end
 		end
@@ -529,7 +529,7 @@ SSA.Flametongue:SetScript("OnUpdate", function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 			Auras:ToggleOverlayGlow(self.glow,false);
 		end
 	else
@@ -549,15 +549,15 @@ SSA.Frostbrand:SetScript("OnUpdate", function(self)
 			self:SetAlpha(0.5);
 		end
 		
-		Auras:SpellRangeCheck(self,193796,true);
+		Auras:SpellRangeCheck(self,193796,true,2);
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if (buff) then
 			local timer,seconds = Auras:parseTime((expires or 0) - GetTime(),false);
 			
-			if (seconds > Auras.db.char.triggers.enh.frostbrand or power < 20) then
+			if (seconds > Auras.db.char.triggers[2].frostbrand or power < 20) then
 				Auras:ToggleOverlayGlow(self.glow,false);
-			elseif (seconds <= Auras.db.char.triggers.enh.frostbrand and UnitAffectingCombat('player') and power >= 20) then
+			elseif (seconds <= Auras.db.char.triggers[2].frostbrand and UnitAffectingCombat('player') and power >= 20) then
 				Auras:ToggleOverlayGlow(self.glow,true);
 			end
 		end
@@ -565,7 +565,7 @@ SSA.Frostbrand:SetScript("OnUpdate", function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 			Auras:ToggleOverlayGlow(self.glow,false);
 		end
 	else
@@ -587,12 +587,12 @@ SSA.HexEnh:SetScript("OnUpdate",function(self)
 			self.CD:Hide();
 		end
 		
-		Auras:SpellRangeCheck(self,51514,(UnitCreatureType('target') == "Humanoid" or UnitCreatureType('target') == "Beast" or UnitCreatureType('target') == "Critter"));	
+		Auras:SpellRangeCheck(self,51514,(UnitCreatureType('target') == "Humanoid" or UnitCreatureType('target') == "Beast" or UnitCreatureType('target') == "Critter"),2);	
 		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -607,7 +607,7 @@ SSA.LavaLash:SetScript("OnUpdate", function(self)
 		
 		local power = UnitPower('player',11);
 		
-		Auras:SpellRangeCheck(self,60103,true);
+		Auras:SpellRangeCheck(self,60103,true,2);
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
@@ -627,7 +627,7 @@ SSA.LavaLash:SetScript("OnUpdate", function(self)
 				self:SetAlpha(0.5);
 			end
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -651,7 +651,7 @@ SSA.LightningSurgeTotemEnh:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -675,7 +675,7 @@ SSA.Rainfall:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -699,7 +699,7 @@ SSA.SpiritWalk:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -713,7 +713,7 @@ SSA.Stormstrike:SetScript("OnUpdate", function(self)
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(17364));
 		local power = UnitPower('player',11);
 		
-		Auras:SpellRangeCheck(self,17364,true);
+		Auras:SpellRangeCheck(self,17364,true,2);
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
@@ -747,7 +747,7 @@ SSA.Stormstrike:SetScript("OnUpdate", function(self)
 				self.CD.text:SetText('');
 			end
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 			Auras:ToggleOverlayGlow(self.glow,false);
 		end
 	else
@@ -760,7 +760,7 @@ SSA.Sundering:SetScript("OnUpdate",function(self)
 	if (Auras:CharacterCheck(2)) then
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(197214));
 
-		Auras:SpellRangeCheck(self,197214,true);
+		Auras:SpellRangeCheck(self,197214,true,2);
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
@@ -773,7 +773,7 @@ SSA.Sundering:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -797,7 +797,7 @@ SSA.VoodooTotemEnh:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -809,7 +809,7 @@ SSA.WindShearEnh:SetScript("OnUpdate",function(self)
 	if (Auras:CharacterCheck(2)) then
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(57994));
 
-		Auras:SpellRangeCheck(self,57994,true);
+		Auras:SpellRangeCheck(self,57994,true,2);
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
@@ -822,7 +822,7 @@ SSA.WindShearEnh:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -846,7 +846,7 @@ SSA.WindRushTotemEnh:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -858,7 +858,7 @@ SSA.Windsong:SetScript("OnUpdate",function(self)
 	if (Auras:CharacterCheck(2)) then
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(201898));
 
-		Auras:SpellRangeCheck(self,201898,true);
+		Auras:SpellRangeCheck(self,201898,true,2);
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
@@ -871,7 +871,7 @@ SSA.Windsong:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -903,7 +903,6 @@ MaelstromBar.bg:SetAlpha(0.5);
 
 MaelstromBar.text = MaelstromBar:CreateFontString(nil, "HIGH", "GameFontHighlightLarge");
 MaelstromBar.text:SetPoint("CENTER",MaelstromBar,"CENTER",0,0);
-MaelstromBar.text:SetFont("Fonts\\FRIZQT__.TTF", 12);
 MaelstromBar.text:SetTextColor(1,1,1,1);
 
 MaelstromBar.Lightning = CreateFrame("PlayerModel","MaelstromBarEnhLightning",MaelstromBar);
@@ -922,6 +921,7 @@ SSA.MaelstromBarEnh:SetScript("OnUpdate",function(self,elaps)
 		local isCombat = UnitAffectingCombat('player');
 		local power = UnitPower('player',11);
 		local maxPower = UnitPowerMax('player',11);
+		local _,font = self.text:GetFont();
 		
 		Auras:ToggleAuraVisibility(self,true,'alpha');
 
@@ -935,40 +935,66 @@ SSA.MaelstromBarEnh:SetScript("OnUpdate",function(self,elaps)
 			self:SetHeight(Auras.db.char.layout[2].maelstromBar.height);
 		end
 		
-		if (not Auras.db.char.layout[2].maelstromBar.isAdjustable and not Auras.db.char.layout[2].isMoving) then
+		if (font ~= Auras.db.char.layout[2].maelstromBar.textSize) then
+			self.text:SetFont("Fonts\\FRIZQT__.TTF", Auras.db.char.layout[2].maelstromBar.textSize);
+		end
+		
+		if (Auras.db.char.config[2].maelstromBar.justify == "Left") then
+			self.text:ClearAllPoints();
+			self.text:SetPoint("LEFT",15,0);
+		elseif (Auras.db.char.config[2].maelstromBar.justify == "Center") then
+			self.text:ClearAllPoints();
+			self.text:SetPoint("CENTER",0,0);
+		else
+			self.text:ClearAllPoints();
+			self.text:SetPoint("RIGHT",-15,0);
+		end
+		
+		if (not Auras.db.char.config[2].maelstromBar.isAdjustable and not Auras.db.char.config[2].isMoving) then
 			if (Auras.db.char.aura[2].MaelstromBarEnh) then
 				self:SetValue(power);
-				self.text:SetText(power);
+				if (Auras.db.char.config[2].maelstromBar.isDisplayText) then
+					self.text:SetText(power);
+				else
+					self.text:SetText('');
+				end
+				if (power >= Auras.db.char.config[2].maelstromBar.threshold and Auras.db.char.config[2].maelstromBar.animate) then
+					self.Lightning:SetAlpha(Auras.db.char.config[2].maelstromBar.alphaCombat);
+					self.bg:SetAlpha(Auras.db.char.config[2].maelstromBar.alphaCombat);
+				else
+					self.Lightning:SetAlpha(0);
+					self.bg:SetAlpha(Auras.db.char.config[2].maelstromBar.alphaCombat / 2);
+				end
+					
 				if (isCombat) then
 					self:SetAlpha(1);
-					if (power >= Auras.db.char.triggers.enh.maelstrom and Auras.db.char.triggers.enh.MaelstromAnim) then
-						self.Lightning:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaCombat);
-						self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaCombat);
-					else
-						self.Lightning:SetAlpha(0);
-						--self.bg:SetAlpha(0.5);
-						self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaCombat / 2);
-					end
-					self:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaCombat);
+					self:SetAlpha(Auras.db.char.config[2].maelstromBar.alphaCombat);
+					
 				elseif (not isCombat and Auras:IsTargetEnemy()) then
-					--MaelstromBar:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha);
-					if (Auras.db.char.triggers.enh.maelstromAlphaOoC == 0) then
-						MaelstromBar:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaTar);
-						self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaTar);
+					--MaelstromBar:SetAlpha(Auras.db.char.triggers[2].OoCAlpha);
+					if (Auras.db.char.config[2].maelstromBar.alphaOoC == 0) then
+						self:SetAlpha(Auras.db.char.config[2].maelstromBar.alphaTar);
+						self.bg:SetAlpha(Auras.db.char.config[2].maelstromBar.alphaTar);
 					else
-						MaelstromBar:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
-						self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
+						self:SetAlpha(Auras.db.char.config[2].maelstromBar.alphaOoC);
+						self.bg:SetAlpha(Auras.db.char.config[2].maelstromBar.alphaOoC);
 					end
 				elseif (not isCombat and not Auras:IsTargetEnemy()) then
 					--self:SetAlpha(0);
-					self:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
-					self.bg:SetAlpha(Auras.db.char.triggers.enh.maelstromAlphaOoC);
+					self:SetAlpha(Auras.db.char.config[2].maelstromBar.alphaOoC);
+					self.bg:SetAlpha(Auras.db.char.config[2].maelstromBar.alphaOoC);
 				end
 			else
 				self:SetAlpha(0);
 			end
-		elseif (Auras.db.char.layout[2].maelstromBar.isAdjustable or Auras.db.char.layout[2].isMoving) then
-			self:SetAlpha(0.5);
+		elseif (Auras.db.char.config[2].maelstromBar.isAdjustable or Auras.db.char.config[2].isMoving) then
+			self:SetAlpha(Auras.db.char.config[2].maelstromBar.alphaCombat);
+			self:SetValue(UnitPowerMax('player',11));
+			if (Auras.db.char.config[2].maelstromBar.isDisplayText) then
+				self.text:SetText(UnitPowerMax('player',11));
+			else
+				self.text:SetText('');
+			end
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'alpha');
@@ -976,13 +1002,13 @@ SSA.MaelstromBarEnh:SetScript("OnUpdate",function(self,elaps)
 end);
 
 MaelstromBar:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseDown(self,'enhGrp',button);
 	end
 end);
 
 MaelstromBar:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseUp(self,'enhGrp',button);
 	end
 end);
@@ -1110,7 +1136,7 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 			end
 		end
 		
-		if (Auras.db.char.layout[2].isMoving) then
+		if (Auras.db.char.config[2].isMoving) then
 			self:SetBackdrop(backdrop);
 			self:SetBackdropColor(0,0,0,0.85);
 		else
@@ -1123,13 +1149,13 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 end);
 
 BuffTimerBarGrp:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseDown(self,'enhGrp',button);
 	end
 end);
 
 BuffTimerBarGrp:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseUp(self,'enhGrp',button);
 	end
 end);
@@ -1158,7 +1184,7 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 			end
 		end
 		
-		if (Auras.db.char.layout[2].isMoving) then
+		if (Auras.db.char.config[2].isMoving) then
 			self:SetBackdrop(backdrop);
 			self:SetBackdropColor(0,0,0,0.85);
 		else
@@ -1170,13 +1196,13 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 end);
 
 MainTimerBarGrp:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseDown(self,'enhGrp',button);
 	end
 end);
 
 MainTimerBarGrp:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseUp(self,'enhGrp',button);
 	end
 end);
@@ -1253,7 +1279,7 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 			end
 		end
 		
-		if (Auras.db.char.layout[2].isMoving) then
+		if (Auras.db.char.config[2].isMoving) then
 			self:SetBackdrop(backdrop);
 			self:SetBackdropColor(0,0,0,0.85);
 		else
@@ -1265,13 +1291,13 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 end);
 
 UtilTimerBarGrp:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseDown(self,'enhGrp',button);
 	end
 end);
 
 UtilTimerBarGrp:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseUp(self,'enhGrp',button);
 	end
 end);
@@ -1320,7 +1346,7 @@ DoomWindsTex:SetScript("OnUpdate",function(self)
 		
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
-		if ((buff and Auras.db.char.aura[2].DoomWindsTex) or Auras.db.char.layout[2].isMoving) then
+		if ((buff and Auras.db.char.aura[2].DoomWindsTex) or Auras.db.char.config[2].isMoving) then
 			if (not self.Scaler:IsPlaying()) then
 				self.Scaler:Play();
 			end
@@ -1328,7 +1354,7 @@ DoomWindsTex:SetScript("OnUpdate",function(self)
 			if (UnitAffectingCombat('player')) then
 				self:SetAlpha(1);
 			else
-				self:SetAlpha(Auras.db.char.triggers.enh.OoCAlpha);
+				self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha);
 			end
 		else
 			self:SetAlpha(0);
@@ -1338,7 +1364,7 @@ DoomWindsTex:SetScript("OnUpdate",function(self)
 			end
 		end
 		
-		if (Auras.db.char.layout[2].isMoving) then
+		if (Auras.db.char.config[2].isMoving) then
 			self:SetBackdrop(backdrop);
 			self:SetBackdropColor(0,0,0,0.85);
 		else
@@ -1350,13 +1376,13 @@ DoomWindsTex:SetScript("OnUpdate",function(self)
 end);
 
 DoomWindsTex:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseDown(self,'enhGrp',button);
 	end
 end);
 
 DoomWindsTex:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseUp(self,'enhGrp',button);
 	end
 end);
@@ -1409,7 +1435,7 @@ StormstrikeCharges:SetScript("OnUpdate",function(self,elaps)
 		
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
-		if (Auras.db.char.layout[2].isMoving) then
+		if (Auras.db.char.config[2].isMoving) then
 			self.Charge1:SetAlpha(1);
 			self.Charge2:SetAlpha(1);
 		elseif (Auras.db.char.aura[2].StormstrikeChargeGrp) then
@@ -1424,7 +1450,7 @@ StormstrikeCharges:SetScript("OnUpdate",function(self,elaps)
 			end
 		end
 		
-		if (Auras.db.char.layout[2].isMoving) then
+		if (Auras.db.char.config[2].isMoving) then
 			self:SetBackdrop(backdrop);
 			self:SetBackdropColor(0,0,0,0.85);
 		else
@@ -1436,13 +1462,13 @@ StormstrikeCharges:SetScript("OnUpdate",function(self,elaps)
 end);
 
 StormstrikeCharges:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseDown(self,'enhGrp',button);
 	end
 end);
 
 StormstrikeCharges:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[2].isMoving) then
+	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseUp(self,'enhGrp',button);
 	end
 end);

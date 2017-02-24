@@ -108,7 +108,7 @@ function Overachiever.GetHolidayEvents(year, month, day, hourOverride, cachekey,
 				--texture = getCalendarTextureFile(texture, calendarType, sequenceType, eventType)
 				if (not result[title]) then  result[title] = {};  end
 				if (not result[title]["texture"] or result[title]["texture"] == "") then
-					result[title]["texture"] = getCalendarTextureFile(texture, calendarType, "START", eventType)
+					result[title]["texture"] = getCalendarTextureFile(texture, calendarType, sequenceType == "" and "" or "START", eventType)
 					result[title]["texture_unpathed"] = texture
 				end
 				if (not result[title]["desc"]) then
@@ -196,7 +196,7 @@ local EVENT_TEXTURE_LOOKUP = {
 	["calendar_weekendpetbattles"] = "bonus",				-- Pet Battle Bonus Event
 	["calendar_glowcapfestival"] = "micro",					-- Glowcap Festival
 	["Calendar_HallowsEnd"] = "holiday",					-- Hallow's End
-	["calendar_weekendlegion"] = "dungeon",				-- Legion Dungeon Event
+	["calendar_weekendlegion"] = "dungeon",					-- Legion Dungeon Event
 	["calendar_weekendpvpskirmish"] = "bonus",				-- Arena Skirmish Bonus Event
 	["calendar_hatchingofthehippogryphs"] = "micro",		-- Hatching of the Hippogryphs
 	["calendar_ungoromadness"] = "micro",					-- Un'Goro Madness
@@ -226,6 +226,7 @@ local EVENT_TEXTURE_LOOKUP = {
 -- /run Overachiever.ToastForEvents(true, true, true, true)
 function Overachiever.ToastForEvents(holiday, microholiday, bonusevent, dungeonevent)
 	if (not holiday and not microholiday and not bonusevent and not dungeonevent) then  return;  end
+	--print("ToastForEvents",holiday, microholiday, bonusevent, dungeonevent)
 
 	local function filterEvents(localizedTitle, texture)
 		--print(texture)
@@ -242,6 +243,7 @@ function Overachiever.ToastForEvents(holiday, microholiday, bonusevent, dungeone
 
 	local events = Overachiever.GetTodaysEvents(-1, true, nil, filterEvents)
 	if (events) then
+		--print("events:")
 		for localizedEventTitle,tab in pairs(events) do
 			local arr = EVENT_TEXTURE_LOOKUP[tab.texture_unpathed]
 			local onClick
@@ -260,7 +262,11 @@ function Overachiever.ToastForEvents(holiday, microholiday, bonusevent, dungeone
 				end
 			end
 			local achID = type(arr) == "table" and arr[2] or nil
-			local delay = Overachiever_Settings.ToastCalendar_onlyclickfade and -1 or 0
+			local delay
+			if (Overachiever_Settings.ToastCalendar_noautofade) then
+				delay = Overachiever_Settings.ToastCalendar_onlyclickfade and -1 or 0
+			end
+			--print("-",localizedEventTitle)
 			Overachiever.ToastFakeAchievement(localizedEventTitle, achID, false, nil, delay, L.STARTTOAST_EVENT, onClick, tab.texture)
 		end
 	end

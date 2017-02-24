@@ -131,7 +131,7 @@ InitializeFrames("WindShearRes",SmallIconGrpLeft,"shared\\wind_shear",smIcon);
 -------------------------------------------------------------------------------------------------------
 
 AuraGroup:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.5);
 	else
@@ -140,19 +140,19 @@ AuraGroup:SetScript("OnUpdate",function(self,button)
 end);
 
 AuraGroup:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseDown(self,'resGrp',button);
 	end
 end);
 
 AuraGroup:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
 
 LargeIconGrpTop:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.85);
 	else
@@ -161,19 +161,19 @@ LargeIconGrpTop:SetScript("OnUpdate",function(self,button)
 end);
 
 LargeIconGrpTop:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseDown(self,'resGrp',button);
 	end
 end);
 
 LargeIconGrpTop:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
 
 LargeIconGrpBot:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.85);
 	else
@@ -182,19 +182,19 @@ LargeIconGrpBot:SetScript("OnUpdate",function(self,button)
 end);
 
 LargeIconGrpBot:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseDown(self,'resGrp',button);
 	end
 end);
 
 LargeIconGrpBot:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
 
 SmallIconGrpLeft:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.85);
 	else
@@ -203,19 +203,19 @@ SmallIconGrpLeft:SetScript("OnUpdate",function(self,button)
 end);
 
 SmallIconGrpLeft:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseDown(self,'resGrp',button);
 	end
 end);
 
 SmallIconGrpLeft:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
 
 SmallIconGrpRight:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		self:SetBackdrop(backdrop);
 		self:SetBackdropColor(0,0,0,0.85);
 	else
@@ -224,13 +224,13 @@ SmallIconGrpRight:SetScript("OnUpdate",function(self,button)
 end);
 
 SmallIconGrpRight:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseDown(self,'resGrp',button);
 	end
 end);
 
 SmallIconGrpRight:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
@@ -253,7 +253,7 @@ SSA.FlameShockRes:SetScript("OnUpdate", function(self)
 			self.text:SetTextColor(1,1,0,1);
 		end
 	
-		Auras:SpellRangeCheck(self,188838,true);
+		Auras:SpellRangeCheck(self,188838,true,3);
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
@@ -272,7 +272,7 @@ SSA.FlameShockRes:SetScript("OnUpdate", function(self)
 				--timer,seconds = Auras:parseTime(expires - GetTime(),false);
 				--self.text:SetText(timer);
 				
-				if ((seconds or 0) <= Auras.db.char.triggers.res.flameShock and UnitAffectingCombat('player')) then
+				if ((seconds or 0) <= Auras.db.char.triggers[3].flameShock and UnitAffectingCombat('player')) then
 					Auras:ToggleOverlayGlow(self.glow,true,true);
 					--isGlowActive = true;
 				--elseif (seconds == 0) then
@@ -295,7 +295,7 @@ SSA.FlameShockRes:SetScript("OnUpdate", function(self)
 				end
 			end
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 			Auras:ToggleOverlayGlow(self.glow,false);
 			--self.text:SetText('');
 		end
@@ -323,7 +323,7 @@ SSA.LavaBurstRes:SetScript("OnUpdate", function(self)
 		local charges,maxCharges,chgStart,chgDuration = GetSpellCharges(51505)
 		local _,_,_,selected = GetTalentInfo(6,3,1);
 		
-		Auras:SpellRangeCheck(self,51505,true);	
+		Auras:SpellRangeCheck(self,51505,true,3);	
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if (selected) then
@@ -374,7 +374,7 @@ SSA.LavaBurstRes:SetScript("OnUpdate", function(self)
 			if (buff) then
 				Auras:ToggleOverlayGlow(self.glow,false);
 			end
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -398,7 +398,7 @@ SSA.AncestralGuidanceRes:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -422,7 +422,7 @@ SSA.AscendanceRes:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -446,7 +446,7 @@ SSA.AstralShiftRes:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -470,7 +470,7 @@ SSA.CloudburstTotem:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -494,7 +494,7 @@ SSA.EarthenShieldTotem:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -518,7 +518,7 @@ SSA.EarthgrabTotemRes:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -542,7 +542,7 @@ SSA.GiftOfQueen:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -566,7 +566,7 @@ SSA.GustWindRes:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -590,7 +590,7 @@ SSA.HealingRain:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -636,7 +636,7 @@ SSA.HealingStreamTotem:SetScript("OnUpdate", function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -660,7 +660,7 @@ SSA.HealingTideTotem:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -681,12 +681,12 @@ SSA.HexRes:SetScript("OnUpdate",function(self)
 			self.CD:Hide();
 		end
 		
-		Auras:SpellRangeCheck(self,51514,(UnitCreatureType('target') == "Humanoid" or UnitCreatureType('target') == "Beast" or UnitCreatureType('target') == "Critter"));	
+		Auras:SpellRangeCheck(self,51514,(UnitCreatureType('target') == "Humanoid" or UnitCreatureType('target') == "Beast" or UnitCreatureType('target') == "Critter"),3);	
 		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -710,7 +710,7 @@ SSA.LightningSurgeTotemRes:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -734,7 +734,7 @@ SSA.PurifySpirit:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -780,7 +780,7 @@ SSA.Riptide:SetScript("OnUpdate", function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -804,7 +804,7 @@ SSA.SpiritLinkTotem:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -828,7 +828,7 @@ SSA.SpiritwalkersGrace:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -852,7 +852,7 @@ SSA.UnleashLife:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -876,7 +876,7 @@ SSA.VoodooTotemRes:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -900,7 +900,7 @@ SSA.Wellspring:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -912,7 +912,7 @@ SSA.WindShearRes:SetScript("OnUpdate",function(self)
 	if (Auras:CharacterCheck(3)) then
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(57994));
 	
-		Auras:SpellRangeCheck(self,57994,true);
+		Auras:SpellRangeCheck(self,57994,true,3);
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
@@ -925,7 +925,7 @@ SSA.WindShearRes:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -949,7 +949,7 @@ SSA.WindRushTotemRes:SetScript("OnUpdate",function(self)
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
-			self:SetAlpha(Auras.db.char.triggers.res.OoCAlpha)
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
 		end
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
@@ -960,15 +960,117 @@ end);
 ----- Build and Initialize Status Bars
 -------------------------------------------------------------------------------------------------------
 
+local ManaBar = CreateFrame("StatusBar","ManaBar",AuraGroup);
+
+ManaBar:SetStatusBarTexture("Interface\\addons\\ShamanAuras\\media\\statusbar\\fifths");
+ManaBar:GetStatusBarTexture():SetHorizTile(false);
+ManaBar:GetStatusBarTexture():SetVertTile(false);
+ManaBar:SetPoint("CENTER",AuraGroup,"CENTER",0,-139);
+ManaBar:SetFrameStrata("LOW");
+ManaBar:SetStatusBarColor(0,0.5,1);
+ManaBar:Show();
+ManaBar:SetAlpha(0);
+
+ManaBar.bg = ManaBar:CreateTexture(nil,"BACKGROUND");
+ManaBar.bg:SetTexture("Interface\\TargetingFrame\\UI-StatusBar");
+ManaBar.bg:SetAllPoints(true);
+ManaBar.bg:SetVertexColor(0,0,0);
+ManaBar.bg:SetAlpha(0.5);
+
+ManaBar.text = ManaBar:CreateFontString(nil, "HIGH", "GameFontHighlightLarge");
+ManaBar.text:SetPoint("CENTER",ManaBar,"CENTER",0,0);
+ManaBar.text:SetTextColor(1,1,1,1);
+
+ManaBar:SetScript("OnUpdate",function(self)
+	if (Auras:CharacterCheck(3)) then
+		local power,maxPower = UnitPower('player',19),UnitPowerMax('player',19);
+		local _,font = self.text:GetFont();
+		
+		
+		
+		self:SetMinMaxValues(0,maxPower);
+		self:SetValue(power);
+		
+		
+		
+		if (self:GetWidth() ~= Auras.db.char.layout[3].manaBar.width) then
+			self:SetWidth(Auras.db.char.layout[3].manaBar.width);
+		end
+		
+		if (self:GetHeight() ~= Auras.db.char.layout[3].manaBar.height) then
+			self:SetHeight(Auras.db.char.layout[3].manaBar.height);
+		end
+		
+		if (font ~= Auras.db.char.layout[3].manaBar.textSize) then
+			self.text:SetFont("Fonts\\FRIZQT__.TTF", Auras.db.char.layout[3].manaBar.textSize)
+		end
+		
+		if (Auras.db.char.config[3].manaBar.justify == "Left") then
+			self.text:ClearAllPoints();
+			self.text:SetPoint("LEFT",15,0);
+		elseif (Auras.db.char.config[3].manaBar.justify == "Center") then
+			self.text:ClearAllPoints();
+			self.text:SetPoint("CENTER",0,0);
+		else
+			self.text:ClearAllPoints();
+			self.text:SetPoint("RIGHT",-15,0);
+		end
+			
+		if (Auras.db.char.aura[3].ManaBar) then
+			
+			if (not Auras.db.char.config[3].manaBar.isAdjustable and not Auras.db.char.config[3].isMoving) then
+				if (UnitAffectingCombat('player')) then
+					self:SetAlpha(Auras.db.char.config[3].manaBar.alphaCombat);
+				else
+					self:SetAlpha(Auras.db.char.config[3].manaBar.alphaOoC);
+				end
+				
+				if (Auras.db.char.config[3].manaBar.isDisplayText) then
+					self.text:SetText(Auras:ManaPrecision(Auras.db.char.config[3].manaBar.precision,true));
+				else
+					self.text:SetText('');
+				end
+			elseif (Auras.db.char.config[3].manaBar.isAdjustable or Auras.db.char.config[3].isMoving) then
+				--Auras:ToggleAuraVisibility(self,true,'alpha');
+				if (Auras.db.char.config[3].manaBar.alphaCombat == 0) then
+					self:SetAlpha(1);
+				else
+					self:SetAlpha(Auras.db.char.config[3].manaBar.alphaCombat);
+				end
+				self:SetValue(UnitPowerMax('player',19));
+				if (Auras.db.char.config[3].manaBar.isDisplayText) then
+					self.text:SetText(Auras:ManaPrecision(Auras.db.char.config[3].manaBar.precision));
+				else
+					self.text:SetText('');
+				end
+			end
+		else
+			self:SetAlpha(0);
+		end
+	else
+		self:SetAlpha(0);
+	end
+end);
+
+SSA.ManaBar = ManaBar;
+_G["SSA_ManaBar"] = ManaBar;
+
 local function SetTidalWavesAnimationState(self,isAnimate,isShown,count,color)
-	if (isAnimate and isShown and not count) then
+	if (isShown and (not count or count == 0)) then
 		self:SetValue(2);
 		self:SetStatusBarColor(color.r,color.g,color.b);
-			
-		if (not self.Flash:IsPlaying()) then
-			self.Flash:Play();
+		
+		if (isAnimate) then
+			if (not self.Flash:IsPlaying()) then
+				self.Flash:Play();
+			end
+		else
+			self:SetAlpha(1);
+			if (self.Flash:IsPlaying()) then
+				self.Flash:Stop();
+			end
 		end
-	elseif (not isAnimate or not isShown or count > 0) then
+	elseif (not isShown or count > 0) then
 		if (self.Flash:IsPlaying()) then
 			self.Flash:Stop();
 		end
@@ -1049,10 +1151,10 @@ TidalWavesBar.Flash.fadeOut:SetEndDelay(0);
 TidalWavesBar:SetScript("OnUpdate",function(self)
 	if (Auras:CharacterCheck(3)) then
 		local buff,_,_,count,_,duration,expires = UnitBuff('player',Auras:GetSpellName(53390));
-		local color = Auras.db.char.layout[3].tidalWavesBar.emptyColor;
-		local isAnimate = Auras.db.char.triggers.res.animTidalWaves;
-		local combatDisplay = Auras.db.char.triggers.res.CombatTidalWaveDisplay;
-		local OoCDisplay = Auras.db.char.triggers.res.OoCTidalWaveDisplay;
+		local color = Auras.db.char.config[3].tidalWavesBar.emptyColor;
+		local isAnimate = Auras.db.char.config[3].tidalWavesBar.animate;
+		local combatDisplay = Auras.db.char.config[3].tidalWavesBar.combatDisplay;
+		local OoCDisplay = Auras.db.char.config[3].tidalWavesBar.OoCDisplay;
 		local remaining,progress
 		
 		if (buff) then
@@ -1064,7 +1166,7 @@ TidalWavesBar:SetScript("OnUpdate",function(self)
 		if (healTime > 0) then
 			elapsed = GetTime() - healTime;
 			
-			if (elapsed <= Auras.db.char.triggers.res.TidalWaveTime) then
+			if (elapsed <= Auras.db.char.triggers[3].TidalWaveTime) then
 				isVisible = true;
 			else
 				healTime = 0;
@@ -1073,12 +1175,16 @@ TidalWavesBar:SetScript("OnUpdate",function(self)
 			isVisible = false;
 		end]]
 		--Auras:ToggleAuraVisibility(self,true,'showhide');
+		if (self:GetWidth() ~= Auras.db.char.layout[3].tidalWavesBar.width) then
+			self:SetWidth(Auras.db.char.layout[3].tidalWavesBar.width);
+		end
 		
-		self:SetWidth(Auras.db.char.layout[3].tidalWavesBar.width);
-		self:SetHeight(Auras.db.char.layout[3].tidalWavesBar.height);
+		if (self:GetHeight() ~= Auras.db.char.layout[3].tidalWavesBar.height) then
+			self:SetHeight(Auras.db.char.layout[3].tidalWavesBar.height);
+		end
 		
 		if (Auras.db.char.aura[3].TidalWavesBar) then
-			if (not Auras.db.char.layout[3].isMoving) then
+			if (not Auras.db.char.config[3].isMoving and not Auras.db.char.config[3].tidalWavesBar.isAdjustable) then
 				if (UnitAffectingCombat('player')) then
 					if (Auras:IsTargetFriendly()) then
 						if (combatDisplay == "Never" or combatDisplay == "On Heal Only") then
@@ -1099,7 +1205,7 @@ TidalWavesBar:SetScript("OnUpdate",function(self)
 							elseif (combatDisplay == "Never") then
 								SetTidalWavesAnimationState(self,isAnimate,false,count,color)
 							elseif (combatDisplay == "Target & On Heal" or combatDisplay == "On Heal Only") then
-								if ((progress or 0) <= Auras.db.char.triggers.res.TidalWaveTime and (progress or 0) ~= 0) then
+								if ((progress or 0) <= Auras.db.char.config[3].tidalWavesBar.OoCTime and (progress or 0) ~= 0) then
 									SetTidalWavesAnimationState(self,isAnimate,true,count,color)
 								else
 									SetTidalWavesAnimationState(self,isAnimate,false,count,color)
@@ -1131,13 +1237,13 @@ TidalWavesBar:SetScript("OnUpdate",function(self)
 								SetTidalWavesAnimationState(self,isAnimate,false,count,color)
 								--ToggleAlpha(self,0);
 							elseif (OoCDisplay == "Target & On Heal" or OoCDisplay == "On Heal Only") then
-								if ((progress or 0) <= Auras.db.char.triggers.res.TidalWaveTime and (progress or 0) ~= 0) then
+								if ((progress or 0) <= Auras.db.char.config[3].tidalWavesBar.OoCTime and (progress or 0) ~= 0) then
 									--ToggleAlpha(self,1);
-									--print("On: "..tostring((progress or 0).." - "..Auras.db.char.triggers.res.TidalWaveTime));
+									--print("On: "..tostring((progress or 0).." - "..Auras.db.char.triggers[3].TidalWaveTime));
 									SetTidalWavesAnimationState(self,isAnimate,true,count,color)
 								else
 									--ToggleAlpha(self,0);
-									--print("Off: "..tostring((progress or 0).." - "..Auras.db.char.triggers.res.TidalWaveTime));
+									--print("Off: "..tostring((progress or 0).." - "..Auras.db.char.triggers[3].TidalWaveTime));
 									SetTidalWavesAnimationState(self,isAnimate,false,count,color)
 								end
 							end
@@ -1148,6 +1254,7 @@ TidalWavesBar:SetScript("OnUpdate",function(self)
 				if (self.Flash:IsPlaying()) then
 					self.Flash:Stop();
 				end
+				self:SetValue(2);
 				self:SetAlpha(1);
 			end
 		else
@@ -1165,13 +1272,13 @@ TidalWavesBar:SetScript("OnUpdate",function(self)
 end);
 
 TidalWavesBar:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseDown(self,'resGrp',button);
 	end
 end);
 
 TidalWavesBar:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
@@ -1303,7 +1410,7 @@ Cloudburst:SetScript("OnUpdate",function(self,elapsed)
 			end
 		end
 
-		if (not Auras.db.char.layout[3].isMoving) then
+		if (not Auras.db.char.config[3].isMoving) then
 			if (absorbed and Auras.db.char.aura[3].CloudburstAbsorbBar) then
 				self.icon.text:SetText(duration);
 				self:SetAlpha(1);
@@ -1322,13 +1429,13 @@ Cloudburst:SetScript("OnUpdate",function(self,elapsed)
 end);
 
 Cloudburst:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseDown(self,'resGrp',button);
 	end
 end);
 
 Cloudburst:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
@@ -1368,7 +1475,6 @@ EarthenShieldTotemBar.bg:SetAlpha(0.5);
 
 EarthenShieldTotemBar.text = EarthenShieldTotemBar:CreateFontString(nil, "HIGH", "GameFontHighlightLarge");
 EarthenShieldTotemBar.text:SetPoint("CENTER",EarthenShieldTotemBar,"RIGHT",-25,0);
-EarthenShieldTotemBar.text:SetFont("Interface\\addons\\ShamanAuras\\Media\\fonts\\Continuum_Medium.ttf", 12);
 EarthenShieldTotemBar.text:SetTextColor(1,1,1,1);
 
 -- Build Earthen Shield Timer Status Bar
@@ -1387,12 +1493,13 @@ EarthenShieldTotemBar.Timer:SetAlpha(0);
 
 EarthenShieldTotemBar.Timer.text = EarthenShieldTotemBar.Timer:CreateFontString(nil, "HIGH", "GameFontHighlightLarge");
 EarthenShieldTotemBar.Timer.text:SetPoint("CENTER",EarthenShieldTotemBar.Timer,"LEFT",25,0);
-EarthenShieldTotemBar.Timer.text:SetFont("Interface\\addons\\ShamanAuras\\Media\\fonts\\Continuum_Medium.ttf", 12);
+--EarthenShieldTotemBar.Timer.text:SetFont("Interface\\addons\\ShamanAuras\\Media\\fonts\\Continuum_Medium.ttf", 12);
 EarthenShieldTotemBar.Timer.text:SetTextColor(1,1,1,1);
 
 EarthenShieldTotemBar:SetScript("OnUpdate",function(self,elapsed)
 	if (Auras:CharacterCheck(3)) then
 		local timer,seconds = Auras:parseTime(((EST_Expires or 0) - GetTime()),true);
+		local _,font = self.text:GetFont();
 		
 		--Auras:ToggleAuraVisibility(self,true,'showhide');
 		
@@ -1406,30 +1513,66 @@ EarthenShieldTotemBar:SetScript("OnUpdate",function(self,elapsed)
 			self.Timer:SetHeight(self:GetHeight());
 		end
 		
-		if (not Auras.db.char.layout[3].earthenShieldBar.isAdjustable and not Auras.db.char.layout[3].isMoving) then
+		if (font ~= Auras.db.char.layout[3].earthenShieldBar.textSize) then
+			self.text:SetFont("Interface\\addons\\ShamanAuras\\Media\\fonts\\Continuum_Medium.ttf", Auras.db.char.layout[3].earthenShieldBar.textSize);
+			self.Timer.text:SetFont("Interface\\addons\\ShamanAuras\\Media\\fonts\\Continuum_Medium.ttf", Auras.db.char.layout[3].earthenShieldBar.textSize);
+		end
+		
+		if (not Auras.db.char.config[3].earthenShieldBar.isAdjustable and not Auras.db.char.config[3].isMoving) then				
 			if ((seconds or 0) > 0.1) then
 				self.Timer:SetValue(seconds);
-				self.Timer.text:SetText(timer);
+				if (UnitAffectingCombat('player')) then
+					self:SetAlpha(Auras.db.char.config[3].earthenShieldBar.alphaCombat);
+				else
+					self:SetAlpha(Auras.db.char.config[3].earthenShieldBar.alphaOoC);
+				end
+				if (Auras.db.char.config[3].earthenShieldBar.isDisplayTimerText) then
+					self.Timer.text:SetText(timer);
+				else
+					self.Timer.text:SetText('');
+				end
 			else
+				self:SetAlpha(0);
 				self.Timer:SetValue(0);
 				self.Timer.text:SetText('');
 			end
-		elseif (Auras.db.char.layout[3].earthenShieldBar.isAdjustable or Auras.db.char.layout[3].isMoving) then
-			self:SetAlpha(0.5);
+		elseif (Auras.db.char.config[3].earthenShieldBar.isAdjustable or Auras.db.char.config[3].isMoving) then
+			--self:SetAlpha(1);
+			--self.Timer:SetAlpha(1);
+			--self.bg:SetAlpha(1);
+			if (Auras.db.char.config[3].earthenShieldBar.alphaCombat == 0) then
+				self:SetAlpha(1);
+				self.Timer:SetAlpha(1);
+			else
+				self:SetAlpha(Auras.db.char.config[3].earthenShieldBar.alphaCombat);
+				self.Timer:SetAlpha(Auras.db.char.config[3].earthenShieldBar.alphaCombat);
+			end
+			if (Auras.db.char.config[3].earthenShieldBar.isDisplayHealthText) then
+				self.text:SetText("100%");
+			else
+				self.text:SetText('');
+			end
+			
+			if (Auras.db.char.config[3].earthenShieldBar.isDisplayTimerText) then
+				self.Timer.text:SetText("5");
+				self.Timer:SetValue(5);
+			else
+				self.Timer.text:SetText('');
+			end
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'alpha');
+		self:SetAlpha(0);
 	end
 end);
 
 EarthenShieldTotemBar:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseDown(self,'resGrp',button);
 	end
 end);
 
 EarthenShieldTotemBar:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
@@ -1628,7 +1771,7 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 			end
 		end
 		
-		if (Auras.db.char.layout[3].isMoving) then
+		if (Auras.db.char.config[3].isMoving) then
 			self:SetBackdrop(backdrop);
 			self:SetBackdropColor(0,0,0,0.85);
 		else
@@ -1640,13 +1783,13 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 end);
 
 BuffTimerBarGrp:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseDown(self,'resGrp',button);
 	end
 end);
 
 BuffTimerBarGrp:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
@@ -1762,7 +1905,7 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		end
 		
 		SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."\nNum Totems: "..tostring(mainTotems).."\nMemory Usage: "..GetAddOnMemoryUsage("ShamanAurasDev"));
-		if (Auras.db.char.layout[3].isMoving) then
+		if (Auras.db.char.config[3].isMoving) then
 			self:SetBackdrop(backdrop);
 			self:SetBackdropColor(0,0,0,0.85);
 		else
@@ -1774,13 +1917,13 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 end);
 
 MainTimerBarGrp:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseDown(self,'resGrp',button);
 	end
 end);
 
 MainTimerBarGrp:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
@@ -1860,7 +2003,7 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 			end
 		end
 		
-		if (Auras.db.char.layout[3].isMoving) then
+		if (Auras.db.char.config[3].isMoving) then
 			self:SetBackdrop(backdrop);
 			self:SetBackdropColor(0,0,0,0.85);
 		else
@@ -1872,13 +2015,13 @@ UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 end);
 
 UtilTimerBarGrp:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseDown(self,'resGrp',button);
 	end
 end);
 
 UtilTimerBarGrp:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
@@ -1940,7 +2083,7 @@ Undulation:SetScript("OnUpdate",function(self)
 		
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
-		if (not Auras.db.char.layout[3].isMoving) then
+		if (not Auras.db.char.config[3].isMoving) then
 			if (buff and Auras.db.char.aura[3].Undulation) then
 				self:SetAlpha(1);
 			else
@@ -1950,7 +2093,7 @@ Undulation:SetScript("OnUpdate",function(self)
 			self:SetAlpha(1);
 		end
 		
-		if (Auras.db.char.layout[3].isMoving) then
+		if (Auras.db.char.config[3].isMoving) then
 			self:SetBackdrop(backdrop);
 			self:SetBackdropColor(0,0,0,0.85);
 		else
@@ -1962,13 +2105,13 @@ Undulation:SetScript("OnUpdate",function(self)
 end);
 
 Undulation:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseDown(self,'resGrp',button);
 	end
 end);
 
 Undulation:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.layout[3].isMoving) then
+	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
@@ -2016,8 +2159,15 @@ EventFrame:SetScript("OnEvent",function(self,event,...)
 					SSA.ErrorFrame.text:SetText("EST Summoned");
 					local EST = SSA.EarthenShieldTotemBar;
 					EST_Expires = GetTime() + 15;
-					SSA.EarthenShieldTotemBar:SetAlpha(1);
-					SSA.EarthenShieldTotemBar.Timer:SetAlpha(1);
+					--SSA.EarthenShieldTotemBar:SetAlpha(1);
+					--SSA.EarthenShieldTotemBar.Timer:SetAlpha(1);
+					--[[if (UnitAffectingCombat('player')) then
+						EarthenShieldTotemBar:SetAlpha(Auras.db.char.config[3].manaBar.alphaCombat);
+						EarthenShieldTotemBar.Timer:SetAlpha(Auras.db.char.config[3].manaBar.alphaCombat);
+					else
+						EarthenShieldTotemBar:SetAlpha(Auras.db.char.config[3].manaBar.alphaOoC);
+						EarthenShieldTotemBar.Timer:SetAlpha(Auras.db.char.config[3].manaBar.alphaOoC);
+					end]]
 					SSA.EarthenShieldTotemBar:SetMinMaxValues(0,UnitHealthMax('player'));
 					SSA.EarthenShieldTotemBar.text:SetText("100%");
 					SSA.EarthenShieldTotemBar:SetValue(UnitHealthMax('player'));

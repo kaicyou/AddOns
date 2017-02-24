@@ -203,18 +203,17 @@ function Hekili:OnInitialize()
 
     ns.primeTooltipColors()
 
-
     callHook( "onInitialize" )
 
     if class.file == 'NONE' then
         if self.DB.profile.Enabled then
-                self.DB.profile.Enabled = false
-                self.DB.profile.AutoDisabled = true
+            self.DB.profile.Enabled = false
+            self.DB.profile.AutoDisabled = true
         end
         for i, buttons in ipairs( ns.UI.Buttons ) do
-                for j, _ in ipairs( buttons ) do
-                        buttons[j]:Hide()
-                end
+            for j, _ in ipairs( buttons ) do
+                buttons[j]:Hide()
+            end
         end
     end
 
@@ -251,6 +250,7 @@ function Hekili:ReInitialize()
             end
         end
     end
+
 end    
 
 
@@ -628,6 +628,7 @@ function Hekili:ProcessHooks( dispID, solo )
     end
 
     -- if not solo then C_Timer.After( 1 / self.DB.profile['Updates Per Second'], self[ 'ProcessDisplay'..dispID ] ) end
+    ns.displayUpdates[ dispID ] = GetTime()
     updatedDisplays[ dispID ] = true
     -- Hekili:UpdateDisplay( dispID )
 
@@ -961,11 +962,11 @@ function Hekili:UpdateDisplay( dispID )
                         end
 
                         if ( class.file == 'HUNTER' or class.file == 'MONK' ) and Queue[i].exact_time and Queue[i].exact_time ~= gcd_start + gcd_duration and Queue[i].exact_time > now then
-                                -- button.Texture:SetDesaturated( Queue[i].time > 0 )
-                                button.Delay:SetText( format( "%.1f", Queue[i].exact_time - now ) )
+                            -- button.Texture:SetDesaturated( Queue[i].time > 0 )
+                            button.Delay:SetText( format( "%.1f", Queue[i].exact_time - now ) )
                         else
-                                -- button.Texture:SetDesaturated( false )
-                                button.Delay:SetText( nil )
+                            -- button.Texture:SetDesaturated( false )
+                            button.Delay:SetText( nil )
                         end
 
                     else
@@ -987,7 +988,8 @@ function Hekili:UpdateDisplay( dispID )
                             ns.UI.Buttons[dispID][i].Texture:SetVertexColor(1, 1, 1)
                         end
                     elseif display['Range Checking'] == 'ability' then
-                        if ns.lib.SpellRange.IsSpellInRange( class.abilities[ aKey ].name, 'target' ) == 0 then
+                        local rangeSpell = class.abilities[ aKey ].range and GetSpellInfo( class.abilities[ aKey ].range ) or class.abilities[ aKey ].name
+                        if ns.lib.SpellRange.IsSpellInRange( rangeSpell, 'target' ) == 0 then
                             ns.UI.Buttons[dispID][i].Texture:SetVertexColor(1, 0, 0)
                         elseif i == 1 and select(2, IsUsableSpell( class.abilities[ aKey ].id )) then
                             ns.UI.Buttons[dispID][i].Texture:SetVertexColor(0.4, 0.4, 0.4)

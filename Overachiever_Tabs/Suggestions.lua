@@ -440,6 +440,7 @@ local ACHID_ZONE_MISC = {
 		7317, -- One Many Army
 		7318, -- A Taste of History
 		--7315 "Eternally in the Vale" is now a Feat of Strength
+		7322, -- Roll Club
 	},
 	["Isle of Thunder"] = 8121, -- "Stormbreaker"
 	["Timeless Isle"] = {

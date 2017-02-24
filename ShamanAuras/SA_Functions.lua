@@ -292,7 +292,7 @@ function Auras:BuildMoveUI(AuraObjects,MoveStrings,name)
 				AuraObjects = SSA.AuraObjectsRes;
 			end
 			
-			Auras.db.char.layout[spec].isMoving = true;
+			Auras.db.char.config[spec].isMoving = true;
 			
 			for i=1,getn(AuraObjects) do
 				AuraObjects[i].object:EnableMouse(true);
@@ -439,7 +439,7 @@ function Auras:BuildMoveUI(AuraObjects,MoveStrings,name)
 			Move.Info:Hide();
 		end
 		
-		Auras.db.char.layout[spec].isMoving = false;
+		Auras.db.char.config[spec].isMoving = false;
 		
 		for i=1,getn(AuraObjects) do
 			--[[if (AuraObjects[i].backdrop) then
@@ -743,9 +743,9 @@ function Auras:CreateVerticalStatusBar(statusbar,anchor,x,r1,g1,b1,text,duration
 	statusbar.rotatename:Play();
 end
 
-local function BuildHorizontalIconRow(rowObj,rowList,y,spec,side)
+local function BuildHorizontalIconRow(rowObj,rowList,y,spec,group,side)
 	local rowCtr = 0;
-	local layout = Auras.db.char.layout[spec].primary[side];
+	local layout = Auras.db.char.layout[spec][group][side];
 	local parent = rowObj[1]:GetParent();
 	local xOdd = {
 		[1] = (0 - (layout.spacing *2)),
@@ -890,9 +890,9 @@ local function BuildHorizontalIconRow(rowObj,rowList,y,spec,side)
 	wipe(xOdd);
 end
 
-local function BuildVerticalIconRow(rowObj,rowList,x,spec,side)
+local function BuildVerticalIconRow(rowObj,rowList,x,spec,group,side)
 	local rowCtr = 0;
-	local layout = Auras.db.char.layout[spec].secondary[side];
+	local layout = Auras.db.char.layout[spec][group][side];
 	local yOdd = {
 		[1] = (0 + (layout.spacing *2)),
 		[2] = (0 + layout.spacing),
@@ -1070,10 +1070,13 @@ local function BuildVerticalIconRow(rowObj,rowList,x,spec,side)
 	wipe(yOdd);
 end
 
-function Auras:UpdateTalents()
+function Auras:UpdateTalents(isTalentChange)
 	SSA.spec = GetSpecialization()
 	spec = SSA.spec;
 	local rowObj,rowList = {},{};
+	if (isTalentChange and InterfaceOptionsFrame:IsShown()) then
+		InterfaceOptionsFrame:Hide();
+	end
 	
 	if (spec == 1) then -- Elemental
 		if (Auras.db.char.frames.timerbars.buff[1]) then
@@ -1121,7 +1124,11 @@ function Auras:UpdateTalents()
 			[5] = Auras.db.char.aura[1].ElementalBlast and select(4,GetTalentInfo(5,3,1)),
 		}
 		
-		BuildHorizontalIconRow(rowObj,rowList,0,1,'top');
+		if (Auras.db.char.layout[1].orientation.top == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,1,'primary','top');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,1,'primary','top');
+		end
 		
 		------------------------------------------------------------
 		---- Bottom Icon Row
@@ -1147,7 +1154,11 @@ function Auras:UpdateTalents()
 			[7] = Auras.db.char.aura[1].Icefury and select(4,GetTalentInfo(7,3,1)),
 		}
 		
-		BuildHorizontalIconRow(rowObj,rowList,0,1,'bottom');
+		if (Auras.db.char.layout[1].orientation.bottom == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,1,'primary','bottom');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,1,'primary','bottom');
+		end
 		
 		------------------------------------------------------------
 		---- Left Icon Row
@@ -1171,7 +1182,11 @@ function Auras:UpdateTalents()
 			[6] = Auras.db.char.aura[1].CleanseSpiritEle,
 		}
 		
-		BuildVerticalIconRow(rowObj,rowList,0,1,'left');
+		if (Auras.db.char.layout[1].orientation.left == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,1,'secondary','left');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,1,'secondary','left');
+		end
 		
 		------------------------------------------------------------
 		---- Right Icon Row
@@ -1195,7 +1210,11 @@ function Auras:UpdateTalents()
 			[6] = Auras.db.char.aura[1].GustWindEle and select(4,GetTalentInfo(2,1,1)),
 		}
 		
-		BuildVerticalIconRow(rowObj,rowList,0,1,'right');
+		if (Auras.db.char.layout[1].orientation.right == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,1,'secondary','right');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,1,'secondary','right');
+		end
 		
 		-- Show Elemental-only Objects
 		--[[SSA.FlameShockGlow:Show();
@@ -1243,7 +1262,12 @@ function Auras:UpdateTalents()
 			[5] = Auras.db.char.aura[2].LavaLash,
 		}
 		
-		BuildHorizontalIconRow(rowObj,rowList,0,2,'top');
+		--BuildHorizontalIconRow(rowObj,rowList,0,2,'top');
+		if (Auras.db.char.layout[2].orientation.top == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,2,'primary','top');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,2,'primary','top');
+		end
 		
 		------------------------------------------------------------
 		---- Bottom Icon Row
@@ -1269,7 +1293,12 @@ function Auras:UpdateTalents()
 			[7] = Auras.db.char.aura[2].FeralSpirit,
 		}
 		
-		BuildHorizontalIconRow(rowObj,rowList,0,2,'bottom');
+		--BuildHorizontalIconRow(rowObj,rowList,0,2,'bottom');
+		if (Auras.db.char.layout[2].orientation.bottom == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,2,'primary','bottom');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,2,'primary','bottom');
+		end
 		
 		------------------------------------------------------------
 		---- Left Icon Row
@@ -1291,7 +1320,12 @@ function Auras:UpdateTalents()
 			[5] = Auras.db.char.aura[2].CleanseSpiritEnh,
 		}
 
-		BuildVerticalIconRow(rowObj,rowList,0,2,'left');
+		--BuildVerticalIconRow(rowObj,rowList,0,2,'left');
+		if (Auras.db.char.layout[2].orientation.left == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,2,'secondary','left');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,2,'secondary','left');
+		end
 		
 		------------------------------------------------------------
 		---- Right Icon Row
@@ -1315,7 +1349,12 @@ function Auras:UpdateTalents()
 			[6] = Auras.db.char.aura[2].FeralLunge and select(4,GetTalentInfo(2,2,1)),
 		}
 
-		BuildVerticalIconRow(rowObj,rowList,0,2,'right');		
+		--BuildVerticalIconRow(rowObj,rowList,0,2,'right');		
+		if (Auras.db.char.layout[2].orientation.right == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,2,'secondary','right');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,2,'secondary','right');
+		end
 	else -- Restoration
 		if (Auras.db.char.frames.timerbars.buff[3]) then
 			SSA.BuffTimerBarGrpRes:Show();
@@ -1362,7 +1401,12 @@ function Auras:UpdateTalents()
 			[5] = Auras.db.char.aura[3].UnleashLife and select(4,GetTalentInfo(1,2,1)),
 		}
 
-		BuildHorizontalIconRow(rowObj,rowList,0,3,'top');
+		--BuildHorizontalIconRow(rowObj,rowList,0,3,'top');
+		if (Auras.db.char.layout[3].orientation.top == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,3,'primary','top');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,3,'primary','top');
+		end
 		
 		------------------------------------------------------------
 		---- Bottom Icon Row
@@ -1386,7 +1430,12 @@ function Auras:UpdateTalents()
 			[6] = Auras.db.char.aura[3].WindRushTotemRes and select(4,GetTalentInfo(2,3,1)),
 		}
 
-		BuildHorizontalIconRow(rowObj,rowList,0,3,'bottom');
+		--BuildHorizontalIconRow(rowObj,rowList,0,3,'bottom');
+		if (Auras.db.char.layout[3].orientation.bottom == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,3,'primary','bottom');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,3,'primary','bottom');
+		end
 		
 		------------------------------------------------------------
 		---- Left Icon Row
@@ -1410,7 +1459,12 @@ function Auras:UpdateTalents()
 			[6] = Auras.db.char.aura[3].EarthenShieldTotem and select(4,GetTalentInfo(5,2,1)),
 		}
 
-		BuildVerticalIconRow(rowObj,rowList,0,3,'left');
+		--BuildVerticalIconRow(rowObj,rowList,0,3,'left');
+		if (Auras.db.char.layout[3].orientation.left == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,3,'secondary','left');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,3,'secondary','left');
+		end
 		
 		------------------------------------------------------------
 		---- Right Icon Row
@@ -1436,7 +1490,12 @@ function Auras:UpdateTalents()
 			[7] = Auras.db.char.aura[3].AncestralGuidanceRes and select(4,GetTalentInfo(4,2,1)),
 		}
 
-		BuildVerticalIconRow(rowObj,rowList,0,3,'right');	
+		--BuildVerticalIconRow(rowObj,rowList,0,3,'right');	
+		if (Auras.db.char.layout[3].orientation.right == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,3,'secondary','right');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,3,'secondary','right');
+		end
 	end
 	
 	--Auras:SetupCharges()

@@ -201,9 +201,9 @@ SSA.ChargeCDFrame = {
 
 function Auras:GetMaelstromBarObj(curSpec)
 	if (curSpec == 1) then
-		return SSA.MaelstromBarEle,Auras.db.char.triggers.ele.maelstrom;
+		return SSA.MaelstromBarEle,Auras.db.char.config[1].maelstromBar.threshold;
 	elseif (curSpec == 2) then
-		return SSA.MaelstromBarEnh,Auras.db.char.triggers.enh.maelstrom;
+		return SSA.MaelstromBarEnh,Auras.db.char.config[1].maelstromBar.threshold;
 	end
 end
 
@@ -269,6 +269,38 @@ function Auras:ToggleAuraVisibility(self,isEnable,visType)
 				self:SetAlpha(0);
 			end
 		end
+	end
+end
+
+function Auras:ManaPrecision(precision,isNotMax)
+	local power = nil;
+	if (isNotMax) then
+		power = UnitPower('player',19);
+	else
+		power = UnitPowerMax('player',19);
+	end
+	
+	if (power > 1000) then
+		--local power = UnitPowerMax('player',19);
+		if (precision == "Long") then
+			if (Auras.db.char.config[3].manaBar.grouping) then
+				return BreakUpLargeNumbers(power);
+			else
+				return power;
+			end
+		elseif (precision == "Short") then
+			if (power > 1000000) then
+				return string.format("%.1f",power / 1000000).."M";
+			elseif (power > 1000) then
+				if (Auras.db.char.config[3].manaBar.grouping) then
+					return string.format("%.1f",BreakUpLargeNumbers(power / 1000)).."K";
+				else
+					return string.format("%.1f",power / 1000).."K";
+				end
+			end
+		end
+	else
+		return power;		
 	end
 end
 
@@ -351,12 +383,12 @@ function Auras:parseTime(timer,precision)
 end
 
 function Auras:AdjustAuraSize(self,spec,object)
-	if (self:GetWidth() ~= Auras.db.char.layout[spec][object].width) then
-		self:SetWidth(Auras.db.char.layout[spec][object].width);
+	if (self:GetWidth() ~= Auras.db.char.config[spec][object].width) then
+		self:SetWidth(Auras.db.char.config[spec][object].width);
 	end
 	
-	if (self:GetHeight() ~= Auras.db.char.layout[spec][object].height) then
-		self:SetHeight(Auras.db.char.layout[spec][object].height);
+	if (self:GetHeight() ~= Auras.db.char.config[spec][object].height) then
+		self:SetHeight(Auras.db.char.config[spec][object].height);
 	end
 end
 
@@ -444,14 +476,14 @@ function Auras:IsTargetFriendly()
 	end
 end
 
-function Auras:SpellRangeCheck(self,spellID,flag)
+function Auras:SpellRangeCheck(self,spellID,flag,spec)
 	if (Auras:IsTargetEnemy() and flag) then
 		if (IsSpellInRange(Auras:GetSpellName(spellID)) == 1) then
 			self.texture:SetDesaturated(false);
 			self.texture:SetVertexColor(1,1,1,1);
 		else
 			self.texture:SetDesaturated(true);
-			self.texture:SetVertexColor(Auras.db.char.triggers.ele.OoRColor.r,Auras.db.char.triggers.ele.OoRColor.g,Auras.db.char.triggers.ele.OoRColor.b,1);
+			self.texture:SetVertexColor(Auras.db.char.triggers[spec].OoRColor.r,Auras.db.char.triggers[spec].OoRColor.g,Auras.db.char.triggers[spec].OoRColor.b,Auras.db.char.triggers[spec].OoRColor.a);
 		end
 	elseif (Auras:IsTargetEnemy() and not flag) then
 		self.texture:SetDesaturated(true);
@@ -549,7 +581,7 @@ end
 function Auras:OnInitialize()
 	local defaults = {
 		char = {
-			isR42FirstLoad = true,
+			isR45FirstLoad = true,
 			version = nil,
 			name = nil,
 			isEleFirst = true,
@@ -570,13 +602,13 @@ function Auras:OnInitialize()
 				}
 			},
 			layout = {
-				LeftButton = false,
-				MiddleButton = false,
-				RightButton = false,
-				isShiftDown = false,
-				isCtrlDown = false,
 				[1] = {
-					isMoving = false,	
+					orientation = {
+						top = "Horizontal",
+						bottom = "Horizontal",
+						left = "Vertical",
+						right = "Vertical",
+					},
 					primary = {
 						top = {
 							icon = 32,
@@ -602,18 +634,23 @@ function Auras:OnInitialize()
 						},
 					},
 					maelstromBar = {
-						isAdjustable = false,
 						width = 260,
 						height = 21,
+						textSize = 12,
 					},
 					icefuryBar = {
-						isAdjustable = false,
 						width = 260,
 						height = 21,
+						textSize = 12,
 					},
 				},
 				[2] = {
-					isMoving = false,
+					orientation = {
+						top = "Horizontal",
+						bottom = "Horizontal",
+						left = "Vertical",
+						right = "Vertical",
+					},
 					primary = {
 						top = {
 							icon = 32,
@@ -639,13 +676,18 @@ function Auras:OnInitialize()
 						},
 					},
 					maelstromBar = {
-						isAdjustable = false,
 						width = 260,
 						height = 21,
+						textSize = 12,
 					},
 				},
 				[3] = {
-					isMoving = false,
+					orientation = {
+						top = "Horizontal",
+						bottom = "Horizontal",
+						left = "Vertical",
+						right = "Vertical",
+					},
 					primary = {
 						top = {
 							icon = 32,
@@ -671,23 +713,27 @@ function Auras:OnInitialize()
 						},
 					},
 					earthenShieldBar = {
-						isAdjustable = false,
 						width = 260,
 						height = 21,
+						textSize = 12,
+					},
+					manaBar = {
+						width = 260,
+						height = 21,
+						textSize = 12,
 					},
 					tidalWavesBar = {
-						emptyColor = {
-							r = 1,
-							g = 0,
-							b = 0,
-							a = 1,
-						},
-						isAdjustable = false,
 						width = 225,
 						height = 7,
 					},
 				},
 				default = {
+					orientation = {
+						top = "Horizontal",
+						bottom = "Horizontal",
+						left = "Vertical",
+						right = "Vertical",
+					},
 					primary = {
 						top = {
 							icon = 32,
@@ -720,6 +766,126 @@ function Auras:OnInitialize()
 						width = 225,
 						height = 7,
 					},
+					textSize = 12,
+				},
+			},
+			config = {
+				LeftButton = false,
+				MiddleButton = false,
+				RightButton = false,
+				isShiftDown = false,
+				isCtrlDown = false,
+				[1] = {
+					isMoving = false,	
+					maelstromBar = {
+						isAdjustable = false,
+						isDisplayText = true,
+						animate = true,
+						justify = "Center",
+						threshold = 90,
+						alphaCombat = 1,
+						alphaOoC = 0,
+						alphaTar = 0.5,
+					},
+					icefuryBar = {
+						isAdjustable = false,
+						isDisplayCountText = true,
+						isDisplayTimerText = true,
+						alphaCombat = 1,
+						alphaOoC = 0,
+						alphaTar = 0.5,
+					},
+				},
+				[2] = {
+					isMoving = false,
+					maelstromBar = {
+						isAdjustable = false,
+						isDisplayText = true,
+						animate = true,
+						justify = "Center",
+						threshold = 130,
+						alphaCombat = 1,
+						alphaOoC = 0,
+						alphaTar = 0.5,
+					},
+				},
+				[3] = {
+					isMoving = false,
+					earthenShieldBar = {
+						isAdjustable = false,
+						isDisplayTimerText = true,
+						isDisplayHealthText = true,
+						alphaCombat = 1,
+						alphaOoC = 0,
+					},
+					manaBar = {
+						isAdjustable = false,
+						precision = "Long",
+						grouping = true,
+						justify = "Center",
+						isDisplayText = true,
+						alphaCombat = 1,
+						alphaOoC = 0,
+					},
+					tidalWavesBar = {
+						isAdjustable = false,
+						animate = true,
+						OoCTime = 5,
+						combatDisplay = "Always",
+						OoCDisplay = "Target & On Heal",
+						emptyColor = {
+							r = 1,
+							g = 0,
+							b = 0,
+							a = 1,
+						},
+						
+					},
+				},
+				default = {
+					alphaOoC = 0,
+					alphaTar = 0.5,
+					alphaCombat = 1,
+					justify = "Center",
+					animate = true,
+					isAdjustable = false,
+					isDisplayText = true,
+					[1] = {
+						maelstromBar = {
+							threshold = 90,
+						},
+						icefuryBar = {
+							isDisplayCountText = true,
+							isDisplayTimerText = true,
+						},
+					},
+					[2] = {
+						maelstromBar = {
+							threshold = 130,
+						},
+					},
+					[3] = {
+						manaBar = {
+							precision = "Long",
+							grouping = true,
+						},
+						earthenShieldBar = {
+							isDisplayHealthText = true,
+							isDisplayTimerText = true,
+						},
+						tidalWavesBar = {
+							TidalWaveTime = 5,
+							combatDisplay = "Always",
+							OoCDisplay = "Target & On Heal",
+							OoCTime = 5,
+							emptyColor = {
+								r = 1,
+								g = 0,
+								b = 0,
+								a = 1,
+							},
+						}
+					},
 				},
 			},
 			triggers = {
@@ -736,12 +902,7 @@ function Auras:OnInitialize()
 					b = 0,
 					a = 1,
 				},
-				ele = {
-					MaelstromAnim = true,
-					maelstromAlphaOoC = 0,
-					maelstromAlphaTar = 0.5,
-					maelstromAlphaCombat = 1,
-					maelstrom = 90,
+				[1] = {
 					flameShock = 10,
 					totemMastery = 15,
 					OoCAlpha = 0.5,
@@ -752,13 +913,8 @@ function Auras:OnInitialize()
 						a = 1,
 					}
 				},
-				enh = {
-					MaelstromAnim = true,
-					maelstromAlphaOoC = 0,
-					maelstromAlphaTar = 0.5,
-					maelstromAlphaCombat = 1,
+				[2] = {
 					boulderfist = 5,
-					maelstrom = 130,
 					flametongue = 5,
 					frostbrand = 5,
 					OoCAlpha = 0.5,
@@ -769,20 +925,16 @@ function Auras:OnInitialize()
 						a = 1,
 					}
 				},
-				res = {
-					CombatTidalWaveDisplay = "Always",
-					OoCTidalWaveDisplay = "Target & On Heal",
-					TidalWaveTime = 5,
-					OoCAlpha = 0.5,
+				[3] = {
 					cloudburst = 300000,
 					flameShock = 10,
+					OoCAlpha = 0.5,
 					OoRColor = {
 						r = 1,
 						g = 0,
 						b = 0,
 						a = 1,
 					},
-					animTidalWaves = true,
 				},
 				default = {
 					gridPreview = false,
@@ -798,47 +950,25 @@ function Auras:OnInitialize()
 						b = 0,
 						a = 1,
 					},
-					ele = {
-						MaelstromAnim = true,
-						maelstrom = 90,
+					OoCAlpha = 0.5,
+					OoRColor = {
+						r = 1,
+						g = 0,
+						b = 0,
+						a = 1,
+					},
+					[1] = {
 						flameShock = 10,
 						totemMastery = 15,
-						OoCAlpha = 0.5,
-						OoRColor = {
-							r = 1,
-							g = 0,
-							b = 0,
-							a = 1,
-						},
 					},
-					enh = {
-						MaelstromAnim = true,
-						maelstrom = 130,
+					[2] = {
 						boulderfist = 5,
 						flametongue = 5,
 						frostbrand = 5,
-						OoCAlpha = 0.5,
-						OoRColor = {
-							r = 1,
-							g = 0,
-							b = 0,
-							a = 1,
-						}
 					},
-					res = {
-						CombatTidalWaveDisplay = "Always",
-						OoCTidalWaveDisplay = "Target & On Heal",
-						TidalWaveTime = 5,
-						OoCAlpha = 0.5,
+					[3] = {
 						cloudburst = 300000,
 						flameShock = 10,
-						OoRColor = {
-							r = 1,
-							g = 0,
-							b = 0,
-							a = 1,
-						},
-						animTidalWaves = true,
 					},
 				},
 			},
@@ -1020,6 +1150,7 @@ function Auras:OnInitialize()
 						LightningSurgeTotemRes = true,
 						LightningSurgeTotemBarRes = true,
 						MainTimerBarGrpRes = true,
+						ManaBar = true,
 						PurifySpirit = true,
 						Riptide = true,
 						RiptideCharge = true,
@@ -1725,11 +1856,11 @@ function Auras:OnEnable()
 					self.isMoving = false;
 				end
 				
-				Auras.db.char.layout[1].icefuryBar.isAdjustable = false;
-				Auras.db.char.layout[1].maelstromBar.isAdjustable = false;
-				Auras.db.char.layout[2].maelstromBar.isAdjustable = false;
-				Auras.db.char.layout[3].earthenShieldBar.isAdjustable = false;
-				Auras.db.char.layout[3].tidalWavesBar.isAdjustable = false;
+				Auras.db.char.config[1].icefuryBar.isAdjustable = false;
+				Auras.db.char.config[1].maelstromBar.isAdjustable = false;
+				Auras.db.char.config[2].maelstromBar.isAdjustable = false;
+				Auras.db.char.config[3].earthenShieldBar.isAdjustable = false;
+				Auras.db.char.config[3].tidalWavesBar.isAdjustable = false;
 				
 				SSA.MaelstromBarEle:SetAlpha(0);
 				SSA.MaelstromBarEnh:SetAlpha(0);
@@ -1742,14 +1873,15 @@ function Auras:OnEnable()
 	Auras:UpdateTalents();
 	spec = SSA.spec;
 	
-	Auras.db.char.layout[1].isMoving = false;
-	Auras.db.char.layout[1].maelstromBar.isAdjustable = false;
-	Auras.db.char.layout[1].icefuryBar.isAdjustable = false;
-	Auras.db.char.layout[2].isMoving = false;
-	Auras.db.char.layout[2].maelstromBar.isAdjustable = false;
-	Auras.db.char.layout[3].isMoving = false;
-	Auras.db.char.layout[3].earthenShieldBar.isAdjustable = false;
-	Auras.db.char.layout[3].tidalWavesBar.isAdjustable = false;
+	Auras.db.char.config[1].isMoving = false;
+	Auras.db.char.config[1].maelstromBar.isAdjustable = false;
+	Auras.db.char.config[1].icefuryBar.isAdjustable = false;
+	Auras.db.char.config[2].isMoving = false;
+	Auras.db.char.config[2].maelstromBar.isAdjustable = false;
+	Auras.db.char.config[3].isMoving = false;
+	Auras.db.char.config[3].earthenShieldBar.isAdjustable = false;
+	Auras.db.char.config[3].tidalWavesBar.isAdjustable = false;
+	Auras.db.char.config[3].manaBar.isAdjustable = false;
 	
 	local dbEle = Auras.db.char.frames.eleGrp;
 	local dbEnh = Auras.db.char.frames.enhGrp;
@@ -1813,8 +1945,8 @@ function Auras:OnEnable()
 		end
 	end
 
-	StaticPopupDialogs["SSA_R42_BAR_GROUP_NOTICE"] = {
-		text = "Due to large re-coding in r42, the placement of the vertical timer duration bars may be out of place. Be sure to take a moment to check their positions.",
+	StaticPopupDialogs["SSA_R45_NOTICE"] = {
+		text = "|cFF8888FFSweetsour's Shaman Auras|r\n\n|cFFFFCC00!!|r|cFFFF0000IMPORTANT|r|cFFFFCC00!!|r\n\n|cFF00FF00PLEASE NOTE|r\n|cFFFFCC00You will see this popup again after resetting your SavedVariables; feel free to ignore it when you do. It won't appear a third time.|r\n\n\n\nIn r45-beta, there has been an enormous re-coding effort within the SavedVariables structrue as well as the configuration interface. As a result, there is a possibility that you may experience various bugs and overall instability. If this occurs, it is recommended that you reset your SavedVariables files.\n\n\n\n|cFFFFCC00To reset your SavedVariables file, please do the following:\n\n1. Close out of WoW\n2. Navigate to your WoW WTF folder*\n3. Open the \"Accounts\" folder\n4. Open the folder with your account name\n5. Open the \"SavedVariables\" folder\n6. Locate and delete \"ShamanAuras\" and \"ShamanAuras.bak\"\n7. Re-open WoW|r\n\n* The default location of your WTF folder is: C:\\Program Files (x86)\\World of Warcraft\\WTF\\\n\n",
 		button1 = "Ok, thanks!",
 		OnAccept = function()
 			--AddonList:Show();
@@ -1841,10 +1973,10 @@ function Auras:OnEnable()
 	if (not Auras:CharacterCheck(0)) then
 		StaticPopup_Show ("SSA_CLASS_CHECKER")
 	end
-	
-	if (Auras.db.char.isR42FirstLoad) then
-		Auras.db.char.isR42FirstLoad = false;
-		StaticPopup_Show ("SSA_R42_BAR_GROUP_NOTICE")
+		
+	if (Auras.db.char.isR45FirstLoad) then
+		Auras.db.char.isR45FirstLoad = false;
+		StaticPopup_Show ("SSA_R45_NOTICE")
 	end
 end
 
@@ -1855,7 +1987,13 @@ function Auras:UpdateEarthenShield(self)
 	
 	if (remains > 0) then
 		self:SetValue(remains);
-		self.text:SetText(tostring(math.ceil(progress)).."%");
+		if (Auras.db.char.config[3].earthShieldBar.isDisplayHealthText) then
+			self.text:SetText(tostring(math.ceil(progress)).."%");
+		else
+			if (not Auras.db.char.config[3].earthenShieldBar.isAdjustable and not Auras.db.char.config[3].isMoving) then
+				self.text:SetText('');
+			end
+		end
 	else
 		self:SetAlpha(0);
 		self.Timer:SetAlpha(0);
@@ -1868,7 +2006,7 @@ function Auras:PLAYER_LEVEL_UP(event,level)
 end
 
 function Auras:PLAYER_TALENT_UPDATE()
-	Auras:UpdateTalents();
+	Auras:UpdateTalents(true);
 	Auras:UpdateInterfaceSettings();
 end
 

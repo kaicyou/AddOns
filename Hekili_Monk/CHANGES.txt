@@ -1,3 +1,9 @@
+commit e78b05911c6e54fc332320ff9049f54e5bd1b499
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Feb 19 21:47:57 2017 -0500
+
+    Use the proper `ready` feature instead of abusing `spend` and `spendResource`.
+
 commit 76e9aababb62483c82af9851106374b204fe17f0
 Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Sun Feb 12 22:51:07 2017 -0500

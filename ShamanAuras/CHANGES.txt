@@ -1,4 +1,49 @@
 ------------------------------------------------------------------------
+r106 | SweetsourDev | 2017-02-20 21:28:34 -0600 (Mon, 20 Feb 2017) | 5 lines
+Changed paths:
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r44.1-beta
+FIX: [Elemental] A Lua error should no longer occur when you reach the Maelstrom threshold.
+FIX: [Ele/Enh] The ligntning animation should disappear when below the Maelstrom threshold while out of combat.
+
+KNOWN ISSUE: A Lua error will occur when the Fire Elemental despawns. However, this will not affect the addon.
+------------------------------------------------------------------------
+r105 | SweetsourDev | 2017-02-20 19:44:39 -0600 (Mon, 20 Feb 2017) | 7 lines
+Changed paths:
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/ShamanAuras.toc
+
+	r44-beta
+NEW: [UI] Fully redesigned options interface!
+NEW: [UI] Players can now toggle all aura groups' orientation (horizontal or vertical)!
+NEW: [UI] All specs' configuration "Reset" buttons will now be more responsive based on changes made.
+NEW: [UI] A large amount of customization options have been added!
+NEW: [Restoration] A mana bar has been added. (Thanks, fiikusan!)
+NEW: [Elemental] Checkbox for toggling Liquid Magma Totem has been added to the settings. (Thanks, morpe!)
+------------------------------------------------------------------------
+r104 | SweetsourDev | 2017-02-20 18:59:06 -0600 (Mon, 20 Feb 2017) | 6 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r45-beta
+NEW: [UI] Fully redesigned options interface!
+NEW: [UI] Players can now toggle all aura groups' orientation (horizontal or vertical)!
+NEW: [UI] All specs' configuration "Reset" buttons will now be more responsive based on changes made.
+NEW: [UI] A large amount of customization options have been added!
+NEW: [Restoration] A mana bar has been added. (Thanks, fiikusan!)
+------------------------------------------------------------------------
 r103 | SweetsourDev | 2017-02-09 20:18:54 -0600 (Thu, 09 Feb 2017) | 2 lines
 Changed paths:
    M /trunk/SA_Frames_Enhancement.lua

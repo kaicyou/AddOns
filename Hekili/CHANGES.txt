@@ -1,3 +1,51 @@
+commit 18efb2692f835c0438045b91098bdebb740d34ad
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Feb 20 13:08:53 2017 -0500
+
+    Masque Fixes
+    
+    + The addon should properly update Masque textures for modularized specs
+    (Monks, Hunters).
+    + If you disable Masque, the icon texture should return to the right
+    size (P.S. HOW DARE YOU RESIZE MY ICON TEXTURES, MASQUE).
+
+commit 7f17cd43524ddf6954995779f31aefd1723aeeec
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Feb 20 11:51:50 2017 -0500
+
+    Range-check and Judgment
+    
+    + Add 'range' value to abilities; when set, the range-coloring will use
+    the specified spellID instead of the action spellID for range-checking.
+    + Use range on Hand of Reckoning for Judgment since IsSpellInRange()
+    returns bad data for Judgment.
+
+commit 81464635ed47db3bc9bfde5269f01e434e8fff18
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Feb 20 11:44:57 2017 -0500
+
+    Fix Consecration buff 'uptime' calculation.
+
+commit 8942edd1dcda679703965ab1557b8b5911ab139a
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Feb 19 23:04:14 2017 -0500
+
+    Elemental Fixes
+    
+    SHAMAN
+    o Earthquake consumes Echoes of the Great Sundering.
+    o Update APLs, Frost Shock was inadvertently used in place of Lightning
+    Bolt in the Lightning Rod action list.
+    
+    CORE
+    o Use proper throttling so the addon updates as scheduled (unless an
+    event occurs to trigger a faster update).
+    
+    STATE
+    + Add 'refreshable' attribute to buffs/debuffs/dots (used in Hunter
+    APL).
+    + Cache 'timeToReady' calculations to reduce CPU usage.
+
 commit 1f794d6301ca263fe592c1c2814d24fc3114af74
 Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Fri Feb 17 17:33:01 2017 -0500

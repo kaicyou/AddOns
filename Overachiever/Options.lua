@@ -50,12 +50,17 @@ Overachiever.DefaultSettings = {
   ToastCalendar_microholiday = false;
   ToastCalendar_bonusevent = false;
   ToastCalendar_dungeonevent = false;
+  ToastCalendar_noautofade = true;
   ToastCalendar_onlyclickfade = true;
   Version = THIS_VERSION;
 };
 
 local function SoundSelected(self, key, val, clicked)
   if (clicked) then  PlaySoundFile( self:Fetch() );  end
+end
+
+local function updateEnabled()
+  Overachiever_Options_ToastCalendar_onlyclickfade:SetEnabled( Overachiever_Options_ToastCalendar_noautofade:GetChecked() )
 end
 
 function Overachiever.CreateOptions(THIS_TITLE, BuildCriteriaLookupTab_check, AutoTrackCheck_Explore, CheckDraggable_AchFrame)
@@ -95,10 +100,13 @@ function Overachiever.CreateOptions(THIS_TITLE, BuildCriteriaLookupTab_check, Au
 
 	{ type = "labelwrap", text = L.OPT_LABEL_STARTTOAST, topBuffer = 4, xOffset = 0 },
 	{ variable = "ToastCalendar_holiday", text = L.OPT_STARTTOAST_HOLIDAY, tooltip = L.OPT_STARTTOAST_HOLIDAY_TIP },
-	{ variable = "ToastCalendar_microholiday", text = L.OPT_STARTTOAST_MICROHOLIDAY, tooltip = L.OPT_STARTTOAST_MICROHOLIDAY_TIP },
+	{ variable = "ToastCalendar_microholiday", text = L.OPT_STARTTOAST_MICROHOLIDAY, tooltip = L.OPT_STARTTOAST_MICROHOLIDAY_TIP, column = 2 },
 	{ variable = "ToastCalendar_bonusevent", text = L.OPT_STARTTOAST_BONUS, tooltip = L.OPT_STARTTOAST_BONUS_TIP },
-	{ variable = "ToastCalendar_dungeonevent", text = L.OPT_STARTTOAST_DUNGEON, tooltip = L.OPT_STARTTOAST_DUNGEON_TIP },
-	{ variable = "ToastCalendar_onlyclickfade", text = L.OPT_STARTTOAST_ONLYCLICKFADE, tooltip = L.OPT_STARTTOAST_ONLYCLICKFADE_TIP },
+	{ variable = "ToastCalendar_dungeonevent", text = L.OPT_STARTTOAST_DUNGEON, tooltip = L.OPT_STARTTOAST_DUNGEON_TIP, column = 2 },
+	{ variable = "ToastCalendar_noautofade", text = L.OPT_STARTTOAST_TIMEFADE, tooltip = L.OPT_STARTTOAST_TIMEFADE_TIP, OnChange = updateEnabled,
+	  name = "Overachiever_Options_ToastCalendar_noautofade" },
+	{ variable = "ToastCalendar_onlyclickfade", xOffset = 15, text = L.OPT_STARTTOAST_ONLYCLICKFADE, tooltip = L.OPT_STARTTOAST_ONLYCLICKFADE_TIP,
+	  name = "Overachiever_Options_ToastCalendar_onlyclickfade" },
 
 	{ type = "labelwrap", text = L.OPT_LABEL_TRADESKILLUI, topBuffer = 4, xOffset = 0 },
 	{ variable = "Tradeskill_ShowCompletedAch_Cooking", text = L.OPT_TRADESKILL_SHOWCOMPLETEDACH_COOKING, tooltip = L.OPT_TRADESKILL_SHOWCOMPLETEDACH_COOKING_TIP },
@@ -179,7 +187,8 @@ function Overachiever.CreateOptions(THIS_TITLE, BuildCriteriaLookupTab_check, Au
 	scrolling = true,
 	items = items_general,
 	variables = "Overachiever_Settings",
-	defaults = Overachiever.DefaultSettings
+	defaults = Overachiever.DefaultSettings,
+	OnShow = updateEnabled
   });
 
   local reminderspanel = TjOptions.CreatePanel(L.OPTPANEL_REMINDERTOOLTIPS, THIS_TITLE, {

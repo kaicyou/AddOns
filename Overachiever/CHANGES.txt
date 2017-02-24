@@ -1,50 +1,27 @@
 ------------------------------------------------------------------------
-r181 | Tuhljin | 2017-01-31 22:20:36 -0600 (Tue, 31 Jan 2017) | 1 line
+r184 | Tuhljin | 2017-02-23 12:39:13 -0600 (Thu, 23 Feb 2017) | 2 lines
 Changed paths:
    M /trunk/Calendar.lua
-
-- Fix toast notifications for dungeon events failing to appear.
-------------------------------------------------------------------------
-r180 | Tuhljin | 2017-01-30 15:32:01 -0600 (Mon, 30 Jan 2017) | 1 line
-Changed paths:
-   A /trunk/AlertBordersGreen.tga
-   A /trunk/AlertGreenLine.tga
-   M /trunk/Calendar.lua
-   M /trunk/Options.lua
-   M /trunk/Overachiever.lua
-   M /trunk/Overachiever.toc
-   A /trunk/Templates.xml
-   M /trunk/localization.lua
-   M /trunk/readme.txt
-
-- New feature: Toast notifications for today's holidays/events. By default, today's holidays are displayed upon entering the game world. Clicking their toast frames will display related achievements in the Suggestions tab. Notifications for micro-holidays, bonus events, and dungeon events are also available but they are disabled by default.
-------------------------------------------------------------------------
-r179 | Tuhljin | 2017-01-25 15:42:30 -0600 (Wed, 25 Jan 2017) | 5 lines
-Changed paths:
-   M /trunk/AchieveID.lua
-   M /trunk/Options.lua
-   M /trunk/Overachiever.lua
    M /trunk/Overachiever_Tabs/Suggestions.lua
-   M /trunk/localization.lua
    M /trunk/readme.txt
 
-- Separated battleground-win achievements from the option for auto-tracking timed achievements. The new option ("Auto-track timed battleground achievements") will also automatically untrack achievements it tracked upon leaving the battleground. The new implementation should fix an issue where the wrong achievements were automatically tracked in battlegrounds.
-- Suggestions Tab:
--- Added suggestions for Brawler's Guild.
--- Fixed suggestion for Temple of Ahn'Qiraj not appearing in the instance.
--- Fixed criteria-specific suggestions for "Savage Hero".
+- Fix failure to load texture for one-day micro-holidays' toast nofications.
+- Suggestions Tab: Suggest "Roll Club" in Vale of Eternal Blossoms.
 ------------------------------------------------------------------------
-r178 | Tuhljin | 2017-01-17 23:23:14 -0600 (Tue, 17 Jan 2017) | 2 lines
+r183 | Tuhljin | 2017-02-11 20:27:18 -0600 (Sat, 11 Feb 2017) | 2 lines
 Changed paths:
-   M /trunk/AchieveID.lua
+   M /trunk/Calendar.lua
+   M /trunk/Options.lua
+   M /trunk/Overachiever.lua
    M /trunk/Overachiever.toc
    M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
-   M /trunk/Overachiever_Tabs/localization.lua
    M /trunk/Overachiever_Trade/Overachiever_Trade.toc
-   M /trunk/Overachiever_Trade/TradeSkills.lua
+   M /trunk/libs/TjOptions.lua
+   M /trunk/libs/TjOptions.txt
+   M /trunk/localization.lua
    M /trunk/readme.txt
 
-- "Adventurer of Highmountain": Fixed inadvertent swap of two criteria (related to recently spotted objectives).
-- Fix rare error when tradeskill window opens.
+- New option added for toast notifications to control whether they will be hidden automatically (without interaction).
+- Made toast notifications more reliable.
 ------------------------------------------------------------------------
 

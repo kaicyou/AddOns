@@ -1197,7 +1197,10 @@ end
 
 function Overachiever.OnEvent(self, event, arg1, ...)
   --print("[Oa]", event, arg1, ...)
-  if (event == "PLAYER_ENTERING_WORLD") then
+  if (event == "CRITERIA_UPDATE") then
+    Overachiever.Criteria_Updated = true  -- used by GameTip.lua
+
+  elseif (event == "PLAYER_ENTERING_WORLD") then
     Overachiever.MainFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
     Overachiever.MainFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	Overachiever.MainFrame:RegisterEvent("CRITERIA_UPDATE") -- used by GameTip.lua
@@ -1296,19 +1299,50 @@ function Overachiever.OnEvent(self, event, arg1, ...)
     end
 
 	if (toast) then
-	  C_Timer.After(7.5, function() -- 7.5 might not be a long enough delay. It might depend on loading time. Tried to find an event that told me when loading was REALLY done; couldn't find one. (Although it seems pretty reliable as is, for me at least, so long as the player is actually entering the game world and not just reloading the UI.)
-	    Overachiever.ToastFakeAchievement(toast, nil, false, msg, 15, nil, function()  openOptions();  end)
+	  C_Timer.After(0, function()
+	    -- This strange double-timer thing works around an issue where the timer starts counting down, so to speak, during the loading screen if the UI is being reloaded (as per /reload), making the toast not appear.
+	    C_Timer.After(4, function()
+	      Overachiever.ToastFakeAchievement(toast, nil, false, msg, 15, nil, function()  openOptions();  end)
+	    end)
 	  end)
 	end
+
+	OpenCalendar() -- We need calendar data to be available later (not just for toasts, but also holiday notices on achievement GUI), so we request it now. (Needed if some other addon doesn't do this.)
+	-- You might think we'd want to watch for event CALENDAR_UPDATE_EVENT_LIST after this, but it's not reliably called. Some report you need to call another function like CalendarSetAbsMonth beforehand for it to work,
+	-- but how we're doing it, we don't seem to need to do that or use that event at all.
 
 	if (Overachiever_Settings.ToastCalendar_holiday or Overachiever_Settings.ToastCalendar_microholiday or Overachiever_Settings.ToastCalendar_bonusevent or Overachiever_Settings.ToastCalendar_dungeonevent) then
-	  C_Timer.After(8, function()
-	    Overachiever.ToastForEvents(Overachiever_Settings.ToastCalendar_holiday, Overachiever_Settings.ToastCalendar_microholiday, Overachiever_Settings.ToastCalendar_bonusevent, Overachiever_Settings.ToastCalendar_dungeonevent)
+	  C_Timer.After(0, function()
+	    -- This strange double-timer thing works around an issue where the timer starts counting down, so to speak, during the loading screen if the UI is being reloaded (as per /reload), making the toast not appear.
+		C_Timer.After(5, function()
+		  Overachiever.ToastForEvents(Overachiever_Settings.ToastCalendar_holiday, Overachiever_Settings.ToastCalendar_microholiday, Overachiever_Settings.ToastCalendar_bonusevent, Overachiever_Settings.ToastCalendar_dungeonevent)
+		end)
 	  end)
+	  --[[
+      Overachiever.MainFrame:RegisterEvent("CALENDAR_UPDATE_EVENT_LIST")
+	  --if (not IsAddOnLoaded("Blizzard_Calendar")) then  UIParentLoadAddOn("Blizzard_Calendar");  end
+      OpenCalendar()
+	  --]]
 	end
 
-  elseif (event == "CRITERIA_UPDATE") then
-    Overachiever.Criteria_Updated = true  -- used by GameTip.lua
+  --[[
+  elseif (event == "CALENDAR_UPDATE_EVENT_LIST") then
+    Overachiever.MainFrame:UnregisterEvent("CALENDAR_UPDATE_EVENT_LIST")
+	--Overachiever.MainFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	--Overachiever.MainFrame:RegisterEvent("PET_JOURNAL_LIST_UPDATE")
+	C_Timer.After(0, function()
+	  -- This strange double-timer thing works around an issue where the timer starts counting down, so to speak, during the loading screen if the UI is being reloaded (as per /reload), making the toast not appear.
+	  C_Timer.After(5, function()
+		Overachiever.ToastForEvents(Overachiever_Settings.ToastCalendar_holiday, Overachiever_Settings.ToastCalendar_microholiday, Overachiever_Settings.ToastCalendar_bonusevent, Overachiever_Settings.ToastCalendar_dungeonevent)
+	  end)
+	end)
+  --]] --[[
+  elseif (event == "COMBAT_LOG_EVENT_UNFILTERED") then
+	Overachiever.MainFrame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	C_Timer.After(8, function()
+	  Overachiever.ToastForEvents(Overachiever_Settings.ToastCalendar_holiday, Overachiever_Settings.ToastCalendar_microholiday, Overachiever_Settings.ToastCalendar_bonusevent, Overachiever_Settings.ToastCalendar_dungeonevent)
+	end)
+  --]]
 
   elseif (event == "ZONE_CHANGED_NEW_AREA") then
     AutoTrackCheck_Explore()
@@ -1758,3 +1792,5 @@ Overachiever.MainFrame:RegisterEvent("PLAYER_LOGOUT")
 
 Overachiever.MainFrame:SetScript("OnEvent", Overachiever.OnEvent)
 Overachiever.MainFrame:SetScript("OnUpdate", AchievementUI_FirstShown_post)
+
+--Overachiever.MainFrame:RegisterEvent("PLAYER_LOGIN")

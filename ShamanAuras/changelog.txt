@@ -1,4 +1,18 @@
-﻿	r43.1-beta
+﻿	r44.1-beta
+FIX: [Elemental] A Lua error should no longer occur when you reach the Maelstrom threshold.
+FIX: [Ele/Enh] The ligntning animation should disappear when below the Maelstrom threshold while out of combat.
+
+KNOWN ISSUE: A Lua error will occur when the Fire Elemental despawns. However, this will not affect the addon.
+	
+	r44-beta
+NEW: [UI] Fully redesigned options interface!
+NEW: [UI] Players can now toggle all aura groups' orientation (horizontal or vertical)!
+NEW: [UI] All specs' configuration "Reset" buttons will now be more responsive based on changes made.
+NEW: [UI] A large amount of customization options have been added!
+NEW: [Restoration] A mana bar has been added. (Thanks, fiikusan!)
+NEW: [Elemental] Checkbox for toggling Liquid Magma Totem has been added to the settings. (Thanks, morpe!)
+	
+	r43.1-beta
 FIX: [Enhancement] An error caused by the Maelstrom Bar during combat should be fixed. (Thanks, Paltaa!)
 	
 	r43-beta

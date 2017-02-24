@@ -225,6 +225,7 @@ P["nameplates"] = {
 	["clampToScreen"] = false,
 	["loadDistance"] = 40,
 	["useTargetGlow"] = true,
+	["alwaysShowTargetHealth"] = true,
 	["classbar"] = {
 		["enable"] = true,
 		["attachTo"] = "TARGET",

@@ -3494,7 +3494,7 @@ function GA:Initialize()
 		end
 
 		local function AutoEquipEnabled()
-			return DGV:UserSetting(DGV_AUTOEQUIPSMARTSET)
+			return DGV:UserSetting(DGV_AUTOEQUIPSMARTSET) and not DGV:IsEquippedOneOfExcludedSets()
 		end
 
 		function GA.AutoEquipSmartSet(reaction, clearTempIgnore, button)
@@ -5355,3 +5355,74 @@ from a LibStatLogic L.StatIDLookup dump
 	},
 }
 ]]
+
+
+--Returns info about provided scores format
+--Possible values: "pawnv1"
+function GA:GetScoresTextInfo(text)
+    if text:find("Pawn: v1:") then
+        return "pawnv1"
+    end
+end
+
+function GA:ImportScoresFromText(text)
+
+    if GA:GetScoresTextInfo(text) == "pawnv1" then
+    
+        local pawn2dugisScoreName_map = {}
+                
+        pawn2dugisScoreName_map["Agility"]           = "AGI"
+        pawn2dugisScoreName_map["Armor"]             = "ARMOR"
+        pawn2dugisScoreName_map["Avoidance"]         = "AVOIDANCE_RATING"
+        pawn2dugisScoreName_map["CritRating"]        = "MELEE_CRIT_RATING or SPELL_CRIT_RATING or RANGED_CRIT_RATING"
+        pawn2dugisScoreName_map["HasteRating"]       = "MELEE_HASTE_RATING or RANGED_HASTE_RATING or SPELL_HASTE_RATING"
+        pawn2dugisScoreName_map["Intellect"]         = "INT"
+        pawn2dugisScoreName_map["Leech"]             = "LEECH_RATING"
+        pawn2dugisScoreName_map["MasteryRating"]     = "MASTERY_RATING"
+        pawn2dugisScoreName_map["Stamina"]           = "STA"
+        pawn2dugisScoreName_map["Strength"]          = "STR"
+        pawn2dugisScoreName_map["Versatility"]       = "VERSATILITY_RATING"
+        pawn2dugisScoreName_map["Ap"]                = "AP"
+        pawn2dugisScoreName_map["Dps"]               = "DPS and DPS|MAIN and DPS|OFF"
+                
+        
+        text = string.gsub(text, '^.*\:', '')
+        text = string.gsub(text, ' [)]', '')
+        local scores = LuaUtils:split(text, ",")
+        
+        local specIndex = tonumber(DugisGuideViewer.Modules.GearAdvisor.selectedSpecIndex)
+        local classId = GA:GetCurrentSelectedClassIdentifier()
+        local dugiScoretable = DugisGuideUser.userCustomWeights_v3[classId][specIndex]
+        
+        LuaUtils:foreach(scores, function(score)
+            score = LuaUtils:trim(score)
+            local scoreName, scoreValue = unpack(LuaUtils:split(score, "="))
+            local weightIdentifier = pawn2dugisScoreName_map[scoreName]
+            
+            if weightIdentifier then
+                if string.find(weightIdentifier, " and ") then
+                    LuaUtils:foreach(LuaUtils:split(weightIdentifier, " and "), function(finalWeightIdentifier)
+                        dugiScoretable[finalWeightIdentifier] = tonumber(scoreValue)
+                    end)
+                    return
+                end
+                
+                if string.find(weightIdentifier, " or ") then
+                    LuaUtils:foreach(LuaUtils:split(weightIdentifier, " or "), function(finalWeightIdentifier)
+                        if dugiScoretable[finalWeightIdentifier] ~= nil then
+                            dugiScoretable[finalWeightIdentifier] = tonumber(scoreValue)
+                        end                    
+                    end)
+                    return
+                end
+            
+                dugiScoretable[weightIdentifier] = tonumber(scoreValue)
+            end
+        end)
+        
+        GA:UpdateWeightsTextboxes()
+        
+    end
+    
+
+end

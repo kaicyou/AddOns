@@ -821,7 +821,7 @@ local methods = {
                                         end
                                     end
                                 end
-                                local icon = WeakAuras.GetIconFromSpellCache(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
+                                local icon = WeakAuras.spellCache.GetIcon(name) or "Interface\\Icons\\INV_Misc_QuestionMark";
                                 tinsert(namestable, {left, name, icon});
                             end
                         end
@@ -941,7 +941,9 @@ local methods = {
             -- restore events and layout
             self.frame:SetScript("OnClick", self.callbacks.OnClickNormal)
             self:Enable()
-            self:Drop(true)
+            if (self.dragging) then
+              self:Drop(true)
+            end
         end
     end,
     ["ShowTooltip"] = function(self)

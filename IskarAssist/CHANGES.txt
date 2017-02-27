@@ -1,5 +1,11 @@
+changeset:   116:fc54d812683d
+tag:         v2.1.231 release
+user:        Tercio
+date:        Fri Feb 24 13:40:28 2017 -0300
+summary:     - added encounter spell list for the first wing of Nighthold.
+
+
 changeset:   115:0b8ce060659c
-tag:         tip
 user:        Tercio
 date:        Thu Feb 16 14:21:11 2017 -0200
 summary:     - added boss ids for nighthold raid.
@@ -596,12 +602,6 @@ summary:     - update on lib details framework.
 changeset:   16:b6eec63212cc
 user:        Tercio
 date:        Thu Jul 16 21:38:12 2015 -0300
-summary:     - Added Darkbindings aura.
-
-
-changeset:   15:3ca3b642916f
-user:        Tercio
-date:        Thu Jul 16 21:24:46 2015 -0300
 summary:     - Added Darkbindings aura.
 
 

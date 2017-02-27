@@ -2,15 +2,97 @@
 ..\FrameXML\UI.xsd">
 <!--Template for a Background frame-->
 
-	<Frame name ="DugisSmallFrameTemplate"  parent = "UIParent" movable="true" virtual="true"> 
+    <Frame name="DugisPreloader" hidden="true" virtual="true">
+        <Frames>
+            <Frame setAllPoints="true" parentKey="TexWrapper" visible="false">
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="Background">
+                            <Anchors>
+                                <Anchor point="LEFT" relativeTo="$parent">
+                                    <Offset>
+                                        <AbsDimension x="0" y="0"/>
+                                    </Offset>
+                                </Anchor>
+                                <Anchor point="RIGHT" relativeTo="$parent">
+                                    <Offset>
+                                        <AbsDimension x="0" y="0"/>
+                                    </Offset>
+                                </Anchor>
+                                <Anchor point="TOP" relativeTo="$parent">
+                                    <Offset>
+                                        <AbsDimension x="0" y="0"/>
+                                    </Offset>
+                                </Anchor>
+                                <Anchor point="BOTTOM" relativeTo="$parent">
+                                    <Offset>
+                                        <AbsDimension x="0" y="0"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color a="0.9" />
+                        </Texture>
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <FontString parentKey="Text" wordwrap="false" wraponspaces="true"  inherits="GameFontNormal" justifyH="LEFT"  visible="false" text="Preparing 2%..">
+                            <Size x="159" y="40"/>
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="5" y="-2"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Frame  parentKey="Icon"  visible="false">
+                <Anchors>
+                   <Anchor point="TOPRIGHT" relativeTo="$parent">
+                        <Offset>
+                            <AbsDimension x="0" y="0"/>
+                        </Offset>
+                    </Anchor>
+               </Anchors>
+                <Size x="45" y="45"/>
+                <Frames>
+                    <Frame  parentKey="Frame"  setAllPoints="true" >
+                        <Layers>
+                            <Layer level="BACKGROUND">
+                                <Texture file="Interface\COMMON\StreamBackground" parentKey="Background" setAllPoints="true" />
+                            </Layer>
+                            <Layer level="ARTWORK">
+                                <Texture file="Interface\COMMON\StreamFrame" parentKey="Alpha" setAllPoints="true" />
+                            </Layer>
+                        </Layers>
+                    </Frame>
+                    <Frame   parentKey="Spin"  setAllPoints="true" >
+                        <Layers>
+                            <Layer level="BACKGROUND">
+                                <Texture file="Interface\COMMON\StreamCircle" parentKey="Spinner" setAllPoints="true" />
+                            </Layer>
+                            <Layer level="OVERLAY" >
+                                <Texture file="Interface\COMMON\StreamSpark" setAllPoints="true" />
+                            </Layer>
+                        </Layers>
+                    </Frame>
+                </Frames>
+                <Scripts>
+                    <OnLoad>
+                        self.Spin.Spinner:SetVertexColor(1,.82,0);
+                        self.Frame.Background:SetVertexColor(1,0.82,0);
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+        </Frames>
+    </Frame>
+
+	<Frame name ="DugisSmallFrameTemplate"  parent = "UIParent" movable="true" virtual="true">
 	<!-- <Frame name ="DugisSmallFrame"  parent = "UIParent" movable="true"> -->
 			<Scripts>
-				<OnMouseDown> 
+				<OnMouseDown>
 					if DugisGuideViewer.Modules.SmallFrame then
 						DugisGuideViewer.Modules.SmallFrame:OnClick(self, button)
 					end
-				</OnMouseDown>		
-				<OnEnter> 
+				</OnMouseDown>
+				<OnEnter>
 					if DugisGuideViewer.Modules.SmallFrame then
 						DugisGuideViewer.Modules.SmallFrame:OnEnter(self, event)
 					end
@@ -31,7 +113,7 @@
 		<Layers>
 			<Layer >
 			<FontString name="$parentText" parentKey="Text" inherits="GameFontNormal"  justifyH="LEFT" text="">
-				
+
 					<Size>
 					<!-- <AbsDimension x="75" y="14"/> -->
 					<Size x="200" y="50"/>
@@ -44,14 +126,33 @@
 						</Anchor>
 						<Anchor point="TOP" relativeTo = "$parent"/>
 					</Anchors>
-				</FontString>			
-				<FontString name="$parentDesc" parentKey="Desc" inherits="GameFontHighlightSmall" wraponspaces="true" wordwrap="true" justifyH="LEFT" justifyV="TOP" text="" visible ="false">
+				</FontString>
+				<FontString name="$parentDesc" parentKey="Desc" inherits="GameFontHighlightSmall" wraponspaces="true" wordwrap="true" justifyH="LEFT" frameLevel="10" enableMouse='false' justifyV="TOP" text="" visible ="false">
 					<Anchors>
 						<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
 							<Offset>
 								<AbsDimension x="16" y="0"/>
 							</Offset>
-						</Anchor>	
+						</Anchor>
+						<Anchor point="TOP" relativeTo="$parentText" relativePoint="BOTTOM">
+							<Offset>
+								<AbsDimension x="0" y="-8"/>
+							</Offset>
+						</Anchor>
+						<Anchor point="RIGHT" relativeTo="$parent" relativePoint="RIGHT">
+							<Offset>
+								<AbsDimension x="-16" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentDescEventHandler" parentKey="DescEventHandler" frameLevel="11" inherits="GameFontHighlightSmall" wraponspaces="true" alpha="0"  wordwrap="true" justifyH="LEFT" justifyV="TOP" text="" visible ="true">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
+							<Offset>
+								<AbsDimension x="16" y="0"/>
+							</Offset>
+						</Anchor>
 						<Anchor point="TOP" relativeTo="$parentText" relativePoint="BOTTOM">
 							<Offset>
 								<AbsDimension x="0" y="-8"/>
@@ -87,12 +188,12 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Button name ="$parentIcon" parentKey="Icon">	
+			<Button name ="$parentIcon" parentKey="Icon">
 				<Size x="22" y="22"/>
 				<NormalTexture  setAllPoints ="true"/>
-				
+
 				<!--<HighlightTexture alphaMode ="ADD"
-				file ="Interface\Buttons\ButtonHilight-Square"/>-->	
+				file ="Interface\Buttons\ButtonHilight-Square"/>-->
 				<Anchors>
 					<Anchor point="RIGHT" relativeTo="$parentText" relativePoint = "LEFT"/>
 				</Anchors>
@@ -103,7 +204,7 @@
 					<OnLeave>
 						 GameTooltip:Hide();
 					</OnLeave>
-				</Scripts>						
+				</Scripts>
 			</Button>
 			<Button name ="$parentWayPoint" parentKey="Waypoint">
 				<Size x="22" y="22"/>
@@ -116,9 +217,9 @@
 					<Offset> <AbsDimension x="3" y="0"/> </Offset>
 					</Anchor>
 				</Anchors>
-				<Scripts> <OnClick> 
+				<Scripts> <OnClick>
 					DugisGuideViewer:WayPoint_OnClick(self)
-				</OnClick></Scripts> 
+				</OnClick></Scripts>
 			</Button>
 			<CheckButton name = "$parentChk" inherits ="UICheckButtonTemplate" parentKey="Chk" >
 				<Size x="15" y="15"/>
@@ -128,7 +229,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-				<OnClick> 
+				<OnClick>
 					if DugisGuideViewer.Modules.SmallFrame then
 						DugisGuideViewer.Modules.SmallFrame:CheckButton_OnEvent(self, event)
 					end
@@ -163,7 +264,7 @@
 					</OnEnter>
 					<OnLeave>
 						 GameTooltip:Hide();
-					</OnLeave>				
+					</OnLeave>
 				</Scripts>
 			</Button>
 			<Frame name="$parentObjectives" parentKey="Objectives" visible ="true">
@@ -186,7 +287,7 @@
 	</Frame>
 	<!--Template for a row with checkbox, picture and quest text -->
 	<Button name = "DugisQuestRowTemplate" virtual="true" >
-		<Size> 
+		<Size>
 			<!-- <AbsDimension x="545" y="35" /> -->
 			<AbsDimension x="800" y="35" />
 		</Size>
@@ -197,12 +298,12 @@
 				DugisGuideViewer:Tooltip_OnEnter(self, event)
 			</OnEnter>
 			<OnLeave>
-				DugisGuideViewer:Tooltip_OnLeave(self, event)		
+				DugisGuideViewer:Tooltip_OnLeave(self, event)
 			</OnLeave>
 			<OnClick>
 				if IsShiftKeyDown() then DugisGuideViewer.Modules.StickyFrame:AddRow(self) end
-				if DGV_SearchBox then 
-					DGV_SearchBox:SetAutoFocus(false) 
+				if DGV_SearchBox then
+					DGV_SearchBox:SetAutoFocus(false)
 					DGV_SearchBox:ClearFocus()
 				end
 			</OnClick>
@@ -212,8 +313,8 @@
 					<Size x="25" y="25"/>
 					<Anchors>
 					<Anchor point = "TOPLEFT">
-					<Offset> 
-					<AbsDimension x="0" y = "-5"/> 
+					<Offset>
+					<AbsDimension x="0" y = "-5"/>
 					</Offset>
 					</Anchor>
 					</Anchors>
@@ -221,7 +322,7 @@
 					<OnClick function="DugisGuideViewer_CheckButton_OnEvent">
 					</OnClick>
 					</Scripts>
-				</CheckButton>	
+				</CheckButton>
 				<Button name ="$parentWayPoint" parentKey="WayPoint">
 					<Size x="25" y="25"/>
 					<NormalTexture file ="Interface\AddOns\DugisGuideViewerZ\Artwork\waypoint.tga"/>
@@ -233,13 +334,13 @@
 						<Offset> <AbsDimension x="-7" y="0"/> </Offset>
 					</Anchor>
 					</Anchors>
-					<Scripts> <OnClick> DugisGuideViewer:WayPoint_OnClick(self) </OnClick></Scripts> 
+					<Scripts> <OnClick> DugisGuideViewer:WayPoint_OnClick(self) </OnClick></Scripts>
 				</Button>
 				<Button name ="$parentButton" parentKey="Button">
 					<Size x="32" y="32"/>
 					<NormalTexture  setAllPoints ="true"/>
 					<!--<HighlightTexture alphaMode ="ADD"
-					file ="Interface\Buttons\ButtonHilight-Square"/>-->	
+					file ="Interface\Buttons\ButtonHilight-Square"/>-->
 					<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentWayPoint" relativePoint="RIGHT" >
 						<Offset> <AbsDimension x="-3" y="0"/> </Offset>
@@ -252,7 +353,7 @@
 						<OnLeave>
 							 GameTooltip:Hide();
 						</OnLeave>
-					</Scripts>					
+					</Scripts>
 				</Button>
 			</Frames>
 		<Layers>
@@ -286,6 +387,18 @@
 					</Anchor>
 					</Anchors>
 				</FontString>
+                <FontString  parentKey="StepNumber" inherits="GameFontNormal"  justifyH="LEFT" text="56.">
+					<Size>
+                        <Size x="40" y="60"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo = "$parent">
+							<Offset>
+								<AbsDimension x="-90" y="0"/>
+							</Offset>
+                        </Anchor>
+					</Anchors>
+				</FontString>	
 				<FontString name="$parentDesc" parentKey="Desc" inherits="GameFontHighlightSmall" wraponspaces="false" justifyH="LEFT" text="">
 					<Size>
 					<!-- <AbsDimension x="475" y="14"/> -->
@@ -298,17 +411,17 @@
 					<AbsDimension x="0" y="-14"/>
 					</Offset>
 					</Anchor>
-					</Anchors>					
-				</FontString>			
+					</Anchors>
+				</FontString>
 			</Layer>
 		</Layers>
-		
+
 
 	</Button> ><!--End of virutual button row-->
 
 	<!--Template for the small window with icon and text -->
 	<Button name = "IconReferenceTemplate" virtual="true" >
-		<Size> 
+		<Size>
 			<AbsDimension x="300" y="35" />
 		</Size>
 		<!--
@@ -318,7 +431,7 @@
 			   tile="true">
 		</Backdrop>
 	-->
-		
+
 	<!--	<HighlightTexture alphaMode ="ADD"
 				file ="Interface\Buttons\ButtonHilight-Square"/>-->
 		<Frames>
@@ -332,8 +445,8 @@
 			<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT" />
 			</Anchors>
 		</Button>
-			</Frames>	
-		
+			</Frames>
+
 		<Layers>
 			<Layer >
 				<FontString name="$parentName" parentKey="Name" inherits="GameFontNormal" wraponspaces="false" text=""> <!--GameFontHighlight-->
@@ -348,17 +461,17 @@
 					</Offset>
 					</Anchor>
 					</Anchors>
-				</FontString>			
-				
+				</FontString>
+
 			</Layer>
 		</Layers>
 	</Button> ><!--End of virutual button row-->
-	
+
 	<Button name="DugisGuideListingTemplate" virtual="true">
         <Size x="400" y="16"/>
         <Layers>
             <Layer level="BACKGROUND">
-				<FontString name="$parentPercent" parentKey="Percent" inherits="GameFontHighlight" wraponspaces="false" justifyH="RIGHT" text=""> 
+				<FontString name="$parentPercent" parentKey="Percent" inherits="GameFontHighlight" wraponspaces="false" justifyH="RIGHT" text="">
 					<Size>
 					<AbsDimension x="105" y="14"/>
 					</Size>
@@ -395,14 +508,14 @@
             <Size x="0" y="10"/>
             <Anchors>
                 <Anchor point="LEFT" x="20" y="0"/>
-            </Anchors> 
+            </Anchors>
         </ButtonText>
         <NormalFont style="GameFontHighlightLeft"/>
         <HighlightFont style="GameFontHighlightLeft"/>
         <DisabledFont style="GameFontHighlightLeft"/>
     </Button>
 	<Button name="DugisGuideTreeNodeTemplate" virtual="true">
-        <Size x="400" y="16"/>
+        <Size x="400" y="26"/>
         <Scripts>
             <OnClick>
                 if self.expanded then
@@ -410,17 +523,17 @@
                 else
                     self.expanded = true
                 end
-                
+
                 self.TreeFrame:UpdateTreeVisualization()
-                
+
                 if self.TreeFrame.onNodeClick then
                     self.TreeFrame.onNodeClick()
                 end
-                
+
                 if self.extraOnClickFunction then
                     self:extraOnClickFunction(self)
-                end       
-                
+                end
+
                 if self.onLeafClickFunction then
                     self:onLeafClickFunction()
                 end
@@ -448,7 +561,7 @@
             <Size x="0" y="10"/>
             <Anchors>
                 <Anchor point="LEFT" x="20" y="0"/>
-            </Anchors> 
+            </Anchors>
         </ButtonText>
         <NormalFont style="GameFontHighlightLeft"/>
         <HighlightFont style="GameFontHighlightLeft"/>
@@ -461,25 +574,25 @@
                 <Size x="400" y="16"/>
                 <HighlightTexture parentKey="highlight" alphaMode ="ADD" file ="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar">
                     <Size x="400" y="16"/>
-             
+
                     <TexCoords left="0" right="1" top="0" bottom="1"/>
                 </HighlightTexture>
                 <ButtonText name="$parentText" nonspacewrap="true"  Text="EEEE" visible ="true" parentKey="Text">
                     <Size x="0" y="0"/>
                     <Anchors>
                         <Anchor point="LEFT" x="0" y="0"/>
-                    </Anchors> 
-                </ButtonText>        
+                    </Anchors>
+                </ButtonText>
                 <NormalFont style="GameFontHighlightLeft"/>
                 <HighlightFont style="GameFontHighlightLeft"/>
                 <DisabledFont style="GameFontHighlightLeft"/>
             </Button>
 
-            
+
         </Frames>
             <Layers>
                 <Layer level="BACKGROUND">
-                    <FontString  parentKey="TextRight" inherits="GameFontHighlight" visible ="true" wraponspaces="false" justifyH="RIGHT" text=""> 
+                    <FontString  parentKey="TextRight" inherits="GameFontHighlight" visible ="true" wraponspaces="false" justifyH="RIGHT" text="">
                         <Size>
                         <AbsDimension x="505" y="14"/>
                         </Size>
@@ -491,8 +604,8 @@
                         </Anchor>
                         </Anchors>
                     </FontString>
-                </Layer>  
-            </Layers>                
+                </Layer>
+            </Layers>
     </Frame>
 	<Button name="DugisOnOffButton" parent = "UIParent"  movable="true" enableMouse='true' frameStrata="MEDIUM" >
 		<Size x="32" y="32"/>
@@ -512,7 +625,7 @@
 			self:RegisterForDrag("LeftButton");
 			self:SetClampedToScreen(true);
 			self:RegisterForClicks("AnyUp")
-		</OnLoad>	
+		</OnLoad>
 		<OnClick>
             lastOnOffButtonClickedTime = GetTime()
 			DugisGuideViewer:OnOff_OnClick(self, button)
@@ -523,9 +636,9 @@
 		<OnDragStop>
 			DugisGuideViewer:OnDragStop(self);
 		</OnDragStop>
-	</Scripts>	
+	</Scripts>
 	</Button>
-	
+
 	<Button name='GearOptionButtonTemplate' virtual='true' >
 		<Size>
 			<AbsDimension x="180" y="68"/>
@@ -535,7 +648,7 @@
 				<Texture file="Interface\Buttons\ButtonHilight-Square" />
 			</Layer>-->
 			<Layer>
-				<FontString name="$parentTitleFont" parentKey="titleFont" inherits="GameFontHighlight" wraponspaces="true" justifyH="LEFT" font="GameFontNormal"> 
+				<FontString name="$parentTitleFont" parentKey="titleFont" inherits="GameFontHighlight" wraponspaces="true" justifyH="LEFT" font="GameFontNormal">
 					<Size>
 						<AbsDimension x="180" y="12"/>
 					</Size>
@@ -565,7 +678,7 @@
 						local name, texture, _
 						if item then
 							name, _, _, _, _, _, _, _, _, texture = GetItemInfo(item)
-							
+
 						else
 							 name, texture = DugisGuideViewer.Modules.GearAdvisor:GetSlotBackgroundInfo(DugisEquipPromptFrame.slot)
 						end
@@ -587,7 +700,7 @@
 					<OnLeave>
 						GameTooltip:Hide()
 						ResetCursor()
-					</OnLeave>            
+					</OnLeave>
 					<OnUpdate>
 						CursorOnUpdate(self, elapsed)
 					</OnUpdate>
@@ -605,10 +718,10 @@
 			</OnShow>
         </Scripts>
 	</Button>
-	
+
 	<Frame name='DugisEquipPromptFrame' parent='UIParent' movable='true' enableMouse='true' hidden='true' >
 		<Size> <AbsDimension x="410" y="270"/> </Size>
-		<Anchors> 
+		<Anchors>
 			<Anchor point="CENTER"></Anchor>
 		</Anchors>
 		<Frames>
@@ -667,7 +780,7 @@
 				<Scripts>
 					<OnClick>
 						self:GetParent():Hide()
-					</OnClick> 
+					</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="$parentCancelButton" inherits="UIPanelButtonTemplate" text ="Cancel">
@@ -687,7 +800,7 @@
 						parent.action = "CANCEL"
 						parent.blacklist:SetChecked(false)
 						parent:Hide()
-					</OnClick> 
+					</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="$parentResetBanButton" inherits="UIPanelButtonTemplate" text ="Reset Ban List">
@@ -710,10 +823,10 @@
 						local parent = self:GetParent()
 						parent.action = "CANCEL"
 						parent.blacklist:SetChecked(false)
-						parent:Hide()						
-					</OnClick> 
+						parent:Hide()
+					</OnClick>
 				</Scripts>
-			</Button>			
+			</Button>
 			<CheckButton name = "$parentBlacklistChk" inherits ="UICheckButtonTemplate" parentKey="blacklist" >
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parentOKButton" relativePoint="topleft" >
@@ -738,7 +851,7 @@
 							forAll.text:SetTextColor(1.0, 0.82, 0)
 							DugisGuideViewer.Modules.GearAdvisor:OnGearOptionClicked(DugisEquipPromptFrameRecommendedGearOptionItemButton:GetParent())
 							DugisEquipItemHighlight:SetPoint("TOPLEFT", DugisEquipPromptFrameRecommendedGearOptionItemButton, "TOPLEFT", -8, 7)
-							DugisEquipItemHighlight:Show()							
+							DugisEquipItemHighlight:Show()
 						end
 					</OnClick>
 					<OnShow>
@@ -765,28 +878,28 @@
 			<OnLoad>
 				self:RegisterForDrag("LeftButton")
 				self:SetClampedToScreen(true);
-			</OnLoad>     
+			</OnLoad>
 			<OnDragStart>
 				self:StartMoving()
 			</OnDragStart>
 			<OnDragStop>
 				self:StopMovingOrSizing()
-			</OnDragStop> 		      
+			</OnDragStop>
 			<OnHide>
 				DugisGuideViewer.Modules.GearAdvisor:OnPromptHidden(self)
 			</OnHide>
         </Scripts>
 	</Frame>
-	
-	<Frame name='DugisGuideSuggestFrame'  parent='UIParent' movable='true' enableMouse='true' hidden='true' > 
+
+	<Frame name='DugisGuideSuggestFrame'  parent='UIParent' movable='true' enableMouse='true' hidden='true' >
 		 <Size> <AbsDimension x="340" y="120"/> </Size>
-		
-			<Anchors> 
+
+			<Anchors>
 			<Anchor point="CENTER"></Anchor>
-			</Anchors> 
+			</Anchors>
 		 <Layers>
 			<Layer>
-				<FontString name="$parentTitle" parentKey="Title" inherits="GameFontHighlight" justifyH="CENTER" font="GameFontNormal"> 
+				<FontString name="$parentTitle" parentKey="Title" inherits="GameFontHighlight" justifyH="CENTER" font="GameFontNormal">
 					<Size>
 					<AbsDimension x="300" y="20"/>
 					</Size>
@@ -798,7 +911,7 @@
 					</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentGuideTitle" parentKey="GuideTitle" inherits="GameFontHighlight" justifyH="LEFT" font="GameFontNormal"> 
+				<FontString name="$parentGuideTitle" parentKey="GuideTitle" inherits="GameFontHighlight" justifyH="LEFT" font="GameFontNormal">
 					<Size>
 					<AbsDimension x="240" y="25"/>
 					</Size>
@@ -816,23 +929,23 @@
                     </Size>
                     <Anchors>
                         <Anchor point="LEFT" />
-                    </Anchors>                     
+                    </Anchors>
                 </Texture>
-				<FontString name="$parentOr" parentKey="Or" text="Alternative Leveling Guides:" inherits="GameFontHighlight" justifyH="CENTER" font="GameFontNormal"> 
+				<FontString name="$parentOr" parentKey="Or" text="Alternative Leveling Guides:" inherits="GameFontHighlight" justifyH="CENTER" font="GameFontNormal">
 					<Size>
 					<AbsDimension x="340" y="20"/>
 					</Size>
 					<Anchors>
 					<Anchor point="TOP" relativeTo="$parentGuideTitle" relativePoint="bottom">
-					<Offset> 
-						<AbsDimension y="-5" /> 
+					<Offset>
+						<AbsDimension y="-5" />
 					</Offset>
 					</Anchor>
 					<Anchor point="LEFT" relativeTo="$parent" relativePoint="LEFT">
 					</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentTitle2" parentKey="Title2" inherits="GameFontHighlight" wraponspaces="true" justifyH="CENTER" text="OR complete Quests in Log first" font="GameFontNormal"> 
+				<FontString name="$parentTitle2" parentKey="Title2" inherits="GameFontHighlight" wraponspaces="true" justifyH="CENTER" text="OR complete Quests in Log first" font="GameFontNormal">
 					<Size>
 					<AbsDimension x="300" y="30"/>
 					</Size>
@@ -861,19 +974,19 @@
 				<Size> <AbsDimension x='95' y='23'/> </Size>
 				<Anchors> <Anchor point='LEFT' relativeTo="$parentCompleteYesButton" relativePoint="right"><Offset><AbsDimension x="5"/></Offset></Anchor> </Anchors>
 				<Scripts> <OnClick> self:GetParent():Hide() </OnClick> </Scripts>
-			</Button> 
+			</Button>
 		</Frames>
-		
+
 		<Scripts>
 			 <OnLoad>
-			
+
 				self:RegisterForDrag("LeftButton")
 				self:SetClampedToScreen(true);
 				self:SetBackdrop({
-					bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-                                            tile = true, tileSize = 16, edgeSize = 16, 
-                                            insets = { left = 4, right = 4, top = 4, bottom = 4 }}); 
-				self:SetBackdropColor(0,0,0,1);	
+					bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+                                            tile = true, tileSize = 16, edgeSize = 16,
+                                            insets = { left = 4, right = 4, top = 4, bottom = 4 }});
+				self:SetBackdropColor(0,0,0,1);
 			</OnLoad>
 			<OnDragStart>
 				self:StartMoving()
@@ -881,10 +994,10 @@
 			<OnDragStop>
 				self:StopMovingOrSizing()
 			</OnDragStop>
-			
+
 		</Scripts>
 	</Frame>
-	
+
 	<Frame name='DugisCoinRewardAdornment' parent='QuestInfoRewardsFrame' hidden='true' >
 		<Layers>
 			<Layer level="ARTWORK">
@@ -894,7 +1007,7 @@
 			</Layer>
 		</Layers>
 	</Frame>
-	
+
 	<Frame name='DugisGreenArrowRewardAdornment' parent='QuestInfoRewardsFrame' hidden='true' >
 		<Layers>
 			<Layer level="ARTWORK">
@@ -904,7 +1017,7 @@
 			</Layer>
 		</Layers>
 	</Frame>
-	
+
 	<Frame name='DugisYellowArrowRewardAdornment' parent='QuestInfoRewardsFrame' hidden='true' >
 		<Layers>
 			<Layer level="ARTWORK">
@@ -914,7 +1027,7 @@
 			</Layer>
 		</Layers>
 	</Frame>
-	
+
 	<Frame name='DugisGreenArrowAdornmentTemplate' virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
@@ -924,7 +1037,7 @@
 			</Layer>
 		</Layers>
 	</Frame>
-	
+
 	<Frame name='DugisYellowArrowAdornmentTemplate' virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
@@ -934,9 +1047,9 @@
 			</Layer>
 		</Layers>
 	</Frame>
-	
+
 	<Button name = "DugisArrowLFGFrameTemplate" virtual="true" >
-		<Size> 
+		<Size>
 			<AbsDimension x="100" y="50" />
 		</Size>
 		<Layers>
@@ -956,7 +1069,7 @@
 		<Frames>
 			<Button name ="$parentButton" parentKey="button">
 				<HighlightTexture alphaMode ="BLEND" file ="Interface\AddOns\DugisGuideViewerZ\Artwork\Micro-Highlight.tga"/>
-				<Size x="38.46" y="50"/>				
+				<Size x="38.46" y="50"/>
 				<NormalTexture file ="INTERFACE\BUTTONS\UI-MicroButton-LFG-Up">
 					<TexCoords left="0" right="1" top=".35" bottom="1" />
 				</NormalTexture>
@@ -968,11 +1081,11 @@
 						<Offset> <AbsDimension x="5" /> </Offset>
 					</Anchor>
 				</Anchors>
-				<Scripts><OnClick> DugisGuideViewer:LFGSelected(self.queue) </OnClick></Scripts> 
+				<Scripts><OnClick> DugisGuideViewer:LFGSelected(self.queue) </OnClick></Scripts>
 			</Button>
 		</Frames>
 	</Button>
-	
+
 	<Frame name="DugisOrderedListItemTemplate" virtual="true" hidden="true">
 		<Frames>
 			<Button name="$parentRemove" parentKey="remove" hidden="true">
@@ -1102,7 +1215,7 @@
 			</OnUpdate>
 		</Scripts>
 	</Frame>
-	
+
 	<Frame name="DugisProgressIcon" toplevel="true" parent="UIParent" hidden="true">
         <Animations>
             <AnimationGroup parentKey="Loop" looping="REPEAT" >
@@ -1140,7 +1253,7 @@
 			</OnLoad>
         </Scripts>
     </Frame>
-	
+
 	<Frame name="DugisSelectionPanelTemplate" virtual="true" hidden="true">
 		<Size x="206" y="32" />
 		<Layers>
@@ -1151,7 +1264,7 @@
 					</Size>
 					<Anchors>
 						<Anchor point="LEFT" />
-					</Anchors> 
+					</Anchors>
 				</Texture>
 				<FontString name="$parentText" inherits="QuestFont_Super_Huge" justifyH="LEFT" parentKey="text">
 					<Size x="0" y="0"/>
@@ -1163,7 +1276,7 @@
 			</Layer>
 		</Layers>
 	</Frame>
-	
+
 	<CheckButton name = "DugisSelectionTemplate" inherits="DugisSelectionPanelTemplate" virtual="true" hidden="false">
 		<HighlightTexture alphaMode ="ADD" file ="Interface\AddOns\DugisGuideViewerZ\Artwork\highlight"/>
 		<CheckedTexture alphaMode ="ADD" file ="Interface\AddOns\DugisGuideViewerZ\Artwork\highlight"/>
@@ -1185,24 +1298,24 @@
 			</OnLeave>
 		</Scripts>
 	</CheckButton>
-	
+
 	<Button name="TopTabTemplate" virtual="true">
-        <Size x="120" y="36"/>    
+        <Size x="120" y="36"/>
         <HitRectInsets>
             <AbsInset left="-12" right="-12" top="0" bottom="0"/>
         </HitRectInsets>
         <Layers>
             <Layer level="BACKGROUND">
                 <Texture name="$parentMid" file="Interface\EncounterJournal\UI-EncounterJournalTextures_Tile" virtual="true" parentKey="mid" horizTile="true">
-					<Size x="64" y="36"/> 
-					<TexCoords left="0.00000000" right="1.00000000" top="0.67382813" bottom="0.74414063"/>    
+					<Size x="64" y="36"/>
+					<TexCoords left="0.00000000" right="1.00000000" top="0.67382813" bottom="0.74414063"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" x="0" y="0"/>
                         <Anchor point="BOTTOMRIGHT" x="0" y="0"/>
                     </Anchors>
                 </Texture>
                 <Texture name="$parentLeft" file="Interface\EncounterJournal\UI-EncounterJournalTextures" virtual="true" parentKey="left">
-					<Size x="12" y="36"/> 
+					<Size x="12" y="36"/>
 					<TexCoords left="0.81835938" right="0.84179688" top="0.02246094" bottom="0.05761719"/>
                     <Anchors>
                         <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="0" y="0"/>
@@ -1210,68 +1323,68 @@
                     </Anchors>
                 </Texture>
                 <Texture name="$parentRight" file="Interface\EncounterJournal\UI-EncounterJournalTextures" virtual="true" parentKey="right">
-					<Size x="12" y="36"/> 
-					<TexCoords left="0.84570313" right="0.86914063" top="0.05957031" bottom="0.09472656"/> 
+					<Size x="12" y="36"/>
+					<TexCoords left="0.84570313" right="0.86914063" top="0.05957031" bottom="0.09472656"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="0"/>
                         <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
                     </Anchors>
                 </Texture>
             </Layer>
-            <Layer level="OVERLAY">   
+            <Layer level="OVERLAY">
                 <Texture name="$parentMidSelect" file="Interface\EncounterJournal\UI-EncounterJournalTextures_Tile" virtual="true" horizTile="true" parentKey="midSelect" hidden="true">
-					<Size x="64" y="36"/> 
-					<TexCoords left="0.00000000" right="1.00000000" top="0.59960938" bottom="0.66992188"/> 
+					<Size x="64" y="36"/>
+					<TexCoords left="0.00000000" right="1.00000000" top="0.59960938" bottom="0.66992188"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" x="0" y="0"/>
                         <Anchor point="BOTTOMRIGHT" x="0" y="0"/>
                     </Anchors>
                 </Texture>
                 <Texture name="$parentLeftSelect" file="Interface\EncounterJournal\UI-EncounterJournalTextures" virtual="true" parentKey="leftSelect" hidden="true">
-					<Size x="12" y="36"/> 
-					<TexCoords left="0.84570313" right="0.86914063" top="0.02246094" bottom="0.05761719"/> 
+					<Size x="12" y="36"/>
+					<TexCoords left="0.84570313" right="0.86914063" top="0.02246094" bottom="0.05761719"/>
                     <Anchors>
                         <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="0" y="0"/>
                         <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
                     </Anchors>
                 </Texture>
                 <Texture name="$parentRightSelect" file="Interface\EncounterJournal\UI-EncounterJournalTextures" virtual="true" parentKey="rightSelect" hidden="true">
-					<Size x="12" y="36"/> 
-					<TexCoords left="0.87304688" right="0.89648438" top="0.05957031" bottom="0.09472656"/> 
+					<Size x="12" y="36"/>
+					<TexCoords left="0.87304688" right="0.89648438" top="0.05957031" bottom="0.09472656"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="0"/>
                         <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
                     </Anchors>
                 </Texture>
                 <Texture name="$parentSelectedGlow" file="Interface\EncounterJournal\UI-EncounterJournalTextures" virtual="true" parentKey="selectedGlow" hidden="true">
-					<Size x="64" y="15"/> 
-					<TexCoords left="0.52343750" right="0.64843750" top="0.00097656" bottom="0.01562500"/> 
+					<Size x="64" y="15"/>
+					<TexCoords left="0.52343750" right="0.64843750" top="0.00097656" bottom="0.01562500"/>
                     <Anchors>
                         <Anchor point="BOTTOMLEFT" x="-18" y="0"/>
                         <Anchor point="BOTTOMRIGHT" x="18" y="0"/>
                     </Anchors>
                 </Texture>
             </Layer>
-            <Layer level="HIGHLIGHT"> 
+            <Layer level="HIGHLIGHT">
                 <Texture name="$parentMidHighlight" file="Interface\EncounterJournal\UI-EncounterJournalTextures_Tile" virtual="true" horizTile="true" parentKey="midHighlight">
-					<Size x="64" y="36"/> 
-					<TexCoords left="0.00000000" right="1.00000000" top="0.52539063" bottom="0.59570313"/>  
+					<Size x="64" y="36"/>
+					<TexCoords left="0.00000000" right="1.00000000" top="0.52539063" bottom="0.59570313"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" x="0" y="0"/>
                         <Anchor point="BOTTOMRIGHT" x="0" y="0"/>
                     </Anchors>
                 </Texture>
                 <Texture name="$parentLeftHighlight" file="Interface\EncounterJournal\UI-EncounterJournalTextures" virtual="true" parentKey="leftHighlight">
-					<Size x="12" y="36"/> 
-					<TexCoords left="0.81835938" right="0.84179688" top="0.05957031" bottom="0.09472656"/> 
+					<Size x="12" y="36"/>
+					<TexCoords left="0.81835938" right="0.84179688" top="0.05957031" bottom="0.09472656"/>
                     <Anchors>
                         <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="0" y="0"/>
                         <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
                     </Anchors>
                 </Texture>
                 <Texture name="$parentRightHighlight" file="Interface\EncounterJournal\UI-EncounterJournalTextures" virtual="true" parentKey="rightHighlight">
-					<Size x="12" y="36"/> 
-					<TexCoords left="0.87304688" right="0.89648438" top="0.02246094" bottom="0.05761719"/> 
+					<Size x="12" y="36"/>
+					<TexCoords left="0.87304688" right="0.89648438" top="0.02246094" bottom="0.05761719"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="0"/>
                         <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
@@ -1281,14 +1394,14 @@
         </Layers>
         <Frames>
             <Frame enableMouse="true" parentKey="grayBox" hidden="true">
-                <Size x="140" y="55"/>    
+                <Size x="140" y="55"/>
                 <Anchors>
                     <Anchor point="BOTTOM"/>
                 </Anchors>
                 <Layers>
                     <Layer level="BACKGROUND">
                         <Texture>
-                            <Size x="134" y="26"/>    
+                            <Size x="134" y="26"/>
                             <Anchors>
                                 <Anchor point="BOTTOM"/>
                             </Anchors>
@@ -1322,24 +1435,24 @@
                 self:SetHeight(self.storedHeight);
             </OnDisable>
 			<OnClick>
-            
+
                 if _G["searchThread"] ~= nil or _G["searchDelayTimer"] ~= nil then
                     return
                 end
-                
+
 				DugisGuideViewer.DeselectTopTabs()
-				
+
 				self:Disable();
 				self:GetFontString():SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
 				self.selectedGlow:SetVertexColor(1.0, 0.8, 0);
 				self.selectedGlow:Show();
-                DugisGuideViewer.currentTabText = self.tabInfo.text  
+                DugisGuideViewer.currentTabText = self.tabInfo.text
 				self.tabInfo:Activate()
 				PlaySound("igCharacterInfoTab");
 			</OnClick>
         </Scripts>
     </Button>
-	
+
 	<Frame name="DugisMainBorder" parent='UIParent' movable ="true" visible="false">
 		<Size x="818" y="420"/>
 		<Anchors>
@@ -1354,7 +1467,7 @@
 						</Anchors>
 					</Texture>
 				</Layer>
-			</Layers>		
+			</Layers>
 		<Frames>
             <Button name = "DugisCloseButton" inherits="UIPanelCloseButton">
                 <Size>
@@ -1369,7 +1482,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>DugisGuideViewer_Close_ButtonClick();</OnClick>
-                </Scripts> 
+                </Scripts>
             </Button>
 			<Frame name="DugisMain"  clipChildren = "true">
 				<Anchors>
@@ -1379,7 +1492,7 @@
 				<Layers>
 					<Layer>
 						<FontString name="$parentTitle" inherits="QuestFont_Super_Huge" justifyH="CENTER" parentKey="title">
-							<Size x="400" y="44" />   
+							<Size x="400" y="44" />
 							<Anchors>
 								<Anchor point="TOPRIGHT" x="-25"/>
 							</Anchors>
@@ -1394,11 +1507,11 @@
                                 <Layers>
                                     <Layer level="BACKGROUND" visible="true">
                                         <!--  <Texture parentKey="Background" setAllPoints="true" >
-                                          <Color a="0.0" r="1" g="1" b="0" /> 
+                                          <Color a="0.0" r="1" g="1" b="0" />
                                         </Texture>-->
-                                        
+
                                         <Texture  parentKey="CategoryIcon"  file ="Interface/Icons/INV_Misc_Orb_05" >
-                                            <Size x="32" y="32" />   
+                                            <Size x="32" y="32" />
                                             <Anchors>
                                                 <Anchor point="TOPLEFT" x="12" y="-49"/>
                                             </Anchors>
@@ -1423,20 +1536,20 @@
                                         self:Hide()
                                         DugisGuideViewer.Modules.Guides.macrolist.frame:Hide()
                                         macrocategorieswrapper:Show()
-                                        
+
                                         local MacroInfo = self:GetParent().MacroInfo
-                                        
+
                                         MacroInfo.CategoryIcon:SetTexture("Interface/Icons/INV_Misc_Orb_05")
                                         MacroInfo.CategoryIcon:ClearAllPoints()
                                         MacroInfo.CategoryIcon:SetPoint("TOPLEFT", 12, -49)
                                         MacroInfo.CategoryName:SetText("Macros")
-                                        
+
                                         DugisGuideViewer.Modules.Guides.macrolist.scrollBar:Hide()
-                                        
+
                                         self:GetParent().MacroEditor:Hide()
-                                        
+
                                         DugisGuideViewer.Modules.Guides.textEditor.frame:Hide()
-                                        
+
                                         --MacroEditor.MacroInfo.:GetParent()
                                     </OnClick>
                                 </Scripts>
@@ -1444,12 +1557,12 @@
                                 <PushedTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Down"/>
                                 <DisabledTexture file="Interface\Buttons\UI-SpellbookIcon-PrevPage-Disabled"/>
                                 <HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
-                            </Button>  
+                            </Button>
                             <Frame  parentKey="MacroEditor"  setAllPoints="true" visible="true">
                                 <Layers>
                                     <Layer level="BACKGROUND" visible="true">
                                         <!--  <Texture parentKey="Background" setAllPoints="true" >
-                                          <Color a="0.0" r="1" g="1" b="0" /> 
+                                          <Color a="0.0" r="1" g="1" b="0" />
                                         </Texture>-->
                                         <FontString parentKey="MacroName"  maxLines="1"  wordwrap="true" wraponspaces="true"  inherits="GameFontNormal" justifyH="LEFT"  visible="true" text="Macro name">
                                             <Size x="289"/>
@@ -1457,7 +1570,7 @@
                                                 <Anchor point="TOPLEFT" x="384" y="-51"/>
                                             </Anchors>
                                         </FontString>
-                                        
+
                                         <FontString parentKey="MacroDescription" maxLines="2"  wordwrap="true" wraponspaces="true"  inherits="GameFontNormal" justifyH="LEFT"  visible="true" text="Macro description">
                                             <Size x="289"/>
                                             <Anchors>
@@ -1465,7 +1578,7 @@
                                             </Anchors>
                                             <Color r="1" g="1" b="1"/>
                                         </FontString>
-                                        
+
                                         <FontString wordwrap="true" wraponspaces="true"  inherits="GameFontNormal" justifyH="LEFT"  visible="true" text="Macro code:">
                                             <Size x="289"/>
                                             <Anchors>
@@ -1493,7 +1606,7 @@
                                                 </Offset>
                                             </Anchor>
                                         </Anchors>
-                                    </Button> 
+                                    </Button>
                                     <Button parentKey = "ResetToDefault" inherits="UIPanelButtonTemplate" text = "Reset to default" hidden="false">
                                          <Size>
                                             <AbsDimension x="155" y="23"/>
@@ -1505,9 +1618,9 @@
                                                 </Offset>
                                             </Anchor>
                                         </Anchors>
-                                    </Button> 
+                                    </Button>
                                 </Frames>
-                            </Frame> 
+                            </Frame>
                         </Frames>
                     </Frame>
 					<Frame name="DGVHomeFrame" >
@@ -1529,7 +1642,7 @@
                                 <Anchors>
 								   <Anchor point="TOPRIGHT" relativeTo="DGVHomeFrame">
 										<Offset>
-											<AbsDimension x="430" y="44"/> 
+											<AbsDimension x="430" y="44"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
@@ -1563,31 +1676,31 @@
                                         DugisSearchProgressIconSpinSpinner:SetVertexColor(1,.82,0);
                                         DugisSearchProgressIconFrameBackground:SetVertexColor(1,0.82,0);
                                     </OnLoad>
-                                </Scripts>                                
-                            </Frame>                       
+                                </Scripts>
+                            </Frame>
                             <Button name="$parentSelection14" inherits="DugisSelectionTemplate" id="14" parentKey="selection14" visible="true">
 							   <Anchors>
 								   <Anchor point="TOPLEFT">
 										<Offset>
-											<AbsDimension x="12" y="-10"/> 
+											<AbsDimension x="12" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
-						   </Button>    
+						   </Button>
 							<Button name="$parentSelection1" inherits="DugisSelectionTemplate" id="1" parentKey="selection1" >
 							   <Anchors>
 								   <Anchor point="TOPLEFT">
 										<Offset>
-											<AbsDimension x="8" y="-10"/> 
+											<AbsDimension x="8" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
-						   </Button>                           
+						   </Button>
                            <Button name="$parentSelection2" inherits="DugisSelectionTemplate" id="2" parentKey="selection2" >
 							   <Anchors>
 								   <Anchor point="TOPLEFT" relativeTo="$parentSelection1" relativePoint="BOTTOMLEFT">
 										<Offset>
-											<AbsDimension x="0" y="-10"/> 
+											<AbsDimension x="0" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
@@ -1596,7 +1709,7 @@
 							   <Anchors>
 								   <Anchor point="TOPLEFT" relativeTo="$parentSelection2" relativePoint="BOTTOMLEFT">
 										<Offset>
-											<AbsDimension x="0" y="-10"/> 
+											<AbsDimension x="0" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
@@ -1605,7 +1718,7 @@
 							   <Anchors>
 								   <Anchor point="TOPLEFT" relativeTo="$parentSelection3" relativePoint="BOTTOMLEFT">
 										<Offset>
-											<AbsDimension x="0" y="-10"/> 
+											<AbsDimension x="0" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
@@ -1614,7 +1727,7 @@
 							   <Anchors>
 								   <Anchor point="TOPLEFT" relativeTo="$parentSelection4" relativePoint="BOTTOMLEFT">
 										<Offset>
-											<AbsDimension x="0" y="-10"/> 
+											<AbsDimension x="0" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
@@ -1623,7 +1736,7 @@
 							   <Anchors>
 								   <Anchor point="TOPLEFT" relativeTo="$parentSelection5" relativePoint="BOTTOMLEFT">
 										<Offset>
-											<AbsDimension x="0" y="-10"/> 
+											<AbsDimension x="0" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
@@ -1632,7 +1745,7 @@
 							   <Anchors>
 								   <Anchor point="TOPLEFT" relativeTo="$parentSelection6" relativePoint="BOTTOMLEFT">
 										<Offset>
-											<AbsDimension x="0" y="-10"/> 
+											<AbsDimension x="0" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
@@ -1642,29 +1755,29 @@
 							   <Anchors>
 								   <Anchor point="TOPLEFT" relativeTo="$parentSelection1" relativePoint="TOPRIGHT">
 										<Offset>
-											<AbsDimension x="6" /> 
+											<AbsDimension x="-6" />
 										</Offset>
 									</Anchor>
 							   </Anchors>
 						   </Button>
-                           
+
 <!--
                            <Button name="$parentSelection16" inherits="DugisSelectionTemplate" id="16" parentKey="selection16" >
 							   <Anchors>
 								   <Anchor point="TOPLEFT" relativeTo="$parentSelection8" relativePoint="BOTTOMLEFT">
 										<Offset>
-											<AbsDimension x="0" y="-10"/> 
+											<AbsDimension x="0" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
 						   </Button>
--->                        
+-->
                            <Button name="$parentSelection9" inherits="DugisSelectionTemplate" id="9" parentKey="selection9" >
 							<Size x="115" y="32" />
 							   <Anchors>
 								   <Anchor point="TOPLEFT" relativeTo="$parentSelection8" relativePoint="BOTTOMLEFT">
 										<Offset>
-											<AbsDimension x="0" y="-10"/> 
+											<AbsDimension x="0" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
@@ -1674,7 +1787,7 @@
 							   <Anchors>
 								   <Anchor point="TOPLEFT" relativeTo="$parentSelection9" relativePoint="BOTTOMLEFT">
 										<Offset>
-											<AbsDimension x="0" y="-10"/> 
+											<AbsDimension x="0" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
@@ -1684,7 +1797,7 @@
 							   <Anchors>
 								   <Anchor point="TOPLEFT" relativeTo="$parentSelection10" relativePoint="BOTTOMLEFT">
 										<Offset>
-											<AbsDimension x="0" y="-10"/> 
+											<AbsDimension x="0" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
@@ -1694,7 +1807,7 @@
 							   <Anchors>
 								   <Anchor point="TOPLEFT" relativeTo="$parentSelection11" relativePoint="BOTTOMLEFT">
 										<Offset>
-											<AbsDimension x="0" y="-10"/> 
+											<AbsDimension x="0" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
@@ -1703,85 +1816,85 @@
 							   <Anchors>
 								   <Anchor point="TOPLEFT" relativeTo="$parentSelection7" relativePoint="BOTTOMLEFT">
 										<Offset>
-											<AbsDimension x="0" y="-10"/> 
+											<AbsDimension x="0" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
-						   </Button>	
+						   </Button>
                             <Button name="$parentSelection15" inherits="DugisSelectionTemplate" id="15" parentKey="selection15" >
                             <Size x="160" y="32" />
 							   <Anchors>
 								   <Anchor point="TOPLEFT" relativeTo="$parentSelection12" relativePoint="BOTTOMLEFT">
 										<Offset>
-											<AbsDimension x="0" y="-10"/> 
+											<AbsDimension x="0" y="-10"/>
 										</Offset>
 									</Anchor>
 							   </Anchors>
 						   </Button>
 						</Frames>
 					</Frame>
-	
-					<Frame name ="DGVSearchFrame"  movable ="true" visible="true"> 
-						<Size x="350" y="356"/>
-					</Frame>	
-				
-					<Frame name ="DGVScrollFrame3"  movable ="true"> 
-						<Size x="350" y="356"/>
-					</Frame>	
 
-					<Frame name ="DGVScrollFrame4"  movable ="true" > 
+					<Frame name ="DGVSearchFrame"  movable ="true" visible="true">
 						<Size x="350" y="356"/>
-					</Frame>	
-				
-					<Frame name ="DGVScrollFrame5"  movable ="true" > 
-						<Size x="350" y="356"/>
-					</Frame>	
+					</Frame>
 
-					<Frame name ="DGVScrollFrame6"  movable ="true" > 
+					<Frame name ="DGVScrollFrame3"  movable ="true">
 						<Size x="350" y="356"/>
-					</Frame>	
-				
-					<Frame name ="DGVScrollFrame7"  movable ="true" visible="true"> 
-						<Size x="350" y="356"/>		
-					</Frame>	
+					</Frame>
 
-					<Frame name ="DGVScrollFrame8"  movable ="true" visible="true"> 
-						<Size x="350" y="356"/>	
-					</Frame>
-					
-					<Frame name ="DGVScrollFrame9"  movable ="true" visible="true"> 
-						<Size x="350" y="356"/>
-					</Frame>	
-				
-					<Frame name ="DGVScrollFrame10"  movable ="true" visible="true"> 
+					<Frame name ="DGVScrollFrame4"  movable ="true" >
 						<Size x="350" y="356"/>
 					</Frame>
-					
-					<Frame name ="DGVScrollFrame11"  movable ="true" visible="true"> 
+
+					<Frame name ="DGVScrollFrame5"  movable ="true" >
 						<Size x="350" y="356"/>
 					</Frame>
-                    <Frame name ="DGVScrollFrame12"  movable ="true" visible="true"> 
+
+					<Frame name ="DGVScrollFrame6"  movable ="true" >
 						<Size x="350" y="356"/>
 					</Frame>
-                    <Frame name ="DGVScrollFrame13"  movable ="true" visible="true"> 
+
+					<Frame name ="DGVScrollFrame7"  movable ="true" visible="true">
 						<Size x="350" y="356"/>
 					</Frame>
-                    <Frame name ="DGVScrollFrame14"  movable ="true" visible="true"> 
+
+					<Frame name ="DGVScrollFrame8"  movable ="true" visible="true">
 						<Size x="350" y="356"/>
 					</Frame>
-                    <Frame name ="DGVScrollFrame15"  movable ="true" visible="true"> 
+
+					<Frame name ="DGVScrollFrame9"  movable ="true" visible="true">
 						<Size x="350" y="356"/>
 					</Frame>
-					<Frame name ="DGVScrollFrame16"  movable ="true" visible="true"> 
+
+					<Frame name ="DGVScrollFrame10"  movable ="true" visible="true">
 						<Size x="350" y="356"/>
-					</Frame>					
-                    <Frame name ="DGVScrollFrame17"  movable ="true" visible="true"> 
+					</Frame>
+
+					<Frame name ="DGVScrollFrame11"  movable ="true" visible="true">
 						<Size x="350" y="356"/>
-					</Frame>	
-                    <Frame name ="DGVScrollFrame18"  movable ="true" visible="true"> 
+					</Frame>
+                    <Frame name ="DGVScrollFrame12"  movable ="true" visible="true">
 						<Size x="350" y="356"/>
-					</Frame>	  
-                    
+					</Frame>
+                    <Frame name ="DGVScrollFrame13"  movable ="true" visible="true">
+						<Size x="350" y="356"/>
+					</Frame>
+                    <Frame name ="DGVScrollFrame14"  movable ="true" visible="true">
+						<Size x="350" y="356"/>
+					</Frame>
+                    <Frame name ="DGVScrollFrame15"  movable ="true" visible="true">
+						<Size x="350" y="356"/>
+					</Frame>
+					<Frame name ="DGVScrollFrame16"  movable ="true" visible="true">
+						<Size x="350" y="356"/>
+					</Frame>
+                    <Frame name ="DGVScrollFrame17"  movable ="true" visible="true">
+						<Size x="350" y="356"/>
+					</Frame>
+                    <Frame name ="DGVScrollFrame18"  movable ="true" visible="true">
+						<Size x="350" y="356"/>
+					</Frame>
+
 					<Button name="$parentHomeTab" inherits="TopTabTemplate" frameLevel="100" text="Home" parentKey="homeTab">
 						<Anchors>
 							<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="20" y="-40"/>
@@ -1821,17 +1934,18 @@
 								PlaySound("igCharacterInfoTab");
                                 DugisGuideViewer.currentTabText = "Settings"
                                 DugisGuideViewer:UpdateCurrentGuideExpanded()
+                                StaticPopup_Hide("SCORES_IMPORT_DIALOG")
 							</OnClick>
 						</Scripts>
 					</CheckButton>
-					
+
 					<!--<Button name="$parentScrollDownButton" inherits="UIPanelScrollDownButtonTemplate">
 						<Size x="32" y="32"/>
 						<Anchors>
 							<Anchor point="LEFT" relativeTo="$parentTier" relativePoint="RIGHT" x="10" y="0"/>
 						</Anchors>
 						<Scripts>
-							<OnClick> 
+							<OnClick>
 								PlaySound("igMainMenuOptionCheckBoxOn");
 								ToggleDropDownMenu(1, nil, EJTierDropDown, self:GetName(), 74, 15);
 							</OnClick>
@@ -1841,7 +1955,7 @@
 						<DisabledTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Disabled"/>
 						<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
 					</Button>-->
-					
+
 					<Frame name="$parentLeftFrameHost" parentKey="leftFrameHost"  >
 						<Size x="350"/>
 						<Anchors>
@@ -1849,12 +1963,12 @@
 							<Anchor point="BOTTOM"/>
 						</Anchors>
 					</Frame>
-					
-                    
-                    
-                    <Frame name ="CurrentGuideTabContent"  movable ="true" visible="true"> 
+
+
+
+                    <Frame name ="CurrentGuideTabContent"  movable ="true" visible="true">
 						<Size x="350" y="356"/>
-                        
+
                         <Frames>
                             <ScrollFrame name="DugisMainLeftScrollFrame" parentKey="leftScroll" inherits="UIPanelScrollFrameCodeTemplate" visible="true">
                                 <Frames>
@@ -1866,7 +1980,7 @@
                                         <Scripts>
                                             <OnLoad>
                                                 self.trackBG:SetVertexColor(0.2, 0.13, 0.08, 0);
-                                            </OnLoad>		
+                                            </OnLoad>
                                         </Scripts>
                                     </Slider>
                                 </Frames>
@@ -1890,23 +2004,23 @@
                                                 <Anchor point="TOPLEFT" x="48" y="-10"/>
                                             </Anchors>
                                             <Color r="0.961" g="0.824" b="0.412"/>
-                                        </FontString>                            
+                                        </FontString>
                                     </Layer>
                                 </Layers>
-                                
+
                             </ScrollFrame>
                         </Frames>
-					</Frame>    
-                    
+					</Frame>
 
-					
+
+
 					<Frame name="$parentRightFrameHost" parentKey="rightFrameHost">
 						<Anchors>
 							<Anchor point="TOPLEFT" x="375" y="-44"/>
 							<Anchor point="BOTTOMRIGHT" x="-25" />
 						</Anchors>
 					</Frame>
-					
+
 					<ScrollFrame name="$parentRightScrollFrame" parentKey="rightScroll" inherits="UIPanelScrollFrameCodeTemplate" visible="false">
 						<Anchors>
 							<Anchor point="TOP" relativeTo="$parentRightFrameHost"/>
@@ -1923,7 +2037,7 @@
 								<Scripts>
 									<OnLoad>
 										self.trackBG:SetVertexColor(0.2, 0.13, 0.08, 0);
-									</OnLoad>		
+									</OnLoad>
 								</Scripts>
 							</Slider>
 						</Frames>
@@ -1935,7 +2049,7 @@
 							</OnMouseWheel>
 						</Scripts>
 					</ScrollFrame>
-					
+
 					<Button name="DugisResetButton" inherits="UIPanelButtonTemplate"  frameLevel="100" text="Reset" hidden="false">
 						<Size>
 							<AbsDimension x="70" y="23"/>
@@ -1949,7 +2063,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>DugisGuideViewer.ResetButtonOnClick()</OnClick>
-						</Scripts> 
+						</Scripts>
 					</Button>
 					<Button name="DugisReloadButton" inherits="UIPanelButtonTemplate"  frameLevel="101" text="Reload" hidden="false">
 						<Size>
@@ -1964,7 +2078,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>DugisGuideViewer.ReloadButtonOnClick()</OnClick>
-						</Scripts> 
+						</Scripts>
 					</Button>
 					<Button name = "DugisPercentButton"  hidden="false">
 						<Size>
@@ -2015,19 +2129,21 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>DugisGuideViewer:PreloadButtonOnClick()</OnClick>
-						</Scripts> 
+						</Scripts>
 					</Button>
 				</Frames>
 			</Frame>
 		</Frames>
-		<Scripts> <!--Mainframe scripts--> 
-			<OnLoad> tinsert(UISpecialFrames,self:GetName());self:SetClampedToScreen(true); </OnLoad>
+		<Scripts> <!--Mainframe scripts-->
+			<OnLoad>
+                tinsert(UISpecialFrames,self:GetName());self:SetClampedToScreen(true);
+            </OnLoad>
 			<OnMouseDown> self:StartMoving();  </OnMouseDown>
 			<OnMouseUp>  self:StopMovingOrSizing(); </OnMouseUp>
 			<OnDragStop> self:StopMovingOrSizing(); </OnDragStop>
 		</Scripts>
 	</Frame>
-	
+	<!-- Shazzam XML_1 -->
 	<Frame name="DugisRecordFrame" parent='UIParent' movable ="true" visible="false">
 		<Size x="840" y="400"/>
 		<Anchors>
@@ -2048,16 +2164,16 @@
 						<Scripts>
 							<OnLoad>
 								self.trackBG:SetVertexColor(0.2, 0.13, 0.08, 0);
-							</OnLoad>		
+							</OnLoad>
 						</Scripts>
 					</Slider>
 				</Frames>
-				<ScrollChild > 
-					<Frame parentKey="child">                                        
+				<ScrollChild >
+					<Frame parentKey="child">
 						<Size x="550" y="360"/>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="DugisRecordFrame"/>
-						</Anchors>                                        
+						</Anchors>
 					</Frame>
 				</ScrollChild>
 				<Scripts>
@@ -2076,9 +2192,9 @@
 			<OnDragStop> self:StopMovingOrSizing(); </OnDragStop>
 		</Scripts>
 	</Frame>
-		
-	
-	<Frame name = "DGVCurrentGuideFrame">					
+
+
+	<Frame name = "DGVCurrentGuideFrame">
 		<Size x="400" y="10000"/>
 	</Frame>
 
@@ -2115,7 +2231,7 @@
 			</OnUpdate>
             <OnShow>
 				self:RegisterEvent("PLAYER_TARGET_CHANGED")
-				self:RegisterEvent("BAG_UPDATE_COOLDOWN")			
+				self:RegisterEvent("BAG_UPDATE_COOLDOWN")
 			</OnShow>
             <OnHide>
 				self:UnregisterEvent("PLAYER_TARGET_CHANGED")
@@ -2137,9 +2253,9 @@
             </Anchors>
         </NormalTexture>
         <PushedTexture file="Interface\Buttons\UI-Quickslot-Depress"/>
-        <HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>     
+        <HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 	</Button>
-    
+
     <Button name="DugisTargetButtonTemplate" inherits="SecureActionButtonTemplate" virtual='true'>
         <Layers>
             <Layer level="ARTWORK">
@@ -2152,10 +2268,10 @@
             </Layer>
         </Layers>
 	</Button>
-	
+
 	<Button name="DugisSecureQuestButton" inherits="DugisSecureQuestButtonTemplate" parent="UIParent">
 	</Button>
-    
+
     <Script file="TutorialFrameDugis.lua"/>
     <Frame name="TutorialFrameDugis" toplevel="true" parent="UIParent" movable="true" clampedToScreen="true" enableMouse="true" frameLevel="100" frameStrata="TOOLTIP" hidden="true" propagateKeyboardInput="true">
         <Animations>
@@ -2204,7 +2320,7 @@
                     <Size x="76" y="101"/>
                     <TexCoords left="0.0019531" right="0.1484375" top="0.2246094" bottom="0.4199219"/>
                 </Texture>
-                 
+
                 <Texture name="$parentArrowUp" file="Interface\TutorialFrame\UI-TUTORIAL-FRAME">
                     <Size x="68" y="89"/>
                     <TexCoords left="0.1542969" right="0.2851563" top="0.6269531" bottom="0.7988281"/>
@@ -2221,7 +2337,7 @@
                     <Size x="89" y="68"/>
                     <TexCoords left="0.4785156" right="0.3066406" top="0.2246094" bottom="0.3554688"/>
                 </Texture>
-                 
+
                 <Texture name="$parentArrowCurveUpRight" file="Interface\TutorialFrame\UI-TUTORIAL-FRAME">
                     <Size x="66" y="81"/>
                     <TexCoords left="0.3066406" right="0.4335938" top="0.3613281" bottom="0.5175781"/>
@@ -2238,7 +2354,7 @@
                     <Size x="66" y="81"/>
                     <TexCoords left="0.4335938" right="0.3066406" top="0.5175781" bottom="0.3613281"/>
                 </Texture>
- 
+
                 <Texture name="$parentArrowCurveRightDown" file="Interface\TutorialFrame\UI-TUTORIAL-FRAME">
                     <Size x="82" y="66"/>
                     <TexCoords left="0.4843750" right="0.6425781" top="0.2246094" bottom="0.3515625"/>
@@ -2255,7 +2371,7 @@
                     <Size x="82" y="66"/>
                     <TexCoords left="0.6425781" right="0.4843750" top="0.3515625" bottom="0.2246094"/>
                 </Texture>
- 
+
                 <FontString name="$parentTitle" inherits="GameFontHighlight" justifyH="LEFT" justifyV="TOP">
                     <Anchors>
                         <Anchor point="TOP" x="15" y="-22"/>
@@ -2297,7 +2413,7 @@
                         </Scripts>
                     </AnimationGroup>
                 </Animations>
-            </Frame>            
+            </Frame>
             <Frame name="Tutorial_PointerLeft" virtual="true">
                 <Size x="64" y="64" />
                 <Anchors>
@@ -2375,7 +2491,7 @@
                         </Scripts>
                     </AnimationGroup>
                 </Animations>
-            </Frame>            
+            </Frame>
             <Frame parentKey="Content" name="$parentContent" clampedToScreen="true" inherits="GlowBoxTemplate" >
                 <Size x="240" y="100" />
                 <Layers>
@@ -2388,9 +2504,9 @@
                         </FontString>
                     </Layer>
                 </Layers>
-            </Frame>      
-        
-           
+            </Frame>
+
+
             <Frame parentKey="Glow">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeKey="$parent" x="-13" y="9"/>
@@ -2409,7 +2525,7 @@
                 <Backdrop edgeFile="Interface\TutorialFrame\UI-TutorialFrame-CalloutGlow" alphaMode="ADD">
                     <EdgeSize val="25"/>
                 </Backdrop>
-            </Frame>             
+            </Frame>
             <Frame parentKey="Glow1">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeKey="$parent" x="-13" y="9"/>
@@ -2428,12 +2544,12 @@
                 <Backdrop edgeFile="Interface\TutorialFrame\UI-TutorialFrame-CalloutGlow" alphaMode="ADD">
                     <EdgeSize val="35"/>
                 </Backdrop>
-            </Frame>            
-         
+            </Frame>
 
-            
+
+
             <!--
-        
+
             <Frame parentKey="ArrowA_UP1" hidden="true" inherits="Tutorial_PointerUp" frameLevel="100"/>
             <Frame parentKey="ArrowA_UP2" hidden="true" inherits="Tutorial_PointerUp" frameLevel="100"/>
             <Frame parentKey="ArrowA_DOWN1" hidden="true" inherits="Tutorial_PointerDown" frameLevel="100"/>
@@ -2443,7 +2559,7 @@
             <Frame parentKey="ArrowA_RIGHT1" hidden="true" inherits="Tutorial_PointerRight" frameLevel="100"/>
             <Frame parentKey="ArrowA_RIGHT2" hidden="true" inherits="Tutorial_PointerRight" frameLevel="100"/>
                     -->
-        
+
 
             <Frame name="TutorialATextBorder" frameStrata="TOOLTIP" hidden="true">
                 <Layers>
@@ -2488,7 +2604,7 @@
                 <NormalFont style="GameFontNormal"/>
                 <HighlightFont style="GameFontHighlight"/>
             </Button>
-            
+
              <Button name="$parentOkayButton" parentKey="YesButton">
                 <Size>
                     <AbsDimension x="58" y="22"/>
@@ -2675,7 +2791,7 @@
                 <Anchors>
                     <Anchor point="CENTER" x="0" y="0"/>
                 </Anchors>
-                </FontString>         
+                </FontString>
             </Layer>
             <Layer level="ARTWORK">
                 <Texture name="$parentBorderLeft" file="Interface\AchievementFrame\UI-Achievement-ProgressBar-Border">
@@ -2722,93 +2838,10 @@
 			<Anchor point="LEFT" relativePoint="RIGHT"/>
 		</Anchors>
 		<Scripts>
-			
-		
+
+
 		</Scripts>
 		<NormalTexture file="Interface\PaperDollInfoFrame\UI-GearManager-FlyoutButton"/>
 		<HighlightTexture file="Interface\PaperDollInfoFrame\UI-GearManager-FlyoutButton"/>
 	</Button>
-    
-    <Frame name="DugisPreloader" hidden="true" virtual="true">
-        <Frames>
-            <Frame setAllPoints="true" parentKey="TexWrapper" visible="false">
-                <Layers>
-                    <Layer level="BACKGROUND">
-                        <Texture parentKey="Background">
-                            <Anchors>
-                                <Anchor point="LEFT" relativeTo="$parent">
-                                    <Offset>
-                                        <AbsDimension x="0" y="0"/>
-                                    </Offset>
-                                </Anchor>
-                                <Anchor point="RIGHT" relativeTo="$parent">
-                                    <Offset>
-                                        <AbsDimension x="0" y="0"/>
-                                    </Offset>
-                                </Anchor>
-                                <Anchor point="TOP" relativeTo="$parent">
-                                    <Offset>
-                                        <AbsDimension x="0" y="0"/>
-                                    </Offset>
-                                </Anchor>
-                                <Anchor point="BOTTOM" relativeTo="$parent">
-                                    <Offset>
-                                        <AbsDimension x="0" y="0"/>
-                                    </Offset>
-                                </Anchor>
-                            </Anchors>
-                            <Color a="0.9" />
-                        </Texture>
-                    </Layer>
-                    <Layer level="ARTWORK">
-                        <FontString parentKey="Text" wordwrap="false" wraponspaces="true"  inherits="GameFontNormal" justifyH="LEFT"  visible="false" text="Preparing 2%..">
-                            <Size x="159" y="40"/>
-                            <Anchors>
-                                <Anchor point="TOPLEFT" x="5" y="-2"/>
-                            </Anchors>
-                        </FontString>
-                    </Layer>
-                </Layers>
-            </Frame>
-            <Frame  parentKey="Icon"  visible="false">
-                <Anchors>
-                   <Anchor point="TOPRIGHT" relativeTo="$parent">
-                        <Offset>
-                            <AbsDimension x="0" y="0"/> 
-                        </Offset>
-                    </Anchor>
-               </Anchors>
-                <Size x="45" y="45"/>
-                <Frames>
-                    <Frame  parentKey="Frame"  setAllPoints="true" >
-                        <Layers>
-                            <Layer level="BACKGROUND">
-                                <Texture file="Interface\COMMON\StreamBackground" parentKey="Background" setAllPoints="true" />
-                            </Layer>
-                            <Layer level="ARTWORK">
-                                <Texture file="Interface\COMMON\StreamFrame" parentKey="Alpha" setAllPoints="true" />
-                            </Layer>
-                        </Layers>
-                    </Frame>
-                    <Frame   parentKey="Spin"  setAllPoints="true" >
-                        <Layers>
-                            <Layer level="BACKGROUND">
-                                <Texture file="Interface\COMMON\StreamCircle" parentKey="Spinner" setAllPoints="true" />
-                            </Layer>
-                            <Layer level="OVERLAY" >
-                                <Texture file="Interface\COMMON\StreamSpark" setAllPoints="true" />
-                            </Layer>
-                        </Layers>
-                    </Frame>
-                </Frames>
-                <Scripts>
-                    <OnLoad>
-                        self.Spin.Spinner:SetVertexColor(1,.82,0);
-                        self.Frame.Background:SetVertexColor(1,0.82,0);
-                    </OnLoad>
-                </Scripts>                                
-            </Frame>                 
-        </Frames>
-    </Frame>
-    
 </Ui>

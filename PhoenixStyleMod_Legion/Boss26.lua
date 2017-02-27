@@ -16,7 +16,7 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion26 and pswasonbossLeg
 		end
 		if psraidoptionson[4][2][6][2]==1 then
 			strochkavezcrash=psiccdmgfrom.." |s4id206398|id ("..psmainmtotal.."): "
-			-reportafterboitwotab(psraidchats3[psraidoptionschat[4][2][6][2]], true, vezaxname2, vezaxcrash2, 1)
+			reportafterboitwotab(psraidchats3[psraidoptionschat[4][2][6][2]], true, vezaxname2, vezaxcrash2, 1)
 		end
 
 

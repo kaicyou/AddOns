@@ -31,7 +31,7 @@ function DGV:CreateDropdown(dropdownName, frame, labelText, optionsIndex, func, 
 	--assert(type(optionsIndex) == "number", "optionsIndex must be a number")
 	assert(type(func) == "function", "func must be a func")	
 	local frameWidth = 0
-	local dropdown = CreateFrame("Frame", dropdownName, frame, "Lib_UIDropDownMenuTemplate")
+	local dropdown = CreateFrame("Frame", dropdownName, frame, "LibDugi_UIDropDownMenuTemplate")
 	dropdown:SetFrameStrata("FULLSCREEN_DIALOG")
 	dropdown:SetPoint("CENTER")
 	dropdown.optionsIndex = optionsIndex
@@ -42,7 +42,7 @@ function DGV:CreateDropdown(dropdownName, frame, labelText, optionsIndex, func, 
 			local indx, value
 			local options = (optionalListFunc and optionalListFunc()) or DGV:GetDB(optionsIndex, "options")
 			for indx, value in pairs(options) do
-				local info = Lib_UIDropDownMenu_CreateInfo()
+				local info = LibDugi_UIDropDownMenu_CreateInfo()
 				if type(value)=="table" then
 					info.text 	= L[value.text]
 					info.value   = value.value or value.text 
@@ -53,17 +53,17 @@ function DGV:CreateDropdown(dropdownName, frame, labelText, optionsIndex, func, 
 				end
 				info.func = func
 				
-				Lib_UIDropDownMenu_AddButton(info)
+				LibDugi_UIDropDownMenu_AddButton(info)
 				local fontWidth = DGV:GetFontWidth(info.text, "GameFontHighlightSmall")
 				if fontWidth > frameWidth then frameWidth = fontWidth end
 			end	
 		end
-	Lib_UIDropDownMenu_Initialize(dropdown, dropdown.initFunc)
+	LibDugi_UIDropDownMenu_Initialize(dropdown, dropdown.initFunc)
 
 	if optionsIndex then
-		Lib_UIDropDownMenu_SetSelectedValue(dropdown, DGV:UserSetting(optionsIndex))
+		LibDugi_UIDropDownMenu_SetSelectedValue(dropdown, DGV:UserSetting(optionsIndex))
 	end
-	Lib_UIDropDownMenu_SetWidth(dropdown, frameWidth+25, 0) 
+	LibDugi_UIDropDownMenu_SetWidth(dropdown, frameWidth+25, 0) 
 	
 	if labelText then
 		local dropdown_text = dropdown:CreateFontString(dropdownName.."Title", "ARTWORK", "GameFontHighlight")

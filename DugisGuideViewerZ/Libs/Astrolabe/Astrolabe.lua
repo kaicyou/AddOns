@@ -329,6 +329,7 @@ function Astrolabe:TranslateWorldMapPosition( M, F, xPos, yPos, nM, nF )
 		end
 		-- need to account for the offset in the new system so we can
 		-- correctly translate into 0-1 style coordinates
+		
 		xPos = xPos - mapData.xOffset;
 		yPos = yPos - mapData.yOffset;
 	

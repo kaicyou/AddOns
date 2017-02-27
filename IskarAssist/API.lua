@@ -712,16 +712,45 @@ local boss_spells = {
 	
 	--Skorpyron
 	[1706] = {
-		
+		204292, --crystalline fragments
+		214718, --acidic fragments
+		204275, --arcanoslash
+		214662, --volatile fragments
+		210074, --shockwave
+		204483, --focused blast
+		214654, --acidic fragments
+		204744, --toxic chitin
+		211659, --arcane tether
+		204766, --energy surge
+		211801, --volatile fragments
 	}, 
+	
 	--Chronomatic Anomaly
 	[1725] = {
-		
+		219823, --power overwhelming
+		206612, --burst of time
+		206607, --chronometric particles
+		206608, --time release
+		205707, --temporal orb
+		212099, --temporal charge
+		207228, --warp nightwell
+		219808, --chronomate
+		228335, --warp nightwell
+		219808, --chronomate
 	}, 
+	
 	--Trilliax
 	[1731] = {
-		
+		206749, --mana rupture
+		206641, --arcane slash
+		206821, --cleansing rage
+		206792, --toxic slice
+		206488, --arcane seepage
+		206798, --toxic slice
+		207328, --cleansing destruction
+		212103, --energy drain
 	}, 
+	
 	--Spellblade Aluriel
 	[1751] = {
 		

@@ -657,6 +657,10 @@ function GenericTrigger.LoadDisplay(id)
   end
 end
 
+local function trueFunction()
+  return true;
+end
+
 function GenericTrigger.Add(data, region)
   local id = data.id;
   events[id] = nil;
@@ -725,6 +729,9 @@ function GenericTrigger.Add(data, region)
             local prototype = event_prototypes[trigger.event];
             if(prototype) then
               trigger_events = prototype.events;
+              if (type(trigger_events) == "function") then
+                trigger_events = trigger_events(trigger, untrigger);
+              end
               for index, event in ipairs(trigger_events) do
                 frame:RegisterEvent(event);
                 aceEvents:RegisterMessage(event, HandleEvent, frame)
@@ -741,6 +748,9 @@ function GenericTrigger.Add(data, region)
           triggerFunc = WeakAuras.LoadFunction("return "..(trigger.custom or ""));
           if(trigger.custom_type == "status" or trigger.custom_type == "event" and trigger.custom_hide == "custom") then
             untriggerFunc = WeakAuras.LoadFunction("return "..(untrigger.custom or ""));
+            if (not untriggerFunc) then
+              untriggerFunc = trueFunction;
+            end
           end
 
           if(trigger.custom_type ~= "stateupdate" and trigger.customDuration and trigger.customDuration ~= "") then
@@ -914,6 +924,7 @@ function GenericTrigger.Modernize(data)
     local trigger, untrigger;
     if(triggernum == 0) then
       trigger = data.trigger;
+      untrigger = data.untrigger;
     elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
       trigger = data.additional_triggers[triggernum].trigger;
     end
@@ -928,9 +939,9 @@ function GenericTrigger.Modernize(data)
   -- Rename ["event"] = "Cooldown (Spell)" to ["event"] = "Cooldown Progress (Spell)"
   for triggernum=0,(data.numTriggers or 9) do
     local trigger, untrigger;
-
     if(triggernum == 0) then
       trigger = data.trigger;
+      untrigger = data.untrigger;
     elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
       trigger = data.additional_triggers[triggernum].trigger;
     end
@@ -1243,20 +1254,34 @@ do
     end
   end
 
-  function WeakAuras.GetSpellCooldown(id, ignoreRuneCD)
+  function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd)
+    local startTime, duration;
     if (ignoreRuneCD) then
       if (spellsRune[id] and spellCdExpsRune[id] and spellCdDursRune[id]) then
-        return spellCdExpsRune[id] - spellCdDursRune[id], spellCdDursRune[id];
+        startTime = spellCdExpsRune[id] - spellCdDursRune[id]
+        duration = spellCdDursRune[id];
       else
-        return 0, 0
+        startTime = 0;
+        duration = 0;
+      end
+    else
+      if(spells[id] and spellCdExps[id] and spellCdDurs[id]) then
+        startTime = spellCdExps[id] - spellCdDurs[id];
+        duration = spellCdDurs[id];
+      else
+        startTime = 0;
+        duration = 0;
       end
     end
 
-    if(spells[id] and spellCdExps[id] and spellCdDurs[id]) then
-      return spellCdExps[id] - spellCdDurs[id], spellCdDurs[id];
-    else
-      return 0, 0;
+    if (showgcd) then
+      if ((gcdStart or 0) + (gcdDuration or 0) > startTime + duration) then
+        startTime = gcdStart;
+        duration = gcdDuration;
+      end
     end
+
+    return startTime, duration;
   end
 
   function WeakAuras.GetSpellCharges(id)
@@ -1543,7 +1568,7 @@ do
   end
 
   function WeakAuras.CheckItemSlotCooldowns()
-    for id, _ in pairs(itemSlots) do
+    for id, itemId in pairs(itemSlots) do
       local startTime, duration, enable = GetInventoryItemCooldown("player", id);
       itemSlotsEnable[id] = enable;
       startTime = startTime or 0;
@@ -1581,6 +1606,12 @@ do
           end
           ItemSlotCooldownFinished(id);
         end
+      end
+
+      local newItemId = GetInventoryItemID("player", id);
+      if (itemId ~= newItemId) then
+        WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_ITEM_CHANGED");
+        itemSlots[id] = newItemId;
       end
     end
   end
@@ -1711,7 +1742,7 @@ do
     if not id or id == 0 then return end
 
     if not(itemSlots[id]) then
-      itemSlots[id] = true;
+      itemSlots[id] = GetInventoryItemID("player", id);
       local startTime, duration, enable = GetInventoryItemCooldown("player", id);
       itemSlotsEnable[id] = enable;
       if(duration > 0 and duration ~= WeakAuras.gcdDuration()) then
@@ -1966,7 +1997,7 @@ do
       bar.duration = duration;
       bar.expirationTime = expirationTime;
       bar.icon = icon;
-      WeakAuras.ScanEvents("BigWigs_StartBar", spellId);
+      WeakAuras.ScanEvents("BigWigs_StartBar", text);
       if (nextExpire == nil) then
         recheckTimer = timer:ScheduleTimer(recheckTimers, expirationTime - now);
         nextExpire = expirationTime;

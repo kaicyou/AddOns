@@ -48,6 +48,16 @@ WeakAuras.encounter_table = {
   [1819] = 1958, -- Odyn
   [1830] = 1962, -- Guarm
   [1829] = 2008, -- Helya
+  -- Tomb of Sargeras
+  [1862] = 2032, -- Goroth
+  [1867] = 2048, -- Demonic Inquisition
+  [1856] = 2048, -- Harjatan
+  [1861] = 2037, -- Mistress Sasszine
+  [1903] = 2050, -- Sisters of the Moon
+  [1896] = 2054, -- Desolate Host
+  [1897] = 2052, -- Maiden of Vigilance
+  [1873] = 2038, -- Fallen Avatar
+  [1898] = 2051, -- Kiljaeden
 }
 
 local function get_encounters_list()
@@ -487,10 +497,18 @@ WeakAuras.load_prototype = {
       init = "false"
     },
     {
+      name = "ingroup",
+      display = L["In Group"],
+      type = "tristate",
+      width = "normal",
+      init = "arg"
+    },
+    {
       name = "petbattle",
       display = L["In Pet Battle"],
       type = "tristate",
-      init = "arg"
+      init = "arg",
+      width = "normal",
     },
     {
       name = "vehicle",
@@ -1383,13 +1401,21 @@ WeakAuras.event_prototypes = {
   },
   ["Cooldown Progress (Spell)"] = {
     type = "status",
-    events = {
-      "SPELL_COOLDOWN_READY",
-      "SPELL_COOLDOWN_CHANGED",
-      "SPELL_COOLDOWN_STARTED",
-      "COOLDOWN_REMAINING_CHECK",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
+    events = function(trigger, untrigger)
+      local events = {
+        "SPELL_COOLDOWN_READY",
+        "SPELL_COOLDOWN_CHANGED",
+        "SPELL_COOLDOWN_STARTED",
+        "COOLDOWN_REMAINING_CHECK",
+        "WA_DELAYED_PLAYER_ENTERING_WORLD"
+      };
+      if (trigger.use_showgcd) then
+        tinsert(events, "GCD_START");
+        tinsert(events, "GCD_CHANGE");
+        tinsert(events, "GCD_END");
+      end
+      return events;
+    end,
     force_events = "SPELL_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Spell)"],
     init = function(trigger)
@@ -1397,10 +1423,14 @@ WeakAuras.event_prototypes = {
       local spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
       trigger.realSpellName = spellName; -- Cache
       WeakAuras.WatchSpellCooldown(spellName, trigger.use_matchedRune);
+      if (trigger.use_showgcd) then
+        WeakAuras.WatchGCD();
+      end
       local ret = [=[
         local spellname = [[%s]]
         local ignoreRuneCD = %s
-        local startTime, duration = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD);
+        local showgcd = %s;
+        local startTime, duration = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd);
         local charges = WeakAuras.GetSpellCharges(spellname);
         if (charges == nil) then
             charges = (duration == 0) and 1 or 0;
@@ -1421,8 +1451,10 @@ WeakAuras.event_prototypes = {
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
-      return ret:format(spellName, (trigger.use_matchedRune and "true" or "false"),
-                                   "[[" .. (trigger.showOn or "") .. "]]");
+      return ret:format(spellName,
+                        (trigger.use_matchedRune and "true" or "false"),
+                        (trigger.use_showgcd and "true" or "false"),
+                        "[[" .. (trigger.showOn or "") .. "]]");
     end,
     args = {
       {
@@ -1430,6 +1462,12 @@ WeakAuras.event_prototypes = {
       {
         name = "matchedRune",
         display = L["Ignore Rune CD"],
+        type = "toggle",
+        test = "true",
+      },
+      {
+        name = "showgcd",
+        display = L["Show Global Cooldown"],
         type = "toggle",
         test = "true"
       },
@@ -1467,7 +1505,7 @@ WeakAuras.event_prototypes = {
       }
     },
     durationFunc = function(trigger)
-      local startTime, duration = WeakAuras.GetSpellCooldown(trigger.realSpellName or 0, trigger.use_matchedRune);
+      local startTime, duration = WeakAuras.GetSpellCooldown(trigger.realSpellName or 0, trigger.use_matchedRune, trigger.use_showgcd);
       startTime = startTime or 0;
       duration = duration or 0;
       return duration, startTime + duration;
@@ -1678,6 +1716,7 @@ WeakAuras.event_prototypes = {
       "ITEM_SLOT_COOLDOWN_STARTED",
       "ITEM_SLOT_COOLDOWN_CHANGED",
       "COOLDOWN_REMAINING_CHECK",
+      "ITEM_SLOT_COOLDOWN_ITEM_CHANGED"
     },
     force_events = "ITEM_COOLDOWN_FORCE",
     name = L["Cooldown Progress (Equipment Slot)"],
@@ -1714,7 +1753,7 @@ WeakAuras.event_prototypes = {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
-        enable = function(trigger) return (trigger.showOn ~= "showOnCooldown") end,
+        enable = function(trigger) return (trigger.showOn ~= "showOnReady") end,
         init = "remaining"
       },
       {
@@ -1982,7 +2021,6 @@ WeakAuras.event_prototypes = {
       end
     end,
     statesParameter = "full",
-    canHaveAuto = true,
     args = {
       {
         name = "id", -- TODO Is there ever anything useful in ID?
@@ -2179,7 +2217,6 @@ WeakAuras.event_prototypes = {
       end
     end,
     statesParameter = "full",
-    canHaveAuto = true,
     args = {
       {
         name = "addon",
@@ -2665,9 +2702,14 @@ WeakAuras.event_prototypes = {
     },
     nameFunc = function(trigger)
       local _, class = UnitClass("player");
+      local name
       if(class == trigger.class) then
         local form = GetShapeshiftForm();
-        local _, name = form > 0 and GetShapeshiftFormInfo(form) or "Humanoid";
+        if form > 0 then
+          local _, name = GetShapeshiftFormInfo(form);
+        else
+          name = "Humanoid";
+        end
         return name;
       else
         local types = WeakAuras[class:lower().."_form_types"];
@@ -3302,22 +3344,46 @@ WeakAuras.event_prototypes = {
   },
   ["Conditions"] = {
     type = "status",
-    events = {
-      "PLAYER_REGEN_ENABLED",
-      "PLAYER_REGEN_DISABLED",
-      "PLAYER_FLAGS_CHANGED",
-      "PLAYER_DEAD",
-      "PLAYER_ALIVE",
-      "PLAYER_UNGHOST",
-      "UNIT_PET",
-      "PET_UPDATE",
-      "UNIT_ENTERED_VEHICLE",
-      "UNIT_EXITED_VEHICLE",
-      "PLAYER_UPDATE_RESTING",
-      "MOUNTED_UPDATE",
-      "CONDITIONS_CHECK",
-      "PLAYER_MOVING_UPDATE"
-    },
+    events = function(trigger, untrigger)
+      local events = {};
+      tinsert(events,  "CONDITIONS_CHECK");
+      if (trigger.use_incombat ~= nil) then
+        tinsert(events, "PLAYER_REGEN_ENABLED");
+        tinsert(events, "PLAYER_REGEN_DISABLED");
+      end
+      if (trigger.use_pvpflagged ~= nil) then
+        tinsert(events, "PLAYER_FLAGS_CHANGED");
+      end
+
+      if (trigger.use_alive ~= nil) then
+        tinsert(events, "PLAYER_DEAD");
+        tinsert(events, "PLAYER_ALIVE");
+        tinsert(events, "PLAYER_UNGHOST");
+      end
+
+      if (trigger.use_vehicle ~= nil) then
+        tinsert(events, "UNIT_ENTERED_VEHICLE");
+        tinsert(events, "UNIT_EXITED_VEHICLE");
+      end
+
+      if (trigger.use_resting ~= nil) then
+        tinsert(events, "PLAYER_UPDATE_RESTING");
+      end
+
+      if (trigger.use_mounted ~= nil) then
+        tinsert(events, "MOUNTED_UPDATE");
+      end
+
+      if (trigger.use_HasPet ~= nil) then
+        tinsert(events, "PET_UPDATE");
+      end
+
+      if (trigger.use_ismoving ~= nil) then
+        tinsert(events, "PLAYER_MOVING_UPDATE");
+      end
+
+      return events;
+    end,
     force_events = "CONDITIONS_CHECK",
     name = L["Conditions"],
     init = function(trigger)

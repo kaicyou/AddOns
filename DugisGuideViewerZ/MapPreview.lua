@@ -538,7 +538,9 @@ function MP:Initialize()
     function MP:InitializeWaypointMapPing()
         --prevents error on early load
         if not WorldMapButton:GetLeft() then
-            MP.FadeOutAnimationGroup:Stop()
+            if MP.FadeOutAnimationGroup then
+                MP.FadeOutAnimationGroup:Stop()
+            end
             HideUIPanel(WorldMapFrame)
             return
         end

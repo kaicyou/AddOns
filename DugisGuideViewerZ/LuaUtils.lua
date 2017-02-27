@@ -258,56 +258,99 @@ end
 dugisThreads = {}
 
 -- threadThrottle (if == 1 then one execution per second)
-function LuaUtils:CreateThread(threadName, threadFunction, onEnd, resumeAmountPerFrame, threadThrottle)
+function LuaUtils:CreateThread(threadName, threadFunction, onEnd, resumeAmountPerFrame, threadThrottle, arguments)
 
-    threadName = "thread_"..threadName
+    --Default values
+    threadThrottle = threadThrottle or 0.01
+    resumeAmountPerFrame = resumeAmountPerFrame or 40
+    arguments = arguments or {}
 
-	local threadFrame = CreateFrame("Frame")
-	local threadCounter = 0
+    if not DugiThreadFrame then
     
-    if threadThrottle == nil then
-        threadThrottle = 0.01
-    end  
+    CreateFrame("Frame", "DugiThreadFrame")
     
-    if resumeAmountPerFrame == nil then
-        resumeAmountPerFrame = 40
-    end
+	DugiThreadFrame:SetScript("OnUpdate" , function(self, elapsed)
     
-	threadFrame:SetScript("OnUpdate" , function(self, elapsed)
-		threadCounter = threadCounter + elapsed
-		if threadCounter >= threadThrottle then
-			threadCounter = threadCounter - threadThrottle
+        LuaUtils:foreach(dugisThreads, function(thread, threadName_)
+        
+		thread.threadCounter = thread.threadCounter + elapsed
+		if thread.threadCounter >= thread.threadThrottle then
+			thread.threadCounter = thread.threadCounter - thread.threadThrottle
             
-            if dugisThreads[threadName] ~= nil then
-                if coroutine.status(dugisThreads[threadName]) ~= "dead" then
-                    for i=1, resumeAmountPerFrame do
-                        if coroutine.status(dugisThreads[threadName]) ~= "dead" then
-                            local result, message = coroutine.resume(dugisThreads[threadName])
-                            local status = coroutine.status(dugisThreads[threadName])
+            if thread ~= nil then
+                if coroutine.status(thread.thread) ~= "dead" then
+                    for i=1, thread.resumeAmountPerFrame do
+                        if coroutine.status(thread.thread) ~= "dead" then
+                            local result, message = coroutine.resume(thread.thread, unpack(thread.arguments))
+                            local status = coroutine.status(thread.thread)
                             if status=="dead"and result == false then
-                                assert(false, threadName..":\n" .. message)
+                                assert(false, threadName_..":\n" .. message)
                             end
                         end
                     end
                 else
-                    if onEnd then
-                        onEnd()
+                    if thread.onEnd then
+                        thread.onEnd()
                     end
-                    dugisThreads[threadName] = nil
+                    dugisThreads[threadName_] = nil
                 end
             end
 		end
         
-        CalculateCurrentFacing()
+        end)
         
+        CalculateCurrentFacing()
 	end) 
+    
+    end
 
-    dugisThreads[threadName] = coroutine.create(threadFunction)
+    local threadName = "thread_"..threadName
+    
+    dugisThreads[threadName] = {
+        thread = coroutine.create(threadFunction),
+        threadCounter = 0,
+        threadThrottle = threadThrottle,
+        resumeAmountPerFrame = resumeAmountPerFrame,
+        onEnd = onEnd,
+        arguments = arguments,
+        threadFunction = threadFunction,
+    }
+    
 end
 
 function LuaUtils:ThreadInProgress(threadName)
     threadName = "thread_"..threadName
     return dugisThreads[threadName]~=nil
+end
+
+
+function LuaUtils:Yield(isInThread)
+    if isInThread then
+        coroutine.yield()
+    end
+end
+
+function LuaUtils:RunInThreadIfNeeded(threadName, threadFunction, onEnd, arguments, alwaysTunInThread)
+    arguments = arguments or {}
+
+    if UnitAffectingCombat("player") or alwaysTunInThread then
+        MainFramePreloader:ShowPreloader()
+        if SmallFramePreloader then
+            SmallFramePreloader:ShowPreloader()
+        end
+    
+        LuaUtils:CreateThread(threadName, threadFunction, function() 
+            if onEnd then
+                onEnd()
+            end
+            MainFramePreloader:HidePreloader()
+            if SmallFramePreloader then
+                SmallFramePreloader:HidePreloader()
+            end
+        end, 20, nil, {true, unpack(arguments)})
+    else
+        return threadFunction(false, unpack(arguments))
+    end
 end
 
 function LuaUtils:clone(orig)
@@ -524,7 +567,9 @@ end
 
 function LuaUtils:DugiSetMapByID(mapId)
 	DugisGuideUser.NoQuestLogUpdateTrigger = true
-	return SetMapByID(mapId)
+    if tonumber(mapId) ~= nil then
+        return SetMapByID(mapId)
+    end
 end 
 
 function LuaUtils:DugiSetMapToCurrentZone()
@@ -534,24 +579,27 @@ function LuaUtils:DugiSetMapToCurrentZone()
 end
 
 ----Post combat loading
-local postCombatLoadQueue = {}
-function LuaUtils:PostCombatLoad(function_)
+local postCombatRunQueue = {}
+function LuaUtils:PostCombatRun(name, function_)
     if UnitAffectingCombat("player")  then
-        postCombatLoadQueue[#postCombatLoadQueue + 1] = function_
+        if not postCombatRunQueue[name] then
+            postCombatRunQueue[name] = function_
+        end
     else
         function_(false)
     end
 end
 
 function LuaUtils:RunPostCombatFunctions()
-    for i = #postCombatLoadQueue, 1, -1 do
-        postCombatLoadQueue[i](true)
-    end
+    LuaUtils:foreach(postCombatRunQueue, function(function_)
+        function_(true)
+        coroutine.yield()
+    end)
     
-    postCombatLoadQueue = {}
+    postCombatRunQueue = {}
 end
 
-LuaUtils:CreateThread("dugi-post-combat-loading", function()
+LuaUtils:CreateThread("dugi-post-combat-invoke", function()
     while UnitAffectingCombat("player") do
         coroutine.yield()
     end

@@ -1169,6 +1169,10 @@ function WMT:Initialize()
 			end
 		end
 	end
+    
+    local function IsElvUIInstalled()
+        return ElvUIMiniMapTrackingDropDown ~= nil
+    end  
 
 	local function GetNearest(button)
 		local shortest, shortestDist
@@ -1202,14 +1206,23 @@ function WMT:Initialize()
 				map, level)
 		end
         
-        DropDownList1.showTimer = 1
-        Lib_DropDownList1.showTimer = 1
-        Lib_HideDropDownMenu(1)
-        Lib_HideDropDownMenu(2)
+        if IsElvUIInstalled() then
+            Lib_DropDownList1.showTimer = 1
+        else
+            LibDugi_DropDownList1.showTimer = 1
+        end        
+
+        LibDugi_HideDropDownMenu(1)
+        LibDugi_HideDropDownMenu(2)
 	end
 
 	local function IterateDropdownLevel(level)
 		local listFrame = _G["DropDownList"..level];
+        
+        if IsElvUIInstalled() then
+            listFrame = _G["Lib_DropDownList"..level];
+        end
+        
 		local listFrameName = listFrame:GetName();
 		local count = listFrame.numButtons
 		local i = 0
@@ -1294,14 +1307,27 @@ function WMT:Initialize()
         local function HasMinimapMenuPetTrackingOption()
             local result = false
             
-            LuaUtils:loop(_G["DropDownList1"].numButtons, function(buttonIndex)
-                local buttonIcon = _G["DropDownList1Button"..buttonIndex.."Icon"]
-                local button = _G["DropDownList1Button"..buttonIndex]
-                local text = _G["DropDownList1Button"..buttonIndex.."NormalText"]
+            local dropDownPrefix = ""
+            
+            if IsElvUIInstalled() then
+                dropDownPrefix = "Lib_"
+            end
+            
+            LuaUtils:loop(_G[dropDownPrefix.."DropDownList1"].numButtons, function(buttonIndex)
+                local buttonIcon = _G[dropDownPrefix.."DropDownList1Button"..buttonIndex.."Icon"]
+                local button = _G[dropDownPrefix.."DropDownList1Button"..buttonIndex]
+                local text = _G[dropDownPrefix.."DropDownList1Button"..buttonIndex.."NormalText"]
                 
-                if DropDownList1:IsVisible() and button:IsShown() and buttonIcon and buttonIcon:IsVisible() and buttonIcon:GetTexture():match("tracking_wildpet") then
-                    result = true
-                end 
+                local texture = buttonIcon:GetTexture()
+                if (type(texture) ~= "number" and texture:match("tracking_wildpet")) or texture == 613074 then
+                    
+                    if _G[dropDownPrefix.."DropDownList1"]:IsVisible() 
+                        and button:IsShown() 
+                        and buttonIcon 
+                        and buttonIcon:IsVisible() then
+                            result = true
+                    end
+                end
             end)
             
             return result
@@ -1310,8 +1336,14 @@ function WMT:Initialize()
         local function IsShowMinimapMenu()
             local result = 0
             
-            LuaUtils:loop(_G["DropDownList1"].numButtons, function(buttonIndex)
-                local button = _G["DropDownList1Button"..buttonIndex]
+            local dropDownPrefix = ""
+            
+            if IsElvUIInstalled() then
+                dropDownPrefix = "Lib_"
+            end
+            
+            LuaUtils:loop(_G[dropDownPrefix.."DropDownList1"].numButtons, function(buttonIndex)
+                local button = _G[dropDownPrefix.."DropDownList1Button"..buttonIndex]
                 
                 if button:GetText() == MINIMAP_TRACKING_NONE then
                     result = result + 1
@@ -1379,16 +1411,37 @@ function WMT:Initialize()
             end
             
             UpdateTrackingFilters()
-            Lib_UIDropDownMenu_Refresh(MinimapExtraMenuFrame)
-        end        
+            LibDugi_UIDropDownMenu_Refresh(MinimapExtraMenuFrame)
+        end  
+        
+        local function TransferBackdropFromElvUI()
+            LuaUtils:loop(5, function(index)
+                local sourceBackdrop = _G["DropDownList1".."".."MenuBackdrop"]
+                local targetBackdrop = _G["LibDugi_DropDownList"..index.."MenuBackdrop"]
 
-        DropDownList1:HookScript("OnShow", function()
+                if sourceBackdrop and targetBackdrop then
+                    local backdrop = sourceBackdrop:GetBackdrop(); 
+
+                    targetBackdrop:SetBackdrop(backdrop)
+
+                    local r, g, b, a = sourceBackdrop:GetBackdropBorderColor(); 
+                    targetBackdrop:SetBackdropBorderColor(r, g, b, a)
+
+                    local r, g, b, a = sourceBackdrop:GetBackdropColor(); 
+                    targetBackdrop:SetBackdropColor(r, g, b, a)
+                end
+            end)        
+        end
+        
+        local function ShowExtraMenu()
             if not IsShowMinimapMenu() then
-                return
+                if not IsElvUIInstalled() then
+                    return
+                end
             end
             
             if not MinimapExtraMenuFrame then
-                extraMenuFrame = CreateFrame("Frame", "MinimapExtraMenuFrame", UIParent, "UIDropDownMenuTemplate")
+                extraMenuFrame = CreateFrame("Frame", "MinimapExtraMenuFrame", UIParent, "LibDugi_UIDropDownMenuTemplate")
             end
         
             if allTrackingPoints == nil then
@@ -1538,35 +1591,80 @@ function WMT:Initialize()
 
             MinimapExtraMenuFrame.point = "TOPRIGHT"
             MinimapExtraMenuFrame.relativePoint = "BOTTOMRIGHT"
+
+            local yMenuOffset = 0
             
-            Lib_EasyMenu(menu, MinimapExtraMenuFrame, DropDownList1, 0 , 0, "MENU");
+            if IsElvUIInstalled() then
+                if Lib_DropDownList1:GetTop() < GetScreenHeight() * 0.5 then
+                    MinimapExtraMenuFrame.point = "BOTTOMRIGHT"
+                    MinimapExtraMenuFrame.relativePoint = "TOPRIGHT"
+                    yMenuOffset = 10
+                end
+            else
+                if DropDownList1:GetTop() < GetScreenHeight() * 0.5 then
+                    MinimapExtraMenuFrame.point = "BOTTOMRIGHT"
+                    MinimapExtraMenuFrame.relativePoint = "TOPRIGHT"
+                end
+            end
+
+             if IsElvUIInstalled() then
+                LibDugi_EasyMenu(menu, MinimapExtraMenuFrame, Lib_DropDownList1, 0 , -5 + yMenuOffset, "MENU"); 
+                TransferBackdropFromElvUI()
+             else
+                LibDugi_EasyMenu(menu, MinimapExtraMenuFrame, DropDownList1, 0 , 0, "MENU");
+             end
             
             if not hooked then
                 hooked = true
-            
-                Lib_DropDownList1:HookScript("OnEnter", function()
-                    DropDownList1.showTimer = 10000
-                end)            
+
+                local DropDownList = DropDownList1
                 
-                DropDownList1:HookScript("OnEnter", function()
-                    Lib_DropDownList1.showTimer = 10000
+                if IsElvUIInstalled() then
+                    DropDownList = Lib_DropDownList1
+                end
+            
+                LibDugi_DropDownList1:HookScript("OnEnter", function()
+                    DropDownList.showTimer = 10000
+                end)            
+
+                DropDownList:HookScript("OnEnter", function()
+                    LibDugi_DropDownList1.showTimer = 10000
                 end)
             
-                DropDownList1:HookScript("OnHide", function()
-                   if Lib_DropDownList1:IsShown() then
-                       Lib_HideDropDownMenu(1)
-                       Lib_HideDropDownMenu(2)
+                DropDownList:HookScript("OnHide", function()
+                   if LibDugi_DropDownList1:IsShown() then
+                       LibDugi_HideDropDownMenu(1)
+                       LibDugi_HideDropDownMenu(2)
                    end
                    
                    allTrackingPoints = nil
                 end)
                 
-                Lib_DropDownList1:HookScript("OnHide", function()
-                    DropDownList1.showTimer = 0.1
+                LibDugi_DropDownList1:HookScript("OnHide", function()
+                    DropDownList.showTimer = 0.1
                 end)
                 
             end
-        end)
+        end
+
+        if ElvUIMiniMapTrackingDropDown then
+            hooksecurefunc(ElvUIMiniMapTrackingDropDown, "initialize", function()
+                ShowExtraMenu(true)
+            end)
+
+            hooksecurefunc("LibDugi_UIDropDownMenu_Initialize",  function()
+                TransferBackdropFromElvUI()
+            end)
+            
+            DropDownList1:HookScript("OnShow", function()
+                ShowExtraMenu()
+            end)
+            
+        else
+            DropDownList1:HookScript("OnShow", function()
+                ShowExtraMenu()
+            end)
+        end
 
 		DGV:RegisterEvent("PET_JOURNAL_LIST_UPDATE")
 		DGV:RegisterEvent("MINIMAP_UPDATE_TRACKING")

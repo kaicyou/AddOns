@@ -884,9 +884,10 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   -- first firing, and FALSE during the second. I am not sure if this check is necessary, but the
   -- following IF statement limits the impact of the PET_BATTLE_CLOSE event to the second one.
   if (event == "PET_BATTLE_CLOSE" and C_PetBattles.IsInBattle()) then return end
-    if(event == "PLAYER_LEVEL_UP") then
-      playerLevel = arg1;
-    end
+
+  if(event == "PLAYER_LEVEL_UP") then
+    playerLevel = arg1;
+  end
 
   -- encounter id stuff, we are holding the current combat id to further load checks.
   -- there is three ways to unload: encounter_end / zone changed (hearthstone used) / reload or disconnect
@@ -1015,8 +1016,8 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   for id, data in pairs(db.displays) do
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
-      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inpetbattle, vehicle, vehicleUi, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
-      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, true, vehicle, vehicleUi, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
+      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, IsInGroup(), inpetbattle, vehicle, vehicleUi, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
+      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, true, true, vehicle, vehicleUi, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
 
       if(shouldBeLoaded and not loaded[id]) then
         WeakAuras.LoadDisplay(id);
@@ -1089,6 +1090,8 @@ loadFrame:RegisterEvent("PET_BATTLE_CLOSE");
 loadFrame:RegisterEvent("UNIT_ENTERED_VEHICLE");
 loadFrame:RegisterEvent("UNIT_EXITED_VEHICLE");
 loadFrame:RegisterEvent("SPELLS_CHANGED");
+loadFrame:RegisterEvent("GROUP_JOINED");
+loadFrame:RegisterEvent("GROUP_LEFT");
 
 function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", WeakAuras.ScanForLoads);
@@ -2040,16 +2043,7 @@ function WeakAuras.SetRegion(data, cloneId)
           region.toShow = true;
 
           if (data.anchorFrameType == "SELECTFRAME") then
-            local anchorParent = WeakAuras.GetAnchorFrame(data.id, data.anchorFrameType, parent,  data.anchorFrameFrame);
-            if (anchorParent ~= region:GetParent()) then
-              region:SetParent(anchorParent);
-              region:SetPoint(data.selfPoint, anchorParent, data.anchorPoint, data.xOffset, data.yOffset);
-              if(data.frameStrata == 1) then
-                  region:SetFrameStrata(region:GetParent():GetFrameStrata());
-              else
-                  region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
-              end
-            end
+            WeakAuras.AnchorFrame(data, region, parent);
           end
 
           region.justCreated = nil;
@@ -2110,7 +2104,7 @@ function WeakAuras.GetRegion(id, cloneId)
   if(cloneId and cloneId ~= "") then
     return WeakAuras.EnsureClone(id, cloneId);
    end
-  return WeakAuras.regions[id].region;
+  return WeakAuras.regions[id] and WeakAuras.regions[id].region;
 end
 
 function WeakAuras.CollapseAllClones(id, triggernum)
@@ -2244,7 +2238,8 @@ function WeakAuras.PerformActions(data, type, region)
   -- Apply start glow actions even if squelch_actions is true, but don't apply finish glow actions
   local squelch_glow = squelch_actions and (type == "finish");
   if(actions.do_glow and actions.glow_action and actions.glow_frame and not squelch_glow) then
-    local glow_frame;
+    local glow_frame
+    local original_glow_frame
     if(actions.glow_frame:sub(1, 10) == "WeakAuras:") then
       local frame_name = actions.glow_frame:sub(11);
       if(regions[frame_name]) then
@@ -2252,6 +2247,7 @@ function WeakAuras.PerformActions(data, type, region)
       end
     else
       glow_frame = _G[actions.glow_frame];
+      original_glow_frame = glow_frame
     end
 
     if (glow_frame) then
@@ -2267,6 +2263,9 @@ function WeakAuras.PerformActions(data, type, region)
         WeakAuras_ShowOverlayGlow(glow_frame);
       elseif(actions.glow_action == "hide") then
         WeakAuras_HideOverlayGlow(glow_frame);
+        if original_glow_frame then
+          WeakAuras_HideOverlayGlow(original_glow_frame);
+        end
       end
     end
   end
@@ -3150,8 +3149,8 @@ function WeakAuras.GetDynamicIconCache(name)
     end
   end
 
-  if (WeakAuras.GetIconFromSpellCache) then
-    return WeakAuras.GetIconFromSpellCache(name);
+  if WeakAuras.spellCache then
+    return WeakAuras.spellCache.GetIcon(name);
   end
   return nil;
 end
@@ -3865,6 +3864,34 @@ local function ensurePRDFrame()
   end
 end
 
+local postPonedAnchors = {};
+local anchorTimer
+
+local function tryAnchorAgain()
+  local delayed = postPonedAnchors;
+  postPonedAnchors = {};
+  anchorTimer = nil;
+
+  for id, _ in pairs(delayed) do
+    local data = WeakAuras.GetData(id);
+    local region = WeakAuras.GetRegion(id);
+    if (data and region) then
+      local parent = frame;
+      if (data.parent and regions[data.parent]) then
+        parent = regions[data.parent].region;
+      end
+      WeakAuras.AnchorFrame(data, region, parent);
+    end
+  end
+end
+
+local function postponeAnchor(id)
+  postPonedAnchors[id] = true;
+  if (not anchorTimer) then
+    anchorTimer = timer:ScheduleTimer(tryAnchorAgain, 5);
+  end
+end
+
 function WeakAuras.GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
   if (personalRessourceDisplayFrame) then
     personalRessourceDisplayFrame:anchorFrame(id, anchorFrameType);
@@ -3893,14 +3920,36 @@ function WeakAuras.GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
   if (anchorFrameType == "SELECTFRAME" and anchorFrameFrame) then
     if(anchorFrameFrame:sub(1, 10) == "WeakAuras:") then
       local frame_name = anchorFrameFrame:sub(11);
+      if (frame == id) then
+        return parent;
+      end
       if(regions[frame_name]) then
         return regions[frame_name].region;
       end
     else
-      return _G[anchorFrameFrame];
+      if (_G[anchorFrameFrame]) then
+        return _G[anchorFrameFrame];
+      end
+      postponeAnchor(id);
+      return  parent;
     end
   end
 
   -- Fallback
   return parent;
+end
+
+function WeakAuras.AnchorFrame(data, region, parent)
+  local anchorParent = WeakAuras.GetAnchorFrame(data.id, data.anchorFrameType, parent,  data.anchorFrameFrame);
+  if (data.anchorFrameParent or data.anchorFrameParent == nil) then
+    region:SetParent(anchorParent);
+  else
+    region:SetParent(frame);
+  end
+  region:SetPoint(data.selfPoint, anchorParent, data.anchorPoint, data.xOffset, data.yOffset);
+  if(data.frameStrata == 1) then
+      region:SetFrameStrata(region:GetParent():GetFrameStrata());
+  else
+      region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
+  end
 end

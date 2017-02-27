@@ -272,7 +272,7 @@ function WF:Initialize()
 					ObjectiveTrackerFrame:SetPoint("TOPRIGHT", anchorFrame, "BOTTOMRIGHT", xOff-3, yOff-13)
 					ObjectiveTrackerFrame.HeaderMenu:SetPoint("TOPRIGHT", ObjectiveTrackerFrame, -10, 0)
 				end
-				WF.WatchBackground:SetPoint("TOPRIGHT", anchorFrame, "BOTTOMRIGHT", xOff, yOff)
+				WF.WatchBackground:SetPoint("TOPRIGHT", anchorFrame, "BOTTOMRIGHT", xOff + 6, yOff)
                 
                 local worldQuestTrackerHeight = 0
                 

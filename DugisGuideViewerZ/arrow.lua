@@ -887,7 +887,7 @@ function DugisArrow:Initialize()
 		end
 	end	
 
-	function DugisArrow:OnQuestLogChanged()
+	function DugisArrow:OnQuestLogChanged(isInThread)
 		if DugisGuideViewer.wqtloaded then return end
 		local wp = DugisArrow:getFirstWaypoint()
 		if not wp or wp.guideIndex or not wp.questId then return end
@@ -909,7 +909,7 @@ function DugisArrow:Initialize()
 				return
 			end
 		end
-		DugisArrow:SetNextWaypoint(wp)
+		DugisArrow:SetNextWaypoint(wp, isInThread)
 	end
 	
     local disabledClicksDugisArrow = false
@@ -1551,7 +1551,9 @@ function DugisArrow:Initialize()
 	end	
 
 	local maxsetnext = 0
-	function DugisArrow:SetNextWaypoint(removeMe)
+	function DugisArrow:SetNextWaypoint(removeMe, isInThread)
+        LuaUtils:Yield(isInThread)
+        
 		if maxsetnext > 30 then return end --Stops endless loop if 2 waypoints are very close together with |LOOP| tag which can crash the game
 		maxsetnext = maxsetnext + 1
 			
@@ -1587,9 +1589,9 @@ function DugisArrow:Initialize()
 			end
 			
 			if waypoint and not waypoint.isWTag and DugisArrow:DidPlayerReachWaypoint() and not removeMe and not waypoint.isRouteWaypoint then
-				DugisArrow:SetNextWaypoint()
+				DugisArrow:SetNextWaypoint(isInThread)
 			elseif waypoint and waypoint.isWTag and DugisArrow:DidPlayerReachWaypoint() and (DugisArrow:DidPlayerReachWaypoint() ~= DugisArrow:getFinalWaypoint()) and not removeMe and not waypoint.isRouteWaypoint then
-				DugisArrow:SetNextWaypoint()
+				DugisArrow:SetNextWaypoint(isInThread)
 			end				
 		end
 		maxsetnext = 0

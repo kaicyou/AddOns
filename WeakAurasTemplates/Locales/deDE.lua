@@ -1,10 +1,9 @@
 if not(GetLocale() == "deDE") then
-    return;
+  return
 end
 
 local L = WeakAuras.L
 
--- Options translation
 L[" (Channeling)"] = "(Kanalisiert)"
 L[" (Healing received increase)"] = " (erhaltene Heilung erhöht)"
 L["- Any"] = "Irgendein(e)"
@@ -61,5 +60,3 @@ L["Totem"] = "Totem"
 L["Totems"] = "Totems"
 L["Unknown Item"] = "Unbekannter Gegenstand"
 L["Unknown Spell"] = "Unbekannter Zauber"
-
-

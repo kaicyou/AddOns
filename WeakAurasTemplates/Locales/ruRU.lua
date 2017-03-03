@@ -1,10 +1,9 @@
 if not(GetLocale() == "ruRU") then
-    return;
+  return
 end
 
 local L = WeakAuras.L
 
--- Options translation
 L[" (Channeling)"] = "(Канальный)"
 L[" (Healing received increase)"] = "(Исцеление получило прирост)"
 L["- Any"] = "- Любой"
@@ -73,5 +72,3 @@ L["Totem"] = "Тотем"
 L["Totems"] = "Тотемы"
 L["Unknown Item"] = "Неизвестный предмет"
 L["Unknown Spell"] = "Неизвестное заклинание"
-
-

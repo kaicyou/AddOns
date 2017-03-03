@@ -1319,15 +1319,14 @@ function WMT:Initialize()
                 local text = _G[dropDownPrefix.."DropDownList1Button"..buttonIndex.."NormalText"]
                 
                 local texture = buttonIcon:GetTexture()
-                if (type(texture) ~= "number" and texture:match("tracking_wildpet")) or texture == 613074 then
-                    
-                    if _G[dropDownPrefix.."DropDownList1"]:IsVisible() 
-                        and button:IsShown() 
-                        and buttonIcon 
-                        and buttonIcon:IsVisible() then
-                            result = true
+                
+                if (texture ~= nil and type(texture) ~= "number" and texture:match("tracking_wildpet")) or texture == 613074 then
+                    local list = _G[dropDownPrefix.."DropDownList1"]
+                    if buttonIcon:IsShown() then  
+                        result = true
                     end
                 end
+
             end)
             
             return result
@@ -1595,13 +1594,15 @@ function WMT:Initialize()
             local yMenuOffset = 0
             
             if IsElvUIInstalled() then
-                if Lib_DropDownList1:GetTop() < GetScreenHeight() * 0.5 then
+                local top = Lib_DropDownList1:GetTop()
+                if top ~= nil and top < GetScreenHeight() * 0.5 then
                     MinimapExtraMenuFrame.point = "BOTTOMRIGHT"
                     MinimapExtraMenuFrame.relativePoint = "TOPRIGHT"
                     yMenuOffset = 10
                 end
             else
-                if DropDownList1:GetTop() < GetScreenHeight() * 0.5 then
+                local top = DropDownList1:GetTop()
+                if top ~= nil and top < GetScreenHeight() * 0.5 then
                     MinimapExtraMenuFrame.point = "BOTTOMRIGHT"
                     MinimapExtraMenuFrame.relativePoint = "TOPRIGHT"
                 end

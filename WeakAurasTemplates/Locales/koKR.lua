@@ -1,10 +1,9 @@
 if not(GetLocale() == "koKR") then
-    return;
+  return
 end
 
 local L = WeakAuras.L
 
--- Options translation
 L[" (Channeling)"] = " (정신 집중)"
 L[" (Healing received increase)"] = " (받는 치유 증가)"
 L["- Any"] = "- 모두"
@@ -74,5 +73,3 @@ L["Totem"] = "토템"
 L["Totems"] = "토템"
 L["Unknown Item"] = "알 수 없는 아이템"
 L["Unknown Spell"] = "알 수 없는 주문"
-
-

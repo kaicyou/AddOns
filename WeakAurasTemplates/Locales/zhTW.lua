@@ -1,10 +1,9 @@
 if not(GetLocale() == "zhTW") then
-    return;
+  return
 end
 
 local L = WeakAuras.L
 
--- Options translation
 L[" (Channeling)"] = " (引導)"
 L[" (Healing received increase)"] = "獲得治療量增加"
 L["- Any"] = "- 任何"
@@ -74,5 +73,3 @@ L["Totem"] = "圖騰"
 L["Totems"] = "圖騰"
 L["Unknown Item"] = "未知物品"
 L["Unknown Spell"] = "未知法術"
-
-

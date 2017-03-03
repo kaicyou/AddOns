@@ -1,7 +1,7 @@
 ## Interface: 70100
-## Title: Dugi Questing Essential |cffffffff4.100|r
+## Title: Dugi Questing Essential |cffffffff4.101|r
 ## Notes: Questing Addon Copyright 2010-2017 UltimateWoWGuide.com
-## Version: 4.100
+## Version: 4.101
 ## X-Website: http://www.ultimatewowguide.com/
 ## X-Email: support@ultimatewowguide.com
 ## X-Category: Quest

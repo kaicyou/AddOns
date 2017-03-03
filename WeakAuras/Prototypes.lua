@@ -449,16 +449,14 @@ end
 function WeakAuras.CheckTalentByIndex(index)
   local tier = ceil(index / 3)
   local column = (index - 1) % 3 + 1
-  local spec = GetActiveSpecGroup()
-  local _, _, _, selected = GetTalentInfo(tier, column, spec)
+  local _, _, _, selected = GetTalentInfo(tier, column, 1)
   return selected
 end
 
 function WeakAuras.CheckPvpTalentByIndex(index)
   local tier = ceil(index / 3)
   local column = (index - 1) % 3 + 1
-  local spec = GetActiveSpecGroup()
-  local _, _, _, selected = GetPvpTalentInfo(tier, column, spec)
+  local _, _, _, selected = GetPvpTalentInfo(tier, column, 1)
   return selected
 end
 
@@ -784,16 +782,35 @@ WeakAuras.load_prototype = {
   }
 };
 
+local function AddUnitChangeEvents(unit, t)
+  if (unit == "player") then
+
+  elseif (unit == "target") then
+    tinsert(t, "PLAYER_TARGET_CHANGED");
+  elseif (unit == "focus") then
+    tinsert(t, "PLAYER_FOCUS_CHANGED");
+  elseif (unit == "pet") then
+    tinsert(t, "UNIT_PET")
+  else
+    tinsert(t, "PLAYER_TARGET_CHANGED");
+    tinsert(t, "PLAYER_FOCUS_CHANGED");
+    tinsert(t, "UNIT_TARGET");
+    tinsert(t, "INSTANCE_ENCOUNTER_ENGAGE_UNIT");
+  end
+end
+
+
 WeakAuras.event_prototypes = {
   ["Unit Characteristics"] = {
     type = "status",
-    events = {
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED",
-      "UNIT_LEVEL",
-      "INSTANCE_ENCOUNTER_ENGAGE_UNIT",
-      "UNIT_FACTION"
-    },
+    events = function(trigger)
+      local result = {
+        "UNIT_LEVEL",
+        "UNIT_FACTION"
+      };
+      AddUnitChangeEvents(trigger.unit, result);
+      return result;
+    end,
     force_events = true,
     name = L["Unit Characteristics"],
     init = function(trigger)
@@ -813,7 +830,8 @@ WeakAuras.event_prototypes = {
         display = L["Unit"],
         type = "unit",
         init = "arg",
-        values = "actual_unit_types_with_specific"
+        values = "actual_unit_types_with_specific",
+        test = "(event ~= 'UNIT_LEVEL' and event ~= 'UNIT_FACTION') or UnitIsUnit(unit, '%s' or '')"
       },
       {
         name = "name",
@@ -826,7 +844,7 @@ WeakAuras.event_prototypes = {
         name = "class",
         display = L["Class"],
         type = "select",
-        init = "select(2, UnitClass(unit))",
+        init = "select(2, UnitClass(concernedUnit))",
         values = "class_types",
         store = true
       },
@@ -866,14 +884,15 @@ WeakAuras.event_prototypes = {
   },
   ["Health"] = {
     type = "status",
-    events = {
-      "UNIT_HEALTH_FREQUENT",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED",
-      "WA_UNIT_PET",
-      "INSTANCE_ENCOUNTER_ENGAGE_UNIT",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD"
-    },
+    events = function(trigger)
+      local result = {
+        "UNIT_HEALTH_FREQUENT",
+        "WA_UNIT_PET",
+        "WA_DELAYED_PLAYER_ENTERING_WORLD"
+      };
+      AddUnitChangeEvents(trigger.unit, result);
+      return result;
+    end,
     force_events = {
       "player",
       "target",
@@ -886,9 +905,6 @@ WeakAuras.event_prototypes = {
       local ret = [=[
         local unit = unit or [[%s]];
         local concernedUnit = [[%s]];
-        if (unit == "pet") then
-          WeakAuras.WatchForUnitPet();
-        end
       ]=];
 
     return ret:format(trigger.unit, trigger.unit);
@@ -900,19 +916,20 @@ WeakAuras.event_prototypes = {
         display = L["Unit"],
         type = "unit",
         init = "arg",
-        values = "actual_unit_types_with_specific"
+        values = "actual_unit_types_with_specific",
+        test = "event ~= 'UNIT_HEALTH_FREQUENT' or UnitIsUnit(unit, '%s' or '')"
       },
       {
         name = "health",
         display = L["Health"],
         type = "number",
-        init = "UnitHealth(unit)"
+        init = "UnitHealth(concernedUnit)"
       },
       {
         name = "percenthealth",
         display = L["Health (%)"],
         type = "number",
-        init = "(UnitHealth(unit) / math.max(1, UnitHealthMax(unit))) * 100"
+        init = "(UnitHealth(concernedUnit) / math.max(1, UnitHealthMax(concernedUnit))) * 100"
       },
       {
         hidden = true,
@@ -929,14 +946,15 @@ WeakAuras.event_prototypes = {
   },
   ["Power"] = {
     type = "status",
-    events = {
-      "UNIT_POWER_FREQUENT",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED",
-      "INSTANCE_ENCOUNTER_ENGAGE_UNIT",
-      "WA_DELAYED_PLAYER_ENTERING_WORLD",
-      "UNIT_DISPLAYPOWER"
-    },
+    events = function(trigger)
+      local result = {
+        "UNIT_POWER_FREQUENT",
+        "WA_DELAYED_PLAYER_ENTERING_WORLD",
+        "UNIT_DISPLAYPOWER"
+      };
+      AddUnitChangeEvents(trigger.unit, result);
+      return result;
+    end,
     force_events = {
       "player",
       "target",
@@ -967,7 +985,8 @@ WeakAuras.event_prototypes = {
         display = L["Unit"],
         type = "unit",
         init = "arg",
-        values = "actual_unit_types_with_specific"
+        values = "actual_unit_types_with_specific",
+        test = "event ~= 'UNIT_POWER_FREQUENT' or UnitIsUnit(unit, '%s' or '')"
       },
       {
         name = "powertype",
@@ -990,13 +1009,13 @@ WeakAuras.event_prototypes = {
         name = "power",
         display = L["Power"],
         type = "number",
-        init = "UnitPower(unit, powerType)"
+        init = "UnitPower(concernedUnit, powerType)"
       },
       {
         name = "percentpower",
         display = L["Power (%)"],
         type = "number",
-        init = "((UnitPower(unit, powerType) or 0) / math.max(1, UnitPowerMax(unit, powerType))) * 100;"
+        init = "((UnitPower(concernedUnit, powerType) or 0) / math.max(1, UnitPowerMax(concernedUnit, powerType))) * 100;"
       },
       {
         hidden = true,
@@ -1021,11 +1040,13 @@ WeakAuras.event_prototypes = {
   },
   ["Alternate Power"] = {
     type = "status",
-    events = {
-      "UNIT_POWER_FREQUENT",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
-    },
+    events = function(trigger)
+      local result = {
+        "UNIT_POWER_FREQUENT",
+      };
+      AddUnitChangeEvents(trigger.unit, result);
+      return result;
+    end,
     force_events = {
       "player",
       "target",
@@ -1049,13 +1070,14 @@ WeakAuras.event_prototypes = {
         display = L["Unit"],
         type = "unit",
         init = "arg",
-        values = "actual_unit_types_with_specific"
+        values = "actual_unit_types_with_specific",
+        test = "event ~= 'UNIT_POWER_FREQUENT' or UnitIsUnit(unit, '%s' or '')"
       },
       {
         name = "power",
         display = L["Alternate Power"],
         type = "number",
-        init = "UnitPower(unit, 10)"
+        init = "UnitPower(concernedUnit, 10)"
       },
       {
         hidden = true,
@@ -1435,9 +1457,6 @@ WeakAuras.event_prototypes = {
         if (charges == nil) then
             charges = (duration == 0) and 1 or 0;
         end
-        if (duration == 0 and charges == 0) then
-          charges = 1;
-        end
         local showOn = %s
       ]=];
       if(trigger.use_remaining and trigger.showOn ~= "showOnReady") then
@@ -1787,7 +1806,7 @@ WeakAuras.event_prototypes = {
       return "";
     end,
     iconFunc = function(trigger)
-      return GetInventoryItemTexture("player", trigger.itemSlot or 0);
+      return GetInventoryItemTexture("player", trigger.itemSlot or 0) or "Interface\\Icons\\INV_Misc_QuestionMark";
     end,
     automaticrequired = true,
     automaticAutoHide = false
@@ -2371,14 +2390,11 @@ WeakAuras.event_prototypes = {
         local charges = WeakAuras.GetSpellCharges(spellname);
         startTime = startTime or 0;
         duration = duration or 0;
-        if (duration == 0 and charges == 0) then
-          charges = 1;
-        end
-        local onCooldown = (duration > 0 and duration ~= WeakAuras.gcdDuration() and charges == nil) or (charges and charges == 0);
-        local active = IsUsableSpell(spellname) and not onCooldown
         if (charges == nil) then
           charges = (duration == 0) and 1 or 0;
         end
+        local ready = startTime == 0 or charges > 0
+        local active = IsUsableSpell(spellname) and ready
       ]=]
       if(trigger.use_targetRequired) then
         ret = ret.."active = active and WeakAuras.IsSpellInRange(spellname or '', 'target')\n";
@@ -3227,18 +3243,20 @@ WeakAuras.event_prototypes = {
   },
   ["Cast"] = {
     type = "status",
-    events = {
-      "UNIT_SPELLCAST_CHANNEL_START",
-      "UNIT_SPELLCAST_CHANNEL_STOP",
-      "UNIT_SPELLCAST_CHANNEL_UPDATE",
-      "UNIT_SPELLCAST_START",
-      "UNIT_SPELLCAST_STOP",
-      "UNIT_SPELLCAST_DELAYED",
-      "UNIT_SPELLCAST_INTERRUPTIBLE",
-      "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
-      "PLAYER_TARGET_CHANGED",
-      "PLAYER_FOCUS_CHANGED"
-    },
+    events = function(trigger)
+      local result = {
+        "UNIT_SPELLCAST_CHANNEL_START",
+        "UNIT_SPELLCAST_CHANNEL_STOP",
+        "UNIT_SPELLCAST_CHANNEL_UPDATE",
+        "UNIT_SPELLCAST_START",
+        "UNIT_SPELLCAST_STOP",
+        "UNIT_SPELLCAST_DELAYED",
+        "UNIT_SPELLCAST_INTERRUPTIBLE",
+        "UNIT_SPELLCAST_NOT_INTERRUPTIBLE",
+      };
+      AddUnitChangeEvents(trigger.unit, result);
+      return result;
+    end,
     force_events = true,
     name = L["Cast"],
     init = function(trigger)
@@ -3268,7 +3286,8 @@ WeakAuras.event_prototypes = {
         type = "unit",
         init = "arg",
         values = "actual_unit_types_with_specific",
-        required = true
+        required = true,
+        test = "event:sub(1,14) ~= 'UNIT_SPELLCAST' or UnitIsUnit(unit, '%s' or '')"
       },
       {
         name = "spell",
@@ -3376,6 +3395,7 @@ WeakAuras.event_prototypes = {
 
       if (trigger.use_HasPet ~= nil) then
         tinsert(events, "PET_UPDATE");
+        tinsert(events, "UNIT_PET");
       end
 
       if (trigger.use_ismoving ~= nil) then

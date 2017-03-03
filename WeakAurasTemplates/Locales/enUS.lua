@@ -1,6 +1,5 @@
 local L = WeakAuras.L
 
--- Options translation
 L[" (Channeling)"] = " (Channeling)"
 L[" (Healing received increase)"] = " (Healing received increase)"
 L["- Any"] = "- Any"
@@ -73,8 +72,6 @@ L["Unknown Spell"] = "Unknown Spell"
 
 -- Make missing translations available
 setmetatable(WeakAuras.L, {__index = function(self, key)
-	self[key] = (key or "")
-	return key
+  self[key] = (key or "")
+  return key
 end})
-
-

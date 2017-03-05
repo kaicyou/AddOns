@@ -59,7 +59,7 @@ GetAdditionalProperties(data, triggernum)
 
 -- Lua APIs
 local tinsert, tconcat, wipe = table.insert, table.concat, wipe
-local tostring, select, pairs, type = tostring, select, pairs, type
+local tostring, pairs, type = tostring, pairs, type
 local error, setmetatable = error, setmetatable
 
 -- WoW APIs
@@ -83,7 +83,7 @@ local loaded_events = WeakAuras.loaded_events;
 local timers = WeakAuras.timers;
 local specificBosses = WeakAuras.specificBosses;
 
--- local function
+-- Local functions
 local LoadEvent, HandleEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
 local ConstructTest, ConstructFunction
 
@@ -1226,6 +1226,7 @@ do
   cdReadyFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
   cdReadyFrame:RegisterEvent("BAG_UPDATE_COOLDOWN");
   cdReadyFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
+  cdReadyFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
   cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
     if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
        or event == "RUNE_POWER_UPDATE" or event == "RUNE_TYPE_UPDATE"
@@ -1240,7 +1241,7 @@ do
           gcdSpellIcon = icon;
         end
       end
-    elseif(event == "UNIT_INVENTORY_CHANGED" or event == "BAG_UPDATE_COOLDOWN") then
+    elseif(event == "UNIT_INVENTORY_CHANGED" or event == "BAG_UPDATE_COOLDOWN" or event == "PLAYER_EQUIPMENT_CHANGED") then
       WeakAuras.CheckItemSlotCooldowns();
     end
   end);
@@ -1444,13 +1445,19 @@ do
   function WeakAuras.GetSpellCooldownUnified(id, runeDuration)
     local charges, maxCharges, startTime, duration = GetSpellCharges(id);
     local cooldownBecauseRune = false;
-    if (charges == nil) then -- charges is nil if the spell has no charges
+    if (charges == nil) then -- charges is nil if the spell has no charges. Or in other words GetSpellCharges is the wrong api
+      local basecd = GetSpellBaseCooldown(id);
       startTime, duration = GetSpellCooldown(id);
-      charges = GetSpellCount(id);
-      cooldownBecauseRune = runeDuration and duration and abs(duration - runeDuration) < 0.001;
+      if ((basecd and basecd > 0) or startTime ~= 0 or duration > 0) then
+        cooldownBecauseRune = runeDuration and duration and abs(duration - runeDuration) < 0.001;
+      else
+        charges = GetSpellCount(id);
+        startTime = 0;
+        duration = 0;
+      end
     elseif (charges == maxCharges) then
       startTime, duration = 0, 0;
-    elseif (charges == 0 and duration == 0) then
+    elseif (charges == 0 and duration == 0) then -- Lavaburst while under Ascendance can return 0 charges even if the spell is useable
       charges = 1;
     end
 
@@ -2099,10 +2106,10 @@ do
     return bars[id];
   end
 
-  function WeakAuras.GetBigWigsTimer(addon, spellId, text, operator)
+  function WeakAuras.GetBigWigsTimer(addon, spellId, operator, text)
     local bestMatch
     for id, bar in pairs(bars) do
-      if (WeakAuras.BigWigsTimerMatches(id, addon, spellId, text, operator)) then
+      if (WeakAuras.BigWigsTimerMatches(id, addon, spellId, operator, text)) then
         if (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime) then
           bestMatch = bar;
         end

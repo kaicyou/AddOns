@@ -1,4 +1,6 @@
 ﻿Version 1.7.12g
+- Handle Truthseeker and Oathbreaker (hopefully)
+- Go back to the "real" LibBabble-SubZone and use a routine suggested by the author to merge in the missing entries.
 - Begin the great rewrite with a lot of code cleanup
 - Prepare to group options with their related tabs
 

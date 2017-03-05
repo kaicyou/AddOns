@@ -80,9 +80,9 @@ module.db.findspecspells = {
 	[205546] = 72, [23881] = 72, [184367] = 72,
 	[203524] = 73, [20243] = 73, [23922] = 73,
 	
-	[202767] = 102, [78674] = 102, [190984] = 102,
+	[202767] = 102, --[190984] = 102, [78674] = 102, 
 	[210722] = 103, [52610] = 103, --[1822] = 103, 
-	[200851] = 104, [33917] = 104, [22842] = 104,
+	[200851] = 104, [33917] = 104, --[22842] = 104,
 	[208253] = 105, [188550] = 105, [48438] = 105, 
 
 	[205223] = 250, [206930] = 250, [50842] = 250,
@@ -8718,6 +8718,7 @@ end
 local InspectItems = nil
 do
 	local ITEM_LEVEL = (ITEM_LEVEL or "NO DATA FOR ITEM_LEVEL"):gsub("%%d","(%%d+)")
+	local dataNames = {'tiersets','items','items_ilvl'}
 	function InspectItems(name,inspectedName,inspectSavedID)
 		if moduleInspect.db.inspectCleared or moduleInspect.db.inspectID ~= inspectSavedID then
 			return
@@ -8725,9 +8726,13 @@ do
 		moduleInspect.db.inspectDB[name] = moduleInspect.db.inspectDB[name] or {}
 		local inspectData = moduleInspect.db.inspectDB[name]
 		inspectData['ilvl'] = 0
-		inspectData['tiersets'] = {}
-		inspectData['items'] = {}
-		inspectData['items_ilvl'] = {}
+		for _,dataName in pairs(dataNames) do	--Prevent overuse memory
+			if inspectData[dataName] then
+				for q,w in pairs(inspectData[dataName]) do inspectData[dataName][q] = nil end
+			else
+				inspectData[dataName] = {}
+			end		
+		end
 		for stateName,stateData in pairs(moduleInspect.db.statsNames) do
 			inspectData[stateName] = 0
 		end
@@ -9205,13 +9210,25 @@ local function ScanArtifactData()
 	ArtifactCache.traits = traits
 	for i = 1, #powers do
 		local traitID = powers[i]
-		local spellID, _, currentRank, maxRank, bonusRanks, _, _, _, isStart, isGold, isFinal = C_ArtifactUI.GetPowerInfo(traitID)
-		traits[#traits + 1] = {
-			traitID = traitID,
-			currentRank = currentRank,
-			maxRank = maxRank,
-			sort = (isStart and 100) or (isFinal and -100) or (isGold and 50) or 0,
-		}
+		if ExRT.clientVersion >= 70200 then
+			local traitData = C_ArtifactUI.GetPowerInfo(traitID)
+			if traitData then
+				traits[#traits + 1] = {
+					traitID = traitID,
+					currentRank = traitData.currentRank,
+					maxRank = traitData.maxRank,
+					sort = (traitData.isStart and 100) or (traitData.isFinal and -100) or (traitData.isGold and 50) or 0,
+				}
+			end
+		else
+			local spellID, _, currentRank, maxRank, bonusRanks, _, _, _, isStart, isGold, isFinal = C_ArtifactUI.GetPowerInfo(traitID)
+			traits[#traits + 1] = {
+				traitID = traitID,
+				currentRank = currentRank,
+				maxRank = maxRank,
+				sort = (isStart and 100) or (isFinal and -100) or (isGold and 50) or 0,
+			}
+		end
 	end
 	
 	sort(traits,function(a,b) 
@@ -9460,7 +9477,14 @@ do
 				local powerID = artifactDB[i][1]
 				local spellID = powerToSpellID[powerID]
 				if not spellID then
-					spellID = C_ArtifactUI_GetPowerInfo(powerID)
+					if ExRT.clientVersion >= 70200 then
+						local traitData = C_ArtifactUI_GetPowerInfo(powerID)
+						if traitData then
+							spellID = traitData.spellID
+						end
+					else
+						spellID = C_ArtifactUI_GetPowerInfo(powerID)
+					end
 					powerToSpellID[powerID] = spellID
 				end	
 				if spellID then
@@ -9489,6 +9513,9 @@ do
 			local powerSpellID = powerToSpellID[powerID]
 			if not powerSpellID then
 				powerSpellID = C_ArtifactUI_GetPowerInfo(powerID)
+				if ExRT.clientVersion >= 70200 and powerSpellID then
+					powerSpellID = powerSpellID.spellID
+				end
 				powerToSpellID[powerID] = powerSpellID
 			end
 			if powerSpellID == spellID then

@@ -1,30 +1,94 @@
-tag 5b641b7b384b23d0183e8c7a3e34168228753a02 2.3.4
+tag 1e43f30741ace229a38dbe6eaafc13f727c1ebae 2.3.5
 Author:	Benjamin Staneck <staneck@gmail.com>
-Date:	Thu Mar 2 16:06:18 2017 +0100
+Date:	Sat Mar 4 20:35:04 2017 +0100
 
-commit c61ddbc9a730fec50416c868f1955b382eb604ad
+commit 9cde84332bf2c7d73cd7567dc7272013d93192c5
 Author: Infus <infus@squorn.de>
-Date:   Thu Mar 2 08:25:01 2017 +0100
+Date:   Sat Mar 4 19:47:30 2017 +0100
 
-    Fix action Useable for spells with charges
+    Fix GetUnifiedSpellCooldown for Raging Blow
+    
+    Mostly, charges is 0 even if the Raging Blow is not on cooldown.
 
-commit 895e9a8538626477efe1ae7f813d74277acaa7f5
+commit 33a80a9c78f6df500927f897957cf9b35fc9948d
+Author: jcai1 <magicxcian@gmail.com>
+Date:   Sat Mar 4 13:10:54 2017 -0500
+
+    fix wrong argument order in GetBigWigsTimer (#164)
+
+commit 63b91fa3aed23d6bb4015ca1cb6a6eac0591a158
+Author: Benjamin Staneck <staneck@gmail.com>
+Date:   Sat Mar 4 16:52:07 2017 +0100
+
+    libs => Libs
+
+commit 0067ebae9bd16764f89764907cb9308640798204
+Author: Benjamin Staneck <staneck@gmail.com>
+Date:   Sat Mar 4 16:51:12 2017 +0100
+
+    pull in HereBeDragons-1.0 for use in the zone load conditions
+
+commit eb9862024ac2bbb79c62673425260f08b750720b
 Author: Infus <infus@squorn.de>
-Date:   Thu Mar 2 00:25:22 2017 +0100
+Date:   Sat Mar 4 14:04:01 2017 +0100
 
-    Fix Health/Power triggers
+    Fix zone id and zone load conditions
     
-    Reported on discord. For those triggers, unit is initialized from
-    the second event parameter. That is no longer guranteed to be
-    a unit id, since those triggers now watch for more events.
+    Ticket-Nr: 876
 
-commit f0be68f67b811d9d5a8717d4f899cd0f0be6f8f1
+commit e692f91f8fd9b815eb8ba60f77b421ed5a5ba8ba
 Author: Infus <infus@squorn.de>
-Date:   Thu Mar 2 00:13:44 2017 +0100
+Date:   Sat Mar 4 01:43:52 2017 +0100
 
-    Fix Cooldown Progress (Equipment Slot)
+    Add PLAYER_EQUIPMENT_CHANGED to Item Equiped trigger
     
-    Broke if no item was equipped in a slot
+    Ticket-Nr: 881
+
+commit 147f9c337d497d053b443d5f26a815fe0327a01d
+Author: Infus <infus@squorn.de>
+Date:   Fri Mar 3 08:49:46 2017 +0100
+
+    Improve GetUnifiedSpellCooldown
     
-    Ticket-Nr: 877
+    Distinguish between spells that have a cooldown and spells that
+    use GetSpellCount. For spells that have cooldowns but no charges
+    leave charges at nil.
+    
+    The Cooldown Progress (Spell) and Action Useable then interpret
+    convert that to 1 or 0 charge.
+    
+    We can't do that in GetSpellCooldownUnified() as we the text
+    replacements would display show 1 charge otherwise.
+    
+    Ticket-Nr: 882
+
+commit 10149c020b04388938ec91b97aa4ad96635197d3
+Author: Benjamin Staneck <staneck@gmail.com>
+Date:   Fri Mar 3 06:20:22 2017 +0100
+
+    fix another GetActiveSpecGroup() deprecation
+
+commit f0d74d2af4ea22b09d427dd4f1a6aef8968f3934
+Author: Benjamin Staneck <staneck@gmail.com>
+Date:   Fri Mar 3 05:40:02 2017 +0100
+
+    adjust babelfish for recent structure changes
+
+commit fb93ab4cfae430955d26777f4ce57fe4dfddad69
+Author: Benjamin Staneck <staneck@gmail.com>
+Date:   Fri Mar 3 04:39:12 2017 +0100
+
+    rename region type/file files to fit in
+
+commit b2d49d7fea56134a03ba46483724c51d52aeff83
+Author: Benjamin Staneck <staneck@gmail.com>
+Date:   Fri Mar 3 04:33:48 2017 +0100
+
+    remove some more variable declarations and comments
+
+commit 291a0e4a9e6077fc567794276d1cb0a6cd1db6e8
+Author: Benjamin Staneck <staneck@gmail.com>
+Date:   Thu Mar 2 23:33:20 2017 +0100
+
+    remove a lot of variable declaritions that we don't use and export WeakAuras.getAll/setAll so the texture picker for groups no longer errors.
 

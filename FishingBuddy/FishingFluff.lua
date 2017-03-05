@@ -597,7 +597,7 @@ FishingItems[136377] = {
 local function PickRandomBobber(info, buff, doit, itemid)
 	local baits = {};
 	for id,info in pairs(Bobbers) do
-		if (PlayerHasToy(id)) then
+	if (PlayerHasToy(id) and C_ToyBox.IsToyUsable(id)) then
 			local start, duration, enable = GetItemCooldown(id);
 			local et = (start + duration) - GetTime();
 			if (et <= 0) then

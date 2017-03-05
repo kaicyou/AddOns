@@ -1,18 +1,17 @@
 -- Lua APIs
 local tinsert, tconcat, tremove, tContains, wipe = table.insert, table.concat, table.remove, tContains, wipe
-local fmt, tostring, select, pairs, next, type, unpack = string.format, tostring, select, pairs, next, type, unpack
+local fmt, tostring, select, pairs, next, type = string.format, tostring, select, pairs, next, type
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable = setmetatable, getmetatable
 local coroutine =  coroutine
 local _G = _G
 
 -- WoW APIs
-local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
-    = GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
-local LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
-    = LoadAddOn, setfenv, UnitName, GetRealmName, GetRealZoneText, GetCurrentMapAreaID, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
-local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetActiveSpecGroup, GetInstanceInfo, IsInInstance
-    = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetActiveSpecGroup, GetInstanceInfo, IsInInstance
+local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
+local LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
+    = LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
+local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetInstanceInfo, IsInInstance
+    = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetInstanceInfo, IsInInstance
 local GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
     = GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
 local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
@@ -26,6 +25,7 @@ local versionString = WeakAuras.versionString
 WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end})
 LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
+local HBD = LibStub("HereBeDragons-1.0")
 
 local timer = WeakAurasTimers
 WeakAuras.timer = timer
@@ -319,7 +319,7 @@ local function WeakAuras_HideOverlayGlow(frame)
 end
 
 local function forbidden()
-  print("|cffffff00A WeakAura you are using just tried to use a forbidden function but has been blocked from doing so. Please check your auras!|r")
+  print("|cffffff00A WeakAura just tried to use a forbidden function but has been blocked from doing so. Please check your auras!|r")
 end
 
 local blockedFunctions = {
@@ -604,13 +604,10 @@ function WeakAuras.CreateTalentCache()
   WeakAuras.talent_types_specific[player_class][spec] = WeakAuras.talent_types_specific[player_class][spec] or {};
   WeakAuras.pvp_talent_types_specific[player_class][spec] = WeakAuras.pvp_talent_types_specific[player_class][spec] or {};
 
-
-  -- print ("Creating talent cache for", player_class, spec);
-
   for tier = 1, MAX_TALENT_TIERS do
     for column = 1, NUM_TALENT_COLUMNS do
       -- Get name and icon info for the current talent of the current class and save it
-      local _, talentName, talentIcon = GetTalentInfo(tier, column, GetActiveSpecGroup())
+      local _, talentName, talentIcon = GetTalentInfo(tier, column, 1)
       local talentId = (tier-1)*3+column
       -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
       if (talentName and talentIcon) then
@@ -619,10 +616,9 @@ function WeakAuras.CreateTalentCache()
     end
   end
 
-
   for tier = 1, MAX_PVP_TALENT_TIERS do
     for column = 1, MAX_PVP_TALENT_COLUMNS do
-      local _, talentName, talentIcon = GetPvpTalentInfo(tier, column, GetActiveSpecGroup());
+      local _, talentName, talentIcon = GetPvpTalentInfo(tier, column, 1);
       local talentId = (tier-1)*3+column
       if (talentName and talentIcon) then
         WeakAuras.pvp_talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
@@ -902,7 +898,9 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     WeakAuras.DestroyEncounterTable()
   end
 
-  local player, realm, zone, zoneId, spec, role = UnitName("player"), GetRealmName(),GetRealZoneText(), GetCurrentMapAreaID(), GetSpecialization(), UnitGroupRolesAssigned("player");
+  local player, realm, spec, role = UnitName("player"), GetRealmName(), GetSpecialization(), UnitGroupRolesAssigned("player");
+  local zoneId = HBD:GetPlayerZone();
+  local zone = HBD:GetLocalizedMap(zoneId);
   local _, race = UnitRace("player")
   local faction, localized_faction = UnitFactionGroup("player")
   -- Hack because there is no second arg for Neutral
@@ -2182,9 +2180,9 @@ function WeakAuras.PerformActions(data, type, region)
     elseif(actions.message_type == "WHISPER") then
     if(actions.message_dest) then
       if(actions.message_dest == "target" or actions.message_dest == "'target'" or actions.message_dest == "\"target\"" or actions.message_dest == "%t" or actions.message_dest == "'%t'" or actions.message_dest == "\"%t\"") then
-      WeakAuras.Announce(message, "WHISPER", nil, UnitName("target"), data.id, type);
+        WeakAuras.Announce(message, "WHISPER", nil, UnitName("target"), data.id, type);
       else
-      WeakAuras.Announce(message, "WHISPER", nil, actions.message_dest, data.id, type);
+        WeakAuras.Announce(message, "WHISPER", nil, actions.message_dest, data.id, type);
       end
     end
     elseif(actions.message_type == "CHANNEL") then
@@ -2380,11 +2378,7 @@ function WeakAuras.UpdateAnimations()
       end
 
       if(anim.loop) then
-        WeakAuras.Animate(anim.namespace, anim.data,
-                          anim.type, anim.anim,
-                          anim.region, anim.inverse,
-                          anim.onFinished, anim.loop,
-                          anim.cloneId);
+        WeakAuras.Animate(anim.namespace, anim.data, anim.type, anim.anim, anim.region, anim.inverse, anim.onFinished, anim.loop, anim.cloneId);
       elseif(anim.onFinished) then
         anim.onFinished();
       end
@@ -3229,10 +3223,7 @@ local function ApplyStateToRegion(id, region, state)
       local total = state.duration or 0
       local func = nil;
 
-      region:SetDurationInfo(total,
-                             now + value,
-                             func,
-                             state.inverseDirection);
+      region:SetDurationInfo(total, now + value, func, state.inverseDirection);
     elseif (state.progressType == "static") then
       local value = state.value or 0;
       local total = state.total or 0;
@@ -3368,7 +3359,7 @@ function WeakAuras.UpdatedTriggerState(id)
     end
   end
 
--- Figure out whether we should be shown or not
+  -- Figure out whether we should be shown or not
   local show = triggerState[id].show;
   if (changed or show == nil) then
     show = evaluateTriggerStateTriggers(id);
@@ -3934,7 +3925,6 @@ function WeakAuras.GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
       return  parent;
     end
   end
-
   -- Fallback
   return parent;
 end

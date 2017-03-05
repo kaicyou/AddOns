@@ -1,9 +1,16 @@
---	0:20 17.01.2017
+--	19:43 03.03.2017
 
 --[[
+3845
+* Raid Inspect: Added Trial of Valor and Nighthold achievements
+* Fixed memory leak caused by inspecting
+* Localization updates
+* Minor fixes
+
 3842
 * Note: added Nighthold icons
 * Timers: fixed sync with BW
+* Bonus Loot: removed AP rewards from notifications
 * Minor fixes
 
 3841
@@ -21,7 +28,7 @@
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3842
+ExRT.V = 3845
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

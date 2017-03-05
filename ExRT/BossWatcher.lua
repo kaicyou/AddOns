@@ -325,6 +325,8 @@ module.db.def_trackingDamageSpells = {
 	[207328]=1867,	--Trillax: Cleansing Destruction
 	[206376]=1842,	--Krosus: Burning Pitch
 	[206938]=1863,	--Etraeus: Shatter
+	[210546]=1872,	--Elisande: orb
+	[206370]=1866,	--Guldan: 
 	
 	--[2812]=true,	--Test
 }
@@ -938,7 +940,7 @@ local BossPhasesData = {
 	[1886] = {
 		events = {{"UNIT_SPELLCAST_SUCCEEDED","boss1"},{"UNIT_SPELLCAST_SUCCEEDED","boss2"},{"UNIT_SPELLCAST_SUCCEEDED","boss3"}},
 		func = function(_, event, unit, spellName, _, _, spellId)
-			if (spellId == 216897 and unit == "boss1") or spellId == 70628 then
+			if ((spellId == 216830 or spellId == 216877) and unit == "boss1") or spellId == 70628 then
 				active_phase = active_phase + 1
 			end
 		end,
@@ -961,6 +963,69 @@ local BossPhasesData = {
 			[3] = -13232,
 		},		
 	},	--NH: Elisande
+	[1866] = {
+		events = {"UNIT_SPELLCAST_SUCCEEDED"},
+		func = function(_, event, unit, spellName, _, _, spellId)
+			if not unit or not unit:find("^boss") then
+				return
+			elseif spellId == 118357 then
+				active_phase = 2
+			elseif spellId == 227427 then
+				C_Timer.After(7.5,function()
+					if fightData then
+						active_phase = 3
+					end
+				end)
+			elseif spellId == 211439 then
+				active_phase = 4
+			end
+		end,
+		names = {
+			[1] = -14885,
+			[2] = -14062,
+			[3] = -13145,
+			[4] = "The Demon Within",
+		},	
+	},	--NH: Guldan
+	[2037] = {
+		events = {{"UNIT_SPELLCAST_SUCCEEDED","boss1"}},
+		func = function(_, event, unit, spellName, _, _, spellId)
+			if spellId == 239423 then
+				active_phase = min(active_phase + 1, 3)
+			end
+		end,
+		names = {
+			[1] = -14591,
+			[2] = -14605,
+			[3] = -14609,
+		},		
+	},	--ToS: Госпожа Сашж'ин
+	[2052] = {
+		events = {{"UNIT_SPELLCAST_SUCCEEDED","boss1"},{"UNIT_SPELLCAST_CHANNEL_STOP","boss1"}},
+		func = function(_, event, unit, spellName, _, _, spellId)
+			if spellId == 235725 then
+				active_phase = 2
+			elseif event == "UNIT_SPELLCAST_CHANNEL_STOP" and spellId == 234891 then
+				active_phase = 1
+			end
+		end,
+		names = {
+			[1] = -14974,
+			[2] = -14975,
+		},		
+	},	--ToS: Бдительная дева
+	[2038] = {
+		events = {{"UNIT_SPELLCAST_SUCCEEDED","boss1"}},
+		func = function(_, event, unit, spellName, _, _, spellId)
+			if spellId == 235597 then
+				active_phase = 2
+			end
+		end,
+		names = {
+			[1] = -14709,
+			[2] = -14719,
+		},		
+	},	--ToS: Аватара Падшего
 }
 local BossPhasesFrame = CreateFrame("Frame")
 local BossPhasesBossmodPhaseCounter, BossPhasesBossmodPhase, BossPhasesBossmodEnabled = 1
@@ -6020,14 +6085,16 @@ function BWInterfaceFrameLoad()
 				for sourceGUID,sourceData in pairs(destData) do
 					if not BWInterfaceFrame.tab.tabs[3].filterS or BWInterfaceFrame.tab.tabs[3].filterS == sourceGUID then
 						if sourceData[spellID] then
-							local missed = sourceData[spellID].parry + sourceData[spellID].dodge + sourceData[spellID].miss
-							if missed > 0 then
-								local inPos = ExRT.F.table_find(data,destGUID,1)
-								if not inPos then
-									inPos = #data + 1
-									data[inPos] = {destGUID,0,0}
+							for segment,spellAmount in pairs(sourceData[spellID]) do
+								local missed = spellAmount.parry + spellAmount.dodge + spellAmount.miss
+								if missed > 0 then
+									local inPos = ExRT.F.table_find(data,destGUID,1)
+									if not inPos then
+										inPos = #data + 1
+										data[inPos] = {destGUID,0,0}
+									end
+									data[inPos][3] = data[inPos][3] + 1
 								end
-								data[inPos][3] = data[inPos][3] + 1
 							end
 						end
 					end

@@ -387,7 +387,8 @@
 					</Anchor>
 					</Anchors>
 				</FontString>
-                <FontString  parentKey="StepNumber" inherits="GameFontNormal"  justifyH="LEFT" text="56.">
+                <FontString  parentKey="StepNumber" inherits="GameFontHighlightSmall"  justifyH="LEFT" text="56.">
+                   <Color r="1.0" g="0.82" b="0"/>
 					<Size>
                         <Size x="40" y="60"/>
 					</Size>
@@ -2223,7 +2224,9 @@
         </Frames>
         <Scripts>
             <OnEvent>
-				Dugi_ItemButton_OnEvent(self, event, ...)
+                if Dugi_ItemButton_OnEvent then
+                    Dugi_ItemButton_OnEvent(self, event, ...)
+                end
 			</OnEvent>
             <OnUpdate>
 				if not self.questLogIndex then return end

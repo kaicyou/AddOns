@@ -2,6 +2,8 @@ local DGV = DugisGuideViewer
 if not DGV then return end
 local L = DugisLocals
 
+local dugiSmartSetID = 999999
+
 local GA = DGV:RegisterModule("GearAdvisor")
 GA.essential = true
 local _
@@ -2946,10 +2948,11 @@ function GA:Initialize()
 		end
 	end
 
-	local orig_GetNumEquipmentSets = GetNumEquipmentSets
-	local orig_GetEquipmentSetInfo = GetEquipmentSetInfo
-	local orig_GetEquipmentSetInfoByName = GetEquipmentSetInfoByName
-	local orig_GetEquipmentSetItemIDs = GetEquipmentSetItemIDs
+	local orig_GetNumEquipmentSets = GetNumEquipmentSets or C_EquipmentSet.GetNumEquipmentSets --For 7.2.0
+	local orig_GetEquipmentSetInfo = GetEquipmentSetInfo or C_EquipmentSet.GetEquipmentSetInfo
+	local orig_GetEquipmentSetInfoByName = GetEquipmentSetInfoByName or C_EquipmentSet.GetEquipmentSetInfoByName
+	local orig_GetEquipmentSetItemIDs = GetEquipmentSetItemIDs or C_EquipmentSet.GetEquipmentSetItemIDs 
+	local orig_GetEquipmentSetIDs = C_EquipmentSet and C_EquipmentSet.GetEquipmentSetIDs 
 	local equipmentSetDataTable = {}
 	local equipmentSetIdTable = {}
 	setmetatable(equipmentSetIdTable, {
@@ -2981,16 +2984,33 @@ function GA:Initialize()
 				return DGV:UserSetting(DGV_GASMARTSETTARGET)~=WIN_CRITERIA_NONE
 			end
 		end
-
-		function GetNumEquipmentSets()
+        
+        --GetNumEquipmentSets
+        local function fn()
             if shouldUseOriginalEquipmentFunctions() then
                 return orig_GetNumEquipmentSets()
             end
 
-			local add = SmartSetShown() and 1 or 0
-			return orig_GetNumEquipmentSets()+add
-		end
+            local add = SmartSetShown() and 1 or 0
+            return orig_GetNumEquipmentSets()+add
+        end        
 
+        if GetNumEquipmentSets then
+            GetNumEquipmentSets = fn
+        else
+            --For 7.2.0
+             C_EquipmentSet.GetNumEquipmentSets = fn
+        end
+
+        if C_EquipmentSet and C_EquipmentSet.GetEquipmentSetIDs then
+            --For 7.2.0
+            C_EquipmentSet.GetEquipmentSetIDs = function()
+                local res = orig_GetEquipmentSetIDs()
+                res[#res + 1] = dugiSmartSetID
+                return res
+            end    
+        end        
+        
 		local function IsInOtherSlot(itemLink, slot)
 			local otherSlot
 			if slot==INVSLOT_TRINKET1 then
@@ -3043,32 +3063,59 @@ function GA:Initialize()
 		-- numInventory - Number of items from the set in current bags (number)
 		-- numMissing - Number of items missing from the set (current bags) (number)
 		-- numIgnored - Number of ignored slots (number)
-		function GetEquipmentSetInfo(index)
+       
+       --GetEquipmentSetInfo
+        local function fn(index)
             if shouldUseOriginalEquipmentFunctions() then
                 return orig_GetEquipmentSetInfo(index)
             end
 
-			if index==1 and SmartSetShown() then
+			if (C_EquipmentSet == nil and index==1 and SmartSetShown()) 
+             or (C_EquipmentSet ~= nil and index==dugiSmartSetID --[[and SmartSetShown()]] ) then
 				local cacheReaction = TryGetCacheReaction("GetEquipmentSetInfo") --keep a cache until next update.  Some addons call this a lot.
 				if cacheReaction then
 					return cacheReaction:UnpackCache()
 				end
 
 				local isEquipped = SmartSetIsEquipped(true)
-				return RegisterStopwatchReaction(0):SetCache("GetEquipmentSetInfo",
+                 
+                local index_SetId = dugiSmartSetID
+                
+                if C_EquipmentSet == nil then
+                   index_SetId = MAX_EQUIPMENT_SETS_PER_PLAYER
+                else
+                   index_SetId = dugiSmartSetID
+                end
+                
+                local result = {RegisterStopwatchReaction(0):SetCache("GetEquipmentSetInfo",
 					L["Dugi Smart Set"],
 					GetSpecIcon(),
-					MAX_EQUIPMENT_SETS_PER_PLAYER,
+					index_SetId,
 					isEquipped,
 					16,
 					isEquipped and 16 or 0,
 					isEquipped and 0 or 16,
 					0,
-					2):UnpackCache()
+					2):UnpackCache()}
+                
+                
+				return unpack(result)
 			else
-				return orig_GetEquipmentSetInfo(SmartSetShown() and index-1 or index)
+                if C_EquipmentSet == nil then
+                   return orig_GetEquipmentSetInfo(SmartSetShown() and index-1 or index)
+                else
+                   return orig_GetEquipmentSetInfo(--[[SmartSetShown() and index-1 or ]]index)
+                end
 			end
+            
 		end
+
+        if GetEquipmentSetInfo then
+            GetEquipmentSetInfo = fn
+        else
+            --For 7.2.0
+            C_EquipmentSet.GetEquipmentSetInfo = fn
+        end
 
 		-- Returns information about an equipment set
 		-- See also Equipment Manager functions.
@@ -3085,7 +3132,9 @@ function GA:Initialize()
 		-- unknown - Unknown, always seem to be 0 (number)
 		-- numMissing - Number of items missing from the set (current bags) (number)
 		-- numIgnored - Number of ignored slots (number)
-		function GetEquipmentSetInfoByName(name)
+        
+        --GetEquipmentSetInfoByName
+		local function fn(name)
             if shouldUseOriginalEquipmentFunctions() then
                 return orig_GetEquipmentSetInfoByName(name)
             end
@@ -3098,6 +3147,13 @@ function GA:Initialize()
 				return orig_GetEquipmentSetInfoByName(name)
 			end
 		end
+        
+        if GetEquipmentSetInfoByName then
+            GetEquipmentSetInfoByName = fn
+        else
+            --For 7.2.0
+            C_EquipmentSet.GetEquipmentSetInfoByName = fn
+        end
 
 		local function GetItemForTable(uniqueInventorySlot, spec, pvp, enforceArmorSpecSubclass, uncapped, threading)
 			local sfo, option, pfo = SpecFromOption(DGV:UserSetting(DGV_GASMARTSETTARGET))
@@ -3167,7 +3223,9 @@ function GA:Initialize()
 		-- Returns:
 		-- itemIDs - A table listing the itemIDs of the set's contents, keyed by inventoryID (table)
 		--EQUIPMENT_SET_IGNORED_SLOT
-		function GetEquipmentSetItemIDs(name)
+        
+        --GetEquipmentSetItemIDs
+		local function fn(name)
             if shouldUseOriginalEquipmentFunctions() then
                 return orig_GetEquipmentSetItemIDs(name)
             end
@@ -3179,7 +3237,26 @@ function GA:Initialize()
 				return orig_GetEquipmentSetItemIDs(name)
 			end
 		end
+        
+        if GetEquipmentSetItemIDs then
+            GetEquipmentSetItemIDs = fn
+        else
+            --For 7.2.0
+            C_EquipmentSet.GetEquipmentSetItemIDs = fn
+        end        
 
+        
+    if C_EquipmentSet and C_EquipmentSet.GetIgnoredSlots then
+    
+        local org_GetIgnoredSlots = C_EquipmentSet.GetIgnoredSlots
+        C_EquipmentSet.GetIgnoredSlots = function(setID)
+            if setID == dugiSmartSetID then
+                return {}
+            else
+                return org_GetIgnoredSlots(setID)
+            end
+        end
+    else
 		function PaperDollFrame_IgnoreSlotsForSet (setName)
 			if setName == L["Dugi Smart Set"] then return end
 			local set = GetEquipmentSetIgnoreSlots(setName);
@@ -3189,7 +3266,9 @@ function GA:Initialize()
 				end
 			end
 		end
+    end
 
+        
 		PaperDollEquipmentManagerPane:HookScript("OnUpdate", function ()
 			if GA.loaded then
 				for i = 1, #PaperDollEquipmentManagerPane.buttons do
@@ -3974,8 +4053,20 @@ function GA:Initialize()
 			equipExecutedReaction:Dispose()
 			equipExecutedReaction = nil
 		end
-		GetNumEquipmentSets = orig_GetNumEquipmentSets
-		GetEquipmentSetInfo = orig_GetEquipmentSetInfo
+        
+        if C_EquipmentSet then 
+            --For 7.2.0
+            C_EquipmentSet.GetEquipmentSetInfo = orig_GetEquipmentSetInfo
+            C_EquipmentSet.GetNumEquipmentSets = orig_GetNumEquipmentSets
+            C_EquipmentSet.GetEquipmentSetInfoByName = orig_GetEquipmentSetInfoByName
+            C_EquipmentSet.GetEquipmentSetItemIDs = orig_GetEquipmentSetItemIDs
+            C_EquipmentSet.GetEquipmentSetIDs = orig_GetEquipmentSetIDs
+        else
+            GetEquipmentSetInfo = orig_GetEquipmentSetInfo
+            GetNumEquipmentSets = orig_GetNumEquipmentSets
+            GetEquipmentSetInfoByName = orig_GetEquipmentSetInfoByName
+            GetEquipmentSetItemIDs = orig_GetEquipmentSetItemIDs
+        end
 	end
 end
 --[[

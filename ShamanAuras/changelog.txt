@@ -1,4 +1,9 @@
-﻿	r44.1-beta
+﻿	r45-beta
+NEW: [Restoration] The newly added Mana Bar should now be moveable. (Thanks, 1SEBI1!)
+	
+FIX: [Elemental] The buff timer bars positioning should no longer act strangely after activating stormkeeper.
+	
+	r44.1-beta
 FIX: [Elemental] A Lua error should no longer occur when you reach the Maelstrom threshold.
 FIX: [Ele/Enh] The ligntning animation should disappear when below the Maelstrom threshold while out of combat.
 

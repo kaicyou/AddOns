@@ -1373,3 +1373,13 @@ function GUIUtils:CreatePreloader(name, parent)
 end
 
 
+--Example: GUIUtils:ShowBindings("Dugi Guides")
+function GUIUtils:ShowBindings(categoryName)
+    GameMenuButtonKeybindings:Click()
+    
+    LuaUtils:foreach(KeyBindingFrame.categoryList.buttons, function(button, k) 
+        if button.text:GetText() == categoryName then
+            button:Click()
+        end
+    end)
+end

@@ -1507,6 +1507,15 @@ function Auras:OnInitialize()
 						width = nil,
 						height = nil,
 					},
+					ManaBar = {
+						point = "CENTER",
+						relativeTo = "AuraGroupRes",
+						relativePoint = "CENTER",
+						x = 0,
+						y = -139,
+						width = nil,
+						height = nil,
+					},
 					TidalWavesBar = {
 						point = "CENTER",
 						relativeTo = "AuraGroupRes",
@@ -1777,6 +1786,15 @@ function Auras:OnInitialize()
 							relativePoint = "CENTER",
 							x = 0,
 							y = -139,
+						},
+						ManaBar = {
+							point = "CENTER",
+							relativeTo = "AuraGroupRes",
+							relativePoint = "CENTER",
+							x = 0,
+							y = -139,
+							width = nil,
+							height = nil,
 						},
 						TidalWavesBar = {
 							point = "CENTER",

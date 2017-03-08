@@ -873,7 +873,15 @@ function DugisArrow:Initialize()
 		if not poiButton then return end
 		local posX, posY 
 		for i=1, GetNumMapLandmarks() do 
-			local landmarkType, name, description, textureIndex, x, y = GetMapLandmarkInfo(i)
+			local landmarkType, name, description, textureIndex, x, y 
+            
+            if GetMapLandmarkInfo then
+                landmarkType, name, description, textureIndex, x, y = GetMapLandmarkInfo(i)
+            else
+                --For 7.2.0
+                landmarkType, name, description, textureIndex, x, y = C_WorldMap.GetMapLandmarkInfo(i)
+            end
+            
 			if name == poiButton.name then 
 				posX = x
 				posY = y
@@ -2138,6 +2146,10 @@ function DugisArrow:Initialize()
 	end
 	
 	function DGV:UNIT_SPELLCAST_SUCCEEDED(event, unit, spellName, spellRank, lineIdCounter, spellId)
+        if unit == "player" then
+            DugisGuideViewer:OnCastingSpell(spellId)
+        end
+    
 		if unit=="player" and DugisArrow.waypoints then
 			--DGV:DebugFormat("UNIT_SPELLCAST_SUCCEEDED", "spellName", spellName, "spellId", spellId)
 			for _, waypoint in pairs(DugisArrow.waypoints) do

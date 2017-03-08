@@ -1443,7 +1443,7 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		for i=1,getn(buffTable) do
 			local buff,_,_,_,_,duration,expires = UnitBuff('player',Auras:GetSpellName(buffTable[i]));
 			--SSA.DataFrame.text:SetText(Auras:CurText('DataFrame')..i..". "..tostring(Auras:GetSpellName(buffTable[i])).."\n");
-			if (expires) then
+			if (buff) then
 				if (Auras.db.char.aura[1][buffIDs[buffTable[i]]:GetName()]) then
 					local timer,seconds = Auras:parseTime(expires - GetTime(),true);
 					
@@ -1861,7 +1861,7 @@ TotemGroup.Totem2.texture:SetAllPoints(TotemGroup.Totem2);]]
 
 
 -- Stormkeeper Charges
-local buff,count;
+--local SK_buff,SK_count;
 local tempX = {
 	[1] = {
 		[1] = 30,
@@ -1932,7 +1932,7 @@ wipe(tempX);
 
 StormkeeperCharges:SetScript("OnUpdate",function(self,elapsed)
 	if (Auras:CharacterCheck(1)) then
-		buff,_,_,count = UnitBuff('player',Auras:GetSpellName(205495))
+		local buff,_,_,count = UnitBuff('player',Auras:GetSpellName(205495))
 		
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		--[[if (not self:IsShown()) then

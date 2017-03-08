@@ -1,4 +1,18 @@
 ------------------------------------------------------------------------
+r108 | SweetsourDev | 2017-03-06 17:00:03 -0600 (Mon, 06 Mar 2017) | 4 lines
+Changed paths:
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r45-beta
+NEW: [Restoration] The newly added Mana Bar should now be moveable. (Thanks, 1SEBI1!)
+	
+FIX: [Elemental] The buff timer bars positioning should no longer act strangely after activating stormkeeper.
+------------------------------------------------------------------------
 r106 | SweetsourDev | 2017-02-20 21:28:34 -0600 (Mon, 20 Feb 2017) | 5 lines
 Changed paths:
    M /trunk/SA_Frames_Elemental.lua

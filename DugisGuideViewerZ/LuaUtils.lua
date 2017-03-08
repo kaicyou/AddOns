@@ -56,6 +56,12 @@ function LuaUtils:separateCamelCase(aString)
     return LuaUtils:trim(result)
 end
 
+function LuaUtils:CamelCase(text)
+    return text:gsub("(%l)(%w*)", function(a,b) return string.upper(a)..b end)
+end
+
+
+
 function LuaUtils:trim(text)
     return text:gsub("^%s*(.-)%s*$", "%1")
 end

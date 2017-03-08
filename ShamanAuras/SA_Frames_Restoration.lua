@@ -791,6 +791,7 @@ end);
 SSA.SpiritLinkTotem:SetScript("OnUpdate",function(self)
 	if (Auras:CharacterCheck(3)) then
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(98008));
+		local start2,duration2 = GetSpellCooldown(Auras:GetSpellName(204293));
 	
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
@@ -800,7 +801,14 @@ SSA.SpiritLinkTotem:SetScript("OnUpdate",function(self)
 		else
 			self.CD:Hide();
 		end
-			
+		
+		if ((duration2 or 0) > 2) then
+			Auras:ExecuteCooldown(self,start2,duration2,false);
+			self.CD:Show();
+		else
+			self.CD:Hide();
+		end
+		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
@@ -1049,6 +1057,18 @@ ManaBar:SetScript("OnUpdate",function(self)
 		end
 	else
 		self:SetAlpha(0);
+	end
+end);
+
+ManaBar:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.config[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'resGrp',button);
+	end
+end);
+
+ManaBar:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.config[3].isMoving) then
+		Auras:MoveOnMouseUp(self,'resGrp',button);
 	end
 end);
 
@@ -2245,7 +2265,7 @@ SSA.AuraObjectsRes = {
 			r = 0.91,
 			g = 0.41,
 			b = 1,
-			m = 'player',
+			m = 'health',
 		},
 	},
 	[10] = {
@@ -2258,8 +2278,18 @@ SSA.AuraObjectsRes = {
 			m = 2,
 		},
 	},
-	--[11] = LavaSurge,
 	[11] = {
+		alpha = true,
+		object = ManaBar,
+		statusbar = {
+			r = 0,
+			g = 0.5,
+			b = 1,
+			m = 'mana',
+		},
+	},
+	--[11] = LavaSurge,
+	[12] = {
 		alpha = true,
 		model = {
 			[1] = Undulation.Orb,
@@ -2267,7 +2297,7 @@ SSA.AuraObjectsRes = {
 		object = Undulation,
 		backdrop = 'BackdropSB',
 	},
-	[12] = {
+	[13] = {
 		object = Cloudburst,
 		alpha = true,
 	},

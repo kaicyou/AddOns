@@ -168,8 +168,10 @@ function Auras:InitMoveAuraGroups(AuraObjects,name)
 				end
 			end
 			if (AuraObjects[i].statusbar) then
-				if (AuraObjects[i].statusbar.m == 'player') then
-					SSA[AuraObjects[i].object:GetName()]:SetValue(UnitHealth('player'));
+				if (AuraObjects[i].statusbar.m == 'health') then
+					SSA[AuraObjects[i].object:GetName()]:SetValue(UnitHealthMax('player'));
+				elseif (AuraObjects[i].statusbar.m == 'mana') then
+					SSA[AuraObjects[i].object:GetName()]:SetValue(UnitPowerMax('player',19));
 				else
 					SSA[AuraObjects[i].object:GetName()]:SetValue(AuraObjects[i].statusbar.m);
 				end

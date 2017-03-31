@@ -19,6 +19,8 @@ local state = ns.state
 
 state.iteration = 0
 
+state.PTR = PTR
+
 state.now = 0
 state.offset = 0
 state.delay = 0
@@ -526,6 +528,8 @@ local function applyBuff( aura, duration, stacks, value )
     return
   end
 
+  if not state.buff[ aura ] then return end
+
   if duration == 0 then
     state.buff[ aura ].expires = 0
     state.buff[ aura ].count = 0
@@ -783,7 +787,7 @@ local mt_state = {
     elseif k == 'time' then
       -- Calculate time in combat.
       if t.combat == 0 and t.false_start == 0 then return 0
-      else return t.now + ( t.offset or 0 ) - ( t.combat > 0 and t.combat or t.false_start ) end
+      else return t.now + ( t.offset or 0 ) - ( t.combat > 0 and t.combat or t.false_start ) + ( ( t.combat > 0 or t.false_start ) and t.delay or 0 ) end
 
     elseif k == 'time_to_die' then
       -- Harvest TTD calculation from Hekili.
@@ -821,6 +825,7 @@ local mt_state = {
     elseif k == 'my_enemies' then
         -- The above is not needed as the nameplate target system will add missing enemies.
         t[k] = ns.numTargets()
+
         if t.min_targets > 0 then t[k] = max( t.min_targets, t[k] ) end
         if t.max_targets > 0 then t[k] = min( t.max_targets, t[k] ) end
 
@@ -908,6 +913,9 @@ local mt_state = {
 
     elseif k == 'max_charges' then
         return class.abilities[ t.this_action ].charges or 0
+
+    elseif k == 'recharge' then
+        return t.cooldown[ t.this_action ].recharge
 
     elseif k == 'recharge_time' then
       return t.cooldown[ t.this_action ].recharge_time
@@ -1104,7 +1112,7 @@ local mt_stat = {
 
     end
 
-    Hekili:Error( "Unknown state.stat key: '" .. k .. "'." )
+    -- Hekili:Error( "Unknown state.stat key: '" .. k .. "'." )
     return
   end
 }
@@ -1147,53 +1155,14 @@ ns.metatables.mt_default_pet = mt_default_pet
 local mt_pets = {
   __index = function(t, k)
     -- Should probably add all totems, but holding off for now.
-    if k == 'searing_totem' or k == 'magma_totem' or k == 'fire_elemental_totem' then
-      local present, name, start, duration = GetTotemInfo(1)
-
-      if present and name == class.abilities[ k ].name then
-        t[k] = {
-          key = k, totem = 1, expires = start + duration
-        }
-      else
-        t[k] = {
-          key = k, totem = 1, expires = 0
-        }
-
-      end
-      return t[k]
-
-    elseif k == 'storm_elemental_totem' then
-      local present, name, start, duration = GetTotemInfo(4)
-
-      if present and name == class.abilities[ k ].name then
-        t[k] = {
-          key = k, totem = 4, expires = start + duration
-        }
-      else
-        t[k] = {
-          key = k, totem = 4, expires = 0
-        }
-
-      end
-      return t[k]
-
-    elseif k == 'earth_elemental_totem' then
-      local present, name, start, duration = GetTotemInfo(2)
-
-      if present and name == class.abilities[ k ].name then
-        t[k] = {
-          key = k, totem = 2, expires = start + duration
-        }
-      else
-        t[k] = {
-          key = k, totem = 2, expires = 0
-        }
-
-      end
-      return t[k]
-
-    elseif k == 'up' or k == 'exists' then
+    if k == 'up' or k == 'exists' then
       return UnitExists( 'pet' )
+
+    elseif k == 'alive' then
+        return not UnitIsDead( 'pet' )
+
+    elseif k == 'dead' then
+        return UnitIsDead( 'pet' )
 
     end
 
@@ -1423,7 +1392,7 @@ ns.metatables.mt_target_health = mt_target_health
 local mt_default_cooldown = {
     __index = function(t, k)
 
-        if k == 'duration' or k == 'expires' or k == 'next_charge' or k == 'charge' then
+        if k == 'duration' or k == 'expires' or k == 'next_charge' or k == 'charge' or k == 'recharge_began' then
             -- Refresh the ID in case we changed specs and ability is spec dependent.
             t.id = class.abilities[ t.key ].id
 
@@ -1496,6 +1465,12 @@ local mt_default_cooldown = {
         elseif k == 'charges_max' then
             return class.abilities[ t.key ].charges
 
+        elseif k == 'recharge' then
+            return class.abilities[ t.key ].recharge
+
+        elseif k == 'time_to_max_charges' then
+            return ( class.abilities[ t.key ].charges - t.charges_fractional ) * class.abilities[ t.key ].recharge
+
         elseif k == 'remains' then
 
             if t.key == 'global_cooldown' then
@@ -1545,7 +1520,7 @@ local mt_default_cooldown = {
 
         end
 
-        error("UNK: " .. k )
+        return
 
     end
 }
@@ -1728,18 +1703,20 @@ local mt_resource = {
       return t.max -- need to accommodate buffs that increase mana, etc.
 
     elseif k == 'time_to_max' then
-      if not t.regen or t.regen <= 0 or t.current == t.max then return 0 end
+        if t.current == t.max then return 0
+        elseif t.regen <= 0 then return 3600 end
 
-      if not t.tick_rate or not t.last_tick then
-        return roundUp( t.deficit / t.regen, 2 )
-      end
+        return max( 0, ( t.max - t.current ) / t.regen )
 
-      local time_to_next_tick = t.tick_rate - ( ( state.query_time - t.last_tick ) % t.tick_rate )
-      local ticks_to_ready = floor( ( t.max - t.current ) / t.regen )
-      local tick_time = time_to_next_tick + ( ticks_to_ready * t.tick_rate )
+    elseif k:sub(1, 8) == 'time_to_' then
+        local amount = k:sub(9)
+        amount = tonumber(amount)
 
-      return roundUp( max( tick_time, t.deficit / t.regen ), 2 )
-      -- return roundUp( ( t.max - t.current ) / t.regen, 2 )
+        if not amount or amount > t.max then return 3600
+        elseif t.current >= amount then return 0
+        elseif t.regen <= 0 then return 3600 end
+
+        return max( 0, ( amount - t.current ) / t.regen )
 
     elseif k == 'regen' then
       -- Not a regenerating resource.
@@ -2577,21 +2554,44 @@ function state.reset( dispID )
       end
   end
   
-  if dispID and Hekili.DB.profile.displays[ dispID ] then
-    local display = Hekili.DB.profile.displays[ dispID ]
-  
-    if state.single then
-      if display['Single - Minimum'] > 0 then state.min_targets = display['Single - Minimum'] end
-      if display['Single - Maximum'] > 0 then state.max_targets = display['Single - Maximum'] end
-    elseif state.aoe then
-      if display['AOE - Minimum'] > 0 then state.min_targets = display['AOE - Minimum'] end
-      if display['AOE - Maximum'] > 0 then state.max_targets = display['AOE - Maximum'] end
-    elseif state.auto then
-      if display['Auto - Minimum'] > 0 then state.min_targets = display['Auto - Minimum'] end
-      if display['Auto - Maximum'] > 0 then state.max_targets = display['Auto - Maximum'] end
-    end
+  local display = dispID and Hekili.DB.profile.displays[ dispID ]
+  if display then
+    local mode = Hekili.DB.profile['Mode Status'] or 0
+
+    if display.displayType == 'a' then -- Primary
+        if mode == 3 then
+            state.min_targets = 0
+            state.max_targets = 0
+        else
+            state.min_targets = 0
+            state.max_targets = 1
+        end
+
+    elseif display.displayType == 'b' then -- Single-Target
+        state.min_targets = 0
+        state.max_targets = 1
+
+    elseif display.displayType == 'c' then -- AOE
+        state.min_targets = ( display.simpleAOE or 2 )
+        state.max_targets = 0
     
-    state.rangefilter = display['Range Checking']
+    elseif display.displayType == 'd' then -- Auto
+        -- do nothing
+
+    elseif display.displayType == 'z' then -- Custom, old style.
+        if mode == 0 then
+            if display.minST > 0 then state.min_targets = display.minST end
+            if display.maxST > 0 then state.max_targets = display.maxST end
+        elseif mode == 2 then
+            if display.minAE > 0 then state.min_targets = display.minAE end
+            if display.maxAE > 0 then state.max_targets = display.maxAE end
+        elseif mode == 3 then
+            if display.minAuto > 0 then state.min_targets = display.minAuto end
+            if display.maxAuto > 0 then state.max_targets = display.maxAuto end
+        end
+    end
+
+    state.rangefilter = display.rangeType == 'xclude'
   else
     state.rangefilter = false
   end
@@ -2714,6 +2714,12 @@ function state.reset( dispID )
         state[ k ].regen = inactive
       end
     end
+
+    --[[ local time_since = state.now - state[ k ].last_tick
+    if state[ k ].last_tick > 0 and time_since < state[ k ].tick_rate and state[ k ].actual < state[ k ].max then
+        gain( state[ k ].regen * time_since, k )
+    end ]]
+
   end
 
   state.health = rawget( state, 'health' ) or setmetatable( { resource = 'health' }, mt_resource )
@@ -2752,19 +2758,25 @@ function state.reset( dispID )
 
     state.advance( cast_time )
 
-    if ability and not ability.channeled then
+    if ability then 
 
-      -- Put the action on cooldown.  (It's slightly premature, but addresses CD resets like Echo of the Elements.)
-      if ability.charges and ability.recharge > 0 then
-        state.spendCharges( casting, 1 )
-      else
-        state.setCooldown( casting, ability.cooldown )
-      end
+        if not ability.channeled then
+            -- Put the action on cooldown.  (It's slightly premature, but addresses CD resets like Echo of the Elements.)
+            if ability.charges and ability.recharge > 0 then
+            state.spendCharges( casting, 1 )
+            else
+            state.setCooldown( casting, ability.cooldown )
+            end
 
-      -- Perform the action.
-      ns.runHandler( casting )
+            -- Perform the action.
+            ns.runHandler( casting )
 
-      ns.spendResources( casting )
+            ns.spendResources( casting )
+
+        elseif ability.postchannel then
+            ability.postchannel()
+
+        end
     end
 
   end
@@ -2787,7 +2799,7 @@ function state.advance( time )
     return
   end
 
-  roundUp( time, 2 )
+  -- roundUp( time, 2 )
   
   time = ns.callHook( 'advance', time )
 
@@ -2808,7 +2820,6 @@ function state.advance( time )
 
         if proj.time > state.query_time and proj.time < state.query_time + time then
             state.offset = proj.time - state.query_time
-            -- print( proj.spell, proj.time, state.query_time )
             ns.runHandler( proj.spell, true )
         else
             break
@@ -2851,7 +2862,7 @@ function state.advance( time )
     local override = ns.callHook( 'advance_resource_regen', false, k, time )
 
     if not override and resource.regen and resource.regen ~= 0 then
-        if resource.last_tick and resource.tick_rate then 
+        if false and resource.last_tick and resource.tick_rate then 
             -- We're using a ticking resource.
             -- Only add what is actually generated in the interval.
             local time_to_next_tick = resource.tick_rate - ( ( state.now + state.offset - resource.last_tick ) % resource.tick_rate )
@@ -2960,7 +2971,7 @@ ns.isUsable = function( spell )
 
     if not ability then return true end
 
-    if state.rangefilter == 'xclude' and UnitExists( 'target' ) and ns.lib.SpellRange.IsSpellInRange( ability.id, 'target' ) == 0 then
+    if state.rangefilter and UnitExists( 'target' ) and ns.lib.SpellRange.IsSpellInRange( ability.id, 'target' ) == 0 then
         return false
     end
 
@@ -2969,8 +2980,11 @@ ns.isUsable = function( spell )
     end ]]
 
     if ability.usable ~= nil then
-        if type( ability.usable ) == 'number' then return IsUsableSpell( ability.usable )
-        elseif type( ability.usable ) == 'function' then return ability.usable() end
+        if type( ability.usable ) == 'number' then 
+            return IsUsableSpell( ability.usable )
+        elseif type( ability.usable ) == 'function' then
+            return ability.usable()
+        end
     end
 
     return true
@@ -3029,25 +3043,12 @@ local TTRtime = 0
 -- Needs to be expanded to handle energy regen before Rogue, Monk, Druid will work.
 function ns.timeToReady( action )
 
-
     local now = state.now + state.offset
 
-    if cacheTTR[ action ] then
-        -- Check to see when this happened.
-        if TTRtime == now then
-            return cacheTTR[ action ]
-        end
+    -- Need to ignore the wait for this part.
+    local wait = max( state.cooldown.global_cooldown.remains, state.cooldown[ action ].remains )
 
-        for k in pairs( cacheTTR ) do
-            cacheTTR[ k ] = nil
-        end
-    end
-
-
-    -- Need to ignore the delay for this part.
-    local delay = state.cooldown[ action ].remains
-
-    delay = ns.callHook( "timeToReady", delay, action )
+    wait = ns.callHook( "timeToReady", wait, action )
 
     local ability = class.abilities[ action ]
     local spend, resource
@@ -3067,43 +3068,47 @@ function ns.timeToReady( action )
         spend = ability.ready
     end
 
-    if resource and spend > state[ resource ].current then
+    if resource and spend > state[ resource ].actual then
         local tick_ready = 0
 
-        if resource == 'focus' or resource == 'energy' then
-            --[[ local time_to_next_tick = state[ resource ].tick_rate - ( ( state.query_time - state[ resource ].last_tick ) % state[ resource ].tick_rate )
-            local ticks_to_ready = ceil( ( spend - state[ resource ].current ) / state[ resource ].regen )
+        if state[ resource ].regen and state[ resource ].regen > 0 then
+            if resource == 'focus' or resource == 'energy' then
+                --[[ local time_to_next_tick = state[ resource ].tick_rate - ( ( state.query_time - state[ resource ].last_tick ) % state[ resource ].tick_rate )
+                local ticks_to_ready = ceil( ( spend - state[ resource ].current ) / state[ resource ].regen )
 
-            tick_ready = ticks_to_ready * state[ resource ].tick_rate
-            -- delay = max( delay, state[ resource ].tick_rate + ( ticks_to_ready * state[ resource ].tick_rate ) ) ]]
-        
+                tick_ready = ticks_to_ready * state[ resource ].tick_rate
+                -- wait = max( wait, state[ resource ].tick_rate + ( ticks_to_ready * state[ resource ].tick_rate ) ) ]]
+            
+            end
+            wait = max( wait, tick_ready, ( spend - state[ resource ].actual ) / state[ resource ].regen )
         elseif resource == 'holy_power' and state.equipped.liadrins_fury_unleashed and ( state.buff.crusade.up or state.buff.avenging_wrath.up ) then
             local buff_remaining = state.buff.crusade.up and state.buff.crusade.remains or state.buff.avenging_wrath.remains
-            local deficit = spend - state.holy_power.current
+            local deficit = spend - state.holy_power.actual
             
             local ticks_remain = math.floor( buff_remaining / 4 )
             
             if ticks_remain < deficit then
                 -- We won't generate enough holy_power from Liadrin's.
-                tick_ready = 999
+                tick_ready = 3600
             else
                 tick_ready = buff_remaining - ( deficit * 4 )
             end
+            wait = max( wait, tick_ready, ( spend - state[ resource ].actual ) / state[ resource ].regen )
+        else
+            wait = 3600
         end
-
-        delay = roundUp( max( delay, tick_ready, ( ( spend - state[ resource ].current ) / state[ resource ].regen ) ), 2 )
     end
 
     if ability.ready and type( ability.ready ) == 'function' then
-        delay = max( delay, ability.ready() )
+        wait = max( wait, ability.ready() )
     end
 
     if state.script.entry then
-        delay = ns.checkTimeScript( state.script.entry, delay, spend, resource ) or delay
+        wait = ns.checkTimeScript( state.script.entry, wait, spend, resource ) or wait
     end
 
-    cacheTTR[ action ] = delay
-    return delay
+    -- cacheTTR[ action ] = wait
+    return wait
 
 end
 

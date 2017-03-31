@@ -1,3 +1,29 @@
+commit fd2c2086d09bf06bee3ed8f3f9a76802e990380f
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Mar 28 18:43:57 2017 -0400
+
+    7.2!  TOC update.
+
+commit fc5fc475f3f82be6b3057e8489bd0f26a2576348
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Mar 28 18:42:05 2017 -0400
+
+    7.2!
+
+commit e6f7704e96ce521d75692e219e08c19f327bc1c4
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Mar 14 00:24:29 2017 -0400
+
+    Update APLs.
+
+commit 08dad6d121fd572d8f694e597e4d6add390ca1d3
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Feb 27 00:26:58 2017 -0500
+
+    Fix to Tiger Palm cost.
+    
+    o May have accidentally reversed BrM vs. WW costs.  What a bad I am.
+
 commit e78b05911c6e54fc332320ff9049f54e5bd1b499
 Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Sun Feb 19 21:47:57 2017 -0500

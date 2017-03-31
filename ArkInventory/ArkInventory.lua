@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1774 $
-$Date: 2017-02-05 16:36:41 +1100 (Sun, 05 Feb 2017) $
+$Revision: 1788 $
+$Date: 2017-03-29 10:13:22 +1100 (Wed, 29 Mar 2017) $
 
 ]]--
 
@@ -1191,6 +1191,10 @@ ArkInventory.Global = { -- globals
 		Rule = { }, -- key generated via ObjectIDRule( )
 		
 		SentMail = { }, -- keeps track of any sent mail to other characters you have
+		
+		h2 = { },
+		BlizzardBagIdToInternalId = { },
+		
 	},
 	
 	Thread = {
@@ -1512,6 +1516,7 @@ ArkInventory.Const.DatabaseDefaults.global = {
 							["cutoff"] = 2,
 						},
 						["compress"] = 0,
+						["upgrade"] = true,
 					},
 					["title"] = {
 						["hide"] = false,
@@ -2195,6 +2200,13 @@ function ArkInventory.OnLoad( )
 	-- void storage
 	for x = 1, ArkInventory.Const.VOID_STORAGE_PAGES do
 		table.insert( ArkInventory.Global.Location[ArkInventory.Const.Location.Void].Bags, ArkInventory.Const.Offset.Void + x )
+	end
+	
+	-- setup reverse lookup cache
+	for loc_id, loc_data in pairs( ArkInventory.Global.Location ) do
+		for bag_id, v in pairs( loc_data.Bags ) do
+			ArkInventory.Global.Cache.BlizzardBagIdToInternalId[v] = { loc_id=loc_id, bag_id=bag_id }
+		end
 	end
 	
 end
@@ -3091,6 +3103,15 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 		end
 	end
 	
+	-- mythic keystone
+	if info.class == "keystone" then
+		if i.sb then
+			return ArkInventory.CategoryGetSystemID( "SYSTEM_PET_BATTLE_BOUND" )
+		else
+			return ArkInventory.CategoryGetSystemID( "SYSTEM_PET_BATTLE_TRADE" )
+		end
+	end
+	
 	-- items only from here on
 	if info.class ~= "item" then return end
 	
@@ -3202,7 +3223,7 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 	
 	
 	-- setup tooltip for scanning
-	local blizzard_id = ArkInventory.BagID_Blizzard( i.loc_id, i.bag_id )
+	local blizzard_id = ArkInventory.InternalIdToBlizzardBagId( i.loc_id, i.bag_id )
 	ArkInventory.TooltipSetItem( ArkInventory.Global.Tooltip.Scan, blizzard_id, i.slot_id )
 	
 	
@@ -3444,7 +3465,7 @@ function ArkInventory.ItemCategoryGetDefaultEmpty( loc_id, bag_id )
 	local codex = ArkInventory.GetLocationCodex( loc_id )
 	local clump = codex.style.slot.empty.clump
 	
-	local blizzard_id = ArkInventory.BagID_Blizzard( loc_id, bag_id )
+	local blizzard_id = ArkInventory.InternalIdToBlizzardBagId( loc_id, bag_id )
 	local bt = ArkInventory.BagType( blizzard_id )
 	
 	--ArkInventory.Output( "loc[", loc_id, "] bag[", bag_id, " / ", blizzard_id, "] type[", bt, "]" )
@@ -5855,8 +5876,8 @@ function ArkInventory.Frame_Bar_Paint( frame )
 			local scale = codex.style.bar.border.scale or 1
 			
 			local colour = nil
-			if codex.style.bar.data[bar_id].border.custom == 2 then
-				colour = codex.style.bar.data[bar_id].border.colour
+			if codex.layout.bar.data[bar_id].border.custom == 2 then
+				colour = codex.layout.bar.data[bar_id].border.colour
 			else
 				colour = codex.style.bar.border.colour
 			end
@@ -6503,7 +6524,7 @@ function ArkInventory.Frame_Bag_OnLoad( frame )
 		--["inv_id"] = inv_id,
 	}
 	
-	local blizzard_id = ArkInventory.BagID_Blizzard( loc_id, bag_id )
+	local blizzard_id = ArkInventory.InternalIdToBlizzardBagId( loc_id, bag_id )
 	frame:SetID( blizzard_id )
 	
 	ArkInventory.MediaFrameDefaultFontSet( frame )
@@ -6670,7 +6691,7 @@ function ArkInventory.Frame_Item_Update_Quest( frame )
 		
 		if i and i.h then
 			
-			local blizzard_id = ArkInventory.BagID_Blizzard( loc_id, i.bag_id )
+			local blizzard_id = ArkInventory.InternalIdToBlizzardBagId( loc_id, i.bag_id )
 			local isQuestItem, questId, isActive = GetContainerItemQuestInfo( blizzard_id, i.slot_id )
 			
 			if questId and not isActive then
@@ -6689,31 +6710,33 @@ end
 
 function ArkInventory.Frame_Item_Update_UpgradeIcon( frame )
 	
-	--if true then return end
-	
 	if not ArkInventory.ValidFrame( frame, true ) then return end
 	
-	--frame.UpgradeIcon:SetShown( false )
 	frame.UpgradeIcon:Hide( )
 	
 	local loc_id = frame.ARK_Data.loc_id
-	if ArkInventory.Global.Location[loc_id].isOffline then
-		return
-	end
-	
 	if loc_id == ArkInventory.Const.Location.Bag or loc_id == ArkInventory.Const.Location.Bank then
 		
-		local i = ArkInventory.Frame_Item_GetDB( frame )
+		if ArkInventory.Global.Location[loc_id].isOffline then
+			return
+		end
 		
+		local i = ArkInventory.Frame_Item_GetDB( frame )
 		if i and i.h then
 			
-			local blizzard_id = ArkInventory.BagID_Blizzard( i.loc_id, i.bag_id )
-			local itemIsUpgrade = IsContainerItemAnUpgrade( blizzard_id, i.slot_id )
+			local codex = ArkInventory.GetLocationCodex( loc_id )
 			
-			if itemIsUpgrade then
-				--ArkInventory.Output( "upgrade? ", itemIsUpgrade, " - ", i.loc_id, ".", i.bag_id, ".", i.slot_id )
-				frame.UpgradeIcon:Show( )
-				--frame.UpgradeIcon:SetShown( itemIsUpgrade )
+			if codex.style.slot.upgrade then
+				
+				local blizzard_id = ArkInventory.InternalIdToBlizzardBagId( i.loc_id, i.bag_id )
+				local itemIsUpgrade = IsContainerItemAnUpgrade( blizzard_id, i.slot_id )
+				
+				if itemIsUpgrade then
+					--ArkInventory.Output( "upgrade? ", itemIsUpgrade, " - ", i.loc_id, ".", i.bag_id, ".", i.slot_id )
+					frame.UpgradeIcon:Show( )
+					--frame.UpgradeIcon:SetShown( itemIsUpgrade )
+				end
+				
 			end
 			
 		end
@@ -6963,7 +6986,7 @@ function ArkInventory.Frame_Item_Update_New( frame )
 
 	local loc_id = frame.ARK_Data.loc_id
 	local bag_id = frame.ARK_Data.bag_id
-	local blizzard_id = ArkInventory.BagID_Blizzard( loc_id, bag_id )
+	local blizzard_id = ArkInventory.InternalIdToBlizzardBagId( loc_id, bag_id )
 	local slot_id = frame.ARK_Data.slot_id
 	
 	local codex = ArkInventory.GetLocationCodex( loc_id )
@@ -7143,7 +7166,7 @@ function ArkInventory.Frame_Item_OnEnter( frame )
 	
 	local loc_id = frame.ARK_Data.loc_id
 	local bag_id = frame.ARK_Data.bag_id
-	local blizzard_id = ArkInventory.BagID_Blizzard( loc_id, bag_id )
+	local blizzard_id = ArkInventory.InternalIdToBlizzardBagId( loc_id, bag_id )
 	local i = ArkInventory.Frame_Item_GetDB( frame )
 	
 	--ArkInventory.Output( "item=[", i.h, "]" )
@@ -7514,7 +7537,7 @@ function ArkInventory.Frame_Item_Update_Cooldown( frame, arg1 )
 
 			else
 				
-				local blizzard_id = ArkInventory.BagID_Blizzard( loc_id, i.bag_id )
+				local blizzard_id = ArkInventory.InternalIdToBlizzardBagId( loc_id, i.bag_id )
 				ContainerFrame_UpdateCooldown( blizzard_id, frame )
 				
 			end
@@ -7552,7 +7575,7 @@ function ArkInventory.Frame_Item_Update_Lock( frame )
 		if loc_id == ArkInventory.Const.Location.Vault then
 			locked = select( 3, GetGuildBankItemInfo( i.bag_id, i.slot_id ) )
 		else
-			local blizzard_id = ArkInventory.BagID_Blizzard( loc_id, i.bag_id )
+			local blizzard_id = ArkInventory.InternalIdToBlizzardBagId( loc_id, i.bag_id )
 			locked = select( 3, GetContainerItemInfo( blizzard_id, i.slot_id ) )
 		end
 		
@@ -8873,7 +8896,7 @@ function ArkInventory.HookOpenBag( self, ... )
 	
 	if bag_id then
 		
-		local loc_id = ArkInventory.BagID_Internal( bag_id )
+		local loc_id = ArkInventory.BlizzardBagIdToInternalId( bag_id )
 		
 		if loc_id and ( loc_id == ArkInventory.Const.Location.Bag or ( loc_id == ArkInventory.Const.Location.Bank and ArkInventory.Global.Mode.Bank ) ) then
 			if ArkInventory.LocationIsControlled( loc_id ) then
@@ -8896,7 +8919,7 @@ function ArkInventory.HookToggleBag( self, ... )
 	
 	if bag_id then
 		
-		local loc_id = ArkInventory.BagID_Internal( bag_id )
+		local loc_id = ArkInventory.BlizzardBagIdToInternalId( bag_id )
 		
 		if loc_id and ( loc_id == ArkInventory.Const.Location.Bag or ( loc_id == ArkInventory.Const.Location.Bank and ArkInventory.Global.Mode.Bank ) ) then
 			if ArkInventory.LocationIsControlled( loc_id ) then

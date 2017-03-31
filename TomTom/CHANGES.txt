@@ -1,0 +1,12 @@
+tag 016dbc1e581f57c71398166fdf8fa0b0b6ed8419 v70100-1.0.1
+Author:	Jim Whitehead <jnwhiteh@gmail.com>
+Date:	Sun Mar 26 20:45:37 2017 +0200
+
+Tagged v70100-1.0.1
+
+commit 0bdb40e304698270f364b7a3f612497db0a3a9a7
+Author: Jim Whitehead <jnwhiteh@gmail.com>
+Date:   Sun Mar 26 20:45:13 2017 +0200
+
+    Fix an issue with POI integration
+

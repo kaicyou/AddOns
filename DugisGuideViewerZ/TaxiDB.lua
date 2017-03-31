@@ -66,6 +66,15 @@ function TaxiDB:Initialize()
     end
     
     local is_WorldFlightMapFrame_Hooked = false
+    
+    local function TryTakeTaxiNode(i)
+        if DGV:UserSetting(DGV_AUTOFLIGHTPATHSELECT) == true and not IsPlayerMoving() then
+            TakeTaxiNode(i)
+        elseif DGV:UserSetting(DGV_AUTOFLIGHTPATHSELECT) == true then
+            UIErrorsFrame:AddMessage(ERR_TAXIPLAYERMOVING,1,1,0,1)
+        end
+    end    
+    
 	
 	local function HighlightFlightmasterDestination()
     
@@ -96,6 +105,7 @@ function TaxiDB:Initialize()
                                     for pin in activePool:EnumerateActive() do 
                                         local pinSlot = pin.taxiNodeData.slotIndex
                                         if i == pinSlot then
+                                            TryTakeTaxiNode(i)
                                             pin.Icon:SetTexture("Interface\\TaxiFrame\\UI-Taxi-Icon-Red")
                                         end
                                         
@@ -108,11 +118,7 @@ function TaxiDB:Initialize()
                                     local btn = _G["TaxiButton"..i]
                                     
                                     if btn and btn:GetNormalTexture() then
-                                        if DGV:UserSetting(DGV_AUTOFLIGHTPATHSELECT) == true and not IsPlayerMoving() then
-                                            TakeTaxiNode(i)
-                                        elseif DGV:UserSetting(DGV_AUTOFLIGHTPATHSELECT) == true then
-                                            UIErrorsFrame:AddMessage(ERR_TAXIPLAYERMOVING,1,1,0,1)
-                                        end
+                                        TryTakeTaxiNode(i)
                                         btn:GetNormalTexture():SetTexture("Interface\\TaxiFrame\\UI-Taxi-Icon-Red")
                                     end
                                 end

@@ -304,6 +304,26 @@ function Auras:ManaPrecision(precision,isNotMax)
 	end
 end
 
+function Auras:ToggleCooldown(self,spec,isCharge)
+	if (Auras.db.char.config[spec].cooldown.text) then
+		self.CD.text:SetAlpha(1);
+	else
+		self.CD.text:SetAlpha(0);
+	end
+	
+	if (Auras.db.char.config[spec].cooldown.sweep) then
+		if (isCharge) then
+			self.ChargeCD:SetAlpha(1);
+		end
+		self.CD:SetAlpha(1);
+	else
+		if (isCharge) then
+			self.ChargeCD:SetAlpha(0);
+		end
+		self.CD:SetAlpha(0);
+	end
+end
+
 -------------------------------------------------------------------------------------------------------
 ----- Local Functions
 -------------------------------------------------------------------------------------------------------
@@ -406,7 +426,7 @@ function Auras:ToggleCooldownSwipe(self,arg1)
 	cooldown:SetDrawBling(arg1)
 end
 
-function Auras:ExecuteCooldown(self,start,duration,isSmallAura,isHideText)
+function Auras:ExecuteCooldown(self,start,duration,isSmallAura,isHideText,spec)
 	local expires = start + duration;
 	local timer = expires - GetTime();
 	local remaining,seconds = Auras:parseTime(timer,false);
@@ -429,15 +449,15 @@ function Auras:ExecuteCooldown(self,start,duration,isSmallAura,isHideText)
 	self.CD.text:SetFont("Interface\\addons\\ShamanAuras\\media\\fonts\\PT_Sans_Narrow.TTF",fontSize,"OUTLINE");
 	
 	self.CD:SetCooldown(start,duration)
-	--self.CD:Show();
+	self.CD:SetReverse(Auras.db.char.config[spec].cooldown.inverse);
 	
-	if (not isHideText and Auras.db.char.cooldowns.numbers) then
+	if (not isHideText and Auras.db.char.config[spec].cooldown.text) then
 		self.CD.text:SetText(Auras:parseTime(timer,false));
 	else
 		self.CD.text:SetText('');
 	end
-	
-	if (Auras.db.char.cooldowns.sweep) then
+
+	if (Auras.db.char.config[spec].cooldown.sweep) then
 		Auras:ToggleCooldownSwipe(self.CD,true)
 	else
 		Auras:ToggleCooldownSwipe(self.CD,false)
@@ -606,6 +626,7 @@ function Auras:OnInitialize()
 					orientation = {
 						top = "Horizontal",
 						bottom = "Horizontal",
+						extra = "Horizontal",
 						left = "Vertical",
 						right = "Vertical",
 					},
@@ -616,6 +637,11 @@ function Auras:OnInitialize()
 							charges = 13.5,
 						},
 						bottom = {
+							icon = 32,
+							spacing = 50,
+							charges = 13.5,
+						},
+						extra = {
 							icon = 32,
 							spacing = 50,
 							charges = 13.5,
@@ -776,7 +802,12 @@ function Auras:OnInitialize()
 				isShiftDown = false,
 				isCtrlDown = false,
 				[1] = {
-					isMoving = false,	
+					isMoving = false,
+					cooldown = {
+						text = true,
+						sweep = true,
+						inverse = false,
+					},
 					maelstromBar = {
 						isAdjustable = false,
 						isDisplayText = true,
@@ -798,6 +829,11 @@ function Auras:OnInitialize()
 				},
 				[2] = {
 					isMoving = false,
+					cooldown = {
+						text = true,
+						sweep = true,
+						inverse = false,
+					},
 					maelstromBar = {
 						isAdjustable = false,
 						isDisplayText = true,
@@ -811,6 +847,11 @@ function Auras:OnInitialize()
 				},
 				[3] = {
 					isMoving = false,
+					cooldown = {
+						text = true,
+						sweep = true,
+						inverse = false,
+					},
 					earthenShieldBar = {
 						isAdjustable = false,
 						isDisplayTimerText = true,
@@ -851,6 +892,11 @@ function Auras:OnInitialize()
 					isAdjustable = false,
 					isDisplayText = true,
 					[1] = {
+						cooldown = {
+							text = true,
+							sweep = true,
+							inverse = false,
+						},
 						maelstromBar = {
 							threshold = 90,
 						},
@@ -860,11 +906,21 @@ function Auras:OnInitialize()
 						},
 					},
 					[2] = {
+						cooldown = {
+							text = true,
+							sweep = true,
+							inverse = false,
+						},
 						maelstromBar = {
 							threshold = 130,
 						},
 					},
 					[3] = {
+						cooldown = {
+							text = true,
+							sweep = true,
+							inverse = false,
+						},
 						manaBar = {
 							precision = "Long",
 							grouping = true,
@@ -997,6 +1053,7 @@ function Auras:OnInitialize()
 						ElementalBlastCritBar = true,
 						ElementalBlastHasteBar = true,
 						ElementalBlastMasteryBar = true,
+						ElementalFocus = true,
 						ElementalMastery = true,
 						ElementalMasteryBar = true,
 						FireElemental = true,
@@ -1011,6 +1068,7 @@ function Auras:OnInitialize()
 						Icefury = true,
 						IcefuryBar = true,
 						LargeIconGrpBotEle = true,
+						LargeIconGrpExtEle = true,
 						LargeIconGrpTopEle = true,
 						LavaBurstEle = true,
 						LavaBurstEleGlow = true,
@@ -1023,6 +1081,7 @@ function Auras:OnInitialize()
 						LiquidMagmaTotemBar = true,
 						MaelstromBarEle = true,
 						MainTimerBarGrpEle = true,
+						PowerOfMaelstrom = true,
 						SmallIconGrpLeftEle = true,
 						SmallIconGrpRightEle = true,
 						StormElemental = true,
@@ -1221,6 +1280,15 @@ function Auras:OnInitialize()
 						x = 0,
 						y = -225,
 						width = 250,
+						height = 50,
+					},
+					LargeIconGrpExtEle = {
+						point = "CENTER",
+						relativeTo = "AuraGroupEle",
+						relativePoint = "CENTER",
+						x = 0,
+						y = -105,
+						width = 100,
 						height = 50,
 					},
 					SmallIconGrpLeftEle = {
@@ -1572,6 +1640,13 @@ function Auras:OnInitialize()
 							relativePoint = "CENTER",
 							x = 0,
 							y = -225,
+						},
+						LargeIconGrpExtEle = {
+							point = "CENTER",
+							relativeTo = "AuraGroupEle",
+							relativePoint = "CENTER",
+							x = 0,
+							y = -105,
 						},
 						SmallIconGrpLeftEle = {
 							point = "CENTER",

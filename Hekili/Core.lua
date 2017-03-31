@@ -6,10 +6,12 @@ local Hekili = _G[ addon ]
 
 local class = ns.class
 local state = ns.state
+local scriptDB = Hekili.Scripts
 
 local buildUI = ns.buildUI
 local callHook = ns.callHook
 local checkScript = ns.checkScript
+local clashOffset = ns.clashOffset
 local formatKey = ns.formatKey
 local getSpecializationID = ns.getSpecializationID
 local getResourceName = ns.getResourceName
@@ -21,18 +23,18 @@ local loadScripts = ns.loadScripts
 local refreshBindings = ns.refreshBindings
 local refreshOptions = ns.refreshOptions
 local restoreDefaults = ns.restoreDefaults
+local convertDisplays = ns.convertDisplays
 local runHandler = ns.runHandler
 local tableCopy = ns.tableCopy
-
 local timeToReady = ns.timeToReady
-local clashOffset = ns.clashOffset
+local trim = string.trim
+
 
 local mt_resource = ns.metatables.mt_resource
 
-local trim = string.trim
 
 local AD = ns.lib.ArtifactData
-
+local SF = ns.lib.SpellFlash
 
 local updatedDisplays = {}
 
@@ -49,76 +51,76 @@ local function checkImports()
         if type( display ) ~= 'table' or display.Name:match("^@") then
             table.remove( profile.displays, i )
         else
-            if not display['Single - Minimum'] or type( display['Single - Minimum'] ) ~= 'number' then display['Single - Minimum'] = 0 end
-            if not display['Single - Maximum'] or type( display['Single - Maximum'] ) ~= 'number' then display['Single - Maximum'] = 0 end
-            if not display['AOE - Minimum'] or type( display['AOE - Minimum'] ) ~= 'number' then display['AOE - Minimum'] = 0 end
-            if not display['AOE - Maximum'] or type( display['AOE - Maximum'] ) ~= 'number' then display['AOE - Maximum'] = 0 end
-            if not display['Auto - Minimum'] or type( display['Auto - Minimum'] ) ~= 'number' then display['Auto - Minimum'] = 0 end
-            if not display['Auto - Maximum'] or type( display['Auto - Maximum'] ) ~= 'number' then display['Auto - Maximum'] = 0 end
-            if not display['Range Checking'] then display['Range Checking'] = 'ability' end
+            if not display.minST or type( display.minST ) ~= 'number' then display.minST = 0 end
+            if not display.maxST or type( display.maxST ) ~= 'number' then display.maxST = 0 end
+            if not display.minAE or type( display.minAE ) ~= 'number' then display.minAE = 0 end
+            if not display.maxAE or type( display.maxAE ) ~= 'number' then display.maxAE = 0 end
+            if not display.minAuto or type( display.minAuto ) ~= 'number' then display.minAuto = 0 end
+            if not display.maxAuto or type( display.maxAuto ) ~= 'number' then display.maxAuto = 0 end
+            if not display.rangeType then display.rangeType = 'ability' end
 
-            if display['PvE Visibility'] and not display['PvE - Default Alpha'] then
+            if display['PvE Visibility'] and not display.alphaAlwaysPvE then
                 if display['PvE Visibility'] == 'always' then
-                    display['PvE - Default'] = true
-                    display['PvE - Default Alpha'] = 1
-                    display['PvE - Target'] = false
-                    display['PvE - Target Alpha'] = 1
-                    display['PvE - Combat'] = false
-                    display['PvE - Combat Alpha'] = 1
+                    display.alwaysPvE = true
+                    display.alphaAlwaysPvE = 1
+                    display.targetPvE = false
+                    display.alphaTargetPvE = 1
+                    display.combatPvE = false
+                    display.alphaCombatPvE = 1
                 elseif display['PvE Visibility'] == 'combat' then
-                    display['PvE - Default'] = false
-                    display['PvE - Default Alpha'] = 1
-                    display['PvE - Target'] = false
-                    display['PvE - Target Alpha'] = 1
-                    display['PvE - Combat'] = true
-                    display['PvE - Combat Alpha'] = 1
+                    display.alwaysPvE = false
+                    display.alphaAlwaysPvE = 1
+                    display.targetPvE = false
+                    display.alphaTargetPvE = 1
+                    display.combatPvE = true
+                    display.alphaCombatPvE = 1
                 elseif display['PvE Visibility'] == 'target' then
-                    display['PvE - Default'] = false
-                    display['PvE - Default Alpha'] = 1
-                    display['PvE - Target'] = true
-                    display['PvE - Target Alpha'] = 1
-                    display['PvE - Combat'] = false
-                    display['PvE - Combat Alpha'] = 1
+                    display.alwaysPvE = false
+                    display.alphaAlwaysPvE = 1
+                    display.targetPvE = true
+                    display.alphaTargetPvE = 1
+                    display.combatPvE = false
+                    display.alphaCombatPvE = 1
                 else
-                    display['PvE - Default'] = false
-                    display['PvE - Default Alpha'] = 1
-                    display['PvE - Target'] = false
-                    display['PvE - Target Alpha'] = 1
-                    display['PvE - Combat'] = false
-                    display['PvE - Combat Alpha'] = 1
+                    display.alwaysPvE = false
+                    display.alphaAlwaysPvE = 1
+                    display.targetPvE = false
+                    display.alphaTargetPvE = 1
+                    display.combatPvE = false
+                    display.alphaCombatPvE = 1
                 end
                 display['PvE Visibility'] = nil
             end
 
-            if display['PvP Visibility'] and not display['PvP - Default Alpha'] then
+            if display['PvP Visibility'] and not display.alphaAlwaysPvP then
                 if display['PvP Visibility'] == 'always' then
-                    display['PvP - Default'] = true
-                    display['PvP - Default Alpha'] = 1
-                    display['PvP - Target'] = false
-                    display['PvP - Target Alpha'] = 1
-                    display['PvP - Combat'] = false
-                    display['PvP - Combat Alpha'] = 1
+                    display.alwaysPvP = true
+                    display.alphaAlwaysPvP = 1
+                    display.targetPvP = false
+                    display.alphaTargetPvP = 1
+                    display.combatPvP = false
+                    display.alphaCombatPvP = 1
                 elseif display['PvP Visibility'] == 'combat' then
-                    display['PvP - Default'] = false
-                    display['PvP - Default Alpha'] = 1
-                    display['PvP - Target'] = false
-                    display['PvP - Target Alpha'] = 1
-                    display['PvP - Combat'] = true
-                    display['PvP - Combat Alpha'] = 1
+                    display.alwaysPvP = false
+                    display.alphaAlwaysPvP = 1
+                    display.targetPvP = false
+                    display.alphaTargetPvP = 1
+                    display.combatPvP = true
+                    display.alphaCombatPvP = 1
                 elseif display['PvP Visibility'] == 'target' then
-                    display['PvP - Default'] = false
-                    display['PvP - Default Alpha'] = 1
-                    display['PvP - Target'] = true
-                    display['PvP - Target Alpha'] = 1
-                    display['PvP - Combat'] = false
-                    display['PvP - Combat Alpha'] = 1
+                    display.alwaysPvP = false
+                    display.alphaAlwaysPvP = 1
+                    display.targetPvP = true
+                    display.alphaTargetPvP = 1
+                    display.combatPvP = false
+                    display.alphaCombatPvP = 1
                 else
-                    display['PvP - Default'] = false
-                    display['PvP - Default Alpha'] = 1
-                    display['PvP - Target'] = false
-                    display['PvP - Target Alpha'] = 1
-                    display['PvP - Combat'] = false
-                    display['PvP - Combat Alpha'] = 1
+                    display.alwaysPvP = false
+                    display.alphaAlwaysPvP = 1
+                    display.targetPvP = false
+                    display.alphaTargetPvP = 1
+                    display.combatPvP = false
+                    display.alphaCombatPvP = 1
                 end
                 display['PvP Visibility'] = nil
             end
@@ -194,6 +196,7 @@ function Hekili:OnInitialize()
     initializeClassModule()
     refreshBindings()
     restoreDefaults()
+    convertDisplays()
     checkImports()
     refreshOptions()
     loadScripts()
@@ -224,6 +227,7 @@ function Hekili:ReInitialize()
     ns.initializeClassModule()
     refreshBindings()
     restoreDefaults()
+    convertDisplays()
     checkImports()
     refreshOptions()
     loadScripts()
@@ -321,24 +325,51 @@ local z_PVP = {
 
 local palStack = {}
 
-function Hekili:ProcessActionList( dispID, hookID, listID, slot, depth )
+function Hekili:ProcessActionList( dispID, hookID, listID, slot, depth, action, wait, clash )
     
+    local display = self.DB.profile.displays[ dispID ]
     local list = self.DB.profile.actionLists[ listID ]
-    
+
+    -- self:Debug( "Testing action list [ %d - %s ].", listID, list and list.Name or "ERROR - Does Not Exist"  )
+    self:Debug( "Previous Recommendation:  %s at +%.2fs, clash is %.2f.", action or "NO ACTION", wait or 30, clash or 0 )
+
     -- the stack will prevent list loops, but we need to keep this from destroying existing data... later.
-    if not list or palStack[ list.Name ] then return
-    else palStack[ list.Name ] = true end
+    if not list then
+        self:Debug( "No list with ID #%d.  Should never see.", listID )
+    elseif palStack[ list.Name ] then
+        self:Debug( "Action list loop detected.  %s was already processed earlier.  Aborting.", list.Name )
+        return 
+    else
+        self:Debug( "Adding %s to the list of processed action lists.", list.Name )
+        palStack[ list.Name ] = true
+    end
     
-    local chosen_action
-    local chosen_clash, chosen_wait, chosen_depth = 0, 999, depth or 0
+    local chosen_action = action
+    local chosen_clash = clash or 0
+    local chosen_wait = wait or 30
+    local chosen_depth = depth or 0
+
     local stop = false
 
     if ns.visible.list[ listID ] then
         local actID = 1
 
-        while actID <= #list.Actions do
-            if chosen_wait == 0 or stop then
-                break
+        while actID <= #list.Actions and chosen_wait do
+            if chosen_wait <= state.cooldown.global_cooldown.remains then
+                self:Debug( "The last selected ability ( %s ) is available at (or before) the next GCD.  End loop.", chosen_action )
+                self:Debug( "Removing %s from list of processed action lists.", list.Name )
+                palStack[ list.Name ] = nil
+                return chosen_action, chosen_wait, chosen_clash, chosen_depth
+            elseif chosen_wait == 0 then
+                self:Debug( "The last selected ability ( %s ) has no wait time.  End loop.", chosen_action )
+                self:Debug( "Removing %s from list of processed action lists.", list.Name )
+                palStack[ list.Name ] = nil
+                return chosen_action, chosen_wait, chosen_clash, chosen_depth
+            elseif stop then
+                self:Debug( "Returning to parent list after completing Run_Action_List ( %d - %s ).", listID, list.Name )
+                self:Debug( "Removing %s from list of processed action lists.", list.Name )
+                palStack[ list.Name ] = nil
+                return chosen_action, chosen_wait, chosen_clash, chosen_depth
             end
 
             if ns.visible.action[ listID..':'..actID ] then
@@ -349,132 +380,198 @@ function Hekili:ProcessActionList( dispID, hookID, listID, slot, depth )
                 state.this_args = entry.Args
                 
                 state.delay = nil
-                depth = depth + 1
+                chosen_depth = chosen_depth + 1
+
+                local minWait = state.cooldown.global_cooldown.remains
+
+                -- Need to expand on modifiers, gather from other settings as needed.
+                self:Debug( "\n[ %2d ] Testing entry %s:%d ( %s ) with modifiers ( %s ).", chosen_depth, list.Name, actID, entry.Ability, entry.Args or "NONE" )
 
                 local ability = class.abilities[ entry.Ability ]
 
-                local wait_time = 999
+                local wait_time = 30
                 local clash = 0
 
-                if isKnown( state.this_action ) then
+                local known = isKnown( state.this_action )
+
+                self:Debug( "%s is %s.", ability.name, known and "KNOWN" or "NOT KNOWN" )
+
+                if known then
+                    local scriptID = listID .. ':' .. actID
+
                     -- Used to notify timeToReady() about an artificial delay for this ability.
-                    state.script.entry = entry.whenReady == 'script' and ( listID .. ':' .. actID ) or nil
+                    state.script.entry = entry.whenReady == 'script' and scriptID or nil
 
                     wait_time = timeToReady( state.this_action )
                     clash = clashOffset( state.this_action )
-                end
 
-                -- implantTimeScriptData( q )
+                    state.delay = wait_time
+                    importModifiers( listID, actID )
 
-                state.delay = wait_time
+                    if wait_time >= chosen_wait then
+                        self:Debug( "This action is not available in time for consideration ( %.2f vs. %.2f ).  Skipping.", wait_time, chosen_wait )
+                    else
+                        -- APL checks.
+                        if entry.Ability == 'call_action_list' or entry.Ability == 'run_action_list' then
+                            -- We handle these here to avoid early forking between starkly different APLs.
+                            local aScriptPass = true
 
-                importModifiers( listID, actID )
-
-                if entry.Ability == 'call_action_list' or entry.Ability == 'run_action_list' then
-
-                    stop = entry.Ability == 'run_action_iist'
-
-                    local aList = state.args.ModName or state.args.name
-
-                    if aList then
-                        -- check to see if we have a real list name.
-                        local called_list = 0
-                        for i, list in ipairs( self.DB.profile.actionLists ) do
-                            if list.Name == aList then
-                                called_list = i
-                                break
+                            if not entry.Script or entry.Script == '' then self:Debug( "%s does not have any required conditions.", ability.name )
+                            else
+                                aScriptPass = checkScript( 'A', scriptID )
+                                self:Debug( "Conditions %s:  %s", aScriptPass and "MET" or "NOT MET", ns.getConditionsAndValues( 'A', scriptID ) )
                             end
-                        end
-                        if called_list > 0 and checkScript( 'A', listID..':'..actID ) then
-                            chosen_action, chosen_wait, chosen_clash, chosen_depth = Hekili:ProcessActionList( dispID, listID..':'..actID, called_list, slot, depth )
+
+                            if aScriptPass then
+
+                                local aList = state.args.ModName or state.args.name
+
+                                if aList then
+                                    -- check to see if we have a real list name.
+                                    local called_list = 0
+                                    for i, list in ipairs( self.DB.profile.actionLists ) do
+                                        if list.Name == aList then
+                                            called_list = i
+                                            break
+                                        end
+                                    end
+
+                                    if called_list > 0 then
+                                        self:Debug( "The action list for %s ( %s ) was found.", entry.Ability, aList )
+                                        chosen_action, chosen_wait, chosen_clash, chosen_depth = self:ProcessActionList( dispID, listID .. ':' .. actID , called_list, slot, chosen_depth, chosen_action, chosen_wait, chosen_clash )
+                                        stop = entry == 'run_action_list'
+                                        calledList = true
+                                    else
+                                        self:Debug( "The action list for %s ( %s ) was not found.", entry.Ability, aList )
+                                    end
+                                end
+
+                            end
+
+                        else
+                            local preservedWait = wait_time
+                            local interval = state.gcd / 3
+                            local calledList = false
+
+                            -- There is a leak inside here, it worsens with higher testCounts.
+                            for testCount = 1, ( self.LowImpact or self.DB.profile['Low Impact Mode'] ) and 2 or 5 do
+
+                                if stop or calledList then break end
+
+                                if testCount == 1 then
+                                elseif testCount == 2 then  state.delay = preservedWait + 0.1
+                                elseif testCount == 3 then  state.delay = preservedWait + ( state.gcd / 2 )
+                                elseif testCount == 4 then  state.delay = preservedWait + state.gcd
+                                elseif testCount == 5 then  state.delay = preservedWait + ( state.gcd * 2 )
+                                end
+
+                                local newWait = max( 0, state.delay - clash )
+                                local usable = isUsable( state.this_action )
+
+                                self:Debug( "Test #%d at [ %.2f + %.2f ] - Ability ( %s ) is %s.", testCount, state.offset, state.delay, entry.Ability, usable and "USABLE" or "NOT USABLE" )
+                                
+                                if usable then
+                                    local chosenWaitValue = max( 0, chosen_wait - chosen_clash )
+                                    local readyFirst = newWait < chosenWaitValue
+
+                                    self:Debug( " - this ability is %s at %.2f before the previous ability at %.2f.", readyFirst and "READY" or "NOT READY", newWait, chosenWaitValue )
+
+                                    if readyFirst then
+                                        local hasResources = ns.hasRequiredResources( state.this_action )
+                                        self:Debug( " - the required resources are %s.", hasResources and "AVAILABLE" or "NOT AVAILABLE" )
+
+                                        if hasResources then
+                                            local aScriptPass = true
+
+                                            if not entry.Script or entry.Script == '' then self:Debug( ' - this ability has no required conditions.' )
+                                            else 
+                                                aScriptPass = checkScript( 'A', scriptID )
+                                                self:Debug( "Conditions %s:  %s", aScriptPass and "MET" or "NOT MET", ns.getConditionsAndValues( 'A', scriptID ) )
+                                            end
+
+                                            if aScriptPass then
+                                                if entry.Ability == 'wait' then
+                                                        -- local args = ns.getModifiers( listID, actID )
+                                                    if not state.args.sec then state.args.sec = 1 end
+                                                    if state.args.sec > 0 then
+                                                        state.advance( state.args.sec )
+                                                        actID = 0
+                                                    end
+
+                                                elseif entry.Ability == 'potion' then
+                                                    local potionName = state.args.ModName or state.args.name or class.potion
+                                                    local potion = class.potions[ potionName ]
+
+                                                    if potion then
+                                                        -- do potion things
+                                                        slot.scriptType = entry.ScriptType or 'simc'
+                                                        slot.display = dispID
+                                                        slot.button = i
+
+                                                        slot.wait = state.delay
+
+                                                        slot.hook = hookID
+                                                        slot.list = listID
+                                                        slot.action = actID
+
+                                                        slot.actionName = state.this_action
+                                                        slot.listName = list.Name
+
+                                                        slot.resource = ns.resourceType( chosen_action )
+                                                        
+                                                        slot.caption = entry.Caption
+                                                        slot.indicator = ( entry.Indicator and entry.Indicator ~= 'none' ) and entry.Indicator
+                                                        slot.texture = select( 10, GetItemInfo( potion.item ) )
+                                                        
+                                                        chosen_action = state.this_action
+                                                        chosen_wait = state.delay
+                                                        chosen_clash = clash
+                                                        break
+                                                    end
+
+                                                else
+                                                    slot.scriptType = entry.ScriptType or 'simc'
+                                                    slot.display = dispID
+                                                    slot.button = i
+
+                                                    slot.wait = state.delay
+
+                                                    slot.hook = hookID
+                                                    slot.list = listID
+                                                    slot.action = actID
+
+                                                    slot.actionName = state.this_action
+                                                    slot.listName = list.Name
+
+                                                    slot.resource = ns.resourceType( chosen_action )
+                                                    
+                                                    slot.caption = entry.Caption
+                                                    slot.indicator = ( entry.Indicator and entry.Indicator ~= 'none' ) and entry.Indicator
+                                                    slot.texture = ability.texture
+                                                    
+                                                    chosen_action = state.this_action
+                                                    chosen_wait = state.delay
+                                                    chosen_clash = clash
+                                                end
+
+                                                if entry.CycleTargets and state.active_enemies > 1 and ability and ability.cycle then
+                                                    if state.dot[ ability.cycle ].up and state.active_dot[ ability.cycle ] < ( state.args.MaxTargets or state.active_enemies ) then
+                                                        slot.indicator = 'cycle'
+                                                    end
+                                                end
+
+                                                break                                               
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+
+                            state.delay = preservedWait
+
                         end
                     end
-
-                elseif entry.Ability == 'wait' then
-
-                    if checkScript( 'A', listID..':'..actID ) then
-                        -- local args = ns.getModifiers( listID, actID )
-                        if not state.args.sec then state.args.sec = 1 end
-                        if state.args.sec > 0 then
-                            state.advance( state.args.sec )
-                            actID = 0
-                        end
-
-                    end
-
-                -- should probably standardize this one, it doesn't need to be a special case...
-                elseif entry.Ability == 'potion' then
-
-                    local potionName = state.args.ModName or state.args.name or class.potion
-                    local potion = class.potions[ potionName ]
-
-                    if potion and isUsable( state.this_action ) and max( 0, wait_time - clash ) < max( 0, chosen_wait - chosen_clash ) and checkScript( 'A', listID..':'..actID ) then
-                        -- do potion things
-                        
-                        slot.scriptType = entry.ScriptType or 'simc'
-                        slot.display = dispID
-                        slot.button = i
-
-                        slot.wait = wait_time
-
-                        slot.hook = hookID
-                        slot.list = listID
-                        slot.action = actID
-
-                        slot.actionName = state.this_action
-                        slot.listName = list.Name
-
-                        slot.resource = ns.resourceType( chosen_action )
-                        
-                        slot.caption = entry.Caption
-                        slot.indicator = ( entry.Indicator and entry.Indicator ~= 'none' ) and entry.Indicator
-                        slot.texture = select( 10, GetItemInfo( potion.item ) )
-                        
-                        chosen_action = state.this_action
-                        chosen_wait = wait_time
-                        chosen_clash = clash
-                        chosen_depth = depth
-
-                    end
-
-                elseif isUsable( state.this_action ) and max( 0, wait_time - clash ) < max( 0, chosen_wait - chosen_clash ) and ns.hasRequiredResources( state.this_action ) and checkScript( 'A', listID..':'..actID ) then
-
-                    slot.scriptType = entry.ScriptType or 'simc'
-                    slot.display = dispID
-                    slot.button = i
-
-                    slot.wait = wait_time
-
-                    slot.hook = hookID
-                    slot.list = listID
-                    slot.action = actID
-
-                    slot.actionName = state.this_action
-                    slot.listName = list.Name
-
-                    slot.resource = ns.resourceType( chosen_action )
-                    
-                    slot.caption = entry.Caption
-                    slot.indicator = ( entry.Indicator and entry.Indicator ~= 'none' ) and entry.Indicator
-                    slot.texture = class.abilities[ state.this_action ].texture
-                    
-                    chosen_action = state.this_action
-                    chosen_wait = wait_time
-                    chosen_clash = clash
-                    chosen_depth = depth
-
                 end
-
-                local ability = class.abilities[ chosen_action ]
-
-                if entry.CycleTargets and state.active_enemies > 1 and ability and ability.cycle then
-                    if state.dot[ ability.cycle ].up and state.active_dot[ ability.cycle ] < ( state.args.MaxTargets or state.active_enemies ) then
-                        slot.indicator = 'cycle'
-                    end
-                end
-
-                -- state.delay = nil
-
             end
 
             actID = actID + 1
@@ -482,7 +579,7 @@ function Hekili:ProcessActionList( dispID, hookID, listID, slot, depth )
         end
 
     end
-    
+
     palStack[ list.Name ] = nil
     return chosen_action, chosen_wait, chosen_clash, chosen_depth
 
@@ -503,6 +600,9 @@ function Hekili:ProcessHooks( dispID, solo )
 
             state.reset( dispID )
 
+            self:SetupDebug( display.Name )
+            for k in pairs( palStack ) do palStack[k] = nil end
+
             if Queue then
                 for k, v in pairs( Queue ) do
                     for l, w in pairs( v ) do
@@ -513,12 +613,19 @@ function Hekili:ProcessHooks( dispID, solo )
                 end
             end
 
-            if ( self.Config or checkScript( 'D', dispID )  ) then
+            local dScriptPass = true -- checkScript( 'D', dispID )
 
-                for i = 1, display['Icons Shown'] do
+            self:Debug( "*** START OF NEW DISPLAY ***\n" ..
+                "Display %d (%s) is %s.", dispID, display.Name, ( self.Config or dScriptPass ) and "VISIBLE" or "NOT VISIBLE" )
+            
+            -- self:Debug( "Conditions %s:  %s", dScriptPass and "MET" or "NOT MET", ns.getConditionsAndValues( 'D', dispID ) )
+
+            if ( self.Config or dScriptPass ) then
+                
+                for i = 1, ( display.numIcons or 4 ) do
 
                     local chosen_action
-                    local chosen_wait, chosen_clash, chosen_depth = 999, 0, 0
+                    local chosen_wait, chosen_clash, chosen_depth = 30, self.DB.profile.Clash or 0, 0
 
                     Queue[i] = Queue[i] or {}
 
@@ -526,30 +633,29 @@ function Hekili:ProcessHooks( dispID, solo )
 
                     local attempts = 0
 
-                    while attempts < 2 do
-                        for hookID, hook in ipairs( display.Queues ) do
+                    self:Debug( "\n[ ** ] Checking for recommendation #%d ( time offset: %.2f ).", i, state.offset )
 
-                            if ns.visible.hook[ dispID..':'..hookID ] and hookID and checkScript( 'P', dispID..':'..hookID ) then
+                    if display.precombatAPL and display.precombatAPL > 0 and state.time == 0 then
+                        -- We have a precombat display and combat hasn't started.
+                        local listName = self.DB.profile.actionLists[ display.precombatAPL ].Name
 
-                                local listID = hook[ 'Action List' ]
-                                local outcome, wait, clash, depth = self:ProcessActionList( dispID, hookID, listID, slot, chosen_depth )
-
-                                if outcome then -- and wait < chosen_wait then
-                                    chosen_action, chosen_wait, chosen_clash, chosen_depth = outcome, wait, clash, depth
-                                end
-
-                                if chosen_wait == 0 then break end
-
-                            end
-
-                        end -- end Hook
-
-                        if chosen_action then break end
-
-                        state.advance( 1 )
-                        attempts = attempts + 1
+                        self:Debug("Processing precombat action list [ %d - %s ].", display.precombatAPL, listName )
+                        chosen_action, chosen_wait, chosen_clash, chosen_depth = self:ProcessActionList( dispID, hookID, display.precombatAPL, slot, chosen_depth, chosen_action, chosen_wait, chosen_clash )
+                        self:Debug( "Completed precombat action list [ %d - %s ].", display.precombatAPL, listName )
                     end
 
+                    if display.defaultAPL and display.defaultAPL > 0 and chosen_wait > 0 then
+                        local listName = self.DB.profile.actionLists[ display.defaultAPL ].Name
+
+                        self:Debug("Processing default action list [ %d - %s ].", display.default, listName )
+                        chosen_action, chosen_wait, chosen_clash, chosen_depth = self:ProcessActionList( dispID, hookID, display.defaultAPL, slot, chosen_depth, chosen_action, chosen_wait, chosen_clash )
+                        self:Debug( "Completed precombat action list [ %d - %s ].", display.defaultAPL, listName )
+                    end
+
+                    self:Debug( "Recommendation #%d is %s at %.2f.", i, chosen_action or "NO ACTION", state.offset + chosen_wait )
+
+                    -- Wipe out the delay, as we're advancing to the cast time.
+                    state.delay = 0
 
                     if chosen_action then
                         -- We have our actual action, so let's get the script values if we're debugging.
@@ -563,12 +669,13 @@ function Hekili:ProcessHooks( dispID, solo )
                         slot.depth = chosen_depth
 
                         for k,v in pairs( class.resources ) do
-                            slot.resources[k] = state[k].current
+                            slot.resources[k] = state[k].current 
+                            if state[k].regen then slot.resources[k] = min( state[k].max, slot.resources[k] + ( state[k].regen * chosen_wait ) ) end
                         end
 
                         slot.resource_type = ns.resourceType( chosen_action )
 
-                        if i < display['Icons Shown'] then
+                        if i < display.numIcons then
 
                             -- Advance through the wait time.
                             state.advance( chosen_wait )
@@ -613,7 +720,7 @@ function Hekili:ProcessHooks( dispID, solo )
                         end
 
                     else
-                        for n = i, display['Icons Shown'] do
+                        for n = i, display.numIcons do
                             slot[n] = nil
                         end
                         break
@@ -629,7 +736,7 @@ function Hekili:ProcessHooks( dispID, solo )
 
     -- if not solo then C_Timer.After( 1 / self.DB.profile['Updates Per Second'], self[ 'ProcessDisplay'..dispID ] ) end
     ns.displayUpdates[ dispID ] = GetTime()
-    updatedDisplays[ dispID ] = true
+    updatedDisplays[ dispID ] = 0
     -- Hekili:UpdateDisplay( dispID )
 
 end
@@ -644,44 +751,57 @@ local pvpZones = {
 local function CheckDisplayCriteria( dispID )
 
     local display = Hekili.DB.profile.displays[ dispID ]
+    local mode = Hekili.DB.profile['Mode Status']
     local _, zoneType = IsInInstance()
 
     -- if C_PetBattles.IsInBattle() or Hekili.Barber or UnitInVehicle( 'player' ) or not ns.visible.display[ dispID ] then
     if C_PetBattles.IsInBattle() or UnitOnTaxi( 'player' ) or Hekili.Barber or HasVehicleActionBar() or not ns.visible.display[ dispID ] then
         return 0
 
+    elseif ( mode == 0 and not display.showST ) or ( mode == 3 and not display.showAuto ) or ( mode == 2 and not display.showAE ) then
+        return 0
+
     elseif not pvpZones[ zoneType ] then
-        if display['PvE - Target'] and UnitExists( 'target' ) and not ( UnitIsDead( 'target' ) or not UnitCanAttack( 'player', 'target' ) ) then
-            return display['PvE - Target Alpha']
+        
+        if display.visibilityType == 'a' then
+            return display.alphaShowPvE
 
-        elseif display['PvE - Combat'] and UnitAffectingCombat( 'player' ) then
-            return display['PvE - Combat Alpha']
+        else
+            if display.targetPvE and UnitExists( 'target' ) and not ( UnitIsDead( 'target' ) or not UnitCanAttack( 'player', 'target' ) ) then
+                return display.alphaTargetPvE
 
-        elseif display['PvE - Default'] then
-            return display['PvE - Default Alpha']
+            elseif display.combatPvE and UnitAffectingCombat( 'player' ) then
+                return display.alphaCombatPvE
 
+            elseif display.alwaysPvE then
+                return display.alphaAlwaysPvE
+
+            end
         end
 
         return 0
 
     elseif pvpZones[ zoneType ] then
-        if display['PvP - Target'] and UnitExists( 'target' ) and not ( UnitIsDead( 'target' ) or not UnitCanAttack( 'player', 'target' ) ) then
-            return display['PvP - Target Alpha']
+        
+        if display.visibilityType == 'a' then
+            return display.alphaShowPvP
 
-        elseif display['PvP - Combat'] and UnitAffectingCombat( 'player' ) then
-            return display['PvP - Combat Alpha']
+        else
+            if display.targetPvP and UnitExists( 'target' ) and not ( UnitIsDead( 'target' ) or not UnitCanAttack( 'player', 'target' ) ) then
+                return display.alphaTargetPvP
 
-        elseif display['PvP - Default'] then
-            return display['PvP - Default Alpha']
+            elseif display.combatPvP and UnitAffectingCombat( 'player' ) then
+                return display.alphaCombatPvP
 
+            elseif display.alwaysPvP then
+                return display.alphaAlwaysPvP
+
+            end
         end
 
         return 0
 
     elseif not Hekili.Config and not ns.queue[ dispID ] then
-        return 0
-
-    elseif not checkScript( 'D', dispID ) then
         return 0
 
     end
@@ -759,48 +879,9 @@ function Hekili:UpdateDisplay( dispID )
 
             _G[ "HekiliDisplay" .. dispID ]:Show()
 
-
-            local checksum = ""
-
-            for i = 1, #Queue do
-                checksum = format( "%s%02d", checksum, Queue[i].depth )
-            end
-
-            checksum = tonumber(checksum)
-
-            checksums[ dispID ] = checksums[ dispID ] or {}
-
-            local different = false
-            local differences = 0
-            local snapbacks = 0
-
-            for i = 1, #checksums[ dispID ] do
-                if not different then
-                    if checksum ~= checksums[dispID][i] then
-                        different = true
-                        differences = differences + 1
-                    else
-                        different = false
-                    end
-                else
-                    if checksum ~= checksums[dispID][i] then
-                        different = true
-                        differences = differences + 1
-                    else
-                        snapbacks = snapbacks + 1
-                        different = false
-                    end
-                end
-            end
-
-            table.insert( checksums[ dispID ], 1, checksum )
-            checksums[ dispID ][ 10 ] = nil
-
-            -- if snapbacks > 0 then return end
-
             for i, button in ipairs( ns.UI.Buttons[ dispID ] ) do
                 if not Queue or not Queue[i] and ( self.DB.profile.Enabled or self.Config ) then
-                    for n = i, display['Icons Shown'] do
+                    for n = i, display.numIcons do
                         ns.UI.Buttons[dispID][n].Texture:SetTexture( 'Interface\\ICONS\\Spell_Nature_BloodLust' )
                         ns.UI.Buttons[dispID][n].Texture:SetVertexColor(1, 1, 1)
                         ns.UI.Buttons[dispID][n].Caption:SetText(nil)
@@ -820,11 +901,11 @@ function Hekili:UpdateDisplay( dispID )
                     button:Show()
                     button:SetAlpha(alpha)
                     button.Texture:SetTexture( Queue[i].texture or class.abilities[ aKey ].texture or GetSpellTexture( class.abilities[ aKey ].id ) )
-                    local zoom = ( display.Zoom or 0 ) / 200
+                    local zoom = ( display.iconZoom or 0 ) / 200
                     button.Texture:SetTexCoord( zoom, 1 - zoom, zoom, 1 - zoom )
                     button.Texture:Show()
 
-                    if indicator then
+                    if display.showIndicators and indicator then
                         if indicator == 'cycle' then button.Icon:SetTexture( "Interface\\Addons\\Hekili\\Textures\\Cycle" ) end
                         if indicator == 'cancel' then button.Icon:SetTexture( "Interface\\Addons\\Hekili\\Textures\\Cancel" ) end
                         button.Icon:Show()
@@ -832,52 +913,103 @@ function Hekili:UpdateDisplay( dispID )
                         button.Icon:Hide()
                     end
 
-                    if display['Action Captions'] then
 
-                        -- 0 = single
-                        -- 2 = cleave
-                        -- 2 = aoe
-                        -- 3 = auto
-                        local min_targets, max_targets = 0, 0
+                    if display.showCaptions and ( i == 1 or display.queuedCaptions ) then
+                        button.Caption:SetText( caption )
+                    else
+                        button.Caption:SetText( nil )
+                    end
 
-                        if Hekili.DB.profile['Mode Status'] == 0 then
-                            if display['Single - Minimum'] > 0 then min_targets = display['Single - Minimum'] end
-                            if display['Single - Maximum'] > 0 then max_targets = display['Single - Maximum'] end
-                        elseif Hekili.DB.profile['Mode Status'] == 2 then
-                            if display['AOE - Minimum'] > 0 then min_targets = display['AOE - Minimum'] end
-                            if display['AOE - Maximum'] > 0 then max_targets = display['AOE - Maximum'] end
-                        elseif Hekili.DB.profile['Mode Status'] == 3 then
-                            if display['Auto - Minimum'] > 0 then min_targets = display['Auto - Minimum'] end
-                            if display['Auto - Maximum'] > 0 then max_targets = display['Auto - Maximum'] end
-                        end
+                    if display.showKeybindings and ( display.queuedKBs or i == 1 ) then
+                        button.Keybinding:SetText( self:GetBindingForAction( aKey, not display.lowercaseKBs == true ) )
+                    else
+                        button.Keybinding:SetText( nil )
+                    end
 
-                        -- local detected = ns.getNameplateTargets()
-                        -- if detected == -1 then detected = ns.numTargets() end
 
-                        local detected = max( 1, ns.getNumberTargets() )
-                        local targets = detected
+                    if i == 1 then
+                        if display.showTargets then
+                            -- 0 = single
+                            -- 2 = cleave
+                            -- 2 = aoe
+                            -- 3 = auto
+                            local min_targets, max_targets = 0, 0
+                            local mode = Hekili.DB.profile['Mode Status']
 
-                        if min_targets > 0 then targets = max( min_targets, targets ) end
-                        if max_targets > 0 then targets = min( max_targets, targets ) end
+                            if display.displayType == 'a' then -- Primary
+                                if mode == 3 then
+                                    min_targets = 0
+                                    max_targets = 0
+                                else
+                                    min_targets = 0
+                                    max_targets = 1
+                                end
 
-                        local targColor = ''
+                            elseif display.displayType == 'b' then -- Single-Target
+                                min_targets = 0
+                                max_targets = 1
 
-                        if detected < targets then targColor = '|cFFFF0000'
-                        elseif detected > targets then targColor = '|cFF00C0FF' end
+                            elseif display.displayType == 'c' then -- AOE
+                                min_targets = ( display.simpleAOE or 2 )
+                                max_targets = 0
+                            
+                            elseif display.displayType == 'd' then -- Auto
+                                -- do nothing
 
-                        if display['Show Keybindings'] then
-                            button.Keybinding:SetText( self:GetBindingForAction( aKey, display[ 'Keybinding Style' ] ~= 1 ) )
-                            button.Keybinding:Show()
-                        else
-                            button.Keybinding:Hide()
-                        end
-
-                        if i == 1 then
-                            if display.Overlay and IsSpellOverlayed( class.abilities[ aKey ].id ) then
-                                ActionButton_ShowOverlayGlow( button )
-                            else
-                                ActionButton_HideOverlayGlow( button )
+                            elseif display.displayType == 'z' then -- Custom, old style.
+                                if mode == 0 then
+                                    if display.minST > 0 then min_targets = display.minST end
+                                    if display.maxST > 0 then max_targets = display.maxST end
+                                elseif mode == 2 then
+                                    if display.minAE > 0 then min_targets = display.minAE end
+                                    if display.maxAE > 0 then max_targets = display.maxAE end
+                                elseif mode == 3 then
+                                    if display.minAuto > 0 then min_targets = display.minAuto end
+                                    if display.maxAuto > 0 then max_targets = display.maxAuto end
+                                end
                             end
+
+                            -- local detected = ns.getNameplateTargets()
+                            -- if detected == -1 then detected = ns.numTargets() end
+
+                            local detected = max( 1, ns.getNumberTargets() )
+                            local targets = detected
+
+                            if min_targets > 0 then targets = max( min_targets, targets ) end
+                            if max_targets > 0 then targets = min( max_targets, targets ) end
+
+                            local targColor = ''
+
+                            if detected < targets then targColor = '|cFFFF0000'
+                            elseif detected > targets then targColor = '|cFF00C0FF' end
+
+                            if targets > 1 then button.Targets:SetText( targColor .. targets .. '|r' )
+                            else button.Targets:SetText( nil ) end
+                        else
+                            button.Targets:SetText( nil )
+                        end
+                    end
+
+                    if display.blizzGlow and ( i == 1 or display.queuedBlizzGlow ) and IsSpellOverlayed( class.abilities[ aKey ].id ) then
+                        ActionButton_ShowOverlayGlow( button )
+                    else
+                        ActionButton_HideOverlayGlow( button )
+                    end
+
+                    --[[ if display.showAuraInfo and i == 1 then
+                        local aura = GetSpellInfo( display.auraSpellID )
+
+                        if aura then
+                            -- What type of aura info?
+                            if display.auraInfoType == 'count' then
+                                local num = ns.numDebuffs( aura )
+                                if num > 0 then
+                                    display.Aura:SetText( num )
+                                else
+                                    display.Aura:SetText( nil )
+                                end
+
+                            elseif display.auraInfoType == 'buff' then
                             button.Caption:SetJustifyH('RIGHT')
                             -- check for special captions.
                             if display['Primary Caption'] == 'targets' and targets > 1 then -- and targets > 1 then
@@ -943,7 +1075,7 @@ function Hekili:UpdateDisplay( dispID )
                         button.Caption:SetJustifyH('CENTER')
                         button.Caption:SetText(nil)
 
-                    end
+                    end ]]
 
                     local start, duration = GetSpellCooldown( class.abilities[ aKey ].id )
                     local gcd_remains = gcd_start + gcd_duration - GetTime()
@@ -956,8 +1088,8 @@ function Hekili:UpdateDisplay( dispID )
                     if i == 1 then
                         button.Cooldown:SetCooldown( start, duration )
 
-                        if ns.lib.SpellFlash and display['Use SpellFlash'] and GetTime() >= flashes[dispID] + 0.2 then
-                            ns.lib.SpellFlash.FlashAction( class.abilities[ aKey ].id, display['SpellFlash Color'] )
+                        if SF and display.spellFlash and GetTime() >= flashes[dispID] + 0.2 then
+                            SF.FlashAction( class.abilities[ aKey ].id, display.spellFlashColor )
                             flashes[dispID] = GetTime()
                         end
 
@@ -977,7 +1109,7 @@ function Hekili:UpdateDisplay( dispID )
                         end
                     end
 
-                    if display['Range Checking'] == 'melee' then
+                    if display.rangeType == 'melee' then
                         local minR = ns.lib.RangeCheck:GetRange( 'target' )
                         
                         if minR and minR >= 5 then 
@@ -987,7 +1119,7 @@ function Hekili:UpdateDisplay( dispID )
                         else
                             ns.UI.Buttons[dispID][i].Texture:SetVertexColor(1, 1, 1)
                         end
-                    elseif display['Range Checking'] == 'ability' then
+                    elseif display.rangeType == 'ability' then
                         local rangeSpell = class.abilities[ aKey ].range and GetSpellInfo( class.abilities[ aKey ].range ) or class.abilities[ aKey ].name
                         if ns.lib.SpellRange.IsSpellInRange( rangeSpell, 'target' ) == 0 then
                             ns.UI.Buttons[dispID][i].Texture:SetVertexColor(1, 0, 0)
@@ -996,7 +1128,7 @@ function Hekili:UpdateDisplay( dispID )
                         else
                             ns.UI.Buttons[dispID][i].Texture:SetVertexColor(1, 1, 1)
                         end
-                    elseif display['Range Checking'] == 'off' then
+                    elseif display.rangeType == 'off' then
                         ns.UI.Buttons[dispID][i].Texture:SetVertexColor(1, 1, 1)
                     end
 
@@ -1021,8 +1153,12 @@ end
 
 
 function Hekili:UpdateDisplays()
-    for display in pairs( updatedDisplays ) do
-        Hekili:UpdateDisplay( display )
-        updatedDisplays[ display ] = nil
+    local now = GetTime()
+
+    for display, update in pairs( updatedDisplays ) do
+        if now - update > 0.033 then
+            Hekili:UpdateDisplay( display )
+            updatedDisplays[ display ] = now
+        end
     end
 end

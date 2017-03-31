@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1768 $
-$Date: 2017-01-18 18:42:43 +1100 (Wed, 18 Jan 2017) $
+$Revision: 1777 $
+$Date: 2017-02-20 00:19:03 +1100 (Mon, 20 Feb 2017) $
 
 ]]--
 
@@ -5462,6 +5462,23 @@ function ArkInventory.ConfigInternalDesignData( path )
 										if v > 5 then v = 5 end
 										style.slot.compress = v
 										ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
+									end,
+								},
+								upgrade = {
+									order = 900,
+									name = ArkInventory.Localise["CONFIG_DESIGN_ITEM_UPGRADE"],
+									desc = ArkInventory.Localise["CONFIG_DESIGN_ITEM_UPGRADE_TEXT"],
+									type = "toggle",
+									get = function( info )
+										local id = ConfigGetNodeArg( info, #info - 4 )
+										local style = ArkInventory.ConfigInternalDesignGet( id )
+										return style.slot.upgrade
+									end,
+									set = function( info, v )
+										local id = ConfigGetNodeArg( info, #info - 4 )
+										local style = ArkInventory.ConfigInternalDesignGet( id )
+										style.slot.upgrade = v
+										ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Refresh )
 									end,
 								},
 							},

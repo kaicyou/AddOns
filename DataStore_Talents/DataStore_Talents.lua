@@ -154,7 +154,9 @@ local function RightShift(value, numBits)
 end
 
 local function GetArtifactName()
-	return select(2, C_ArtifactUI.GetArtifactArtInfo())
+	local info = C_ArtifactUI.GetEquippedArtifactArtInfo()
+	return info.titleName
+	-- return select(2, C_ArtifactUI.GetArtifactArtInfo())
 end
 
 
@@ -237,6 +239,7 @@ local function ScanArtifact()
 	
 	artifact.rank = C_ArtifactUI.GetTotalPurchasedRanks()
 	artifact.pointsRemaining = C_ArtifactUI.GetPointsRemaining()
+	artifact.tier = select(13, C_ArtifactUI.GetEquippedArtifactInfo())
 end
 
 local function ScanArtifactXP()
@@ -383,11 +386,25 @@ local function _GetEquippedArtifactPower(character)
 	return power
 end
 
+local function _GetEquippedArtifactTier(character)
+	local tier = 0
+	
+	local equippedArtifact = character.EquippedArtifact
+	if equippedArtifact then
+		local info = character.Artifacts[equippedArtifact]
+		if info and info.tier then
+			tier = info.tier
+		end
+	end
+	
+	return tier
+end
+
 local function _GetKnownArtifacts(character)
 	return character.Artifacts
 end
 
-local function _GetNumArtifactTraitsPurchasableFromXP(currentRank, xpToSpend)
+local function _GetNumArtifactTraitsPurchasableFromXP(currentRank, xpToSpend, currentTier)
 	-- this function is exactly the same as 
 	-- MainMenuBar_GetNumArtifactTraitsPurchasableFromXP (from MainMenuBar.lua)
 	-- but just in case it's not loaded or changes later.. I'll keep it here
@@ -396,14 +413,15 @@ local function _GetNumArtifactTraitsPurchasableFromXP(currentRank, xpToSpend)
 	--    artifact is currently at rank 1, and we have 945 points to spend
 	
 	local numPoints = 0
-	local xpForNextPoint = C_ArtifactUI.GetCostForPointAtRank(currentRank)
+	local xpForNextPoint = C_ArtifactUI.GetCostForPointAtRank(currentRank, currentTier)
+
 	while xpToSpend >= xpForNextPoint and xpForNextPoint > 0 do
 		xpToSpend = xpToSpend - xpForNextPoint
 
 		currentRank = currentRank + 1
 		numPoints = numPoints + 1
 
-		xpForNextPoint = C_ArtifactUI.GetCostForPointAtRank(currentRank)
+		xpForNextPoint = C_ArtifactUI.GetCostForPointAtRank(currentRank, currentTier)
 	end
 	
 	-- ex: with rank 1 and 945 points, we have enough points for 2 traits, and 320 / 350 in the last rank
@@ -425,6 +443,7 @@ local PublicMethods = {
 	GetEquippedArtifact = _GetEquippedArtifact,
 	GetEquippedArtifactRank = _GetEquippedArtifactRank,
 	GetEquippedArtifactPower = _GetEquippedArtifactPower,
+	GetEquippedArtifactTier = _GetEquippedArtifactTier,
 	GetKnownArtifacts = _GetKnownArtifacts,
 	GetNumArtifactTraitsPurchasableFromXP = _GetNumArtifactTraitsPurchasableFromXP,
 }
@@ -441,6 +460,7 @@ function addon:OnInitialize()
 	DataStore:SetCharacterBasedMethod("GetEquippedArtifact")
 	DataStore:SetCharacterBasedMethod("GetEquippedArtifactRank")
 	DataStore:SetCharacterBasedMethod("GetEquippedArtifactPower")
+	DataStore:SetCharacterBasedMethod("GetEquippedArtifactTier")
 	DataStore:SetCharacterBasedMethod("GetKnownArtifacts")
 end
 

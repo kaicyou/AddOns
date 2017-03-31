@@ -143,7 +143,7 @@ if arg2=="SPELL_DAMAGE" and (spellid==167819 or spellid==167935 or spellid==1773
       if arg13>=0 then
         tt2=", "..psdamageceil(arg12-arg13).." |cffff0000("..psoverkill..": "..psdamageceil(arg13)..")|r"
       end
-    pscaststartinfo(0,spellname..": "..psaddcolortxt(1,name2)..name2..psaddcolortxt(2,name2)..tt2.." (".._meter.." yd)", -1, "id1", 2, "|s4id"..spellid.."|id - "..psinfo,psbossnames[4][2][10],2)
+    pscaststartinfo(0,spellname..": "..psaddcolortxt(1,name2)..name2..psaddcolortxt(2,name2)..tt2.." (".._meter.." yd)", -1, "id1", 3, "|s4id"..spellid.."|id - "..psinfo,psbossnames[4][2][10],2)
   end
 end
 

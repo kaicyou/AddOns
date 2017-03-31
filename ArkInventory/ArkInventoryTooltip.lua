@@ -44,7 +44,7 @@ function ArkInventory.TooltipSetHyperlink( tooltip, h )
 		
 		local osd = ArkInventory.ObjectStringDecode( h )
 		
-		if osd.class == "item" or osd.class == "spell" then
+		if osd.class == "item" or osd.class == "spell" or osd.class == "keystone" then
 			return tooltip:SetHyperlink( h )
 		end
 		
@@ -791,7 +791,7 @@ function ArkInventory.TooltipAddItemAge( tooltip, h, blizzard_id, slot_id )
 	
 	if type( blizzard_id ) == "number" and type( slot_id ) == "number" then
 		ArkInventory.TooltipAddEmptyLine( tooltip )
-		local bag_id = ArkInventory.BagID_Internal( blizzard_id )
+		local bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 		tooltip:AddLine( tt, 1, 1, 1, 0 )
 	end
 

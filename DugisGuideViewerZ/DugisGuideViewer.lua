@@ -1057,17 +1057,17 @@ function DugisGuideViewer:IsEquippedOneOfExcludedSets()
     local excludedSets = DugisGuideViewer.chardb["excludedSets"] or {}
     local equippedSets = {}
     
-    local fn = GetNumEquipmentSets or C_EquipmentSet.GetNumEquipmentSets
+    local fn = (C_EquipmentSet and C_EquipmentSet.GetNumEquipmentSets) or GetNumEquipmentSets
     LuaUtils:loop(fn(), function(i)  
         local name, icon, setID, isEquipped
        
-        if GetEquipmentSetInfo then
-           name, icon, setID, isEquipped = GetEquipmentSetInfo(i) 
-        else
+        if C_EquipmentSet and C_EquipmentSet.GetEquipmentSetIDs then
            --For 7.2.0
            
            local equipmentSetIDs = C_EquipmentSet.GetEquipmentSetIDs();
            name, icon, setID, isEquipped = C_EquipmentSet.GetEquipmentSetInfo(equipmentSetIDs[i])
+        else
+            name, icon, setID, isEquipped = GetEquipmentSetInfo(i) 
         end
        
         if isEquipped then
@@ -1089,16 +1089,16 @@ function DugisGuideViewer:UpdateSetsExcludingInSettings(frame)
     local function PrepareSetsForTree()
         local result = {}
         
-        local fn = GetNumEquipmentSets or C_EquipmentSet.GetNumEquipmentSets
+        local fn = (C_EquipmentSet and C_EquipmentSet.GetNumEquipmentSets) or GetNumEquipmentSets
         LuaUtils:loop(fn(), function(i)  
             local name, icon
             
-            if GetEquipmentSetInfo then
-                name, icon = GetEquipmentSetInfo(i) 
-            else
+            if C_EquipmentSet and C_EquipmentSet.GetEquipmentSetInfo then
                --For 7.2.0
                local equipmentSetIDs = C_EquipmentSet.GetEquipmentSetIDs();
                name, icon = C_EquipmentSet.GetEquipmentSetInfo(equipmentSetIDs[i])
+            else
+               name, icon = GetEquipmentSetInfo(i) 
             end
             
             if name ~= "Dugi Smart Set" then
@@ -1174,8 +1174,9 @@ function DugisGuideViewer:UpdateSetsExcludingInSettings(frame)
             hooksecurefunc("ModifyEquipmentSet", function() 
                 DugisGuideViewer:UpdateSetsExcludingInSettings(frame)
             end)
-        else
+        end
         
+        if C_EquipmentSet and C_EquipmentSet.SaveEquipmentSet then
             --For > 7.2.0
             if C_EquipmentSet.SaveEquipmentSet then
                 hooksecurefunc(C_EquipmentSet, "DeleteEquipmentSet", function() 
@@ -1392,13 +1393,13 @@ local function GetSettingsCategoryFrame(category, parent)
                 local name = C_MountJournal.GetMountInfoByID(node.nodeData.data.mountId)
                 local creatureDisplayID, descriptionText, sourceText, isSelfMount, mountType = C_MountJournal.GetMountInfoExtraByID(node.nodeData.data.mountId)
                 
-                if DugisGuideViewer.NPCJournalFrame and name and creatureDisplayID then
+                if DugisGuideViewer:IsModuleLoaded("NPCJournalFrame") and DugisGuideViewer.NPCJournalFrame and name and creatureDisplayID then
                 DugisGuideViewer.NPCJournalFrame:ShowGuideObjectPreview(name, creatureDisplayID)
                 end
             end
             
             local function onMountIconLeave(node)
-                if DugisGuideViewer.NPCJournalFrame.hintFrame then
+                if DugisGuideViewer:IsModuleLoaded("NPCJournalFrame") and DugisGuideViewer.NPCJournalFrame.hintFrame then
                     DugisGuideViewer.NPCJournalFrame.hintFrame.frame:Hide()   
                 end
             end
@@ -1420,10 +1421,17 @@ local function GetSettingsCategoryFrame(category, parent)
                 local secondContainer = {}
             
                 LuaUtils:foreach(C_MountJournal.GetMountIDs(), function(mountId)
-                    local name, _, icon, _, isUsable, _, isFavorite, _, _, _, isCollected = C_MountJournal.GetMountInfoByID(mountId)
+                    local name, _, icon, _, isUsable, _, isFavorite, isFactionSpecific, faction, _, isCollected = C_MountJournal.GetMountInfoByID(mountId)
                     local _, _, _, _, mountType = C_MountJournal.GetMountInfoExtraByID(mountId)
                     
-                    if isCollected --[[and isUsable]] then
+                                    
+                    local _, _, _, _, isUsable, _, isFavorite, _, _, _, isCollected, mountID = C_MountJournal.GetMountInfoByID(mountId)
+                    local _, _, _, _, mountTypeId = C_MountJournal.GetMountInfoExtraByID(mountId)       
+
+                    local englishFaction, localizedFaction = UnitFactionGroup("player")
+                    local rightFaction = (isFactionSpecific == false) or (englishFaction == "Alliance" and faction == 1) or (englishFaction == "Horde" and faction == 0)
+                    
+                    if isCollected and rightFaction then
                         --use requestedMountType for order purposes
                         local container = secondContainer
                         if requestedMountType ==  DugisGuideViewer:GetNamedMountType(mountType) then
@@ -3465,6 +3473,7 @@ SlashCmdList["DG"] = function(msg)
 		print("|cff11ff11/dugi on - |rEnable Dugi Addon.")
 		print("|cff11ff11/dugi off - |rDisable Dugi Addon.")
 		print("|cff11ff11/dugi config - |rDisplay settings menu.")
+		print("|cff11ff11/dugi automount - |rToogle Auto Mount on/off.")
 	elseif msg  == "on" then
 		DugisGuideViewer:TurnOn()
 		DugisGuideViewer:UpdateIconStatus()
@@ -4716,7 +4725,9 @@ end
 
 function DugisGuideViewer:OnCastingSpell(spellID)
     if spellID and not IsMountSpell(spellID) then
-        lastCastingNoneMountTime = GetTime()
+	    if tonumber(spellID) ~= 219223 and tonumber(spellID) ~= 219222 and tonumber(spellID) ~= 197886 then  -- Hunter Windrunning spell effect from Marksman Artifact Bow 
+	        lastCastingNoneMountTime = GetTime()
+		end
     end
 end
 
@@ -4740,12 +4751,13 @@ local function IsUsingSpecialBuff()
         
         n1 = name1
         n2 = name2
-        
-        if (icon1 and string.lower(icon1):match("inv_misc_fishing_raft"))
-	or (icon2 and string.lower(icon2):match("inv_misc_fishing_raft"))
-	or (icon1 and string.lower(icon1):match("inv_misc_fork&knife"))
-	or (icon1 and string.lower(icon1):match("ability_rogue_feigndeath"))	
-	or (icon1 and string.lower(icon1):match("inv_drink_18")) then
+		
+		if (icon1 and icon1 == 774121) --inv_misc_fishing_raft
+		or (icon2 and icon2 == 774121) --inv_misc_fishing_raft
+		or (icon1 and icon1 == 134062) --inv_misc_fork&knife
+		or (icon1 and icon1 == 132293) --ability_rogue_feigndeath
+		or (icon1 and icon1 == 132320) --ability_stealth
+		or (icon1 and icon1 == 132805) then --inv_drink_18
             return true
         end
        
@@ -4763,13 +4775,21 @@ local function IsFeignDeath()
 	end
 end
 
+local function IsShapeShift()
+	if GetShapeshiftForm() == 1 then 
+		if select(2, UnitClass("player")) == "SHAMAN" or select(2, UnitClass("player")) == "DRUID" then 
+			return true 
+		end
+	end
+end
+
 local function MountTheFastestMount()
     --Preventing dropping from the height and  checking if player is not moving to allow mount
     if IsFlying() or IsPlayerMoving() or IsIndoors() 
        or IsMounted()
        or UnitIsDead("player") or UnitIsGhost("player")
        or C_PetBattles.IsInBattle() or UnitOnTaxi("player")
-       or GetShapeshiftForm() ~= 0 
+       or IsShapeShift()
        or (LootFrame and LootFrame:IsVisible()) 
        or IsCasting() or IsLootFrameOpenend() 
        or (GetTime() - lastCombatTime) <= 1
@@ -4800,7 +4820,7 @@ end
 local autoMountTicker = nil
 
 local function CancelAutoMountingIfNeeded()
-    if IsLootFrameOpenend() and not IsFlying() then
+    if IsLootFrameOpenend() and not IsFlying() and not IsMounted() then
         C_MountJournal.Dismiss()
     end
 end

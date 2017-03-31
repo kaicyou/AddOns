@@ -2,14 +2,13 @@
 local tinsert, tremove, wipe = table.insert, table.remove, wipe
 local fmt, tostring = string.format, tostring
 local pairs, type, unpack = pairs, type, unpack
-local loadstring, assert, error = loadstring, assert, error
+local loadstring, error = loadstring, error
 local coroutine = coroutine
 local _G = _G
 
 -- WoW APIs
 local InCombatLockdown = InCombatLockdown
-local GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
-  = GetSpellInfo, GetItemInfo, IsSpellKnown, GetItemIcon, UnitName
+local GetSpellInfo, GetItemInfo, GetItemIcon, UnitName = GetSpellInfo, GetItemInfo, GetItemIcon, UnitName
 local GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, IsAddOnLoaded, LoadAddOn
   = GetScreenWidth, GetScreenHeight, GetBuildInfo, GetLocale, GetTime, PlaySoundFile, PlaySoundKitID, CreateFrame, IsAddOnLoaded, LoadAddOn
 
@@ -19,10 +18,6 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
-
--- GLOBALS: WeakAurasSaved WeakAurasOptionsSaved WeakAuras_DropDownMenu WeakAuras_DropIndicator AceGUIWidgetLSMlists
--- GLOBALS: GameTooltip GameTooltip_Hide UIParent FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
--- GLOBALS: STATICPOPUP_NUMDIALOGS StaticPopupDialogs StaticPopup_Show GetAddOnEnableState
 
 local font_close,yellow_font,red_font = FONT_COLOR_CODE_CLOSE,YELLOW_FONT_COLOR_CODE,RED_FONT_COLOR_CODE
 local ValidateNumeric = function(info,val)
@@ -135,6 +130,7 @@ function WeakAuras.MultipleDisplayTooltipMenu()
           trigger = {},
           load = {}
         };
+
         WeakAuras.Add(data);
         WeakAuras.NewDisplayButton(data);
 
@@ -242,16 +238,12 @@ local check_types = WeakAuras.check_types;
 local custom_trigger_types = WeakAuras.custom_trigger_types;
 local eventend_types = WeakAuras.eventend_types;
 local autoeventend_types = WeakAuras.autoeventend_types;
-local justify_types = WeakAuras.justify_types;
-local align_types = WeakAuras.align_types;
-local rotated_align_types = WeakAuras.rotated_align_types;
 local anim_types = WeakAuras.anim_types;
 local anim_translate_types = WeakAuras.anim_translate_types;
 local anim_scale_types = WeakAuras.anim_scale_types;
 local anim_alpha_types = WeakAuras.anim_alpha_types;
 local anim_rotate_types = WeakAuras.anim_rotate_types;
 local anim_color_types = WeakAuras.anim_color_types;
-local group_types = WeakAuras.group_types;
 local anim_start_preset_types = WeakAuras.anim_start_preset_types;
 local anim_main_preset_types = WeakAuras.anim_main_preset_types;
 local anim_finish_preset_types = WeakAuras.anim_finish_preset_types;
@@ -962,7 +954,6 @@ local options;
 local newOptions;
 local loadedOptions;
 local unloadedOptions;
-local pickonupdate;
 local reopenAfterCombat = false;
 local loadedFrame = CreateFrame("FRAME");
 loadedFrame:RegisterEvent("ADDON_LOADED");
@@ -6622,7 +6613,7 @@ end
 WeakAuras.afterScanForLoads = function()
   if(frame) then
     if (frame:IsVisible()) then
-      WeakAuras.SortDisplayButtons();
+      WeakAuras.SortDisplayButtons(nil, true);
     else
       frame.needsSort = true;
     end
@@ -6869,8 +6860,6 @@ function WeakAuras.ShowCloneDialog(data)
         WeakAuras.ReloadGroupRegionOptions(parentData);
         WeakAuras.SortDisplayButtons();
         parentButton:Expand();
-
-        pickonupdate = data.id;
       end,
       OnCancel = function()
       -- do nothing

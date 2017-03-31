@@ -124,7 +124,7 @@ InitializeFrames("LightningSurgeTotemRes",SmallIconGrpRight,"totems\\lightning_s
 InitializeFrames("PurifySpirit",SmallIconGrpLeft,"restoration\\purify_spirit",smIcon);
 InitializeFrames("SpiritwalkersGrace",SmallIconGrpLeft,"restoration\\spiritwalkers_grace",smIcon);
 InitializeFrames("VoodooTotemRes",SmallIconGrpLeft,"totems\\voodoo_totem",smIcon);
-InitializeFrames("WindShearRes",SmallIconGrpLeft,"shared\\wind_shear",smIcon);
+InitializeFrames("WindShearRes",SmallIconGrpLeft,"shared\\wind_shear",smIcon,smGlow);
 
 -------------------------------------------------------------------------------------------------------
 ----- Initialize Scripts (Aura Groups)
@@ -257,7 +257,7 @@ SSA.FlameShockRes:SetScript("OnUpdate", function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true,true);
+			Auras:ExecuteCooldown(self,start,duration,true,true,3);
 			--timer,seconds = Auras:parseTime((start + duration) - GetTime(),false);
 			--self.text:SetText(timer);
 		end
@@ -341,7 +341,7 @@ SSA.LavaBurstRes:SetScript("OnUpdate", function(self)
 				self.CD.text:SetText('');
 				--self.ChargeCD:Show();
 			else
-				Auras:ExecuteCooldown(self,chgStart,chgDuration,false);
+				Auras:ExecuteCooldown(self,chgStart,chgDuration,false,false,3);
 				self.Charges.text:SetText('');
 				self.ChargeCD:Hide();
 			end
@@ -353,7 +353,7 @@ SSA.LavaBurstRes:SetScript("OnUpdate", function(self)
 			if (duration > 2) then
 				--Auras:ToggleCooldownSwipe(self.CD,true)
 				Auras:ToggleOverlayGlow(self.glow,false);
-				Auras:ExecuteCooldown(self,start,duration,false);
+				Auras:ExecuteCooldown(self,start,duration,false,false,3);
 				self.CD:Show();
 			elseif (buff) then
 				Auras:ToggleCooldownSwipe(self.CD,false)
@@ -389,7 +389,7 @@ SSA.AncestralGuidanceRes:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -413,7 +413,7 @@ SSA.AscendanceRes:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 	
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -437,7 +437,7 @@ SSA.AstralShiftRes:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -461,7 +461,7 @@ SSA.CloudburstTotem:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -485,7 +485,7 @@ SSA.EarthenShieldTotem:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -509,7 +509,7 @@ SSA.EarthgrabTotemRes:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -533,7 +533,7 @@ SSA.GiftOfQueen:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -557,7 +557,7 @@ SSA.GustWindRes:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -581,7 +581,7 @@ SSA.HealingRain:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -618,14 +618,14 @@ SSA.HealingStreamTotem:SetScript("OnUpdate", function(self)
 				self.Charges.text:SetText(charges);
 				self.CD.text:SetText('');
 			else
-				Auras:ExecuteCooldown(self,chgStart,chgDuration,false);
+				Auras:ExecuteCooldown(self,chgStart,chgDuration,false,false,3);
 				self.Charges.text:SetText('');
 			end
 		else
 			self.Charges.text:SetText('');
 			if ((duration or 0) > 2 and not buff) then
 				Auras:ToggleCooldownSwipe(self.CD,true)
-				Auras:ExecuteCooldown(self,start,duration,false);
+				Auras:ExecuteCooldown(self,start,duration,false,false,3);
 				self.CD:Show();
 			else
 				Auras:ToggleCooldownSwipe(self.CD,true)
@@ -651,7 +651,7 @@ SSA.HealingTideTotem:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -675,7 +675,7 @@ SSA.HexRes:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -701,7 +701,7 @@ SSA.LightningSurgeTotemRes:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -725,7 +725,7 @@ SSA.PurifySpirit:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -762,14 +762,14 @@ SSA.Riptide:SetScript("OnUpdate", function(self)
 				self.Charges.text:SetText(charges);
 				self.CD.text:SetText('');
 			else
-				Auras:ExecuteCooldown(self,chgStart,chgDuration,false);
+				Auras:ExecuteCooldown(self,chgStart,chgDuration,false,false,3);
 				self.Charges.text:SetText('');
 			end
 		else
 			self.Charges.text:SetText('');
 			if ((duration or 0) > 2 and not buff) then
 				Auras:ToggleCooldownSwipe(self.CD,true)
-				Auras:ExecuteCooldown(self,start,duration,false);
+				Auras:ExecuteCooldown(self,start,duration,false,false,3);
 				self.CD:Show();
 			else
 				Auras:ToggleCooldownSwipe(self.CD,true)
@@ -796,14 +796,14 @@ SSA.SpiritLinkTotem:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
 		end
 		
 		if ((duration2 or 0) > 2) then
-			Auras:ExecuteCooldown(self,start2,duration2,false);
+			Auras:ExecuteCooldown(self,start2,duration2,false,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -827,7 +827,7 @@ SSA.SpiritwalkersGrace:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -851,7 +851,7 @@ SSA.UnleashLife:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -875,7 +875,7 @@ SSA.VoodooTotemRes:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -899,7 +899,7 @@ SSA.Wellspring:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -919,17 +919,24 @@ end);
 SSA.WindShearRes:SetScript("OnUpdate",function(self)
 	if (Auras:CharacterCheck(3)) then
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(57994));
+		local name,_,_,_,_,_,_,_,interrupt = UnitCastingInfo('target');
 	
 		Auras:SpellRangeCheck(self,57994,true,3);
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
 		end
-			
+		
+		if (name and not interrupt and (start or 0) == 0) then
+			Auras:ToggleOverlayGlow(self.glow,true,true);
+		else
+			Auras:ToggleOverlayGlow(self.glow,false);
+		end
+		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
@@ -948,7 +955,7 @@ SSA.WindRushTotemRes:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,3);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -1765,29 +1772,27 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		local xPosCtr = 1;
-		for i=1,getn(buffTable) do
-			local buff,_,_,_,_,duration,expires = UnitBuff('player',Auras:GetSpellName(buffTable[i]));
-			--[[local timer,seconds = Auras:parseTime(expires - GetTime(),true);
-			
-			buffIDs[buffTable[i]:SetMinMaxValues(0,duration);
-			buffIDs[buffTable[i]:SetValue(seconds);
-			buffIDs[buffTable[i].timetext:SetText(timer);
-			buffIDs[buffTable[i]:SetPoint("LEFT",xPos[i],0);
-			buffIDs[buffTable[i]:Show();]]
-			if (expires) then
-				if (Auras.db.char.aura[3][buffIDs[buffTable[i]]:GetName()]) then
-					local timer,seconds = Auras:parseTime(expires - GetTime(),true);
-					
-					buffIDs[buffTable[i]]:SetMinMaxValues(0,duration);
-					buffIDs[buffTable[i]]:SetValue(seconds);
-					buffIDs[buffTable[i]].timetext:SetText(timer);
-					buffIDs[buffTable[i]]:SetPoint("LEFT",xPos[xPosCtr],0);
-					buffIDs[buffTable[i]]:Show();
-					xPosCtr = xPosCtr + 1;
-				else
-					buffIDs[buffTable[i]]:Hide();
-					--table.remove(buffTable,i);
+		for i=1,50 do
+			local buff,_,_,_,_,duration,expires,caster,_,_,spellID = UnitBuff('player',i);
+
+			if (buff) then
+				if (buffIDs[spellID]) then
+					if (Auras.db.char.aura[3][buffIDs[spellID]:GetName()]) then
+						local timer,seconds = Auras:parseTime(expires - GetTime(),true);
+						
+						buffIDs[spellID]:SetMinMaxValues(0,duration);
+						buffIDs[spellID]:SetValue(seconds);
+						buffIDs[spellID].timetext:SetText(timer);
+						buffIDs[spellID]:SetPoint("LEFT",xPos[xPosCtr],0);
+						buffIDs[spellID]:Show();
+						
+						xPosCtr = xPosCtr + 1;
+					else
+						buffIDs[spellID]:Hide();
+					end
 				end
+			else
+				break;
 			end
 		end
 		
@@ -2179,6 +2184,7 @@ EventFrame:SetScript("OnEvent",function(self,event,...)
 					SSA.ErrorFrame.text:SetText("EST Summoned");
 					local EST = SSA.EarthenShieldTotemBar;
 					EST_Expires = GetTime() + 15;
+					print("SUMMONED!");
 					--SSA.EarthenShieldTotemBar:SetAlpha(1);
 					--SSA.EarthenShieldTotemBar.Timer:SetAlpha(1);
 					--[[if (UnitAffectingCombat('player')) then
@@ -2197,6 +2203,9 @@ EventFrame:SetScript("OnEvent",function(self,event,...)
 				end
 			elseif ((subevent == "SPELL_DAMAGE" or subevent == "SWING_DAMAGE") and name == L["Earthen Shield Totem"]) then
 				Auras.db.char.info.totems.eShield.dmg = (Auras.db.char.info.totems.eShield.dmg or 0) + damage;
+				if (not Auras.db.char.info.totems.eShield.hp) then
+					Auras.db.char.info.totems.eShield.hp = UnitHealthMax('player');
+				end
 				Auras:UpdateEarthenShield(EarthenShieldTotemBar);
 			elseif (subevent == "UNIT_DIED" and name == L["Earthen Shield Totem"]) then
 				SSA.ErrorFrame.text:SetText("DEAD");

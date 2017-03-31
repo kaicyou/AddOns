@@ -1,7 +1,5 @@
 local L = WeakAuras.L;
 
--- GLOBALS: WeakAuras UIParent AceGUIWidgetLSMlists
-
 -- Calculate bounding box
 local function getRect(data)
   -- Temp variables
@@ -523,7 +521,7 @@ local function createOptions(id, data)
 end
 
 -- Create preview thumbnail
-local function createThumbnail(parent, fullCreate)
+local function createThumbnail(parent)
   -- Preview frame
   local borderframe = CreateFrame("FRAME", nil, parent);
   borderframe:SetWidth(32);

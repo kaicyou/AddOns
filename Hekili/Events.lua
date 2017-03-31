@@ -16,7 +16,7 @@ local formatKey = ns.formatKey
 local getSpecializationInfo = ns.getSpecializationInfo
 local getSpecializationKey = ns.getSpecializationKey
 
-local match, upper = string.match, string.upper
+local lower, match, upper = string.lower, string.match, string.upper
 
 -- Abandoning AceEvent in favor of darkend's solution from:
 -- http://andydote.co.uk/2014/11/23/good-design-in-warcraft-addons.html
@@ -27,7 +27,13 @@ local events = CreateFrame( "Frame" )
 local handlers = {}
 
 ns.displayUpdates = {}
+local lastRefresh = {}
+local hardUpdate = {}
+
+local lastRecount = 0
 local displayUpdates = ns.displayUpdates
+
+local refreshes = {}
 
 
 function ns.StartEventHandler()
@@ -43,9 +49,20 @@ function ns.StartEventHandler()
     end )
 
     events:SetScript( "OnUpdate", function( self, elapsed )
+        local now = GetTime()
+
+        if now - lastRecount >= 0.1 then
+            ns.recountTargets()
+        end
+
+        local updatePeriod = 1 / ( Hekili.DB.profile['Updates Per Second'] or 5 )
+        
         for i = 1, #Hekili.DB.profile.displays do
-            if not displayUpdates[i] or ( GetTime() - displayUpdates[i] >= ( 1 / Hekili.DB.profile['Updates Per Second'] ) ) then
+            if hardUpdate[i] or not displayUpdates[i] or not lastRefresh[i] or now - lastRefresh[i] >= updatePeriod then
                 Hekili:ProcessHooks( i )
+                lastRefresh[i] = now
+                hardUpdate[i] = nil
+                -- refreshes[i] = refreshes[i] and ( refreshes[i] + 1 ) or 1
             end
         end
         Hekili:UpdateDisplays()
@@ -73,6 +90,17 @@ end
 local RegisterEvent = ns.RegisterEvent
 
 
+ns.FeignEvent = function( event, ... )
+    local eventHandlers = handlers[ event ]
+
+    if not eventHandlers then return end
+
+    for i, handler in pairs( eventHandlers ) do
+        handler( event, ... )
+    end
+end
+
+
 -- FIND A BETTER HOME
 ns.cacheCriteria = function()
 
@@ -83,11 +111,11 @@ ns.cacheCriteria = function()
     end
 
     for i, display in ipairs( Hekili.DB.profile.displays ) do
-        ns.visible.display[ i ] = display.Enabled and ( display.Specialization == 0 or display.Specialization == state.spec.id ) and ( display['Talent Group'] == 0 or display['Talent Group'] == GetActiveSpecGroup() )
+        ns.visible.display[ i ] = display.Enabled and ( display.Specialization == 0 or display.Specialization == state.spec.id )
 
-        for j, hook in ipairs( display.Queues ) do
+        --[[ for j, hook in ipairs( display.Queues ) do
             ns.visible.hook[ i..':'..j ] = hook.Enabled and hook['Action List'] ~= 0
-        end
+        end ]]
     end
 
     for i, list in ipairs( Hekili.DB.profile.actionLists ) do
@@ -111,19 +139,21 @@ RegisterEvent( "PLAYER_ENTERING_WORLD", function ()
     ns.checkImports()
     ns.updateGear()
     ns.restoreDefaults( nil, true )
+    ns.convertDisplays()
     ns.buildUI()
 end )
+
 RegisterEvent( "ACTIVE_TALENT_GROUP_CHANGED", function ()
     ns.specializationChanged()
     ns.checkImports()
 end )
+
 RegisterEvent( "PLAYER_SPECIALIZATION_CHANGED", function ( _, unit )
     if unit == 'player' then
         ns.specializationChanged()
         ns.checkImports()
     end
 end )
-
 
 RegisterEvent( "BARBER_SHOP_OPEN", function ()
     Hekili.Barber = true
@@ -167,8 +197,9 @@ ns.updateTalents = function ()
 end
 
 
-RegisterEvent( "PLAYER_TALENT_UPDATE", function ()
+RegisterEvent( "PLAYER_TALENT_UPDATE", function ( event )
     ns.updateTalents()
+    ns.forceUpdate( event )
 end )
 
 
@@ -357,11 +388,24 @@ RegisterEvent( "PLAYER_EQUIPMENT_CHANGED", function()
 end )
 
 
-RegisterEvent( "PLAYER_REGEN_DISABLED", function () state.combat = GetTime() end )
+RegisterEvent( "PLAYER_REGEN_DISABLED", function ()
+    state.combat = GetTime()
+    for i in ipairs( refreshes ) do
+        refreshes[i] = 0
+    end
+end )
+
+
 RegisterEvent( "PLAYER_REGEN_ENABLED", function ()
     ns.updateGear()
+    --[[ for i, v in ipairs( refreshes ) do
+        local freq = v / ( GetTime() - state.combat )
+        local output = format( "Display #%d - %d updates, %.2f per second.", i, v, freq )
+        print( output )
+    end ]]
     state.combat = 0
 end )
+
 
 local dynamic_keys = setmetatable( {}, {
     __index = function( t, k, v )
@@ -384,10 +428,18 @@ local castsOn, castsOff, castsAll = ns.castsOn, ns.castsOff, ns.castsAll
 
 
 
-local function forceUpdate()
+local function forceUpdate( from, hard )
     for i = 1, #Hekili.DB.profile.displays do
         displayUpdates[ i ] = nil
+        hardUpdate[i] = hardUpdate[i] or hard
     end
+end
+
+ns.forceUpdate = forceUpdate
+
+
+local function hardUpdate( from )
+    forceUpdate( from, true )
 end
 
 
@@ -448,14 +500,14 @@ local function spellcastEvents( event, unit, spell, _, _, spellID )
             end
         end
 
-        forceUpdate()
+        forceUpdate( event, true )
 
     end
 
 end
 
 RegisterEvent( "UNIT_SPELLCAST_SUCCEEDED", spellcastEvents )
--- RegisterEvent( "UNIT_SPELLCAST_START", spellcastEvents )
+RegisterEvent( "UNIT_SPELLCAST_START", spellcastEvents )
 
 
 
@@ -485,7 +537,7 @@ local spell_names = setmetatable( {}, {
 } )
 
 
-RegisterEvent( "UNIT_POWER_FREQUENT", function( _, unit, power)
+RegisterEvent( "UNIT_POWER_FREQUENT", function( event, unit, power )
     if unit == 'player' then
         if power == "FOCUS" and state.focus then
             local now = GetTime()
@@ -493,7 +545,7 @@ RegisterEvent( "UNIT_POWER_FREQUENT", function( _, unit, power)
 
             elapsed = elapsed > power_tick_data.focus_avg * 1.5 and power_tick_data.focus_avg or elapsed
 
-            if elapsed > 0.09 then
+            if elapsed > 0.075 then
                 power_tick_data.focus_avg = ( elapsed + ( power_tick_data.focus_avg * power_tick_data.focus_ticks ) ) / ( power_tick_data.focus_ticks + 1 )
                 power_tick_data.focus_ticks = power_tick_data.focus_ticks + 1
                 state.focus.last_tick = now
@@ -504,7 +556,7 @@ RegisterEvent( "UNIT_POWER_FREQUENT", function( _, unit, power)
             local elapsed = min( 0.12, now - state.energy.last_tick )
             elapsed = elapsed > power_tick_data.energy_avg * 1.5 and power_tick_data.energy_avg or elapsed
 
-            if elapsed > 0.09 then
+            if elapsed > 0.075 then
                 power_tick_data.energy_avg = ( elapsed + ( power_tick_data.energy_avg * power_tick_data.energy_ticks ) ) / ( power_tick_data.energy_ticks + 1 )
                 power_tick_data.energy_ticks = power_tick_data.energy_ticks + 1
                 state.energy.last_tick = now
@@ -512,11 +564,19 @@ RegisterEvent( "UNIT_POWER_FREQUENT", function( _, unit, power)
 
         end
 
-        forceUpdate()
+        -- forceUpdate( event ) 
     end
 end )
 
-RegisterEvent( "PLAYER_TARGET_CHANGED", forceUpdate )
+RegisterEvent( "UNIT_POWER", function( event, unit, power )
+    if unit == 'player' then
+        forceUpdate( event )
+    end
+end )
+
+
+
+RegisterEvent( "PLAYER_TARGET_CHANGED", hardUpdate )
 RegisterEvent( "SPELL_UPDATE_USABLE", forceUpdate )
 RegisterEvent( "SPELL_UPDATE_COOLDOWN", forceUpdate )
 
@@ -569,7 +629,6 @@ RegisterEvent( "COMBAT_LOG_EVENT_UNFILTERED", function( event, _, subtype, _, so
 
             -- Aura Tracking
             if subtype == 'SPELL_AURA_APPLIED'  or subtype == 'SPELL_AURA_REFRESH' or subtype == 'SPELL_AURA_APPLIED_DOSE' then
-
                 ns.trackDebuff( spellName, destGUID, time, true )
                 ns.updateTarget( destGUID, time, sourceGUID == state.GUID )
 
@@ -740,7 +799,7 @@ local function StoreKeybindInfo( key, aType, id )
 
     if ability then
         keys[ ability ] = keys[ ability ] or {}
-        keys[ ability ].binding = improvedGetBindingText( key )
+        keys[ ability ].binding = lower( improvedGetBindingText( key ) )
         keys[ ability ].upper = upper( keys[ ability ].binding )
         updatedKeys[ ability ] = true
     end

@@ -1,4 +1,4 @@
-## Interface: 70100
+## Interface: 70200
 
 ## Title: Ark Inventory [Configuration]
 ## Author: Arkayenro - Khaz'goroth

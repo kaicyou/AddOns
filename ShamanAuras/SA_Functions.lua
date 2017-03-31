@@ -114,7 +114,7 @@ function Auras:ChatCommand(input)
 		elseif input == "res" or input == "resto" or input == "restoration" then
 			NavigateInterfaceOptions(3);
 		elseif input == "settings" or input == "options" or input == "option" or input == "opt" or input == "config" then
-			NavigateInterfaceOptions(4)
+			DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF77Sweetsour\'s Shaman Auras|r: |cFFFF7777The advanced configuration options have been embed directly in each of the specs' settings. Type /ssa <spec> and select the corresponding tabs that have been added.");
 		elseif input == "version" then
 			DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF77Sweetsour\'s Shaman Auras|r: |cFF9999FF"..GetAddOnMetadata(FOLDER_NAME,"Version").."|r");
 		else
@@ -1107,7 +1107,7 @@ function Auras:UpdateTalents(isTalentChange)
 		--Auras:ToggleAuraVisibility(1);
 		
 		------------------------------------------------------------
-		---- Top Icon Row
+		---- Primary Aura Group #1
 		----
 		
 		rowObj = {
@@ -1133,7 +1133,7 @@ function Auras:UpdateTalents(isTalentChange)
 		end
 		
 		------------------------------------------------------------
-		---- Bottom Icon Row
+		---- Primary Aura Group #2
 		----
 		
 		rowObj = {
@@ -1160,6 +1160,26 @@ function Auras:UpdateTalents(isTalentChange)
 			BuildHorizontalIconRow(rowObj,rowList,0,1,'primary','bottom');
 		else
 			BuildVerticalIconRow(rowObj,rowList,0,1,'primary','bottom');
+		end
+		
+		------------------------------------------------------------
+		---- Primary Aura Group #3
+		----
+		
+		rowObj = {
+			[1] = SSA.ElementalFocus,
+			[2] = SSA.PowerOfMaelstrom,
+		}
+		
+		rowList = {
+			[1] = Auras.db.char.aura[1].ElementalFocus,
+			[2] = Auras.db.char.aura[1].PowerOfMaelstrom,
+		}
+		
+		if (Auras.db.char.layout[1].orientation.extra == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,1,'primary','extra');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,1,'primary','extra');
 		end
 		
 		------------------------------------------------------------

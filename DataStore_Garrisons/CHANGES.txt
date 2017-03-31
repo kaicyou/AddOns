@@ -1,4 +1,14 @@
 ------------------------------------------------------------------------
+r20 | thaoky.altoholic@yahoo.com | 2017-03-29 14:23:59 -0500 (Wed, 29 Mar 2017) | 1 line
+Changed paths:
+   M /trunk/DataStore_Garrisons.lua
+   M /trunk/DataStore_Garrisons.toc
+   M /trunk/Options.lua
+   M /trunk/Options.xml
+   M /trunk/locale.xml
+
+TOC Update
+------------------------------------------------------------------------
 r19 | thaoky.altoholic@yahoo.com | 2017-01-12 13:22:23 -0600 (Thu, 12 Jan 2017) | 2 lines
 Changed paths:
    M /trunk/DataStore_Garrisons.lua

@@ -176,14 +176,9 @@ end
 
 function ArkInventory.Collection.Mount.SkillLevel( )
 	
-	local skill = 0
+	local skill = 1
 	
-	if UnitLevel( "player" ) < PLAYER_MOUNT_LEVEL then
-		
-		--ArkInventory.Output( "player level is too low" )
-		skill = 1
-		
-	else
+	if UnitLevel( "player" ) >= PLAYER_MOUNT_LEVEL then
 		
 		if GetSpellInfo( ( GetSpellInfo( 90265 ) ) ) then -- master
 			skill = 300

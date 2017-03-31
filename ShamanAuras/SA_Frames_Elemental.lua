@@ -51,7 +51,7 @@ local function InitializeFrames(name,parent,icon,iconSize,glowSize,charge)
 	Frame.texture = Frame:CreateTexture(nil,"BACKGROUND");
 	Frame.texture:SetTexture("Interface\\addons\\ShamanAuras\\media\\ICONS\\"..icon);
 	Frame.texture:SetAllPoints(Frame);
-
+	
 	Frame.CD = CreateFrame("Cooldown", name.."CD", Frame, "CooldownFrameTemplate");
 	Frame.CD:SetAllPoints(Frame);
 	
@@ -103,6 +103,7 @@ local AuraGroup,LargeIconGrpTop,LargeIconGrpBot,SmallIconGrpLeft,SmallIconGrpRig
 AuraGroup = CreateGroup("AuraGroupEle",UIParent);
 LargeIconGrpTop = CreateGroup("LargeIconGrpTopEle",AuraGroup);
 LargeIconGrpBot = CreateGroup("LargeIconGrpBotEle",AuraGroup);
+LargeIconGrpExt = CreateGroup("LargeIconGrpExtEle",AuraGroup);
 SmallIconGrpLeft = CreateGroup("SmallIconGrpLeftEle",AuraGroup);
 SmallIconGrpRight = CreateGroup("SmallIconGrpRightEle",AuraGroup);
 
@@ -111,12 +112,14 @@ InitializeFrames("AscendanceEle",LargeIconGrpBot,"shared\\ascendance",lgIcon);
 InitializeFrames("EarthShock",LargeIconGrpTop,"elemental\\earth_shock",lgIcon,lgGlow);
 InitializeFrames("Earthquake",LargeIconGrpTop,"elemental\\earthquake",lgIcon,lgGlow);
 InitializeFrames("ElementalBlast",LargeIconGrpTop,"elemental\\elemental_blast",lgIcon);
+InitializeFrames("ElementalFocus",LargeIconGrpExt,"elemental\\elemental_focus",lgIcon,nil,true);
 InitializeFrames("ElementalMastery",LargeIconGrpBot,"elemental\\elemental_mastery",lgIcon);
 InitializeFrames("FireElemental",LargeIconGrpBot,"elemental\\fire_elemental",lgIcon);
 InitializeFrames("FlameShock",LargeIconGrpTop,"shared\\flame_shock",lgIcon,lgGlow);
 InitializeFrames("Icefury",LargeIconGrpBot,"elemental\\icefury",lgIcon);
 InitializeFrames("LavaBurstEle",LargeIconGrpTop,"elemental\\lava_burst",lgIcon,lgGlow,true);
 InitializeFrames("LiquidMagmaTotem",LargeIconGrpBot,"totems\\liquid_magma_totem",lgIcon);
+InitializeFrames("PowerOfMaelstrom",LargeIconGrpExt,"elemental\\power_of_the_maelstrom",lgIcon,nil,true);
 InitializeFrames("StormElemental",LargeIconGrpBot,"elemental\\storm_elemental",lgIcon);
 InitializeFrames("Stormkeeper",LargeIconGrpBot,"elemental\\stormkeeper",lgIcon);
 
@@ -132,7 +135,7 @@ InitializeFrames("LightningSurgeTotemEle",SmallIconGrpRight,"totems\\lightning_s
 InitializeFrames("Thunderstorm",SmallIconGrpRight,"elemental\\thunderstorm",smIcon);
 InitializeFrames("VoodooTotemEle",SmallIconGrpLeft,"totems\\voodoo_totem",smIcon);
 InitializeFrames("WindRushTotemEle",SmallIconGrpRight,"totems\\wind_rush_totem",smIcon);
-InitializeFrames("WindShearEle",SmallIconGrpLeft,"shared\\wind_shear",smIcon);
+InitializeFrames("WindShearEle",SmallIconGrpLeft,"shared\\wind_shear",smIcon,smGlow);
 
 -------------------------------------------------------------------------------------------------------
 ----- Initialize Scripts (Aura Groups)
@@ -171,60 +174,14 @@ end);
 
 LargeIconGrpTop:SetScript("OnMouseDown",function(self,button)
 	if (Auras.db.char.config[1].isMoving) then
-		--Auras:ParseClick(true,button,1);
-		--Auras:ShiftPressCheck(self);
 		Auras:MoveOnMouseDown(self,'eleGrp',button);
-		--if (not IsShiftKeyDown() and not IsControlKeyDown()) then
-		--[[if (not self.shift and not self.control) then
-			local framePt,_,parentPt,x,y = self:GetPoint(1)
-			self.framePt = framePt
-			self.parentPt = parentPt
-			self.frameX = x
-			self.frameY = y
-			self:StartMoving()
-			_,_,_,x,y = self:GetPoint(1)
-			self.screenX = x
-			self.screenY = y
-		elseif (not self.shift and self.control and button == "RightButton") then
-			Auras:ResetAuraGroupPosition('eleGrp',self:GetName())
-			--local frame = Auras.db.char.frames.defaultPos[name:lower().."Grp"][self:GetName()];
-
-			--self:SetPoint(frame.point,SSA[frame.relativeTo],frame.relativePoint,frame.x,frame.y);
-		end]]
 	end
 end);
 
 LargeIconGrpTop:SetScript("OnMouseUp",function(self,button)
-	--Auras:ParseClick(false,button,1);
 	if (Auras.db.char.config[1].isMoving) then
 		Auras:MoveOnMouseUp(self,'eleGrp',button);
 	end
-	--[[local framePt,_,parentPt,x,y = self:GetPoint(1)
-	if (self.shift and IsShiftKeyDown()) then
-		if (button == "LeftButton") then
-			self:SetPoint("CENTER",self:GetParent(),"CENTER",0,y);
-		elseif (button == "RightButton") then
-			self:SetPoint("CENTER",self:GetParent(),"CENTER",x,0);
-		elseif (button == "MiddleButton") then
-			self:SetPoint("CENTER",self:GetParent(),"CENTER",0,0);
-		end
-	elseif (self.shift and not IsShiftKeyDown()) then
-		Auras:ResetAuraGroupPosition('eleGrp',self:GetName())
-	else
-		if (not IsControlKeyDown()) then
-			self:StopMovingOrSizing()
-			x = (x - self.screenX) + self.frameX
-			y = (y - self.screenY) + self.frameY
-			self:ClearAllPoints()
-			self:SetPoint(self.framePt, self:GetParent(), self.parentPt, x, y)
-			self.framePt = nil
-			self.parentPt = nil
-			self.frameX = nil
-			self.frameY =nil
-			self.screenX = nil
-			self.screenY = nil
-		end
-	end]]
 end);
 
 LargeIconGrpBot:SetScript("OnUpdate",function(self,button)
@@ -243,6 +200,27 @@ LargeIconGrpBot:SetScript("OnMouseDown",function(self,button)
 end);
 
 LargeIconGrpBot:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.config[1].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
+	end
+end);
+
+LargeIconGrpExt:SetScript("OnUpdate",function(self,button)
+	if (Auras.db.char.config[1].isMoving) then
+		self:SetBackdrop(backdrop);
+		self:SetBackdropColor(0,0,0,0.85);
+	else
+		self:SetBackdrop(nil);
+	end
+end);
+
+LargeIconGrpExt:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.config[1].isMoving) then
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+	end
+end);
+
+LargeIconGrpExt:SetScript("OnMouseUp",function(self,button)
 	if (Auras.db.char.config[1].isMoving) then
 		Auras:MoveOnMouseUp(self,'eleGrp',button);
 	end
@@ -407,7 +385,7 @@ SSA.LavaBurstEle:SetScript("OnUpdate", function(self)
 				self.CD.text:SetText('');
 				--self.ChargeCD:Show();
 			else
-				Auras:ExecuteCooldown(self,chgStart,chgDuration,false);
+				Auras:ExecuteCooldown(self,chgStart,chgDuration,false,false,1);
 				self.Charges.text:SetText('');
 				self.ChargeCD:Hide();
 			end
@@ -430,10 +408,12 @@ SSA.LavaBurstEle:SetScript("OnUpdate", function(self)
 				if (duration > 2) then
 					--[[if (Auras.db.char.cooldowns.swipe) then
 						Auras:ToggleCooldownSwipe(self.CD,true)]]
-						Auras:ToggleOverlayGlow(self.glow,false);
+					
 						--self.CD:Show();
 					--end
-					Auras:ExecuteCooldown(self,start,duration,false);
+					--Auras:ToggleCooldownSwipe(self.CD,1)
+					Auras:ToggleOverlayGlow(self.glow,false);
+					Auras:ExecuteCooldown(self,start,duration,false,false,1);
 					self.CD:Show();
 				elseif (buff or ascendance) then
 					if (buff) then
@@ -445,17 +425,19 @@ SSA.LavaBurstEle:SetScript("OnUpdate", function(self)
 						self.Charges.text:SetText('');
 						self.ChargeCD:Hide();
 					end
-					Auras:ToggleCooldownSwipe(self.CD,false)
+					--Auras:ToggleCooldownSwipe(self.CD,1,true)
 					self.CD:Hide();
 					self.CD:SetCooldown(0,0);
 				else
-					Auras:ToggleCooldownSwipe(self.CD,false)
+					--Auras:ToggleCooldownSwipe(self.CD,false)
 					Auras:ToggleOverlayGlow(self.glow,false);
 					self.CD.text:SetText('');
 				end
 			--end
 		end
-			
+		
+		--Auras:ToggleCooldown(self,1,true);
+		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
@@ -511,7 +493,7 @@ SSA.Stormkeeper:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -535,7 +517,7 @@ SSA.EarthElemental:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -559,7 +541,7 @@ SSA.FireElemental:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -583,7 +565,7 @@ SSA.StormElemental:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -607,7 +589,7 @@ SSA.AncestralGuidanceEle:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -631,7 +613,7 @@ SSA.AscendanceEle:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -655,7 +637,7 @@ SSA.AstralShiftEle:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -679,7 +661,7 @@ SSA.CleanseSpiritEle:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -703,7 +685,7 @@ SSA.EarthgrabTotemEle:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -727,14 +709,46 @@ SSA.ElementalBlast:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
 		end
 		
 		Auras:SpellRangeCheck(self,117014,true,1);		
+		--Auras:ToggleCooldown(self,1);
 		
+		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
+			self:SetAlpha(1);
+		else
+			self:SetAlpha(Auras.db.char.triggers[1].OoCAlpha)
+		end
+	else
+		Auras:ToggleAuraVisibility(self,false,'showhide');
+	end
+end);
+
+-- Elemental Focus
+SSA.ElementalFocus:SetScript("OnUpdate",function(self)
+	if (Auras:CharacterCheck(1)) then
+		local buff,_,_,count,_,duration,expires,caster = UnitBuff('player',Auras:GetSpellName(16246));
+		
+		Auras:ToggleAuraVisibility(self,true,'showhide');
+		
+		if ((duration or 0) > 2) then
+			Auras:ExecuteCooldown(self,(expires - duration),duration,false,false,1);
+			self.CD:Show();
+		else
+			self.CD:Hide();
+		end
+		
+		self.CD.text:SetText('');
+		if ((count or 0) >= 1) then
+			self.Charges.text:SetText(count);
+		else
+			self.Charges.text:SetText('');
+		end
+			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
@@ -753,7 +767,7 @@ SSA.ElementalMastery:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -777,7 +791,7 @@ SSA.GustWindEle:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -801,7 +815,7 @@ SSA.HexEle:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -828,7 +842,7 @@ SSA.Icefury:SetScript("OnUpdate",function(self)
 		Auras:SpellRangeCheck(self,210714,true,1);	
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -852,7 +866,7 @@ SSA.LightningSurgeTotemEle:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -876,12 +890,43 @@ SSA.LiquidMagmaTotem:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
 		end
 			
+		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
+			self:SetAlpha(1);
+		else
+			self:SetAlpha(Auras.db.char.triggers[1].OoCAlpha)
+		end
+	else
+		Auras:ToggleAuraVisibility(self,false,'showhide');
+	end
+end);
+
+-- Power of the Maelstrom
+SSA.PowerOfMaelstrom:SetScript("OnUpdate",function(self)
+	if (Auras:CharacterCheck(1)) then
+		local buff,_,_,count,_,duration,expires,caster = UnitBuff('player',Auras:GetSpellName(191877));
+		
+		Auras:ToggleAuraVisibility(self,true,'showhide');
+		
+		if ((duration or 0) > 2) then
+			Auras:ExecuteCooldown(self,(expires - duration),duration,false,false,1);
+			self.CD:Show();
+		else
+			self.CD:Hide();
+		end
+		
+		self.CD.text:SetText('');
+		if ((count or 0) >= 1) then
+			self.Charges.text:SetText(count);
+		else
+			self.Charges.text:SetText('');
+		end
+		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
@@ -900,7 +945,7 @@ SSA.Thunderstorm:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -924,7 +969,7 @@ SSA.VoodooTotemEle:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
@@ -944,17 +989,24 @@ end);
 SSA.WindShearEle:SetScript("OnUpdate",function(self)
 	if (Auras:CharacterCheck(1)) then
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(57994));
+		local name,_,_,_,_,_,_,_,interrupt = UnitCastingInfo('target');
 		
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		Auras:SpellRangeCheck(self,57994,true,1);
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false);
+			Auras:ExecuteCooldown(self,start,duration,false,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
 		end
-			
+		
+		if (name and not interrupt and (start or 0) == 0) then
+			Auras:ToggleOverlayGlow(self.glow,true,true);
+		else
+			Auras:ToggleOverlayGlow(self.glow,false);
+		end
+		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
@@ -973,12 +1025,14 @@ SSA.WindRushTotemEle:SetScript("OnUpdate",function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true);
+			Auras:ExecuteCooldown(self,start,duration,true,false,1);
 			self.CD:Show();
 		else
 			self.CD:Hide();
 		end
-			
+		
+		
+		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
@@ -1436,27 +1490,31 @@ local xOffset = {
 
 BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 	if (Auras:CharacterCheck(1)) then
-		--SSA.DataFrame.text:SetText('Num Buffs: '..getn(buffTable).."\n\n");
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		local xPosCtr = 1;
-		for i=1,getn(buffTable) do
-			local buff,_,_,_,_,duration,expires = UnitBuff('player',Auras:GetSpellName(buffTable[i]));
-			--SSA.DataFrame.text:SetText(Auras:CurText('DataFrame')..i..". "..tostring(Auras:GetSpellName(buffTable[i])).."\n");
+
+		for i=1,50 do
+			local buff,_,_,_,_,duration,expires,caster,_,_,spellID = UnitBuff('player',i);
+
 			if (buff) then
-				if (Auras.db.char.aura[1][buffIDs[buffTable[i]]:GetName()]) then
-					local timer,seconds = Auras:parseTime(expires - GetTime(),true);
-					
-					buffIDs[buffTable[i]]:SetMinMaxValues(0,duration);
-					buffIDs[buffTable[i]]:SetValue(seconds);
-					buffIDs[buffTable[i]].timetext:SetText(timer);
-					buffIDs[buffTable[i]]:SetPoint("LEFT",xPos[xPosCtr],0);
-					buffIDs[buffTable[i]]:Show();
-					xPosCtr = xPosCtr + 1;
-				else
-					buffIDs[buffTable[i]]:Hide();
-					--table.remove(buffTable,i);
+				if (buffIDs[spellID]) then
+					if (Auras.db.char.aura[1][buffIDs[spellID]:GetName()]) then
+						local timer,seconds = Auras:parseTime(expires - GetTime(),true);
+						
+						buffIDs[spellID]:SetMinMaxValues(0,duration);
+						buffIDs[spellID]:SetValue(seconds);
+						buffIDs[spellID].timetext:SetText(timer);
+						buffIDs[spellID]:SetPoint("LEFT",xPos[xPosCtr],0);
+						buffIDs[spellID]:Show();
+						
+						xPosCtr = xPosCtr + 1;
+					else
+						buffIDs[spellID]:Hide();
+					end
 				end
+			else
+				break;
 			end
 		end
 		
@@ -2139,7 +2197,7 @@ EventFrame:SetScript("OnEvent",function(self,event,...)
 				if (buffIDs[spellID]) then
 					local isValidBuff = false;
 
-					if ((spellID == 108271 and Auras.db.char.aura[1].AstralShiftBarEle) or (spellID == 114050 and Auras.db.char.aura[1].AscendanceBarEle) or (spellID == 108281 and Auras.db.char.aura[1].AncestralGuidanceBarEle) or (spellID == 2825 and Auras.db.char.aura[1].BloodlustBarEle) or ((spellID == 173183 or spellID == 173184 or spellID == 118522) and Auras.db.char.aura[1].ElementalBlastCritBar) or (spellID == 16166 and Auras.db.char.aura[1].ElementalMasteryBar) or (spellID == 32182 and Auras.db.char.aura[1].HeroismBarEle) or (spellID == 80353 and Auras.db.char.aura[1].TimeWarpBarEle)) then
+					if ((spellID == 108271 and Auras.db.char.aura[1].AstralShiftBarEle) or (spellID == 114050 and Auras.db.char.aura[1].AscendanceBarEle) or (spellID == 108281 and Auras.db.char.aura[1].AncestralGuidanceBarEle) or (spellID == 2825 and Auras.db.char.aura[1].BloodlustBarEle) or ((spellID == 173183 or spellID == 173184 or spellID == 118522) and Auras.db.char.aura[1].ElementalBlastCritBar) or (spellID == 16166 and Auras.db.char.aura[1].ElementalMasteryBar) or (spellID == 32182 and Auras.db.char.aura[1].HeroismBarEle)) then
 						isValidBuff = true;
 					end
 					
@@ -2185,6 +2243,20 @@ EventFrame:SetScript("OnEvent",function(self,event,...)
 					end
 				end
 			end
+		else
+			if (subevent == "SPELL_AURA_APPLIED") then
+				if (buffIDs[spellID]) then
+					local isValidBuff = false;
+
+					if ((spellID == 2825 and Auras.db.char.aura[1].BloodlustBarEle) or (spellID == 32182 and Auras.db.char.aura[1].HeroismBarEle) or (spellID == 80353 and Auras.db.char.aura[1].TimeWarpBarEle)) then
+						isValidBuff = true;
+					end
+					
+					if (isValidBuff and not tContains(buffTable,spellID)) then
+						table.insert(buffTable,spellID);
+					end
+				end
+			end
 		end
 	end
 end);
@@ -2213,30 +2285,35 @@ SSA.AuraObjectsEle = {
 	},
 	[4] = {
 		alpha = nil,
-		object = SmallIconGrpLeft,
+		object = LargeIconGrpExt,
 		backdrop = 'BackdropSB',
 	},
 	[5] = {
 		alpha = nil,
-		object = SmallIconGrpRight,
+		object = SmallIconGrpLeft,
 		backdrop = 'BackdropSB',
 	},
 	[6] = {
 		alpha = nil,
-		object = BuffTimerBarGrp,
+		object = SmallIconGrpRight,
 		backdrop = 'BackdropSB',
 	},
 	[7] = {
 		alpha = nil,
-		object = MainTimerBarGrp,
+		object = BuffTimerBarGrp,
 		backdrop = 'BackdropSB',
 	},
 	[8] = {
 		alpha = nil,
-		object = UtilTimerBarGrp,
+		object = MainTimerBarGrp,
 		backdrop = 'BackdropSB',
 	},
 	[9] = {
+		alpha = nil,
+		object = UtilTimerBarGrp,
+		backdrop = 'BackdropSB',
+	},
+	[10] = {
 		alpha = true,
 		object = MaelstromBar,
 		statusbar = {
@@ -2246,7 +2323,7 @@ SSA.AuraObjectsEle = {
 			m = 100,
 		},
 	},
-	[10] = {
+	[11] = {
 		alpha = false,
 		object = IcefuryBar,
 		statusbar = {
@@ -2256,12 +2333,12 @@ SSA.AuraObjectsEle = {
 			m = 4,
 		},
 	},
-	[11] = {
+	[12] = {
 		alpha = false,
 		object = TotemMastery,
 		backdrop = 'BackdropSB',
 	},
-	[12] = {
+	[13] = {
 		model = {
 			[1] = StormkeeperCharges.Charge1,
 			[2] = StormkeeperCharges.Charge2,

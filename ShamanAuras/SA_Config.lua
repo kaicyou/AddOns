@@ -5,7 +5,13 @@ local Auras = LibStub("AceAddon-3.0"):GetAddon("ShamanAuras")
 
 local TimeClock = CreateFrame("Frame");
 local function CheckElementalDefaultValues(options,group,subgroup)
-	if (group == "Maelstrom") then
+	if (group == "Cooldowns") then
+		if (Auras.db.char.config[1].cooldown.sweep) then
+			options.args.config.args.cooldown.args.inverse.disabled = false;
+		else
+			options.args.config.args.cooldown.args.inverse.disabled = true;
+		end
+	elseif (group == "Maelstrom") then
 		if (subgroup == "Alpha" or subgroup == "All") then
 			if (Auras.db.char.config[1].maelstromBar.alphaOoC ~= Auras.db.char.config.default.alphaOoC) then
 				options.args.config.args.maelstromBar.args.alphaTarget.disabled = true;
@@ -73,7 +79,13 @@ local function CheckElementalDefaultValues(options,group,subgroup)
 end
 
 local function CheckEnhancementDefaultValues(options,group,subgroup)
-	if (group == "Maelstrom") then
+	if (group == "Cooldowns") then
+		if (Auras.db.char.config[2].cooldown.sweep) then
+			options.args.config.args.cooldown.args.inverse.disabled = false;
+		else
+			options.args.config.args.cooldown.args.inverse.disabled = true;
+		end
+	elseif (group == "Maelstrom") then
 		if (subgroup == "Alpha" or subgroup == 'All') then
 			if (Auras.db.char.config[2].maelstromBar.alphaOoC ~= Auras.db.char.config.default.alphaOoC) then
 				options.args.config.args.maelstromBar.args.alphaTarget.disabled = true;
@@ -125,7 +137,13 @@ local function CheckEnhancementDefaultValues(options,group,subgroup)
 end
 
 local function CheckRestorationDefaultValues(options,group,subgroup)
-	if (group == "Triggers") then
+	if (group == "Cooldowns") then
+		if (Auras.db.char.config[3].cooldown.sweep) then
+			options.args.config.args.cooldown.args.inverse.disabled = false;
+		else
+			options.args.config.args.cooldown.args.inverse.disabled = true;
+		end
+	elseif (group == "Triggers") then
 		if (Auras.db.char.triggers[3].OoCAlpha ~= Auras.db.char.triggers.default.OoCAlpha or Auras.db.char.triggers[3].flameShock ~= Auras.db.char.triggers.default[3].flameShock or Auras.db.char.triggers[3].OoRColor.r ~= Auras.db.char.triggers.default.OoRColor.r or Auras.db.char.triggers[3].OoRColor.g ~= Auras.db.char.triggers.default.OoRColor.g or Auras.db.char.triggers[3].OoRColor.b ~= Auras.db.char.triggers.default.OoRColor.b or Auras.db.char.triggers[3].OoRColor.a ~= Auras.db.char.triggers.default.OoRColor.a) then
 			options.args.config.args.triggers.args.reset.disabled = false;
 			options.args.config.args.triggers.args.reset.name = "|cFFFFCC00"..L["Reset Trigger Values"].."|r";
@@ -280,8 +298,20 @@ local function GetElementalOptions()
 										Auras:UpdateTalents()
 									end,
 								},
-								ElementalMastery = {
+								ElementalFocus = {
 									order = 6,
+									type = "toggle",
+									name = L["Elemental Focus"],
+									get = function()
+										return Auras.db.char.aura[1].ElementalFocus;
+									end,
+									set = function(_, value)
+										Auras.db.char.aura[1].ElementalFocus = value
+										Auras:UpdateTalents()
+									end,
+								},
+								ElementalMastery = {
+									order = 7,
 									type = "toggle",
 									name = L["Elemental Mastery"],
 									get = function()
@@ -293,7 +323,7 @@ local function GetElementalOptions()
 									end,
 								},
 								FireElemental = {
-									order = 7,
+									order = 8,
 									type = "toggle",
 									name = L["Fire Elemental"],
 									get = function() 
@@ -305,7 +335,7 @@ local function GetElementalOptions()
 									end,
 								},
 								FlameShock = {
-									order = 8,
+									order = 9,
 									type = "toggle",
 									name = L["Flame Shock"],
 									get = function()
@@ -317,7 +347,7 @@ local function GetElementalOptions()
 									end,
 								},
 								Icefury = {
-									order = 9,
+									order = 10,
 									type = "toggle",
 									name = L["Icefury"],
 									get = function() 
@@ -329,7 +359,7 @@ local function GetElementalOptions()
 									end,
 								},
 								LavaBurst = {
-									order = 10,
+									order = 11,
 									type = "toggle",
 									name = L["Lava Burst"],
 									get = function()
@@ -341,7 +371,7 @@ local function GetElementalOptions()
 									end,
 								},
 								LiquidMagmaTotem = {
-									order = 11,
+									order = 12,
 									type = "toggle",
 									name = L["Liquid Magma Totem"],
 									get = function()
@@ -352,8 +382,20 @@ local function GetElementalOptions()
 										Auras:UpdateTalents()
 									end,
 								},
+								PowerOfMaelstrom = {
+									order = 13,
+									type = "toggle",
+									name = L["Power of the Maelstrom"],
+									get = function()
+										return Auras.db.char.aura[1].PowerOfMaelstrom;
+									end,
+									set = function(_, value)
+										Auras.db.char.aura[1].PowerOfMaelstrom = value
+										Auras:UpdateTalents()
+									end,
+								},
 								StormElemental = {
-									order = 12,
+									order = 14,
 									type = "toggle",
 									name = L["Storm Elemental"],
 									get = function() 
@@ -365,7 +407,7 @@ local function GetElementalOptions()
 									end,
 								},
 								Stormkeeper = {
-									order = 13,
+									order = 15,
 									type = "toggle",
 									name = L["Stormkeeper"],
 									get = function() 
@@ -767,34 +809,66 @@ local function GetElementalOptions()
 					type = "group",
 					disabled = true,
 					args = {
-						MoveAuras = {
+						cooldown = {
+							name = L["Cooldown Settings"],
+							type = "group",
 							order = 1,
-							type = "execute",
-							name = "|cFFFFCC00"..L["Move Elemental Auras"].."|r",
-							--disabled = false,
-							func = function()
-								Auras.db.char.layout[1].isMoving = true;
-								Auras:InitMoveAuraGroups(SSA.AuraObjectsEle,"Ele")
-							end,
+							--disabled = true,
+							guiInline = true,
+							args = {
+								text = {
+									order = 1,
+									name = L["Cooldown Values"],
+									desc = L["Toggle the display of cooldown text/numbers."],
+									type = "toggle",
+									get = function()
+										return Auras.db.char.config[1].cooldown.text;
+									end,
+									set = function(_, value)
+										Auras.db.char.config[1].cooldown.text = value;
+									end,
+								},
+								sweep = {
+									order = 2,
+									name = L["Cooldown Sweep Animation"],
+									desc = L["Toggle the display of the cooldown animation sweep."],
+									type = "toggle",
+									get = function()
+										return Auras.db.char.config[1].cooldown.sweep;
+									end,
+									set = function(_, value)
+										Auras.db.char.config[1].cooldown.sweep = value;
+										
+										if (not value) then
+											ele_options.args.config.args.cooldown.args.inverse.disabled = true;
+										else
+											ele_options.args.config.args.cooldown.args.inverse.disabled = false;
+										end
+									end,
+								},
+								inverse = {
+									order = 3,
+									name = L["Reverse Sweep Animation"],
+									desc = L["Reverses the cooldown animation sweep."],
+									type = "toggle",
+									get = function()
+										return Auras.db.char.config[1].cooldown.inverse;
+									end,
+									set = function(_, value)
+										Auras.db.char.config[1].cooldown.inverse = value;
+									end,
+								},
+							},
 						},
-						ResetAuras = {
+						filler_0 = {
 							order = 2,
-							type = "execute",
-							name = "|cFFFFCC00"..L["Reset Elemental Auras"].."|r",
-							--disabled = false,
-							func = function()
-								Auras:ResetAuraGroups(Auras.db.char.frames.defaultPos.eleGrp,Auras.db.char.frames.eleGrp)
-							end,
-						},
-						fillerOne = {
-							order = 3,
 							type = "description",
 							name = ' ',
 						},
 						triggers = {
 							name = L["Aura Triggers"],
 							type = "group",
-							order = 4,
+							order = 3,
 							--disabled = true,
 							guiInline = true,
 							args = {
@@ -886,15 +960,15 @@ local function GetElementalOptions()
 								},
 							},
 						},
-						fillerTwo = {
-							order = 5,
+						filler_1 = {
+							order = 4,
 							type = "description",
 							name = ' ',
 						},
 						maelstromBar = {
 							name = L["Maelstrom Settings"],
 							type = "group",
-							order = 6,
+							order = 5,
 							--disabled = true,
 							guiInline = true,
 							args = {
@@ -1117,15 +1191,15 @@ local function GetElementalOptions()
 								},
 							},
 						},
-						fillerThree = {
-							order = 7,
+						filler_2 = {
+							order = 6,
 							type = "description",
 							name = ' ',
 						},
 						icefuryBar = {
 							name = L["Icefury Bar Settings"],
 							type = "group",
-							order = 8,
+							order = 7,
 							--disabled = true,
 							guiInline = true,
 							args = {
@@ -1321,13 +1395,37 @@ local function GetElementalOptions()
 					type = "group",
 					disabled = true,
 					args = {
+						MoveAuras = {
+							order = 1,
+							type = "execute",
+							name = "|cFFFFCC00"..L["Move Elemental Auras"].."|r",
+							--disabled = false,
+							func = function()
+								Auras.db.char.layout[1].isMoving = true;
+								Auras:InitMoveAuraGroups(SSA.AuraObjectsEle,"Ele")
+							end,
+						},
+						ResetAuras = {
+							order = 2,
+							type = "execute",
+							name = "|cFFFFCC00"..L["Reset Elemental Auras"].."|r",
+							--disabled = false,
+							func = function()
+								Auras:ResetAuraGroups(Auras.db.char.frames.defaultPos.eleGrp,Auras.db.char.frames.eleGrp)
+							end,
+						},
+						filler_0 = {
+							order = 3,
+							type = "description",
+							name = ' ',
+						},
 						primaryDesc = {
-							order = 0,
+							order = 4,
 							type = "description",
 							name = L["Primary Auras"],
 						},
 						PrimaryOrientation1 = {
-							order = 1,
+							order = 5,
 							type = "select",
 							name = L["Primary Orientation 1"],
 							desc = L["Set the aura orientation to horizontal or vertical."],
@@ -1345,7 +1443,7 @@ local function GetElementalOptions()
 							},
 						},
 						PrimaryOrientation2 = {
-							order = 2,
+							order = 6,
 							type = "select",
 							name = L["Primary Orientation 2"],
 							desc = L["Set the aura orientation to horizontal or vertical."],
@@ -1362,8 +1460,8 @@ local function GetElementalOptions()
 								["Vertical"] = L["Vertical"],
 							},
 						},
-						filler_0 = {
-							order = 3,
+						filler_1 = {
+							order = 7,
 							type = "description",
 							name = ' ',
 						},
@@ -1373,7 +1471,7 @@ local function GetElementalOptions()
 							name = ' ',
 						},]]
 						AuraSizeRow1 = {
-							order = 4,
+							order = 8,
 							type = "range",
 							name = L["Primary Size 1"],
 							desc = L["Determines the size of primary auras in row 1. (Default is 32)"],
@@ -1390,7 +1488,7 @@ local function GetElementalOptions()
 							end,
 						},
 						AuraSpacingRow1 = {
-							order = 5,
+							order = 9,
 							type = "range",
 							name = L["Primary Spacing 1"],
 							desc = L["Determines the spacing of the primary auras in row 1. (Default is 50)"],
@@ -1406,7 +1504,7 @@ local function GetElementalOptions()
 							end,
 						},
 						AuraChargesRow1 = {
-							order = 6,
+							order = 10,
 							type = "range",
 							name = L["Primary Charges 1"],
 							desc = L["Determines the size of the primary charge text in row 1. (Default is 13.5)"],
@@ -1421,13 +1519,13 @@ local function GetElementalOptions()
 								Auras:UpdateTalents();
 							end,
 						},
-						filler_1 = {
-							order = 7,
+						filler_2 = {
+							order = 11,
 							type = "description",
 							name = ' ',
 						},
 						AuraSizeRow2 = {
-							order = 8,
+							order = 12,
 							type = "range",
 							name = L["Primary Size 2"],
 							desc = L["Determines the size of primary auras in row 2. (Default is 32)"],
@@ -1444,7 +1542,7 @@ local function GetElementalOptions()
 							end,
 						},
 						AuraSpacingRow2 = {
-							order = 9,
+							order = 13,
 							type = "range",
 							name = L["Primary Spacing 2"],
 							desc = L["Determines the spacing of the primary auras in row 2. (Default is 50)"],
@@ -1481,7 +1579,7 @@ local function GetElementalOptions()
 							name = ' ',
 						},]]
 						ResetPrimaryLayout = {
-							order = 10,
+							order = 14,
 							type = "execute",
 							--name = "|cFFFFCC00"..L["Reset Primary Layout"].."|r",
 							--disabled = false,
@@ -1500,23 +1598,23 @@ local function GetElementalOptions()
 								Auras:UpdateTalents();
 							end,
 						},
-						filler_2 = {
-							order = 11,
+						filler_3 = {
+							order = 15,
 							type = "description",
 							name = ' ',
 						},
-						filler_3 = {
-							order = 12,
+						filler_4 = {
+							order = 16,
 							type = "description",
 							name = ' ',
 						},
 						secondaryDesc = {
-							order = 13,
+							order = 17,
 							type = "description",
 							name = L["Secondary Auras"],
 						},
 						SecondaryOrientation1 = {
-							order = 14,
+							order = 18,
 							type = "select",
 							name = L["Secondary Orientation 1"],
 							desc = L["Set the aura orientation to horizontal or vertical."],
@@ -1534,7 +1632,7 @@ local function GetElementalOptions()
 							},
 						},
 						SecondaryOrientation2 = {
-							order = 15,
+							order = 19,
 							type = "select",
 							name = L["Secondary Orientation 2"],
 							desc = L["Set the aura orientation to horizontal or vertical."],
@@ -1551,13 +1649,13 @@ local function GetElementalOptions()
 								["Vertical"] = L["Vertical"],
 							},
 						},
-						filler_4 = {
-							order = 16,
+						filler_5 = {
+							order = 20,
 							type = "description",
 							name = ' ',
 						},
 						AuraSizeCol1 = {
-							order = 17,
+							order = 21,
 							type = "range",
 							name = L["Secondary Size 1"],
 							desc = L["Determines the size of secondary auras in column 1. (Default is 25)"],
@@ -1574,7 +1672,7 @@ local function GetElementalOptions()
 							end,
 						},
 						AuraSpacingCol1 = {
-							order = 18,
+							order = 22,
 							type = "range",
 							name = L["Secondary Spacing 1"],
 							desc = L["Determines the spacing of the secondary auras in column 1. (Default is 30)"],
@@ -1611,7 +1709,7 @@ local function GetElementalOptions()
 							name = ' ',
 						},]]
 						AuraSizeCol2 = {
-							order = 19,
+							order = 23,
 							type = "range",
 							name = L["Secondary Size 2"],
 							desc = L["Determines the size of secondary auras in column 2. (Default is 25)"],
@@ -1628,7 +1726,7 @@ local function GetElementalOptions()
 							end,
 						},
 						AuraSpacingCol2 = {
-							order = 20,
+							order = 24,
 							type = "range",
 							name = L["Secondary Spacing 2"],
 							desc = L["Determines the spacing of the secondary auras in column 2. (Default is 30)"],
@@ -1665,7 +1763,7 @@ local function GetElementalOptions()
 							name = ' ',
 						},]]
 						ResetSecondaryLayout = {
-							order = 21,
+							order = 25,
 							type = "execute",
 							--name = "|cFFFFCC00"..L["Reset Secondary Layout"].."|r",
 							--disabled = false,
@@ -2301,32 +2399,66 @@ local function GetEnhancementOptions()
 					type = "group",
 					disabled = true,
 					args = {
-						MoveAuras = {
+						cooldown = {
+							name = L["Cooldown Settings"],
+							type = "group",
 							order = 1,
-							type = "execute",
-							name = "|cFFFFCC00"..L["Move Enhancement Auras"].."|r",
-							func = function()
-								Auras.db.char.layout[2].isMoving = true;
-								Auras:InitMoveAuraGroups(SSA.AuraObjectsEnh,"Enh")
-							end,
+							--disabled = true,
+							guiInline = true,
+							args = {
+								text = {
+									order = 1,
+									name = L["Cooldown Values"],
+									desc = L["Toggle the display of cooldown text/numbers."],
+									type = "toggle",
+									get = function()
+										return Auras.db.char.config[2].cooldown.text;
+									end,
+									set = function(_, value)
+										Auras.db.char.config[2].cooldown.text = value;
+									end,
+								},
+								sweep = {
+									order = 2,
+									name = L["Cooldown Sweep Animation"],
+									desc = L["Toggle the display of the cooldown animation sweep."],
+									type = "toggle",
+									get = function()
+										return Auras.db.char.config[2].cooldown.sweep;
+									end,
+									set = function(_, value)
+										Auras.db.char.config[2].cooldown.sweep = value;
+										
+										if (not value) then
+											enh_options.args.config.args.cooldown.args.inverse.disabled = true;
+										else
+											enh_options.args.config.args.cooldown.args.inverse.disabled = false;
+										end
+									end,
+								},
+								inverse = {
+									order = 3,
+									name = L["Reverse Sweep Animation"],
+									desc = L["Reverses the cooldown animation sweep."],
+									type = "toggle",
+									get = function()
+										return Auras.db.char.config[2].cooldown.inverse;
+									end,
+									set = function(_, value)
+										Auras.db.char.config[2].cooldown.inverse = value;
+									end,
+								},
+							},
 						},
-						ResetAuras = {
+						filler_0 = {
 							order = 2,
-							type = "execute",
-							name = "|cFFFFCC00"..L["Reset Enhancement Auras"].."|r",
-							func = function()
-								Auras:ResetAuraGroups(Auras.db.char.frames.defaultPos.enhGrp,Auras.db.char.frames.enhGrp)
-							end,
-						},
-						fillerOne = {
-							order = 4,
 							type = "description",
 							name = ' ',
 						},
 						triggers = {
 							name = L["Aura Triggers"],
 							type = "group",
-							order = 5,
+							order = 3,
 							guiInline = true,
 							args = {
 								OoCAlpha = {
@@ -2437,15 +2569,15 @@ local function GetEnhancementOptions()
 								},
 							},
 						},
-						fillerTwo = {
-							order = 6,
+						filler_1 = {
+							order = 4,
 							type = "description",
 							name = ' ',
 						},
 						maelstromBar = {
 							name = L["Maelstrom Bar Settings"],
 							type = "group",
-							order = 7,
+							order = 5,
 							guiInline = true,
 							args = {
 								adjust = {
@@ -2673,13 +2805,35 @@ local function GetEnhancementOptions()
 					type = "group",
 					disabled = true,
 					args = {
+						MoveAuras = {
+							order = 1,
+							type = "execute",
+							name = "|cFFFFCC00"..L["Move Enhancement Auras"].."|r",
+							func = function()
+								Auras.db.char.layout[2].isMoving = true;
+								Auras:InitMoveAuraGroups(SSA.AuraObjectsEnh,"Enh")
+							end,
+						},
+						ResetAuras = {
+							order = 2,
+							type = "execute",
+							name = "|cFFFFCC00"..L["Reset Enhancement Auras"].."|r",
+							func = function()
+								Auras:ResetAuraGroups(Auras.db.char.frames.defaultPos.enhGrp,Auras.db.char.frames.enhGrp)
+							end,
+						},
+						filler_0 = {
+							order = 3,
+							type = "description",
+							name = ' ',
+						},
 						primaryDesc = {
-							order = 0,
+							order = 4,
 							type = "description",
 							name = L["Primary Auras"],
 						},
 						PrimaryOrientation1 = {
-							order = 1,
+							order = 5,
 							type = "select",
 							name = L["Primary Orientation 1"],
 							desc = L["Set the aura orientation to horizontal or vertical."],
@@ -2697,7 +2851,7 @@ local function GetEnhancementOptions()
 							},
 						},
 						PrimaryOrientation2 = {
-							order = 2,
+							order = 6,
 							type = "select",
 							name = L["Primary Orientation 2"],
 							desc = L["Set the aura orientation to horizontal or vertical."],
@@ -2714,13 +2868,13 @@ local function GetEnhancementOptions()
 								["Vertical"] = L["Vertical"],
 							},
 						},
-						filler_0 = {
-							order = 3,
+						filler_1 = {
+							order = 6,
 							type = "description",
 							name = ' ',
 						},
 						AuraSizeRow1 = {
-							order = 4,
+							order = 7,
 							type = "range",
 							name = L["Primary Size 1"],
 							desc = L["Determines the size of primary auras in row 1. (Default is 32)"],
@@ -2736,7 +2890,7 @@ local function GetEnhancementOptions()
 							end,
 						},
 						AuraSpacingRow1 = {
-							order = 5,
+							order = 8,
 							type = "range",
 							name = L["Primary Spacing 1"],
 							desc = L["Determines the spacing of the primary auras in row 1. (Default is 50)"],
@@ -2752,7 +2906,7 @@ local function GetEnhancementOptions()
 							end,
 						},
 						AuraChargesRow1 = {
-							order = 6,
+							order = 9,
 							type = "range",
 							name = L["Primary Charges 1"],
 							desc = L["Determines the size of the primary charge text in row 1. (Default is 13.5)"],
@@ -2767,13 +2921,13 @@ local function GetEnhancementOptions()
 								Auras:UpdateTalents();
 							end,
 						},
-						filler_1 = {
-							order = 7,
+						filler_2 = {
+							order = 10,
 							type = "description",
 							name = ' ',
 						},
 						AuraSizeRow2 = {
-							order = 8,
+							order = 11,
 							type = "range",
 							name = L["Primary Size 2"],
 							desc = L["Determines the size of primary auras in row 2. (Default is 32)"],
@@ -2789,7 +2943,7 @@ local function GetEnhancementOptions()
 							end,
 						},
 						AuraSpacingRow2 = {
-							order = 9,
+							order = 12,
 							type = "range",
 							name = L["Primary Spacing 2"],
 							desc = L["Determines the spacing of the primary auras in row 2. (Default is 50)"],
@@ -2805,7 +2959,7 @@ local function GetEnhancementOptions()
 							end,
 						},
 						AuraChargesRow2 = {
-							order = 10,
+							order = 13,
 							type = "range",
 							name = L["Primary Charges 2"],
 							desc = L["Determines the size of the primary charge text in row 2. (Default is 13.5)"],
@@ -2820,13 +2974,13 @@ local function GetEnhancementOptions()
 								Auras:UpdateTalents();
 							end,
 						},
-						filler_2 = {
-							order = 11,
+						filler_3 = {
+							order = 14,
 							type = "description",
 							name = ' ',
 						},
 						ResetPrimaryLayout = {
-							order = 12,
+							order = 15,
 							type = "execute",
 							--name = "|cFFFFCC00"..L["Reset Primary Layout"].."|r",
 							--disabled = false,
@@ -2845,23 +2999,23 @@ local function GetEnhancementOptions()
 								Auras:UpdateTalents();
 							end,
 						},
-						filler_3 = {
-							order = 13,
+						filler_4 = {
+							order = 16,
 							type = "description",
 							name = ' ',
 						},
-						filler_4 = {
-							order = 14,
+						filler_5 = {
+							order = 17,
 							type = "description",
 							name = ' ',
 						},
 						secondaryDesc = {
-							order = 15,
+							order = 18,
 							type = "description",
 							name = L["Secondary Auras"],
 						},
 						SecondaryOrientation1 = {
-							order = 16,
+							order = 19,
 							type = "select",
 							name = L["Secondary Orientation 1"],
 							desc = L["Set the aura orientation to horizontal or vertical."],
@@ -2879,7 +3033,7 @@ local function GetEnhancementOptions()
 							},
 						},
 						SecondaryOrientation2 = {
-							order = 17,
+							order = 20,
 							type = "select",
 							name = L["Secondary Orientation 2"],
 							desc = L["Set the aura orientation to horizontal or vertical."],
@@ -2896,13 +3050,13 @@ local function GetEnhancementOptions()
 								["Vertical"] = L["Vertical"],
 							},
 						},
-						filler_5 = {
-							order = 18,
+						filler_6 = {
+							order = 21,
 							type = "description",
 							name = ' ',
 						},
 						AuraSizeCol1 = {
-							order = 19,
+							order = 22,
 							type = "range",
 							name = L["Secondary Size 1"],
 							desc = L["Determines the size of secondary auras in column 1. (Default is 25)"],
@@ -2918,7 +3072,7 @@ local function GetEnhancementOptions()
 							end,
 						},
 						AuraSpacingCol1 = {
-							order = 20,
+							order = 23,
 							type = "range",
 							name = L["Secondary Spacing 1"],
 							desc = L["Determines the spacing of the secondary auras in column 1. (Default is 30)"],
@@ -2933,13 +3087,13 @@ local function GetEnhancementOptions()
 								Auras:UpdateTalents();
 							end,
 						},
-						filler_6 = {
-							order = 21,
+						filler_7 = {
+							order = 24,
 							type = "description",
 							name = ' ',
 						},
 						AuraSizeCol2 = {
-							order = 22,
+							order = 25,
 							type = "range",
 							name = L["Secondary Size 2"],
 							desc = L["Determines the size of secondary auras in column 2. (Default is 25)"],
@@ -2955,7 +3109,7 @@ local function GetEnhancementOptions()
 							end,
 						},
 						AuraSpacingCol2 = {
-							order = 23,
+							order = 26,
 							type = "range",
 							name = L["Secondary Spacing 2"],
 							desc = L["Determines the spacing of the secondary auras in column 2. (Default is 30)"],
@@ -2970,7 +3124,7 @@ local function GetEnhancementOptions()
 								Auras:UpdateTalents();
 							end,
 						},
-						filler_7 = {
+						filler_8 = {
 							order = 24,
 							type = "description",
 							name = ' ',
@@ -2981,7 +3135,7 @@ local function GetEnhancementOptions()
 							name = ' ',
 						},]]
 						ResetSecondaryLayout = {
-							order = 25,
+							order = 28,
 							type = "execute",
 							--name = "|cFFFFCC00"..L["Reset Secondary Layout"].."|r",
 							--disabled = false,
@@ -3084,8 +3238,20 @@ local function GetRestorationOptions()
 										Auras:UpdateTalents()
 									end,
 								},
-								HealingRain = {
+								GiftOfQueen = {
 									order = 4,
+									type = "toggle",
+									name = L["Gift of the Queen"],
+									get = function() 
+										return Auras.db.char.aura[3].GiftOfQueen;
+									end,
+									set = function(_, value)
+										Auras.db.char.aura[3].GiftOfQueen = value
+										Auras:UpdateTalents()
+									end,
+								},
+								HealingRain = {
+									order = 5,
 									type = "toggle",
 									name = L["Healing Rain"],
 									get = function()
@@ -3097,7 +3263,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								HealingStreamTotem = {
-									order = 5,
+									order = 6,
 									type = "toggle",
 									name = L["Healing Stream Totem"],
 									get = function() 
@@ -3109,7 +3275,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								HealingTideTotem = {
-									order = 6,
+									order = 7,
 									type = "toggle",
 									name = L["Healing Tide Totem"],
 									get = function() 
@@ -3121,7 +3287,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								Riptide = {
-									order = 7,
+									order = 8,
 									type = "toggle",
 									name = L["Riptide"],
 									get = function()
@@ -3129,18 +3295,6 @@ local function GetRestorationOptions()
 									end,
 									set = function(_, value)
 										Auras.db.char.aura[3].Riptide = value
-										Auras:UpdateTalents()
-									end,
-								},
-								UnleashLife = {
-									order = 8,
-									type = "toggle",
-									name = L["Unleash Life"],
-									get = function()
-										return Auras.db.char.aura[3].UnleashLife;
-									end,
-									set = function(_, value)
-										Auras.db.char.aura[3].UnleashLife = value
 										Auras:UpdateTalents()
 									end,
 								},
@@ -3156,8 +3310,20 @@ local function GetRestorationOptions()
 										Auras:UpdateTalents()
 									end,
 								},
-								Wellspring = {
+								UnleashLife = {
 									order = 10,
+									type = "toggle",
+									name = L["Unleash Life"],
+									get = function()
+										return Auras.db.char.aura[3].UnleashLife;
+									end,
+									set = function(_, value)
+										Auras.db.char.aura[3].UnleashLife = value
+										Auras:UpdateTalents()
+									end,
+								},
+								Wellspring = {
+									order = 11,
 									type = "toggle",
 									name = L["Wellspring"],
 									get = function() 
@@ -3169,7 +3335,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								WindRushTotemRes = {
-									order = 11,
+									order = 12,
 									type = "toggle",
 									name = L["Wind Rush Totem"],
 									get = function() 
@@ -3200,8 +3366,20 @@ local function GetRestorationOptions()
 										Auras:UpdateTalents()
 									end,
 								},
-								EarthgrabTotemRes = {
+								EarthenShield = {
 									order = 2,
+									type = "toggle",
+									name = L["Earthen Shield Totem"],
+									get = function()
+										return Auras.db.char.aura[3].EarthenShieldTotem;
+									end,
+									set = function(_, value)
+										Auras.db.char.aura[3].EarthenShieldTotem = value
+										Auras:UpdateTalents()
+									end,
+								},
+								EarthgrabTotemRes = {
+									order = 3,
 									type = "toggle",
 									name = L["Earthgrab Totem"],
 									get = function() 
@@ -3213,7 +3391,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								FlameShockRes = {
-									order = 3,
+									order = 4,
 									type = "toggle",
 									name = L["Flame Shock"],
 									get = function() 
@@ -3225,7 +3403,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								GustWindRes = {
-									order = 4,
+									order = 5,
 									type = "toggle",
 									name = L["Gust of Wind"],
 									get = function() 
@@ -3237,7 +3415,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								Hex = {
-									order = 5,
+									order = 6,
 									type = "toggle",
 									name = L["Hex"],
 									get = function()
@@ -3249,7 +3427,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								LavaBurstRes = {
-									order = 6,
+									order = 7,
 									type = "toggle",
 									name = L["Lava Burst"],
 									get = function() 
@@ -3261,7 +3439,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								LightningSurgeTotemRes = {
-									order = 7,
+									order = 8,
 									type = "toggle",
 									name = L["Lightning Surge Totem"],
 									get = function() 
@@ -3273,7 +3451,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								PurifySpirit = {
-									order = 8,
+									order = 9,
 									type = "toggle",
 									name = L["Purify Spirit"],
 									get = function() 
@@ -3285,7 +3463,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								SpiritwalkersGrace = {
-									order = 9,
+									order = 10,
 									type = "toggle",
 									name = L["Spiritwalker's Grace"],
 									get = function() 
@@ -3297,7 +3475,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								VoodooTotemRes = {
-									order = 10,
+									order = 11,
 									type = "toggle",
 									name = L["Voodoo Totem"],
 									get = function() 
@@ -3309,7 +3487,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								WindShearRes = {
-									order = 11,
+									order = 12,
 									type = "toggle",
 									name = L["Wind Shear"],
 									get = function() 
@@ -3595,32 +3773,66 @@ local function GetRestorationOptions()
 					type = "group",
 					disabled = true,
 					args = {
-						MoveAuras = {
+						cooldown = {
+							name = L["Cooldown Settings"],
+							type = "group",
 							order = 1,
-							type = "execute",
-							name = "|cFFFFCC00"..L["Move Restoration Auras"].."|r",
-							func = function()
-								Auras.db.char.config[3].isMoving = true;
-								Auras:InitMoveAuraGroups(SSA.AuraObjectsRes,"Res")
-							end,
+							--disabled = true,
+							guiInline = true,
+							args = {
+								text = {
+									order = 1,
+									name = L["Cooldown Values"],
+									desc = L["Toggle the display of cooldown text/numbers."],
+									type = "toggle",
+									get = function()
+										return Auras.db.char.config[3].cooldown.text;
+									end,
+									set = function(_, value)
+										Auras.db.char.config[3].cooldown.text = value;
+									end,
+								},
+								sweep = {
+									order = 2,
+									name = L["Cooldown Sweep Animation"],
+									desc = L["Toggle the display of the cooldown animation sweep."],
+									type = "toggle",
+									get = function()
+										return Auras.db.char.config[3].cooldown.sweep;
+									end,
+									set = function(_, value)
+										Auras.db.char.config[3].cooldown.sweep = value;
+										
+										if (not value) then
+											res_options.args.config.args.cooldown.args.inverse.disabled = true;
+										else
+											res_options.args.config.args.cooldown.args.inverse.disabled = false;
+										end
+									end,
+								},
+								inverse = {
+									order = 3,
+									name = L["Reverse Sweep Animation"],
+									desc = L["Reverses the cooldown animation sweep."],
+									type = "toggle",
+									get = function()
+										return Auras.db.char.config[3].cooldown.inverse;
+									end,
+									set = function(_, value)
+										Auras.db.char.config[3].cooldown.inverse = value;
+									end,
+								},
+							},
 						},
-						ResetAuras = {
+						filler_0 = {
 							order = 2,
-							type = "execute",
-							name = "|cFFFFCC00"..L["Reset Restoration Auras"].."|r",
-							func = function()
-								Auras:ResetAuraGroups(Auras.db.char.frames.defaultPos.resGrp,Auras.db.char.frames.resGrp)
-							end,
-						},
-						fillerOne = {
-							order = 3,
 							type = "description",
 							name = ' ',
 						},
 						triggers = {
 							name = L["Aura Triggers"],
 							type = "group",
-							order = 4,
+							order = 3,
 							guiInline = true,
 							args = {
 								OoCAlpha = {
@@ -3695,8 +3907,8 @@ local function GetRestorationOptions()
 								},
 							},
 						},
-						fillerTwo = {
-							order = 5,
+						filler_1 = {
+							order = 4,
 							type = "description",
 							name = ' ',
 						},
@@ -3727,7 +3939,7 @@ local function GetRestorationOptions()
 						earthenShield = {
 							name = L["Earthen Shield Bar Settings"],
 							type = "group",
-							order = 7,
+							order = 5,
 							guiInline = true,
 							args = {
 								adjust = {
@@ -3895,7 +4107,7 @@ local function GetRestorationOptions()
 						tidalWavesBar = {
 							name = L["Tidal Waves Bar Settings"],
 							type = "group",
-							order = 8,
+							order = 6,
 							guiInline = true,
 							args = {
 								adjust = {
@@ -4083,7 +4295,7 @@ local function GetRestorationOptions()
 						manaBar = {
 							name = L["Mana Bar Settings"],
 							type = "group",
-							order = 9,
+							order = 7,
 							guiInline = true,
 							args = {
 								ManaBarAdjust = {
@@ -4333,13 +4545,30 @@ local function GetRestorationOptions()
 					type = "group",
 					disabled = true,
 					args = {
+						MoveAuras = {
+							order = 1,
+							type = "execute",
+							name = "|cFFFFCC00"..L["Move Restoration Auras"].."|r",
+							func = function()
+								Auras.db.char.config[3].isMoving = true;
+								Auras:InitMoveAuraGroups(SSA.AuraObjectsRes,"Res")
+							end,
+						},
+						ResetAuras = {
+							order = 2,
+							type = "execute",
+							name = "|cFFFFCC00"..L["Reset Restoration Auras"].."|r",
+							func = function()
+								Auras:ResetAuraGroups(Auras.db.char.frames.defaultPos.resGrp,Auras.db.char.frames.resGrp)
+							end,
+						},
 						primaryDesc = {
-							order = 0,
+							order = 3,
 							type = "description",
 							name = L["Primary Auras"],
 						},
 						PrimaryOrientation1 = {
-							order = 1,
+							order = 4,
 							type = "select",
 							name = L["Primary Orientation 1"],
 							desc = L["Set the aura orientation to horizontal or vertical."],
@@ -4357,7 +4586,7 @@ local function GetRestorationOptions()
 							},
 						},
 						PrimaryOrientation2 = {
-							order = 2,
+							order = 5,
 							type = "select",
 							name = L["Primary Orientation 2"],
 							desc = L["Set the aura orientation to horizontal or vertical."],
@@ -4375,12 +4604,12 @@ local function GetRestorationOptions()
 							},
 						},
 						filler_0 = {
-							order = 3,
+							order = 6,
 							type = "description",
 							name = ' ',
 						},
 						AuraSizeRow1 = {
-							order = 4,
+							order = 7,
 							type = "range",
 							name = L["Primary Size 1"],
 							desc = L["Determines the size of primary auras in row 1. (Default is 32)"],
@@ -4396,7 +4625,7 @@ local function GetRestorationOptions()
 							end,
 						},
 						AuraSpacingRow1 = {
-							order = 5,
+							order = 8,
 							type = "range",
 							name = L["Primary Spacing 1"],
 							desc = L["Determines the spacing of the primary auras in row 1. (Default is 50)"],
@@ -4412,7 +4641,7 @@ local function GetRestorationOptions()
 							end,
 						},
 						AuraChargesRow1 = {
-							order = 6,
+							order = 9,
 							type = "range",
 							name = L["Primary Charges 1"],
 							desc = L["Determines the size of the primary charge text in row 1. (Default is 13.5)"],
@@ -4428,12 +4657,12 @@ local function GetRestorationOptions()
 							end,
 						},
 						filler_1 = {
-							order = 7,
+							order = 10,
 							type = "description",
 							name = ' ',
 						},
 						AuraSizeRow2 = {
-							order = 8,
+							order = 11,
 							type = "range",
 							name = L["Primary Size 2"],
 							desc = L["Determines the size of primary auras in row 2. (Default is 32)"],
@@ -4449,7 +4678,7 @@ local function GetRestorationOptions()
 							end,
 						},
 						AuraSpacingRow2 = {
-							order = 9,
+							order = 12,
 							type = "range",
 							name = L["Primary Spacing 2"],
 							desc = L["Determines the spacing of the primary auras in row 2. (Default is 50)"],
@@ -4465,12 +4694,12 @@ local function GetRestorationOptions()
 							end,
 						},
 						filler_2 = {
-							order = 10,
+							order = 13,
 							type = "description",
 							name = ' ',
 						},
 						ResetPrimaryLayout = {
-							order = 11,
+							order = 14,
 							type = "execute",
 							--name = "|cFFFFCC00"..L["Reset Primary Layout"].."|r",
 							--disabled = false,
@@ -4489,22 +4718,22 @@ local function GetRestorationOptions()
 							end,
 						},
 						filler_3 = {
-							order = 12,
+							order = 15,
 							type = "description",
 							name = ' ',
 						},
 						filler_4 = {
-							order = 13,
+							order = 16,
 							type = "description",
 							name = ' ',
 						},
 						secondaryDesc = {
-							order = 14,
+							order = 17,
 							type = "description",
 							name = L["Secondary Auras"],
 						},
 						SecondaryOrientation1 = {
-							order = 15,
+							order = 18,
 							type = "select",
 							name = L["Secondary Orientation 1"],
 							desc = L["Set the aura orientation to horizontal or vertical."],
@@ -4522,7 +4751,7 @@ local function GetRestorationOptions()
 							},
 						},
 						SecondaryOrientation2 = {
-							order = 16,
+							order = 19,
 							type = "select",
 							name = L["Secondary Orientation 2"],
 							desc = L["Set the aura orientation to horizontal or vertical."],
@@ -4540,12 +4769,12 @@ local function GetRestorationOptions()
 							},
 						},
 						filler_5 = {
-							order = 17,
+							order = 20,
 							type = "description",
 							name = ' ',
 						},
 						AuraSizeCol1 = {
-							order = 18,
+							order = 21,
 							type = "range",
 							name = L["Secondary Size 1"],
 							desc = L["Determines the size of secondary auras in column 1. (Default is 25)"],
@@ -4561,7 +4790,7 @@ local function GetRestorationOptions()
 							end,
 						},
 						AuraSpacingCol1 = {
-							order = 19,
+							order = 22,
 							type = "range",
 							name = L["Secondary Spacing 1"],
 							desc = L["Determines the spacing of the secondary auras in column 1. (Default is 30)"],
@@ -4577,12 +4806,12 @@ local function GetRestorationOptions()
 							end,
 						},
 						filler_6 = {
-							order = 20,
+							order = 23,
 							type = "description",
 							name = ' ',
 						},
 						AuraSizeCol2 = {
-							order = 21,
+							order = 24,
 							type = "range",
 							name = L["Secondary Size 2"],
 							desc = L["Determines the size of secondary auras in column 2. (Default is 25)"],
@@ -4598,7 +4827,7 @@ local function GetRestorationOptions()
 							end,
 						},
 						AuraSpacingCol2 = {
-							order = 22,
+							order = 25,
 							type = "range",
 							name = L["Secondary Spacing 2"],
 							desc = L["Determines the spacing of the secondary auras in column 2. (Default is 30)"],
@@ -4614,7 +4843,7 @@ local function GetRestorationOptions()
 							end,
 						},
 						AuraChargesCol2 = {
-							order = 23,
+							order = 26,
 							type = "range",
 							name = L["Secondary Charges 2"],
 							desc = L["Determines the size of the secondary charge text in column 2. (Default is 13.5)"],
@@ -4635,7 +4864,7 @@ local function GetRestorationOptions()
 							name = ' ',
 						},]]
 						ResetSecondaryLayout = {
-							order = 24,
+							order = 27,
 							type = "execute",
 							--name = "|cFFFFCC00"..L["Reset Secondary Layout"].."|r",
 							--disabled = false,
@@ -4697,6 +4926,7 @@ function Auras:UpdateInterfaceSettings()
 	end
 	
 	if (spec == 1) then
+		CheckElementalDefaultValues(ele_options,'Cooldowns');
 		CheckElementalDefaultValues(ele_options,'Maelstrom','All');
 		CheckElementalDefaultValues(ele_options,'Triggers');
 		CheckElementalDefaultValues(ele_options,'Primary');
@@ -4710,6 +4940,7 @@ function Auras:UpdateInterfaceSettings()
 		res_options.args.config.disabled = true;
 		res_options.args.layout.disabled = true;
 	elseif (spec == 2) then
+		CheckEnhancementDefaultValues(enh_options,'Cooldowns');
 		CheckEnhancementDefaultValues(enh_options,'Maelstrom','All');
 		CheckEnhancementDefaultValues(enh_options,'Triggers');
 		CheckEnhancementDefaultValues(enh_options,'Primary');
@@ -4722,6 +4953,7 @@ function Auras:UpdateInterfaceSettings()
 		res_options.args.config.disabled = true;
 		res_options.args.layout.disabled = true;
 	elseif (spec == 3) then
+		CheckRestorationDefaultValues(res_options,'Cooldowns');
 		CheckRestorationDefaultValues(res_options,'Triggers');
 		CheckRestorationDefaultValues(res_options,'Primary');
 		CheckRestorationDefaultValues(res_options,'Secondary');

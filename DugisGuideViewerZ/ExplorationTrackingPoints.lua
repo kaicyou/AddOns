@@ -363,7 +363,7 @@ tappend(points["Zangarmarsh:0"],
 	"A:81.00,38.00:863:8", --The Dead Mire Zangarmarsh	 467
 	"A:79.00,64.00:863:1", --Cenarion Refuge Zangarmarsh	 467
 	"A:83.00,82.00:863:11", --Umbrafen Village Zangarmarsh	 467
-	"A:70.00,80.00:863:28", --Darkcrest Shore Zangarmarsh	 467
+	"A:70.00,80.00:863:18", --Darkcrest Shore Zangarmarsh	 467
 	"A:58.00,62.00:863:9", --The Lagoon Zangarmarsh	 467
 	"A:47.00,53.00:863:10", --Twin Spire Ruins Zangarmarsh	 467
 	"A:46.00,63.00:863:3", --Feralfen Village Zangarmarsh	 467
@@ -595,22 +595,22 @@ tappend(points["HowlingFjord:0"],
 	"A:27.00,24.00:1263:4", --Apothecary Camp Howling Fjord	 491
 	"A:30.00,26.00:1263:6", --Steel Gate Howling Fjord	 491
 	"A:45.00,35.00:1263:16", --Skorn Howling Fjord	 491
-	"A:30.00,43.00:1263:21", --Westguard Keep Howling Fjord	 491
+	"A:30.00,43.00:1263:19", --Westguard Keep Howling Fjord	 491
 	"A:39.00,50.00:1263:10", --Ember Clutch Howling Fjord	 491
 	"A:25.00,57.00:1263:1", --Kamagua Howling Fjord	 491
 	"A:35.00,80.00:1263:7", --Scalawag Point Howling Fjord	 491
 	"A:52.00,67.00:1263:15", --New Agamand Howling Fjord	 491
 	"A:50.00,53.00:1263:14", --Halgrind Howling Fjord	 491
-	"A:58.00,46.00:1263:20", --Utgarde Keep Howling Fjord	 491
+	"A:58.00,46.00:1263:18", --Utgarde Keep Howling Fjord	 491
 	"A:57.00,36.00:1263:2", --Cauldros Isle Howling Fjord	 491
-	"A:66.00,39.00:1263:23", --Baleheim Howling Fjord	 491
+	"A:66.00,39.00:1263:21", --Baleheim Howling Fjord	 491
 	"A:68.00,54.00:1263:8", --Nifflevar Howling Fjord	 491
-	"A:72.00,71.00:1263:22", --Baelgun's Excavation Site Howling Fjord	 491
+	"A:72.00,71.00:1263:20", --Baelgun's Excavation Site Howling Fjord	 491
 	"A:77.00,48.00:1263:13", --Ivald's Ruin Howling Fjord	 491
 	"A:78.00,30.00:1263:5", --Vengeance Landing Howling Fjord	 491
 	"A:68.00,27.00:1263:11", --Giants' Run Howling Fjord	 491
 	"A:60.00,15.00:1263:12", --Fort Wildervar Howling Fjord	 491
-	"A:53.00,27.00:1263:19", --The Twisted Glade Howling Fjord	 491
+	"A:53.00,27.00:1263:17", --The Twisted Glade Howling Fjord	 491
 	"A:48.00,10.00:1263:3", --Camp Winterhoof Howling Fjord	 491
 	"A:36.00,10.00:1263:9") --Gjalerbron Howling Fjord	 491
 

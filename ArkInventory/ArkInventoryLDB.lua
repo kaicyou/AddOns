@@ -486,11 +486,6 @@ function ArkInventory.LDB.Mounts:OnTooltipShow( ... )
 		return
 	end
 	
---	if ArkInventory.Collection.Mount.SkillLevel( ) == 0 then
---		self:AddLine( SPELL_FAILED_LOW_CASTLEVEL, 1, 0, 0 )
---		return
---	end
-	
 	self:AddDoubleLine( MODE, ArkInventory.Localise["LDB_MOUNTS_TOOLTIP_SELECTION"] )
 	
 	for mountType in pairs( ArkInventory.Const.MountTypes ) do
@@ -562,7 +557,7 @@ function ArkInventory.LDB.Mounts:OnClick( button )
 		
 	else
 		
-		if UnitInVehicle( "player" ) or IsIndoors( ) or not IsOutdoors( ) or not ArkInventory.Collection.Mount.IsReady( ) or ArkInventory.Collection.Mount.SkillLevel( ) == 0 then
+		if UnitInVehicle( "player" ) or IsIndoors( ) or not IsOutdoors( ) or not ArkInventory.Collection.Mount.IsReady( ) then
 			-- not even going to try
 			return
 		end
@@ -907,7 +902,7 @@ end
 
 function ArkInventory.LDB.Mounts.GetUsable( ignoreActive, forceAlternative )
 	
-	if IsIndoors( ) or not IsOutdoors( ) or not ArkInventory.Collection.Mount.IsReady( ) or ArkInventory.Collection.Mount.SkillLevel( ) == 0 then
+	if IsIndoors( ) or not IsOutdoors( ) or not ArkInventory.Collection.Mount.IsReady( ) then
 		return
 	end
 	

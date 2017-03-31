@@ -460,6 +460,11 @@ P["sle"] = {
 				["size"] = 12,
 				["outline"] = "NONE",
 			},
+			["questFontSuperHuge"] = {
+				["font"] = "PT Sans Narrow",
+				["size"] = 24,
+				["outline"] = "NONE",
+			},
 		},
 	},
 	--Minimap Module
@@ -754,6 +759,11 @@ P["sle"] = {
 					["size"] = 22,
 					["texture"] = "DEFAULT",
 					["customTexture"] = "",
+				},
+				["pvpIconText"] = {
+					["enable"] = false,
+					["xoffset"] = 0,
+					["yoffset"] = 0,
 				},
 				["higherPortrait"] = false,
 				["portraitAlpha"] = 0.35,

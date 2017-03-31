@@ -1,6 +1,13 @@
---	19:43 03.03.2017
+--	1:08 24.03.2017
 
 --[[
+3850
+* 7.2 Update
+* Note: Added ToS bosses
+* Fight Log: added death report for cheath death procs
+* Added scale-bar for options window
+
+
 3845
 * Raid Inspect: Added Trial of Valor and Nighthold achievements
 * Fixed memory leak caused by inspecting
@@ -28,7 +35,7 @@
 ]]
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 3845
+ExRT.V = 3850
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции

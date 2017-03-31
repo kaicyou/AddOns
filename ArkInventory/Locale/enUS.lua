@@ -189,6 +189,9 @@ if not L then return end
 	L["MENU_BAR_MOVE_FAIL_SAME"] = "move failed; the bar is already positioned here, try again"
 	L["MENU_BAR_SORTKEY_TEXT"] = "Assigns the %1$s sort method to bar %2$i"
 	L["MENU_BAR_SORTKEY_DEFAULT_RESET_TEXT"] = "Sets the sort method for bar %1$i back to the default"
+	L["MENU_BAR_COLOUR_BORDER_DEFAULT_TEXT"] = "use the default colour for the border of bar %1$s"
+	L["MENU_BAR_COLOUR_BORDER_CUSTOM_TEXT"] = "use a custom colour for the border of bar %1$s"
+	L["MENU_BAR_COLOUR_BORDER_TEXT"] = "set the colour to use for the border of bar %1$s"
 	L["MENU_BAR_COLOUR_BACKGROUND_DEFAULT_TEXT"] = "use the default colour for the background of bar %1$s"
 	L["MENU_BAR_COLOUR_BACKGROUND_CUSTOM_TEXT"] = "use a custom colour for the background of bar %1$s"
 	L["MENU_BAR_COLOUR_BACKGROUND_TEXT"] = "set the colour to use for the background of bar %1$s"
@@ -414,6 +417,8 @@ if not L then return end
 	L["CONFIG_DESIGN_ITEM_COMPRESS_TEXT"] = "only show this many stacks of an item and hide the rest\n\nuse show hidden items to temporarily see all stacks\n\nset to zero to always display all stacks\n\nNote: displayed stacks may not be the newest or largest"
 	L["CONFIG_DESIGN_ITEM_ITEMCOUNT_SHOW"] = "Item Count"
 	L["CONFIG_DESIGN_ITEM_ITEMCOUNT_SHOW_TEXT"] = "show item stack counts"
+	L["CONFIG_DESIGN_ITEM_UPGRADE"] = "Upgrade arrow"
+	L["CONFIG_DESIGN_ITEM_UPGRADE_TEXT"] = "show the item upgrade arrow"
 	
 	L["CONFIG_DESIGN_ITEM_COOLDOWN_SHOW_TEXT"] = "Display cooldowns"
 	L["CONFIG_DESIGN_ITEM_COOLDOWN_GLOBAL"] = "Update on GCD"

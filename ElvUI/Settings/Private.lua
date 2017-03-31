@@ -21,6 +21,7 @@ V['general'] = {
 		['hideCalendar'] = true,
 	},
 	["classColorMentionsSpeech"] = true,
+	["raidUtility"] = true,
 }
 
 V['bags'] = {
@@ -117,6 +118,7 @@ V['skins'] = {
 		["talkinghead"] = true,
 		["AdventureMap"] = true,
 		["Obliterum"] = true,
+		["Contribution"] = true,
 	},
 }
 

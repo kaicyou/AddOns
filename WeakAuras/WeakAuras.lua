@@ -10,8 +10,8 @@ local _G = _G
 local GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, GetPvpTalentInfo, IsAddOnLoaded, InCombatLockdown
 local LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
     = LoadAddOn, setfenv, UnitName, GetRealmName, UnitGroupRolesAssigned, UnitRace, UnitFactionGroup, IsInRaid
-local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetInstanceInfo, IsInInstance
-    = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetSpecialization, GetInstanceInfo, IsInInstance
+local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
+    = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
 local GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
     = GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
 local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
@@ -33,12 +33,8 @@ WeakAuras.timer = timer
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
--- GLOBALS: WeakAurasTimers WeakAurasAceEvents WeakAurasSaved
--- GLOBALS: FONT_COLOR_CODE_CLOSE RED_FONT_COLOR_CODE
--- GLOBALS: GameTooltip GameTooltip_Hide StaticPopup_Show StaticPopupDialogs STATICPOPUP_NUMDIALOGS DEFAULT_CHAT_FRAME
--- GLOBALS: CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION WorldFrame MAX_TALENT_TIERS MAX_PVP_TALENT_TIERS NUM_TALENT_COLUMNS MAX_PVP_TALENT_COLUMNS
--- GLOBALS: SLASH_WEAKAURAS1 SLASH_WEAKAURAS2 SlashCmdList GTFO UNKNOWNOBJECT C_PetBattles LE_PARTY_CATEGORY_INSTANCE
--- GLOBALS: C_NamePlate NamePlateDriverFrame Lerp Saturate KuiNameplatesPlayerAnchor KuiNameplatesCore ElvUIPlayerNamePlateAnchor
+-- luacheck: globals NamePlateDriverFrame CombatText_AddMessage COMBAT_TEXT_SCROLL_FUNCTION
+-- luacheck: globals Lerp Saturate KuiNameplatesPlayerAnchor KuiNameplatesCore ElvUIPlayerNamePlateAnchor GTFO
 
 local queueshowooc;
 
@@ -207,11 +203,9 @@ local playerLevel = UnitLevel("player");
 
 WeakAuras.currentInstanceType = "none"
 
-local function_strings = WeakAuras.function_strings;
 local anim_function_strings = WeakAuras.anim_function_strings;
 local anim_presets = WeakAuras.anim_presets;
 local load_prototype = WeakAuras.load_prototype;
-local event_prototypes = WeakAuras.event_prototypes;
 
 local levelColors = {
   [0] = "|cFFFFFFFF",
@@ -898,15 +892,11 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     WeakAuras.DestroyEncounterTable()
   end
 
-  local player, realm, spec, role = UnitName("player"), GetRealmName(), GetSpecialization(), UnitGroupRolesAssigned("player");
+  local player, realm, spec, role, zone = UnitName("player"), GetRealmName(), GetSpecialization(), UnitGroupRolesAssigned("player"), GetRealZoneText();
   local zoneId = HBD:GetPlayerZone();
-  local zone = HBD:GetLocalizedMap(zoneId);
   local _, race = UnitRace("player")
-  local faction, localized_faction = UnitFactionGroup("player")
-  -- Hack because there is no second arg for Neutral
-  if faction == "Neutral" then
-    localized_faction = "Neutral"
-  end
+  local faction = UnitFactionGroup("player")
+
   if role == "NONE" then
     if IsInRaid() then
       for i=1,GetNumGroupMembers() do
@@ -930,7 +920,7 @@ function WeakAuras.ScanForLoads(self, event, arg1)
   local _, class = UnitClass("player");
   -- 0:none 1:5N 2:5H 3:10N 4:25N 5:10H 6:25H 7:LFR 8:5CH 9:40N
   local inInstance, Type = IsInInstance()
-  local _, size, difficulty, instanceType, difficultyIndex;
+  local size, difficulty
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
   local inpetbattle = C_PetBattles.IsInBattle()
   local vehicle = UnitInVehicle('player');
@@ -1425,7 +1415,6 @@ function WeakAuras.ResolveCollisions(onFinished)
     end
   end
 
-  local resolved = {};
   local numResolved = 0;
   local currentId = next(collisions);
 
@@ -1437,21 +1426,20 @@ function WeakAuras.ResolveCollisions(onFinished)
     text = baseText,
     button1 = buttonText,
     OnAccept = function(self)
-    -- Do the collision resolution
-    local newId = self.editBox:GetText();
-    if(WeakAuras.OptionsFrame and WeakAuras.OptionsFrame() and WeakAuras.displayButtons and WeakAuras.displayButtons[currentId]) then
-      WeakAuras.displayButtons[currentId].callbacks.OnRenameAction(newId)
-    else
-      local data = WeakAuras.GetData(currentId);
-      if(data) then
-        WeakAuras.Rename(data, newId);
+      -- Do the collision resolution
+      local newId = self.editBox:GetText();
+      if(WeakAuras.OptionsFrame and WeakAuras.OptionsFrame() and WeakAuras.displayButtons and WeakAuras.displayButtons[currentId]) then
+        WeakAuras.displayButtons[currentId].callbacks.OnRenameAction(newId)
       else
-        print("Data not found");
-      end
+        local data = WeakAuras.GetData(currentId);
+        if(data) then
+          WeakAuras.Rename(data, newId);
+        else
+          print("Data not found");
+        end
     end
 
     WeakAuras.CollisionResolved(collisions[currentId][1], collisions[currentId][2], true);
-    resolved[currentId] = newId;
     numResolved = numResolved + 1;
 
     -- Get the next id to resolve
@@ -1573,33 +1561,6 @@ function WeakAuras.Modernize(data)
         load.class.multi[i] = nil;
       end
     end
-  end
-
-  -- Delete conditions fields and convert them to additional triggers
-  if(data.conditions) then
-    data.additional_triggers = data.additional_triggers or {};
-    local condition_trigger = {
-      trigger = {
-        type = "status",
-        unevent = "auto",
-        event = "Conditions"
-      },
-      untrigger = {
-      }
-    }
-    local num = 0;
-    for i,v in pairs(data.conditions) do
-      if(i == "combat") then
-        data.load.use_combat = v;
-      else
-        condition_trigger.trigger["use_"..i] = v;
-        num = num + 1;
-      end
-    end
-    if(num > 0) then
-      tinsert(data.additional_triggers, condition_trigger);
-    end
-    data.conditions = nil;
   end
 
   -- Add dynamic text info to Progress Bars
@@ -2251,7 +2212,8 @@ function WeakAuras.PerformActions(data, type, region)
     if (glow_frame) then
       if (not glow_frame.__WAGlowFrame) then
         glow_frame.__WAGlowFrame = CreateFrame("Frame", nil, glow_frame);
-        glow_frame.__WAGlowFrame:SetAllPoints();
+        glow_frame.__WAGlowFrame:SetAllPoints(glow_frame);
+        glow_frame.__WAGlowFrame:SetSize(glow_frame:GetSize());
       end
       glow_frame = glow_frame.__WAGlowFrame;
     end
@@ -2384,7 +2346,7 @@ function WeakAuras.UpdateAnimations()
       end
     end
   end
-  -- XXX I tried to have animations only update if there are actually animation data to animate upon.
+  -- XXX: I tried to have animations only update if there are actually animation data to animate upon.
   -- This caused all start animations to break, and I couldn't figure out why.
   -- May revisit at a later time.
   --[[
@@ -2679,7 +2641,6 @@ local function wrapTriggerSystemFunction(functionName, mode)
       end
       return triggerSystem[functionName](data, triggernum);
     end
-    return false;
   end
   return func;
 end
@@ -2854,7 +2815,6 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   end
   return tooltipText, debuffType, tonumber(tooltipSize) or 0;
 end
-
 
 local function tooltip_draw()
   GameTooltip:ClearLines();
@@ -3168,7 +3128,6 @@ local function startStopTimers(id, cloneId, triggernum, state)
       timers[id][triggernum] = timers[id][triggernum] or {};
       timers[id][triggernum][cloneId] = timers[id][triggernum][cloneId] or {};
       local record = timers[id][triggernum][cloneId];
-      local createTimer = false;
       if (state.expirationTime == nil) then
         state.expirationTime = GetTime() + state.duration;
         state.resort = true;
@@ -3464,7 +3423,6 @@ local function colorWheel(angle)
   local p = 0;
   local q = 0.75 * (1.0 - ff);
   local t = 0.75 * ff;
-  local r, g, b;
   if (i == 0) then
     return 0.75, t, p;
   elseif (i == 1) then
@@ -3580,7 +3538,6 @@ local function ensureMouseFrame()
     mouseFrame:SetScript("OnUpdate", mouseFrame.moveWithMouse);
     moverFrame:SetScript("OnUpdate", nil);
     wipe(mouseFrame.attachedVisibleFrames);
-
   end
 
   mouseFrame.expand = function(self, id)
@@ -3696,7 +3653,6 @@ local function ensurePRDFrame()
   end
 
   personalRessourceDisplayFrame.OptionsOpened = function()
-
     personalRessourceDisplayFrame:Detach();
     personalRessourceDisplayFrame:SetScript("OnEvent", nil);
     personalRessourceDisplayFrame:ClearAllPoints();

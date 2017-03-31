@@ -1,4 +1,43 @@
 ------------------------------------------------------------------------
+r110 | SweetsourDev | 2017-03-25 02:02:28 -0500 (Sat, 25 Mar 2017) | 6 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r47-beta
+NEW: [All] Wind Shear will now glow when an interruptible cast is being casted. (Thanks, Yukko!)
+NEW: [Restoration] Checkboxes for "Gift of the Queen" and "Earthen Shield Totem" have been added to toggle their display. (Thanks, Foksondydo!)
+NEW: [UI] The "Move" buttons have been relocated to the "Layout" tab for each spec.
+NEW: [All] Cooldown options have been re-added.
+NEW: [All] Ability to reverse cooldown animations has been added.
+------------------------------------------------------------------------
+r109 | SweetsourDev | 2017-03-20 19:31:21 -0500 (Mon, 20 Mar 2017) | 6 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   A /trunk/Media/icons/elemental/elemental_focus.blp
+   A /trunk/Media/icons/elemental/power_of_the_maelstrom.blp
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r46-beta
+NEW: [Elemental] The long awaited auras for "Elemental Focus" and "Power of the Maelstrom" have been added!
+NEW: [UI] Typing "/ssa opt" will now return an error message; directing the user to the correct slash command.
+NEW: [All] The code for the Buff Timer Bars has been re-worked and should no longer behave abnormally when using Bloodlust and Heroism.
+
+FIX: [All] Time Warp's buff timer bar should now appear.
+------------------------------------------------------------------------
 r108 | SweetsourDev | 2017-03-06 17:00:03 -0600 (Mon, 06 Mar 2017) | 4 lines
 Changed paths:
    M /trunk/SA_Core.lua

@@ -1009,6 +1009,8 @@ function module.options:Load()
 					line.apinfo:SetText("")
 					
 					line.back:SetGradientAlpha("HORIZONTAL", 0, 0, 0, 0.5, 0, 0, 0, 0)
+					
+					line.perksData = nil
 				end
 				
 				if (nowDB[i][3] or not parentModule.db.inspectQuery[ name ]) and module.db.page < 3 then
@@ -1027,7 +1029,9 @@ function module.options:Load()
 			module.options.lines[i]:Hide()
 		end
 		
-		module.options.ScrollBar:SetMinMaxValues(1,max(#nowDB-module.db.perPage+1,1),nil,true):UpdateButtons()
+		if not module.options.ScrollBar.ignore then
+			module.options.ScrollBar:SetMinMaxValues(1,max(#nowDB-module.db.perPage+1,1),nil,true):UpdateButtons()
+		end
 		module.options.RaidIlvl()
 	end
 	self.ScrollBar:SetScript("OnValueChanged", module.options.ReloadPage)
@@ -1848,7 +1852,7 @@ function module.options:Load()
 			powersToData[ powerID ] = artifactData[i]
 		end
 		
-		for powerID,button in ipairs(PerksTab.powerIDToPowerButton) do
+		for powerID,button in pairs(PerksTab.powerIDToPowerButton) do
 			button:Hide()
 		end
 		for i, powerID in ipairs(powers) do
@@ -1986,7 +1990,13 @@ function module.options:Load()
 		end
 		local val = self.ScrollBar:GetValue()
 		local newMax = max(count-module.db.perPage+1,1)
-		self.ScrollBar:SetMinMaxValues(1,newMax):SetValue(min(val,newMax))
+		self.ScrollBar:SetMinMaxValues(1,newMax)
+		if val < newMax then
+			val = newMax
+		end
+		self.ScrollBar.ignore = true
+		self.ScrollBar:SetValue(val)
+		self.ScrollBar.ignore = nil
 		
 		module.options.ReloadPage()
 		

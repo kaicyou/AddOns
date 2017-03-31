@@ -4,8 +4,8 @@
 -- Desc: Addon for World of Warcraft
 --
 -- Author: gmz323(Greg)
--- current version: v1.39
--- (c) 2011-2016
+-- current version: v1.40
+-- (c) 2011-2017
 --
 =============================================================================
 
@@ -67,6 +67,10 @@ My Other Addons:
 
 Changelog:
 ==========
+
+v1.40 (2017-03-28)
+------------------
+* update for WoW 7.2 patch
 
 v1.39 (2016-10-25)
 ------------------

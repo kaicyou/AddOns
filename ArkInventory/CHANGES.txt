@@ -1,21 +1,19 @@
 ------------------------------------------------------------------------
-r623 | arkayenro | 2017-02-04 23:40:14 -0600 (Sat, 04 Feb 2017) | 7 lines
+r629 | arkayenro | 2017-03-28 18:16:30 -0500 (Tue, 28 Mar 2017) | 4 lines
 Changed paths:
    M /trunk/ArkInventory.lua
    M /trunk/ArkInventory.toc
-   M /trunk/ArkInventoryLDB.lua
-   M /trunk/ArkInventoryMenu.lua
    M /trunk/ArkInventoryStorage.lua
    M /trunk/ArkInventoryTooltip.lua
-   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.toc
+   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.toc
+   M /trunk/Modules/ArkInventoryRules_Example/ArkInventoryRules_Example.toc
+   M /trunk/Modules/ArkInventorySearch/ArkInventorySearch.toc
    M /trunk/VersionHistory.txt
 
-*3.07.23 (05-FEB-2017)*
- * changed - internal rule id now includes all gem, enchant, suffix and bonusid data to be able to see the different variations (note: does not apply to categories)
- * fixed - issue with debug and displaying which PT sets an item is in
- * added - the green upgrade icon should display when blizzard think the item is an upgrade for you (note, the API is currently returning false for all items so its not actually going to show anything at this point but may later)
- * changed - the green upgrade icon has been moved to the bottom left so as to not overlap the item level text
- * fixed - issue with tooltip rule where it couldnt match against the green <Right click to ...> last line text
+*3.07.25 (29-MAR-2017)*
+ * changed - toc updated to 70200
+ * added - keystone item class to stop error message (still needs work to integrate fully)
 
 ------------------------------------------------------------------------
 

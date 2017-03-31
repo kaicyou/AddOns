@@ -128,8 +128,15 @@ function QuestPOI:Initialize()
 			watchIndex = watchIndex + 1
 		end]]
 		
-		local trackedQuestID = GetSuperTrackedQuestID();
 		
+		local trackedQuestID
+		
+		if waypoint and waypoint.questId then 
+			trackedQuestID = waypoint.questId
+		else 
+			trackedQuestID = GetSuperTrackedQuestID()
+		end
+
 		local worldQuestID
 		
 		if IsLegionPatch then 

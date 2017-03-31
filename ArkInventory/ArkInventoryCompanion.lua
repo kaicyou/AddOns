@@ -476,7 +476,7 @@ local TempData = { -- temporary table for item to spell translations.
 [128281]={sid=189043,mt=0x01}, -- Wild Gladiator's Felblood Gronnling
 [128282]={sid=189044,mt=0x01}, -- Warmongering Gladiator's Felblood Gronnling
 [128311]={sid=189364,mt=0x01}, -- Coalfist Gronnling
-[128425]={sid=189998,mt=0x02}, -- Illidari Felstalker
+[128425]={sid=189998,mt=0x01}, -- Illidari Felstalker
 [128422]={sid=189999,mt=0x02}, -- Grove Warden
 [128480]={sid=190690,mt=0x01}, -- Bristling Hellboar
 [128481]={sid=190690,mt=0x01}, -- Bristling Hellboar

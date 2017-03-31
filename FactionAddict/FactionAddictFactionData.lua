@@ -4,7 +4,7 @@
 --  This file is used to contain basic info about each faction. Including an
 --  icon, alliance/horde, faction id, category and type.
 --
---  (c) 2011-2016 gmz323(Greg)
+--  (c) 2011-2017 gmz323(Greg)
 -----------------------------------------------------------------------------
 
 

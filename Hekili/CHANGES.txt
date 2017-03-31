@@ -1,3 +1,113 @@
+commit b092925522e93f7dc841c85d1d410671679ba3f4
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Mar 28 18:41:56 2017 -0400
+
+    7.2:  Update some PTR data to live.
+
+commit 49d6017332d1d05f0ff9d0908205b2ef4a9daf0c
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Mar 28 18:40:03 2017 -0400
+
+    7.2:  Update Paladin Defaults
+
+commit 3bf3cce2818118cc4a356d93bb3cb9c1461c352f
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Mar 28 18:29:44 2017 -0400
+
+    7.2:  So much stuff.
+    
+    This update note is objectively bad.
+
+commit de640f1f8ced7fc6463ab6a9335c96d6ba723c7a
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sat Mar 18 23:30:31 2017 -0400
+
+    ALPHA:  Try event-driven (with 0.05 ICD) updates instead of interval updates.
+    
+    + Add resource.time_to_XX calculation.
+
+commit 5cbec630ff5d800987bd91140db622507f6d752e
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sat Mar 18 10:52:15 2017 -0400
+
+    Fixes for run_action_list, call_action_list, ...
+    
+    o When an action list's criteria is checked, it will not use padded
+    criteria (i.e., recheck in 0.1s, half-GCD, etc.) because this has caused
+    the addon to test inferior action lists before their criteria are met
+    (blocking higher priority lists).
+    o Added 0.05s of padding to regenerated resource prediction time.  Wew
+    lads!
+
+commit 218a68f4bdca3a9c745e9c1e012e41eb4d74d3c0
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Mar 14 00:22:14 2017 -0400
+
+    Improved Debugging, Incremental Fixes
+    
+    + The debug system will now allow you to generate a text-log of its
+    decision-making process for clearer debugging.  There will be some
+    iterating on this.
+    + The 'Pause' key will generate a snapshot that can be viewed through
+    /hekili.  The 'Pause' key can be set to *just* take a snapshot instead
+    of freezing the display.
+    + Energy/Focus abilities default to a CPU-intensive decision-making
+    process to help offset issues with resource regeneration.  This can be
+    disabled by checking "Low Impact Mode" under general settings.
+    
+    + Added 'Fatigued' to the list of Bloodlust-blocking auras.
+
+commit 33b10ee32a612e0aa8b745f507d36dec4c02207a
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Feb 27 00:24:55 2017 -0500
+
+    FIXES
+    
+    o Reset the delay after advance to the cast time of a selected action
+    (failing to do so could cause distortions in the predicted game state,
+    i.e. if the addon had a delay of 0.5s to refresh a buff that was falling
+    off in 0.75s, when the addon advanced 0.5s then tried to update, it
+    would result in checking buff duration at 0.5s + 0.5s and the buff would
+    already be down).  Discussing time offsets is a pain in the ass and I
+    understand why Murozond would want to destroy the timeline.
+    o Time Script and Conditions debugging will have more accurate and
+    useful information.
+    o Added 'time_to_max_charges' attribute to cooldowns.
+    o Removed an error() call that just annoyed me; it should've known
+    better than to mess with me.
+    o Removed more tick-based regen stuff, just using time seems to work
+    better.
+
+commit 08b86c4d6376002b929da7e210b2cc3cf11b7d90
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sat Feb 25 18:20:32 2017 -0500
+
+    Debug Info, Resource Ticks
+    
+    o Fix for debug tooltip; show the amount of resources when an entry is
+    recommended.
+    o Turn off tick-based resource regeneration prediction for a bit.
+
+commit 369dcbaf04526c4afe68f1a4674cbf235092eecc
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sat Feb 25 01:31:14 2017 -0500
+
+    Pet stuff, channel stuff.
+
+commit 8800504c77628b000c1da9fc225ab6f0f9d0fd26
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Feb 24 22:42:10 2017 -0500
+
+    Display Updates, Forced Updates, Remove Rounding
+    
+    o Display Updates will happen more frequently (even if the
+    recommendations haven't been refreshed).  This helps text timers work
+    properly.
+    o Talent-swapping and cooldown toggling will force immediate
+    recommendation updates.
+    o Remove a lot of rounding that wasn't needed after the refresh bug was
+    found.
+
 commit 18efb2692f835c0438045b91098bdebb740d34ad
 Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Mon Feb 20 13:08:53 2017 -0500

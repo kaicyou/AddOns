@@ -1,4 +1,13 @@
 ------------------------------------------------------------------------
+r58 | thaoky.altoholic@yahoo.com | 2017-03-29 14:27:48 -0500 (Wed, 29 Mar 2017) | 3 lines
+Changed paths:
+   M /trunk/DataStore_Talents.lua
+   M /trunk/DataStore_Talents.toc
+
+TOC Update
+Fixed a few issues when scanning artifact data.
+Fixed an issue when artifact XP was updated.
+------------------------------------------------------------------------
 r57 | thaoky.altoholic@yahoo.com | 2017-01-12 13:25:08 -0600 (Thu, 12 Jan 2017) | 1 line
 Changed paths:
    M /trunk/DataStore_Talents.lua

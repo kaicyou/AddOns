@@ -93,7 +93,7 @@ function ArkInventory.JunkSell( )
 		--ArkInventory.Output( "start amount ", GetMoney( ) )
 		ArkInventory.Global.Junk.money = GetMoney( )
 		
-		local limit = ( ArkInventory.db.option.junk.limit and 0 ) or BUYBACK_ITEMS_PER_PAGE
+		local limit = ( ArkInventory.db.option.junk.limit and BUYBACK_ITEMS_PER_PAGE ) or 0
 		
 		for blizzard_id, slot_id, itemLink, itemCount, vendorPrice in ArkInventory.JunkIterate( ) do
 			
@@ -133,6 +133,7 @@ function ArkInventory.JunkSell( )
 			
 		end
 		
+		--ArkInventory.Output( "tried to sell ", ArkInventory.Global.Junk.sold, " items" )
 		-- notifcation is at EVENT_WOW_PLAYER_MONEY
 		
 	end

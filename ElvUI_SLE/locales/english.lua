@@ -378,6 +378,7 @@ please submit ticket at http://git.tukui.org/repooc/elvui-shadowandlight]=]
 L["Additional Datatext Panels"] = true
 L["DP_DESC"] = [=[Additional Datatext Panels.
 8 panels with 20 datatext points total.]=]
+L["Some datatexts that Shadow & Light are supplied with, has settings that can be modified to alter the displayed information."] = true
 L["Sets size of this panel"] = true
 L["Don't show this panel, only datatexts assinged to it"] = true
 L["Override Chat DT Panels"] = true
@@ -444,6 +445,10 @@ L["Order of each toon. Smaller numbers will go first"] = true
 --Enhnced Shadows
 L["Enhanced Shadows"] = true
 L["Use shadows on..."] = true
+L["SLE_EnhShadows_BarButtons_Option"] = "Bar %s Buttons"
+L["SLE_EnhShadows_MicroButtons_Option"] = "Microbar Buttons"
+L["SLE_EnhShadows_StanceButtons_Option"] = "Stance Bar Buttons"
+L["SLE_EnhShadows_PetButtons_Option"] = "Pet Bar Buttons"
 
 --Equip Manager
 L["Equipment Manager"] = true
@@ -476,7 +481,7 @@ L["Swap sets only on specialization change ignoring location change when. Does n
 --Loot
 L["Loot Dropped:"] = true
 L["Loot Auto Roll"] = true
-L["LOOT_AUTO_DESC"] = "Automatically selects an apropriate roll on dropped loot."
+L["LOOT_AUTO_DESC"] = "Automatically selects an appropriate roll on dropped loot."
 L["Auto Confirm"] = true
 L["Automatically click OK on BOP items"] = true
 L["Auto Greed"] = true
@@ -500,8 +505,8 @@ L["Select chat channel to announce loot to."] = true
 L["Loot Roll History"] = true
 L["LOOTH_DESC"] = "These are options for tweaking the Loot Roll History window."
 L["Auto hide"] = true
-L["Automaticaly hides Loot Roll Histroy frame when leaving the instance."] = true
-L["Sets the alpha of Loot Roll Histroy frame."] = true
+L["Automaticaly hides Loot Roll History frame when leaving the instance."] = true
+L["Sets the alpha of Loot Roll History frame."] = true
 L["Channels"] = true
 L["Private channels"] = true
 L["Incoming"] = true
@@ -550,6 +555,7 @@ L["Misc Texts"] = true
 L["Mail Text"] = true
 L["Chat Editbox Text"] = true
 L["Gossip and Quest Frames Text"] = true
+L["Banner Big Text"] = true
 
 --Minimap
 L["Minimap Options"] = true
@@ -633,6 +639,7 @@ L["Actionbar Autocast"] = true
 L["Show glow on bag button"] = true
 L["Show glow on the deconstruction button in bag when deconstruction mode is enabled.\nApplies on next mode toggle."] = true
 L["Scroll"] = true
+L["Missing scroll item for spellID %d. Please report this at the Shadow&Light Ticket Tracker."] = true
 L["Sets style of glow around item available for deconstruction while in deconstruct mode. Autocast is less intence but also less noticeable."] = true
 L["Enchant Scroll Button"] = true
 L["Create a button for applying selected enchant on the scroll."] = true
@@ -825,11 +832,12 @@ L["Castbar Texture"] = true
 L["Red Icon"] = true
 L["Aura Bars Texture"] = true
 L["Higher Overlay Portrait"] = true
+L["Overlay Portrait Alpha"] = true
 L["Makes frame portrait visible regardles of health level when overlay portrait is set."] = true
 L["Classbar Texture"] = true
 L["Resize Health Prediction"] = true
 L["Slightly chages size of health prediction bars."] = true
-L["Always Compare Items"] = true
+L["Custom Texture"] = true
 
 
 --Viewport

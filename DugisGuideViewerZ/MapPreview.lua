@@ -44,6 +44,12 @@ function MP:Initialize()
             delegate(_G["WorldMapFramePOI"..poiIndex], GetNextIndex())                
             poiIndex = poiIndex + 1  
         end
+        
+        local taskPoiIndex = 1
+        while _G["WorldMapFrameTaskPOI"..taskPoiIndex] do
+            delegate(_G["WorldMapFrameTaskPOI"..taskPoiIndex], GetNextIndex())   
+            taskPoiIndex = taskPoiIndex + 1
+        end        
 
 		local numDetails = GetNumberOfDetailTiles()
 		if unconditional or (GetCurrentMapZone() > 0 and DGV:MapHasOverlays()) then
@@ -263,7 +269,7 @@ function MP:Initialize()
 					end					
 				elseif DugisGuideViewer:GuideOn() and DugisGuideViewer.chardb.EssentialsMode ~= 1 then 
 
-					if DGV.actions[DugisGuideUser.CurrentQuestIndex] == "R" then 
+					if DugisGuideViewer:IsModuleRegistered("Guides") and DGV.actions[DugisGuideUser.CurrentQuestIndex] == "R" then 
 						if id and not IsQuestWatchedDugi(poi) and parentIsMap then
 							poi:Hide()
                             if poi.worldQuest then

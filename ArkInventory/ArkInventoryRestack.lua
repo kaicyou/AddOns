@@ -1320,7 +1320,7 @@ end
 
 function ArkInventory.EmptyBag( loc_id, cbag )
 	
-	local cbag = ArkInventory.BagID_Blizzard( loc_id, cbag )
+	local cbag = ArkInventory.InternalIdToBlizzardBagId( loc_id, cbag )
 	
 	if not ( loc_id == ArkInventory.Const.Location.Bag or loc_id == ArkInventory.Const.Location.Bank ) then
 		return

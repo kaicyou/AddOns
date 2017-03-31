@@ -555,43 +555,8 @@ function CA:Setup_CharacterArmory()
 		E:Flash(self.ArtifactMonitor.BarExpected, 1, true)
 		
 		-- Gem Socket
-		for i = 1, C_ArtifactUI.GetEquippedArtifactNumRelicSlots() or 3 do
-			self.ArtifactMonitor['Socket'..i] = CreateFrame('Frame', nil, self.ArtifactMonitor)
-			self.ArtifactMonitor['Socket'..i]:Size(E.db.sle.Armory.Character.Gem.SocketSize)
-			self.ArtifactMonitor['Socket'..i]:SetBackdrop({
-				bgFile = E.media.blankTex,
-				edgeFile = E.media.blankTex,
-				tile = false, tileSize = 0, edgeSize = E.mult,
-				insets = { left = 0, right = 0, top = 0, bottom = 0}
-			})
-			self.ArtifactMonitor['Socket'..i]:SetBackdropColor(0, 0, 0, 1)
-			self.ArtifactMonitor['Socket'..i]:SetBackdropBorderColor(0, 0, 0)
-			self.ArtifactMonitor['Socket'..i]:SetFrameLevel(CharacterFrame_Level + 4)
-			
-			self.ArtifactMonitor['Socket'..i].SlotID = 16
-			self.ArtifactMonitor['Socket'..i].SocketNumber = i
-			
-			self.ArtifactMonitor['Socket'..i].Socket = CreateFrame('Button', nil, self.ArtifactMonitor['Socket'..i])
-			self.ArtifactMonitor['Socket'..i].Socket:SetBackdrop({
-				bgFile = E.media.blankTex,
-				edgeFile = E.media.blankTex,
-				tile = false, tileSize = 0, edgeSize = E.mult,
-				insets = { left = 0, right = 0, top = 0, bottom = 0}
-			})
-			self.ArtifactMonitor['Socket'..i].Socket:SetInside()
-			self.ArtifactMonitor['Socket'..i].Socket:SetFrameLevel(CharacterFrame_Level + 5)
-			self.ArtifactMonitor['Socket'..i].Socket:RegisterForClicks('AnyUp', 'RightButtonDown')
-			self.ArtifactMonitor['Socket'..i].Socket:SetScript('OnEnter', self.OnEnter)
-			self.ArtifactMonitor['Socket'..i].Socket:SetScript('OnLeave', self.OnLeave)
-			self.ArtifactMonitor['Socket'..i].Socket:SetScript('OnClick', self.GemSocket_OnClick)
-			self.ArtifactMonitor['Socket'..i].Socket:SetScript('OnReceiveDrag', self.GemSocket_OnRecieveDrag)
-			
-			self.ArtifactMonitor['Socket'..i].Texture = self.ArtifactMonitor['Socket'..i].Socket:CreateTexture(nil, 'OVERLAY')
-			self.ArtifactMonitor['Socket'..i].Texture:SetTexCoord(.1, .9, .1, .9)
-			self.ArtifactMonitor['Socket'..i].Texture:SetInside()
-			
-			self.ArtifactMonitor['Socket'..i]:Point('CENTER', self.MainHandSlot['Socket'..i])
-		end
+		CA:ConstructArtSockets()
+		
 		self.ArtifactMonitor.SocketWarning = CreateFrame('Button', nil, self.ArtifactMonitor)
 		self.ArtifactMonitor.SocketWarning:Size(E.db.sle.Armory.Character.Enchant.WarningSize)
 		self.ArtifactMonitor.SocketWarning:RegisterForClicks('AnyUp')
@@ -748,7 +713,49 @@ function CA:ClearTooltip(Tooltip)
 	end
 end
 
-local Artifact_ItemID, Artifact_Power, Artifact_Rank, LockedReason
+local Artifact_ItemID, Artifact_Power, Artifact_Rank, Artifact_Tier, LockedReason
+
+function CA:ConstructArtSockets() --Creating gem slots for artifact. Apparently having it to be done on load actually fails
+	local CharacterFrame_Level = CharacterModelFrame:GetFrameLevel()
+	for i = 1, C_ArtifactUI.GetEquippedArtifactNumRelicSlots() or 3 do
+		CA.ArtifactMonitor['Socket'..i] = CreateFrame('Frame', nil, CA.ArtifactMonitor)
+		CA.ArtifactMonitor['Socket'..i]:Size(E.db.sle.Armory.Character.Gem.SocketSize)
+		CA.ArtifactMonitor['Socket'..i]:SetBackdrop({
+			bgFile = E.media.blankTex,
+			edgeFile = E.media.blankTex,
+			tile = false, tileSize = 0, edgeSize = E.mult,
+			insets = { left = 0, right = 0, top = 0, bottom = 0}
+		})
+		CA.ArtifactMonitor['Socket'..i]:SetBackdropColor(0, 0, 0, 1)
+		CA.ArtifactMonitor['Socket'..i]:SetBackdropBorderColor(0, 0, 0)
+		CA.ArtifactMonitor['Socket'..i]:SetFrameLevel(CharacterFrame_Level + 4)
+		
+		CA.ArtifactMonitor['Socket'..i].SlotID = 16
+		CA.ArtifactMonitor['Socket'..i].SocketNumber = i
+		
+		CA.ArtifactMonitor['Socket'..i].Socket = CreateFrame('Button', nil, CA.ArtifactMonitor['Socket'..i])
+		CA.ArtifactMonitor['Socket'..i].Socket:SetBackdrop({
+			bgFile = E.media.blankTex,
+			edgeFile = E.media.blankTex,
+			tile = false, tileSize = 0, edgeSize = E.mult,
+			insets = { left = 0, right = 0, top = 0, bottom = 0}
+		})
+		CA.ArtifactMonitor['Socket'..i].Socket:SetInside()
+		CA.ArtifactMonitor['Socket'..i].Socket:SetFrameLevel(CharacterFrame_Level + 5)
+		CA.ArtifactMonitor['Socket'..i].Socket:RegisterForClicks('AnyUp', 'RightButtonDown')
+		CA.ArtifactMonitor['Socket'..i].Socket:SetScript('OnEnter', CA.OnEnter)
+		CA.ArtifactMonitor['Socket'..i].Socket:SetScript('OnLeave', CA.OnLeave)
+		CA.ArtifactMonitor['Socket'..i].Socket:SetScript('OnClick', CA.GemSocket_OnClick)
+		CA.ArtifactMonitor['Socket'..i].Socket:SetScript('OnReceiveDrag', CA.GemSocket_OnRecieveDrag)
+		
+		CA.ArtifactMonitor['Socket'..i].Texture = CA.ArtifactMonitor['Socket'..i].Socket:CreateTexture(nil, 'OVERLAY')
+		CA.ArtifactMonitor['Socket'..i].Texture:SetTexCoord(.1, .9, .1, .9)
+		CA.ArtifactMonitor['Socket'..i].Texture:SetInside()
+		
+		CA.ArtifactMonitor['Socket'..i]:Point('CENTER', CA.MainHandSlot['Socket'..i])
+	end
+end
+
 function CA:Update_Gear()
 	--[[ Get Player Profession
 	
@@ -765,6 +772,7 @@ function CA:Update_Gear()
 	local Slot, ItemLink, ItemData, BasicItemLevel, TrueItemLevel, ItemUpgradeID, CurrentUpgrade, MaxUpgrade, ItemType, UsableEffect, CurrentLineText, GemID, GemLink, GemTexture, GemCount_Default, GemCount_Now, GemCount, IsTransmogrified
 
 	Artifact_ItemID, _, _, _, Artifact_Power, Artifact_Rank = C_ArtifactUI.GetEquippedArtifactInfo()
+	if not self.ArtifactMonitor.Socket1 then CA:ConstructArtSockets() end
 
 	for _, SlotName in T.pairs(T.type(self.GearUpdated) == 'table' and self.GearUpdated or Info.Armory_Constants.GearList) do
 		Slot = self[SlotName]
@@ -840,15 +848,15 @@ function CA:Update_Gear()
 								
 							self:ClearTooltip(self.ScanTT)
 							self.ScanTT:SetInventoryItem('player', Slot.ID)
-								
+							
 							for i = 1, Slot.GemCount_Enable do
 								LockedReason, _, GemTexture, GemLink = C_ArtifactUI.GetEquippedArtifactRelicInfo(i)
+								if GemLink then GemTexture = T.select(10, T.GetItemInfo(GemLink)) end
 								GemID = Info.Armory_Constants.ArtifactType[Legion_ArtifactData.ItemID][i]
 								R, G, B = unpack(Info.Armory_Constants.GemColor[GemID])
-									
-								if not LockedReason then
+								-- if not LockedReason then
 									GemCount_Now = GemCount_Now + 1
-										
+
 									self.ArtifactMonitor['Socket'..i].Texture:SetTexture(GemTexture)
 									self.ArtifactMonitor['Socket'..i].Socket.Link = GemLink
 									self.ArtifactMonitor['Socket'..i].Socket.Message = nil
@@ -869,15 +877,15 @@ function CA:Update_Gear()
 											Slot['Socket'..i].Socket.Message = format(RELIC_TOOLTIP_TYPE, E:RGBToHex(R, G, B).._G['RELIC_SLOT_TYPE_'..GemID])
 										end
 									end
-								else
-									Slot.GemCount_Enable = Slot.GemCount_Enable - 1
-									if self.ArtifactMonitor['Socket'..i].Socket.Message then
-										self.ArtifactMonitor['Socket'..i].Socket.Message = format(LOCKED_RELIC_TOOLTIP_TITLE, E:RGBToHex(R, G, B).._G['RELIC_SLOT_TYPE_'..GemID])..'|r|n'..LockedReason
-										Slot['Socket'..i].Socket.Message = format(LOCKED_RELIC_TOOLTIP_TITLE, E:RGBToHex(R, G, B).._G['RELIC_SLOT_TYPE_'..GemID])..'|r|n'..LockedReason
-									end
-									self.ArtifactMonitor['Socket'..i].Socket:SetBackdropColor(0, 0, 0, .5)
-									Slot['Socket'..i].Socket:SetBackdropColor(0, 0, 0, .5)
-								end
+								-- else
+									-- Slot.GemCount_Enable = Slot.GemCount_Enable - 1
+									-- if self.ArtifactMonitor['Socket'..i].Socket.Message then
+										-- self.ArtifactMonitor['Socket'..i].Socket.Message = format(LOCKED_RELIC_TOOLTIP_TITLE, E:RGBToHex(R, G, B).._G['RELIC_SLOT_TYPE_'..GemID])..'|r|n'..LockedReason
+										-- Slot['Socket'..i].Socket.Message = format(LOCKED_RELIC_TOOLTIP_TITLE, E:RGBToHex(R, G, B).._G['RELIC_SLOT_TYPE_'..GemID])..'|r|n'..LockedReason
+									-- end
+									-- self.ArtifactMonitor['Socket'..i].Socket:SetBackdropColor(0, 0, 0, .5)
+									-- Slot['Socket'..i].Socket:SetBackdropColor(0, 0, 0, .5)
+								-- end
 									
 								self.ArtifactMonitor['Socket'..i].Socket:SetBackdropBorderColor(R, G, B)
 								self.ArtifactMonitor['Socket'..i].GemType = GemID
@@ -1226,11 +1234,12 @@ do --<< Artifact Monitor >>
 	
 	
 	function CA:LegionArtifactMonitor_UpdateData()
-		Artifact_ItemID, _, _, _, Artifact_Power, Artifact_Rank = C_ArtifactUI.GetEquippedArtifactInfo()
+		Artifact_ItemID, _, _, _, Artifact_Power, Artifact_Rank,_, _, _, _, _, _, Artifact_Tier = C_ArtifactUI.GetEquippedArtifactInfo()
 		if Artifact_ItemID then
 			Legion_ArtifactData.ItemID = Artifact_ItemID
 			Legion_ArtifactData.Rank = Artifact_Rank
-			Legion_ArtifactData.AvailablePoint, Legion_ArtifactData.XP, Legion_ArtifactData.XPForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(Artifact_Rank, Artifact_Power)
+			Legion_ArtifactData.Tier = Artifact_Tier
+			Legion_ArtifactData.AvailablePoint, Legion_ArtifactData.XP, Legion_ArtifactData.XPForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(Artifact_Rank, Artifact_Power, Artifact_Tier)
 			-- Legion_ArtifactData.RemainXP = Legion_ArtifactData.XPForNextPoint - Legion_ArtifactData.XP --We don't actually use it
 			if E.db.sle.Armory.Character.Artifact.ShortValues then
 				Legion_ArtifactData.Power = E:ShortValue(Legion_ArtifactData.XP)
@@ -1309,7 +1318,8 @@ do --<< Artifact Monitor >>
 								if SearchingPhase == 1 and SearchingText == ARTIFACT_POWER then
 									SearchingPhase = 2
 								elseif SearchingPhase == 2 and SearchingText:find(ITEM_SPELL_TRIGGER_ONUSE) then
-									CurrentItemPower = tonumber(SearchingText:gsub(',', ''):match('%d+'))
+									CurrentItemPower = T.gsub(strmatch(SearchingText, "(%d+[,.%s]%d+)"), "[,.%s]", "")
+									CurrentItemPower = T.tonumber(CurrentItemPower)
 									TotalPower = TotalPower + CurrentItemPower
 									
 									if not LowestPower or LowestPower > CurrentItemPower then

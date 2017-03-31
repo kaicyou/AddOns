@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1775 $
-$Date: 2017-02-05 16:38:11 +1100 (Sun, 05 Feb 2017) $
+$Revision: 1781 $
+$Date: 2017-03-24 10:24:17 +1100 (Fri, 24 Mar 2017) $
 
 ]]--
 
@@ -696,7 +696,7 @@ function ArkInventoryRules.System.tooltip( ... )
 		ArkInventory.TooltipSetHyperlink( ArkInventoryRules.Tooltip, ArkInventoryRules.Object.h )
 	else
 		-- online mode uses specific item tooltip
-		local bliz_id = ArkInventory.BagID_Blizzard( ArkInventoryRules.Object.loc_id, ArkInventoryRules.Object.bag_id )
+		local bliz_id = ArkInventory.InternalIdToBlizzardBagId( ArkInventoryRules.Object.loc_id, ArkInventoryRules.Object.bag_id )
 		ArkInventory.TooltipSetItem( ArkInventoryRules.Tooltip, bliz_id, ArkInventoryRules.Object.slot_id )
 	end
 	
@@ -901,11 +901,15 @@ function ArkInventoryRules.System.outfit_blizzard( ... )
 		local setname = GetEquipmentSetInfo( setnum )
 		local set = GetEquipmentSetLocations( setname )
 		
-		local id, player, bank, bags, void, slot, bag, voidtab, voidslot
+		local loc_id, bag_id, slot_id, id, player, bank, bags, void, slot, bag, voidtab, voidslot
 		
 		for k, location in pairs( set ) do
 			
+			loc_id = nil
+			bag_id = nil
+			slot_id = nil
 			id = nil
+			
 			player, bank, bags, void, slot, bag, voidtab, voidslot = EquipmentManager_UnpackLocation( location )
 			
 --			if void then
@@ -913,14 +917,22 @@ function ArkInventoryRules.System.outfit_blizzard( ... )
 --			end
 			
 			if void and voidtab and voidslot then
+				loc_id = ArkInventory.Const.Location.Void
+				bag_id = ArkInventory.Const.Offset.Void + voidtab
+				slot_id = voidslot
 				id = GetVoidItemInfo( voidtab, voidslot )
 			elseif ( not bags ) and slot then
+				loc_id = ArkInventory.Const.Location.Wearing
+				bag_id = ArkInventory.Const.Offset.Wearing + 1
+				slot_id = slot
 				id = GetInventoryItemID( "player", slot )
 			elseif bag and slot then
+				loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( bag )
+				slot_id = slot
 				id = GetContainerItemID( bag, slot )
 			end
 			
-			if id and ArkInventoryRules.Object.info.id and id == ArkInventoryRules.Object.info.id then
+			if loc_id and bag_id and slot_id and id and ArkInventoryRules.Object.info.id and ArkInventoryRules.Object.loc_id == loc_id and ArkInventoryRules.Object.bag_id == bag_id and ArkInventoryRules.Object.slot_id == slot_id and id == ArkInventoryRules.Object.info.id then
 				--ArkInventory.Output( setname, ":", k, " -> [", ArkInventoryRules.Object.h, " / ", id )
 				tinsert( Outfits, string.trim( setname ) )
 				--ArkInventory.Output( "found ", ArkInventoryRules.Object.h, " in set [", setname, ":", k, "] [", ArkInventoryRules.Object.loc_id, ".", ArkInventoryRules.Object.bag_id, ".", ArkInventoryRules.Object.slot_id, "]" )

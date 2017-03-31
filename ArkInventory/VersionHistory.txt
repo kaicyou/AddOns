@@ -12,6 +12,20 @@
  
 
 
+*3.07.25 (29-MAR-2017)*
+ * changed - toc updated to 70200
+ * added - keystone item class to stop error message (still needs work to integrate fully)
+ 
+*3.07.24 (24-MAR-2017)*
+ * fixed - issue with sell junk limit option being inverted (it still has issues selling large number of items)
+ * added - option to disable showing the upgrade arrow under config > settings > styles / layouts > (id) > items > style > items (disabling shouldnt impact other mods, like pawn, that use it)
+ * fixed - mount issue when reaching level 20 and not purchasing a riding skill locks out all mounts including the chauffered ones that youve been using up to level 20
+ * fixed - illidari felstalker changed from flying to land mount
+ * changed - internal hyperlink (h2) results are now cached, this increases memory use but lowers cpu
+ * added - edit mode menu options for custom bar border colours
+ * changed - edit mode menu for category assignment to a bar changed so that assign is now a menu choice (to make it clear that you have to click on it to assign it, previously you had to click on the category name which wasnt as obvious)
+ * fixed - (maybe) issue with outfit( ) rule and blizzard equipment manager
+
 *3.07.23 (05-FEB-2017)*
  * changed - internal rule id now includes all gem, enchant, suffix and bonusid data to be able to see the different variations (note: does not apply to categories)
  * fixed - issue with debug and displaying which PT sets an item is in
@@ -35,7 +49,7 @@
  
 *3.07.19 (11-NOV-2016)*
  * changed - default itemtype/subtype returns changed from 0/0 to -2/0 so that they dont conflict with consumable/explosives (which is 0/0)
- * changed - items ending up with default itemtype/subtype values will be assigned to the system > unknown category (it should only be temporary until the game returns the correct information)
+ * changed - items ending up with default itemtype/subtype values will be assigned to the2 system > unknown category (it should only be temporary until the game returns the correct information)
  * changed - items in the system > unknown category are no longer cached and should update to their correct category (and get cached) once the game returns the correct information
  * added - option to disable warning for unknown bag type rescans
  

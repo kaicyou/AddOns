@@ -364,10 +364,10 @@ function ArkInventory:EVENT_ARKINV_BAG_UPDATE_BUCKET( bagTable )
 	
 	for blizzard_id in pairs( bagTable ) do
 		ArkInventory.Scan( blizzard_id )
-		if ArkInventory.BagID_Internal( blizzard_id ) == ArkInventory.Const.Location.Bag then
+		if ArkInventory.BlizzardBagIdToInternalId( blizzard_id ) == ArkInventory.Const.Location.Bag then
 			bag_changed = true
 		end
-		--ArkInventory.RestackResume( ArkInventory.BagID_Internal( blizzard_id ) )
+		--ArkInventory.RestackResume( ArkInventory.BlizzardBagIdToInternalId( blizzard_id ) )
 	end
 
 	-- re-scan empty bag slots to wipe their data - no events are triggered when you move a bag from one bag slot into an empty bag slot (for the empty slot, new slot is fine)
@@ -413,7 +413,7 @@ function ArkInventory:EVENT_WOW_BAG_LOCK( event, arg1, arg2 )
 		for blizzard_id = 1, NUM_BAG_SLOTS do
 			local slotName = string.format( "Bag%sSlot", blizzard_id - 1 )
 			if arg1 == GetInventorySlotInfo( slotName ) then
-				local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+				local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 				ArkInventory.ObjectLockChanged( loc_id, bag_id, nil )
 			end
 		end
@@ -428,18 +428,18 @@ function ArkInventory:EVENT_WOW_BAG_LOCK( event, arg1, arg2 )
 	
 			if arg2 <= count then
 				-- item lock
-				local loc_id, bag_id = ArkInventory.BagID_Internal( arg1 )
+				local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( arg1 )
 				ArkInventory.ObjectLockChanged( loc_id, bag_id, arg2 )
 			else
 				-- bag lock
-				local loc_id, bag_id = ArkInventory.BagID_Internal( arg2 - count + NUM_BAG_SLOTS )
+				local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( arg2 - count + NUM_BAG_SLOTS )
 				ArkInventory.ObjectLockChanged( loc_id, bag_id, nil )
 			end
 
 		else
 	
 			-- item lock
-			local loc_id, bag_id = ArkInventory.BagID_Internal( arg1 )
+			local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( arg1 )
 			ArkInventory.ObjectLockChanged( loc_id, bag_id, arg2 )
 			
 		end
@@ -1122,7 +1122,7 @@ function ArkInventory:EVENT_WOW_BAG_UPDATE_COOLDOWN( event, arg1, arg2, arg3, ar
 	--ArkInventory.Output( "EVENT_WOW_BAG_UPDATE_COOLDOWN( ", arg1, " )" )
 	
 	if arg1 then
-		local loc_id = ArkInventory.BagID_Internal( arg1 )
+		local loc_id = ArkInventory.BlizzardBagIdToInternalId( arg1 )
 		ArkInventory:SendMessage( "EVENT_ARKINV_BAG_UPDATE_COOLDOWN_BUCKET", loc_id )
 	else
 		for loc_id, loc_data in pairs( ArkInventory.Global.Location ) do
@@ -1192,8 +1192,6 @@ function ArkInventory:EVENT_WOW_SPELLS_CHANGED( event )
 end
 
 
-
-
 function ArkInventory:EVENT_ARKINV_RESCAN_LOCATION_BUCKET( arg1 )
 	
 	--ArkInventory.Output( "EVENT_ARKINV_RESCAN_LOCATION_BUCKET( ", arg1, " )" )
@@ -1207,8 +1205,7 @@ function ArkInventory:EVENT_ARKINV_RESCAN_LOCATION_BUCKET( arg1 )
 end
 
 
-
-function ArkInventory.BagID_Blizzard( loc_id, bag_id )
+function ArkInventory.InternalIdToBlizzardBagId( loc_id, bag_id )
 	
 	-- converts internal location+bag codes into blizzzard bag ids
 	
@@ -1223,24 +1220,18 @@ function ArkInventory.BagID_Blizzard( loc_id, bag_id )
 	
 end
 
-function ArkInventory.BagID_Internal( blizzard_id )
+function ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	-- converts blizzard bag codes into storage location+bag ids
 	
 	assert( blizzard_id ~= nil, "code failure: blizard_id is nil" )
 	
-	for loc_id, loc_data in pairs( ArkInventory.Global.Location ) do
-		for bag_id, v in pairs( loc_data.Bags ) do
-			if blizzard_id == v then
-				return loc_id, bag_id
-			end
-		end
+	if ArkInventory.Global.Cache.BlizzardBagIdToInternalId[blizzard_id] then
+		return ArkInventory.Global.Cache.BlizzardBagIdToInternalId[blizzard_id].loc_id, ArkInventory.Global.Cache.BlizzardBagIdToInternalId[blizzard_id].bag_id
+	else
+		ArkInventory.OutputError( "unknown blizzard bag id ", blizzard_id )
+		--error( "code failure" )
 	end
-	
-	ArkInventory.OutputError( "unknown blizzard bag id ", blizzard_id )
-	--error( "code failure" )
-	
-	return
 	
 end
 
@@ -1256,7 +1247,7 @@ function ArkInventory.BagType( blizzard_id )
 		return ArkInventory.Const.Slot.Type.ReagentBank
 	end
 	
-	local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	if loc_id == nil then
 		return ArkInventory.Const.Slot.Type.Unknown
@@ -1373,7 +1364,7 @@ function ArkInventory.Scan( bagTable )
 		
 		--local t1 = GetTime( )
 		
-		local loc_id = ArkInventory.BagID_Internal( blizzard_id )
+		local loc_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 		
 		if loc_id == nil then
 			--ArkInventory.OutputWarning( "aborted scan of bag ", blizzard_id, ", not an ", ArkInventory.Const.Program.Name, " controlled bag" )
@@ -1443,7 +1434,7 @@ function ArkInventory.ScanBag( blizzard_id )
 	
 	--ArkInventory.Output( "ScanBag( ", blizzard_id, " )" )
 	
-	local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	if not loc_id then
 		ArkInventory.OutputWarning( "aborted scan of bag [", blizzard_id, "], unknown bag id" )
@@ -1985,7 +1976,7 @@ function ArkInventory.ScanWearing( )
 	--ArkInventory.Output( GREEN_FONT_COLOR_CODE, "ScanWearing( ) start" )
 	
 	local blizzard_id = ArkInventory.Const.Offset.Wearing + 1
-	local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	if not ArkInventory.LocationIsMonitored( loc_id ) then
 		--ArkInventory.Output( RED_FONT_COLOR_CODE, "aborted scan of bag id [", blizzard_id, "], location ", loc_id, " [", ArkInventory.Global.Location[loc_id].Name, "] is not being monitored" )
@@ -2100,7 +2091,7 @@ function ArkInventory.ScanMailInbox( )
 	end
 	
 	local blizzard_id = ArkInventory.Const.Offset.Mail + 1
-	local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	if not ArkInventory.LocationIsMonitored( loc_id ) then
 		--ArkInventory.Output( RED_FONT_COLOR_CODE, "aborted scan of bag id [", blizzard_id, "], location ", loc_id, " [", ArkInventory.Global.Location[loc_id].Name, "] is not being monitored" )
@@ -2302,7 +2293,7 @@ function ArkInventory.ScanMailInbox( )
 	
 	-- clear cached mail sent from other known characters
 	blizzard_id = ArkInventory.Const.Offset.Mail + 2
-	loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+	loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	bag = player.data.location[loc_id].bag[bag_id]
 	
@@ -2325,7 +2316,7 @@ end
 function ArkInventory.ScanMailSentData( )
 	
 	local blizzard_id = ArkInventory.Const.Offset.Mail + 2
-	local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	--ArkInventory.Output( GREEN_FONT_COLOR_CODE, "scaning: ", ArkInventory.Global.Location[loc_id].Name, " [", loc_id, ".", bag_id, "] - [", blizzard_id, "]" )
 	
@@ -2403,7 +2394,7 @@ function ArkInventory.ScanCollectionMount( )
 	end
 	
 	local blizzard_id = ArkInventory.Const.Offset.Mount + 1
-	local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	if not ArkInventory.LocationIsMonitored( loc_id ) then
 		--ArkInventory.Output( RED_FONT_COLOR_CODE, "aborted scan of bag id [", blizzard_id, "], location ", loc_id, " [", ArkInventory.Global.Location[loc_id].Name, "] is not being monitored" )
@@ -2497,7 +2488,7 @@ function ArkInventory.ScanCollectionPet( )
 	end
 	
 	local blizzard_id = ArkInventory.Const.Offset.Pet + 1
-	local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	if not ArkInventory.LocationIsMonitored( loc_id ) then
 		--ArkInventory.Output( RED_FONT_COLOR_CODE, "aborted scan of bag id [", blizzard_id, "], location ", loc_id, " [", ArkInventory.Global.Location[loc_id].Name, "] is not being monitored" )
@@ -2596,7 +2587,7 @@ function ArkInventory.ScanCollectionToy( )
 	end
 	
 	local blizzard_id = ArkInventory.Const.Offset.Toybox + 1
-	local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	if not ArkInventory.LocationIsMonitored( loc_id ) then
 		--ArkInventory.Output( RED_FONT_COLOR_CODE, "aborted scan of bag id [", blizzard_id, "], location ", loc_id, " [", ArkInventory.Global.Location[loc_id].Name, "] is not being monitored" )
@@ -2684,7 +2675,7 @@ function ArkInventory.ScanCollectionHeirloom( )
 	end
 	
 	local blizzard_id = ArkInventory.Const.Offset.Heirloom + 1
-	local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	if not ArkInventory.LocationIsMonitored( loc_id ) then
 		--ArkInventory.Output( RED_FONT_COLOR_CODE, "aborted scan of bag id [", blizzard_id, "], location ", loc_id, " [", ArkInventory.Global.Location[loc_id].Name, "] is not being monitored" )
@@ -2753,7 +2744,7 @@ function ArkInventory.ScanCurrency( )
 	--ArkInventory.Output( "ScanCurrency( ) start" )
 	
 	local blizzard_id = ArkInventory.Const.Offset.Token + 1
-	local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 
 	if not ArkInventory.LocationIsMonitored( loc_id ) then
 		--ArkInventory.Output( RED_FONT_COLOR_CODE, "aborted scan of bag id [", blizzard_id, "], location ", loc_id, " [", ArkInventory.Global.Location[loc_id].Name, "] is not being monitored" )
@@ -2867,7 +2858,7 @@ function ArkInventory.ScanVoidStorage( blizzard_id )
 		return
 	end
 	
-	local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	if not ArkInventory.LocationIsMonitored( loc_id ) then
 		--ArkInventory.Output( RED_FONT_COLOR_CODE, "aborted scan of bag id [", blizzard_id, "], location ", loc_id, " [", ArkInventory.Global.Location[loc_id].Name, "] is not being monitored" )
@@ -2961,7 +2952,7 @@ function ArkInventory.ScanAuction( massive )
 	end
 	
 	local blizzard_id = ArkInventory.Const.Offset.Auction + 1
-	local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	if not ArkInventory.LocationIsMonitored( loc_id ) then
 		--ArkInventory.Output( RED_FONT_COLOR_CODE, "aborted scan of bag id [", blizzard_id, "], location ", loc_id, " [", ArkInventory.Global.Location[loc_id].Name, "] is not being monitored" )
@@ -3063,7 +3054,7 @@ end
 function ArkInventory.ScanAuctionExpire( )
 	
 	local blizzard_id = ArkInventory.Const.Offset.Auction + 1
-	local loc_id, bag_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	local current_time = ArkInventory.TimeAsMinutes( )
 	
@@ -3113,7 +3104,7 @@ function ArkInventory.ScanSpellbook( )
 	
 	local blizzard_id = ArkInventory.Const.Offset.Spellbook + 1
 	
-	local loc_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	if not ArkInventory.LocationIsMonitored( loc_id ) then
 		--ArkInventory.Output( RED_FONT_COLOR_CODE, "aborted scan of bag id [", blizzard_id, "], location ", loc_id, " [", ArkInventory.Global.Location[loc_id].Name, "] is not being monitored" )
@@ -3316,7 +3307,7 @@ function ArkInventory.ScanTradeskill( )
 	
 	local blizzard_id = ArkInventory.Const.Offset.Tradeskill + 1
 	
-	local loc_id = ArkInventory.BagID_Internal( blizzard_id )
+	local loc_id = ArkInventory.BlizzardBagIdToInternalId( blizzard_id )
 	
 	if not ArkInventory.LocationIsMonitored( loc_id ) then
 		--ArkInventory.Output( RED_FONT_COLOR_CODE, "aborted scan of bag id [", blizzard_id, "], location ", loc_id, " [", ArkInventory.Global.Location[loc_id].Name, "] is not being monitored" )
@@ -3744,7 +3735,7 @@ function ArkInventory.ObjectStringDecode( h, i )
 --		if not i.loc_id then
 --			ArkInventory.Output( i )
 --		end
-		local blizzard_id = ArkInventory.BagID_Blizzard( i.loc_id, i.bag_id )
+		local blizzard_id = ArkInventory.InternalIdToBlizzardBagId( i.loc_id, i.bag_id )
 		v.slottype = ArkInventory.BagType( blizzard_id )
 	end
 	
@@ -3840,9 +3831,27 @@ function ArkInventory.ObjectStringDecode( h, i )
 			v.custom = pos
 		end
 		
-		v.h2 = v[3]
-		for k = 4, pos - 1 do
-			v.h2 = string.format( "%s:%s", v.h2, v[k] or 0 )
+		-- this saves cpu at the expense of memory usage
+		if i and i.h2 then
+			
+			v.h2 = i.h2
+			
+		else
+			
+			if ArkInventory.Global.Cache.h2[h] then
+				
+				v.h2 = ArkInventory.Global.Cache.h2[h]
+				
+			else
+				
+				v.h2 = v[3]
+				for k = 4, pos - 1 do
+					v.h2 = string.format( "%s:%s", v.h2, v[k] or 0 )
+				end
+				ArkInventory.Global.Cache.h2[h] = v.h2
+				
+			end
+			
 		end
 		
 	elseif v.class == "spell" then
@@ -3896,7 +3905,7 @@ function ArkInventory.ObjectStringDecode( h, i )
 		
 		if v.bagtype == 0 and i then
 			
-			local blizzard_id = ArkInventory.BagID_Blizzard( i.loc_id, i.bag_id )
+			local blizzard_id = ArkInventory.InternalIdToBlizzardBagId( i.loc_id, i.bag_id )
 			local bt = ArkInventory.BagType( blizzard_id )
 			
 			v.h = string.format( "empty:0:%s", bt )
@@ -3926,7 +3935,7 @@ end
 
 function ArkInventory.InventoryIDGet( loc_id, bag_id )
 	
-	local blizzard_id = ArkInventory.BagID_Blizzard( loc_id, bag_id )
+	local blizzard_id = ArkInventory.InternalIdToBlizzardBagId( loc_id, bag_id )
 	
 	if blizzard_id == nil then
 		return nil
@@ -3972,12 +3981,14 @@ function ArkInventory.ObjectIDCategory( i, isRule )
 			r = string.format( "%s:%s", r, osd.h2 )
 		end
 	elseif osd.class == "empty" then
-		local blizzard_id = ArkInventory.BagID_Blizzard( i.loc_id, i.bag_id )
+		local blizzard_id = ArkInventory.InternalIdToBlizzardBagId( i.loc_id, i.bag_id )
 		soulbound = ArkInventory.BagType( blizzard_id ) -- allows for unique codes per bag type
 		r = string.format( "%s:%i:%i", osd.class, osd.id, soulbound )
 	elseif osd.class == "spell" or osd.class == "currency" or osd.class == "copper" then
 		r = string.format( "%s:%i", osd.class, osd.id )
 	elseif osd.class == "battlepet" then
+		r = string.format( "%s:%i:%i", osd.class, osd.id, soulbound )
+	elseif osd.class == "keystone" then
 		r = string.format( "%s:%i:%i", osd.class, osd.id, soulbound )
 	else
 		ArkInventory.OutputWarning( "uncoded object class [", i.h, "] = [", osd.class, "]" )

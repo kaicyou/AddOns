@@ -1,6 +1,6 @@
-## Interface: 70100
+## Interface: 70200
 ## Title: Masque: |cffff8000Entropy|r
-## Version: 7.1.0
+## Version: 7.2.0
 ## Author: StormFX
 ## Notes: Entropy skins for Masque.
 ## Notes-zhTW: Masque的Entropy皮膚。
@@ -9,9 +9,5 @@
 ## X-Category: Interface Enhancements
 ## X-Credits: Zeal
 ## X-WoWI-ID: 8873
-## X-Curse-Packaged-Version: 7.1.0
-## X-Curse-Project-Name: Masque: Entropy
-## X-Curse-Project-ID: masque_entropy
-## X-Curse-Repository-ID: wow/masque_entropy/mainline
 
 Entropy.lua

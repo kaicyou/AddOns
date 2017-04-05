@@ -1,3 +1,21 @@
+commit b250a4728289f4c86e992cf2c21c6369b02f768b
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Apr 2 13:12:07 2017 -0400
+
+    Update defaults.
+
+commit e5f9d7fa6a377962e53bd80209c071f54bfccbf8
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Mar 29 16:06:40 2017 -0400
+
+    Remove PTR flag.
+
+commit ac78660b2160a9ce023d2f8bc766bec5a9f42784
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Mar 29 16:00:46 2017 -0400
+
+    Fix Katsuo's Eclipse, update APLs.
+
 commit fd2c2086d09bf06bee3ed8f3f9a76802e990380f
 Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Tue Mar 28 18:43:57 2017 -0400

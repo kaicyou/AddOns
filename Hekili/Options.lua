@@ -27,7 +27,7 @@ function Hekili:GetDefaults()
       Legion = true,
       Enabled = true,
       Locked = true,
-      Debug = true,
+      Debug = false,
 
       PauseSnapshot = true,
 
@@ -55,10 +55,96 @@ function Hekili:GetDefaults()
       },
       actionLists = {
       },
+      runOnce = {
+      },
     }
   }
 
   return defaults
+end
+
+
+local defaultAPLs = {
+    ['Survival Primary'] = { "SimC Survival: precombat", "SimC Survival: default" },
+    ['Survival AOE'] = { "SimC Survival: precombat", "SimC Survival: default" },
+
+    ['Windwalker Primary'] = { "SimC Windwalker: precombat", "SimC Windwalker: default" },
+    ['Windwalker AOE'] = { "SimC Windwalker: precombat", "SimC Windwalker: default" },
+
+    ['Brewmaster Primary'] = { 0, "Brewmaster: Default" },
+    ['Brewmaster AOE'] = { 0, "Brewmaster: Default" },
+    ['Brewmaster Defensives'] = { 0, "Brewmaster: Defensives" },
+
+    ['Enhancement Primary'] = { 'SimC Enhancement: precombat', 'SimC Enhancement: default' },
+    ['Enhancement AOE'] = { 'SimC Enhancement: precombat', 'SimC Enhancement: default' },
+
+    ['Elemental Primary'] = { 'SEL Elemental Precombat', 'SEL Elemental Default' },
+    ['Elemental AOE'] = { 'SEL Elemental Precombat', 'SEL Elemental Default' },
+
+    ['Retribution Primary'] = { 'SimC Retribution: precombat', 'SimC Retribution: default' },
+    ['Retribution AOE'] = { 'SimC Retribution: precombat', 'SimC Retribution: default' },
+
+    ['Protection Primary'] = { 0, 'Protection Default' }
+}    
+
+
+-- One Time Fixes
+local oneTimeFixes = {
+    turnOffDebug_04022017 = function( profile )
+        profile.Debug = false
+    end,
+
+    attachDefaultAPLs_04022017 = function( profile )
+        for dID, display in ipairs( profile.displays ) do
+            local APLs = defaultAPLs[ display.Name ]
+
+            if APLs then
+                local precombat, default = 0, 0
+
+                for i, list in ipairs( Hekili.DB.profile.actionLists ) do
+                    if list.Name == APLs[1] then precombat = i end
+                    if list.Name == APLs[2] then default = i end
+                end
+
+                if precombat > 0 and display.precombatAPL == 0 then display.precombatAPL = precombat end
+                if default > 0 and display.defaultAPL == 0 then display.defaultAPL = default end
+            end
+        end
+    end,
+
+    setDisplayTypes_04022017 = function( profile )
+        for d, display in ipairs( profile.displays ) do
+            if display.Name:match( "Primary" ) then
+                display.displayType = 'a'
+                display.showST = true
+                display.showAE = true
+                display.showAuto = true
+            elseif display.Name:match( "AOE" ) then
+                display.displayType = 'c'
+                display.showST = true
+                display.showAE = false
+                display.showAuto = false
+            end
+        end
+    end,
+
+}
+
+
+function ns.runOneTimeFixes()
+
+    local profile = Hekili.DB.profile
+    if not profile then return end
+
+    profile.runOnce = profile.runOnce or {}
+
+    for k, v in pairs( oneTimeFixes ) do
+        if not profile.runOnce[ k ] then
+            profile.runOnce[k] = true
+            v( profile )
+        end
+    end
+
 end
 
 
@@ -67,11 +153,12 @@ local displayTemplate = {
     Enabled = true,
     Default = false,
 
-    Script = '',
-
     displayType = 'd', -- Automatic
     simpleAOE = 2,
 
+    quickVisStyle = 'a', -- Primary
+    showSwitchAuto = true,
+    showSwitchAE = true,
     showST = true,
     showAE = true,
     showAuto = true,
@@ -175,11 +262,12 @@ local displayTemplate = {
     kbFontStyle = "OUTLINE",
     kbFontSize = 12,
     kbAnchor = "TOPRIGHT",
-    xOffsetKBs = 0,
-    yOffsetKBs = 0,
+    xOffsetKBs = 1,
+    yOffsetKBs = -1,
 
     precombatAPL = 0,
     defaultAPL = 0
+
 }
 
 
@@ -278,6 +366,8 @@ function convertDisplay( id )
 
     if not display then return end
 
+    display.runOnce = nil
+
     for key, newKey in pairs( displayKeyMap ) do
         if display[ key ] ~= nil then
             display[ newKey ] = display[ key ]
@@ -285,16 +375,9 @@ function convertDisplay( id )
         end
     end
 
-    -- Special Value Conversions
-    if display.rangeType == 'off' then
-        display.rangeType = 'ability'
-        display.rangeCheck = false
-    end
-
     for k, v in pairs( displayTemplate ) do
         if display[ k ] == nil then display[ k ] = v end
     end
-
 end
 
 
@@ -310,6 +393,7 @@ local displayOptionInfo = {
     lists = {},
 
     quickStyle = 'z',
+    quickVisStyle = 'z',
 
     templates = {
         a = {
@@ -337,6 +421,23 @@ local displayOptionInfo = {
         }
     },
 
+    visTemplates = {
+        a = {
+            showST = true,
+            showAE = true,
+            showAuto = true,
+            showSwitchAE = true,
+            showSwitchAuto = true
+        },
+        b = {
+            showST = true,
+            showAE = false,
+            showAuto = false,
+            showSwitchAE = false,
+            showSwitchAuto = true
+        },
+    },
+
     iconOffset = 40
 }
 
@@ -356,6 +457,9 @@ function Hekili:GetDisplayOption( info )
     
     elseif option == 'quickStyle' then
         return displayOptionInfo.quickStyle
+
+    elseif option == 'quickVisStyle' then
+        return display.quickVisStyle
 
     end
 
@@ -390,8 +494,8 @@ function Hekili:SetDisplayOption( info, val )
             if id then display[ option ] = id end
             return
         end
-
         display.auraSpellID = 0
+        return
     
     elseif option == 'quickStyle' then
         if val ~= 'z' then
@@ -400,7 +504,17 @@ function Hekili:SetDisplayOption( info, val )
             end
             ns.buildUI()
         end       
-        display.quickStyle = val
+        displayOptionInfo.quickStyle = val
+        return
+
+    elseif option == 'quickVisStyle' then
+        if val ~= 'z' then
+            for k, v in pairs( displayOptionInfo.visTemplates[ val ] ) do
+                display[k] = v
+            end
+            ns.buildUI()
+        end
+        display.quickVisStyle = val
         return
 
     end
@@ -682,8 +796,8 @@ ns.newDisplayOption = function( key )
 
                 displayType = {
                     type = "select",
-                    name = "Display Type",
-                    desc = "Choose the type of display for this display.\n\n" ..
+                    name = "Target Handling",
+                    desc = "Select the option that best reflects how this display should use or manipulate the addon's target detection feature.\n\n" ..
                         "|cFFFFD100Primary|r means the display will interact with the 'Mode Toggle' feature.  In Automatic Mode, this display's recommendations " ..
                         "will be made based on the number of targets detected.  In Single-Target and AOE Mode, the display will make recommendations based on only " ..
                         "one target.  It is expected that a second display would provide AOE information if needed.\n\n" ..
@@ -695,7 +809,7 @@ ns.newDisplayOption = function( key )
                         "feature.\n\n" ..
                         "|cFFFFD100Custom|r allows you to manually specify the minimum and maximum number of targets this display will use in making its recommendations, " ..
                         "based on each available 'Mode Toggle' setting.  This is an advanced feature.",
-                    order = 30,
+                    order = 40,
                     values = {
                         a = "Primary",
                         b = "Single-Target",
@@ -711,7 +825,7 @@ ns.newDisplayOption = function( key )
                     name = "AOE Minimum Targets",
                     desc = "When the 'Mode Toggle' feature is set to AOE, this display will assume there are at |cFFFF0000least|r this many enemies when making its " ..
                         "recommendations.",
-                    order = 31,
+                    order = 41,
                     min = 2,
                     max = 20,
                     step = 1,
@@ -730,7 +844,7 @@ ns.newDisplayOption = function( key )
                     step = 1,
                     name = 'Single-Target, Minimum',
                     desc = "This display will always act as though there are at least this many targets when your mode is set to Single Target.  If set to 0, this will be ignored.",
-                    order = 31,
+                    order = 41,
                     width = 'full',
                     hidden = function( info )
                         local id = tonumber( info[2]:match( "^D(%d+)" ) )
@@ -745,7 +859,7 @@ ns.newDisplayOption = function( key )
                     step = 1,
                     name = 'Single-Target, Maximum',
                     desc = "This display will always act as though there are no more than this many targets when your mode is set to Single Target.  If set to 0, this will be ignored.",
-                    order = 32,
+                    order = 42,
                     width = 'full',
                     hidden = function( info )
                         local id = tonumber( info[2]:match( "^D(%d+)" ) )
@@ -760,7 +874,7 @@ ns.newDisplayOption = function( key )
                     step = 1,
                     name = 'AOE, Minimum',
                     desc = "This display will always act as though there are at least this many targets when your mode is set to AOE.  If set to 0, this will be ignored.",
-                    order = 33,
+                    order = 43,
                     width = 'full',
                     hidden = function( info )
                         local id = tonumber( info[2]:match( "^D(%d+)" ) )
@@ -775,7 +889,7 @@ ns.newDisplayOption = function( key )
                     step = 1,
                     name = 'AOE, Maximum',
                     desc = "This display will always act as though there are no more than this many targets when your mode is set to AOE.  If set to 0, this will be ignored.",
-                    order = 34,
+                    order = 44,
                     width = 'full',
                     hidden = function( info )
                         local id = tonumber( info[2]:match( "^D(%d+)" ) )
@@ -790,7 +904,7 @@ ns.newDisplayOption = function( key )
                     step = 3,
                     name = 'Automatic, Minimum',
                     desc = "This display will always act as though there are at least this many targets when your mode is set to Auto.  If set to 0, this will be ignored.",
-                    order = 35,
+                    order = 45,
                     width = 'full',
                     hidden = function( info )
                         local id = tonumber( info[2]:match( "^D(%d+)" ) )
@@ -805,7 +919,7 @@ ns.newDisplayOption = function( key )
                     step = 1,
                     name = 'Automatic, Maximum',
                     desc = "This display will always act as though there are no more than this many targets when your mode is set to Auto.  If set to 0, this will be ignored.",
-                    order = 36,
+                    order = 46,
                     width = 'full',
                     hidden = function( info )
                         local id = tonumber( info[2]:match( "^D(%d+)" ) )
@@ -814,6 +928,83 @@ ns.newDisplayOption = function( key )
                     end
                 },
 
+                quickVisStyle = {
+                    type = 'select',
+                    name = 'Mode Visibility',
+                    desc = "Select an option regarding this display's visibility based on your Mode Switch and Current Mode (See Toggles tab).  Examples include:\n\n" ..
+                        "|cFFFFD100Standard Primary Display|r - The display is shown like a Primary display as created by the author of this addon.  " ..
+                        "It will be displayed in all modes, regardless of the Switch Type or Current Mode.\n\n" ..
+                        "|cFFFFD100Standard AOE Display|r - This display is shown like an AOE display as created by the author of this addon.  " ..
+                        "It will only be displayed when your addon is setup to switch between Single-Target and Automatic target " ..
+                        "detection, and is currently in Single-Target mode.  (When paired with a Standard Primary Display, this provides you " ..
+                        "with two displays, one for Single-Target and one for AOE, based on your Current Mode.)",
+                    values = {
+                        a = 'Standard Primary Display',
+                        b = 'Standard AOE Display',
+                        z = 'Set Custom Visibility Options'
+                    },
+                    order = 30,
+                    get = 'GetDisplayOption',
+                    set = 'SetDisplayOption',
+                    width = 'full',
+
+                },
+
+                quickVisGroup = {
+                    type = 'group',
+                    name = "Custom Mode Visibility",
+                    inline = true,
+                    order = 31,
+                    width = 'full',
+                    hidden = function( info )
+                        local id = tonumber( info[2]:match( "^D(%d+)" ) )
+                        local display = id and Hekili.DB.profile.displays[ id ]
+
+                        if not display then return true end
+                        
+                        return display.quickVisStyle ~= 'z'
+                    end,
+                    args = {
+                        showSwitchAuto = {
+                            type = 'toggle',
+                            name = 'Show when using Mode Switch: Single-Target <-> Automatic',
+                            desc = "When checked, if your Mode Switch feature is set to switch between 'Single-Target' and 'Automatic', this " ..
+                                "display will be shown (assuming its other requirements are met).",
+                            order = 0,
+                            width = 'full',
+                        },
+                        showSwitchAE = {
+                            type = 'toggle',
+                            name = 'Show when using Mode Switch: Single-Target <-> AOE',
+                            desc = "When checked, if your Mode Switch feature is set to switch between 'Single-Target' and 'AOE', this " ..
+                                "display will be shown (assuming its other requirements are met).",
+                            order = 1,
+                            width = 'full'
+                        },
+
+                        showST = {
+                            type = 'toggle',
+                            name = 'Show in Single-Target',
+                            desc = "If checked, this display will be shown when the addon is in Single-Target mode.",
+                            order = 2,
+                            width = 'full'
+                        },
+                        showAE = {
+                            type = 'toggle',
+                            name = 'Show in AOE',
+                            desc = "If checked, this display will be shown when the addon is in AOE mode.",
+                            order = 3,
+                            width = 'full'
+                        },
+                        showAuto = {
+                            type = 'toggle',
+                            name = 'Show in Automatic',
+                            desc = "If checked, this display will be shown when the addon is in Automatic mode.",
+                            order = 4,
+                            width = 'full'
+                        },
+                    }
+                },
                 displaySpacer4 = {
                     type = 'description',
                     name = '\n',
@@ -1819,39 +2010,13 @@ ns.newDisplayOption = function( key )
 
         visibilitySettings = {
             type = 'group',
-            name = 'Visibility',
+            name = 'Transparency',
             order = 3,
             args = {
-                showST = {
-                    type = 'toggle',
-                    name = 'Show in Single-Target',
-                    desc = "If checked, this display will be shown when the addon is in Single-Target mode.",
-                    order = 1,
-                },
-                showAE = {
-                    type = 'toggle',
-                    name = 'Show in AOE',
-                    desc = "If checked, this display will be shown when the addon is in AOE mode.",
-                    order = 2,
-                },
-                showAuto = {
-                    type = 'toggle',
-                    name = 'Show in Automatic',
-                    desc = "If checked, this display will be shown when the addon is in Automatic mode.",
-                    order = 3,
-                },
-
-                showSpacer1 = {
-                    type = 'description',
-                    name = '\n',
-                    order = 20,
-                    width = 'full',
-                },
-
 
                 visibilityType = {
                     type = 'select',
-                    name = "Visibility Options",
+                    name = "Transparency Options",
                     width = "full",
                     values = {
                         a = "Simple",
@@ -1909,7 +2074,7 @@ ns.newDisplayOption = function( key )
                 PvE = {
                     type = 'group',
                     inline = true,
-                    name = "PvE Visibility",
+                    name = "PvE Transparency",
                     order = 32,
                     hidden = function( info )
                         local id = tonumber( info[2]:match( "^D(%d+)" ) )
@@ -1971,7 +2136,7 @@ ns.newDisplayOption = function( key )
                 PvP = {
                     type = 'group',
                     inline = true,
-                    name = "PvP Visibility",
+                    name = "PvP Transparency",
                     order = 33,
                     hidden = function( info )
                         local id = tonumber( info[2]:match( "^D(%d+)" ) )
@@ -2528,14 +2693,6 @@ ns.newActionListOption = function( index )
           local actIdx = tonumber( match( actKey, "^L(%d+)" ) )
 
           for d_key, display in ipairs( Hekili.DB.profile.displays ) do
-            for l_key, list in ipairs ( display.Queues ) do
-              if list['Action List'] == actIdx then
-                list['Action List'] = 0
-                list.Enabled = false
-              elseif list['Action List'] > actIdx then
-                list['Action List'] = list['Action List'] - 1
-              end
-            end
             if display.precombatAPL == actIdx then display.precombatAPL = 0
             elseif display.precombatAPL > actIdx then display.precombatAPL = display.precombatAPL - 1 end
             if display.defaultAPL == actIdx then display.defaultAPL = 0
@@ -4821,13 +4978,13 @@ function Hekili:GetOptions()
               local out = ''
               
               for i, list in ipairs( Hekili.DB.profile.actionLists ) do
-                out = out .. "    storeDefault( [[" .. list.Name .. "]], 'actionLists', " .. date("%Y%m%d.1") .. ", [[" .. ns.serializeActionList( i ) .. "]] )\n\n"
+                out = out .. "    storeDefault( [[" .. list.Name .. "]], 'actionLists', " .. date("%Y%m%d.%H%M%S") .. ", [[" .. ns.serializeActionList( i ) .. "]] )\n\n"
               end
               
               out = out .. "\n"
               
               for i, display in ipairs( Hekili.DB.profile.displays ) do
-                out = out .. "    storeDefault( [[" .. display.Name .. "]], 'displays', " .. date("%Y%m%d.1") .. ", [[" .. ns.serializeDisplay( i ) .. "]] )\n\n"
+                out = out .. "    storeDefault( [[" .. display.Name .. "]], 'displays', " .. date("%Y%m%d.%H%M%S") .. ", [[" .. ns.serializeDisplay( i ) .. "]] )\n\n"
               end
               
               return out
@@ -4897,6 +5054,7 @@ function Hekili:TotalRefresh()
   end
   
   ns.convertDisplays()
+  ns.runOneTimeFixes()
   ns.checkImports()
   ns.refreshOptions()
   ns.buildUI()

@@ -1,6 +1,6 @@
-## Interface: 70100
+## Interface: 70200
 ## Title: Masque: |cffff8000LiteStep|r
-## Version: 7.1.0
+## Version: 7.2.0
 ## Notes: LiteStep skins for Masque.
 ## Notes-zhTW: Masque的LiteStep皮膚。
 ## Author: StormFX
@@ -9,9 +9,5 @@
 ## X-Category: Interface Enhancements
 ## X-Credits: Saynt
 ## X-WoWI-ID: 8882
-## X-Curse-Packaged-Version: 7.1.0
-## X-Curse-Project-Name: Masque: LiteStep
-## X-Curse-Project-ID: masque_litestep
-## X-Curse-Repository-ID: wow/masque_litestep/mainline
 
 LiteStep.lua

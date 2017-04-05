@@ -4,7 +4,7 @@
 	please see the included License.txt file.
 
 	* File...: Apathy.lua
-	* Date...: 2016-07-25T23:55:25Z
+	* Date...: 2016-07-26T4:55:25Z
 	* Hash...: 9b26b44
 	* Author.: StormFX
 
@@ -16,7 +16,7 @@ if not MSQ then return end
 -- Apathy
 MSQ:AddSkin("Apathy", {
 	Author = "StormFX",
-	Version = "7.1.0",
+	Version = "7.2.0",
 	Shape = "Square",
 	Masque_Version = 60200,
 	Backdrop = {

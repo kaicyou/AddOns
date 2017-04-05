@@ -2029,29 +2029,36 @@ ns.restoreDefaults = function( category, purge )
                             import.rangeType = existing.rangeType
                             
                             import.showCaptions = existing.showCaptions
-                            import['Primary Caption'] = existing['Primary Caption']
-                            import['Primary Caption Aura'] = existing['Primary Caption Aura']
                         else
                             index = #profile.displays + 1
                         end
                         
-                        profile.displays[ index ] = import
-                        
-                        for j, hook in ipairs( profile.displays[ #profile.displays ].Queues ) do
-                            if type( hook['Action List'] ) == 'string' then
-                                for k, list in ipairs( profile.actionLists ) do
-                                    if list.Name == hook['Action List'] then
-                                        hook['Action List'] = k
-                                        break
-                                    end
-                                end
-                                
-                                if type( hook['Action List'] ) == 'string' then
-                                    -- The list wasn't found.
-                                    hook['Action List'] = 0
+                        if type( import.precombatAPL ) == 'string' then
+                            for i, list in pairs( profile.actionLists ) do
+                                if list.Name == import.precombatAPL then
+                                    import.precombatAPL = i
                                 end
                             end
+
+                            if type( import.precombatAPL ) == 'string' then
+                                import.precombatAPL = 0
+                            end
                         end
+
+                        if type( import.defaultAPL ) == 'string' then
+                            for i, list in pairs( profile.actionLists ) do
+                                if list.Name == import.defaultAPL then
+                                    import.defaultAPL = i
+                                end
+                            end
+
+                            if type( import.defaultAPL ) == 'string' then
+                                import.defaultAPL = 0
+                            end
+                        end
+
+                        profile.displays[ index ] = import
+                        
                     else
                         ns.Error( "restoreDefaults() - unable to import '" .. default.name .. "' display." )
                     end

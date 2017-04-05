@@ -3705,6 +3705,11 @@ function PawnOnArtifactUpdated(NewItem)
 	-- Get details about this artifact and then cache them.
 	local ArtifactItemID, _, ArtifactName = C_ArtifactUI.GetArtifactInfo()
 	if not ArtifactItemID then return end
+	-- Workaround: the hunter artifact Talonclaw has a longer name than GetArtifactInfo() returns, so when it's seen on tooltips, the strings don't match.  Use the longer name if available.
+	--   Item and GetArtifactInfo return: "Talonclaw"
+	--   Artifact UI and relic tooltips show: "Talonclaw, Spear of the Wild Gods"
+	-- FUTURE: If this doesn't work for all locales and artifacts, you'll need to use both: whenever the two names don't match, add that name to a secondary lookup table.
+	ArtifactName = C_ArtifactUI.GetArtifactArtInfo().titleName or ArtifactName
 
 	local Artifacts = PawnOptions.Artifacts
 	if not Artifacts then

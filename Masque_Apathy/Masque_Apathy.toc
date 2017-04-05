@@ -1,6 +1,6 @@
-## Interface: 70100
+## Interface: 70200
 ## Title: Masque: |cffff8000Apathy|r
-## Version: 7.1.0
+## Version: 7.2.0
 ## Author: StormFX
 ## Notes: Apathy skin for Masque.
 ## Notes-deDE: Apathy-Skin für Masque.
@@ -10,9 +10,5 @@
 ## X-Category: Interface Enhancements
 ## X-Credits: Zeal
 ## X-WoWI-ID: 8870
-## X-Curse-Packaged-Version: 7.1.0
-## X-Curse-Project-Name: Masque: Apathy
-## X-Curse-Project-ID: masque_apathy
-## X-Curse-Repository-ID: wow/masque_apathy/mainline
 
 Apathy.lua

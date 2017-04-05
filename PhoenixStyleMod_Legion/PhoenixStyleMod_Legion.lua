@@ -36,6 +36,17 @@ psraidoptionstxtLegion1[3]={
 {},
 {"|tip2 "..psdidfriendlyf.." |sid193367|id","|tip2 "..psmainmdamagefrom.." |sid228051|id"},
 }
+psraidoptionstxtLegion1[4]={
+{""},
+{""},
+{""},
+{""},
+{"|tip2 "..psmainmdamagefrom.." |sid232722|id"},
+{"|tip2 "..psdidfriendlyf.." |sid239006|id"},
+{""},
+{""},
+{""},
+}
 
 
 for i=1,#psraidoptionstxtLegion1 do
@@ -74,6 +85,17 @@ psraidoptionschatdefLegion1[3]={
 {},
 {1,1},
 }
+psraidoptionschatdefLegion1[4]={
+{},
+{},
+{},
+{},
+{1},
+{1},
+{},
+{},
+{},
+}
 
 
 
@@ -105,11 +127,22 @@ psraidoptionsondefLegion1[3]={
 {},
 {1,1},
 }
+psraidoptionsondefLegion1[4]={
+{},
+{},
+{},
+{},
+{1},
+{1},
+{},
+{},
+{},
+}
 
 
 
 SetMapToCurrentZone()
-if GetCurrentMapAreaID()==pslocations[4][1] or GetCurrentMapAreaID()==pslocations[4][2] or GetCurrentMapAreaID()==pslocations[4][3] then
+if GetCurrentMapAreaID()==pslocations[4][1] or GetCurrentMapAreaID()==pslocations[4][2] or GetCurrentMapAreaID()==pslocations[4][3] or GetCurrentMapAreaID()==pslocations[4][4] then
 	PhoenixStyleMod_patchlegion3:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 end
 	PhoenixStyleMod_patchlegion3:RegisterEvent("PLAYER_REGEN_DISABLED")
@@ -374,6 +407,35 @@ if GetCurrentMapAreaID()==pslocations[currentExpansion][3] then
 		pswasonbossLegion33=1
 	end
 end
+if GetCurrentMapAreaID()==pslocations[currentExpansion][4] then
+	if (id==115844) and psbossfileLegion41 then
+		pswasonbossLegion41=1
+	end
+	if (id==120996) and psbossfileLegion42 then
+		pswasonbossLegion42=1
+	end
+	if (id==116407) and psbossfileLegion43 then
+		pswasonbossLegion43=1
+	end
+	if (id==118523) and psbossfileLegion44 then
+		pswasonbossLegion44=1
+	end
+	if (id==115767) and psbossfileLegion45 then
+		pswasonbossLegion45=1
+	end
+	if (id==118460) and psbossfileLegion46 then
+		pswasonbossLegion46=1
+	end
+	if (id==118289) and psbossfileLegion47 then
+		pswasonbossLegion47=1
+	end
+	if (id==120436) and psbossfileLegion48 then
+		pswasonbossLegion48=1
+	end
+	if (id==108573) and psbossfileLegion49 then
+		pswasonbossLegion49=1
+	end
+end
 
 
 
@@ -482,6 +544,46 @@ else
 pscombatlogbossLegion31(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
 pscombatlogbossLegion32(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
 pscombatlogbossLegion33(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+
+end
+
+end
+--inst 6 end
+
+
+--Inst 6
+if GetCurrentMapAreaID()==pslocations[currentExpansion][4] then
+
+if pswasonbossLegion41 then
+pscombatlogbossLegion41(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+elseif pswasonbossLegion42 then
+pscombatlogbossLegion42(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+elseif pswasonbossLegion43 then
+pscombatlogbossLegion43(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+elseif pswasonbossLegion44 then
+pscombatlogbossLegion44(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+elseif pswasonbossLegion45 then
+pscombatlogbossLegion45(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+elseif pswasonbossLegion46 then
+pscombatlogbossLegion46(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+elseif pswasonbossLegion47 then
+pscombatlogbossLegion47(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+elseif pswasonbossLegion48 then
+pscombatlogbossLegion48(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+elseif pswasonbossLegion49 then
+pscombatlogbossLegion49(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+
+else
+
+pscombatlogbossLegion41(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+pscombatlogbossLegion42(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+pscombatlogbossLegion43(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+pscombatlogbossLegion44(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+pscombatlogbossLegion45(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+pscombatlogbossLegion46(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+pscombatlogbossLegion47(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+pscombatlogbossLegion48(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
+pscombatlogbossLegion49(arg1, arg2, hideCaster, guid1, name1, flag1, new1, guid2, name2, flag2, new2, spellid, spellname, arg11,arg12,arg13,arg14,arg15)
 
 end
 
@@ -818,6 +920,54 @@ end
 if (pswasonbossLegion33) then
 pscmrbossREPORTLegion331(wipe, tryorkill, reset, checkforwipe)
 pscmrbossRESETLegion331(wipe, tryorkill, reset, checkforwipe)
+end
+
+
+
+
+if (pswasonbossLegion41) then
+pscmrbossREPORTLegion411(wipe, tryorkill, reset, checkforwipe)
+pscmrbossRESETLegion411(wipe, tryorkill, reset, checkforwipe)
+end
+
+if (pswasonbossLegion42) then
+pscmrbossREPORTLegion421(wipe, tryorkill, reset, checkforwipe)
+pscmrbossRESETLegion421(wipe, tryorkill, reset, checkforwipe)
+end
+
+if (pswasonbossLegion43) then
+pscmrbossREPORTLegion431(wipe, tryorkill, reset, checkforwipe)
+pscmrbossRESETLegion431(wipe, tryorkill, reset, checkforwipe)
+end
+
+if (pswasonbossLegion44) then
+pscmrbossREPORTLegion441(wipe, tryorkill, reset, checkforwipe)
+pscmrbossRESETLegion441(wipe, tryorkill, reset, checkforwipe)
+end
+
+if (pswasonbossLegion45) then
+pscmrbossREPORTLegion451(wipe, tryorkill, reset, checkforwipe)
+pscmrbossRESETLegion451(wipe, tryorkill, reset, checkforwipe)
+end
+
+if (pswasonbossLegion46) then
+pscmrbossREPORTLegion461(wipe, tryorkill, reset, checkforwipe)
+pscmrbossRESETLegion461(wipe, tryorkill, reset, checkforwipe)
+end
+
+if (pswasonbossLegion47) then
+pscmrbossREPORTLegion471(wipe, tryorkill, reset, checkforwipe)
+pscmrbossRESETLegion471(wipe, tryorkill, reset, checkforwipe)
+end
+
+if (pswasonbossLegion48) then
+pscmrbossREPORTLegion481(wipe, tryorkill, reset, checkforwipe)
+pscmrbossRESETLegion481(wipe, tryorkill, reset, checkforwipe)
+end
+
+if (pswasonbossLegion49) then
+pscmrbossREPORTLegion491(wipe, tryorkill, reset, checkforwipe)
+pscmrbossRESETLegion491(wipe, tryorkill, reset, checkforwipe)
 end
 
 

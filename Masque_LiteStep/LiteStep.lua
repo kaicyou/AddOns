@@ -4,7 +4,7 @@
 	please see the included License.txt file.
 
 	* File...: LiteStep.lua
-	* Date...: 2016-07-26T00:35:55Z
+	* Date...: 2016-07-26T5:35:55Z
 	* Hash...: 4a85baa
 	* Author.: StormFX
 
@@ -16,7 +16,7 @@ if not MSQ then return end
 -- LiteStep
 MSQ:AddSkin("LiteStep", {
 	Author = "StormFX",
-	Version = "7.1.0",
+	Version = "7.2.0",
 	Shape = "Square",
 	Masque_Version = 60200,
 	Backdrop = {

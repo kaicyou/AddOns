@@ -1,27 +1,18 @@
 ------------------------------------------------------------------------
-r184 | Tuhljin | 2017-02-23 12:39:13 -0600 (Thu, 23 Feb 2017) | 2 lines
+r186 | Tuhljin | 2017-03-29 00:27:08 -0500 (Wed, 29 Mar 2017) | 5 lines
 Changed paths:
-   M /trunk/Calendar.lua
-   M /trunk/Overachiever_Tabs/Suggestions.lua
-   M /trunk/readme.txt
-
-- Fix failure to load texture for one-day micro-holidays' toast nofications.
-- Suggestions Tab: Suggest "Roll Club" in Vale of Eternal Blossoms.
-------------------------------------------------------------------------
-r183 | Tuhljin | 2017-02-11 20:27:18 -0600 (Sat, 11 Feb 2017) | 2 lines
-Changed paths:
-   M /trunk/Calendar.lua
-   M /trunk/Options.lua
-   M /trunk/Overachiever.lua
+   M /trunk/AchieveID.lua
+   M /trunk/AchieveTip.lua
    M /trunk/Overachiever.toc
    M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
+   M /trunk/Overachiever_Tabs/Suggestions.lua
    M /trunk/Overachiever_Trade/Overachiever_Trade.toc
-   M /trunk/libs/TjOptions.lua
-   M /trunk/libs/TjOptions.txt
-   M /trunk/localization.lua
    M /trunk/readme.txt
 
-- New option added for toast notifications to control whether they will be hidden automatically (without interaction).
-- Made toast notifications more reliable.
+- Updated for WoW patch 7.2.
+- "Compare progress in others' links" option no longer adds a line indicating you completed the achievement (and when) because WoW 7.2 has made that redundant.
+- Suggestions Tab:
+-- Added suggestions for Broken Shore, Cathedral of Eternal Night, and Tomb of Sargeras.
+-- Suggest the new class armor set achievements in the appropriate instances, from Molten Core to Tomb of Sargeras.
 ------------------------------------------------------------------------
 

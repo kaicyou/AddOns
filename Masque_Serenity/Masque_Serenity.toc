@@ -1,6 +1,6 @@
-## Interface: 70100
+## Interface: 70200
 ## Title: Masque: |cffff8000Serenity|r
-## Version: 7.1.0
+## Version: 7.2.0
 ## Author: StormFX
 ## Notes: Serenity skins for Masque.
 ## Notes-zhTW: Masque的Serenity皮膚。
@@ -9,9 +9,5 @@
 ## X-Category: Interface Enhancements
 ## X-Credits: Sairen
 ## X-WoWI-ID: 8875
-## X-Curse-Packaged-Version: 7.1.0
-## X-Curse-Project-Name: Masque: Serenity
-## X-Curse-Project-ID: masque_serenity
-## X-Curse-Repository-ID: wow/masque_serenity/mainline
 
 Serenity.lua

@@ -11,7 +11,7 @@ pslocale()
 end
 
 
-	psversion=7.200
+	psversion=7.201
 
 
 	psverstiptext="alpha"
@@ -164,9 +164,9 @@ psdeathgriplocal=GetSpellInfo(49560)
 
 
 --cataclysm & Panda data
-pslocations={{752,754,758,773,800,824},{77777,897,896,886,930,953},{994,988,1026},{1094,1088,1114}}
-pslocationnamesdef={{"Baradin Hold","Blackwing Descent","The Bastion of Twilight","Throne of the Four Winds","Firelands", "Dragon Soul"},{"New Baradin Hold","Heart of Fear","Mogu'shan Vaults","Terrace of Endless Spring","Throne of Thunder","Siege of Orgrimmar"},{"Highmaul", "Blackrock Foundry","Hellfire Citadel"},{"The Emerald Nightmare","The Nighthold","Trial of Valor"}}
-psaddontoload={{"PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_Firelands","PhoenixStyleMod_DragonSoul"},{"PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier2","PhoenixStyleMod_Panda_tier3"},{"PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1"},{"PhoenixStyleMod_Legion","PhoenixStyleMod_Legion","PhoenixStyleMod_Legion"}}
+pslocations={{752,754,758,773,800,824},{77777,897,896,886,930,953},{994,988,1026},{1094,1088,1114,1147}}
+pslocationnamesdef={{"Baradin Hold","Blackwing Descent","The Bastion of Twilight","Throne of the Four Winds","Firelands", "Dragon Soul"},{"New Baradin Hold","Heart of Fear","Mogu'shan Vaults","Terrace of Endless Spring","Throne of Thunder","Siege of Orgrimmar"},{"Highmaul", "Blackrock Foundry","Hellfire Citadel"},{"The Emerald Nightmare","The Nighthold","Trial of Valor","Tomb of Sargeras"}}
+psaddontoload={{"PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_Firelands","PhoenixStyleMod_DragonSoul"},{"PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier2","PhoenixStyleMod_Panda_tier3"},{"PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1"},{"PhoenixStyleMod_Legion","PhoenixStyleMod_Legion","PhoenixStyleMod_Legion","PhoenixStyleMod_Legion"}}
 
 psbossnamesdef={
 {{"Argaloth","Occu'thar", "Alizabal, Mistress of Hate"},{"Magmaw","Omnitron Defense System","Maloriak","Atramedes","Chimaeron","Nefarian"},{"Halfus Wyrmbreaker","Valiona & Theralion","Twilight Ascendant Council","Cho'gall","Sinestra"},{"Conclave of Wind", "Al'Akir"},{"Beth'tilac", "Lord Rhyolith","Alysrazor","Shannox","Baleroc","Majordomo Staghelm","Ragnaros"},{"Morchok","Warlord Zon'ozz","Yor'sahj the Unsleeping","Hagara the Stormbinder","Ultraxion","Warmaster Blackhorn","Spine of Deathwing","Madness of Deathwing"}},
@@ -182,7 +182,8 @@ psbossnamesdef={
 
 {{"Nythendra","Il´gynoth, the Heart of Corruption","Elerethe Renferal","Ursoc","Dragons of Nightmare","Cenarius","Xavius"},
 {"Skorpyron","Chronomatic Anomaly","Trilliax","Spellblade Aluriel","High Botanist Tel'arn","Star Augur Etraeus","Tichondrius","Krosus","Grand Magistrix Elisande","Gul'dan"},
-{"Odyn","Guarm","Helya"}
+{"Odyn","Guarm","Helya"},
+{"Goroth","Demonic Inquisition","Harjatan","Sisters of the Moon","Mistress Sassz'ine","The Desolate Host","Maiden of Vigilance","Fallen Avatar","Kil'jaeden"}
 }
 
 
@@ -200,13 +201,18 @@ psbossid={
 
 {{{102672},{105393},{106087},{100497},{39407},{106912,104636},{103769}},
 {{102263},{104415},{104288},{110908},{104528},{103758},{103685},{101002},{110965},{110533}},
-{{114263},{114344},{96759}}
+{{114263},{114344},{96759}},
+{{115844},{120996},{116407},{118523},{115767},{118460},{118289},{120436},{108573}}
 }
 
 }
 
 --obj.modelId = select(4, EJ_GetCreatureInfo(1, tonumber(name)))
 --получение моделек
+
+
+-- ДЛЯ ПОЛУЧЕНИЯ МОДЕЛЕК, открываем каждого босса в данжен журнале (в игре) и вводим строчку:
+--/script local _, _, _, aaa, _ = EJ_GetCreatureInfo(1) print(aaa)
 
 ps_modelid={
 {{{35426},{35904},{21252}},{{37993},{32688},{33186},{34547},{33308},{32716}},{{34816},{34812},{35064},{34576},{34335}},{{35232},{35248}},{{38227},{38629},{38446},{38448},{38628},{37953},{37875}},{{39094},{39138},{39101},{39318},{39099},{39399},{35268},{40087}}},
@@ -221,7 +227,8 @@ ps_modelid={
 
 {{{0},{0},{0},{0},{0},{0},{0}},
 {{0},{0},{0},{0},{0},{0},{0},{0},{0},{0}},
-{{0},{0},{0}}
+{{0},{0},{0}},
+{{74493},{74282},{74020},{74874},{74287},{74496},{74875},{74497},{74504}}
 }
 
 
@@ -232,7 +239,7 @@ ps_saoptions_def={
 {{{},{},{}},{{},{1,1,1,1},{},{1,1},{},{1}},{{},{1,1,0},{1,0},{1}},{{},{1}},{{},{},{},{1,1},{1},{1},{1}}, {{},{1},{},{1,1},{},{1},{},{}}},
 {{{}},{{},{1},{},{1,1},{},{}},{{0},{1,1},{},{0},{},{}},{{1},{},{},{}},{{1},{1},{},{},{1},{},{},{},{},{},{},{},{}}},
 {{{},{},{},{},{},{},{}},{{},{},{},{},{},{},{},{},{},{}},{{},{},{},{},{},{},{},{},{},{},{},{},{}}},
-{{{},{},{},{},{},{},{}},{{},{},{},{},{},{},{},{},{},{}}}
+{{{},{},{},{},{},{},{}},{{},{},{},{},{},{},{},{},{},{}},{{},{},{}},{{},{},{},{},{},{},{},{},{}}} -- ДОБАВЛЯТЬ И ТУТ ТОЖЕ!!!!
 }
 ps_sa_id={
 {{{},{},{}},{{},{79501,79888,92053,80157},{},{78092,92677},{},{79339}},{{},{86622,86788,86369},{92075,92067},{81685}},{{},{89668}},{{},{},{},{99836,99839},{99516},{98535},{98164}},{{},{"103434|AddComm"..psiccheroic},{},{109541,109325},{},{108046},{},{}}}, --не забыть дефалт добавить вкл/выкл
@@ -246,6 +253,7 @@ ps_sa_id={
 {{{},{},{},{},{},{},{}},
 {{},{},{},{},{},{},{},{},{},{}},
 {{},{},{}},
+{{},{},{},{},{},{},{},{},{}},
 }
 
 }

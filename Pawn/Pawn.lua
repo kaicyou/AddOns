@@ -7,7 +7,7 @@
 -- Main non-UI code
 ------------------------------------------------------------
 
-PawnVersion = 2.0202
+PawnVersion = 2.0204
 
 -- Pawn requires this version of VgerCore:
 local PawnVgerCoreVersionRequired = 1.09
@@ -3726,23 +3726,31 @@ function PawnOnArtifactUpdated(NewItem)
 
 	local NumRelicSlots = C_ArtifactUI.GetNumRelicSlots() or 0
 	local RelicIndex
+	local PlayerLevel = UnitLevel("player")
 	for RelicIndex = 1, NumRelicSlots do
-		local ThisRelic = ThisArtifact.Relics[RelicIndex]
-		if not ThisRelic then
-			ThisRelic = {}
-			ThisArtifact.Relics[RelicIndex] = ThisRelic
-		end
-
-		ThisRelic.Type = C_ArtifactUI.GetRelicSlotType(RelicIndex)
 		local _, _, _, ThisRelicItemLink = C_ArtifactUI.GetRelicInfo(RelicIndex)
 		local LockedReason = C_ArtifactUI.GetRelicLockedReason(RelicIndex)
-		if ThisRelicItemLink ~= nil and (LockedReason == nil or UnitLevel("player") >= 110) then -- ignore locked relic slots until the player hits 110
-			local RelicItemLevel = PawnGetItemLevelIncreaseProvidedByRelic(ThisRelicItemLink)
-			ThisRelic.ItemLevel = RelicItemLevel
+
+		if LockedReason == nil or PlayerLevel >= 110 then
+			-- This relic slot is unlocked, or the player is 110 and so it's close to being unlocked.
+			local ThisRelic = ThisArtifact.Relics[RelicIndex]
+			if not ThisRelic then
+				ThisRelic = {}
+				ThisArtifact.Relics[RelicIndex] = ThisRelic
+			end
+			ThisRelic.Type = C_ArtifactUI.GetRelicSlotType(RelicIndex)
+			if ThisRelicItemLink then
+				-- And, there's a relic for this slot.
+				local RelicItemLevel = PawnGetItemLevelIncreaseProvidedByRelic(ThisRelicItemLink)
+				ThisRelic.ItemLevel = RelicItemLevel
+			end
+			-- It's possible for us to not get an item link for the exiting relic if this is called right after logging in (because, for example, another
+			-- addon is simulating the shift-right-click).  In that case, we want to just keep whatever we already had cached—don't clear it out.
+		else
+			-- This relic slot is locked.  If we have anything saved for this slot, clear it out; it was probably saved due to a bug in an earlier Pawn version.
+			ThisArtifact.Relics[RelicIndex] = nil
 		end
-		-- If it ever becomes possible for a slot to have a relic in it, and then later for that relic to be removed, I'll have to modify this.
-		-- But in 7.2, if this is called right after logging in (because, for example, another addon is simulating the shift-right-click), we might not
-		-- get an ItemLink for the relic.  In that case, we want to just keep whatever we already had cached; don't clear it out.
+
 	end
 end
 

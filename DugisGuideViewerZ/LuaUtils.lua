@@ -622,3 +622,26 @@ function LuaUtils:collectgarbage(threading)
         collectgarbage()
     end
 end
+
+function LuaUtils:IsElvUIInstalled()
+    return ElvUIMiniMapTrackingDropDown ~= nil
+end  
+
+function LuaUtils:TransferBackdropFromElvUI()
+    LuaUtils:loop(5, function(index)
+        local sourceBackdrop = _G["DropDownList1".."".."MenuBackdrop"]
+        local targetBackdrop = _G["LibDugi_DropDownList"..index.."MenuBackdrop"]
+
+        if sourceBackdrop and targetBackdrop then
+            local backdrop = sourceBackdrop:GetBackdrop(); 
+
+            targetBackdrop:SetBackdrop(backdrop)
+
+            local r, g, b, a = sourceBackdrop:GetBackdropBorderColor(); 
+            targetBackdrop:SetBackdropBorderColor(r, g, b, a)
+
+            local r, g, b, a = sourceBackdrop:GetBackdropColor(); 
+            targetBackdrop:SetBackdropColor(r, g, b, a)
+        end
+    end)        
+end

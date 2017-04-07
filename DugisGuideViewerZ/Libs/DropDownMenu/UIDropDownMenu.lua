@@ -18,6 +18,14 @@ LibDugi_UIDROPDOWNMENU_DEFAULT_TEXT_HEIGHT = nil;
 -- List of open menus
 LIB_OPEN_DROPDOWNMENUS = {}; --used by UnitPopup only
 
+local function finalValue(valueOrFunction)
+    if type(valueOrFunction) == "function" then
+        return valueOrFunction()
+    end
+    
+    return valueOrFunction
+end
+
 local LibDugi_UIDropDownMenuDelegate = CreateFrame("FRAME");
 for i = 1, LibDugi_UIDROPDOWNMENU_MAXLEVELS do
 	local listFrameName = "LibDugi_DropDownList"..i;	
@@ -286,7 +294,7 @@ function LibDugi_UIDropDownMenu_AddButton(info, level)
 	end
 	
 	-- Disable the button if disabled and turn off the color code
-	if ( info.disabled ) then
+	if finalValue(info.disabled) then
 		button:Disable();
 		invisibleButton:Show();
 		info.colorCode = nil;
@@ -472,7 +480,7 @@ function LibDugi_UIDropDownMenu_AddButton(info, level)
 
 
 	if not info.notCheckable then 
-		if ( info.disabled ) then
+		if finalValue(info.disabled) then
 			_G[listFrameName.."Button"..index.."Check"]:SetDesaturated(true);
 			_G[listFrameName.."Button"..index.."Check"]:SetAlpha(0.5);
 			_G[listFrameName.."Button"..index.."UnCheck"]:SetDesaturated(true);
@@ -513,6 +521,7 @@ function LibDugi_UIDropDownMenu_AddButton(info, level)
 		_G[listFrameName.."Button"..index.."UnCheck"]:Hide();
 	end	
 	button.checked = info.checked;
+	button.disabled = info.disabled;
 
 	-- If has a colorswatch, show it and vertex color it
 	local colorSwatch = _G[listFrameName.."Button"..index.."ColorSwatch"];
@@ -619,6 +628,12 @@ function LibDugi_UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 		if (button.checked and type(button.checked) == "function") then
 			checked = button.checked(button);
 		end
+        
+        if finalValue(button.disabled) then
+            button:Disable()
+        else
+            button:Enable()
+        end
 
 		if not button.notCheckable and button:IsShown() then	
 			-- If checked show check image

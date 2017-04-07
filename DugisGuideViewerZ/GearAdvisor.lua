@@ -3217,7 +3217,8 @@ function GA:Initialize()
             local stack = debugstack()
             local isCalledByBagnonAddon = (string.find(stack, "Bagnon") ~= nil)
             local isCalledCargBags_NivayaAddon = (string.find(stack, "Nivaya") ~= nil)
-            return  isCalledByBagnonAddon or isCalledCargBags_NivayaAddon
+			local isCalledByAdibags = (string.find(stack, "AdiBags") ~= nil)
+            return  isCalledByBagnonAddon or isCalledCargBags_NivayaAddon or isCalledByAdibags
         end
 
 		-- Returns a table listing the items in an equipment set

@@ -43,13 +43,7 @@ function MP:Initialize()
         while _G["WorldMapFramePOI"..poiIndex] do 
             delegate(_G["WorldMapFramePOI"..poiIndex], GetNextIndex())                
             poiIndex = poiIndex + 1  
-        end
-        
-        local taskPoiIndex = 1
-        while _G["WorldMapFrameTaskPOI"..taskPoiIndex] do
-            delegate(_G["WorldMapFrameTaskPOI"..taskPoiIndex], GetNextIndex())   
-            taskPoiIndex = taskPoiIndex + 1
-        end        
+        end     
 
 		local numDetails = GetNumberOfDetailTiles()
 		if unconditional or (GetCurrentMapZone() > 0 and DGV:MapHasOverlays()) then
@@ -301,6 +295,9 @@ function MP:Initialize()
             DGV:IterateQuestPOIs(hidePoiFunc, WorldMapPOIFrame, QUEST_POI_COMPLETE_OUT)
             DGV:IterateQuestPOIs(hidePoiFunc, WorldMapPOIFrame, QUEST_POI_COMPLETE_SWAP)
             DGV:IterateQuestPOIs(hidePoiFunc, WorldMapPOIFrame, nil, "WorldQuest")
+            DGV:IterateQuestPOIs(hidePoiFunc, WorldMapPOIFrame, nil, "WorldMapFrameTaskPOI")
+            DGV:IterateQuestPOIs(hidePoiFunc, WorldMapPOIFrame, nil, "WorldMapStoryLine")
+            
 		end
 	end
 
@@ -345,6 +342,7 @@ function MP:Initialize()
 		if InCombatLockdown()
 			or (WorldMapFrame:IsShown() and not MP:IsAnimating() and not MP.ForceMapPreview)
 			or DGV:GetDB(DGV_MAPPREVIEWDURATION)==0
+			or not DGV:GetDB(DGV_ENABLED_MAPPREVIEW)
 			or DGV.carboniteloaded
 			or WORLDMAP_SETTINGS.size ~= WORLDMAP_WINDOWED_SIZE
 			or QuestFrame:IsShown()

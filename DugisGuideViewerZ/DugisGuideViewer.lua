@@ -262,6 +262,7 @@ local function LoadSettings()
     
     DGV_HIDE_MODELS_IN_WORLDMAP = 80
     DGV_AUTO_MOUNT = 81
+    DGV_ENABLED_MAPPREVIEW = 82
 
     
 	--Sliders
@@ -316,7 +317,7 @@ local function LoadSettings()
 					SettingsRevision = 0,
 					WatchFrameSnapped = true,
 					GuideOn = true,
-					sz = 81, --Num check boxes
+					sz = 82, --Num check boxes
 					[DGV_QUESTLEVELON]			= { category = "Other",	text = "Display Quest Level", 	checked = false,	tooltip = "Show the quest level on the large and small frames", module = "Guides"},
 					[DGV_QUESTCOLORON] 		= { category = "Other",	text = "Color Code Quest", 	checked = true,		tooltip = "Color code quest against your character's level", module = "Guides"},
 					[DGV_LOCKSMALLFRAME] 		= { category = "Frames",	text = "Lock Small Frame", 	checked = false,	tooltip = "Lock small frame into place", module = "SmallFrame"},
@@ -361,7 +362,8 @@ local function LoadSettings()
 					[DGV_ENABLENPCNAMEDB]		= { category = "Memory",	text = "NPC Name Database",	checked = true,		tooltip = "Provides localized NPC names. Required for target button.", module = "Disabled"},
 					[DGV_ENABLEQUESTLEVELDB]		= { category = "Memory",	text = "Quest Level Database",	checked = true,		tooltip = "Shows minimum level required for quests.\n\nAlso used for color coding the quests.", module = "ReqLevel"},
 					[DGV_UNLOADMODULES]		= { category = "Memory",	text = "Unload Modules",	checked = false,	tooltip = "Unloading modules will allow the addon to run on low memory setting in Essential Mode but will require a UI reload to return back to normal. ", module = "Guides"},
-					[DGV_MAPPREVIEWHIDEBORDER]	= { category = "Map Preview",	text = "Hide Border",		checked = true,		tooltip = "Hides the minimized map border when map preview is on.",},
+					[DGV_ENABLED_MAPPREVIEW]	= { category = "Map Preview",	text = "Enabled Map Preview",		checked = true,		tooltip = "",},
+                    [DGV_MAPPREVIEWHIDEBORDER]	= { category = "Map Preview",	text = "Hide Border",		checked = true,		tooltip = "Hides the minimized map border when map preview is on.",},
 					[DGV_AUTOQUESTITEMLOOT]	= { category = "Questing",	text = "Auto Loot Quest Item",	checked = true,		tooltip = "Automatically loot quest items.",},
 					[DGV_ACCOUNTWIDEACH]		= { category = "Other",text = "Account Wide Achievement",	checked = false,		tooltip = "Detects account wide achievements completion.", module = "Guides"},
 					[DGV_AUTO_MOUNT]		= { category = "Auto Mount", text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tEnabled auto mount",	checked = false,		tooltip = "Automatically mounts the fastest available mount.", module = "GearAdvisor"},
@@ -3524,7 +3526,11 @@ end
 
 function DugisGuideViewer:OnOff_OnClick(self, event)
 	if event == "LeftButton" then
-		DugisGuideViewer:ToggleOnOff()
+        if LibDugi_DropDownList1 and LibDugi_DropDownList1:IsVisible() then
+            LibDugi_CloseDropDownMenus(1)
+        else
+            DugisGuideViewer.ShowMainMenu(DugisGuideViewer.ClickedMenuItem)  
+        end
 	elseif event == "RightButton" then
 		ToggleConfig()
 	end
@@ -3619,8 +3625,8 @@ function DugisGuideViewer:TurnOnEssentials()
 	if DugisGuideViewer_ModelViewer and DugisGuideViewer_ModelViewer:IsShown() then DugisGuideViewer_ModelViewer:Hide() end
 end
 
-function DugisGuideViewer:TurnOff()
-	if not DugisGuideViewer:GuideOn() then return end
+function DugisGuideViewer:TurnOff(forceOff)
+	if not DugisGuideViewer:GuideOn() and not forceOff then return end
 	print("|cff11ff11" .. "Dugi Guides Off" )
 	DugisGuideViewer.chardb.GuideOn = false
 	DugisGuideViewer.eventFrame:UnregisterAllEvents()
@@ -3638,8 +3644,8 @@ function DugisGuideViewer:TurnOff()
 	DugisGuideViewer:ReloadModules()
 end
 
-function DugisGuideViewer:TurnOn()
-	if DugisGuideViewer:GuideOn() then return end
+function DugisGuideViewer:TurnOn(forceOn)
+	if DugisGuideViewer:GuideOn() and not forceOn then return end
 	print("|cff11ff11" .. "Dugi Guides On" )
 	if not DugisGuideViewer:IsModuleRegistered("Guides") then
 		DugisGuideViewer.chardb.EssentialsMode = 1
@@ -4030,7 +4036,9 @@ function DugisGuideViewer.QUEST_LOG_UPDATE(func)
 		DugisGuideUser.NoQuestLogUpdateTrigger = nil
 		return 
 	else
-		DugisGuideViewer:Dugi_QUEST_LOG_UPDATE()
+        if FirstTime then
+            DugisGuideViewer:Dugi_QUEST_LOG_UPDATE()
+        end
 	end	
 end
 
@@ -4318,7 +4326,10 @@ end
 function DugisGuideViewer:UpdateCompletionVisuals(headerAnim)
 	if DugisGuideViewer:IsModuleRegistered("SmallFrame") and DugisGuideViewer:IsModuleRegistered("DugisWatchFrame") and DugisGuideViewer:GuideOn() then 
 		DugisGuideViewer:UpdateSmallFrame(headerAnim)
-		DugisGuideViewer.Modules.DugisWatchFrame:DelayUpdate()
+        
+        if DugisGuideViewer.Modules.DugisWatchFrame.DelayUpdate then
+            DugisGuideViewer.Modules.DugisWatchFrame:DelayUpdate()
+        end
 	end
 end
 
@@ -4862,6 +4873,149 @@ function DugisGuideViewer:UpdateAutoMountEnabled()
     end
 end
 
+function DugisGuideViewer.UpdateSettingsCheckbox(settingsId)
+    local value = DugisGuideViewer:GetDB(settingsId)
+    local chkBoxName = "DGV.ChkBox"..settingsId
+    local chkBox = _G[chkBoxName]
+    if chkBox then
+        chkBox:SetChecked(value)
+    end
+end
+
+function DugisGuideViewer.ClickedMenuItem(settingsId, itemInfo)
+    local checked = itemInfo.checked
+    
+    if settingsId == DGV_AUTO_MOUNT
+    or settingsId == DGV_AUTOEQUIPSMARTSET
+    or settingsId == DGV_AUTOQUESTACCEPT
+    or settingsId == DGV_AUTOFLIGHTPATHSELECT
+    or settingsId == DGV_ENABLED_MAPPREVIEW then
+        local newValue = not DugisGuideViewer:GetDB(settingsId)
+    
+        if settingsId == DGV_AUTOQUESTACCEPT then
+            newValue = not (DugisGuideViewer:GetDB(settingsId) and DugisGuideViewer:GetDB(DGV_AUTOQUESTTURNIN))
+        end
+    
+        DugisGuideViewer:SetDB(newValue, settingsId)
+        DugisGuideViewer:UpdateAutoMountEnabled()
+        
+        --Updating checkbox in settings
+        DugisGuideViewer.UpdateSettingsCheckbox(settingsId)
+        
+    end
+
+    if settingsId == DGV_AUTOQUESTACCEPT then
+        DugisGuideViewer:SetDB(DugisGuideViewer:GetDB(settingsId), DGV_AUTOQUESTTURNIN)
+        DugisGuideViewer.UpdateSettingsCheckbox(DGV_AUTOQUESTTURNIN)
+    end
+    
+    if settingsId == "guide-mode" then
+        if checked then
+            DugisGuideViewer.chardb.EssentialsMode = 0
+            DugisGuideViewer:TurnOn(true)
+        end
+    end
+    
+    if settingsId == "essential-mode" then
+        if checked then
+            SaveFramesPositions()
+            DugisGuideViewer:TurnOnEssentials()
+            DugisGuideViewer:RefreshQuestWatch()
+        end
+    end   
+    
+    if settingsId == "off-mode" then
+        if checked then
+            DugisGuideViewer.chardb.EssentialsMode = 0
+            DugisGuideViewer:TurnOff(true)
+        end
+    end
+    
+    LibDugi_UIDropDownMenu_Refresh(MainDugisMenuFrame)
+end
+
+function DugisGuideViewer.GetPluginMode()
+    local isGuideMode = DugisGuideViewer:GuideOn() == true and DugisGuideViewer.chardb.EssentialsMode == 0
+    local isEssentialMode = DugisGuideViewer.chardb.EssentialsMode == 1
+    local isOffMode = isGuideMode ~= true and not isEssentialMode
+    
+    return isGuideMode, isEssentialMode, isOffMode
+end
+
+function DugisGuideViewer.ShowMainMenu(clickCallback)
+    local menu = {
+        {text = "Addon", isTitle = true, isNotRadio = true, notCheckable = true},
+        
+        {text = "Guide Mode",     keepShownOnClick = true, checked = function() return select(1, DugisGuideViewer.GetPluginMode()) end,     func = function(itemInfo) clickCallback("guide-mode", itemInfo)      end},
+        {text = "Essential Mode", keepShownOnClick = true, checked = function() return select(2, DugisGuideViewer.GetPluginMode()) end, func = function(itemInfo) clickCallback("essential-mode", itemInfo)  end},
+        {text = "Off Mode",       keepShownOnClick = true, checked = function() return select(3, DugisGuideViewer.GetPluginMode()) end,       func = function(itemInfo) clickCallback("off-mode", itemInfo)        end},
+        
+        {text = "Quick Settings", isTitle = true, isNotRadio = true, notCheckable = true},
+        
+        {text = "Auto Mount", isNotRadio = true, keepShownOnClick = true, checked = function() return DugisGuideViewer:UserSetting(DGV_AUTO_MOUNT) end
+        , func = function(itemInfo) clickCallback(DGV_AUTO_MOUNT, itemInfo) end},
+        
+        {text = "Gear Advisor", isNotRadio = true, keepShownOnClick = true, checked = function() return DugisGuideViewer:UserSetting(DGV_AUTOEQUIPSMARTSET) end
+        , func = function(itemInfo) clickCallback(DGV_AUTOEQUIPSMARTSET, itemInfo) end},
+        
+        {text = "Auto Quest Accept/Turn in", isNotRadio = true, keepShownOnClick = true, checked = function() 
+        return DugisGuideViewer:UserSetting(DGV_AUTOQUESTACCEPT) and DugisGuideViewer:UserSetting(DGV_AUTOQUESTTURNIN) end
+        , func = function(itemInfo) clickCallback(DGV_AUTOQUESTACCEPT, itemInfo) end},
+        
+        {text = "Map Preview", isNotRadio = true, keepShownOnClick = true, checked = function() return DugisGuideViewer:UserSetting(DGV_ENABLED_MAPPREVIEW) end
+        , func = function(itemInfo) clickCallback(DGV_ENABLED_MAPPREVIEW, itemInfo) end},
+        
+        {text = "Auto Select Flight Path", isNotRadio = true, keepShownOnClick = true, checked = function() return DugisGuideViewer:UserSetting(DGV_AUTOFLIGHTPATHSELECT) end
+        , func = function(itemInfo) clickCallback(DGV_AUTOFLIGHTPATHSELECT, itemInfo) end},
+        
+        {text = "More settings..", isNotRadio = true, notCheckable = true
+        , disabled = function()
+            return not DugisGuideViewer:GuideOn()
+        end
+        , func = function(itemInfo) 
+            if not DugisMainBorder:IsVisible() then
+                ToggleConfig()
+            end
+            if DugisMain and DugisMain.settingsTab and DugisGuideViewer.DeselectTopTabs then
+                DugisMain.settingsTab:Click()
+            end
+        end},
+        
+        {text = "Home", isNotRadio = true, notCheckable = true
+        , disabled = function()
+            return not DugisGuideViewer:GuideOn() or DugisGuideViewer.chardb.EssentialsMode == 1
+        end
+        , func = function(itemInfo) 
+            if not DugisMainBorder:IsVisible() then
+                ToggleConfig()
+            end
+            if DugisMain and DugisMain.homeTab then
+                DugisMain.homeTab:Click()
+            end
+        end}      
+    }
+    
+    if not DugisGuideViewer:IsModuleRegistered("Guides") then
+        LuaUtils:foreach(menu, function(item, index)
+            if item.text == "Guide Mode" then
+                tremove(menu, index)
+            end
+        end)
+        
+        LuaUtils:foreach(menu, function(item, index)
+            if item.text == "Home" then
+                tremove(menu, index)
+            end
+        end)
+    end
+        
+    CreateFrame("Frame", "MainDugisMenuFrame", UIParent, "UIDropDownMenuTemplate")
+    LibDugi_EasyMenu(menu, MainDugisMenuFrame, "cursor", 13 , -15, "MENU");
+    
+    if LuaUtils:IsElvUIInstalled() then
+       LuaUtils:TransferBackdropFromElvUI()
+    end
+end
 
 
 

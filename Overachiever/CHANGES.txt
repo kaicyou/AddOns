@@ -1,18 +1,18 @@
 ------------------------------------------------------------------------
-r186 | Tuhljin | 2017-03-29 00:27:08 -0500 (Wed, 29 Mar 2017) | 5 lines
+r188 | Tuhljin | 2017-04-06 02:43:32 -0500 (Thu, 06 Apr 2017) | 4 lines
 Changed paths:
-   M /trunk/AchieveID.lua
-   M /trunk/AchieveTip.lua
+   M /trunk/Calendar.lua
+   M /trunk/Options.lua
+   M /trunk/Overachiever.lua
    M /trunk/Overachiever.toc
    M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
-   M /trunk/Overachiever_Tabs/Suggestions.lua
    M /trunk/Overachiever_Trade/Overachiever_Trade.toc
+   M /trunk/localization.lua
    M /trunk/readme.txt
 
-- Updated for WoW patch 7.2.
-- "Compare progress in others' links" option no longer adds a line indicating you completed the achievement (and when) because WoW 7.2 has made that redundant.
-- Suggestions Tab:
--- Added suggestions for Broken Shore, Cathedral of Eternal Night, and Tomb of Sargeras.
--- Suggest the new class armor set achievements in the appropriate instances, from Molten Core to Tomb of Sargeras.
+- Holiday/Event Toasts:
+-- Added option to control the appearance of PvP Brawl toasts. Disabled by default.
+-- Fix certain timewalking events being treated as holidays instead of dungeon events.
+-- Fix failure to load texture for micro-holidays that take up two days in the calendar.
 ------------------------------------------------------------------------
 

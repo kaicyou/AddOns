@@ -1170,10 +1170,6 @@ function WMT:Initialize()
 		end
 	end
     
-    local function IsElvUIInstalled()
-        return ElvUIMiniMapTrackingDropDown ~= nil
-    end  
-
 	local function GetNearest(button)
 		local shortest, shortestDist
 		--for _,point in ipairs(trackingPoints) do
@@ -1206,7 +1202,7 @@ function WMT:Initialize()
 				map, level)
 		end
         
-        if IsElvUIInstalled() then
+        if LuaUtils:IsElvUIInstalled() then
             Lib_DropDownList1.showTimer = 1
         else
             LibDugi_DropDownList1.showTimer = 1
@@ -1219,7 +1215,7 @@ function WMT:Initialize()
 	local function IterateDropdownLevel(level)
 		local listFrame = _G["DropDownList"..level];
         
-        if IsElvUIInstalled() then
+        if LuaUtils:IsElvUIInstalled() then
             listFrame = _G["Lib_DropDownList"..level];
         end
         
@@ -1309,7 +1305,7 @@ function WMT:Initialize()
             
             local dropDownPrefix = ""
             
-            if IsElvUIInstalled() then
+            if LuaUtils:IsElvUIInstalled() then
                 dropDownPrefix = "Lib_"
             end
             
@@ -1337,7 +1333,7 @@ function WMT:Initialize()
             
             local dropDownPrefix = ""
             
-            if IsElvUIInstalled() then
+            if LuaUtils:IsElvUIInstalled() then
                 dropDownPrefix = "Lib_"
             end
             
@@ -1412,29 +1408,10 @@ function WMT:Initialize()
             UpdateTrackingFilters()
             LibDugi_UIDropDownMenu_Refresh(MinimapExtraMenuFrame)
         end  
-        
-        local function TransferBackdropFromElvUI()
-            LuaUtils:loop(5, function(index)
-                local sourceBackdrop = _G["DropDownList1".."".."MenuBackdrop"]
-                local targetBackdrop = _G["LibDugi_DropDownList"..index.."MenuBackdrop"]
 
-                if sourceBackdrop and targetBackdrop then
-                    local backdrop = sourceBackdrop:GetBackdrop(); 
-
-                    targetBackdrop:SetBackdrop(backdrop)
-
-                    local r, g, b, a = sourceBackdrop:GetBackdropBorderColor(); 
-                    targetBackdrop:SetBackdropBorderColor(r, g, b, a)
-
-                    local r, g, b, a = sourceBackdrop:GetBackdropColor(); 
-                    targetBackdrop:SetBackdropColor(r, g, b, a)
-                end
-            end)        
-        end
-        
         local function ShowExtraMenu()
             if not IsShowMinimapMenu() then
-                if not IsElvUIInstalled() then
+                if not LuaUtils:IsElvUIInstalled() then
                     return
                 end
             end
@@ -1593,7 +1570,7 @@ function WMT:Initialize()
 
             local yMenuOffset = 0
             
-            if IsElvUIInstalled() then
+            if LuaUtils:IsElvUIInstalled() then
                 local top = Lib_DropDownList1:GetTop()
                 if top ~= nil and top < GetScreenHeight() * 0.5 then
                     MinimapExtraMenuFrame.point = "BOTTOMRIGHT"
@@ -1608,9 +1585,9 @@ function WMT:Initialize()
                 end
             end
 
-             if IsElvUIInstalled() then
+             if LuaUtils:IsElvUIInstalled() then
                 LibDugi_EasyMenu(menu, MinimapExtraMenuFrame, Lib_DropDownList1, 0 , -5 + yMenuOffset, "MENU"); 
-                TransferBackdropFromElvUI()
+                LuaUtils:TransferBackdropFromElvUI()
              else
                 LibDugi_EasyMenu(menu, MinimapExtraMenuFrame, DropDownList1, 0 , 0, "MENU");
              end
@@ -1620,7 +1597,7 @@ function WMT:Initialize()
 
                 local DropDownList = DropDownList1
                 
-                if IsElvUIInstalled() then
+                if LuaUtils:IsElvUIInstalled() then
                     DropDownList = Lib_DropDownList1
                 end
             
@@ -1654,7 +1631,7 @@ function WMT:Initialize()
             end)
 
             hooksecurefunc("LibDugi_UIDropDownMenu_Initialize",  function()
-                TransferBackdropFromElvUI()
+                LuaUtils:TransferBackdropFromElvUI()
             end)
             
             DropDownList1:HookScript("OnShow", function()

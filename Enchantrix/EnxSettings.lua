@@ -1,6 +1,6 @@
 --[[
 	Enchantrix Addon for World of Warcraft(tm).
-	Version: 7.3a.5701 (TasmanianThylacine)
+	Version: 7.4.5714 (TasmanianThylacine)
 	Revision: $Id: EnxSettings.lua 5644 2016-08-06 21:39:02Z ccox $
 	URL: http://enchantrix.org/
 
@@ -63,7 +63,7 @@ Usage:
 
 ]]
 
-Enchantrix_RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.3a/Enchantrix/EnxSettings.lua $", "$Rev: 5644 $")
+Enchantrix_RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.4/Enchantrix/EnxSettings.lua $", "$Rev: 5644 $")
 
 local lib = {}
 Enchantrix.Settings = lib

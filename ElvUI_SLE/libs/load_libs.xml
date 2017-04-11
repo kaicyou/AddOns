@@ -11,5 +11,7 @@
 	<Include file="LibBabble-SubZone-3.0\lib.xml"/>
 	<Include file="LibFishing-1.0\lib.xml" />
 	<Script file="oUF_OfflineSLE\oUF_OfflineSLE.lua"/>
+	<Script file="LibKitUITags-1.0\LibKitUITags-1.0.lua"/>
+	<Script file="LibKituiConditions-1.0\LibKituiConditions-1.0.lua"/>
 	<Include file="LibProcessable\LibProcessable.lua"/>
 </Ui>

@@ -5,6 +5,37 @@ local _
 
 local FL = LibStub("LibFishing-1.0");
 
+local function GetEquipmentSetInfoByName(name)
+	local setId = C_EquipmentSet.GetEquipmentSetID(name);
+	if (setId) then
+		local n, iconFileID, setID, isEquipped, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(setId);
+		return iconFileID, setID, isEquipped, numItems, numEquipped, numInInventory, numLost, numIgnored;
+	end
+end
+
+local function SaveEquipmentSet(name, icon)
+	local setId = C_EquipmentSet.GetEquipmentSetID(name);
+	if (setId) then
+		C_EquipmentSet.SaveEquipmentSet(setId, icon);
+	else
+		C_EquipmentSet.CreateEquipmentSet(name, icon);
+	end
+end
+
+local function DeleteEquipmentSet(name)
+	local setId = C_EquipmentSet.GetEquipmentSetID(name);
+	if (setId) then
+		C_EquipmentSet.DeleteEquipmentSet(setId);
+	end
+end
+
+local function EquipSetByName(name)
+	local setId = C_EquipmentSet.GetEquipmentSetID(name);
+	if (setId) then
+		EquipmentManager_EquipSet(setId);
+	end
+end
+
 local lastOutfit;
 
 local FB_TEMP_OUTFIT = "FB_TEMP_OUTFIT";
@@ -43,11 +74,19 @@ gearframe:SetScript("OnUpdate", function(self)
 			self.state = FINAL_STATE;
 		end
 	elseif ( self.state == 1 ) then
+		-- we have to save it again, after setting the ignore slots
+		for slot=1,17 do
+			C_EquipmentSet.IgnoreSlotForSave(slot);
+		end
+		for invslot,info in pairs(self.outfit) do
+			C_EquipmentSet.UnignoreSlotForSave(invslot);
+		end
+		SaveEquipmentSet(self.name, self.maintexture);
+
 		-- reset slot ignore flags
-		EquipmentManagerClearIgnoredSlotsForSave();
 		local icon, _ = GetEquipmentSetInfoByName(FB_TEMP_OUTFIT);
 		if ( icon ) then
-			EquipmentManager_EquipSet(FB_TEMP_OUTFIT);
+			EquipSetByName(FB_TEMP_OUTFIT);
 			self.state = 2;
 			self.nextstate = 3;
 		else
@@ -89,10 +128,10 @@ local function GearManagerInitialize(force)
 			-- FishingBuddy.Debug("GearManagerInitialize forced");
 		end
 		-- FishingBuddy.Debug("GearManagerInitialize name "..FBConstants.NAME);
-		local icon, _ = GetEquipmentSetInfoByName(FBConstants.NAME);
+		local icon, setId = GetEquipmentSetInfoByName(FBConstants.NAME);
 		if ( icon ) then
 			-- Validate outfit, CurseForge bug #218
-			local itemArray = GetEquipmentSetItemIDs(FBConstants.NAME);
+			local itemArray = C_EquipmentSet.GetEquipmentSetIDs(setId);
 			-- If there is a Ranged slot, nuke this outfit
 			-- FishingBuddy.Dump(itemArray)
 			if (itemArray[18] and itemArray[18] ~= 0) then
@@ -103,15 +142,11 @@ local function GearManagerInitialize(force)
 			-- Let's build a fishing outfit
 			-- but we actually have to equip the items for this to work
 			-- let's save what we have on now...
+			C_EquipmentSet.ClearIgnoredSlotsForSave();
 			SaveEquipmentSet(FB_TEMP_OUTFIT, 1);
-			for slot=1,17 do
-				EquipmentManagerIgnoreSlotForSave(slot);
-			end
-
 			local outfit = FL:GetFishingOutfitItems(false) or {};
 			for invslot,info in pairs(outfit) do
 				EquipItemByName(info.link, invslot);
-				EquipmentManagerUnignoreSlotForSave(invslot);
 			end  -- for bags
 			-- let's save this puppy
 			PrepGearFrame(FBConstants.NAME, outfit, force);
@@ -123,37 +158,38 @@ end
 
 local function GuessCurrentOutfit()
 	local ret = {};
-	local location_array = {};
-	local numsets = GetNumEquipmentSets();
-	for set = 1, numsets do
-		ret[set] = 0;
-		local eq_set_name, _, _ = GetEquipmentSetInfo(set);
-		GetEquipmentSetLocations(eq_set_name, location_array);
-		for s,location in pairs(location_array) do
-			local onplayer, _, bags, _, _, _ = EquipmentManager_UnpackLocation(location);
-			if onplayer and not bags then
-				ret[set] = ret[set] + 1;
-			end	
+	local numsets = C_EquipmentSet.GetNumEquipmentSets();
+	for set = 0, numsets-1 do
+		ret[set+1] = 0;
+		local location_array = C_EquipmentSet.GetItemLocations(set);
+		if (location_array) then
+			for s,location in pairs(location_array) do
+				local onplayer, _, bags, _, _, _ = EquipmentManager_UnpackLocation(location);
+				if onplayer and not bags then
+					ret[set+1] = ret[set+1] + 1;
+				end
+			end
 		end
 	end
 	local best_set = 1;
 	local best_value = 0;
-	for i = 1, numsets do
+	for i = 1, #ret do
 		if (best_value < ret[i]) then
 			best_value = ret[i];
-			best_set = i;
+			best_set = i-1;
 		end
 	end
-	local best_name, _, _ = GetEquipmentSetInfo(best_set);
+	local best_name, _, _ = C_EquipmentSet.GetEquipmentSetInfo(best_set);
 	return best_name;
 end
 
 local function GetCurrentOutfit()
-	local setname = PaperDollEquipmentManagerPane.selectedSetName;
-	if ( setname ) then
-		return setname;
+	local setId = PaperDollEquipmentManagerPane.selectedSetId;
+	if ( setId ) then
+		local name = C_EquipmentSet.GetEquipmentSetInfo(setId);
+		return name;
 	end
-	if ( GetNumEquipmentSets() == 0 ) then
+	if ( C_EquipmentSet.GetNumEquipmentSets() == 0 ) then
         return nil; -- there are no gear sets, give up
     end
 	-- no gear set active, take best fit
@@ -165,16 +201,16 @@ local function GearManagerSwitch(outfitName)
 	if ( FL:IsFishingReady(GSB("PartialGear")) ) then
 		local name = FishingBuddy_Info["LastGearSet"];
 		if ( not name ) then
-			name, _, _ = GetEquipmentSetInfo(1);
+			name = GetCurrentOutfit();
 		end
-		EquipmentManager_EquipSet(name);
+		EquipSetByName(name);
 		FishingBuddy_Info["LastGearSet"] = nil;
 		return false;
 	else
-		local icon, idxm1 = GetEquipmentSetInfoByName(FBConstants.NAME);
+		local icon, setId = GetEquipmentSetInfoByName(FBConstants.NAME);
 		if ( icon ) then
 			FishingBuddy_Info["LastGearSet"] = GetCurrentOutfit();
-			EquipmentManager_EquipSet(FBConstants.NAME);
+			EquipmentManager_EquipSet(setId);
 			return true;
 		end
 	end
@@ -242,7 +278,8 @@ if ( FishingBuddy.Debugging ) then
 	FishingBuddy.Commands["checkset"].func =
 		function(what)
 			local Debug = FishingBuddy.Debug;
-			local set = GetEquipmentSetItemIDs(FBConstants.NAME);
+			local icon, setId = GetEquipmentSetInfoByName(self.name);
+			local set = GetEquipmentSetItemIDs(setId);
 			for slot, item in ipairs(set) do
 				if ( item == EQUIPMENT_SET_IGNORED_SLOT ) then
 					Debug("Ignored slot "..slot);

@@ -178,6 +178,15 @@ faFactionDataRow[1859]  = 161;
 faFactionDataRow[1894]  = 162;
 faFactionDataRow[1948]  = 163;
 
+faFactionDataRow[1975]  = 164;
+faFactionDataRow[2018]  = 165;
+faFactionDataRow[2045]  = 166;
+faFactionDataRow[2097]  = 167;
+faFactionDataRow[2098]  = 168;
+faFactionDataRow[2099]  = 169;
+faFactionDataRow[2100]  = 170;
+faFactionDataRow[2101]  = 171;
+faFactionDataRow[2102]  = 172;
 
 faFactionData = {
 	{1037, "Interface\\ICONS\\spell_misc_hellifrepvphonorholdfavor",
@@ -512,6 +521,24 @@ faFactionData = {
 			6,0,19},
 	{1948, "Interface\\ICONS\\inv_tabard_a_88valarjar",
 			6,0,19},
+	{1975, "Interface\\ICONS\\inv_g_fishingbobber_05",
+			6,0,19},
+	{2018, "Interface\\ICONS\\inv_ability_mount_cockatricemount_white",
+			6,0,19},
+	{2045, "Interface\\ICONS\\inv_tabard_a_92legionfall",
+			6,0,19},
+	{2097, "Interface\\ICONS\\achievement_character_nightelf_female",
+			6,0,19},
+	{2098, "Interface\\ICONS\\ability_druid_improvedtreeform",
+			6,0,19},
+	{2099, "Interface\\ICONS\\spell_shaman_totemrecall",
+			6,0,19},
+	{2100, "Interface\\ICONS\\inv_helm_plate_pvppaladin_c_01",
+			6,0,19},
+	{2101, "Interface\\ICONS\\creatureportrait_darkshoreboat",
+			6,0,19},
+	{2102, "Interface\\ICONS\\ability_warlock_demonicempowerment",
+			6,0,19},
 };
 
 local faFactionDataDesc = { -- column descriptions - info only, no need to localize
@@ -603,3 +630,8 @@ faFactionAddictTooltips = {
 --ORANGE_FONT_COLOR_CODE      = "|cffff7f3f";
 --ACHIEVEMENT_COLOR_CODE      = "|cffffff00";
 --FONT_COLOR_CODE_CLOSE       = "|r";
+
+
+-- Not in game
+-- 2010 Brawlgar Arena
+-- 2011 Bizmos Brawlpub

@@ -122,6 +122,23 @@ local function GetFreePoolIcon()
 	return iconcache[pdx];
 end
 
+function CalendarGetDayEvent(monthOffset, monthDay, index)
+	local event = C_Calendar.GetDayEvent(monthOffset, monthDay, index);
+	if (event) then
+		local hour, minute;
+		if (event.sequenceType == "END") then
+			hour = event.endTime.hour;
+			minute = event.endTime.minute;
+		else
+			hour = event.startTime.hour;
+			minute = event.startTime.minute;
+		end
+		return event.title, hour, minute, event.calendarType, event.sequenceType, event.eventType, event.texture, event.modStatus, event.inviteStatus, event.invitedBy, event.difficulty, event.inviteType, event.sequenceIndex, event.numSequenceDays, event.difficultyName;
+	else
+		return nil, 0, 0, "", "", 0, "", "", 0, "", 0, 0, 0, 0, "";
+	end
+end
+
 -- Salty Badmunkay the Limnologist (@Shadow Council, a MST server with a EST player...guh)
 -- Should we display the extravaganza message?
 local checkedDay = nil;

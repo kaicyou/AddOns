@@ -1,6 +1,6 @@
 --[[
 	Auctioneer
-	Version: 7.3a.5701 (TasmanianThylacine)
+	Version: 7.4.5714 (TasmanianThylacine)
 	Revision: $Id: CoreConfig.lua 5669 2016-09-03 11:52:14Z brykrys $
 	URL: http://auctioneeraddon.com/
 
@@ -192,5 +192,5 @@ coremodule.Processors = {
 	gameactive = function() private.Activate() end,
 }
 
-AucAdvanced.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.3a/Auc-Advanced/CoreConfig.lua $", "$Rev: 5669 $")
+AucAdvanced.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.4/Auc-Advanced/CoreConfig.lua $", "$Rev: 5669 $")
 AucAdvanced.CoreFileCheckOut("CoreConfig")

@@ -1,6 +1,6 @@
 --[[
 	Auctioneer - Search UI - Searcher Disenchant
-	Version: 7.3a.5701 (TasmanianThylacine)
+	Version: 7.4.5714 (TasmanianThylacine)
 	Revision: $Id: SearcherDisenchant.lua 5671 2016-09-10 05:25:34Z ccox $
 	URL: http://auctioneeraddon.com/
 
@@ -190,4 +190,4 @@ function lib.Search(item)
 	return false, "Not enough profit"
 end
 
-AucAdvanced.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.3a/Auc-Util-SearchUI/SearcherDisenchant.lua $", "$Rev: 5671 $")
+AucAdvanced.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.4/Auc-Util-SearchUI/SearcherDisenchant.lua $", "$Rev: 5671 $")

@@ -3049,7 +3049,14 @@ function GA:Initialize()
 		end
 
 		local function GetSpecIcon()
-			return (select(4, GetSpecializationInfo((SpecFromOption(DGV:UserSetting(DGV_GASMARTSETTARGET))))))
+            local spec = DGV:UserSetting(DGV_GASMARTSETTARGET)
+            local specIndex = SpecFromOption(spec)
+            
+            if specIndex == nil then
+                return "Interface\\ICONS\\INV_Misc_QuestionMark"
+            else
+                return (select(4, GetSpecializationInfo(specIndex)))
+            end
 		end
 
 		-- name, icon, setID, isEquipped, numItems, numEquipped, numInventory, numMissing, numIgnored = GetEquipmentSetInfo(index)

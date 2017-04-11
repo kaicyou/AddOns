@@ -1,6 +1,6 @@
 --[[
 	Auctioneer
-	Version: 7.3a.5701 (TasmanianThylacine)
+	Version: 7.4.5714 (TasmanianThylacine)
 	Revision: $Id: CoreServers.lua 5693 2016-12-22 23:00:47Z brykrys $
 	URL: http://auctioneeraddon.com/
 
@@ -568,5 +568,5 @@ AucAdvanced.GetServerKeyText = GetServerKeyText
 AucAdvanced.SplitServerKey = SplitServerKey
 
 
-AucAdvanced.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.3a/Auc-Advanced/CoreServers.lua $", "$Rev: 5693 $")
+AucAdvanced.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.4/Auc-Advanced/CoreServers.lua $", "$Rev: 5693 $")
 AucAdvanced.CoreFileCheckOut("CoreServers")

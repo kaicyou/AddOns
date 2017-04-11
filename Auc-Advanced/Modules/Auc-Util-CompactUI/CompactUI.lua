@@ -1,6 +1,6 @@
 ﻿--[[
 	Auctioneer - Price Level Utility module
-	Version: 7.3a.5701 (TasmanianThylacine)
+	Version: 7.4.5714 (TasmanianThylacine)
 	Revision: $Id: CompactUI.lua 5694 2016-12-23 15:15:14Z brykrys $
 	URL: http://auctioneeraddon.com/
 
@@ -911,4 +911,4 @@ function lib.GetButtons()
 end
 
 
-AucAdvanced.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.3a/Auc-Util-CompactUI/CompactUI.lua $", "$Rev: 5694 $")
+AucAdvanced.RegisterRevision("$URL: http://svn.norganna.org/auctioneer/branches/7.4/Auc-Util-CompactUI/CompactUI.lua $", "$Rev: 5694 $")

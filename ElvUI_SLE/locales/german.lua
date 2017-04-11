@@ -432,6 +432,7 @@ L["Normal"] = true
 L["Reversed"] = "Umgekehrt"
 L["Amount"] = "Anzahl"
 L["Order of each toon. Smaller numbers will go first"] = "Anordnung von jedem Twink. Kleiner Zahlen werden zu erst angezeigt."
+L["Tracked"] = "Verfolgt"
 
 --Enhnced Shadows
 L["Enhanced Shadows"] = "Erweiterte Schatten"

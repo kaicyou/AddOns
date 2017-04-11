@@ -4,7 +4,7 @@
 -- Desc: Addon for World of Warcraft
 --
 -- Author: gmz323(Greg)
--- current version: v1.40
+-- current version: v1.41
 -- (c) 2011-2017
 --
 =============================================================================
@@ -67,6 +67,11 @@ My Other Addons:
 
 Changelog:
 ==========
+
+v1.41 (2017-04-09)
+------------------
+* Added the 7.2 factions to the addon that were left out. Please let me know if run into other missing factions.
+* PARAGON REP Note - The addon currently does NOT display info about Paragon reputations. Still working on how best to integrate this into the UI in an easily useable way.
 
 v1.40 (2017-03-28)
 ------------------

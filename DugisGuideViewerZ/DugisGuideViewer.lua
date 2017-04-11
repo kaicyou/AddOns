@@ -263,6 +263,8 @@ local function LoadSettings()
     DGV_HIDE_MODELS_IN_WORLDMAP = 80
     DGV_AUTO_MOUNT = 81
     DGV_ENABLED_MAPPREVIEW = 82
+    
+    DGV_DISABLE_QUICK_SETTINGS = 83
 
     
 	--Sliders
@@ -317,7 +319,7 @@ local function LoadSettings()
 					SettingsRevision = 0,
 					WatchFrameSnapped = true,
 					GuideOn = true,
-					sz = 82, --Num check boxes
+					sz = 83, --Num check boxes
 					[DGV_QUESTLEVELON]			= { category = "Other",	text = "Display Quest Level", 	checked = false,	tooltip = "Show the quest level on the large and small frames", module = "Guides"},
 					[DGV_QUESTCOLORON] 		= { category = "Other",	text = "Color Code Quest", 	checked = true,		tooltip = "Color code quest against your character's level", module = "Guides"},
 					[DGV_LOCKSMALLFRAME] 		= { category = "Frames",	text = "Lock Small Frame", 	checked = false,	tooltip = "Lock small frame into place", module = "SmallFrame"},
@@ -366,6 +368,7 @@ local function LoadSettings()
                     [DGV_MAPPREVIEWHIDEBORDER]	= { category = "Map Preview",	text = "Hide Border",		checked = true,		tooltip = "Hides the minimized map border when map preview is on.",},
 					[DGV_AUTOQUESTITEMLOOT]	= { category = "Questing",	text = "Auto Loot Quest Item",	checked = true,		tooltip = "Automatically loot quest items.",},
 					[DGV_ACCOUNTWIDEACH]		= { category = "Other",text = "Account Wide Achievement",	checked = false,		tooltip = "Detects account wide achievements completion.", module = "Guides"},
+					[DGV_DISABLE_QUICK_SETTINGS]		= { category = "Other",text = "Disable Quick Settings Under "..[[|T]]..DugisGuideViewer.ARTWORK_PATH.."iconbutton"..[[:20:20|t]].."Icon",	checked = false,		tooltip = "", module = "Guides"},
 					[DGV_AUTO_MOUNT]		= { category = "Auto Mount", text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tEnabled auto mount",	checked = false,		tooltip = "Automatically mounts the fastest available mount.", module = "GearAdvisor"},
 					[DGV_EMBEDDEDTOOLTIP]		= { category = "Display",	text = "Embedded Tooltip",	checked = true,	tooltip = "Displays tooltip information under guide step", module = "Guides"},
 					[DGV_FIXEDWIDTHSMALL]		= { category = "Display",	text = "Fixed Width Small Frame",	checked = true,	tooltip = "Floating Small Frame won't adjust size horizontally and remain the same width as the Objective Tracker.", module = "Guides"},
@@ -3526,10 +3529,15 @@ end
 
 function DugisGuideViewer:OnOff_OnClick(self, event)
 	if event == "LeftButton" then
-        if LibDugi_DropDownList1 and LibDugi_DropDownList1:IsVisible() then
-            LibDugi_CloseDropDownMenus(1)
+        if DugisGuideViewer:UserSetting(DGV_DISABLE_QUICK_SETTINGS) ~= true then
+            if LibDugi_DropDownList1 and LibDugi_DropDownList1:IsVisible() then
+                LibDugi_CloseDropDownMenus(1)
+            else
+                DugisGuideViewer.ShowMainMenu(DugisGuideViewer.ClickedMenuItem)  
+            end
         else
-            DugisGuideViewer.ShowMainMenu(DugisGuideViewer.ClickedMenuItem)  
+            --Old switching
+            DugisGuideViewer:ToggleOnOff()
         end
 	elseif event == "RightButton" then
 		ToggleConfig()
@@ -3619,10 +3627,11 @@ function DugisGuideViewer:TurnOnEssentials()
 		DugisSecureQuestButton:Hide()			
 	end
 	DugisGuideViewer:CreateSettingsTree(DugisMainBorder)
-	if DugisGuideViewer.Modules.Target.Frame then DugisGuideViewer.Modules.Target.Frame:Hide() end
-	if DugisGuideViewer.Modules.ModelViewer.Frame then DugisGuideViewer.Modules.ModelViewer.Frame:Hide() end
+	if DugisGuideViewer:IsModuleLoaded("Target") then DugisGuideViewer.Modules.Target.Frame:Hide() end
+	if DugisGuideViewer:IsModuleLoaded("ModelViewer") then DugisGuideViewer.Modules.ModelViewer.Frame:Hide() end
 	DugisGuideViewer.Modules.QuestPOI:ObjectivesChangedDelay(3)
 	if DugisGuideViewer_ModelViewer and DugisGuideViewer_ModelViewer:IsShown() then DugisGuideViewer_ModelViewer:Hide() end
+	print("|cff11ff11" .. "Dugi Guides Essential Mode" )
 end
 
 function DugisGuideViewer:TurnOff(forceOff)
@@ -3642,6 +3651,8 @@ function DugisGuideViewer:TurnOff(forceOff)
 	--DugisGuideViewer.SmallFrame:Disable()
 	if DugisSecureQuestButton then DugisSecureQuestButton:Hide() end
 	DugisGuideViewer:ReloadModules()
+    
+    DugisGuideViewer:UpdateAutoMountEnabled()
 end
 
 function DugisGuideViewer:TurnOn(forceOn)
@@ -3668,6 +3679,8 @@ function DugisGuideViewer:TurnOn(forceOn)
 	end
 	DugisGuideViewer.Modules.DugisWatchFrame:DelayUpdate()		
 	DugisGuideViewer:RefreshQuestWatch()	
+    
+    DugisGuideViewer:UpdateAutoMountEnabled()
 end
 
 if not DugisGuideViewerDelayFrame then
@@ -4736,7 +4749,7 @@ end
 
 function DugisGuideViewer:OnCastingSpell(spellID)
     if spellID and not IsMountSpell(spellID) then
-	    if tonumber(spellID) ~= 219223 and tonumber(spellID) ~= 219222 and tonumber(spellID) ~= 197886 then  -- Hunter Windrunning spell effect from Marksman Artifact Bow 
+	    if tonumber(spellID) ~= 219223 and tonumber(spellID) ~= 219222 and tonumber(spellID) ~= 197886 and tonumber(spellID) ~= 240022 then  -- Hunter Windrunning spell effect from Marksman Artifact Bow 
 	        lastCastingNoneMountTime = GetTime()
 		end
     end

@@ -793,6 +793,7 @@ function FishLib:GetTrackingID(tex)
 	if ( tex ) then
 		for id=1,GetNumTrackingTypes() do
 			local _, texture, _, _ = GetTrackingInfo(id);
+			texture = texture.."";
 			if ( texture == tex) then
 				return id;
 			end
@@ -801,7 +802,8 @@ function FishLib:GetTrackingID(tex)
 	-- return nil;
 end
 
-local FINDFISHTEXTURE = "Interface\\Icons\\INV_Misc_Fish_02";
+-- local FINDFISHTEXTURE = "Interface\\Icons\\INV_Misc_Fish_02";
+local FINDFISHTEXTURE = "133888";
 function FishLib:GetFindFishID()
 	if ( not self.FindFishID ) then
 		self.FindFishID = self:GetTrackingID(FINDFISHTEXTURE);

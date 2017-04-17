@@ -1594,6 +1594,16 @@ tappend(points["Suramar:0"],
 	"A:71.5,51.1:10669:10", -- Jandvik
 	"A:34.9,31.0:10669:6", -- Moonwhisper Gulch
 	"A:46.1,59.8:10669:7") -- Suramar City
+
+tappend(points["BrokenShore:0"],		
+	"A:44.66,62.92:11543:1", --Deliverance Point
+	"A:31.80,60.03:11543:2", --Deadwood Landing
+	"A:80.60,51.13:11543:8", --Felfire Pass
+	"A:72.74,29.36:11543:7", --Felrage Strand
+	"A:47.19,16.67:11543:5", --The Weeping Terrace
+	"A:50.85,29.15:11543:4", --Broken Valley
+	"A:52.04,37.80:11543:3", --Soul Ruin
+	"A:62.46,23.04:11543:6") --Tomb of Sargeras
 	
 --Disable atomatic addition of key/table combos
 --getmetatable(DugisWorldMapTrackingPoints).__index = nil

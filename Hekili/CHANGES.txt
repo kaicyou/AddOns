@@ -1,3 +1,118 @@
+commit b9f85b23c4902ec85c7f1345fffb0913c92d6646
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Thu Apr 13 23:40:10 2017 -0400
+
+    Reduce aura caching workload.
+    
+    Instead of recaching auras on every UNIT_AURA for player/target, notify
+    the addon to update auras on the next reset if UNIT_AURA fired for
+    player or target.  Much less CPU, such performance.  WoW.
+
+commit b541a599a0142cf6e244ea96d595615c6e201dc3
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Thu Apr 13 21:30:50 2017 -0400
+
+    Fix for projectiles; clean-up actionlist and potion options.
+
+commit d5a37249971b2958211aec13daeaff98801ec3bb
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Thu Apr 13 20:00:06 2017 -0400
+
+    Harder, faster, better, stronger...ish.
+    
+    Re-fix judgment_override to work at 4+ HoPo (the previous issue was
+    related to aura-detection rather than HoPo check).
+    
+    Trying new on-demand debug system that only snapshots info when you push
+    the button.
+    
+    Fix broken update frequency logic that slowed the addon down in boss
+    fights.
+    
+    ...Need to decide when to queued abilities that haven't actually fired
+    yet.
+
+commit 6dcf5ce499c2a6f7a1471ba9866c8e2fd8150087
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Apr 12 21:38:20 2017 -0400
+
+    Efforts to improve reactivity and responsiveness.
+    
+    + Fix for spells that are 'in flight' or have been cast but have not yet
+    impacted.
+
+commit 5ecb683d4222ccadc02b6141b289340204623970
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Apr 11 23:22:44 2017 -0400
+
+    Test fix for 'oh_speed' error.
+
+commit 758dae7f231a5bd01a3b272e04a4af266ec78cfe
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Apr 11 21:43:59 2017 -0400
+
+    Fix for aura detection by spell ID (use localized name as backup).
+
+commit 0531136f2b2c06893d84d332fa6780cc119d3c5c
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Apr 11 20:47:17 2017 -0400
+
+    Fix for buff/debuff detection.
+
+commit 3e850e7486c260dcaa036bcdc4cd10ab1b7ea69b
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Apr 11 18:22:49 2017 -0400
+
+    Please don't look.
+    
+    1.  Fixed a bug with judgment_override for Retribution Paladins.  Thanks
+    @Notcalx for the report.
+    
+    2.  Please ignore the Demon Hunter stuff.  It's not anywhere near ready.
+    
+    3.  Added 'variable' (a.k.a. Store Value) support like SimC.  Specify a
+    value name "taco" and the conditions are stored in it.  Other actions
+    can use value.taco to retrieve that.  SimC does stuff with this.  Just
+    embrace it.
+    
+    4.  Action Lists can no longer be disabled because wtf is the point of
+    disabling an action list?
+    
+    5.  Added 'deficit_pct' and 'deficit_percent' to resource values.
+    
+    6.  Uggh.
+
+commit 5fcd42f17883ff2652f96e68d317e122c8de0ebf
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Apr 9 21:27:22 2017 -0400
+
+    Tweaks, Updates, Fixes
+    
+    + The addon will now try to learn about buffs that aren't manually
+    entered into the addon.
+    + The addon will now cache aura information instead of grabbing it fresh
+    from the API every update cycle.
+    + The addon will now throttle itself to 1 update/second outside of
+    combat, unless something relevant happens (target change, buffs/debuffs
+    drop/refresh, you cast something...).
+    
+    Shaman:
+    + Added duration info to several auras.
+    + Corrected Stormbringer ID.
+    + Removed the special logic for Spiritual Journey, since the game
+    handles it well-enough without workarounds.
+    + Added Lightning Rod as a target-cycling aura when it is talented (this
+    means that using cycle_targets for Lightning Bolt/Chain Lightning should
+    work at least a little better until I suppose the target_if syntax).
+    + Imported the newer SimC APLs for Elemental and made adjustments
+    accordingly.
+
+commit 9f26b2cf865a15657ecbf971412e33152e29d3ff
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Apr 3 00:31:08 2017 -0400
+
+    Tweak placement of SpellFlash settings.
+
 commit 3b4bba30b83cc55512d8d201522a5f1b37e8c561
 Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Sun Apr 2 13:36:11 2017 -0400

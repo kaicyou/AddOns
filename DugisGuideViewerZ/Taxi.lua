@@ -521,7 +521,8 @@ function Taxi:Initialize()
 	local spellFlightMastersLicense = 90267
 	local spellColdWeatherFlying = 54197
 	local spellWisdomOfTheFourWinds = 115913
-	local draenorPathFinderAchievement = select(4, GetAchievementInfo(10018))	
+	local draenorPathFinderAchievement = select(4, GetAchievementInfo(10018))
+	local brokenIslePathFinderAchievement = select(4, GetAchievementInfo(11446))		
 	function IsFlyableMapId(mapId)
 		local result = true
 		local c = DGV:GetCZByMapId(mapId)
@@ -534,7 +535,7 @@ function Taxi:Initialize()
 		then result = false 
 		elseif c==draenor and (draenorPathFinderAchievement ~= true)
 		then result = false 
-		elseif c==brokenIsles
+		elseif c==brokenIsles and (brokenIslePathFinderAchievement ~= true)
 		then result = false
 		end
 		if tContains(groundedMaps, mapId) then result=false end

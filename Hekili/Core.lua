@@ -327,7 +327,7 @@ function Hekili:ProcessActionList( dispID, hookID, listID, slot, depth, action, 
     local display = self.DB.profile.displays[ dispID ]
     local list = self.DB.profile.actionLists[ listID ]
 
-    local debug = self.DB.profile.Debug
+    local debug = self.ActiveDebug
 
     -- if debug then self:Debug( "Testing action list [ %d - %s ].", listID, list and list.Name or "ERROR - Does Not Exist"  ) end
     if debug then self:Debug( "Previous Recommendation:  %s at +%.2fs, clash is %.2f.", action or "NO ACTION", wait or 30, clash or 0 ) end
@@ -411,7 +411,18 @@ function Hekili:ProcessActionList( dispID, hookID, listID, slot, depth, action, 
                         if debug then self:Debug( "This action is not available in time for consideration ( %.2f vs. %.2f ).  Skipping.", wait_time, chosen_wait ) end
                     else
                         -- APL checks.
-                        if entry.Ability == 'call_action_list' or entry.Ability == 'run_action_list' then
+                        if entry.Ability == 'variable' then
+                            local aScriptValue = checkScript( 'A', scriptID )
+
+                            local varName = entry.ModVarName or state.args.name
+
+                            if debug then self:Debug( "Will attempt to store value " .. tostring( aScriptValue ) .. " in variable '%s'", varName or "MISSING" ) end
+
+                            if varName ~= nil and aScriptValue ~= nil then
+                                state.variable[ varName ] = aScriptValue
+                            end
+
+                        elseif entry.Ability == 'call_action_list' or entry.Ability == 'run_action_list' then
                             -- We handle these here to avoid early forking between starkly different APLs.
                             local aScriptPass = true
 
@@ -423,7 +434,7 @@ function Hekili:ProcessActionList( dispID, hookID, listID, slot, depth, action, 
 
                             if aScriptPass then
 
-                                local aList = state.args.ModName or state.args.name
+                                local aList = entry.ModName or state.args.name
 
                                 if aList then
                                     -- check to see if we have a real list name.
@@ -441,7 +452,7 @@ function Hekili:ProcessActionList( dispID, hookID, listID, slot, depth, action, 
                                         stop = entry == 'run_action_list'
                                         calledList = true
                                     else
-                                        if debug then self:Debug( "The action list for %s ( %s ) was not found.", entry.Ability, aList ) end
+                                        if debug then self:Debug( "The action list for %s ( %s ) was not found - %s / %s.", entry.Ability, aList, entry.ModName or "nil", state.args.name or "nil" ) end
                                     end
                                 end
 
@@ -599,7 +610,7 @@ function Hekili:ProcessHooks( dispID, solo )
 
             state.reset( dispID )
 
-            local debug = self.DB.profile.Debug
+            local debug = self.ActiveDebug
 
             if debug then self:SetupDebug( display.Name ) end
 
@@ -636,6 +647,10 @@ function Hekili:ProcessHooks( dispID, solo )
                     local attempts = 0
 
                     if debug then self:Debug( "\n[ ** ] Checking for recommendation #%d ( time offset: %.2f ).", i, state.offset ) end
+
+                    for k in pairs( state.variable ) do
+                        state.variable[ k ] = nil
+                    end
 
                     if display.precombatAPL and display.precombatAPL > 0 and state.time == 0 then
                         -- We have a precombat display and combat hasn't started.
@@ -997,87 +1012,6 @@ function Hekili:UpdateDisplay( dispID )
                     else
                         ActionButton_HideOverlayGlow( button )
                     end
-
-                    --[[ if display.showAuraInfo and i == 1 then
-                        local aura = GetSpellInfo( display.auraSpellID )
-
-                        if aura then
-                            -- What type of aura info?
-                            if display.auraInfoType == 'count' then
-                                local num = ns.numDebuffs( aura )
-                                if num > 0 then
-                                    display.Aura:SetText( num )
-                                else
-                                    display.Aura:SetText( nil )
-                                end
-
-                            elseif display.auraInfoType == 'buff' then
-                            button.Caption:SetJustifyH('RIGHT')
-                            -- check for special captions.
-                            if display['Primary Caption'] == 'targets' and targets > 1 then -- and targets > 1 then
-                                button.Caption:SetText( targColor .. targets .. '|r' )
-
-                            elseif display['Primary Caption'] == 'buff' then
-                                if display['Primary Caption Aura'] then
-                                    local name, _, _, count, _, _, expires = UnitBuff( 'player', display['Primary Caption Aura'] )
-                                    if name then button.Caption:SetText( count or 1 )
-                                    else
-                                        button.Caption:SetJustifyH('CENTER')
-                                        button.Caption:SetText(caption)
-                                    end
-                                end
-
-                            elseif display['Primary Caption'] == 'debuff' then
-                                if display['Primary Caption Aura'] then
-                                    local name, _, _, count = UnitDebuff( 'target', display['Primary Caption Aura'] )
-                                    if name then button.Caption:SetText( count or 1 )
-                                    else
-                                        button.Caption:SetJustifyH('CENTER')
-                                        button.Caption:SetText(caption)
-                                    end
-                                end
-
-                            elseif display['Primary Caption'] == 'ratio' then
-                                if display['Primary Caption Aura'] then
-                                    if ns.numDebuffs( display['Primary Caption Aura'] ) > 1 or targets > 1 then
-                                        button.Caption:SetText( ns.numDebuffs( display['Primary Caption Aura'] ) .. ' / ' .. targColor .. targets .. '|r' )
-                                    else
-                                        button.Caption:SetJustifyH('CENTER')
-                                        button.Caption:SetText(caption)
-                                    end
-                                end
-
-                            elseif display['Primary Caption'] == 'sratio' then
-                                if display['Primary Caption Aura'] then
-                                    local name, _, _, count, _, _, expires = UnitBuff( 'player', display['Primary Caption Aura'] )
-                                    if name and ( ( count or 1 ) > 0 ) then
-                                        local cap = count or 1
-                                        if targets > 1 then cap = cap .. ' / ' .. targColor .. targets .. '|r' end
-                                        button.Caption:SetText( cap )
-                                    else
-                                        if targets > 1 then button.Caption:SetText( targColor .. targets .. '|r' )
-                                        else
-                                            button.Caption:SetJustifyH('CENTER')
-                                            button.Caption:SetText(caption)
-                                        end
-                                    end
-                                end
-
-                            else
-                                button.Caption:SetJustifyH('CENTER')
-                                button.Caption:SetText(caption)
-
-                            end
-                        else
-                            button.Caption:SetJustifyH('CENTER')
-                            button.Caption:SetText(caption)
-
-                        end
-                    else
-                        button.Caption:SetJustifyH('CENTER')
-                        button.Caption:SetText(nil)
-
-                    end ]]
 
                     local start, duration = GetSpellCooldown( class.abilities[ aKey ].id )
                     local gcd_remains = gcd_start + gcd_duration - GetTime()

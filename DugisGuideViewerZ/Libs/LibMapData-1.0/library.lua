@@ -2633,7 +2633,7 @@ do
 			['name'] = "TheDreamgrove",
 		}	
 		mapData[1021] = { 
-			['name'] = "Broken Shore",
+			['name'] = "BrokenShore",
 		}			
 		mapData[1050] = { 
 			['name'] = "DreadscarRift",

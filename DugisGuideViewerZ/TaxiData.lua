@@ -28999,11 +28999,11 @@ function TaxiData:Initialize()
 			":1021:2:24.97,33.76:1014:10:60.89,44.75:cls:DEATHKNIGHT", --Ebon Hold Legion > Dalaran Legion
 			":1017:0:30.08,40.71:1014:10:60.89,44.75", --Stormheim > Dalaran Legion
 
-			":1021:0:46.34,62.24:1033:0:36.41,46.91:qid:46286", --Broken Shore > Shal'Aran, Suramar
-			":1021:0:46.42,62.10:1017:0:60.23,51.01:qid:46286", --Broken Shore > Valdisdall, Stormheim
-			":1021:0:46.50,61.93:1018:0:55.00,72.61:qid:46286", --Broken Shore > Lorlathil, Val'Sharah
-			":1021:0:46.44,61.70:1015:0:47.00,40.89:qid:46286", --Broken Shore > Crumbled Palace, Azsuna
-			":1021:0:46.29,61.62:1080:0:39.22,45.71:qid:46286", --Broken Shore > Highmountain				
+			--":1021:0:46.34,62.24:1033:0:36.41,46.91:qid:46286", --Broken Shore > Shal'Aran, Suramar
+			--":1021:0:46.42,62.10:1017:0:60.23,51.01:qid:46286", --Broken Shore > Valdisdall, Stormheim
+			--":1021:0:46.50,61.93:1018:0:55.00,72.61:qid:46286", --Broken Shore > Lorlathil, Val'Sharah
+			--":1021:0:46.44,61.70:1015:0:47.00,40.89:qid:46286", --Broken Shore > Crumbled Palace, Azsuna
+			--":1021:0:46.29,61.62:1080:0:39.22,45.71:qid:46286", --Broken Shore > Highmountain				
 		}, --Broken Isles
 		{
 		}, --Reserve

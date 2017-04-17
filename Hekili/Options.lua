@@ -128,6 +128,33 @@ local oneTimeFixes = {
         end
     end,
 
+    removeActionListEnabled_04102017 = function( profile )
+        for a, list in ipairs( profile.actionLists ) do
+            list.Enabled = nil
+        end
+    end,
+
+    removeExtraQuotes_04142017_3 = function( profile )
+        for a, list in ipairs( profile.actionLists ) do
+            for _, entry in ipairs( list.Actions ) do
+                if entry.ModName then entry.ModName = entry.ModName:gsub( [["(.*)"]], [[%1]] ) end
+            end
+        end
+    end,
+
+    spruceUpActionListNames_04142017 = function( profile )
+        for _, list in ipairs( profile.actionLists ) do
+            for _, entry in ipairs( list.Actions ) do
+                if entry.Args and entry.Args:match( "name=" ) then
+                    if entry.Ability == 'variable' and not entry.ModVarName then
+                        entry.ModVarName = entry.Args:match( [[name="(.-)"]] )
+                    else
+                        entry.ModName = entry.Args:match( [[name="(.-)"]] )
+                    end
+                end
+            end
+        end
+    end,
 }
 
 
@@ -1359,45 +1386,46 @@ ns.newDisplayOption = function( key )
                     end
                 },
 
-                ['SpellFlash Group'] = {
-                    type = 'group',
-                    inline = true,
-                    name = "SpellFlash",
-                    order = 10,
+                spellFlash = {
+                    type = 'toggle',
+                    name = 'Use SpellFlash',
+                    desc = "If enabled and SpellFlash (or SpellFlashCore) is installed, the addon will cause the action buttons for recommended abilities to flash.",
+                    order = 11,
                     hidden = function( info, val )
                         return ns.lib.SpellFlash == nil
                     end,
-                    args = {
-                        spellFlash = {
-                            type = 'toggle',
-                            name = 'Use SpellFlash',
-                            desc = "If enabled and SpellFlash (or SpellFlashCore) is installed, the addon will cause the action buttons for recommended abilities to flash.",
-                            order = 1,
-                            width = 'full'
-                        },
-                        spellFlashColor = {
-                            type = 'color',
-                            name = 'SpellFlash Color',
-                            desc = "If SpellFlash is installed, actions recommended from this display will flash with the selected color.",
-                            order = 2,
-                            width = 'full'
-                        }
-                    },
+                    width = 'full'
+                },
+                spellFlashColor = {
+                    type = 'color',
+                    name = 'SpellFlash Color',
+                    desc = "If SpellFlash is installed, actions recommended from this display will flash with the selected color.",
+                    order = 12,
+                    hidden = function( info, val )
+                        local id = tonumber( info[2]:match( "^D(%d+)" ) )
+                        local display = id and Hekili.DB.profile.displays[ id ]
+
+                        return ns.lib.SpellFlash == nil or not display or not display.spellFlash
+                    end,
+                    width = 'full'
                 },
                 esSpacer3 = {
                     type = 'description',
                     name = '\n',
-                    order = 11,
+                    order = 13,
                     width = 'full',
                     hidden = function( info, val )
-                        return ns.lib.SpellFlash == nil
+                        local id = tonumber( info[2]:match( "^D(%d+)" ) )
+                        local display = id and Hekili.DB.profile.displays[ id ]
+
+                        return ns.lib.SpellFlash == nil or not display or not display.spellFlash
                     end,
                 },
 
                 showKeybindings = {
                     type = 'toggle',
                     name = 'Show Keybindings',
-                    order = 12,
+                    order = 14,
                     width = 'full'
                 },
                 keybindingGroup = {
@@ -2457,13 +2485,6 @@ ns.newActionListOption = function( index )
     end,
     order = 10 + index,
     args = {
-      Enabled = {
-        type = 'toggle',
-        name = 'Enabled',
-        desc = "Enable or disable this action list for processing in all displays.",
-        order = 1,
-        width = 'double',
-      },
       Default = {
         type = 'toggle',
         name = 'Default',
@@ -2882,7 +2903,7 @@ ns.newActionOption = function( aList, index )
       },
       ModName = {
         type = 'select',
-        name = "Ability Settings",
+        name = "Select a Value",
         desc = "Select the appropriate option for the chosen ability.",
         order = 09,
         values = function( info )
@@ -2891,11 +2912,11 @@ ns.newActionOption = function( aList, index )
 
             if action.Ability == 'call_action_list' or action.Ability == 'run_action_list' then
                 for i, list in ipairs( Hekili.DB.profile.actionLists ) do
-                    opts[ '"' .. list.Name .. '"' ] = '|T' .. select(4, GetSpecializationInfoByID( list.Specialization ) ) .. ':0|t ' .. list.Name
+                    opts[ list.Name ] = '|T' .. select(4, GetSpecializationInfoByID( list.Specialization ) ) .. ':0|t ' .. list.Name
                 end
             elseif action.Ability == 'potion' then
                 for key, potion in pairs( class.potions ) do
-                    opts[ '"' .. key .. '"' ] = GetItemInfo( potion.item )
+                    opts[ key ] = GetItemInfo( potion.item )
                 end
             end
 
@@ -2915,6 +2936,20 @@ ns.newActionOption = function( aList, index )
             return true
         end,
         width = "double"
+      },
+      ModVarName = {
+        type = 'input',
+        name = "Variable Name",
+        desc = "Enter a name for this stored value (the value will be referenced elsewhere in the action list by this name).",
+        order = 09,
+        width = "double",
+        hidden = function( info )
+            local action = getActionEntry( info )
+
+            if action.Ability == 'variable' then return false end
+
+            return true
+        end,
       },
 
       Script = {
@@ -2936,11 +2971,10 @@ ns.newActionOption = function( aList, index )
         multiline = 6,
         order = 20,
         width = 'full',
-        --[[ hidden = function (info)
-          local listKey, actKey = info[2], info[3]
-          local listIdx, actIdx = tonumber( listKey:match("^L(%d+)" ) ), tonumber( actKey:match("^A(%d+)" ) )
+        --[[ hidden = function( info )
+            local action = getActionEntry( info )
 
-          return Hekili.DB.profile.actionLists[ listIdx ].Actions[ actIdx ].ScriptType == 'time'
+            return action.Ability == 'variable'
         end, ]]
       },
       whenReady = {
@@ -2963,6 +2997,11 @@ ns.newActionOption = function( aList, index )
           if value == nil then value = 'auto' end
 
           return value
+        end,
+        hidden = function( info )
+          local action = getActionEntry( info )
+
+          return action.Ability == 'variable' or action.Ability == 'call_action_list' or action.Ability == 'run_action_list'
         end,
       },
       ReadyTime = {
@@ -3009,27 +3048,11 @@ ns.newActionOption = function( aList, index )
           return results
         end,
         hidden = function (info)
-          local listKey, actKey = info[2], info[3]
-          local listIdx, actIdx = tonumber( listKey:match("^L(%d+)" ) ), tonumber( actKey:match("^A(%d+)" ) )
+          local action = getActionEntry( info )
 
-          return Hekili.DB.profile.actionLists[ listIdx ].Actions[ actIdx ].whenReady ~= 'script'
+          return action.whenReady ~= 'script' or action.Ability == 'variable' or action.Ability == 'call_action_list' or action.Ability == 'run_action_list'
         end,
         width = 'full',
-      },
-      ReadyTimeDescription = {
-        type = 'description',
-        name = "|cFFFFD100Time Script:|r\n" ..
-            "This is an experimental feature that allows an action list author to provide additional information " ..
-            "about |cFF00D1D1when|r the criteria will be met for this ability.  While the |cFFFFD100Conditions|r are " ..
-            "checked when the ability is ready, a proper |cFFFFD100Time Script|r script will tell the addon |cFF00D1D1when|r " ..
-            "the ability will be ready *and* its Conditions will be met.",
-        hidden = function (info)
-          local listKey, actKey = info[2], info[3]
-          local listIdx, actIdx = tonumber( listKey:match("^L(%d+)" ) ), tonumber( actKey:match("^A(%d+)" ) )
-
-          return Hekili.DB.profile.actionLists[ listIdx ].Actions[ actIdx ].ScriptType ~= 'time'
-        end,
-        order = 22,
       },
       ShowModifiers = {
         type = 'toggle',
@@ -3632,7 +3655,6 @@ ns.SimulationCraftImporter = function ()
 
               local list = Hekili.DB.profile.actionLists[ target ]
               list.Name = importerOpts.prefix .. ': ' .. new_list
-              list.Enabled = true
 
               if import then
                 for i, entry in ipairs( import ) do
@@ -3650,7 +3672,13 @@ ns.SimulationCraftImporter = function ()
                   action.MaximumTargets = entry.MaximumTargets
                   action.CheckMovement = entry.CheckMovement or false
                   action.Moving = entry.Moving
-                  action.ModName = entry.ModName or ''
+                  if action.Ability == 'variable' then
+                    action.ModVarName = entry.ModName or ''
+                    action.ModName = ''
+                  else
+                    action.ModName = entry.ModName or ''
+                    action.ModVarName = ''
+                  end
 
                   --[[ if entry.Args then
                     local cycle = entry.Args:match("cycle_targets=1")
@@ -5646,6 +5674,7 @@ function Hekili:SetOption( info, input, ... )
             action.CheckMovement = entry.CheckMovement or false
             action.Movement = entry.Movement
             action.ModName = entry.ModName or ''
+            action.ModVarName = entry.ModVarName or ''
 
             --[[ if entry.Args and entry.Args:match("cycle_targets=1") then
               action.Indicator = "cycle"
@@ -6524,7 +6553,12 @@ local function storeModifier( entry, key, value )
         entry.Moving = tonumber( value )
 
     elseif key == 'name' then
-        entry.ModName = value
+        entry.ModName = value:match( [["(.*)"]] ) or value
+        entry.ModVarName = value:match( [["(.*)"]] ) or value
+
+
+    elseif key == 'value' then -- for 'variable' type, overwrites Script
+        entry.Script = value
 
     end
 
@@ -6639,22 +6673,25 @@ function Hekili:ImportSimulationCraftActionList( str, enemies )
 end
 
 
+
 local forceUpdate = ns.forceUpdate
-
-
 local warnOnce = false
 
 -- Key Bindings
 function Hekili:TogglePause()
 
     if not self.Pause then
-        if Hekili.DB.profile.Debug then
-            Hekili:SaveDebugSnapshot()
-            Hekili:Print( "Snapshot saved." )
-            if not warnOnce then
-                Hekili:Print( "Snapshots are viewable via /hekili (until you reload your UI)." )
-                warnOnce = true
-            end
+        Hekili.ActiveDebug = true
+        for i = 1, #Hekili.DB.profile.displays do
+            Hekili:ProcessHooks( i )
+        end
+        Hekili.ActiveDebug = false
+        Hekili:UpdateDisplays()
+        Hekili:SaveDebugSnapshot()
+        Hekili:Print( "Snapshot saved." )
+        if not warnOnce then
+            Hekili:Print( "Snapshots are viewable via /hekili (until you reload your UI)." )
+            warnOnce = true
         end
     end
 

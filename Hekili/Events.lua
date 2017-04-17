@@ -26,22 +26,29 @@ local lower, match, upper = string.lower, string.match, string.upper
 
 local events = CreateFrame( "Frame" )
 local handlers = {}
-local unitEvents = {}
+local unitEvents = CreateFrame( "Frame" )
+local unitHandlers = {}
 
 ns.displayUpdates = {}
-local lastRefresh = {}
-local hardUpdate = {}
 
+local lastRefresh = {}
 local lastRecount = 0
 local displayUpdates = ns.displayUpdates
-
-local refreshes = {}
-
 
 function ns.StartEventHandler()
 
     events:SetScript( "OnEvent", function( self, event, ... )
         local eventHandlers = handlers[ event ]
+
+        if not eventHandlers then return end
+
+        for i, handler in pairs( eventHandlers ) do
+            handler( event, ... )
+        end
+    end )
+
+    unitEvents:SetScript( "OnEvent", function( self, event, ... )
+        local eventHandlers = unitHandlers[ event ]
 
         if not eventHandlers then return end
 
@@ -57,16 +64,20 @@ function ns.StartEventHandler()
             ns.recountTargets()
         end
 
-        local updatePeriod = 1 / ( Hekili.DB.profile['Updates Per Second'] or 5 )
-        
+        local updatePeriod = state.combat == 0 and 1 or ( 1 / ( Hekili.DB.profile['Updates Per Second'] or 5 ) )
+
         for i = 1, #Hekili.DB.profile.displays do
-            if hardUpdate[i] or not displayUpdates[i] or not lastRefresh[i] or now - lastRefresh[i] >= updatePeriod then
+            if not displayUpdates[i] then
                 Hekili:ProcessHooks( i )
                 lastRefresh[i] = now
-                hardUpdate[i] = nil
-                -- refreshes[i] = refreshes[i] and ( refreshes[i] + 1 ) or 1
+
+            elseif ( not lastRefresh[i] or now - lastRefresh[i] >= updatePeriod ) then
+                Hekili:ProcessHooks( i )
+                lastRefresh[i] = now
+
             end
         end
+
         Hekili:UpdateDisplays()
     end )
 
@@ -76,6 +87,7 @@ end
 function ns.StopEventHandler()
 
     events:SetScript( "OnEvent", nil )
+    unitEvents:SetScript( "OnEvent", nil )
     events:SetScript( "OnUpdate", nil )
 
 end
@@ -92,12 +104,14 @@ end
 local RegisterEvent = ns.RegisterEvent
 
 
+-- For our purposes, all UnitEvents are player/target oriented.
 ns.RegisterUnitEvent = function( event, handler, u1, u2 )
 
-    handlers[ event ] = handlers[ event ] or {}
-    table.insert( handlers[ event ], handler )
+    unitHandlers[ event ] = unitHandlers[ event ] or {}
 
-    events:RegisterUnitEvent( event, u1, u2 )
+    table.insert( unitHandlers[ event ], handler )
+
+    unitEvents:RegisterUnitEvent( event, 'player', 'target' )
 
 end
 local RegisterUnitEvent = ns.RegisterUnitEvent
@@ -133,9 +147,9 @@ ns.cacheCriteria = function()
 
     for i, list in ipairs( Hekili.DB.profile.actionLists ) do
 
-        if list.Enabled == nil then list.Enabled = true end
+        -- if list.Enabled == nil then list.Enabled = true end
 
-        ns.visible.list[ i ] = list.Enabled and ( list.Specialization == 0 or list.Specialization == state.spec.id )
+        ns.visible.list[ i ] = ( list.Specialization == 0 or list.Specialization == state.spec.id )
 
         for j, action in ipairs( list.Actions ) do
             ns.visible.action[ i..':'..j ] = action.Enabled and action.Ability
@@ -161,10 +175,10 @@ RegisterEvent( "ACTIVE_TALENT_GROUP_CHANGED", function ()
     ns.checkImports()
 end )
 
-RegisterUnitEvent( "PLAYER_SPECIALIZATION_CHANGED", function ( _, unit )
+RegisterEvent( "PLAYER_SPECIALIZATION_CHANGED", function ()
     ns.specializationChanged()
     ns.checkImports()
-end, 'player' )
+end )
 
 RegisterEvent( "BARBER_SHOP_OPEN", function ()
     Hekili.Barber = true
@@ -401,19 +415,11 @@ end )
 
 RegisterEvent( "PLAYER_REGEN_DISABLED", function ()
     state.combat = GetTime()
-    for i in ipairs( refreshes ) do
-        refreshes[i] = 0
-    end
 end )
 
 
 RegisterEvent( "PLAYER_REGEN_ENABLED", function ()
     ns.updateGear()
-    --[[ for i, v in ipairs( refreshes ) do
-        local freq = v / ( GetTime() - state.combat )
-        local output = format( "Display #%d - %d updates, %.2f per second.", i, v, freq )
-        print( output )
-    end ]]
     state.combat = 0
 end )
 
@@ -439,19 +445,25 @@ local castsOn, castsOff, castsAll = ns.castsOn, ns.castsOff, ns.castsAll
 
 
 
-local function forceUpdate( from, hard )
+local function forceUpdate( from, super )
+
     for i = 1, #Hekili.DB.profile.displays do
         displayUpdates[ i ] = nil
-        hardUpdate[i] = hardUpdate[i] or hard
     end
+
+    return
+
+    --[[ local updatePeriod = 1 / ( Hekili.DB.profile['Updates Per Second'] or 5 )
+    local now = GetTime()
+
+    local new_delay = now - updatePeriod
+
+    for i = 1, #Hekili.DB.profile.displays do
+        lastRefresh[ i ] = lastRefresh[ i ] and min( lastRefresh[ i ], new_delay )
+    end ]]
 end
 
 ns.forceUpdate = forceUpdate
-
-
-local function hardUpdate( from )
-    forceUpdate( from, true )
-end
 
 
 local function spellcastEvents( event, unit, spell, _, _, spellID )
@@ -487,7 +499,7 @@ local function spellcastEvents( event, unit, spell, _, _, spellID )
     -- This is an ability with a travel time.
     if class.abilities[ spellID ] and class.abilities[ spellID ].velocity then
 
-        local lands = 0.05
+        local lands = state.latency or 0.05
 
         -- If we have a hostile target, we'll assume we're waiting for them to get hit.
         if UnitExists( 'target' ) and not UnitIsFriend( 'player', 'target' ) then
@@ -495,7 +507,7 @@ local function spellcastEvents( event, unit, spell, _, _, spellID )
             local _, range = RC:GetRange( 'target' )
 
             if range then
-                lands = range > 0 and range / class.abilities[ spellID ].velocity or 0.05
+                lands = range > 0 and ( range / class.abilities[ spellID ].velocity ) or lands
             end
         end
 
@@ -508,8 +520,25 @@ local function spellcastEvents( event, unit, spell, _, _, spellID )
 
 end
 
-RegisterUnitEvent( "UNIT_SPELLCAST_SUCCEEDED", spellcastEvents, 'player' )
+
+-- Need to make caching system.
+RegisterUnitEvent( "UNIT_SPELLCAST_SUCCEEDED", function( event, unit, spell, _, _, spellID )
+    if unit == 'player' then forceUpdate( event, true ) end
+end )
+
 -- RegisterUnitEvent( "UNIT_SPELLCAST_START", spellcastEvents, 'player' )
+
+
+--[[ WiP - Fire quicker on UNIT_SPELLCAST_SUCCEEDED, but be prepared to revise the cast queue.
+
+local queueTime = 0
+
+RegisterUnitEvent( "UNIT_SPELLCAST_SUCCEEDED", function( event, unit, spell, _, _, spellID )
+    local window = GetCVar( 'spellQueueWindow' ) / 1000
+    local latency = state.latency or 50
+
+    -- We need to test to see if our last cast queued something.
+... ]]
 
 
 function ns.removeSpellFromFlight( spell )
@@ -539,6 +568,8 @@ local spell_names = setmetatable( {}, {
 
 
 RegisterUnitEvent( "UNIT_POWER_FREQUENT", function( event, unit, power )
+    if unit ~= 'player' then return end
+
     if power == "FOCUS" and state.focus then
         local now = GetTime()
         local elapsed = now - state.focus.last_tick
@@ -564,27 +595,74 @@ RegisterUnitEvent( "UNIT_POWER_FREQUENT", function( event, unit, power )
 
     end
 
-    -- if abs( power ) > 2 then
-        hardUpdate( event )
-    -- end
-end, 'player' )
+    -- forceUpdate( event )
+end )
+
+RegisterUnitEvent( "UNIT_POWER", function( event, unit, power )
+    if unit ~= 'player' then return end
+    forceUpdate( event )
+end )
 
 --[[ RegisterEvent( "UNIT_POWER", function( event, unit, power )
     if unit == 'player' then
-        hardUpdate( event )
+        forceUpdate( event )
     end
 end ) ]]
 
 
 
-RegisterEvent( "PLAYER_TARGET_CHANGED", hardUpdate )
-RegisterEvent( "SPELL_UPDATE_USABLE", forceUpdate )
+-- RegisterEvent( "SPELL_UPDATE_USABLE", forceUpdate )
 RegisterEvent( "SPELL_UPDATE_COOLDOWN", forceUpdate )
 
 
+local autoAuraKey = setmetatable( {}, {
+    __index = function( t, k )
+        local name = GetSpellInfo( k )
+
+        if not name then return end
+
+        local key = formatKey( name )
+
+        if class.auras[ key ] then
+            local i = 1
+
+            while ( true ) do 
+                local new = key .. '_' .. i
+                
+                if not class.auras[ new ] then
+                    key = new
+                    break
+                end
+
+                i = i + 1
+            end
+        end
+
+        -- Store the aura and save the key if we can.
+        if ns.addAura then
+            ns.addAura( key, k, 'name', name )
+            t[k] = key
+        end
+
+        return t[k]
+    end
+} )
+
+
 RegisterUnitEvent( "UNIT_AURA", function( event, unit )
-    forceUpdate( event )
-end, 'player', 'target' )
+    if unit == 'player' then
+        state.player.updated = true
+        forceUpdate( event, true )
+    else
+        state.target.updated = true
+    end
+end )
+
+
+RegisterEvent( "PLAYER_TARGET_CHANGED", function ( event )
+    state.target.updated = true
+    forceUpdate( event, true )
+end )
 
 
 -- Use dots/debuffs to count active targets.
@@ -610,7 +688,16 @@ RegisterEvent( "COMBAT_LOG_EVENT_UNFILTERED", function( event, _, subtype, _, so
     end
 
     if sourceGUID == state.GUID and ( subtype == 'SPELL_CAST_SUCCESS' or subtype == 'SPELL_CAST_START' ) then
-        hardUpdate( subtype )
+        if subtype == 'SPELL_CAST_SUCCESS' then
+            spellcastEvents( subtype, sourceGUID, spellName, _, _, spellID )
+            state.player.queued_ability = nil
+            state.player.queued_time = nil
+            state.player.queued_tt = nil
+            state.player.queued_lands = nil
+            state.player.queued_gcd = nil
+            state.player.queued_off = nil
+        end
+        forceUpdate( subtype, true )
     end
 
 
@@ -624,7 +711,7 @@ RegisterEvent( "COMBAT_LOG_EVENT_UNFILTERED", function( event, _, subtype, _, so
 
         if offhand and time > sw.oh_actual and sw.oh_speed then
             sw.oh_actual = time
-            sw.oh_speed = select( 2, UnitAttackSpeed( 'player' ) )
+            sw.oh_speed = select( 2, UnitAttackSpeed( 'player' ) ) or sw.oh_speed
             sw.oh_projected = sw.oh_actual + sw.oh_speed
 
         elseif not offhand and time > sw.mh_actual then
@@ -695,7 +782,9 @@ end )
 
 
 
-RegisterUnitEvent( "UNIT_COMBAT", function( event, unitID, action, descriptor, damage, damageType )
+RegisterUnitEvent( "UNIT_COMBAT", function( event, unit, action, descriptor, damage, damageType )
+
+    if unit ~= 'player' then return end
 
     if damage > 0 then
         if action == 'WOUND' then
@@ -705,11 +794,11 @@ RegisterUnitEvent( "UNIT_COMBAT", function( event, unitID, action, descriptor, d
         end
     end
         
-end, 'player' )
+end )
 
 
 -- Time to die calculations.
-RegisterUnitEvent( "UNIT_HEALTH", function( _, unit )
+RegisterEvent( "UNIT_HEALTH", function( event, unit )
 
     if not unit then return end
 
@@ -761,12 +850,12 @@ RegisterUnitEvent( "UNIT_HEALTH", function( _, unit )
 
     ttd.sec = projectedTTD
 
-end, 'player' )
+end )
+
 
 
 local keys = ns.hotkeys
 local updatedKeys = {}
-
 
 local bindingSubs = {
     ["CTRL%-"] = "c",

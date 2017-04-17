@@ -24,6 +24,17 @@ ns.lib = {
 	SharedMedia = LibStub( "LibSharedMedia-3.0", true )
 }
 
+-- 04072017:  Let's go ahead and cache aura information to reduce overhead.
+ns.auras = {
+    target = {
+        buff = {},
+        debuff = {}
+    },
+    player = {
+        buff = {},
+        debuff = {}
+    }
+}
 
 ns.class = {
     file = "NONE",
@@ -44,20 +55,29 @@ ns.class = {
 	talents = {},
 	toggles = {}
 }
+
 ns.hotkeys = {}
+
 ns.keys = {}
+
 ns.queue = {}
+
 ns.scripts = {
     D = {},
     P = {},
     A = {}
 }
+
 ns.state = {}
+
 ns.targets = {}
+
 ns.TTD = {}
+
 ns.UI = {
     Buttons = {}
 }
+
 ns.visible = {
     display = {},
     hook = {},
@@ -65,8 +85,8 @@ ns.visible = {
     action = {}
 }
 
-
 ns.debug = {}
+
 ns.snapshots = {}
 
 
@@ -128,7 +148,7 @@ local current_display
 
 function Hekili:SetupDebug( display )
 
-    if not self.DB.profile.Debug then return end
+    if not self.DB.profile.Debug and not self.ActiveDebug then return end
     if not display then return end
 
     current_display = display
@@ -146,7 +166,7 @@ end
 
 function Hekili:Debug( ... )
 
-    if not Hekili.DB.profile.Debug then return end
+    if not self.DB.profile.Debug and not self.ActiveDebug then return end
     if not active_debug then return end
 
     active_debug.log[ active_debug.index ] = format( ... )

@@ -71,6 +71,7 @@ if not L then return end
 	
 --	system category descriptions
 	L["CATEGORY_SYSTEM_CORE_MATS"] = "原始材料"
+--	L["CATEGORY_SYSTEM_MYTHIC_KEYSTONE"] = ""
 	
 	
 --	consumable category descriptions
@@ -418,6 +419,8 @@ if not L then return end
 --	L["CONFIG_DESIGN_ITEM_ITEMCOUNT_SHOW_TEXT"] = ""
 --	L["CONFIG_DESIGN_ITEM_UPGRADE"] = ""
 --	L["CONFIG_DESIGN_ITEM_UPGRADE_TEXT"] = ""
+--	L["CONFIG_DESIGN_ITEM_SIZE"] = ""
+--	L["CONFIG_DESIGN_ITEM_SIZE_TEXT"] = ""
 	
 --	L["CONFIG_DESIGN_ITEM_COOLDOWN_SHOW_TEXT"] = "显示 %1$s 窗口中的物品冷却"
 	L["CONFIG_DESIGN_ITEM_COOLDOWN_GLOBAL"] = "按照 GCD 更新"

@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1777 $
-$Date: 2017-02-20 00:19:03 +1100 (Mon, 20 Feb 2017) $
+$Revision: 1796 $
+$Date: 2017-04-16 00:00:19 +1000 (Sun, 16 Apr 2017) $
 
 ]]--
 
@@ -5355,6 +5355,34 @@ function ArkInventory.ConfigInternalDesignData( path )
 											style.slot.anchor = v
 											ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
 										end
+									end,
+								},
+								itemsize = {
+									order = 150,
+									name = ArkInventory.Localise["CONFIG_DESIGN_ITEM_SIZE"],
+									desc = string.format( ArkInventory.Localise["CONFIG_DESIGN_ITEM_SIZE_TEXT"], ArkInventory.Const.SLOT_SIZE ),
+									type = "range",
+									min = 24,
+									max = 64,
+									step = 1,
+									get = function( info )
+										local id = ConfigGetNodeArg( info, #info - 4 )
+										local style = ArkInventory.ConfigInternalDesignGet( id )
+										return style.slot.size or ArkInventory.Const.SLOT_SIZE
+									end,
+									set = function( info, v )
+										local id = ConfigGetNodeArg( info, #info - 4 )
+										local style = ArkInventory.ConfigInternalDesignGet( id )
+										local v = math.floor( v )
+										if v < 24 then v = 24 end
+										if v > 64 then v = 64 end
+										
+										if v == ArkInventory.Const.SLOT_SIZE then
+											v = nil
+										end
+										
+										style.slot.size = v
+										ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
 									end,
 								},
 								padding = {

@@ -72,6 +72,7 @@ if not L then return end
 	
 --	system category descriptions
 	L["CATEGORY_SYSTEM_CORE_MATS"] = "Core Mats"
+	L["CATEGORY_SYSTEM_MYTHIC_KEYSTONE"] = "Mythic Keystone"
 	
 	
 --	consumable category descriptions
@@ -419,6 +420,8 @@ if not L then return end
 	L["CONFIG_DESIGN_ITEM_ITEMCOUNT_SHOW_TEXT"] = "show item stack counts"
 	L["CONFIG_DESIGN_ITEM_UPGRADE"] = "Upgrade arrow"
 	L["CONFIG_DESIGN_ITEM_UPGRADE_TEXT"] = "show the item upgrade arrow"
+	L["CONFIG_DESIGN_ITEM_SIZE"] = "Base Item Size"
+	L["CONFIG_DESIGN_ITEM_SIZE_TEXT"] = "set the size of the item icon before it is scaled (default size is %d)"
 	
 	L["CONFIG_DESIGN_ITEM_COOLDOWN_SHOW_TEXT"] = "Display cooldowns"
 	L["CONFIG_DESIGN_ITEM_COOLDOWN_GLOBAL"] = "Update on GCD"

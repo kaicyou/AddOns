@@ -42,7 +42,7 @@ ArkInventory.Const = { -- constants
 		Version = nil, -- calculated at load
 	},
 	
-	SLOT_SIZE = nil, -- calculated at runtime
+	SLOT_SIZE = nil, -- updated with actual value in frame_item_onload
 	MAX_PET_LEVEL = 25,
 	MAX_ACTIVE_PETS = 3,
 	MAX_PET_SAVED_SPECIES = 3,

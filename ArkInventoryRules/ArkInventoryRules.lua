@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1781 $
-$Date: 2017-03-24 10:24:17 +1100 (Fri, 24 Mar 2017) $
+$Revision: 1795 $
+$Date: 2017-04-16 00:00:11 +1000 (Sun, 16 Apr 2017) $
 
 ]]--
 
@@ -770,7 +770,7 @@ function ArkInventoryRules.System.outfit( ... )
 		return true
 	end
 	
-	if CanUseEquipmentSets( ) then
+	if C_EquipmentSet.CanUseEquipmentSets( ) then
 		return ArkInventoryRules.System.outfit_blizzard( ... )
 	end
 	
@@ -888,129 +888,59 @@ function ArkInventoryRules.System.outfit_blizzard( ... )
 	
 	-- blizzard equipment manager
 	
-	local equipsets = GetNumEquipmentSets( )
+	local equipsets = C_EquipmentSet.GetNumEquipmentSets( )
 	if equipsets == 0 then
 		return false
 	end
 	
 	local Outfits = { }
+	local setids = C_EquipmentSet.GetEquipmentSetIDs( )
 	
 	-- get a list of outfits the item is in
-	for setnum = 1, equipsets do 
+	for setnum, setid in pairs( setids ) do
 		
-		local setname = GetEquipmentSetInfo( setnum )
-		local set = GetEquipmentSetLocations( setname )
+		local setname = C_EquipmentSet.GetEquipmentSetInfo( setid )
 		
-		local loc_id, bag_id, slot_id, id, player, bank, bags, void, slot, bag, voidtab, voidslot
+		local items = C_EquipmentSet.GetItemLocations( setid )
+		--ArkInventory.Output( items )
 		
-		for k, location in pairs( set ) do
+		if items then
 			
-			loc_id = nil
-			bag_id = nil
-			slot_id = nil
-			id = nil
+			local loc_id, bag_id, slot_id, id, player, bank, bags, void, slot, bag, voidtab, voidslot
 			
-			player, bank, bags, void, slot, bag, voidtab, voidslot = EquipmentManager_UnpackLocation( location )
-			
---			if void then
---				ArkInventory.Output( setname, ":", k, " -> [", player, ", ", bank, ", ", bags, ", ", void, "] [", bag, ".", slot, "] [", voidtab, ".", voidslot, "]" )
---			end
-			
-			if void and voidtab and voidslot then
-				loc_id = ArkInventory.Const.Location.Void
-				bag_id = ArkInventory.Const.Offset.Void + voidtab
-				slot_id = voidslot
-				id = GetVoidItemInfo( voidtab, voidslot )
-			elseif ( not bags ) and slot then
-				loc_id = ArkInventory.Const.Location.Wearing
-				bag_id = ArkInventory.Const.Offset.Wearing + 1
-				slot_id = slot
-				id = GetInventoryItemID( "player", slot )
-			elseif bag and slot then
-				loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( bag )
-				slot_id = slot
-				id = GetContainerItemID( bag, slot )
-			end
-			
-			if loc_id and bag_id and slot_id and id and ArkInventoryRules.Object.info.id and ArkInventoryRules.Object.loc_id == loc_id and ArkInventoryRules.Object.bag_id == bag_id and ArkInventoryRules.Object.slot_id == slot_id and id == ArkInventoryRules.Object.info.id then
-				--ArkInventory.Output( setname, ":", k, " -> [", ArkInventoryRules.Object.h, " / ", id )
-				tinsert( Outfits, string.trim( setname ) )
-				--ArkInventory.Output( "found ", ArkInventoryRules.Object.h, " in set [", setname, ":", k, "] [", ArkInventoryRules.Object.loc_id, ".", ArkInventoryRules.Object.bag_id, ".", ArkInventoryRules.Object.slot_id, "]" )
-				break
-			end
-			
-		end
-		
-	end
-	
-	-- not in any outfit
-	if next( Outfits ) == nil then
-		return false
-	end
-	
-	local ac = select( '#', ... )
-	
-	if ac == 0 then
-		return true
-	end
-	
-	for ax = 1, ac do
-		
-		local arg = select( ax, ... )
-		
-		if not arg then
-			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NIL"], fn, ax ), 0 )
-		end
-		
-		if type( arg ) ~= "string" then
-			error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_NOT"], fn, ax, ArkInventory.Localise["STRING"] ), 0 )
-		end
-		
-		for _, o in pairs( Outfits ) do
-			if o and string.lower( string.trim( o ) ) == string.lower( string.trim( arg ) ) then
-				return true
-			end
-		end
-		
-	end	
-	
-	return false
-
-end
-
-function ArkInventoryRules.System.outfit_blizzard_old( ... )
-
-	-- blizzard equipment manager
-	
-	local equipsets = GetNumEquipmentSets( )
-	if equipsets == 0 then
-		return false
-	end
-	
-	local Outfits = { }
-	
-	-- get a list of outfits the item is in
-	for setnum = 1, equipsets do 
-		
-		local setname = GetEquipmentSetInfo( setnum )
-		local set = GetEquipmentSetLocations( setname )
-		
-		for k, location in pairs( set ) do
-			
-			local wearing, bank, bags, void, slot, bag = EquipmentManager_UnpackLocation( location )
-			if wearing or bank or bags then
+			for k, location in pairs( items ) do
 				
-				local h
+				loc_id = nil
+				bag_id = nil
+				slot_id = nil
+				id = nil
 				
-				if not bags then 
-					h = GetInventoryItemLink( "player", slot )  --being worn or in bank
-				else
-					h = GetContainerItemLink( bag, slot )  -- player bags or bank bags
+				player, bank, bags, void, slot, bag, voidtab, voidslot = EquipmentManager_UnpackLocation( location )
+				
+--				if void then
+--					ArkInventory.Output( setname, ":", k, " -> [", player, ", ", bank, ", ", bags, ", ", void, "] [", bag, ".", slot, "] [", voidtab, ".", voidslot, "]" )
+--				end
+				
+				if void and voidtab and voidslot then
+					loc_id = ArkInventory.Const.Location.Void
+					bag_id = ArkInventory.Const.Offset.Void + voidtab
+					slot_id = voidslot
+					id = GetVoidItemInfo( voidtab, voidslot )
+				elseif ( not bags ) and slot then
+					loc_id = ArkInventory.Const.Location.Wearing
+					bag_id = ArkInventory.Const.Offset.Wearing + 1
+					slot_id = slot
+					id = GetInventoryItemID( "player", slot )
+				elseif bag and slot then
+					loc_id, bag_id = ArkInventory.BlizzardBagIdToInternalId( bag )
+					slot_id = slot
+					id = GetContainerItemID( bag, slot )
 				end
 				
-				if h == ArkInventoryRules.Object.h then
+				if loc_id and bag_id and slot_id and id and ArkInventoryRules.Object.info.id and ArkInventoryRules.Object.loc_id == loc_id and ArkInventoryRules.Object.bag_id == bag_id and ArkInventoryRules.Object.slot_id == slot_id and id == ArkInventoryRules.Object.info.id then
+					--ArkInventory.Output( setname, ":", k, " -> [", ArkInventoryRules.Object.h, " / ", id )
 					tinsert( Outfits, string.trim( setname ) )
-					--ArkInventory.OutputDebug( "found ", h, " in set [", setname, ":", k, "] [", bag, ".", slot, "]" )
+					--ArkInventory.Output( "found ", ArkInventoryRules.Object.h, " in set [", setname, ":", k, "] [", ArkInventoryRules.Object.loc_id, ".", ArkInventoryRules.Object.bag_id, ".", ArkInventoryRules.Object.slot_id, "]" )
 					break
 				end
 				
@@ -1021,7 +951,9 @@ function ArkInventoryRules.System.outfit_blizzard_old( ... )
 	end
 	
 	-- not in any outfit
-	if next( Outfits ) == nil then return false end
+	if next( Outfits ) == nil then
+		return false
+	end
 	
 	local ac = select( '#', ... )
 	
@@ -1796,6 +1728,11 @@ ArkInventoryRules.Environment = {
 function ArkInventoryRules.Register( a, n , f, o ) -- addon, rule name, function, overwrite
 	
 	local n = string.trim( string.lower( tostring( n ) ) )
+	
+	if n == "i" then
+		ArkInventory.OutputWarning( "Invalid rule registration from ", a:GetName( ), " - ", n, " cannot overwrite environment variable" )
+		return false
+	end
 	
 	if not string.match( n, "^%a[%a%d]*$" ) then
 		ArkInventory.OutputWarning( "Invalid rule registration from ", a:GetName( ), " - ", n, " is not a valid rule name" )

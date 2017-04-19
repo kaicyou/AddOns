@@ -100,7 +100,7 @@ function ArkInventory.LDB.Tracking_Currency:Update( )
 			local id = osd.id
 			local me = ArkInventory.GetPlayerCodex( )
 			if me.player.data.ldb.tracking.currency.tracked[id] then
-				self.text = string.format( "%s  |T%s:0|t %d", self.text, icon or ArkInventory.Const.Texture.Missing, count or 0 )
+				self.text = string.format( "%s  |T%s:0|t %s", self.text, icon or ArkInventory.Const.Texture.Missing, FormatLargeNumber( count or 0 ) )
 				hasText = true
 			end
 		end
@@ -141,8 +141,10 @@ function ArkInventory.LDB.Tracking_Currency:OnTooltipShow( )
 	
 	for j = 1, numTokenTypes do
 		
-		local name, isHeader, isExpanded, isUnused, isWatched, count, icon, limit, limitWeekly, countWeekly = GetCurrencyListInfo( j )
-		--ArkInventory.Output( GetCurrencyListInfo( j ) )
+		local name, isHeader, isExpanded, isUnused, isWatched, count, icon, maximum, hasWeeklyLimit, weeklyCount, unknown = GetCurrencyListInfo( j )
+		--ArkInventory.Output( { GetCurrencyListInfo( j ) } )
+		
+		-- local name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(id)
 		
 		if isHeader then
 			self:AddLine( " " )
@@ -154,11 +156,10 @@ function ArkInventory.LDB.Tracking_Currency:OnTooltipShow( )
 			local id = osd.id
 			local me = ArkInventory.GetPlayerCodex( )
 			
-			--limit = limit / 100
 			local txt = FormatLargeNumber( count )
 			
-			if limit and limit > 0 then
-				txt = string.format( "%s/%s", FormatLargeNumber( count ), FormatLargeNumber( limit ) )
+			if maximum and maximum > 0 then
+				txt = string.format( "%s/%s", FormatLargeNumber( count ), FormatLargeNumber( maximum ) )
 			end
 			
 			if me.player.data.ldb.tracking.currency.tracked[id] then
@@ -167,9 +168,10 @@ function ArkInventory.LDB.Tracking_Currency:OnTooltipShow( )
 				self:AddDoubleLine( name, txt, 1, 1, 1, 1, 1, 1 )
 			end
 			
-			if limitWeekly and countWeekly and countWeekly > 0 then
+			if hasWeeklyLimit and weeklyCount and weeklyCount > 0 then
 				
-				txt = string.format( "%s/%s", FormatLargeNumber( countWeekly ), FormatLargeNumber( limitWeekly ) )
+				--txt = string.format( "%s/%s", FormatLargeNumber( weeklyCount ), FormatLargeNumber( hasWeeklyLimit ) )
+				txt = string.format( "%s/???", FormatLargeNumber( weeklyCount ) )
 				
 				if me.player.data.ldb.tracking.currency.tracked[id] then
 					self:AddDoubleLine( string.format( "  * %s", ArkInventory.Localise["WEEKLY"] ), txt, 0, 1, 0, 0, 1, 0 )
@@ -204,7 +206,7 @@ function ArkInventory.LDB.Tracking_Item:Update( )
 			end
 ]]--
 			local icon = select( 10, GetItemInfo( k ) )
-			self.text = string.format( "%s  |T%s:0|t %s", self.text, icon or ArkInventory.Const.Texture.Missing, count or 0 )
+			self.text = string.format( "%s  |T%s:0|t %s", self.text, icon or ArkInventory.Const.Texture.Missing, FormatLargeNumber( count or 0 ) )
 			hasText = true
 		end
 	end

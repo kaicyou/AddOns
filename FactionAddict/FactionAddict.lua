@@ -68,15 +68,17 @@
 
 
 -- Constants
-local FACTION_ADDICT_VERSION = "1.41"
+local FACTION_ADDICT_VERSION = "1.42"
 local FACTION_ADDICT_LOGGING_VERSION = 1
 local FACTION_ADDICT_LOGGING_DAYS = 20
 local GUILD_FACTION_ID = 1168
+local FACTION_ADDICT_PARAGON_COLOR = {r = 0.00, g = 0.82, b = 1.00}
 -- Locals
 local tempDisplayData = {} -- temp table built to show subset of data
 local tempDisplayData_rowcount
 local tempAllFactionData = {} -- table built to store all faction data - info window population
 local tempAllFactionData_rowcount
+local tempAllParagonData = {} -- table built to store all paragon data
 local tempLoggingData = {} -- temp table to show log data
 local tempLoggingData_rowcount
 local tempFactionIDsByName = {} -- temp table mapping factin names to IDs
@@ -439,7 +441,12 @@ local function fa_StandingTextByID(standingID)
 	local standingTxt
 	local postfixTxt
 	
-	standingTxt = GetText("FACTION_STANDING_LABEL"..standingID, UnitSex("player"))
+    if (standingID == 9) then
+        standingTxt = L.MISC_PARAGON_TXT
+    else
+        standingTxt = GetText("FACTION_STANDING_LABEL"..standingID, UnitSex("player"))
+    end
+	
 
 	return(standingTxt)
 end
@@ -757,7 +764,39 @@ local function fa_PopulateAllFactionDataTable()
 				percentToExalted = 100
 			end
 			
-			if (standingID == 8) then
+            -- PARAGON REP
+            if (C_Reputation.IsFactionParagon(faFactionData[maintableRow][1])) then
+                local paraValue, paraThreshold, paraQuestId, paraRewardPending = C_Reputation.GetFactionParagonInfo(faFactionData[maintableRow][1])
+                barMin = 0
+                barMax = paraThreshold
+                -- assuming paraValue never resets - based on ReputationFrame.lua usage
+                barValue = mod(paraValue, paraThreshold) 
+                if (paraRewardPending) then
+                    barValue = barValue + paraThreshold
+                end
+                -- 9 will represent Paragon in addon - not a client value
+                standingID = 9 
+                -- overwrite percentToExalted with NextParagonReward
+                percentToExalted = (barValue / barMax)*100
+                -- preload data
+                C_Reputation.RequestFactionParagonPreloadRewardData(faFactionData[maintableRow][1])
+                
+                -- save paragon data
+                if (tempAllParagonData[faFactionData[maintableRow][1]] == nil) then
+                    tempAllParagonData[faFactionData[maintableRow][1]] = {}
+                end
+                -- column 1 - current paragon value
+                tempAllParagonData[faFactionData[maintableRow][1]][1] = paraValue
+                -- column 2 - paragon threshold - max
+                tempAllParagonData[faFactionData[maintableRow][1]][2] = paraThreshold
+                -- column 3 - paragon quest id
+                tempAllParagonData[faFactionData[maintableRow][1]][3] = paraQuestId
+                -- column 4 - paragon reward pending flag
+                tempAllParagonData[faFactionData[maintableRow][1]][4] = paraRewardPending
+            end
+            -- END PARAGON REP
+
+			if (standingID == 8 or standingID == 9) then
 				faNumFactionsExalted = faNumFactionsExalted + 1
 			end
 			faNumFactions = faNumFactions + 1
@@ -894,6 +933,8 @@ local function fa_PopulateDisplayTable()
 			displayThisRow = true
 		elseif (standingID == 1 and FactionAddictConfig.CB_STANDING_HATED == true) then
 			displayThisRow = true
+        elseif (standingID == 9) then
+            displayThisRow = true
 		else
 			displayThisRow = false
 		end
@@ -1041,7 +1082,7 @@ local function fa_SetConfigShowHideDefaults()
 	end
 	
 	-- Remove any configs that no longer exist
-	for key, value in pairs(FactionAddictConfigIsInactive) 
+	for key, value in pairs(FactionAddictConfigIsInactive)
 	do
 		if (faFactionDataRow[key] == nil) then
 			FactionAddictConfigIsInactive[key] = nil
@@ -1256,7 +1297,7 @@ function FactionAddict_ScrollBar_Update()
 			getglobal("FactionAddictEntry"..line).FactionIcon:Show()
 			
 			-- set faction icon overlay texture
-			if (tempDisplayData[lineplusoffset][4] == 8) then
+			if (tempDisplayData[lineplusoffset][4] == 8 or tempDisplayData[lineplusoffset][4] == 9) then
 				getglobal("FactionAddictEntry"..line).FactionIconOverlay:Show()
 			else
 				getglobal("FactionAddictEntry"..line).FactionIconOverlay:Hide()
@@ -1286,7 +1327,12 @@ function FactionAddict_ScrollBar_Update()
 			getglobal("FactionAddictEntry"..line).FAReputationBar:Show()
 			
 			-- set color
-			color = FACTION_BAR_COLORS[tempDisplayData[lineplusoffset][4]]
+            if (tempDisplayData[lineplusoffset][4] == 9) then
+                color = FACTION_ADDICT_PARAGON_COLOR
+            else
+                color = FACTION_BAR_COLORS[tempDisplayData[lineplusoffset][4]]
+            end
+			
 			getglobal("FactionAddictEntry"..line).FAReputationBar:SetStatusBarColor(color.r, color.g, color.b)
 			-- set progress bar text
 			getglobal("FactionAddictEntry"..line).FAReputationBar.text:SetText(fa_StandingTextByID(tempDisplayData[lineplusoffset][4]))
@@ -1738,16 +1784,23 @@ end
 -----------------------------------------------------------------------------
 local function fa_InfoWindow_LoadInfo(self)
 
+    local color
+    local totalHeight = 0
 	-- tempAllFactionData has all data
 	-- tempDisplayData has data shown in faction tabdisplay
 
 	-- Set icon texture
 	self.FactionIconInfoWin:SetTexture(tempAllFactionData[faClickedFactionName][2])
-	
+	totalHeight = totalHeight + self.FactionIconInfoWin:GetHeight()
+
 	-- Set Faction Name
 	self.FactionNameTxt:SetText(tempAllFactionData[faClickedFactionName][3])
 	-- Set Status Bar values
-	local color = FACTION_BAR_COLORS[tempAllFactionData[faClickedFactionName][4]]
+    if (tempAllFactionData[faClickedFactionName][4] == 9) then
+        color = FACTION_ADDICT_PARAGON_COLOR
+    else
+        color = FACTION_BAR_COLORS[tempAllFactionData[faClickedFactionName][4]]
+    end
 	self.StatusBar:SetStatusBarColor(color.r, color.g, color.b, 1)
 	self.StatusBar:SetMinMaxValues(tempAllFactionData[faClickedFactionName][5], tempAllFactionData[faClickedFactionName][6])
 	self.StatusBar:SetValue(tempAllFactionData[faClickedFactionName][7])
@@ -1758,15 +1811,24 @@ local function fa_InfoWindow_LoadInfo(self)
 	self.StatusBar.text2:Hide()
 	-- Set EditBox text
 	self.EditBox:SetText(L.FACTION_URL_TXT .. tostring(tempAllFactionData[faClickedFactionName][1]))
+    totalHeight = totalHeight + self.EditBox:GetHeight()
 	-- Set Percent text
-	self.PctTxt:SetText(LIGHTYELLOW_FONT_COLOR_CODE .. L.PCT_TO_EXALTED_TXT .. FONT_COLOR_CODE_CLOSE .. tempAllFactionData[faClickedFactionName][8])
+    if (tempAllFactionData[faClickedFactionName][4] == 9) then
+        self.PctTxt:SetText(LIGHTYELLOW_FONT_COLOR_CODE .. L.PCT_TO_REWARD_TXT .. FONT_COLOR_CODE_CLOSE .. tempAllFactionData[faClickedFactionName][8])
+    else
+        self.PctTxt:SetText(LIGHTYELLOW_FONT_COLOR_CODE .. L.PCT_TO_EXALTED_TXT .. FONT_COLOR_CODE_CLOSE .. tempAllFactionData[faClickedFactionName][8])
+    end
+    totalHeight = totalHeight + self.PctTxt:GetHeight()
+	
 	-- Set Category text
 	self.CategoryTxt:SetText(LIGHTYELLOW_FONT_COLOR_CODE .. L.CATEGORY_TXT .. FONT_COLOR_CODE_CLOSE .. faFactionDataCategoryValues[tempAllFactionData[faClickedFactionName][12]])
+    totalHeight = totalHeight + self.CategoryTxt:GetHeight()
 
 	-- Set Move to Inactive text - 
 	self.CBMoveInactive.fs:SetText(LIGHTYELLOW_FONT_COLOR_CODE .. MOVE_TO_INACTIVE .. FONT_COLOR_CODE_CLOSE)
 	-- set the appropriate checkbox value
 	self.CBMoveInactive:SetChecked( (FactionAddictConfigIsInactive[tempAllFactionData[faClickedFactionName][1]]) )
+    totalHeight = totalHeight + self.CBMoveInactive:GetHeight()
 	-- set the appropriate background
 	if (FactionAddictConfigIsInactive[tempAllFactionData[faClickedFactionName][1]] == false) then
 		self:SetBackdrop(InfoWindow_Backdrop_Default)
@@ -1775,8 +1837,47 @@ local function fa_InfoWindow_LoadInfo(self)
 		self:SetBackdropColor(InfoWindow_Inactive_RGBA[1], InfoWindow_Inactive_RGBA[2], InfoWindow_Inactive_RGBA[3], InfoWindow_Inactive_RGBA[4])
 	end
 
-	-- Set Desc text
-	self.DescTxt:SetText(tempAllFactionData[faClickedFactionName][9])
+    -- PARAGON REP - Display Reward Info
+    if (tempAllFactionData[faClickedFactionName][4] == 9) then
+
+        local itemName, itemTexture, quantity, quality, isUsable, itemID = GetQuestLogRewardInfo(1, tempAllParagonData[tempAllFactionData[faClickedFactionName][1]][3])
+        -- Reward Text
+        self.RewardTxt:SetText(QUEST_REWARDS)
+        self.RewardTxt:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+        totalHeight = totalHeight + self.RewardTxt:GetHeight()
+        -- Reward Icon and Border
+        self.RewardIcon:SetTexture(itemTexture)
+        self.RewardIconBorder:SetVertexColor(BAG_ITEM_QUALITY_COLORS[quality].r, BAG_ITEM_QUALITY_COLORS[quality].g, BAG_ITEM_QUALITY_COLORS[quality].b)
+        -- Reward Name
+        self.RewardName:SetText(itemName)
+        self.RewardName:SetTextColor(BAG_ITEM_QUALITY_COLORS[quality].r, BAG_ITEM_QUALITY_COLORS[quality].g, BAG_ITEM_QUALITY_COLORS[quality].b)
+        -- Show Elements
+        self.RewardTxt:Show()
+        self.RewardIcon:Show()
+        self.RewardIconBorder:Show()
+        self.RewardName:Show()
+        -- inc height
+        totalHeight = totalHeight + self.RewardIcon:GetHeight()
+    else
+        -- Hide Elements
+       self.RewardTxt:Hide()
+       self.RewardIcon:Hide()
+       self.RewardIconBorder:Hide()
+       self.RewardName:Hide()
+    end
+    -- END PARAGON REP
+
+	-- Set Desc text 
+    if (tempAllFactionData[faClickedFactionName][4] == 9) then
+	   self.DescTxt:SetPoint("TOPLEFT",self.RewardIcon,"BOTTOMLEFT",0,-8)
+       totalHeight = totalHeight+10
+    else
+        self.DescTxt:SetPoint("TOPLEFT",self.CBMoveInactive,"BOTTOMLEFT",0,-2)
+        totalHeight = totalHeight+0
+    end
+    self.DescTxt:SetText(tempAllFactionData[faClickedFactionName][9])
+    totalHeight = totalHeight + self.DescTxt:GetHeight()
+
 	-- set faction side icon
 	if (tempAllFactionData[faClickedFactionName][11] == 2) then
 		self.SideFactionIcon:SetTexture("Interface\\BattlefieldFrame\\Battleground-Horde.png")
@@ -1808,6 +1909,10 @@ local function fa_InfoWindow_LoadInfo(self)
 		self.FALFGBonusRepButton:Disable()
 		self.FALFGBonusRepButton:Hide()
 	end
+
+    -- Set size of frame based on contents
+    self:SetSize(270, totalHeight+30)
+    
 end
 
 

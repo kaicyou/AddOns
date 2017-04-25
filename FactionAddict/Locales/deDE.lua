@@ -94,6 +94,7 @@ FactionAddictLocalization["ABOUT_TXT"] = "Faction Addict ist ein Addon, das dem 
 FactionAddictLocalization["LAUNCH_WATCH_PANEL_TXT"] = "\195\150ffne Informations Panel"
 FactionAddictLocalization["FACTION_URL_TXT"] = "http://de.wowhead.com/faction="
 FactionAddictLocalization["PCT_TO_EXALTED_TXT"] = "Proz. bis Erf\195\188rchtig: "
+FactionAddictLocalization["PCT_TO_REWARD_TXT"] = "Pct to Next Reward: "
 FactionAddictLocalization["CATEGORY_TXT"] = "Kategorie: "
 
 -- Info Window - Categories
@@ -138,5 +139,8 @@ FactionAddictLocalization["Friday"] = "Freitag"
 FactionAddictLocalization["Saturday"] = "Samstag"
 FactionAddictLocalization["Sunday"] = "Sonntag"
 FactionAddictLocalization["DATE_FORMAT"] = "D m/d"
+
+-- Misc Strings
+FactionAddictLocalization["MISC_PARAGON_TXT"] = "Paragon"
 
 end;

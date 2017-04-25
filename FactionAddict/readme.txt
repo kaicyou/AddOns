@@ -4,7 +4,7 @@
 -- Desc: Addon for World of Warcraft
 --
 -- Author: gmz323(Greg)
--- current version: v1.41
+-- current version: v1.42
 -- (c) 2011-2017
 --
 =============================================================================
@@ -67,6 +67,14 @@ My Other Addons:
 
 Changelog:
 ==========
+
+v1.42 (2017-04-25)
+------------------
+* Paragon Rep Info - Faction Addict now displays info and progress for Paragon reputations. The faction info window shows the reward for completing the paragon.
+* New Localization Strings - for non-english users please note there are 2 new strings that will need to be localized into your language. Look for PCT_TO_REWARD_TXT and MISC_PARAGON_TXT in files.
+* FYI - Logging NOT yet updated to include paragon repuation. Due to the actual value of paragon reputation gains not being printed in the chat log a new logging method will need to be created for paragon logging.
+* Future Update - more UI polish for paragon reputations coming soon. Hope to include the paragon reward bag icons similar to default UI.
+* Please report any issues you run into with the new changes.
 
 v1.41 (2017-04-09)
 ------------------

@@ -30,12 +30,11 @@ local tableCopy = ns.tableCopy
 local timeToReady = ns.timeToReady
 local trim = string.trim
 
-
 local mt_resource = ns.metatables.mt_resource
-
 
 local AD = ns.lib.ArtifactData
 local SF = ns.lib.SpellFlash
+local ToggleDropDownMenu = Lib_ToggleDropDownMenu
 
 local updatedDisplays = {}
 
@@ -161,6 +160,9 @@ function ns.pruneDefaults()
 end
 
 
+
+local hookOnce = false
+
 -- OnInitialize()
 -- Addon has been loaded by the WoW client (1x).
 function Hekili:OnInitialize()
@@ -182,11 +184,62 @@ function Hekili:OnInitialize()
     self:RegisterChatCommand( "hekili", "CmdLine" )
     self:RegisterChatCommand( "hek", "CmdLine" )
 
+    local LDB = LibStub( "LibDataBroker-1.1", true )
+    local LDBIcon = LDB and LibStub( "LibDBIcon-1.0", true )
+    if LDB then
+        ns.UI.Minimap = LDB:NewDataObject( "Hekili", {
+            type = "launcher",
+            text = "Hekili",
+            icon = "Interface\\ICONS\\spell_nature_bloodlust",
+            OnClick = function( f, button )
+                if button == "RightButton" then ns.StartConfiguration()
+                else
+                    if not hookOnce then 
+                        hooksecurefunc("Lib_UIDropDownMenu_InitializeHelper", function(frame)
+                            for i = 1, LIB_UIDROPDOWNMENU_MAXLEVELS do
+                                if _G["Lib_DropDownList"..i.."Backdrop"].SetTemplate then _G["Lib_DropDownList"..i.."Backdrop"]:SetTemplate("Transparent") end
+                                if _G["Lib_DropDownList"..i.."MenuBackdrop"].SetTemplate then _G["Lib_DropDownList"..i.."MenuBackdrop"]:SetTemplate("Transparent") end
+                            end
+                        end )
+                        hookOnce = true
+                    end
+                    ToggleDropDownMenu( 1, nil, Hekili_Menu, f:GetName(), "MENU" )
+                end
+                GameTooltip:Hide()
+            end,
+            OnTooltipShow = function( tt )
+                tt:AddDoubleLine( "Hekili", ns.UI.Minimap.text )
+                tt:AddLine( "|cFFFFFFFFLeft-click to make quick adjustments.|r" )
+                tt:AddLine( "|cFFFFFFFFRight-click to open the options interface.|r" )
+            end,
+        } )
+
+        function ns.UI.Minimap:RefreshDataText()
+            local p = Hekili.DB.profile
+            local color = "FFFFD100"
+
+            self.text = format( "|c%s%s|r  %sCD|r  %sInt|r  %sPot|r",
+                color,
+                p['Mode Status'] == 0 and "Single" or ( p['Mode Status'] == 2 and "AOE" or ( p['Mode Status'] == 3 and "Auto" or "X" ) ),
+                p.Cooldowns and "|cFF00FF00" or "|cFFFF0000",
+                p.Interrupts and "|cFF00FF00" or "|cFFFF0000",
+                p.Potions and "|cFF00FF00" or "|cFFFF0000" )
+        end
+
+        ns.UI.Minimap:RefreshDataText()
+
+        if LDBIcon then
+            LDBIcon:Register( "Hekili", ns.UI.Minimap, self.DB.profile.iconStore )
+        end
+    end
+
+
     if not self.DB.profile.Version or self.DB.profile.Version < 7 or not self.DB.profile.Release or self.DB.profile.Release < 20161000 then
         self.DB:ResetDB()
     end
 
-    self.DB.profile.Release = self.DB.profile.Release or 20161003.1
+    self.DB.profile.Release = self.DB.profile.Release or 20170416.0
+
 
     initializeClassModule()
     refreshBindings()
@@ -261,18 +314,16 @@ function Hekili:OnEnable()
     ns.StartEventHandler()
     buildUI()
     ns.overrideBinds()
+    ns.ReadKeybindings()
 
     Hekili.s = ns.state
 
     -- May want to refresh configuration options, key bindings.
     if self.DB.profile.Enabled then
-
         self:UpdateDisplays()
         ns.Audit()
-
     else
         self:Disable()
-
     end
 
 end
@@ -281,6 +332,14 @@ end
 function Hekili:OnDisable()
     self.DB.profile.Enabled = false
     ns.StopEventHandler()
+    buildUI()
+end
+
+
+function Hekili:Toggle()
+    self.DB.profile.Enabled = not self.DB.profile.Enabled
+    if self.DB.profile.Enabled then self:Enable()
+    else self:Disable() end
 end
 
 
@@ -412,14 +471,14 @@ function Hekili:ProcessActionList( dispID, hookID, listID, slot, depth, action, 
                     else
                         -- APL checks.
                         if entry.Ability == 'variable' then
-                            local aScriptValue = checkScript( 'A', scriptID )
-
+                            -- local aScriptValue = checkScript( 'A', scriptID )
                             local varName = entry.ModVarName or state.args.name
 
-                            if debug then self:Debug( "Will attempt to store value " .. tostring( aScriptValue ) .. " in variable '%s'", varName or "MISSING" ) end
+                            if debug then self:Debug( " - variable.%s will refer to this action's script.", varName or "MISSING" ) end
 
-                            if varName ~= nil and aScriptValue ~= nil then
-                                state.variable[ varName ] = aScriptValue
+                            if varName ~= nil then -- and aScriptValue ~= nil then
+                                state.variable[ "_" .. varName ] = scriptID
+                                -- We just store the scriptID so that the variable actually gets tested at time of comparison.
                             end
 
                         elseif entry.Ability == 'call_action_list' or entry.Ability == 'run_action_list' then
@@ -677,7 +736,7 @@ function Hekili:ProcessHooks( dispID, solo )
                     if chosen_action then
                         -- We have our actual action, so let's get the script values if we're debugging.
 
-                        if self.DB.profile.Debug then ns.implantDebugData( slot ) end
+                        if self.ActiveDebug then ns.implantDebugData( slot ) end
 
                         slot.time = state.offset + chosen_wait
                         slot.exact_time = state.now + state.offset + chosen_wait
@@ -930,7 +989,6 @@ function Hekili:UpdateDisplay( dispID )
                         button.Icon:Hide()
                     end
 
-
                     if display.showCaptions and ( i == 1 or display.queuedCaptions ) then
                         button.Caption:SetText( caption )
                     else
@@ -942,7 +1000,6 @@ function Hekili:UpdateDisplay( dispID )
                     else
                         button.Keybinding:SetText( nil )
                     end
-
 
                     if i == 1 then
                         if display.showTargets then
@@ -1069,6 +1126,8 @@ function Hekili:UpdateDisplay( dispID )
                     end
 
                 else
+
+                    -- print( "no aKey", dispID, display.Name, i )
                     ns.UI.Buttons[dispID][i].Texture:SetTexture( nil )
                     ns.UI.Buttons[dispID][i].Cooldown:SetCooldown( 0, 0 )
                     ns.UI.Buttons[dispID][i]:Hide()
@@ -1078,6 +1137,7 @@ function Hekili:UpdateDisplay( dispID )
             end
 
         else
+
             for i, button in ipairs(ns.UI.Buttons[dispID]) do
                 button:Hide()
 

@@ -1,23 +1,22 @@
-tag 80a1275186e28fc42f94f2ed5f47be8e5985f792 2.3.9
+tag 63300a3c38bd423464b814fbb222a27b52368d0e 2.4.1
 Author:	Benjamin Staneck <staneck@gmail.com>
-Date:	Tue Apr 4 19:13:18 2017 +0200
+Date:	Tue Apr 25 22:02:28 2017 +0200
 
-commit c879426dbeb0d5c8ddb2b3cccb3d9dcdf9cdcfaf
+commit 69766856d8162ee78188bce7a1d303e0f99a2255
 Author: Infus <infus@squorn.de>
-Date:   Fri Mar 31 07:47:29 2017 +0200
+Date:   Tue Apr 25 21:44:28 2017 +0200
 
-    Fix Power Type trigger with "Only if primary"
-    
-    Ticket-Nr: 906
+    Fix upgrade code for Icons
 
-commit 9617b6d9fe26f2e633ef05741ed11beb4e66ee10
-Author: Infus <infus@squorn.de>
-Date:   Thu Mar 30 20:29:30 2017 +0200
+commit 6b6d641b69a77a1d908ebba81c70629cc7e81abf
+Author: Benjamin Staneck <staneck@gmail.com>
+Date:   Mon Apr 24 02:30:49 2017 +0200
 
-    Fix Expel Harm again
-    
-    Another small tweak to unified cooldown function.
-    A spell on gcd cooldown is not a spell with a cooldown.
-    
-    Ticket-Nr: 910
+    prefix a few more prints with the addon name
+
+commit 79e666e770e7720b5259aa0e747583d3cd8f2a76
+Author: Benjamin Staneck <staneck@gmail.com>
+Date:   Mon Apr 24 01:51:02 2017 +0200
+
+    avoid the table access here, trips up the locale import on WowAce
 

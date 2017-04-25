@@ -1,3 +1,146 @@
+commit 61b366ff9ae63de471b157c2e1043e757f8373c8
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Apr 24 23:27:03 2017 -0400
+
+    Assorted Fixes
+    
+    o Fixed assignment of textures for abilities that change during
+    Metamorphosis.
+    o Use NoTaint_UIDropDownMenu to avoid taint issues.
+    o Skin the dropdown menu if ElvUI is installed.
+
+commit 2ba73ef1935a7560e8e36732153b582d0b1aec2d
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Apr 24 18:54:54 2017 -0400
+
+    Clear all stashed gear when updateGear() fires.
+
+commit 9ac60dd657511ccfcc536eab8f601cfe7dc80c7d
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Apr 24 18:40:15 2017 -0400
+
+    Added Class Settings: Exclusions
+    
+    + Added checklist of abilities one can use to exclude abilities from
+    your displays.  This is done on a per-profile basis for now, but could
+    conceivably be done per-display if needed.
+    
+    + Added 'active_mongoose_fury' which compares buff.mongoose_fury.remains
+    > latency * 2 -- this hopefully makes the addon slightly less likely to
+    recommend another Mongoose Bite when Mongoose Fury is falling off faster
+    than you can realistically react.  APL will be updated to use this.
+
+commit 1b9d51eafd4d2c8ce2da1c821b9891834190e5b2
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Apr 24 00:26:10 2017 -0400
+
+    Fix Demon Hunter APL.
+    
+    Fix 'arget.time_to_die' -> 'target.time_to_die'
+
+commit 89af533533a708c1aa2417f35dd6562bdf8d875c
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Apr 23 22:59:46 2017 -0400
+
+    Fix LibDataBroker-1.1 bake-in.
+
+commit d55a496c7deda8ee1f46b8811c919926e4a51683
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Apr 23 22:29:08 2017 -0400
+
+    Unleashed Demons is an artifact trait, not a talent.
+
+commit 9058d498f75071b7f2fee6983e9c7e2c2fb8fec9
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Apr 23 22:18:57 2017 -0400
+
+    Import latest Hunter APLs.
+    
+    + Fix import when the specific potion isn't indicated.
+
+commit 657c45745304a67b3113f770e9d6d34c43d49bf6
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Apr 23 22:04:40 2017 -0400
+
+    Paladin - make sure APLs are up to date.
+    
+    Fix extraneous code in DH module.
+
+commit f8d30dcd944b57e87eb4ab1b8605e31725430ea5
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Apr 23 21:52:35 2017 -0400
+
+    Ugh.
+
+commit 4bf32a5275d1aab0f2456b99d18614c8896b21a5
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Apr 23 21:51:21 2017 -0400
+
+    Tweaks, work on DH, etc.
+    
+    o Delay keybind overrides until out of combat, if needed.
+    o Fix typo 'csating' -> 'casting'.
+    + Added DH traits and legendary effects (very few, really).
+    + Change 'variable' or "Store Value" actions to just grab the result
+    from the action list, instead of snapshotting it.
+    o Do a better job of grabbing keybinds for abilities that shift between
+    forms.
+    + Create some really, really ugly string manipulation code to simplify
+    importing the DH Havoc APL directly from SimulationCraft.
+    + target.distance will now return the average of the minimum and maximum
+    range estimates.
+    + target.exists is now a valid check.
+    + target.in_range is now a valid check, will check on a per-ability
+    basis or default to true.
+    + cooldown.X.adjusted_remains added, simply returns the 'remains' value.
+
+commit d692fffedbf4da4a6913ac2d1d304ab25f83c570
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Apr 21 09:27:32 2017 -0400
+
+    Shaman traits.
+
+commit 28cd3f75242b14b3121dc0ba98505966f2b69c10
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Apr 21 09:27:19 2017 -0400
+
+    Fixes, tweaks.
+    
+    + Artifact traits will now use the English-version SimC-like keys
+    regardless of region.  (Ashes to Ashes -> ashes_to_ashes, even if your
+    client is in Spanish or German or whatever.)
+    
+    o Fix for Rainfall duration extension, because that matters.
+    
+    o Iterate on minimap icon.
+    
+    o Don't force update on UNIT_SPELLCAST_START or
+    UNIT_SPELLCAST_SUCCEEDED.  Wait for SPELL_CAST_START and
+    SPELL_CAST_SUCCESS in the combat log.
+
+commit ff87fdedac818c897b449e48dff295a5037d6588
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Apr 16 23:22:39 2017 -0400
+
+    Minimap Icon, integrate Monk and Hunter support
+    
+    + Added LibDataBroker and LibDBIcon to support a minimap icon, some
+    quick setting adjustment w/o keybindings.
+    + Brought the Monk and Hunter modules into the addon.
+    + Iterated on Demon Hunter support.
+    + Debug setting is no longer needed.  When you pause, debug info is
+    collected for one cycle and then shut off again.
+    + Put Custom Toggles back in.
+    
+    ? Still trying to figure out when to rescrape keybindings to
+    most-efficiently catch when abilities change due to a form change.
+    
+    + SEL and SimC Elemental APLs will default to the Ascendance APL when
+    you aren't 110 yet (so that you at least get *something*).
+    
+    + Intentionally broke the module code (for now) so that the forked
+    modules stop working.
+
 commit b9f85b23c4902ec85c7f1345fffb0913c92d6646
 Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Thu Apr 13 23:40:10 2017 -0400

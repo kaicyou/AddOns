@@ -1,5 +1,5 @@
 -- Hunter.lua
--- February 2015
+-- January 2017
 
 local addon, ns = ...
 local Hekili = _G[ addon ]
@@ -7,848 +7,840 @@ local Hekili = _G[ addon ]
 local class = ns.class
 local state = ns.state
 
-local addHook = ns.addHook
-local callHook = ns.callHook
-
 local addAbility = ns.addAbility
-local modifyAbility = ns.modifyAbility
-local addHandler = ns.addHandler
-
 local addAura = ns.addAura
-local modifyAura = ns.modifyAura
 local addCastExclusion = ns.addCastExclusion
-local addExclusion = ns.addExclusion
 local addGearSet = ns.addGearSet
 local addGlyph = ns.addGlyph
-local addTalent = ns.addTalent
-local addPerk = ns.addPerk
+local addHandler = ns.addHandler
+local addHook = ns.addHook
+local addMetaFunction = ns.addMetaFunction
 local addResource = ns.addResource
+local addSetting = ns.addSetting
 local addStance = ns.addStance
+local addTalent =  ns.addTalent
+local addToggle = ns.addToggle
+local addTrait = ns.addTrait
+local modifyAbility = ns.modifyAbility
+local modifyAura = ns.modifyAura
+
+local registerCustomVariable = ns.registerCustomVariable
+local registerInterrupt = ns.registerInterrupt
 
 local removeResource = ns.removeResource
 
+local setArtifact = ns.setArtifact 
 local setClass = ns.setClass
 local setPotion = ns.setPotion
 local setRole = ns.setRole
 
 local RegisterEvent = ns.RegisterEvent
+
+local retireDefaults = ns.retireDefaults
 local storeDefault = ns.storeDefault
 
--- This table gets loaded only if there's a ported class/specialization
-if (select(2, UnitClass('player')) == 'HUNTER') then
-  ns.initializeClassModule = function ()
-    setClass( 'HUNTER' )
-    setRole( 'attack' )
 
-    addResource( 'focus', true )
+local PTR = ns.PTR
 
-    addTalent( 'posthaste', 109215 )
-    addTalent( 'narrow_escape', 109298 )
-    addTalent( 'crouching_tiger_hidden_chimaera', 118675 )
 
-    addTalent( 'binding_shot', 109248 )
-    addTalent( 'wyvern_sting', 19386 )
-    addTalent( 'intimidation', 19577 )
+if select( 2, UnitClass( 'player' ) ) == 'HUNTER' then
 
-    addTalent( 'exhilaration', 109304 )
-    addTalent( 'iron_hawk', 109260 )
-    addTalent( 'spirit_bond', 109212 )
+    local function HunterInit()
 
-    addTalent( 'steady_focus', 177667 )
-    addTalent( 'dire_beast', 120679 )
-    addTalent( 'thrill_of_the_hunt', 109306 )
+        Hekili:Print("Initializing Hunter Class Module.")
 
-    addTalent( 'a_murder_of_crows', 131894 )
-    addTalent( 'blink_strikes', 130392 )
-    addTalent( 'stampede', 121818 )
+        setClass( 'HUNTER' )
 
-    addTalent( 'glaive_toss', 117050 )
-    addTalent( 'powershot', 109259 )
-    addTalent( 'barrage', 120360 )
+        addResource( 'focus', true )
 
-    addTalent( 'exotic_munitions', 162534 )
-    addTalent( 'focusing_shot', 152245 )
-    addTalent( 'adaptation', 152244 )
-    addTalent( 'lone_wolf', 155228 )
+        addTalent( 'animal_instincts', 204315 )
+        addTalent( 'throwing_axes', 200163 )
+        addTalent( 'way_of_the_moknathal', 201082 )
 
-    -- Major Glyphs
-    addGlyph( 'animal_bond', 20895 )
-    addGlyph( 'black_ice', 109263 )
-    addGlyph( 'camouflage', 42898 )
-    addGlyph( 'chimaera_shot', 119447 )
-    addGlyph( 'deterrence', 42903 )
-    addGlyph( 'disengage', 42904 )
-    addGlyph( 'distracting_shot', 42901 )
-    addGlyph( 'enduring_deceit', 104276 )
-    addGlyph( 'explosive_trap', 42908 )
-    addGlyph( 'freezing_trap', 42905 )
-    addGlyph( 'ice_trap', 42906 )
-    addGlyph( 'liberation', 132106 )
-    addGlyph( 'masters_call', 45733 )
-    addGlyph( 'mend_pet', 42915 )
-    addGlyph( 'mending', 56833 )
-    addGlyph( 'mirrored_blades', 45735 )
-    addGlyph( 'misdirection', 56829 )
-    addGlyph( 'no_escape', 42910 )
-    addGlyph( 'pathfinding', 19560 )
-    addGlyph( 'quick_revival', 110821 )
-    addGlyph( 'snake_trap', 110822 )
-    addGlyph( 'solace', 42917 )
-    addGlyph( 'lean_pack', 104270 )
-    addGlyph( 'tranquilizing_shot', 45731 )
+        addTalent( 'a_murder_of_crows', 206505 )
+        addTalent( 'mortal_wounds', 201075 )
+        addTalent( 'snake_hunter', 201078 )
 
-    -- Minor Glyphs
-    addGlyph( 'aspect_of_the_beast', 85683 )
-    addGlyph( 'aspect_of_the_cheetah', 45732 )
-    addGlyph( 'aspect_of_the_pack', 43355 )
-    addGlyph( 'aspects', 42897 )
-    addGlyph( 'fetch', 87393 )
-    addGlyph( 'fireworks', 43351 )
-    addGlyph( 'lesser_proportion', 43350 )
-    addGlyph( 'play_dead', 110819 )
-    addGlyph( 'revive_pet', 43338 )
-    addGlyph( 'stampede', 43356 )
-    addGlyph( 'tame_beast', 42912)
+        addTalent( 'posthaste', 109215 )
+        addTalent( 'disengage', 781 )
+        addTalent( 'trailblazer', 199921 )
 
-    -- Player Buffs / Debuffs
-    addAura( 'a_murder_of_crows', 131894, 'duration', 15 )
-    addAura( 'aspect_of_the_fox', 172106, 'duration', 6 ) -- 6.2
-    addAura( 'beast_cleave', 118455, 'duration', 4, 'feign', function ()
-        if pet.exists and UnitBuff('pet', class.auras.beast_cleave.name ) then
-          local _, _, _, count, _, duration, expires = UnitBuff( 'pet', class.auras.beast_cleave.name )
+        addTalent( 'caltrops', 194277 )
+        addTalent( 'guerrilla_tactics', 236698 )
+        addTalent( 'steel_trap', 162488 )
 
-          buff.beast_cleave.count = count
-          buff.beast_cleave.expires = expires
-          buff.beast_cleave.applied = expires - duration
-          buff.beast_cleave.caster = 'player'
-        else
-          buff.beast_cleave.count = 0
-          buff.beast_cleave.expires = 0
-          buff.beast_cleave.applied = 0
-          buff.beast_cleave.caster = 'player'
+        addTalent( 'sticky_bomb', 191241 )
+        addTalent( 'rangers_net', 200108 )
+        addTalent( 'camouflage', 199483 )
+
+        addTalent( 'butchery', 212436 )
+        addTalent( 'dragonsfire_grenade', 2194855 )
+        addTalent( 'serpent_sting', 87935 )
+
+        addTalent( 'spitting_cobra', 194407 )
+        addTalent( 'expert_trapper', 199543 )
+        addTalent( 'aspect_of_the_beast', 191384 )
+
+
+        addTrait( "aspect_of_the_skylord", 203755 )
+        addTrait( "bird_of_prey", 224764 )
+        addTrait( "concordance_of_the_legionfall", 239042 )
+        addTrait( "eagles_bite", 203757 )
+        addTrait( "echoes_of_ohnara", 238125 )
+        addTrait( "embrace_of_the_aspects", 225092 )
+        addTrait( "explosive_force", 203670 )
+        addTrait( "ferocity_of_the_unseen_path", 241115 )
+        addTrait( "fluffy_go", 203669 )
+        addTrait( "fury_of_the_eagle", 203415 )
+        addTrait( "hellcarver", 203673 )
+        addTrait( "hunters_bounty", 203749 )
+        addTrait( "hunters_guile", 203752 )
+        addTrait( "iron_talons", 221773 )
+        addTrait( "jaws_of_the_mongoose", 238053 )
+        addTrait( "lacerating_talons", 203578 )
+        addTrait( "my_beloved_monster", 203577 )
+        addTrait( "raptors_cry", 203638 )
+        addTrait( "sharpened_fang", 203566 )
+        addTrait( "talon_bond", 238089 )
+        addTrait( "talon_strike", 203563 )
+        addTrait( "terms_of_engagement", 203754 )
+        addTrait( "voice_of_the_wild_gods", 214916 )
+
+
+        -- Buffs/Debuffs
+        addAura( 'a_murder_of_crows', 206505, 'duration', 15 )
+        addAura( 'aspect_of_the_cheetah', 186258, 'duration', 12 )
+        addAura( 'aspect_of_the_cheetah_sprint', 186257, 'duration', 3 )
+        addAura( 'aspect_of_the_eagle', 186289, 'duration', 10 )
+        addAura( 'aspect_of_the_turtle', 186265, 'duration', 8 )
+        addAura( 'butchers_bone_apron', 236446, 'duration', 30, 'max_stack', 10 )
+        addAura( 'caltrops', 194279, 'duration', 6 )
+        addAura( 'camouflage', 199483, 'duration', 60 )
+        addAura( 'dragonsfire_grenade', 194858, 'duration', 8 )
+        addAura( 'explosive_trap', 13812, 'duration', 10 )
+        addAura( 'feign_death', 5384, 'duration', 360 )
+        addAura( 'freezing_trap', 3355, 'duration', 60 )
+        addAura( 'harpoon', 190927, 'duration', 3 )
+        addAura( 'helbrine_rope_of_the_mist_marauder', 213154, 'duration', 10 )
+        addAura( 'lacerate', 185855, 'duration', 12 )
+        addAura( 'moknathal_tactics', 201081, 'duration', 10, 'max_stack', 4 )
+        addAura( 'mongoose_fury', 190931, 'duration', 14, 'max_stack', 6 )
+        addAura( 'on_the_trail', 204081, 'duration', 12 )
+        addAura( 'posthaste', 118922, 'duration', 5 )
+        addAura( 'rangers_net', 206755, 'duration', 15 )
+        addAura( 'rangers_net_root', 200108, 'duration', 3 )
+        addAura( 'serpent_sting', 118253, 'duration', 15 )
+        addAura( 'spitting_cobra', 194407, 'duration', 30 )
+        addAura( 'survivalist', 164856, 'duration', 10 )
+        addAura( 'tar_trap', 135299, 'duration', 60 )
+        addAura( 'trailblazer', 231390, 'duration', 3600 )
+
+
+        -- Gear Sets
+        addGearSet( 'tier19', 138342, 138344, 138813, 138339, 138347, 138368 )
+        addGearSet( 'talonclaw', 128808 )
+
+        setArtifact( 'talonclaw' )
+
+        addGearSet( 'the_shadow_hunters_voodoo_mask', 137064 )
+        addGearSet( 'prydaz_xavarics_magnum_opus', 132444 )
+        addGearSet( 'butchers_bone_apron', 144361 )
+        addGearSet( 'call_of_the_wild', 137101 )
+        addGearSet( 'helbrine_rope_of_the_mist_marauder', 137082 )
+        addGearSet( 'roots_of_shaladrassil', 132466 )
+        addGearSet( 'nesingwarys_trapping_threads', 137034 )
+        addGearSet( 'sephuzs_secret', 132452 )
+        addGearSet( 'frizzos_fingertrap', 137043 )
+        addGearSet( 'kiljaedens_burning_wish', 144259 )
+
+
+        addHook( 'specializationChanged', function ()
+            setPotion( 'old_war' ) -- true for Sv, anyway.
+            setRole( 'attack' )
+        end )
+
+
+        local floor = math.floor
+
+        addHook( 'advance', function( t )
+            if not state.talent.spitting_cobra.enabled then return t end
+
+            if state.buff.spitting_cobra.up then
+                local ticks_before = floor( state.buff.spitting_cobra.remains )
+                local ticks_after = floor( max( 0, state.buff.spitting_cobra.remains - t ) )
+                local gain = 3 * ( ticks_before - ticks_after )
+
+                state.gain( gain, 'focus' )
+            end
+
+            return t
+        end )
+
+
+        addHook( 'reset_precast', function()
+            rawset( state.pet, 'ferocity', IsSpellKnown( 55709, true ) )
+            rawset( state.pet, 'tenacity', IsSpellKnown( 53478, true ) )
+            rawset( state.pet, 'cunning', IsSpellKnown( 53490, true ) )
+        end )
+
+
+        addToggle( 'artifact_ability', true, 'Artifact Ability',
+            'Set a keybinding to toggle your artifact ability on/off in your priority lists.' )
+
+        addSetting( 'artifact_cooldown', true, {
+            name = "Artifact Ability: Cooldown Override",
+            type = "toggle",
+            desc = "If |cFF00FF00true|r, when your Cooldown toggle is |cFF00FF00ON|r then the toggle for your artifact ability will be overridden and your artifact ability will be shown regardless of its toggle above.",
+            width = "full"
+        } )
+
+        addSetting( 'moknathal_padding', true, {
+            name = "Way of the Mok'Nathal Padding",
+            type = "toggle",
+            desc = "If checked, the addon will save an internal buffer of 25 Focus to spend on Raptor Strike for Mok'Nathal Tactics stacks.",
+            width = "full"
+        } )
+
+        addSetting( 'refresh_padding', 0.5, {
+            name = "Survival: Buff/Debuff Refresh Window",
+            type = "range",
+            desc = "The default action list has some criteria for refreshing Mok'Nathal Tactics or Serpent Sting when they have less than 1 global cooldown remaining on their durations.  If adhering strictly to this criteria, it is easy " ..
+                "for the buff/debuff to fall off.  Adding a small time buffer (the default is |cFFFFD1000.5 seconds|r) will tell the addon to recommend refreshing these a little bit sooner, to prevent losing uptime.",
+            min = 0,
+            max = 1.5,
+            step = 0.01,
+            width = "full"
+        } )
+
+        addMetaFunction( 'state', 'refresh_window', function()
+            return gcd + settings.refresh_padding
+        end )
+
+        addMetaFunction( 'state', 'active_mongoose_fury', function ()
+            return buff.mongoose_fury.remains > latency * 2
+        end )
+
+
+        local function genericHasteMod( x )
+            return x * haste
         end
-      end )
-    addAura( 'bestial_wrath', 19574, 'duration', 10 )
-    addAura( 'binding_shot', 109248, 'duration', 5 )
-    addAura( 'black_arrow', 3674, 'duration', 20 )
-    addAura( 'black_decay', 188400, 'duration', 15 )
-    addAura( 'bombardment', 82921, 'duration', 5 )
-    addAura( 'camouflage', 51753)
-    addAura( 'careful_aim', 34483,
-      'feign', function ()
-        buff.careful_aim.caster = 'player'
-        if target.health.pct >= 80 then
-          buff.careful_aim.count = 1
-          buff.careful_aim.expires = state.now + 3600
-          buff.careful_aim.applied = state.now
-        elseif target.health.pct < 80 and buff.rapid_fire.up then
-          buff.careful_aim.count = 1
-          buff.careful_aim.expires = buff.rapid_fire.expires
-          buff.careful_aim.applied = buff.rapid_fire.applied
-        else
-          buff.careful_aim.count = 0
-          buff.careful_aim.expires = 0
-          buff.careful_aim.applied = 0
-        end
-      end )
-    addAura( 'concussive_shot', 5116, 'duration', 6 )
-    addAura( 'deterrence', 148467, 'duration', 5 )
-    addAura( 'dire_beast', 120679, 'duration', 15 )
-    addAura( 'explosive_shot', 53301, 'duration', 4 )
-    addAura( 'explosive_trap', 82939, 'duration', 10 )
-    addAura( 'feign_death', 5384, 'duration', 300 )
-    addAura( 'focus_fire', 82692, 'duration', 20)
-    addAura( 'freezing_trap', 60192, 'duration', 60 )
-    addAura( 'frenzy', 19615, 'duration', 30, 'max_stacks', 5 )
-    --[[ 'feign', function ()
-        if pet.exists and UnitBuff('pet', class.auras.frenzy.name ) then
-          local _, _, _, count, _, duration, expires = UnitBuff( 'pet', class.auras.frenzy.name )
-
-          buff.frenzy.count = count
-          buff.frenzy.expires = expires
-          buff.frenzy.applied = expires - duration
-          buff.frenzy.caster = 'pet'
-        else
-          buff.frenzy.count = 0
-          buff.frenzy.expires = 0
-          buff.frenzy.applied = 0
-          buff.frenzy.caster = 'pet'
-        end
-      end ) ]]
-    addAura( 'frozen_ammo', 162539, 'duration', 3600 )
-    addAura( 'frozen_ammo_debuff', 162546, 'duration', 4 )
-    addAura( 'glaive_toss', 117050, 'duration', 3 )
-    addAura( 'ice_trap', 13809, 'duration', 60 )
-    addAura( 'incendiary_ammo', 162536, 'duration', 3600 )
-    addAura( 'intimidation', 19577, 'duration', 3)
-    addAura( 'lock_and_load', 168980, 'duration', 15, 'max_stacks', 2)
-    addAura( 'lone_wolf', 164273, 'duration', 3600 )
-    addAura( 'lone_wolf_ferocity_of_the_raptor', 160200, 'duration', 3600 )
-    addAura( 'lone_wolf_fortitude_of_the_bear', 160199, 'duration', 3600 )
-    addAura( 'lone_wolf_grace_of_the_cat', 160198, 'duration', 3600 )
-    addAura( 'lone_wolf_haste_of_the_hyena', 160203, 'duration', 3600 )
-    addAura( 'lone_wolf_power_of_the_primates', 160206, 'duration', 3600 )
-    addAura( 'lone_wolf_wisdom_of_the_serpent', 160205, 'duration', 3600 )
-    addAura( 'lone_wolf_versatility_of_the_ravager', 172967, 'duration', 3600 )
-    addAura( 'lone_wolf_quickness_of_the_dragonhawk', 172968, 'duration', 3600 )
-    addAura( 'masters_call', 53271, 'duration', 4 )
-    addAura( 'misdirection', 34477, 'duration', 8 )
-    addAura( 'narrow_escape', 109298, 'duration', 8 )
-    addAura( 'poisoned_ammo', 162537, 'duration', 3600)
-    addAura( 'poisoned_ammo_debuff', 162543, 'duration', 16)
-    addAura( 'posthaste', 109215, 'duration', 8 )    
-    addAura( 'pre_steady_focus', -10, 'name', 'Pre-Steady Focus', 'duration', 10,
-      'feign', function ()
-        local up = ( player.lastcast == 'cobra_shot' or player.lastcast == 'steady_shot' ) and buff.steady_focus.applied < player.casttime
-        buff.pre_steady_focus.name = "Pre-Steady Focus"
-        buff.pre_steady_focus.count = up and 1 or 0
-        buff.pre_steady_focus.expires = up and player.casttime + 3600 or 0
-        buff.pre_steady_focus.applied = up and player.casttime or 0
-        buff.pre_steady_focus.caster = 'player'
-      end )
-    addAura( 'rapid_fire', 3045, 'duration', 15 )
-    addAura( 'serpent_sting', 87935 , 'duration', 15 )
-    addAura( 'sniper_training', 168811, 'duration', 3600 )
-    addAura( 'spirit_bond', 118694, 'duration', 3600 )
-    addAura( 'stampede', 121818, 'duration', 40,
-      'feign', function()
-        buff.stampede.count = cooldown.stampede.remains > 260 and 1 or 0
-        buff.stampede.expires = cooldown.stampede.expires - 260
-        buff.stampede.applied = cooldown.stampede.expires - 300
-        buff.stampede.caster = 'player'
-      end )
-    addAura( 'steady_focus', 177667, 'duration', 10 )
-    addAura( 'thrill_of_the_hunt', 34720, 'duration', 15 , 'max_stacks', 3 )
-    addAura( 'wyvern_sting', 19386, 'duration', 30 )
-    addAura( 't17_4pc_survival', 165545, 'duration', 3 )
-
-    -- Perks
-    addPerk( 'improved_focus_fire', 157705 )
-    addPerk( 'improved_beast_cleave', 157714 )
-    addPerk( 'enhanced_basic_attacks', 157715 )
-    addPerk( 'enhanced_camouflage', 157718 )
-    addPerk( 'enhanced_aimed_shot', 157724 )
-    addPerk( 'improved_focus', 157726 )
-    addPerk( 'enhanced_kill_shot', 157707 )
-    addPerk( 'empowered_explosive_shot', 157748 )
-    addPerk( 'enhanced_traps', 157751 )
-    addPerk( 'enhanced_entrapment', 157752 )
-
-    -- Gear Sets
-    addGearSet( 'tier17', 115545, 115546, 115547, 115548, 115549 )
-    addGearSet( 'tier18', 124284, 124256, 124262, 124268, 124273 )
-    addGearSet( 't18_class_trinket', 124515 )
-
-    -- Pick an instant cast ability for checking the GCD.
-    -- setGCD( 'arcane_shot' )
-
-    class.auras.potion = class.auras.draenic_agility_potion
-    setPotion( 'draenic_agility' )
-
-    state.frozen = 'frozen'
-    state.incendiary = 'incendiary'
-    state.poisoned = 'poisoned'
-
-    addCastExclusion( 75 ) -- ignore autoshots in SPELL_CAST_SUCCEEDED.
-
-    addHook( 'runHandler', function( ability )
-      if ability ~= 'steady_shot' and ability ~= 'cobra_shot' then
-        state.removeBuff( 'pre_steady_focus' )
-      end
-    end )
-    
-    addHook( 'hasRequiredResources', function( spend )
-      return spend + state.settings.focus_padding
-    end )
-    
-    addHook( 'timeToReady_spend', function( spend )
-      return spend + state.settings.focus_padding
-    end )
-    
-    ns.addSetting( 'time_padding', 0, {
-      name = "Time Padding",
-      type = "range",
-      desc = "...",
-      min = 0,
-      max = 0.50,
-      step = 0.01,
-    } )
-    
-    ns.addSetting( 'focus_padding', 0, {
-      name = "Focus Padding",
-      type = "range",
-      desc = "...",
-      min = 0,
-      max = 10,
-      step = 0.1
-    } )
-    
-    addHook( 'advance', function( time )
-      return time + Hekili.DB.profile['Class Option: time_padding']
-    end )
-    
-    addAbility( 'a_murder_of_crows',
-      {
-        id = 131894,
-        spend = 30,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 60
-      })
-
-    addHandler( 'a_murder_of_crows', function ()
-      applyDebuff('target', 'a_murder_of_crows', 15 )
-    end)
-
-    addAbility( 'aimed_shot',
-      {
-        id = 19434,
-        known = function() return spec.marksmanship end,
-        spend = 50,
-        cast = 2.5,
-        gcdType = 'spell',
-        cooldown = 0
-      })
-
-    modifyAbility( 'aimed_shot', 'spend', function ( x )
-      if buff.thrill_of_the_hunt.up then
-        return x - 20
-      end
-      return x
-    end)
-
-    modifyAbility( 'aimed_shot', 'cast', function ( x )
-      if spec.marksmanship and set_bonus.tier18_4pc then return 0 end
-      return x * haste
-    end)
-
-    addHandler( 'aimed_shot' , function()
-      end)
-
-    addAbility( 'arcane_shot',
-      {
-        id = 3044,
-        spend = 30,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 0
-      })
-
-    modifyAbility( 'arcane_shot', 'cost', function ( x )
-      if buff.thrill_of_the_hunt.up then
-        return x - 20
-      end
-      return x
-    end)
-
-    addHandler( 'arcane_shot', function()
-      if spec.survival then
-        applyDebuff( 'target', 'serpent_sting', 15 )
-      end
-      if talent.thrill_of_the_hunt.enabled then
-        removeStack( 'thrill_of_the_hunt' )
-      end
-      if spec.beast_mastery and set_bonus.tier18_2pc == 1 and buff.focus_fire.up then
-        buff.focus_fire.expires = buff.focus_fire.expires + 1
-      end
-    end)
-
-    addAbility( 'aspect_of_the_cheetah',
-      {
-        id = 5118,
-        spend = 0,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 0,
-        passive = true
-      } )
-
-    addHandler( 'aspect_of_the_cheetah', function ()
-      applyBuff( 'aspect_of_the_cheetah', 3600 )
-    end)
-
-    addAbility( 'auto_shot',
-      {
-        id = 145759,
-        spend = 0,
-        cast = 0,
-        gcdType = 'off',
-        cooldown = 3
-      } )
-
-
-    addAbility( 'barrage',
-      {
-        id = 120360,
-        spend = 60,
-        cast = 3,
-        gcdType = 'spell',
-        cooldown = 20,
-        known = function () return talent.barrage.enabled end,
-      })
-
-    modifyAbility( 'barrage', 'cast', function ( x )
-      return x * haste
-    end)
-
-    addHandler( 'barrage', function ()
-      end)
-
-    addAbility( 'bestial_wrath',
-      {
-        id = 19574,
-        spend = 0,
-        cast = 0,
-        gcdType = 'off',
-        cooldown = 60,
-        toggle = 'cooldowns'
-      })
-
-    addHandler( 'bestial_wrath', function ()
-      applyBuff( 'bestial_wrath', 10)
-    end)
-
-    addAbility( 'black_arrow',
-      {
-        id = 3674,
-        spend = 35,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 24
-      })
-
-    addHandler( 'black_arrow', function ()
-      applyDebuff('target', 'black_arrow', 20)
-      if set_bonus.tier17_2pc and spec.survival then
-        applyBuff( 'lock_and_load', 15, 2 )
-        setCooldown( 'explosive_shot', 0 )
-      end
-      if set_bonus.tier18_2pc and spec.survival then
-        applyDebuff( 'target', 'black_decay', 15 )
-      end
-    end)
-
-    addAbility( 'chimaera_shot',
-      {
-        id = 53209,
-        spend = 35,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 9
-      })
-
-    addHandler( 'chimaera_shot', function ()
-      end)
-
-    addAbility( 'cobra_shot',
-      {
-        id = 77767,
-        known = function () return level >= 81 and (spec.survival or spec.beast_mastery) end,
-        spend = 0,
-        cast = 2,
-        gcdType = 'spell',
-        cooldown = 0
-      })
-
-    modifyAbility( 'cobra_shot', 'cast', function ( x )
-      return x * haste
-    end)
-
-    addHandler( 'cobra_shot', function ()
-      if talent.steady_focus.enabled and buff.pre_steady_focus.up then
-        applyBuff( 'steady_focus', 10 )
-        removeBuff( 'pre_steady_focus' )
-      elseif talent.steady_focus.enabled and buff.pre_steady_focus.down then
-        applyBuff( 'pre_steady_focus', 3600 )
-      end
-      gain( 14, 'focus' )
-    end)
-
-    addAbility( 'counter_shot',
-      {
-        id = 147362,
-        spend = 0,
-        cast = 0,
-        gcdType = 'off',
-        cooldown = 24,
-        toggle = 'interrupts',
-        usable = function () return target.casting end
-      })
-
-    addHandler( 'counter_shot', function ()
-      interrupt()
-    end)
-
-    addAbility( 'dire_beast',
-      {
-        id = 120679,
-        spend = 0,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 30,
-        toggle = 'cooldowns'
-      })
-
-    addHandler( 'dire_beast', function ()
-      end)
-      
-      
-    addAbility( 'exotic_munitions',
-      {
-        id = 162534,
-        spend = 0,
-        cast = 3,
-        gcdType = 'spell',
-        cooldown = 0,
-        known = function () return talent.exotic_munitions.enabled end,
-        usable = function () return talent.exotic_munitions.enabled and args.ammo_type and not buff[ args.ammo_type .. '_ammo' ].up end
-      } )
-    
-    addHandler( 'exotic_munitions', function ()
-      if not args.ammo_type then return
-      elseif args.ammo_type == 'frozen' then
-        runHandler( 'frozen_ammo' )
-      elseif args.ammo_type == 'incendiary' then
-        runHandler( 'incendiary_ammo' )
-      elseif args.ammo_type == 'poisoned' then
-        runHandler( 'poisoned_ammo' )
-      end
-    end )
-      
-
-    addAbility( 'explosive_shot',
-      {
-        id = 53301,
-        spend = 15,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 6
-      })
-
-    modifyAbility( 'explosive_shot', 'spend', function ( x )
-      if buff.lock_and_load.up then return 0 end
-      return x
-    end)
-
-    modifyAbility( 'explosive_shot', 'cooldown', function ( x )
-      if buff.lock_and_load.up then return 0 end
-      return x
-    end)
-
-    addHandler( 'explosive_shot', function()
-      applyDebuff( 'target', 'explosive_shot', 4 )
-      removeStack( 'lock_and_load' )
-      if set_bonus.t17_4pc and spec.survival then
-        applyBuff( 't17_4pc_survival', 3 )
-      end
-    end)
-
-    addAbility( 'explosive_trap',
-      {
-        id = 13813,
-        spend = 0,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 30
-      })
-
-    addHandler( 'explosive_trap' ,function ()
-      end)
-
-    modifyAbility( 'explosive_trap', 'cooldown' , function ( x )
-      if spec.survival then
-        return x * 0.66
-      end
-      return x
-    end)
-
-    addAbility( 'focusing_shot',
-      {
-        id = 152245,
-        known = function() return talent.focusing_shot.enabled end,
-        spend = 0,
-        cast = 3,
-        gcdType = 'spell',
-        cooldown = 0
-      })
-
-    modifyAbility( 'focusing_shot', 'id', function ( x )
-      if spec.marksmanship then return 163485 end
-      return x
-    end)
-
-    modifyAbility( 'focusing_shot', 'cooldown', function ( x )
-      return x * haste
-    end)
-
-    addHandler( 'focusing_shot', function()
-      if talent.steady_focus.enabled then
-        applyBuff( 'steady_focus', 10 )
-      end
-      gain( 50, 'focus' )
-    end)
-
-    addAbility( 'focus_fire',
-      {
-        id = 82692,
-        spend = 0,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 0,
-        usable = function()
-          if args.five_stacks ~= 0 and buff.frenzy.stacks < 5 then return false end
-          return buff.frenzy.up
-        end
-      })
-
-    addHandler( 'focus_fire', function()
-      applyBuff( 'focus_fire', 20, buff.frenzy.stacks )
-      removeBuff( 'frenzy' )
-    end)    
-    
-    addAbility( 'frozen_ammo', 
-      {
-        id = 162539,
-        spend = 0,
-        cast = 3,
-        gcdType = 'spell',
-        cooldown = 0,
-        texture = 'Interface\\ICONS\\spell_hunter_exoticmunitions_frozen',
-        usable = function () return talent.exotic_munitions.enabled and not buff.frozen_ammo.up end
-      } )
-    
-    addHandler( 'frozen_ammo', function ()
-      removeBuff( 'incendiary_ammo' )
-      removeBuff( 'poisoned_ammo' )
-      applyBuff( 'frozen_ammo', 3600 )
-    end )
-
-    addAbility( 'glaive_toss',
-      {
-        id = 117050,
-        known = function () return talent.glaive_toss.enabled end,
-        spend = 15,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 15
-      })
-
-    addHandler( 'glaive_toss', function ()
-      end)
-
-    addAbility( 'incendiary_ammo', 
-      {
-        id = 162539,
-        spend = 0,
-        cast = 3,
-        gcdType = 'spell',
-        cooldown = 0,
-        texture = 'Interface\\ICONS\\spell_hunter_exoticmunitions_incendiary',
-        usable = function () return talent.exotic_munitions.enabled and not buff.incendiary_ammo.up end
-      } )
-    
-    addHandler( 'incendiary_ammo', function ()
-      removeBuff( 'poisoned_ammo' )
-      removeBuff( 'frozen_ammo' )
-      applyBuff( 'incendiary_ammo', 3600 )
-    end )
-      
-    addAbility( 'kill_command',
-      {
-        id = 34026,
-        spend = 40,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 6,
-        usable = function () return pet.exists end
-      })
-
-    addHandler( 'kill_command', function ()
-      end)
-
-    addAbility( 'kill_shot',
-      {
-        id = 53351,
-        spend = 0,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 10,
-        known = 53351,
-        usable = function() if perk.enhanced_kill_shot.enabled then return IsUsableSpell( 157708 ) end
-          return IsUsableSpell( 53351 )
-        end,
-      })
-      
-    class.abilities[ 157708 ] = class.abilities[ 53351 ]
-    
-    modifyAbility( 'kill_shot', 'id', function( x )
-      if perk.enhanced_kill_shot.enabled then return 157708 end
-      return x
-    end )
-
-    addHandler( 'kill_shot', function ()
-      end)
-
-    addAbility( 'multishot',
-      {
-        id = 2643,
-        spend = 40,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 0
-      })
-
-    modifyAbility( 'multishot', 'spend', function ( x )
-      if buff.thrill_of_the_hunt.up then
-        x = x - 20
-      end
-      if buff.bombardment.up then
-        x = x - 25
-      end
-      return max( 0, x )
-    end)
-
-    addHandler( 'multishot', function ()
-      if spec.beast_mastery then
-        applyBuff( 'beast_cleave', 4 )
-      elseif spec.survival then
-        applyDebuff( 'target', 'serpent_sting', 15 )
-      end
-      if talent.thrill_of_the_hunt.enabled then
-        removeStack( 'thrill_of_the_hunt' )
-      end
-      if spec.beast_mastery and set_bonus.tier18_2pc == 1 and buff.focus_fire.up then
-        buff.focus_fire.expires = buff.focus_fire.expires + 1
-      end
-    end)
-
-    addAbility( 'poisoned_ammo', 
-      {
-        id = 162539,
-        spend = 0,
-        cast = 3,
-        gcdType = 'spell',
-        cooldown = 0,
-        texture = 'Interface\\ICONS\\spell_hunter_exoticmunitions_poisoned',
-        usable = function () return talent.exotic_munitions.enabled and not buff.poisoned_ammo.up end
-      } )
-    
-    addHandler( 'poisoned_ammo', function ()
-      removeBuff( 'incendiary_ammo' )
-      removeBuff( 'frozen_ammo' )
-      applyBuff( 'poisoned_ammo', 3600 )
-    end )
-    
-    addAbility( 'powershot',
-      {
-        id = 109259,
-        spend = 15,
-        cast = 2.25,
-        gcdType = 'spell',
-        cooldown = 45,
-        known = function () return talent.powershot.enabled end
-      })
-
-    addHandler( 'powershot', function ()
-      end)
-
-    addAbility( 'rapid_fire',
-      {
-        id = 3045,
-        spend = 0,
-        cast = 0,
-        gcdType = 'off',
-        cooldown = 120,
-        toggle = 'cooldowns'
-      })
-
-    addHandler( 'rapid_fire', function ()
-      applyBuff( 'rapid_fire', 15 )
-    end)
-
-    addAbility( 'stampede',
-      {
-        id = 121818,
-        spend = 0,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 300,
-        toggle = 'cooldowns'
-      })
-
-    addHandler( 'stampede', function ()
-      end)
-
-    addAbility( 'steady_shot',
-      {
-        id = 56641,
-        known = function () return not (level >= 81 and (spec.survival or spec.beast_mastery)) end,
-        spend = 0,
-        cast = 2,
-        gcdType = 'spell',
-        cooldown = 0
-      })
-
-    modifyAbility( 'steady_shot', 'cast', function ( x )
-      return x * haste
-    end)
-
-    addHandler( 'steady_shot', function ()
-      if talent.steady_focus.enabled and buff.pre_steady_focus.up then
-        applyBuff( 'steady_focus', 10 )
-        removeBuff( 'pre_steady_focus' )
-      elseif talent.steady_focus.enabled and buff.pre_steady_focus.down then
-        applyBuff( 'pre_steady_focus', 3600 )
-      end
-      gain( 14, 'focus' )
-    end)
-    
-    addAbility( 'summon_pet',
-      {
-        id = 883,
-        spend = 0,
-        cast = 0,
-        gcdType = 'spell',
-        cooldown = 0,
-        passive = true,
-        texture = 'INTERFACE\\ICONS\\Ability_Hunter_BeastCall',
-        usable = function () return not talent.lone_wolf.enabled and not pet.exists end
-      } )
-    
-    addHandler( 'summon_pet', function ()
-      summonPet( 'cat', 3600 )
-    end )
-
-  end
-
-    storeDefault( 'MM: Careful Aim', 'actionLists', 20160203.1, [[^1^T^SEnabled^B^SName^SMM:~`Careful~`Aim^SSpecialization^N254^SRelease^N20150706.1^SScript^S^SActions^T^N1^T^SEnabled^B^SScript^Smy_enemies>2^SAbility^Sglaive_toss^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SGlaive~`Toss^t^N2^T^SEnabled^B^SScript^Smy_enemies>1&cast_regen<focus.deficit^SAbility^Spowershot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SPowershot^t^N3^T^SEnabled^B^SScript^Smy_enemies>1^SAbility^Sbarrage^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SBarrage^t^N4^T^SEnabled^B^SName^SAimed~`Shot^SAbility^Saimed_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N5^T^SEnabled^B^SScript^S50+cast_regen<focus.deficit^SAbility^Sfocusing_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SFocusing~`Shot^t^N6^T^SEnabled^B^SName^SSteady~`Shot^SAbility^Ssteady_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^t^SDefault^B^t^^]] )
-
-    storeDefault( 'MM: Default', 'actionLists', 20160203.1, [[^1^T^SEnabled^B^SName^SMM:~`Default^SSpecialization^N254^SRelease^N20150706.1^SScript^S^SActions^T^N1^T^SEnabled^B^SName^SAuto~`Shot^SAbility^Sauto_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N2^T^SEnabled^B^SScript^Stoggle.cooldowns&(focus.deficit>=30)^SAbility^Sarcane_torrent^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SArcane~`Torrent^t^N3^T^SEnabled^B^SScript^Stoggle.cooldowns^SAbility^Sblood_fury^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SBlood~`Fury^t^N4^T^SEnabled^B^SScript^Stoggle.cooldowns^SAbility^Sberserking^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SBerserking^t^N5^T^SEnabled^B^SScript^Stoggle.cooldowns&(((buff.rapid_fire.up|buff.bloodlust.up)&(cooldown.stampede.remains<1))|target.time_to_die<=25)^SArgs^Sname=draenic_agility^SAbility^Spotion^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SPotion^t^N6^T^SEnabled^B^SName^SChimaera~`Shot^SAbility^Schimaera_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N7^T^SEnabled^B^SName^SKill~`Shot^SAbility^Skill_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N8^T^SEnabled^B^SScript^Stoggle.cooldowns^SAbility^Srapid_fire^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SRapid~`Fire^t^N9^T^SEnabled^B^SScript^Stoggle.cooldowns&(buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=25)^SAbility^Sstampede^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SStampede^t^N10^T^SEnabled^B^SScript^Sbuff.careful_aim.up^SArgs^Sname="MM:~`Careful~`Aim"^SAbility^Scall_action_list^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SCall~`Action~`List^t^N11^T^SEnabled^B^SScript^Smy_enemies>1^SAbility^Sexplosive_trap^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SExplosive~`Trap^t^N12^T^SEnabled^B^SName^SA~`Murder~`of~`Crows^SAbility^Sa_murder_of_crows^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N13^T^SEnabled^B^SScript^Stoggle.cooldowns&(cast_regen+action.aimed_shot.cast_regen<focus.deficit)^SAbility^Sdire_beast^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SDire~`Beast^t^N14^T^SEnabled^B^SName^SGlaive~`Toss^SAbility^Sglaive_toss^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N15^T^SEnabled^B^SScript^Scast_regen<focus.deficit^SAbility^Spowershot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SPowershot^t^N16^T^SEnabled^B^SName^SBarrage^SAbility^Sbarrage^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N17^T^SEnabled^B^SScript^Sfocus.deficit*cast_time%(14+cast_regen)>cooldown.rapid_fire.remains^SAbility^Ssteady_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SSteady~`Shot^t^N18^T^SEnabled^B^SScript^Sfocus.deficit*cast_time%(50+cast_regen)>cooldown.rapid_fire.remains&focus.current<100^SAbility^Sfocusing_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SFocusing~`Shot^t^N19^T^SEnabled^B^SScript^Sbuff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit^SAbility^Ssteady_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SSteady~`Shot~`(1)^t^N20^T^SEnabled^B^SScript^Smy_enemies>6^SAbility^Smultishot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SMulti-Shot^t^N21^T^SEnabled^B^SScript^Stalent.focusing_shot.enabled^SAbility^Saimed_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SAimed~`Shot^t^N22^T^SEnabled^B^SScript^Sfocus.current+cast_regen>=85^SAbility^Saimed_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SAimed~`Shot~`(1)^t^N23^T^SEnabled^B^SScript^Sbuff.thrill_of_the_hunt.up&focus.current+cast_regen>=65^SAbility^Saimed_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SAimed~`Shot~`(2)^t^N24^T^SEnabled^B^SScript^S50+cast_regen-10<focus.deficit^SAbility^Sfocusing_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SFocusing~`Shot~`(1)^t^N25^T^SEnabled^B^SName^SSteady~`Shot~`(2)^SAbility^Ssteady_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^t^SDefault^B^t^^]] )
-
-    storeDefault( 'MM: Precombat', 'actionLists', 20160203.1, [[^1^T^SEnabled^B^SName^SMM:~`Precombat^SSpecialization^N254^SRelease^N20150706.1^SScript^S^SActions^T^N1^T^SEnabled^B^SName^SCall~`Pet~`1^SAbility^Ssummon_pet^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N2^T^SEnabled^B^SScript^Smy_enemies<3^SArgs^Sammo_type=poisoned^SAbility^Sexotic_munitions^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SExotic~`Munitions^t^N3^T^SEnabled^B^SScript^Smy_enemies>=3^SArgs^Sammo_type=incendiary^SAbility^Sexotic_munitions^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SExotic~`Munitions~`(1)^t^N4^T^SEnabled^B^SScript^Stoggle.cooldowns^SArgs^Sname=draenic_agility^SAbility^Spotion^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SPotion^t^N5^T^SEnabled^B^SName^SGlaive~`Toss^SAbility^Sglaive_toss^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N6^T^SEnabled^B^SName^SFocusing~`Shot^SAbility^Sfocusing_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^t^SDefault^B^t^^]] )
-
-    storeDefault( 'BM: Default', 'actionLists', 20160203.1, [[^1^T^SEnabled^B^SSpecialization^N253^SName^SBM:~`Default^SRelease^N20150706.1^SScript^S^SActions^T^N1^T^SEnabled^B^SName^SAuto~`Shot^SAbility^Sauto_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N2^T^SEnabled^B^SScript^Stoggle.cooldowns&(focus.deficit>=30)^SAbility^Sarcane_torrent^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SArcane~`Torrent^t^N3^T^SEnabled^B^SScript^Stoggle.cooldowns^SAbility^Sblood_fury^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SBlood~`Fury^t^N4^T^SEnabled^B^SScript^Stoggle.cooldowns^SAbility^Sberserking^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SBerserking^t^N5^T^SEnabled^B^SScript^Stoggle.cooldowns&(!talent.stampede.enabled&((buff.bestial_wrath.up&(legendary_ring.up|!legendary_ring.has_cooldown)&target.health.pct<=20)|target.time_to_die<=20))^SArgs^Sname=draenic_agility^SAbility^Spotion^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SPotion^t^N6^T^SEnabled^B^SScript^Stoggle.cooldowns&(talent.stampede.enabled&((buff.stampede.up&(legendary_ring.up|!legendary_ring.has_cooldown)&(buff.bloodlust.up|buff.focus_fire.up))|target.time_to_die<=40))^SArgs^Sname=draenic_agility^SAbility^Spotion^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SPotion~`(1)^t^N7^T^SEnabled^B^SScript^Stoggle.cooldowns&(((buff.bloodlust.up|buff.focus_fire.up)&(legendary_ring.up|!legendary_ring.has_cooldown))|target.time_to_die<=25)^SAbility^Sstampede^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SStampede^t^N8^T^SEnabled^B^SScript^Stoggle.cooldowns^SAbility^Sdire_beast^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SDire~`Beast^t^N9^T^SEnabled^B^SScript^Sbuff.focus_fire.down&((cooldown.bestial_wrath.remains<1&buff.bestial_wrath.down)|(talent.stampede.enabled&buff.stampede.up)|buff.frenzy.remains<1)^SAbility^Sfocus_fire^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SFocus~`Fire^t^N10^T^SEnabled^B^SScript^Stoggle.cooldowns&(focus.current>30&!buff.bestial_wrath.up)^SAbility^Sbestial_wrath^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SBestial~`Wrath^t^N11^T^SEnabled^B^SScript^Smy_enemies>1&buff.beast_cleave.remains<0.5^SAbility^Smultishot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SMulti-Shot^t^N12^T^SEnabled^B^SName^SFocus~`Fire~`(1)^SArgs^Smin_frenzy=5^SAbility^Sfocus_fire^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N13^T^SEnabled^B^SScript^Smy_enemies>1^SAbility^Sbarrage^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SBarrage^t^N14^T^SEnabled^B^SScript^Smy_enemies>5^SAbility^Sexplosive_trap^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SExplosive~`Trap^t^N15^T^SEnabled^B^SScript^Smy_enemies>5^SAbility^Smultishot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SMulti-Shot~`(1)^t^N16^T^SEnabled^B^SName^SKill~`Command^SAbility^Skill_command^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N17^T^SEnabled^B^SName^SA~`Murder~`of~`Crows^SAbility^Sa_murder_of_crows^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N18^T^SEnabled^B^SScript^Sfocus.time_to_max>gcd^SAbility^Skill_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SKill~`Shot^t^N19^T^SEnabled^B^SScript^Sfocus.current<50^SAbility^Sfocusing_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SFocusing~`Shot^t^N20^T^SEnabled^B^SScript^Sbuff.pre_steady_focus.up&buff.steady_focus.remains<7&(14+cast_regen)<focus.deficit^SAbility^Scobra_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SCobra~`Shot^t^N21^T^SEnabled^B^SScript^Smy_enemies>1^SAbility^Sexplosive_trap^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SExplosive~`Trap~`(1)^t^N22^T^SEnabled^B^SScript^Stalent.steady_focus.enabled&buff.steady_focus.remains<4&focus.current<50^SAbility^Scobra_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SCobra~`Shot~`(1)^t^N23^T^SEnabled^B^SName^SGlaive~`Toss^SAbility^Sglaive_toss^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N24^T^SEnabled^B^SName^SBarrage~`(1)^SAbility^Sbarrage^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N25^T^SEnabled^B^SScript^Sfocus.time_to_max>cast_time^SAbility^Spowershot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SPowershot^t^N26^T^SEnabled^B^SScript^Smy_enemies>5^SAbility^Scobra_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SCobra~`Shot~`(2)^t^N27^T^SEnabled^B^SScript^S(buff.thrill_of_the_hunt.up&focus.current>35)|buff.bestial_wrath.up^SAbility^Sarcane_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SArcane~`Shot^t^N28^T^SEnabled^B^SScript^Sfocus.current>=75^SAbility^Sarcane_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SArcane~`Shot~`(1)^t^N29^T^SEnabled^B^SName^SCobra~`Shot~`(3)^SAbility^Scobra_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^t^SDefault^B^t^^]] )
-
-    storeDefault( 'BM: Precombat', 'actionLists', 20160203.1, [[^1^T^SEnabled^B^SSpecialization^N253^SName^SBM:~`Precombat^SRelease^N20150706.1^SScript^S^SActions^T^N1^T^SEnabled^B^SName^SCall~`Pet~`1^SAbility^Ssummon_pet^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N2^T^SEnabled^B^SScript^Smy_enemies<3^SArgs^Sammo_type=poisoned^SAbility^Sexotic_munitions^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SExotic~`Munitions^t^N3^T^SEnabled^B^SScript^Smy_enemies>=3^SArgs^Sammo_type=incendiary^SAbility^Sexotic_munitions^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SExotic~`Munitions~`(1)^t^N4^T^SEnabled^B^SScript^Stoggle.cooldowns^SArgs^Sname=draenic_agility^SAbility^Spotion^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SPotion^t^N5^T^SEnabled^B^SName^SGlaive~`Toss^SAbility^Sglaive_toss^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N6^T^SEnabled^B^SName^SFocusing~`Shot^SAbility^Sfocusing_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^t^SDefault^B^t^^]] )
-
-    storeDefault( 'Sv: AOE', 'actionLists', 20160203.1, [[^1^T^SEnabled^B^SDefault^B^SName^SSv:~`AOE^SRelease^N20150706.1^SScript^S^SActions^T^N1^T^SEnabled^B^SScript^Stoggle.cooldowns&(buff.potion.up|(cooldown.potion.remains>0&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up|buff.archmages_incandescence_agi.up)))^SAbility^Sstampede^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SStampede^t^N2^T^SEnabled^B^SScript^Sbuff.lock_and_load.up&(!talent.barrage.enabled|cooldown.barrage.remains>0)^SAbility^Sexplosive_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SExplosive~`Shot^t^N3^T^SEnabled^B^SName^SBarrage^SAbility^Sbarrage^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N4^T^SEnabled^B^SScript^Sremains<gcd*1.5^SArgs^S^SAbility^Sblack_arrow^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SBlack~`Arrow^t^N5^T^SEnabled^B^SScript^Sremains<gcd*1.5^SArgs^Scycle_targets=1^SAbility^Sblack_arrow^SIndicator^Scycle^SRelease^F6923701033084388^f-35^SName^SBlack~`Arrow~`(1)^t^N6^T^SEnabled^B^SScript^Smy_enemies<5^SAbility^Sexplosive_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SExplosive~`Shot~`(1)^t^N7^T^SEnabled^B^SScript^Sdot.explosive_trap.remains<=5^SAbility^Sexplosive_trap^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SExplosive~`Trap^t^N8^T^SEnabled^B^SName^SA~`Murder~`of~`Crows^SAbility^Sa_murder_of_crows^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N9^T^SEnabled^B^SScript^Stoggle.cooldowns^SAbility^Sdire_beast^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SDire~`Beast^t^N10^T^SEnabled^B^SScript^Sbuff.thrill_of_the_hunt.up&focus.current>50&cast_regen<=focus.deficit|dot.serpent_sting.remains<=5|target.time_to_die<4.5^SAbility^Smultishot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SMulti-Shot^t^N11^T^SEnabled^B^SName^SGlaive~`Toss^SAbility^Sglaive_toss^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N12^T^SEnabled^B^SName^SPowershot^SAbility^Spowershot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N13^T^SEnabled^B^SScript^Sbuff.pre_steady_focus.up&buff.steady_focus.remains<5&focus.current+14+cast_regen<80^SAbility^Scobra_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SCobra~`Shot^t^N14^T^SEnabled^B^SScript^Sfocus.current>=70|talent.focusing_shot.enabled^SAbility^Smultishot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SMulti-Shot~`(1)^t^N15^T^SEnabled^B^SName^SFocusing~`Shot^SAbility^Sfocusing_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N16^T^SEnabled^B^SName^SCobra~`Shot~`(1)^SAbility^Scobra_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^t^SSpecialization^N255^t^^]] )
-
-    storeDefault( 'Sv: Default', 'actionLists', 20160203.1, [[^1^T^SEnabled^B^SDefault^B^SName^SSv:~`Default^SRelease^N20150706.1^SScript^S^SActions^T^N1^T^SEnabled^B^SName^SAuto~`Shot^SAbility^Sauto_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N2^T^SEnabled^B^SScript^Stoggle.cooldowns&(focus.deficit>=30)^SAbility^Sarcane_torrent^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SArcane~`Torrent^t^N3^T^SEnabled^B^SScript^Stoggle.cooldowns^SAbility^Sblood_fury^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SBlood~`Fury^t^N4^T^SEnabled^B^SScript^Stoggle.cooldowns^SAbility^Sberserking^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SBerserking^t^N5^T^SEnabled^B^SScript^Stoggle.cooldowns&((((cooldown.stampede.remains<1)&(cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|buff.archmages_greater_incandescence_agi.up))|target.time_to_die<=25)^SArgs^Sname=draenic_agility^SAbility^Spotion^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SPotion^t^N6^T^SEnabled^B^SScript^Smy_enemies>1^SArgs^Sname="Sv:~`AOE"^SAbility^Scall_action_list^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SCall~`Action~`List^t^N7^T^SEnabled^B^SName^SA~`Murder~`of~`Crows^SAbility^Sa_murder_of_crows^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N8^T^SEnabled^B^SScript^Stoggle.cooldowns&(buff.potion.up|(cooldown.potion.remains>0&(buff.archmages_greater_incandescence_agi.up|trinket.stat.any.up))|target.time_to_die<=45)^SAbility^Sstampede^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SStampede^t^N9^T^SEnabled^B^SScript^Sremains<gcd*1.5^SArgs^S^SAbility^Sblack_arrow^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SBlack~`Arrow^t^N10^T^SEnabled^B^SScript^Sremains<gcd*1.5^SArgs^Scycle_targets=1^SAbility^Sblack_arrow^SIndicator^Scycle^SRelease^F6923701033084388^f-35^SName^SBlack~`Arrow~`(1)^t^N11^T^SEnabled^B^SScript^S(trinket.proc.any.up&trinket.proc.any.remains<4)|dot.serpent_sting.remains<=3^SAbility^Sarcane_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SArcane~`Shot^t^N12^T^SEnabled^B^SName^SExplosive~`Shot^SAbility^Sexplosive_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N13^T^SEnabled^B^SScript^Sbuff.pre_steady_focus.up^SAbility^Scobra_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SCobra~`Shot^t^N14^T^SEnabled^B^SScript^Stoggle.cooldowns^SAbility^Sdire_beast^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SDire~`Beast^t^N15^T^SEnabled^B^SScript^S(buff.thrill_of_the_hunt.up&focus.current>35)|target.time_to_die<4.5^SAbility^Sarcane_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SArcane~`Shot~`(1)^t^N16^T^SEnabled^B^SName^SGlaive~`Toss^SAbility^Sglaive_toss^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N17^T^SEnabled^B^SName^SPowershot^SAbility^Spowershot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N18^T^SEnabled^B^SName^SBarrage^SAbility^Sbarrage^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N19^T^SEnabled^B^SScript^S!trinket.proc.any.up&!trinket.stacking_proc.any.up^SAbility^Sexplosive_trap^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SExplosive~`Trap^t^N20^T^SEnabled^B^SScript^Stalent.steady_focus.enabled&!talent.focusing_shot.enabled&focus.deficit<action.cobra_shot.cast_regen*2+28^SAbility^Sarcane_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SArcane~`Shot~`(2)^t^N21^T^SEnabled^B^SScript^Stalent.steady_focus.enabled&buff.steady_focus.remains<5^SAbility^Scobra_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SCobra~`Shot~`(1)^t^N22^T^SEnabled^B^SScript^Stalent.steady_focus.enabled&buff.steady_focus.remains<=cast_time&focus.deficit>cast_regen^SAbility^Sfocusing_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SFocusing~`Shot^t^N23^T^SEnabled^B^SScript^Sfocus.current>=70|talent.focusing_shot.enabled|(talent.steady_focus.enabled&focus.current>=50)^SAbility^Sarcane_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SArcane~`Shot~`(3)^t^N24^T^SEnabled^B^SName^SFocusing~`Shot~`(1)^SAbility^Sfocusing_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N25^T^SEnabled^B^SName^SCobra~`Shot~`(2)^SAbility^Scobra_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^t^SSpecialization^N255^t^^]] )
-
-    storeDefault( 'Sv: Precombat', 'actionLists', 20160203.1, [[^1^T^SEnabled^B^SDefault^B^SName^SSv:~`Precombat^SRelease^N20150706.1^SScript^S^SActions^T^N1^T^SEnabled^B^SName^SCall~`Pet~`1^SAbility^Ssummon_pet^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N2^T^SEnabled^B^SScript^Smy_enemies<3^SArgs^Sammo_type=poisoned^SAbility^Sexotic_munitions^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SExotic~`Munitions^t^N3^T^SEnabled^B^SScript^Smy_enemies>=3^SArgs^Sammo_type=incendiary^SAbility^Sexotic_munitions^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SExotic~`Munitions~`(1)^t^N4^T^SEnabled^B^SScript^Stoggle.cooldowns^SArgs^Sname=draenic_agility^SAbility^Spotion^SIndicator^Snone^SRelease^F6923701033084388^f-35^SName^SPotion^t^N5^T^SEnabled^B^SName^SGlaive~`Toss^SAbility^Sglaive_toss^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N6^T^SEnabled^B^SName^SExplosive~`Shot^SAbility^Sexplosive_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^N7^T^SEnabled^B^SName^SFocusing~`Shot^SAbility^Sfocusing_shot^SIndicator^Snone^SRelease^F6923701033084388^f-35^t^t^SSpecialization^N255^t^^]] )
-
-
-    storeDefault( 'Marksmanship: Primary', 'displays', 20160203.1, [[^1^T^SQueued~`Font~`Size^N12^SPvP~`-~`Target^b^SPrimary~`Caption~`Aura^S^Srel^SCENTER^SUse~`SpellFlash^b^SPvE~`-~`Target^b^SPvE~`-~`Default^B^SPvE~`-~`Combat^b^SMaximum~`Time^N30^SQueues^T^N1^T^SEnabled^B^SAction~`List^SMM:~`Precombat^SName^SMM:~`Precombat^SRelease^N201506.221^SScript^Stime=0^t^N2^T^SEnabled^B^SAction~`List^SMM:~`Default^SName^SMM:~`Default^SRelease^N201506.221^t^t^SPvP~`-~`Default~`Alpha^N1^SPvP~`-~`Combat^b^SPvP~`-~`Default^B^Sy^N-270^SAOE~`-~`Maximum^N0^SRelease^N20150706.1^SRange~`Checking^Sability^SAuto~`-~`Maximum^N0^SPrimary~`Icon~`Size^N40^SSingle~`-~`Minimum^N0^SPrimary~`Caption^Stargets^SAction~`Captions^B^SSpellFlash~`Color^T^Sa^N1^Sb^N1^Sg^N1^Sr^N1^t^SSpecialization^N254^SSpacing^N5^SQueue~`Direction^SRIGHT^SPrimary~`Font~`Size^N12^SQueued~`Icon~`Size^N40^SPvP~`-~`Target~`Alpha^N1^SEnabled^B^SName^SMarksmanship:~`Primary^SFont^SArial~`Narrow^SAOE~`-~`Minimum^N3^STalent~`Group^N0^SSingle~`-~`Maximum^N1^SIcons~`Shown^N4^SPvE~`-~`Combat~`Alpha^N1^SAuto~`-~`Minimum^N0^SPvE~`-~`Target~`Alpha^N1^SDefault^B^SPvP~`-~`Combat~`Alpha^N1^SCopy~`To^SMarksmanship:~`AOE^SScript^S^SPvE~`-~`Default~`Alpha^N1^Sx^N0^t^^]] )
-
-    storeDefault( 'Marksmanship: AOE', 'displays', 20160203.1, [[^1^T^SQueued~`Font~`Size^N12^SPrimary~`Font~`Size^N12^SPrimary~`Caption~`Aura^S^Srel^SCENTER^SUse~`SpellFlash^b^SSpacing^N5^SPvE~`-~`Default^B^SPvE~`-~`Combat^b^SMaximum~`Time^N30^SQueues^T^N1^T^SEnabled^B^SAction~`List^SMM:~`Precombat^SName^SMM:~`Precombat^SRelease^N201506.141^SScript^Stime=0^t^N2^T^SEnabled^B^SAction~`List^SMM:~`Default^SName^SMM:~`Default^SRelease^N201506.141^t^t^SScript^S^SPvP~`-~`Combat^b^SPvP~`-~`Default^B^Sy^N-225^SAOE~`-~`Maximum^N0^SPrimary~`Caption^Stargets^SRange~`Checking^Sability^SAuto~`-~`Maximum^N0^SPrimary~`Icon~`Size^N40^SSingle~`-~`Minimum^N3^Sx^N0^SPvE~`-~`Default~`Alpha^N1^SSpellFlash~`Color^T^Sa^N1^Sr^N1^Sg^N1^Sb^N1^t^SCopy~`To^SMarksmanship:~`AOE^SPvP~`-~`Default~`Alpha^N1^SQueue~`Direction^SRIGHT^SSpecialization^N254^SQueued~`Icon~`Size^N40^SPvP~`-~`Combat~`Alpha^N1^SEnabled^B^SDefault^B^SPvE~`-~`Target~`Alpha^N1^SAOE~`-~`Minimum^N3^SAuto~`-~`Minimum^N3^SPvE~`-~`Combat~`Alpha^N1^SIcons~`Shown^N4^SSingle~`-~`Maximum^N0^STalent~`Group^N0^SFont^SArial~`Narrow^SName^SMarksmanship:~`AOE^SPvP~`-~`Target~`Alpha^N1^SPvP~`-~`Target^b^SPvE~`-~`Target^b^SAction~`Captions^B^SRelease^N20150706.1^t^^]] )
-
-    storeDefault( 'Beast Mastery: Primary', 'displays', 20160203.1, [[^1^T^SQueued~`Font~`Size^N12^SPrimary~`Font~`Size^N12^SPrimary~`Caption~`Aura^S^Srel^SCENTER^SUse~`SpellFlash^b^SPvE~`-~`Target^b^SPvE~`-~`Default^B^SPvE~`-~`Combat^b^SMaximum~`Time^N30^SQueues^T^N1^T^SEnabled^B^SAction~`List^SBM:~`Precombat^SName^SBM:~`Precombat^SRelease^N201506.221^SScript^Stime=0^t^N2^T^SEnabled^B^SAction~`List^SBM:~`Default^SName^SBM:~`Default^SRelease^N201506.221^t^t^SPvP~`-~`Default~`Alpha^N1^SPvP~`-~`Combat^b^SPvP~`-~`Default^B^Sy^F-4749890768863230^f-44^SAOE~`-~`Maximum^N0^SPrimary~`Caption^Sdefault^SRange~`Checking^Sability^SAuto~`-~`Maximum^N0^SPrimary~`Icon~`Size^N40^SSingle~`-~`Minimum^N0^Sx^N0^SAction~`Captions^B^SSpellFlash~`Color^T^Sa^N1^Sr^N1^Sg^N1^Sb^N1^t^SSpecialization^N253^SSpacing^N5^SQueue~`Direction^SRIGHT^SPvP~`-~`Target^b^SQueued~`Icon~`Size^N40^SPvP~`-~`Target~`Alpha^N1^SEnabled^B^SDefault^B^SFont^SElvUI~`Font^SAOE~`-~`Minimum^N3^SName^SBeast~`Mastery:~`Primary^SCopy~`To^SBeast~`Mastery:~`AOE^SIcons~`Shown^N4^STalent~`Group^N0^SSingle~`-~`Maximum^N1^SPvE~`-~`Target~`Alpha^N1^SAuto~`-~`Minimum^N0^SPvE~`-~`Combat~`Alpha^N1^SPvP~`-~`Combat~`Alpha^N1^SScript^S^SPvE~`-~`Default~`Alpha^N1^SRelease^N20150706.1^t^^]] )
-
-    storeDefault( 'Beast Mastery: AOE', 'displays', 20160203.1, [[^1^T^SQueued~`Font~`Size^N12^SPrimary~`Font~`Size^N12^SPrimary~`Caption~`Aura^S^Srel^SCENTER^SUse~`SpellFlash^b^SPvE~`-~`Target^b^SPvE~`-~`Default^B^SPvE~`-~`Combat^b^SMaximum~`Time^N30^SQueues^T^N1^T^SEnabled^B^SAction~`List^SBM:~`Precombat^SName^SBM:~`Precombat^SRelease^N201505.311^SScript^Stime=0^t^N2^T^SEnabled^B^SAction~`List^SBM:~`Default^SName^SBM:~`Default^SRelease^N201505.311^t^t^SPvP~`-~`Default~`Alpha^N1^SPvP~`-~`Combat^b^SPvP~`-~`Default^B^Sy^N-225^SAOE~`-~`Maximum^N0^SRelease^N20150706.1^SRange~`Checking^Sability^SAuto~`-~`Maximum^N0^SPrimary~`Icon~`Size^N40^SSingle~`-~`Minimum^N3^SIcons~`Shown^N4^SPvE~`-~`Default~`Alpha^N1^SSpellFlash~`Color^T^Sa^N1^Sb^N1^Sg^N1^Sr^N1^t^SCopy~`To^SBeast~`Mastery:~`AOE^SScript^S^SQueue~`Direction^SRIGHT^SPvP~`-~`Combat~`Alpha^N1^SQueued~`Icon~`Size^N40^SPvE~`-~`Combat~`Alpha^N1^SEnabled^B^SDefault^B^SPvE~`-~`Target~`Alpha^N1^SAOE~`-~`Minimum^N3^SAuto~`-~`Minimum^N3^SPvP~`-~`Target^b^SSingle~`-~`Maximum^N0^STalent~`Group^N0^SPvP~`-~`Target~`Alpha^N1^SFont^SElvUI~`Font^SName^SBeast~`Mastery:~`AOE^SSpacing^N5^SSpecialization^N253^Sx^N0^SAction~`Captions^B^SPrimary~`Caption^Stargets^t^^]] )
-
-    storeDefault( 'Survival: Primary', 'displays', 20160203.1, [[^1^T^SQueued~`Font~`Size^N12^SPvP~`-~`Target^b^SPrimary~`Caption~`Aura^S^Srel^SCENTER^SUse~`SpellFlash^b^SSpacing^N5^SPvE~`-~`Default^B^SPvE~`-~`Combat^b^SMaximum~`Time^N30^SQueues^T^N1^T^SEnabled^B^SAction~`List^SSv:~`Precombat^SName^SSv:~`Precombat^SRelease^N201506.221^SScript^Stime=0^t^N2^T^SEnabled^B^SAction~`List^SSv:~`Default^SName^SSv:~`Default^SRelease^N201506.221^t^t^SPvP~`-~`Default~`Alpha^N1^SPvP~`-~`Combat^b^SPvP~`-~`Default^B^Sy^F-4749889695121410^f-44^SIcons~`Shown^N4^SRelease^N20150706.1^SRange~`Checking^Sability^SAuto~`-~`Maximum^N0^SPrimary~`Icon~`Size^N40^SSingle~`-~`Minimum^N0^SAOE~`-~`Maximum^N0^SPvE~`-~`Default~`Alpha^N1^SSpellFlash~`Color^T^Sa^N1^Sb^N1^Sg^N1^Sr^N1^t^SCopy~`To^SSurvival:~`AOE^SScript^S^SQueue~`Direction^SRIGHT^SPvP~`-~`Combat~`Alpha^N1^SQueued~`Icon~`Size^N40^SPvE~`-~`Combat~`Alpha^N1^SEnabled^B^SAuto~`-~`Minimum^N0^SPvE~`-~`Target~`Alpha^N1^SAOE~`-~`Minimum^N3^SSingle~`-~`Maximum^N1^STalent~`Group^N0^SName^SSurvival:~`Primary^SPrimary~`Font~`Size^N12^SPrimary~`Caption^Sdefault^SFont^SElvUI~`Font^SDefault^B^SPvP~`-~`Target~`Alpha^N1^SSpecialization^N255^SPvE~`-~`Target^b^SAction~`Captions^B^Sx^N0.0003662109375^t^^]] )
-
-    storeDefault( 'Survival: AOE', 'displays', 20160203.1, [[^1^T^SQueued~`Font~`Size^N12^SPvP~`-~`Target^b^SPrimary~`Caption~`Aura^S^Srel^SCENTER^SUse~`SpellFlash^b^SPvE~`-~`Target^b^SPvE~`-~`Default^B^SPvE~`-~`Combat^b^SMaximum~`Time^N30^SQueues^T^N1^T^SEnabled^B^SAction~`List^SSv:~`Precombat^SName^SSv:~`Precombat^SRelease^N201506.141^SScript^Stime=0^t^N2^T^SEnabled^B^SAction~`List^SSv:~`Default^SName^SSv:~`Default^SRelease^N201506.141^t^t^SPvP~`-~`Default~`Alpha^N1^SPvP~`-~`Combat^b^SPvP~`-~`Default^B^Sy^N-225^Sx^N0^SRelease^N20150706.1^SRange~`Checking^Sability^SAuto~`-~`Maximum^N0^SPvP~`-~`Target~`Alpha^N1^SSingle~`-~`Minimum^N3^SIcons~`Shown^N4^SAction~`Captions^B^SSpellFlash~`Color^T^Sa^N1^Sr^N1^Sg^N1^Sb^N1^t^SCopy~`To^SSurvival:~`AOE^SSpacing^N5^SQueue~`Direction^SRIGHT^SSpecialization^N255^SQueued~`Icon~`Size^N40^SPrimary~`Icon~`Size^N40^SEnabled^B^SDefault^B^SFont^SElvUI~`Font^SAOE~`-~`Minimum^N3^SPrimary~`Caption^Stargets^SPrimary~`Font~`Size^N12^SName^SSurvival:~`AOE^STalent~`Group^N0^SSingle~`-~`Maximum^N0^SPvE~`-~`Target~`Alpha^N1^SAuto~`-~`Minimum^N3^SPvE~`-~`Combat~`Alpha^N1^SPvP~`-~`Combat~`Alpha^N1^SScript^S^SPvE~`-~`Default~`Alpha^N1^SAOE~`-~`Maximum^N0^t^^]] )
 
+        setfenv( genericHasteMod, state )
+
+
+        -- Abilities.
+        addAbility( 'aspect_of_the_cheetah', {
+            id = 186257,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'off',
+            cooldown = 180,
+        } )
+
+        modifyAbility( 'aspect_of_the_cheetah', 'cooldown', function ()
+            if equipped.call_of_the_wild then return x - ( x * 0.35 ) end
+            return x
+        end )
+
+        addHandler( 'aspect_of_the_cheetah', function( x )
+            applyBuff( 'aspect_of_the_cheetah_sprint', 3 )
+            applyBuff( 'aspect_of_the_cheetah', 12 )
+        end )
+
+
+        addAbility( 'aspect_of_the_eagle', {
+            id = 186289,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'off',
+            cooldown = 120,
+            toggle = 'cooldowns'
+        } )
+
+        modifyAbility( 'aspect_of_the_eagle', 'cooldown', function( x )
+            if equipped.call_of_the_wild then return x - ( x * 0.35 ) end
+            return x
+        end )
+
+        addHandler( 'aspect_of_the_eagle', function ()
+            applyBuff( 'aspect_of_the_eagle', 10 )
+            stat.mod_crit_pct = stat.mod_crit_pct + 20
+        end )
+
+        
+        addAbility( 'aspect_of_the_turtle', {
+            id = 186265,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'off',
+            cooldown = 180,
+        } )
+
+        modifyAbility( 'aspect_of_the_turtle', 'cooldown', function( x )
+            if equipped.call_of_the_wild then return x - ( x * 0.35 ) end
+            return x
+        end )
+
+        addHandler( 'aspect_of_the_turtle', function ()
+            applyBuff( 'aspect_of_the_turtle', 8 )
+            setCooldown( 'global_cooldown', 8 )
+        end )
+
+
+        addAbility( 'butchery', {
+            id = 212436,
+            spend = 40,
+            spend_type = 'focus',
+            ready = 40,
+            cast = 0,
+            charges = 3,
+            recharge = 12,
+            cooldown = 12,
+            velocity = 20,
+            known = function () return talent.butchery.enabled end,
+        } )
+
+        modifyAbility( 'butchery', 'ready', function( x )
+            if not talent.way_of_the_moknathal.enabled or not settings.moknathal_padding then
+                return x
+            end
+
+            local ticks = floor( ( buff.moknathal_tactics.remains - refresh_window ) / focus.tick_rate )
+            return x + max( 0, 25 - floor( focus.regen * ticks * focus.tick_rate ) ), "focus"
+        end )
+
+        modifyAbility( 'butchery', 'recharge', genericHasteMod )
+        modifyAbility( 'butchery', 'cooldown', genericHasteMod )
+
+        addHandler( 'butchery', function ()
+            -- if settings.moknathal_padding and talent.way_of_the_moknathal.enabled then gain( max( 0, 25 - focus.regen * max( 0, buff.moknathal_tactics.remains - gcd ) ), 'focus', true ) end
+            removeBuff( 'butchers_bone_apron' )
+            if equipped.frizzos_fingertrap and active_dot.lacerate > 0 then
+                active_dot.lacerate = active_dot.lacerate + 1
+            end
+        end )
+
+        
+        addAbility( 'summon_pet', {
+            id = 883,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'spell',
+            cooldown = 0,
+            passive = true,
+            texture = 'Interface\\ICONS\\Ability_Hunter_BeastCall',
+            usable = function () return not pet.exists end
+        } )
+
+        addHandler( 'summon_pet', function ()
+            summonPet( 'made_up_pet' )
+        end )
+
+
+        addAbility( 'caltrops', {
+            id = 194277,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'spell',
+            cooldown = 15,
+            passive = true,
+            known = function () return talent.caltrops.enabled end,
+        } )
+
+        -- addHandler() -- Maybe for the snare?
+
+
+        addAbility( 'camouflage', {
+            id = 199483,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'off',
+            passive = true,
+            known = function () return talent.camouflage.enabled end,
+        } )
+
+        addHandler( 'camouflage', function ()
+            applyBuff( 'camouflage', 60 )
+        end )
+
+
+        addAbility( 'carve', {
+            id = 187708,
+            spend = 40,
+            spend_type = 'focus',
+            ready = 40,
+            cast = 0,
+            gcdType = 'melee',
+            cooldown = 0,
+            velocity = 60,
+            known = function () return not talent.butchery.enabled end,
+        } )
+
+        modifyAbility( 'carve', 'ready', function( x )
+            if not talent.way_of_the_moknathal.enabled or not settings.moknathal_padding then
+                return x
+            end
+
+            local ticks = floor( ( buff.moknathal_tactics.remains - refresh_window ) / focus.tick_rate )
+            return x + max( 0, 25 - floor( focus.regen * ticks * focus.tick_rate ) ), "focus"
+        end )
+
+        addHandler( 'carve', function ()
+            removeBuff( 'butchers_bone_apron' )
+
+            if talent.serpent_sting.enabled then
+                applyDebuff( 'target', 'serpent_sting', 15 )
+                active_dot.serpent_sting = active_enemies
+            end 
+
+            if equipped.frizzos_fingertrap and active_dot.lacerate > 0 then
+                active_dot.lacerate = min( active_enemies, active_dot.lacerate + 1 )
+            end
+        end )
+
+
+        addAbility( 'disengage', {
+            id = 781,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'off',
+            cooldown = 20
+        } )
+
+
+        addAbility( 'dragonsfire_grenade', {
+            id = 194855,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'spell',
+            cooldown = 30,
+            velocity = 20,
+            passive = true, -- since it could be in the air I guess.
+            known = function () return talent.dragonsfire_grenade.enabled end,
+        } )
+
+        addHandler( 'dragonsfire_grenade', function ()
+            applyDebuff( 'target', 'dragonsfire_grenade', 8 )
+        end )
+
+
+        addAbility( 'exhilaration', {
+            id = 109304,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'off',
+            cooldown = 120,
+            passive = true,
+        } )
+
+        addHandler( 'exhilaration', function ()
+            health.current = min( health.max, health.current + ( health.max * 0.3 ) )
+            -- NYI: Also heal pet.
+        end )
+
+
+        addAbility( 'feign_death', {
+            id = 5384,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'off',
+            cooldown = 30,
+            passive = true,
+        } )
+
+        addHandler( 'feign_death', function ()
+            applyBuff( 'feign_death', 360 )
+            if equipped.the_shadow_hunters_voodoo_mask then health.current = min( health.max, health.current + ( health.max * 0.2 ) ) end
+        end )
+        
+
+        addAbility( 'flanking_strike', {
+            id = 202800,
+            spend = 50,
+            spend_type = 'focus',
+            ready = 50,
+            cast = 0,
+            gcdType = 'melee',
+            cooldown = 6,
+            velocity = 60,
+            known = function () return pet.exists end,
+        } )
+
+        modifyAbility( 'flanking_strike', 'ready', function( x )
+            if not talent.way_of_the_moknathal.enabled or not settings.moknathal_padding then
+                return x
+            end
+
+            local ticks = floor( ( buff.moknathal_tactics.remains - refresh_window ) / focus.tick_rate )
+            return x + max( 0, 25 - floor( focus.regen * ticks * focus.tick_rate ) ), "focus"
+        end )
+
+        addHandler( 'flanking_strike', function ()
+            -- if settings.moknathal_padding and talent.way_of_the_moknathal.enabled then gain( max( 0, 25 - focus.regen * max( 0, buff.moknathal_tactics.remains - gcd ) ), 'focus', true ) end
+            if talent.aspect_of_the_beast.enabled then
+                if pet.ferocity then
+
+                elseif pet.tenacity then
+
+                elseif pet.cunning then
+
+                end
+            end
+        end )
+
+
+        addAbility( 'fury_of_the_eagle', {
+            id = 203415,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 4,
+            gcdType = 'melee',
+            cooldown = 45,
+            velocity = 60,
+            known = function () return equipped.talonclaw and ( toggle.artifact_ability or ( toggle.cooldowns and settings.artifact_cooldown ) ) end,
+            channeled = true
+        } )
+
+        modifyAbility( 'fury_of_the_eagle', 'cast', genericHasteMod )
+
+        addHandler( 'fury_of_the_eagle', function ()
+            if buff.mongoose_fury.up then
+                buff.mongoose_fury.expires = buff.mongoose_fury.expires + ( 4 * haste )
+            end
+        end )
+        
+
+        addAbility( 'harpoon', {
+            id = 190925,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'melee',
+            cooldown = 20,
+            velocity = 40,
+            usable = function () return target.minR >= 8 and target.maxR <= 40 end,       
+        } )
+
+        addHandler( 'harpoon', function ()
+            setDistance( 0, 5 )
+            applyDebuff( 'target', 'on_the_trail', 12 )
+            if talent.posthaste.enabled then
+                applyBuff( 'posthaste', 5 )
+            end
+
+            if equipped.helbrine_rope_of_the_mist_marauder then
+                applyDebuff( 'target', 'helbrine_rope_of_the_mist_marauder', 10 )
+            end
+        end )
+
+
+        addAbility( 'hatchet_toss', {
+            id = 193265,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'melee',
+            cooldown = 0,
+            velocity = 40,
+        } )
+
+
+        addAbility( 'lacerate', {
+            id = 185855,
+            spend = 35,
+            spend_type = 'focus',
+            ready = 35,
+            cast = 0,
+            gcdType = 'melee',
+            cooldown = 0,
+            velocity = 60,
+        } )
+
+        modifyAbility( 'lacerate', 'ready', function( x )
+            if not talent.way_of_the_moknathal.enabled or not settings.moknathal_padding then
+                return x
+            end
+
+            local ticks = floor( ( buff.moknathal_tactics.remains - refresh_window ) / focus.tick_rate )
+            return x + max( 0, 25 - floor( focus.regen * ticks * focus.tick_rate ) ), "focus"
+        end )
+
+        addHandler( 'lacerate', function ()
+            -- if settings.moknathal_padding and talent.way_of_the_moknathal.enabled then gain( max( 0, 25 - focus.regen * max( 0, buff.moknathal_tactics.remains - gcd ) ), 'focus', true ) end
+            applyDebuff( 'target', 'lacerate', 12 )
+        end )
+
+
+        addAbility( 'mongoose_bite', {
+            id = 190928,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'melee',
+            charges = 3,
+            recharge = 12,
+            cooldown = 12,
+            velocity = 20,
+        } )
+
+        modifyAbility( 'mongoose_bite', 'recharge', genericHasteMod )
+        modifyAbility( 'mongoose_bite', 'cooldown', genericHasteMod )
+
+        addHandler( 'mongoose_bite', function ()
+            if equipped.butchers_bone_apron then
+                addStack( 'butchers_bone_apron', 3600, 1 )
+            end
+            applyBuff( 'mongoose_fury', buff.mongoose_fury.remains > 0 and buff.mongoose_fury.remains or 14, min( 6, buff.mongoose_fury.stack + 1 ) )
+        end )
+        
+
+        addAbility( 'muzzle', {
+            id = 187707,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'melee',
+            cooldown = 15,
+            velocity = 60,
+            toggle = 'interrupts'
+        } )
+
+        addHandler( 'muzzle', function ()
+            interrupt()
+        end )
+
+        registerInterrupt( 'muzzle' )
+
+
+        addAbility( 'rangers_net', {
+            id = 200108,
+            spend = 30,
+            spend_type = 'focus',
+            ready = 30,
+            cast = 0,
+            gcdType = 'spell',
+            cooldown = 1,
+            velocity = 40,
+        } )
+
+        modifyAbility( 'rangers_net', 'ready', function( x )
+            if not talent.way_of_the_moknathal.enabled or not settings.moknathal_padding then
+                return x
+            end
+
+            local ticks = floor( ( buff.moknathal_tactics.remains - refresh_window ) / focus.tick_rate )
+            return x + max( 0, 25 - floor( focus.regen * ticks * focus.tick_rate ) ), "focus"
+        end )
+
+        addHandler( 'rangers_net', function ()
+            -- if settings.moknathal_padding and talent.way_of_the_moknathal.enabled then gain( max( 0, 25 - focus.regen * max( 0, buff.moknathal_tactics.remains - gcd ) ), 'focus', true ) end
+            applyDebuff( 'target', 'rangers_net_root', 3 )
+            applyDebuff( 'target', 'rangers_net', 15 )
+        end )
+
+
+        addAbility( 'raptor_strike', {
+            id = 186270,
+            spend = 25,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'melee',
+            cooldown = 0,
+        } )
+
+        addHandler( 'raptor_strike', function ()
+            if talent.way_of_the_moknathal.enabled then
+                addStack( 'moknathal_tactics', 10, 1 )
+            end
+
+            if talent.serpent_sting.enabled then
+                applyDebuff( 'target', 'serpent_sting', 15 )
+            end
+        end )
+
+        addAbility( 'spitting_cobra', {
+            id = 194407,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'spell',
+            cooldown = 60,
+            toggle = 'cooldowns',
+            known = function () return talent.spitting_cobra.enabled end,
+        } )
+
+        addHandler( 'spitting_cobra', function ()
+            summonPet( 'spiting_cobra', 30 )
+            applyBuff( 'spitting_cobra', 30 )
+            -- focus.regen = focus.regen + 3
+        end )
+
+
+        addAbility( 'snake_hunter', {
+            id = 201078,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'off',
+            cooldown = 120,
+            known = function () return talent.snake_hunter.enabled end,
+            toggle = 'cooldowns'
+        } )
+
+        addHandler( 'snake_hunter', function ()
+            gainCharges( 'mongoose_bite', 3 )
+        end )
+
+
+        addAbility( 'freezing_trap', {
+            id = 187650,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'spell',
+            cooldown = 30,
+            passive = true,
+            known = function () return not talent.steel_trap.enabled end,
+        } )
+
+
+        addAbility( 'explosive_trap', {
+            id = 191433,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'spell',
+            cooldown = 30,
+            velocity = 10,
+            passive = true
+        } )
+
+        addHandler( 'explosive_trap', function ()
+            gain( 25, 'focus' )
+        end )
+
+
+        addAbility( 'tar_trap', {
+            id = 187698,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'spell',
+            cooldown = 30,
+            passive = true,
+            known = function () return not talent.caltrops.enabled end,
+        } )
+
+
+        addAbility( 'steel_trap', {
+            id = 162488,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'spell',
+            cooldown = 60,
+            passive = true,
+            known = function () return talent.steel_trap.enabled end,
+        } )
+
+        addHandler( 'steel_trap', function ()
+            gain( 25, 'focus' )
+        end )
+
+
+
+        addAbility( 'sticky_bomb', {
+            id = 191241,
+            spend = 0,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'spell',
+            cooldown = 25,
+            velocity = 20,
+            known = function () return talent.sticky_bomb.enabled end,
+        } )
+
+
+        addAbility( 'throwing_axes', {
+            id = 200163,
+            spend = 15,
+            spend_type = 'focus',
+            cast = 0,
+            gcdType = 'melee',
+            cooldown = 15,
+            charges = 2,
+            recharge = 15,
+            velocity = 40,
+            known = function () return talent.throwing_axes.enabled end
+        } )
+
+        modifyAbility( 'throwing_axes', 'cooldown', genericHasteMod )
+        modifyAbility( 'throwing_axes', 'recharge', genericHasteMod )
+
+        
+        addAbility( 'a_murder_of_crows', {
+            id = 206505,
+            spend = 30,
+            spend_type = 'focus',
+            ready = 30,
+            cast = 0,
+            gcdType = 'spell',
+            cooldown = 60,
+            velocity = 60,
+            known = function () return talent.a_murder_of_crows.enabled end
+        } )
+
+        modifyAbility( 'a_murder_of_crows', 'ready', function( x )
+            if not talent.way_of_the_moknathal.enabled or not settings.moknathal_padding then
+                return x
+            end
+
+            local ticks = floor( ( buff.moknathal_tactics.remains - refresh_window ) / focus.tick_rate )
+            return x + max( 0, 25 - floor( focus.regen * ticks * focus.tick_rate ) ), "focus"
+        end )
+
+        addHandler( 'a_murder_of_crows', function ()
+            -- if settings.moknathal_padding and talent.way_of_the_moknathal.enabled then gain( max( 0, 25 - focus.regen * max( 0, buff.moknathal_tactics.remains - gcd ) ), 'focus', true ) end
+            applyDebuff( 'target', 'a_murder_of_crows', 15 )
+        end )
+
+    end
+
+
+    storeDefault( [[SimC Survival: biteFill]], 'actionLists', 20170423.221805, [[dSt(gaGEubBcvr7sP61ePzIkunBrDtcEosDBP8njQDk0EP2nu7xP0Hjnmj14qfPoVK40OmyLKHtOdkHESuDmr6COIWcvIwQeSyKSCepev1tblJOADOcPjIkuMkrzYcMUIlkrMgQcDzvxNiAJOIKTQKAZOkTDuPpIkI(orOplIMNsqptj0FfHrljnEur1jvk2grW1ucCpuH43qooQOCiufStTmdLWkv(btziQTBayn(Bxbss4Y4Qzo62vuS5CkwoBOWZxPVJYRtlxZJYxCp1ai(otZmoOddHDu(cwGHI9HHW0wMJPwMHsyLk)GxAa6eM4yyqjtM)EhHYbKeX0gksXYSPIbAr2mmCYeDefrnWV67sfqCF74XugeqH1kjQTBWquB3aiYMHHtUDfFefrnu45R03r51PLtRnSbhyDDqedye(geqHO2Ubpok3YmucRu5h8sdqNWehdNZKKjk(WoVegh4aIobVmCYtgIkYZaA2ZA)eD(o5nLHPx4I7sWqrkwMnvmqj50REsfd8R(Uube33oEmLbbuyTsIA7gme12nSuYPx9Kkgk88v67O860YP1g2GdSUoiIbmcFdcOquB3Ghhx0YmucRu5h8sdqNWehdNZKKjk(WoVegh4aIobVmCYtgIkYZaA2ZA)eD(o5nLHPx4I7sWqrkwMnvm0vc3BGF13LkG4(2XJPmiGcRvsuB3GHO2Ub(kH7nu45R03r51PLtRnSbhyDDqedye(geqHO2UbpoYJwMHsyLk)GxAa6eM4yiGM9S2prNVtEtzy6fU4UemuKILztfdzTFIo3a)QVlvaX9TJhtzqafwRKO2UbdrTDdCCTFIo3qHNVsFhLxNwoT2WgCG11brmGr4BqafIA7g844cSmdLWkv(bV0a0jmXXG2hg3N443yNMJKYZrZhp70NiE8KGEy4K7hRu5h4jpeqZo9jIhpjOhgo5(W6sz4KgksXYSPIbIkoisc6HWKEd8R(Uube33oEmLbbuyTsIA7gme12nuqfhez7kyimP3qHNVsFhLxNwoT2WgCG11brmGr4BqafIA7g84OeSmdLWkv(bV0GakSwjrTDdgIA7gG5pVDLmIkAydoW66GigWi8nuKILztfd0ZFoXqurd8R(Uube33oEmLHcpFL(okVoTCATbbuiQTBWJJLTmdLWkv(bV0GakSwjrTDdgIA7gkUDLGKKWjBxH4D7k(eKePnSbhyDDqedye(gksXYSPIbnrtss4KeiEt0jijsBGF13LkG4(2XJPmu45R03r51PLtRniGcrTDdECKtBzgkHvQ8dEPbbuyTsIA7gme12nWXiAseMMxg5BxXjjhRHBydoW66GigWi8nuKILztfdbIMeHP5LrEIKKJ1WnWV67sfqCF74Xugk88v67O860YP1geqHO2UbpoYjSmdLWkv(bV0GakSwjrTDdgIA7gkX5IzenJ73UsgrfnSbhyDDqedye(gksXYSPIHZ5IzenJ7tmev0a)QVlvaX9TJhtzOWZxPVJYRtlNwBqafIA7g84yATLzOewPYp4LgGoHjog4HaA27AEiir69H1LYWjnuKILztfdDnpeKiTb(vFxQaI7BhpMYGakSwjrTDdgIA7g4R5HGePnu45R03r51PLtRnSbhyDDqedye(geqHO2UbpEmaDctCm4Xga]] )
+
+    storeDefault( [[SimC Survival: CDs]], 'actionLists', 20170423.221805, [[dSJihaGEcL0Mev2fbBtuvzFek1SPYnfLVPu1Tv4WQStvzVs7gY(Pknkkvdtv14evv9mcvnucf1GPkgov1bfHtrPCmr6EeQSqLslfPYIry5u8qvfRIqHwMiADekyIekYuvQmzLmDOUOsXPfCzW1PKnsOeBLO0Mr02vv6Xc9DKQMMOkmprvAKIQOpJKrJuEUIojrXFjY1evLZtipf1RjQ(nPBA3vEd6iCWQeLF3akZHXhVEylZ3W3Zjg865JyAwMoWb3e6l5F6()8iP4fslZ(qmCUGy9Wbf1xY8LVYjI4GIMDxFPDx5nOJWbRUTmhnbFCzSsr5aHOQULspAMZoPgTMcrlJbq48koX)BRCcIGlGfv(mXdbsy1yaeU8hAquEM(fgacxIYz6s2Z8UbuU87gq5eM4HaVE2PgdGWLPdCWnH(s(NUp9VSmOviEy1ugPiOCMUE3akxCFj7UYBqhHdwDBzoAc(4YyLIYbcrvDlLE0mNDclssHB6drSKskHPbsWr5ablFBLtqeCbSOYeGzcg5bev5p0GO8m9lmaeUeLZ0LSN5DdOC53nGYBbZemYdiQY0bo4MqFj)t3N(xwg0kepSAkJueuotxVBaLlUpX3DL3GochS62YC0e8XLXkfLdeIQ6wk9Ozo7ewKKc30hIyjLuctdKGJYbcw(2kNGi4cyrLjCQUKiTmIk)HgeLNPFHbGWLOCMUK9mVBaLl)UbuERt1LxpIflJOY0bo4MqFj)t3N(xwg0kepSAkJueuotxVBaLlUV8O7kVbDeoy1TL5Oj4JlJvkkhi4R4GIM5StyrskCtFiILusjmnqcokhiy5BRCcIGlGfv2xXbfv(dnikpt)cdaHlr5mDj7zE3akx(DdOSywXbfvMoWb3e6l5F6(0)YYGwH4HvtzKIGYz66DdOCX9LVUR8g0r4Gv3wMJMGpUmwPOCGquv3sPhnZzNWIKu4M(qelPKsyAGeCuoqWY3w5eebxalQmbyMGrEarv(dnikpt)cdaHlr5mDj7zE3akx(DdO8wWmbJ8aIYRh7P2kth4GBc9L8pDF6FzzqRq8WQPmsrq5mD9UbuU4(YVUR8g0r4Gv3wMJMGpUmwPOCGquv3sPhnZzpQQBP0JegkIs1jireWGqK2zOGP4(ZryrskmueLQtqI0YisWaJlGMIT4fJuXLTYjicUawu5j6Kds0SqyWu(dnikpt)cdaHlr5mDj7zE3akx(DdOmJo5Gxp5PfcdMY0bo4MqFj)t3N(xwg0kepSAkJueuotxVBaLlUV9Dx5nOJWbRUTmhnbFCzSsr5aHOQULspAMZUDclssHHIOuDcsKwgrcgyCb0mVIlnnhHfjPWqruQobjslJiblFB5Shv1Tu6rcKwgrskPeMgibhLdemW4cOPytyrskmueLQtqI0YisWaJlGM2SvobrWfWIkFtFiILusjmnqcokhu(dnikpt)cdaHlr5mDj7zE3akx(DdOCIPpeXE9OKE9GPbE9S5OCqz6ahCtOVK)P7t)lldAfIhwnLrkckNPR3nGYf3x(3DL3GochS62YC0e8XLXkfLdeIQ6wk9Ozo72jSijfgkIs1jirAzejyGXfqZ8kU95iSijfgkIs1jirAzejy5BZw5eebxalQ8n9HiwsjLW0aj4OCq5p0GO8m9lmaeUeLZ0LSN5DdOC53nGYjM(qe71Js61dMg41ZMJYbE9yp1wz6ahCtOVK)P7t)lldAfIhwnLrkckNPR3nGYfxCzoAc(4Yf3ca]] )
+
+    storeDefault( [[SimC Survival: AOE]], 'actionLists', 20170423.221805, [[dmtDdaGEekTjrI2ff51uu7dHOzlQBIQUTuTtQAVKDdz)Oi)eHIHjP(nsdgL0WPuhKs6uiK6yuyHsslvKAXQQLtLhIGNQSmvP1HqYurPMSuMUkxevCzW1fjTvvrphrBxeFtsCyHPHc8zuItd1JLy0uIXJq1jvfoekORHI68OsptKWFrHgfcHLHyRXbf)m00xZhDqB4obMyDP6sWjrMOyIvRedhT0qgcsq(3AJk1m4nfMm0MnuWrgtSXHPi5FzMznRLdtrKIT8gITghu8Zqtv14PTNHZhDqtZhDqRAQxXc44Q9a1WL4OonefbAw)4m(4Q9t9kwahxncwGIzEAc0b0PVwAidbji)BTrfJAnEAZhDqtN8VITghu8Zqtv1wXHTpng2ONPsKph1M00HlMXiw0S(Xz8XvRe5ZrTj1iybkM5PjqhqN(A802ZW5JoOP5JoOriYNJAtQLgYqqcY)wBuXOw7bQHlXrDAikc04PnF0bnDYNcXwJdk(zOPQA802ZW5JoOP5JoOXH42zkjobyIv2UWw7bQHlXrDAikc0S(Xz8XvdiUDMsItagpxyRrWcumZttGoGo91sdziib5FRnQyuRXtB(OdA6KNbITghu8Zqtv1wXHTpTlYa6mrcoBaDmsEyelMau8ZqlLmSrptKGZgqhJKhgXIPdxmJrSOz9JZ4JRwjCjGgblqXmpnb6a60xJN2EgoF0bnnF0bncHlb0sdziib5FRnQyuR9a1WL4OonefbA80Mp6GMo5zwS14GIFgAQQ2koS9PfLdNamciOJbsIKznRFCgFC1kHlb0iybkM5PjqhqN(A802ZW5JoOP5JoOriCjatSsegeTwAidbji)BTrfJAThOgUeh1PHOiqJN28rh00PtBfh2(00jb]] )
+
+    storeDefault( [[SimC Survival: default]], 'actionLists', 20170423.221805, [[d0JWhaGEueBscv2LeSnsjSpuPyMsiZwP5JkvDtr65GCBQ8nuODcQ9QA3iTFjnkQkggQyCsOQdtzOKszWsz4aYbLOtrvPJHqNhbwikyPOswmQA5IArIWtHwgvvRJQ0errQPIGMmknDfxeiDAHltCDa2iQuzRufTza12r0JLQ)cuttcLVtkrFgiEgPKgnP4qOi5KufEiP6AKs19qr9tuP0Vj51IOpXt4rqPg)kSN)iS5KJy40RneqMmiT1BTXkaBa25ixYkgKCy)CiYiNI5xRfiEebs6HTbtSju0d7x7A)yzFcff6eEyINWJGsn(vypdhXEoaAookqazLcbDKCgaqduX5ZyzqKPaRWdayGl0nOjOGuaaq(ESKp2yi4OdatyYkh11i9KPksXj058htvSEAzyZjhpcBo5ykaMWKvoYLSIbjh2phImsKZrpOSr3gv(ivrLJPkwyZjh)Cy)NWJGsn(vypdhXEoaAoo2k0PGwAeawbm4rJa2PssTrJTfeQXVc7Xs(yJHGJDBxWwFcff8gqZrpOSr3gv(ivrLJPkwpTmS5KJhHnNCu32T2k7tOO1wrb0CSmdc0rQ5eMtGHtV2qazYG0wV1MtLm1c6ybnXrUKvmi5W(5qKrICoQRr6jtvKItOZ5pMQyHnNCedNETHaYKbPTERnNkzQf0Xc6NdR1t4rqPg)kSNHJyphanh5bamWfCQKuB0yl4X6t0Hkanwpj3WSFUN7zQXwHof0sJaWkGbpAeWovsQnASTGqn(vypwYhBmeCSB7c26tOOG3aAo6bLn62OYhPkQCmvX6PLHnNC8iS5KJ62U1wzFcfT2kkGMAZhI(ESmdc0rQ5eMtGHtV2qazYG0wV1MotdL4ixYkgKCy)CiYiroh11i9KPksXj058htvSWMtoIHtV2qazYG0wV1Motd95Wf7eEeuQXVc7z4i2ZbqZrMIhaWaxWPOGOuqcyGbKjOaaGowYhBmeCSB7c26tOOG3aAo6bLn62OYhPkQCmvX6PLHnNC8iS5KJ62U1wzFcfT2kkGMAZh)(ESmdc0rQ5eMtGHtV2qazYG0wV1gqzHHyeTPXGKeh5swXGKd7NdrgjY5OUgPNmvrkoHoN)yQIf2CYrmC61gcitgK26T2aklmeJOnngK85WA)eEeuQXVc7z4i2ZbqZrRpbPawOIleiUHzTESKp2yi4y32fS1NqrbVb0C0dkB0TrLpsvu5yQI1tldBo54ryZjh1TDRTY(ekATvuan1MpA13JLzqGosnNWCcmC61gcitgK26T2k5wqtCKlzfdsoSFoezKiNJ6AKEYufP4e6C(JPkwyZjhXWPxBiGmzqAR3ARKBb9ZH1It4rqPg)kSNHJL8Xgdbh72UGT(ekk4nGMJEqzJUnQ8rQIkhtvSEAzyZjhpcBo5OUTBTv2NqrRTIcOP28Py(ESmdc0rQ5eMtGHtV2qazYG0wV1gFmI20yqsIJCjRyqYH9ZHiJe5CuxJ0tMQifNqNZFmvXcBo5igo9AdbKjdsB9wB8XiAtJbjFomJNWJGsn(vypdhl5Jngco2TDbB9juuWBanh9GYgDBu5JufvoMQy90YWMtoEe2CYrDB3ARSpHIwBffqtT5J299yzgeOJuZjmNadNETHaYKbPTERn(yeUl2nXrUKvmi5W(5qKrICoQRr6jtvKItOZ5pMQyHnNCedNETHaYKbPTERn(yeUl29ZHl(t4rqPg)kSNHJL8Xgdbh72UGT(ekk4nGMJEqzJUnQ8rQIkhtvSEAzyZjhpcBo5OUTBTv2NqrRTIcOP28rl89yzgeOJuZjmNadNETHaYKbPTERnGJDLmuIJCjRyqYH9ZHiJe5CuxJ0tMQifNqNZFmvXcBo5igo9AdbKjdsB9wBah7kzOpFoI9Ca0C8Zpa]] )
+
+    storeDefault( [[SimC Survival: precombat]], 'actionLists', 20170423.221805, [[dmtVdaGEKcTlKsEnGA2cDteUTGDIYEj7g0(frdts(TudfPOblPmCk6GIWXq0cbKLsPAXaTCjEif8uLLbvwhuvAIqvXuHIjlQPd5IuONtjxw11rQQhJKTcGnJuQTdL(iuv1HPAAiv5Vukgjuv50OA0IKXJuXjLu9mKkDnkLopa9zOkBdPGVjsTifgnJqhm(Sa1yE4AJhmKS2OFblhRhX3K1mlNQdGosZ(J3TUy4QitxrpC0LwKAZ8uCpYPrhXBOy4S1wTeuiEdTegXifgnJqhm(SasJOZa4fMhUMgZdxZGhJjRrZJswJuRomZPCux0Gn8Aja5rocqnl6hcn0gZJ0mK6uat0yF4qKa1S)4DRlgUkY0KvAeDM5HRjKy4egnJqhm(SasBufUjsd14Hx80YSr8gAPLaKh5ia1mBeVHAgsDkGjASpCisGAeDgaVW8W10yE4A0Sr8gQz)X7wxmCvKPjR0QdZCkh1fnydVgrNzE4AcjgDfgnJqhm(SasJOZa4fMhUMgZdxZiDmJTfh7twdtXn1QdZCkh1fnydVwcqEKJau70Xm2wCS3guXn1mK6uat0yF4qKa1S)4DRlgUkY0KvAeDM5HRjKy0ty0mcDW4ZcinIodGxyE4AAmpCTH(JjRHP4MA1HzoLJ6IgSHxlbipYraQzH(J2GkUPMHuNcyIg7dhIeOM9hVBDXWvrMMSsJOZmpCnHeZwHrZi0bJplG0i6maEH5HRPX8W1WNIJxdTOnV8K1W)YHE(A1HzoLJ6IgSHxlbipYraQLloEn0I28YTbVYHE(AgsDkGjASpCisGA2F8U1fdxfzAYknIoZ8W1esmAqy0mcDW4ZcinIodGxyE4AAmpCn8ZlMDd1QdZCkh1fnydVwcqEKJaulLxm7gQzi1PaMOX(WHibQz)X7wxmCvKPjR0i6mZdxtiH0gvHBI0esca]] )
+
+    storeDefault( [[SimC Survival: fillers]], 'actionLists', 20170423.221805, [[dGtceaGEbqBsjyxa1RbyFkHMTc3uOUTuTtrTxQDdA)srJcinma9Bu9CenyH0WvQoOu4uOihJO(gqSqIKLkilgLwoHhkepfAziyDePQhlYufOjROPl5IkLELaWZeqUokyAkrTvuuBwPy7sPtJ03vI8zb18isPdt6qePYOjIXlaDsuOBrKIRPKCELu)fHUSQvjGAl7Gg3cv2XNM1yw73is7rAgfzq0sB1H03m6g6yCbPXqFCL8otaOmiaxMqGalBe3FIQdAaQfLdDMWQvgBKkkhs6Gol7Gg3cv2XNwkJysq3lJAQOTN4HVtp5IYlu64Wcm5f7hwejlkmm4dv2XNliDtEbM8I9dlIKffggCrtaOWWgBWsh0ATXKkAVXisEcqmV99dlZAmMpzwfzTFJgZA)gJOI2Bm0hxjVZeakdImqJmcN0KwCHrihEJX8zw73OlNj4Gg3cv2XNwkJX8jZQiR9B0yw73yqjc(suy4MrBeWtAKr4KM0Ilmc5WBSblDqR1gljc(suyyIAapPXisEcqmV99dlZAm0hxjVZeakdImqJX8zw73OlNdKdACluzhFAPmIjbDVmQPI2EIh(o9KlsWydw6GwRnMur7ngrYtaI5TVFyzwJX8jZQiR9B0yw73yev0(MrbvMjJH(4k5DMaqzqKbAKr4KM0Ilmc5WBmMpZA)gD58YoOXTqLD8PLYiMe09YiOLooSaVKUMiFdXsYj25aGAjrhGpuzhFUaldB2aUZba1sIoiwAQOjsWI3vkKuAdNMbEzMm2GLoO1AJcDV4cIKLGc4gJi5jaX823pSmRXy(KzvK1(nAmR9BmKUxCrZOyjOaUXqFCL8otaOmiYanYiCstAXfgHC4ngZNzTFJUCELdACluzhFAPmIjbDVmUHNyGeCIbH4WArqbLWkPzdpXajyXdFyGdNMmfaRwXKXgS0bTwBuO7fxqKSeua3yejpbiM3((HLzngZNmRIS2VrJzTFJH09IlAgflbfWBgfuzMmg6JRK3zcaLbrgOrgHtAslUWiKdVXy(mR9B0LlJysq3lJUSb]] )
+
+    storeDefault( [[SimC Survival: preBitePhase]], 'actionLists', 20170423.221805, [[d4dniaGEuQSjrI2fkzBIK8CuzMeu1HjnBr9njPBIQoVe52s50iTtH2l1UHA)kfJIGcdtjghkvvpwQgkbLmyLKHlIdkrDkck1XiYXfjyHsOLkblgflhXdjKNcwgHADOuftKGIMkrzYcMUIlkjMgbvUSQRlPYgrPiBvj1MjiBNaFeLQ03LuLptunpjv1ZqP05qPQmArQXlsOtQu6VskxdLc3dLI6qIK61kv)gYwYYmubRm5hmJHO2UbG2eTzfuhravGMzpBwLqEr6CHvAL7gk88vU7O4fPQlcNy2YsYaK8ovZu2PdfHDumBWggk3hkcZzzokzzgQGvM8dUObEuyTsIA7gme12nWMYkENILVzfme6(nSfhODDqedye(gkZqZ0PKbHYkENILxJBi09Bqu6335rcE74Xmgk88vU7O4fPQslg4rHO2Ubpok2YmubRm5hCrdqNqtgddsU88z1rOCavpmNHYm0mDkzGlHodflVwhXqudIs)(opsWBhpMXapkSwjrTDdgIA7gGe6muS8nReHyiQHcpFL7okErQQ0IHT4aTRdIyaJW3apke12n4Xr2AzgQGvM8dUObOtOjJHuhqdRS2prNZAO9DkwUHYm0mDkziR9t05geL(9DEKG3oEmJbEuyTsIA7gme12ni8A)eDUHcpFL7okErQQ0IHT4aTRdIyaJW3apke12n4XrHZYmubRm5hCrdqNqtgdAFOcETJFJEo2SukhnF8WI7KKJNACdflN1Xkt(HuM6aAyXDsYXtnUHILZAO9DkwUHYm0mDkzGOjdIuJBi09Bqu6335rcE74Xmg4rH1kjQTBWquB3qbnzqKnRGHq3VHcpFL7okErQQ0IHT4aTRdIyaJW3apke12n4Xr2WYmubRm5hCrd8OWALe12nyiQTBaM)8MvYiAIHT4aTRdIyaJW3qzgAMoLmWn)5Adrtmik9778ibVD8ygdfE(k3Du8IuvPfd8OquB3GhhtLLzOcwzYp4Ig4rH1kjQTBWquB3q5nR4RJeozZkKqBwjIGQhNHT4aTRdIyaJW3qzgAMoLmO1A1rcNudjuTobvpodIs)(opsWBhpMXqHNVYDhfVivvAXapke12n4XXQwMHkyLj)GlAGhfwRKO2UbdrTDdctIkhH5eIs(MvSxYXA4g2Id0UoiIbmcFdLzOz6uYqGOYryoHOKxto5ynCdIs)(opsWBhpMXqHNVYDhfVivvAXapke12n4Xr2VLzOcwzYp4Ig4rH1kjQTBWquB3qLumjJ4Oc(MvYiAIHT4aTRdIyaJW3qzgAMoLm8umjJ4OcETHOjgeL(9DEKG3oEmJHcpFL7okErQQ0IbEuiQTBWJJSplZqfSYKFWfnaDcnzmK6aAy118qqjCSgAFNILBOmdntNsg6AEiOeodIs)(opsWBhpMXapkSwjrTDdgIA7geP5HGs4mu45RC3rXlsvLwmSfhODDqedye(g4rHO2UbpokTyzgQGvM8dUObOtOjJHNc1rtsEGLqek7yhIRMquS8tgIMKYaAyL1(j6CwK3ukMR(SLvQmuMHMPtjdm1n90NuYGO0VVZJe82XJzmWJcRvsuB3GHO2UHI1n90NuYqHNVYDhfVivvAXWwCG21brmGr4BGhfIA7g84OKKLzOcwzYp4IgGoHMmgEkuhnj5bwcrOSJDiUAcrXYpziAskdOHvw7NOZzrEtPyU6ZwwPYqzgAMoLm0vIGBqu6335rcE74Xmg4rH1kjQTBWquB3GiLi4gk88vU7O4fPQslg2Id0UoiIbmcFd8OquB3GhhLeBzgQGvM8dUObOtOjJHaAyL1(j6CwK3ukMR(SLvQmuMHMPtjdzTFIo3GO0VVZJe82XJzmWJcRvsuB3GHO2UbHx7NOZ3SsyijSnu45RC3rXlsvLwmSfhODDqedye(g4rHO2UbpEmaDcnzm4Xga]] )
+
+    storeDefault( [[SimC Survival: mokMaintain]], 'actionLists', 20170423.221805, [[daZ8baGEufTlq8AKmBa3uc3ws7uQ2Ry3OSFqzuOkmmLYVHAWGQHtPoOsQtHuvhdvwiQklfKwmqlhXdvsEQQLjrRdPIPsrMmKMovxuj6YexNsSvkuBwPA7usphIPHuP5rbDysFtjmAkQhlLtsboTIRHQQZJQ0FrkFNc5ziv5Wft5lzkiGGgW8UwL8p1vWGFleRJvfGoWGxXuf6WCDy5qfarrK0l34wSr3s6bHl)2sBuGHNQpyw6L8ZF(6MpygsmLoxmLVKPGacA4l)nYy75Gw23HuXum1nRa0CT5tdbcrQ6WqmKiGw23Pz0WqXgLVgCagN3CIA7ycneNmus(kZsJQaBvQcZdyEbg1yL01QKN31QKdvTDmbg87KHsYHkaIIiPxUXTGBl3ag60uhtYzyMKxGr7AvYJNEzmLVKPGacA4l)nYy75Gw23HuXum1nRa0CT5tdbcIRnkdlZxdoaJZBorTDmHgItgkjFLzPrvGTkvH5bmVaJASs6AvYZ7AvYHQ2oMad(DYqjWGZdo6NdvaefrsVCJBb3wUbm0PPoMKZWmjVaJ21QKhpE(BKX2ZJNa]] )
+
+    storeDefault( [[SimC Survival: bitePhase]], 'actionLists', 20170423.221805, [[d0tefaGEGqTjkWUiPxlW(qb9CPA2cnFua3us(gkPBtPdlANiSxv7wP9tkgffzyOs)MQZJsnuuGgmP0WPqheu5uuuhtsDAKwiOyPOOwmGLlXdrjEkXYqfRJur9yPmvqvtgKPR4IaPxbe0LHUoqTruO2kPsBMeBhu6saHCiGiFgvnpui)frpJuHrlOVtQQtsQY0aI6AOiUhf0QqrABabghPI8Rp8xaDtGicDGlePfViullA0kGlWsHnJ6SgTa0bzWWSJxygJy2XtWHBnRCbzo6qT(IyeB0msbX5q99eCyctUaxBO(2p8NO(WFb0nbIi0H5I0kuJZftG0KrChv9t2KUc5eIKwpyZjmJQ4MareIbyaaWkkQwpyZjmJKt2gARRwqBs3odnX3GyQjDcePdZMnBaayffvRV8U3rsfWf2Q9jBbgccUahansh2xuaxyt6kKtisIjFeVO3crB54LlRV4Lkhs3SqKw8YfI0Ixym4cBnADfnANquJwqt(iEbUcF)cDhSuaBCiPkgAAYiUJQ(jBsxHCcrsRhS5eMrvCtGiczaayffvRhS5eMrYjBdT1vlOnPBNrgo0wa5qTO5lmJrm74j4WTM1AUxyjeBbvoSOf35axQCiI0Ix(Ccoh(lGUjqeHomxKwHACU0cZcp2zOHCmO5EeY1FvT(Y7EhjbOdQwqBs3oJ4BqmLZf4aOr6W(I1xE37ijaDWlSeITGkhw0I7CGlvoKUzHiT4LlePfVu5lV7DuJwyOdEHzmIzhpbhU1SwZ9IEleTLJxUS(IxQCiI0Ix(CcDC4Va6Mare6WCrAfQX5IjtaGvuuT(Y7EhjvaxyRwqBs3odnX3GyQPM7rix)v16lV7DKeGoOAlml8yheYXSzZg0Cpc56VQwF5DVJKa0bvBHzHh7mYWAZgasaGvuuZUrSnKUc5eIKyYhrvWgVahansh2xuI5gqxEY(uOb4fwcXwqLdlAXDoWLkhs3SqKw8YfI0IxyCm3a6YRrRmfAaEHzmIzhpbhU1SwZ9IEleTLJxUS(IxQCiI0Ix(Ccq(WFb0nbIi0H5I0kuJZfaWkkQwF5DVJKkGlSvbB8cCa0iDyFX6lV7DKeGo4fwcXwqLdlAXDoWLkhs3SqKw8YfI0IxQ8L39oQrlm0b1O1uT5lmJrm74j4WTM1AUx0BHOTC8YL1x8sLdrKw8YNtWKd)fq3eiIqhMlvoKUzHiT4LlePfVW4yUb0LxJwzk0auJwt1MVO3crB54LlRV4f4aOr6W(Ism3a6Yt2NcnaVWsi2cQCyrlUZbUWmgXSJNGd3AwR5EPYHislE5ZNlsRqnox(8d]] )
+
+
+    storeDefault( [[Survival Primary]], 'displays', 20170423.221805, [[d8d5haWyKA9kQEjfs7cckBdjI(nuZKc10OqmBfopfDtiWPr5BuvQJjvTtkTxXUjz)qQFcjddvnoKi1Lv1qj0GHOHJWbLkhfjsoSKZHeHfkLwksyXuLLt0dLcpfSmPONtQjcbzQiAYOIPR0fvHRsvjpJcQRRsBKQQTcbvBMkTDv0hvu8AfL(ms67kYiPawhfOrtW4HqNev6wir11OGCpKO0TPI1IefhNQItFidqxeldR8JvlSMJpakFrAmx7ra6IyzyLFSAb28p2(MbKLI63q4PNnTb8gS5ZNzGNIxatuUU6FBueldR0XYharuUU6FBueldR0XYhGqYCkPjxAScyZ)yncFahMQ7i2Mb85(3NtJIyzyLoTbmr56Q)LSKu)vhlFak19VVoKX2hYahQYB8CsBGo6LHvOrAmtVXsjcylNpafxDjyq0ijKpn2XR2au8JV0FSn579nFppFaGwYi2alZ5PS8zJTzidCOkVXZjTb6OxgwHgPXm9glLoGTC(auC1LGbrJKZ7w3XgGIF8L(JTjFVV5755ZMnGwapbtSLwO7iTb0c4PU7ItBaTaEcMylTq3DXPnWwsQ)2POfWYaTOijrHak4oJbidyglL3KsYhaXy5dOfWtKLK6V60gywVofTawgGeLifCNXaKbOXoE1kEEeVa0fXYWQofTawgOffjjkeeaiEAwnyZRLHvX20qgkGwapbKPnGp3)(iet(0ldRcqb3zmaza11HlnwPJ1ib0e)y4FuAHg4bwgYavS9bKX2hGAS9b8ITpBaTaEQrrSmSsN2aiIY1v)B3vwXYhOUYI0K4d4DDDd4ui2DxCS8bQbHq1nMktT45rS9bQbHqbc4jXZJy7dudcHQb2XRwXZJy7dGqVBDhBAduJPYulEkM2aNmnZJnyRjPjXhWlaDrSmSQBWOQc04WsEqraomnXOmjnj(avazPO(KMeFGYJnyRzG6kleWuFAd4ZLrplcNPH1C8bQaZ65hRwGn)JTVzaB58bGR8KDwd0ifLmNsAgOgecfzjP(R4PyS9bmr56Q)LRIdJUwSuhlFa5pc04WsEqranXpg(hLwiEbQbHqrwsQ)kEEeBFaMIdJUwSStrlGLbOG7mgGmGp3)(C4Q4WORfl1PnGdt1DxCS8bQRS6u0cyzGwuKKOqGXh(jdSLK6V(XQfwZXhaLVinMR9iackezoxh0ijzoFSgMpaJgRaIIMPOgRHca0sgXgiqnieQUXuzQfpfJTpqDLfxLlM0K4d4DDDdqizoL00pwTaB(hBFZaeYNg74vBNOXbaMtd0iHR8KDwddIgjH8PXoE1gqlGN6UYIRYfhVaofIDhXYhGSgVArJCgj(selFGTKu)v88iEbeLmNsAIgzJIyzyvaTSwgoGwapz030JP4Wuu1PnaN3TUJTt04aaZPbAKWvEYoRHbrJKZ7w3XgWeLRR(xJ2QJLY7dGikxx9VKLK6V6y5dmRNFSAH1C8bq5lsJ5ApcyIY1v)B3vwXYhqlGN4Q4WORfl1PnqniekqapjEkgBFGAmvMAXZJ0gOUYci(XGlcflFaTaEs88iTbOXoE1kEkgVaZ65hR2aIKOrcLsJgPTKs8uaTaEQ7iTb0c4jXtX0gWHPaYy5dSLK6V(XQfyZ)y7BgaruUU6FnARow(a0fXYWk)y1gqKensOuA0iTLuINcudcHQb2XRwXtXy7dCOkVXZjTb0mhIX3H6i2Mb8gS5ZNzGN6gJ4fWfR2ahisiFTEQmdSLK6VINIXlGp3)(DdgvLZR2a0bO4hFP)yBY37BEJW3eH1ByEEdBOaIsMtjnrJSrrSmScnYURScGaSIkgRF0i9FLMb85(3NdxAScyZ)yncFaNcrGm2(amASIYGXoXAy(a(C)7ZXpwTaB(hBFZaBjP(RFSAdisIgjuknAK2skXtb85(3NJrB1PnaIOCD1)YvXHrxlwQJLpqDLLVuSnaXOmFz2ea]] )
+
+    storeDefault( [[Survival AOE]], 'displays', 20170423.221805, [[dae7haqisc1MqKIBrfv2fvu1WiLJjLwgv4zKKAAKeDnejFtfuJJKaNJKGwhjj3drkDqfSqf5HsrtufKlQO2Ou4JQaJKkkNev6LKuAMKuDtvO2jL(jenus1rrKQwQkQNcMksUkjfBLKqwlIuzVIbdPoSKftIhJutgvCzvTzQ0NruJgvDAuETkKzlv3MQSBc)gQHJWXPISCkEortxPRRsBhcFxHgpI48uvRxfz)qYPnubOlILHfnWIfw)(haPAOuNRDoaDrSmSObwSa70hBRJaMsq(BY)0hLPakD2Pth0XJrjGpsxx5VnlILHfYy1cqcsxx5VnlILHfYy1c409VphU0ybWo9XQsTasE84W1uCfU4OeWP7FFonlILHfYmfWhPRR8xQYq(xzSAbi93)(YqfBBOcmlkL(ZjtbgOxgwGcT6m5gRkmGT8(aNVYIxvOqtyEASNsTbo)9VKFSo0ApSwRMwaG2Wi2alZ7jTAzJ1rOcmlkL(ZjtbgOxgwGcT6m5gRkiGT8(aNVYIxvOqZ5DRBFdC(7Fj)yDO1EyTwnTSzdi5XJWiBP5hMZuasq66k)LQmK)vgRwajpEegzln)WDXzkWwgY)oiO5XMatiPOqE8zUh4mQa(X6CoAjvaxSydmtcH5LYXYpGKhpsvgY)kZuGJuge08ytakK6N5EGZOcqJ9uQvhXCucqxeldlge08ytGjKuuipoaq80SQZovldlI1bPivajpEeOYuaNU)9peZ80ldlcCM7boJkG46XLglKXQYasIV3B0ljFtChBcvGk22aMyBdqo22akX2MnGKhp2SiwgwiZuasq66k)D4AQy1cuxtr5t8buUUUb8ksgUlowTavNGVg6JLVuhXCSTbQobFb84rDeZX2gO6e8vtSNsT6iMJTnWHE3623mfO6JLVuhHEMcGGjzkSoB9P8j(akbOlILHfdDgzrGMZwQ5Zb4WKe9YNYN4dqhWucYpLpXhOuyD26hOUM6yM4ZuaNUm6JurmjS(9pqf4iLgyXcStFSTocylVpaCniyiQok0diNdOByELXhf6MfXYWcuOhUMkWXybzmw(Oq34A8d4Xed3fhRJaMVhO5SLA(CajX37n6LKpkbQobFrvgY)QJyo22a(iDDL)YvWHrxl2iJvlGt3)(C4k4WORfBKzkaJglaIIMjihlPcuxtniO5XMatiPOqES6ZnOcSLH8VnWIfw)(haPAOuNRDoWXfjmVRhk0umVpwvRfWRibOIvlaqByeBajtqU)KgvCDxCGQtWxd9XYxQJqp22a11uCfUykFIpGY11naHH5vg)gyXcStFSTocqyEASNsTd6QhayEnrHgUgemevxvOqtyEASNsTbK84XH7IJsaVIKH5y1cqv9xSOqFGbFjIvlWwgY)QJyokbK84r1((kmbhMGSmtbo)9VKFSo0ApSMk1C48TQwtt1KkaN3TU9Dqx9aaZRjk0W1GGHO6QcfAoVBD7BaFKUUYFv7KmwNRnWwgY)2al2a6uOqdLqIcTTmg8yGJuAGflS(9pas1qPox7CaFKUUYFhUMkwTasE8ixbhgDTyJmtbQobFb84rDe6X2gO6JLVuhXCMcuxtbeFVZ9qXQfqYJh1rmNPa0ypLA1rOhLahP0al2a6uOqdLqIcTTmg8yajpECyokbK84rDe6zkGhtauX6iWwgY)2alwGD6JT1rasq66k)vTtYyBdqxeldlAGfBaDkuOHsirH2wgdEmq1j4RMypLA1rOhBBGzrP0FozkGK5r0)bKZX6iGsND60bD84qVhLaoD)7p0zKfEVydqhyld5F1rOhLavNGVOkd5F1rOhBBaDdZRm(Oq3SiwgweqAQLHdqyyELXNlnwaStFSQulatWHrxl2miO5XMaN5EGZOc4XedZX6iaJgliDySxSQwlGt3)(CAGflWo9X26iajXQfWP7FFoQDsMPaKG01v(lxbhgDTyJmwTa11uQrW2ae9Y)nzta]] )
+
+
+    ns.initializeClassModule = HunterInit
 
 end

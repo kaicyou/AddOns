@@ -16,7 +16,13 @@ local getSpecializationID = ns.getSpecializationID
 
 local escapeMagic = ns.escapeMagic
 local formatKey = ns.formatKey
+local orderedPairs = ns.orderedPairs
 local tableCopy = ns.tableCopy
+
+
+local LDB = LibStub( "LibDataBroker-1.1", true )
+local LDBIcon = LibStub( "LibDBIcon-1.0", true )
+
 
 -- Default Table
 function Hekili:GetDefaults()
@@ -27,14 +33,11 @@ function Hekili:GetDefaults()
       Legion = true,
       Enabled = true,
       Locked = true,
-      Debug = false,
-
-      PauseSnapshot = true,
+      MinimapIcon = false, -- true == hide
 
       ['Switch Type'] = 0,
       ['Mode Status'] = 3,
       Interrupts = false,
-      Hardcasts = true,
 
       Clash = 0,
       ['Audit Targets'] = 6,
@@ -57,7 +60,15 @@ function Hekili:GetDefaults()
       },
       runOnce = {
       },
-    }
+
+
+      blacklist = {
+      },
+
+      iconStore = {
+        hide = false,
+      },
+    },
   }
 
   return defaults
@@ -90,8 +101,8 @@ local defaultAPLs = {
 
 -- One Time Fixes
 local oneTimeFixes = {
-    turnOffDebug_04022017 = function( profile )
-        profile.Debug = false
+    turnOffDebug_04162017 = function( profile )
+        profile.Debug = nil
     end,
 
     attachDefaultAPLs_04022017 = function( profile )
@@ -142,7 +153,7 @@ local oneTimeFixes = {
         end
     end,
 
-    spruceUpActionListNames_04142017 = function( profile )
+    spruceUpActionListNames_04162017 = function( profile )
         for _, list in ipairs( profile.actionLists ) do
             for _, entry in ipairs( list.Actions ) do
                 if entry.Args and entry.Args:match( "name=" ) then
@@ -3381,6 +3392,33 @@ ns.ClassSettings = function ()
     option.args.settings.args[ setting.name ].order = i
   end
 
+  option.args.exclusions = {
+    type = 'group',
+    name = 'Exclusions',
+    order = 30,
+    inline = true,
+    args = {},
+  }
+
+  local abilities = {}  
+  for _, v in pairs( class.abilities ) do
+    if v.id > 0 then
+        abilities[ v.name ] = v.key
+    end
+  end
+
+  local i = 1
+  for k, v in orderedPairs( abilities ) do
+    option.args.exclusions.args[ v ] = {
+        type = 'toggle',
+        name = k,
+        desc = "If checked, this ability will be excluded from the addon's recommendations.",
+        -- width = 'full',
+        order = i
+    }
+    i = i + 1
+  end
+
   return option
 
 end
@@ -3596,6 +3634,7 @@ ns.SimulationCraftImporter = function ()
             if action:sub( 1, 6 ) == "potion" then
                 local pot = action:match( "name=(.-),")
                 pot = pot or action:match( "name=(.-)$" )
+                pot = pot or class.potion or ""
                 action = action:gsub( pot, "\""..pot.."\"" )
             end
               
@@ -4114,10 +4153,10 @@ function Hekili:GetOptions()
             desc = "Locks or unlocks all displays for movement, except when the options window is open.",
             order = 2
           },
-          Debug = {
+          MinimapIcon = {
             type = "toggle",
-            name = "Debug",
-            desc = "If checked, the addon will collect additional information that you can view by pausing the addon and placing your mouse over your displayed abilities.",
+            name = "Hide Minimap Icon",
+            desc = "If checked, the minimap icon will be hidden.",
             order = 3
           },
           ['Counter'] = {
@@ -4264,7 +4303,7 @@ function Hekili:GetOptions()
         name = "Notifications",
         childGroups = "tree",
         cmdHidden = true,
-        order = 40,
+        order = 70,
         args = {
           ['Notification Enabled'] = {
             type = 'toggle',
@@ -4610,12 +4649,7 @@ function Hekili:GetOptions()
                 type = 'toggle',
                 name = 'Pause',
                 order = 11,
-              },
-              PauseSnapshot = {
-                type = 'toggle',
-                name = 'Snapshot Only',
-                desc = "If checked, the addon will only take a snapshot when the Pause key is tapped, rather than freezing the display.",
-                order = 12,
+                width = "double"
               },
               HEKILI_TOGGLE_MODE = {
                 type = 'keybinding',
@@ -4921,7 +4955,7 @@ function Hekili:GetOptions()
       },
       snapshots = {
         type = "group",
-        name = "Debug Snapshots",
+        name = "Snapshots",
         order = 70,
         args = {
 
@@ -5080,13 +5114,15 @@ function Hekili:TotalRefresh()
       Hekili.DB.profile['Class Option: '..v.name] = v.state
     end
   end
-  
+
   ns.convertDisplays()
   ns.runOneTimeFixes()
   ns.checkImports()
   ns.refreshOptions()
   ns.buildUI()
   ns.overrideBinds()
+
+  LibStub("LibDBIcon-1.0"):Refresh( "Hekili", self.DB.profile.iconStore )
 
 end
 
@@ -5159,6 +5195,9 @@ function Hekili:GetOption( info, input )
 
     elseif info[2] == 'settings' then
       return profile['Class Option: '..option]
+
+    elseif info[2] == 'exclusions' then
+      return profile.blacklist[ option ]
 
     end
 
@@ -5318,7 +5357,19 @@ function Hekili:SetOption( info, input, ... )
         for i, v in ipairs( ns.UI.Buttons ) do
           ns.UI.Buttons[i][1]:EnableMouse( not input )
         end
+        ns.UI.Notification:EnableMouse( not input )
       end
+
+    elseif option == 'MinimapIcon' then
+        profile.iconStore.hide = input
+
+        if LDBIcon then
+            if input then
+                LDBIcon:Hide( "Hekili" )
+            else
+                LDBIcon:Show( "Hekili" )
+            end
+        end
 
     elseif option == 'Audit Targets' or option == 'Updates Per Second' then
       return
@@ -5341,6 +5392,10 @@ function Hekili:SetOption( info, input, ... )
 
     elseif subcategory == 'settings' then
       profile[ 'Class Option: '..option] = input
+
+    elseif subcategory == 'exclusions' then
+      profile.blacklist[ option ] = input
+      ns.forceUpdate()
 
     end
 
@@ -5374,9 +5429,6 @@ function Hekili:SetOption( info, input, ... )
     elseif option == 'Pause' then
       profile[option] = revert
       self:TogglePause()
-      return
-
-    elseif option == 'PauseSnapshot' then
       return
 
     elseif option == 'Cooldowns' then
@@ -5741,6 +5793,8 @@ function Hekili:SetOption( info, input, ... )
     if RebuildCache and not RebuildUI then ns.cacheCriteria() end
   end
 
+  if ns.UI.Minimap then ns.UI.Minimap:RefreshDataText() end
+
   if Select then
     ns.lib.AceConfigDialog:SelectGroup( "Hekili", category, info[2], Select )
   end
@@ -5782,6 +5836,9 @@ function Hekili:CmdLine( input )
     LibStub( "AceConfigCmd-3.0" ):HandleCommand( "hekili", "Hekili", input )
   end
 end
+
+
+
 
 
 
@@ -6063,7 +6120,8 @@ local function sanitize( segment, i, line, warnings )
 
   if i == nil then return i end
 
-  local operators = { [">"] = true,
+  local operators = {
+    [">"] = true,
     ["<"] = true,
     ["="] = true,
     ["~"] = true,
@@ -6073,7 +6131,8 @@ local function sanitize( segment, i, line, warnings )
     ["*"] = true
   }
   
-  local maths = { ['+'] = true,
+  local maths = {
+    ['+'] = true,
     ['-'] = true,
     ['*'] = true,
     ['%%'] = true
@@ -6122,8 +6181,7 @@ local function sanitize( segment, i, line, warnings )
     end
 
   end
-
-  
+ 
 
   i, times = i:gsub( "pet%.%w+%.([%w_]+)%.", "%1." )
   if times > 0 then
@@ -6138,6 +6196,78 @@ local function sanitize( segment, i, line, warnings )
   i, times = i:gsub( "gcd%.remains", "cooldown.global_cooldown.remains" )
   if times > 0 then
     table.insert( warnings, "Line " .. line .. ": Converted gcd.remains to cooldown.global_cooldown.remains (" .. times .. "x)." )
+  end
+
+  i, times = i:gsub( "[!+-%*]?raid_event[.a-z0-9_><=~%-%+*]+", "" )
+  if times > 0 then
+    table.insert( warnings, "Line " .. line .. ": Removed 'raid_event' check(s) (" .. times .. "x)." )
+
+    local cleaning = true
+    i = i:gsub( "||", "|" )
+    while( cleaning ) do
+
+        cleaning = false
+        i, times = i:gsub( "%(%)", "" )
+        cleaning = cleaning or times > 0
+
+        i, times = i:gsub( "^[|&]+", "" )
+        cleaning = cleaning or times > 0
+
+        i, times = i:gsub( "[|&]+$", "" )
+        cleaning = cleaning or times > 0
+
+        i, times = i:gsub( "%([|&]+", "(" )
+        cleaning = cleaning or times > 0
+
+        i, times = i:gsub( "[|&]+%)", ")" )
+        cleaning = cleaning or times > 0
+
+        i = i:gsub( "||", "|" )
+        i = i:gsub( "|&", "|" )
+        i = i:gsub( "&|", "|" )
+        i = i:gsub( "&&", "&" )
+
+        -- i, times = i:gsub( "([|&])[|&]", "%1" )
+        -- cleaning = cleaning or times > 0
+
+    end
+    i = i:gsub( "|", "||" )
+  end
+
+
+  i, times = i:gsub( "desired_targets", "1" )
+  if times > 0 then
+    table.insert( warnings, "Line " .. line .. ": Replaced 'desired_targets' with '1' (" .. times .. "x)." )
+  end
+
+  i, times = i:gsub( "min:[a-z0-9_%+%-%%]", "" )
+  if times > 0 then
+    table.insert( warnings, "Line " .. line .. ": Removed min:X check (not available in emulation) -- (" .. times .. "x)." )
+  end
+
+  i, times = i:gsub( "max:[a-z0-9_%+%-%%]", "" )
+  if times > 0 then
+    table.insert( warnings, "Line " .. line .. ": Removed max:X check (not available in emulation) -- (" .. times .. "x)." )
+  end
+
+  i, times = i:gsub( "buff.out_of_range.up", "target.in_range" )
+  if times > 0 then
+    table.insert( warnings, "Line " .. line .. ": Replaced 'buff.out_of_range.up' with 'target.in_range' (" .. times .. "x)." )
+  end
+
+  i, times = i:gsub( "buff.out_of_range.down", "!target.in_range" )
+  if times > 0 then
+    table.insert( warnings, "Line " .. line .. ": Replaced 'buff.out_of_range.down' with '!target.in_range' (" .. times .. "x)." )
+  end
+
+  i, times = i:gsub( "movement.distance", "target.distance" )
+  if times > 0 then
+    table.insert( warnings, "Line " .. line .. ": Replaced 'movement.distance' with 'target.distance' (" .. times .. "x)." )
+  end
+
+  i, times = i:gsub( "buff.metamorphosis.extended_by_demonic", "buff.demonic_extended_metamorphosis.up" )
+  if times > 0 then
+    table.insert( warnings, "Line " .. line .. ": Replaced 'buff.metamorphosis.extended_by_demonic' with 'buff.demonic_extended_metamorphosis.up' (" .. times .. "x)." )
   end
 
   --[[ i, times = i:gsub( "spell_targets%.[a-zA-Z0-9_]+", "active_enemies" )
@@ -6556,9 +6686,11 @@ local function storeModifier( entry, key, value )
         entry.ModName = value:match( [["(.*)"]] ) or value
         entry.ModVarName = value:match( [["(.*)"]] ) or value
 
-
     elseif key == 'value' then -- for 'variable' type, overwrites Script
         entry.Script = value
+
+    elseif key == 'target_if' then
+        entry.TargetIf = value
 
     end
 
@@ -6598,7 +6730,7 @@ function Hekili:ImportSimulationCraftActionList( str, enemies )
             end
         end
 
-        for token in i:gmatch( 'spell_targets%.[%a_]+' ) do
+        for token in i:gmatch( 'spell_targets[.%a_]-' ) do
 
             local times = 0
             while (i:find(token)) do
@@ -6658,6 +6790,11 @@ function Hekili:ImportSimulationCraftActionList( str, enemies )
 
         end
 
+        if result.Script and result.TargetIf then
+            -- We merge these and don't really use it for target swapping.
+            result.Script = format( "(%s)&(%s)", result.Script, result.TargetIf )
+        end
+
         if result.Script then
             result.Script = sanitize( 'c', result.Script, line, warnings )
         end
@@ -6678,7 +6815,7 @@ local forceUpdate = ns.forceUpdate
 local warnOnce = false
 
 -- Key Bindings
-function Hekili:TogglePause()
+function Hekili:TogglePause( ... )
 
     if not self.Pause then
         Hekili.ActiveDebug = true
@@ -6695,11 +6832,9 @@ function Hekili:TogglePause()
         end
     end
 
-    if not Hekili.DB.profile.PauseSnapshot or self.Pause then
-        self.Pause = not self.Pause
-    end
+    self.Pause = not self.Pause
 
-    local MouseInteract = ( self.DB.profile.Debug and self.Pause ) or self.Config or ( not Hekili.DB.profile.Locked )
+    local MouseInteract = ( self.Pause ) or self.Config or ( not Hekili.DB.profile.Locked )
 
     for i = 1, #ns.UI.Buttons do
         for j = 1, #ns.UI.Buttons[i] do
@@ -6707,10 +6842,8 @@ function Hekili:TogglePause()
         end
     end
 
-    if not Hekili.DB.profile.PauseSnapshot then
-        Hekili:Print( (not self.Pause and "UN" or "") .. "PAUSED." )
-        Hekili:Notify( (not self.Pause and "UN" or "") .. "PAUSED" )
-    end
+    Hekili:Print( (not self.Pause and "UN" or "") .. "PAUSED." )
+    Hekili:Notify( (not self.Pause and "UN" or "") .. "PAUSED" )
     
     forceUpdate()
 end
@@ -6758,6 +6891,7 @@ function Hekili:ToggleMode()
   Hekili:Notify( modeMsgs[ Hekili.DB.profile['Mode Status'] ].n )
 
   if WeakAuras then WeakAuras.ScanEvents( 'HEKILI_TOGGLE_MODE', Hekili.DB.profile['Mode Status'] ) end
+  if ns.UI.Minimap then ns.UI.Minimap:RefreshDataText() end
 
   forceUpdate( "HEKILI_TOGGLE_MODE", true )
 end
@@ -6767,7 +6901,10 @@ function Hekili:ToggleInterrupts()
   Hekili.DB.profile.Interrupts = not Hekili.DB.profile.Interrupts
   Hekili:Print( Hekili.DB.profile.Interrupts and "Interrupts |cFF00FF00ENABLED|r." or "Interrupts |cFFFF0000DISABLED|r." )
   Hekili:Notify( "Interrupts " .. ( Hekili.DB.profile.Interrupts and "ON" or "OFF" ) )
+
   if WeakAuras then WeakAuras.ScanEvents( 'HEKILI_TOGGLE_INTERRUPTS', Hekili.DB.profile.Interrupts ) end
+  if ns.UI.Minimap then ns.UI.Minimap:RefreshDataText() end
+
 
   forceUpdate( "HEKILI_TOGGLE_INTERRUPTS", true )
 end
@@ -6777,7 +6914,9 @@ function Hekili:ToggleCooldowns()
   Hekili.DB.profile.Cooldowns = not Hekili.DB.profile.Cooldowns
   Hekili:Print( Hekili.DB.profile.Cooldowns and "Cooldowns |cFF00FF00ENABLED|r." or "Cooldowns |cFFFF0000DISABLED|r." )
   Hekili:Notify( "Cooldowns " .. ( Hekili.DB.profile.Cooldowns and "ON" or "OFF" ) )
+
   if WeakAuras then WeakAuras.ScanEvents( 'HEKILI_TOGGLE_COOLDOWNS', Hekili.DB.profile.Cooldowns ) end
+  if ns.UI.Minimap then ns.UI.Minimap:RefreshDataText() end
 
   forceUpdate( "HEKILI_TOGGLE_COOLDOWNS", true )
 end
@@ -6787,9 +6926,24 @@ function Hekili:TogglePotions()
   Hekili.DB.profile.Potions = not Hekili.DB.profile.Potions
   Hekili:Print( Hekili.DB.profile.Potions and "Potions |cFF00FF00ENABLED|r." or "Potions |cFFFF0000DISABLED|r." )
   Hekili:Notify( "Potions " .. ( Hekili.DB.profile.Potions and "ON" or "OFF" ) )
+
   if WeakAuras then WeakAuras.ScanEvents( 'HEKILI_TOGGLE_POTIONS', Hekili.DB.profile.Potions ) end
+  if ns.UI.Minimap then ns.UI.Minimap:RefreshDataText() end
 
   forceUpdate( "HEKILI_TOGGLE_POTIONS", true )
+end
+
+
+function Hekili:ToggleCustom( num )
+  Hekili.DB.profile['Toggle_' .. num] = not Hekili.DB.profile['Toggle_' .. num]
+
+  if Hekili.DB.profile['Toggle ' .. num .. ' Name'] then
+    Hekili:Print( Hekili.DB.profile['Toggle_' .. num] and ( 'Toggle \'' .. Hekili.DB.profile['Toggle ' .. num .. ' Name'] .. "' |cFF00FF00ENABLED|r." ) or ( 'Toggle \'' .. Hekili.DB.profile['Toggle ' .. num .. ' Name'] .. "' |cFFFF0000DISABLED|r." ) )
+    Hekili:Notify( Hekili.DB.profile['Toggle_' .. num] and ( Hekili.DB.profile['Toggle ' .. num .. ' Name']:gsub("^%l", string.upper) .. " ON" ) or ( Hekili.DB.profile['Toggle ' .. num .. ' Name']:gsub("^%l", string.upper) .. " OFF" ) )
+  else
+    Hekili:Print( Hekili.DB.profile['Toggle_' .. num] and ( "Custom Toggle #" .. num .. " |cFF00FF00ENABLED|r." ) or ( "Custom Toggle #" .. num .. " |cFFFF0000DISABLED|r." ) )
+    Hekili:Notify( Hekili.DB.profile['Toggle_' .. num] and ( "Toggle #" .. num .. " ON" ) or ( "Toggle #" .. num .. " OFF" ) )
+  end
 end
 
 

@@ -60,13 +60,37 @@
 					<Color r="1" g="1" b="1"/>
 				</FontString>
 
+				<FontString name="FactionAddictRewardTxt" parentKey="RewardTxt" inherits="GameFontNormal" justifyH="LEFT" justifyV="TOP" spacing="2">
+					<Size>
+						<AbsDimension x="250" y="0"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent_FactionPctTxtInfoWin" relativePoint="BOTTOMLEFT" x="0" y="-17"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+				<Texture name="FactionAddictRewardIcon" parentKey="RewardIcon">
+					<Size x="32" y="32"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="FactionAddictRewardTxt" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
+					</Anchors>
+				</Texture>
+				<FontString name="FactionAddictRewardName" parentKey="RewardName" inherits="GameFontNormalMed2" justifyH="LEFT" justifyV="TOP" spacing="2">
+					<Size>
+						<AbsDimension x="250" y="0"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="FactionAddictRewardIcon" relativePoint="TOPRIGHT" x="8" y="0"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
 
 				<FontString name="FactionAddictFactionDescTxt" parentKey="DescTxt" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" spacing="2">
 					<Size>
 						<AbsDimension x="250" y="0"/>
 					</Size>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parent_FactionPctTxtInfoWin" relativePoint="BOTTOMLEFT" x="0" y="-17"/>
+						<Anchor point="TOPLEFT" relativeTo="FactionAddictRewardIcon" relativePoint="BOTTOMLEFT" x="0" y="0"/>
 					</Anchors>
 					<Color r="1" g="1" b="1"/>
 				</FontString>
@@ -91,6 +115,12 @@
 							</Offset>
 						</Anchor>
 					</Anchors>	
+				</Texture>
+				<Texture parentKey="RewardIconBorder" file="Interface\Common\WhiteIconFrame" hidden="true">
+					<Size x="32" y="32"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeTo="FactionAddictRewardIcon" />
+					</Anchors>
 				</Texture>
 			</Layer>
 		</Layers>

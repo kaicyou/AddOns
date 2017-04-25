@@ -66,8 +66,11 @@ function ns.StartEventHandler()
 
         local updatePeriod = state.combat == 0 and 1 or ( 1 / ( Hekili.DB.profile['Updates Per Second'] or 5 ) )
 
+        local forced = false
+
         for i = 1, #Hekili.DB.profile.displays do
-            if not displayUpdates[i] then
+            if not displayUpdates[i] then 
+                -- if not forced then print( now, "Updating." ); forced = true; end
                 Hekili:ProcessHooks( i )
                 lastRefresh[i] = now
 
@@ -244,7 +247,10 @@ function ns.updateArtifact()
     if success then    
         if data.traits then
             for key, trait in pairs( data.traits ) do
-                local name, rank = formatKey( trait.name ), trait.currentRank
+                local id, rank = trait.spellID, trait.currentRank
+
+                local name = class.traits[ id ] or formatKey( trait.name )
+                
                 artifact[ name ] = rawget( artifact, name ) or {}
                 artifact[ name ].rank = rank
             end
@@ -294,6 +300,10 @@ RegisterEvent( "ENCOUNTER_END", function () state.boss = false end )
 local gearInitialized = false
 
 ns.updateGear = function ()
+
+    for thing in pairs( state.set_bonus ) do
+        state.set_bonus[ thing ] = nil
+    end
 
     for set, items in pairs( class.gearsets ) do
         state.set_bonus[ set ] = 0
@@ -408,8 +418,8 @@ end
 
 
 RegisterEvent( "PLAYER_EQUIPMENT_CHANGED", function()
-        ns.updateGear()
-        -- ns.updateArtifact()
+    ns.updateGear()
+    -- ns.updateArtifact()
 end )
 
 
@@ -446,6 +456,8 @@ local castsOn, castsOff, castsAll = ns.castsOn, ns.castsOff, ns.castsAll
 
 
 local function forceUpdate( from, super )
+
+    -- print( GetTime(), from or "NONE", tostring( super ) )
 
     for i = 1, #Hekili.DB.profile.displays do
         displayUpdates[ i ] = nil
@@ -522,11 +534,11 @@ end
 
 
 -- Need to make caching system.
-RegisterUnitEvent( "UNIT_SPELLCAST_SUCCEEDED", function( event, unit, spell, _, _, spellID )
-    if unit == 'player' then forceUpdate( event, true ) end
-end )
+--[[ RegisterUnitEvent( "UNIT_SPELLCAST_SUCCEEDED", function( event, unit, spell, _, _, spellID )
+    if unit == 'player' then forceUpdate( event, spell ) end
+end ) ]]
 
--- RegisterUnitEvent( "UNIT_SPELLCAST_START", spellcastEvents, 'player' )
+-- RegisterUnitEvent( "UNIT_SPELLCAST_START", forceUpdate, 'player' )
 
 
 --[[ WiP - Fire quicker on UNIT_SPELLCAST_SUCCEEDED, but be prepared to revise the cast queue.
@@ -652,7 +664,7 @@ local autoAuraKey = setmetatable( {}, {
 RegisterUnitEvent( "UNIT_AURA", function( event, unit )
     if unit == 'player' then
         state.player.updated = true
-        forceUpdate( event, true )
+        -- forceUpdate( event, true )
     else
         state.target.updated = true
     end
@@ -902,6 +914,15 @@ local function StoreKeybindInfo( key, aType, id )
         keys[ ability ].binding = lower( improvedGetBindingText( key ) )
         keys[ ability ].upper = upper( keys[ ability ].binding )
         updatedKeys[ ability ] = true
+
+        if ability.bind then
+            local bind = ability.bind
+
+            keys[ bind ] = keys[ bind ] or {}
+            keys[ bind ].binding = keys[ ability ].binding
+            keys[ bind ].upper = keys[ ability ].upper
+            updatedKeys[ bind ] = true
+        end
     end
 end        
 
@@ -944,15 +965,29 @@ local function ReadKeybindings()
         if not updatedKeys[ k ] then keys[ k ] = nil end
     end
 
+    for k in pairs( keys ) do
+        local ability = class.abilities[ k ]
+
+        if ability and ability.bind then
+            keys[ ability.bind ] = keys[ k ]
+        end
+    end
+
 end    
+
+
+ns.ReadKeybindings = ReadKeybindings
 
 
 RegisterEvent( "UPDATE_BINDINGS", ReadKeybindings )
 RegisterEvent( "PLAYER_ENTERING_WORLD", ReadKeybindings )
 RegisterEvent( "ACTIONBAR_SLOT_CHANGED", ReadKeybindings )
 RegisterEvent( "ACTIONBAR_SHOWGRID", ReadKeybindings )
+RegisterEvent( "UPDATE_SHAPESHIFT_FORM", ReadKeybindings )
 
 
 function Hekili:GetBindingForAction( key, caps )
     return ( key and keys[ key ] ) and ( caps and keys[ key ].upper or keys[ key ].binding ) or ""
 end
+
+

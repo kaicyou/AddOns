@@ -67,6 +67,11 @@ local overrideInitialized = false
 
 ns.overrideBinds = function()
 
+    if InCombatLockdown() then
+        C_Timer.After( 5, ns.overrideBinds )
+        return
+    end
+
     if overrideInitialized then
         ClearOverrideBindings( Hekili_Keyhandler )
     end 
@@ -139,8 +144,16 @@ ns.setClass = function( name ) class.file = name end
 
 class.artifacts = {}
 
-ns.setArtifact = function( name, remove )
+function ns.setArtifact( name, remove )
     class.artifacts[ name ] = remove and false or true
+end
+
+
+class.traits = {}
+
+function ns.addTrait( key, id )
+    class.traits[ key ] = id
+    class.traits[ id ] = key
 end
 
 
@@ -624,9 +637,10 @@ addAura( 'casting', -10, 'feign', function()
 
     debuff.casting.count = 0
     debuff.casting.expires = 0
-    debuff.csating.applied = 0
+    debuff.casting.applied = 0
     debuff.casting.caster = 'unknown'
 end )
+
 
 
 
@@ -2098,10 +2112,10 @@ end
 
 
 function Hekili.RetrieveFromNamespace( key )
-    return ns[ key ]
+    return nil
 end
 
 
 function Hekili.StoreInNamespace( key, value )
-    ns[ key ] = value
+    -- ns[ key ] = value
 end

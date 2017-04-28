@@ -1,4 +1,16 @@
 ------------------------------------------------------------------------
+r179 | thaoky.altoholic@yahoo.com | 2017-04-28 12:39:46 -0500 (Fri, 28 Apr 2017) | 1 line
+Changed paths:
+   M /trunk/Core.lua
+   M /trunk/Frames/TabOptions.lua
+   M /trunk/Modules/Altoholic_Achievements/Frames/Achievements.lua
+   M /trunk/Modules/Altoholic_Grids/Grid_Reputations.lua
+   M /trunk/Modules/Altoholic_Summary/AccountSummary.lua
+   M /trunk/changelog.txt
+   M /trunk/locale.xml
+
+7.2.002 Commit
+------------------------------------------------------------------------
 r178 | thaoky.altoholic@yahoo.com | 2017-03-29 14:37:31 -0500 (Wed, 29 Mar 2017) | 1 line
 Changed paths:
    M /trunk/Altoholic.lua
@@ -2222,13 +2234,5 @@ Changed paths:
    M /trunk/Frames/Mails.lua
 
 Fixed an accidental replacement of "Altoholic" with "addon"
-------------------------------------------------------------------------
-r78 | thaoky | 2010-02-07 10:44:55 -0600 (Sun, 07 Feb 2010) | 1 line
-Changed paths:
-   M /trunk/Altoholic.lua
-   M /trunk/Core.lua
-   M /trunk/Tooltip.lua
-
-Fixed tooltip for the new option icons.
 ------------------------------------------------------------------------
 

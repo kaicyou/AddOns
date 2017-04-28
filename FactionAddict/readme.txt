@@ -4,7 +4,7 @@
 -- Desc: Addon for World of Warcraft
 --
 -- Author: gmz323(Greg)
--- current version: v1.42
+-- current version: v1.43
 -- (c) 2011-2017
 --
 =============================================================================
@@ -40,6 +40,7 @@ Features:
 * Faction info panel - click on a faction in the addon to see more specific info.
 * Exalted Count - Shows count of exalted factions and how many required for next achievement.
 * Exalted Achievements Tooltip - Show which character earned which achievement on what date
+* Paragon Information - shows info and progress towards next Paragon
 * Display Ordering - Faction display can be ordered by % to exalted or faction name
 * Display Filtering - Faction display can be filtered by standing, expansion, alliance/horde only
 * Auto-Change Reputation Bar - reputation bar will auto-change to faction that had last gain
@@ -67,6 +68,12 @@ My Other Addons:
 
 Changelog:
 ==========
+
+v1.43 (2017-04-27)
+------------------
+* Logging of Paragon Rep gains - the logging tab will now include your paragon rep gains. 
+* Reward Bag Icons added to UI - the same reward bag icons (and reward available indicator) is now part of the faction display
+* Please report any issues you run into. I've only been able to do minimal testing as I don't have many Legion factions at Exalted to test with.
 
 v1.42 (2017-04-25)
 ------------------

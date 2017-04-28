@@ -37,6 +37,7 @@
 --			function FactionAddict_DisplayTooltip(self)
 --			local function fa_GetDDConfigValue(param)
 --			local function fa_SetDDConfigValue(self, arg1, arg2, checked)
+--          local function fa_UpdateParagonLogValue()
 --			function FactionAddict_AchText_OnEnter(self)
 --			function FactionAddict_ScrollBar_Update()
 --			function FactionAddict_LogEntry_OnClick(self)
@@ -68,7 +69,7 @@
 
 
 -- Constants
-local FACTION_ADDICT_VERSION = "1.42"
+local FACTION_ADDICT_VERSION = "1.43"
 local FACTION_ADDICT_LOGGING_VERSION = 1
 local FACTION_ADDICT_LOGGING_DAYS = 20
 local GUILD_FACTION_ID = 1168
@@ -175,10 +176,11 @@ SlashCmdList["FACTIONADDICT"] = function(msg, editbox)
 end
 
 -- example message: Reputation with Lower City increased by 300.
+-- example generic: Reputation with The Nightfallen increased.
 -- globalstrings - FACTION_STANDING_DECREASED - FACTION_STANDING_INCREASED 
 local pattern_standing_inc = string.gsub(string.gsub(FACTION_STANDING_INCREASED, "(%%s)", "(.+)"), "(%%d)", "(%%d+)")
 local pattern_standing_dec = string.gsub(string.gsub(FACTION_STANDING_DECREASED, "(%%s)", "(.+)"), "(%%d)", "(%%d+)")
-
+local pattern_standing_inc_generic = string.gsub(FACTION_STANDING_INCREASED_GENERIC, "(%%s)", "(.+)")
 
 -----------------------------------------------------------------------------
 -- Sorts table keys
@@ -722,6 +724,13 @@ end
 --      column 12 - faction category
 --      column 13 - hasBonusRepGain
 --      column 14 - canBeLFGBonus
+--
+--  global tempAllParagonData
+--      column 1 - current paragon value
+--      column 2 - paragon threshold - max
+--      column 3 - paragon quest id
+--      column 4 - paragon reward pending flag
+--      column 5 - paragon logging value
 -----------------------------------------------------------------------------
 local function fa_PopulateAllFactionDataTable()
 
@@ -793,6 +802,7 @@ local function fa_PopulateAllFactionDataTable()
                 tempAllParagonData[faFactionData[maintableRow][1]][3] = paraQuestId
                 -- column 4 - paragon reward pending flag
                 tempAllParagonData[faFactionData[maintableRow][1]][4] = paraRewardPending
+                -- column 5 - paragon logging value - set in PLAYER_LOGIN and modified in CHAT_MSG_COMBAT_FACTION_CHANGE
             end
             -- END PARAGON REP
 
@@ -1218,6 +1228,26 @@ end
 
 
 -----------------------------------------------------------------------------
+-- Set the stored Paragon Log Value (total)
+--
+-- assumption: tempAllParagonData has been initially populated
+-----------------------------------------------------------------------------
+local function fa_UpdateParagonLogValue()
+
+    -- column 1 - current paragon value
+    -- column 2 - paragon threshold - max
+    -- column 3 - paragon quest id
+    -- column 4 - paragon reward pending flag
+    -- column 5 - paragon logging value
+
+    for key,value in pairs(tempAllParagonData) do      
+        -- copy paraValue to logging value
+        tempAllParagonData[key][5] = tempAllParagonData[key][1]
+        fa_DebugOut("FactionID: " .. key .. " - Initial Paragon: " .. tempAllParagonData[key][5])
+    end
+end 
+
+-----------------------------------------------------------------------------
 -- Handles OnEnter event from xml. Shows a tooltip.
 -----------------------------------------------------------------------------
 function FactionAddict_AchText_OnEnter(self)
@@ -1326,7 +1356,7 @@ function FactionAddict_ScrollBar_Update()
 			getglobal("FactionAddictEntry"..line).FAReputationBar:SetValue(tempDisplayData[lineplusoffset][7])
 			getglobal("FactionAddictEntry"..line).FAReputationBar:Show()
 			
-			-- set color
+			-- set bar color
             if (tempDisplayData[lineplusoffset][4] == 9) then
                 color = FACTION_ADDICT_PARAGON_COLOR
             else
@@ -1347,6 +1377,15 @@ function FactionAddict_ScrollBar_Update()
 			else
 				getglobal("FactionAddictEntry"..line).FAReputationBar.FABonusIcon:Hide()
 			end
+
+            -- set paragon reward icon
+            if (tempDisplayData[lineplusoffset][4] == 9) then
+                getglobal("FactionAddictEntry"..line).FAReputationBar.FAParagonIcon:Show()
+                getglobal("FactionAddictEntry"..line).FAReputationBar.FAParagonIcon.Glow:SetShown(tempAllParagonData[tempDisplayData[lineplusoffset][1]][4])
+                getglobal("FactionAddictEntry"..line).FAReputationBar.FAParagonIcon.Check:SetShown(tempAllParagonData[tempDisplayData[lineplusoffset][1]][4])
+            else
+                getglobal("FactionAddictEntry"..line).FAReputationBar.FAParagonIcon:Hide()
+            end
 
 			-- set LFG Bonus Rep button
 			if (fa_IsFactionInReputationDisplay(tempDisplayData[lineplusoffset][1])) then 
@@ -1401,6 +1440,7 @@ function FactionAddict_ScrollBar_Update()
 			getglobal("FactionAddictEntry"..line).FactionPctTxt:Hide()
 			getglobal("FactionAddictEntry"..line).FAReputationBar:Hide()
 			getglobal("FactionAddictEntry"..line).FAReputationBar.FABonusIcon:Hide()
+            getglobal("FactionAddictEntry"..line).FAReputationBar.FAParagonIcon:Hide()
 			getglobal("FactionAddictEntry"..line).SideFactionIcon:Hide()
 			getglobal("FactionAddictEntry"..line).ExpansionIcon:Hide()
 			getglobal("FactionAddictEntry"..line).FALFGBonusRepButton:Disable()
@@ -1841,6 +1881,10 @@ local function fa_InfoWindow_LoadInfo(self)
     if (tempAllFactionData[faClickedFactionName][4] == 9) then
 
         local itemName, itemTexture, quantity, quality, isUsable, itemID = GetQuestLogRewardInfo(1, tempAllParagonData[tempAllFactionData[faClickedFactionName][1]][3])
+        -- show status bar bag
+        self.StatusBar.FAParagonIcon:Show()
+        self.StatusBar.FAParagonIcon.Glow:SetShown(tempAllParagonData[tempAllFactionData[faClickedFactionName][1]][4])
+        self.StatusBar.FAParagonIcon.Check:SetShown(tempAllParagonData[tempAllFactionData[faClickedFactionName][1]][4])
         -- Reward Text
         self.RewardTxt:SetText(QUEST_REWARDS)
         self.RewardTxt:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
@@ -1860,10 +1904,11 @@ local function fa_InfoWindow_LoadInfo(self)
         totalHeight = totalHeight + self.RewardIcon:GetHeight()
     else
         -- Hide Elements
-       self.RewardTxt:Hide()
-       self.RewardIcon:Hide()
-       self.RewardIconBorder:Hide()
-       self.RewardName:Hide()
+        self.StatusBar.FAParagonIcon:Hide()
+        self.RewardTxt:Hide()
+        self.RewardIcon:Hide()
+        self.RewardIconBorder:Hide()
+        self.RewardName:Hide()
     end
     -- END PARAGON REP
 
@@ -2146,6 +2191,9 @@ function FactionAddict_OnEvent(self, event, ...)
 		fa_PopulateDisplayTable()
 		fa_DebugOut("Done with initial load.")
 
+        -- Set inital base level for logging
+        fa_UpdateParagonLogValue()
+
 		-- check if main window is displayed
 		if (frameFactionAddict:IsVisible()) then
 			-- order the display
@@ -2185,9 +2233,15 @@ function FactionAddict_OnEvent(self, event, ...)
 		-- If increase not found check for decrease
 		if (s1 == nil) then
 			s1, e1, faction, amount = string.find(arg1, pattern_standing_dec)
-			factionDecrease = true
+            if (s1 ~= nil) then
+			     factionDecrease = true
+            end
+        end
+        -- check for generic gain
+        if (s1 == nil) then
+            s1, e1, faction = string.find(arg1, pattern_standing_inc_generic)
 		end
-		
+
 		-- Seems to also be a case where this event will fire but not an UPDATE_FACTION
 		-- which causes main tables to not get updated
 		-- check if main window is displayed
@@ -2217,6 +2271,36 @@ function FactionAddict_OnEvent(self, event, ...)
 			fa_PopulateAllFactionDataTable()
 		end
 		
+        -- Might be PARAGON if amount is nil
+        if (amount == nil) then
+            fa_DebugOut("parsed amount: nil !!! - Possibly Paragon ")
+        end
+        if (faction ~= nil) then
+            fa_DebugOut("parsed name: " .. faction)
+        else
+            fa_DebugOut("parsed name: nil !!!")
+        end
+        
+        if (s1 ~= nil and amount == nil) then
+            -- see if there is a faction id
+            if (tempFactionIDsByName[faction] ~= nil) then 
+                fa_DebugOut("FactionIDByName: ".. tempFactionIDsByName[faction])
+                -- see if faction id is in paragon table
+                if (tempAllParagonData[tempFactionIDsByName[faction]][5]  ~= nil) then
+                    local paraValue, _, _, _ = C_Reputation.GetFactionParagonInfo(tempFactionIDsByName[faction])
+                    fa_DebugOut("New paragon value: " .. paraValue)
+                    -- difference
+                    local diff = paraValue - tempAllParagonData[tempFactionIDsByName[faction]][5]
+                    fa_DebugOut("Diff paragon value: " .. diff)
+                    if (diff > 0) then
+                        amount = diff
+                        fa_DebugOut("Set calculated amount: " .. amount)
+                        tempAllParagonData[tempFactionIDsByName[faction]][5] = paraValue
+                    end
+                end
+            end
+        end
+
 		-- Check that s1 is not nil before continuing
 		if (s1 ~= nil and amount ~= nil) then
 			local rep = tonumber(amount)

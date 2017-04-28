@@ -1,4 +1,12 @@
 ------------------------------------------------------------------------
+r41 | thaoky.altoholic@yahoo.com | 2017-04-28 12:33:29 -0500 (Fri, 28 Apr 2017) | 1 line
+Changed paths:
+   M /trunk/Options.lua
+   M /trunk/Options.xml
+   M /trunk/locale.xml
+
+udpated load order in locale.xml
+------------------------------------------------------------------------
 r40 | thaoky.altoholic@yahoo.com | 2017-03-29 14:26:17 -0500 (Wed, 29 Mar 2017) | 1 line
 Changed paths:
    M /trunk/DataStore_Quests.toc

@@ -1,16 +1,28 @@
-tag cbde0fe92aae2be2d3442f074aa8bbaf06acdf37 7.1.0.8
+tag 02fc4a604664643684b8df5cb35a2b1ffbfebb25 7.2.0.1
 Author:	James D. Callahan III <jcallahan@curse.com>
-Date:	Wed Jan 4 19:49:19 2017 -0600
+Date:	Tue May 2 11:05:10 2017 -0500
 
-commit 28b85d66e9b1065a44f3d5daa4eba4bb36f83982
-Author: sidji <codeguide@gmx.net>
-Date:   Wed Jan 4 17:33:19 2017 +0100
+commit c1638dbd75cfbad16171316a74f6dba4ffcd377e
+Author: James D. Callahan III <jcallahan@curse.com>
+Date:   Tue May 2 11:02:14 2017 -0500
 
-    added missing digsites and races
+    GetMapLandmarkInfo => C_WorldMap.GetMapLandmarkInfo
 
-commit 28b85d66e9b1065a44f3d5daa4eba4bb36f83982
-Author: sidji <codeguide@gmx.net>
-Date:   Wed Jan 4 17:33:19 2017 +0100
+commit 58faa9eb1186bd70d0a8f2b6753b1ad61f3458b9
+Author: MMOSimca <mmosimca@gmail.com>
+Date:   Sat Feb 4 21:00:28 2017 -0500
 
-    added missing digsites and races
+    Updated digsite races of Demon sites in Val'sharah; we previously assumed all Val'sharah digsites were Highborne Night Elf, which is not true.
+
+commit 92d068f7b6f77034caed3dae0a93c7c6f3a84af1
+Author: MMOSimca <mmosimca@gmail.com>
+Date:   Sat Feb 4 19:50:13 2017 -0500
+
+    Updated the coordinates for The Wildwood digsite in Val'sharah, which were apparently changed in Patch 7.1.5.
+
+commit 9caf1518e9ea37db817bae6549767db50c522018
+Author: Caleb Atherton <catherton@curse.com>
+Date:   Tue Jan 31 01:11:43 2017 -0500
+
+    Updated coordinates for Nor'daniel Wellspring digsite, which were apparently changed in Patch 7.1.5.
 

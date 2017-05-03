@@ -393,7 +393,7 @@
 						FauxScrollFrame_OnVerticalScroll(self, offset, 44, FactionAddict_ScrollBar_Update)
 					</OnVerticalScroll>
 					<OnShow>
-						FactionAddict_ScrollBar_Update()
+					<!-- not needed?	FactionAddict_ScrollBar_Update() -->
 					</OnShow>
 				</Scripts>
 			</ScrollFrame>

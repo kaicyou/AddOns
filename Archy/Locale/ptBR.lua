@@ -1,7 +1,7 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("Archy", "ptBR")
 if not L then return end
 
-L["\"Arrival Distance\""] = "Distancia do destino"
+L["\"Arrival Distance\""] = "Distância do destino"
 L["%d %ss in your inventory"] = "%d %s no seu inventário"
 L["%d Key stone sockets available"] = "%d Soquetes de pedras chave disponíveis."
 L["%d yards"] = "%d Jardas"
@@ -217,8 +217,8 @@ L["Show Crate Button"] = "Mostrar botão da caixa"
 L["Show Dig Site Boundaries on battlefield map"] = "Mostrar Fronteiras do Local de Escavação no Mapa de Batalha"
 L["Show Dig Site Boundaries on minimap"] = "Mostre o perímetro da área de escavação no minimapa"
 L["Show Dig Sites"] = "Mostre as áreas de escavação"
-L["Show Distance"] = "Mostra Distância"
-L["Show Distances"] = "Mostre as distancias"
+L["Show Distance"] = "Mostrar distância"
+L["Show Distances"] = "Mostrar as distâncias"
 L["Show Fragment Nodes"] = "Mostrar Nós de Fragmento"
 L["Show Lorewalker Items Button"] = "Mostrar botões de items de Historiadores"
 L["Show only the nearest dig site on the minimap"] = "Mostre no minimapa apenas a área de escavação mais próxima"

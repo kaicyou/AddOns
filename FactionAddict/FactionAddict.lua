@@ -16,7 +16,7 @@
 --			function fa_UpdateInactiveFactionsList() - Phanx
 --			function fa_SetWatchedFactionByID(watchID) - Phanx
 --			local function fa_BuildTooltipData()
---			local function fa_StandingTextByID(standingID)
+--			local function fa_StandingText(factionID, standingID)
 --			local function fa_GetNextAchievementValue(exaltedCount)
 --			local function fa_PopulateLoggingTable()
 --			local function fa_RollLogData()
@@ -69,7 +69,7 @@
 
 
 -- Constants
-local FACTION_ADDICT_VERSION = "1.43"
+local FACTION_ADDICT_VERSION = "1.44"
 local FACTION_ADDICT_LOGGING_VERSION = 1
 local FACTION_ADDICT_LOGGING_DAYS = 20
 local GUILD_FACTION_ID = 1168
@@ -246,7 +246,8 @@ local function fa_DebugOut(outString)
 		getglobal("ChatFrame"..(fa_FindChatWindow("DEBUG"))):AddMessage(prefixStr..outString)
 	end
 end
-
+-- Example debugstack
+-- ChatFrame1:AddMessage(debugstack(1, 8, 1))
 
 -----------------------------------------------------------------------------
 -- Shows all FactionAddictEntry rows.
@@ -438,18 +439,24 @@ end
 -- @param standingID  	standing value (1-8).
 -- @return 				standing text.
 -----------------------------------------------------------------------------
-local function fa_StandingTextByID(standingID)
+local function fa_StandingText(factionID, standingID)
 
-	local standingTxt
-	local postfixTxt
-	
-    if (standingID == 9) then
+	local standingTxt, friendID, friendTxtLevel
+
+    -- Check for friendshipRepuation text
+    if (factionID ~= nil) then
+        friendID, _, _, _, _, _, friendTextLevel, _, _ = GetFriendshipReputation(factionID)
+    end
+    -- Set friend text
+    if (friendID ~= nil) then
+        standingTxt = friendTextLevel
+    -- set paragon text
+    elseif (standingID == 9) then
         standingTxt = L.MISC_PARAGON_TXT
+    -- set normal standing level text
     else
         standingTxt = GetText("FACTION_STANDING_LABEL"..standingID, UnitSex("player"))
     end
-	
-
 	return(standingTxt)
 end
 
@@ -803,9 +810,29 @@ local function fa_PopulateAllFactionDataTable()
                 -- column 4 - paragon reward pending flag
                 tempAllParagonData[faFactionData[maintableRow][1]][4] = paraRewardPending
                 -- column 5 - paragon logging value - set in PLAYER_LOGIN and modified in CHAT_MSG_COMBAT_FACTION_CHANGE
+                -- ONLY set column 5 if it is nil - means faction became exalted since login
+                if (tempAllParagonData[faFactionData[maintableRow][1]][5] == nil) then
+                    tempAllParagonData[faFactionData[maintableRow][1]][5] = paraValue
+                end
             end
             -- END PARAGON REP
 
+            -- Determine if capped
+            if (standingID == 8) then
+                --barMin, barMax, barValue = 0, 1, 1
+                barMin = 0
+            end
+            -- check if this is a friendship faction 
+            local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(faFactionData[maintableRow][1])
+            if (friendID ~= nil) then
+                if ( nextFriendThreshold ) then
+                    barMin, barMax, barValue = friendThreshold, nextFriendThreshold, friendRep
+                else
+                    barMin, barMax, barValue = 0, friendMaxRep, friendRep
+                end
+            end
+
+            -- increase exalted count
 			if (standingID == 8 or standingID == 9) then
 				faNumFactionsExalted = faNumFactionsExalted + 1
 			end
@@ -1365,7 +1392,7 @@ function FactionAddict_ScrollBar_Update()
 			
 			getglobal("FactionAddictEntry"..line).FAReputationBar:SetStatusBarColor(color.r, color.g, color.b)
 			-- set progress bar text
-			getglobal("FactionAddictEntry"..line).FAReputationBar.text:SetText(fa_StandingTextByID(tempDisplayData[lineplusoffset][4]))
+			getglobal("FactionAddictEntry"..line).FAReputationBar.text:SetText(fa_StandingText(tempDisplayData[lineplusoffset][1],tempDisplayData[lineplusoffset][4]))
 			getglobal("FactionAddictEntry"..line).FAReputationBar.text:Show()
 			
 			getglobal("FactionAddictEntry"..line).FAReputationBar.text2:SetText(fa_SetStatusBarText(lineplusoffset))
@@ -1845,7 +1872,7 @@ local function fa_InfoWindow_LoadInfo(self)
 	self.StatusBar:SetMinMaxValues(tempAllFactionData[faClickedFactionName][5], tempAllFactionData[faClickedFactionName][6])
 	self.StatusBar:SetValue(tempAllFactionData[faClickedFactionName][7])
 	-- Set Status Bar text
-	self.StatusBar.text:SetText(fa_StandingTextByID(tempAllFactionData[faClickedFactionName][4]))
+	self.StatusBar.text:SetText(fa_StandingText(tempAllFactionData[faClickedFactionName][1],tempAllFactionData[faClickedFactionName][4]))
 	self.StatusBar.text:Show()
 	self.StatusBar.text2:SetText(fa_SetStatusBarText_ByFactionName(faClickedFactionName))
 	self.StatusBar.text2:Hide()
@@ -2285,20 +2312,56 @@ function FactionAddict_OnEvent(self, event, ...)
             -- see if there is a faction id
             if (tempFactionIDsByName[faction] ~= nil) then 
                 fa_DebugOut("FactionIDByName: ".. tempFactionIDsByName[faction])
-                -- see if faction id is in paragon table
-                if (tempAllParagonData[tempFactionIDsByName[faction]][5]  ~= nil) then
-                    local paraValue, _, _, _ = C_Reputation.GetFactionParagonInfo(tempFactionIDsByName[faction])
-                    fa_DebugOut("New paragon value: " .. paraValue)
-                    -- difference
-                    local diff = paraValue - tempAllParagonData[tempFactionIDsByName[faction]][5]
-                    fa_DebugOut("Diff paragon value: " .. diff)
-                    if (diff > 0) then
-                        amount = diff
-                        fa_DebugOut("Set calculated amount: " .. amount)
-                        tempAllParagonData[tempFactionIDsByName[faction]][5] = paraValue
+               
+                -- Check if faction is in Paragon Data Table 
+                -- if not - then use api to check it - possibly became exalted after login
+                if (tempAllParagonData[tempFactionIDsByName[faction]] == nil) then
+                    fa_DebugOut("FactionID not in ParagonData table for name: " .. faction)
+                    -- check factionid with api
+                    if (C_Reputation.IsFactionParagon(tempFactionIDsByName[faction])) then
+                        fa_DebugOut("IsFactionParagon - true - for: " .. faction)
+                        -- get paragon info
+                        local paraValue, paraThreshold, paraQuestId, paraRewardPending = C_Reputation.GetFactionParagonInfo(tempFactionIDsByName[faction])
+                        -- save paragon data
+                        tempAllParagonData[tempFactionIDsByName[faction]] = {}
+                        -- column 1 - current paragon value
+                        tempAllParagonData[ tempFactionIDsByName[faction] ][1] = paraValue
+                        -- column 2 - paragon threshold - max
+                        tempAllParagonData[ tempFactionIDsByName[faction] ][2] = paraThreshold
+                        -- column 3 - paragon quest id
+                        tempAllParagonData[ tempFactionIDsByName[faction] ][3] = paraQuestId
+                        -- column 4 - paragon reward pending flag
+                        tempAllParagonData[ tempFactionIDsByName[faction] ][4] = paraRewardPending
+                        -- column 5 - paragon logging value
+                        tempAllParagonData[ tempFactionIDsByName[faction] ][5] = paraValue
+                        -- set amount - assumes this is first gain since not in paragon table
+                        if (paraValue > 0) then
+                            amount = paraValue
+                            fa_DebugOut("Set amount: " .. amount)
+                        end
+                    else
+                        fa_DebugOut("IsFactionParagon - false - for: " .. faction)
+                    end
+                -- faction exists in ParagonData
+                else 
+                    -- check if logging value has been set
+                    if (tempAllParagonData[tempFactionIDsByName[faction]][5]  ~= nil) then
+                        local paraValue, _, _, _ = C_Reputation.GetFactionParagonInfo(tempFactionIDsByName[faction])
+                        fa_DebugOut("New paragon value: " .. paraValue)
+                        -- difference
+                        local diff = paraValue - tempAllParagonData[tempFactionIDsByName[faction]][5]
+                        fa_DebugOut("Diff paragon value: " .. diff)
+                        if (diff > 0) then
+                            amount = diff
+                            fa_DebugOut("Set calculated amount: " .. amount)
+                            tempAllParagonData[tempFactionIDsByName[faction]][5] = paraValue
+                        end
+                    else
+                        fa_DebugOut("Paragon logging value missing.")
                     end
                 end
-            end
+
+            end -- end found factionid by name
         end
 
 		-- Check that s1 is not nil before continuing

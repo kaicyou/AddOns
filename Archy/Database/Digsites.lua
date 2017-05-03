@@ -2034,7 +2034,7 @@ function private.InitializeDigsiteTemplates()
 			-- Digsite: Dreadroot
 			blobID = 354251,
 			mapID = 1018,
-			typeID = RaceID.ArchRaceHighborneNightElves,
+			typeID = RaceID.ArchRaceDemons,
 		},
 		["8:0.427701:0.432854"] = {
 			-- Digsite: Eastern Ambervale
@@ -2150,7 +2150,7 @@ function private.InitializeDigsiteTemplates()
 			mapID = 1033,
 			typeID = RaceID.ArchRaceHighborneNightElves,
 		},
-		["8:0.307413:0.556034"] = {
+		["8:0.308156:0.555317"] = {
 			-- Digsite: Nor'Danil Wellspring
 			blobID = 354049,
 			mapID = 1015,
@@ -2220,7 +2220,7 @@ function private.InitializeDigsiteTemplates()
 			-- Digsite: Shala'nir
 			blobID = 346512,
 			mapID = 1018,
-			typeID = RaceID.ArchRaceHighborneNightElves,
+			typeID = RaceID.ArchRaceDemons,
 		},
 		["8:0.608344:0.373214"] = {
 			-- Digsite: Skold-Ashil
@@ -2298,13 +2298,13 @@ function private.InitializeDigsiteTemplates()
 			-- Digsite: Thas'talah
 			blobID = 354245,
 			mapID = 1018,
-			typeID = RaceID.ArchRaceHighborneNightElves,
+			typeID = RaceID.ArchRaceDemons,
 		},
 		["8:0.323603:0.347018"] = {
 			-- Digsite: The Crescent Vale
 			blobID = 346514,
 			mapID = 1018,
-			typeID = RaceID.ArchRaceHighborneNightElves,
+			typeID = RaceID.ArchRaceDemons,
 		},
 		["8:0.484341:0.153289"] = {
 			-- Digsite: The Haglands
@@ -2324,11 +2324,11 @@ function private.InitializeDigsiteTemplates()
 			mapID = 1015,
 			typeID = RaceID.ArchRaceHighborneNightElves,
 		},
-		["8:0.359913:0.376001"] = {
+		["8:0.360337:0.374966"] = {
 			-- Digsite: The Wildwood
 			blobID = 354249,
 			mapID = 1018,
-			typeID = RaceID.ArchRaceHighborneNightElves,
+			typeID = RaceID.ArchRaceDemons,
 		},
 		["8:0.442458:0.131551"] = {
 			-- Digsite: The Witchwood
@@ -2364,7 +2364,7 @@ function private.InitializeDigsiteTemplates()
 			-- Digsite: Wretched Hollow
 			blobID = 354247,
 			mapID = 1018,
-			typeID = RaceID.ArchRaceHighborneNightElves,
+			typeID = RaceID.ArchRaceDemons,
 		},
 	}
 

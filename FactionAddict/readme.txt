@@ -4,7 +4,7 @@
 -- Desc: Addon for World of Warcraft
 --
 -- Author: gmz323(Greg)
--- current version: v1.43
+-- current version: v1.44
 -- (c) 2011-2017
 --
 =============================================================================
@@ -69,10 +69,17 @@ My Other Addons:
 Changelog:
 ==========
 
+v1.44 (2017-04-30)
+------------------
+* LUA Error fix - lua errors were being thrown when first reaching exalted reputation with a Paragon-able faction.
+* Display of Exalted (capped) reputation bars will look full again instead of empty - 42000/42000
+* Display of Friend Reputation Text in status bar - ie. Best Friend, Good Friend, Friend, etc...
+* Please keep reporting any issues, lua errors you encounter, and suggestions. Thanks! 
+
 v1.43 (2017-04-27)
 ------------------
 * Logging of Paragon Rep gains - the logging tab will now include your paragon rep gains. 
-* Reward Bag Icons added to UI - the same reward bag icons (and reward available indicator) is now part of the faction display
+* Reward Bag Icons added to UI - the same reward bag icons that are in the default ui (and reward available indicator) is now part of the faction display.
 * Please report any issues you run into. I've only been able to do minimal testing as I don't have many Legion factions at Exalted to test with.
 
 v1.42 (2017-04-25)

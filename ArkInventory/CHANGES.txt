@@ -1,63 +1,43 @@
 ------------------------------------------------------------------------
-r633 | arkayenro | 2017-04-18 04:32:35 -0500 (Tue, 18 Apr 2017) | 9 lines
+r637 | arkayenro | 2017-05-08 04:50:58 -0500 (Mon, 08 May 2017) | 6 lines
 Changed paths:
-   M /trunk/ArkInventory.lua
-   M /trunk/ArkInventoryConst.lua
-   M /trunk/ArkInventoryLDB.lua
-   M /trunk/ArkInventoryStorage.lua
-   M /trunk/Locale/deDE.lua
-   M /trunk/Locale/enUS.lua
-   M /trunk/Locale/esES.lua
-   M /trunk/Locale/esMX.lua
-   M /trunk/Locale/frFR.lua
-   M /trunk/Locale/game.lua
-   M /trunk/Locale/itIT.lua
-   M /trunk/Locale/koKR.lua
-   M /trunk/Locale/ptBR.lua
-   M /trunk/Locale/ruRU.lua
-   M /trunk/Locale/zhCN.lua
-   M /trunk/Locale/zhTW.lua
-   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
-   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
+   M /trunk/ArkInventory.toc
    M /trunk/VersionHistory.txt
 
-*3.07.26 (18-APR-2017)*
- * fixed - mythic keystones should now have an icon (had to temporarily hardcode it in)
- * changed - mythic keystone level value replaces the ilvl value
- * added - category for system > mythic keystone
- * changed - artifact relic +item levels value replaces the ilvl value
- * fixed - updated rules to use new C_EquipmentSet code for blizzard equipment manager
- * changed - LDB currency and item tracking counts now use thousands seperators
- * added - option to set the base item size (before scaling) under config > settings > styles / layouts > (id) > items > style > items
+*3.07.27 (08-MAY-2017)*
+ * changed - cooldown event handling should use less cpu
+ * changed - code that stores the item name (the search frame had too many items with no name)
+ * fixed - item counts for some auction house items was not working (due to invalid item links in the tooltip)
+ * changed - unuseable item tint changed to allow for cooldown issue
 
 ------------------------------------------------------------------------
-r632 | arkayenro | 2017-04-06 10:38:19 -0500 (Thu, 06 Apr 2017) | 6 lines
+r636 | arkayenro | 2017-04-27 07:43:02 -0500 (Thu, 27 Apr 2017) | 6 lines
 Changed paths:
    M /trunk/ArkInventory.lua
-   M /trunk/ArkInventoryLDB.lua
-   M /trunk/ArkInventoryStorage.lua
-   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
+   M /trunk/ArkInventory.xml
    M /trunk/VersionHistory.txt
 
-*3.07.26 (xx-xxx-2017)*
- * fixed - mythic keystones should now have an icon (had to temporarily hardcode it in)
- * changed - mythic keystone level replaces the ilvl value (for sorting / display purposes)
- * fixed - updated rules to use new C_EquipmentSet code for blizzard equipment manager
- * changed - LDB currency and item tracking counts now use thousands seperators
+*3.07.27 ALPHA 2 (xx-xxx-2017)*
+ * changed - cooldown event handling should use less cpu
+ * changed - code that stores the item name (the search frame had too many items with no name)
+ * fixed - item counts for some auction house items was not working (due to invalid item links in the tooltip)
+ * changed - unuseable item tint changed to allow for cooldown issue
 
 ------------------------------------------------------------------------
-r631 | arkayenro | 2017-04-01 20:50:27 -0500 (Sat, 01 Apr 2017) | 5 lines
+r635 | arkayenro | 2017-04-23 08:15:56 -0500 (Sun, 23 Apr 2017) | 5 lines
 Changed paths:
    M /trunk/ArkInventory.lua
    M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryConst.lua
    M /trunk/ArkInventoryStorage.lua
-   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
+   M /trunk/ArkInventoryTooltip.lua
+   M /trunk/Modules/ArkInventorySearch/ArkInventorySearch.lua
    M /trunk/VersionHistory.txt
 
-*3.07.26 (xx-xxx-2017)*
- * fixed - mythic keystones should now have an icon (had to temporarily hardcode it in)
- * changed - mythic keystone level replaces the ilvl value (for sorting / display purposes)
- * fixed - updated rules to use new C_EquipmentSet code for blizzard equipment manager
+*3.07.27 ALPHA (xx-xxx-2017)*
+ * changed - cooldown event handling should use less cpu
+ * changed - code that stores the item name (the search frame had too many items with no name)
+ * fixed - item counts for some auction house items was not working (due to invalid item links in the tooltip)
 
 ------------------------------------------------------------------------
 

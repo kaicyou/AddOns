@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1726 $
-$Date: 2016-09-22 00:02:17 +1000 (Thu, 22 Sep 2016) $
+$Revision: 1800 $
+$Date: 2017-04-23 23:12:46 +1000 (Sun, 23 Apr 2017) $
 
 ]]--
 
@@ -199,6 +199,7 @@ function ArkInventory.Frame_Search_Table_Refresh( frame )
 	--ArkInventory.Output( "filter = [", filter, "]" )
 	
 	local tt = { }
+	
 	ArkInventory.SearchRebuild = false
 
 	for p, pd in ArkInventory.spairs( ArkInventory.db.player.data ) do

@@ -654,6 +654,23 @@ function ArkInventory.TooltipHook( ... )
 	
 end
 
+function ArkInventory.TooltipHookSetAuctionItem( ... )
+	
+	if not ArkInventory:IsEnabled( ) then return end
+	
+	if not ArkInventory.db.option.tooltip.show then return end
+	
+	local tooltip, arg1, arg2 = ...
+	-- tooltip, type, index
+	
+	if not tooltip or not arg1 or not arg2 then return end
+	
+	local h = GetAuctionItemLink( arg1, arg2 )
+	
+	ArkInventory.TooltipHook( tooltip, h )
+	
+end
+
 function ArkInventory.TooltipHookSetCurrencyToken( ... )
 	
 	if not ArkInventory:IsEnabled( ) then return end
@@ -684,6 +701,7 @@ function ArkInventory.TooltipHookSetMerchantCostItem( ... )
 	--ArkInventory.Output( slot, " / ", index, " / ", currencies )
 	
 	if currencies[index] then
+		
 		local h = GetCurrencyLink( currencies[index] )
 		
 		if h then
@@ -1014,7 +1032,7 @@ function ArkInventory.TooltipShowCompare( ... )
 	local objectlink = self.ARK_Data[1]
 	if not objectlink or type( objectlink ) ~= "string" then return end
 	
-	--ArkInventory.Output( self.ARK_Data[1], " / ", self.ARK_Data[2], " / ", self.ARK_Data[3], " / ", self.ARK_Data[4] )
+	--ArkInventory.Output( self.ARK_Data )
 	
 	local osd = ArkInventory.ObjectStringDecode( objectlink )
 	if not osd.class or not osd.id then return end

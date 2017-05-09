@@ -1104,12 +1104,14 @@ end
 
 function ArkInventory:EVENT_ARKINV_BAG_UPDATE_COOLDOWN_BUCKET( arg )
 	
+	--ArkInventory.Output( "EVENT_ARKINV_BAG_UPDATE_COOLDOWN_BUCKET( ", arg, " )" )
+	
 	for loc_id in pairs( arg ) do
 		local me = ArkInventory.GetPlayerCodex( loc_id )
 		if me.style.slot.cooldown.show then
 			if not ArkInventory.Global.Mode.Combat or me.style.slot.cooldown.combat then
 				if me.style.sort.when ~= ArkInventory.Const.SortWhen.Instant then
-					ArkInventory.Frame_Main_Generate( loc_id, ArkInventory.Const.Window.Draw.Refresh )
+					ArkInventory.Frame_Main_Update_Cooldown( loc_id )
 				end
 			end
 		end
@@ -1117,7 +1119,7 @@ function ArkInventory:EVENT_ARKINV_BAG_UPDATE_COOLDOWN_BUCKET( arg )
 	
 end
 
-function ArkInventory:EVENT_WOW_BAG_UPDATE_COOLDOWN( event, arg1, arg2, arg3, arg4 )
+function ArkInventory:EVENT_WOW_BAG_UPDATE_COOLDOWN( event, arg1 )
 	
 	--ArkInventory.Output( "EVENT_WOW_BAG_UPDATE_COOLDOWN( ", arg1, " )" )
 	
@@ -3598,7 +3600,7 @@ function ArkInventory.ObjectInfoArray( h, i )
 		
 		info.name = info.info[1] or info.name
 		if not info.name or info.name == "" then
-			info.name = string.match( info.h, "|h%[(.+)%]|h" ) or info.name
+			info.name = string.match( info.info[2] or h, "|h%[(.+)%]|h" ) or info.name
 		end
 		
 		info.q = info.info[3] or info.q

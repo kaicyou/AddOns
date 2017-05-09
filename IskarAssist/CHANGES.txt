@@ -1,7 +1,7 @@
-changeset:   122:52d1e300365d
-tag:         v2.1.243 release
+changeset:   124:c91c26070f62
+tag:         v2.1.247 release
 user:        Tercio
-date:        Tue Apr 04 10:47:52 2017 -0300
-summary:     - framework update.
+date:        Mon May 08 15:16:33 2017 -0300
+summary:     - added harmful spell list for the two last wings of the nighthold raid.
 
 

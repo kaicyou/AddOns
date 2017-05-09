@@ -94,6 +94,9 @@ ArkInventory.Const = { -- constants
 			Internal = "ArkInventory",
 			Blizzard = "ArkInventoryConfigBlizzard",
 		},
+		Cooldown = {
+			Name = "Cooldown",
+		},
 	},
 	
 	Debug = false,

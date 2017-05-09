@@ -257,9 +257,14 @@
 					</Anchors>
 				</FontString>
 			</Layer>
-			<Layer level="OVERLAY">
+			<Layer level="OVERLAY" textureSubLevel="4">
 				<Texture name="$parentArkBagHighlight" parentKey="ArkBagHighlight" setAllPoints="true" hidden="true">
 					<Color r="0" g="0" b="0" a="0.8"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY" textureSubLevel="0">
+				<Texture name="$parentArkItemTinted" parentKey="ArkItemTinted" setAllPoints="true" hidden="true">
+					<Color r="1" g="0" b="0" a="0.5"/>
 				</Texture>
 			</Layer>
 		</Layers>

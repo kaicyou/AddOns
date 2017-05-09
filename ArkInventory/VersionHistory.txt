@@ -5,7 +5,7 @@
  * moving an item from one guild bank tab to another will leave a ghost item behind until you view that tab again (it also increases the tooltip count for that ghost item).
  * caged battle pets cannot be seen when placed in the guild bank, they appear as pet cages instead (api issue, default ui has same issue)
  * your legion class tier set bonus for out of combat regeneration is triggering a bag_update_cooldown event for all bags every 5 seconds
- * something is triggering a bag_update_cooldown event every second. havent been able to work out what it is yet
+ * broken shore tower buffs are triggering a bag_update_cooldown event multiple times per second.
  * mythic keystone links arent supported by some of the item APIs so theyre a bit weird at the moment
  
 *wiki pages*
@@ -13,6 +13,12 @@
  * faq - https://github.com/arkayenro/arkinventory/wiki/FAQ
  
 
+
+*3.07.27 (08-MAY-2017)*
+ * changed - cooldown event handling should use less cpu
+ * changed - code that stores the item name (the search frame had too many items with no name)
+ * fixed - item counts for some auction house items was not working (due to invalid item links in the tooltip)
+ * changed - unuseable item tint changed to allow for cooldown issue
 
 *3.07.26 (18-APR-2017)*
  * fixed - mythic keystones should now have an icon (had to temporarily hardcode it in)

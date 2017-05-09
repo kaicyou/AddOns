@@ -791,19 +791,79 @@ local boss_spells = {
 	}, 
 	--High Botanist Tel'arn
 	[1761] = {
-
+		218780, --plasma explosion
+		219950, --controlled chaos
+		223414, --parasitic fetter
+		218838, --arcane eclipse
+		218155, --solar collapse
+		218463, --controlled chaos
+		218508, --recursive strikes
+		218806, --flare
+		219235, --toxic spores
 	}, 
 	--Star Augur Etraeus
 	[1732] = {
-		
+		206965, --voidburst
+		206921, --iceburst
+		206398, --felflame
+		206517, --fel nova
+		206388, --felburst
+		207439, --void nova
+		206954, --frigid nova
+		206433, --fel impact
+		205486, --starburst
+		206577, --comet impact
+		206585, --absolute zero
+		207813, --void impact
+		205649, --fel ejection
+		206936, --icy ejection
+		206464, --coronal ejection
+		207720, --witness the void
+		217054, --devouring remnant
 	}, 
 	--Grand Magistrix Elisande
 	[1743] = {
-		
+		229741, --cascadent star
+		211799, --ablating explosion
+		209599, --conflexive burst
+		209248, --delphuric beam
+		229738, --cascadent star
+		209615, --ablation
+		211261, --permeliative torment
+		209568, --exothermic release
+		221864, --blast
+		210024, --epocheric orb
+		208659, --arcanetic ring
+		209433, --spanning singularity
+		209248, --delphuric beam
 	}, 
 	--Gul'dan
 	[1737] = {
-		
+		206581, --empowered liquid hellfire
+		228265, --soul corrosion
+		221807, --black harvest
+		206555, --liquid hellfire
+		206370, --empowered bonds of fel
+		208536, --well of souls
+		227550, --fel scythe
+		221781, --desolate ground
+		232692, --nether rift
+		228267, --soul explulsion
+		228190, --flames of sargeras
+		206340, --bonds of fel
+		221891, --soul siphon
+		206367, --empowered bonds of fel
+		209087, --harvested soul
+		177380, --storm of the destroyer
+		212262, --hand of guldan
+		227096, --flame crash
+		206847, --parasitic wound
+		226955, --parasitic expulsion
+		211439, --will of the demon within
+		220957, --soulsever
+		227040, --severed
+		223134, --burning
+		211132, --empowered eye of guldan
 	}, 
 }
 

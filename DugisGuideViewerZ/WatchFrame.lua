@@ -334,7 +334,6 @@ function WF:Initialize()
 		else
 			WF.WatchBackground = CreateFrame("Frame", "DugisWatchBackground", ObjectiveTrackerFrame)
 			WF.WatchBackground:SetFrameStrata("BACKGROUND")
-			WF.WatchBackground:SetFrameStrata("LOW")
 			header = CreateFrame("Frame", nil, WF.WatchBackground, "ObjectiveTrackerHeaderTemplate")
 			header.module = DEFAULT_OBJECTIVE_TRACKER_MODULE;
 			header.isHeader = true;

@@ -772,18 +772,21 @@ function WMT:Initialize()
     DugisWaypointTooltip.updateDugisWaypointTooltipLines = function()
         DugisWaypointTooltip:ClearLines()
         local lineIndex = 0
-        LuaUtils:foreach(DugisWaypointTooltip.lines, function(line)
-			if DugisGuideViewer:IsModuleLoaded("NPCJournalFrame") then 
-				line = DGV.NPCJournalFrame:ReplaceSpecialTags(line, false)
-			end
-            if lineIndex == 0 then
-                DugisWaypointTooltip:AddLine(line, nil, nil, nil, true)
-            else
-                DugisWaypointTooltip:AddLine(line, 1, 1, 1, true)
-            end
-		    
-            lineIndex = lineIndex + 1
-        end)
+        
+        if DugisWaypointTooltip.lines then
+            LuaUtils:foreach(DugisWaypointTooltip.lines, function(line)
+                if DugisGuideViewer:IsModuleLoaded("NPCJournalFrame") then 
+                    line = DGV.NPCJournalFrame:ReplaceSpecialTags(line, false)
+                end
+                if lineIndex == 0 then
+                    DugisWaypointTooltip:AddLine(line, nil, nil, nil, true)
+                else
+                    DugisWaypointTooltip:AddLine(line, 1, 1, 1, true)
+                end
+                
+                lineIndex = lineIndex + 1
+            end)
+        end
         
 		DugisWaypointTooltip:HookScript("OnShow", DugisWaypointTooltip_OnShow)
 		DugisWaypointTooltip:Show()

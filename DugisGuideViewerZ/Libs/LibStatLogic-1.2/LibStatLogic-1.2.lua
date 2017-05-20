@@ -6827,7 +6827,15 @@ function StatLogic:GetNormalManaRegenFromSpi(spi,...)
 	-- argCheck for invalid input
 	self:argCheck(spi, 2, "number")
 
-	local maxmana = UnitManaMax("player");
+	local maxmana
+    
+    if POWER_TYPE_MANA then
+        --For 7.2.0
+        maxmana = UnitManaMax("player", POWER_TYPE_MANA);
+    else
+        maxmana = UnitManaMax("player");
+    end
+    
 	-- Calculate
 	--return (0.001 + spi * BaseManaRegenPerSpi[level] * (int ^ 0.5)) * 5, "MANA_REGEN"
 	return (1.1287*spi), "MANA_REGEN" --*Meditation) 

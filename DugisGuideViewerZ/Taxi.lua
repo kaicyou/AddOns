@@ -2134,6 +2134,28 @@ end
 		"StaticPortals",
 		"Boats",
 	}
+    
+    function Taxi:IsBuilderEnabled(builderKey)
+        local result = false
+        
+        if (builderKey == "Boats" and DGV:UserSetting(DGV_TAXISYSTEM_BOATS))
+              or (builderKey == "FlightMasterWhistle" and DGV:UserSetting(DGV_TAXISYSTEM_WHISTLE))
+              or ((builderKey == "LocalPortals" or builderKey == "StaticPortals" or builderKey == "InstancePortals") and DGV:UserSetting(DGV_TAXISYSTEM_ZONE_PORTALS))
+              or (builderKey == "ZenPilgrimageReturn" and DGV:UserSetting(DGV_TAXISYSTEM_CLASS_PORTALS))
+              or (builderKey == "UnboundTeleport" and DGV:UserSetting(DGV_TAXISYSTEM_PLAYER_PORTALS)) then
+           result = true   
+        end
+        
+        local possibleKeys = {Boats = true, FlightMasterWhistle = true, LocalPortals = true, ZenPilgrimageReturn = true, UnboundTeleport = true
+        , StaticPortals = true, InstancePortals = true}
+        
+        if not possibleKeys[builderKey] then
+            result = true
+        end
+        
+        return result
+    end
+    
 	
 	--local gbrCount = 0
 	function Taxi:GetBestRoute(parentRoute, m1, f1, x1, y1, m2, f2, x2, y2, ...)
@@ -2142,6 +2164,9 @@ end
 		local builder =  nil
 	
 		for _,builderKey in ipairs(order) do
+        
+            if Taxi:IsBuilderEnabled(builderKey) then
+        
 			builder = RouteBuilders[builderKey]
 			if builder.Iterate and not tContains(dontIterate, builder) and
 				not (builder==RouteBuilders.FlightMaster and DGV:UserSetting(DGV_TAXIFLIGHTMASTERS)=="Never")
@@ -2165,6 +2190,8 @@ end
 				end
 				tPool(iteratorData)
 			end
+            
+            end
 		end
 		tPool(dontIterate)
 		return best

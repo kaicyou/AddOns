@@ -243,6 +243,7 @@ L["Ascendance"] = true;
 L["Astral Shift"] = true;
 L["Bloodlust"] = true;
 L["Cleanse Spirit"] = true;
+L["Concordance of the Legionfall"] = true;
 L["Earthgrab"] = true;
 L["Earthgrab Totem"] = true;
 L["Heroism"] = true;
@@ -290,11 +291,13 @@ L["Feral Lunge"] = true;
 L["Feral Spirit"] = true;
 L["Flametongue"] = true;
 L["Frostbrand"] = true;
+L["Landslide"] = true;
 L["Lava Lash"] = true;
 L["Rainfall"] = true;
 L["Spirit Walk"] = true;
 L["Stormstrike"] = true;
 L["Sundering"] = true;
+L["Unleash Doom"] = true;
 L["Windsong"] = true;
 
 -- Restoration Abilities

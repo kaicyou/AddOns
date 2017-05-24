@@ -265,8 +265,13 @@ local function LoadSettings()
     DGV_ENABLED_MAPPREVIEW = 82
     
     DGV_DISABLE_QUICK_SETTINGS = 83
-
     
+    DGV_TAXISYSTEM_ZONE_PORTALS = 84
+    DGV_TAXISYSTEM_PLAYER_PORTALS = 85
+    DGV_TAXISYSTEM_BOATS = 86
+    DGV_TAXISYSTEM_CLASS_PORTALS = 87
+    DGV_TAXISYSTEM_WHISTLE = 88
+
 	--Sliders
 	DGV_MINIBLOBQUALITY = 200
 	DGV_SHOWTOOLTIP = 201
@@ -290,6 +295,7 @@ local function LoadSettings()
 	DGV_GASTATCAPLEVELDIFFERENCE = 111
 	DGV_SMALLFRAMEDOCKING = 112
 	DGV_WEAPONPREF = 113
+	DGV_MAIN_FRAME_BACKGROUND = 114
 		
 	--DGV_MINIBLOBS = 104
 	DGV_TOOLTIPANCHOR = 105
@@ -319,7 +325,7 @@ local function LoadSettings()
 					SettingsRevision = 0,
 					WatchFrameSnapped = true,
 					GuideOn = true,
-					sz = 83, --Num check boxes
+					sz = 88, --Num check boxes
 					[DGV_QUESTLEVELON]			= { category = "Other",	text = "Display Quest Level", 	checked = false,	tooltip = "Show the quest level on the large and small frames", module = "Guides"},
 					[DGV_QUESTCOLORON] 		= { category = "Other",	text = "Color Code Quest", 	checked = true,		tooltip = "Color code quest against your character's level", module = "Guides"},
 					[DGV_LOCKSMALLFRAME] 		= { category = "Frames",	text = "Lock Small Frame", 	checked = false,	tooltip = "Lock small frame into place", module = "SmallFrame"},
@@ -341,8 +347,13 @@ local function LoadSettings()
 					[DGV_AUTOSELL]         		= { category = "Other",		text = "Auto Sell Greys",    	checked = true,    	tooltip = "Automatically sell grey quality items to merchant NPCs",},
 					[DGV_AUTOREPAIR]			= { category = "Other",		text = "Auto Repair",    		checked = false,    tooltip = "Automatically repair all damaged equipment at repair NPC",},
 					[DGV_AUTOFLIGHTPATHSELECT]			= { category = "Waypoints",	showOnRightColumn = true,	text = "Auto Select Flight Path",	checked = false,	tooltip = "Automatically select the suggested flight path after opening the flightmaster map",},
-					[DGV_USETAXISYSTEM]			= { category = "Waypoints",	showOnRightColumn = true,	text = "Use Taxi System",	checked = true,	tooltip = "Taxi system will find the fastest route to get to your destination with the use of portals, teleports, vehicles etc. Disabling this option will give you a direct waypoint instead.",},
-					[DGV_AUTOREPAIRGUILD]		= { category = "Other",		text = "Use Guild Bank",    	checked = false,   	tooltip = "Use guild funds when repairing automatically", indent=true,},
+					[DGV_USETAXISYSTEM]			= { category = "Taxi System", text = "Use Taxi System",	checked = true,	tooltip = "Taxi system will find the fastest route to get to your destination with the use of portals, teleports, vehicles etc. Disabling this option will give you a direct waypoint instead.",},
+					[DGV_TAXISYSTEM_ZONE_PORTALS]			= { category = "Taxi System",	text = "Use Zone Portals",	checked = true,	tooltip = "",},
+					[DGV_TAXISYSTEM_PLAYER_PORTALS]			= { category = "Taxi System",	text = "Use Player Portals",	checked = true,	tooltip = "",},
+					[DGV_TAXISYSTEM_BOATS]			= { category = "Taxi System",	text = "Use Boats",	checked = true,	tooltip = "",},
+					[DGV_TAXISYSTEM_CLASS_PORTALS]			= { category = "Taxi System",	text = "Use Class Portals",	checked = true,	tooltip = "",},
+					[DGV_TAXISYSTEM_WHISTLE]			= { category = "Taxi System",	text = "Use Flight Master Whistle",	checked = true,	tooltip = "",},
+                    [DGV_AUTOREPAIRGUILD]		= { category = "Other",		text = "Use Guild Bank",    	checked = false,   	tooltip = "Use guild funds when repairing automatically", indent=true,},
 					[DGV_AUTO_QUEST_TRACK] 		= { category = "Questing",	text = "Auto Quest Tracking",	checked = true,		tooltip = "Automatically add quest to the Objective Tracker on accept or objective update", module = "Guides", indent=false},
 					[DGV_GUIDESUGGESTMODE] 		= { category = "Questing",	text = "Guide Suggest Mode",	showOnRightColumn = true, checked = true,		tooltip = "Suggest guides for your player on level up", module = "Guides", indent=false,},
 					[DGV_SMALLFRAMEBORDER] 		= { category = "Borders",	text = "Small Frame Border",	checked = true,		tooltip = "Use the same border that is selected for the large frame", module = "SmallFrame"},
@@ -428,6 +439,12 @@ local function LoadSettings()
 							{	text = "Scroll", },
 						}
 					},
+					[DGV_MAIN_FRAME_BACKGROUND] 	= { category = "Display",		text = "Background",	checked = "Solid", module = "SmallFrame",
+						options = {
+							{	text = "Solid", },
+							{	text = "Transparent", },
+						}
+					},                    
 					[DGV_LARGEFRAMEBORDER] 		= { category = "Borders",		text = "Borders",	checked = "BlackGold",
 						options = {
 							{	text = "Default", },
@@ -473,7 +490,7 @@ local function LoadSettings()
 							{	text = "Yellow", colorCode = YELLOW_FONT_COLOR_CODE,	value = [[Interface\COMMON\Indicator-Yellow]]},
 						}
 					},
-					[DGV_TAXIFLIGHTMASTERS]		= { category = "Waypoints",	text = "Use Flightmasters", checked = "Auto",
+					[DGV_TAXIFLIGHTMASTERS]		= { category = "Taxi System",	text = "Use Flightmasters", checked = "Auto",
 						options = {
 							{	text = "Auto", colorCode = GREEN_FONT_COLOR_CODE, value = "Auto" },
 							{	text = "Always", colorCode = YELLOW_FONT_COLOR_CODE, value = "Always" },
@@ -568,7 +585,7 @@ local function LoadSettings()
 					[DGV_SHOWTOOLTIP]			= { category = "Tooltip",	text = "Auto Tooltip (%.1fs)", checked = 5, module = "SmallFrame", tooltip ="Amount of time the Tooltip will remain in view from the last mouse over on small frame" },
 					[DGV_MAPPREVIEWDURATION]	= {	category = "Map Preview",	text = "Duration (%.1fs)", checked = 5, tooltip = "Amount of time the Map Preview should remain in view (zero to disable).  Enabling this feature will automatically set the world map to windowed mode on reload." },
 					[DGV_SMALLFRAMEFONTSIZE]	= {	category = "Display",	text = "Small Frame Font Size (%.1f)", checked = 12, module = "SmallFrame", tooltip = "Size of the font in the Small Frame." },
-					[DGV_MOUNT_DELAY]	= {	category = "Auto Mount",	text = "Delay After Spell (%.1f)", checked = 6, tooltip = "" },
+					[DGV_MOUNT_DELAY]	= {	category = "Auto Mount",	text = "Delay After Spell (%.1fs)", checked = 6, tooltip = "" },
                     [DGV_DISPLAYGUIDESPROGRESS] 	= { category = "Display",	text = "Show Progress Bar", 	checked = true,	tooltip = "Show Progress Bar", module = "SmallFrame"},
                     [DGV_DISPLAYGUIDESPROGRESSTEXT] 	= { category = "Display",	text = "Show % text", 	checked = true, indent=true,	tooltip = "Show % text", module = "SmallFrame"},
                     [DGV_TARGETBUTTONSCALE]	    = {	category = "Target",	text = "Target Button Size (%.1f)", checked = 1, module = "Target", tooltip = "Size of the target button." },
@@ -592,7 +609,7 @@ local function LoadSettings()
                     [DGV_DISPLAYALLSTATS]			= { category = "Gear Scoring",	showOnRightColumn = false,	text = "Display All Stats",	checked = false,	tooltip = "Display unused stats for gear scoring",},					
                   
                     [DGV_JOURNALFRAMEBUTTONSCALE]	    = {	category = "Frames",	text = "NPC Journal Button Size (%.1f)", checked = 4, module = "SmallFrame", tooltip = "Size of the NPC Journal Frame button." },
-                    [DGV_SMALLFRAME_STEPS]	    = {	category = "Display",	text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tMaximum Multi Step (%.0f)", checked = 6, module = "SmallFrame", tooltip = "Maximum amout of steps in the Small Frame." },
+                    [DGV_SMALLFRAME_STEPS]	    = {	category = "Display",	text = "Maximum Multi Step (%.0f)", checked = 6, module = "SmallFrame", tooltip = "Maximum amout of steps in the Small Frame." },
 					[DGV_RECORDSIZE]			= { checked = 50 },
 				},
 			},
@@ -684,30 +701,31 @@ function DugisGuideViewer:OnInitialize()
 	
 	CATEGORY_TREE = { 
 
-		{ value = "Search Locations", 	text = L["Search Locations"], 	icon = nil },
-		{ value = "Questing", 	text = L["Questing"], 	icon = nil },
-		{ value = "Waypoints", 	text = L["Waypoints"], icon = nil },
-		{ value = "Display", 	text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Display"], 	icon = nil },
-		{ value = "Borders", 	text = L["Borders"], 	icon = nil },
-		{ value = "Frames", 	text = L["Frames"], 	icon = nil },
-		{ value = "Maps", 		text = L["Maps"], 		icon = nil },
-		{ value = "Map Preview",text = L["Map Preview"],icon = nil },
-		{ value = "Target",		text = L["Target Button"],	icon = nil },
-		{ value = "Tooltip", 	text = L["Tooltip"], 	icon = nil },
-		{ value = "Gear Set",		text = L["Gear Set"],		icon = nil },		
-		{ value = "Gear Scoring",		text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Gear Scoring"],		icon = nil },
-		{ value = "Gear Finder",		text = L["Gear Finder"],		icon = nil },
-		{ value = "Memory", 	text = L["Memory"], 	icon = nil },
-		{ value = "Auto Mount", 		text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Auto Mount"], 	icon = nil },
-		{ value = "Other", 		text = L["Other"], 	icon = nil },
-		{ value = "Profiles", 	text = L["Profiles"] },
+		{ value = "Search Locations", 	text = L["Search Locations"], 	icon = nil }, --1
+		{ value = "Questing", 	text = L["Questing"], 	icon = nil }, --2
+		{ value = "Waypoints", 	text = L["Waypoints"], icon = nil }, --3
+		{ value = "Display", 	text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Display"], 	icon = nil }, --4
+		{ value = "Borders", 	text = L["Borders"], 	icon = nil }, --5
+		{ value = "Frames", 	text = L["Frames"], 	icon = nil }, --6
+		{ value = "Maps", 		text = L["Maps"], 		icon = nil }, --7
+		{ value = "Map Preview",text = L["Map Preview"],icon = nil }, --8
+		{ value = "Taxi System",text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Taxi System"],icon = nil }, --9
+		{ value = "Target",		text = L["Target Button"],	icon = nil }, --10
+		{ value = "Tooltip", 	text = L["Tooltip"], 	icon = nil }, --11
+		{ value = "Gear Set",		text = L["Gear Set"],		icon = nil },		 --12	
+		{ value = "Gear Scoring",		text = L["Gear Scoring"],		icon = nil }, --13
+		{ value = "Gear Finder",		text = L["Gear Finder"],		icon = nil }, --14
+		{ value = "Memory", 	text = L["Memory"], 	icon = nil }, --15
+		{ value = "Auto Mount", 		text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Auto Mount"], 	icon = nil }, --16
+		{ value = "Other", 		text = L["Other"], 	icon = nil }, --17
+		{ value = "Profiles", 	text = L["Profiles"] }, --18
 	}
 
-	if not DugisGuideViewer:IsModuleRegistered("Guides") then tremove(CATEGORY_TREE, 14) end --Memory will be empty
-    if not DugisGuideViewer:IsModuleRegistered("GearFinder") or not DugisGearFinder.allGearIds then tremove(CATEGORY_TREE, 13) end --Gear Finder 
-	if not DugisGuideViewer:IsModuleRegistered("Guides") then tremove(CATEGORY_TREE, 10) end --Tooltip
+	if not DugisGuideViewer:IsModuleRegistered("Guides") then tremove(CATEGORY_TREE, 15) end --Memory will be empty
+    if not DugisGuideViewer:IsModuleRegistered("GearFinder") or not DugisGearFinder.allGearIds then tremove(CATEGORY_TREE, 14) end --Gear Finder 
+	if not DugisGuideViewer:IsModuleRegistered("Guides") then tremove(CATEGORY_TREE, 11) end --Tooltip
 
-	if not DugisGuideViewer:IsModuleRegistered("Target") then tremove(CATEGORY_TREE, 9) end --Target
+	if not DugisGuideViewer:IsModuleRegistered("Target") then tremove(CATEGORY_TREE, 10) end --Target
 	if not DugisGuideViewer:IsModuleRegistered("Guides") then tremove(CATEGORY_TREE, 4) end --Display
 	
 	LoadSettings()
@@ -2289,6 +2307,14 @@ local function GetSettingsCategoryFrame(category, parent)
 	if DGV_StatusFrameEffectDropdown then
 		LibDugi_UIDropDownMenu_Initialize(DGV_StatusFrameEffectDropdown, DGV_StatusFrameEffectDropdown.initFunc)
 		LibDugi_UIDropDownMenu_SetSelectedValue(DGV_StatusFrameEffectDropdown, DugisGuideViewer:UserSetting(DGV_SMALLFRAMETRANSITION))
+	end	
+    
+	if SettingsDB[DGV_MAIN_FRAME_BACKGROUND].category==category 
+		and not DGV_Main_Frame_Background_Dropdown
+	then
+		local dropdown = self:CreateDropdown("DGV_Main_Frame_Background_Dropdown", frame, "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tMain Frame Background"
+        , DGV_MAIN_FRAME_BACKGROUND, self.MainFrameBackgroundDropDown_OnClick)
+		dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 333, -190)
 	end
 
 	--Large Frame Border  Dropdown
@@ -2700,6 +2726,12 @@ function DugisGuideViewer.StatusFrameEffectDropDown_OnClick(button)
             DugisGuideViewer.Modules.SmallFrame:StartFrameTransition( )
         end
 	end
+end
+
+function DugisGuideViewer.MainFrameBackgroundDropDown_OnClick(button)
+	LibDugi_UIDropDownMenu_SetSelectedID(DGV_Main_Frame_Background_Dropdown, button:GetID() )
+	DugisGuideViewer:SetDB(button.value, DGV_MAIN_FRAME_BACKGROUND)
+    DugisGuideViewer:UpdateCurrentGuideExpanded()
 end
 
 function DugisGuideViewer:SetFrameBackdrop(frame, bgFile, edgeFile, left, right, top, bottom, edgeSize)
@@ -3631,6 +3663,8 @@ function DugisGuideViewer:TurnOnEssentials()
 	if DugisGuideViewer:IsModuleLoaded("ModelViewer") then DugisGuideViewer.Modules.ModelViewer.Frame:Hide() end
 	DugisGuideViewer.Modules.QuestPOI:ObjectivesChangedDelay(3)
 	if DugisGuideViewer_ModelViewer and DugisGuideViewer_ModelViewer:IsShown() then DugisGuideViewer_ModelViewer:Hide() end
+    
+    DugisGuideViewer:UpdateAutoMountEnabled()
 	print("|cff11ff11" .. "Dugi Guides Essential Mode" )
 end
 
@@ -4363,8 +4397,30 @@ function DugisGuideViewer:ToggleCurrentGuide()
    DugisGuideViewer:UpdateCurrentGuideExpanded()
 end
 
-local SCROLL_BACKGROUND = "Interface\\AddOns\\DugisGuideViewerZ\\Artwork\\bg_home.tga"
-local SCROLLESS_BACKGROUND = "Interface\\AddOns\\DugisGuideViewerZ\\Artwork\\bg_currentguide.tga"
+function DugisGuideViewer:GetScrollBackground()
+    local isSolid = DugisGuideViewer:GetDB(DGV_MAIN_FRAME_BACKGROUND) == "Solid"
+    if isSolid then
+        return "Interface\\AddOns\\DugisGuideViewerZ\\Artwork\\bg_home_solid"
+    else
+        return "Interface\\AddOns\\DugisGuideViewerZ\\Artwork\\bg_home"
+    end
+end
+
+function DugisGuideViewer:GetScrolllesBackground()
+    local isSolid = DugisGuideViewer:GetDB(DGV_MAIN_FRAME_BACKGROUND) == "Solid"
+    if isSolid then
+        return "Interface\\AddOns\\DugisGuideViewerZ\\Artwork\\bg_currentguide_solid"
+    else
+        return "Interface\\AddOns\\DugisGuideViewerZ\\Artwork\\bg_currentguide"
+    end
+end
+
+function DugisGuideViewer:MainFrameBackgroundOnChange()
+    local isSolid = DugisGuideViewer:GetDB(DGV_MAIN_FRAME_BACKGROUND) == "Solid"
+    if isSolid then
+        DugisMainBorder.bg:SetTexture("Interface\\FrameGeneral\\UI-Background-Marble")
+    end
+end
 
 function DugisGuideViewer:UpdateCurrentGuideExpanded()
     if DugisGuideUser.showLeftMenuForCurrentGuide == nil then
@@ -4378,7 +4434,8 @@ function DugisGuideViewer:UpdateCurrentGuideExpanded()
         
         if DugisGuideViewer.currentTabText == "Settings" then
             DugisMainRightFrameHost:SetPoint("TOPLEFT", DugisMain, -9, -49)
-            DugisMainBorder.bg:SetTexture(SCROLLESS_BACKGROUND)
+            DugisMainBorder.bg:SetTexture(DugisGuideViewer:GetScrolllesBackground())
+            
             DugisMainLeftScrollFrame.bar:Hide()
         end
 
@@ -4394,7 +4451,8 @@ function DugisGuideViewer:UpdateCurrentGuideExpanded()
     local highlightedRowTexture = DugisGuideViewer.visualRows[DugisGuideUser.CurrentQuestIndex]:GetNormalTexture();
     
     if DugisGuideUser.showLeftMenuForCurrentGuide then
-        DugisMainBorder.bg:SetTexture(SCROLL_BACKGROUND)
+        DugisMainBorder.bg:SetTexture(DugisGuideViewer:GetScrollBackground())
+        
         DugisMainLeftScrollFrame:Show()
         DugisMainLeftScrollFrame.bar:Show()
         DugisMainRightFrameHost:SetPoint("TOPLEFT", DugisMain, 395 - 15, -44)
@@ -4408,7 +4466,8 @@ function DugisGuideViewer:UpdateCurrentGuideExpanded()
         
         guidesMainScroll.frame:Show()
     else
-        DugisMainBorder.bg:SetTexture(SCROLLESS_BACKGROUND)
+        DugisMainBorder.bg:SetTexture(DugisGuideViewer:GetScrolllesBackground())
+        
         DugisMainLeftScrollFrame:Hide()
         guidesMainScroll.frame:Hide()
         DugisMainRightFrameHost:SetPoint("TOPLEFT", DugisMain, 8, -44)

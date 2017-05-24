@@ -1166,16 +1166,20 @@ function Auras:UpdateTalents(isTalentChange)
 		---- Primary Aura Group #3
 		----
 		
+		local _,_,name,_,_,rank = C_ArtifactUI.GetEquippedArtifactInfo();
+		
 		rowObj = {
 			[1] = SSA.ElementalFocus,
 			[2] = SSA.PowerOfMaelstrom,
+			[3] = SSA.ConcordanceEle,
 		}
 		
 		rowList = {
 			[1] = Auras.db.char.aura[1].ElementalFocus,
 			[2] = Auras.db.char.aura[1].PowerOfMaelstrom,
+			[3] = Auras.db.char.aura[1].ConcordanceEle and (rank or 0) >= 52,
 		}
-		
+		--SSA.DataFrame.text:SetText(rowList[3]);
 		if (Auras.db.char.layout[1].orientation.extra == "Horizontal") then
 			BuildHorizontalIconRow(rowObj,rowList,0,1,'primary','extra');
 		else
@@ -1323,6 +1327,28 @@ function Auras:UpdateTalents(isTalentChange)
 		end
 		
 		------------------------------------------------------------
+		---- Primary Aura Group #3
+		----
+		
+		local _,_,name,_,_,rank = C_ArtifactUI.GetEquippedArtifactInfo();
+		
+		rowObj = {
+			[1] = SSA.UnleashDoom,
+			[2] = SSA.ConcordanceEnh,
+		}
+		
+		rowList = {
+			[1] = Auras.db.char.aura[2].UnleashDoom,
+			[2] = Auras.db.char.aura[2].ConcordanceEnh and (rank or 0) >= 52,
+		}
+		--SSA.DataFrame.text:SetText(rowList[3]);
+		if (Auras.db.char.layout[2].orientation.extra == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,2,'primary','extra');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,2,'primary','extra');
+		end
+		
+		------------------------------------------------------------
 		---- Left Icon Row
 		----
 		
@@ -1457,6 +1483,28 @@ function Auras:UpdateTalents(isTalentChange)
 			BuildHorizontalIconRow(rowObj,rowList,0,3,'primary','bottom');
 		else
 			BuildVerticalIconRow(rowObj,rowList,0,3,'primary','bottom');
+		end
+		
+		------------------------------------------------------------
+		---- Primary Aura Group #3
+		----
+		
+		local _,_,name,_,_,rank = C_ArtifactUI.GetEquippedArtifactInfo();
+		
+		rowObj = {
+			--[1] = SSA.UnleashDoom,
+			[1] = SSA.ConcordanceRes,
+		}
+		
+		rowList = {
+			--[1] = Auras.db.char.aura[2].UnleashDoom,
+			[1] = Auras.db.char.aura[3].ConcordanceRes and (rank or 0) >= 52,
+		}
+		--SSA.DataFrame.text:SetText(rowList[3]);
+		if (Auras.db.char.layout[3].orientation.extra == "Horizontal") then
+			BuildHorizontalIconRow(rowObj,rowList,0,3,'primary','extra');
+		else
+			BuildVerticalIconRow(rowObj,rowList,0,3,'primary','extra');
 		end
 		
 		------------------------------------------------------------

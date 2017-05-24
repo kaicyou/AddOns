@@ -230,8 +230,8 @@ function Auras:CharacterCheck(curSpec,test)
 		SSA.ErrorFrame.text:SetText(Auras:CurText("ErrorFrame").."Spec: "..spc.."\n");
 	end
 	if (test == "MaelstromEnh") then
-		SSA.DataFrame.text:SetText("CurSpec (Enh): "..curSpec.."\n");
-		SSA.DataFrame.text:SetText(Auras:CurText("DataFrame").."Spec: "..spc.."\n");
+		--SSA.DataFrame.text:SetText("CurSpec (Enh): "..curSpec.."\n");
+		--SSA.DataFrame.text:SetText(Auras:CurText("DataFrame").."Spec: "..spc.."\n");
 	end
 	
 	if ((curSpec == spc or curSpec == 0) and classIndex == 7) then
@@ -601,7 +601,8 @@ end
 function Auras:OnInitialize()
 	local defaults = {
 		char = {
-			isR45FirstLoad = true,
+			EquippedArtifact = '',
+			isR48FirstLoad = true,
 			version = nil,
 			name = nil,
 			isEleFirst = true,
@@ -674,6 +675,7 @@ function Auras:OnInitialize()
 					orientation = {
 						top = "Horizontal",
 						bottom = "Horizontal",
+						extra = "Horizontal",
 						left = "Vertical",
 						right = "Vertical",
 					},
@@ -684,6 +686,11 @@ function Auras:OnInitialize()
 							charges = 13.5,
 						},
 						bottom = {
+							icon = 32,
+							spacing = 50,
+							charges = 13.5,
+						},
+						extra = {
 							icon = 32,
 							spacing = 50,
 							charges = 13.5,
@@ -711,6 +718,7 @@ function Auras:OnInitialize()
 					orientation = {
 						top = "Horizontal",
 						bottom = "Horizontal",
+						extra = "Horizontal",
 						left = "Vertical",
 						right = "Vertical",
 					},
@@ -721,6 +729,11 @@ function Auras:OnInitialize()
 							charges = 13.5,
 						},
 						bottom = {
+							icon = 32,
+							spacing = 50,
+							charges = 13.5,
+						},
+						extra = {
 							icon = 32,
 							spacing = 50,
 							charges = 13.5,
@@ -757,6 +770,7 @@ function Auras:OnInitialize()
 					orientation = {
 						top = "Horizontal",
 						bottom = "Horizontal",
+						extra = "Horizontal",
 						left = "Vertical",
 						right = "Vertical",
 					},
@@ -767,6 +781,11 @@ function Auras:OnInitialize()
 							charges = 13.5,
 						},
 						bottom = {
+							icon = 32,
+							spacing = 50,
+							charges = 13.5,
+						},
+						extra = {
 							icon = 32,
 							spacing = 50,
 							charges = 13.5,
@@ -1042,6 +1061,7 @@ function Auras:OnInitialize()
 						BloodlustBarEle = true,
 						BuffTimerBarGrpEle = true,
 						CleanseSpiritEle = true,
+						ConcordanceEle = true,
 						EarthElemental = true,
 						EarthElementalBar = true,
 						EarthgrabTotemEle = true,
@@ -1114,6 +1134,7 @@ function Auras:OnInitialize()
 						BoulderfistCharges = true,
 						BuffTimerBarGrpEnh = true,
 						CleanseSpiritEnh = true,
+						ConcordanceEnh = true,
 						CrashLightning = true,
 						CrashLightningBar = true,
 						CrashLightningGlow = true,
@@ -1135,7 +1156,9 @@ function Auras:OnInitialize()
 						HeroismBarEng = true,
 						HexEnh = true,
 						HexBarEnh = true,
+						LandslideBar = true;
 						LargeIconGrpBotEnh = true,
+						LargeIconGrpExtEnh = true,
 						LargeIconGrpTopEnh = true,
 						LavaLash = true,
 						LightningSurgeTotemEnh = true,
@@ -1153,6 +1176,7 @@ function Auras:OnInitialize()
 						StormstrikeGlow = true,
 						Sundering = true,
 						TimeWarpBarEnh = true,
+						UnleashDoom = true,
 						UtilTimerBarGrpEnh = true,
 						VoodooTotemEnh = true,
 						VoodooTotemBarEnh = true,
@@ -1180,6 +1204,7 @@ function Auras:OnInitialize()
 						CloudburstAbsorbBar = true,
 						CloudburstTotem = true,
 						CloudburstTotemBar = true,
+						ConcordanceRes = true,
 						EarthenShieldTotem = true,
 						EarthenShieldTotemBar = true,
 						EarthgrabTotemRes = true,
@@ -1200,6 +1225,7 @@ function Auras:OnInitialize()
 						HexRes = true,
 						HexBarRes = true,
 						LargeIconGrpBotRes = true,
+						LargeIconGrpExtRes = true,
 						LargeIconGrpTopRes = true,
 						LavaBurstRes = true,
 						LavaBurstResGlow = true,
@@ -1419,6 +1445,15 @@ function Auras:OnInitialize()
 						width = 250,
 						height = 50,
 					},
+					LargeIconGrpExtEnh = {
+						point = "CENTER",
+						relativeTo = "AuraGroupEnh",
+						relativePoint = "CENTER",
+						x = 0,
+						y = -105,
+						width = 100,
+						height = 50,
+					},
 					SmallIconGrpLeftEnh = {
 						point = "CENTER",
 						relativeTo = "AuraGroupEnh",
@@ -1519,6 +1554,15 @@ function Auras:OnInitialize()
 						x = 0,
 						y = -225,
 						width = 250,
+						height = 50,
+					},
+					LargeIconGrpExtRes = {
+						point = "CENTER",
+						relativeTo = "AuraGroupRes",
+						relativePoint = "CENTER",
+						x = 0,
+						y = -105,
+						width = 100,
 						height = 50,
 					},
 					SmallIconGrpLeftRes = {
@@ -1741,6 +1785,13 @@ function Auras:OnInitialize()
 							x = 0,
 							y = -225,
 						},
+						LargeIconGrpExtEnh = {
+							point = "CENTER",
+							relativeTo = "AuraGroupEnh",
+							relativePoint = "CENTER",
+							x = 0,
+							y = -105,
+						},
 						SmallIconGrpLeftEnh = {
 							point = "CENTER",
 							relativeTo = "AuraGroupEnh",
@@ -1819,6 +1870,13 @@ function Auras:OnInitialize()
 							relativePoint = "CENTER",
 							x = 0,
 							y = -225,
+						},
+						LargeIconGrpExtRes = {
+							point = "CENTER",
+							relativeTo = "AuraGroupRes",
+							relativePoint = "CENTER",
+							x = 0,
+							y = -105,
 						},
 						SmallIconGrpLeftRes = {
 							point = "CENTER",
@@ -1917,6 +1975,11 @@ function Auras:OnEnable()
 	self:RegisterEvent("PLAYER_LEVEL_UP");
 	self:RegisterEvent("PLAYER_REGEN_DISABLED");
 	self:RegisterEvent("PLAYER_TALENT_UPDATE");
+	
+	if (Auras.db.char.EquippedArtifact == '') then
+		local _,_,name = C_ArtifactUI.GetEquippedArtifactInfo();
+		Auras.db.char.EquippedArtifact = name;
+	end
 	
 	-- Check if cooldowns value is table
 	if (type(Auras.db.char.cooldowns.numbers) == "table") then
@@ -2038,8 +2101,8 @@ function Auras:OnEnable()
 		end
 	end
 
-	StaticPopupDialogs["SSA_R45_NOTICE"] = {
-		text = "|cFF8888FFSweetsour's Shaman Auras|r\n\n|cFFFFCC00!!|r|cFFFF0000IMPORTANT|r|cFFFFCC00!!|r\n\n|cFF00FF00PLEASE NOTE|r\n|cFFFFCC00You will see this popup again after resetting your SavedVariables; feel free to ignore it when you do. It won't appear a third time.|r\n\n\n\nIn r45-beta, there has been an enormous re-coding effort within the SavedVariables structrue as well as the configuration interface. As a result, there is a possibility that you may experience various bugs and overall instability. If this occurs, it is recommended that you reset your SavedVariables files.\n\n\n\n|cFFFFCC00To reset your SavedVariables file, please do the following:\n\n1. Close out of WoW\n2. Navigate to your WoW WTF folder*\n3. Open the \"Accounts\" folder\n4. Open the folder with your account name\n5. Open the \"SavedVariables\" folder\n6. Locate and delete \"ShamanAuras\" and \"ShamanAuras.bak\"\n7. Re-open WoW|r\n\n* The default location of your WTF folder is: C:\\Program Files (x86)\\World of Warcraft\\WTF\\\n\n",
+	StaticPopupDialogs["SSA_R48_NOTICE"] = {
+		text = "|cFF8888FFSweetsour's Shaman Auras|r\n\n|cFFFFCC00!!|r|cFFFF0000IMPORTANT|r|cFFFFCC00!!|r\n\n|cFF00FF00PLEASE NOTE|r\n|cFFFFCC00You will see this popup again after resetting your SavedVariables; feel free to ignore it when you do. It won't appear a third time.|r\n\n\n\nThere has been a reported bug where moving auras will not save. If this occurs, it is recommended that you reset your SavedVariables files.\n\n\n\n|cFFFFCC00To reset your SavedVariables file, please do the following:\n\n1. Close out of WoW\n2. Navigate to your WoW WTF folder*\n3. Open the \"Accounts\" folder\n4. Open the folder with your account name\n5. Open the \"SavedVariables\" folder\n6. Locate and delete \"ShamanAuras\" and \"ShamanAuras.bak\"\n7. Re-open WoW|r\n\n* The default location of your WTF folder is: C:\\Program Files (x86)\\World of Warcraft\\WTF\\\n\nIf the keeps happening, let me know right away!\n\nThank you for your patience!",
 		button1 = "Ok, thanks!",
 		OnAccept = function()
 			--AddonList:Show();
@@ -2067,9 +2130,9 @@ function Auras:OnEnable()
 		StaticPopup_Show ("SSA_CLASS_CHECKER")
 	end
 		
-	if (Auras.db.char.isR45FirstLoad) then
-		Auras.db.char.isR45FirstLoad = false;
-		StaticPopup_Show ("SSA_R45_NOTICE")
+	if (Auras.db.char.isR48FirstLoad) then
+		Auras.db.char.isR48FirstLoad = false;
+		StaticPopup_Show ("SSA_R48_NOTICE")
 	end
 end
 

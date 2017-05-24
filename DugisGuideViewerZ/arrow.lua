@@ -23,13 +23,14 @@ local BeginAutoroutine, InterruptAutoroutine, YieldAutoroutine, GetRunningAutoro
 local function CreateArrowFrame()
 	if not DugisArrowFrame then
 		CreateFrame("Button", "DugisArrowFrame", UIParent)
+		DugisArrowFrame:SetFrameStrata("LOW")
 		DugisArrowFrame:EnableMouse(true)
 		DugisArrowFrame:SetMovable(true)
 		DugisArrowFrame:SetUserPlaced(true)
 		DugisArrowFrame.arrow = DugisArrowFrame:CreateTexture("BACKGROUND")
 		DugisArrowFrame.arrow:SetColorTexture(0,0,0,1);
 		DugisArrowFrame.button = CreateFrame("Button", "DugisArrowActionButton", UIParent, "SecureActionButtonTemplate")
-		DugisArrowFrame.button:SetFrameStrata("MEDIUM")
+		DugisArrowFrame.button:SetFrameStrata("LOW")
 		DugisArrowFrame.button:SetFrameLevel(2)
 		DugisArrowFrame.button:SetNormalTexture("Interface\\AddOns\\DugisGuideViewerZ\\Artwork\\IconBorder")
 		DugisArrowFrame.button:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress")

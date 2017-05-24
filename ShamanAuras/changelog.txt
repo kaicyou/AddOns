@@ -1,4 +1,11 @@
-﻿	r47-beta
+﻿	r48-beta
+NEW: [All] Concordance of the Legionfall has been added.
+NEW: [Enhancement] Unleash Doom has been added.
+NEW: [Enhancement] Timer duration bar added for Landslide (Thanks, Orfin!)
+
+FIX: [Enhancement] Fixed an issue with certain aura groups not staying in position after moving them.
+
+	r47-beta
 NEW: [All] Wind Shear will now glow when an interruptible cast is being casted. (Thanks, Yukko!)
 NEW: [Restoration] Checkboxes for "Gift of the Queen" and "Earthen Shield Totem" have been added to toggle their display. (Thanks, Foksondydo!)
 NEW: [UI] The "Move" buttons have been relocated to the "Layout" tab for each spec.

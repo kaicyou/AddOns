@@ -262,8 +262,20 @@ local function GetElementalOptions()
 										Auras:UpdateTalents()
 									end,
 								},
-								Earthquake = {
+								Concordance = {
 									order = 3,
+									type = "toggle",
+									name = L["Concordance of the Legionfall"],
+									get = function()
+										return Auras.db.char.aura[1].ConcordanceEle;
+									end,
+									set = function(_, value)
+										Auras.db.char.aura[1].ConcordanceEle = value
+										Auras:UpdateTalents()
+									end,
+								},
+								Earthquake = {
+									order = 4,
 									type = "toggle",
 									name = L["Earthquake"],
 									get = function()
@@ -275,7 +287,7 @@ local function GetElementalOptions()
 									end,
 								},
 								EarthShock = {
-									order = 4,
+									order = 5,
 									type = "toggle",
 									name = L["Earth Shock"],
 									get = function()
@@ -287,7 +299,7 @@ local function GetElementalOptions()
 									end,
 								},
 								ElementalBlast = {
-									order = 5,
+									order = 6,
 									type = "toggle",
 									name = L["Elemental Blast"],
 									get = function()
@@ -299,7 +311,7 @@ local function GetElementalOptions()
 									end,
 								},
 								ElementalFocus = {
-									order = 6,
+									order = 7,
 									type = "toggle",
 									name = L["Elemental Focus"],
 									get = function()
@@ -311,7 +323,7 @@ local function GetElementalOptions()
 									end,
 								},
 								ElementalMastery = {
-									order = 7,
+									order = 8,
 									type = "toggle",
 									name = L["Elemental Mastery"],
 									get = function()
@@ -323,7 +335,7 @@ local function GetElementalOptions()
 									end,
 								},
 								FireElemental = {
-									order = 8,
+									order = 9,
 									type = "toggle",
 									name = L["Fire Elemental"],
 									get = function() 
@@ -335,7 +347,7 @@ local function GetElementalOptions()
 									end,
 								},
 								FlameShock = {
-									order = 9,
+									order = 10,
 									type = "toggle",
 									name = L["Flame Shock"],
 									get = function()
@@ -347,7 +359,7 @@ local function GetElementalOptions()
 									end,
 								},
 								Icefury = {
-									order = 10,
+									order = 11,
 									type = "toggle",
 									name = L["Icefury"],
 									get = function() 
@@ -359,7 +371,7 @@ local function GetElementalOptions()
 									end,
 								},
 								LavaBurst = {
-									order = 11,
+									order = 12,
 									type = "toggle",
 									name = L["Lava Burst"],
 									get = function()
@@ -371,7 +383,7 @@ local function GetElementalOptions()
 									end,
 								},
 								LiquidMagmaTotem = {
-									order = 12,
+									order = 13,
 									type = "toggle",
 									name = L["Liquid Magma Totem"],
 									get = function()
@@ -383,7 +395,7 @@ local function GetElementalOptions()
 									end,
 								},
 								PowerOfMaelstrom = {
-									order = 13,
+									order = 14,
 									type = "toggle",
 									name = L["Power of the Maelstrom"],
 									get = function()
@@ -395,7 +407,7 @@ local function GetElementalOptions()
 									end,
 								},
 								StormElemental = {
-									order = 14,
+									order = 15,
 									type = "toggle",
 									name = L["Storm Elemental"],
 									get = function() 
@@ -407,7 +419,7 @@ local function GetElementalOptions()
 									end,
 								},
 								Stormkeeper = {
-									order = 15,
+									order = 16,
 									type = "toggle",
 									name = L["Stormkeeper"],
 									get = function() 
@@ -1855,8 +1867,20 @@ local function GetEnhancementOptions()
 										Auras:UpdateTalents()
 									end,
 								},
-								CrashLightning = {
+								Concordance = {
 									order = 3,
+									type = "toggle",
+									name = L["Concordance of the Legionfall"],
+									get = function()
+										return Auras.db.char.aura[2].ConcordanceEnh;
+									end,
+									set = function(_, value)
+										Auras.db.char.aura[2].ConcordanceEnh = value
+										Auras:UpdateTalents()
+									end,
+								},
+								CrashLightning = {
+									order = 4,
 									type = "toggle",
 									name = L["Crash Lightning"],
 									get = function()
@@ -1868,7 +1892,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								DoomWinds = {
-									order = 4,
+									order = 5,
 									type = "toggle",
 									name = L["Doom Winds"],
 									get = function()
@@ -1880,7 +1904,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								EarthenSpike = {
-									order = 5,
+									order = 6,
 									type = "toggle",
 									name = L["Earthen Spike"],
 									get = function()
@@ -1892,7 +1916,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								FeralLunge = {
-									order = 6,
+									order = 7,
 									type = "toggle",
 									name = L["Feral Lunge"],
 									get = function()
@@ -1904,7 +1928,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								FeralSpirit = {
-									order = 7,
+									order = 8,
 									type = "toggle",
 									name = L["Feral Spirit"],
 									get = function()
@@ -1916,7 +1940,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								Flametongue = {
-									order = 8,
+									order = 9,
 									type = "toggle",
 									name = L["Flametongue"],
 									get = function()
@@ -1928,7 +1952,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								Frostbrand = {
-									order = 9,
+									order = 10,
 									type = "toggle",
 									name = L["Frostbrand"],
 									get = function()
@@ -1940,7 +1964,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								LavaLash = {
-									order = 10,
+									order = 11,
 									type = "toggle",
 									name = L["Lava Lash"],
 									get = function()
@@ -1952,7 +1976,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								Stormstrike = {
-									order = 11,
+									order = 12,
 									type = "toggle",
 									name = L["Stormstrike"],
 									get = function()
@@ -1964,7 +1988,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								Sundering = {
-									order = 12,
+									order = 13,
 									type = "toggle",
 									name = L["Sundering"],
 									get = function()
@@ -1975,8 +1999,20 @@ local function GetEnhancementOptions()
 										Auras:UpdateTalents()
 									end,
 								},
+								UnleashDoom = {
+									order = 14,
+									type = "toggle",
+									name = L["Unleash Doom"],
+									get = function()
+										return Auras.db.char.aura[2].UnleashDoom;
+									end,
+									set = function(_, value)
+										Auras.db.char.aura[2].UnleashDoom = value
+										Auras:UpdateTalents()
+									end,
+								},
 								Windsong = {
-									order = 13,
+									order = 15,
 									type = "toggle",
 									name = L["Windsong"],
 									get = function()
@@ -2305,8 +2341,19 @@ local function GetEnhancementOptions()
 												Auras.db.char.aura[2].FrostbrandBar = value
 											end,
 										},
-										WindsongBar = {
+										Landslide = {
 											order = 6,
+											type = "toggle",
+											name = L["Landslide"],
+											get = function() 
+												return Auras.db.char.aura[2].LandslideBar;
+											end,
+											set = function(_, value)
+												Auras.db.char.aura[2].LandslideBar = value
+											end,
+										},
+										WindsongBar = {
+											order = 7,
 											type = "toggle",
 											name = L["Windsong"],
 											get = function() 
@@ -3238,8 +3285,20 @@ local function GetRestorationOptions()
 										Auras:UpdateTalents()
 									end,
 								},
-								GiftOfQueen = {
+								Concordance = {
 									order = 4,
+									type = "toggle",
+									name = L["Concordance of the Legionfall"],
+									get = function()
+										return Auras.db.char.aura[3].ConcordanceRes;
+									end,
+									set = function(_, value)
+										Auras.db.char.aura[3].ConcordanceRes = value
+										Auras:UpdateTalents()
+									end,
+								},
+								GiftOfQueen = {
+									order = 5,
 									type = "toggle",
 									name = L["Gift of the Queen"],
 									get = function() 
@@ -3251,7 +3310,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								HealingRain = {
-									order = 5,
+									order = 6,
 									type = "toggle",
 									name = L["Healing Rain"],
 									get = function()
@@ -3263,7 +3322,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								HealingStreamTotem = {
-									order = 6,
+									order = 7,
 									type = "toggle",
 									name = L["Healing Stream Totem"],
 									get = function() 
@@ -3275,7 +3334,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								HealingTideTotem = {
-									order = 7,
+									order = 8,
 									type = "toggle",
 									name = L["Healing Tide Totem"],
 									get = function() 
@@ -3287,7 +3346,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								Riptide = {
-									order = 8,
+									order = 9,
 									type = "toggle",
 									name = L["Riptide"],
 									get = function()
@@ -3299,7 +3358,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								SpiritLinkTotem = {
-									order = 9,
+									order = 10,
 									type = "toggle",
 									name = L["Spirit Link Totem"],
 									get = function() 
@@ -3311,7 +3370,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								UnleashLife = {
-									order = 10,
+									order = 11,
 									type = "toggle",
 									name = L["Unleash Life"],
 									get = function()
@@ -3323,7 +3382,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								Wellspring = {
-									order = 11,
+									order = 12,
 									type = "toggle",
 									name = L["Wellspring"],
 									get = function() 
@@ -3335,7 +3394,7 @@ local function GetRestorationOptions()
 									end,
 								},
 								WindRushTotemRes = {
-									order = 12,
+									order = 13,
 									type = "toggle",
 									name = L["Wind Rush Totem"],
 									get = function() 

@@ -81,18 +81,20 @@ end
 -----------------------------------------------------------------------
 -- Enhancement Frames
 -----------------------------------------------------------------------
-local AuraGroup,LargeIconGrpTop,LargeIconGrpBot,SmallIconGrpLeft,SmallIconGrpRight
+local AuraGroup,LargeIconGrpTop,LargeIconGrpBot,LargeIconGrpExt,SmallIconGrpLeft,SmallIconGrpRight
 
 -- Build Enhtoration Aura Group Containers
 AuraGroup = CreateGroup("AuraGroupEnh",UIParent);
 LargeIconGrpTop = CreateGroup("LargeIconGrpTopEnh",AuraGroup);
 LargeIconGrpBot = CreateGroup("LargeIconGrpBotEnh",AuraGroup);
+LargeIconGrpExt = CreateGroup("LargeIconGrpExtEnh",AuraGroup);
 SmallIconGrpLeft = CreateGroup("SmallIconGrpLeftEnh",AuraGroup);
 SmallIconGrpRight = CreateGroup("SmallIconGrpRightEnh",AuraGroup);
 
 -- Build Large Enhancement Icon Frames
 InitializeFrames("AscendanceEnh",LargeIconGrpBot,"shared\\ascendance",lgIcon);
 InitializeFrames("Boulderfist",LargeIconGrpBot,"enhancement\\boulderfist",lgIcon,lgGlow,true);
+InitializeFrames("ConcordanceEnh",LargeIconGrpExt,"shared\\concordance_legionfall.tga",lgIcon);
 InitializeFrames("CrashLightning",LargeIconGrpTop,"enhancement\\crash_lightning",lgIcon,lgGlow);
 InitializeFrames("DoomWinds",LargeIconGrpBot,"enhancement\\doom_winds",lgIcon);
 InitializeFrames("EarthenSpike",LargeIconGrpBot,"enhancement\\earthen_spike",lgIcon);
@@ -102,6 +104,7 @@ InitializeFrames("Frostbrand",LargeIconGrpTop,"enhancement\\frostbrand",lgIcon,l
 InitializeFrames("LavaLash",LargeIconGrpTop,"enhancement\\lava_lash",lgIcon,lgGlow);
 InitializeFrames("Stormstrike",LargeIconGrpTop,"enhancement\\stormstrike",lgIcon,lgGlow,true);
 InitializeFrames("Sundering",LargeIconGrpBot,"enhancement\\sundering",lgIcon);
+InitializeFrames("UnleashDoom",LargeIconGrpExt,"enhancement\\unleash_doom",lgIcon);
 InitializeFrames("Windsong",LargeIconGrpBot,"enhancement\\windsong",lgIcon,lgGlow);
 
 InitializeFrames("AstralShiftEnh",SmallIconGrpRight,"shared\\astral_shift",smIcon);
@@ -119,6 +122,17 @@ InitializeFrames("WindShearEnh",SmallIconGrpLeft,"shared\\wind_shear",smIcon,smG
 -------------------------------------------------------------------------------------------------------
 ----- Initialize Scripts (Aura Groups)
 -------------------------------------------------------------------------------------------------------
+
+EventFrame:SetScript("OnUpdate",function(self)
+	local _,_,name,_,_,rank = C_ArtifactUI.GetEquippedArtifactInfo();
+	
+	if (Auras:CharacterCheck(2)) then
+		if (name ~= Auras.db.char.EquippedArtifact) then
+			Auras.db.char.EquippedArtifact = "Doomhammer";
+			Auras:UpdateTalents();
+		end
+	end
+end);
 
 AuraGroup:SetScript("OnUpdate",function(self,button)
 	if (Auras.db.char.config[2].isMoving) then
@@ -152,13 +166,13 @@ end);
 
 LargeIconGrpTop:SetScript("OnMouseDown",function(self,button)
 	if (Auras.db.char.config[2].isMoving) then
-		Auras:MoveOnMouseDown(self,'resGrp',button);
+		Auras:MoveOnMouseDown(self,'enhGrp',button);
 	end
 end);
 
 LargeIconGrpTop:SetScript("OnMouseUp",function(self,button)
 	if (Auras.db.char.config[2].isMoving) then
-		Auras:MoveOnMouseUp(self,'resGrp',button);
+		Auras:MoveOnMouseUp(self,'enhGrp',button);
 	end
 end);
 
@@ -180,6 +194,27 @@ end);
 LargeIconGrpBot:SetScript("OnMouseUp",function(self,button)
 	if (Auras.db.char.config[2].isMoving) then
 		Auras:MoveOnMouseUp(self,'enhGrp',button);
+	end
+end);
+
+LargeIconGrpExt:SetScript("OnUpdate",function(self,button)
+	if (Auras.db.char.config[2].isMoving) then
+		self:SetBackdrop(backdrop);
+		self:SetBackdropColor(0,0,0,0.85);
+	else
+		self:SetBackdrop(nil);
+	end
+end);
+
+LargeIconGrpExt:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.config[2].isMoving) then
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+	end
+end);
+
+LargeIconGrpExt:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.config[2].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
 	end
 end);
 
@@ -323,6 +358,30 @@ SSA.Boulderfist:SetScript("OnUpdate", function(self)
 		Auras:ToggleAuraVisibility(self,false,'showhide');
 	end
 end);	
+
+-- Concordance of the Legionfall
+SSA.ConcordanceEnh:SetScript("OnUpdate",function(self)
+	if (Auras:CharacterCheck(2)) then
+		local buff,_,_,count,_,duration,expires,caster = UnitBuff('player',Auras:GetSpellName(242584));
+		
+		Auras:ToggleAuraVisibility(self,true,'showhide');
+		
+		if ((duration or 0) > 2) then
+			Auras:ExecuteCooldown(self,(expires - duration),duration,false,false,2);
+			self.CD:Show();
+		else
+			self.CD:Hide();
+		end
+		
+		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
+			self:SetAlpha(1);
+		else
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
+		end
+	else
+		Auras:ToggleAuraVisibility(self,false,'showhide');
+	end
+end);
 
 -- Cleanse Spirit
 SSA.CleanseSpiritEnh:SetScript("OnUpdate",function(self)
@@ -780,6 +839,30 @@ SSA.Sundering:SetScript("OnUpdate",function(self)
 	end
 end);
 
+-- Unleash Doom
+SSA.UnleashDoom:SetScript("OnUpdate",function(self)
+	if (Auras:CharacterCheck(2)) then
+		local buff,_,_,count,_,duration,expires,caster = UnitBuff('player',Auras:GetSpellName(199055));
+		
+		Auras:ToggleAuraVisibility(self,true,'showhide');
+		
+		if ((duration or 0) > 2) then
+			Auras:ExecuteCooldown(self,(expires - duration),duration,false,false,2);
+			self.CD:Show();
+		else
+			self.CD:Hide();
+		end
+		
+		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
+			self:SetAlpha(1);
+		else
+			self:SetAlpha(Auras.db.char.triggers[2].OoCAlpha)
+		end
+	else
+		Auras:ToggleAuraVisibility(self,false,'showhide');
+	end
+end);
+
 -- Voodoo Totem
 SSA.VoodooTotemEnh:SetScript("OnUpdate",function(self)
 	if (Auras:CharacterCheck(2)) then
@@ -1055,6 +1138,7 @@ SSA.FlametongueBar = CreateFrame("StatusBar","FlametongueBar",MainTimerBarGrp);
 SSA.FrostbrandBar = CreateFrame("StatusBar","FrostbrandBar",MainTimerBarGrp);
 SSA.HeroismBarEnh = CreateFrame("StatusBar","HeroismBarEnh",BuffTimerBarGrp);
 SSA.HexBarEnh = CreateFrame("StatusBar","HexBarEnh",UtilTimerBarGrp);
+SSA.LandslideBar = CreateFrame("StatusBar","LandslideBar",MainTimerBarGrp);
 SSA.SpiritWalkBar = CreateFrame("StatusBar","SpiritWalkBar",BuffTimerBarGrp);
 SSA.TimeWarpBarEnh = CreateFrame("StatusBar","TimeWarpBarEnh",BuffTimerBarGrp);
 SSA.VoodooTotemBarEnh = CreateFrame("StatusBar","VoodooTotemBarEnh",UtilTimerBarGrp);
@@ -1074,6 +1158,7 @@ local mainIDs = {
 	[187878] = SSA.CrashLightningBar,
 	[194084] = SSA.FlametongueBar,
 	[196834] = SSA.FrostbrandBar,
+	[202004] = SSA.LandslideBar,
 	[201898] = SSA.WindsongBar,
 }
 local utilIDs = {
@@ -1606,30 +1691,35 @@ SSA.AuraObjectsEnh = {
 	},
 	[4] = {
 		alpha = nil,
-		object = SmallIconGrpLeft,
+		object = LargeIconGrpExt,
 		backdrop = 'BackdropSB',
 	},
 	[5] = {
 		alpha = nil,
-		object = SmallIconGrpRight,
+		object = SmallIconGrpLeft,
 		backdrop = 'BackdropSB',
 	},
 	[6] = {
 		alpha = nil,
-		object = BuffTimerBarGrp,
+		object = SmallIconGrpRight,
 		backdrop = 'BackdropSB',
 	},
 	[7] = {
 		alpha = nil,
-		object = MainTimerBarGrp,
+		object = BuffTimerBarGrp,
 		backdrop = 'BackdropSB',
 	},
 	[8] = {
 		alpha = nil,
-		object = UtilTimerBarGrp,
+		object = MainTimerBarGrp,
 		backdrop = 'BackdropSB',
 	},
 	[9] = {
+		alpha = nil,
+		object = UtilTimerBarGrp,
+		backdrop = 'BackdropSB',
+	},
+	[10] = {
 		alpha = true,
 		object = MaelstromBar,
 		statusbar = {
@@ -1639,12 +1729,12 @@ SSA.AuraObjectsEnh = {
 			m = 150,
 		},
 	},
-	[10] = {
+	[11] = {
 		alpha = false,
 		object = DoomWindsTex,
 		backdrop = 'BackdropSB',
 	},
-	[11] = {
+	[12] = {
 		model = {
 			[1] = StormstrikeCharges.Charge1,
 			[2] = StormstrikeCharges.Charge2,

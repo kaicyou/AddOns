@@ -89,18 +89,20 @@ local function InitializeFrames(name,parent,icon,iconSize,glowSize,charge)
 	_G["SSA_"..name] = Frame;
 end
 
-local AuraGroup,LargeIconGrpTop,LargeIconGrpBot,SmallIconGrpLeft,SmallIconGrpRight
+local AuraGroup,LargeIconGrpTop,LargeIconGrpBot,LargeIconGrpExt,SmallIconGrpLeft,SmallIconGrpRight
 
 -- Build Restoration Aura Group Containers
 AuraGroup = CreateGroup("AuraGroupRes",UIParent);
 LargeIconGrpTop = CreateGroup("LargeIconGrpTopRes",AuraGroup);
 LargeIconGrpBot = CreateGroup("LargeIconGrpBotRes",AuraGroup);
+LargeIconGrpExt = CreateGroup("LargeIconGrpExtRes",AuraGroup);
 SmallIconGrpLeft = CreateGroup("SmallIconGrpLeftRes",AuraGroup);
 SmallIconGrpRight = CreateGroup("SmallIconGrpRightRes",AuraGroup);
 
 -- Build Large Restoration Icon Frames
 InitializeFrames("AscendanceRes",LargeIconGrpBot,"shared\\ascendance",lgIcon);
 InitializeFrames("CloudburstTotem",LargeIconGrpTop,"totems\\cloudburst_totem",lgIcon);
+InitializeFrames("ConcordanceRes",LargeIconGrpExt,"shared\\concordance_legionfall.tga",lgIcon);
 InitializeFrames("GiftOfQueen",LargeIconGrpBot,"restoration\\gift_of_the_queen",lgIcon);
 InitializeFrames("HealingRain",LargeIconGrpTop,"shared\\healing_rain",lgIcon);
 InitializeFrames("HealingStreamTotem",LargeIconGrpTop,"totems\\healing_stream_totem",lgIcon,nil,true);
@@ -129,6 +131,17 @@ InitializeFrames("WindShearRes",SmallIconGrpLeft,"shared\\wind_shear",smIcon,smG
 -------------------------------------------------------------------------------------------------------
 ----- Initialize Scripts (Aura Groups)
 -------------------------------------------------------------------------------------------------------
+
+EventFrame:SetScript("OnUpdate",function(self)
+	local _,_,name,_,_,rank = C_ArtifactUI.GetEquippedArtifactInfo();
+	
+	if (Auras:CharacterCheck(3)) then
+		if (name ~= Auras.db.char.EquippedArtifact) then
+			Auras.db.char.EquippedArtifact = "Sharas'dal, Scepter of Tides";
+			Auras:UpdateTalents();
+		end
+	end
+end);
 
 AuraGroup:SetScript("OnUpdate",function(self,button)
 	if (Auras.db.char.config[3].isMoving) then
@@ -190,6 +203,27 @@ end);
 LargeIconGrpBot:SetScript("OnMouseUp",function(self,button)
 	if (Auras.db.char.config[3].isMoving) then
 		Auras:MoveOnMouseUp(self,'resGrp',button);
+	end
+end);
+
+LargeIconGrpExt:SetScript("OnUpdate",function(self,button)
+	if (Auras.db.char.config[3].isMoving) then
+		self:SetBackdrop(backdrop);
+		self:SetBackdropColor(0,0,0,0.85);
+	else
+		self:SetBackdrop(nil);
+	end
+end);
+
+LargeIconGrpExt:SetScript("OnMouseDown",function(self,button)
+	if (Auras.db.char.config[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'eleGrp',button);
+	end
+end);
+
+LargeIconGrpExt:SetScript("OnMouseUp",function(self,button)
+	if (Auras.db.char.config[3].isMoving) then
+		Auras:MoveOnMouseUp(self,'eleGrp',button);
 	end
 end);
 
@@ -467,6 +501,31 @@ SSA.CloudburstTotem:SetScript("OnUpdate",function(self)
 			self.CD:Hide();
 		end
 			
+		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
+			self:SetAlpha(1);
+		else
+			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+		end
+	else
+		Auras:ToggleAuraVisibility(self,false,'showhide');
+	end
+end);
+
+-- Concordance of the Legionfall
+SSA.ConcordanceRes:SetScript("OnUpdate",function(self)
+	if (Auras:CharacterCheck(3)) then
+		local buff,_,_,count,_,duration,expires,caster = UnitBuff('player',Auras:GetSpellName(242586));
+		
+		
+		Auras:ToggleAuraVisibility(self,true,'showhide');
+		
+		if ((duration or 0) > 2) then
+			Auras:ExecuteCooldown(self,(expires - duration),duration,false,false,3);
+			self.CD:Show();
+		else
+			self.CD:Hide();
+		end
+		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
@@ -1836,7 +1895,7 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		
 		
 		Auras:ToggleAuraVisibility(self,true,'showhide');
-		SSA.DataFrame.text:SetText('');
+		--SSA.DataFrame.text:SetText('');
 		for i=1,5 do
 			local _,name,start,duration = GetTotemInfo(i);
 
@@ -1915,7 +1974,7 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		end
 		
 		for mainObj in pairs(mainIDs) do
-			SSA_DataFrame.text:SetText(mainObj);
+			--SSA_DataFrame.text:SetText(mainObj);
 			if (not mainIDs[mainObj][1] and mainIDs[mainObj][2]:IsShown()) then
 				mainIDs[mainObj][2]:Hide();
 				mainIDs[mainObj][1] = false;
@@ -1929,7 +1988,7 @@ MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 			mainIDs["Cloudburst Totem"][2]:SetValue(0);
 		end
 		
-		SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."\nNum Totems: "..tostring(mainTotems).."\nMemory Usage: "..GetAddOnMemoryUsage("ShamanAurasDev"));
+		--SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."\nNum Totems: "..tostring(mainTotems).."\nMemory Usage: "..GetAddOnMemoryUsage("ShamanAurasDev"));
 		if (Auras.db.char.config[3].isMoving) then
 			self:SetBackdrop(backdrop);
 			self:SetBackdropColor(0,0,0,0.85);

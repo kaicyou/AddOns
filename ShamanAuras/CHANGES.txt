@@ -1,4 +1,26 @@
 ------------------------------------------------------------------------
+r111 | SweetsourDev | 2017-05-22 00:47:22 -0500 (Mon, 22 May 2017) | 6 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   A /trunk/Media/icons/enhancement/unleash_doom.blp
+   A /trunk/Media/icons/shared/concordance_legionfall.tga
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/SA_Init.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r48-beta
+NEW: [All] Concordance of the Legionfall has been added.
+NEW: [Enhancement] Unleash Doom has been added.
+NEW: [Enhancement] Timer duration bar added for Landslide (Thanks, Orfin!)
+
+FIX: [Enhancement] Fixed an issue with certain aura groups not staying in position after moving them.
+------------------------------------------------------------------------
 r110 | SweetsourDev | 2017-03-25 02:02:28 -0500 (Sat, 25 Mar 2017) | 6 lines
 Changed paths:
    M /trunk/Locales/enUS.lua

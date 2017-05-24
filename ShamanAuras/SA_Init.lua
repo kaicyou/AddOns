@@ -37,6 +37,7 @@ Auras:CreateVerticalStatusBar(SSA.CrashLightningBar,"RIGHT",-5,0,133,255,L["Cras
 Auras:CreateVerticalStatusBar(SSA.EarthgrabTotemBarEnh,"RIGHT",-5,127,175,97,L["Earthgrab"],20);
 Auras:CreateVerticalStatusBar(SSA.EarthenSpikeBar,"RIGHT",-5,255,18,76,L["Bloodlust"],10);
 Auras:CreateVerticalStatusBar(SSA.FlametongueBar,"RIGHT",-5,255,160,43,L["Flametongue"],16);
+Auras:CreateVerticalStatusBar(SSA.LandslideBar,"RIGHT",-5,223,101,93,L["Landslide"],10);
 Auras:CreateVerticalStatusBar(SSA.FrostbrandBar,"RIGHT",-5,0,200,255,L["Frostbrand"],16);
 Auras:CreateVerticalStatusBar(SSA.HeroismBarEnh,"LEFT",5,0,121,255,L["Heroism"],40);
 Auras:CreateVerticalStatusBar(SSA.HexBarEnh,"RIGHT",-5,76,195,71,L["Hex"],60);

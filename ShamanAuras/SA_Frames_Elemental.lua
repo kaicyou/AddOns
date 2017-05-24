@@ -97,7 +97,7 @@ local function InitializeFrames(name,parent,icon,iconSize,glowSize,charge)
 end
 
 
-local AuraGroup,LargeIconGrpTop,LargeIconGrpBot,SmallIconGrpLeft,SmallIconGrpRight
+local AuraGroup,LargeIconGrpTop,LargeIconGrpBot,LargeIconGrpExt,SmallIconGrpLeft,SmallIconGrpRight
 
 -- Build Elemental Aura Group Containers
 AuraGroup = CreateGroup("AuraGroupEle",UIParent);
@@ -109,6 +109,7 @@ SmallIconGrpRight = CreateGroup("SmallIconGrpRightEle",AuraGroup);
 
 -- Build Large Elemental Icon Frames
 InitializeFrames("AscendanceEle",LargeIconGrpBot,"shared\\ascendance",lgIcon);
+InitializeFrames("ConcordanceEle",LargeIconGrpExt,"shared\\concordance_legionfall.tga",lgIcon);
 InitializeFrames("EarthShock",LargeIconGrpTop,"elemental\\earth_shock",lgIcon,lgGlow);
 InitializeFrames("Earthquake",LargeIconGrpTop,"elemental\\earthquake",lgIcon,lgGlow);
 InitializeFrames("ElementalBlast",LargeIconGrpTop,"elemental\\elemental_blast",lgIcon);
@@ -140,6 +141,17 @@ InitializeFrames("WindShearEle",SmallIconGrpLeft,"shared\\wind_shear",smIcon,smG
 -------------------------------------------------------------------------------------------------------
 ----- Initialize Scripts (Aura Groups)
 -------------------------------------------------------------------------------------------------------
+
+EventFrame:SetScript("OnUpdate",function(self)
+	local _,_,name,_,_,rank = C_ArtifactUI.GetEquippedArtifactInfo();
+	
+	if (Auras:CharacterCheck(1)) then
+		if (name ~= Auras.db.char.EquippedArtifact) then
+			Auras.db.char.EquippedArtifact = "The Fist of Ra-den";
+			Auras:UpdateTalents();
+		end
+	end
+end);
 
 AuraGroup:SetScript("OnUpdate",function(self,button)
 	if (Auras.db.char.config[1].isMoving) then
@@ -667,6 +679,35 @@ SSA.CleanseSpiritEle:SetScript("OnUpdate",function(self)
 			self.CD:Hide();
 		end
 			
+		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
+			self:SetAlpha(1);
+		else
+			self:SetAlpha(Auras.db.char.triggers[1].OoCAlpha)
+		end
+	else
+		Auras:ToggleAuraVisibility(self,false,'showhide');
+	end
+end);
+
+-- Concordance of the Legionfall
+SSA.ConcordanceEle:SetScript("OnUpdate",function(self)
+	local _,_,name,_,_,rank = C_ArtifactUI.GetEquippedArtifactInfo();
+	--print(tostring(name)..", "..tostring(Auras.db.char.EquippedArtifact));
+	if (Auras:CharacterCheck(1)) then
+		
+		
+		
+		local buff,_,_,count,_,duration,expires,caster = UnitBuff('player',Auras:GetSpellName(242586));
+		
+		Auras:ToggleAuraVisibility(self,true,'showhide');
+		
+		if ((duration or 0) > 2) then
+			Auras:ExecuteCooldown(self,(expires - duration),duration,false,false,1);
+			self.CD:Show();
+		else
+			self.CD:Hide();
+		end
+		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
 			self:SetAlpha(1);
 		else
@@ -1515,6 +1556,14 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 				end
 			else
 				break;
+			end
+		end
+		
+		for id in pairs(buffIDs) do
+			local buff = UnitBuff('player',Auras:GetSpellName(id));
+			
+			if (buffIDs[id]:IsShown() and not buff) then
+				buffIDs[id]:Hide();
 			end
 		end
 		

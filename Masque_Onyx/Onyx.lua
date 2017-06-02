@@ -4,8 +4,6 @@
 	please see the included License.txt file.
 
 	* File...: Onyx.lua
-	* Date...: 2016-07-26T5:48:09Z
-	* Hash...: ec07169
 	* Author.: StormFX
 
 ]]
@@ -13,12 +11,15 @@
 local MSQ = LibStub("Masque", true)
 if not MSQ then return end
 
+local AddOn, _ = ...
+local Version = GetAddOnMetadata(AddOn, "Version")
+
 -- Onyx
 MSQ:AddSkin("Onyx", {
 	Author = "StormFX",
-	Version = "7.2.0",
+	Version = Version,
 	Shape = "Square",
-	Masque_Version = 60200,
+	Masque_Version = 70200,
 	Backdrop = {
 		Width = 40,
 		Height = 40,
@@ -37,6 +38,7 @@ MSQ:AddSkin("Onyx", {
 	Cooldown = {
 		Width = 36,
 		Height = 36,
+		Color = {0, 0, 0, 0.7},
 	},
 	ChargeCooldown = {
 		Width = 36,
@@ -59,14 +61,15 @@ MSQ:AddSkin("Onyx", {
 	Checked = {
 		Width = 40,
 		Height = 40,
-		BlendMode = "ADD",
-		Color = {0, 0.8, 1, 0.5},
+		BlendMode = "BLEND",
+		Color = {0, 0.7, 0.9, 0.7},
 		Texture = [[Interface\AddOns\Masque_Onyx\Textures\Arrow]],
 	},
 	Border = {
 		Width = 40,
 		Height = 40,
-		BlendMode = "ADD",
+		BlendMode = "BLEND",
+		Color = {0, 1, 0, 0.5},
 		Texture = [[Interface\AddOns\Masque_Onyx\Textures\Arrow]],
 	},
 	Gloss = {
@@ -85,7 +88,7 @@ MSQ:AddSkin("Onyx", {
 		Width = 40,
 		Height = 40,
 		BlendMode = "ADD",
-		Color = {1, 0.9, 0, 0.8},
+		Color = {1, 1, 1, 0.5},
 		Texture = [[Interface\AddOns\Masque_Onyx\Textures\Arrow]],
 	},
 	Name = {
@@ -126,20 +129,22 @@ MSQ:AddSkin("Onyx Redux", {
 	Checked = {
 		Width = 40,
 		Height = 40,
-		BlendMode = "ADD",
-		Color = {0, 0.75, 1, 0.5},
+		BlendMode = "BLEND",
+		Color = {0, 0.7, 0.9, 0.7},
 		Texture = [[Interface\AddOns\Masque_Onyx\Textures\Border]],
 	},
 	Border = {
 		Width = 40,
 		Height = 40,
-		BlendMode = "ADD",
+		BlendMode = "BLEND",
+		Color = {0, 1, 0, 0.5},
 		Texture = [[Interface\AddOns\Masque_Onyx\Textures\Border]],
 	},
 	Highlight = {
 		Width = 40,
 		Height = 40,
 		BlendMode = "ADD",
+		Color = {1, 1, 1, 0.7},
 		Texture = [[Interface\AddOns\Masque_Onyx\Textures\Highlight]],
 	},
 }, true)

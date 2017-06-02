@@ -4,8 +4,6 @@
 	please see the included License.txt file.
 
 	* File...: Apathy.lua
-	* Date...: 2016-07-26T4:55:25Z
-	* Hash...: 9b26b44
 	* Author.: StormFX
 
 ]]
@@ -13,12 +11,15 @@
 local MSQ = LibStub("Masque", true)
 if not MSQ then return end
 
+local AddOn, _ = ...
+local Version = GetAddOnMetadata(AddOn, "Version")
+
 -- Apathy
 MSQ:AddSkin("Apathy", {
 	Author = "StormFX",
-	Version = "7.2.0",
+	Version = Version,
 	Shape = "Square",
-	Masque_Version = 60200,
+	Masque_Version = 70200,
 	Backdrop = {
 		Width = 32,
 		Height = 32,
@@ -37,6 +38,7 @@ MSQ:AddSkin("Apathy", {
 	Cooldown = {
 		Width = 28,
 		Height = 28,
+		Color = {0, 0, 0, 0.7},
 	},
 	ChargeCooldown = {
 		Width = 28,
@@ -60,14 +62,15 @@ MSQ:AddSkin("Apathy", {
 	Checked = {
 		Width = 32,
 		Height = 32,
-		BlendMode = "ADD",
-		Color = {0, 0.8, 1, 0.5},
+		BlendMode = "BLEND",
+		Color = {0, 0.7, 0.9, 0.7},
 		Texture = [[Interface\AddOns\Masque_Apathy\Textures\Border]],
 	},
 	Border = {
 		Width = 32,
 		Height = 32,
-		BlendMode = "ADD",
+		BlendMode = "BLEND",
+		Color = {0, 1, 0, 0.5},
 		Texture = [[Interface\AddOns\Masque_Apathy\Textures\Border]],
 	},
 	Gloss = {
@@ -119,8 +122,8 @@ MSQ:AddSkin("Apathy", {
 	},
 }, true)
 
--- Apathy: No Shadow
-MSQ:AddSkin("Apathy: No Shadow", {
+-- Apathy - No Shadow
+MSQ:AddSkin("Apathy - No Shadow", {
 	Template = "Apathy",
 	Normal = {
 		Width = 32,

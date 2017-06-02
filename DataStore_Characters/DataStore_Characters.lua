@@ -171,6 +171,8 @@ end
 local function _GetColoredCharacterFaction(character)
 	if character.faction == "Alliance" then
 		return "|cFF2459FF" .. FACTION_ALLIANCE
+	elseif character.faction == "Neutral" then	-- for young pandas :)
+		return "|cFF909090" .. character.faction
 	else
 		return "|cFFFF0000" .. FACTION_HORDE
 	end

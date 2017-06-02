@@ -759,3 +759,4 @@ L[ [=[Your confirmation will still be required any time someone requests your in
 ]=] ] = "당신의 정보를 요구하는 모든 요청에 대해 승인 절차를 거치게 될 것입니다."
 L["Zelemar the Wrathful"] = "진노의 젤레마르"
 L["Zone"] = "지역"
+

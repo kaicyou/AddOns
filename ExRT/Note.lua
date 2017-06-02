@@ -45,32 +45,41 @@ module.db.otherIconsList = {
 module.db.iconsLocalizatedNames = {
 	L.raidtargeticon1,L.raidtargeticon2,L.raidtargeticon3,L.raidtargeticon4,L.raidtargeticon5,L.raidtargeticon6,L.raidtargeticon7,L.raidtargeticon8,
 }
-module.db.iconsEngNames = {
-	L.raidtargeticon1_eng,L.raidtargeticon2_eng,L.raidtargeticon3_eng,L.raidtargeticon4_eng,L.raidtargeticon5_eng,L.raidtargeticon6_eng,L.raidtargeticon7_eng,L.raidtargeticon8_eng,
-}
+local iconsLangs = {"eng","de","it","fr","ru"}
+for _,lang in pairs(iconsLangs) do
+	module.db["icons"..lang.."Names"] = {}
+	for i=1,8 do
+		module.db["icons"..lang.."Names"][i] = L["raidtargeticon"..i.."_"..lang]
+	end
+end
+
 local frameStrataList = {"BACKGROUND","LOW","MEDIUM","HIGH","DIALOG","FULLSCREEN","FULLSCREEN_DIALOG","TOOLTIP"}
 
 module.db.msgindex = -1
 module.db.lasttext = ""
 
+local string_gsub = string.gsub
+
 local function txtWithIcons(t)
 	t = t or ""
-	t = string.gsub(t,"||T","|T")
-	t = string.gsub(t,"||t","|t")
+	t = string_gsub(t,"||T","|T")
+	t = string_gsub(t,"||t","|t")
 	for i=1,8 do
-		t = string.gsub(t,module.db.iconsLocalizatedNames[i],module.db.iconsList[i])
-		t = string.gsub(t,module.db.iconsEngNames[i],module.db.iconsList[i])
-		t = string.gsub(t,"{rt"..i.."}",module.db.iconsList[i])
+		t = string_gsub(t,module.db.iconsLocalizatedNames[i],module.db.iconsList[i])
+		t = string_gsub(t,"{rt"..i.."}",module.db.iconsList[i])
+		for _,lang in pairs(iconsLangs) do
+			t = string_gsub(t,module.db["icons"..lang.."Names"][i],module.db.iconsList[i])
+		end
 	end
-	t = string.gsub(t,"||c","|c")
-	t = string.gsub(t,"||r","|r")
+	t = string_gsub(t,"||c","|c")
+	t = string_gsub(t,"||r","|r")
 	for i=1,#module.db.otherIconsList do
-		t = string.gsub(t,module.db.otherIconsList[i][1],module.db.otherIconsList[i][2])
+		t = string_gsub(t,module.db.otherIconsList[i][1],module.db.otherIconsList[i][2])
 	end
 	
-	local spellLastPos = t:find("{spell:[^}]+}")
+	local spellLastPos = t:find("{spell:%d+}")
 	while spellLastPos do
-		local template,spell = t:match("({spell:([^}]+)})")
+		local template,spell = t:match("({spell:(%d+)})")
 		local _,spellTexture
 		spell = tonumber(spell)
 		if spell then
@@ -80,19 +89,19 @@ local function txtWithIcons(t)
 		spellTexture = spellTexture or ""
 		
 		if template:find("%-") then
-			template = template:gsub("%-","%%%-")
+			template = string_gsub(template,"%-","%%%-")
 		end
 		
-		t = t:gsub(template,spellTexture)
+		t = string_gsub(t,template,spellTexture)
 		
-		local spellNewPos = t:find("{spell:[^}]+}")
+		local spellNewPos = t:find("{spell:%d+}")
 		if spellLastPos == spellNewPos then
 			break
 		end
 		spellLastPos = spellNewPos
 	end
 	
-	t = string.gsub(t,"{[^}]*}","")
+	t = string_gsub(t,"%b{}","")
 	return t
 end
 

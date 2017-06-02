@@ -337,10 +337,15 @@ function addon:OnEnable()
 	local key = format("%s.%s.%s", THIS_ACCOUNT, realm, player)
 	addon.ThisCharacter = addon.db.global.Characters[key]
 
-	addon:RestoreOptionsToUI()
-
-	Minimap.AltoholicButton:Init()
+	-- Do not move this line, minimap initialization must happen AFTER OnEnable, otherwise options are not yet ready
+	if addon:GetOption("UI.Minimap.ShowIcon") then
+		Minimap.AltoholicButton:Move()
+		Minimap.AltoholicButton:Show()
+	else
+		Minimap.AltoholicButton:Hide()
+	end
 	
+	addon:RestoreOptionsToUI()
 	addon:RegisterEvent("CHAT_MSG_LOOT", OnChatMsgLoot)
 	
 	BuildUnsafeItemList()
@@ -507,6 +512,7 @@ function addon:GetSpellIDFromRecipeLink(link)
 	return LCI:GetRecipeLearnedSpell(recipeID)
 end
 
+-- copied to formatter service
 function addon:GetMoneyString(copper, color, noTexture)
 	copper = copper or 0
 	color = color or colors.gold
@@ -528,6 +534,7 @@ function addon:GetMoneyString(copper, color, noTexture)
 	return format("%s %s %s", gold, silver, copper)
 end
 
+-- copied to formatter service
 function addon:GetTimeString(seconds)
 	seconds = seconds or 0
 
@@ -541,14 +548,7 @@ function addon:GetTimeString(seconds)
 	return format("%s%s|rd %s%s|rh %s%s|rm", colors.white, days, colors.white, hours, colors.white, minutes)
 end
 
-function addon:GetFactionColour(faction)
-	if faction == "Alliance" then
-		return "|cFF2459FF"
-	else
-		return colors.red
-	end
-end
-
+-- copied to formatter service
 function addon:FormatDelay(timeStamp)
 	-- timeStamp = value when time() was last called for a given variable (ex: last time the mailbox was checked)
 	if not timeStamp then

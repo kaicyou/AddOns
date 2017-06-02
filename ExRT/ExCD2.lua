@@ -1876,7 +1876,7 @@ local function UpdateBarStatus(self,isTitle)
 		isCooldown = true
 	end
 	if data.specialStatus then
-		local var1,var2,var3 = data.specialStatus()
+		local var1,var2,var3,var4 = data.specialStatus()
 		if var2 then
 			if var1 then
 				isCooldown = true
@@ -1884,9 +1884,14 @@ local function UpdateBarStatus(self,isTitle)
 				t = var2 + var3
 			else
 				isCooldown = false
-				t = nil				
+				t = nil	
+				if var4 then
+					data.charge = var2
+					data.cd = var3
+				end			
 			end
 		end
+		data.isCharge = var4
 	end
 	
 	self.curr_charges = nil
@@ -3221,9 +3226,9 @@ function RaidResurrectSpecialStatus()
 	local charges, maxCharges, started, duration = GetSpellCharges(20484)
 	if charges then
 		if charges > 0 then
-			return false,started,duration
+			return false,started,duration,true
 		else
-			return true,started,duration
+			return true,started,duration,false
 		end
 	end
 end

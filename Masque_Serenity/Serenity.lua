@@ -4,8 +4,6 @@
 	please see the included License.txt file.
 
 	* File...: Serenity.lua
-	* Date...: 2016-07-26T5:41:58Z
-	* Hash...: 8cdd45b
 	* Author.: StormFX
 
 ]]
@@ -13,12 +11,15 @@
 local MSQ = LibStub("Masque", true)
 if not MSQ then return end
 
+local AddOn, _ = ...
+local Version = GetAddOnMetadata(AddOn, "Version")
+
 -- Serenity
 MSQ:AddSkin("Serenity", {
 	Author = "StormFX",
-	Version = "7.2.0",
+	Version = Version,
 	Shape = "Circle",
-	Masque_Version = 60200,
+	Masque_Version = 70200,
 	Backdrop = {
 		Width = 44,
 		Height = 44,
@@ -32,12 +33,13 @@ MSQ:AddSkin("Serenity", {
 	Flash = {
 		Width = 44,
 		Height = 44,
-		Color = {1, 0, 0, 1},
+		Color = {1, 0, 0, 0.3},
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Overlay]],
 	},
 	Cooldown = {
 		Width = 26,
 		Height = 26,
+		Color = {0, 0, 0, 0.7},
 	},
 	ChargeCooldown = {
 		Width = 26,
@@ -46,7 +48,7 @@ MSQ:AddSkin("Serenity", {
 	Pushed = {
 		Width = 44,
 		Height = 44,
-		Color = {0, 0, 0, 1},
+		Color = {0, 0, 0, 0.5},
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Overlay]],
 	},
 	Normal = {
@@ -60,14 +62,15 @@ MSQ:AddSkin("Serenity", {
 	Checked = {
 		Width = 44,
 		Height = 44,
-		BlendMode = "ADD",
-		Color = {0, 0.8, 1, 0.8},
+		BlendMode = "BLEND",
+		Color = {0, 0.7, 0.9, 0.7},
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Border]],
 	},
 	Border = {
 		Width = 44,
 		Height = 44,
-		BlendMode = "ADD",
+		BlendMode = "BLEND",
+		Color = {0, 1, 0, 0.7},
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Border]],
 	},
 	Gloss = {
@@ -84,6 +87,7 @@ MSQ:AddSkin("Serenity", {
 		Width = 44,
 		Height = 44,
 		BlendMode = "ADD",
+		Color = {1, 1, 1, 0.7},
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Highlight]],
 	},
 	Name = {
@@ -115,20 +119,28 @@ MSQ:AddSkin("Serenity", {
 -- Serenity Redux
 MSQ:AddSkin("Serenity Redux", {
 	Template = "Serenity",
+	Checked = {
+		Width = 44,
+		Height = 44,
+		BlendMode = "BLEND",
+		Color = {0, 0.7, 0.9, 1},
+		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Highlight]],
+	},
 	Border = {
 		Width = 44,
 		Height = 44,
-		BlendMode = "ADD",
+		BlendMode = "BLEND",
+		Color = {0, 1, 0, 1},
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Highlight]],
 	},
 }, true)
 
--- Serenity: Square
-MSQ:AddSkin("Serenity: Square", {
+-- Serenity - Square
+MSQ:AddSkin("Serenity - Square", {
 	Author = "StormFX",
-	Version = "7.2.0",
+	Version = Version,
 	Shape = "Square",
-	Masque_Version = 60200,
+	Masque_Version = 70200,
 	Backdrop = {
 		Width = 40,
 		Height = 40,
@@ -142,12 +154,13 @@ MSQ:AddSkin("Serenity: Square", {
 	Flash = {
 		Width = 40,
 		Height = 40,
-		Color = {1, 0, 0, 1},
+		Color = {1, 0, 0, 0.3},
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Overlay]],
 	},
 	Cooldown = {
 		Width = 26,
 		Height = 26,
+		Color = {0, 0, 0, 0.7},
 	},
 	ChargeCooldown = {
 		Width = 24,
@@ -156,7 +169,7 @@ MSQ:AddSkin("Serenity: Square", {
 	Pushed = {
 		Width = 40,
 		Height = 40,
-		Color = {0, 0, 0, 1},
+		Color = {0, 0, 0, 0.5},
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Overlay]],
 	},
 	Normal = {
@@ -170,14 +183,15 @@ MSQ:AddSkin("Serenity: Square", {
 	Checked = {
 		Width = 40,
 		Height = 40,
-		BlendMode = "ADD",
-		Color = {0, 0.8, 1, 0.8},
+		BlendMode = "BLEND",
+		Color = {0, 0.7, 0.9, 0.7},
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Border]],
 	},
 	Border = {
 		Width = 40,
 		Height = 40,
-		BlendMode = "ADD",
+		BlendMode = "BLEND",
+		Color = {0, 1, 0, 0.7},
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Border]],
 	},
 	Gloss = {
@@ -194,6 +208,7 @@ MSQ:AddSkin("Serenity: Square", {
 		Width = 40,
 		Height = 40,
 		BlendMode = "ADD",
+		Color = {1, 1, 1, 0.7},
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Highlight]],
 	},
 	Name = {
@@ -225,13 +240,21 @@ MSQ:AddSkin("Serenity: Square", {
 	},
 }, true)
 
--- Serenity: Square Redux
-MSQ:AddSkin("Serenity: Square Redux", {
-	Template = "Serenity: Square",
+-- Serenity Redux - Square
+MSQ:AddSkin("Serenity Redux - Square", {
+	Template = "Serenity - Square",
+	Checked = {
+		Width = 40,
+		Height = 40,
+		BlendMode = "BLEND",
+		Color = {0, 0.7, 0.9, 1},
+		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Highlight]],
+	},
 	Border = {
 		Width = 40,
 		Height = 40,
-		BlendMode = "ADD",
+		BlendMode = "BLEND",
+		Color = {0, 1, 0, 1},
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Highlight]],
 	},
 }, true)

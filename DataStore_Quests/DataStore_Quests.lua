@@ -37,6 +37,22 @@ local AddonDB_Defaults = {
 	}
 }
 
+local emissaryQuests = {
+	[42420] = true,
+	[42421] = true,
+	[42422] = true,
+	[42233] = true,
+	[42234] = true,
+	[42170] = true,
+	[43179] = true,
+	[46743] = true,
+	[46745] = true,
+	[46746] = true,
+	[46747] = true,
+	[46748] = true,
+	[46777] = true
+}
+
 -- *** Utility functions ***
 local bAnd = bit.band
 local bOr = bit.bor
@@ -89,10 +105,12 @@ local function ClearExpiredDailies()
 
 	for characterKey, character in pairs(addon.Characters) do
 		-- browse dailies history backwards, to avoid messing up the indexes when removing
-		for i = #character.Dailies, 1, -1 do
-
-			if (now - character.Dailies[i].timestamp) > gap then
-				table.remove(character.Dailies, i)
+		local dailies = character.Dailies
+		
+		for i = #dailies, 1, -1 do
+			local quest = dailies[i]
+			if (now - quest.timestamp) > gap then
+				table.remove(dailies, i)
 			end
 		end
 	end
@@ -392,6 +410,20 @@ local function _IsQuestCompletedBy(character, questID)
 	end
 end
 
+local function _GetEmissaryQuests()
+	return emissaryQuests
+end
+
+local function _IsCharacterOnQuest(character, questID)
+	for index, link in pairs(character.QuestLinks) do
+		local id = link:match("quest:(%d+)")
+		if questID == tonumber(id) then
+			return true, index		-- return 'true' if the id was found, also return the index at which it was found
+		end
+	end
+end
+
+
 local PublicMethods = {
 	GetQuestLogSize = _GetQuestLogSize,
 	GetQuestLogInfo = _GetQuestLogInfo,
@@ -405,6 +437,8 @@ local PublicMethods = {
 	GetDailiesHistory = _GetDailiesHistory,
 	GetDailiesHistorySize = _GetDailiesHistorySize,
 	GetDailiesHistoryInfo = _GetDailiesHistoryInfo,
+	GetEmissaryQuests = _GetEmissaryQuests,
+	IsCharacterOnQuest = _IsCharacterOnQuest,
 }
 
 function addon:OnInitialize()
@@ -421,6 +455,7 @@ function addon:OnInitialize()
 	DataStore:SetCharacterBasedMethod("GetDailiesHistory")
 	DataStore:SetCharacterBasedMethod("GetDailiesHistorySize")
 	DataStore:SetCharacterBasedMethod("GetDailiesHistoryInfo")
+	DataStore:SetCharacterBasedMethod("IsCharacterOnQuest")
 end
 
 function addon:OnEnable()
@@ -460,26 +495,26 @@ end
 -- GetQuestReward is the function that actually turns in a quest
 hooksecurefunc("GetQuestReward", function(choiceIndex)
 	local questID = GetQuestID() -- returns the last displayed quest dialog's questID
-	if GetOption("TrackTurnIns") and questID then
-		local history = addon.ThisCharacter.History
-		local bitPos  = (questID % 32)
-		local index   = ceil(questID / 32)
+	
+	if not GetOption("TrackTurnIns") or not questID then return end
+	
+	local history = addon.ThisCharacter.History
+	local bitPos  = (questID % 32)
+	local index   = ceil(questID / 32)
 
-		if type(history[index]) == "boolean" then		-- temporary workaround for all players who have not cleaned their SV for 4.0
-			history[index] = 0
-		end
-
-		-- mark the current quest ID as completed
-		history[index] = bOr((history[index] or 0), 2^bitPos)	-- read: value = SetBit(value, bitPosition)
-
-		-- track daily quests turn-ins
-		if QuestIsDaily() then
-			local dailies = addon.ThisCharacter.Dailies
-
-			table.insert(dailies, { title = GetTitleText(), id = questID, timestamp = time() })
-		end
-		-- TODO: there's also QuestIsWeekly() which should probably also be tracked
-
-		addon:SendMessage("DATASTORE_QUEST_TURNED_IN", questID)		-- trigger the DS event
+	if type(history[index]) == "boolean" then		-- temporary workaround for all players who have not cleaned their SV for 4.0
+		history[index] = 0
 	end
+
+	-- mark the current quest ID as completed
+	history[index] = bOr((history[index] or 0), 2^bitPos)	-- read: value = SetBit(value, bitPosition)
+
+	-- track daily quests turn-ins
+	if QuestIsDaily() or emissaryQuests[questID] then
+		-- I could not find a function to test if a quest is emissary, so their id's are tracked manually
+		table.insert(addon.ThisCharacter.Dailies, { title = GetTitleText(), id = questID, timestamp = time() })
+	end
+	-- TODO: there's also QuestIsWeekly() which should probably also be tracked
+
+	addon:SendMessage("DATASTORE_QUEST_TURNED_IN", questID)		-- trigger the DS event
 end)

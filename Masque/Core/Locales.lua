@@ -3,8 +3,6 @@
 	please see the included License.txt file.
 
 	* File...: Core\Locales.lua
-	* Date...: 2015-10-22T3:43:12Z
-	* Hash...: 829af9f
 	* Author.: StormFX
 
 	[ Notes ]
@@ -134,6 +132,10 @@ L["Set the intensity of the gloss color."] = "Lege die Intensität der Glanzfarb
 L["Set the skin for this group."] = "Lege die Optik dieser Gruppe fest"
 L["Skin"] = "Optik"
 L["This section will allow you to skin the buttons of the add-ons and add-on groups registered with Masque."] = "Dieser Abschnitt ermöglicht es dir, das Aussehen von Buttons der Addons und Addongruppen anzupassen, die mit Masque verbunden sind."
+
+-- ToC
+L["A dynamic button skinning add-on."] = "Ein Addon zur dynamischen Änderung der Buttonoptiken."
+
 	elseif LOC == "esES" or LOC == "esMX" then
 L["Addons"] = "Botones"
 L["Adjust the skin of all buttons registered to %s. This will overwrite any per-group settings."] = "Ajusta la apariencia de todos los botones registrados a %s. Esto sobreescribirá la configuracion de los grupos."
@@ -185,6 +187,10 @@ L["Set the intensity of the gloss color."] = "Cambiar la transparencia de la tex
 L["Set the skin for this group."] = "Seleccionar la tema para este grupo."
 L["Skin"] = "Textura"
 L["This section will allow you to skin the buttons of the add-ons and add-on groups registered with Masque."] = "Estas opciones te permiten cambiar la aparencia de los botones de los add-ons que se han registrados en Masque."
+
+-- ToC
+L["A dynamic button skinning add-on."] = "Cambiar dinamicamente la aparencia de botones."
+
 	elseif LOC == "frFR" then
 L["Addons"] = "Boutons"
 L["Adjust the skin of all buttons registered to %s. This will overwrite any per-group settings."] = "Ajuster le skin (style) de tous les boutons enregistrés sous %s. Ceci va écraser les réglages \"par groupe\"."
@@ -236,6 +242,10 @@ L["Set the intensity of the gloss color."] = "Définir l’intensité de la coul
 L["Set the skin for this group."] = "Définir le skin (style) pour ce groupe."
 L["Skin"] = "Skin"
 L["This section will allow you to skin the buttons of the add-ons and add-on groups registered with Masque."] = "Cette section vous permet de définir le skin (style) des boutons des add-ons et des groupes d'add-ons enregistrés avec Masque."
+
+-- ToC
+L["A dynamic button skinning add-on."] = "Un add-on de skinnage dynamique des boutons."
+
 	elseif LOC == "koKR" then
 L["Addons"] = "애드온"
 L["Adjust the skin of all buttons registered to %s. This will overwrite any per-group settings."] = "%s|1으로;로; 등록된 모든 버튼의 스킨을 조절합니다. 이 옵션은 그룹당 설정은 어떤 것이던지 덧씌우게 됩니다."
@@ -287,6 +297,10 @@ L["Set the intensity of the gloss color."] = "번들거림 색상의 농도를 �
 L["Set the skin for this group."] = "이 그룹을 위한 스킨을 설정합니다."
 L["Skin"] = "스킨"
 L["This section will allow you to skin the buttons of the add-ons and add-on groups registered with Masque."] = "이 항목은 Masque와 함께 등록된 애드온과 애드온 그룹의 버튼의 스킨을 씌울 수 있도록 합니다."
+
+-- ToC
+L["A dynamic button skinning add-on."] = "동적인 버튼 스킨 입히기 애드온 입니다."
+
 	elseif LOC == "ruRU" then
 L["Addons"] = "Модификации"
 L["Adjust the skin of all buttons registered to %s. This will overwrite any per-group settings."] = "Позволяет редактировать скины всех панелей, под управлением %s. Это переопределит все групповые настройки."
@@ -338,6 +352,10 @@ L["Set the intensity of the gloss color."] = "Установить интенс�
 L["Set the skin for this group."] = "Установить скин для данной группы."
 L["Skin"] = "Скины"
 L["This section will allow you to skin the buttons of the add-ons and add-on groups registered with Masque."] = "Этот раздел позволяет настроить скины для панелей команд аддонов и групп аддонов, использующих Masque."
+
+-- ToC
+L["A dynamic button skinning add-on."] = "Аддон для добавления скинов к панелям команд."
+
 	elseif LOC == "zhCN" then
 L["Addons"] = "插件"
 L["Adjust the skin of all buttons registered to %s. This will overwrite any per-group settings."] = "将皮肤应用到所有已注册到%s的按钮上。这会覆盖所有群组的设定。"
@@ -389,6 +407,10 @@ L["Set the intensity of the gloss color."] = "设置光泽颜色亮度。"
 L["Set the skin for this group."] = "为此群组设置皮肤。"
 L["Skin"] = "皮肤"
 L["This section will allow you to skin the buttons of the add-ons and add-on groups registered with Masque."] = "这个部分将允许你将使用 Masque 注册的插件与插件群组的按钮进行换肤。"
+
+-- ToC
+L["A dynamic button skinning add-on."] = "一个动态按钮皮肤插件。"
+
 	elseif LOC == "zhTW" then
 L["Addons"] = "插件"
 L["Adjust the skin of all buttons registered to %s. This will overwrite any per-group settings."] = "將所有按鈕的佈景主題套用到%s。這會覆蓋所有群組的設定。"
@@ -440,5 +462,9 @@ L["Set the intensity of the gloss color."] = "設定光澤顏色亮度。"
 L["Set the skin for this group."] = "設定佈景主題套用在此群組。"
 L["Skin"] = "佈景主題"
 L["This section will allow you to skin the buttons of the add-ons and add-on groups registered with Masque."] = "此區塊允許使用者將註冊在Masque底下的插件按鈕套用佈景主題。"
+
+-- ToC
+L["A dynamic button skinning add-on."] = "動態套用按鈕佈景主題的插件。"
+
 	end
 end

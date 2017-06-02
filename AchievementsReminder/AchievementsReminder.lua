@@ -1,4 +1,4 @@
-﻿achievereminderload=1
+achievereminderload=1
 function out(text)
 DEFAULT_CHAT_FRAME:AddMessage(text)
 UIErrorsFrame:AddMessage(text, 1.0, 1.0, 0, 1, 10) 
@@ -15,7 +15,7 @@ end
 
 ralldatabase()
 
-  achievementsreminderver=7.203
+  achievementsreminderver=7.204
 
 
 	if ralloptions==nil then ralloptions={1,1,0,0,0,0,1,0,0,0,0,0} end
@@ -74,13 +74,13 @@ if ralldelaycheckzone2 and icracurtime>ralldelaycheckzone2 then
 ralldelaycheckzone2=nil
 ralldelaycheckzone=GetTime()+0.5 --ыытест не работал инфо после релога, так заработал
 local a1, a2, a3, a4, a5 = GetInstanceInfo()
-  if UnitInRaid("player") or a2=="pvp" or a2=="raid" or a2=="scenario" or a3==14 or a3==15 or a3==16 or (a2=="party" and a3==2) or a3==2 or (a3==1 and a2=="scenario") then
+  if UnitInRaid("player") or a2=="pvp" or a2=="raid" or a2=="scenario" or a3==14 or a3==15 or a3==16 or (a2=="party" and (a3==2 or a3==23)) or a3==2 or a3==23 or (a3==1 and a2=="scenario") then
   SetMapToCurrentZone()
   end
   local _, instanceType, pppl, _, maxPlayers, dif = GetInstanceInfo()
 if select(3,GetInstanceInfo())==17 then
 --no LFR
-elseif (a2=="pvp" and raenablebg==1) or a2=="raid" or a2=="scenario" or a3==14 or a3==15 or a3==16 or (a2=="party" and a3==2) or select(3,GetInstanceInfo())==2 or (select(3,GetInstanceInfo())==1 and a2=="scenario") then
+elseif (a2=="pvp" and raenablebg==1) or a2=="raid" or a2=="scenario" or a3==14 or a3==15 or a3==16 or (a2=="party" and (a3==2 or a3==23)) or select(3,GetInstanceInfo())==2 or (select(3,GetInstanceInfo())==1 and a2=="scenario") then
   local found=0
   local curZoneID=GetCurrentMapAreaID()
   for kj=1,#ralllocations do
@@ -114,7 +114,7 @@ if ralldelaycheckzone and icracurtime>ralldelaycheckzone then
   ralldelaycheckzone=nil
   local vbil=0
   local a1, a2, a3, a4, a5 = GetInstanceInfo()
-  if UnitInRaid("player") or (a2=="pvp" and raenablebg==1) or a2=="raid" or a2=="scenario" or a3==14 or a3==15 or a3==16 or (a2=="party" and a3==2) or select(3,GetInstanceInfo())==2 or (select(3,GetInstanceInfo())==1 and a2=="scenario") then
+  if UnitInRaid("player") or (a2=="pvp" and raenablebg==1) or a2=="raid" or a2=="scenario" or a3==14 or a3==15 or a3==16 or (a2=="party" and (a3==2 or a3==23)) or select(3,GetInstanceInfo())==2 or (select(3,GetInstanceInfo())==1 and a2=="scenario") then
   SetMapToCurrentZone()
   end
   local _, instanceType, pppl, _, maxPlayers, dif = GetInstanceInfo()
@@ -153,7 +153,7 @@ if select(3,GetInstanceInfo())==17 then
 else
 	if ralloptions[1]==1 then
 		if #rallnomorereport[1]==0 then
-			if (a2=="pvp" and raenablebg==1) or a2=="raid" or a2=="scenario" or a3==14 or a3==15 or a3==16 or (a2=="party" and a3==2) or select(3,GetInstanceInfo())==2 or (select(3,GetInstanceInfo())==1 and a2=="scenario") then
+			if (a2=="pvp" and raenablebg==1) or a2=="raid" or a2=="scenario" or a3==14 or a3==15 or a3==16 or (a2=="party" and (a3==2 or a3==23)) or select(3,GetInstanceInfo())==2 or (select(3,GetInstanceInfo())==1 and a2=="scenario") then
 				icllcheckachieves(1)
 				local a1, a2, a3, a4, a5 = GetInstanceInfo()
         if a2~="pvp" then --для пвп постоянно показываем зону, для сценариев также!
@@ -177,7 +177,7 @@ else
 			end
 			if bil==0 then
 				icllcheckachieves(1)
-				if (a2=="pvp" and raenablebg==1) or a2=="raid" or a2=="scenario" or a3==14 or a3==15 or a3==16 or (a2=="party" and a3==2) or select(3,GetInstanceInfo())==2 or (select(3,GetInstanceInfo())==1 and a2=="scenario") then
+				if (a2=="pvp" and raenablebg==1) or a2=="raid" or a2=="scenario" or a3==14 or a3==15 or a3==16 or (a2=="party" and (a3==2 or a3==23)) or select(3,GetInstanceInfo())==2 or (select(3,GetInstanceInfo())==1 and a2=="scenario") then
           local a1, a2, a3, a4, a5 = GetInstanceInfo()
           if a2~="pvp" then --для пвп постоянно показываем зону, для сценариев также!
             if select(3,GetInstanceInfo())~=1 and a2~=nil then
@@ -576,7 +576,7 @@ local curZoneID=GetCurrentMapAreaID()
 for i=1,#ralllocations do
 	if ralllocations[i]==curZoneID then
 		local a1, a2, a3, a4, a5 = GetInstanceInfo()
-		if a2=="pvp" or a2=="raid" or a2=="scenario" or a3==14 or a3==15 or a3==16 or (a2=="party" and a3==2) or select(3,GetInstanceInfo())==2 or (select(3,GetInstanceInfo())==1 and a2=="scenario") then
+		if a2=="pvp" or a2=="raid" or a2=="scenario" or a3==14 or a3==15 or a3==16 or (a2=="party" and (a3==2 or a3==23)) or select(3,GetInstanceInfo())==2 or (select(3,GetInstanceInfo())==1 and a2=="scenario") then
 			if ralltip[i]=="10" or ralltip[i]=="25" then
 				if tonumber(ralltip[i])==a5 then
 					bil=i
@@ -1297,7 +1297,7 @@ if ralloptions[1]==1 then
 
 local a1, a2, a3, a4, a5 = GetInstanceInfo()
 SetMapToCurrentZone()
-if a2=="pvp" or a2=="raid" or a2=="scenario" or a3==14 or a3==15 or a3==16 or (a2=="party" and a3==2) or select(3,GetInstanceInfo())==2 or (select(3,GetInstanceInfo())==1 and a2=="scenario") then
+if a2=="pvp" or a2=="raid" or a2=="scenario" or a3==14 or a3==15 or a3==16 or (a2=="party" and (a3==2 or a3==23)) or select(3,GetInstanceInfo())==2 or (select(3,GetInstanceInfo())==1 and a2=="scenario") then
 
 
 --проверка по имени локации, если имя встречается дважды - проверяется цифра на сколько чел расчитано и с той колонкой работаем

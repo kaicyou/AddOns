@@ -1,4 +1,9 @@
-﻿	r48-beta
+﻿	r49-beta
+
+FIX: [Enh/Res] Fixed an issue that would cause certain buff duration timers from behaving incorrectly (Thanks, Netharion!).
+FIX: [Elemental] Fixed a random bug (Thanks, xaroc_!).
+	
+	r48-beta
 NEW: [All] Concordance of the Legionfall has been added.
 NEW: [Enhancement] Unleash Doom has been added.
 NEW: [Enhancement] Timer duration bar added for Landslide (Thanks, Orfin!)

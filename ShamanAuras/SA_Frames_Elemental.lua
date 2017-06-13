@@ -417,7 +417,7 @@ SSA.LavaBurstEle:SetScript("OnUpdate", function(self)
 				end
 			else]]
 				--self.Charges.text:SetText('');
-				if (duration > 2) then
+				if ((duration or 0) > 2) then
 					--[[if (Auras.db.char.cooldowns.swipe) then
 						Auras:ToggleCooldownSwipe(self.CD,true)]]
 					

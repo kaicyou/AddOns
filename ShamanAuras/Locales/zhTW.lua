@@ -10,14 +10,10 @@ local _, GT_Globals = ...
 
 local translations = {
 {
-	--Translation missing 
-	-- ["Ability Duration Timers"] = "",
-	--Translation missing 
-	-- ["Advanced customization options"] = "",
-	--Translation missing 
-	-- ["Allows you to move the group that contains the buff duration timers"] = "",
-	--Translation missing 
-	-- ["Always"] = "",
+	["Ability Duration Timers"] = "技能持續時間計時",
+	["Advanced customization options"] = "進階自定義選項",
+	["Allows you to move the group that contains the buff duration timers"] = "允許你移動包含增益持續時間計時的群組",
+	["Always"] = "總是",
 	--Translation missing 
 	-- ["Ancestral Guidance"] = "",
 	--Translation missing 

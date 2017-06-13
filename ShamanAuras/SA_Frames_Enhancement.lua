@@ -776,7 +776,7 @@ SSA.Stormstrike:SetScript("OnUpdate", function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			if (duration > 2) then
+			if ((duration or 0) > 2) then
 				--Auras:ToggleCooldownSwipe(self.CD,true)
 				Auras:ToggleOverlayGlow(self.glow,false);
 				Auras:ExecuteCooldown(self,start,duration,false,false,2);
@@ -1210,6 +1210,7 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		local xPosCtr = 1;
+		
 		for i=1,50 do
 			local buff,_,_,_,_,duration,expires,caster,_,_,spellID = UnitBuff('player',i);
 
@@ -1234,13 +1235,20 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 			end
 		end
 		
+		for id in pairs(buffIDs) do
+			local buff = UnitBuff('player',Auras:GetSpellName(id));
+			
+			if (buffIDs[id]:IsShown() and not buff) then
+				buffIDs[id]:Hide();
+			end
+		end
+		
 		if (Auras.db.char.config[2].isMoving) then
 			self:SetBackdrop(backdrop);
 			self:SetBackdropColor(0,0,0,0.85);
 		else
 			self:SetBackdrop(nil);
 		end
-		
 	else
 		Auras:ToggleAuraVisibility(self,false,'showhide');
 	end

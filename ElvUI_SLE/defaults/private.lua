@@ -11,40 +11,11 @@ V["sle"] = {
 	["equip"] = {
 		["enable"] = false,
 		["spam"] = false,
-		["instanceSet"] = false,
-		["pvpSet"] = false,
-		["timewalkingSet"] = false,
 		["onlyTalent"] = false,
-		["firstSpec"] = {
-			["general"] = "NONE",
-			["pvp"] = "NONE",
-			["instance"] = "NONE",
-			["timewalking"] = "NONE",
-		},
-		["secondSpec"] = {
-			["general"] = "NONE",
-			["pvp"] = "NONE",
-			["instance"] = "NONE",
-			["timewalking"] = "NONE",
-		},
-		["thirdSpec"] = {
-			["general"] = "NONE",
-			["pvp"] = "NONE",
-			["instance"] = "NONE",
-			["timewalking"] = "NONE",
-		},
-		["forthSpec"] = {
-			["general"] = "NONE",
-			["pvp"] = "NONE",
-			["instance"] = "NONE",
-			["timewalking"] = "NONE",
-		},
+		["conditions"] = "",
+		["conditions"] = "",
 		["setoverlay"] = false,
 		["lockbutton"] = false,
-		["FishingSet"] = {
-			["enable"] = false,
-			["set"] = "NONE",
-		},
 	},
 	--Minimap Module
 	["minimap"] = {

@@ -1,4 +1,81 @@
 ------------------------------------------------------------------------
+r114 | SweetsourDev | 2017-06-10 12:09:04 -0500 (Sat, 10 Jun 2017) | 1 line
+Changed paths:
+   D /trunk/Desktop.ini
+   D /trunk/README.txt
+   D /trunk/conf
+   D /trunk/db
+   D /trunk/format
+   D /trunk/hooks
+   D /trunk/locks
+   D /trunk/svn.ico
+
+
+------------------------------------------------------------------------
+r113 | SweetsourDev | 2017-06-10 12:04:35 -0500 (Sat, 10 Jun 2017) | 4 lines
+Changed paths:
+   A /trunk/Media/icons/elemental/earth_elemental.png
+   A /trunk/Media/icons/shared/concordance_legionfall.png
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r49-beta
+
+FIX: [Enh/Res] Fixed an issue that would cause certain buff duration timers from behaving incorrectly (Thanks, Netharion!).
+FIX: [Elemental] Fixed a random bug (Thanks, xaroc_!).
+------------------------------------------------------------------------
+r112 | SweetsourDev | 2017-06-10 11:26:16 -0500 (Sat, 10 Jun 2017) | 1 line
+Changed paths:
+   A /trunk/Desktop.ini
+   A /trunk/README.txt
+   A /trunk/conf
+   A /trunk/conf/authz
+   A /trunk/conf/hooks-env.tmpl
+   A /trunk/conf/passwd
+   A /trunk/conf/svnserve.conf
+   A /trunk/db
+   A /trunk/db/current
+   A /trunk/db/format
+   A /trunk/db/fs-type
+   A /trunk/db/fsfs.conf
+   A /trunk/db/min-unpacked-rev
+   A /trunk/db/rep-cache.db
+   A /trunk/db/rep-cache.db-journal
+   A /trunk/db/revprops
+   A /trunk/db/revprops/0
+   A /trunk/db/revprops/0/0
+   A /trunk/db/revprops/0/1
+   A /trunk/db/revs
+   A /trunk/db/revs/0
+   A /trunk/db/revs/0/0
+   A /trunk/db/revs/0/1
+   A /trunk/db/transactions
+   A /trunk/db/txn-current
+   A /trunk/db/txn-current-lock
+   A /trunk/db/txn-protorevs
+   A /trunk/db/uuid
+   A /trunk/db/write-lock
+   A /trunk/format
+   A /trunk/hooks
+   A /trunk/hooks/post-commit.tmpl
+   A /trunk/hooks/post-lock.tmpl
+   A /trunk/hooks/post-revprop-change.tmpl
+   A /trunk/hooks/post-unlock.tmpl
+   A /trunk/hooks/pre-commit.tmpl
+   A /trunk/hooks/pre-lock.tmpl
+   A /trunk/hooks/pre-revprop-change.tmpl
+   A /trunk/hooks/pre-unlock.tmpl
+   A /trunk/hooks/start-commit.tmpl
+   A /trunk/locks
+   A /trunk/locks/db-logs.lock
+   A /trunk/locks/db.lock
+   A /trunk/svn.ico
+
+
+------------------------------------------------------------------------
 r111 | SweetsourDev | 2017-05-22 00:47:22 -0500 (Mon, 22 May 2017) | 6 lines
 Changed paths:
    M /trunk/Locales/enUS.lua

@@ -384,7 +384,7 @@ SSA.LavaBurstRes:SetScript("OnUpdate", function(self)
 		end
 		
 		if (UnitAffectingCombat('player')) then
-			if (duration > 2) then
+			if ((duration or 0) > 2) then
 				--Auras:ToggleCooldownSwipe(self.CD,true)
 				Auras:ToggleOverlayGlow(self.glow,false);
 				Auras:ExecuteCooldown(self,start,duration,false,false,3);
@@ -1831,6 +1831,7 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 		Auras:ToggleAuraVisibility(self,true,'showhide');
 		
 		local xPosCtr = 1;
+		
 		for i=1,50 do
 			local buff,_,_,_,_,duration,expires,caster,_,_,spellID = UnitBuff('player',i);
 
@@ -1852,6 +1853,14 @@ BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
 				end
 			else
 				break;
+			end
+		end
+		
+		for id in pairs(buffIDs) do
+			local buff = UnitBuff('player',Auras:GetSpellName(id));
+			
+			if (buffIDs[id]:IsShown() and not buff) then
+				buffIDs[id]:Hide();
 			end
 		end
 		

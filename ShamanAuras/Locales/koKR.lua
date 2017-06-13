@@ -10,494 +10,250 @@ local _, GT_Globals = ...
 
 local translations = {
 {
-	--Translation missing 
-	-- ["Ability Duration Timers"] = "",
-	--Translation missing 
-	-- ["Advanced customization options"] = "",
-	--Translation missing 
-	-- ["Allows you to move the group that contains the buff duration timers"] = "",
-	--Translation missing 
-	-- ["Always"] = "",
-	--Translation missing 
-	-- ["Ancestral Guidance"] = "",
-	--Translation missing 
-	-- ["Ancestral Protection"] = "",
-	--Translation missing 
-	-- ["Ancestral Protection Totem"] = "",
-	--Translation missing 
-	-- ["Animate Tidal Waves Bar"] = "",
-	--Translation missing 
-	-- ["Ascendance"] = "",
-	--Translation missing 
-	-- ["Astral Shift"] = "",
-	--Translation missing 
-	-- ["Aura Settings"] = "",
-	--Translation missing 
-	-- ["Auras used by the Elemental specialization"] = "",
-	--Translation missing 
-	-- ["Auras used by the Enhancement specialization"] = "",
-	--Translation missing 
-	-- ["Auras used by the Restoration specialization"] = "",
-	--Translation missing 
-	-- ["Bar Height"] = "",
-	--Translation missing 
-	-- ["Bar Width"] = "",
-	--Translation missing 
-	-- ["Bloodlust"] = "",
-	--Translation missing 
-	-- ["Boulderfist"] = "",
-	--Translation missing 
-	-- ["Buff Duration Timers"] = "",
-	--Translation missing 
-	-- ["Changes the height of the Earthen Shield Bar. (Default is 21)"] = "",
-	--Translation missing 
-	-- ["Changes the height of the Icefury Bar. (Default is 21)"] = "",
-	--Translation missing 
-	-- ["Changes the height of the Maelstrom Bar. (Default is 21)"] = "",
-	--Translation missing 
-	-- ["Changes the height of the Tidal Waves Bar. (Default is 7)"] = "",
-	--Translation missing 
-	-- ["Changes the width of the Earthen Shield Bar. (Default is 260)"] = "",
-	--Translation missing 
-	-- ["Changes the width of the Icefury Bar. (Default is 260)"] = "",
-	--Translation missing 
-	-- ["Changes the width of the Maelstrom Bar. (Default is 260)"] = "",
-	--Translation missing 
-	-- ["Changes the width of the Tidal Waves Bar. (Default is 225)"] = "",
-	--Translation missing 
-	-- ["Cleanse Spirit"] = "",
-	--Translation missing 
-	-- ["Cloudburst"] = "",
-	--Translation missing 
-	-- ["Cloudburst Healing Stored"] = "",
-	--Translation missing 
-	-- ["Cloudburst Totem"] = "",
-	--Translation missing 
-	-- ["Cooldown Settings"] = "",
-	--Translation missing 
-	-- ["Cooldown Sweep Animation"] = "",
-	--Translation missing 
-	-- ["Cooldown Values"] = "",
-	--Translation missing 
-	-- ["Crash Lightning"] = "",
-	--Translation missing 
-	-- ["Critical Strike"] = "",
-	--Translation missing 
-	-- ["Determines how opaque or transparent the auras will appear when out of combat"] = "",
-	--Translation missing 
-	-- ["Determines how opaque or transparent the maelstrom bar appear when out of combat"] = "",
-	--Translation missing 
-	-- ["Determines how opaque or transparent the maelstrom bar appear when out of combat and targetting an enemyt"] = "",
-	--Translation missing 
-	-- ["Determines how opaque or transparent the maelstrom bar appear while in combat"] = "",
-	--Translation missing 
-	-- ["Determines the color and alpha of the grid"] = "",
-	--Translation missing 
-	-- ["Determines the color and alpha of the main X/Y axis lines"] = "",
-	--Translation missing 
-	-- ["Determines the color of harmful auras will appear when out of range"] = "",
-	--Translation missing 
-	-- ["Determines the color of the Tidal Waves bar when no tidal wave charges are active"] = "",
-	--Translation missing 
-	-- ["Determines the size of primary auras in row 1. (Default is 32)"] = "",
-	--Translation missing 
-	-- ["Determines the size of primary auras in row 2. (Default is 32)"] = "",
-	--Translation missing 
-	-- ["Determines the size of secondary auras in column 1. (Default is 25)"] = "",
-	--Translation missing 
-	-- ["Determines the size of secondary auras in column 2. (Default is 25)"] = "",
-	--Translation missing 
-	-- ["Determines the size of the primary charge text in row 1. (Default is 13.5)"] = "",
-	--Translation missing 
-	-- ["Determines the size of the primary charge text in row 2. (Default is 13.5)"] = "",
-	--Translation missing 
-	-- ["Determines the size of the secondary charge text in column 1. (Default is 13.5)"] = "",
-	--Translation missing 
-	-- ["Determines the size of the secondary charge text in column 2. (Default is 13.5)"] = "",
-	--Translation missing 
-	-- ["Determines the spacing of the primary auras in row 1. (Default is 50)"] = "",
-	--Translation missing 
-	-- ["Determines the spacing of the primary auras in row 2. (Default is 50)"] = "",
-	--Translation missing 
-	-- ["Determines the spacing of the secondary auras in column 1. (Default is 30)"] = "",
-	--Translation missing 
-	-- ["Determines the spacing of the secondary auras in column 2. (Default is 30)"] = "",
-	--Translation missing 
-	-- ["Deuff Duration Timers"] = "",
-	--Translation missing 
-	-- ["Doom Winds"] = "",
-	--Translation missing 
-	-- ["Earth Elemental"] = "",
-	--Translation missing 
-	-- ["Earth Shock"] = "",
-	--Translation missing 
-	-- ["Earthen Shield"] = "",
-	--Translation missing 
-	-- ["Earthen Shield Totem"] = "",
-	--Translation missing 
-	-- ["Earthen Shield Totem Bar"] = "",
-	--Translation missing 
-	-- ["Earthen Spike"] = "",
-	--Translation missing 
-	-- ["Earthgrab"] = "",
-	--Translation missing 
-	-- ["Earthgrab Totem"] = "",
-	--Translation missing 
-	-- ["Earthquake"] = "",
-	--Translation missing 
-	-- ["Elemental"] = "",
-	--Translation missing 
-	-- ["Elemental Auras"] = "",
-	--Translation missing 
-	-- ["Elemental Blast"] = "",
-	--Translation missing 
-	-- ["Elemental Duration Timers"] = "",
-	--Translation missing 
-	-- ["Elemental Mastery"] = "",
-	--Translation missing 
-	-- ["Elemental Shaman Auras"] = "",
-	--Translation missing 
-	-- ["Enhancement"] = "",
-	--Translation missing 
-	-- ["Enhancement Auras"] = "",
-	--Translation missing 
-	-- ["Enhancement Shaman Auras"] = "",
-	--Translation missing 
-	-- ["Feral Lunge"] = "",
-	--Translation missing 
-	-- ["Feral Spirit"] = "",
-	--Translation missing 
-	-- ["Fire Elemental"] = "",
-	--Translation missing 
-	-- ["Flame Shock"] = "",
-	--Translation missing 
-	-- ["Flametongue"] = "",
-	--Translation missing 
-	-- ["Frostbrand"] = "",
-	--Translation missing 
-	-- ["General"] = "",
-	--Translation missing 
-	-- ["Greater Earth Elemental"] = "",
-	--Translation missing 
-	-- ["Greater Fire Elemental"] = "",
-	--Translation missing 
-	-- ["Greater Storm Elemental"] = "",
-	--Translation missing 
-	-- ["Grid Color"] = "",
-	--Translation missing 
-	-- ["Grid Preview"] = "",
-	--Translation missing 
-	-- ["Grid Settings"] = "",
-	--Translation missing 
-	-- ["Gust of Wind"] = "",
-	--Translation missing 
-	-- ["Haste"] = "",
-	--Translation missing 
-	-- ["Healing Rain"] = "",
-	--Translation missing 
-	-- ["Healing Stream"] = "",
-	--Translation missing 
-	-- ["Healing Stream Totem"] = "",
-	--Translation missing 
-	-- ["Healing Tide"] = "",
-	--Translation missing 
-	-- ["Healing Tide Totem"] = "",
-	--Translation missing 
-	-- ["Heroism"] = "",
-	--Translation missing 
-	-- ["Hex"] = "",
-	--Translation missing 
-	-- ["Icefury"] = "",
-	--Translation missing 
-	-- ["Icefury Bar"] = "",
-	--Translation missing 
-	-- ["Lava Burst"] = "",
-	--Translation missing 
-	-- ["Lava Lash"] = "",
-	--Translation missing 
-	-- ["Lava Surge"] = "",
-	--Translation missing 
-	-- ["Layout Settings"] = "",
-	--Translation missing 
-	-- ["Lightning Surge"] = "",
-	--Translation missing 
-	-- ["Lightning Surge Totem"] = "",
-	--Translation missing 
-	-- ["Liquid Magma"] = "",
-	--Translation missing 
-	-- ["Liquid Magma Totem"] = "",
-	--Translation missing 
-	-- ["Maelstrom"] = "",
-	--Translation missing 
-	-- ["Maelstrom Alpha (In Combat)"] = "",
-	--Translation missing 
-	-- ["Maelstrom Alpha (OoC - No Target)"] = "",
-	--Translation missing 
-	-- ["Maelstrom Alpha (OoC - Target)"] = "",
-	--Translation missing 
-	-- ["Maelstrom Bar"] = "",
-	--Translation missing 
-	-- ["Maelstrom Lightning"] = "",
-	--Translation missing 
-	-- ["Maelstrom Settings"] = "",
-	--Translation missing 
-	-- ["Maelstrom Trigger"] = "",
-	--Translation missing 
-	-- ["Major Auras"] = "",
-	--Translation missing 
-	-- ["Mastery"] = "",
-	--Translation missing 
-	-- ["Minor Auras"] = "",
-	--Translation missing 
-	-- ["Move All Auras"] = "",
-	--Translation missing 
-	-- ["Move Aura Groups"] = "",
-	--Translation missing 
-	-- ["Move Bottom Auras"] = "",
-	--Translation missing 
-	-- ["Move Buff Timer Bars"] = "",
-	--Translation missing 
-	-- ["Move Doom Winds"] = "",
-	--Translation missing 
-	-- ["Move Earthen Shield Bar"] = "",
-	--Translation missing 
-	-- ["Move Elemental Aura Groups"] = "",
-	--Translation missing 
-	-- ["Move Elemental Auras"] = "",
-	--Translation missing 
-	-- ["Move Enhancement Auras"] = "",
-	--Translation missing 
-	-- ["Move Icefury Bar"] = "",
-	--Translation missing 
-	-- ["Move Lava Surge Texture"] = "",
-	--Translation missing 
-	-- ["Move Left Auras"] = "",
-	--Translation missing 
-	-- ["Move Maelstrom Bar"] = "",
-	--Translation missing 
-	-- ["Move Main Timer Bars"] = "",
-	--Translation missing 
-	-- ["Move Restoration Auras"] = "",
-	--Translation missing 
-	-- ["Move Right Auras"] = "",
-	--Translation missing 
-	-- ["Move Stormkeeper Charges"] = "",
-	--Translation missing 
-	-- ["Move Stormstrike Charges"] = "",
-	--Translation missing 
-	-- ["Move Tidal Waves Bar"] = "",
-	--Translation missing 
-	-- ["Move Top Auras"] = "",
-	--Translation missing 
-	-- ["Move Totem Mastery Alert"] = "",
-	--Translation missing 
-	-- ["Move Undulation"] = "",
-	--Translation missing 
-	-- ["Move Utility Timer Bars"] = "",
-	--Translation missing 
-	-- ["Never"] = "",
-	--Translation missing 
-	-- ["No Tidal Waves Color"] = "",
-	--Translation missing 
-	-- ["On Heal Only"] = "",
-	--Translation missing 
-	-- ["OoC Target Display"] = "",
-	--Translation missing 
-	-- ["OoC Tidal Wave Duration"] = "",
-	--Translation missing 
-	-- ["Our of Range Color"] = "",
-	--Translation missing 
-	-- ["Out of Combat Alpha"] = "",
-	--Translation missing 
-	-- ["Preview Earthen Shield Bar"] = "",
-	--Translation missing 
-	-- ["Preview Icefury Bar"] = "",
-	--Translation missing 
-	-- ["Preview Maelstrom Bar"] = "",
-	--Translation missing 
-	-- ["Preview Tidal Waves Bar"] = "",
-	--Translation missing 
-	-- ["Primary Aura Size"] = "",
-	--Translation missing 
-	-- ["Primary Auras"] = "",
-	--Translation missing 
-	-- ["Primary Charges 1"] = "",
-	--Translation missing 
-	-- ["Primary Charges 2"] = "",
-	--Translation missing 
-	-- ["Primary Icon Size"] = "",
-	--Translation missing 
-	-- ["Primary Size 1"] = "",
-	--Translation missing 
-	-- ["Primary Size 2"] = "",
-	--Translation missing 
-	-- ["Primary Spacing 1"] = "",
-	--Translation missing 
-	-- ["Primary Spacing 2"] = "",
-	--Translation missing 
-	-- ["Progress Bars"] = "",
-	--Translation missing 
-	-- ["Purify Spirit"] = "",
-	--Translation missing 
-	-- ["Rainfall"] = "",
-	--Translation missing 
-	-- ["Reload UI"] = "",
-	--Translation missing 
-	-- ["Remaining Time"] = "",
-	--Translation missing 
-	-- ["Reset Earthen Shield Bar"] = "",
-	--Translation missing 
-	-- ["Reset Elemental Auras"] = "",
-	--Translation missing 
-	-- ["Reset Enhancement Auras"] = "",
-	--Translation missing 
-	-- ["Reset Icefury Bar"] = "",
-	--Translation missing 
-	-- ["Reset Maelstrom Bar"] = "",
-	--Translation missing 
-	-- ["Reset Primary Layout"] = "",
-	--Translation missing 
-	-- ["Reset Restoration Auras"] = "",
-	--Translation missing 
-	-- ["Reset Secondary Layout"] = "",
-	--Translation missing 
-	-- ["Reset Settings Values"] = "",
-	--Translation missing 
-	-- ["Reset Tidal Waves Bar"] = "",
-	--Translation missing 
-	-- ["Resource Accumulation"] = "",
-	--Translation missing 
-	-- ["Restoration"] = "",
-	--Translation missing 
-	-- ["Restoration Auras"] = "",
-	--Translation missing 
-	-- ["Restoration Shaman Auras"] = "",
-	--Translation missing 
-	-- ["Riptide"] = "",
-	--Translation missing 
-	-- ["Secondary Auras"] = "",
-	--Translation missing 
-	-- ["Secondary Charges 1"] = "",
-	--Translation missing 
-	-- ["Secondary Charges 2"] = "",
-	--Translation missing 
-	-- ["Secondary Icon Size"] = "",
-	--Translation missing 
-	-- ["Secondary Size 1"] = "",
-	--Translation missing 
-	-- ["Secondary Size 2"] = "",
-	--Translation missing 
-	-- ["Secondary Spacing 1"] = "",
-	--Translation missing 
-	-- ["Secondary Spacing 2"] = "",
-	--Translation missing 
-	-- ["Set how large the \"Primary\" Auras appear"] = "",
-	--Translation missing 
-	-- ["Settings"] = "",
-	--Translation missing 
-	-- ["Show Ability Timers"] = "",
-	--Translation missing 
-	-- ["Show Buff Timers"] = "",
-	--Translation missing 
-	-- ["Show Elemental Auras"] = "",
-	--Translation missing 
-	-- ["Show Enhancement Auras"] = "",
-	--Translation missing 
-	-- ["Show Restoration Auras"] = "",
-	--Translation missing 
-	-- ["Show Utility Timers"] = "",
-	--Translation missing 
-	-- ["Spirit Link"] = "",
-	--Translation missing 
-	-- ["Spirit Link Totem"] = "",
-	--Translation missing 
-	-- ["Spirit Walk"] = "",
-	--Translation missing 
-	-- ["Spiritwalker's Grace"] = "",
-	--Translation missing 
-	-- ["Storm Elemental"] = "",
-	--Translation missing 
-	-- ["Stormkeeper"] = "",
-	--Translation missing 
-	-- ["Stormkeeper Orbs"] = "",
-	--Translation missing 
-	-- ["Stormstrike"] = "",
-	--Translation missing 
-	-- ["Stormstrike Lightning Orbs"] = "",
-	--Translation missing 
-	-- ["Sundering"] = "",
-	--Translation missing 
-	-- ["Target & On Heal"] = "",
-	--Translation missing 
-	-- ["Target Only"] = "",
-	--Translation missing 
-	-- ["Texture Alerts"] = "",
-	--Translation missing 
-	-- ["The amount of Maelstrom accumulated at which the \"Lightning\" animation will appear"] = "",
-	--Translation missing 
-	-- ["The amount of seconds remaining when the \"Glow\" animation will appear"] = "",
-	--Translation missing 
-	-- ["The amount of seconds remaining when the Totem Mastery texture will appear"] = "",
-	--Translation missing 
-	-- ["The amount of seconds the Tidal Waves indicator bar will appear when casting a heal without a target while out of combat."] = "",
-	--Translation missing 
-	-- ["The method in which Tidal Wave will be displayed while in combat."] = "",
-	--Translation missing 
-	-- ["The method in which Tidal Wave will be displayed while out of combat."] = "",
-	--Translation missing 
-	-- ["Thunderstorm"] = "",
-	--Translation missing 
-	-- ["Tidal Wave Display (In Combat)"] = "",
-	--Translation missing 
-	-- ["Tidal Wave Display (OoC)"] = "",
-	--Translation missing 
-	-- ["Tidal Waves Bar"] = "",
-	--Translation missing 
-	-- ["Time Warp"] = "",
-	--Translation missing 
-	-- ["Toggle Grid"] = "",
-	--Translation missing 
-	-- ["Toggle Info Frame"] = "",
-	--Translation missing 
-	-- ["Toggle the adjustment of the Earthen Shield Bar size"] = "",
-	--Translation missing 
-	-- ["Toggle the adjustment of the Icefury Bar size"] = "",
-	--Translation missing 
-	-- ["Toggle the adjustment of the Maelstrom Bar size"] = "",
-	--Translation missing 
-	-- ["Toggle the adjustment of the Tidal Waves Bar size"] = "",
-	--Translation missing 
-	-- ["Toggle the display of Elemental Auras"] = "",
-	--Translation missing 
-	-- ["Toggle the display of Restoration Auras"] = "",
-	--Translation missing 
-	-- ["Toggles the display of the auras while targetting an enemy while out of combat."] = "",
-	--Translation missing 
-	-- ["Totem Duration Timers"] = "",
-	--Translation missing 
-	-- ["Totem Mastery"] = "",
-	--Translation missing 
-	-- ["Undulation"] = "",
-	--Translation missing 
-	-- ["Unleash Life"] = "",
-	--Translation missing 
-	-- ["Utility Duration Timers"] = "",
-	--Translation missing 
-	-- ["Voodoo"] = "",
-	--Translation missing 
-	-- ["Voodoo Totem"] = "",
-	--Translation missing 
-	-- ["Wellspring"] = "",
-	--Translation missing 
-	-- ["Wind Rush"] = "",
-	--Translation missing 
-	-- ["Wind Rush Totem"] = "",
-	--Translation missing 
-	-- ["Wind Shear"] = "",
-	--Translation missing 
-	-- ["Windsong"] = "",
-	--Translation missing 
-	-- ["X/Y Axis Color"] = ""
+	["Ability Duration Timers"] = "지속 능력 타이머",
+	["Advanced customization options"] = "사용자 정의 고급 설정",
+	["Allows you to move the group that contains the buff duration timers"] = "버프 기간 타이머가 포함 된 그룹을 이동할 수 있습니다.",
+	["Always"] = "항상",
+	["Ancestral Guidance"] = "고대의 인도",
+	["Ancestral Protection"] = "선조의 보호",
+	["Ancestral Protection Totem"] = "선조의 보호 토템",
+	["Animate Tidal Waves Bar"] = "굽이치는 물결 바 애니메이션",
+	["Ascendance"] = "승천",
+	["Astral Shift"] = "영혼 이동",
+	["Aura Settings"] = "오라 설정",
+	["Auras used by the Elemental specialization"] = "정기 전문화에서 사용되는 오라",
+	["Auras used by the Enhancement specialization"] = "고양 전문화에서 사용되는 오라",
+	["Auras used by the Restoration specialization"] = "복원 전문화에서 사용되는 오라",
+	["Bar Height"] = "바 높이",
+	["Bar Width"] = "바 너비",
+	["Bloodlust"] = "피의 욕망",
+	["Boulderfist"] = "돌주먹",
+	["Buff Duration Timers"] = "버프 타이머 길이",
+	["Changes the height of the Earthen Shield Bar. (Default is 21)"] = "대지의 방패 바 높이를 조정합니다. (기본값 21)",
+	["Changes the height of the Icefury Bar. (Default is 21)"] = "얼음격노 바 높이를 조정합니다. (기본값 21)",
+	["Changes the height of the Maelstrom Bar. (Default is 21)"] = "화염 충격 바 높이를 조정합니다. (기본값 21)",
+	["Changes the height of the Tidal Waves Bar. (Default is 7)"] = "굽이치는 물결 바 높이를 조정합니다. (기본값 7)",
+	["Changes the width of the Earthen Shield Bar. (Default is 260)"] = "대지의 방패 바 폭를 조정합니다. (기본값 260)",
+	["Changes the width of the Icefury Bar. (Default is 260)"] = "대지의 방패 바 폭를 조정합니다. (기본값 260)",
+	["Changes the width of the Maelstrom Bar. (Default is 260)"] = "소용돌이 바 폭를 조정합니다. (기본값 260)",
+	["Changes the width of the Tidal Waves Bar. (Default is 225)"] = "굽이치는 물결 바 폭를 조정합니다. (기본값 225)",
+	["Cleanse Spirit"] = "영혼 정화",
+	["Cloudburst"] = "폭우",
+	["Cloudburst Healing Stored"] = "폭우 힐 저장량",
+	["Cloudburst Totem"] = "폭우의 토템",
+	["Cooldown Settings"] = "재사용 대기 시간 설정",
+	["Cooldown Sweep Animation"] = "재사용 대기 시간 애니메이션 스윕",
+	["Cooldown Values"] = "재사용 대기 시간 값",
+	["Crash Lightning"] = "낙뢰",
+	["Critical Strike"] = "치명타",
+	["Determines how opaque or transparent the auras will appear when out of combat"] = "전투중 오라의 불투명도를 결정합니다.",
+	["Determines how opaque or transparent the maelstrom bar appear when out of combat"] = "전투 중 표시되는 바의 불투명도를 결정합니다.",
+	["Determines how opaque or transparent the maelstrom bar appear when out of combat and targetting an enemyt"] = "전투에서 벗어났을때 타겟이 된 적의 불투명도를 결정합니다.",
+	["Determines how opaque or transparent the maelstrom bar appear while in combat"] = "전투중 바의 불투명도를 결정합니다.",
+	["Determines the color and alpha of the grid"] = "그리드의 색과 알파를 결정합니다.",
+	["Determines the color and alpha of the main X/Y axis lines"] = "주 X / Y 축 선의 색상과 알파를 결정합니다.",
+	["Determines the color of harmful auras will appear when out of range"] = "범위 밖일 때 유해 오라의 색을 결정합니다.",
+	["Determines the color of the Tidal Waves bar when no tidal wave charges are active"] = "굽이치는 물결이 활성화 되지 않았을때의 바의 색상을 결정합니다.",
+	["Determines the size of primary auras in row 1. (Default is 32)"] = "1 행의 1 차 오라의 크기를 결정합니다. (기본값 32)",
+	["Determines the size of primary auras in row 2. (Default is 32)"] = "2 행의 1 차 오라의 크기를 결정합니다. (기본값 32)",
+	["Determines the size of secondary auras in column 1. (Default is 25)"] = "1 열의 2 차 오라의 크기를 결정합니다. (기본값 25)",
+	["Determines the size of secondary auras in column 2. (Default is 25)"] = "2 열의 2 차 오라의 크기를 결정합니다. (기본값 25)",
+	["Determines the size of the primary charge text in row 1. (Default is 13.5)"] = "1 행의 기본 텍스트 크기를 결정합니다.(기본값 13.5)",
+	["Determines the size of the primary charge text in row 2. (Default is 13.5)"] = "2 행의 기본 텍스트 크기를 결정합니다. (기본값 13.5) ",
+	["Determines the size of the secondary charge text in column 1. (Default is 13.5)"] = "1열의 보조 텍스트 크기를 결정합니다. (기본값 13.5)",
+	["Determines the size of the secondary charge text in column 2. (Default is 13.5)"] = "2 열의 2 차 보조 텍스트 크기를 결정합니다. (기본값 13.5)",
+	["Determines the spacing of the primary auras in row 1. (Default is 50)"] = "1 행의 1 차 오라의 간격을 결정합니다. (기본값 50)",
+	["Determines the spacing of the primary auras in row 2. (Default is 50)"] = "2 행의 1 차 오라의 간격을 결정합니다. (기본값 50)",
+	["Determines the spacing of the secondary auras in column 1. (Default is 30)"] = "1 열의 2 차 오라의 간격을 결정합니다. (기본값 30)",
+	["Determines the spacing of the secondary auras in column 2. (Default is 30)"] = "2 열의 2 차 오라의 간격을 결정합니다. (기본값 30)",
+	["Deuff Duration Timers"] = "지속 디버프 타이머",
+	["Doom Winds"] = "파멸의 바람",
+	["Earth Elemental"] = "대지의 정령",
+	["Earth Shock"] = "대지 충격",
+	["Earthen Shield"] = "대지의 방패",
+	["Earthen Shield Totem"] = "대지의 방패 토템",
+	["Earthen Shield Totem Bar"] = "대지의 방패 토템 바",
+	["Earthen Spike"] = "대지의 쐐기",
+	["Earthgrab"] = "속박",
+	["Earthgrab Totem"] = "속박 토템",
+	["Earthquake"] = "지진",
+	["Elemental"] = "정기",
+	["Elemental Auras"] = "정기 오라",
+	["Elemental Blast"] = "정기 작렬",
+	["Elemental Duration Timers"] = "정기 지속 타이머",
+	["Elemental Mastery"] = "정기 전문화",
+	["Elemental Shaman Auras"] = "정기 주술사 오라",
+	["Enhancement"] = "고양",
+	["Enhancement Auras"] = "고양 오라",
+	["Enhancement Shaman Auras"] = "고양 주술사 오라",
+	["Feral Lunge"] = "야생의 약진",
+	["Feral Spirit"] = "야수 정령",
+	["Fire Elemental"] = "불의 정령",
+	["Flame Shock"] = "화염 충격",
+	["Flametongue"] = "불꽃혓바닥",
+	["Frostbrand"] = "냉기의 무기",
+	["General"] = "일반",
+	["Greater Earth Elemental"] = "상급 대지의 정령",
+	["Greater Fire Elemental"] = "상급 불의 정령",
+	["Greater Storm Elemental"] = "상급 바람의 정령",
+	["Grid Color"] = "그리드 색",
+	["Grid Preview"] = "그리드 미리보기",
+	["Grid Settings"] = "그리드 설정",
+	["Gust of Wind"] = "돌풍",
+	["Haste"] = "가속",
+	["Healing Rain"] = "치유의 비",
+	["Healing Stream"] = "치유의 흐름",
+	["Healing Stream Totem"] = "치유의 토템",
+	["Healing Tide"] = "치유의 해일",
+	["Healing Tide Totem"] = "치유의 해일 토템",
+	["Heroism"] = "영웅의",
+	["Hex"] = "사술",
+	["Icefury"] = "얼음격노",
+	["Icefury Bar"] = "얼음격노 바",
+	["Lava Burst"] = "용암 폭발",
+	["Lava Lash"] = "용암 채찍",
+	["Lava Surge"] = "용암 쇄도",
+	["Layout Settings"] = "레이아웃 설정",
+	["Lightning Surge"] = "번개 쇄도",
+	["Lightning Surge Totem"] = "번개 쇄도 토템",
+	["Liquid Magma"] = "마그마",
+	["Liquid Magma Totem"] = "마그마 토템",
+	["Maelstrom"] = "소용돌이",
+	["Maelstrom Alpha (In Combat)"] = "소용돌이 알파 (전투중)",
+	["Maelstrom Alpha (OoC - No Target)"] = "소용돌이 알파 (비전투중 - 대상 없음)",
+	["Maelstrom Alpha (OoC - Target)"] = "소용돌이 알파 (비전투중 - 대상)",
+	["Maelstrom Bar"] = "소용돌이 바",
+	["Maelstrom Lightning"] = "소용돌이 번개",
+	["Maelstrom Settings"] = "소용돌이 설정",
+	["Maelstrom Trigger"] = "소용돌이 방아쇠",
+	["Major Auras"] = "중요한 오라",
+	["Mastery"] = "전문화",
+	["Minor Auras"] = "작은 쪽의 오라",
+	["Move All Auras"] = "모든 오라 이동",
+	["Move Aura Groups"] = "그룹 오라 이동",
+	["Move Bottom Auras"] = "오라 버튼 이동",
+	["Move Buff Timer Bars"] = "버프 타이머 바 이동",
+	["Move Doom Winds"] = "파멸의 바람 이동",
+	["Move Earthen Shield Bar"] = "대지의 방패 바 이동",
+	["Move Elemental Aura Groups"] = "정기의 오라 구룹 이동",
+	["Move Elemental Auras"] = "정기의 오라 이동",
+	["Move Enhancement Auras"] = "고양의 오라 이동",
+	["Move Icefury Bar"] = "얼음격노 바 이동",
+	["Move Lava Surge Texture"] = "용암쇄도 문자열 이동",
+	["Move Left Auras"] = "왼쪽 오라 이동",
+	["Move Maelstrom Bar"] = "소용돌이 바 이동",
+	["Move Main Timer Bars"] = "마나 타이머 바 이동",
+	["Move Restoration Auras"] = "복원의 오라 이동",
+	["Move Right Auras"] = "오른쪽 오라 이동",
+	["Move Stormkeeper Charges"] = "폭풍수호자의 힘 이동",
+	["Move Stormstrike Charges"] = "폭풍수호자 이동",
+	["Move Tidal Waves Bar"] = "굽이치는 물결 바 이동",
+	["Move Top Auras"] = "위쪽 오라 이동",
+	["Move Totem Mastery Alert"] = "토템 전문화 경고 이동",
+	["Move Undulation"] = "파동 이동",
+	["Move Utility Timer Bars"] = "유용한 타이머 바 이동",
+	["Never"] = "엇",
+	["No Tidal Waves Color"] = "웨이브 색상을 바꿀 수 없습니다",
+	["On Heal Only"] = "치유에만",
+	["OoC Target Display"] = "비전투중 대상 표시",
+	["OoC Tidal Wave Duration"] = "비전투중 굽이치는 물결 시간",
+	["Our of Range Color"] = "바깥쪽 색상",
+	["Out of Combat Alpha"] = "바깥쪽 전투 알파",
+	["Preview Earthen Shield Bar"] = "대지의 방패 바 미리보기",
+	["Preview Icefury Bar"] = "얼음격노바 미리보기",
+	["Preview Maelstrom Bar"] = "소용돌이 바 미리보기",
+	["Preview Tidal Waves Bar"] = "굽이치는 물결 바 미리보기",
+	["Primary Aura Size"] = "1차 오라 크기",
+	["Primary Auras"] = "1차 오라",
+	["Primary Charges 1"] = "기본값 1",
+	["Primary Charges 2"] = "기본값 2",
+	["Primary Icon Size"] = "1차 아이콘 크기",
+	["Primary Size 1"] = "기본 크기 1",
+	["Primary Size 2"] = "기본 크기 2",
+	["Primary Spacing 1"] = "기본 간격 1",
+	["Primary Spacing 2"] = "기본 간격 2",
+	["Progress Bars"] = "진행 바",
+	["Purify Spirit"] = "영혼 정화",
+	["Rainfall"] = "강우",
+	["Reload UI"] = "UI 재시작",
+	["Remaining Time"] = "남은 시간",
+	["Reset Earthen Shield Bar"] = "대지의 방패 바 재설정",
+	["Reset Elemental Auras"] = "정기의 오라 재설정",
+	["Reset Enhancement Auras"] = "고양의 오라 재설정",
+	["Reset Icefury Bar"] = "얼음격노 바 재설정",
+	["Reset Maelstrom Bar"] = "소용돌이 바 재설정",
+	["Reset Primary Layout"] = "기본 레이아웃 재설정",
+	["Reset Restoration Auras"] = "복원의 오라 재설정",
+	["Reset Secondary Layout"] = "보조 레이아웃 재설정",
+	["Reset Settings Values"] = "설정 값 재설정",
+	["Reset Tidal Waves Bar"] = "굽이치는 물결 바 재설정",
+	["Resource Accumulation"] = "자원 누적",
+	["Restoration"] = "복원",
+	["Restoration Auras"] = "복원의 오라",
+	["Restoration Shaman Auras"] = "복원 주술사 오라",
+	["Riptide"] = "성난 해일",
+	["Secondary Auras"] = "보조 오라",
+	["Secondary Charges 1"] = "보조 값 1",
+	["Secondary Charges 2"] = "보조 값 2",
+	["Secondary Icon Size"] = "보조 아이콘 크기",
+	["Secondary Size 1"] = "보조 크기 1",
+	["Secondary Size 2"] = "보조 크기 2",
+	["Secondary Spacing 1"] = "보조 간격 1",
+	["Secondary Spacing 2"] = "보조 간격 2",
+	["Set how large the \"Primary\" Auras appear"] = "기본 오라의 크기를 정함",
+	["Settings"] = "설정",
+	["Show Ability Timers"] = "능력 타이머 보여주기",
+	["Show Buff Timers"] = "버프 타이머 보여주기",
+	["Show Elemental Auras"] = "정기의 오라 보여주기",
+	["Show Enhancement Auras"] = "고양의 오라 보여주기",
+	["Show Restoration Auras"] = "복원의 오라 보여주기",
+	["Show Utility Timers"] = "유용한 타이머 보여주기",
+	["Spirit Link"] = "정신 고리",
+	["Spirit Link Totem"] = "정신 고리 토템",
+	["Spirit Walk"] = "영혼나그네",
+	["Spiritwalker's Grace"] = "영혼나그네의 은총",
+	["Storm Elemental"] = "폭풍의 정령",
+	["Stormkeeper"] = "폭풍수호자",
+	["Stormkeeper Orbs"] = "폭풍수호자의 오브",
+	["Stormstrike"] = "폭풍의 일격",
+	["Stormstrike Lightning Orbs"] = "폭풍의 일격 번개 오브",
+	["Sundering"] = "분리",
+	["Target & On Heal"] = "대상 & 치유",
+	["Target Only"] = "대상만",
+	["Texture Alerts"] = "문자열 알람",
+	["The amount of Maelstrom accumulated at which the \"Lightning\" animation will appear"] = "\"번개\" 소용돌이 양을 애니메이션이에 표시",
+	["The amount of seconds remaining when the \"Glow\" animation will appear"] = "\"불타는\" 애니메이션이 나타날 때 남은 시간 (초)",
+	["The amount of seconds remaining when the Totem Mastery texture will appear"] = "토템의 남은 시간을 문자열에 시간표기(초)",
+	["The amount of seconds the Tidal Waves indicator bar will appear when casting a heal without a target while out of combat."] = "전투중에 굽이치는 물결을 시전시 바에 표기되는 시간 (초).",
+	["The method in which Tidal Wave will be displayed while in combat."] = "굽이치는 물결이 전투 중에 표시되는 방법.",
+	["The method in which Tidal Wave will be displayed while out of combat."] = "굽이 치는 물결이 전투중에 표기되는 방법.",
+	["Thunderstorm"] = "청둥폭풍",
+	["Tidal Wave Display (In Combat)"] = "굽이치는 물결 표기 (전투중)",
+	["Tidal Wave Display (OoC)"] = "굽이치는 물결 표기 (비전투중)",
+	["Tidal Waves Bar"] = "굽이치는 물결 바",
+	["Time Warp"] = "시간 왜곡",
+	["Toggle Grid"] = "그리드 토클",
+	["Toggle Info Frame"] = "정보 프레임 토글",
+	["Toggle the adjustment of the Earthen Shield Bar size"] = "대지의 방패 바 크기의 조정 토글",
+	["Toggle the adjustment of the Icefury Bar size"] = "얼음격노 바 크기 조정을 토글합니다.",
+	["Toggle the adjustment of the Maelstrom Bar size"] = "소용돌이 바 크기의 조정 토글",
+	["Toggle the adjustment of the Tidal Waves Bar size"] = "굽이치는 물결 바 크기의 조정 토글",
+	["Toggle the display of Elemental Auras"] = "정기의 오라 표시 토글",
+	["Toggle the display of Restoration Auras"] = "복원의 오라 표시 토글",
+	["Toggles the display of the auras while targetting an enemy while out of combat."] = "전투 중에 적을 타겟팅하는 동안 오라의 표시를 토글합니다.",
+	["Totem Duration Timers"] = "토템 시간 타이머",
+	["Totem Mastery"] = "토템 특화",
+	["Undulation"] = "기복",
+	["Unleash Life"] = "생명 폭발",
+	["Utility Duration Timers"] = "유용한 지속시간 타이머",
+	["Voodoo"] = "부두",
+	["Voodoo Totem"] = "부두 토템",
+	["Wellspring"] = "샘솟는 물살",
+	["Wind Rush"] = "바람 질주",
+	["Wind Rush Totem"] = "바람 질주 토템",
+	["Wind Shear"] = "날카로운 바람",
+	["Windsong"] = "바람노래",
+	["X/Y Axis Color"] = "X / Y 축 색"
 }
 }
 

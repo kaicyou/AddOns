@@ -1,5 +1,5 @@
 Rarity = LibStub("AceAddon-3.0"):NewAddon("Rarity", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "LibSink-2.0", "AceBucket-3.0", "LibBars-1.0", "AceSerializer-3.0")
-Rarity.MINOR_VERSION = tonumber(("$Revision: 592 $"):match("%d+"))
+Rarity.MINOR_VERSION = tonumber(("$Revision: 594 $"):match("%d+"))
 local FORCE_PROFILE_RESET_BEFORE_REVISION = 1 -- Set this to one higher than the Revision on the line above this
 local L = LibStub("AceLocale-3.0"):GetLocale("Rarity")
 local R = Rarity
@@ -4011,7 +4011,7 @@ function R:ScanCalendar(reason)
 	for i = 1, numEvents, 1 do
 		local _, _, _, calendarType, _, _, texture = CalendarGetDayEvent(monthOffset, day, i)
 
-		if calendarType == "HOLIDAY" then
+		if calendarType == "HOLIDAY" and texture ~= nil then
 			Rarity.holiday_textures[texture] = true
 		end
 	end

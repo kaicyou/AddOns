@@ -1518,6 +1518,7 @@ local mt_default_cooldown = {
             elseif not ns.isKnown( t.id ) then
                 start = state.now
                 duration = 3600 -- was 0... consider implications.
+            
             end
             
             t.duration = duration or 0
@@ -2504,7 +2505,7 @@ local mt_set_bonuses = {
     __index = function(t, k)
         if type(k) == 'number' then return 0 end
         
-        if not class.artifacts[ k ] and ( state.bg or state.arena ) then return 0 end
+        if ( not class.artifacts[ k ] ) and ( state.bg or state.arena ) then return 0 end
         
         local set, pieces, class = k:match("^(.-)_"), tonumber( k:match("_(%d+)pc") ), k:match("pc(.-)$")
         
@@ -2531,6 +2532,7 @@ ns.metatables.mt_set_bonuses = mt_set_bonuses
 
 local mt_equipped = {
     __index = function(t, k)
+        if not class.artifacts[ k ] and ( state.bg or state.arena ) then return false end
         return state.set_bonus[k] > 0
     end
 }
@@ -2768,7 +2770,14 @@ local mt_default_action = {
             return false
             
         else
-            return class.abilities[ t.action ][ k ] or 0
+            local val = class.abilities[ t.action ][ k ]
+
+            if val then
+                if type( val ) == 'function' then return val() end
+                return val
+            end
+
+            return 0
             
         end
         
@@ -3388,18 +3397,15 @@ function state.reset( dispID )
 end
 
 
-
-
-
 function state.advance( time )
     
     if time <= 0 then
         return
     end
     
-    -- roundUp( time, 2 )
-    
     time = ns.callHook( 'advance', time ) or time
+
+    time = roundUp( time, 3 )
     
     state.delay = 0
     
@@ -3540,10 +3546,12 @@ ns.isKnown = function( sID )
     
     if not sID then
         return false -- no ability
+
     elseif sID < 0 then
         return true
-    end -- fake ability (i.e., wait)
-    
+
+    end
+
     local ability = class.abilities[ sID ]
     
     if not ability then

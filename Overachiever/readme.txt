@@ -1,5 +1,5 @@
 
-Overachiever v0.99.7
+Overachiever v0.99.8
 ==============================
 
 Author: Tuhljin
@@ -107,6 +107,15 @@ Change log
 ==========
 
 The change log lists changes of particular note to users, not every change made.
+
+v0.99.8
+- Updated for WoW patch 7.2.5. (Correct a problem with holiday/event toasts.)
+- To reduce loading times, the process that examines achievement criteria has been removed from startup. It now does its work incrementally, in the background, until its task is complete.
+- The Holiday/Event Toasts options "Do not automatically hide" and "Require click to hide" now default to disabled. (This only affects new installations of the addon. Current users' options are preserved.)
+- The exploration achievement associated with Thunder Totem is now that of its parent zone, Highmountain.
+- Suggestions Tab:
+-- Added suggestions for the Blight Boar concert at the Darkmoon Faire, Black Temple timewalking, and The Deaths of Chromie scenario.
+-- The zone Thunder Totem now shows suggestions from its parent zone, Highmountain.
 
 v0.99.7
 - Holiday/Event Toasts:

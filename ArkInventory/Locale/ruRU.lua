@@ -36,7 +36,7 @@ if not L then return end
 	
 --	location names
 --	L["LOCATION_ACCOUNT"] = ""
-	L["LOCATION_WEARING"] = "Одето"
+	L["LOCATION_WEARING"] = "Надето" --Одето
 	
 	
 --	subframe names

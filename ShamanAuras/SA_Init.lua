@@ -32,7 +32,7 @@ Auras:CreateVerticalStatusBar(SSA.WindRushTotemBarEle,"RIGHT",-5,174,195,86,L["W
 Auras:CreateVerticalStatusBar(SSA.AscendanceBarEnh,"LEFT",5,251,147,255,L["Ascendance"],15);
 Auras:CreateVerticalStatusBar(SSA.AstralShiftBarEnh,"LEFT",5,240,56,255,L["Astral Shift"],8);
 Auras:CreateVerticalStatusBar(SSA.BloodlustBarEnh,"LEFT",5,255,18,76,L["Bloodlust"],40);
-Auras:CreateVerticalStatusBar(SSA.BoulderfistBar,"RIGHT",-5,201,169,139,L["Boulderfist"],10);
+--Auras:CreateVerticalStatusBar(SSA.BoulderfistBar,"RIGHT",-5,201,169,139,L["Boulderfist"],10); REMOVED 7.2.5
 Auras:CreateVerticalStatusBar(SSA.CrashLightningBar,"RIGHT",-5,0,133,255,L["Crash Lightning"],10);
 Auras:CreateVerticalStatusBar(SSA.EarthgrabTotemBarEnh,"RIGHT",-5,127,175,97,L["Earthgrab"],20);
 Auras:CreateVerticalStatusBar(SSA.EarthenSpikeBar,"RIGHT",-5,255,18,76,L["Bloodlust"],10);

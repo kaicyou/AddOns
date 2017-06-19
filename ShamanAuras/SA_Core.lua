@@ -989,7 +989,7 @@ function Auras:OnInitialize()
 					}
 				},
 				[2] = {
-					boulderfist = 5,
+					rockbiter = 5,
 					flametongue = 5,
 					frostbrand = 5,
 					OoCAlpha = 0.5,
@@ -1037,7 +1037,7 @@ function Auras:OnInitialize()
 						totemMastery = 15,
 					},
 					[2] = {
-						boulderfist = 5,
+						rockbiter = 5,
 						flametongue = 5,
 						frostbrand = 5,
 					},
@@ -1128,10 +1128,10 @@ function Auras:OnInitialize()
 						AuraGroupEnh = true,
 						BloodlustEnh = true,
 						BloodlustBarEnh = true,
-						Boulderfist = true,
+						--[[Boulderfist = true,
 						BoulderfistBar = true,
 						BoulderfistGlow = true,
-						BoulderfistCharges = true,
+						BoulderfistCharges = true,]]
 						BuffTimerBarGrpEnh = true,
 						CleanseSpiritEnh = true,
 						ConcordanceEnh = true,
@@ -1166,6 +1166,10 @@ function Auras:OnInitialize()
 						MaelstromBarEnh = true,
 						MainTimerBarGrpEnh = true,
 						Rainfall = true,
+						Rockbiter = true,
+						--RockbiterBar = true,
+						--RockbiterGlow = true,
+						RockbiterCharges = true,
 						SmallIconGrpLeftEnh = true,
 						SmallIconGrpRightEnh = true,
 						SpiritWalk = true,

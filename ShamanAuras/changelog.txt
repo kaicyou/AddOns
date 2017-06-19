@@ -1,4 +1,8 @@
-﻿	r49-beta
+﻿	r50-beta
+FIX: [Enhancement] Boulderfist's aura has been replaced with a Rockbiter aura. (Thanks, Netharion & Hooper005!)
+FIX: [Enhancement] Rockbiter's glow alert time range has been adjusted to 2 - 6 seconds (from 5 - 10 seconds; when Landslide is active).
+
+	r49-beta
 
 FIX: [Enh/Res] Fixed an issue that would cause certain buff duration timers from behaving incorrectly (Thanks, Netharion!).
 FIX: [Elemental] Fixed a random bug (Thanks, xaroc_!).

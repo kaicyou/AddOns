@@ -283,7 +283,6 @@ L["Thunderstorm"] = true;
 L["Totem Mastery"] = true;
 
 -- Enhancement Abilities
-L["Boulderfist"] = true;
 L["Crash Lightning"] = true;
 L["Doom Winds"] = true;
 L["Earthen Spike"] = true;
@@ -294,6 +293,7 @@ L["Frostbrand"] = true;
 L["Landslide"] = true;
 L["Lava Lash"] = true;
 L["Rainfall"] = true;
+L["Rockbiter"] = true;
 L["Spirit Walk"] = true;
 L["Stormstrike"] = true;
 L["Sundering"] = true;

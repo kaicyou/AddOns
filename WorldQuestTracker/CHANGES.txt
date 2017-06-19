@@ -1,13 +1,7 @@
-changeset:   141:f148f1d1aa7e
-tag:         v7.2.5.141-release
+changeset:   145:9bd2ee26a356
+tag:         v7.2.5.145-release
 user:        Tercio
-date:        Tue Jun 13 21:24:23 2017 -0300
-summary:     - 7.2.5 fix for invasion texture issue.
-
-
-changeset:   140:95d91310c2f8
-user:        Tercio
-date:        Tue Jun 13 21:23:53 2017 -0300
-summary:     - 7.2.5 fix for invasion texture issue.
+date:        Sun Jun 18 14:46:35 2017 -0300
+summary:     - Artifact power amount rounded: now showns "10M" instead of "10.0M" or "10.2M".
 
 

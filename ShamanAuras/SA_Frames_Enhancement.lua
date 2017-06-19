@@ -93,7 +93,6 @@ SmallIconGrpRight = CreateGroup("SmallIconGrpRightEnh",AuraGroup);
 
 -- Build Large Enhancement Icon Frames
 InitializeFrames("AscendanceEnh",LargeIconGrpBot,"shared\\ascendance",lgIcon);
-InitializeFrames("Boulderfist",LargeIconGrpBot,"enhancement\\boulderfist",lgIcon,lgGlow,true);
 InitializeFrames("ConcordanceEnh",LargeIconGrpExt,"shared\\concordance_legionfall.tga",lgIcon);
 InitializeFrames("CrashLightning",LargeIconGrpTop,"enhancement\\crash_lightning",lgIcon,lgGlow);
 InitializeFrames("DoomWinds",LargeIconGrpBot,"enhancement\\doom_winds",lgIcon);
@@ -102,6 +101,7 @@ InitializeFrames("FeralSpirit",LargeIconGrpBot,"enhancement\\feral_spirit",lgIco
 InitializeFrames("Flametongue",LargeIconGrpTop,"enhancement\\flametongue",lgIcon,lgGlow);
 InitializeFrames("Frostbrand",LargeIconGrpTop,"enhancement\\frostbrand",lgIcon,lgGlow);
 InitializeFrames("LavaLash",LargeIconGrpTop,"enhancement\\lava_lash",lgIcon,lgGlow);
+InitializeFrames("Rockbiter",LargeIconGrpBot,"enhancement\\rockbiter",lgIcon,lgGlow,true);
 InitializeFrames("Stormstrike",LargeIconGrpTop,"enhancement\\stormstrike",lgIcon,lgGlow,true);
 InitializeFrames("Sundering",LargeIconGrpBot,"enhancement\\sundering",lgIcon);
 InitializeFrames("UnleashDoom",LargeIconGrpExt,"enhancement\\unleash_doom",lgIcon);
@@ -312,12 +312,12 @@ SSA.AstralShiftEnh:SetScript("OnUpdate",function(self)
 	end
 end);
 
--- Boulderfist
-SSA.Boulderfist:SetScript("OnUpdate", function(self)
+-- Rockbiter
+SSA.Rockbiter:SetScript("OnUpdate", function(self)
 	if (Auras:CharacterCheck(2)) then
-		local buff,_,_,_,_,_,expires = UnitBuff('player',Auras:GetSpellName(201897));
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(201897))
-		local charges,maxCharges,chgStart,chgDuration = GetSpellCharges(201897)
+		local buff,_,_,_,_,_,expires = UnitBuff('player',Auras:GetSpellName(202004));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(193786))
+		local charges,maxCharges,chgStart,chgDuration = GetSpellCharges(193786)
 	
 		Auras:SpellRangeCheck(self,193786,true,2);
 		Auras:ToggleAuraVisibility(self,true,'showhide');
@@ -325,9 +325,9 @@ SSA.Boulderfist:SetScript("OnUpdate", function(self)
 		if (buff) then
 			local timer,seconds = Auras:parseTime((expires or 0) - GetTime(),false);
 			
-			if (seconds > Auras.db.char.triggers[2].boulderfist) then
+			if (seconds > Auras.db.char.triggers[2].rockbiter) then
 				Auras:ToggleOverlayGlow(self.glow,false);
-			elseif (seconds <= Auras.db.char.triggers[2].boulderfist and UnitAffectingCombat('player')) then
+			elseif (seconds <= Auras.db.char.triggers[2].rockbiter and UnitAffectingCombat('player')) then
 				Auras:ToggleOverlayGlow(self.glow,true);
 			end
 		end
@@ -1130,7 +1130,6 @@ _G["SSA_UtilTimerBarGrpEnh"] = UtilTimerBarGrp;
 SSA.AscendanceBarEnh = CreateFrame("StatusBar","AscendanceBarEnh",BuffTimerBarGrp);
 SSA.AstralShiftBarEnh = CreateFrame("StatusBar","AstralShiftBarEnh",BuffTimerBarGrp);
 SSA.BloodlustBarEnh = CreateFrame("StatusBar","BloodlustBarEnh",BuffTimerBarGrp);
-SSA.BoulderfistBar = CreateFrame("StatusBar","BoulderfistBar",MainTimerBarGrp);
 SSA.CrashLightningBar = CreateFrame("StatusBar","CrashLightningBar",MainTimerBarGrp);
 SSA.EarthgrabTotemBarEnh = CreateFrame("StatusBar","EarthgrabTotemBarEnh",UtilTimerBarGrp);
 SSA.EarthenSpikeBar = CreateFrame("StatusBar","EarthenSpikeBar",UtilTimerBarGrp);
@@ -1139,6 +1138,7 @@ SSA.FrostbrandBar = CreateFrame("StatusBar","FrostbrandBar",MainTimerBarGrp);
 SSA.HeroismBarEnh = CreateFrame("StatusBar","HeroismBarEnh",BuffTimerBarGrp);
 SSA.HexBarEnh = CreateFrame("StatusBar","HexBarEnh",UtilTimerBarGrp);
 SSA.LandslideBar = CreateFrame("StatusBar","LandslideBar",MainTimerBarGrp);
+--SSA.RockbiterBar = CreateFrame("StatusBar","RockbiterBar",MainTimerBarGrp);
 SSA.SpiritWalkBar = CreateFrame("StatusBar","SpiritWalkBar",BuffTimerBarGrp);
 SSA.TimeWarpBarEnh = CreateFrame("StatusBar","TimeWarpBarEnh",BuffTimerBarGrp);
 SSA.VoodooTotemBarEnh = CreateFrame("StatusBar","VoodooTotemBarEnh",UtilTimerBarGrp);
@@ -1154,11 +1154,11 @@ local buffIDs = {
 	[80353]  = SSA.TimeWarpBarEnh,
 }
 local mainIDs = {
-	[218825] = SSA.BoulderfistBar,
 	[187878] = SSA.CrashLightningBar,
 	[194084] = SSA.FlametongueBar,
 	[196834] = SSA.FrostbrandBar,
 	[202004] = SSA.LandslideBar,
+	--[218825] = SSA.RockbiterBar,
 	[201898] = SSA.WindsongBar,
 }
 local utilIDs = {

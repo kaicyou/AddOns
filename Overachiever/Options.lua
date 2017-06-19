@@ -51,8 +51,8 @@ Overachiever.DefaultSettings = {
   ToastCalendar_bonusevent = false;
   ToastCalendar_dungeonevent = false;
   ToastCalendar_pvpbrawl = false;
-  ToastCalendar_noautofade = true;
-  ToastCalendar_onlyclickfade = true;
+  ToastCalendar_noautofade = false;
+  ToastCalendar_onlyclickfade = false;
   Version = THIS_VERSION;
 };
 

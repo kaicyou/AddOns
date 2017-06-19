@@ -10,7 +10,7 @@ local _, GT_Globals = ...
 
 local translations = {
 {
-	["Ability Duration Timers"] = "지속 능력 타이머",
+	["Ability Duration Timers"] = "능력 지속 타이머",
 	["Advanced customization options"] = "사용자 정의 고급 설정",
 	["Allows you to move the group that contains the buff duration timers"] = "버프 기간 타이머가 포함 된 그룹을 이동할 수 있습니다.",
 	["Always"] = "항상",

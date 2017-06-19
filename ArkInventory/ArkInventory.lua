@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1801 $
-$Date: 2017-04-27 22:42:03 +1000 (Thu, 27 Apr 2017) $
+$Revision: 1803 $
+$Date: 2017-06-17 18:23:38 +1000 (Sat, 17 Jun 2017) $
 
 ]]--
 
@@ -8266,10 +8266,6 @@ function ArkInventory.Frame_Status_Update_Tracking( loc_id )
 		if currencyID then
 			
 			local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo( currencyID )
-			
-			if not string.find( icon, "\\" ) then
-				icon = string.format( "Interface\\Icons\\%s", icon )
-			end
 			
 			obj.currencyID = currencyID
 			

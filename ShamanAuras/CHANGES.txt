@@ -1,4 +1,19 @@
 ------------------------------------------------------------------------
+r115 | SweetsourDev | 2017-06-17 11:50:45 -0500 (Sat, 17 Jun 2017) | 3 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/SA_Init.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r50-beta
+FIX: [Enhancement] Boulderfist's aura has been replaced with a Rockbiter aura. (Thanks, Netharion & Hooper005!)
+FIX: [Enhancement] Rockbiter's glow alert time range has been adjusted to 2 - 6 seconds (from 5 - 10 seconds; when Landslide is active).
+------------------------------------------------------------------------
 r114 | SweetsourDev | 2017-06-10 12:09:04 -0500 (Sat, 10 Jun 2017) | 1 line
 Changed paths:
    D /trunk/Desktop.ini

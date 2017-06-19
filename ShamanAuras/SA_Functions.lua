@@ -1301,7 +1301,7 @@ function Auras:UpdateTalents(isTalentChange)
 		
 		rowObj = {
 			[1] = SSA.DoomWinds,
-			[2] = SSA.Boulderfist,
+			[2] = SSA.Rockbiter,
 			[3] = SSA.Windsong,
 			[4] = SSA.AscendanceEnh,
 			[5] = SSA.EarthenSpike,
@@ -1311,7 +1311,7 @@ function Auras:UpdateTalents(isTalentChange)
 		
 		rowList = {
 			[1] = Auras.db.char.aura[2].DoomWinds,
-			[2] = Auras.db.char.aura[2].Boulderfist and select(4,GetTalentInfo(1,3,1)),
+			[2] = Auras.db.char.aura[2].Rockbiter,
 			[3] = Auras.db.char.aura[2].Windsong and select(4,GetTalentInfo(1,1,1)),
 			[4] = Auras.db.char.aura[2].AscendanceEnh and select(4,GetTalentInfo(7,1,1)),
 			[5] = Auras.db.char.aura[2].EarthenSpike and select(4,GetTalentInfo(7,3,1)),

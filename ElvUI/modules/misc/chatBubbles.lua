@@ -8,13 +8,13 @@ local select, unpack, type, pairs = select, unpack, type, pairs
 local strlower, find, format = strlower, string.find, string.format
 --WoW API / Variables
 local CreateFrame = CreateFrame
-local C_ChatBubbles_GetAllChatBubbles = C_ChatBubbles and C_ChatBubbles.GetAllChatBubbles
-local IsInInstance, SetCVar, GetCVar = IsInInstance, SetCVar, GetCVar
+local C_ChatBubbles_GetAllChatBubbles = C_ChatBubbles.GetAllChatBubbles
+local IsInInstance = IsInInstance
 local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 --Global variables that we don't cache, list them here for mikk's FindGlobals script
--- GLOBALS: UIParent, WorldFrame
+-- GLOBALS: UIParent, WorldFrame, SetCVar
 
 function M:UpdateBubbleBorder()
 	if not self.text then return end
@@ -191,24 +191,25 @@ local function ChatBubble_OnUpdate(self, elapsed)
 	end
 end
 
+local userDisabledChatBubbles = not GetCVarBool("chatBubbles")
 function M:UpdateChatBubbleInstanceToggle(value)
-	if E.private.general.chatBubbles == 'disabled' then
+	if E.private.general.chatBubbles == 'disabled' or userDisabledChatBubbles then
 		M.BubbleFrame:SetScript('OnUpdate', nil)
 	else
 		if E.private.general.chatBubbleHideInInstance then
 			local _, instanceType = IsInInstance()
 			if instanceType == "none" then
 				M.BubbleFrame:SetScript('OnUpdate', ChatBubble_OnUpdate)
-				SetCVar('chatBubbles', 1)
+				SetCVar('chatBubbles', 1, nil, "ELVUI_UPDATE")
 			else
 				M.BubbleFrame:SetScript('OnUpdate', nil)
-				SetCVar('chatBubbles', 0)
+				SetCVar('chatBubbles', 0, nil, "ELVUI_UPDATE")
 			end
 		else
 			if value == false then
-				SetCVar('chatBubbles', 1)
+				SetCVar('chatBubbles', 1, nil, "ELVUI_UPDATE")
 			end
-			if GetCVar('chatBubbles') == '0' then
+			if not GetCVarBool("chatBubbles") then
 				M.BubbleFrame:SetScript('OnUpdate', nil)
 			else
 				M.BubbleFrame:SetScript('OnUpdate', ChatBubble_OnUpdate)
@@ -219,4 +220,15 @@ end
 
 function M:LoadChatBubbles()
 	self.BubbleFrame = CreateFrame('Frame')
+
+	--Keep track of whether or not the user has disabled chat bubbles completely in Interface Options
+	hooksecurefunc("SetCVar", function(cvar, value, _, event)
+		if (cvar == "chatBubbles" and ((event and event ~= "ELVUI_UPDATE") or not event)) then
+			userDisabledChatBubbles = (value == "0" and true or false)
+			if not userDisabledChatBubbles and E.private.general.chatBubbleHideInInstance then
+				E.private.general.chatBubbleHideInInstance = false
+			end
+			self:UpdateChatBubbleInstanceToggle()
+		end
+	end)
 end

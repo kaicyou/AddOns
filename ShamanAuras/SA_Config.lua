@@ -102,7 +102,7 @@ local function CheckEnhancementDefaultValues(options,group,subgroup)
 			options.args.config.args.maelstromBar.args.reset.name = "|cFF666666"..L["Reset Maelstrom Bar"].."|r"
 		end
 	elseif (group == "Triggers") then
-		if (Auras.db.char.triggers[2].OoCAlpha ~= Auras.db.char.triggers.default.OoCAlpha or Auras.db.char.triggers[2].flametongue ~= Auras.db.char.triggers.default[2].flametongue or Auras.db.char.triggers[2].frostbrand ~= Auras.db.char.triggers.default[2].frostbrand or Auras.db.char.triggers[2].boulderfist ~= Auras.db.char.triggers.default[2].boulderfist or Auras.db.char.triggers[2].OoRColor.r ~= Auras.db.char.triggers.default.OoRColor.r or Auras.db.char.triggers[2].OoRColor.g ~= Auras.db.char.triggers.default.OoRColor.g or Auras.db.char.triggers[2].OoRColor.b ~= Auras.db.char.triggers.default.OoRColor.b or Auras.db.char.triggers[2].OoRColor.a ~= Auras.db.char.triggers.default.OoRColor.a) then
+		if (Auras.db.char.triggers[2].OoCAlpha ~= Auras.db.char.triggers.default.OoCAlpha or Auras.db.char.triggers[2].flametongue ~= Auras.db.char.triggers.default[2].flametongue or Auras.db.char.triggers[2].frostbrand ~= Auras.db.char.triggers.default[2].frostbrand or Auras.db.char.triggers[2].rockbiter ~= Auras.db.char.triggers.default[2].rockbiter or Auras.db.char.triggers[2].OoRColor.r ~= Auras.db.char.triggers.default.OoRColor.r or Auras.db.char.triggers[2].OoRColor.g ~= Auras.db.char.triggers.default.OoRColor.g or Auras.db.char.triggers[2].OoRColor.b ~= Auras.db.char.triggers.default.OoRColor.b or Auras.db.char.triggers[2].OoRColor.a ~= Auras.db.char.triggers.default.OoRColor.a) then
 			options.args.config.args.triggers.args.reset.disabled = false;
 			options.args.config.args.triggers.args.reset.name = "|cFFFFCC00"..L["Reset Trigger Values"].."|r";
 		else
@@ -1855,20 +1855,8 @@ local function GetEnhancementOptions()
 										Auras:UpdateTalents()
 									end,
 								},
-								Boulderfist = {
-									order = 2,
-									type = "toggle",
-									name = L["Boulderfist"],
-									get = function()
-										return Auras.db.char.aura[2].Boulderfist;
-									end,
-									set = function(_, value)
-										Auras.db.char.aura[2].Boulderfist = value
-										Auras:UpdateTalents()
-									end,
-								},
 								Concordance = {
-									order = 3,
+									order = 2,
 									type = "toggle",
 									name = L["Concordance of the Legionfall"],
 									get = function()
@@ -1880,7 +1868,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								CrashLightning = {
-									order = 4,
+									order = 3,
 									type = "toggle",
 									name = L["Crash Lightning"],
 									get = function()
@@ -1892,7 +1880,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								DoomWinds = {
-									order = 5,
+									order = 4,
 									type = "toggle",
 									name = L["Doom Winds"],
 									get = function()
@@ -1904,7 +1892,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								EarthenSpike = {
-									order = 6,
+									order = 5,
 									type = "toggle",
 									name = L["Earthen Spike"],
 									get = function()
@@ -1916,7 +1904,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								FeralLunge = {
-									order = 7,
+									order = 6,
 									type = "toggle",
 									name = L["Feral Lunge"],
 									get = function()
@@ -1928,7 +1916,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								FeralSpirit = {
-									order = 8,
+									order = 7,
 									type = "toggle",
 									name = L["Feral Spirit"],
 									get = function()
@@ -1940,7 +1928,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								Flametongue = {
-									order = 9,
+									order = 8,
 									type = "toggle",
 									name = L["Flametongue"],
 									get = function()
@@ -1952,7 +1940,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								Frostbrand = {
-									order = 10,
+									order = 9,
 									type = "toggle",
 									name = L["Frostbrand"],
 									get = function()
@@ -1964,7 +1952,7 @@ local function GetEnhancementOptions()
 									end,
 								},
 								LavaLash = {
-									order = 11,
+									order = 10,
 									type = "toggle",
 									name = L["Lava Lash"],
 									get = function()
@@ -1972,6 +1960,18 @@ local function GetEnhancementOptions()
 									end,
 									set = function(_, value)
 										Auras.db.char.aura[2].LavaLash = value
+										Auras:UpdateTalents()
+									end,
+								},
+								Rockbiter = {
+									order = 11,
+									type = "toggle",
+									name = L["Rockbiter"],
+									get = function()
+										return Auras.db.char.aura[2].Rockbiter;
+									end,
+									set = function(_, value)
+										Auras.db.char.aura[2].Rockbiter = value
 										Auras:UpdateTalents()
 									end,
 								},
@@ -2286,7 +2286,7 @@ local function GetEnhancementOptions()
 									guiInline = true,
 									--disabled = function() return (generalSettings.theme == "Graphical") end,
 									args = {
-										BoulderfistBar = {
+										--[[BoulderfistBar = {
 											order = 1,
 											type = "toggle",
 											name = L["Boulderfist"],
@@ -2296,7 +2296,7 @@ local function GetEnhancementOptions()
 											set = function(_, value)
 												Auras.db.char.aura[2].BoulderfistBar = value
 											end,
-										},
+										},]]
 										CrashLightningBar = {
 											order = 2,
 											type = "toggle",
@@ -2553,18 +2553,18 @@ local function GetEnhancementOptions()
 										CheckEnhancementDefaultValues(enh_options,"Triggers");
 									end,
 								},
-								Boulderfist = {
+								Rockbiter = {
 									order = 4,
 									type = "range",
-									name = L["Boulderfist"],
+									name = L["Rockbiter"],
 									desc = L["The amount of seconds remaining when the \"Glow\" animation will appear"],
-									min = 5,
-									max = 10,
+									min = 2,
+									max = 6,
 									step = 1,
 									bigStep = 1,
-									get = function() return Auras.db.char.triggers[2].boulderfist end,
+									get = function() return Auras.db.char.triggers[2].rockbiter end,
 									set = function(_, value)
-										Auras.db.char.triggers[2].boulderfist = value;
+										Auras.db.char.triggers[2].rockbiter = value;
 										CheckEnhancementDefaultValues(enh_options,"Triggers");
 										--[[if (value ~= Auras.db.char.triggers.default.enh.boulderfist) then
 											enh_options.args.layout.args.triggers.args.ResetTriggers.disabled = false;
@@ -2604,7 +2604,7 @@ local function GetEnhancementOptions()
 									func = function()
 										Auras.db.char.triggers[2].flametongue = Auras.db.char.triggers.default[2].flametongue
 										Auras.db.char.triggers[2].frostbrand = Auras.db.char.triggers.default[2].frostbrand
-										Auras.db.char.triggers[2].boulderfist = Auras.db.char.triggers.default[2].boulderfist
+										Auras.db.char.triggers[2].rockbiter = Auras.db.char.triggers.default[2].rockbiter
 										Auras.db.char.triggers[2].OoCAlpha = Auras.db.char.triggers.default.OoCAlpha
 										Auras.db.char.triggers[2].OoRColor.r = Auras.db.char.triggers.default.OoRColor.r
 										Auras.db.char.triggers[2].OoRColor.g = Auras.db.char.triggers.default.OoRColor.g

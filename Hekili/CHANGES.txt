@@ -1,3 +1,16 @@
+commit 0547fa8d3190697f2c8c6f0e8bc65434a2644546
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Thu Jun 15 08:50:17 2017 -0400
+
+    Fixes.
+    
+    - prevent infinite loop in modelResources()
+    - workaround for Windstrike CD (it can end up about a hundredth of a
+    second greater than GCD, leading to two lower priority abilities woven
+    in instead of alternating Windstrikes).  Better fix is pending.
+    - prevent bug that allowed lower priority abilities to sometimes sneak
+    through.  Sneaky abilities.
+
 commit 49a852733e3150bba97ee58c08967b218987130f
 Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Wed Jun 14 00:32:23 2017 -0400
@@ -1285,21 +1298,4 @@ Date:   Fri Jan 20 20:55:58 2017 -0500
     State:  Improve basic pet mechanics.
     + Fix an error with regard to unit IDs in debuffs.
     + Remove maelstrom hook from the state table.
-
-commit e340209b759dfe64e73bc9760279b12902ddbfa3
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Thu Jan 12 22:43:19 2017 -0500
-
-    Elemental Improvements
-    
-    + Flagged abilities that don't start combat as passive.
-    + Iterated on Elemental APLs.  Combined the SimC and SEL and left the
-    result in SEL lists.  Some spells were missing from the SEL lists.
-    Should be an improvement.
-    
-    Core:  Prevent an error with setting delay text on Monk abilities that
-    are not yet ready.
-    
-    Events:  Force an early refresh on UNIT_SPELLCAST_START to help caster
-    modules (just Ele for now).
 

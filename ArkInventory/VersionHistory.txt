@@ -14,6 +14,9 @@
  
 
 
+*3.07.28 (17-JUN-2017)*
+ * fixed - display issue with backpack currency icons in status section
+
 *3.07.27 (08-MAY-2017)*
  * changed - cooldown event handling should use less cpu
  * changed - code that stores the item name (the search frame had too many items with no name)

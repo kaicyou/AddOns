@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1803 $
-$Date: 2017-06-17 18:23:38 +1000 (Sat, 17 Jun 2017) $
+$Revision: 1810 $
+$Date: 2017-06-20 18:38:53 +1000 (Tue, 20 Jun 2017) $
 
 ]]--
 
@@ -1203,10 +1203,11 @@ ArkInventory.Global = { -- globals
 	
 	Thread = {
 		WhileInCombat = true,
-		--WhileInCombat = false, -- !!! comment out when done testing
+--		WhileInCombat = false, -- !!! comment out when done testing
 		Restack = { },
 		Window = { },
 		WindowState = { },
+		Categorise = { },
 	},
 	
 	Options = {
@@ -1466,7 +1467,7 @@ ArkInventory.Const.DatabaseDefaults.global = {
 							["offset"] = nil,
 							["scale"] = 1,
 							["rarity"] = true,
-							["raritycutoff"] = 0,
+							["raritycutoff"] = LE_ITEM_QUALITY_POOR,
 						},
 						["anchor"] = ArkInventory.Const.Anchor.BottomRight,
 						["age"] = {
@@ -1672,11 +1673,20 @@ ArkInventory.Const.DatabaseDefaults.global = {
 							["*"] = nil, -- item id = category number to assign the item to
 						},
 						["active"] = {
-							["**"] = { -- category type
+							["*"] = { -- category type
 								["*"] = false, -- category id = enabled
 							},
 							[ArkInventory.Const.Category.Type.System] = {
 								["*"] = true,
+							},
+						},
+						["junk"] = {
+							["*"] = { -- category type
+								["*"] = false, -- true = autosell
+							},
+							[ArkInventory.Const.Category.Type.System] = {
+								["*"] = false,
+								[402] = true,
 							},
 						},
 					},
@@ -1928,6 +1938,9 @@ ArkInventory.Const.DatabaseDefaults.global = {
 			["limit"] = true,
 			["delete"] = false,
 			["notify"] = true,
+			["raritycutoff"] = LE_ITEM_QUALITY_POOR, -- max quality to sell/destroy
+			["list"] = true,
+			["test"] = true,
 		},
 		["font"] = {
 			["face"] = ArkInventory.Const.Font.Face,
@@ -2423,7 +2436,7 @@ function ArkInventory.OnEnable( )
 	
 	ArkInventory:RegisterEvent( "CVAR_UPDATE", "EVENT_WOW_CVAR_UPDATE" )
 	
-	ArkInventory:RegisterBucketMessage( "EVENT_ARKINV_ZONE_CHANGED_BUCKET", 1 )
+	ArkInventory:RegisterBucketMessage( "EVENT_ARKINV_ZONE_CHANGED_BUCKET", 5 )
 	ArkInventory:RegisterEvent( "ZONE_CHANGED", "EVENT_WOW_ZONE_CHANGED" )
 	ArkInventory:RegisterEvent( "ZONE_CHANGED_INDOORS", "EVENT_WOW_ZONE_CHANGED" )
 	ArkInventory:RegisterEvent( "ZONE_CHANGED_NEW_AREA", "EVENT_WOW_ZONE_CHANGED" )
@@ -2456,7 +2469,7 @@ function ArkInventory.OnEnable( )
 	
 	if not ArkInventory.Global.Thread.WhileInCombat then
 		-- should be set to true by default so if its not then i forgot to put it back
-		ArkInventory.OutputWarning( "Threads.WhileInCombat is disabled (this may be deliberate if this is a Beta version)" )
+		ArkInventory.OutputWarning( "Thread.WhileInCombat is disabled (this may be deliberate if this is a Beta version)" )
 	end
 	
 end
@@ -2899,7 +2912,7 @@ function ArkInventory.CategoryGenerate( )
 					system = nil
 					name = string.format( "[%04i] %s", k, v.name )
 					order = ( v.order or 99999 ) + ( k / 10000 )
-					sort_order = v.name --string.format( "%09.4f", order )
+					sort_order = string.lower( v.name )
 					
 				end
 				
@@ -2913,7 +2926,7 @@ function ArkInventory.CategoryGenerate( )
 					system = nil
 					name = string.format( "[%04i] %s", k, v.name )
 					order = k
-					sort_order = v.name --string.format( "[%04i]", k )
+					sort_order = string.lower( v.name )
 				
 				end
 				
@@ -2928,7 +2941,7 @@ function ArkInventory.CategoryGenerate( )
 				if type( name ) == "function" then
 					name = name( )
 				end
-				sort_order = name
+				sort_order = string.lower( name )
 				name = string.format( "[%04i] %s", k, name or system )
 				
 			end
@@ -2945,7 +2958,7 @@ function ArkInventory.CategoryGenerate( )
 					["name"] = name or string.format( "%s %04i %s", tn, k, "<no name>"  ),
 					["fullname"] = string.format( "%s > %s", ArkInventory.Localise[string.format( "CATEGORY_%s", tn )], name ),
 					["order"] = order or 0,
-					["sort_order"] = sort_order or "!",
+					["sort_order"] = string.lower( sort_order ) or "!",
 					["type_code"] = tn,
 					["type"] = ArkInventory.Localise[string.format( "CATEGORY_%s", tn )],
 				}
@@ -6851,6 +6864,17 @@ function ArkInventory.Frame_Item_Update_Stock( frame )
 					stock = info.ilvl
 				end
 				
+				-- artifact power and ancient mana
+				if info.itemtypeid == ArkInventory.Const.ItemClass.CONSUMABLE and info.itemsubtypeid == ArkInventory.Const.ItemClass.CONSUMABLE_OTHER then
+					
+					stock = ArkInventory.TooltipExtractValueArtifactPower( i.h ) or 0
+					
+					if stock == 0 then
+						stock = ArkInventory.TooltipExtractValueAncientMana( i.h ) or 0
+					end
+					
+				end
+				
 			elseif info.class == "keystone" then
 				
 				stock = info.ilvl
@@ -6860,7 +6884,21 @@ function ArkInventory.Frame_Item_Update_Stock( frame )
 			if stock > 0 then
 				
 				if stock > ( frame.maxDisplayCount or 9999 ) then
-					stock = "*"
+					
+					if stock >= 1000000000000 then
+						-- trillion
+						stock = string.format( "%.0f%s", stock / 1000000000000, FOURTH_NUMBER_CAP_NO_SPACE or "T" )
+					elseif stock >= 1000000000 then
+						-- billion
+						stock = string.format( "%.0f%s", stock / 1000000000, THIRD_NUMBER_CAP_NO_SPACE or "B" )
+					elseif stock >= 1000000 then
+						-- million
+						stock = string.format( "%.0f%s", stock / 1000000, SECOND_NUMBER_CAP_NO_SPACE )
+					elseif stock > 9999 then
+						-- thousand
+						stock = string.format( "%.0f%s", stock / 1000, FIRST_NUMBER_CAP_NO_SPACE )
+					end
+					
 				end
 				
 				obj:SetText( stock )
@@ -6968,14 +7006,14 @@ function ArkInventory.Frame_Item_Update_Border( frame )
 			-- border colour
 			local i = ArkInventory.Frame_Item_GetDB( frame )
 			
-			local r, g, b = ArkInventory.GetItemQualityColor( 0 )
+			local r, g, b = ArkInventory.GetItemQualityColor( LE_ITEM_QUALITY_POOR )
 			local a = 0.6
 			
 			if i and i.h then
 				
 				if codex.style.slot.border.rarity then
-					if ( i.q or 0 ) >= ( codex.style.slot.border.raritycutoff or 0 ) then
-						r, g, b = ArkInventory.GetItemQualityColor( i.q or 0 )
+					if ( i.q or LE_ITEM_QUALITY_POOR ) >= ( codex.style.slot.border.raritycutoff or LE_ITEM_QUALITY_POOR ) then
+						r, g, b = ArkInventory.GetItemQualityColor( i.q or LE_ITEM_QUALITY_POOR )
 						a = 1
 					end
 				end

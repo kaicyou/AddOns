@@ -14,6 +14,15 @@
  
 
 
+*3.07.29 (22-JUN-2017)*
+ * added - artifact power and ancient mana items will now display their values in the ilvl field (if item level is displayed)
+ * changed - disabled ldb update code after zoning, its not really needed and seems to be causing "script ran too long" errors while out of combat
+ * added - maximum quality option for auto sell
+ * fixed - bar and item category menus now use the same structure and colouring scheme
+ * reverted - you can click on a category name to assign it to a bar again (if its already assigned it will remove it)
+ * added - bar/item menu option to set auto sell flag for an individual category, option is per categoryset
+ * added - config option for testing auto sell mode (this is enabled by default, if you currently have auto sell enabled it will display a warning and wont sell anything until you disable this)
+
 *3.07.28 (17-JUN-2017)*
  * fixed - display issue with backpack currency icons in status section
 
@@ -37,7 +46,7 @@
  * added - keystone object class to stop error message (still needs work to integrate fully)
  
 *3.07.24 (24-MAR-2017)*
- * fixed - issue with sell junk limit option being inverted (it still has issues selling large number of items)
+ * fixed - issue with sell junk limit option being inverted (it still has issues selling large numbers of items)
  * added - option to disable showing the upgrade arrow under config > settings > styles / layouts > (id) > items > style > items (disabling shouldnt impact other mods, like pawn, that use it)
  * fixed - mount issue when reaching level 20 and not purchasing a riding skill locks out all mounts including the chauffered ones that youve been using up to level 20
  * fixed - illidari felstalker changed from flying to land mount

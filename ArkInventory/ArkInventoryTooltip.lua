@@ -1118,3 +1118,63 @@ function ArkInventory.TooltipDump( tooltip )
 		end
 	end
 end
+
+function ArkInventory.TooltipExtractValueArtifactPower( h )
+	
+	ArkInventory.TooltipSetHyperlink( ArkInventory.Global.Tooltip.Scan, h )
+	local _, _, amount, suffix = ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ARTIFACT_POWER"], false, true, true, 0, true )
+	
+	if amount then
+		
+		--ArkInventory.Output( "[", amount, "] [", suffix, "]" )
+		
+		amount = tonumber( amount )
+		
+		if amount then
+			
+			suffix = string.trim( suffix )
+			
+			if suffix == FOURTH_NUMBER then
+				-- trillion
+				amount = amount * 1000000000000
+			elseif suffix == THIRD_NUMBER then
+				-- billion
+				amount = amount * 1000000000
+			elseif suffix == SECOND_NUMBER then
+				-- million
+				amount = amount * 1000000
+			elseif suffix == FIRST_NUMBER then
+				-- thousand
+				amount = amount * 1000
+			end
+			
+			return amount
+			
+		end
+		
+	end
+	
+	return 0
+	
+end
+
+function ArkInventory.TooltipExtractValueAncientMana( h )
+	
+	ArkInventory.TooltipSetHyperlink( ArkInventory.Global.Tooltip.Scan, h )
+	local _, _, amount = ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ANCIENT_MANA"], false, true, true, 0, true )
+	
+	if amount then
+		
+		amount = tonumber( amount )
+		
+		if amount then
+			
+			return amount
+			
+		end
+		
+	end
+	
+	return 0
+	
+end

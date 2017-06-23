@@ -60,6 +60,7 @@ if not L then return end
 --	L["RESTACK_TOPUP_FROM_BAGS"] = ""
 --	L["RESTACK_TOPUP_FROM_BAGS_TEXT"] = ""
 --	L["RESTACK_FILL_FROM_BAGS_TEXT"] = ""
+--	L["RESTACK_REFRESH_WHEN_COMPLETE"] = ""
 	
 	
 --	vault tab tooltips
@@ -178,6 +179,9 @@ if not L then return end
 --	L["MENU_BAR_CATEGORY_MOVE_COMPLETE_TEXT"] = ""
 --	L["MENU_BAR_CATEGORY_ENABLE_TEXT"] = ""
 --	L["MENU_BAR_CATEGORY_DISABLE_TEXT"] = ""
+--	L["MENU_BAR_CATEGORY_STATUS"] = ""
+--	L["MENU_BAR_CATEGORY_STATUS_TEXT"] = ""
+--	L["MENU_BAR_CATEGORY_JUNK_TEXT"] = ""
 --	L["MENU_BAR_BAG_ASSIGN_TEXT"] = ""
 	L["MENU_BAR_OPTIONS"] = "Options des groupes"
 	L["MENU_BAR_RESET_TEXT"] = "Supprimer toutes les catégories assignées actuellement à ce groupe sauf la catégorie par défaut"
@@ -469,10 +473,18 @@ if not L then return end
 --	L["CONFIG_JUNK_SELL_TEXT"] = ""
 --	L["CONFIG_JUNK_SELL_NOTIFY_SOLD"] = ""
 --	L["CONFIG_JUNK_SELL_NOTIFY_DESTROYED"] = ""
+--	L["CONFIG_JUNK_SELL_NOTIFY_LIMIT"] = ""
 --	L["CONFIG_JUNK_LIMIT"] = ""
 --	L["CONFIG_JUNK_LIMIT_TEXT"] = ""
 --	L["CONFIG_JUNK_DELETE_TEXT"] = ""
 --	L["CONFIG_JUNK_NOTIFY_TEXT"] = ""
+--	L["CONFIG_JUNK_RARITY_CUTOFF_TEXT"] = ""
+--	L["CONFIG_JUNK_CATEGORY_TEXT"] = ""
+--	L["CONFIG_JUNK_LIST_TEXT"] = ""
+--	L["CONFIG_JUNK_LIST_SELL_TEXT"] = ""
+--	L["CONFIG_JUNK_LIST_DESTROY_TEXT"] = ""
+--	L["CONFIG_JUNK_TEST_TEXT"] = ""
+--	L["CONFIG_JUNK_TEST_ALERT"] = ""
 	
 	
 -- sorting
@@ -514,6 +526,8 @@ if not L then return end
 	L["CONFIG_SORTING_INCLUDE_VENDORPRICE_TEXT"] = "inclure le prix des vendeurs (par taille de pile) pour trier l'inventaire"
 --	L["CONFIG_SORTING_INCLUDE_ID"] = ""
 --	L["CONFIG_SORTING_INCLUDE_ID_TEXT"] = ""
+--	L["CONFIG_SORTING_INCLUDE_SLOTTYPE"] = ""
+--	L["CONFIG_SORTING_INCLUDE_SLOTTYPE_TEXT"] = ""
 	
 	L["CONFIG_SORTING_DIRECTION_TEXT"] = "Définir dans quel sens vous voulez trier vos objets"
 	L["CONFIG_SORTING_ORDER"] = "Ordre de tri"
@@ -725,6 +739,8 @@ if not L then return end
 --	L["LAST"] = ""
 --	L["NONE_USABLE"] = ""
 --	L["NONE_OWNED"] = ""
+--	L["TEST"] = ""
+--	L["LIST"] = ""
 	
 	
 -- libdatabroker

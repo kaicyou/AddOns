@@ -452,6 +452,17 @@ local function checktrue(...)
 	return not checknil(...)
 end
 
+function oilvl_link(link)
+	local ChatFrameEditBox = ChatEdit_ChooseBoxForSend()
+	if (not ChatFrameEditBox:IsShown()) then
+		ChatEdit_ActivateChat(ChatFrameEditBox)
+	end
+	ChatFrameEditBox:Insert(link)
+	ChatFrameEditBox:HighlightText()
+	return
+end
+
+
 local OgemFrame = CreateFrame('GameTooltip', 'OSocketTooltip', UIParent, 'GameTooltipTemplate');
 OgemFrame:SetOwner(UIParent, 'ANCHOR_NONE');
 function OItemAnalysis_CountEmptySockets(unitid, slot)
@@ -3118,6 +3129,7 @@ local function SaveAOTCCE(tt,...)
 		local _,temp2,_ = GetAchievementInfo(an[j]); 
 		for i = 1, 4 do tt[#tt+1] = temp[i] end 
 		tt[j*5] = temp2
+		tt[j*6] = GetAchievementLink(an[j])
 	end
 end
 
@@ -3317,7 +3329,7 @@ function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses)
 	SaveAOTCCE(RaidAchiv[TNname],11195,11192) 
 	SaveAOTCCE(RaidAchiv[TENname],11194,11191) 
 	SaveAOTCCE(RaidAchiv[TOVname],11581,11580)
-	SaveAOTCCE(RaidAchiv[TOSname],11874,11875)
+	SaveAOTCCE(RaidAchiv[TOSname],11790,11874,11875)
 	
 	local oilvltooltiptexts = {}
 	for i = 1, OilvlTooltip:NumLines() do
@@ -3409,32 +3421,10 @@ function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses)
 		line = otooltip2:AddLine()
 		otooltip2:SetCell(line, 1, "|cffffffff" ..orp["unitname"].."("..orp["ilvl"].." "..orp["spec"].." "..orp["class"]..") "..orp["progression"].." "..orp["raidname"].. "|r", "LEFT", 5)
 		otooltip2:SetLineScript(1, "OnMouseUp", function() 
-			StaticPopupDialogs["COPY_ORP"] = {
-				text="Press Ctrl+C to copy",
-				button1 = OKAY,
-				button2 = nil,
-				timeout = 0,
-				whileDead = 1,
-				hideOnEscape = 1,
-				whileDead = 1,
-				hasEditBox = 1,
-				preferredIndex = 3,
-				exclusive = 1,
-				maxLetters = 255,
-				editBoxWidth = 350,
-				OnShow = function (self, data)
-					self.editBox:SetText(orp["unitname"].."("..orp["ilvl"].." "..orp["spec"].." "..orp["class"]..") "..orp["progression"].." "..orp["raidname"])
-					self.editBox:HighlightText()
-					self:SetHeight(16)
-				end,
-				EditBoxOnEnterPressed = function(self, data)
-					StaticPopup_Hide ("COPY_ORP")
-				end,
-				EditBoxOnEscapePressed = function(self, data)
-					StaticPopup_Hide ("COPY_ORP")
-				end,				
-			}
-			StaticPopup_Show ("COPY_ORP")
+			oilvl_link(orp["unitname"].."("..orp["ilvl"].." "..orp["spec"].." "..orp["class"]..") "..orp["progression"].." "..orp["raidname"])		
+		end)
+		otooltip2:SetLineScript(line, "OnMouseUp", function() 
+			oilvl_link(orp["unitname"].."("..orp["ilvl"].." "..orp["spec"].." "..orp["class"]..") "..orp["progression"].." "..orp["raidname"])		
 		end)
 		otooltip2:AddSeparator();
 		line = otooltip2:AddHeader()
@@ -3547,10 +3537,13 @@ function OGetRaidProgression2(RaidName, OSTAT, NumRaidBosses)
 		end)
 		otooltip2:AddSeparator()
 		if RaidAchiv[orp["raidname"]] then
-			for i = 1, #RaidAchiv[orp["raidname"]],5 do
+			for i = 1, #RaidAchiv[orp["raidname"]],6 do
 				if RaidAchiv[orp["raidname"]][i] then
 					line = otooltip2:AddLine()
 					line = otooltip2:SetCell(line, 1, "|cFFFF8000"..RaidAchiv[orp["raidname"]][i+4].." - |cFFFFFFFF"..RaidAchiv[orp["raidname"]][i+1].."/"..RaidAchiv[orp["raidname"]][i+2].."/"..RaidAchiv[orp["raidname"]][i+3])
+					otooltip2:SetLineScript(line, "OnMouseUp", function()
+						oilvl_link(RaidAchiv[orp["raidname"]][i+5])
+					end)
 					otooltip2:AddSeparator()
 				end
 			end
@@ -3770,7 +3763,7 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses)
 	SaveAOTCCE(RaidAchiv[TNname],11195,11192) 
 	SaveAOTCCE(RaidAchiv[TENname],11194,11191) 
 	SaveAOTCCE(RaidAchiv[TOVname],11581,11580)
-	SaveAOTCCE(RaidAchiv[TOSname],11874,11875)
+	SaveAOTCCE(RaidAchiv[TOSname],11790,11874,11875)
 
 	local oilvltooltiptexts = {}
 	for i = 1, OilvlTooltip:NumLines() do
@@ -3886,32 +3879,10 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses)
 		line = otooltip2:AddLine()
 		otooltip2:SetCell(line, 1, "|cffffffff" ..orp["unitname"].."("..orp["ilvl"].." "..orp["spec"].." "..orp["class"]..") "..orp["progression"].." "..orp["raidname"].. "|r", "LEFT", 5)
 		otooltip2:SetLineScript(1, "OnMouseUp", function() 
-			StaticPopupDialogs["COPY_ORP"] = {
-				text="Press Ctrl+C to copy",
-				button1 = OKAY,
-				button2 = nil,
-				timeout = 0,
-				whileDead = 1,
-				hideOnEscape = 1,
-				whileDead = 1,
-				hasEditBox = 1,
-				preferredIndex = 3,
-				exclusive = 1,
-				maxLetters = 255,
-				editBoxWidth = 350,
-				OnShow = function (self, data)
-					self.editBox:SetText(orp["unitname"].."("..orp["ilvl"].." "..orp["spec"].." "..orp["class"]..") "..orp["progression"].." "..orp["raidname"])
-					self.editBox:HighlightText()
-					self:SetHeight(16)
-				end,
-				EditBoxOnEnterPressed = function(self, data)
-					StaticPopup_Hide ("COPY_ORP")
-				end,
-				EditBoxOnEscapePressed = function(self, data)
-					StaticPopup_Hide ("COPY_ORP")
-				end,				
-			}
-			StaticPopup_Show ("COPY_ORP")
+			oilvl_link(orp["unitname"].."("..orp["ilvl"].." "..orp["spec"].." "..orp["class"]..") "..orp["progression"].." "..orp["raidname"])
+		end)
+		otooltip2:SetLineScript(line, "OnMouseUp", function() 
+			oilvl_link(orp["unitname"].."("..orp["ilvl"].." "..orp["spec"].." "..orp["class"]..") "..orp["progression"].." "..orp["raidname"])
 		end)
 		otooltip2:AddSeparator();
 		line = otooltip2:AddHeader()
@@ -3971,11 +3942,14 @@ function OGetRaidProgression3(RaidName, OSTAT, NumRaidBosses)
 		end	
 		otooltip2:AddSeparator()
 		if RaidAchiv[orp["raidname"]] then
-			for i = 1, #RaidAchiv[orp["raidname"]],5 do
+			for i = 1, #RaidAchiv[orp["raidname"]],6 do
 				if RaidAchiv[orp["raidname"]][i] then
 					line = otooltip2:AddLine()
 					line = otooltip2:SetCell(line, 1, "|cFFFF8000"..RaidAchiv[orp["raidname"]][i+4].." - |cFFFFFFFF"..RaidAchiv[orp["raidname"]][i+1].."/"..RaidAchiv[orp["raidname"]][i+2].."/"..RaidAchiv[orp["raidname"]][i+3])
 					otooltip2:AddSeparator()
+					otooltip2:SetLineScript(line, "OnMouseUp", function()
+						oilvl_link(RaidAchiv[orp["raidname"]][i+5])
+					end)
 				end
 			end
 		end
@@ -4173,24 +4147,26 @@ end
 
 local tiergears = {HELM,SHOULDER,CHEST,HANDS,LEGS,BACK}
 local tierslots = {INVTYPE_HEAD,INVTYPE_SHOULDER,INVTYPE_CHEST,INVTYPE_HAND,INVTYPE_LEGS,INVTYPE_CLOAK}
-local function checktierID(id) if id >= 138309 and id <= 138380 then return true else return false end end
+-- The Nighthold Set = 138309 to 138380
+-- Tomb of Sargeras Set = 147121 to 147192
+local function checktierID(id) if id >= 147121 and id <= 147192 then return true else return false end end
 
 local function checkNtier(slot) 
-	if slot then if 	(slot[1] == 875 
-					or	slot[1] == 880
-					or	slot[1] == 885) 					
+	if slot then if 	(slot[1] == 900
+					or	slot[1] == 905
+					or	slot[1] == 910) 					
 	and checktierID(slot[8]) then return true else return false end end 
 end
 local function checkHtier(slot) 
-	if slot then if 	(slot[1] == 890 
-					or	slot[1] == 895
-					or	slot[1] == 900)
+	if slot then if 	(slot[1] == 915
+					or	slot[1] == 920
+					or	slot[1] == 925)
 	and checktierID(slot[8]) then return true else return false end end 
 end
 local function checkMtier(slot) 
-	if slot then if 	(slot[1] == 905
-					or	slot[1] == 910
-					or	slot[1] == 915)
+	if slot then if 	(slot[1] == 930
+					or	slot[1] == 935
+					or	slot[1] == 940)
 	and checktierID(slot[8]) then return true else return false end end 
 end
 
@@ -5597,7 +5573,9 @@ function events:PLAYER_ENTERING_WORLD(...)
 		rpunit="";
 		Omover2 = 0;
 		hooksecurefunc("OpenAllBags",oilvlShowBagItemLevel)
-		hooksecurefunc("ToggleAllBags",oilvlShowBagItemLevel)	
+		hooksecurefunc("ToggleAllBags",oilvlShowBagItemLevel)
+		hooksecurefunc("ToggleBag",oilvlShowBagItemLevel)
+		hooksecurefunc("OpenBag",oilvlShowBagItemLevel)
 	end
 end
 

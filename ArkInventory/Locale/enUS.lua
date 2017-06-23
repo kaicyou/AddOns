@@ -138,7 +138,7 @@ if not L then return end
 	L["MENU_ITEM_DEFAULT_RESET_TEXT"] = "click to reset the category for this item back to it's default value (does not reset rules)"
 	L["MENU_ITEM_ASSIGN_CHOICES"] = "Assignable Categories"
 	L["MENU_ITEM_ASSIGN_THIS"] = "Assign Category"
-	L["MENU_ITEM_ASSIGN_THIS_TEXT"] = "assign %1$s to %2$s"
+	L["MENU_ITEM_ASSIGN_THIS_TEXT"] = "click here to assign %1$s to %2$s"
 	L["MENU_ITEM_RULE_NEW"] = "Create a new rule"
 	L["MENU_ITEM_RULE_ADD"] = "Add item to rule"
 	L["MENU_ITEM_CUSTOM_NEW"] = "Create a new custom category"
@@ -179,6 +179,9 @@ if not L then return end
 	L["MENU_BAR_CATEGORY_MOVE_COMPLETE_TEXT"] = "Finalises moving %1$s from bar %2$s to here (bar %3$s)"
 	L["MENU_BAR_CATEGORY_ENABLE_TEXT"] = "Enables this rule so it can be used by this layout"
 	L["MENU_BAR_CATEGORY_DISABLE_TEXT"] = "Disables this rule so it is no longer used by this layout"
+	L["MENU_BAR_CATEGORY_STATUS"] = "Sets whether %s will be used or not."
+	L["MENU_BAR_CATEGORY_STATUS_TEXT"] = "%s\n\nclick to %s it."
+	L["MENU_BAR_CATEGORY_JUNK_TEXT"] = "%s\n\nclick to %s it."
 	L["MENU_BAR_BAG_ASSIGN_TEXT"] = "assign all slots from Bag %1$s to bar %2$s"
 	L["MENU_BAR_OPTIONS"] = "Bar Options"
 	L["MENU_BAR_RESET_TEXT"] = "Resets bar %1$s back to default.\n\nRemoves all assigned categories (except the default category)"
@@ -434,7 +437,7 @@ if not L then return end
 	L["CONFIG_DESIGN_ITEM_BORDER_RARITY"] = "Rarity coloured border"
 	L["CONFIG_DESIGN_ITEM_BORDER_RARITY_TEXT"] = "colour the border around each item slot to match it's rarity (Common, Rare, Epic, etc)"
 	L["CONFIG_DESIGN_ITEM_BORDER_RARITY_CUTOFF"] = "Rarity Cutoff"
-	L["CONFIG_DESIGN_ITEM_BORDER_RARITY_CUTOFF_TEXT"] = "only colour the item border if the item rarity is equal to or above %s"
+	L["CONFIG_DESIGN_ITEM_BORDER_RARITY_CUTOFF_TEXT"] = "only colour the item border if the item rarity is equal to or above: %s%s|r"
 	L["CONFIG_DESIGN_ITEM_BORDER_TEXTURE_OFFSET_TEXT"] = "the number pixels from the outside of the image to the inside edge of the border itself (used to realign the border to the item texture)"
 	
 	L["CONFIG_DESIGN_ITEM_NEW"] = "New Items"
@@ -467,13 +470,21 @@ if not L then return end
 -- junk
 	L["CONFIG_JUNK"] = "Junk Items"
 	L["CONFIG_JUNK_SELL"] = "Auto Sell"
-	L["CONFIG_JUNK_SELL_TEXT"] = "Sell all junk as soon as you open a merchant window"
-	L["CONFIG_JUNK_SELL_NOTIFY_SOLD"] = "Sold your junk for %s"
-	L["CONFIG_JUNK_SELL_NOTIFY_DESTROYED"] = "Destroyed %s junk items"
+	L["CONFIG_JUNK_SELL_TEXT"] = "Sell all junk items as soon as you open a merchant window"
+	L["CONFIG_JUNK_SELL_NOTIFY_SOLD"] = "Sold your junk items for %s."
+	L["CONFIG_JUNK_SELL_NOTIFY_DESTROYED"] = "Destroyed %s junk items."
+	L["CONFIG_JUNK_SELL_NOTIFY_LIMIT"] = "Aborting auto sell due to buyback limit (%s) being reached."
 	L["CONFIG_JUNK_LIMIT"] = "Limit to Buyback"
 	L["CONFIG_JUNK_LIMIT_TEXT"] = "As a safety precaution stop selling your junk when the buyback limit (%i) is reached"
-	L["CONFIG_JUNK_DELETE_TEXT"] = "Delete junk that cannot be vendored (has no sell price)"
-	L["CONFIG_JUNK_NOTIFY_TEXT"] = "Display a notification about how much gold you sold your junk for"
+	L["CONFIG_JUNK_DELETE_TEXT"] = "Delete items that cannot be vendored (have no sell price)"
+	L["CONFIG_JUNK_NOTIFY_TEXT"] = "Display a notification about how much gold you sold your items for"
+	L["CONFIG_JUNK_RARITY_CUTOFF_TEXT"] = "Only sell/destroy an item if its rarity is at or below: %s%s|r"
+	L["CONFIG_JUNK_CATEGORY_TEXT"] = "Auto sells/destroys all items assigned to %s when you talk to a vendor"
+	L["CONFIG_JUNK_LIST_TEXT"] = "Display a notification for each item that is sold or destroyed."
+	L["CONFIG_JUNK_LIST_SELL_TEXT"] = "Selling: %s x %s for %s"
+	L["CONFIG_JUNK_LIST_DESTROY_TEXT"] = "Destroying: %s x %s"
+	L["CONFIG_JUNK_TEST_TEXT"] = "When this option is enabled no items are actually sold or destroyed.\n\nUse with the List option to see what would normally get sold or destroyed."
+	L["CONFIG_JUNK_TEST_ALERT"] = "Test mode is enabled in your config, no items were actually sold or destroyed."
 	
 	
 -- sorting
@@ -724,6 +735,8 @@ if not L then return end
 	L["LAST"] = "Last"
 	L["NONE_USABLE"] = "No usable %1$s"
 	L["NONE_OWNED"] = "No don't own any %1$s"
+	L["TEST"] = "Test"
+	L["LIST"] = "List"
 	
 	
 -- libdatabroker

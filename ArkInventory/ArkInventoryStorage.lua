@@ -1154,7 +1154,7 @@ function ArkInventory:EVENT_WOW_CVAR_UPDATE( event, cvar, value )
 end
 
 function ArkInventory:EVENT_ARKINV_ZONE_CHANGED_BUCKET( )
-	ArkInventory.LDB.Mounts:Update( )
+	--ArkInventory.LDB.Mounts:Update( )
 	--ArkInventory.ScanCollectionMount( )
 end
 
@@ -1460,7 +1460,7 @@ function ArkInventory.ScanBag( blizzard_id )
 	local texture = nil
 	local status = ArkInventory.Const.Bag.Status.Unknown
 	local h = nil
-	local rarity = 0
+	local rarity = LE_ITEM_QUALITY_POOR
 	
 	if loc_id == ArkInventory.Const.Location.Bag then
 		
@@ -1668,7 +1668,7 @@ function ArkInventory.ScanBag( blizzard_id )
 			
 			empty_slot = true
 			
-			rarity = 0
+			rarity = LE_ITEM_QUALITY_POOR
 			
 			count = 1
 			bag.empty = bag.empty + 1

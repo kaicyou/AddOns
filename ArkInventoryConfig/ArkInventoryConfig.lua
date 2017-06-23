@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1796 $
-$Date: 2017-04-16 00:00:19 +1000 (Sun, 16 Apr 2017) $
+$Revision: 1809 $
+$Date: 2017-06-20 18:38:44 +1000 (Tue, 20 Jun 2017) $
 
 ]]--
 
@@ -1353,8 +1353,50 @@ function ArkInventory.ConfigInternal( )
 								ArkInventory.db.option.junk.sell = not ArkInventory.db.option.junk.sell
 							end,
 						},
-						limit = {
+						test = {
 							order = 200,
+							name = ArkInventory.Localise["TEST"],
+							desc = ArkInventory.Localise["CONFIG_JUNK_TEST_TEXT"],
+							type = "toggle",
+							width = "half",
+							disabled = function( info )
+								return not ArkInventory.db.option.junk.sell
+							end,
+							get = function( info )
+								return ArkInventory.db.option.junk.test
+							end,
+							set = function( info, v )
+								ArkInventory.db.option.junk.test = not ArkInventory.db.option.junk.test
+							end,
+						},
+						raritycutoff = {
+							order = 300,
+							name = ArkInventory.Localise["CONFIG_DESIGN_ITEM_BORDER_RARITY_CUTOFF"],
+							desc = function( info )
+								return string.format( ArkInventory.Localise["CONFIG_JUNK_RARITY_CUTOFF_TEXT"], ( select( 5, ArkInventory.GetItemQualityColor( ArkInventory.db.option.junk.raritycutoff ) ) ), _G[string.format( "ITEM_QUALITY%d_DESC", ArkInventory.db.option.junk.raritycutoff or LE_ITEM_QUALITY_POOR )] )
+							end,
+							type = "select",
+							disabled = function( info )
+								return not ArkInventory.db.option.junk.sell
+							end,
+							values = function( )
+								local t = { }
+								for z in pairs( ITEM_QUALITY_COLORS ) do
+									if z >= LE_ITEM_QUALITY_POOR then
+										t[tostring( z )] = _G[string.format( "ITEM_QUALITY%d_DESC", z )]
+									end
+								end
+								return t
+							end,
+							get = function( info )
+								return tostring( ArkInventory.db.option.junk.raritycutoff or LE_ITEM_QUALITY_POOR )
+							end,
+							set = function( info, v )
+								ArkInventory.db.option.junk.raritycutoff = tonumber( v )
+							end,
+						},
+						limit = {
+							order = 400,
 							name = ArkInventory.Localise["CONFIG_JUNK_LIMIT"],
 							desc = string.format( ArkInventory.Localise["CONFIG_JUNK_LIMIT_TEXT"], BUYBACK_ITEMS_PER_PAGE ),
 							type = "toggle",
@@ -1369,7 +1411,7 @@ function ArkInventory.ConfigInternal( )
 							end,
 						},
 						delete = {
-							order = 300,
+							order = 500,
 							name = ArkInventory.Localise["DELETE"],
 							desc = ArkInventory.Localise["CONFIG_JUNK_DELETE_TEXT"],
 							type = "toggle",
@@ -1385,7 +1427,7 @@ function ArkInventory.ConfigInternal( )
 							end,
 						},
 						notify = {
-							order = 400,
+							order = 600,
 							name = ArkInventory.Localise["NOTIFY"],
 							desc = ArkInventory.Localise["CONFIG_JUNK_NOTIFY_TEXT"],
 							type = "toggle",
@@ -1398,6 +1440,22 @@ function ArkInventory.ConfigInternal( )
 							end,
 							set = function( info, v )
 								ArkInventory.db.option.junk.notify = not ArkInventory.db.option.junk.notify
+							end,
+						},
+						list = {
+							order = 700,
+							name = ArkInventory.Localise["LIST"],
+							desc = ArkInventory.Localise["CONFIG_JUNK_LIST_TEXT"],
+							type = "toggle",
+							width = "half",
+							disabled = function( info )
+								return not ArkInventory.db.option.junk.sell
+							end,
+							get = function( info )
+								return ArkInventory.db.option.junk.list
+							end,
+							set = function( info, v )
+								ArkInventory.db.option.junk.list = not ArkInventory.db.option.junk.list
 							end,
 						},
 					},
@@ -5641,7 +5699,7 @@ function ArkInventory.ConfigInternalDesignData( path )
 									desc = function( info )
 										local id = ConfigGetNodeArg( info, #info - 4 )
 										local style = ArkInventory.ConfigInternalDesignGet( id )
-										return string.format( ArkInventory.Localise["CONFIG_DESIGN_ITEM_BORDER_RARITY_CUTOFF_TEXT"], _G[string.format( "ITEM_QUALITY%d_DESC", style.slot.border.raritycutoff or 0 )] )
+										return string.format( ArkInventory.Localise["CONFIG_DESIGN_ITEM_BORDER_RARITY_CUTOFF_TEXT"], ( select( 5, ArkInventory.GetItemQualityColor( style.slot.border.raritycutoff ) ) ), _G[string.format( "ITEM_QUALITY%d_DESC", style.slot.border.raritycutoff or LE_ITEM_QUALITY_POOR )] )
 									end,
 									type = "select",
 									disabled = function( info )
@@ -5652,7 +5710,7 @@ function ArkInventory.ConfigInternalDesignData( path )
 									values = function( )
 										local t = { }
 										for z in pairs( ITEM_QUALITY_COLORS ) do
-											if z >= 0 then
+											if z >= LE_ITEM_QUALITY_POOR then
 												t[tostring( z )] = _G[string.format( "ITEM_QUALITY%d_DESC", z )]
 											end
 										end
@@ -5661,7 +5719,7 @@ function ArkInventory.ConfigInternalDesignData( path )
 									get = function( info )
 										local id = ConfigGetNodeArg( info, #info - 4 )
 										local style = ArkInventory.ConfigInternalDesignGet( id )
-										return tostring( style.slot.border.raritycutoff or 0 )
+										return tostring( style.slot.border.raritycutoff or LE_ITEM_QUALITY_POOR )
 									end,
 									set = function( info, v )
 										local id = ConfigGetNodeArg( info, #info - 4 )

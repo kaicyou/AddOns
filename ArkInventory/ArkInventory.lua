@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1810 $
-$Date: 2017-06-20 18:38:53 +1000 (Tue, 20 Jun 2017) $
+$Revision: 1814 $
+$Date: 2017-06-25 03:07:52 +1000 (Sun, 25 Jun 2017) $
 
 ]]--
 
@@ -2556,8 +2556,8 @@ end
 
 function ArkInventory.StripColourCodes( txt )
 	local txt = txt or ""
-	txt = gsub( txt, "|c%x%x%x%x%x%x%x%x", "" )
-	txt = gsub( txt, "|r", "" )
+	txt = string.gsub( txt, "|c%x%x%x%x%x%x%x%x", "" )
+	txt = string.gsub( txt, "|r", "" )
 	return txt
 end
 
@@ -3357,15 +3357,15 @@ function ArkInventory.ItemCategoryGetDefaultActual( i )
 --[[
 			if info.id == 141710 then
 				local line = ArkInventory.TooltipGetLine( ArkInventory.Global.Tooltip.Scan, 2 )
-				ArkInventory.Output( gsub( line, "\124", "\124\124" ) )
+				ArkInventory.Output( string.gsub( line, "\124", "\124\124" ) )
 			end
 ]]--
 			
-			if ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ARTIFACT_POWER"], false, true, true, 4, true ) then
+			if ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ARTIFACT_POWER"], false, true, false, 0, true ) then
 				return ArkInventory.CategoryGetSystemID( "CONSUMABLE_ARTIFACT_POWER" )
 			end
 			
-			if ArkInventory.TooltipContains( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ANCIENT_MANA"], false, true, true, true ) then
+			if ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_ANCIENT_MANA"], false, true, false, 0, true ) then
 				return ArkInventory.CategoryGetSystemID( "SYSTEM_TOKEN" )
 			end
 			
@@ -6886,18 +6886,20 @@ function ArkInventory.Frame_Item_Update_Stock( frame )
 				if stock > ( frame.maxDisplayCount or 9999 ) then
 					
 					if stock >= 1000000000000 then
-						-- trillion
-						stock = string.format( "%.0f%s", stock / 1000000000000, FOURTH_NUMBER_CAP_NO_SPACE or "T" )
+						stock = string.format( "%.0f%s", stock / 1000000000000, ArkInventory.Localise["WOW_ITEM_TOOLTIP_10P12S"] )
 					elseif stock >= 1000000000 then
-						-- billion
-						stock = string.format( "%.0f%s", stock / 1000000000, THIRD_NUMBER_CAP_NO_SPACE or "B" )
+						stock = string.format( "%.0f%s", stock / 1000000000, ArkInventory.Localise["WOW_ITEM_TOOLTIP_10P9S"] )
 					elseif stock >= 1000000 then
-						-- million
-						stock = string.format( "%.0f%s", stock / 1000000, SECOND_NUMBER_CAP_NO_SPACE )
+						stock = string.format( "%.0f%s", stock / 1000000, ArkInventory.Localise["WOW_ITEM_TOOLTIP_10P6S"] )
 					elseif stock > 9999 then
-						-- thousand
-						stock = string.format( "%.0f%s", stock / 1000, FIRST_NUMBER_CAP_NO_SPACE )
+						stock = string.format( "%.0f%s", stock / 1000, ArkInventory.Localise["WOW_ITEM_TOOLTIP_10P3S"] )
+					else
+						stock = string.format( "%.0f", stock )
 					end
+					
+				else
+					
+					stock = string.format( "%.0f", stock )
 					
 				end
 				

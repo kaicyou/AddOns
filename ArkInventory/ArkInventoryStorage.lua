@@ -2527,7 +2527,7 @@ function ArkInventory.ScanCollectionPet( )
 		local i = bag.slot[slot_id]
 		
 		local h = object.link
-		--ArkInventory.Output( gsub( h, "|", "*" ) )
+		--ArkInventory.Output( string.gsub( h, "|", "*" ) )
 		
 		local level = object.level or 1
 		
@@ -3608,9 +3608,9 @@ function ArkInventory.ObjectInfoArray( h, i )
 		info.ilvl = info.info[4] or info.ilvl
 		
 --		if info.id == 128872 then
---			ArkInventory.Output( "[ ", gsub( gsub( info.info[2], "\124", " " ), ":", " : " ), " ]" )
---			ArkInventory.Output( "[ ", gsub( gsub( info.osd.h, "\124", " " ), ":", " : " ), " ]" )
---			ArkInventory.Output( "[ ", gsub( gsub( info.h, "\124", " " ), ":", " : " ), " ]" )
+--			ArkInventory.Output( "[ ", string.gsub( string.gsub( info.info[2], "\124", " " ), ":", " : " ), " ]" )
+--			ArkInventory.Output( "[ ", string.gsub( string.gsub( info.osd.h, "\124", " " ), ":", " : " ), " ]" )
+--			ArkInventory.Output( "[ ", string.gsub( string.gsub( info.h, "\124", " " ), ":", " : " ), " ]" )
 --		end
 		
 		info.uselevel = info.info[5] or info.uselevel
@@ -3655,7 +3655,7 @@ function ArkInventory.ObjectInfoArray( h, i )
 		
 	elseif info.class == "keystone" then
 		
-		--ArkInventory.Output( "[ ", gsub( gsub( info.osd.h, "\124", " " ), ":", " : " ), " ]" )
+		--ArkInventory.Output( "[ ", string.gsub( string.gsub( info.osd.h, "\124", " " ), ":", " : " ), " ]" )
 		
 		info.info = { GetItemInfo( h ) }
 		--ArkInventory.Output( h )

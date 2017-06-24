@@ -5396,10 +5396,10 @@ function events:INSPECT_ACHIEVEMENT_READY(...)
 		if cfg.oilvlms then
 			if Omover2 == 1 then
 				if UnitExists(rpunit) and CheckInteractDistance(rpunit, 1) and rpsw then
-					if cfg.oilvlten then OGetRaidProgression2(TENname, OSTATTEN, 7); end
-					if cfg.oilvltn then OGetRaidProgression2(TNname, OSTATTN, 10); end
-					if cfg.oilvltov then OGetRaidProgression2(TOVname, OSTATTOV, 3); end
-					if cfg.oilvltos then OGetRaidProgression2(TOSname, OSTATTOS, 9); end
+					if cfg.raidmenuid == 4 then OGetRaidProgression2(TENname, OSTATTEN, 7); end
+					if cfg.raidmenuid == 2 then OGetRaidProgression2(TNname, OSTATTN, 10); end
+					if cfg.raidmenuid == 3 then OGetRaidProgression2(TOVname, OSTATTOV, 3); end
+					if cfg.raidmenuid == 1 then OGetRaidProgression2(TOSname, OSTATTOS, 9); end
 				else
 					ClearAchievementComparisonUnit();
 					rpsw=false;
@@ -5408,10 +5408,10 @@ function events:INSPECT_ACHIEVEMENT_READY(...)
 				end
 			elseif Omover2 == 2 then
 				if UnitExists(rpunit) and CheckInteractDistance(rpunit, 1) and rpsw then
-					if cfg.oilvlten then OGetRaidProgression3(TENname, OSTATTEN, 7); end
-					if cfg.oilvltn then OGetRaidProgression3(TNname, OSTATTN, 10); end
-					if cfg.oilvltov then OGetRaidProgression3(TOVname, OSTATTOV, 3); end
-					if cfg.oilvltos then OGetRaidProgression3(TOSname, OSTATTOS, 9); end
+					if cfg.raidmenuid  == 4 then OGetRaidProgression3(TENname, OSTATTEN, 7); end
+					if cfg.raidmenuid  == 2 then OGetRaidProgression3(TNname, OSTATTN, 10); end
+					if cfg.raidmenuid  == 3 then OGetRaidProgression3(TOVname, OSTATTOV, 3); end
+					if cfg.raidmenuid  == 1 then OGetRaidProgression3(TOSname, OSTATTOS, 9); end
 				else
 					ClearAchievementComparisonUnit();
 					rpsw=false;
@@ -5420,10 +5420,10 @@ function events:INSPECT_ACHIEVEMENT_READY(...)
 				end
 			else
 				if UnitExists("target") and CheckInteractDistance("target", 1)  and rpsw then
-					if cfg.oilvlten then OGetRaidProgression(TENname, OSTATTEN, 7); end
-					if cfg.oilvltn then OGetRaidProgression(TNname, OSTATTN, 10); end
-					if cfg.oilvltov then OGetRaidProgression(TOVname, OSTATTOV, 3); end
-					if cfg.oilvltos then OGetRaidProgression(TOSname, OSTATTOS, 9); end
+					if cfg.raidmenuid  == 4 then OGetRaidProgression(TENname, OSTATTEN, 7); end
+					if cfg.raidmenuid  == 2 then OGetRaidProgression(TNname, OSTATTN, 10); end
+					if cfg.raidmenuid  == 3 then OGetRaidProgression(TOVname, OSTATTOV, 3); end
+					if cfg.raidmenuid  == 1 then OGetRaidProgression(TOSname, OSTATTOS, 9); end
 				else
 					ClearAchievementComparisonUnit();
 					rpsw=false;
@@ -5479,10 +5479,7 @@ function events:PLAYER_LOGIN(...)
 	if cfg.oilvlframeY == nil then cfg.oilvlframeY = -60; end
 	if cfg.oilvlscale  == nil then cfg.oilvlscale = 0.8; end
 	if cfg.oilvlalpha  == nil then cfg.oilvlalpha = 1; end
-	if cfg.oilvlten == nil then cfg.oilvlten = false; end
-	if cfg.oilvltn == nil then cfg.oilvltn = false; end
-	if cfg.oilvltov == nil then cfg.oilvltov = false; end
-	if cfg.oilvltos == nil then cfg.oilvltos = true; end
+	if cfg.raidmenuid  == nil then cfg.raidmenuid = 1; end
 	if cfg.oilvlms == nil then cfg.oilvlms = true; end
 	if cfg.oilvlme == nil then cfg.oilvlme = true; end
 	if cfg.oilvlme2 == nil then cfg.oilvlme2 = false; end
@@ -5768,6 +5765,45 @@ function OMouseover()
 	end
 end
 
+function OilvlRaidMenu()
+	if not ORaidDropDownMenu then
+	   CreateFrame("Button", "ORaidDropDownMenu", cfg.frame, "UIDropDownMenuTemplate")
+	end
+	 
+	ORaidDropDownMenu:ClearAllPoints()
+	ORaidDropDownMenu:SetPoint("TOPLEFT", cfg.frame, "TOPLEFT", 16+25, -230)
+	ORaidDropDownMenu:Show()
+	 
+	local items = {
+	   TOSname,
+	   TNname,
+	   TOVname,
+	   TENname,
+	}
+	 
+	local function OnClick(self)
+	   UIDropDownMenu_SetSelectedID(ORaidDropDownMenu, self:GetID())
+	   cfg.raidmenuid = self:GetID()
+	end
+	 
+	local function initialize(self, level)
+	   local info = UIDropDownMenu_CreateInfo()
+	   for k,v in pairs(items) do
+		  info = UIDropDownMenu_CreateInfo()
+		  info.text = v
+		  info.value = v
+		  info.func = OnClick
+		  UIDropDownMenu_AddButton(info, level)
+	   end
+	end
+	
+	UIDropDownMenu_Initialize(ORaidDropDownMenu, initialize)
+	UIDropDownMenu_SetWidth(ORaidDropDownMenu, 150);
+	UIDropDownMenu_SetButtonWidth(ORaidDropDownMenu, 124)
+	UIDropDownMenu_SetSelectedID(ORaidDropDownMenu, cfg.raidmenuid)
+	UIDropDownMenu_JustifyText(ORaidDropDownMenu, "LEFT")
+end
+
 function OilvlConfigFrame()
 	cfg.frame = CreateFrame("Frame", "OiLvLConfig",InterfaceOptionsFramePanelContainer)
 	cfg.frame.name = "O Item Level (OiLvL)"
@@ -5871,96 +5907,8 @@ function OilvlConfigFrame()
 	end);
 	if cfg.oilvlms then mscb:SetChecked(true) end
 	
-	-- TEN check button
-	local tencb = createCheckbutton(cfg.frame, 16+25, -200, "oicbten"," "..TENname);
-	tencb:SetSize(30,30);
-	tencb:SetScript("PostClick", function() 
-		cfg.oilvlten = oicbten:GetChecked() 
-		if cfg.oilvlten then 
-			oicbtn:SetChecked(false) 
-			cfg.oilvltn = false; 
-			oicbtov:SetChecked(false) 
-			cfg.oilvltov = false; 
-			oicbtos:SetChecked(false) 
-			cfg.oilvltos = false; 
-		end
-		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
-		ClearAchievementComparisonUnit();
-		rpsw=false;
-		rpunit="";
-		Omover=0
-		Omover2 = 0;		
-	end);
-	if cfg.oilvlten then tencb:SetChecked(true) cfg.oilvltn = false; cfg.oilvltov = false; cfg.oilvltos = false; end
-
-	-- TN check button 
-	local tncb = createCheckbutton(cfg.frame, 16+25, -230, "oicbtn", " "..TNname);
-	tncb:SetSize(30,30);
-	tncb:SetScript("PostClick", function() 
-		cfg.oilvltn = oicbtn:GetChecked() 
-		if cfg.oilvltn then 
-			oicbten:SetChecked(false) 
-			cfg.oilvlten = false; 
-			oicbtov:SetChecked(false) 
-			cfg.oilvltov = false; 
-			oicbtos:SetChecked(false) 
-			cfg.oilvltos = false; 
-		end 
-		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
-		ClearAchievementComparisonUnit();
-		rpsw=false;
-		rpunit="";
-		Omover=0
-		Omover2 = 0;		
-	end);	
-	if cfg.oilvltn then tncb:SetChecked(true) cfg.oilvlten = false; cfg.oilvltov = false; cfg.oilvltos = false; end
-
-	-- Trial of Valor check button 
-	local tovcb = createCheckbutton(cfg.frame, 16+25+200, -200, "oicbtov", " "..TOVname);
-	tovcb:SetSize(30,30);
-	tovcb:SetScript("PostClick", function() 
-		cfg.oilvltov = oicbtov:GetChecked() 
-		if cfg.oilvltov then 
-			oicbten:SetChecked(false) 
-			cfg.oilvlten = false; 
-			oicbtn:SetChecked(false) 
-			cfg.oilvltn = false; 
-			oicbtos:SetChecked(false) 
-			cfg.oilvltos = false; 
-		end 
-		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
-		ClearAchievementComparisonUnit();
-		rpsw=false;
-		rpunit="";
-		Omover=0
-		Omover2 = 0;		
-	end);	
-	if cfg.oilvltov then tovcb:SetChecked(true) cfg.oilvlten = false; cfg.oilvltn = false; cfg.oilvltos = false; end
-
-	-- Tomb of Sargeras check button
-	local toscb = createCheckbutton(cfg.frame, 16+25+200, -230, "oicbtos", " "..TOSname);
-	toscb:SetSize(30,30);
-	toscb:SetScript("PostClick", function() 
-		cfg.oilvltos = oicbtos:GetChecked() 
-		if cfg.oilvltos then 
-			oicbten:SetChecked(false) 
-			cfg.oilvlten = false; 
-			oicbtn:SetChecked(false) 
-			cfg.oilvltn = false; 
-			oicbtov:SetChecked(false) 
-			cfg.oilvltov = false; 
-		end 
-		OILVL:UnregisterEvent("INSPECT_ACHIEVEMENT_READY");
-		ClearAchievementComparisonUnit();
-		rpsw=false;
-		rpunit="";
-		Omover=0
-		Omover2 = 0;		
-	end);	
-	if cfg.oilvltos then toscb:SetChecked(true) cfg.oilvlten = false; cfg.oilvltn = false; cfg.oilvltov = false; end
-	
 	-- Raid Progression Details 
-	local rpdcb = createCheckbutton(cfg.frame, 16+25, -260, "oilvlsrpd", " "..L["Enable Showing Raid Progression Details on tooltips"]);
+	local rpdcb = createCheckbutton(cfg.frame, 16+25, -200, "oilvlsrpd", " "..L["Enable Showing Raid Progression Details on tooltips"]);
 	rpdcb:SetSize(30,30);
 	rpdcb:SetScript("PostClick", function() 
 		cfg.oilvlrpdetails = oilvlsrpd:GetChecked() 
@@ -5973,22 +5921,10 @@ function OilvlConfigFrame()
 	end);
 	if cfg.oilvlrpdetails then rpdcb:SetChecked(true) end
 
-	if oilvlsilvl:GetChecked() then
-		oicbten:Enable();
-		oicbtn:Enable();
-		oilvlsrpd:Enable();
-		oicbtos:Enable();
-		oicbtov:Enable();
-	else
-		oicbten:Disable();
-		oicbtn:Disable();
-		oilvlsrpd:Disable();
-		oicbtos:Disable();
-		oicbtov:Disable();
-	end
-
+	OilvlRaidMenu()	
+	
 	-- miss enchant option
-	local eercb = createCheckbutton(cfg.frame, 16, -290, "oilvleer"," "..L["Enable Sending Enchantment Reminder"]);
+	local eercb = createCheckbutton(cfg.frame, 16, -260, "oilvleer"," "..L["Enable Sending Enchantment Reminder"]);
 	eercb:SetSize(30,30);
 	eercb:SetScript("PostClick", function() 
 		cfg.oilvlme = oilvleer:GetChecked() 
@@ -5998,13 +5934,13 @@ function OilvlConfigFrame()
 	eercb:SetChecked(cfg.oilvlme);
 
 	-- character frame item level option
-	local cfilvlcb = createCheckbutton(cfg.frame, 16, -350, "oilvlcfilvl"," "..L["Enable Showing Gear Item Level on Character Frame"]);
+	local cfilvlcb = createCheckbutton(cfg.frame, 16, -320, "oilvlcfilvl"," "..L["Enable Showing Gear Item Level on Character Frame"]);
 	cfilvlcb:SetSize(30,30);
 	cfilvlcb:SetScript("PostClick", function() cfg.oilvlcharilvl = oilvlcfilvl:GetChecked() OiLvlPlayer_Update() end);
 	if cfg.oilvlcharilvl then cfilvlcb:SetChecked(true) end	
 
 	-- best enchant option 
-	local eercb2 = createCheckbutton(cfg.frame, 16+25, -320, "oilvlbestenchant", " "..BEST.." "..ENSCRIBE);
+	local eercb2 = createCheckbutton(cfg.frame, 16+25, -290, "oilvlbestenchant", " "..BEST.." "..ENSCRIBE);
 	eercb2:SetSize(30,30);
 	eercb2:SetScript("PostClick", function()
 		cfg.oilvlme2 = oilvlbestenchant:GetChecked() 
@@ -6019,7 +5955,7 @@ function OilvlConfigFrame()
 	if oilvleer:GetChecked() then oilvlbestenchant:Enable(); else oilvlbestenchant:Disable(); end
 	
 	-- minimap icon option 
-	local micon = createCheckbutton(cfg.frame, 16, -410, "oilvlshowminimap", L["Show minimap button"]);
+	local micon = createCheckbutton(cfg.frame, 16, -380, "oilvlshowminimap", L["Show minimap button"]);
 	micon:SetSize(30,30);
 	micon:SetScript("PostClick", function() 
 		cfg.oilvlminimapicon = oilvlshowminimap:GetChecked()
@@ -6034,12 +5970,12 @@ function OilvlConfigFrame()
 	-- item level decimal places
 	local dptitle = cfg.frame:CreateFontString(nil,"ARTWORK","GameFontNormal")
 	dptitle:SetTextColor(1,1,1)
-	dptitle:SetPoint("TOPLEFT",16,-440)
+	dptitle:SetPoint("TOPLEFT",16,-410)
 	dptitle:SetText(L["Set the amount of numbers past the decimal place to show"].."(0-2): ")
 	local dp = CreateFrame("EditBox", "ODP",cfg.frame,"InputBoxTemplate")
 	dp:SetWidth(15)
 	dp:SetHeight(20)
-	dp:SetPoint("TOPLEFT",20+dptitle:GetStringWidth(),-437)	
+	dp:SetPoint("TOPLEFT",20+dptitle:GetStringWidth(),-407)	
 	dp:SetFontObject("GameFontNormal")
 	dp:SetTextColor(1,1,1)
 	dp:SetMaxLetters(1)
@@ -6058,7 +5994,7 @@ function OilvlConfigFrame()
 	dp:SetScript("OnEscapePressed",function(self) dp:SetNumber(cfg.oilvldp) dp:ClearFocus() end)	
 
 	-- upgrade number
-	local upgradenumbercb = createCheckbutton(cfg.frame, 16+25, -380, "oilvlupgradeno",ITEM_UPGRADE_TOOLTIP_FORMAT:gsub(": %%d/%%d",""):gsub("：",""):gsub("%%d/%%d",""));
+	local upgradenumbercb = createCheckbutton(cfg.frame, 16+25, -350, "oilvlupgradeno",ITEM_UPGRADE_TOOLTIP_FORMAT:gsub(": %%d/%%d",""):gsub("：",""):gsub("%%d/%%d",""));
 	upgradenumbercb:SetSize(30,30);
 	upgradenumbercb:SetScript("PostClick", function() cfg.oilvlun = oilvlupgradeno:GetChecked() OiLvlPlayer_Update() end);
 	if cfg.oilvlun then upgradenumbercb:SetChecked(true) end

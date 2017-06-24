@@ -32,6 +32,14 @@ if not L then return end
 --	L["WOW_ITEM_TOOLTIP_POTION_MANA"] = ""
 --	L["WOW_ITEM_TOOLTIP_ELIXIR_BATTLE"] = ""
 --	L["WOW_ITEM_TOOLTIP_ELIXIR_GUARDIAN"] = ""
+	L["WOW_ITEM_TOOLTIP_10P3T"] = ""
+--	L["WOW_ITEM_TOOLTIP_10P3S"] = ""
+	L["WOW_ITEM_TOOLTIP_10P6T"] = "milione,milioni"
+--	L["WOW_ITEM_TOOLTIP_10P6S"] = ""
+	L["WOW_ITEM_TOOLTIP_10P9T"] = ""
+--	L["WOW_ITEM_TOOLTIP_10P9S"] = ""
+	L["WOW_ITEM_TOOLTIP_10P12T"] = ""
+--	L["WOW_ITEM_TOOLTIP_10P12S"] = ""
 	
 	
 --	location names

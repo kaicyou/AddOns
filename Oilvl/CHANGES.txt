@@ -1,9 +1,10 @@
 ------------------------------------------------------------------------
-r713 | olzenkhaw | 2017-06-22 22:18:50 -0500 (Thu, 22 Jun 2017) | 1 line
+r715 | olzenkhaw | 2017-06-24 00:47:44 -0500 (Sat, 24 Jun 2017) | 1 line
 Changed paths:
    M /trunk/Oilvl.lua
    M /trunk/Oilvl.toc
+   M /trunk/Oilvlconfig.lua
 
-v6.6.3 - Added ability to show achievement link in chat in Raid Progression Details
+v6.6.4 Updated OiLvL Configuration Panel
 ------------------------------------------------------------------------
 

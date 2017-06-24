@@ -414,7 +414,7 @@ local function FindProfessionItem( loc_id, cl, cb, bp, cs, ct )
 									if loc_id ~= cl then
 										-- only allow crafting reagents to be selected from bags when depositing to the bank (dont steal the pick/hammer/army knife/etc)
 										ArkInventory.TooltipSetHyperlink( ArkInventory.Global.Tooltip.Scan, h )
-										if not ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_CRAFTING_REAGENT"], false, true, true, 4, true ) then
+										if not ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_CRAFTING_REAGENT"], false, true, false, 4, true ) then
 											check_item = false
 										end
 									end
@@ -509,7 +509,7 @@ local function FindCraftingItem( loc_id, cl, cb, bp, cs, ct )
 						else
 							
 							ArkInventory.TooltipSetItem( ArkInventory.Global.Tooltip.Scan, bag_id, slot_id )
-							if ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_CRAFTING_REAGENT"], false, true, true, 4, true ) then
+							if ArkInventory.TooltipFind( ArkInventory.Global.Tooltip.Scan, ArkInventory.Localise["WOW_TOOLTIP_CRAFTING_REAGENT"], false, true, false, 4, true ) then
 								--ArkInventory.Output( "craft @ ", loc_id, ".", bag_id, ".", slot_id )
 								return abort, recheck, true, bag_id, slot_id
 							end

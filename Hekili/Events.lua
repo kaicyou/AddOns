@@ -64,7 +64,7 @@ function ns.StartEventHandler()
             ns.recountTargets()
         end
 
-        local updatePeriod = state.combat == 0 and 1 or 0.25
+        local updatePeriod = state.combat == 0 and 1 or 0.2
 
         local forced = false
 
@@ -226,6 +226,21 @@ ns.updateTalents = function ()
         end
     end
 
+    for item, specs in pairs( class.talentLegendary ) do
+        if item and state.equipped[ item ] then
+            local tal = specs[ state.spec.key ]
+
+            if tal and rawget( state.talent, tal ) then
+                state.talent[ tal ].enabled = true
+                state.talent[ tal ].i_enabled = 1
+            else state.talent[ tal ] = {
+                    enabled = true,
+                    i_enabled = 1
+                }
+            end
+        end
+    end
+
 end
 
 
@@ -363,6 +378,25 @@ ns.updateGear = function ()
             end
         end
     end
+
+
+    for item, specs in pairs( class.talentLegendary ) do
+        if item and state.equipped[ item ] then
+            local tal = specs[ state.spec.key ]
+
+            if tal then
+                if rawget( state.talent, tal ) then
+                    state.talent[ tal ].enabled = true
+                    state.talent[ tal ].i_enabled = 1
+                else state.talent[ tal ] = {
+                        enabled = true,
+                        i_enabled = 1
+                    }
+                end
+            end
+        end
+    end
+
 
     if not gearInitialized then
         C_Timer.After( 3, ns.updateGear )
@@ -695,7 +729,7 @@ RegisterEvent( "COMBAT_LOG_EVENT_UNFILTERED", function( event, _, subtype, _, so
 
             elseif subtype == 'SPELL_PERIODIC_DAMAGE' or subtype == 'SPELL_PERIODIC_MISSED' then
                 ns.trackDebuff( spellName, destGUID, time )
-                ns.updateTarget( destGUID, time, sourceGUID == state.GUID )
+                -- ns.updateTarget( destGUID, time, sourceGUID == state.GUID )
 
             elseif subtype == 'SPELL_DAMAGE' or subtype == 'SPELL_MISSED' then
                 ns.updateTarget( destGUID, time, sourceGUID == state.GUID )
@@ -884,7 +918,7 @@ end
 
 local function ReadKeybindings()
 
-    if class.file == "DRUID" then return end
+    -- if class.file == "DRUID" then return end
 
     for k in pairs( updatedKeys ) do
         updatedKeys[ k ] = nil
@@ -922,13 +956,13 @@ local function ReadKeybindings()
         if not updatedKeys[ k ] then keys[ k ] = nil end
     end
 
-    --[[ for k in pairs( keys ) do
+    for k in pairs( keys ) do
         local ability = class.abilities[ k ]
 
         if ability and ability.bind then
             keys[ ability.bind ] = keys[ k ]
         end
-    end ]]
+    end
 
 end    
 
@@ -941,9 +975,11 @@ RegisterEvent( "PLAYER_ENTERING_WORLD", ReadKeybindings )
 RegisterEvent( "ACTIONBAR_SLOT_CHANGED", ReadKeybindings )
 RegisterEvent( "ACTIONBAR_SHOWGRID", ReadKeybindings )
 RegisterEvent( "ACTIONBAR_HIDEGRID", ReadKeybindings )
+RegisterEvent( "ACTIONBAR_PAGE_CHANGED", ReadKeybindings )
+RegisterEvent( "ACTIONBAR_UPDATE_STATE", ReadKeybindings )
 RegisterEvent( "SPELL_UPDATE_ICON", ReadKeybindings )
 RegisterEvent( "SPELLS_CHANGED", ReadKeybindings )
-RegisterEvent( "ACTIONBAR_PAGE_CHANGED", ReadKeybindings )
+
 RegisterEvent( "UPDATE_SHAPESHIFT_FORM", ReadKeybindings )
 RegisterUnitEvent( "PLAYER_TALENT_UPDATE", ReadKeybindings() )
 

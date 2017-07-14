@@ -1298,13 +1298,13 @@ function ArkInventory.MenuItemOpen( frame )
 								
 								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_LVL_ITEM"], LIGHTYELLOW_FONT_COLOR_CODE, info.ilvl ) )
 								
-								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s (%s)", ArkInventory.Localise["MENU_ITEM_DEBUG_TYPE"], LIGHTYELLOW_FONT_COLOR_CODE, info.itemsubtypeid, ArkInventory.PetJournal.PetTypeName( info.itemsubtypeid ) or ArkInventory.Localise["UNKNOWN"] ) )
+								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s (%s)", ArkInventory.Localise["MENU_ITEM_DEBUG_TYPE"], LIGHTYELLOW_FONT_COLOR_CODE, info.itemsubtypeid, ArkInventory.Collection.Pet.PetTypeName( info.itemsubtypeid ) or ArkInventory.Localise["UNKNOWN"] ) )
 								
 								if i.guid then
 									
 									ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_PET_ID"], LIGHTYELLOW_FONT_COLOR_CODE, i.guid ) )
 									
-									local pd = ArkInventory.PetJournal.GetPet( i.guid )
+									local pd = ArkInventory.Collection.Pet.GetPet( i.guid )
 									if pd then
 										ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_PET_SPECIES"], LIGHTYELLOW_FONT_COLOR_CODE, pd.sd.speciesID ) )
 										ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", "IsRevoked", LIGHTYELLOW_FONT_COLOR_CODE, pd.IsRevoked and "true" or "false" ) )
@@ -3493,13 +3493,13 @@ function ArkInventory.MenuPets( frame, level, value, offset )
 	
 	if ( level == offset + 1 ) and ( ( offset == 0 ) or ( value and ( value == "INSERT_LOCATION_MENU" ) ) ) then
 		
-		local n = ArkInventory.PetJournal.GetCount( )
+		local n = ArkInventory.Collection.Pet.GetCount( )
 		
 		if n > 0 then
 			
 			for i = 1, C_PetJournal.GetNumPetTypes( ) do
 				ArkInventory.Lib.Dewdrop:AddLine(
-					"text", ArkInventory.PetJournal.PetTypeName( i ),
+					"text", ArkInventory.Collection.Pet.PetTypeName( i ),
 					"hasArrow", true,
 					"value", string.format( "PETTYPE_%s", i )
 				)
@@ -3561,7 +3561,7 @@ function ArkInventory.MenuPets( frame, level, value, offset )
 			petType0 = tonumber( petType0 )
 			local species = -1
 			
-			for _, pd in ArkInventory.PetJournal.Iterate( ) do
+			for _, pd in ArkInventory.Collection.Pet.Iterate( ) do
 				
 				if ( pd.sd.petType == petType0 ) and ( species ~= pd.sd.speciesID ) then
 					
@@ -3588,7 +3588,7 @@ function ArkInventory.MenuPets( frame, level, value, offset )
 		if speciesID then
 			
 			speciesID = tonumber( speciesID )
-			local sd = ArkInventory.PetJournal.GetSpeciesInfo( speciesID )
+			local sd = ArkInventory.Collection.Pet.GetSpeciesInfo( speciesID )
 			
 			if sd then
 				
@@ -3600,7 +3600,7 @@ function ArkInventory.MenuPets( frame, level, value, offset )
 				
 				ArkInventory.Lib.Dewdrop:AddLine( )
 				
-				for _, pd in ArkInventory.PetJournal.Iterate( ) do
+				for _, pd in ArkInventory.Collection.Pet.Iterate( ) do
 					
 					if ( pd.sd.speciesID == sd.speciesID ) then
 						
@@ -3645,7 +3645,7 @@ function ArkInventory.MenuPets( frame, level, value, offset )
 		
 		if petID then
 			
-			local pd = ArkInventory.PetJournal.GetPet( petID )
+			local pd = ArkInventory.Collection.Pet.GetPet( petID )
 			
 			local selected = me.player.data.ldb.pets.selected
 			
@@ -3698,7 +3698,7 @@ function ArkInventory.MenuPets( frame, level, value, offset )
 			ArkInventory.Lib.Dewdrop:AddLine( )
 			
 			local txt = BATTLE_PET_SUMMON
-			local active = ArkInventory.PetJournal.GetCurrent( )
+			local active = ArkInventory.Collection.Pet.GetCurrent( )
 			if active and active == pd.guid then
 				txt = PET_ACTION_DISMISS
 			end
@@ -3707,9 +3707,9 @@ function ArkInventory.MenuPets( frame, level, value, offset )
 				"text", txt,
 				"tooltipTitle", pd.fullname,
 				"tooltipText", BATTLE_PETS_SUMMON_TOOLTIP,
-				"disabled", not ArkInventory.PetJournal.CanSummon( pd.guid ),
+				"disabled", not ArkInventory.Collection.Pet.CanSummon( pd.guid ),
 				"func", function( )
-					ArkInventory.PetJournal.Summon( pd.guid )
+					ArkInventory.Collection.Pet.Summon( pd.guid )
 				end
 			)
 			
@@ -3808,7 +3808,7 @@ function ArkInventory.MenuItemPetJournal( frame, index )
 			"relativePoint", rp,
 			"children", function( level, value )
 				
-				local pd = ArkInventory.PetJournal.GetPet( index )
+				local pd = ArkInventory.Collection.Pet.GetPet( index )
 				
 				if pd then
 					
@@ -3826,30 +3826,30 @@ function ArkInventory.MenuItemPetJournal( frame, index )
 					
 					ArkInventory.Lib.Dewdrop:AddLine( )
 					
-					local isRevoked = ArkInventory.PetJournal.IsRevoked( pd.guid )
-					local isLockedForConvert = ArkInventory.PetJournal.IsLockedForConvert( pd.guid )
+					local isRevoked = ArkInventory.Collection.Pet.IsRevoked( pd.guid )
+					local isLockedForConvert = ArkInventory.Collection.Pet.IsLockedForConvert( pd.guid )
 					
 					if ( not isRevoked ) and ( not isLockedForConvert ) then
 						
 						local txt = BATTLE_PET_SUMMON
-						if ( ArkInventory.PetJournal.GetCurrent( ) == pd.guid ) then
+						if ( ArkInventory.Collection.Pet.GetCurrent( ) == pd.guid ) then
 							txt = PET_DISMISS
 						end
 						
 						-- summon / dismiss
 						ArkInventory.Lib.Dewdrop:AddLine(
 							"text", txt,
-							"disabled", not ArkInventory.PetJournal.CanSummon( pd.guid ),
+							"disabled", not ArkInventory.Collection.Pet.CanSummon( pd.guid ),
 							"closeWhenClicked", true,
 							"func", function( info )
-								ArkInventory.PetJournal.Summon( pd.guid )
+								ArkInventory.Collection.Pet.Summon( pd.guid )
 							end
 						)
 						
 						-- rename
 						ArkInventory.Lib.Dewdrop:AddLine(
 							"text", BATTLE_PET_RENAME,
-							"disabled", not ArkInventory.PetJournal.JournalIsReady( ),
+							"disabled", not ArkInventory.Collection.Pet.IsReady( ),
 							"closeWhenClicked", true,
 							"func", function( info )
 								ArkInventory.Lib.StaticDialog:Spawn( "BATTLE_PET_RENAME", pd.guid )
@@ -3865,24 +3865,24 @@ function ArkInventory.MenuItemPetJournal( frame, index )
 						
 						ArkInventory.Lib.Dewdrop:AddLine(
 							"text", txt,
-							"disabled", not ArkInventory.PetJournal.JournalIsReady( ),
+							"disabled", not ArkInventory.Collection.Pet.IsReady( ),
 							"closeWhenClicked", true,
 							"func", function( info )
 								if pd.fav then
-									ArkInventory.PetJournal.SetFavorite( pd.guid, 0 )
+									ArkInventory.Collection.Pet.SetFavorite( pd.guid, 0 )
 								else
-									ArkInventory.PetJournal.SetFavorite( pd.guid, 1 )
+									ArkInventory.Collection.Pet.SetFavorite( pd.guid, 1 )
 								end
 							end
 						)
 						
 						-- release
-						if ArkInventory.PetJournal.CanRelease( pd.guid ) then
+						if ArkInventory.Collection.Pet.CanRelease( pd.guid ) then
 							
 							txt = nil
-							if ArkInventory.PetJournal.InBattle( ) then
+							if ArkInventory.Collection.Pet.InBattle( ) then
 								txt2 = "in battle"
-							elseif ArkInventory.PetJournal.IsSlotted( pd.guid ) then
+							elseif ArkInventory.Collection.Pet.IsSlotted( pd.guid ) then
 								txt = "slotted"
 							end
 							
@@ -3890,7 +3890,7 @@ function ArkInventory.MenuItemPetJournal( frame, index )
 								"text", BATTLE_PET_RELEASE,
 								"tooltipTitle", BATTLE_PET_RELEASE,
 								"tooltipText", txt,
-								"disabled", ArkInventory.PetJournal.InBattle( ) or ArkInventory.PetJournal.IsSlotted( pd.guid ),
+								"disabled", ArkInventory.Collection.Pet.InBattle( ) or ArkInventory.Collection.Pet.IsSlotted( pd.guid ),
 								"closeWhenClicked", true,
 								"func", function( info )
 									ArkInventory.Lib.StaticDialog:Spawn( "BATTLE_PET_RELEASE", pd.guid )
@@ -3899,19 +3899,19 @@ function ArkInventory.MenuItemPetJournal( frame, index )
 						end
 						
 						-- cage
-						if ArkInventory.PetJournal.CanTrade( pd.guid ) then
+						if ArkInventory.Collection.Pet.CanTrade( pd.guid ) then
 							
 							txt = BATTLE_PET_PUT_IN_CAGE
 							
-							if ArkInventory.PetJournal.IsSlotted( pd.guid ) then
+							if ArkInventory.Collection.Pet.IsSlotted( pd.guid ) then
 								txt = BATTLE_PET_PUT_IN_CAGE_SLOTTED
-							elseif ArkInventory.PetJournal.IsHurt( pd.guid ) then
+							elseif ArkInventory.Collection.Pet.IsHurt( pd.guid ) then
 								txt = BATTLE_PET_PUT_IN_CAGE_HEALTH
 							end
 							
 							ArkInventory.Lib.Dewdrop:AddLine(
 								"text", txt,
-								"disabled", ArkInventory.PetJournal.IsSlotted( pd.guid ) or ArkInventory.PetJournal.IsHurt( pd.guid ),
+								"disabled", ArkInventory.Collection.Pet.IsSlotted( pd.guid ) or ArkInventory.Collection.Pet.IsHurt( pd.guid ),
 								"closeWhenClicked", true,
 								"func", function( info )
 									ArkInventory.Lib.StaticDialog:Spawn( "BATTLE_PET_PUT_IN_CAGE", pd.guid )
@@ -4003,7 +4003,7 @@ function ArkInventory.MenuItemMountJournal( frame, index )
 						
 						ArkInventory.Lib.Dewdrop:AddLine(
 							"text", txt,
-							"disabled", not ArkInventory.PetJournal.JournalIsReady( ),
+							"disabled", not ArkInventory.Collection.Pet.IsReady( ),
 							"closeWhenClicked", true,
 							"func", function( info )
 								if md.fav then

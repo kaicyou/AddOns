@@ -360,6 +360,7 @@ P["sle"] = {
 			["nightmare"] = false,
 			["trial"] = false,
 			["palace"] = false,
+			["tomb"] = false,
 		},
 	},
 	--Loot 
@@ -704,6 +705,7 @@ P["sle"] = {
 				["nightmare"] = true,
 				["trial"] = true,
 				["nighthold"] = true,
+				["sargeras"] = true,
 			},
 		},
 	},

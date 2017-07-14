@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1795 $
-$Date: 2017-04-16 00:00:11 +1000 (Sun, 16 Apr 2017) $
+$Revision: 1815 $
+$Date: 2017-06-27 00:16:14 +1000 (Tue, 27 Jun 2017) $
 
 ]]--
 
@@ -184,7 +184,6 @@ function ArkInventoryRules.AppliesToItem( i )
 			local cr, res = loadstring( string.format( "return( %s )", ra.formula ) )
 			
 			if not cr then
-				
 				ArkInventory.OutputWarning( res )
 				ArkInventory.OutputWarning( string.format( ArkInventory.Localise["RULE_DAMAGED"], cat_code ) )
 				ArkInventory.db.option.category[cat_type].data[cat_code].damaged = true
@@ -202,9 +201,10 @@ function ArkInventoryRules.AppliesToItem( i )
 					
 				else
 					
-					ArkInventory.OutputWarning( res )
+					ArkInventory.OutputError( res )
 					ArkInventory.OutputWarning( string.format( ArkInventory.Localise["RULE_DAMAGED"], cat_code ) )
 					ArkInventory.db.option.category[cat_type].data[cat_code].damaged = true
+					--error( res )
 					
 				end
 				
@@ -1319,7 +1319,7 @@ function ArkInventoryRules.System.pettype( ... )
 	end
 	
 	local e = ArkInventoryRules.Object.info.itemsubtypeid
-	e = string.lower( ArkInventory.PetJournal.PetTypeName( e ) )
+	e = string.lower( ArkInventory.Collection.Pet.PetTypeName( e ) )
 	
 	if e then
 		
@@ -1332,7 +1332,7 @@ function ArkInventoryRules.System.pettype( ... )
 			end
 			
 			if type( arg ) == "number" then
-				arg = ArkInventory.PetJournal.PetTypeName( arg )
+				arg = ArkInventory.Collection.Pet.PetTypeName( arg )
 				if not arg then
 					error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_INVALID"], fn, ax ), 0 )
 				end

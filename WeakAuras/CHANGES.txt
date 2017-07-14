@@ -1,10 +1,10 @@
-tag 34a2ca1084f0117376d6692fc564769ba2bad2a8 2.4.5
+tag 2f4cc1fea5aa20b68f73babcc6a24356c18b029b 2.4.12
 Author:	Benjamin Staneck <staneck@gmail.com>
-Date:	Wed Jun 21 19:43:55 2017 +0200
+Date:	Fri Jul 14 02:57:58 2017 +0200
 
-commit 27a09d84b50e69a240411d599b5123d5ea3f8aeb
-Author: Infus <infus@squorn.de>
-Date:   Wed Jun 21 19:38:51 2017 +0200
+commit 07a71fc02e30ca2c9d927caac35f5d1d91977d13
+Author: Benjamin Staneck <staneck@gmail.com>
+Date:   Fri Jul 14 02:46:39 2017 +0200
 
-    Fix infinite loop for temporary groups
+    add safeguards for group anchoring
 

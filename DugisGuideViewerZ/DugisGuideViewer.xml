@@ -608,7 +608,131 @@
                 </Layer>
             </Layers>
     </Frame>
-	<Button name="DugisOnOffButton" parent = "UIParent"  movable="true" enableMouse='true' frameStrata="HIGH" >
+    
+   <Button name="IconicButtonTemplate" hidden="false" virtual="true">
+        <Size>
+            <AbsDimension x="14" y="16"/>
+        </Size>
+        <Anchors>
+            <Anchor point="RIGHT" relativePoint = "RIGHT" >
+                <Offset>
+                <AbsDimension x="-35" y="0"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="Icon" file="Interface/AddOns/DugisGuideViewerZ/Artwork/check16px" alphaMode="ADD">
+                   <Size>
+                        <AbsDimension x="10" y="10"/>
+                    </Size>
+                     <Anchors>
+                        <Anchor point="RIGHT"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+              <Layer level="BACKGROUND">
+                <FontString parentKey="Text" text="Accept"
+                    inherits="GameFontNormal" wraponspaces="true" justifyH="RIGHT" 
+                    font="GameFontNormal">
+                    <Color a="1" r="1" g="1" b="1" />
+                    <Anchors>
+                        <Anchor point="RIGHT">
+                            <Offset>
+                                <AbsDimension x="-18" y="0"/>
+                            </Offset>                                
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                self.Icon:SetVertexColor(1,.82,0);
+            </OnLoad>
+            <OnEnter>
+                self:GetParent():GetScript("OnEnter")(self:GetParent())
+            </OnEnter> 
+            <OnLeave>
+                self:GetParent():GetScript("OnLeave")(self:GetParent())
+            </OnLeave>
+        </Scripts>
+    </Button>
+	<Frame name="NotificationItemTemplate" virtual="true"  hidden="true">
+		<Layers>
+			<Layer>
+				<FontString  parentKey="Title" text="title"
+                inherits="GameFontHighlightSmall" wraponspaces="true" justifyH="LEFT" 
+                font="GameFontHighlightSmall">
+                    <Color a="1" r="0.1" g="1" b="0" />
+					<Anchors>
+						<Anchor point="LEFT" >
+                            <Offset>
+                                <AbsDimension x="4" y="0"/>
+                            </Offset>
+                        </Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+            <Layer  level="BACKGROUND">
+                <Texture parentKey="Background" visible="true"  alpha="0.3">
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="" y=""/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                   <Color r="0" g="0" b="0" />
+                </Texture>
+            </Layer>
+		</Layers>
+        <Frames>
+            <Button parentKey="Dismiss" hidden="false" inherits="IconicButtonTemplate">
+                <Anchors>
+                    <Anchor point="RIGHT" relativePoint = "RIGHT" >
+                        <Offset>
+                        <AbsDimension x="-8" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        self.Icon:SetTexture("Interface/AddOns/DugisGuideViewerZ/Artwork/x16px")
+                        self.Text:Hide()
+                    </OnLoad>
+                    <OnClick>
+                        local parent = self:GetParent()
+                        DugisGuideViewer:OnNotificationDismissClicked(DugisGuideViewer:GetNotification(parent.id))
+                        DugisGuideViewer:RemoveNotificationWithAnimation(parent.id)
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        
+        <Scripts>
+            <OnEnter>
+                self.Background:SetAlpha(1)
+                self.Background:SetColorTexture(0.2, 0.2, 0.2)
+                LibDugi_DropDownList1.showTimer = 10000
+			</OnEnter>       
+            <OnLeave>
+                self.Background:SetAlpha(0.3)
+                self.Background:SetColorTexture(0, 0, 0)
+			    --To prevent menu hide
+                LibDugi_DropDownList1.showTimer = 3
+			</OnLeave>
+            <OnClick>
+                DugisGuideViewer:OnNotificationClicked(DugisGuideViewer:GetNotification(self.id))
+			</OnClick>
+			<OnDragStart>
+			</OnDragStart>
+            <OnLoad>
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    
+	<Button name="DugisOnOffButton" parent = "UIParent"  movable="true" enableMouse='true' frameStrata="HIGH"  frameLevel = "1" >
 		<Size x="32" y="32"/>
 		<NormalTexture file ="Interface\AddOns\DugisGuideViewerZ\Artwork\iconbutton.tga"/>
 		<HighlightTexture alphaMode ="ADD" file ="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
@@ -638,6 +762,23 @@
 			DugisGuideViewer:OnDragStop(self);
 		</OnDragStop>
 	</Scripts>
+		<Frames>
+			<Frame name="NotificationsMark" frameLevel="2"  visible="false" hidden="true">
+				<Size x="32" y="32"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="DugisOnOffButton" relativePoint = "TOPLEFT" >
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>		
+				<Layers>
+					<Layer >
+						<Texture file="Interface\AddOns\DugisGuideViewerZ\Artwork\notification.tga"/>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
 	</Button>
 
 	<Button name='GearOptionButtonTemplate' virtual='true' >
@@ -781,6 +922,7 @@
 				<Scripts>
 					<OnClick>
 						self:GetParent():Hide()
+                        DugisGuideViewer:RemoveNotificationWithAnimation(DugisEquipPromptFrame.notificationId)
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -801,6 +943,10 @@
 						parent.action = "CANCEL"
 						parent.blacklist:SetChecked(false)
 						parent:Hide()
+						
+						if DugisEquipPromptFrame.dontRemoveNotificationOnCancel ~= true then
+							DugisGuideViewer:RemoveNotificationWithAnimation(DugisEquipPromptFrame.notificationId)
+						end
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1437,7 +1583,7 @@
             </OnDisable>
 			<OnClick>
 
-                if _G["searchThread"] ~= nil or _G["searchDelayTimer"] ~= nil then
+                if _G["searchThread"] ~= nil or _G["searchDelayTimer"] ~= nil or not self.tabInfo then
                     return
                 end
 
@@ -1454,7 +1600,7 @@
         </Scripts>
     </Button>
 
-	<Frame name="DugisMainBorder" parent='UIParent' movable ="true" visible="false">
+	<Frame name="DugisMainBorder" parent='UIParent' movable ="true" visible="false" frameStrata="DIALOG">
 		<Size x="818" y="420"/>
 		<Anchors>
             <Anchor point="CENTER" x="0" y="0"/>
@@ -1929,6 +2075,9 @@
 								self.icon:Hide()
 							</OnShow>
 							<OnClick>
+								if not self.tabInfo then
+									return
+								end
 								DugisGuideViewer.DeselectTopTabs()
 								self:SetChecked(true)
 								self.tabInfo:Activate()
@@ -2033,7 +2182,7 @@
 							<Slider name="$parentScrollBar" inherits="MinimalScrollBarTemplate" parentKey="bar">
 								<Anchors>
 									<Anchor point="TOPRIGHT" x="25" y="-14"/>
-									<Anchor point="BOTTOMRIGHT" x="25" y="20"/>
+									<Anchor point="BOTTOMRIGHT" x="25" y="-10"/>
 								</Anchors>
 								<Scripts>
 									<OnLoad>
@@ -2102,7 +2251,7 @@
 							</Layer>
 						</Layers>
 					</Button>
-                    <Button name="CurrentGuideExpandButton" hidden="false" frameStrata="MEDIUM" frameLevel="100">
+                    <Button name="CurrentGuideExpandButton" hidden="false" frameStrata="DIALOG" frameLevel="100">
                         <Size x="32" y="32"/>
                         <Anchors>
                             <Anchor point="BOTTOMLEFT" relativeTo="DugisMainRightFrameHost" x="-52" y="-1"/>

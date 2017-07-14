@@ -329,16 +329,18 @@ local function ConstructMoverSizer(parent)
     mover.moving.data = data;
     local xOff, yOff;
     mover.selfPoint, mover.anchor, mover.anchorPoint, xOff, yOff = region:GetPoint(1);
+    xOff = xOff or 0;
+    yOff = yOff or 0;
     mover:ClearAllPoints();
     frame:ClearAllPoints();
     if(data.regionType == "group") then
       mover:SetWidth((region.trx - region.blx) * scale);
       mover:SetHeight((region.try - region.bly) * scale);
-      mover:SetPoint(mover.selfPoint, mover.anchor, mover.anchorPoint, (xOff + region.blx) * scale, (yOff + region.bly) * scale);
+      mover:SetPoint(mover.selfPoint or "CENTER", mover.anchor or UIParent, mover.anchorPoint or "CENTER", (xOff + region.blx) * scale, (yOff + region.bly) * scale);
     else
       mover:SetWidth(region:GetWidth() * scale);
       mover:SetHeight(region:GetHeight() * scale);
-      mover:SetPoint(mover.selfPoint, mover.anchor, mover.anchorPoint, xOff * scale, yOff * scale);
+      mover:SetPoint(mover.selfPoint or "CENTER", mover.anchor or UIParent, mover.anchorPoint or "CENTER", xOff * scale, yOff * scale);
     end
     frame:SetPoint("BOTTOMLEFT", mover, "BOTTOMLEFT", -8, -8);
     frame:SetPoint("TOPRIGHT", mover, "TOPRIGHT", 8, 8);

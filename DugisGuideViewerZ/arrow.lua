@@ -83,6 +83,26 @@ local function CreateArrowFrame()
 end
 CreateArrowFrame()
 
+function DugisArrow:GetBadColor()
+	return DugisGuideUser.DGV_BAD_COLOR or DugisGuideViewer.defaultBadArrowColor
+end
+
+function DugisArrow:GetMiddleColor()
+	return DugisGuideUser.DGV_MIDDLE_COLOR or DugisGuideViewer.defaultMiddleArrowColor
+end
+
+function DugisArrow:GetGoodColor()
+	return DugisGuideUser.DGV_GOOD_COLOR or DugisGuideViewer.defaultGoodArrowColor
+end
+
+function DugisArrow:GetExactColor()
+	return DugisGuideUser.DGV_EXACT_COLOR or DugisGuideViewer.defaultExactArrowColor
+end
+
+function DugisArrow:GetQuestingAreaColor()
+	return DugisGuideUser.DGV_QUESTING_AREA_COLOR or DugisGuideViewer.defaultQuestingAreaColor
+end
+
 function DugisArrow:Initialize()
 	DGV.DugisArrow = DugisArrow
 
@@ -111,29 +131,41 @@ function DugisArrow:Initialize()
 
 	local index, waypoint
 
-	local function ColorGradient(perc, ...)
-		local num = select("#", ...)
-		local hexes = type(select(1, ...)) == "string"
+	local function InterpolateTwoColors(n, r1, g1, b1, r2, g2, b2)
+		return LuaUtils.inOutQuad(n, r1, r2), LuaUtils.inOutQuad(n, g1, g2), LuaUtils.inOutQuad(n, b1, b2)
+	end 
+	
+	--normalizedDirection has values from 0 to 1. 1 for excelent direction. 0 for oposite/very bad direction
+	local function ColorGradient(normalizedDirection)
+		local gradientTable = {} 
+		gradientTable[1] = DugisArrow:GetBadColor()
+		gradientTable[2] = DugisArrow:GetMiddleColor()
+ 		gradientTable[3] = DugisArrow:GetGoodColor()
+		gradientTable[4] = DugisArrow:GetExactColor()
+		
+		local directionRanges = { {0, 0.3333}, {0.3333, 0.95}, {0.95, 1} }
+		
+		local color1, color2
+		local interpolation
 
-		if perc == 1 then
-			return select(num-2, ...), select(num-1, ...), select(num, ...)
-		end
-
-		num = num / 3
-
-		local segment, relperc = math.modf(perc*(num-1))
-		local r1, g1, b1, r2, g2, b2
-		r1, g1, b1 = select((segment*3)+1, ...), select((segment*3)+2, ...), select((segment*3)+3, ...)
-		r2, g2, b2 = select((segment*3)+4, ...), select((segment*3)+5, ...), select((segment*3)+6, ...)
-
-		if not r2 or not g2 or not b2 then
-			return r1, g1, b1
-		else
-			return r1 + (r2-r1)*relperc,
-			g1 + (g2-g1)*relperc,
-
-			b1 + (b2-b1)*relperc
-		end
+		LuaUtils:foreach(directionRanges, function(range, index)
+			local v1 = range[1]
+			local v2 = range[2]
+			if normalizedDirection >= v1 and normalizedDirection < v2 then
+				color1 = gradientTable[index]
+				color2 = gradientTable[index + 1]
+				interpolation = (normalizedDirection - v1) / (v2 - v1)
+			end
+		end)
+		
+		local r1, g1, b1 = unpack(color1)
+		local r2, g2, b2 = unpack(color2)
+		
+		--if normalizedDirection > 0.98 then
+		--	return unpack(DugisArrow:GetExactColor())
+		--end
+		
+		return InterpolateTwoColors(interpolation, r1, g1, b1, r2, g2, b2)
 	end
 
 	local wayframe = CreateArrowFrame()
@@ -1139,6 +1171,9 @@ function DugisArrow:Initialize()
 	local tta_throttle = 0
 	local speed = 0
 	local speed_count = 0
+	
+	DugisArrowGlobal.lastAngle = -1000
+	
 	local function OnUpdate(self, elapsed)
 
 		local text = ""
@@ -1235,7 +1270,8 @@ function DugisArrow:Initialize()
 				arrow:SetTexCoord(xstart,xend,ystart,yend)
 
 				if DugisGuideViewer:IsPlayerAtBlizzardDestination() then
-					arrow:SetVertexColor(0,.6,0)
+					local r, g, b = unpack(DugisArrow:GetQuestingAreaColor())
+					arrow:SetVertexColor(r, g, b)
 				end
 			else
 				if showDownArrow then
@@ -1248,33 +1284,37 @@ function DugisArrow:Initialize()
 				local player = GetPlayerFacing_dugi()
 				angle = angle - player
 
-				local perc = math.abs((math.pi - math.abs(angle)) / math.pi)
-				if perc > 1 then perc = 2 - perc end
-
-				local gr,gg,gb = 1, 0.8, 0
-				local mr,mg,mb = 1, 0.8, 0
-				local br,bg,bb = 1, 0, 0
-				local r,g,b = ColorGradient(perc, br, bg, bb, mr, mg, mb, gr, gg, gb)
-				arrow:SetVertexColor(r,g,b)
+				if angle ~= DugisArrowGlobal.lastAngle then
 				
-				if (perc > 0.995) then
-					arrow:SetVertexColor(1,1,0)
+					DugisArrowGlobal.lastAngle = angle
+					
+					local perc = math.abs((math.pi - math.abs(angle)) / math.pi)
+					if perc > 1 then perc = 2 - perc end
+
+				
+					local r,g,b = ColorGradient(perc)
+					
+					--To remove original light-yellow color from arrow
+					arrow:SetDesaturated(true)
+					
+					arrow:SetVertexColor(r,g,b)
+
+					if DugisGuideViewer:IsPlayerAtBlizzardDestination() then
+						local r, g, b = unpack(DugisArrow:GetQuestingAreaColor())
+						arrow:SetVertexColor(r, g, b)
+					end
+
+					local cell = floor(angle / (math.pi * 2) * 108 + 0.5) % 108
+					local column = cell % 9
+					local row = floor(cell / 9)
+
+					local xstart = (column * 56) / 512
+					local ystart = (row * 42) / 512
+					local xend = ((column + 1) * 56) / 512
+					local yend = ((row + 1) * 42) / 512
+					arrow:SetTexCoord(xstart,xend,ystart,yend)
+				
 				end
-
-				if DugisGuideViewer:IsPlayerAtBlizzardDestination() then
-					arrow:SetVertexColor(0,.6,0)
-					--angle = 0
-				end
-
-				local cell = floor(angle / (math.pi * 2) * 108 + 0.5) % 108
-				local column = cell % 9
-				local row = floor(cell / 9)
-
-				local xstart = (column * 56) / 512
-				local ystart = (row * 42) / 512
-				local xend = ((column + 1) * 56) / 512
-				local yend = ((row + 1) * 42) / 512
-				arrow:SetTexCoord(xstart,xend,ystart,yend)
 			end
             DugisArrow.foundRoute = true
 		elseif active_point.m == 1048 or --To force teleport portal regardless of cooldown

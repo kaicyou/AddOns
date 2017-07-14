@@ -322,6 +322,8 @@ function LuaUtils:CreateThread(threadName, threadFunction, onEnd, resumeAmountPe
         threadFunction = threadFunction,
     }
     
+    return dugisThreads[threadName]
+    
 end
 
 function LuaUtils:ThreadInProgress(threadName)
@@ -587,7 +589,7 @@ end
 ----Post combat loading
 local postCombatRunQueue = {}
 function LuaUtils:PostCombatRun(name, function_)
-    if UnitAffectingCombat("player")  then
+    if UnitAffectingCombat("player") or InCinematic() then
         if not postCombatRunQueue[name] then
             postCombatRunQueue[name] = function_
         end
@@ -606,7 +608,7 @@ function LuaUtils:RunPostCombatFunctions()
 end
 
 LuaUtils:CreateThread("dugi-post-combat-invoke", function()
-    while UnitAffectingCombat("player") do
+    while UnitAffectingCombat("player") or InCinematic() do
         coroutine.yield()
     end
     LuaUtils:RunPostCombatFunctions()
@@ -644,4 +646,80 @@ function LuaUtils:TransferBackdropFromElvUI()
             targetBackdrop:SetBackdropColor(r, g, b, a)
         end
     end)        
+end
+
+local lastProcessId = 0
+
+--Test: /run LuaUtils:ProcessInTime(2, print)
+function LuaUtils:ProcessInTime(durationInSec, function_, endFunction)
+    local threadName = "thread_"..lastProcessId
+
+    local thread = LuaUtils:CreateThread(lastProcessId, function()
+        
+        local thread = dugisThreads[threadName]
+        
+        while true do
+            local normlizedTime = (GetTime() - thread.startTime) / durationInSec
+            
+            if normlizedTime >= 1 then
+                function_(1)
+                if endFunction then
+                    endFunction()
+                end
+                break
+            else
+                function_(normlizedTime)
+                coroutine.yield()
+            end
+        end
+        
+    end)
+    
+    thread.startTime = GetTime()
+    thread.durationInSec = durationInSec
+    
+    lastProcessId = lastProcessId + 1
+	
+	if lastProcessId > 10000 then
+		lastProcessId = 0
+	end
+	
+end
+
+--b = x1
+--c = (x2 - x1)
+
+--Easings
+local function linear(n, x1, x2) 
+    return (x2 - x1) * n + x1 
+end
+
+local function inQuad(n, x1, x2) 
+    return (x2 - x1) * math.pow(n, 2) + x1 
+end
+
+local function outQuad(n, x1, x2)
+  return -(x2 - x1) * n * (n - 2) + x1
+end
+
+function LuaUtils.inOutQuad(n, x1, x2)
+  n = n * 2
+  if n < 1 then
+    return (x2 - x1) / 2 * math.pow(n, 2) + x1
+  else
+    return -(x2 - x1) / 2 * ((n - 1) * (n - 3) - 1) + x1
+  end
+end
+
+
+function LuaUtils:FadeIn(frame, from, to, duration, endFunction)
+    LuaUtils:ProcessInTime(duration, function(n)
+        frame:SetAlpha(inQuad(n, from, to))
+    end, endFunction)
+end
+
+function LuaUtils:FadeOut(frame, from, to, duration, endFunction)
+    LuaUtils:ProcessInTime(duration, function(n)
+        frame:SetAlpha(outQuad(n, from, to))
+    end, endFunction)
 end

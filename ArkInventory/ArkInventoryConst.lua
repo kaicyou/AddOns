@@ -546,6 +546,12 @@ function ArkInventory.Output( ... )
 	
 end
 
+function ArkInventory.OutputThread( ... )
+	if ArkInventory.db.option.thread.debug then
+		ArkInventory.Output( "|cffffff9aTHREAD> ", ... )
+	end
+end
+
 function ArkInventory.OutputDebug( ... )
 	if ArkInventory.Const.Debug then
 		ArkInventory.Output( "|cffffff9aDEBUG> ", ... )

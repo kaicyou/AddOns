@@ -1255,7 +1255,7 @@ local function importCompanionCrossRefTable( )
 			
 			if ( data.cid ) and ( type( data.cid ) == "number" ) then
 				
-				speciesID = ArkInventory.PetJournal.GetSpeciesIDForCreatureID( data.cid )
+				speciesID = ArkInventory.Collection.Pet.GetSpeciesIDForCreatureID( data.cid )
 				if speciesID then
 					
 					key2 = ArkInventory.ObjectIDCount( string.format( "battlepet:%s", speciesID ) )

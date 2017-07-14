@@ -232,6 +232,8 @@ function MV:Initialize()
 			MV.Frame = DugisGuideViewer_ModelViewer
 		else
 			MV.Frame = CreateFrame("FRAME","DugisGuideViewer_ModelViewer", UIParent)
+            
+            MV.Frame:SetFrameStrata("BACKGROUND")
 
 			MV.Frame:SetClampedToScreen(true);
 			MV.Frame:SetSize(165, 220)

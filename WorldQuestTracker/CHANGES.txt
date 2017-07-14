@@ -1,7 +1,7 @@
-changeset:   147:9507428afa05
-tag:         v7.2.5.147-release
+changeset:   151:470c95ce5b58
+tag:         v7.2.5.151-release
 user:        Tercio
-date:        Tue Jun 20 09:39:10 2017 -0300
-summary:     - Fix for Ticket #449: error on opening the world map.
+date:        Wed Jul 05 13:48:27 2017 -0300
+summary:     - Ticket #456: problem with pet battle quest showing a wrong icon.
 
 

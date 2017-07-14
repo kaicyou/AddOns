@@ -149,11 +149,11 @@ function ArkInventory.MediaFrameFontSet( frame, face, size )
 	for _, obj in pairs( { frame:GetRegions( ) } ) do
 		ArkInventory.MediaObjectFontSet( obj, face, size )
 	end
-
+	
 	for _, obj in pairs( { frame:GetChildren( ) } ) do
 		ArkInventory.MediaObjectFontSet( obj, face, size )
 	end
-
+	
 	for _, obj in pairs( { frame:GetChildren( ) } ) do
 		ArkInventory.MediaFrameFontSet( obj, face, size )
 	end

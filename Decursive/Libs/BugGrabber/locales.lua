@@ -373,6 +373,7 @@ L["TOO_MANY_ERRORS_ALERT"] = [=[사용자 인터페이스(%d)에 많은 Lua 오�
 L["TOOFAR"] = "거리 벗어남"
 L["UNITSTATUS"] = "상태: "
 L["UNSTABLERELEASE"] = "비안정화판 배포"
+
 	elseif locale == "deDE" then
 L["ABOLISH_CHECK"] = "Zuvor überprüfen ob Reinigung nötig"
 L["ABOUT_AUTHOREMAIL"] = "E-MAIL DES ENTWICKLERS"
@@ -716,6 +717,7 @@ L["TIE_LIVELIST"] = "Sichtbarkeit der aktuellen Liste an DCR-Fenster binden"
 L["TOOFAR"] = "Zu weit entfernt"
 L["UNITSTATUS"] = "Einheitenstatus:"
 L["UNSTABLERELEASE"] = "Instabile Veröffentlichung"
+
 	elseif locale == "esES" then
 L["ABOLISH_CHECK"] = "Comprobar \"Abolido\" antes de curar"
 L["ABSENT"] = "Falta (%s)"
@@ -755,6 +757,7 @@ L["STR_GROUP"] = "Grupo"
 L["STR_OPTIONS"] = "Opciones"
 L["STR_OTHER"] = "Otro"
 L["TOOFAR"] = "Muy lejos"
+
 	elseif locale == "zhTW" then
 L["ABOLISH_CHECK"] = "施法前檢查是否需要淨化"
 L["ABOUT_AUTHOREMAIL"] = "作者 E-Mail"
@@ -1161,6 +1164,7 @@ L["TOO_MANY_ERRORS_ALERT"] = [=[你的UI有太多LUA錯誤 (%d)。你的遊戲�
 L["TOOFAR"] = "太遠"
 L["UNITSTATUS"] = "玩家狀態: "
 L["UNSTABLERELEASE"] = "不穩定釋出版"
+
 	elseif locale == "zhCN" then
 L["ABOLISH_CHECK"] = "净化前检查“无效”减益"
 L["ABOUT_AUTHOREMAIL"] = "作者 E-MAIL"
@@ -1574,6 +1578,7 @@ L["TOO_MANY_ERRORS_ALERT"] = [=[你的用户界面（%d）有太多的 Lua 错�
 L["TOOFAR"] = "太远"
 L["UNITSTATUS"] = "单位状态："
 L["UNSTABLERELEASE"] = "不稳定版本"
+
 	elseif locale == "ruRU" then
 L["ABOLISH_CHECK"] = "Проверять на наличие \"Лечащего заклинания\" яда/болезни перед лечением"
 L["ABOUT_AUTHOREMAIL"] = "E-mail автора"
@@ -1924,6 +1929,7 @@ L["TIE_LIVELIST"] = "Привязка обзора активного списк
 L["TOOFAR"] = "Слишком далеко"
 L["UNITSTATUS"] = "Состояние: "
 L["UNSTABLERELEASE"] = "Нестабильный релиз"
+
 	elseif locale == "frFR" then
 L["ABOLISH_CHECK"] = "Voir si \"Abolir\" sur la cible avant de guérir"
 L["ABOUT_AUTHOREMAIL"] = "CONTACTER L'AUTEUR"
@@ -2331,7 +2337,9 @@ Vous devriez activer les rapports d'erreur Lua (/console scriptErrors 1).]=]
 L["TOOFAR"] = "Hors de portée"
 L["UNITSTATUS"] = "Statut de l'unité : "
 L["UNSTABLERELEASE"] = "Version instable"
+
 	elseif locale == "esMX" then
+
 	elseif locale == "ptBR" then
 L["ABOLISH_CHECK"] = "Verifique se há \"Abolir\" antes de curar"
 L["ABOUT_LICENSE"] = "Licensa"
@@ -2373,7 +2381,9 @@ L["SKIP_SHOW"] = "S"
 L["SPELL_FOUND"] = "%s feitiço nao foi encontrado"
 L["STR_CLOSE"] = "Fechar"
 L["STR_DCR_PRIO"] = "Prioridade do Decursive"
+
 	elseif locale == "itIT" then
+
 	end
 end
 

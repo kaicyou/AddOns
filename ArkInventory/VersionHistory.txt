@@ -14,6 +14,17 @@
  
 
 
+*3.07.31 (09-JUL-2017)*
+ * removed - config options for in-combat yielding
+ * added - config options for thread timeout values (defaults to 100ms for in-combat and 100ms for out-of-combat)
+ * changed - bag, pet, mount, toybox, heirloom, mailbox, auction, void storage, and vault scans are now threaded
+ * changed - window drawing is now threaded all the time (not just in combat) - initial window draw can be a bit laggy
+ * changed - restack should be a bit slower but leave the game more responsive (depends on what you set the out of combat thread timeout to)
+ * fixed - issue where pet scanning might sometimes not run
+ * fixed - bag rescans will now just rescan the bag having an issue, not all the bags in that location
+ * fixed - issue with search filter initilisation causing a second window rebuild at the first open
+ * fixed - issue with font size on initial window load
+
 *3.07.30 (25-JUN-2017)*
  * fixed - issue with some tooltip text containing a UTF-8 non breaking space sequence (its not the same as a normal space character so doesnt match)
  * fixed - issue with artifact power items not being categorised properly for non-english languages

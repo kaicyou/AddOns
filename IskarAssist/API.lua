@@ -478,12 +478,12 @@ end
 --]=]
 
 local raid_list = {
-	[1448] = {669, {1778, 1785, 1787, 1798, 1786, 1783, 1788, 1794, 1777, 1800, 1784, 1795, 1799}}, --mapid / EJ_id / encounter ids (hellfire citadel)
-	[1520] = {768, {1853, 1876, 1873, 1841, 1854, 1877, 1864}}, --mapid / EJ_id / encounter ids (emerald nightmare)
-	[1648] = {861, {1958, 1962, 2008}}, --mapid / EJ_id / encounter ids (trials of valor)
-	[1530] = {786, {1849, 1865, 1867, 1871, 1862, 1842, 1886, 1863, 1872, 1866}}, --mapid / EJ_id / encounter ids (nighthold)
+	[1448] = {669, {1778, 1785, 1787, 1798, 1786, 1783, 1788, 1794, 1777, 1800, 1784, 1795, 1799}}, --mapid / EJ_id / combatlog encounter ids (hellfire citadel)
+	[1520] = {768, {1853, 1876, 1873, 1841, 1854, 1877, 1864}}, --mapid / EJ_id / combatlog encounter ids (emerald nightmare)
+	[1648] = {861, {1958, 1962, 2008}}, --mapid / EJ_id / combatlog encounter ids (trials of valor)
+	[1530] = {786, {1849, 1865, 1867, 1871, 1862, 1842, 1886, 1863, 1872, 1866}}, --mapid / EJ_id / combatlog encounter ids (nighthold)
+	[1676] = {875, {2032, 2048, 2036, 2050, 2037, 2054, 2052, 2038, 2051}}, --mapid / EJ_id / combatlog encounter ids (tomb of sargeras)
 }
-
 
 
 local empty_table = {}
@@ -592,7 +592,7 @@ end
 	return a table with spells id.
 --]=]
 
-local boss_spells = {
+local boss_spells = { --[boss EJID] = {spellIDs}
 	--"Hellfire Assault"
 	[1426] = {181155, 180417, 181968, 186737, 188884, 185806, 185021, 180945,185156,187655,187638,184065,186883,180080,190728,184243,190748,190739,181120,184394,184370},
 		
@@ -865,6 +865,143 @@ local boss_spells = {
 		223134, --burning
 		211132, --empowered eye of guldan
 	}, 
+	--Goroth
+	[1862] = {
+		233283, --shattering nova
+		231363, --burning armor
+		233062, --infernal burning
+		233281, --shattering star
+		230345, --crashing comet
+		233021, --infernal spike
+		230348, --fel pool
+	},
+	--Demonic Inquisition
+	[1867] = {
+		233444, --bone saw
+		233435, --calcified quills
+		233426, --scythe sweep
+		235236, --fel squall
+		234015, --tormenting burst
+		233983, --echoing anguish
+		239401, --pangs of guilt
+		248713, --soul corruption
+		239144, --tormented eruption
+		233901, --suffocating dark
+		239358, --anguished outburst
+	},
+	--Hartjatan
+	[1856] = {
+		231854, --unchecked rage
+		233520, --frigid blows
+		231998, --jagged abrasion
+		232174, --frosty discharge
+		247403, --unchecked rage
+		233530, --drenching slough
+		241511, --drenched
+		231768, --drenching waters
+		233371, --watery splash
+		231754, --aqueous burst
+		234129, --splashy cleave
+	
+	},
+	--Mistrress Sasszine
+	[1903] = {
+		232754, --hydra acid
+		230201, --burden of pain
+		230143, --hydra shot
+		230920, --consuming hunger
+		241509, --water blast
+		232916, --befouling ink
+		232732, --slicing tornado
+		234621, --devouring maw
+		230276, --jaws from the deep
+		230959, --concealing murk
+		230362, --thundering shock
+	},
+	--Sisters of the Moon
+	[1861] = {
+		236480, --glaive storm
+		236541, --twilight glaive
+		236519, --moon burn
+		233284, --umbra detonation
+		236516, --twilight volley
+		237633, --spectral glaive
+		236603, --rapid shot
+		237351, --lunar barrage
+		239264, --lunar fire
+		237632, --lunar strike
+		236712, --lunar beacon
+		236306, --incorporeal shot
+		237630, --shadow shot
+		236697, --deathly screech
+		236547, --moon glaive
+	},
+	--TYhe Desolate Host
+	[1896] = {
+		236563, --sundering doom
+		236567, --doomed sundering
+		236075, --wailing souls
+		241566, --crush mind
+		236464, --soulbind
+		236135, --wither
+		235933, --spear of anguish
+		236011, --tormented cries
+		236142, --bone shards
+		235907, --collapsing fissure
+		235956, --rupturing slam
+		239006, --dissonance
+		236515, --shattering scream
+		236361, --spirit chains
+		235968, --grasping darkness
+		235989, --tormented cries
+	},
+	--Maiden of Vigilance
+	[1897] = {
+		235253, --fel infusion
+		235214, --light infusion
+		235125, --unstable soul
+		238037, --light echoes
+		238420, --fel echoes
+		234896, --wrath of the creators
+		235569, --hammer of creation
+		235573, --hammer of obliteration
+		238408, --fel remanence
+		241624, --hammer of creation
+		238028, --light remanence
+		241634, --hammer of obliteration
+	},	
+	--Fallan Avatar
+	[1873] = {
+		240213, --chaos flames
+		239132, --rupture realities
+		236494, --desolate
+		235572, --rupture realities
+		236604, --shadowy blades
+		234180, --sear
+		239058, --touch of sargeras
+		242017, --black winds
+		239742, --dark mark
+		239212, --lingering darkness
+		240249, --molten fel
+	},
+	--Kil'jaeden
+	[1898] = {
+		239216, --darkness of a thousand souls
+		234310, --armageddon rain
+		239931, --felclaws
+		238455, --bursting dreadflame
+		235058, --rupturing singularity
+		238502, --focused dreadflame
+		238503, --focused dreadburst
+		239155, --gravity squeeze
+		240916, --armageddon hail
+		235120, --erupting dreadflame
+		241721, --illidans sightless gaze
+		240262, --burning
+		239852, --demonic obelisk
+		241702, --destabilized shadowsoul
+		239267, --flaming detonation
+	},
 }
 
 function RA:GetBossSpellList (ej_id)
@@ -877,7 +1014,20 @@ end
 	return the encounter id from the journal and for the combatlog
 --]=]
 local encounter_journal = {
-	--instance EJID --boss EJID
+	--[instance EJID] { [boss EJID] = Combatlog ID}
+	[875] = {
+		1862, 1867, 1856, 1903, 1861, 1896, 1897, 1873, 1898,
+		[1862] = 2032, --Goroth
+		[1867] = 2048, --Demonic Inquisition
+		[1856] = 2036, --Harjatan
+		[1903] = 2050, --Sisters of the Moon
+		[1861] = 2037, --Mistress Sassz'ine
+		[1896] = 2054, --The Desolate Host
+		[1897] = 2052, --Maiden of Vigilance
+		[1873] = 2038, --Fallen Avatar
+		[1898] = 2051, --Kil'jaeden
+	},
+	
 	[786] = {
 		1706, 1725, 1731, 1751, 1762, 1713, 1761, 1732, 1743, 1737,
 		[1706] = 1849, --Skorpyron
@@ -912,8 +1062,20 @@ local encounter_journal = {
 }
 
 local combat_log_ids = {
-	--instance EJID --boss CLID
-
+	--[instance EJID] = { --[boss Combatlog ID] = boss EJID}
+	[875] = {
+		2032, 2048, 2036, 2050, 2037, 2054, 2052, 2038, 2051,
+		[2032] = 1862, --Goroth
+		[2048] = 1867, --Demonic Inquisition
+		[2036] = 1856, --Harjatan
+		[2050] = 1903, --Sisters of the Moon
+		[2037] = 1861, --Mistress Sassz'ine
+		[2054] = 1896, --The Desolate Host
+		[2052] = 1897, --Maiden of Vigilance
+		[2038] = 1873, --Fallen Avatar
+		[2051] = 1898, --Kil'jaeden
+	},
+	
 	[786] = {
 		1849, 1865, 1867, 1871, 1862, 1842, 1886, 1863, 1872, 1866,
 		[1849] = 1706, --Skorpyron

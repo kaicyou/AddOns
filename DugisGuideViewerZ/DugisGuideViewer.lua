@@ -159,6 +159,14 @@ BINDING_HEADER_DUGI = "Dugi Guides"
 _G["BINDING_NAME_CLICK DugisGuideViewer_TargetFrame:RightButton"] = L["Target Button"]
 _G["BINDING_NAME_CLICK DugisSecureQuestButton:LeftButton"] = L["Floating Item Button"]
 
+
+--Default colors definition
+DugisGuideViewer.defaultBadArrowColor = {1, 0, 0} 
+DugisGuideViewer.defaultMiddleArrowColor = {1, 0.5, 0}
+DugisGuideViewer.defaultGoodArrowColor = {1, 0.5, 0}
+DugisGuideViewer.defaultExactArrowColor = {1, 1, 0}
+DugisGuideViewer.defaultQuestingAreaColor = {0, 1, 0}
+
 local function LocalizePrint(message)
 	if Localize == 1 then
 		print(message)
@@ -271,6 +279,16 @@ local function LoadSettings()
     DGV_TAXISYSTEM_BOATS = 86
     DGV_TAXISYSTEM_CLASS_PORTALS = 87
     DGV_TAXISYSTEM_WHISTLE = 88
+    DGV_ENABLED_GEAR_NOTIFICATIONS = 89
+    DGV_ENABLED_GUIDE_NOTIFICATIONS = 90
+	
+    DGV_ALWAYS_SHOW_STANDARD_PROMPT_GEAR = 91
+    DGV_ALWAYS_SHOW_STANDARD_PROMPT_GUIDE = 92
+	DGV_BAD_COLOR = 93
+	DGV_MIDDLE_COLOR = 94
+	DGV_GOOD_COLOR = 95
+	DGV_EXACT_COLOR = 96
+	DGV_QUESTING_AREA_COLOR = 97
 
 	--Sliders
 	DGV_MINIBLOBQUALITY = 200
@@ -325,7 +343,7 @@ local function LoadSettings()
 					SettingsRevision = 0,
 					WatchFrameSnapped = true,
 					GuideOn = true,
-					sz = 88, --Num check boxes
+					sz = 97, --Num check boxes
 					[DGV_QUESTLEVELON]			= { category = "Other",	text = "Display Quest Level", 	checked = false,	tooltip = "Show the quest level on the large and small frames", module = "Guides"},
 					[DGV_QUESTCOLORON] 		= { category = "Other",	text = "Color Code Quest", 	checked = true,		tooltip = "Color code quest against your character's level", module = "Guides"},
 					[DGV_LOCKSMALLFRAME] 		= { category = "Frames",	text = "Lock Small Frame", 	checked = false,	tooltip = "Lock small frame into place", module = "SmallFrame"},
@@ -356,8 +374,8 @@ local function LoadSettings()
                     [DGV_AUTOREPAIRGUILD]		= { category = "Other",		text = "Use Guild Bank",    	checked = false,   	tooltip = "Use guild funds when repairing automatically", indent=true,},
 					[DGV_AUTO_QUEST_TRACK] 		= { category = "Questing",	text = "Auto Quest Tracking",	checked = true,		tooltip = "Automatically add quest to the Objective Tracker on accept or objective update", module = "Guides", indent=false},
 					[DGV_GUIDESUGGESTMODE] 		= { category = "Questing",	text = "Guide Suggest Mode",	showOnRightColumn = true, checked = true,		tooltip = "Suggest guides for your player on level up", module = "Guides", indent=false,},
-					[DGV_SMALLFRAMEBORDER] 		= { category = "Borders",	text = "Small Frame Border",	checked = true,		tooltip = "Use the same border that is selected for the large frame", module = "SmallFrame"},
-					[DGV_WATCHFRAMEBORDER] 		= { category = "Borders",	text = "Objective Tracker Frame Border",	checked = true,		tooltip = "Add a border for the Objective Tracker Frame", module = "DugisWatchFrame"},
+					[DGV_SMALLFRAMEBORDER] 		= { category = "Frames",	text = "Small Frame Border", dY = -103, position = DGV_DISABLEWATCHFRAMEMOD + 1,	showOnRightColumn = true,	checked = true,	tooltip = "Use the same border that is selected for the large frame", module = "SmallFrame"},
+					[DGV_WATCHFRAMEBORDER] 		= { category = "Frames",	text = "Objective Tracker Frame Border", position = DGV_DISABLEWATCHFRAMEMOD + 2,	showOnRightColumn = true,	checked = true,		tooltip = "Add a border for the Objective Tracker Frame", module = "DugisWatchFrame"},
 					[DGV_REMOVEMAPFOG]     		= { category = "Maps",		text = "Remove Map Fog",  	checked = true,    	tooltip = "View undiscovered areas of the world map, type /reload in your chat box after change of settings",},
 					[DGV_HIGHLIGHTSTEPONENTER]	= { category = "Tooltip",	text = "Highlight Guide Steps",	checked = true,	tooltip = "Guide step text color intensifies when moused over", module = "SmallFrame"},
 					[DGV_DISPLAYCOORDINATES]	= { category = "Tooltip",	text = "Tooltip Coordinates",	checked = false,	tooltip = "Show destination coordinates in the status frame tooltip", module = "Guides"},
@@ -372,11 +390,11 @@ local function LoadSettings()
 					[DGV_BLINKMINIMAPICONS] 		= { category = "Maps",		text = "Blink Minimap Resource Nodes",  	checked = false,    	tooltip = "Resource nodes for gathering profession will blink in your minimap to make it easier to notice", module = "Disabled"},
 					[DGV_HIDE_MODELS_IN_WORLDMAP] 		= { category = "Maps",		text = "Hide Model Preview in World Map",  	checked = false,    	tooltip = "Hide Model Preview in World Map"},
 					[DGV_ENABLEMODELDB]		= { category = "Hide",	text = "Model Database",	checked = true,		tooltip = "Allows model viewer to function", module = "NpcsF"},
-					[DGV_ENABLENPCNAMEDB]		= { category = "Memory",	text = "NPC Name Database",	checked = true,		tooltip = "Provides localized NPC names. Required for target button.", module = "Disabled"},
-					[DGV_ENABLEQUESTLEVELDB]		= { category = "Memory",	text = "Quest Level Database",	checked = true,		tooltip = "Shows minimum level required for quests.\n\nAlso used for color coding the quests.", module = "ReqLevel"},
-					[DGV_UNLOADMODULES]		= { category = "Memory",	text = "Unload Modules",	checked = false,	tooltip = "Unloading modules will allow the addon to run on low memory setting in Essential Mode but will require a UI reload to return back to normal. ", module = "Guides"},
-					[DGV_ENABLED_MAPPREVIEW]	= { category = "Map Preview",	text = "Enabled Map Preview",		checked = true,		tooltip = "",},
-                    [DGV_MAPPREVIEWHIDEBORDER]	= { category = "Map Preview",	text = "Hide Border",		checked = true,		tooltip = "Hides the minimized map border when map preview is on.",},
+					[DGV_ENABLENPCNAMEDB]		= { category = "Other",	text = "NPC Name Database",	checked = true,		tooltip = "Provides localized NPC names. Required for target button.", module = "Disabled"},
+					[DGV_ENABLEQUESTLEVELDB]		= { category = "Other",	text = "Quest Level Database", showOnRightColumn = true,	checked = true,		tooltip = "Shows minimum level required for quests.\n\nAlso used for color coding the quests.", module = "ReqLevel"},
+					[DGV_UNLOADMODULES]		= { category = "Other",	text = "Unload Modules", showOnRightColumn = true,	checked = false,	tooltip = "Unloading modules will allow the addon to run on low memory setting in Essential Mode but will require a UI reload to return back to normal. ", module = "Guides"},
+					[DGV_ENABLED_MAPPREVIEW]	= { category = "Maps",	text = "Enabled Map Preview",showOnRightColumn = true,		checked = true,		tooltip = "",},
+                    [DGV_MAPPREVIEWHIDEBORDER]	= { category = "Maps",	text = "Hide Border",showOnRightColumn = true,		checked = true,	position = DGV_HIDE_MODELS_IN_WORLDMAP + 1,	tooltip = "Hides the minimized map border when map preview is on.",},
 					[DGV_AUTOQUESTITEMLOOT]	= { category = "Questing",	text = "Auto Loot Quest Item",	checked = true,		tooltip = "Automatically loot quest items.",},
 					[DGV_ACCOUNTWIDEACH]		= { category = "Other",text = "Account Wide Achievement",	checked = false,		tooltip = "Detects account wide achievements completion.", module = "Guides"},
 					[DGV_DISABLE_QUICK_SETTINGS]		= { category = "Other",text = "Disable Quick Settings Under "..[[|T]]..DugisGuideViewer.ARTWORK_PATH.."iconbutton"..[[:20:20|t]].."Icon",	checked = false,		tooltip = "", module = "Guides"},
@@ -401,7 +419,19 @@ local function LoadSettings()
 					[DGV_TARGETBUTTONCUSTOM]	= { category = "Target",	text = "Customize Macro",		checked = false,	tooltip = "Customize Target Macro", module = "Target", indent = true, editBox = "",},
 					[DGV_TARGETTOOLTIP]			= { category = "Target",		text = "Target Button Tooltip", checked = true, tooltip = "Display a tooltip for the target button to display the target name and model", indent = true, module = "Target"},						
 					[DGV_WAYPOINT_PING]			= { category = "Waypoints",		text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tWaypoint Reached Sound", checked = true, tooltip = "Plays a ping sound upon reaching each waypoint", showOnRightColumn = true},													
-
+					
+					[DGV_BAD_COLOR]			= { category = "Waypoints",	text = "Bad Color", checked = false, tooltip = "", showOnRightColumn = true},													
+					[DGV_MIDDLE_COLOR]			= { category = "Waypoints",	dX = 120, dY = 26,		text = "Middle Color", checked = false, tooltip = "", showOnRightColumn = true},													
+					[DGV_GOOD_COLOR]			= { category = "Waypoints",		text = "Good Color", checked = false, tooltip = "", showOnRightColumn = true},													
+					[DGV_EXACT_COLOR]			= { category = "Waypoints",	dX = 120, dY = 26,		text = "Exact Color", checked = false, tooltip = "", showOnRightColumn = true},													
+					[DGV_QUESTING_AREA_COLOR]	= { category = "Waypoints",	dX = 0, dY = -5,		text = "Questing Area Color", checked = false, tooltip = "", showOnRightColumn = true},													
+					
+					[DGV_ENABLED_GEAR_NOTIFICATIONS]			= { category = "Notifications",		text = "Gear Advisor Suggestions as Notifications", checked = true, tooltip = "If disabled standard gear suggestion prompts will be shown.", module = "GearAdvisor"},													
+					[DGV_ENABLED_GUIDE_NOTIFICATIONS]			= { category = "Notifications",		text = "Leveling Guide Suggestions as Notifications", checked = true, tooltip = "If disabled standard guide suggestion prompts will be shown.", module = "Guides"},													
+					
+					[DGV_ALWAYS_SHOW_STANDARD_PROMPT_GEAR]			= { category = "Notifications", indent = true, position = DGV_ENABLED_GEAR_NOTIFICATIONS, text = "Always Show Standard Prompt", checked = true, tooltip = "", module = "Guides"},													
+					[DGV_ALWAYS_SHOW_STANDARD_PROMPT_GUIDE]			= { category = "Notifications", indent = true, text = "Always Show Standard Prompt", checked = true, tooltip = "", module = "Guides"},													
+					
 					[DGV_GAWINCRITERIACUSTOM] = {category = "Gear Scoring", text = "Loot Suggestion Priority", tooltip = "Determines how gear should be scored, in order of greatest to least importance.", module = "GearAdvisor",
 						options = {
 							"Active Talent Specialization",
@@ -432,7 +462,7 @@ local function LoadSettings()
 							{	text = "Hard", colorCode = ORANGE_FONT_COLOR_CODE, },
 						}
 					},
-					[DGV_SMALLFRAMETRANSITION] 	= { category = "Borders",		text = "Small Frame Effect",	checked = "Flash", module = "SmallFrame",
+					[DGV_SMALLFRAMETRANSITION] 	= { category = "Frames",		text = "Small Frame Effect",	checked = "Flash", module = "SmallFrame",
 						options = {
 							{	text = "None", },
 							{	text = "Flash", },
@@ -445,7 +475,7 @@ local function LoadSettings()
 							{	text = "Transparent", },
 						}
 					},                    
-					[DGV_LARGEFRAMEBORDER] 		= { category = "Borders",		text = "Borders",	checked = "BlackGold",
+					[DGV_LARGEFRAMEBORDER] 		= { category = "Frames",		text = "Borders",	checked = "BlackGold",
 						options = {
 							{	text = "Default", },
 							{	text = "BlackGold", },
@@ -545,7 +575,7 @@ local function LoadSettings()
 							{	text = "Top Right", },
 						}
 					},
-					[DGV_MAPPREVIEWPOIS]			= {category = "Map Preview",	text = "Quest Objectives", checked = "Single Quest",
+					[DGV_MAPPREVIEWPOIS]			= {category = "Maps",	text = "Quest Objectives", checked = "Single Quest",
 						options = {
 							{	text = "All Available Quests", },
 							{	text = "All Tracked Quests", },
@@ -583,7 +613,7 @@ local function LoadSettings()
 					},						
 					[DGV_MINIBLOBQUALITY]		= { category = "Maps",	text = "Minimap Blob Quality",	checked = 0 },
 					[DGV_SHOWTOOLTIP]			= { category = "Tooltip",	text = "Auto Tooltip (%.1fs)", checked = 5, module = "SmallFrame", tooltip ="Amount of time the Tooltip will remain in view from the last mouse over on small frame" },
-					[DGV_MAPPREVIEWDURATION]	= {	category = "Map Preview",	text = "Duration (%.1fs)", checked = 5, tooltip = "Amount of time the Map Preview should remain in view (zero to disable).  Enabling this feature will automatically set the world map to windowed mode on reload." },
+					[DGV_MAPPREVIEWDURATION]	= {	category = "Maps",	text = "Duration (%.1fs)", checked = 5, tooltip = "Amount of time the Map Preview should remain in view (zero to disable).  Enabling this feature will automatically set the world map to windowed mode on reload." },
 					[DGV_SMALLFRAMEFONTSIZE]	= {	category = "Display",	text = "Small Frame Font Size (%.1f)", checked = 12, module = "SmallFrame", tooltip = "Size of the font in the Small Frame." },
 					[DGV_MOUNT_DELAY]	= {	category = "Auto Mount",	text = "Delay After Spell (%.1fs)", checked = 6, tooltip = "" },
                     [DGV_DISPLAYGUIDESPROGRESS] 	= { category = "Display",	text = "Show Progress Bar", 	checked = true,	tooltip = "Show Progress Bar", module = "SmallFrame"},
@@ -692,6 +722,7 @@ function DugisGuideViewer:OnInitialize()
 	self:RegisterEvent("CRITERIA_UPDATE")
 	self:RegisterEvent("TRADE_SKILL_UPDATE")
 	self:RegisterEvent("PLAYER_LEVEL_UP")
+	self:RegisterEvent("PLAYER_XP_UPDATE")
 	self:RegisterEvent("PLAYER_LOGOUT")
     self:RegisterEvent("PLAYER_LEAVING_WORLD")
 	self:RegisterEvent("PET_BATTLE_OPENING_START")
@@ -705,27 +736,24 @@ function DugisGuideViewer:OnInitialize()
 		{ value = "Questing", 	text = L["Questing"], 	icon = nil }, --2
 		{ value = "Waypoints", 	text = L["Waypoints"], icon = nil }, --3
 		{ value = "Display", 	text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Display"], 	icon = nil }, --4
-		{ value = "Borders", 	text = L["Borders"], 	icon = nil }, --5
-		{ value = "Frames", 	text = L["Frames"], 	icon = nil }, --6
-		{ value = "Maps", 		text = L["Maps"], 		icon = nil }, --7
-		{ value = "Map Preview",text = L["Map Preview"],icon = nil }, --8
-		{ value = "Taxi System",text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Taxi System"],icon = nil }, --9
-		{ value = "Target",		text = L["Target Button"],	icon = nil }, --10
-		{ value = "Tooltip", 	text = L["Tooltip"], 	icon = nil }, --11
-		{ value = "Gear Set",		text = L["Gear Set"],		icon = nil },		 --12	
-		{ value = "Gear Scoring",		text = L["Gear Scoring"],		icon = nil }, --13
-		{ value = "Gear Finder",		text = L["Gear Finder"],		icon = nil }, --14
-		{ value = "Memory", 	text = L["Memory"], 	icon = nil }, --15
-		{ value = "Auto Mount", 		text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Auto Mount"], 	icon = nil }, --16
-		{ value = "Other", 		text = L["Other"], 	icon = nil }, --17
-		{ value = "Profiles", 	text = L["Profiles"] }, --18
+		{ value = "Frames", 	text = L["Frames"], 	icon = nil }, --5
+		{ value = "Maps", 		text = L["Maps"], 		icon = nil }, --6
+		{ value = "Taxi System",text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Taxi System"],icon = nil }, --7
+		{ value = "Target",		text = L["Target Button"],	icon = nil }, --8
+		{ value = "Tooltip", 	text = L["Tooltip"], 	icon = nil }, --9
+		{ value = "Gear Set",		text = L["Gear Set"],		icon = nil },		 --10	
+		{ value = "Gear Scoring",		text = L["Gear Scoring"],		icon = nil }, --11
+		{ value = "Gear Finder",		text = L["Gear Finder"],		icon = nil }, --12
+		{ value = "Auto Mount", 		text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Auto Mount"], 	icon = nil }, --13
+		{ value = "Notifications", 		text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Notifications"], 	icon = nil }, --14
+		{ value = "Other", 		text = L["Other"], 	icon = nil }, --15
+		{ value = "Profiles", 	text = L["Profiles"] }, --16
 	}
 
-	if not DugisGuideViewer:IsModuleRegistered("Guides") then tremove(CATEGORY_TREE, 15) end --Memory will be empty
-    if not DugisGuideViewer:IsModuleRegistered("GearFinder") or not DugisGearFinder.allGearIds then tremove(CATEGORY_TREE, 14) end --Gear Finder 
-	if not DugisGuideViewer:IsModuleRegistered("Guides") then tremove(CATEGORY_TREE, 11) end --Tooltip
+    if not DugisGuideViewer:IsModuleRegistered("GearFinder") or not DugisGearFinder.allGearIds then tremove(CATEGORY_TREE, 12) end --Gear Finder 
+	if not DugisGuideViewer:IsModuleRegistered("Guides") then tremove(CATEGORY_TREE, 9) end --Tooltip
 
-	if not DugisGuideViewer:IsModuleRegistered("Target") then tremove(CATEGORY_TREE, 10) end --Target
+	if not DugisGuideViewer:IsModuleRegistered("Target") then tremove(CATEGORY_TREE, 8) end --Target
 	if not DugisGuideViewer:IsModuleRegistered("Guides") then tremove(CATEGORY_TREE, 4) end --Display
 	
 	LoadSettings()
@@ -751,7 +779,8 @@ function DugisGuideViewer:OnInitialize()
     DugisGuideViewer:UpdateAutoMountEnabled()
     
     GUIUtils:CreatePreloader("MainFramePreloader", DugisMain)
-    MainFramePreloader:SetFrameStrata("HIGH")
+    MainFramePreloader:SetFrameStrata("DIALOG")
+    MainFramePreloader:SetFrameLevel(120)
     
 end
 
@@ -869,11 +898,267 @@ function DugisGuideViewer:RestoreFramesPositions()
     end
 end
 
+function DugisGuideViewer:UpdateNotificationsMarkVisibility()
+    local notifications = DugisGuideViewer:GetNotifications()
+    
+    if #notifications > 0 then
+        NotificationsMark:Show()
+    else
+        NotificationsMark:Hide()
+    end
+end
+
+local notificationsData = {}
+
+function DugisGuideViewer:GetNotifications()
+    return notificationsData
+end
+
+function DugisGuideViewer:SetNotifications(notifications)
+    notificationsData = notifications
+    DugisGuideViewer:UpdateNotificationsMarkVisibility()
+end
+
+local visualNotifications = {}
+
+function DugisGuideViewer:NotificationsVisible()
+    return true
+end
+
+function DugisGuideViewer:Notification2VisualNotification(id)
+    local result
+    LuaUtils:foreach(visualNotifications, function(visualNotification)
+        if visualNotification.id == id then
+            result = visualNotification
+            return "break"
+        end
+    end)
+    return result
+end
+
+local lastUsedId = 0
+function DugisGuideViewer:AddNotification(definition)
+    local notifications = DugisGuideViewer:GetNotifications()
+    
+    --Check if some gear suggestion already exists. In case it does remove it.
+    LuaUtils:foreach(notifications, function(notification, index)
+        if notification.notificationType == "gear-suggestion" then
+            DugisGuideViewer:RemoveNotification(notification.id)
+        end
+    end)
+    
+    definition = definition or {}
+    
+    notifications[#notifications + 1] = {
+        title = definition.title
+        , notificationType = definition.notificationType
+        , id = lastUsedId
+    }
+    
+    lastUsedId = lastUsedId + 1
+    
+    DugisGuideViewer:SetNotifications(notifications)
+	
+	return notifications[#notifications]
+end
+
+function DugisGuideViewer:RemoveNotification(id)
+    local notifications = DugisGuideViewer:GetNotifications()
+    
+    LuaUtils:foreach(notifications, function(notification, index)
+        if notification.id == id then
+            table.remove(notifications, index)
+        end
+    end)
+    
+    DugisGuideViewer:SetNotifications(notifications)
+end
+
+function DugisGuideViewer:RemoveGuideSuggestionNotifications()
+	local notification = DugisGuideViewer:GetNotificationByType("guide-suggestion")
+	if notification then
+		self:RemoveNotification(notification.id)
+	end	
+end
+
+function DugisGuideViewer:RemoveNotificationWithAnimation(id)
+    local visualNotification = DugisGuideViewer:Notification2VisualNotification(id)
+    if visualNotification then
+        LuaUtils:FadeOut(visualNotification, 1, 0, 0.7, 
+        function()
+            DugisGuideViewer:RemoveNotification(id)
+            DugisGuideViewer:ShowNotifications()
+            DugisGuideViewer.RefreshMainMenu()
+        end)
+    end
+end
+
+function DugisGuideViewer:GetNotification(id)
+    local notifications = DugisGuideViewer:GetNotifications()
+    local result
+    
+    LuaUtils:foreach(notifications, function(notification, index)
+        if notification.id == id then
+            result = notification
+            return "break"
+        end
+    end)
+    
+    return result
+end
+
+function DugisGuideViewer:GetNotificationByTitle(title)
+    local notifications = DugisGuideViewer:GetNotifications()
+    local result
+    if #notifications > 0 then
+        LuaUtils:foreach(notifications, function(notification, index)
+            if notification.title == title then
+                result = notification
+                return "break"
+            end
+        end)
+    end
+    
+    return result
+end
+
+function DugisGuideViewer:GetNotificationByType(notificationType)
+    local notifications = DugisGuideViewer:GetNotifications()
+    local result
+    if #notifications > 0 then
+        LuaUtils:foreach(notifications, function(notification, index)
+            if notification.notificationType == notificationType then
+                result = notification
+                return "break"
+            end
+        end)
+    end
+    
+    return result
+end
+
+
+local lastNotificationParent = nil
+local lastNotificationsConfig = nil
+
+function DugisGuideViewer:ShowNotifications(parent, config)
+
+    if not parent and not lastNotificationParent then
+        return
+    end
+    
+    lastNotificationParent = parent or lastNotificationParent
+    lastNotificationsConfig = config or lastNotificationsConfig or {}
+
+    local notifications = DugisGuideViewer:GetNotifications()
+    
+    local dY = 0
+    
+    DugisGuideViewer:HideNotifications()
+    
+    LuaUtils:foreach(notifications, function(notification, index)
+        --Building notification 
+        local visualNotification
+        
+        if visualNotifications[index] then
+            visualNotification = visualNotifications[index]
+        else
+            visualNotifications[index] = CreateFrame("Button", nil, lastNotificationParent, "NotificationItemTemplate")
+            visualNotification = visualNotifications[index]
+        end
+        
+        if DugisGuideViewer:NotificationsVisible() then
+            visualNotification:Show()
+        end
+        
+        visualNotification:SetAlpha(1)
+        visualNotification:ClearAllPoints()       
+        
+        visualNotification:SetPoint("TOPLEFT", lastNotificationParent, "TOPLEFT", (lastNotificationsConfig.dX or 0), dY + (lastNotificationsConfig.dY or 0))
+        visualNotification:SetPoint("RIGHT", lastNotificationParent, "RIGHT", -(lastNotificationsConfig.dX or 0), 0)
+
+        visualNotification.Title:SetText(notification.title)  
+        
+        local height = visualNotification.Title:GetHeight() + 5
+        
+        if height < 20 then 
+            height = 20
+        end        
+        
+        visualNotification:SetHeight(height)        
+        visualNotification.Background:SetHeight(height)  
+
+        dY = dY - height - 1                
+        
+        visualNotification.id = notification.id
+    end)
+    
+    DugisGuideViewer:UpdateNotificationsMarkVisibility()
+    
+    return -dY
+end
+
+function DugisGuideViewer:HideNotifications()
+    LuaUtils:foreach(visualNotifications, function(visualNotification)
+        visualNotification:Hide()
+    end)
+end
+
+function DugisGuideViewer:OnNotificationClicked(notification)
+    if notification.notificationType == "gear-suggestion" then
+        DugisEquipPromptFrame:Show()
+        DugisEquipPromptFrame.notificationId = notification.id
+        
+        LuaUtils:FadeOut(LibDugi_DropDownList1, 1, 0, 0.7, 
+        function()
+            DugisGuideViewer:RemoveNotification(notification.id)
+            DugisGuideViewer:UpdateNotificationsMarkVisibility()
+            LibDugi_DropDownList1:Hide()
+            LibDugi_DropDownList1:SetAlpha(1)
+        end)
+		return
+        
+    end    
+	
+    if notification.notificationType == "guide-suggestion" then
+        DugisGuideViewer:AskGuideSuggest(UnitLevel("player"))
+        LuaUtils:FadeOut(LibDugi_DropDownList1, 1, 0, 0.7, 
+        function()
+            DugisGuideViewer:RemoveNotification(notification.id)
+            DugisGuideViewer:UpdateNotificationsMarkVisibility()
+            LibDugi_DropDownList1:Hide()
+            LibDugi_DropDownList1:SetAlpha(1)
+        end)
+		return
+    end
+	
+    DugisGuideViewer:RemoveNotificationWithAnimation(notification.id)
+end
+
+function DugisGuideViewer:OnNotificationDismissClicked(notification)
+    if notification.notificationType == "gear-suggestion" then
+        DugisEquipPromptFrame:Show()
+        DugisEquipPromptFrameCancelButton:Click()
+    end
+end
+
+--/run TestNotifications()
+function TestNotifications()
+    DugisGuideViewer:AddNotification({title = "Test notification 1"})
+    DugisGuideViewer:AddNotification({title = "Test notification 2"})
+    DugisGuideViewer:AddNotification({title = "Test notification 3"})
+    DugisGuideViewer:AddNotification({title = "Test notification 4"})
+    DugisGuideViewer:ShowNotifications()
+    DugisGuideViewer.RefreshMainMenu()
+end
+
 function DugisGuideViewer:OnLoad()
 	--DugisGuideViewer.Target:Init( )
 	--DugisGuideViewer.chardb.GuideOn = true
 	--DugisGuideViewer.StickyFrame:Init( )
 	
+    --TestNotifications()
+    
 	self:SetAllBorders()
 	DugisGuideViewer:SetMemoryOptions()
 
@@ -1217,6 +1502,69 @@ function DugisGuideViewer:UpdateSetsExcludingInSettings(frame)
     
 end
 
+--Configuration
+local rightColumnX = 300
+local columnPaddingLeft = 16
+
+function DugisGuideViewer:InsertControlBeforeCheckbox(SettingNum, category, top, topRightColumn, frame)
+	if category=="Maps" and SettingNum == DGV_MAPPREVIEWHIDEBORDER then
+        --Map preview title
+		local fontstring = frame:CreateFontString(nil,"ARTWORK", "GameFontNormalLarge")
+		fontstring:SetText(L["Map Preview"])
+		fontstring:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX + columnPaddingLeft, topRightColumn + 24)    
+	end
+	
+    if category=="Frames" and SettingNum == DGV_SMALLFRAMEBORDER then
+        --Borders
+		local fontstring = frame:CreateFontString(nil,"ARTWORK", "GameFontNormalLarge")
+		fontstring:SetText(L["Borders"])
+		fontstring:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX + columnPaddingLeft, topRightColumn - 77)    
+	end
+	
+	if category=="Waypoints" and SettingNum == DGV_BAD_COLOR then
+		local fontstring = frame:CreateFontString(nil,"ARTWORK", "GameFontNormal")
+		fontstring:SetText(L["Dugi Arrow Colors"])
+		fontstring:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX + columnPaddingLeft, topRightColumn - 7)   
+	    topRightColumn = topRightColumn - 30
+	end
+	
+	if category=="Other" and SettingNum == DGV_ENABLEQUESTLEVELDB and (DugisGuideViewer:IsModuleRegistered("Guides") 
+	or DugisGuideViewer:IsModuleRegistered("ReqLevel") ) then
+        --Memory
+		local fontstring = frame:CreateFontString(nil,"ARTWORK", "GameFontNormalLarge")
+		fontstring:SetText(L["Memory"])
+		fontstring:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX + columnPaddingLeft, topRightColumn + 24)    
+	end	
+    
+    return top, topRightColumn
+end
+
+function DugisGuideViewer:InsertControlAfterCheckbox(SettingNum, category, top, topRightColumn, frame)
+	--Reset Profile Button
+	if category=="Waypoints" and not DGV_ResetColorsButton and SettingNum == DGV_QUESTING_AREA_COLOR then
+	
+		topRightColumn = topRightColumn - 15
+		local button = CreateFrame("Button", "DGV_ResetColorsButton", frame, "UIPanelButtonTemplate")
+		local btnText = L["Default Colors"]
+		local fontwidth = DugisGuideViewer:GetFontWidth(btnText, "GameFontHighlight")
+		button:SetText(btnText)
+		button:SetWidth(fontwidth + 30)
+		button:SetHeight(22)
+		button:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX + columnPaddingLeft, topRightColumn)
+		button:RegisterForClicks("LeftButtonUP")
+		button:SetScript("OnClick", function() 
+			DugisGuideViewer.onColorChange("DGV_BAD_COLOR", unpack(DugisGuideViewer.defaultBadArrowColor))
+			DugisGuideViewer.onColorChange("DGV_MIDDLE_COLOR", unpack(DugisGuideViewer.defaultMiddleArrowColor))
+			DugisGuideViewer.onColorChange("DGV_GOOD_COLOR", unpack(DugisGuideViewer.defaultGoodArrowColor))
+			DugisGuideViewer.onColorChange("DGV_EXACT_COLOR", unpack(DugisGuideViewer.defaultExactArrowColor))
+			DugisGuideViewer.onColorChange("DGV_QUESTING_AREA_COLOR", unpack(DugisGuideViewer.defaultQuestingAreaColor))
+		end)
+	end
+
+    
+    return top, topRightColumn
+end
+
 
 local AceGUI = LibStub("AceGUI-3.0")
 local function GetSettingsCategoryFrame(category, parent)
@@ -1232,13 +1580,29 @@ local function GetSettingsCategoryFrame(category, parent)
 	
 		local fontstring = frame:CreateFontString(nil,"ARTWORK", "GameFontNormalLarge")
 		fontstring:SetText(L[category])
-		fontstring:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -16)
+		fontstring:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, -16)
 	end
 	
 	local SettingsDB = 	DugisGuideViewer.chardb
 	local top = -40
     local topRightColumn = -40
+	
+	local checkboxesInfo = {}
+	
 	for SettingNum = 1, SettingsDB.sz do
+		checkboxesInfo[#checkboxesInfo + 1] = {SettingNum = SettingNum, info = SettingsDB[SettingNum]}
+	end
+	
+    --Sorting table by ids (standard past behaviour). In case position parameter exists sorts by position.
+    table.sort(checkboxesInfo, function(a, b)
+		local position_a = a.info.position or a.SettingNum
+		local position_b = b.info.position or b.SettingNum
+		
+		return position_a < position_b
+    end)
+
+	LuaUtils:foreach(checkboxesInfo, function(info)
+		local SettingNum = info.SettingNum
 		if SettingsDB[SettingNum].category==category
 			and(not DugisGuideViewer:GetDB(SettingNum, "module") 
 			or DugisGuideViewer:IsModuleRegistered(DugisGuideViewer:GetDB(SettingNum, "module")))
@@ -1247,6 +1611,8 @@ local function GetSettingsCategoryFrame(category, parent)
 			local chkBox = _G[chkBoxName]
 			if not chkBox then
 
+				top, topRightColumn = DugisGuideViewer:InsertControlBeforeCheckbox(SettingNum, category, top, topRightColumn, frame)
+				
 				chkBox = CreateFrame("CheckButton", chkBoxName, frame, "InterfaceOptionsCheckButtonTemplate")
                 
                 local topValue = top
@@ -1258,7 +1624,7 @@ local function GetSettingsCategoryFrame(category, parent)
                         topRightColumn = topRightColumn + 15
                     end     
                 
-                    xShift = 300
+                    xShift = rightColumnX
                     
                     if SettingNum == DGV_DISPLAYALLSTATS then
                        -- topRightColumn = topRightColumn + 25
@@ -1266,17 +1632,21 @@ local function GetSettingsCategoryFrame(category, parent)
                     end
                     
                     topValue = topRightColumn
-                    
+					
+					topValue = topValue + (SettingsDB[SettingNum].dY or 0)
                     topRightColumn = topRightColumn - chkBox:GetHeight()
-                    
+                    topRightColumn = topRightColumn + (SettingsDB[SettingNum].dY or 0)
 				else
                     top = top - chkBox:GetHeight()
+					top = top + (SettingsDB[SettingNum].dY or 0)
                 end
                 
+				xShift = xShift + (SettingsDB[SettingNum].dX or 0)
+				
 				if SettingsDB[SettingNum].indent then
 					chkBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 40 + xShift, topValue)
 				else
-					chkBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 16 + xShift, topValue)
+					chkBox:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft + xShift, topValue)
 				end
 				chkBox.Text:SetText(L[SettingsDB[SettingNum].text])
 				chkBox:SetHitRectInsets(0, 0, 0, 0)
@@ -1298,11 +1668,42 @@ local function GetSettingsCategoryFrame(category, parent)
                     fontstring:SetText("Search gears from raid guides:")
                     fontstring:SetPoint("TOPLEFT", frame, "TOPLEFT", 18 + xShift, top - 5)
                     top = top - fontstring:GetStringHeight() - 10
-                end                
+                end  
+
+				top, topRightColumn = DugisGuideViewer:InsertControlAfterCheckbox(SettingNum, category, top, topRightColumn, frame)	
                 
 			end
 			chkBox:SetChecked(SettingsDB[SettingNum].checked)
 		end
+	end)
+	
+	if category=="Waypoints" then
+		function DugisGuideViewer.onColorChange(id, r, g, b)
+			DugisGuideUser[id] = {r, g, b}
+			DugisArrowGlobal.lastAngle = -1000
+			
+			_G["DGV.ChkBox".._G[id]]:SetColor({r, g, b})
+		end
+	
+		GUIUtils:MakeColorPicker(_G["DGV.ChkBox"..DGV_BAD_COLOR], DugisGuideUser.DGV_BAD_COLOR or DugisGuideViewer.defaultBadArrowColor , function(r, g, b)
+			DugisGuideViewer.onColorChange("DGV_BAD_COLOR", r, g, b)
+		end)
+		
+		GUIUtils:MakeColorPicker(_G["DGV.ChkBox"..DGV_MIDDLE_COLOR], DugisGuideUser.DGV_MIDDLE_COLOR or DugisGuideViewer.defaultMiddleArrowColor, function(r, g, b)
+			DugisGuideViewer.onColorChange("DGV_MIDDLE_COLOR", r, g, b)
+		end)	
+		
+		GUIUtils:MakeColorPicker(_G["DGV.ChkBox"..DGV_GOOD_COLOR], DugisGuideUser.DGV_GOOD_COLOR or DugisGuideViewer.defaultGoodArrowColor, function(r, g, b)
+			DugisGuideViewer.onColorChange("DGV_GOOD_COLOR", r, g, b)
+		end)
+		
+		GUIUtils:MakeColorPicker(_G["DGV.ChkBox"..DGV_EXACT_COLOR], DugisGuideUser.DGV_EXACT_COLOR or DugisGuideViewer.defaultExactArrowColor, function(r, g, b)
+			DugisGuideViewer.onColorChange("DGV_EXACT_COLOR", r, g, b)
+		end)
+		
+		GUIUtils:MakeColorPicker(_G["DGV.ChkBox"..DGV_QUESTING_AREA_COLOR], DugisGuideUser.DGV_QUESTING_AREA_COLOR or DugisGuideViewer.defaultQuestingAreaColor, function(r, g, b)
+			DugisGuideViewer.onColorChange("DGV_QUESTING_AREA_COLOR", r, g, b)
+		end)
 	end
 	
 	--Customize macro edit box
@@ -1320,7 +1721,7 @@ local function GetSettingsCategoryFrame(category, parent)
 			if SettingsDB[DGV_TARGETBUTTONCUSTOM].indent then
 				chkBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 40, top)
 			else
-				chkBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, top)
+				chkBox:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, top)
 			end
 			chkBox.Text:SetText(L[SettingsDB[DGV_TARGETBUTTONCUSTOM].text])
 			chkBox:SetHitRectInsets(0, -200, 0, 0)
@@ -1382,7 +1783,7 @@ local function GetSettingsCategoryFrame(category, parent)
 		button:SetText(btnText)
 		button:SetWidth(fontwidth + 30)
 		button:SetHeight(22)
-		button:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, top-3)
+		button:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, top-3)
 		top = top-3-button:GetHeight()
 		button:RegisterForClicks("LeftButtonUP")
 		button:SetScript("OnClick", 
@@ -1504,7 +1905,7 @@ local function GetSettingsCategoryFrame(category, parent)
                       parent = frame
                     , name                    = "mountsList"
                     , data                    = PrepareMountsForTree(mountType)
-                    , x                       = 300
+                    , x                       = rightColumnX
                     , y                       = -10
                     , nodesOffsetY            = -10
                     , width                   = 420
@@ -1559,7 +1960,7 @@ local function GetSettingsCategoryFrame(category, parent)
                 button.normal:SetHeight(32)
                 button.highlight:SetWidth(32)
                 button.highlight:SetHeight(32)
-                button:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, y)
+                button:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, y)
                 button:Show()
                 button:SetNormalTexture("Interface\\PaperDoll\\UI-Backpack-EmptySlot")
                 button:SetScript("OnClick", function()
@@ -1586,7 +1987,7 @@ local function GetSettingsCategoryFrame(category, parent)
             button:SetText(btnText)
             button:SetWidth(fontwidth + 20)
             button:SetHeight(22)
-            button:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -300)
+            button:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, -rightColumnX)
             button:RegisterForClicks("LeftButtonUP")
             button:SetScript("OnClick", function() 
                 GUIUtils:ShowBindings("Dugi Guides")
@@ -1677,7 +2078,7 @@ local function GetSettingsCategoryFrame(category, parent)
 		button:SetText(btnText)
 		button:SetWidth(fontwidth + 30)
 		button:SetHeight(22)
-		button:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, top-3)
+		button:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, top-3)
 		top = top-3-button:GetHeight()
 		--button:SetPoint("TOPLEFT", "DGV.ChkBox6", "BOTTOMLEFT", "0", "-3")
 		button:RegisterForClicks("LeftButtonUP")
@@ -1705,7 +2106,7 @@ local function GetSettingsCategoryFrame(category, parent)
         local deltaY = 10
 		local fontstring = frame:CreateFontString("DugisGearScoringLabel","ARTWORK", "GameFontNormalLarge")
 		fontstring:SetText(SettingsDB[DGV_GAWINCRITERIACUSTOM].text)
-		fontstring:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -175 - deltaY, top)
+		fontstring:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, -175 - deltaY, top)
 		fontstring:SetJustifyV("TOP")
 		top = top - fontstring:GetStringHeight() - 5
 		
@@ -1891,7 +2292,7 @@ local function GetSettingsCategoryFrame(category, parent)
 		classDropDownLabel:SetText(L["Class"])
 		classDropDownLabel:SetWidth(classDropDownLabel:GetStringWidth())
 		classDropDownLabel:SetHeight(40)
-		classDropDownLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, top)
+		classDropDownLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, top)
         
 		local dropdown = self:CreateDropdown(
 				"DugisGearWeightsClassDropdown", 
@@ -1934,7 +2335,7 @@ local function GetSettingsCategoryFrame(category, parent)
 		specizlizationDropDownLabel:SetText(L["Specialization"])
 		specizlizationDropDownLabel:SetWidth(specizlizationDropDownLabel:GetStringWidth())
 		specizlizationDropDownLabel:SetHeight(40)
-		specizlizationDropDownLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, top)
+		specizlizationDropDownLabel:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, top)
         
         function IsSpecializationAvaliable(specIndex)
             return DugisGuideViewer.Modules.GearAdvisor:SpecExists(specIndex)
@@ -1977,7 +2378,7 @@ local function GetSettingsCategoryFrame(category, parent)
 			DugisGuideViewer.Modules.GearAdvisor.scrollFrame.scrollBar:SetValue(DugisGuideViewer.Modules.GearAdvisor.scrollFrame.scrollBar:GetValue() - delta * 24)  
 		end)          
         
-        scrollFrame.frame:SetPoint("TOPLEFT", frame,"TOPLEFT", 300, -15)
+        scrollFrame.frame:SetPoint("TOPLEFT", frame,"TOPLEFT", rightColumnX, -15)
         
         scrollFrame.scrollBar:SetHeight(250)
         scrollFrame.scrollBar:ClearAllPoints()
@@ -2025,7 +2426,7 @@ local function GetSettingsCategoryFrame(category, parent)
 		button:SetText(btnText)
 		button:SetWidth(fontwidth + 30)
 		button:SetHeight(22)
-		button:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, top-3)
+		button:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, top-3)
 		button:RegisterForClicks("LeftButtonUP")
 		button:SetScript("OnClick", function() 
             DugisGuideViewer.Modules.GearAdvisor:ResetWeights()
@@ -2208,7 +2609,7 @@ local function GetSettingsCategoryFrame(category, parent)
 		button:SetText(btnText)
 		button:SetWidth(fontwidth + 30)
 		button:SetHeight(22)
-		button:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, top-3)
+		button:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, top-3)
 		top = top-3-button:GetHeight()
 		--button:SetPoint("TOPLEFT", "DGV.ChkBox6", "BOTTOMLEFT", "0", "-3")
 		button:RegisterForClicks("LeftButtonUP")
@@ -2224,7 +2625,7 @@ local function GetSettingsCategoryFrame(category, parent)
 		button:SetText(btnText)
 		button:SetWidth(fontwidth + 30)
 		button:SetHeight(22)
-		button:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, top-3)
+		button:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, top-3)
 		top = top-3-button:GetHeight()
 		--button:SetPoint("TOPLEFT", "DGV.ChkBox6", "BOTTOMLEFT", "0", "-3")
 		button:RegisterForClicks("LeftButtonUP")
@@ -2242,7 +2643,7 @@ local function GetSettingsCategoryFrame(category, parent)
 		button:SetText(btnText)
 		button:SetWidth(fontwidth + 30)
 		button:SetHeight(22)
-		button:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, top-3)
+		button:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, top-3)
 		top = top-3-button:GetHeight()
 		--button:SetPoint("TOPLEFT", "DGV.ChkBox6", "BOTTOMLEFT", "0", "-3")
 		button:RegisterForClicks("LeftButtonUP")
@@ -2252,15 +2653,15 @@ local function GetSettingsCategoryFrame(category, parent)
 	end
 	
 	--Memory settings Apply button
-	if category=="Memory" and not DGV_MemoryApplyButton and DugisGuideViewer:IsModuleRegistered("Guides") then
+	if category=="Other" and not DGV_MemoryApplyButton and DugisGuideViewer:IsModuleRegistered("Guides") then
 		local button = CreateFrame("Button", "DGV_MemoryApplyButton", frame, "UIPanelButtonTemplate")
 		local btnText = L["Apply Memory Settings"]
 		local fontwidth = DugisGuideViewer:GetFontWidth(btnText, "GameFontHighlight")
 		button:SetText(btnText)
 		button:SetWidth(fontwidth + 30)
 		button:SetHeight(22)
-		button:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, top-3)
-		top = top-3-button:GetHeight()
+		button:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX + columnPaddingLeft, topRightColumn-3)
+		topRightColumn = topRightColumn-3-button:GetHeight()
 		button:RegisterForClicks("LeftButtonUP")
 		button:SetScript("OnClick", function() DugisGuideViewer:ReloadModules() end)
 	end
@@ -2301,8 +2702,9 @@ local function GetSettingsCategoryFrame(category, parent)
 		or DugisGuideViewer:IsModuleRegistered(DugisGuideViewer:GetDB(DGV_SMALLFRAMETRANSITION, "module")))
 		and not DGV_StatusFrameEffectDropdown
 	then
+		topRightColumn = topRightColumn-27
 		local dropdown = self:CreateDropdown("DGV_StatusFrameEffectDropdown", frame, "Small Frame Effect", DGV_SMALLFRAMETRANSITION, self.StatusFrameEffectDropDown_OnClick)
-		dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, top)
+		dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX, topRightColumn)
 	end
 	if DGV_StatusFrameEffectDropdown then
 		LibDugi_UIDropDownMenu_Initialize(DGV_StatusFrameEffectDropdown, DGV_StatusFrameEffectDropdown.initFunc)
@@ -2319,11 +2721,10 @@ local function GetSettingsCategoryFrame(category, parent)
 
 	--Large Frame Border  Dropdown
 	if SettingsDB[DGV_LARGEFRAMEBORDER].category==category  and not DGV_LargeFrameBorderDropdown then
-		local dropdown = self:CreateDropdown("DGV_LargeFrameBorderDropdown", frame, "Borders", DGV_LARGEFRAMEBORDER, self.LargeFrameBorderDropdown_OnClick)
+		local dropdown = self:CreateDropdown("DGV_LargeFrameBorderDropdown", frame, "Frames", DGV_LARGEFRAMEBORDER, self.LargeFrameBorderDropdown_OnClick)
 		local left = 3
 		if DGV_StatusFrameEffectDropdownTitle then left = DGV_StatusFrameEffectDropdownTitle:GetWidth() + 20 end
-		dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", left, top)
-		top = top-22-dropdown:GetHeight()
+		dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX + left, topRightColumn)
 	end
 	if DGV_LargeFrameBorderDropdown then
 		LibDugi_UIDropDownMenu_Initialize(DGV_LargeFrameBorderDropdown, DGV_LargeFrameBorderDropdown.initFunc)
@@ -2400,9 +2801,11 @@ local function GetSettingsCategoryFrame(category, parent)
 	
 	--Map Preview POIs
 	if SettingsDB[DGV_MAPPREVIEWPOIS].category==category and not DGV_MapPreviewPOIsDropdown then
+		topRightColumn = topRightColumn-27
 		local dropdown = self:CreateDropdown("DGV_MapPreviewPOIsDropdown", frame, "Preview Quest Objectives", DGV_MAPPREVIEWPOIS, self.MapPreviewPOIsDropdown_OnClick)
-		dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, top)
-		top = top-22-dropdown:GetHeight()
+		dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX, topRightColumn)
+		
+		topRightColumn = topRightColumn-dropdown:GetHeight()
 	end
 	if DGV_MapPreviewPOIsDropdown then
 		LibDugi_UIDropDownMenu_Initialize(DGV_MapPreviewPOIsDropdown, DGV_MapPreviewPOIsDropdown.initFunc)
@@ -2606,14 +3009,16 @@ local function GetSettingsCategoryFrame(category, parent)
 				DugisGuideViewer.MapPreview:ConfigChanged()
 			end
 		end)
-		slider:SetPoint("TOPLEFT", frame, "TOPLEFT", 23, top)
+		topRightColumn = topRightColumn-27
+		
+		slider:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX + 20, topRightColumn)
 		if DugisGuideViewer.carboniteloaded then
 			_G[slider:GetName() .. 'Text']:SetTextColor(0.5, 0.5, 0.5)
 			_G[slider:GetName() .. 'Low']:SetTextColor(0.5, 0.5, 0.5)
 			_G[slider:GetName() .. 'High']:SetTextColor(0.5, 0.5, 0.5)
 			slider:Disable()
 		end
-		top = top-30-slider:GetHeight()
+		topRightColumn = topRightColumn-slider:GetHeight()
 	end
 	if DGV_MapPreviewSlider then
 		DGV_MapPreviewSlider:SetValue(DugisGuideViewer:GetDB(DGV_MAPPREVIEWDURATION) or 1)
@@ -3480,7 +3885,7 @@ local function ToggleConfig()
 		DugisGuideViewer:ShowLargeWindow()
 	end
     local NPCJournalFrame = DugisGuideViewer.NPCJournalFrame
-    if NPCJournalFrame and NPCJournalFrame.Update then
+    if NPCJournalFrame and NPCJournalFrame.Update and not DugiGuidesIsLoading then
         NPCJournalFrame:Update()
     end
 end
@@ -3565,7 +3970,7 @@ function DugisGuideViewer:OnOff_OnClick(self, event)
             if LibDugi_DropDownList1 and LibDugi_DropDownList1:IsVisible() then
                 LibDugi_CloseDropDownMenus(1)
             else
-                DugisGuideViewer.ShowMainMenu(DugisGuideViewer.ClickedMenuItem)  
+                DugisGuideViewer.ShowMainMenu()  
             end
         else
             --Old switching
@@ -5014,7 +5419,30 @@ function DugisGuideViewer.GetPluginMode()
     return isGuideMode, isEssentialMode, isOffMode
 end
 
-function DugisGuideViewer.ShowMainMenu(clickCallback)
+
+function DugisGuideViewer.RefreshMainMenu()
+    if LibDugi_DropDownList1:IsShown() then
+        DugisGuideViewer.ShowMainMenu()
+    end
+end
+
+function DugisGuideViewer.ShowMainMenu()
+
+	DugisGuideViewer.showInProgress = true
+
+    local clickCallback = DugisGuideViewer.ClickedMenuItem
+    local height = DugisGuideViewer:ShowNotifications(LibDugi_DropDownList1, {dX = 8, dY = -8})
+	
+	if not LibDugi_DropDownList1.notificationHideHooked then
+		LibDugi_DropDownList1:HookScript("OnHide", function()
+			if not DugisGuideViewer.showInProgress then
+				DugisGuideViewer:HideNotifications()
+			end
+		end)
+
+		LibDugi_DropDownList1.notificationHideHooked = true		
+	end
+    
     local menu = {
         {text = "Addon", isTitle = true, isNotRadio = true, notCheckable = true},
         
@@ -5080,13 +5508,23 @@ function DugisGuideViewer.ShowMainMenu(clickCallback)
             end
         end)
     end
-        
-    CreateFrame("Frame", "MainDugisMenuFrame", UIParent, "UIDropDownMenuTemplate")
-    LibDugi_EasyMenu(menu, MainDugisMenuFrame, "cursor", 13 , -15, "MENU");
+
+    LuaUtils:foreach(menu, function(item)
+        item.dY = -height + 5
+    end)
+    
+    if not MainDugisMenuFrame then
+        CreateFrame("Frame", "MainDugisMenuFrame", UIParent, "UIDropDownMenuTemplate")
+    end
+    
+    LibDugi_EasyMenu(menu, MainDugisMenuFrame, DugisOnOffButton, 30 , -3, "MENU", nil, {extraHeight = height - 10})
+    LibDugi_DropDownList1:SetClampedToScreen(true)
     
     if LuaUtils:IsElvUIInstalled() then
        LuaUtils:TransferBackdropFromElvUI()
     end
+	
+	DugisGuideViewer.showInProgress = false
 end
 
 

@@ -1,4 +1,8 @@
-﻿Version 1.7.13a
+﻿Version 1.7.13b
+- Don't globally define my custom CalendarGetDayEvent so as not to break other addons
+- Update LibTourist and LibPetJournal
+
+Version 1.7.13a
 - Fix Equipment Manger support
 - Fix Curse Bug #296 (calendar event change)
 - Fix "Find Fish" issue

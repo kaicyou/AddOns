@@ -1,12 +1,197 @@
 ------------------------------------------------------------------------
-r648 | arkayenro | 2017-06-24 12:09:38 -0500 (Sat, 24 Jun 2017) | 8 lines
+r660 | arkayenro | 2017-07-09 03:18:50 -0500 (Sun, 09 Jul 2017) | 11 lines
 Changed paths:
    M /trunk/ArkInventory.lua
    M /trunk/ArkInventory.toc
+   M /trunk/VersionHistory.txt
+
+*3.07.31 (09-JUL-2017)*
+ * removed - config options for in-combat yielding
+ * added - config options for thread timeout values (defaults to 100ms for in-combat and 100ms for out-of-combat)
+ * changed - bag, pet, mount, toybox, heirloom, mailbox, auction, void storage, and vault scans are now threaded
+ * changed - window drawing is now threaded all the time (not just in combat) - initial window draw can be a bit laggy
+ * changed - restack should be a bit slower but leave the game more responsive (depends on what you set the out of combat thread timeout to)
+ * fixed - issue where pet scanning might sometimes not run
+ * fixed - bag rescans will now just rescan the bag having an issue, not all the bags in that location
+ * fixed - issue with search filter initilisation causing a second window rebuild at the first open
+ * fixed - issue with font size on initial window load
+
+------------------------------------------------------------------------
+r659 | arkayenro | 2017-07-02 05:34:05 -0500 (Sun, 02 Jul 2017) | 12 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryCodex.lua
+   M /trunk/ArkInventoryCollectionHeirloom.lua
+   M /trunk/ArkInventoryCollectionMount.lua
+   M /trunk/ArkInventoryCollectionPet.lua
+   M /trunk/ArkInventoryCollectionToy.lua
    M /trunk/ArkInventoryRestack.lua
    M /trunk/ArkInventoryStorage.lua
-   M /trunk/ArkInventoryTooltip.lua
-   M /trunk/ArkInventoryTranslate.lua
+   M /trunk/Locale/deDE.lua
+   M /trunk/Locale/enUS.lua
+   M /trunk/Locale/esES.lua
+   M /trunk/Locale/esMX.lua
+   M /trunk/Locale/frFR.lua
+   M /trunk/Locale/itIT.lua
+   M /trunk/Locale/koKR.lua
+   M /trunk/Locale/ptBR.lua
+   M /trunk/Locale/ruRU.lua
+   M /trunk/Locale/zhCN.lua
+   M /trunk/Locale/zhTW.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.31 (xx-xxx-2017)*
+ * added - config options to set the thread timeout values (defaults to 100ms for in-combat and 300ms for out of combat)
+ * changed - bag, pet, mount, toybox, heirloom, mailbox, auction, void storage, and vault scans are now threaded
+ * changed - window drawing is now threaded all the time (not just in combat) - initial window draw can be a bit laggy
+ * changed - the windows initial position (before its fully drawn) should be closer to its final position and not the top left corner of your display
+ * changed - restack should be a bit slower but leave the game more responsive (depends on what you set the out of combat thread timeout to)
+ * removed - config options for out of combat yielding
+ * fixed - issue where pet scanning might sometimes not run
+ * fixed - bag rescans will now just rescan the bag having an issue, not all the bags in that location
+ * fixed - issue with search filter initilisation causing a second window rebuild at the first open
+ * fixed - issue with font size on initial window load
+
+------------------------------------------------------------------------
+r658 | arkayenro | 2017-07-01 19:18:54 -0500 (Sat, 01 Jul 2017) | 17 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventoryCollectionHeirloom.lua
+   M /trunk/ArkInventoryCollectionMount.lua
+   M /trunk/ArkInventoryCollectionPet.lua
+   M /trunk/ArkInventoryCollectionToy.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.31 (xx-xxx-2017)*
+ * changed - bag scans are now threaded
+ * changed - pet scans are now threaded
+ * changed - mount scans are now threaded
+ * changed - toybox scans are now threaded
+ * changed - heirloom scans are now threaded
+ * changed - mailbox scans are now threaded
+ * changed - restack should be a bit slower but leave the game more responsive
+ * changed - window drawing is now threaded all the time (not just in combat) - initial window draw can be a bit laggy
+ * removed - config options for out of combat yielding
+ * added - config options to set the thread timeout values (defaults to 100ms for in-combat and 300ms for out of combat)
+ * fixed - issue where pet scanning might sometimes not run
+ * fixed - bag rescans will now just rescan the bag having an issue, not all the bags in that location
+ * fixed - issue with search filter initilisation causing a second window rebuild at the first open
+ * fixed - a windows initial position (before its fully drawn) should be closer to its final position and not the top left corner of your display
+ * fixed - issue with font size on initial window load
+
+------------------------------------------------------------------------
+r657 | arkayenro | 2017-07-01 02:50:42 -0500 (Sat, 01 Jul 2017) | 17 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.xml
+   M /trunk/ArkInventoryCollectionHeirloom.lua
+   M /trunk/ArkInventoryCollectionMount.lua
+   M /trunk/ArkInventoryCollectionPet.lua
+   M /trunk/ArkInventoryCollectionToy.lua
+   M /trunk/ArkInventoryRestack.lua
+   M /trunk/ArkInventoryStorage.lua
+
+*3.07.31 (xx-xxx-2017)*
+ * changed - bag scans are now threaded
+ * changed - pet scans are now threaded
+ * changed - mount scans are now threaded
+ * changed - toybox scans are now threaded
+ * changed - heirloom scans are now threaded
+ * changed - mailbox scans are now threaded
+ * changed - restack should be a bit slower but leave the game more responsive
+ * changed - window drawing is now threaded all the time (not just in combat) - initial window draw can be a bit laggy
+ * removed - config options for out of combat yielding
+ * added - config options to set the thread timeout values (defaults to 100ms for in-combat and 250ms for out of combat)
+ * fixed - issue where pet scanning might sometimes not run
+ * fixed - bag rescans will now just rescan the bag having an issue, not all the bags in that location
+ * fixed - issue with search filter initilisation causing a second window rebuild at the first open
+ * fixed - a windows initial position (before its fully drawn) should be closer to its final position and not the top left corner of your display
+ * fixed - issue with font size on initial window load
+
+------------------------------------------------------------------------
+r656 | arkayenro | 2017-06-30 04:11:41 -0500 (Fri, 30 Jun 2017) | 17 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventoryCollectionHeirloom.lua
+   M /trunk/ArkInventoryCollectionMount.lua
+   M /trunk/ArkInventoryCollectionPet.lua
+   M /trunk/ArkInventoryCollectionToy.lua
+   M /trunk/ArkInventoryMedia.lua
+   M /trunk/ArkInventoryRestack.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/Locale/enUS.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.31 (xx-xxx-2017)*
+ * changed - bag scans are now threaded
+ * changed - pet scans are now threaded
+ * changed - mount scans are now threaded
+ * changed - toybox scans are now threaded
+ * changed - heirloom scans are now threaded
+ * changed - mailbox scans are now threaded
+ * changed - restack should be a bit slower but leave the game more responsive
+ * changed - window drawing is now threaded all the time (not just in combat) - initial window draw can be a bit laggy
+ * removed - config options for out of combat yielding
+ * added - config options to set the thread timeout values (defaults to 100ms for in-combat and 250ms for out of combat)
+ * fixed - issue where pet scanning might sometimes not run
+ * fixed - bag rescans will now just rescan the bag having an issue, not all the bags in that location
+ * fixed - issue with search filter initilisation causing a second window rebuild at the first open
+ * fixed - a windows initial position (before its fully drawn) should be closer to its final position and not the top left corner of your display
+ * fixed - issue with font size on initial window load
+
+------------------------------------------------------------------------
+r655 | arkayenro | 2017-06-30 00:50:45 -0500 (Fri, 30 Jun 2017) | 16 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventoryConst.lua
+   M /trunk/Locale/deDE.lua
+   M /trunk/Locale/enUS.lua
+   M /trunk/Locale/esES.lua
+   M /trunk/Locale/esMX.lua
+   M /trunk/Locale/frFR.lua
+   M /trunk/Locale/itIT.lua
+   M /trunk/Locale/koKR.lua
+   M /trunk/Locale/ptBR.lua
+   M /trunk/Locale/ruRU.lua
+   M /trunk/Locale/zhCN.lua
+   M /trunk/Locale/zhTW.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.31 (xx-xxx-2017)*
+ * changed - bag scans are now threaded
+ * changed - pet scans are now threaded
+ * changed - mount scans are now threaded
+ * changed - toybox scans are now threaded
+ * changed - heirloom scans are now threaded
+ * changed - mailbox scans are now threaded
+ * changed - restack should be a bit slower but leave the game more responsive
+ * changed - window drawing is now threaded all the time (not just in combat) - initial window draw can be a bit laggy
+ * removed - config options for out of combat yielding
+ * added - config options to set the thread timeout values (defaults to 100ms for in-combat and 1000ms for out of combat)
+ * fixed - issue where pet scanning might sometimes not run
+ * fixed - bag rescans will now just rescan the bag having an issue, not all the bags in that location
+ * fixed - issue with search filter initilisation causing a second window rebuild at the first open
+ * fixed - the windows initial position (before its drawn) should be closer to their actual position and not the top left corner of your display
+
+------------------------------------------------------------------------
+r654 | arkayenro | 2017-06-29 23:36:27 -0500 (Thu, 29 Jun 2017) | 15 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.xml
+   M /trunk/ArkInventoryCollectionHeirloom.lua
+   M /trunk/ArkInventoryCollectionMount.lua
+   M /trunk/ArkInventoryCollectionPet.lua
+   M /trunk/ArkInventoryCollectionToy.lua
+   M /trunk/ArkInventoryConst.lua
+   M /trunk/ArkInventoryRestack.lua
+   M /trunk/ArkInventoryStorage.lua
    M /trunk/Locale/deDE.lua
    M /trunk/Locale/enUS.lua
    M /trunk/Locale/esES.lua
@@ -19,15 +204,140 @@ Changed paths:
    M /trunk/Locale/ruRU.lua
    M /trunk/Locale/zhCN.lua
    M /trunk/Locale/zhTW.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
    M /trunk/VersionHistory.txt
 
-*3.07.30 (25-JUN-2017)*
- * fixed - issue with some tooltip text containing a UTF-8 non breaking space sequence (its not the same as a normal space character so doesnt match)
- * fixed - issue with artifact power items not being categorised properly for non-english languages
- * fixed - issue with ancient mana items not being categorised properly
- * fixed - issue with artifact power and ancient mana amounts not displaying for non-english languages (the amount should show up but still requires translation of some suffixes)
- * note - some languages (RU) do not have the text "Ancient Mana" in the toltip for Ancient Mana items so the values cannot be extracted at this time
- * note - some languages (KR, CN, TW) have different structures so the values cannot be extracted at this time
+*3.07.31 (xx-xxx-2017)*
+ * changed - global thread duration set to 2 seconds
+ * changed - bag scans are now threaded
+ * changed - pet scans are now threaded
+ * changed - mount scans are now threaded
+ * changed - toybox scans are now threaded
+ * changed - heirloom scans are now threaded
+ * changed - mailbox scans are now threaded
+ * changed - restack should be a bit slower but leave the game more responsive
+ * changed - window drawing is now threaded all the time (not just in combat) - initial window draw can be a bit laggy
+ * removed - config options for out of combat yielding
+ * fixed - issue where pet scanning might sometimes not run
+ * fixed - bag rescans will now just rescan the bag having an issue, not all the bags in that location
+ * fixed - issue with search filter initilisation causing a second window rebuild at the first open
+
+------------------------------------------------------------------------
+r653 | arkayenro | 2017-06-27 21:53:28 -0500 (Tue, 27 Jun 2017) | 13 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.xml
+   M /trunk/ArkInventoryCollectionHeirloom.lua
+   M /trunk/ArkInventoryCollectionMount.lua
+   M /trunk/ArkInventoryCollectionPet.lua
+   M /trunk/ArkInventoryCollectionToy.lua
+   M /trunk/ArkInventoryConst.lua
+   M /trunk/ArkInventoryRestack.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.31 (xx-xxx-2017)*
+ * changed - global thread duration set to 2 seconds
+ * changed - bag scans are now threaded
+ * changed - pet scans are now threaded
+ * changed - mount scans are now threaded
+ * changed - toybox scans are now threaded
+ * changed - heirloom scans are now threaded
+ * changed - restack should be a bit slower but leave the game more responsive
+ * changed - window drawing is now threaded all the time (not just in combat) - initial window draw can be a bit laggy
+ * removed - config options for out of combat yielding
+ * fixed - issue where pet scanning might sometimes not run
+ * fixed - bag rescans will now just rescan the bag having an issue, not the entire location
+
+------------------------------------------------------------------------
+r652 | arkayenro | 2017-06-27 06:34:46 -0500 (Tue, 27 Jun 2017) | 13 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventoryCollectionHeirloom.lua
+   M /trunk/ArkInventoryCollectionMount.lua
+   M /trunk/ArkInventoryCollectionPet.lua
+   M /trunk/ArkInventoryCollectionToy.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.31 (xx-xxx-2017)*
+ * note - this is an ALPHA, the debugging text cannot be disabled
+ * changed - global thread duration set to 2 seconds
+ * changed - bag scans are now threaded
+ * changed - pet scans are now threaded
+ * changed - mount scans are now threaded
+ * changed - toybox scans are now threaded
+ * changed - heirloom scans are now threaded
+ * changed - restack should be a bit slower but leave the game more responsive
+ * changed - window drawing is now threaded all the time (not just in combat) - initial window draw can be a bit laggy
+ * removed - config options for out of combat yielding
+ * fixed - issue where pet scanning might sometimes not run
+
+------------------------------------------------------------------------
+r651 | arkayenro | 2017-06-27 05:05:01 -0500 (Tue, 27 Jun 2017) | 13 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventoryCollectionHeirloom.lua
+   M /trunk/ArkInventoryCollectionMount.lua
+   M /trunk/ArkInventoryCollectionPet.lua
+   M /trunk/ArkInventoryCollectionToy.lua
+   M /trunk/ArkInventoryConst.lua
+   M /trunk/ArkInventoryRestack.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.31 (xx-xxx-2017)*
+ * note - this is an ALPHA, the debugging text cannot be disabled
+ * changed - global thread duration set to 2 seconds
+ * changed - bag scans are now threaded
+ * changed - pet scans are now threaded
+ * changed - mount scans are now threaded
+ * changed - toybox scans are now threaded
+ * changed - heirloom scans are now threaded
+ * changed - restack should be a bit slower but leave the game more responsive
+ * changed - window drawing is now threaded all the time (not just in combat) - initial window draw can be a bit laggy
+ * removed - config options for out of combat yielding
+ * fixed - issue where pet scanning might sometimes not run
+
+------------------------------------------------------------------------
+r650 | arkayenro | 2017-06-27 00:12:06 -0500 (Tue, 27 Jun 2017) | 9 lines
+Changed paths:
+   M /trunk/ArkInventory.lua
+   M /trunk/ArkInventory.toc
+   M /trunk/ArkInventory.xml
+   M /trunk/ArkInventoryCollectionMount.lua
+   M /trunk/ArkInventoryCollectionPet.lua
+   M /trunk/ArkInventoryCollectionToy.lua
+   M /trunk/ArkInventoryCompanion.lua
+   M /trunk/ArkInventoryLDB.lua
+   M /trunk/ArkInventoryMenu.lua
+   M /trunk/ArkInventoryRestack.lua
+   M /trunk/ArkInventoryStaticPopups.lua
+   M /trunk/ArkInventoryStorage.lua
+   M /trunk/ArkInventoryTooltip.lua
+   M /trunk/Locale/deDE.lua
+   M /trunk/Locale/enUS.lua
+   M /trunk/Locale/esES.lua
+   M /trunk/Locale/esMX.lua
+   M /trunk/Locale/frFR.lua
+   M /trunk/Locale/itIT.lua
+   M /trunk/Locale/koKR.lua
+   M /trunk/Locale/ptBR.lua
+   M /trunk/Locale/ruRU.lua
+   M /trunk/Locale/zhCN.lua
+   M /trunk/Locale/zhTW.lua
+   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.lua
+   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.lua
+   M /trunk/VersionHistory.txt
+
+*3.07.31 (xx-xxx-2017)*
+ * changed - pet scans are now threaded (max run time is 3 seconds before it yields)
+ * changed - mount scans are now threaded (max run time is 3 seconds before it yields)
+ * changed - toybox scans are now threaded (max run time is 3 seconds before it yields)
+ * changed - restack should be a bit slower but leave the game more responsive
+ * changed - window drawing is now threaded all the time (not just in combat) - initial window draw can be a bit laggy
+ * removed - config options for out of combat yielding
+ * fixed - issue where pet scanning might sometimes not run
 
 ------------------------------------------------------------------------
 

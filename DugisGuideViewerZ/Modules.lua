@@ -250,6 +250,9 @@ end
 
 local function UpdateGameLoadingProgress(threading, currentProgress)
     if threading then
+	
+		MainFramePreloader:ShowPreloader()
+		
         GamePreloader:Show()
         GamePreloader.TexWrapper.Text:SetText("Loading Dugi Guides "..(LuaUtils:Round(currentProgress, 2) * 100).."%..")
         
@@ -257,6 +260,10 @@ local function UpdateGameLoadingProgress(threading, currentProgress)
             GamePreloader:Hide()
             GamePreloader.animationGroup:Stop()
         end
+		
+		if currentProgress >= 0.98  then
+			MainFramePreloader:HidePreloader()
+		end
     end
 end
 

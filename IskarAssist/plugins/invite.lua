@@ -15,6 +15,7 @@ _G ["RaidAssistInvite"] = Invite
 local default_config = {
 	presets = {},
 	invite_msg = "[RA]: invites in 5 seconds.",
+	invite_msg_repeats = true,
 	auto_invite = false,
 	auto_invite_limited = true,
 	auto_invite_keywords = {},
@@ -129,6 +130,9 @@ local handle_inv_text = function (message, from)
 end
 
 local handle_inv_whisper = function (message, from)
+	if (not from) then
+		return
+	end
 	if (Invite.db.auto_invite) then
 		if (Invite:IsInQueue()) then
 			return
@@ -735,7 +739,7 @@ function Invite.BuildOptions (frame)
 		
 		--> welcome msg
 		local welcome_text4 = RA:CreateLabel (main_frame, "When a friend or guild member send a group invite, auto accept it?", Invite:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
-		welcome_text4:SetPoint ("topleft", main_frame, "topleft", x_start, -360)
+		welcome_text4:SetPoint ("topleft", main_frame, "topleft", x_start, -350)
 		
 		--> enabled
 		local on_auto_ainvite_switch = function (_, _, value)
@@ -743,7 +747,7 @@ function Invite.BuildOptions (frame)
 		end
 		local auto_ainvite_switch, auto_ainvite_label = RA:CreateSwitch (main_frame, on_auto_ainvite_switch, Invite.db.auto_accept_invites, _, _, _, _, "switch_auto_ainvite", _, _, _, _, "Enabled", Invite:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE"), Invite:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 		auto_ainvite_switch:SetAsCheckBox()
-		auto_ainvite_label:SetPoint ("topleft", main_frame, "topleft", x_start, -380)
+		auto_ainvite_label:SetPoint ("topleft", main_frame, "topleft", x_start, -370)
 		
 		--> only from guild
 		local on_auto_ainvite_guild_switch = function (_, _, value)
@@ -751,7 +755,20 @@ function Invite.BuildOptions (frame)
 		end
 		local auto_ainvite_guild_switch, auto_ainvite_guild_label = RA:CreateSwitch (main_frame, on_auto_ainvite_guild_switch, Invite.db.auto_accept_invites_limited, _, _, _, _, "switch_auto_ainvite_guild", _, _, _, _, "Only From Guild and Friends", Invite:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE"), Invite:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 		auto_ainvite_guild_switch:SetAsCheckBox()
-		auto_ainvite_guild_label:SetPoint ("topleft", main_frame, "topleft", x_start, -400)
+		auto_ainvite_guild_label:SetPoint ("topleft", main_frame, "topleft", x_start, -390)
+
+        --> invite message repeats
+		--> welcome msg
+		local welcome_text5 = RA:CreateLabel (main_frame, "Repeat the invite announcement with each wave?", Invite:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
+		welcome_text5:SetPoint ("topleft", main_frame, "topleft", x_start, -420)
+		
+		--> enabled
+		local on_invite_msg_repeats_switch = function (_, _, value)
+		    Invite.db.invite_msg_repeats = value
+		end
+		local invite_msg_repeats_switch, invite_msg_repeats_label = RA:CreateSwitch (main_frame, on_invite_msg_repeats_switch, Invite.db.invite_msg_repeats, _, _, _, _, "switch_invite_msg_repeats", _, _, _, _, "Enabled", Invite:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE"), Invite:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
+		invite_msg_repeats_switch:SetAsCheckBox()
+		invite_msg_repeats_label:SetPoint ("topleft", main_frame, "topleft", x_start, -440)	
 	
 	-------------- fim
 	
@@ -944,7 +961,8 @@ function Invite.AutoInviteTick()
 	if (Invite.auto_invite_wave_time == 15) then
 		GuildRoster()
 		
-	elseif (Invite.auto_invite_wave_time == 5) then
+	--elseif (Invite.auto_invite_wave_time == 5) then
+	elseif (Invite.db.invite_msg_repeats and Invite.auto_invite_wave_time == 5) then
 		Invite:SendInviteAnnouncementMsg()
 		
 	elseif (Invite.auto_invite_wave_time == 0) then

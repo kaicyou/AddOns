@@ -88,6 +88,13 @@ function GA:Initialize()
             GA.EvaluateRewards()
         end)
     end
+    
+    --Immersion addon
+    if ImmersionFrame then
+        ImmersionFrame.TalkBox.Elements.Content.RewardsFrame:SetScript("OnShow", function()
+            GA.EvaluateRewards()
+        end)
+    end
 
 		local LE_LE_ITEM_CLASS_WEAPON, LE_LE_ITEM_CLASS_ARMOR = LE_LE_ITEM_CLASS_WEAPON, LE_LE_ITEM_CLASS_ARMOR
 		local LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_SHIELD = LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_SHIELD
@@ -1929,6 +1936,25 @@ function GA:Initialize()
 	function GA.ItemChoiceIterator(invariant, control)
 		if not control then control = 0 end
 		control = control + 1
+        
+        --Immersion addon
+        if ImmersionFrame and ImmersionFrame:IsShown() then
+            local buttonname = "ImmersionQuestInfoItem"..control
+            
+            if _G[buttonname] then
+                local button = _G[buttonname]
+                local link = GetQuestItemLink(button.type, button:GetID())
+                
+                if link then
+                    return control, link, button
+                else
+                    return
+                end
+            else
+                return 
+            end
+        end
+        
 		local isLogFrame = QuestFrame:IsShown() or QuestLogPopupDetailFrame:IsShown() or (WorldMapFrame:IsShown() and QuestMapFrame.DetailsFrame:IsShown())
 		local getNumChoices = isLogFrame and GetNumQuestLogChoices or GetNumQuestChoices
 		local getItemLink = isLogFrame and GetQuestLogItemLink or GetQuestItemLink
@@ -2612,7 +2638,14 @@ function GA:Initialize()
 		chosenColor:SetParent(rewardFrame)
 		chosenColor:ClearAllPoints()
 		chosenColor:SetSize(28, 28)
-		chosenColor:SetPoint("TOP", rewardFrame, "BOTTOMLEFT", 30, 25)
+        
+        --Immersion addon
+        if ImmersionFrame and ImmersionFrame:IsShown() then
+            chosenColor:SetPoint("TOP", rewardFrame, "BOTTOMLEFT", 40, 25)
+        else
+            chosenColor:SetPoint("TOP", rewardFrame, "BOTTOMLEFT", 30, 25)
+        end
+
         chosenColor:SetFrameStrata("DIALOG")
         chosenColor:SetFrameLevel(501)
 		chosenColor:Show()
@@ -2716,7 +2749,12 @@ function GA:Initialize()
                 rewardFrame = storyLineRewardFrame
             end
         end
-
+         
+        --Immersion addon already adds the coin 
+        if ImmersionFrame and ImmersionFrame:IsShown() then
+            return
+        end
+        
 		DugisCoinRewardAdornment:ClearAllPoints()
 		DugisCoinRewardAdornment:SetParent(rewardFrame)
 		--DugisCoinRewardAdornment:SetFrameLevel(129)
@@ -3531,8 +3569,32 @@ function GA:Initialize()
 					GetItemStats(itemLink, statTable)
 					AddSetCompareLine(L["Item has the following stats:"])
 				end
-				DugisGuideViewer:HideLargeWindow()
-				DugisEquipPromptFrame:Show()
+                
+                local name, _, _, _, _, _, _, _, _, texture = GetItemInfo(itemLink)
+                  
+				if DGV:UserSetting(DGV_ENABLED_GEAR_NOTIFICATIONS) then
+					local notificationTitle = "Gear Upgrade Suggested"
+					local notification =  DugisGuideViewer:GetNotificationByTitle(notificationTitle)
+					
+					DugisEquipPromptFrame.dontRemoveNotificationOnCancel = false
+					
+					if notification == nil then
+						notification = DugisGuideViewer:AddNotification({title = notificationTitle
+						, notificationType = "gear-suggestion" })
+						DugisGuideViewer:ShowNotifications()   
+						DugisGuideViewer.RefreshMainMenu()
+					end
+					
+					if DGV:UserSetting(DGV_ALWAYS_SHOW_STANDARD_PROMPT_GEAR) then
+						--Old standard prompt
+						DugisEquipPromptFrame:Show()
+						DugisEquipPromptFrame.notificationId = notification.id
+						DugisEquipPromptFrame.dontRemoveNotificationOnCancel = true
+					end
+				else
+					--Old standard prompt
+					DugisEquipPromptFrame:Show()
+                end
 				DugisEquipPromptFrame.compare[1]:Hide()
 				for stat, value in pairs(statTable) do
 					if stat~="n" and _G[stat] and type(value)=="number" then

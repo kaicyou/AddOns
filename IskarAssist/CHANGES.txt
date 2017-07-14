@@ -1,7 +1,7 @@
-changeset:   124:c91c26070f62
-tag:         v2.1.247 release
+changeset:   128:ebbb1f817f4e
+tag:         v2.1.261 release
 user:        Tercio
-date:        Mon May 08 15:16:33 2017 -0300
-summary:     - added harmful spell list for the two last wings of the nighthold raid.
+date:        Tue Jul 11 10:20:32 2017 -0300
+summary:     - Ticket #25: added an option to disable invite announcements (patch submited by @kowh).
 
 

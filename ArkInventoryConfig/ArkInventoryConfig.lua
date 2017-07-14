@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1809 $
-$Date: 2017-06-20 18:38:44 +1000 (Tue, 20 Jun 2017) $
+$Revision: 1838 $
+$Date: 2017-07-02 20:32:58 +1000 (Sun, 02 Jul 2017) $
 
 ]]--
 
@@ -964,43 +964,76 @@ function ArkInventory.ConfigInternal( )
 								},
 							},
 						},
-						combatyield = {
+						thread = {
 							order = 300,
-							name = ArkInventory.Localise["CONFIG_SYSTEM_WORKAROUND_COMBAT_YIELD"],
+							name = ArkInventory.Localise["CONFIG_SYSTEM_WORKAROUND_THREAD"],
 							type = "group",
 							inline = true,
 							args = {
-								enabled = {
+								use = {
 									order = 100,
-									name = ArkInventory.Localise["ENABLED"],
-									desc = ArkInventory.Localise["CONFIG_SYSTEM_WORKAROUND_COMBAT_YIELD_ENABLED_TEXT"],
+									name = USE,
+									desc = ArkInventory.Localise["CONFIG_SYSTEM_WORKAROUND_THREAD_DISABLED_TEXT"],
 									type = "toggle",
 									get = function( info )
-										return ArkInventory.Global.Thread.WhileInCombat
+										return ArkInventory.Global.Thread.Use
 									end,
 									set = function( info, v )
-										ArkInventory.Global.Thread.WhileInCombat = v
+										ArkInventory.Global.Thread.Use = v
 									end,
 								},
-								items = {
+								debug = {
 									order = 200,
-									name = ArkInventory.Localise["ITEMS"],
-									desc = ArkInventory.Localise["CONFIG_SYSTEM_WORKAROUND_COMBAT_YIELD_COUNT_TEXT"],
-									type = "range",
-									min = 1,
-									max = ArkInventory.Const.MAX_BAG_SIZE,
-									step = 1,
-									disabled = function( info )
-										return not ArkInventory.Global.Thread.WhileInCombat
-									end,
+									name = ArkInventory.Localise["DEBUG"],
+									desc = ArkInventory.Localise["CONFIG_SYSTEM_WORKAROUND_THREAD_DEBUG_TEXT"],
+									type = "toggle",
 									get = function( info )
-										return ArkInventory.db.option.combat.yieldafter or 30
+										return ArkInventory.db.option.thread.debug
 									end,
 									set = function( info, v )
-										local v = math.floor( v )
-										if v < 1 then v = 1 end
-										if v > ArkInventory.Const.MAX_BAG_SIZE then v = ArkInventory.Const.MAX_BAG_SIZE end
-										ArkInventory.db.option.combat.yieldafter = v
+										ArkInventory.db.option.thread.debug = v
+									end,
+								},
+								timeout_combat = {
+									order = 520,
+									name = ArkInventory.Localise["CONFIG_SYSTEM_WORKAROUND_THREAD_TIMEOUT_COMBAT"],
+									desc = ArkInventory.Localise["CONFIG_SYSTEM_WORKAROUND_THREAD_TIMEOUT_COMBAT_TEXT"],
+									type = "range",
+									min = 50,
+									max = 250,
+									step = 10,
+									disabled = function( )
+										return not ArkInventory.Global.Thread.Use
+									end,
+									get = function( info )
+										return ArkInventory.db.option.thread.timeout.combat
+									end,
+									set = function( info, v )
+										local v = math.floor( v / 10 ) * 10
+										if v < 50 then v = 50 end
+										if v > 250 then v = 250 end
+										ArkInventory.db.option.thread.timeout.combat = v
+									end,
+								},
+								timeout_normal = {
+									order = 510,
+									name = ArkInventory.Localise["CONFIG_SYSTEM_WORKAROUND_THREAD_TIMEOUT_NORMAL"],
+									desc = ArkInventory.Localise["CONFIG_SYSTEM_WORKAROUND_THREAD_TIMEOUT_NORMAL_TEXT"],
+									type = "range",
+									min = 50,
+									max = 5000,
+									step = 10,
+									disabled = function( )
+										return not ArkInventory.Global.Thread.Use
+									end,
+									get = function( info )
+										return ArkInventory.db.option.thread.timeout.normal
+									end,
+									set = function( info, v )
+										local v = math.floor( v / 10 ) * 10
+										if v < 50 then v = 50 end
+										if v > 5000 then v = 5000 end
+										ArkInventory.db.option.thread.timeout.normal = v
 									end,
 								},
 							},

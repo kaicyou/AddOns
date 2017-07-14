@@ -5,17 +5,6 @@ local L
 ---------------------------
 L= DBM:GetModLocalization(1862)
 
-L:SetTimerLocalization({
-	timerComboWamboCD =	"Next Comet/Spike (%d)"
-})
-
-L:SetOptionLocalization({
-	timerComboWamboCD =	"Show timer for next Crashing Comet/Infernal Spike"
-})
-
-L:SetMiscLocalization({
-})
-
 ---------------------------
 -- Demonic Inquisition --
 ---------------------------
@@ -30,6 +19,10 @@ L= DBM:GetModLocalization(1856)
 -- Mistress Sassz'ine --
 ---------------------------
 L= DBM:GetModLocalization(1861)
+
+L:SetOptionLocalization({
+	TauntOnPainSuccess	= "Sync timers and taunt warning to Burden of Pain cast SUCCESS instead of START (for certain mythic strats where you let burden tick once on purpose, otherwise it's NOT recommended to use this options)"
+})
 
 ---------------------------
 -- Sisters of the Moon --
@@ -59,6 +52,10 @@ L:SetOptionLocalization({
 -- Kil'jaeden --
 ---------------------------
 L= DBM:GetModLocalization(1898)
+
+L:SetMiscLocalization({
+	Obelisklasers	= "Obelisk Lasers"
+})
 
 -------------
 --  Trash  --

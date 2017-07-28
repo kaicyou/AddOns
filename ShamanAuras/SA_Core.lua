@@ -2,32 +2,45 @@
 
 ]]
 local FOLDER_NAME, SSA = ...
+local SSA = SSA
 
-local Auras = LibStub("AceAddon-3.0"):NewAddon("ShamanAuras", "AceConsole-3.0","AceEvent-3.0", "AceHook-3.0", "AceTimer-3.0");
-Auras.version = GetAddOnMetadata(FOLDER_NAME, "Version")
-Auras:RegisterChatCommand("ssa","ChatCommand");
-local L = LibStub("AceLocale-3.0"):GetLocale("ShamanAuras", true)
+local Auras = LibStub('AceAddon-3.0'):NewAddon('ShamanAuras', 'AceConsole-3.0','AceEvent-3.0', 'AceHook-3.0', 'AceTimer-3.0');
+Auras.version = GetAddOnMetadata(FOLDER_NAME, 'Version')
+Auras:RegisterChatCommand('ssa','ChatCommand')
+local L = LibStub('AceLocale-3.0'):GetLocale('ShamanAuras', true)
+local LSM = LibStub('LibSharedMedia-3.0')
 
 --local obj = {}
-local caster,cooldown,duration = {},{},{};
-local smallSpells = {};
-local spellobj,totemObj,targetObj,miscObj,spells,ignoreSpells,GUIDs = {},{},{},{},{},{},{};
-local loadedBuffBars,loadedMainBars,loadedUtilBars = {},{},{};
-local talents,execTime = {},{};
-local isFireStormElemental,isEarthElemental,isTotemMastery = false,false,false;
-local spec = nil;
--- Booleans
-local isIcefury = false;
-local tempBool = false;
+local caster,cooldown,duration = {},{},{}
+local spec = nil
 
-
+-- Cache Global Variables
+-- Lua Function
+local _G = _G
+local floor, fmod = math.floor, math.fmod
+local pairs, tonumber, tostring = pairs, tonumber, tostring
+local format, lower, sub = string.format, string.lower, string.sub
+-- WoW API / Variables
+local BreakUpLargeNumbers = BreakUpLargeNumbers
+local C_ArtifactUI = C_ArtifactUI
+local CreateFont, CreateFrame = CreateFont, CreateFrame
+local GetSpellCharges, GetSpellInfo = GetSpellCharges, GetSpellInfo
+local GetSpecialization = GetSpecialization
+local GetTime = GetTime
+local IsShiftKeyDown, IsControlKeyDown = IsShiftKeyDown, IsControlKeyDown
+local UnitAffectingCombat = UnitAffectingCombat
+local UnitCastingInfo, UnitChannelInfo = UnitCastingInfo, UnitChannelInfo
+local UnitClass = UnitClass
+local UnitExists, UnitIsDead, UnitIsFriend = UnitExists, UnitIsDead, UnitIsFriend
+local UnitGUID = UnitGUID
+local UnitPower, UnitPowerMax = UnitPower, UnitPowerMax
 
 -------------------------------------------------------------------------------------------------------
 ----- Initialize Global Variables
 -------------------------------------------------------------------------------------------------------
 SSA.BackdropCB = {
-	bgFile    = "Interface\\AddOns\\ShamanAuras\\media\\textures\\background_flat",
-	edgeFile  = "Interface\\AddOns\\ShamanAuras\\media\\textures\\UI-Tooltip-Border",
+	bgFile    = [[Interface\Tooltips\UI-Tooltip-Background]],
+	edgeFile  = [[Interface\AddOns\ShamanAuras\Media\textures\UI-Tooltip-Border]],
 	tile      = false,
 	tileSize  = 16, 
 	edgeSize  = 16, 
@@ -37,182 +50,96 @@ SSA.BackdropCB = {
 		top = 4,
 		bottom = 4,
 	},
-};
+}
 
 SSA.BackdropSB = {
-	bgFile   = "Interface\\Tooltips\\UI-Tooltip-Background",
-	edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+	bgFile   = [[Interface\Tooltips\UI-Tooltip-Background]],
+	edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],
 	tile = true,
 	tileSize = 16,
 	edgeSize = 10
 }
 SSA.BackdropFrm = {
-	bgFile   = "Interface\\BUTTONS\\WHITE8X8.blp",
-	edgeFile = "Interface\\BUTTONS\\WHITE8X8.blp",
+	bgFile   = [[Interface\BUTTONS\WHITE8X8.blp]],
+	edgeFile = [[Interface\BUTTONS\WHITE8X8.blp]],
 	tile = false, tileSize = 0, edgeSize = 1,
 	insets = { left = 0, right = 0, top = 0, bottom = 0}
 }
+
 SSA.grid = CreateFrame('Frame', 'AuraGrid', UIParent)
 SSA.IsMovingAuras = false;
-SSA.ButtonFont = CreateFont("SSAButtonFont");
-local ButtonFont = SSA.ButtonFont;
-ButtonFont:SetFont("Interface\\addons\\ShamanAuras\\Media\\fonts\\Continuum_Medium.ttf",12,"OUTLINE");
-ButtonFont:SetJustifyH("CENTER");
+SSA.ButtonFont = CreateFont('SSAButtonFont')
+local ButtonFont = SSA.ButtonFont
+ButtonFont:SetFont([[Interface\addons\ShamanAuras\Media\fonts\Continuum_Medium.ttf]],12,'OUTLINE')
+ButtonFont:SetJustifyH('CENTER')
 
 
-SSA.MoveEnh = CreateFrame("Frame","MoveEnh",UIParent);
-SSA.MoveRes = CreateFrame("Frame","MoveRes",UIParent);
+SSA.MoveEnh = CreateFrame('Frame','MoveEnh',UIParent)
+SSA.MoveRes = CreateFrame('Frame','MoveRes',UIParent)
 
 ------------------------------
 --- For Debugging Purposes ---
 ------------------------------
 
-SSA.ErrorFrame = CreateFrame("Frame",nil,UIParent);
-_G["SSA_ErrorFrame"] = SSA.ErrorFrame;
-local ErrorFrame = SSA.ErrorFrame;
-ErrorFrame:SetWidth(260);
-ErrorFrame:SetHeight(665);
-ErrorFrame:SetPoint("TOPLEFT",UIParent,"TOPLEFT",100,-100);
+SSA.ErrorFrame = CreateFrame('Frame',nil,UIParent)
+_G['SSA_ErrorFrame'] = SSA.ErrorFrame
+local ErrorFrame = SSA.ErrorFrame
+ErrorFrame:SetWidth(260)
+ErrorFrame:SetHeight(665)
+ErrorFrame:SetPoint('TOPLEFT',UIParent,'TOPLEFT',100,-100)
 ErrorFrame:SetBackdrop(SSA.BackdropSB)
-ErrorFrame:SetBackdropColor(0.15,0.15,0.15,0.9);
-ErrorFrame:SetBackdropBorderColor(1,1,1,1);
-ErrorFrame:Hide();
+ErrorFrame:SetBackdropColor(0.15,0.15,0.15,0.9)
+ErrorFrame:SetBackdropBorderColor(1,1,1,1)
+ErrorFrame:Hide()
 
-ErrorFrame.text = ErrorFrame:CreateFontString(nil, "MEDIUM", "GameFontHighlightLarge");
-ErrorFrame.text:SetPoint("TOPLEFT",11,-5);
-ErrorFrame.text:SetFont("Interface\\addons\\ShamanAurasDev\\Media\\fonts\\courbd.ttf", 14,"NONE");
-ErrorFrame.text:SetTextColor(1,1,1,1);
-ErrorFrame.text:SetJustifyH("LEFT");
+ErrorFrame.text = ErrorFrame:CreateFontString(nil, 'MEDIUM', 'GameFontHighlightLarge')
+ErrorFrame.text:SetPoint('TOPLEFT',11,-5)
+ErrorFrame.text:SetFont([[Interface\addons\ShamanAurasDev\Media\fonts\courbd.ttf]], 14,'NONE')
+ErrorFrame.text:SetTextColor(1,1,1,1)
+ErrorFrame.text:SetJustifyH('LEFT')
 
 ------------------------------
 --- For Debugging Purposes ---
 ------------------------------
-local DataFrame = CreateFrame("Frame",nil,UIParent);
-DataFrame:SetWidth(700);
-DataFrame:SetHeight(300);
-DataFrame:SetPoint("TOPLEFT",UIParent,"TOPLEFT",100,-100);
+local DataFrame = CreateFrame('Frame',nil,UIParent)
+DataFrame:SetWidth(700)
+DataFrame:SetHeight(300)
+DataFrame:SetPoint('TOPLEFT',UIParent,'TOPLEFT',100,-100)
 DataFrame:SetBackdrop(SSA.BackdropSB)
-DataFrame:SetBackdropColor(0.15,0.15,0.15,0.9);
-DataFrame:SetBackdropBorderColor(1,1,1,1);
-DataFrame:Hide();
+DataFrame:SetBackdropColor(0.15,0.15,0.15,0.9)
+DataFrame:SetBackdropBorderColor(1,1,1,1)
+DataFrame:Hide()
 
-DataFrame.text = DataFrame:CreateFontString(nil, "MEDIUM", "GameFontHighlightLarge");
-DataFrame.text:SetPoint("TOPLEFT",11,-5);
-DataFrame.text:SetFont("Interface\\addons\\ShamanAurasDev\\Media\\fonts\\courbd.ttf", 14,"NONE");
-DataFrame.text:SetTextColor(1,1,1,1);
-DataFrame.text:SetJustifyH("LEFT");
+DataFrame.text = DataFrame:CreateFontString(nil, 'MEDIUM', 'GameFontHighlightLarge')
+DataFrame.text:SetPoint('TOPLEFT',11,-5);
+DataFrame.text:SetFont([[Interface\addons\ShamanAurasDev\Media\fonts\courbd.ttf]] or LSM.DefaultMedia.font, 14,'NONE')
+DataFrame.text:SetTextColor(1,1,1,1)
+DataFrame.text:SetJustifyH('LEFT')
 
-SSA.DataFrame = DataFrame;
-_G["SSA_DataFrame"] = DataFrame;
-
--------------------------------
---- User Notification Frame ---
--------------------------------
-local AlertFrame = CreateFrame("Frame","AlertFrame",UIParent)
-
-AlertFrame:SetBackdrop(SSA.BackdropFrm);
-AlertFrame:SetBackdropColor(0,0,0,0.8)
-AlertFrame:SetBackdropBorderColor(0,0,0);
-AlertFrame:SetPoint("CENTER",UIParent,"CENTER",0,250);
-AlertFrame:Hide();
-
-AlertFrame.header = CreateFrame("Frame",nil,AlertFrame);
-AlertFrame.header:SetWidth(AlertFrame.header:GetParent():GetWidth() - 20);
-AlertFrame.header:SetHeight(30);
-
-AlertFrame.header.text = AlertFrame.header:CreateFontString(nil, "MEDIUM", "GameFontHighlightLarge");
---[[AlertFrame.header.text:SetWidth(280);
-AlertFrame.header.text:SetHeight(380);]]
-AlertFrame.header.text:SetPoint("TOP",AlertFrame,"TOP",0,-10);
-AlertFrame.header.text:SetFont("Interface\\addons\\ShamanAuras\\Media\\fonts\\ABF.ttf", 16);
-AlertFrame.header.text:SetTextColor(1,0.82,0,1);
-AlertFrame.header.text:SetJustifyH("LEFT");
-AlertFrame.header.text:SetJustifyV("TOP");
-AlertFrame.header.text:SetText("Sweetsour's Shaman Auras");
-
---[[AlertFrame.footer.text = AlertFrame.header:CreateFontString(nil, "MEDIUM", "GameFontHighlightLarge");
-AlertFrame.footer.text:SetPoint("TOP",AlertFrame,"TOP",0,-10);
-AlertFrame.footer.text:SetFont("Interface\\addons\\ShamanAuras\\Media\\fonts\\ABF.ttf", 16);
-AlertFrame.footer.text:SetTextColor(1,0.82,0,1);
-AlertFrame.footer.text:SetJustifyH("LEFT");
-AlertFrame.footer.text:SetJustifyV("TOP");]]
-
-AlertFrame.inner = CreateFrame("Frame",nil,AlertFrame);
-AlertFrame.inner:SetPoint("TOP",AlertFrame,"TOP",0,-40);
-AlertFrame.inner:Show();
-
-AlertFrame.inner.text = AlertFrame.inner:CreateFontString(nil, "MEDIUM", "GameFontHighlightLarge");
-AlertFrame.inner.text:CanWordWrap();
---[[AlertFrame.inner.text:SetWidth(280);
-AlertFrame.inner.text:SetHeight(380);]]
---AlertFrame.inner.text:SetAllPoints(AlertFrame.inner);
-AlertFrame.inner.text:SetFont("Interface\\addons\\ShamanAuras\\Media\\fonts\\ABF.ttf", 13);
-AlertFrame.inner.text:SetTextColor(1,0.82,0,1);
-AlertFrame.inner.text:SetJustifyV("TOP");
-
-AlertFrame.inner.texture = AlertFrame.inner:CreateTexture(nil,"BACKGROUND");
-AlertFrame.inner.texture:SetAllPoints(AlertFrame.inner);
-
-local function CreateAlert(img,text,width,height,xDiff,yDiff,xOffset,yOffset,justify)
-	AlertFrame:SetWidth(width);
-	AlertFrame:SetHeight(height);
-
-	AlertFrame.inner:SetWidth(width-xDiff);
-	AlertFrame.inner:SetHeight(height-yDiff);
-	AlertFrame.inner.text:SetPoint("TOP",AlertFrame,"TOP",xOffset,yOffset);
-	AlertFrame.inner.text:SetJustifyH(justify);
-	
-	if (text) then
-		AlertFrame.inner.text:SetText(text);
-	end
-
-	if (img) then
-		AlertFrame.inner.texture:SetTexture(img);
-	end
-end
+SSA.DataFrame = DataFrame
+_G['SSA_DataFrame'] = DataFrame
 
 function Auras:CurText(name)
-	return SSA[name].text:GetText() or '';
+	return SSA[name].text:GetText() or ''
 end
 
-local Frame = CreateFrame("Frame");
-local UpdateFrame = CreateFrame("Frame");
-		
--- Frame Tables
-local CDFrame = {
-	[1] = {
-	},
-	[2] = {
-	},
-	[3] = {
-	}
-}
-SSA.isEoE = false;
-SSA.spec = nil;
-local spec = nil;
-SSA.ChargeCDFrame = {
-	[1] = {
-	},
-	[2] = {
-	},
-	[3] = {
-	}
-}
+local Frame = CreateFrame('Frame')
+local UpdateFrame = CreateFrame('Frame')
 
 function Auras:GetMaelstromBarObj(curSpec)
 	if (curSpec == 1) then
-		return SSA.MaelstromBarEle,Auras.db.char.config[1].maelstromBar.threshold;
+		return SSA.MaelstromBarEle,Auras.db.char.elements[1].statusbars.maelstromBar.threshold
 	elseif (curSpec == 2) then
-		return SSA.MaelstromBarEnh,Auras.db.char.config[1].maelstromBar.threshold;
+		return SSA.MaelstromBarEnh,Auras.db.char.elements[2].statusbars.maelstromBar.threshold
 	end
 end
 
 -- Check if the current target is an enemy
 local function IsEnemyTarget()
 	if (UnitExists('target') and not UnitIsFriend('target','player') and not UnitIsDead('target')) then
-		return true;
+		return true
 	else
-		return false;
+		return false
 	end
 end
 
@@ -221,106 +148,100 @@ end
 -------------------------------------------------------------------------------------------------------
 
 -- Check Current Class
-function Auras:CharacterCheck(curSpec,test)
-	local _,_,classIndex = UnitClass('player');
-	local spc = GetSpecialization();
+function Auras:CharacterCheck(spec,test)
+	local _,_,classIndex = UnitClass('player')
+	local curSpec = GetSpecialization()
 	
-	if (test == "MaelstromEle") then
-		SSA.ErrorFrame.text:SetText("\n\n\nCurSpec (Ele): "..curSpec.."\n");
-		SSA.ErrorFrame.text:SetText(Auras:CurText("ErrorFrame").."Spec: "..spc.."\n");
-	end
-	if (test == "MaelstromEnh") then
-		--SSA.DataFrame.text:SetText("CurSpec (Enh): "..curSpec.."\n");
-		--SSA.DataFrame.text:SetText(Auras:CurText("DataFrame").."Spec: "..spc.."\n");
-	end
-	
-	if ((curSpec == spc or curSpec == 0) and classIndex == 7) then
-		return true;
+	if ((spec == curSpec or spec == 0) and classIndex == 7) then
+		--SSA.DataFrame.text:SetText("CurSpec: "..curSpec.."\nSpec: "..spec)
+		return true
 	else
-		return false;
+		return false
 	end
 end
 
 -- Retrieve Spell Info Name
 function Auras:GetSpellName(spellID)
-	local name = GetSpellInfo(spellID);
-	return name;
+	local name = GetSpellInfo(spellID)
+	return name
 end
 
 -- Show/Hide aura icons based on the current spec
 function Auras:ToggleAuraVisibility(self,isEnable,visType)
 	if (isEnable) then
-		if (visType == "showhide") then
+		if (visType == 'showhide') then
 			if (not self:IsShown()) then
-				self:Show();
+				self:Show()
 			end
-		elseif (visType == "alpha") then
+		elseif (visType == 'alpha') then
 			if (self:GetAlpha() == 0) then
-				self:SetAlpha(1);
+				self:SetAlpha(1)
 			end
 		end
 	else
-		if (visType == "showhide") then
+		if (visType == 'showhide') then
 			if (self:IsShown()) then
-				self:Hide();
+				self:Hide()
 			end
-		elseif (visType == "alpha") then
+		elseif (visType == 'alpha') then
 			if (self:GetAlpha() ~= 0) then
-				self:SetAlpha(0);
+				self:SetAlpha(0)
 			end
 		end
 	end
 end
 
-function Auras:ManaPrecision(precision,isNotMax)
-	local power = nil;
-	if (isNotMax) then
-		power = UnitPower('player',19);
+function Auras:ManaPrecision(precision,isNotMax,override)
+	local power
+	if (override) then
+		power = floor(UnitPowerMax('player',19) - (UnitPowerMax('player',19) * 0.75))
+	elseif (isNotMax) then
+		power = UnitPower('player',19)
 	else
-		power = UnitPowerMax('player',19);
+		power = UnitPowerMax('player',19)
 	end
 	
 	if (power > 1000) then
-		--local power = UnitPowerMax('player',19);
-		if (precision == "Long") then
-			if (Auras.db.char.config[3].manaBar.grouping) then
-				return BreakUpLargeNumbers(power);
+		--local power = UnitPowerMax('player',19)
+		if (precision == 'Long') then
+			if (Auras.db.char.elements[3].statusbars.manaBar.grouping) then
+				return BreakUpLargeNumbers(power)
 			else
-				return power;
+				return power
 			end
-		elseif (precision == "Short") then
+		elseif (precision == 'Short') then
 			if (power > 1000000) then
-				return string.format("%.1f",power / 1000000).."M";
+				return format('%.1f',power / 1000000)..'M'
 			elseif (power > 1000) then
-				if (Auras.db.char.config[3].manaBar.grouping) then
-					return string.format("%.1f",BreakUpLargeNumbers(power / 1000)).."K";
+				if (Auras.db.char.elements[3].statusbars.manaBar.grouping) then
+					return format('%.1f',BreakUpLargeNumbers(power / 1000))..'K'
 				else
-					return string.format("%.1f",power / 1000).."K";
+					return format('%.1f',power / 1000)..'K'
 				end
 			end
 		end
 	else
-		return power;		
+		return power
 	end
 end
 
 function Auras:ToggleCooldown(self,spec,isCharge)
 	if (Auras.db.char.config[spec].cooldown.text) then
-		self.CD.text:SetAlpha(1);
+		self.CD.text:SetAlpha(1)
 	else
-		self.CD.text:SetAlpha(0);
+		self.CD.text:SetAlpha(0)
 	end
 	
 	if (Auras.db.char.config[spec].cooldown.sweep) then
 		if (isCharge) then
-			self.ChargeCD:SetAlpha(1);
+			self.ChargeCD:SetAlpha(1)
 		end
-		self.CD:SetAlpha(1);
+		self.CD:SetAlpha(1)
 	else
 		if (isCharge) then
-			self.ChargeCD:SetAlpha(0);
+			self.ChargeCD:SetAlpha(0)
 		end
-		self.CD:SetAlpha(0);
+		self.CD:SetAlpha(0)
 	end
 end
 
@@ -331,11 +252,11 @@ end
 -- Retrieve Specialization Name
 local function GetSpecName(spec)
 	if (spec == 1) then
-		return "Ele";
+		return 'Ele';
 	elseif (spec == 2) then
-		return "Enh";
+		return 'Enh';
 	elseif (spec == 3) then
-		return "Res";
+		return 'Res';
 	end
 end
 
@@ -345,81 +266,153 @@ local function GetTargetInfo()
 end
 
 -- Aura Group Builder
-local function InitializeGroup(group,width,height,point,relativeTo,relativePoint,x,y,spec,name)
-	if (width ~= nil) then
-		group:SetWidth(width);
-		group:SetHeight(height);
+function Auras:InitializeFrameGroup(db)
+	SSA.DataFrame.text:SetText('')
+	for groupObj in pairs(db) do
+		if (SSA[groupObj]) then
+			local group = SSA[groupObj]
+			group:SetWidth(db[groupObj].width)
+			group:SetHeight(db[groupObj].height)
+
+			group:EnableMouse(false)
+			group:SetMovable(false)
+			group:RegisterForDrag('LeftButton')
+			
+
+			group:SetPoint(db[groupObj].point,(SSA[db[groupObj].relativeTo] or UIParent),db[groupObj].relativePoint,db[groupObj].x,db[groupObj].y)
+
+			
+			if (not db[group:GetName()].isEnabled or not Auras:CharacterCheck(0)) then
+				group:Hide()
+			else
+				group:Show()
+			end
+			
+			if (group:GetName() == "Undulation") then
+				group.Model:SetModel('SPELLS/Monk_ForceSpere_Orb.m2')
+			elseif (group:GetName() == 'StormstrikeChargeGrp') then
+				group.Charge1.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
+				group.Charge2.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
+			elseif (group:GetName() == 'StormkeeperChargeGrp') then
+				group.Charge1.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
+				group.Charge2.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
+				group.Charge3.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
+			end
+		end
 	end
+end
+
+function Auras:InitializeProgressBar(bar1,bar2,db,text1,text2,spec)
+	local curSpec = GetSpecialization();
 	
-	group:EnableMouse(false);
-	group:SetMovable(false);
-	group:RegisterForDrag("LeftButton");
-	group:SetPoint(point,(SSA[relativeTo] or UIParent),relativePoint,x,y)
-	if (not Auras.db.char.aura[spec][group:GetName()] or not Auras:CharacterCheck(0)) then
-		group:Hide();
-	end
-end
-
-function Auras:AdjustFont(self,font,size,flag)
-	self:SetFont(font,size,flag);
-end
-
-function Auras:ToggleCombatStateOpacity(self,spec,isCombat)
-	if (isCombat) then
-		self:SetAlpha(1);
-	else
-		self:SetAlpha(Auras.db.char.triggers[spec].OoCAlpha);
+	if (curSpec == spec) then
+		local specName = GetSpecName(spec)
+		local bar1 = SSA[bar1]
+		
+		local db = Auras.db.char.elements[spec].statusbars[db]
+		if (text1) then
+			if (db[text1].isDisplayText) then
+				bar1[text1]:SetAlpha(1)
+			else
+				bar1[text1]:SetAlpha(0)
+			end
+			
+			bar1[text1]:SetPoint(db[text1].justify,db[text1].x,db[text1].y)
+			bar1[text1]:SetFont(LSM.MediaTable.font[db[text1].font.name] or LSM.DefaultMedia.font,db[text1].font.size,db[text1].font.flag)
+			bar1[text1]:SetTextColor(db[text1].font.color.r,db[text1].font.color.g,db[text1].font.color.b)
+		end
+		
+		if (text2) then
+			if (db[text2].isDisplayText) then
+				bar1[text2]:SetAlpha(1)
+			else
+				bar1[text2]:SetAlpha(0)
+			end
+			
+			bar1[text2]:SetPoint(db[text2].justify,db[text2].x,db[text2].y)
+			bar1[text2]:SetFont(LSM.MediaTable.font[db[text2].font.name] or LSM.DefaultMedia.font,db[text2].font.size,db[text2].font.flag)
+			bar1[text2]:SetTextColor(db[text2].font.color.r,db[text2].font.color.g,db[text2].font.color.b)
+		end
+		
+		bar1:ClearAllPoints()
+		
+		if (bar1.icon and db.icon.isEnabled) then
+			local parentJustify
+			
+			if (db.icon.justify == 'LEFT') then
+				parentJustify = 'RIGHT';
+				bar1:SetPoint(db.layout.point,SSA[db.layout.relativeTo],db.layout.relativePoint,(db.layout.x + floor(db.layout.height / 2)) + 1,db.layout.y)
+			else
+				parentJustify = 'LEFT'
+				bar1:SetPoint(db.layout.point,SSA[db.layout.relativeTo],db.layout.relativePoint,(db.layout.x - floor(db.layout.height / 2)) - 1,db.layout.y)
+			end
+			bar1:SetWidth(db.layout.width - db.layout.height)
+			
+			bar1.icon:SetWidth(db.layout.height)
+			bar1.icon:SetHeight(db.layout.height)
+			bar1.icon:SetPoint(parentJustify,bar1,db.icon.justify,0,0)
+		else
+			bar1:SetPoint(db.layout.point,SSA[db.layout.relativeTo],db.layout.relativePoint,db.layout.x,db.layout.y)
+			bar1:SetWidth(db.layout.width)
+		end
+		
+		bar1.bg:SetTexture(LSM.MediaTable.statusbar[db.background.texture])
+		bar1.bg:SetVertexColor(db.background.color.r,db.background.color.g,db.background.color.b,db.background.color.a)
+		
+		bar1:SetFrameStrata(db.layout.strata)
+		bar1:SetHeight(db.layout.height)
+		bar1:SetStatusBarColor(db.foreground.color.r,db.foreground.color.g,db.foreground.color.b)
+		bar1:SetStatusBarTexture(LSM.MediaTable.statusbar[db.foreground.texture])
+		
+		if (bar2) then
+			bar1[bar2]:ClearAllPoints()
+			bar1[bar2]:SetPoint('CENTER',bar1,'CENTER',0,0)
+			bar1[bar2]:SetFrameStrata('MEDIUM')
+			bar1[bar2]:SetWidth(db.layout.width)
+			bar1[bar2]:SetHeight(db.layout.height)
+			bar1[bar2]:SetStatusBarColor(db[lower(bar2).."Bar"].color.r,db[lower(bar2).."Bar"].color.g,db[lower(bar2).."Bar"].color.b,db[lower(bar2).."Bar"].color.a)
+		end
+		
+		db.adjust.isEnabled = false
 	end
 end
 
 -- Convert time, in seconds, to a timer string
 function Auras:parseTime(timer,precision)
 	if (timer ~= nil and timer > 0) then
-		local m,s,ms,fs = math.floor(timer / 60),math.floor(math.fmod(timer,60)),(("%%.%df"):format(1)):format(math.fmod(timer,60),1),timer;
+		local m,s,ms,fs = floor(timer / 60),floor(fmod(timer,60)),(('%%.%df'):format(1)):format(fmod(timer,60),1),timer
 
 		if (m >= 1 and s == 0) then
-			return m..":00",fs;
+			return m..":00",fs
 		else
 			if (m > 0) then
-				m = m..":";
+				m = m..":"
 				if (s < 10) then
-					s = "0"..s;
+					s = "0"..s
 				end
 			else
-				m = '';
+				m = ''
 				if (s < 0) then
-					s = '';
+					s = ''
 				end
 			end
 		end
 		if (precision and tonumber(s) < 60) then
-			return m..ms,fs;
+			return m..ms,fs
 		else
-			return m..s,fs;
+			return m..s,fs
 		end
 	else
-		return 0,0;
-	end
-end
-
-function Auras:AdjustAuraSize(self,spec,object)
-	if (self:GetWidth() ~= Auras.db.char.config[spec][object].width) then
-		self:SetWidth(Auras.db.char.config[spec][object].width);
-	end
-	
-	if (self:GetHeight() ~= Auras.db.char.config[spec][object].height) then
-		self:SetHeight(Auras.db.char.config[spec][object].height);
+		return 0,0
 	end
 end
 
 function Auras:ToggleCooldownSwipe(self,arg1)
-	local cooldown = _G[self:GetName()];
+	local cooldown = _G[self:GetName()]
 	if (not arg1) then
-		cooldown:SetSwipeColor(0,0,0,0);
-		--cooldown.text:Hide();
+		cooldown:SetSwipeColor(0,0,0,0)
 	else
-		cooldown:SetSwipeColor(1,1,1,1);
-		--cooldown.text:Show();
+		cooldown:SetSwipeColor(1,1,1,1)
 	end
 	cooldown:SetDrawSwipe(arg1)
 	cooldown:SetDrawEdge(arg1)
@@ -427,37 +420,38 @@ function Auras:ToggleCooldownSwipe(self,arg1)
 end
 
 function Auras:ExecuteCooldown(self,start,duration,isSmallAura,isHideText,spec)
-	local expires = start + duration;
-	local timer = expires - GetTime();
-	local remaining,seconds = Auras:parseTime(timer,false);
+	local expires = start + duration
+	local timer = expires - GetTime()
+	local remaining,seconds = Auras:parseTime(timer,false)
 	local fontSize
+	local cd = Auras.db.char.elements[spec].cooldowns
 
 	if (isSmallAura) then
 		if (seconds > 60) then
-			fontSize = 10;
+			fontSize = 10
 		else
-			fontSize = 16;
+			fontSize = 16
 		end
 	else
 		if (seconds > 60) then
-			fontSize = 14;
+			fontSize = 14
 		else
-			fontSize = 18;
+			fontSize = 18
 		end
 	end
 	
-	self.CD.text:SetFont("Interface\\addons\\ShamanAuras\\media\\fonts\\PT_Sans_Narrow.TTF",fontSize,"OUTLINE");
+	self.CD.text:SetFont([[Interface\addons\ShamanAuras\media\fonts\PT_Sans_Narrow.TTF]],fontSize,'OUTLINE');
 	
 	self.CD:SetCooldown(start,duration)
-	self.CD:SetReverse(Auras.db.char.config[spec].cooldown.inverse);
+	self.CD:SetReverse(cd.inverse)
 	
-	if (not isHideText and Auras.db.char.config[spec].cooldown.text) then
-		self.CD.text:SetText(Auras:parseTime(timer,false));
+	if (not isHideText and cd.text) then
+		self.CD.text:SetText(Auras:parseTime(timer,false))
 	else
-		self.CD.text:SetText('');
+		self.CD.text:SetText('')
 	end
 
-	if (Auras.db.char.config[spec].cooldown.sweep) then
+	if (cd.sweep) then
 		Auras:ToggleCooldownSwipe(self.CD,true)
 	else
 		Auras:ToggleCooldownSwipe(self.CD,false)
@@ -466,33 +460,33 @@ end
 
 -- Return the number of charges an ability currently has by spellID
 local function SpellCharges(spellid)
-	local charges,maxcharges = GetSpellCharges(spellid);
-	local isMaxCharge = false;
+	local charges,maxcharges = GetSpellCharges(spellid)
+	local isMaxCharge = false
 	
 	if (charges == maxcharges) then
-		isMaxCharge = true;
+		isMaxCharge = true
 	end
 	
 	if ((charges or 0) > 0) then
-		return charges,isMaxCharge;
+		return charges,isMaxCharge
 	else
-		return nil,false;
+		return nil,false
 	end
 end
 
 function Auras:IsTargetEnemy()
 	if (UnitExists('target') and not UnitIsFriend('target','player') and not UnitIsDead('target')) then
-		return true;
+		return true
 	else
-		return false;
+		return false
 	end
 end
 
 function Auras:IsTargetFriendly()
 	if (UnitExists('target') and UnitIsFriend('target','player') and not UnitIsDead('target')) then
-		return true;
+		return true
 	else
-		return false;
+		return false
 	end
 end
 
@@ -500,34 +494,106 @@ function Auras:SpellRangeCheck(self,spellID,flag,spec)
 	if (Auras:IsTargetEnemy() and flag) then
 		if (IsSpellInRange(Auras:GetSpellName(spellID)) == 1) then
 			self.texture:SetDesaturated(false);
-			self.texture:SetVertexColor(1,1,1,1);
+			self.texture:SetVertexColor(1,1,1,1)
 		else
-			self.texture:SetDesaturated(true);
-			self.texture:SetVertexColor(Auras.db.char.triggers[spec].OoRColor.r,Auras.db.char.triggers[spec].OoRColor.g,Auras.db.char.triggers[spec].OoRColor.b,Auras.db.char.triggers[spec].OoRColor.a);
+			self.texture:SetDesaturated(true)
+			self.texture:SetVertexColor(Auras.db.char.settings[spec].OoRColor.r,Auras.db.char.settings[spec].OoRColor.g,Auras.db.char.settings[spec].OoRColor.b,Auras.db.char.settings[spec].OoRColor.a)
 		end
 	elseif (Auras:IsTargetEnemy() and not flag) then
-		self.texture:SetDesaturated(true);
-		self.texture:SetVertexColor(0.5,0.5,0.5,1);
+		self.texture:SetDesaturated(true)
+		self.texture:SetVertexColor(0.5,0.5,0.5,1)
 	else
-		self.texture:SetDesaturated(false);
-		self.texture:SetVertexColor(1,1,1,1);
+		self.texture:SetDesaturated(false)
+		self.texture:SetVertexColor(1,1,1,1)
 	end
 end
 
 function Auras:ShiftPressCheck(self)
 	if (IsShiftKeyDown()) then
-		self.shift = true;
+		self.shift = true
 	else
-		self.shift = false;
+		self.shift = false
 	end
 end
 
-function Auras:ResetAuraGroupPosition(self,grp,name)
-	local frame = Auras.db.char.frames.defaultPos[grp][name];
-	self:SetPoint(frame.point,SSA[frame.relativeTo],frame.relativePoint,frame.x,frame.y);
+function Auras:ResetAuraGroupPosition(auraGroup)
+	local spec,specName = GetSpecialization()
+	
+	local db = Auras.db.char
+	local elements = db.elements[spec]
+	local objName, obj, subName
+	
+	SSA.DataFrame.text:SetText('')
+	for i=1,SSA[auraGroup]:GetNumChildren() do
+		objName = select(i,SSA[auraGroup]:GetChildren()):GetName()
+		
+		if (elements.frames[objName]) then
+			obj = db.elements.defaults[spec].frames[objName]
+			SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."="..objName.."\n")
+			SSA[objName]:SetPoint(obj.point,SSA[auraGroup],obj.relativePoint,obj.x,obj.y)
+			Auras:UpdateLayout(SSA[objName],elements.frames[objName])
+		else
+			if (spec == 1) then
+				specName = 'Ele'
+			elseif (spec == 2) then
+				specName = 'Enh'
+			else
+				specName = 'Res'
+			end
+			
+			subName = gsub(objName,"^%a",lower)
+			subName = gsub(subName,specName,'')
+			subName = gsub(subName,'Totem','')
+			
+			obj = db.elements.defaults[spec].statusbars[subName]
+			bar = elements.statusbars[subName]
+			
+			if (SSA[objName].icon and bar.icon.isEnabled) then
+				local parentJustify
+				
+				if (obj.icon.justify == 'LEFT') then
+					parentJustify = 'RIGHT';
+					SSA[objName]:SetPoint(obj.layout.point,SSA[obj.layout.relativeTo],obj.layout.relativePoint,(obj.layout.x + floor(obj.layout.height / 2)) + 1,obj.layout.y)
+				else
+					parentJustify = 'LEFT'
+					SSA[objName]:SetPoint(obj.layout.point,SSA[obj.layout.relativeTo],obj.layout.relativePoint,(obj.layout.x - floor(obj.layout.height / 2)) - 1,obj.layout.y)
+				end
+				SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."-"..objName.."\n")
+				SSA[objName].icon:SetPoint(parentJustify,SSA[objName],bar.icon.justify,0,0)
+				Auras:UpdateLayout(SSA[objName],elements.statusbars[subName])
+			else
+				SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."+"..objName.."\n")
+				SSA[objName]:SetPoint(obj.layout.point,SSA[auraGroup],obj.layout.relativePoint,obj.layout.x,obj.layout.y)
+				Auras:UpdateLayout(SSA[objName],elements.statusbars[subName])
+			end
+		end	
+	end
 end
 
-function Auras:MoveOnMouseDown(self,grp,button)
+function Auras:ConfigureMove(db,obj,backdrop)
+	if (db.isMoving) then
+		if (not obj:IsMouseEnabled()) then
+			obj:EnableMouse(true)
+			obj:SetMovable(true)
+		end
+		
+		if (not obj:GetBackdrop()) then
+			obj:SetBackdrop(backdrop)
+			obj:SetBackdropColor(0,0,0,0.85)
+		end
+	else
+		if (obj:IsMouseEnabled()) then
+			obj:EnableMouse(false)
+			obj:SetMovable(false)
+		end
+		
+		if (obj:GetBackdrop()) then
+			obj:SetBackdrop(nil)
+		end
+	end
+end
+
+function Auras:MoveOnMouseDown(self,auraGroup,button)
 	local framePt,_,parentPt,x,y = self:GetPoint(1)
 
 	if (not IsShiftKeyDown() and not IsControlKeyDown() and button == 'LeftButton') then
@@ -541,18 +607,18 @@ function Auras:MoveOnMouseDown(self,grp,button)
 		self.screenY = y
 	elseif (IsShiftKeyDown() and not IsControlKeyDown()) then
 		if (button == "LeftButton") then
-			self:SetPoint("CENTER",self:GetParent(),"CENTER",0,y);
+			self:SetPoint("CENTER",self:GetParent(),"CENTER",0,y)
 		elseif (button == "RightButton") then
-			self:SetPoint("CENTER",self:GetParent(),"CENTER",x,0);
+			self:SetPoint("CENTER",self:GetParent(),"CENTER",x,0)
 		elseif (button == "MiddleButton") then
-			self:SetPoint("CENTER",self:GetParent(),"CENTER",0,0);
+			self:SetPoint("CENTER",self:GetParent(),"CENTER",0,0)
 		end
 	elseif (not IsShiftKeyDown() and IsControlKeyDown() and button == "RightButton") then
-		Auras:ResetAuraGroupPosition(self,grp,self:GetName())
+		Auras:ResetAuraGroupPosition(auraGroup)
 	end
 end
 
-function Auras:MoveOnMouseUp(self,grp,button)
+function Auras:MoveOnMouseUp(self,button)
 	local framePt,_,parentPt,x,y = self:GetPoint(1)
 
 	if (button == 'LeftButton' and self.framePt) then
@@ -570,1559 +636,201 @@ function Auras:MoveOnMouseUp(self,grp,button)
 	end
 end
 
-
+function Auras:UpdateLayout(obj,db)
+	local point,relativeTo,relativePoint,x,y = obj:GetPoint(1);
+	
+	if (obj.icon and obj:GetName() ~= "Cloudburst") then
+		if (db.icon.isEnabled) then
+			if (db.icon.justify == "LEFT") then
+				x = x - floor(db.layout.height / 2)
+			else
+				x = x + floor(db.layout.height / 2)
+			end
+		else
+		
+		end
+	end
+	
+	if (db.layout) then
+		db.layout.point = point
+		db.layout.relativeTo = relativeTo:GetName()
+		db.layout.relativePoint = relativePoint
+		db.layout.x = x
+		db.layout.y = y
+	else
+		db.point = point
+		db.relativeTo = relativeTo:GetName()
+		db.relativePoint = relativePoint
+		db.x = x
+		db.y = y
+	end
+end
 
 function Auras:ParseClick(isClicked,button,spec)
-	Auras.db.char.layout[spec][button] = isClicked;
+	Auras.db.char.layout[spec][button] = isClicked
 end
 
 local function GetVersionNumber()
-	return tonumber(string.sub(Auras.version,2,3));	
+	return tonumber(sub(Auras.version,2,3))
 end
 -- Toggle Button Glow Animation
 function Auras:ToggleOverlayGlow(object,toggle,enemyCheck)
 
 	if (enemyCheck and not UnitIsFriend('target','player')) then
 		if (toggle) then
-			LibStub("LibButtonGlow-1.0").ShowOverlayGlow(object);
+			LibStub("LibButtonGlow-1.0").ShowOverlayGlow(object)
 		else
-			LibStub("LibButtonGlow-1.0").HideOverlayGlow(object);
+			LibStub("LibButtonGlow-1.0").HideOverlayGlow(object)
 		end
 	else
 		if (toggle) then
-			LibStub("LibButtonGlow-1.0").ShowOverlayGlow(object);
+			LibStub("LibButtonGlow-1.0").ShowOverlayGlow(object)
 		else
-			LibStub("LibButtonGlow-1.0").HideOverlayGlow(object);
+			LibStub("LibButtonGlow-1.0").HideOverlayGlow(object)
 		end
 	end
 end
 
+local function ResetAdjustable()
+	local db = Auras.db.char
+	
+	db.elements[1].statusbars.maelstromBar.adjust.isEnabled = false
+	db.elements[1].statusbars.maelstromBar.adjust.showBG = false
+	db.elements[1].statusbars.castBar.adjust.isEnabled = false
+	db.elements[1].statusbars.castBar.adjust.showBG = false
+	db.elements[1].statusbars.channelBar.adjust.isEnabled = false
+	db.elements[1].statusbars.channelBar.adjust.showBG = false
+	db.elements[1].statusbars.icefuryBar.adjust.isEnabled = false
+	db.elements[1].statusbars.icefuryBar.adjust.showBG = false
+	db.elements[1].statusbars.icefuryBar.adjust.showTimer = false
+	
+	db.elements[2].statusbars.maelstromBar.adjust.isEnabled = false
+	db.elements[2].statusbars.maelstromBar.adjust.showBG = false
+	db.elements[2].statusbars.castBar.adjust.isEnabled = false
+	db.elements[2].statusbars.castBar.adjust.showBG = false
+	db.elements[2].statusbars.channelBar.adjust.isEnabled = false
+	db.elements[2].statusbars.channelBar.adjust.showBG = false
+	
+	db.elements[3].statusbars.earthenShieldBar.adjust.isEnabled = false
+	db.elements[3].statusbars.earthenShieldBar.adjust.showBG = false
+	db.elements[3].statusbars.earthenShieldBar.adjust.showTimer = false
+	db.elements[3].statusbars.tidalWavesBar.adjust.isEnabled = false
+	db.elements[3].statusbars.manaBar.adjust.isEnabled = false
+	db.elements[3].statusbars.manaBar.adjust.showBG = false
+	db.elements[3].statusbars.castBar.adjust.isEnabled = false
+	db.elements[3].statusbars.castBar.adjust.showBG = false
+	db.elements[3].statusbars.channelBar.adjust.isEnabled = false
+	db.elements[3].statusbars.channelBar.adjust.showBG = false
+end
+
+local function ResetMovable()
+	local db = Auras.db.char
+	
+	db.elements[1].isMoving = false 
+	db.elements[2].isMoving = false
+	db.elements[3].isMoving = false
+end
+
 -- Event: ADDON_LOADED
 function Auras:OnInitialize()
-	local defaults = {
-		char = {
-			EquippedArtifact = '',
-			isR48FirstLoad = true,
-			version = nil,
-			name = nil,
-			isEleFirst = true,
-			isEnhFirst = true,
-			isResFirst = true,
-			isMoveGrid = true,
-			cooldowns = {
-				numbers = true,
-				sweep = true,
-			},
-			info = {
-				totems = {
-					eShield = {
-					},
-					cBurst = {
-						absorb = 0;
-					}
-				}
-			},
-			layout = {
-				[1] = {
-					orientation = {
-						top = "Horizontal",
-						bottom = "Horizontal",
-						extra = "Horizontal",
-						left = "Vertical",
-						right = "Vertical",
-					},
-					primary = {
-						top = {
-							icon = 32,
-							spacing = 50,
-							charges = 13.5,
-						},
-						bottom = {
-							icon = 32,
-							spacing = 50,
-							charges = 13.5,
-						},
-						extra = {
-							icon = 32,
-							spacing = 50,
-							charges = 13.5,
-						},
-					},
-					secondary = {
-						left = {
-							icon = 25,
-							spacing = 30,
-							charges = 13.5,
-						},
-						right = {
-							icon = 25,
-							spacing = 30,
-							charges = 13.5,
-						},
-					},
-					maelstromBar = {
-						width = 260,
-						height = 21,
-						textSize = 12,
-					},
-					icefuryBar = {
-						width = 260,
-						height = 21,
-						textSize = 12,
-					},
-				},
-				[2] = {
-					orientation = {
-						top = "Horizontal",
-						bottom = "Horizontal",
-						extra = "Horizontal",
-						left = "Vertical",
-						right = "Vertical",
-					},
-					primary = {
-						top = {
-							icon = 32,
-							spacing = 50,
-							charges = 13.5,
-						},
-						bottom = {
-							icon = 32,
-							spacing = 50,
-							charges = 13.5,
-						},
-						extra = {
-							icon = 32,
-							spacing = 50,
-							charges = 13.5,
-						},
-					},
-					secondary = {
-						left = {
-							icon = 25,
-							spacing = 30,
-							charges = 13.5,
-						},
-						right = {
-							icon = 25,
-							spacing = 30,
-							charges = 13.5,
-						},
-					},
-					maelstromBar = {
-						width = 260,
-						height = 21,
-						textSize = 12,
-					},
-				},
-				[3] = {
-					orientation = {
-						top = "Horizontal",
-						bottom = "Horizontal",
-						extra = "Horizontal",
-						left = "Vertical",
-						right = "Vertical",
-					},
-					primary = {
-						top = {
-							icon = 32,
-							spacing = 50,
-							charges = 13.5,
-						},
-						bottom = {
-							icon = 32,
-							spacing = 50,
-							charges = 13.5,
-						},
-						extra = {
-							icon = 32,
-							spacing = 50,
-							charges = 13.5,
-						},
-					},
-					secondary = {
-						left = {
-							icon = 25,
-							spacing = 30,
-							charges = 13.5,
-						},
-						right = {
-							icon = 25,
-							spacing = 30,
-							charges = 13.5,
-						},
-					},
-					earthenShieldBar = {
-						width = 260,
-						height = 21,
-						textSize = 12,
-					},
-					manaBar = {
-						width = 260,
-						height = 21,
-						textSize = 12,
-					},
-					tidalWavesBar = {
-						width = 225,
-						height = 7,
-					},
-				},
-				default = {
-					orientation = {
-						top = "Horizontal",
-						bottom = "Horizontal",
-						extra = "Horizontal",
-						left = "Vertical",
-						right = "Vertical",
-					},
-					primary = {
-						top = {
-							icon = 32,
-							spacing = 50,
-							charges = 13.5,
-						},
-						bottom = {
-							icon = 32,
-							spacing = 50,
-							charges = 13.5,
-						},
-						extra = {
-							icon = 32,
-							spacing = 50,
-							charges = 13.5,
-						},
-					},
-					secondary = {
-						left = {
-							icon = 25,
-							spacing = 30,
-							charges = 13.5,
-						},
-						right = {
-							icon = 25,
-							spacing = 30,
-							charges = 13.5,
-						},
-					},
-					LargeBar = {
-						width = 260,
-						height = 21,
-					},
-					SmallBar = {
-						width = 225,
-						height = 7,
-					},
-					textSize = 12,
-				},
-			},
-			config = {
-				LeftButton = false,
-				MiddleButton = false,
-				RightButton = false,
-				isShiftDown = false,
-				isCtrlDown = false,
-				[1] = {
-					isMoving = false,
-					cooldown = {
-						text = true,
-						sweep = true,
-						inverse = false,
-					},
-					maelstromBar = {
-						isAdjustable = false,
-						isDisplayText = true,
-						animate = true,
-						justify = "Center",
-						threshold = 90,
-						alphaCombat = 1,
-						alphaOoC = 0,
-						alphaTar = 0.5,
-					},
-					icefuryBar = {
-						isAdjustable = false,
-						isDisplayCountText = true,
-						isDisplayTimerText = true,
-						alphaCombat = 1,
-						alphaOoC = 0,
-						alphaTar = 0.5,
-					},
-				},
-				[2] = {
-					isMoving = false,
-					cooldown = {
-						text = true,
-						sweep = true,
-						inverse = false,
-					},
-					maelstromBar = {
-						isAdjustable = false,
-						isDisplayText = true,
-						animate = true,
-						justify = "Center",
-						threshold = 130,
-						alphaCombat = 1,
-						alphaOoC = 0,
-						alphaTar = 0.5,
-					},
-				},
-				[3] = {
-					isMoving = false,
-					cooldown = {
-						text = true,
-						sweep = true,
-						inverse = false,
-					},
-					earthenShieldBar = {
-						isAdjustable = false,
-						isDisplayTimerText = true,
-						isDisplayHealthText = true,
-						alphaCombat = 1,
-						alphaOoC = 0,
-					},
-					manaBar = {
-						isAdjustable = false,
-						precision = "Long",
-						grouping = true,
-						justify = "Center",
-						isDisplayText = true,
-						alphaCombat = 1,
-						alphaOoC = 0,
-					},
-					tidalWavesBar = {
-						isAdjustable = false,
-						animate = true,
-						OoCTime = 5,
-						combatDisplay = "Always",
-						OoCDisplay = "Target & On Heal",
-						emptyColor = {
-							r = 1,
-							g = 0,
-							b = 0,
-							a = 1,
-						},
-						
-					},
-				},
-				default = {
-					alphaOoC = 0,
-					alphaTar = 0.5,
-					alphaCombat = 1,
-					justify = "Center",
-					animate = true,
-					isAdjustable = false,
-					isDisplayText = true,
-					[1] = {
-						cooldown = {
-							text = true,
-							sweep = true,
-							inverse = false,
-						},
-						maelstromBar = {
-							threshold = 90,
-						},
-						icefuryBar = {
-							isDisplayCountText = true,
-							isDisplayTimerText = true,
-						},
-					},
-					[2] = {
-						cooldown = {
-							text = true,
-							sweep = true,
-							inverse = false,
-						},
-						maelstromBar = {
-							threshold = 130,
-						},
-					},
-					[3] = {
-						cooldown = {
-							text = true,
-							sweep = true,
-							inverse = false,
-						},
-						manaBar = {
-							precision = "Long",
-							grouping = true,
-						},
-						earthenShieldBar = {
-							isDisplayHealthText = true,
-							isDisplayTimerText = true,
-						},
-						tidalWavesBar = {
-							TidalWaveTime = 5,
-							combatDisplay = "Always",
-							OoCDisplay = "Target & On Heal",
-							OoCTime = 5,
-							emptyColor = {
-								r = 1,
-								g = 0,
-								b = 0,
-								a = 1,
-							},
-						}
-					},
-				},
-			},
-			triggers = {
-				gridPreview = false,
-				gridColor = {
-					r = 0,
-					g = 0,
-					b = 0,
-					a = 1,
-				},
-				axisColor = {
-					r = 1,
-					g = 0,
-					b = 0,
-					a = 1,
-				},
-				[1] = {
-					flameShock = 10,
-					totemMastery = 15,
-					OoCAlpha = 0.5,
-					OoRColor = {
-						r = 1,
-						g = 0,
-						b = 0,
-						a = 1,
-					}
-				},
-				[2] = {
-					rockbiter = 5,
-					flametongue = 5,
-					frostbrand = 5,
-					OoCAlpha = 0.5,
-					OoRColor = {
-						r = 1,
-						g = 0,
-						b = 0,
-						a = 1,
-					}
-				},
-				[3] = {
-					cloudburst = 300000,
-					flameShock = 10,
-					OoCAlpha = 0.5,
-					OoRColor = {
-						r = 1,
-						g = 0,
-						b = 0,
-						a = 1,
-					},
-				},
-				default = {
-					gridPreview = false,
-					gridColor = {
-						r = 0,
-						g = 0,
-						b = 0,
-						a = 1,
-					},
-					axisColor = {
-						r = 1,
-						g = 0,
-						b = 0,
-						a = 1,
-					},
-					OoCAlpha = 0.5,
-					OoRColor = {
-						r = 1,
-						g = 0,
-						b = 0,
-						a = 1,
-					},
-					[1] = {
-						flameShock = 10,
-						totemMastery = 15,
-					},
-					[2] = {
-						rockbiter = 5,
-						flametongue = 5,
-						frostbrand = 5,
-					},
-					[3] = {
-						cloudburst = 300000,
-						flameShock = 10,
-					},
-				},
-			},
-			aura = {
-				--minor = {
-					[1] = {
-						AncestralGuidanceEle = true,
-						AncestralGuidanceBarEle = true,
-						AscendanceEle = true,
-						AscendanceBarEle = true,
-						AstralShiftEle = true,
-						AstralShiftBarEle = true,
-						AuraGroupEle = true,
-						Bloodlust = true,
-						BloodlustBarEle = true,
-						BuffTimerBarGrpEle = true,
-						CleanseSpiritEle = true,
-						ConcordanceEle = true,
-						EarthElemental = true,
-						EarthElementalBar = true,
-						EarthgrabTotemEle = true,
-						EarthgrabTotemBarEle = true,
-						Earthquake = true,
-						EarthShock = true,
-						EarthShockGlow = true,
-						ElementalBlast = true,
-						ElementalBlastCritBar = true,
-						ElementalBlastHasteBar = true,
-						ElementalBlastMasteryBar = true,
-						ElementalFocus = true,
-						ElementalMastery = true,
-						ElementalMasteryBar = true,
-						FireElemental = true,
-						FireElementalBar = true,
-						FlameShock = true,
-						FlameShockGlow = true,
-						FrostShock = true,
-						GustWindEle = true,
-						HeroismBarEle = true,
-						HexEle = true,
-						HexBarEle = true,
-						Icefury = true,
-						IcefuryBar = true,
-						LargeIconGrpBotEle = true,
-						LargeIconGrpExtEle = true,
-						LargeIconGrpTopEle = true,
-						LavaBurstEle = true,
-						LavaBurstEleGlow = true,
-						LavaBurstEleCharges = true,
-						LavaSurgeEle = true,
-						--LavaSurgeBar = true,
-						LightningSurgeTotemEle = true,
-						LightningSurgeTotemBarEle = true,
-						LiquidMagmaTotem = true,
-						LiquidMagmaTotemBar = true,
-						MaelstromBarEle = true,
-						MainTimerBarGrpEle = true,
-						PowerOfMaelstrom = true,
-						SmallIconGrpLeftEle = true,
-						SmallIconGrpRightEle = true,
-						StormElemental = true,
-						StormElementalBar = true,
-						Stormkeeper = true,
-						StormkeeperChargeGrp = true,
-						TimeWarpBarEle = true,
-						Thunderstorm = true,
-						TotemGroupEle = true,
-						TotemMastery = true,
-						TotemMasteryTexture = true,
-						UtilTimerBarGrpEle = true,
-						VoodooTotemEle = true,
-						VoodooTotemBarEle = true,
-						WindRushTotemEle = true,
-						WindRushTotemBarEle = true,
-						WindShearEle = true
-					},
-					[2] = {
-						AscendanceEnh = true,
-						AscendanceBarEnh = true,
-						AstralShiftEnh = true,
-						AstralShiftBarEnh = true,
-						AuraGroupEnh = true,
-						BloodlustEnh = true,
-						BloodlustBarEnh = true,
-						--[[Boulderfist = true,
-						BoulderfistBar = true,
-						BoulderfistGlow = true,
-						BoulderfistCharges = true,]]
-						BuffTimerBarGrpEnh = true,
-						CleanseSpiritEnh = true,
-						ConcordanceEnh = true,
-						CrashLightning = true,
-						CrashLightningBar = true,
-						CrashLightningGlow = true,
-						DoomWinds = true,
-						DoomWindsTex = true,
-						EarthenSpike = true,
-						EarthenSpikeBar = true,
-						EarthgrabTotemEnh = true,
-						EarthgrabTotemBarEnh = true,
-						FeralLunge = true,
-						FeralSpirit = true,
-						FeralSpiritBar = true,
-						Flametongue = true,
-						FlametongueBar = true,
-						FlametongueGlow = true,
-						Frostbrand = true,
-						FrostbrandBar = true,
-						FrostbrandGlow = true,
-						HeroismBarEng = true,
-						HexEnh = true,
-						HexBarEnh = true,
-						LandslideBar = true;
-						LargeIconGrpBotEnh = true,
-						LargeIconGrpExtEnh = true,
-						LargeIconGrpTopEnh = true,
-						LavaLash = true,
-						LightningSurgeTotemEnh = true,
-						LightningSurgeTotemBarEnh = true,
-						MaelstromBarEnh = true,
-						MainTimerBarGrpEnh = true,
-						Rainfall = true,
-						Rockbiter = true,
-						--RockbiterBar = true,
-						--RockbiterGlow = true,
-						RockbiterCharges = true,
-						SmallIconGrpLeftEnh = true,
-						SmallIconGrpRightEnh = true,
-						SpiritWalk = true,
-						SpiritWalkBar = true,
-						Stormstrike = true,
-						StormstrikeChargeGrp = true,
-						StormstrikeChargesText = false,
-						StormstrikeGlow = true,
-						Sundering = true,
-						TimeWarpBarEnh = true,
-						UnleashDoom = true,
-						UtilTimerBarGrpEnh = true,
-						VoodooTotemEnh = true,
-						VoodooTotemBarEnh = true,
-						WindRushTotemEnh = true,
-						WindRushTotemBarEnh = true,
-						WindShearEnh = true,
-						Windsong = true,
-						WindsongBar = true,
-						WindsongGlow = true,
-					},
-					[3] = {
-						AncestralGuidanceRes = true,
-						AncestralGuidanceBarRes = true,
-						AncestralProtectionTotem = true,
-						AncestralProtectionTotemBar = true,
-						AscendanceRes = true,
-						AscendanceBarRes = true,
-						AstralShiftRes = true,
-						AstralShiftBarRes = true,
-						AuraGroupRes = true,
-						--Bloodlust = true,
-						BloodlustBarRes = true,
-						BuffTimerBarGrpRes = true,
-						Cloudburst = true,
-						CloudburstAbsorbBar = true,
-						CloudburstTotem = true,
-						CloudburstTotemBar = true,
-						ConcordanceRes = true,
-						EarthenShieldTotem = true,
-						EarthenShieldTotemBar = true,
-						EarthgrabTotemRes = true,
-						EarthgrabTotemBarRes = true,
-						FlameShockRes = true,
-						FlameshockResGlow = true,
-						GiftOfQueen = true,
-						GustWindRes = true,
-						HealingRain = true,
-						HealingStreamTotem = true,
-						HealingStreamTotemBar = true,
-						HealingStreamTotemOneBar = true,
-						HealingStreamTotemTwoBar = true,
-						HealingStreamCharges = true,
-						HealingTideTotem = true,
-						HealingTideTotemBar = true,
-						HeroismBarRes = true,
-						HexRes = true,
-						HexBarRes = true,
-						LargeIconGrpBotRes = true,
-						LargeIconGrpExtRes = true,
-						LargeIconGrpTopRes = true,
-						LavaBurstRes = true,
-						LavaBurstResGlow = true,
-						LavaBurstResCharges = true,
-						LavaSurgeRes = true,
-						--LavaSurgeBarRes = true,
-						LightningSurgeTotemRes = true,
-						LightningSurgeTotemBarRes = true,
-						MainTimerBarGrpRes = true,
-						ManaBar = true,
-						PurifySpirit = true,
-						Riptide = true,
-						RiptideCharge = true,
-						SmallIconGrpLeftRes = true,
-						SmallIconGrpRightRes = true,
-						SpiritLinkTotem = true,
-						SpiritLinkTotemBar = true,
-						SpiritwalkersGrace = true,
-						SpiritwalkersGraceBar = true,
-						TidalWaves = true,
-						TidalWavesBar = true,
-						TidalWavesCharges = true,
-						Undulation = true,
-						UnleashLife = true,
-						UnleashLifeBar = true,
-						UtilTimerBarGrpRes = true,
-						VoodooTotemRes = true,
-						VoodooTotemBarRes = true,
-						Wellspring = true,
-						WindRushTotemRes = true,
-						WindRushTotemBarRes = true,
-						WindShearRes = true,
-					},
-				--},
-			},
-			frames = {
-				timerbars = {
-					buff = {
-						[1] = true,
-						[2] = true,
-						[3] = true,
-					},
-					main = {
-						[1] = true,
-						[2] = true,
-						[3] = true,
-					},
-					util = {
-						[1] = true,
-						[2] = true,
-						[3] = true,
-					},
-				},
-				eleGrp = {
-					enabled = true,
-					AuraGroupEle = {
-						point = "CENTER",
-						relativeTo = nil,
-						relativePoint = "CENTER",
-						x = 0,
-						y = 0,
-						width = (GetScreenWidth() - 500),
-						height = (GetScreenHeight() - 250),
-					},
-					LargeIconGrpTopEle = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEle",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -180,
-						width = 250,
-						height = 50,
-					},
-					LargeIconGrpBotEle = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEle",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -225,
-						width = 250,
-						height = 50,
-					},
-					LargeIconGrpExtEle = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEle",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -105,
-						width = 100,
-						height = 50,
-					},
-					SmallIconGrpLeftEle = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEle",
-						relativePoint = "CENTER",
-						x = -175,
-						y = -170,
-						width = 35,
-						height = 160,
-					},
-					SmallIconGrpRightEle = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEle",
-						relativePoint = "CENTER",
-						x = 175,
-						y = -170,
-						width = 35,
-						height = 160,
-					},
-					BuffTimerBarGrpEle = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEle",
-						relativePoint = "CENTER",
-						x = 250,
-						y = -125,
-						width = 115,
-						height = 180,
-					},
-					MainTimerBarGrpEle = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEle",
-						relativePoint = "CENTER",
-						x = -250,
-						y = -125,
-						width = 90,
-						height = 180,
-					},
-					UtilTimerBarGrpEle = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEle",
-						relativePoint = "CENTER",
-						x = -240,
-						y = -125,
-						width = 70,
-						height = 180,
-					},
-					MaelstromBarEle = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEle",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -139,
-						width = nil,
-						height = nil,
-						alpha = 0.5,
-					},
-					IcefuryBar = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEle",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -110,
-						width = nil,
-						height = nil,
-						alpha = 0.9,
-					},
-					TotemGroupEle = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEle",
-						relativePoint = "CENTER",
-						x = -200,
-						y = 0,
-						width = 200,
-						height = 50,
-						BackdropColor = {
-							r = 0.15,
-							g = 0.15,
-							b = 0.15,
-							a = 0.6,
-						}
-					},
-					TotemMastery = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEle",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -210,
-						width = nil,
-						height = nil,
-					},
-					StormkeeperChargeGrp = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEle",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -110,
-						width = 260,
-						height = 50,
-					}
-				},
-				enhGrp = {
-					enabled = true,
-					AuraGroupEnh = {
-						point = "CENTER",
-						relativeTo = nil,
-						relativePoint = "CENTER",
-						x = 0,
-						y = 0,
-						width = (GetScreenWidth() - 500),
-						height = (GetScreenHeight() - 250),
-					},
-					LargeIconGrpTopEnh = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEnh",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -180,
-						width = 250,
-						height = 50,
-					},
-					LargeIconGrpBotEnh = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEnh",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -225,
-						width = 250,
-						height = 50,
-					},
-					LargeIconGrpExtEnh = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEnh",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -105,
-						width = 100,
-						height = 50,
-					},
-					SmallIconGrpLeftEnh = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEnh",
-						relativePoint = "CENTER",
-						x = -175,
-						y = -170,
-						width = 35,
-						height = 160,
-					},
-					SmallIconGrpRightEnh = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEnh",
-						relativePoint = "CENTER",
-						x = 175,
-						y = -170,
-						width = 35,
-						height = 160,
-					},
-					BuffTimerBarGrpEnh = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEnh",
-						relativePoint = "CENTER",
-						x = 257,
-						y = -125,
-						width = 131,
-						height = 180,
-					},
-					MainTimerBarGrpEnh = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEnh",
-						relativePoint = "CENTER",
-						x = -257,
-						y = -125,
-						width = 131,
-						height = 180,
-					},
-					UtilTimerBarGrpEnh = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEnh",
-						relativePoint = "CENTER",
-						x = -215,
-						y = -125,
-						width = 47,
-						height = 180,
-					},
-					MaelstromBarEnh = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEnh",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -139,
-						width = nil,
-						height = nil,
-					},
-					StormstrikeChargeGrp = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEnh",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -100,
-						width = 260,
-						height = 50,
-					},
-					DoomWindsTex = {
-						point = "CENTER",
-						relativeTo = "AuraGroupEnh",
-						relativePoint = "CENTER",
-						x = -150,
-						y = 0,
-						width = 125,
-						height = 240,
-					},
-				},
-				resGrp = {
-					enabled = true,
-					AuraGroupRes = {
-						point = "CENTER",
-						relativeTo = nil,
-						relativePoint = "CENTER",
-						x = 0,
-						y = 0,
-						width = (GetScreenWidth() - 500),
-						height = (GetScreenHeight() - 250),
-					},
-					LargeIconGrpTopRes = {
-						point = "CENTER",
-						relativeTo = "AuraGroupRes",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -180,
-						width = 250,
-						height = 50,
-					},
-					LargeIconGrpBotRes = {
-						point = "CENTER",
-						relativeTo = "AuraGroupRes",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -225,
-						width = 250,
-						height = 50,
-					},
-					LargeIconGrpExtRes = {
-						point = "CENTER",
-						relativeTo = "AuraGroupRes",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -105,
-						width = 100,
-						height = 50,
-					},
-					SmallIconGrpLeftRes = {
-						point = "CENTER",
-						relativeTo = "AuraGroupRes",
-						relativePoint = "CENTER",
-						x = -175,
-						y = -170,
-						width = 35,
-						height = 160,
-					},
-					SmallIconGrpRightRes = {
-						point = "CENTER",
-						relativeTo = "AuraGroupRes",
-						relativePoint = "CENTER",
-						x = 175,
-						y = -170,
-						width = 35,
-						height = 160,
-					},
-					BuffTimerBarGrpRes = {
-						point = "CENTER",
-						relativeTo = "AuraGroupRes",
-						relativePoint = "CENTER",
-						x = 257,
-						y = -125,
-						width = 131,
-						height = 180,
-					},
-					MainTimerBarGrpRes = {
-						point = "CENTER",
-						relativeTo = "AuraGroupRes",
-						relativePoint = "CENTER",
-						x = -244,
-						y = -125,
-						width = 105,
-						height = 180,
-					},
-					UtilTimerBarGrpRes = {
-						point = "CENTER",
-						relativeTo = "AuraGroupRes",
-						relativePoint = "CENTER",
-						x = -215,
-						y = -125,
-						width = 47,
-						height = 180,
-					},
-					EarthenShieldTotemBar = {
-						point = "CENTER",
-						relativeTo = "AuraGroupRes",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -139,
-						width = nil,
-						height = nil,
-					},
-					ManaBar = {
-						point = "CENTER",
-						relativeTo = "AuraGroupRes",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -139,
-						width = nil,
-						height = nil,
-					},
-					TidalWavesBar = {
-						point = "CENTER",
-						relativeTo = "AuraGroupRes",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -202,
-						width = nil,
-						height = nil,
-					},
-					Cloudburst = {
-						point = "CENTER",
-						relativeTo = "AuraGroupRes",
-						relativePoint = "CENTER",
-						x = -200,
-						y = 0,
-						width = 150,
-						height = 40,
-						BackdropColor = {
-							r = 0.15,
-							g = 0.15,
-							b = 0.15,
-							a = 0.6,
-						}
-					},
-					Undulation = {
-						point = "CENTER",
-						relativeTo = "AuraGroupRes",
-						relativePoint = "CENTER",
-						x = 0,
-						y = -275,
-						width = nil,
-						height = nil,
-					},
-				},
-				defaultPos = {
-					eleGrp = {
-						AuraGroupEle = {
-							point = "CENTER",
-							relativeTo = nil,
-							relativePoint = "CENTER",
-							x = 0,
-							y = 0,
-						},
-						LargeIconGrpTopEle = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEle",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -180,
-						},
-						LargeIconGrpBotEle = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEle",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -225,
-						},
-						LargeIconGrpExtEle = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEle",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -105,
-						},
-						SmallIconGrpLeftEle = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEle",
-							relativePoint = "CENTER",
-							x = -175,
-							y = -170,
-						},
-						SmallIconGrpRightEle = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEle",
-							relativePoint = "CENTER",
-							x = 175,
-							y = -170,
-						},
-						BuffTimerBarGrpEle = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEle",
-							relativePoint = "CENTER",
-							x = 250,
-							y = -125,
-						},
-						MainTimerBarGrpEle = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEle",
-							relativePoint = "CENTER",
-							x = -250,
-							y = -125,
-						},
-						UtilTimerBarGrpEle = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEle",
-							relativePoint = "CENTER",
-							x = -240,
-							y = -125,
-						},
-						MaelstromBarEle = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEle",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -139,
-						},
-						IcefuryBar = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEle",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -110,
-						},
-						TotemMastery = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEle",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -210,
-						},
-						--[[LavaSurgeEle = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEle",
-							relativePoint = "CENTER",
-							x = -130,
-							y = 0,
-						},]]
-						StormkeeperChargeGrp = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEle",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -110,
-						}
-					},
-					enhGrp = {
-						AuraGroupEnh = {
-							point = "CENTER",
-							relativeTo = nil,
-							relativePoint = "CENTER",
-							x = 0,
-							y = 0,
-						},
-						LargeIconGrpTopEnh = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEnh",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -180,
-						},
-						LargeIconGrpBotEnh = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEnh",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -225,
-						},
-						LargeIconGrpExtEnh = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEnh",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -105,
-						},
-						SmallIconGrpLeftEnh = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEnh",
-							relativePoint = "CENTER",
-							x = -175,
-							y = -170,
-						},
-						SmallIconGrpRightEnh = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEnh",
-							relativePoint = "CENTER",
-							x = 175,
-							y = -170,
-						},
-						BuffTimerBarGrpEnh = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEnh",
-							relativePoint = "CENTER",
-							x = 257,
-							y = -125,
-						},
-						MainTimerBarGrpEnh = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEnh",
-							relativePoint = "CENTER",
-							x = -257,
-							y = -125,
-						},
-						UtilTimerBarGrpEnh = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEnh",
-							relativePoint = "CENTER",
-							x = -215,
-							y = -125,
-						},
-						MaelstromBarEnh = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEnh",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -139,
-						},
-						StormstrikeChargeGrp = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEnh",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -100,
-						},
-						DoomWindsTex = {
-							point = "CENTER",
-							relativeTo = "AuraGroupEnh",
-							relativePoint = "CENTER",
-							x = -150,
-							y = 0,
-						},
-					},
-					resGrp = {
-						AuraGroupRes = {
-							point = "CENTER",
-							relativeTo = nil,
-							relativePoint = "CENTER",
-							x = 0,
-							y = 0,
-						},
-						LargeIconGrpTopRes = {
-							point = "CENTER",
-							relativeTo = "AuraGroupRes",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -180,
-						},
-						LargeIconGrpBotRes = {
-							point = "CENTER",
-							relativeTo = "AuraGroupRes",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -225,
-						},
-						LargeIconGrpExtRes = {
-							point = "CENTER",
-							relativeTo = "AuraGroupRes",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -105,
-						},
-						SmallIconGrpLeftRes = {
-							point = "CENTER",
-							relativeTo = "AuraGroupRes",
-							relativePoint = "CENTER",
-							x = -175,
-							y = -170,
-						},
-						SmallIconGrpRightRes = {
-							point = "CENTER",
-							relativeTo = "AuraGroupRes",
-							relativePoint = "CENTER",
-							x = 175,
-							y = -170,
-						},
-						BuffTimerBarGrpRes = {
-							point = "CENTER",
-							relativeTo = "AuraGroupRes",
-							relativePoint = "CENTER",
-							x = 257,
-							y = -125,
-						},
-						MainTimerBarGrpRes = {
-							point = "CENTER",
-							relativeTo = "AuraGroupRes",
-							relativePoint = "CENTER",
-							x = -244,
-							y = -125,
-						},
-						UtilTimerBarGrpRes = {
-							point = "CENTER",
-							relativeTo = "AuraGroupRes",
-							relativePoint = "CENTER",
-							x = -215,
-							y = -125,
-						},
-						EarthenShieldTotemBar = {
-							point = "CENTER",
-							relativeTo = "AuraGroupRes",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -139,
-						},
-						ManaBar = {
-							point = "CENTER",
-							relativeTo = "AuraGroupRes",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -139,
-							width = nil,
-							height = nil,
-						},
-						TidalWavesBar = {
-							point = "CENTER",
-							relativeTo = "AuraGroupRes",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -202,
-						},
-						Cloudburst = {
-							point = "CENTER",
-							relativeTo = "AuraGroupRes",
-							relativePoint = "CENTER",
-							x = 150,
-							y = 0,
-						},
-						Undulation = {
-							point = "CENTER",
-							relativeTo = "AuraGroupRes",
-							relativePoint = "CENTER",
-							x = 0,
-							y = -275,
-						},
-					},
-				},
-			},
-		}
-	}
-	
+
+	local defaults = SSA.defaults;
 	local about_panel = LibStub:GetLibrary("LibAboutPanel", true)
 
 	if about_panel then
 		self.optionsFrame = about_panel.new(nil, "ShamanAuras")
 	end
 	
-	self.db = LibStub("AceDB-3.0"):New("SSA_db",defaults);
-	self:SetupOptions();
+	self.db = LibStub("AceDB-3.0"):New("SSA_db",defaults)
+	self:SetupOptions()
 	
 	
 end
 
 -- Event: PLAYER_LOGIN
 function Auras:OnEnable()
-	local _,_,classIndex = UnitClass('player');
-	--self:RegisterEvent("SPELL_UPDATE_COOLDOWN");
-	self:RegisterEvent("PLAYER_LEVEL_UP");
-	self:RegisterEvent("PLAYER_REGEN_DISABLED");
-	self:RegisterEvent("PLAYER_TALENT_UPDATE");
+	local db = Auras.db.char
+	local _,_,classIndex = UnitClass('player')
+
+	self:UnregisterAllEvents()
+	self:RegisterEvent("PLAYER_LEVEL_UP")
+	self:RegisterEvent("PLAYER_REGEN_DISABLED")
+	self:RegisterEvent("PLAYER_TALENT_UPDATE")
+	Frame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED","player")
+	Frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED","player")
+	Frame:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED","player")
+	Frame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
+	Frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START","player")
+	Frame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP","player")
 	
-	if (Auras.db.char.EquippedArtifact == '') then
-		local _,_,name = C_ArtifactUI.GetEquippedArtifactInfo();
-		Auras.db.char.EquippedArtifact = name;
-	end
+	--if (db.EquippedArtifact == '') then
+		local _,_,name = C_ArtifactUI.GetEquippedArtifactInfo()
+		db.EquippedArtifact = name
+	--end
 	
 	-- Check if cooldowns value is table
-	if (type(Auras.db.char.cooldowns.numbers) == "table") then
-		Auras.db.char.cooldowns.numbers = true;
+	if (type(db.cooldowns.numbers) == "table") then
+		db.cooldowns.numbers = true
 	end
-	--self:RegisterEvent("SPELL_UPDATE_CHARGES","ChargeCooldown");
-
-	--InterfaceOptionsFrame:HookScript("OnShow",function(self)
-		--if (not InterfaceOptionsFrame:IsMovable()) then
 			
-			InterfaceOptionsFrame:EnableMouse(true);
-			InterfaceOptionsFrame:SetMovable(true);
-			InterfaceOptionsFrame:RegisterForDrag("LeftButton");
-			InterfaceOptionsFrame:SetUserPlaced(true);
-			InterfaceOptionsFrame:SetScript("OnMouseDown",function(self,button)
-				if (button == "LeftButton" and not self.isMoving) then
-					self:StartMoving();
-					self.isMoving = true;
-				end
-			end);
-			InterfaceOptionsFrame:SetScript("OnMouseUp",function(self,button)
-				if (button == "LeftButton" and self.isMoving) then
-					self:StopMovingOrSizing();
-					self.isMoving = false;
-				end
-			end);
-			InterfaceOptionsFrame:HookScript("OnHide",function(self,button)
-				if (self.isMoving) then
-					self:StopMovingOrSizing();
-					self.isMoving = false;
-				end
-				
-				Auras.db.char.config[1].icefuryBar.isAdjustable = false;
-				Auras.db.char.config[1].maelstromBar.isAdjustable = false;
-				Auras.db.char.config[2].maelstromBar.isAdjustable = false;
-				Auras.db.char.config[3].earthenShieldBar.isAdjustable = false;
-				Auras.db.char.config[3].tidalWavesBar.isAdjustable = false;
-				
-				SSA.MaelstromBarEle:SetAlpha(0);
-				SSA.MaelstromBarEnh:SetAlpha(0);
-				SSA.EarthenShieldTotemBar:SetAlpha(0);
-				SSA.TidalWavesBar:SetAlpha(0);
-			end);
-		--end
-	--end);
-	
-	Auras:UpdateTalents();
-	spec = SSA.spec;
-	
-	Auras.db.char.config[1].isMoving = false;
-	Auras.db.char.config[1].maelstromBar.isAdjustable = false;
-	Auras.db.char.config[1].icefuryBar.isAdjustable = false;
-	Auras.db.char.config[2].isMoving = false;
-	Auras.db.char.config[2].maelstromBar.isAdjustable = false;
-	Auras.db.char.config[3].isMoving = false;
-	Auras.db.char.config[3].earthenShieldBar.isAdjustable = false;
-	Auras.db.char.config[3].tidalWavesBar.isAdjustable = false;
-	Auras.db.char.config[3].manaBar.isAdjustable = false;
-	
-	local dbEle = Auras.db.char.frames.eleGrp;
-	local dbEnh = Auras.db.char.frames.enhGrp;
-	local dbRes = Auras.db.char.frames.resGrp;
-	
-	if (type(dbEle) ~= "table" or type(dbEnh) ~= "table" or type(dbRes) ~= "table") then
-		AlertFrame:Show();
-		CreateAlert(nil,"If you're seeing this, you are running r18-beta or later, but have a corrupted database. There was a rare issue that would cause this to happen and it has been fixed. However, we need to reset your database to return everything back to working order\n\nTo do this, please do ths following:\n\n    1. Logout of the game.\n    2. Go to your WTF folder\n        a. \"C:\\Program Files(x86)\\World of Warcraft\\WTF\"\n    3. Open the \"Accounts\" folder.\n    4. Open your account's folder.\n    5. Open the \"Saved Variables\" folder.\n    6. Find and delete the following files:\n        a. ShamanAuras.lua\n        b. ShamanAuras.lua.back\n\nWhen logging back in, the issue should be fixed.\n\nEnjoy!",360,312,20,50,0,-40,"LEFT");
-	--[[elseif (not Auras.db.char.version or Auras.db.char.version ~= GetVersionNumber()) then
-	--elseif (Auras.db.char.version == 21) then
-		local version = GetVersionNumber();
-		if (not Auras.db.char.version) then
-			Auras.db.char.version = version;
+	InterfaceOptionsFrame:EnableMouse(true)
+	InterfaceOptionsFrame:SetMovable(true)
+	InterfaceOptionsFrame:RegisterForDrag("LeftButton")
+	InterfaceOptionsFrame:SetUserPlaced(true)
+	InterfaceOptionsFrame:SetScript("OnMouseDown",function(self,button)
+		if (button == "LeftButton" and not self.isMoving) then
+			self:StartMoving()
+			self.isMoving = true
 		end
-		if (Auras.db.char.version <= 21) then
-			--SSA.ErrorFrame.text:SetText("Version check");
-			local desc = "Sizing and Spacing Available!\n\nYou can now resize and adjust the spacing of the auras. Simply go to the advanced settings by typing '/ssa opt' to begin!"
-			CreateAlert("Interface\\addons\\ShamanAurasDev\\Media\\textures\\sizing_spacing_preview",desc,420,406,20,120,0,500,"CENTER")
-		end]]
-	else
-		for groupObj in pairs(dbEle) do
-			--SSA.ErrorFrame.text:SetText(Auras:CurText().."[ELE]: "..groupObj.."\n")
-			if (groupObj == "LavaSurgeEle") then
-				dbRes.groupObj = nil
-			elseif (groupObj ~= "enabled" and SSA[groupObj]) then
-				InitializeGroup(SSA[groupObj],dbEle[groupObj].width,dbEle[groupObj].height,dbEle[groupObj].point,dbEle[groupObj].relativeTo,dbEle[groupObj].relativePoint,dbEle[groupObj].x,dbEle[groupObj].y,1,groupObj);
-			elseif (groupObj == "enabled") then
-				if (dbEle[groupObj]) then
-					AuraGroupEle:Show();
-				else
-					AuraGroupEle:Hide();
-				end
-			end
+	end);
+	InterfaceOptionsFrame:SetScript("OnMouseUp",function(self,button)
+		if (button == "LeftButton" and self.isMoving) then
+			self:StopMovingOrSizing()
+			self.isMoving = false
+		end
+	end);
+	InterfaceOptionsFrame:HookScript("OnHide",function(self,button)
+		if (self.isMoving) then
+			self:StopMovingOrSizing()
+			self.isMoving = false
 		end
 		
-		for groupObj in pairs(dbEnh) do
-			--SSA.ErrorFrame.text:SetText(Auras:CurText().."[ENH]: "..groupObj.."\n")
-			if (groupObj ~= "enabled" and SSA[groupObj]) then
-				InitializeGroup(SSA[groupObj],dbEnh[groupObj].width,dbEnh[groupObj].height,dbEnh[groupObj].point,dbEnh[groupObj].relativeTo,dbEnh[groupObj].relativePoint,dbEnh[groupObj].x,dbEnh[groupObj].y,2,groupObj);
-			elseif (groupObj == "enabled") then
-				if (dbEnh[groupObj]) then
-					AuraGroupEnh:Show();
-				else
-					AuraGroupEnh:Hide();
-				end
-			end
-		end
+		ResetAdjustable()
 		
-		for groupObj in pairs(dbRes) do
-			if (groupObj == "LavaSurgeRes") then
-				dbRes.groupObj = nil
-			elseif (groupObj ~= "enabled" and SSA[groupObj]) then
-				InitializeGroup(SSA[groupObj],dbRes[groupObj].width,dbRes[groupObj].height,dbRes[groupObj].point,dbRes[groupObj].relativeTo,dbRes[groupObj].relativePoint,dbRes[groupObj].x,dbRes[groupObj].y,3,groupObj);
-			elseif (groupObj == "enabled") then
-				if (dbRes[groupObj]) then
-					AuraGroupRes:Show();
-				else
-					AuraGroupRes:Hide();
-				end
-			end
-		end
-	end
+		SSA.MaelstromBarEle:SetAlpha(0)
+		SSA.MaelstromBarEnh:SetAlpha(0)
+		SSA.EarthenShieldTotemBar:SetAlpha(0)
+		SSA.TidalWavesBar:SetAlpha(0)
+	end);
+	
+	Auras:UpdateTalents()
+	
+	ResetAdjustable()
+	ResetMovable()
 
-	StaticPopupDialogs["SSA_R48_NOTICE"] = {
-		text = "|cFF8888FFSweetsour's Shaman Auras|r\n\n|cFFFFCC00!!|r|cFFFF0000IMPORTANT|r|cFFFFCC00!!|r\n\n|cFF00FF00PLEASE NOTE|r\n|cFFFFCC00You will see this popup again after resetting your SavedVariables; feel free to ignore it when you do. It won't appear a third time.|r\n\n\n\nThere has been a reported bug where moving auras will not save. If this occurs, it is recommended that you reset your SavedVariables files.\n\n\n\n|cFFFFCC00To reset your SavedVariables file, please do the following:\n\n1. Close out of WoW\n2. Navigate to your WoW WTF folder*\n3. Open the \"Accounts\" folder\n4. Open the folder with your account name\n5. Open the \"SavedVariables\" folder\n6. Locate and delete \"ShamanAuras\" and \"ShamanAuras.bak\"\n7. Re-open WoW|r\n\n* The default location of your WTF folder is: C:\\Program Files (x86)\\World of Warcraft\\WTF\\\n\nIf the keeps happening, let me know right away!\n\nThank you for your patience!",
-		button1 = "Ok, thanks!",
-		OnAccept = function()
-			--AddonList:Show();
-		end,
-		timeout = 0,
-		whileDead = true,
-		hideOnEscape = true,
-		preferredIndex = 3,
-	}
+	if (db.isR51FirstLoad) then
+		db.isR51FirstLoad = nil
+	end
+	
+	if (db.isR52FirstLoad) then
+		db.isR52FirstLoad = nil
+	end
+	
+	if (db.isR53FirstLoad) then
+		db.isR53FirstLoad = nil
+	end
+	
+	if (db.isR54FirstLoad) then
+		SSA.Bulletin:Show()
+		db.isR54FirstLoad = false
+	end
 	
 	StaticPopupDialogs["SSA_CLASS_CHECKER"] = {
 		text = "You are currently running the addon \"Sweetsour's Shaman Auras\" while on a non-shaman character. It is recommended that you disable this addon.",
 		button1 = "Show Addon List",
 		button2 = "I'll disable it later",
 		OnAccept = function()
-			AddonList:Show();
+			AddonList:Show()
 		end,
 		timeout = 0,
 		whileDead = true,
@@ -2132,32 +840,6 @@ function Auras:OnEnable()
 
 	if (not Auras:CharacterCheck(0)) then
 		StaticPopup_Show ("SSA_CLASS_CHECKER")
-	end
-		
-	if (Auras.db.char.isR48FirstLoad) then
-		Auras.db.char.isR48FirstLoad = false;
-		StaticPopup_Show ("SSA_R48_NOTICE")
-	end
-end
-
-function Auras:UpdateEarthenShield(self)
-	local progress = ((Auras.db.char.info.totems.eShield.dmg or 0) / Auras.db.char.info.totems.eShield.hp * 100);
-	progress = 100 - progress;
-	local remains = (Auras.db.char.info.totems.eShield.hp - (Auras.db.char.info.totems.eShield.dmg or 0));
-	
-	if (remains > 0) then
-		self:SetValue(remains);
-		if (Auras.db.char.config[3].earthShieldBar.isDisplayHealthText) then
-			self.text:SetText(tostring(math.ceil(progress)).."%");
-		else
-			if (not Auras.db.char.config[3].earthenShieldBar.isAdjustable and not Auras.db.char.config[3].isMoving) then
-				self.text:SetText('');
-			end
-		end
-	else
-		self:SetAlpha(0);
-		self.Timer:SetAlpha(0);
-		--SSA.EarthenShieldTotemBar.Timer:Hide();
 	end
 end
 
@@ -2170,12 +852,132 @@ function Auras:PLAYER_TALENT_UPDATE()
 	Auras:UpdateInterfaceSettings();
 end
 
+-- Fires when entering combat
 function Auras:PLAYER_REGEN_DISABLED()
-	--Auras:MaelstromAlpha();
-	if (SSA["Move"..GetSpecName(SSA.spec)]:IsShown()) then
-		if (SSA["Move"..GetSpecName(SSA.spec)].Unlock:IsEnabled()) then
-			SSA["Move"..GetSpecName(SSA.spec)].Unlock:Click();
-		end
-		SSA["Move"..GetSpecName(SSA.spec)].Close:Click("MiddleButton");
+	local spec = GetSpecialization();
+	if (SSA["Move"..GetSpecName(spec)]:IsShown()) then
+
+		SSA["Move"..GetSpecName(spec)].Close:Click("MiddleButton");
 	end
 end
+
+Frame:HookScript("OnEvent",function(self,event,...)
+	local spec = GetSpecialization()
+	local specName = GetSpecName(spec)
+
+	local castBar,channelBar = SSA["CastBar"..specName],SSA["ChannelBar"..specName]
+	
+	if (event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_CHANNEL_START") then
+		if (event == "UNIT_SPELLCAST_START") then
+			local db = Auras.db.char.elements[spec].statusbars.castBar
+			--local castBar = SSA.CastBarEle
+			
+			local spellName,_,_,texture,startTime,endTime = UnitCastingInfo('player')
+			--local duration = (endTime - startTime) / 1000
+			endTime = endTime / 1e3
+			startTime = startTime / 1e3
+			
+			castBar.HideTime = 0
+			
+			castBar.startTime = startTime
+			castBar.endTime = endTime
+			castBar.duration = endTime - startTime
+			castBar.spellName = spellName
+			castBar.isCast = true
+			
+			if (db.icon.isEnabled) then
+				if (not castBar.icon:IsShown()) then
+					castBar.icon:Show()
+				end
+				
+				castBar.icon:SetTexture(texture)
+				castBar:SetWidth(db.layout.width - db.layout.height)
+			else
+				if (castBar.icon:IsShown()) then
+					castBar.icon:Hide()
+				end
+				
+				castBar:SetWidth(db.layout.width)
+			end
+			
+			if (db.spark) then
+				if (not castBar.spark:IsShown()) then
+					castBar.spark:Show()
+				end
+				
+				castBar.spark:SetSize(20,(castBar:GetHeight() * 2.5))
+			else
+				if (castBar.spark:IsShown()) then
+					castBar.spark:Hide()
+				end
+			end
+			
+			castBar:SetMinMaxValues(0,castBar.duration)
+			if (db.nametext.isDisplayText) then
+				castBar.nametext:SetText(spellName)
+			else
+				castBar.nametext:SetText('')
+			end
+			
+			castBar:SetAlpha(1);
+		else
+			local db = Auras.db.char.elements[spec].statusbars.channelBar
+			local spellName,_,_,texture,startTime,endTime = UnitChannelInfo('player')
+
+			endTime = endTime / 1e3
+			startTime = startTime / 1e3
+			
+			channelBar.duration = endTime - startTime
+			channelBar.HideTime = 0
+			
+			channelBar.startTime = startTime
+			channelBar.endTime = endTime
+			
+			channelBar:SetMinMaxValues(0,channelBar.duration)
+			channelBar.nametext:SetText(spellName)
+			channelBar.isChannel = true
+			channelBar:SetAlpha(1)
+
+			if (db.icon.isEnabled) then
+				if (not channelBar.icon:IsShown()) then
+					channelBar.icon:Show()
+				end
+				
+				channelBar.icon:SetTexture(texture)
+				channelBar:SetWidth(db.layout.width - db.layout.height)
+			else
+				if (channelBar.icon:IsShown()) then
+					channelBar.icon:Hide()
+				end
+				
+				channelBar:SetWidth(db.layout.width)
+			end
+			
+			if (db.spark) then
+				if (not channelBar.spark:IsShown()) then
+					channelBar.spark:Show()
+				end
+				
+				channelBar.spark:SetSize(20,(channelBar:GetHeight() * 2.5))
+			else
+				if (channelBar.spark:IsShown()) then
+					channelBar.spark:Hide()
+				end
+			end
+			
+			if (db.timetext.isDisplayText) then
+				channelBar.timetext:SetText(spellName)
+			else
+				channelBar.timetext:SetText('')
+			end
+			
+			if (castBar:GetAlpha(1)) then
+				castBar:SetAlpha(0)
+			end
+		end
+	elseif (event == "UNIT_SPELLCAST_CHANNEL_STOP") then
+		if (not Auras.db.char.elements[spec].statusbars.channelBar.adjust.isEnabled) then
+			channelBar:SetAlpha(0)
+		end
+	end
+end)

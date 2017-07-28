@@ -1,505 +1,421 @@
--- these are the ruRU localizations
--- we will use the Wowace localization system
--- since this isn't the default, check and exit if not ruRU
+-- these are base translations, so no commenting out!
+-- meaning, if some string is not localized,
+-- the string will default to these
 
-if GetLocale() ~= "ruRU" then
+local L = LibStub("AceLocale-3.0"):NewLocale("ShamanAuras", "ruRU")
+
+if not L then
 	return
 end
 
-local _, GT_Globals = ...
+-- AceConfig Strings
+L["Ability Duration Timers"] = true
+L["Add or remove separating commas"] = true
+L["Advanced customization options"] = true
+L["Allows you to move the group that contains the buff duration timers"] = true
+L["Alpha (In Combat)"] = true
+L["Alpha (OoC)"] = true
+L["Alpha (OoC - No Target)"] = true
+L["Alpha (OoC - Target)"] = true
+L["Alpha (Out of Combat)"] = true
+L["Always"] = true
+L["Applies a shadow effect to the text"] = true
+L["Animate Tidal Waves Bar"] = true
+L["Anchor Point"] = true
+L["Aura Settings"] = true
+L["Auras used by the Elemental specialization"] = true
+L["Auras used by the Enhancement specialization"] = true
+L["Auras used by the Restoration specialization"] = true
+L["Background Color"] = true
+L["Background Opacity"] = true
+L["Background Texture"] = true
+L["Bar Color"] = true
+L["Bar Height"] = true
+L["Bar Texture"] = true
+L["Bar Width"] = true
+L["Blizzard Casting Bar"] = true
+L["BOTTOM"] = true
+L["BOTTOMLEFT"] = true
+L["BOTTOMRIGHT"] = true
+L['Buff Count Text'] = true
+L["Buff Duration Timers"] = true
+L["Cast Bar"] = true
+L["Cast Bar Settings"] = true
+L["Center"] = true
+L["CENTER"] = true
+L["Changes the width of the Earthen Shield Bar. (Default is 260)"] = true
+L["Changes the height of the Earthen Shield Bar. (Default is 21)"] = true
+L["Changes the height of the Icefury Bar. (Default is 21)"] = true
+L["Changes the width of the Icefury Bar. (Default is 260)"] = true
+L["Changes the height of the Maelstrom Bar. (Default is 21)"] = true
+L["Changes the width of the Maelstrom Bar. (Default is 260)"] = true
+L["Changes the height of the Mana Bar. (Default is 21)"] = true
+L["Changes the width of the Mana Bar. (Default is 260)"] = true
+L["Changes the height of the Tidal Waves Bar. (Default is 7)"] = true
+L["Changes the width of the Tidal Waves Bar. (Default is 225)"] = true
+L["Changes the size of the text. (Default is 12)"] = true
+L["Channel Bar"] = true
+L["Cloudburst Healing Stored"] = true
+L["Color (OoR)"] = true
+L["Configuration"] = true
+L["Cooldown Settings"] = true
+L["Cooldown Sweep Animation"] = true
+L["Cooldown Values"] = true
+L["Count Value Text"] = true
+L["Customize the font size of the cooldown text"] = true
+L["Deuff Duration Timers"] = true
+L["Determines how opaque or transparent the auras will appear when out of combat"] = true
+L["Determines how opaque or transparent the bar will appear when out of combat"] = true
+L["Determines how opaque or transparent the bar will appear when out of combat and targetting an enemy"] = true
+L["Determines how opaque or transparent the bar will appear while in combat"] = true
+L["Determines the color and alpha of the grid"] = true
+L["Determines the color and alpha of the main X/Y axis lines"] = true
+L["Determines the color of harmful auras will appear when out of range"] = true
+L["Determines the color of the Tidal Waves bar when no tidal wave charges are active"] = true
+L["Determines the size of primary auras in row 1. (Default is 32)"] = true
+L["Determines the size of primary auras in row 2. (Default is 32)"] = true
+L["Determines the size of the primary charge text in row 1. (Default is 13.5)"] = true
+L["Determines the size of the primary charge text in row 2. (Default is 13.5)"] = true
+L["Determines the size of the secondary charge text in column 1. (Default is 13.5)"] = true
+L["Determines the size of the secondary charge text in column 2. (Default is 13.5)"] = true
+L["Determines the spacing of the primary auras in row 1. (Default is 50)"] = true
+L["Determines the spacing of the primary auras in row 2. (Default is 50)"] = true
+L["Determines the size of secondary auras in column 1. (Default is 25)"] = true
+L["Determines the size of secondary auras in column 2. (Default is 25)"] = true
+L["Determines the spacing of the secondary auras in column 1. (Default is 30)"] = true
+L["Determines the spacing of the secondary auras in column 2. (Default is 30)"] = true
+L["Digit Grouping"] = true
+L["Display"] = true
+L["Earthen Shield Bar"] = true
+L["Earthgrab Totem"] = true
+L["Elemental"] = true
+L["Elemental Auras"] = true
+L["Elemental Duration Timers"] = true
+L["Elemental Shaman Auras"] = true
+L["Enhancement"] = true
+L["Enhancement Auras"] = true
+L["Enhancement Shaman Auras"] = true
+L["Font"] = true
+L["Font Outline"] = true
+L["Font Size"] = true
+L["General"] = true
+L["Grid Color"] = true
+L["Grid Preview"] = true
+L["Grid Settings"] = true
+L["Health Value Justify"] = true
+L['Health Text'] = true
+L["Health Value Text"] = true
+L["Height"] = true
+L["Horizontal"] = true
+L["Icefury Bar"] = true
+L["Icefury Bar Settings"] = true
+L["Icon & Spark"] = true
+L["Icon Justify"] = true
+L["Layout"] = true
+L["Layout & Design"] = true
+L["Layout Settings"] = true
+L["Left"] = true
+L["LEFT"] = true
+L["Lightning Surge Totem"] = true
+L["Maelstrom Bar"] = true
+L["Maelstrom Bar Settings"] = true
+L["Maelstrom Lightning"] = true
+L["Maelstrom Settings"] = true
+L['Maelstrom Text'] = true
+L["Maelstrom Trigger"] = true
+L["Maelstrom Value Text"] = true
+L["Maelstrom Value Justify"] = true
+L["Major Auras"] = true
+L["Mana Bar"] = true
+L["Mana Bar Settings"] = true
+L["Mana Precision"] = true
+L["Mana Value Text"] = true
+L["Mana Value Justify"] = true
+L["Minor Auras"] = true
+L["Modify Background"] = true
+L["Modify Cast Bar"] = true
+L["Modify Channel Bar"] = true
+L["Modify Earthen Shield Bar"] = true
+L["Modify Icefury Bar"] = true
+L["Modify Mana Bar"] = true
+L["Modify Maelstrom Bar"] = true
+L["Modify Tidal Waves Bar"] = true
+L["Modify Timer Bar"] = true
+L["Monochrome"] = true
+L["Monochrome Outline"] = true
+L["Monochrome Thick Outline"] = true
+L["Move All Auras"] = true
+L["Move Aura Groups"] = true
+L["Move Bottom Auras"] = true
+L["Move Buff Timer Bars"] = true
+L["Move Doom Winds"] = true
+L["Move Earthen Shield Bar"] = true
+L["Move Elemental Auras"] = true
+L["Move Elemental Aura Groups"] = true
+L["Move Enhancement Auras"] = true
+L["Move Restoration Auras"] = true
+L["Move Icefury Bar"] = true
+L["Move Lava Surge Texture"] = true
+L["Move Left Auras"] = true
+L["Move Maelstrom Bar"] = true
+L["Move Main Timer Bars"] = true
+L["Move Right Auras"] = true
+L["Move Stormkeeper Charges"] = true
+L["Move Stormstrike Charges"] = true
+L["Move Tidal Waves Bar"] = true
+L["Move Top Auras"] = true
+L["Move Totem Mastery Alert"] = true
+L["Move Undulation"] = true
+L["Move Utility Timer Bars"] = true
+L["Name Text"] = true
+L["Never"] = true
+L["No Tidal Waves Color"] = true
+L["None"] = true
+L["On Heal Only"] = true
+L["Primary Auras"] = true
+L["Primary Charges 1"] = true
+L["Primary Charges 2"] = true
+L["Primary Icon Size"] = true
+L["Primary Orientation 1"] = true
+L["Primary Orientation 2"] = true
+L["Primary Size 1"] = true
+L["Primary Size 2"] = true
+L["Primary Spacing 1"] = true
+L["Primary Spacing 2"] = true
+L["Progress Bars"] = true
+L["Reload UI"] = true
+L["Remaining Time"] = true
+L["Reset Cast Bar"] = true
+L["Reset Channel Bar"] = true
+L["Reset Earthen Shield Bar"] = true
+L["Reset Elemental Auras"] = true
+L["Reset Enhancement Auras"] = true
+L["Reset Icefury Bar"] = true
+L["Reset Maelstrom Bar"] = true
+L["Reset Mana Bar"] = true
+L["Reset Primary Layout"] = true
+L["Reset Restoration Auras"] = true
+L["Reset Secondary Layout"] = true
+L["Reset Settings Values"] = true
+L["Reset Tidal Waves Bar"] = true
+L["Resource Accumulation"] = true
+L["Restoration"] = true
+L["Restoration Auras"] = true
+L["Restoration Shaman Auras"] = true
+L["Reverse Sweep Animation"] = true
+L["Reverses the cooldown animation sweep."] = true
+L["Right"] = true
+L["RIGHT"] = true
+L["Secondary Auras"] = true
+L["Secondary Charges 1"] = true
+L["Secondary Charges 2"] = true
+L["Secondary Orientation 1"] = true
+L["Secondary Orientation 2"] = true
+L["Secondary Size 1"] = true
+L["Secondary Size 2"] = true
+L["Secondary Spacing 1"] = true
+L["Secondary Spacing 2"] = true
+L["Set how large the \"Primary\" Auras appear"] = true
+L["Set the anchor point."] = true
+L["Set the aura orientation to horizontal or vertical."] = true
+L["Set the bar's background texture."] = true
+L["Set the bar's texture."] = true
+L["Set the color of the cast bar's background."] = true
+L["Set the color of the text."] = true
+L["Set location of text on the X axis"] = true
+L["Set location of text on the Y axis"] = true
+L["Set the anchor point."] = true
+L["Set the color of the text's shadow."] = true
+L["Set the position of the text on the Earthen Shield bar."] = true
+L["Set the position of the text on the mana bar."] = true
+L["Set the side of the progress bar that the icon will appear."] = true
+L["Set the text shadow's X offset"] = true
+L["Set the text shadow's Y offset"] = true
+L["Settings"] = true
+L["Shadow Color"] = true
+L["Show Ability Timers"] = true
+L["Show Elemental Auras"] = true
+L["Show Enhancement Auras"] = true
+L["Show Buff Timers"] = true
+L["Show Restoration Auras"] = true
+L["Show Utility Timers"] = true
+L["Spell Name Text"] = true
+L["Statusbar Manager"] = true
+L["Stormkeeper Orbs"] = true
+L["Stormstrike Lightning Orbs"] = true
+L["Secondary Icon Size"] = true
+L["Target Display (OoC)"] = true
+L["Target & On Heal"] = true
+L["OoC Tidal Wave Duration"] = true
+L["Outline"] = true
+L["Target Only"] = true
+L["Text Color"] = true
+L["Text Shadow"] = true
+L["Text Size"] = true
+L["Texture Alerts"] = true
+L["The amount of Maelstrom accumulated at which the \"Lightning\" animation will appear"] = true
+L["The amount of seconds remaining when the \"Glow\" animation will appear"] = true
+L["The amount of seconds remaining when the Totem Mastery texture will appear"] = true
+L["The amount of seconds the Tidal Waves indicator bar will appear when casting a heal without a target while out of combat."] = true
+L["The font that will be used"] = true
+L["The method in which Tidal Wave will be displayed while in combat."] = true
+L["The method in which Tidal Wave will be displayed while out of combat."] = true
+L["The outline of the font"] = true
+L["Thick Outline"] = true
+L["Tidal Waves Bar"] = true
+L["Tidal Wave Display (In Combat)"] = true
+L["Tidal Wave Display (OoC)"] = true
+L["Tidal Wave Duration (OoC)"] = true
+L["Time Text"] = true
+L["Timer Bar"] = true
+L["Timer Bar Texture"] = true
+L["Timer Value Text"] = true
+L["Toggle"] = true
+L["Toggle Buff Count Text"] = true
+L["Toggle Cast Bar"] = true
+L["Toggle Channel Bar"] = true
+L["Toggle Earthen Shield Bar"] = true
+L["Toggle Grid"] = true
+L["Toggle Icefury Bar"] = true
+L["Toggle Icon"] = true
+L["Toggle Info Frame"] = true
+L["Toggle Maelstrom Bar"] = true
+L["Toggle Mana Bar"] = true
+L["Toggle Spark"] = true
+L["Toggle Spell Name Text"] = true
+L["Toggle Tidal Waves Bar"] = true
+L["Toggle the adjustment of the bar's background texture"] = true
+L["Toggle the adjustment of the Cast Bar"] = true
+L["Toggle the adjustment of the Channel Bar"] = true
+L["Toggle the adjustment of the Earthen Shield Bar"] = true
+L["Toggle the adjustment of the Icefury Bar"] = true
+L["Toggle the adjustment of the Maelstrom Bar"] = true
+L["Toggle the adjustment of the Mana Bar"] = true
+L["Toggle the adjustment of the Tidal Waves Bar"] = true
+L["Toggle the adjustment of the Timer Bar"] = true
+L["Toggle the display of cooldown text/numbers."] = true
+L["Toggle the display of Elemental Auras"] = true
+L["Toggle the display of Restoration Auras"] = true
+L["Toggle the display of the cooldown animation sweep."] = true
+L["Toggle Time Text"] = true
+L["Toggle Totem Health Text"] = true
+L["Toggles the display of Blizzard's default casting bar"] = true
+L["Toggles the display of the auras while targetting an enemy while out of combat."] = true
+L["Toggles the display of the cast bar"] = true
+L["Toggles the display of the channel bar"] = true
+L["Toggles the display of the Earthen Shield bar"] = true
+L["Toggles the display of the Icefury bar"] = true
+L["Toggles the display of the Maelstrom Bar"] = true
+L["Toggles the display of the Mana Bar"] = true
+L["Toggles the display of the Tidal Waves bar"] = true
+L["Toggles the text display of the amount of health remaining"] = true
+L["Toggles the text display of the amount of icefury stacks remaining"] = true
+L["Toggles the text display of the amount of mana remaining"] = true
+L["Toggles the text display of the amount of maelstrom remaining"] = true
+L["Toggles the text display of the amount of time remaining"] = true
+L["Toggles the text display of the remaining health of the Earthen Shield Totem"] = true
+L["Toggles the text display of the remaining stacks on Icefury's buff"] = true
+L["Toggles the text display of the spell casted"] = true
+L["TOP"] = true
+L["TOPLEFT"] = true
+L["TOPRIGHT"] = true
+L["Totem Duration Timers"] = true
+L["Utility Duration Timers"] = true
+L["Vertical"] = true
+L["Voodoo Totem"] = true
+L["Width"] = true
+L["X/Y Axis Color"] = true
 
-local translations = {
-{
-	--Translation missing 
-	-- ["Ability Duration Timers"] = "",
-	--Translation missing 
-	-- ["Advanced customization options"] = "",
-	--Translation missing 
-	-- ["Allows you to move the group that contains the buff duration timers"] = "",
-	--Translation missing 
-	-- ["Always"] = "",
-	--Translation missing 
-	-- ["Ancestral Guidance"] = "",
-	--Translation missing 
-	-- ["Ancestral Protection"] = "",
-	--Translation missing 
-	-- ["Ancestral Protection Totem"] = "",
-	--Translation missing 
-	-- ["Animate Tidal Waves Bar"] = "",
-	--Translation missing 
-	-- ["Ascendance"] = "",
-	--Translation missing 
-	-- ["Astral Shift"] = "",
-	--Translation missing 
-	-- ["Aura Settings"] = "",
-	--Translation missing 
-	-- ["Auras used by the Elemental specialization"] = "",
-	--Translation missing 
-	-- ["Auras used by the Enhancement specialization"] = "",
-	--Translation missing 
-	-- ["Auras used by the Restoration specialization"] = "",
-	--Translation missing 
-	-- ["Bar Height"] = "",
-	--Translation missing 
-	-- ["Bar Width"] = "",
-	--Translation missing 
-	-- ["Bloodlust"] = "",
-	--Translation missing 
-	-- ["Boulderfist"] = "",
-	--Translation missing 
-	-- ["Buff Duration Timers"] = "",
-	--Translation missing 
-	-- ["Changes the height of the Earthen Shield Bar. (Default is 21)"] = "",
-	--Translation missing 
-	-- ["Changes the height of the Icefury Bar. (Default is 21)"] = "",
-	--Translation missing 
-	-- ["Changes the height of the Maelstrom Bar. (Default is 21)"] = "",
-	--Translation missing 
-	-- ["Changes the height of the Tidal Waves Bar. (Default is 7)"] = "",
-	--Translation missing 
-	-- ["Changes the width of the Earthen Shield Bar. (Default is 260)"] = "",
-	--Translation missing 
-	-- ["Changes the width of the Icefury Bar. (Default is 260)"] = "",
-	--Translation missing 
-	-- ["Changes the width of the Maelstrom Bar. (Default is 260)"] = "",
-	--Translation missing 
-	-- ["Changes the width of the Tidal Waves Bar. (Default is 225)"] = "",
-	--Translation missing 
-	-- ["Cleanse Spirit"] = "",
-	--Translation missing 
-	-- ["Cloudburst"] = "",
-	--Translation missing 
-	-- ["Cloudburst Healing Stored"] = "",
-	--Translation missing 
-	-- ["Cloudburst Totem"] = "",
-	--Translation missing 
-	-- ["Cooldown Settings"] = "",
-	--Translation missing 
-	-- ["Cooldown Sweep Animation"] = "",
-	--Translation missing 
-	-- ["Cooldown Values"] = "",
-	--Translation missing 
-	-- ["Crash Lightning"] = "",
-	--Translation missing 
-	-- ["Critical Strike"] = "",
-	--Translation missing 
-	-- ["Determines how opaque or transparent the auras will appear when out of combat"] = "",
-	--Translation missing 
-	-- ["Determines how opaque or transparent the maelstrom bar appear when out of combat"] = "",
-	--Translation missing 
-	-- ["Determines how opaque or transparent the maelstrom bar appear when out of combat and targetting an enemyt"] = "",
-	--Translation missing 
-	-- ["Determines how opaque or transparent the maelstrom bar appear while in combat"] = "",
-	--Translation missing 
-	-- ["Determines the color and alpha of the grid"] = "",
-	--Translation missing 
-	-- ["Determines the color and alpha of the main X/Y axis lines"] = "",
-	--Translation missing 
-	-- ["Determines the color of harmful auras will appear when out of range"] = "",
-	--Translation missing 
-	-- ["Determines the color of the Tidal Waves bar when no tidal wave charges are active"] = "",
-	--Translation missing 
-	-- ["Determines the size of primary auras in row 1. (Default is 32)"] = "",
-	--Translation missing 
-	-- ["Determines the size of primary auras in row 2. (Default is 32)"] = "",
-	--Translation missing 
-	-- ["Determines the size of secondary auras in column 1. (Default is 25)"] = "",
-	--Translation missing 
-	-- ["Determines the size of secondary auras in column 2. (Default is 25)"] = "",
-	--Translation missing 
-	-- ["Determines the size of the primary charge text in row 1. (Default is 13.5)"] = "",
-	--Translation missing 
-	-- ["Determines the size of the primary charge text in row 2. (Default is 13.5)"] = "",
-	--Translation missing 
-	-- ["Determines the size of the secondary charge text in column 1. (Default is 13.5)"] = "",
-	--Translation missing 
-	-- ["Determines the size of the secondary charge text in column 2. (Default is 13.5)"] = "",
-	--Translation missing 
-	-- ["Determines the spacing of the primary auras in row 1. (Default is 50)"] = "",
-	--Translation missing 
-	-- ["Determines the spacing of the primary auras in row 2. (Default is 50)"] = "",
-	--Translation missing 
-	-- ["Determines the spacing of the secondary auras in column 1. (Default is 30)"] = "",
-	--Translation missing 
-	-- ["Determines the spacing of the secondary auras in column 2. (Default is 30)"] = "",
-	--Translation missing 
-	-- ["Deuff Duration Timers"] = "",
-	--Translation missing 
-	-- ["Doom Winds"] = "",
-	--Translation missing 
-	-- ["Earth Elemental"] = "",
-	--Translation missing 
-	-- ["Earth Shock"] = "",
-	--Translation missing 
-	-- ["Earthen Shield"] = "",
-	--Translation missing 
-	-- ["Earthen Shield Totem"] = "",
-	--Translation missing 
-	-- ["Earthen Shield Totem Bar"] = "",
-	--Translation missing 
-	-- ["Earthen Spike"] = "",
-	--Translation missing 
-	-- ["Earthgrab"] = "",
-	--Translation missing 
-	-- ["Earthgrab Totem"] = "",
-	--Translation missing 
-	-- ["Earthquake"] = "",
-	--Translation missing 
-	-- ["Elemental"] = "",
-	--Translation missing 
-	-- ["Elemental Auras"] = "",
-	--Translation missing 
-	-- ["Elemental Blast"] = "",
-	--Translation missing 
-	-- ["Elemental Duration Timers"] = "",
-	--Translation missing 
-	-- ["Elemental Mastery"] = "",
-	--Translation missing 
-	-- ["Elemental Shaman Auras"] = "",
-	--Translation missing 
-	-- ["Enhancement"] = "",
-	--Translation missing 
-	-- ["Enhancement Auras"] = "",
-	--Translation missing 
-	-- ["Enhancement Shaman Auras"] = "",
-	--Translation missing 
-	-- ["Feral Lunge"] = "",
-	--Translation missing 
-	-- ["Feral Spirit"] = "",
-	--Translation missing 
-	-- ["Fire Elemental"] = "",
-	--Translation missing 
-	-- ["Flame Shock"] = "",
-	--Translation missing 
-	-- ["Flametongue"] = "",
-	--Translation missing 
-	-- ["Frostbrand"] = "",
-	--Translation missing 
-	-- ["General"] = "",
-	--Translation missing 
-	-- ["Greater Earth Elemental"] = "",
-	--Translation missing 
-	-- ["Greater Fire Elemental"] = "",
-	--Translation missing 
-	-- ["Greater Storm Elemental"] = "",
-	--Translation missing 
-	-- ["Grid Color"] = "",
-	--Translation missing 
-	-- ["Grid Preview"] = "",
-	--Translation missing 
-	-- ["Grid Settings"] = "",
-	--Translation missing 
-	-- ["Gust of Wind"] = "",
-	--Translation missing 
-	-- ["Haste"] = "",
-	--Translation missing 
-	-- ["Healing Rain"] = "",
-	--Translation missing 
-	-- ["Healing Stream"] = "",
-	--Translation missing 
-	-- ["Healing Stream Totem"] = "",
-	--Translation missing 
-	-- ["Healing Tide"] = "",
-	--Translation missing 
-	-- ["Healing Tide Totem"] = "",
-	--Translation missing 
-	-- ["Heroism"] = "",
-	--Translation missing 
-	-- ["Hex"] = "",
-	--Translation missing 
-	-- ["Icefury"] = "",
-	--Translation missing 
-	-- ["Icefury Bar"] = "",
-	--Translation missing 
-	-- ["Lava Burst"] = "",
-	--Translation missing 
-	-- ["Lava Lash"] = "",
-	--Translation missing 
-	-- ["Lava Surge"] = "",
-	--Translation missing 
-	-- ["Layout Settings"] = "",
-	--Translation missing 
-	-- ["Lightning Surge"] = "",
-	--Translation missing 
-	-- ["Lightning Surge Totem"] = "",
-	--Translation missing 
-	-- ["Liquid Magma"] = "",
-	--Translation missing 
-	-- ["Liquid Magma Totem"] = "",
-	--Translation missing 
-	-- ["Maelstrom"] = "",
-	--Translation missing 
-	-- ["Maelstrom Alpha (In Combat)"] = "",
-	--Translation missing 
-	-- ["Maelstrom Alpha (OoC - No Target)"] = "",
-	--Translation missing 
-	-- ["Maelstrom Alpha (OoC - Target)"] = "",
-	--Translation missing 
-	-- ["Maelstrom Bar"] = "",
-	--Translation missing 
-	-- ["Maelstrom Lightning"] = "",
-	--Translation missing 
-	-- ["Maelstrom Settings"] = "",
-	--Translation missing 
-	-- ["Maelstrom Trigger"] = "",
-	--Translation missing 
-	-- ["Major Auras"] = "",
-	--Translation missing 
-	-- ["Mastery"] = "",
-	--Translation missing 
-	-- ["Minor Auras"] = "",
-	--Translation missing 
-	-- ["Move All Auras"] = "",
-	--Translation missing 
-	-- ["Move Aura Groups"] = "",
-	--Translation missing 
-	-- ["Move Bottom Auras"] = "",
-	--Translation missing 
-	-- ["Move Buff Timer Bars"] = "",
-	--Translation missing 
-	-- ["Move Doom Winds"] = "",
-	--Translation missing 
-	-- ["Move Earthen Shield Bar"] = "",
-	--Translation missing 
-	-- ["Move Elemental Aura Groups"] = "",
-	--Translation missing 
-	-- ["Move Elemental Auras"] = "",
-	--Translation missing 
-	-- ["Move Enhancement Auras"] = "",
-	--Translation missing 
-	-- ["Move Icefury Bar"] = "",
-	--Translation missing 
-	-- ["Move Lava Surge Texture"] = "",
-	--Translation missing 
-	-- ["Move Left Auras"] = "",
-	--Translation missing 
-	-- ["Move Maelstrom Bar"] = "",
-	--Translation missing 
-	-- ["Move Main Timer Bars"] = "",
-	--Translation missing 
-	-- ["Move Restoration Auras"] = "",
-	--Translation missing 
-	-- ["Move Right Auras"] = "",
-	--Translation missing 
-	-- ["Move Stormkeeper Charges"] = "",
-	--Translation missing 
-	-- ["Move Stormstrike Charges"] = "",
-	--Translation missing 
-	-- ["Move Tidal Waves Bar"] = "",
-	--Translation missing 
-	-- ["Move Top Auras"] = "",
-	--Translation missing 
-	-- ["Move Totem Mastery Alert"] = "",
-	--Translation missing 
-	-- ["Move Undulation"] = "",
-	--Translation missing 
-	-- ["Move Utility Timer Bars"] = "",
-	--Translation missing 
-	-- ["Never"] = "",
-	--Translation missing 
-	-- ["No Tidal Waves Color"] = "",
-	--Translation missing 
-	-- ["On Heal Only"] = "",
-	--Translation missing 
-	-- ["OoC Target Display"] = "",
-	--Translation missing 
-	-- ["OoC Tidal Wave Duration"] = "",
-	--Translation missing 
-	-- ["Our of Range Color"] = "",
-	--Translation missing 
-	-- ["Out of Combat Alpha"] = "",
-	--Translation missing 
-	-- ["Preview Earthen Shield Bar"] = "",
-	--Translation missing 
-	-- ["Preview Icefury Bar"] = "",
-	--Translation missing 
-	-- ["Preview Maelstrom Bar"] = "",
-	--Translation missing 
-	-- ["Preview Tidal Waves Bar"] = "",
-	--Translation missing 
-	-- ["Primary Aura Size"] = "",
-	--Translation missing 
-	-- ["Primary Auras"] = "",
-	--Translation missing 
-	-- ["Primary Charges 1"] = "",
-	--Translation missing 
-	-- ["Primary Charges 2"] = "",
-	--Translation missing 
-	-- ["Primary Icon Size"] = "",
-	--Translation missing 
-	-- ["Primary Size 1"] = "",
-	--Translation missing 
-	-- ["Primary Size 2"] = "",
-	--Translation missing 
-	-- ["Primary Spacing 1"] = "",
-	--Translation missing 
-	-- ["Primary Spacing 2"] = "",
-	--Translation missing 
-	-- ["Progress Bars"] = "",
-	--Translation missing 
-	-- ["Purify Spirit"] = "",
-	--Translation missing 
-	-- ["Rainfall"] = "",
-	--Translation missing 
-	-- ["Reload UI"] = "",
-	--Translation missing 
-	-- ["Remaining Time"] = "",
-	--Translation missing 
-	-- ["Reset Earthen Shield Bar"] = "",
-	--Translation missing 
-	-- ["Reset Elemental Auras"] = "",
-	--Translation missing 
-	-- ["Reset Enhancement Auras"] = "",
-	--Translation missing 
-	-- ["Reset Icefury Bar"] = "",
-	--Translation missing 
-	-- ["Reset Maelstrom Bar"] = "",
-	--Translation missing 
-	-- ["Reset Primary Layout"] = "",
-	--Translation missing 
-	-- ["Reset Restoration Auras"] = "",
-	--Translation missing 
-	-- ["Reset Secondary Layout"] = "",
-	--Translation missing 
-	-- ["Reset Settings Values"] = "",
-	--Translation missing 
-	-- ["Reset Tidal Waves Bar"] = "",
-	--Translation missing 
-	-- ["Resource Accumulation"] = "",
-	--Translation missing 
-	-- ["Restoration"] = "",
-	--Translation missing 
-	-- ["Restoration Auras"] = "",
-	--Translation missing 
-	-- ["Restoration Shaman Auras"] = "",
-	--Translation missing 
-	-- ["Riptide"] = "",
-	--Translation missing 
-	-- ["Secondary Auras"] = "",
-	--Translation missing 
-	-- ["Secondary Charges 1"] = "",
-	--Translation missing 
-	-- ["Secondary Charges 2"] = "",
-	--Translation missing 
-	-- ["Secondary Icon Size"] = "",
-	--Translation missing 
-	-- ["Secondary Size 1"] = "",
-	--Translation missing 
-	-- ["Secondary Size 2"] = "",
-	--Translation missing 
-	-- ["Secondary Spacing 1"] = "",
-	--Translation missing 
-	-- ["Secondary Spacing 2"] = "",
-	--Translation missing 
-	-- ["Set how large the \"Primary\" Auras appear"] = "",
-	--Translation missing 
-	-- ["Settings"] = "",
-	--Translation missing 
-	-- ["Show Ability Timers"] = "",
-	--Translation missing 
-	-- ["Show Buff Timers"] = "",
-	--Translation missing 
-	-- ["Show Elemental Auras"] = "",
-	--Translation missing 
-	-- ["Show Enhancement Auras"] = "",
-	--Translation missing 
-	-- ["Show Restoration Auras"] = "",
-	--Translation missing 
-	-- ["Show Utility Timers"] = "",
-	--Translation missing 
-	-- ["Spirit Link"] = "",
-	--Translation missing 
-	-- ["Spirit Link Totem"] = "",
-	--Translation missing 
-	-- ["Spirit Walk"] = "",
-	--Translation missing 
-	-- ["Spiritwalker's Grace"] = "",
-	--Translation missing 
-	-- ["Storm Elemental"] = "",
-	--Translation missing 
-	-- ["Stormkeeper"] = "",
-	--Translation missing 
-	-- ["Stormkeeper Orbs"] = "",
-	--Translation missing 
-	-- ["Stormstrike"] = "",
-	--Translation missing 
-	-- ["Stormstrike Lightning Orbs"] = "",
-	--Translation missing 
-	-- ["Sundering"] = "",
-	--Translation missing 
-	-- ["Target & On Heal"] = "",
-	--Translation missing 
-	-- ["Target Only"] = "",
-	--Translation missing 
-	-- ["Texture Alerts"] = "",
-	--Translation missing 
-	-- ["The amount of Maelstrom accumulated at which the \"Lightning\" animation will appear"] = "",
-	--Translation missing 
-	-- ["The amount of seconds remaining when the \"Glow\" animation will appear"] = "",
-	--Translation missing 
-	-- ["The amount of seconds remaining when the Totem Mastery texture will appear"] = "",
-	--Translation missing 
-	-- ["The amount of seconds the Tidal Waves indicator bar will appear when casting a heal without a target while out of combat."] = "",
-	--Translation missing 
-	-- ["The method in which Tidal Wave will be displayed while in combat."] = "",
-	--Translation missing 
-	-- ["The method in which Tidal Wave will be displayed while out of combat."] = "",
-	--Translation missing 
-	-- ["Thunderstorm"] = "",
-	--Translation missing 
-	-- ["Tidal Wave Display (In Combat)"] = "",
-	--Translation missing 
-	-- ["Tidal Wave Display (OoC)"] = "",
-	--Translation missing 
-	-- ["Tidal Waves Bar"] = "",
-	--Translation missing 
-	-- ["Time Warp"] = "",
-	--Translation missing 
-	-- ["Toggle Grid"] = "",
-	--Translation missing 
-	-- ["Toggle Info Frame"] = "",
-	--Translation missing 
-	-- ["Toggle the adjustment of the Earthen Shield Bar size"] = "",
-	--Translation missing 
-	-- ["Toggle the adjustment of the Icefury Bar size"] = "",
-	--Translation missing 
-	-- ["Toggle the adjustment of the Maelstrom Bar size"] = "",
-	--Translation missing 
-	-- ["Toggle the adjustment of the Tidal Waves Bar size"] = "",
-	--Translation missing 
-	-- ["Toggle the display of Elemental Auras"] = "",
-	--Translation missing 
-	-- ["Toggle the display of Restoration Auras"] = "",
-	--Translation missing 
-	-- ["Toggles the display of the auras while targetting an enemy while out of combat."] = "",
-	--Translation missing 
-	-- ["Totem Duration Timers"] = "",
-	--Translation missing 
-	-- ["Totem Mastery"] = "",
-	--Translation missing 
-	-- ["Undulation"] = "",
-	--Translation missing 
-	-- ["Unleash Life"] = "",
-	--Translation missing 
-	-- ["Utility Duration Timers"] = "",
-	--Translation missing 
-	-- ["Voodoo"] = "",
-	--Translation missing 
-	-- ["Voodoo Totem"] = "",
-	--Translation missing 
-	-- ["Wellspring"] = "",
-	--Translation missing 
-	-- ["Wind Rush"] = "",
-	--Translation missing 
-	-- ["Wind Rush Totem"] = "",
-	--Translation missing 
-	-- ["Wind Shear"] = "",
-	--Translation missing 
-	-- ["Windsong"] = "",
-	--Translation missing 
-	-- ["X/Y Axis Color"] = ""
-}
-}
+-- Miscellaenous
+L["Critical Strike"] = true
+L["Haste"] = true
+L["Mastery"] = true
 
-GT_Globals:RegisterLocale("ruRU", translations)
-translations = nil
+--Shared Abilities
+L["Ancestral Guidance"] = "Наставления предков"
+L["Ascendance"] = "Перерождение"
+L["Astral Shift"] = "Астральный сдвиг"
+L["Bloodlust"] = "Жажда крови"
+L["Cleanse Spirit"] = "Очищение духа"
+L["Concordance of the Legionfall"] = "Согласованность Армии погибели Легиона"
+L["Earthbind"] = "оков земли"
+L["Earthbind Totem"] = "Тотем оков земли"
+L["Earthgrab"] = "хватки земли"
+L["Earthgrab Totem"] = "Тотем хватки земли"
+L["Heroism"] = "Героизм"
+L["Hex"] = "Сглаз"
+L["Gust of Wind"] = "Порыв ветра"
+L["Lightning Surge"] = "выброса тока"
+L["Lightning Surge Totem"] = "Тотем выброса тока"
+L["Maelstrom"] = "Водоворот"
+L["Time Warp"] = "Искажение времени"
+L["Voodoo"] = "вуду"
+L["Voodoo Totem"] = "Тотем вуду"
+L["Wind Shear"] = "Пронизывающий ветер"
+L["Wind Rush"] = "ветряного порыва"
+L["Wind Rush Totem"] = "Тотем ветряного порыва"
+
+-- Elemental Abilities
+L["Earthquake"] = "Землетрясение"
+L["Earth Shock"] = "Земной шок"
+L["Earth Elemental"] = "элементаль земли"
+L["Elemental Blast"] = "Удар духов стихии"
+L["Elemental Focus"] = "Средоточие стихий"
+L["Elemental Mastery"] = "Покорение стихий"
+L["Fire Elemental"] = "элементаль огня"
+L["Flame Shock"] = "Огненный шок"
+L["Greater Earth Elemental"] = "Большой элементаль земли"
+L["Greater Fire Elemental"] = "Большой элементаль огня"
+L["Greater Storm Elemental"] = "Большой элементаль бури"
+L["Icefury"] = "Ледяная ярость"
+L["Lava Burst"] = "Выброс лавы"
+L["Lava Surge"] = "Волна лавы"
+L["Liquid Magma"] = "жидкой магмы"
+L["Liquid Magma Totem"] = "Тотем жидкой магмы"
+L["Power of the Maelstrom"] = "Мощь Водоворота"
+L["Storm Elemental"] = "Элементаль бури"
+L["Stormkeeper"] = "Хранитель бурь"
+L["Thunderstorm"] = "Гром и молния"
+L["Totem Mastery"] = "Повелитель тотемов"
+
+-- Enhancement Abilities
+L["Boulderfist"] = "Тяжелый кулак"
+L["Crash Lightning"] = "Сокрушающая молния"
+L["Doom Winds"] = "Ветра Рока"
+L["Earthen Spike"] = "Перерождение"
+L["Feral Lunge"] = "Свирепый выпад"
+L["Feral Spirit"] = "Дух дикого зверя"
+L["Flametongue"] = "Язык пламени"
+L["Frostbrand"] = "Ледяное клеймо"
+L["Landslide"] = "Обвал"
+L["Lava Lash"] = "Вскипание лавы"
+L["Rainfall"] = "Ливень"
+L["Rockbiter"] = "Камнедробитель"
+L["Spirit Walk"] = "Поступь духа"
+L["Stormstrike"] = "Удар бури"
+L["Sundering"] = "Раскол"
+L["Unleash Doom"] = "Высвобожденный Рок"
+L["Windsong"] = "Песнь ветра"
+
+-- Restoration Abilities
+L["Ancestral Protection"] = "защиты Предков"
+L["Ancestral Protection Totem"] = "Тотем защиты Предков"
+L["Cloudburst"] = "разразившегося ливня"
+L["Cloudburst Totem"] = "Тотем разразившегося ливня"
+L["Earthen Shield"] = "земного щита"
+L["Earthen Shield Totem"] = "Тотем земного щита"
+L["Gift of the Queen"] = "Дар королевы"
+L["Healing Rain"] = "Целительный ливень"
+L["Healing Stream"] = "исцеляющего потока"
+L["Healing Stream Totem"] = "Тотем исцеляющего потока"
+L["Earthen Shield Totem Bar"] = true
+L["Healing Tide"] = "целительного прилива"
+L["Healing Tide Totem"] = "Тотем целительного прилива"
+L["Purify Spirit"] = "Возрождение духа"
+L["Riptide"] = "Быстрина"
+L["Spirit Link"] = "духовной связи"
+L["Spirit Link Totem"] = "Тотем духовной связи"
+L["Spiritwalker's Grace"] = "Благосклонность предков"
+L["Undulation"] = "Пульсация" 
+L["Unleash Life"] = "Высвободить чары жизни"
+L["Wellspring"] = "Родник"

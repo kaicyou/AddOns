@@ -1,18 +1,10 @@
 ------------------------------------------------------------------------
-r597 | Allara | 2017-06-27 15:35:00 -0500 (Tue, 27 Jun 2017) | 1 line
-Changed paths:
-   M /trunk/Core.lua
-
-- Added missing world objects to R.opennodes
-------------------------------------------------------------------------
-r596 | Allara | 2017-06-27 14:24:29 -0500 (Tue, 27 Jun 2017) | 3 lines
+r599 | Allara | 2017-07-17 11:45:17 -0500 (Mon, 17 Jul 2017) | 1 line
 Changed paths:
    M /trunk/Core.lua
    M /trunk/Locales.lua
    M /trunk/Options_Defaults.lua
 
-- Fixed the item IDs for all paragon chests (thanks Urtgard!)
-- Added Ageless Bronze Drake, Bronze Proto-Whelp, Scraps, Albino Buzzard, Everliving Spore, Cavern Moccasin, Young Venomfang, Torn Invitation [for Reins of the Llothien Prowler], Arcano-Shower, Displacer Meditation Stone, Kaldorei Light Globe, Unstable Powder Box, Wisp in a Bottle, Ley Spider Eggs (thanks Urtgard!)
-
+- Added Abyss Worm, Blight Boar Microphone, Nightmare Whelpling (thanks Urtgard!)
 ------------------------------------------------------------------------
 

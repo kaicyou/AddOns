@@ -1,10 +1,12 @@
-tag 2f4cc1fea5aa20b68f73babcc6a24356c18b029b 2.4.12
+tag 571e8c67fc92aa9479fc768f8d2983d71a97ab50 2.4.16
 Author:	Benjamin Staneck <staneck@gmail.com>
-Date:	Fri Jul 14 02:57:58 2017 +0200
+Date:	Tue Jul 25 00:20:50 2017 +0200
 
-commit 07a71fc02e30ca2c9d927caac35f5d1d91977d13
+commit 334ce71855a5d0edb0378b2fb6df9d064470d5f5
 Author: Benjamin Staneck <staneck@gmail.com>
-Date:   Fri Jul 14 02:46:39 2017 +0200
+Date:   Tue Jul 25 00:20:36 2017 +0200
 
-    add safeguards for group anchoring
+    Revert "Reset duration info on applying a state without progress information"
+    
+    This reverts commit 8a99fb211ea21bc3f99acd17527d3eec9b36fb16.
 

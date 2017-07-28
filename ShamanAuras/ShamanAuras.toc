@@ -2,9 +2,9 @@
 ## Title: Sweetsour's Shaman Auras
 ## Notes: A full package of auras for all 3 Shaman specializations
 ## Author: Sweetsour
-## Version: r50-beta
+## Version: r54-beta
 ## SavedVariables: SSA_db
-## X-Curse-Packaged-Version: r50-beta
+## X-Curse-Packaged-Version: r54-beta
 ## X-Curse-Project-Name: Sweetsour's Shaman Auras
 ## X-Curse-Project-ID: sweetsour-shaman-auras
 ## X-Curse-Repository-ID: wow/sweetsour-shaman-auras/mainline
@@ -23,7 +23,11 @@ Libs\AceDB-3.0\AceDB-3.0.xml
 Libs\AceEvent-3.0\AceEvent-3.0.xml
 Libs\AceLocale-3.0\AceLocale-3.0.xml
 Libs\AceTimer-3.0\AceTimer-3.0.xml
+
+Libs\LibSharedMedia-3.0\LibSharedMedia-3.0\lib.xml
+Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
 Libs\LibAboutPanel\lib.xml
+Media\load_media.xml
 #@end-no-lib-strip@
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 
@@ -42,7 +46,9 @@ Locales\zhCN.lua
 Locales\esES.lua
 Locales\zhTW.lua
 
+SA_defaults.lua
 SA_Core.lua
+SA_Bulletin.lua
 SA_Frames_Elemental.lua
 SA_Frames_Enhancement.lua
 SA_Frames_Restoration.lua

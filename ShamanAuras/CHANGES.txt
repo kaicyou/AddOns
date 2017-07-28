@@ -1,4 +1,236 @@
 ------------------------------------------------------------------------
+r119 | SweetsourDev | 2017-07-27 19:02:24 -0500 (Thu, 27 Jul 2017) | 4 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   M /trunk/Locales/koKR.lua
+   M /trunk/Locales/ruRU.lua
+   A /trunk/Media/fonts/noto_sans
+   A /trunk/Media/fonts/noto_sans/NotoSansCJKtc-Bold.otf
+   A /trunk/Media/fonts/noto_sans/NotoSansCJKtc-Light.otf
+   A /trunk/Media/fonts/noto_sans/NotoSansCJKtc-Regular.otf
+   M /trunk/Media/sharedmedia.lua
+   M /trunk/SA_Bulletin.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r54-beta
+FIX: [UI] Fixes more issues caused by fonts not compatible with non-English langes. (Thanks, AKFDI!)
+FIX: [UI] An issue preventing all progress bars from being modified when playing WoW in a non-English language has been fixed.
+FIX: [UI] Added more asian-compatible fonts.
+------------------------------------------------------------------------
+r118 | SweetsourDev | 2017-07-26 16:08:26 -0500 (Wed, 26 Jul 2017) | 7 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   A /trunk/Media/fonts/deja_vu
+   A /trunk/Media/fonts/deja_vu/DejaVuLGCSans.ttf
+   A /trunk/Media/fonts/deja_vu/DejaVuLGCSerif.ttf
+   A /trunk/Media/fonts/deja_vu/LICENSE
+   A /trunk/Media/fonts/gentium_plus
+   A /trunk/Media/fonts/gentium_plus/GentiumPlus-R.ttf
+   A /trunk/Media/fonts/gentium_plus/OFL.txt
+   A /trunk/Media/fonts/liberation
+   A /trunk/Media/fonts/liberation/LICENSE
+   A /trunk/Media/fonts/liberation/LiberationSans-Regular.ttf
+   A /trunk/Media/fonts/liberation/LiberationSerif-Regular.ttf
+   A /trunk/Media/fonts/wen_quan_yi_zen_hei
+   A /trunk/Media/fonts/wen_quan_yi_zen_hei/COPYING
+   A /trunk/Media/fonts/wen_quan_yi_zen_hei/README
+   A /trunk/Media/fonts/wen_quan_yi_zen_hei/wqy-zenhei.ttf
+   M /trunk/Media/sharedmedia.lua
+   M /trunk/SA_Bulletin.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r53-beta
+NEW: [UI] Added the ability to disable Blizzard's default casting bar.	
+	
+FIX: [Elemental] The timer bars for the elementals has been re-coded to work better and correctly.
+FIX: [Resto] Corrected incorrect spell names for the Buff Duration Timers display options.
+FIX: [UI] Fixed an issue caused by fonts not being compatible with certain non-English languages. (Thanks, baga & BurningBear!)
+FIX: [UI] The ability to toggle the vertical timer bars should once again be working. (Thanks, Yakuzai!)
+------------------------------------------------------------------------
+r117 | SweetsourDev | 2017-07-25 19:24:19 -0500 (Tue, 25 Jul 2017) | 6 lines
+Changed paths:
+   M /trunk/Libs/Ace3.toc
+   M /trunk/Libs/AceAddon-3.0/AceAddon-3.0.xml
+   M /trunk/Libs/AceConfig-3.0/AceConfig-3.0.xml
+   M /trunk/Libs/AceConfig-3.0/AceConfigCmd-3.0/AceConfigCmd-3.0.xml
+   M /trunk/Libs/AceConfig-3.0/AceConfigDialog-3.0/AceConfigDialog-3.0.xml
+   M /trunk/Libs/AceConfig-3.0/AceConfigRegistry-3.0/AceConfigRegistry-3.0.xml
+   M /trunk/Libs/AceConsole-3.0/AceConsole-3.0.xml
+   M /trunk/Libs/AceDB-3.0/AceDB-3.0.xml
+   M /trunk/Libs/AceEvent-3.0/AceEvent-3.0.xml
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIContainer-Frame.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIContainer-ScrollFrame.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIContainer-TreeGroup.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIContainer-Window.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-ColorPicker.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-DropDown-Items.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-InteractiveLabel.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-Label.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets/BackgroundWidget.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets/BorderWidget.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets/FontWidget.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets/SoundWidget.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets/StatusbarWidget.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets/prototypes.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets/widget.xml
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets.toc
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Changelog-AceGUI-3.0-SharedMediaWidgets-r57-release.txt
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/AceGUI-3.0.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/AceGUI-3.0.xml
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-BlizOptionsGroup.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-DropDownGroup.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-Frame.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-InlineGroup.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-ScrollFrame.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-SimpleGroup.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-TreeGroup.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-Window.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-Button.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-CheckBox.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-ColorPicker.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-DropDown-Items.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-DropDown.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-EditBox.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-Heading.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-Icon.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-InteractiveLabel.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-Keybinding.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-Label.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-MultiLineEditBox.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-Slider.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/CallbackHandler-1.0
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/CallbackHandler-1.0/CallbackHandler-1.0.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/CallbackHandler-1.0/CallbackHandler-1.0.xml
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/lib.xml
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibStub
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibStub/LibStub.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibStub/LibStub.toc
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/widget.xml
+   M /trunk/Libs/AceHook-3.0/AceHook-3.0.xml
+   M /trunk/Libs/AceLocale-3.0/AceLocale-3.0.xml
+   M /trunk/Libs/AceTimer-3.0/AceTimer-3.0.xml
+   A /trunk/Libs/CHANGES.txt
+   M /trunk/Libs/CallbackHandler-1.0/CallbackHandler-1.0.xml
+   A /trunk/Libs/LibSharedMedia-3.0
+   A /trunk/Libs/LibSharedMedia-3.0/CallbackHandler-1.0
+   A /trunk/Libs/LibSharedMedia-3.0/CallbackHandler-1.0/CallbackHandler-1.0.lua
+   A /trunk/Libs/LibSharedMedia-3.0/Changelog-LibSharedMedia-3.0-7.1.0.txt
+   A /trunk/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0
+   A /trunk/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0/lib.xml
+   A /trunk/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0.lua
+   A /trunk/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0.toc
+   A /trunk/Libs/LibSharedMedia-3.0/LibStub
+   A /trunk/Libs/LibSharedMedia-3.0/LibStub/LibStub.lua
+   A /trunk/Libs/LibSharedMedia-3.0/lib.xml
+   M /trunk/Libs/changelog.txt
+   M /trunk/Locales/enUS.lua
+   A /trunk/Media/fonts/Accidental_Presidency.ttf
+   A /trunk/Media/fonts/Action_Man.ttf
+   A /trunk/Media/fonts/Adventure.ttf
+   A /trunk/Media/fonts/Arial.ttf
+   A /trunk/Media/fonts/Avqest.ttf
+   A /trunk/Media/fonts/DieDieDie.ttf
+   A /trunk/Media/fonts/Expressway.ttf
+   A /trunk/Media/fonts/FiraMono-Medium.ttf
+   A /trunk/Media/fonts/Homespun.ttf
+   A /trunk/Media/fonts/VeraSe.ttf
+   M /trunk/Media/sharedmedia.lua
+   A /trunk/Media/statusbar/Aluminium.tga
+   A /trunk/Media/statusbar/Armory.tga
+   A /trunk/Media/statusbar/BantoBar.tga
+   A /trunk/Media/statusbar/Flat.tga
+   A /trunk/Media/statusbar/Frost.tga
+   A /trunk/Media/statusbar/Glaze2.tga
+   A /trunk/Media/statusbar/Gloss.tga
+   A /trunk/Media/statusbar/Graphite.tga
+   A /trunk/Media/statusbar/Grid.tga
+   A /trunk/Media/statusbar/Healbot.tga
+   A /trunk/Media/statusbar/LiteStep.tga
+   A /trunk/Media/statusbar/Minimalist.tga
+   A /trunk/Media/statusbar/Otravi.tga
+   A /trunk/Media/statusbar/Outline.tga
+   A /trunk/Media/statusbar/Perl.tga
+   A /trunk/Media/statusbar/Rocks.tga
+   A /trunk/Media/statusbar/Round.tga
+   A /trunk/Media/statusbar/Runes.tga
+   A /trunk/Media/statusbar/Smooth.tga
+   A /trunk/Media/statusbar/Xeon.tga
+   M /trunk/SA_Bulletin.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r52-beta
+NEW: [All] All progress bars are shown as full when modifying them, but added the ability to modify the bar's background with a toggle; reducing the bar's value to reveal the background texture. (Thanks, Jay040792!)
+NEW: [Ele/Res] When modifying the Icefury and Earthen Shield progress bars, the Timer bar can be toggled on or off.
+NEW: [UI] Added many new fonts and statusbar textures. Many more can be attained by downloading the "SharedMedia" addon. (Thanks, Jay040792!)
+
+FIX: Some Lib files were missing with the update. They have been included in this update, fixing several bugs.
+------------------------------------------------------------------------
+r116 | SweetsourDev | 2017-07-24 22:47:32 -0500 (Mon, 24 Jul 2017) | 18 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   A /trunk/Media/load_media.xml
+   A /trunk/Media/sharedmedia.lua
+   M /trunk/Media/statusbar/Halves.tga
+   A /trunk/SA_Bulletin.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Functions.lua
+   A /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r51-beta
+
+NEW: [Elemental] Stormkeeper's aura now glows and shows remaining charges as well as buff duration timer. (Thanks, eric1375!)
+NEW: [Ele/Enh] The Maelstrom Bar's width limit has been increased to 500 (was 300) and height limit to 100 (was 50). (Thanks, Jay040792!)
+NEW: [UI] A cast bar and channel bar are now available. (Thanks, Jay040792!)
+NEW: [Restoration] A glow effect has been added to Riptide for the T20 2-piece bonus.
+NEW: [Restoration] A glow effect has been added to Healing Rain for the T20 4-piece bonus.
+NEW: [UI] Now supports SharedMedia
+NEW: [UI] All "primary" progress bars can now be heavily modified.
+	
+FIX: [UI] Major code clean up to yield better performance and reduced memory usage.
+FIX: [All] Wind Shear's Glow animation should no longer appear when targetting a friendly target that's casting an interruptible ability.
+FIX: [All] Added "Wind Rush Totem" to display configuration list for Minor Auras.
+FIX: [Elemental] The Maelstrom Trigger threshold slider will now update to 125 when you have obtained the "Swelling Maelstrom" artifact trait. (Thanks, Morrd!)
+FIX: [Enhancement] Moved the "Doom Winds" aura to the artifact aura group to fix overlapping auras in the bottom aura row.
+FIX: [Restoration] Spirit Link's aura should once again show its cooldown. (Thanks, Guvna!)
+FIX: [Restoration] Earthen Shield Totem's progress bar should be more accurate.
+FIX: [Restoration] Tidal Waves Bar should now correctly appear when targetting a friendly target and with OoC Display set to "On Heal Only"
+------------------------------------------------------------------------
 r115 | SweetsourDev | 2017-06-17 11:50:45 -0500 (Sat, 17 Jun 2017) | 3 lines
 Changed paths:
    M /trunk/Locales/enUS.lua

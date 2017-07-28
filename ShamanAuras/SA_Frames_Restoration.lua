@@ -1,337 +1,473 @@
 
 local FOLDER_NAME, SSA = ...
+local SSA = SSA
 
-local L = LibStub("AceLocale-3.0"):GetLocale("ShamanAuras", true)
-local Auras = LibStub("AceAddon-3.0"):GetAddon("ShamanAuras")
-local AceGUI = LibStub("AceGUI-3.0");
+local L = LibStub('AceLocale-3.0'):GetLocale('ShamanAuras', true)
+local Auras = LibStub('AceAddon-3.0'):GetAddon('ShamanAuras')
+local LSM = LibStub('LibSharedMedia-3.0')
 
-local lgIcon,lgGlow,smIcon,smGlow = 32,45,25,35;
-local x,y = 0,0,0;
-local bg,low,med,high = "BACKGROUND","LOW","MEDIUM","HIGH"
-local buffTable,mainTable,utilTable = {},{},{};
-local mainTotems,EST_Expires,EST_GUID = 0;
-local secondTotemSlot = 0;
-local healTime = 0;
+local lgIcon,lgGlow,smIcon,smGlow = 32,45,25,35
+local x,y = 0,0,0
+local bg,low,med,high = 'BACKGROUND','LOW','MEDIUM','HIGH'
+local buffTable,mainTable,utilTable = {},{},{}
+local mainTotems = 0
+local secondTotemSlot = 0
 
-local EventFrame = CreateFrame("Frame");
-EventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+-- Cache Global Variables
+-- Lua Function
+local _G = _G
+local floor, rad = math.floor, math.rad
+local tinsert, tremove = table.insert, table.remove
+local pairs, tostring = pairs, tostring
+local gsub, lower = string.gsub, string.lower
+-- WoW API / Variables
+local CreateFrame = CreateFrame
+local GetSpellCharges, GetSpellCooldown, GetSpellInfo = GetSpellCharges, GetSpellCooldown, GetSpellInfo
+local GetTime = GetTime
+local GetTotemInfo = GetTotemInfo
+local UnitAffectingCombat = UnitAffectingCombat
+local UnitBuff, UnitDebuff = UnitBuff, UnitDebuff
+local UnitCastingInfo, UnitChannelInfo = UnitCastingInfo, UnitChannelInfo
+local UnitCreatureType = UnitCreatureType
+local UnitGUID = UnitGUID
+local UnitPower, UnitPowerMax = UnitPower, UnitPowerMax
 
 local backdrop = {
-	bgFile   = "Interface\\Tooltips\\UI-Tooltip-Background",
-	edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+	bgFile   = LSM.MediaTable.background['Blizzard Tooltip'],
+	edgeFile = LSM.MediaTable.border['Blizzard Tooltip'],
 	tile = true,
 	tileSize = 16,
 	edgeSize = 10
 }
 
+-- Check Current Class
+local function CharacterCheck()
+	local _,_,classIndex = UnitClass('player')
+	local spec = GetSpecialization()
+	
+	if (spec == 3 and classIndex == 7) then
+		return true
+	else
+		return false
+	end
+end
+
+local function AdjustStatusBarSpark(self,db)
+	if (db.spark) then
+		local position = self:GetWidth() * 0.75
+		
+		self.spark:Show()
+		self.spark:SetSize(20,(self:GetHeight() * 2.5))
+				
+		self.spark:SetPoint('CENTER', self, 'LEFT', position, 0)
+	else
+		self.spark:Hide()
+	end
+end
+
+local function AdjustStatusBarIcon(self,db,texture)
+	if (db.icon.isEnabled) then
+		local parentJustify
+		
+		self.icon:Show()		
+		
+		if (db.icon.justify == 'LEFT') then
+			parentJustify = 'RIGHT'
+			self:SetPoint(db.layout.point,self:GetParent(),'CENTER',db.layout.x + math.floor(db.layout.height / 2),db.layout.y)
+		else
+			parentJustify = 'LEFT'
+			self:SetPoint(db.layout.point,self:GetParent(),'CENTER',db.layout.x - math.floor(db.layout.height / 2),db.layout.y)
+		end
+		
+		self.icon:ClearAllPoints()
+		self.icon:SetWidth(db.layout.height)
+		self.icon:SetHeight(db.layout.height)
+		self.icon:SetPoint(parentJustify,self,db.icon.justify,0,0)
+		self.icon:SetTexture(texture)
+	
+		self:SetWidth(db.layout.width - db.layout.height)
+	else
+		self:SetPoint(db.layout.point,self:GetParent(),db.layout.point,db.layout.x,db.layout.y)
+		self:SetWidth(db.layout.width)
+		self.icon:Hide()
+	end
+end
+
+local function AdjustStatusBarText(self,db)
+	if (db.isDisplayText) then
+		self:SetAlpha(1)
+		
+		if (db.font.shadow.isEnabled) then
+			self:SetShadowColor(db.font.shadow.color.r,db.font.shadow.color.g,db.font.shadow.color.b,db.font.shadow.color.a)
+			self:SetShadowOffset(db.font.shadow.offset.x,db.font.shadow.offset.y)
+		else
+			self:SetShadowColor(0,0,0,0)
+		end
+
+		self:ClearAllPoints()
+		self:SetPoint(db.justify,db.x,db.y)
+		self:SetFont(LSM.MediaTable.font[db.font.name] or LSM.DefaultMedia.font,db.font.size,db.font.flag)
+		self:SetTextColor(db.font.color.r,db.font.color.g,db.font.color.b)
+	else
+		self:SetAlpha(0)
+	end
+end
+
+local function ToggleFrameMove(self,isMoving)
+	if (isMoving) then
+		if (not self:IsMouseEnabled()) then
+			self:EnableMouse(true)
+			self:SetMovable(true)
+		end
+		
+		if (not self:GetBackdrop()) then
+			self:SetBackdrop(backdrop)
+			self:SetBackdropColor(0,0,0,0.85)
+		end
+	else
+		if (self:IsMouseEnabled()) then
+			self:EnableMouse(false)
+			self:SetMovable(false)
+		end
+		
+		if (self:GetBackdrop()) then
+			self:SetBackdrop(nil)
+		end
+	end
+end
+
+local function ToggleProgressBarMove(self,isMoving,db)
+	if (isMoving) then
+		db.adjust.isEnabled = false
+		
+		if (not self:IsMouseEnabled()) then
+			self:EnableMouse(true)
+			self:SetMovable(true)
+		end
+		self:SetAlpha(1)
+	else
+		if (self:IsMouseEnabled()) then
+			self:EnableMouse(false)
+			self:SetMovable(false)
+		end
+	end
+end
+
+local function UpdateEarthenShield(self)
+	local db  = Auras.db.char
+	local bar = Auras.db.char.elements[3].statusbars.earthenShieldBar
+	local shield = Auras.db.char.info.totems.eShield
+	
+	local progress = ((shield.dmg or 0) / shield.hp * 100);
+	local remains = (shield.hp - (shield.dmg or 0));
+	
+	progress = 100 - progress;
+	
+	if (remains > 0) then
+		self:SetValue(remains);
+		if (bar.healthtext.isDisplayText) then
+			self.healthtext:SetText(tostring(math.ceil(progress)).."%");
+		else
+			if (not bar.adjust.isEnabled and not db.elements[3].isMoving) then
+				self.healthtext:SetText('');
+			end
+		end
+	else
+		self:SetAlpha(0);
+		self.Timer:SetAlpha(0);
+	end
+end
+
+-------------------------------------------------------------------------------------------------------
+----- Build and Initialize Frames & Frame Groups
+-------------------------------------------------------------------------------------------------------
+
+local EventFrame = CreateFrame('Frame')
+
+EventFrame:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+
 -- Aura Group Builder
 local function CreateGroup(name,parent)
-	SSA[name] = CreateFrame("Frame",name,parent);
-	local Group = SSA[name];
-	Group:SetFrameStrata(bg);
-	Group:Show();
+	SSA[name] = CreateFrame('Frame',name,parent)
+	local Group = SSA[name]
+	Group:SetFrameStrata(bg)
+	Group:Show()
 	
-	return Group;
+	return Group
 end
 
 -- Aura Icon Builder
 local function InitializeFrames(name,parent,icon,iconSize,glowSize,charge)
 	
-	SSA[name] = CreateFrame("Frame",name,parent);
-	local Frame = SSA[name];
-	Frame:SetFrameStrata("LOW");
-	Frame:SetWidth(iconSize);
-	Frame:SetHeight(iconSize);
-	Frame:Show();
+	SSA[name] = CreateFrame('Frame',name,parent)
+	local Frame = SSA[name]
+	Frame:SetFrameStrata('LOW')
+	Frame:SetWidth(iconSize)
+	Frame:SetHeight(iconSize)
+	Frame:Show()
 
-	Frame.texture = Frame:CreateTexture(nil,"BACKGROUND");
-	Frame.texture:SetTexture("Interface\\addons\\ShamanAuras\\media\\ICONS\\"..icon);
-	Frame.texture:SetAllPoints(Frame);
+	Frame.texture = Frame:CreateTexture(nil,'BACKGROUND')
+	Frame.texture:SetTexture([[Interface\addons\ShamanAuras\media\ICONS\]]..icon)
+	Frame.texture:SetAllPoints(Frame)
 	
-	Frame.CD = CreateFrame("Cooldown", name.."CD", Frame, "CooldownFrameTemplate");
-	Frame.CD:SetAllPoints(Frame);
+	Frame.CD = CreateFrame('Cooldown', name..'CD', Frame, 'CooldownFrameTemplate')
+	Frame.CD:SetAllPoints(Frame)
 	
-	Frame.CD.text = Frame.CD:CreateFontString(nil, "MEDIUM", "GameFontHighlightLarge");
-	Frame.CD.text:SetAllPoints(Frame.CD);
-	Frame.CD.text:SetPoint("CENTER",0,0);
-	Frame.CD.text:SetTextColor(1,1,0,1);
+	Frame.CD.text = Frame.CD:CreateFontString(nil, 'MEDIUM', 'GameFontHighlightLarge')
+	Frame.CD.text:SetAllPoints(Frame.CD)
+	Frame.CD.text:SetPoint('CENTER',0,0)
+	Frame.CD.text:SetTextColor(1,1,0,1)
 	
 	if (glowSize) then
-		--[[SSA[name.."Glow"] = CreateFrame("Frame",name.."Glow",parent);
-		local Glow = SSA[name.."Glow"];
-		Glow:SetFrameStrata("BACKGROUND");
-		Glow:SetWidth(glowSize);
-		Glow:SetHeight(glowSize);]]
-		Frame.glow = CreateFrame("Frame",name.."Glow",Frame);
-		Frame.glow:SetPoint("CENTER",0,0);
-		Frame.glow:SetFrameStrata("BACKGROUND");
-		Frame.glow:SetWidth(glowSize);
-		Frame.glow:SetHeight(glowSize);
-		Frame.glow:Show();
+		--[[SSA[name..'Glow'] = CreateFrame('Frame',name..'Glow',parent)
+		local Glow = SSA[name..'Glow']
+		Glow:SetFrameStrata('BACKGROUND')
+		Glow:SetWidth(glowSize)
+		Glow:SetHeight(glowSize)]]
+		Frame.glow = CreateFrame('Frame',name..'Glow',Frame)
+		Frame.glow:SetPoint('CENTER',0,0)
+		Frame.glow:SetFrameStrata('BACKGROUND')
+		Frame.glow:SetWidth(glowSize)
+		Frame.glow:SetHeight(glowSize)
+		Frame.glow:Show()
 	end
 	if (charge) then
-		Frame.ChargeCD = CreateFrame("Cooldown", name.."ChargeCD", Frame, "CooldownFrameTemplate");
-		Frame.ChargeCD:SetAllPoints(Frame);
-		Frame.ChargeCD:SetFrameStrata("LOW");
+		Frame.ChargeCD = CreateFrame('Cooldown', name..'ChargeCD', Frame, 'CooldownFrameTemplate')
+		Frame.ChargeCD:SetAllPoints(Frame)
+		Frame.ChargeCD:SetFrameStrata('LOW')
 		Frame.ChargeCD:Show()
 
-		Frame.Charges = CreateFrame("Frame",name.."Charges",Frame);
-		Frame.Charges:SetAllPoints(Frame);
-		Frame.Charges:SetFrameStrata(med);
-		Frame.Charges:SetWidth(iconSize);
-		Frame.Charges:SetHeight(iconSize);
+		Frame.Charges = CreateFrame('Frame',name..'Charges',Frame)
+		Frame.Charges:SetAllPoints(Frame)
+		Frame.Charges:SetFrameStrata(med)
+		Frame.Charges:SetWidth(iconSize)
+		Frame.Charges:SetHeight(iconSize)
 
-		Frame.Charges.text = Frame.Charges:CreateFontString(nil, "MEDIUM", "GameFontHighlightLarge");
-		Frame.Charges.text:SetPoint("BOTTOMRIGHT",-3,3);
-		Frame.Charges.text:SetFont("Interface\\addons\\ShamanAuras\\Media\\fonts\\ABF.ttf", 13.5,"OUTLINE");
-		Frame.Charges.text:SetTextColor(1,1,1,1);		
+		Frame.Charges.text = Frame.Charges:CreateFontString(nil, 'MEDIUM', 'GameFontHighlightLarge')
+		Frame.Charges.text:SetPoint('BOTTOMRIGHT',-3,3)
+		Frame.Charges.text:SetFont((LSM.MediaTable.font['PT Sans Narrow'] or LSM.DefaultMedia.font), 13.5,'OUTLINE')
+		Frame.Charges.text:SetTextColor(1,1,1,1)		
 	end
-	_G["SSA_"..name] = Frame;
+	_G['SSA_'..name] = Frame
 end
 
 local AuraGroup,LargeIconGrpTop,LargeIconGrpBot,LargeIconGrpExt,SmallIconGrpLeft,SmallIconGrpRight
 
 -- Build Restoration Aura Group Containers
-AuraGroup = CreateGroup("AuraGroupRes",UIParent);
-LargeIconGrpTop = CreateGroup("LargeIconGrpTopRes",AuraGroup);
-LargeIconGrpBot = CreateGroup("LargeIconGrpBotRes",AuraGroup);
-LargeIconGrpExt = CreateGroup("LargeIconGrpExtRes",AuraGroup);
-SmallIconGrpLeft = CreateGroup("SmallIconGrpLeftRes",AuraGroup);
-SmallIconGrpRight = CreateGroup("SmallIconGrpRightRes",AuraGroup);
+AuraGroup = CreateGroup('AuraGroupRes',UIParent)
+LargeIconGrpTop = CreateGroup('LargeIconGrpTopRes',AuraGroup)
+LargeIconGrpBot = CreateGroup('LargeIconGrpBotRes',AuraGroup)
+LargeIconGrpExt = CreateGroup('LargeIconGrpExtRes',AuraGroup)
+SmallIconGrpLeft = CreateGroup('SmallIconGrpLeftRes',AuraGroup)
+SmallIconGrpRight = CreateGroup('SmallIconGrpRightRes',AuraGroup)
 
 -- Build Large Restoration Icon Frames
-InitializeFrames("AscendanceRes",LargeIconGrpBot,"shared\\ascendance",lgIcon);
-InitializeFrames("CloudburstTotem",LargeIconGrpTop,"totems\\cloudburst_totem",lgIcon);
-InitializeFrames("ConcordanceRes",LargeIconGrpExt,"shared\\concordance_legionfall.tga",lgIcon);
-InitializeFrames("GiftOfQueen",LargeIconGrpBot,"restoration\\gift_of_the_queen",lgIcon);
-InitializeFrames("HealingRain",LargeIconGrpTop,"shared\\healing_rain",lgIcon);
-InitializeFrames("HealingStreamTotem",LargeIconGrpTop,"totems\\healing_stream_totem",lgIcon,nil,true);
-InitializeFrames("HealingTideTotem",LargeIconGrpBot,"totems\\healing_tide_totem",lgIcon);
-InitializeFrames("Riptide",LargeIconGrpTop,"restoration\\riptide",lgIcon,nil,true);
-InitializeFrames("SpiritLinkTotem",LargeIconGrpBot,"totems\\spirit_link_totem",lgIcon);
-InitializeFrames("UnleashLife",LargeIconGrpTop,"restoration\\unleash_life",lgIcon);
-InitializeFrames("Wellspring",LargeIconGrpBot,"restoration\\wellspring",lgIcon);
-InitializeFrames("WindRushTotemRes",LargeIconGrpBot,"totems\\wind_rush_totem",lgIcon);
+InitializeFrames('AscendanceRes',LargeIconGrpBot,[[shared\ascendance]],lgIcon)
+InitializeFrames('CloudburstTotem',LargeIconGrpTop,[[totems\cloudburst_totem]],lgIcon)
+InitializeFrames('ConcordanceRes',LargeIconGrpExt,[[shared\concordance_legionfall.tga]],lgIcon)
+InitializeFrames('GiftOfQueen',LargeIconGrpBot,[[restoration\gift_of_the_queen]],lgIcon)
+InitializeFrames('HealingRain',LargeIconGrpTop,[[shared\healing_rain]],lgIcon,lgGlow)
+InitializeFrames('HealingStreamTotem',LargeIconGrpTop,[[totems\healing_stream_totem]],lgIcon,nil,true)
+InitializeFrames('HealingTideTotem',LargeIconGrpBot,[[totems\healing_tide_totem]],lgIcon)
+InitializeFrames('Riptide',LargeIconGrpTop,[[restoration\riptide]],lgIcon,lgGlow,true)
+InitializeFrames('SpiritLinkTotem',LargeIconGrpBot,[[totems\spirit_link_totem]],lgIcon)
+InitializeFrames('UnleashLife',LargeIconGrpTop,[[restoration\unleash_life]],lgIcon)
+InitializeFrames('Wellspring',LargeIconGrpBot,[[restoration\wellspring]],lgIcon)
+InitializeFrames('WindRushTotemRes',LargeIconGrpBot,[[totems\wind_rush_totem]],lgIcon)
 
 -- Build Small Restoration Icon Frames
-InitializeFrames("AncestralGuidanceRes",SmallIconGrpRight,"shared\\ancestral_guidance",smIcon);
-InitializeFrames("AstralShiftRes",SmallIconGrpRight,"shared\\astral_shift",smIcon);
-InitializeFrames("EarthenShieldTotem",SmallIconGrpLeft,"totems\\earthen_shield_totem",smIcon);
-InitializeFrames("EarthgrabTotemRes",SmallIconGrpRight,"totems\\earthgrab_totem",smIcon);
-InitializeFrames("FlameShockRes",SmallIconGrpRight,"shared\\flame_shock",smIcon,smGlow);
-InitializeFrames("GustWindRes",SmallIconGrpRight,"shared\\gust_of_wind",smIcon);
-InitializeFrames("HexRes",SmallIconGrpLeft,"shared\\hex",smIcon);
-InitializeFrames("LavaBurstRes",SmallIconGrpRight,"elemental\\lava_burst",smIcon,smGlow,true);
-InitializeFrames("LightningSurgeTotemRes",SmallIconGrpRight,"totems\\lightning_surge_totem",smIcon);
-InitializeFrames("PurifySpirit",SmallIconGrpLeft,"restoration\\purify_spirit",smIcon);
-InitializeFrames("SpiritwalkersGrace",SmallIconGrpLeft,"restoration\\spiritwalkers_grace",smIcon);
-InitializeFrames("VoodooTotemRes",SmallIconGrpLeft,"totems\\voodoo_totem",smIcon);
-InitializeFrames("WindShearRes",SmallIconGrpLeft,"shared\\wind_shear",smIcon,smGlow);
+InitializeFrames('AncestralGuidanceRes',SmallIconGrpRight,[[shared\ancestral_guidance]],smIcon)
+InitializeFrames('AstralShiftRes',SmallIconGrpRight,[[shared\astral_shift]],smIcon)
+InitializeFrames('EarthenShieldTotem',SmallIconGrpLeft,[[totems\earthen_shield_totem]],smIcon)
+InitializeFrames('EarthgrabTotemRes',SmallIconGrpRight,[[totems\earthgrab_totem]],smIcon)
+InitializeFrames('FlameShockRes',SmallIconGrpRight,[[shared\flame_shock]],smIcon,smGlow)
+InitializeFrames('GustWindRes',SmallIconGrpRight,[[shared\gust_of_wind]],smIcon)
+InitializeFrames('HexRes',SmallIconGrpLeft,[[shared\hex]],smIcon)
+InitializeFrames('LavaBurstRes',SmallIconGrpRight,[[elemental\lava_burst]],smIcon,smGlow,true)
+InitializeFrames('LightningSurgeTotemRes',SmallIconGrpRight,[[totems\lightning_surge_totem]],smIcon)
+InitializeFrames('PurifySpirit',SmallIconGrpLeft,[[restoration\purify_spirit]],smIcon)
+InitializeFrames('SpiritwalkersGrace',SmallIconGrpLeft,[[restoration\spiritwalkers_grace]],smIcon)
+InitializeFrames('VoodooTotemRes',SmallIconGrpLeft,[[totems\voodoo_totem]],smIcon)
+InitializeFrames('WindShearRes',SmallIconGrpLeft,[[shared\wind_shear]],smIcon,smGlow)
 
 -------------------------------------------------------------------------------------------------------
 ----- Initialize Scripts (Aura Groups)
 -------------------------------------------------------------------------------------------------------
 
-EventFrame:SetScript("OnUpdate",function(self)
-	local _,_,name,_,_,rank = C_ArtifactUI.GetEquippedArtifactInfo();
+EventFrame:SetScript('OnUpdate',function(self)
+	local _,_,name,_,_,rank = C_ArtifactUI.GetEquippedArtifactInfo()
 	
 	if (Auras:CharacterCheck(3)) then
 		if (name ~= Auras.db.char.EquippedArtifact) then
-			Auras.db.char.EquippedArtifact = "Sharas'dal, Scepter of Tides";
-			Auras:UpdateTalents();
+			Auras.db.char.EquippedArtifact = name
+			Auras:UpdateTalents()
 		end
 	end
-end);
+end)
 
-AuraGroup:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		self:SetBackdrop(backdrop);
-		self:SetBackdropColor(0,0,0,0.5);
-	else
-		self:SetBackdrop(nil);
-	end
-end);
+AuraGroup:SetScript('OnUpdate',function(self,button)
+	ToggleFrameMove(self,Auras.db.char.elements[3].isMoving)
+end)
 
-AuraGroup:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseDown(self,'resGrp',button);
+AuraGroup:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
 	end
-end);
+end)
 
-AuraGroup:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseUp(self,'resGrp',button);
+AuraGroup:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].frames[self:GetName()])
 	end
-end);
+end)
 
-LargeIconGrpTop:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		self:SetBackdrop(backdrop);
-		self:SetBackdropColor(0,0,0,0.85);
-	else
-		self:SetBackdrop(nil);
-	end
-end);
+LargeIconGrpTop:SetScript('OnUpdate',function(self,button)
+	ToggleFrameMove(self,Auras.db.char.elements[3].isMoving)
+end)
 
-LargeIconGrpTop:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseDown(self,'resGrp',button);
+LargeIconGrpTop:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
 	end
-end);
+end)
 
-LargeIconGrpTop:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseUp(self,'resGrp',button);
+LargeIconGrpTop:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].frames[self:GetName()])
 	end
-end);
+end)
 
-LargeIconGrpBot:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		self:SetBackdrop(backdrop);
-		self:SetBackdropColor(0,0,0,0.85);
-	else
-		self:SetBackdrop(nil);
-	end
-end);
+LargeIconGrpBot:SetScript('OnUpdate',function(self,button)
+	ToggleFrameMove(self,Auras.db.char.elements[3].isMoving)
+end)
 
-LargeIconGrpBot:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseDown(self,'resGrp',button);
+LargeIconGrpBot:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
 	end
-end);
+end)
 
-LargeIconGrpBot:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseUp(self,'resGrp',button);
+LargeIconGrpBot:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].frames[self:GetName()])
 	end
-end);
+end)
 
-LargeIconGrpExt:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		self:SetBackdrop(backdrop);
-		self:SetBackdropColor(0,0,0,0.85);
-	else
-		self:SetBackdrop(nil);
-	end
-end);
+LargeIconGrpExt:SetScript('OnUpdate',function(self,button)
+	ToggleFrameMove(self,Auras.db.char.elements[3].isMoving)
+end)
 
-LargeIconGrpExt:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseDown(self,'eleGrp',button);
+LargeIconGrpExt:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
 	end
-end);
+end)
 
-LargeIconGrpExt:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseUp(self,'eleGrp',button);
+LargeIconGrpExt:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].frames[self:GetName()])
 	end
-end);
+end)
 
-SmallIconGrpLeft:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		self:SetBackdrop(backdrop);
-		self:SetBackdropColor(0,0,0,0.85);
-	else
-		self:SetBackdrop(nil);
-	end
-end);
+SmallIconGrpLeft:SetScript('OnUpdate',function(self,button)
+	ToggleFrameMove(self,Auras.db.char.elements[3].isMoving)
+end)
 
-SmallIconGrpLeft:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseDown(self,'resGrp',button);
+SmallIconGrpLeft:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
 	end
-end);
+end)
 
-SmallIconGrpLeft:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseUp(self,'resGrp',button);
+SmallIconGrpLeft:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].frames[self:GetName()])
 	end
-end);
+end)
 
-SmallIconGrpRight:SetScript("OnUpdate",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		self:SetBackdrop(backdrop);
-		self:SetBackdropColor(0,0,0,0.85);
-	else
-		self:SetBackdrop(nil);
-	end
-end);
+SmallIconGrpRight:SetScript('OnUpdate',function(self,button)
+	ToggleFrameMove(self,Auras.db.char.elements[3].isMoving)
+end)
 
-SmallIconGrpRight:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseDown(self,'resGrp',button);
+SmallIconGrpRight:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
 	end
-end);
+end)
 
-SmallIconGrpRight:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseUp(self,'resGrp',button);
+SmallIconGrpRight:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].frames[self:GetName()])
 	end
-end);
+end)
 
 -------------------------------------------------------------------------------------------------------
 ----- Initialize Scripts (Separate Auras)
 -------------------------------------------------------------------------------------------------------
 
 -- Flame Shock
-SSA.FlameShockRes:SetScript("OnUpdate", function(self)
+SSA.FlameShockRes:SetScript('OnUpdate', function(self)
 	if (Auras:CharacterCheck(3)) then
-		local debuff,_,_,_,_,_,expires,caster = UnitDebuff('target',Auras:GetSpellName(188838));
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(188838));
+		local debuff,_,_,_,_,_,expires,caster = UnitDebuff('target',Auras:GetSpellName(188838))
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(188838))
 		local timer,seconds
 		
 		if (not self.text) then
-			self.text = self:CreateFontString(nil, "HIGH", "GameFontHighlightLarge");
-			self.text:SetPoint("CENTER",0.5,0.5);
-			self.text:SetFont("Interface\\addons\\ShamanAuras\\media\\fonts\\PT_Sans_Narrow.TTF", 16,"OUTLINE");
-			self.text:SetTextColor(1,1,0,1);
+			self.text = self:CreateFontString(nil, 'HIGH', 'GameFontHighlightLarge')
+			self.text:SetPoint('CENTER',0.5,0.5)
+			self.text:SetFont(LSM.MediaTable.font['PT Sans Narrow'] or LSM.DefaultMedia.font, 16,'OUTLINE')
+			self.text:SetTextColor(1,1,0,1)
 		end
 	
-		Auras:SpellRangeCheck(self,188838,true,3);
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:SpellRangeCheck(self,188838,true,3)
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true,true,3);
-			--timer,seconds = Auras:parseTime((start + duration) - GetTime(),false);
-			--self.text:SetText(timer);
+			Auras:ExecuteCooldown(self,start,duration,true,true,3)
 		end
 		
 		if (expires) then
-			timer,seconds = Auras:parseTime(expires - GetTime(),false);
+			timer,seconds = Auras:parseTime(expires - GetTime(),false)
 		end
 		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 			if (debuff and caster == 'player') then
-				--timer,seconds = Auras:parseTime(expires - GetTime(),false);
-				--self.text:SetText(timer);
+				--timer,seconds = Auras:parseTime(expires - GetTime(),false)
+				--self.text:SetText(timer)
 				
-				if ((seconds or 0) <= Auras.db.char.triggers[3].flameShock and UnitAffectingCombat('player')) then
-					Auras:ToggleOverlayGlow(self.glow,true,true);
-					--isGlowActive = true;
+				if ((seconds or 0) <= Auras.db.char.settings[3].flameShock and UnitAffectingCombat('player')) then
+					Auras:ToggleOverlayGlow(self.glow,true,true)
+					--isGlowActive = true
 				--elseif (seconds == 0) then
-					--self.text:SetText('');
+					--self.text:SetText('')
 				else
-					Auras:ToggleOverlayGlow(self.glow,false);
-					--isGlowActive = false;
+					Auras:ToggleOverlayGlow(self.glow,false)
+					--isGlowActive = false
 				end
 				--[[if (seconds == 0) then
-					self.text:SetText('');
+					self.text:SetText('')
 				else
-					self.text:SetText(timer);
+					self.text:SetText(timer)
 				end]]
 			else
-				--self.text:SetText('');
+				--self.text:SetText('')
 				if (Auras:IsTargetEnemy()) then
-					Auras:ToggleOverlayGlow(self.glow,	true,true);
+					Auras:ToggleOverlayGlow(self.glow,	true,true)
 				else
-					Auras:ToggleOverlayGlow(self.glow,false);
+					Auras:ToggleOverlayGlow(self.glow,false)
 				end
 			end
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
-			Auras:ToggleOverlayGlow(self.glow,false);
-			--self.text:SetText('');
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
+			Auras:ToggleOverlayGlow(self.glow,false)
+			--self.text:SetText('')
 		end
 		
 		if ((seconds or 0) >= 0.1) then
@@ -340,858 +476,1143 @@ SSA.FlameShockRes:SetScript("OnUpdate", function(self)
 			self.text:SetText('')
 		end
 		--[[if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
 			self:SetAlpha(Auras.db.char.triggers.ele.OoCAlpha)
 		end]]
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Lava Burst
-SSA.LavaBurstRes:SetScript("OnUpdate", function(self)
+SSA.LavaBurstRes:SetScript('OnUpdate', function(self)
 	if (Auras:CharacterCheck(3)) then
-		local buff = UnitBuff('player',Auras:GetSpellName(77762));
+		local buff = UnitBuff('player',Auras:GetSpellName(77762))
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(51505))
 		local charges,maxCharges,chgStart,chgDuration = GetSpellCharges(51505)
-		local _,_,_,selected = GetTalentInfo(6,3,1);
+		local _,_,_,selected = GetTalentInfo(6,3,1)
 		
-		Auras:SpellRangeCheck(self,51505,true,3);	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:SpellRangeCheck(self,51505,true,3)	
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if (selected) then
 			if (charges == 2) then
-				self.ChargeCD:Hide();
-				self.ChargeCD:SetCooldown(0,0);
-				self.Charges.text:SetText(2);
+				self.ChargeCD:Hide()
+				self.ChargeCD:SetCooldown(0,0)
+				self.Charges.text:SetText(2)
 			elseif (charges < 2) then
-				self.ChargeCD:Show();
-				self.ChargeCD:SetCooldown(chgStart,chgDuration);
-				self.Charges.text:SetText(charges);
+				self.ChargeCD:Show()
+				self.ChargeCD:SetCooldown(chgStart,chgDuration)
+				self.Charges.text:SetText(charges)
 			end
 			if (charges > 0) then
-				self.Charges.text:SetText(charges);
-				self.CD.text:SetText('');
-				--self.ChargeCD:Show();
+				self.Charges.text:SetText(charges)
+				self.CD.text:SetText('')
+				--self.ChargeCD:Show()
 			else
-				Auras:ExecuteCooldown(self,chgStart,chgDuration,false,false,3);
-				self.Charges.text:SetText('');
-				self.ChargeCD:Hide();
+				Auras:ExecuteCooldown(self,chgStart,chgDuration,false,false,3)
+				self.Charges.text:SetText('')
+				self.ChargeCD:Hide()
 			end
 		else
-			self.ChargeCD:Hide();
+			self.ChargeCD:Hide()
 		end
 		
 		if (UnitAffectingCombat('player')) then
 			if ((duration or 0) > 2) then
 				--Auras:ToggleCooldownSwipe(self.CD,true)
-				Auras:ToggleOverlayGlow(self.glow,false);
-				Auras:ExecuteCooldown(self,start,duration,false,false,3);
-				self.CD:Show();
+				Auras:ToggleOverlayGlow(self.glow,false)
+				Auras:ExecuteCooldown(self,start,duration,false,false,3)
+				self.CD:Show()
 			elseif (buff) then
 				Auras:ToggleCooldownSwipe(self.CD,false)
-				Auras:ToggleOverlayGlow(self.glow,true,false);
-				self.CD:Hide();
-				self.CD:SetCooldown(0,0);
-				Auras:ToggleOverlayGlow(self.glow,true,false);
+				Auras:ToggleOverlayGlow(self.glow,true,false)
+				self.CD:Hide()
+				self.CD:SetCooldown(0,0)
+				Auras:ToggleOverlayGlow(self.glow,true,false)
 			else
 				Auras:ToggleCooldownSwipe(self.CD,false)
-				Auras:ToggleOverlayGlow(self.glow,false);
-				self.CD:Hide();
+				Auras:ToggleOverlayGlow(self.glow,false)
+				self.CD:Hide()
 			end
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
 			if (buff) then
-				Auras:ToggleOverlayGlow(self.glow,false);
+				Auras:ToggleOverlayGlow(self.glow,false)
 			end
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Ancestral Guidance
-SSA.AncestralGuidanceRes:SetScript("OnUpdate",function(self)
+SSA.AncestralGuidanceRes:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(108281));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(108281))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,true,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Ascendance
-SSA.AscendanceRes:SetScript("OnUpdate",function(self)
+SSA.AscendanceRes:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(114052));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(114052))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 	
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,false,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Astral Shift
-SSA.AstralShiftRes:SetScript("OnUpdate",function(self)
+SSA.AstralShiftRes:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(108271));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(108271))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,true,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Cloudburst Totem
-SSA.CloudburstTotem:SetScript("OnUpdate",function(self)
+SSA.CloudburstTotem:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(157153));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(157153))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,false,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Concordance of the Legionfall
-SSA.ConcordanceRes:SetScript("OnUpdate",function(self)
+SSA.ConcordanceRes:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local buff,_,_,count,_,duration,expires,caster = UnitBuff('player',Auras:GetSpellName(242586));
+		local buff,_,_,count,_,duration,expires,caster = UnitBuff('player',Auras:GetSpellName(242586))
 		
 		
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,(expires - duration),duration,false,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,(expires - duration),duration,false,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Earthen Shield Totem
-SSA.EarthenShieldTotem:SetScript("OnUpdate",function(self)
+SSA.EarthenShieldTotem:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(198838));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(198838))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,true,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Earthgrab Totem
-SSA.EarthgrabTotemRes:SetScript("OnUpdate",function(self)
+SSA.EarthgrabTotemRes:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(51485));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(51485))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,true,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Gift of the Queen
-SSA.GiftOfQueen:SetScript("OnUpdate",function(self)
+SSA.GiftOfQueen:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(207778));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(207778))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,false,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Gust of Wind
-SSA.GustWindRes:SetScript("OnUpdate",function(self)
+SSA.GustWindRes:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(192063));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(192063))
 		
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,true,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Healing Rain
-SSA.HealingRain:SetScript("OnUpdate",function(self)
+SSA.HealingRain:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(73920));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(73920))
+		local spiritRain = UnitBuff('player',Auras:GetSpellName(246771))
 		
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,false,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
+		end
+		
+		if (spiritRain) then
+			Auras:ToggleOverlayGlow(self.glow,true)
+		else
+			Auras:ToggleOverlayGlow(self.glow,false)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Healing Stream Totem
-SSA.HealingStreamTotem:SetScript("OnUpdate", function(self)
+SSA.HealingStreamTotem:SetScript('OnUpdate', function(self)
 	if (Auras:CharacterCheck(3)) then
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(5394))
 		local charges,maxCharges,chgStart,chgDuration = GetSpellCharges(5394)
-		local _,_,_,selected = GetTalentInfo(6,3,1);
+		local _,_,_,selected = GetTalentInfo(6,3,1)
 
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if (selected) then
 			if (charges == 2) then
-				self.ChargeCD:Hide();
-				self.ChargeCD:SetCooldown(0,0);
+				self.ChargeCD:Hide()
+				self.ChargeCD:SetCooldown(0,0)
 			elseif (charges < 2) then
-				self.ChargeCD:Show();
-				self.ChargeCD:SetCooldown(chgStart,chgDuration);
+				self.ChargeCD:Show()
+				self.ChargeCD:SetCooldown(chgStart,chgDuration)
 			end
 			if (charges > 0) then
-				self.Charges.text:SetText(charges);
-				self.CD.text:SetText('');
+				self.Charges.text:SetText(charges)
+				self.CD.text:SetText('')
 			else
-				Auras:ExecuteCooldown(self,chgStart,chgDuration,false,false,3);
-				self.Charges.text:SetText('');
+				Auras:ExecuteCooldown(self,chgStart,chgDuration,false,false,3)
+				self.Charges.text:SetText('')
 			end
 		else
-			self.Charges.text:SetText('');
+			self.Charges.text:SetText('')
 			if ((duration or 0) > 2 and not buff) then
 				Auras:ToggleCooldownSwipe(self.CD,true)
-				Auras:ExecuteCooldown(self,start,duration,false,false,3);
-				self.CD:Show();
+				Auras:ExecuteCooldown(self,start,duration,false,false,3)
+				self.CD:Show()
 			else
 				Auras:ToggleCooldownSwipe(self.CD,true)
-				self.CD:Hide();
+				self.CD:Hide()
 			end
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Healing Tide Totem
-SSA.HealingTideTotem:SetScript("OnUpdate",function(self)
+SSA.HealingTideTotem:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(108280));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(108280))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,false,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Hex
-SSA.HexRes:SetScript("OnUpdate",function(self)
+SSA.HexRes:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(51514));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(51514))
 		
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,true,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 		
-		Auras:SpellRangeCheck(self,51514,(UnitCreatureType('target') == "Humanoid" or UnitCreatureType('target') == "Beast" or UnitCreatureType('target') == "Critter"),3);	
+		Auras:SpellRangeCheck(self,51514,(UnitCreatureType('target') == 'Humanoid' or UnitCreatureType('target') == 'Beast' or UnitCreatureType('target') == 'Critter'),3)	
 		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Lightning Surge Totem
-SSA.LightningSurgeTotemRes:SetScript("OnUpdate",function(self)
+SSA.LightningSurgeTotemRes:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(192058));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(192058))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,true,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Purify Spirit
-SSA.PurifySpirit:SetScript("OnUpdate",function(self)
+SSA.PurifySpirit:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(77130));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(77130))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,true,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Riptide
-SSA.Riptide:SetScript("OnUpdate", function(self)
+SSA.Riptide:SetScript('OnUpdate', function(self)
 	if (Auras:CharacterCheck(3)) then
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(61295))
 		local charges,maxCharges,chgStart,chgDuration = GetSpellCharges(61295)
-		local _,_,_,selected = GetTalentInfo(6,3,1);
+		local _,_,_,selected = GetTalentInfo(6,3,1)
+		
+		local tidalForce = UnitBuff('player',Auras:GetSpellName(246729))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if (selected) then
 			if (charges == 2) then
-				self.ChargeCD:Hide();
-				self.ChargeCD:SetCooldown(0,0);
+				self.ChargeCD:Hide()
+				self.ChargeCD:SetCooldown(0,0)
 			elseif (charges < 2) then
-				self.ChargeCD:Show();
-				self.ChargeCD:SetCooldown(chgStart,chgDuration);
+				self.ChargeCD:Show()
+				self.ChargeCD:SetCooldown(chgStart,chgDuration)
 			end
 			if (charges > 0) then
-				self.Charges.text:SetText(charges);
-				self.CD.text:SetText('');
+				self.Charges.text:SetText(charges)
+				self.CD.text:SetText('')
 			else
-				Auras:ExecuteCooldown(self,chgStart,chgDuration,false,false,3);
-				self.Charges.text:SetText('');
+				Auras:ExecuteCooldown(self,chgStart,chgDuration,false,false,3)
+				self.Charges.text:SetText('')
 			end
 		else
-			self.Charges.text:SetText('');
+			self.Charges.text:SetText('')
 			if ((duration or 0) > 2 and not buff) then
 				Auras:ToggleCooldownSwipe(self.CD,true)
-				Auras:ExecuteCooldown(self,start,duration,false,false,3);
-				self.CD:Show();
+				Auras:ExecuteCooldown(self,start,duration,false,false,3)
+				self.CD:Show()
 			else
 				Auras:ToggleCooldownSwipe(self.CD,true)
-				self.CD:Hide();
+				self.CD:Hide()
 			end
 		end
-			
-		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+		
+		if (tidalForce) then
+			Auras:ToggleOverlayGlow(self.glow,true)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			Auras:ToggleOverlayGlow(self.glow,false)
+		end
+		
+		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
+			self:SetAlpha(1)
+		else
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Spirit Link Totem
-SSA.SpiritLinkTotem:SetScript("OnUpdate",function(self)
+SSA.SpiritLinkTotem:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(98008));
-		local start2,duration2 = GetSpellCooldown(Auras:GetSpellName(204293));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(98008))
+		--local start2,duration2 = GetSpellCooldown(Auras:GetSpellName(204293))
+		--local buff,_,_,_,_,duration,expires = UnitBuff('player',Auras:GetSpellName(204293))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,false,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 		
-		if ((duration2 or 0) > 2) then
-			Auras:ExecuteCooldown(self,start2,duration2,false,false,3);
-			self.CD:Show();
+		--[[if ((duration2 or 0) > 2) then
+			start = expires - duration
+			Auras:ExecuteCooldown(self,start,duration,false,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
-		end
+			self.CD:Hide()
+		end]]
 		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Spiritwalker's Grace
-SSA.SpiritwalkersGrace:SetScript("OnUpdate",function(self)
+SSA.SpiritwalkersGrace:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(79206));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(79206))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,true,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Unleash Life
-SSA.UnleashLife:SetScript("OnUpdate",function(self)
+SSA.UnleashLife:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(73685));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(73685))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,false,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Voodoo Totem
-SSA.VoodooTotemRes:SetScript("OnUpdate",function(self)
+SSA.VoodooTotemRes:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(196932));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(196932))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,true,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Wellspring
-SSA.Wellspring:SetScript("OnUpdate",function(self)
+SSA.Wellspring:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(197995));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(197995))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,false,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Wind Shear
-SSA.WindShearRes:SetScript("OnUpdate",function(self)
+SSA.WindShearRes:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(57994));
-		local name,_,_,_,_,_,_,_,interrupt = UnitCastingInfo('target');
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(57994))
+		local name,_,_,_,_,_,_,_,interrupt = UnitCastingInfo('target')
 	
-		Auras:SpellRangeCheck(self,57994,true,3);
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:SpellRangeCheck(self,57994,true,3)
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,true,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 		
-		if (name and not interrupt and (start or 0) == 0) then
-			Auras:ToggleOverlayGlow(self.glow,true,true);
+		if (name and not interrupt and (start or 0) == 0 and Auras:IsTargetEnemy()) then
+			Auras:ToggleOverlayGlow(self.glow,true,true)
 		else
-			Auras:ToggleOverlayGlow(self.glow,false);
+			Auras:ToggleOverlayGlow(self.glow,false)
 		end
 		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -- Wind Rush Totem
-SSA.WindRushTotemRes:SetScript("OnUpdate",function(self)
+SSA.WindRushTotemRes:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local start,duration = GetSpellCooldown(Auras:GetSpellName(192077));
+		local start,duration = GetSpellCooldown(Auras:GetSpellName(192077))
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
 		if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,true,false,3);
-			self.CD:Show();
+			Auras:ExecuteCooldown(self,start,duration,true,false,3)
+			self.CD:Show()
 		else
-			self.CD:Hide();
+			self.CD:Hide()
 		end
 			
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		else
-			self:SetAlpha(Auras.db.char.triggers[3].OoCAlpha)
+			self:SetAlpha(Auras.db.char.settings[3].OoCAlpha)
 		end
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 -------------------------------------------------------------------------------------------------------
 ----- Build and Initialize Status Bars
 -------------------------------------------------------------------------------------------------------
 
-local ManaBar = CreateFrame("StatusBar","ManaBar",AuraGroup);
+-- Casting Status Bar
+local ChannelBar = CreateFrame('StatusBar','ChannelBarRes',AuraGroup)
 
-ManaBar:SetStatusBarTexture("Interface\\addons\\ShamanAuras\\media\\statusbar\\fifths");
-ManaBar:GetStatusBarTexture():SetHorizTile(false);
-ManaBar:GetStatusBarTexture():SetVertTile(false);
-ManaBar:SetPoint("CENTER",AuraGroup,"CENTER",0,-139);
-ManaBar:SetFrameStrata("LOW");
-ManaBar:SetStatusBarColor(0,0.5,1);
-ManaBar:Show();
-ManaBar:SetAlpha(0);
+ChannelBar:SetStatusBarTexture([[Interface\addons\ShamanAuras\media\statusbar\Glamour2]])
+ChannelBar:GetStatusBarTexture():SetHorizTile(false)
+ChannelBar:GetStatusBarTexture():SetVertTile(false)
+ChannelBar:RegisterForDrag('LeftButton')
+ChannelBar:SetPoint('TOPLEFT',AuraGroup,'CENTER',0,0)
+ChannelBar:Show()
+ChannelBar:SetAlpha(0)
 
-ManaBar.bg = ManaBar:CreateTexture(nil,"BACKGROUND");
-ManaBar.bg:SetTexture("Interface\\TargetingFrame\\UI-StatusBar");
-ManaBar.bg:SetAllPoints(true);
-ManaBar.bg:SetVertexColor(0,0,0);
-ManaBar.bg:SetAlpha(0.5);
+ChannelBar.spark = ChannelBar:CreateTexture(nil,'OVERLAY')
+ChannelBar.spark:SetBlendMode('ADD')
+ChannelBar.spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
 
-ManaBar.text = ManaBar:CreateFontString(nil, "HIGH", "GameFontHighlightLarge");
-ManaBar.text:SetPoint("CENTER",ManaBar,"CENTER",0,0);
-ManaBar.text:SetTextColor(1,1,1,1);
+ChannelBar.icon = ChannelBar:CreateTexture(nil,'OVERLAY')
 
-ManaBar:SetScript("OnUpdate",function(self)
+ChannelBar.bg = ChannelBar:CreateTexture(nil,'BACKGROUND')
+--ChannelBar.bg:SetTexture([[Interface\TargetingFrame\UI-StatusBar]])
+ChannelBar.bg:SetAllPoints(true)
+--ChannelBar.bg:SetVertexColor(0,0,0)
+--ChannelBar.bg:SetAlpha(0.5)
+
+ChannelBar.timetext = ChannelBar:CreateFontString(nil, 'HIGH', 'GameFontHighlightLarge')
+ChannelBar.nametext = ChannelBar:CreateFontString(nil, 'HIGH', 'GameFontHighlightLarge')
+
+ChannelBar.startTime = 0
+ChannelBar.endTime = 0
+ChannelBar.isChannel = false
+ChannelBar.duration = 0
+ChannelBar.progress = 0
+
+ChannelBar:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local power,maxPower = UnitPower('player',19),UnitPowerMax('player',19);
-		local _,font = self.text:GetFont();
+		local db = Auras.db.char
+		local bar = db.elements[3].statusbars.channelBar
+		local isMoving = db.elements[3].isMoving
 		
+		ToggleProgressBarMove(self,isMoving,bar)
 		
-		
-		self:SetMinMaxValues(0,maxPower);
-		self:SetValue(power);
-		
-		
-		
-		if (self:GetWidth() ~= Auras.db.char.layout[3].manaBar.width) then
-			self:SetWidth(Auras.db.char.layout[3].manaBar.width);
-		end
-		
-		if (self:GetHeight() ~= Auras.db.char.layout[3].manaBar.height) then
-			self:SetHeight(Auras.db.char.layout[3].manaBar.height);
-		end
-		
-		if (font ~= Auras.db.char.layout[3].manaBar.textSize) then
-			self.text:SetFont("Fonts\\FRIZQT__.TTF", Auras.db.char.layout[3].manaBar.textSize)
-		end
-		
-		if (Auras.db.char.config[3].manaBar.justify == "Left") then
-			self.text:ClearAllPoints();
-			self.text:SetPoint("LEFT",15,0);
-		elseif (Auras.db.char.config[3].manaBar.justify == "Center") then
-			self.text:ClearAllPoints();
-			self.text:SetPoint("CENTER",0,0);
-		else
-			self.text:ClearAllPoints();
-			self.text:SetPoint("RIGHT",-15,0);
-		end
+		if (isMoving) then
+			local name,_,texture = GetSpellInfo(6196)
+
+			self:SetMinMaxValues(0,60)
+			self:SetValue(60)
+			self.nametext:SetText(name)
+			self.timetext:SetText('59.9')
 			
-		if (Auras.db.char.aura[3].ManaBar) then
+			if (bar.icon.isEnabled) then
+				self.icon:Show()
+				self.icon:SetTexture(texture)
+			end
+		end
+		
+		if (bar.adjust.isEnabled) then
+			local name,_,texture = GetSpellInfo(6196)
+			self.nametext:SetText(name)
+			self:SetAlpha(1)
 			
-			if (not Auras.db.char.config[3].manaBar.isAdjustable and not Auras.db.char.config[3].isMoving) then
-				if (UnitAffectingCombat('player')) then
-					self:SetAlpha(Auras.db.char.config[3].manaBar.alphaCombat);
-				else
-					self:SetAlpha(Auras.db.char.config[3].manaBar.alphaOoC);
+			AdjustStatusBarText(self.nametext,bar.nametext)
+			AdjustStatusBarText(self.timetext,bar.timetext)
+			AdjustStatusBarIcon(self,bar,texture)
+			AdjustStatusBarSpark(self,bar)
+			
+			if (bar.adjust.showBG) then
+				self:SetMinMaxValues(0,1)
+				self:SetValue(0.33)
+				self.timetext:SetText('20.0')
+				AdjustStatusBarSpark(self,bar,0.33)
+			else
+				self:SetMinMaxValues(0,1)
+				self:SetValue(1)
+				self.timetext:SetText('60.0')
+				AdjustStatusBarSpark(self,bar,1)
+			end
+
+			self:SetStatusBarTexture(LSM.MediaTable.statusbar[bar.foreground.texture])
+			self:SetStatusBarColor(bar.foreground.color.r,bar.foreground.color.g,bar.foreground.color.b)
+			
+			self.bg:SetTexture(LSM.MediaTable.statusbar[bar.background.texture])
+			self.bg:SetVertexColor(bar.background.color.r,bar.background.color.g,bar.background.color.b,bar.background.color.a)
+			
+			self:SetHeight(bar.layout.height)
+			self:SetFrameStrata(bar.layout.strata)
+		end
+
+		if (bar.isEnabled and not isMoving and not bar.adjust.isEnabled) then
+			local spellName,_,_,_,_,endTime = UnitChannelInfo('player')
+			
+			if (self.isChannel and (spellName or GetTime() == endTime)) then
+				local timer,seconds = Auras:parseTime(self.endTime - GetTime(),true)
+
+				self:SetValue(seconds)
+				self.timetext:SetText(timer)
+				
+				if (bar.spark) then
+					self.progress = self.endTime - GetTime()
+					self.spark:SetPoint('CENTER', self, 'LEFT', (self.progress / self.duration) * self:GetWidth(), 0)
 				end
 				
-				if (Auras.db.char.config[3].manaBar.isDisplayText) then
-					self.text:SetText(Auras:ManaPrecision(Auras.db.char.config[3].manaBar.precision,true));
+				if (UnitAffectingCombat('player')) then
+					self:SetAlpha(bar.alphaCombat)
 				else
-					self.text:SetText('');
+					self:SetAlpha(bar.alphaOoC)
+					
 				end
-			elseif (Auras.db.char.config[3].manaBar.isAdjustable or Auras.db.char.config[3].isMoving) then
-				--Auras:ToggleAuraVisibility(self,true,'alpha');
-				if (Auras.db.char.config[3].manaBar.alphaCombat == 0) then
-					self:SetAlpha(1);
-				else
-					self:SetAlpha(Auras.db.char.config[3].manaBar.alphaCombat);
-				end
-				self:SetValue(UnitPowerMax('player',19));
-				if (Auras.db.char.config[3].manaBar.isDisplayText) then
-					self.text:SetText(Auras:ManaPrecision(Auras.db.char.config[3].manaBar.precision));
-				else
-					self.text:SetText('');
-				end
+				self.bg:SetAlpha(bar.background.color.a)
+			else
+				self.isChannel = false
+				self:SetAlpha(0)
 			end
-		else
-			self:SetAlpha(0);
+		elseif (not bar.isEnabled and not isMoving and not bar.adjust.isEnabled) then
+			self:SetAlpha(0)
 		end
 	else
-		self:SetAlpha(0);
+		self:SetAlpha(0)
 	end
-end);
+end)
 
-ManaBar:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseDown(self,'resGrp',button);
+ChannelBar:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
 	end
-end);
+end)
 
-ManaBar:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseUp(self,'resGrp',button);
+ChannelBar:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].statusbars.channelBar)
 	end
-end);
+end)
 
-SSA.ManaBar = ManaBar;
-_G["SSA_ManaBar"] = ManaBar;
+SSA.ChannelBarRes = ChannelBar
+
+-- Casting Status Bar
+local CastBar = CreateFrame('StatusBar','CastBarRes',AuraGroup)
+
+CastBar:SetStatusBarTexture([[Interface\addons\ShamanAuras\media\statusbar\Glamour2]])
+CastBar:GetStatusBarTexture():SetHorizTile(false)
+CastBar:GetStatusBarTexture():SetVertTile(false)
+CastBar:RegisterForDrag('LeftButton')
+CastBar:SetPoint('TOPLEFT',AuraGroup,'CENTER',0,0)
+CastBar:Show()
+CastBar:SetAlpha(0)
+
+CastBar.spark = CastBar:CreateTexture(nil,'OVERLAY')
+CastBar.spark:SetBlendMode('ADD')
+CastBar.spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
+
+CastBar.bg = CastBar:CreateTexture(nil,'BACKGROUND')
+CastBar.bg:SetTexture('Interface\\TargetingFrame\\UI-StatusBar')
+CastBar.bg:SetAllPoints(true)
+CastBar.bg:SetVertexColor(0,0,0)
+CastBar.bg:SetAlpha(0.5)
+
+CastBar.icon = CastBar:CreateTexture(nil,'OVERLAY')
+
+CastBar.safezone = CastBar:CreateTexture(nil,'OVERLAY')
+CastBar.safezone:SetColorTexture(0.54,0.26,0.26)
+CastBar.safezone:SetPoint('RIGHT',CastBar,'RIGHT',0,0)
+CastBar.safezone:SetAlpha(0)
+
+CastBar.timetext = CastBar:CreateFontString(nil, 'OVERLAY', 'GameFontHighlightLarge')
+CastBar.nametext = CastBar:CreateFontString(nil, 'OVERLAY', 'GameFontHighlightLarge')
+
+CastBar.startTime = 0
+CastBar.endTime = 0
+CastBar.duration = 0
+CastBar.spellName = ''
+CastBar.isCast = false
+CastBar.progress = 0
+
+CastBar:SetScript('OnUpdate',function(self)
+	if (Auras:CharacterCheck(3)) then
+		local db = Auras.db.char
+		local bar = db.elements[3].statusbars.castBar
+		local isMoving = Auras.db.char.elements[3].isMoving
+
+		ToggleProgressBarMove(self,isMoving,bar)
+		
+		if (not db.elements[3].statusbars.defaultBar and CastingBarFrame:IsShown()) then
+			CastingBarFrame:Hide()
+		end
+		
+		if (isMoving) then
+			local name,_,texture = GetSpellInfo(51505)
+
+			self:SetMinMaxValues(0,3)
+			self:SetValue(3)
+			self.nametext:SetText(name)
+			self.timetext:SetText('3.0')
+			
+			if (bar.icon.isEnabled) then
+				self.icon:Show()
+				self.icon:SetTexture(texture)
+			end
+			
+			self.spark:Hide()
+		end
+		
+		if (bar.adjust.isEnabled) then
+			local name,_,texture = GetSpellInfo(51505)
+			
+			self.nametext:SetText(name)
+			self.timetext:SetText('3.0')
+			self:SetAlpha(1)
+			
+			AdjustStatusBarText(self.nametext,bar.nametext)
+			AdjustStatusBarText(self.timetext,bar.timetext)
+			AdjustStatusBarIcon(self,bar,texture)
+			
+			if (bar.adjust.showBG) then
+				self:SetMinMaxValues(0,1)
+				self:SetValue(0.33)
+				AdjustStatusBarSpark(self,bar,0.33)
+			else
+				self:SetMinMaxValues(0,1)
+				self:SetValue(1)
+				AdjustStatusBarSpark(self,bar,1)
+			end
+			
+			self:SetStatusBarTexture(LSM.MediaTable.statusbar[bar.foreground.texture])
+			self:SetStatusBarColor(bar.foreground.color.r,bar.foreground.color.g,bar.foreground.color.b)
+			
+			self.bg:SetTexture(LSM.MediaTable.statusbar[bar.background.texture])
+			self.bg:SetVertexColor(bar.background.color.r,bar.background.color.g,bar.background.color.b,bar.background.color.a)
+
+			self:SetHeight(bar.layout.height)
+			self:SetFrameStrata(bar.layout.strata)
+			self.safezone:SetHeight(bar.layout.height)
+		end
+		
+		if (bar.isEnabled and not isMoving and not bar.adjust.isEnabled) then
+			local spellName = UnitCastingInfo('player')
+			
+			if (self.isCast and (spellName or GetTime() == self.endTime)) then
+				if (bar.timetext.isDisplayText) then
+					local timer,seconds = Auras:parseTime(self.endTime - GetTime(),true)
+					local diff = 0
+					if (self.isChannel) then
+						diff = seconds
+					else
+						diff = self.duration - seconds
+					end
+
+					self:SetValue(diff)
+					self.timetext:SetText(timer)
+				else
+					self.timetext:SetText('')
+				end
+				if (bar.spark) then
+					self.progress = self.endTime - GetTime()
+					local position = self:GetWidth() - (self:GetWidth() / (self.duration / self.progress))
+					self.spark:SetPoint('CENTER', self, 'LEFT', position, 0)
+				end
+				
+				if (UnitAffectingCombat('player')) then
+					self:SetAlpha(bar.alphaCombat)
+				else
+					self:SetAlpha(bar.alphaOoC)
+					
+				end
+				self.bg:SetAlpha(bar.background.color.a)
+			else
+				self.isCast = false
+				self:SetAlpha(0)
+			end
+		elseif (not bar.isEnabled and not isMoving and not bar.adjust.isEnabled) then
+			self:SetAlpha(0)
+		end
+	else
+		self:SetAlpha(0)
+	end
+end)
+
+CastBar:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
+	end
+end)
+
+CastBar:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].statusbars.castBar)
+	end
+end)
+
+SSA.CastBarRes = CastBar
+_G['SSA_CastBarRes'] = CastBar
+
+local ManaBar = CreateFrame('StatusBar','ManaBar',AuraGroup)
+
+ManaBar:SetStatusBarTexture([[Interface\addons\ShamanAuras\media\statusbar\fifths]])
+ManaBar:GetStatusBarTexture():SetHorizTile(false)
+ManaBar:GetStatusBarTexture():SetVertTile(false)
+ManaBar:Show()
+ManaBar:SetAlpha(0)
+
+ManaBar.bg = ManaBar:CreateTexture(nil,'BACKGROUND')
+ManaBar.bg:SetAllPoints(true)
+
+ManaBar.text = ManaBar:CreateFontString(nil, 'HIGH', 'GameFontHighlightLarge')
+ManaBar.text:SetPoint('CENTER',ManaBar,'CENTER',0,0)
+ManaBar.text:SetTextColor(1,1,1,1)
+_G["SSA_UI"] = SSA
+ManaBar:SetScript('OnUpdate',function(self)	
+	if (Auras:CharacterCheck(3)) then
+		local isCombat = UnitAffectingCombat('player')
+		local power,maxPower = UnitPower('player',19),UnitPowerMax('player',19)
+		
+		local db = Auras.db.char
+		local bar = db.elements[3].statusbars.manaBar
+		local isMoving = db.elements[3].isMoving
+		
+		local _,maxVal = self:GetMinMaxValues()
+		
+		if (maxVal ~= maxPower) then
+			self:SetMinMaxValues(0,maxPower)
+		end
+		
+		ToggleProgressBarMove(self,isMoving,bar)
+		
+		if (isMoving) then
+			self:SetValue(maxPower)
+			self.text:SetText(maxPower)
+		end
+
+		if (bar.adjust.isEnabled) then
+			local tempPower = math.floor(maxPower - (maxPower * 0.75))
+			
+			self:SetAlpha(1)
+			
+			AdjustStatusBarText(self.text,bar.text)
+
+			if (bar.adjust.showBG) then
+				self:SetValue(tempPower)
+				self.text:SetText(Auras:ManaPrecision(bar.precision,false,true))
+			else
+				self:SetMinMaxValues(0,maxPower)
+				self:SetValue(maxPower)
+				self.text:SetText(maxPower)
+			end
+
+			self:SetStatusBarTexture(LSM.MediaTable.statusbar[bar.foreground.texture])
+			self:SetStatusBarColor(bar.foreground.color.r,bar.foreground.color.g,bar.foreground.color.b)
+
+			self.bg:SetTexture(LSM.MediaTable.statusbar[bar.background.texture])
+			self.bg:SetVertexColor(bar.background.color.r,bar.background.color.g,bar.background.color.b,bar.background.color.a)
+
+			self:SetWidth(bar.layout.width)
+			self:SetHeight(bar.layout.height)
+			self:SetPoint(bar.layout.point,AuraGroup,bar.layout.point,bar.layout.x,bar.layout.y)
+			self:SetFrameStrata(bar.layout.strata)
+		end
+			
+		if (bar.isEnabled and not isMoving and not bar.adjust.isEnabled) then
+			
+			if (bar.text.isDisplayText) then
+				self.text:SetText(Auras:ManaPrecision(bar.precision,true))
+			else
+				self.text:SetText('')
+			end
+			
+			self:SetValue(UnitPower('player',19))
+			
+			if (isCombat) then
+				self:SetAlpha(bar.alphaCombat)				
+			elseif (not isCombat and Auras:IsTargetEnemy()) then
+				self:SetAlpha(bar.alphaTar)
+				self.bg:SetAlpha(bar.background.color.a)
+			elseif (not isCombat and not Auras:IsTargetEnemy()) then
+				self:SetAlpha(bar.alphaOoC)
+				self.bg:SetAlpha(bar.background.color.a)
+			end
+		elseif (not bar.isEnabled and not isMoving and not bar.adjust.isEnabled) then
+			self:SetAlpha(0)
+		end
+	else
+		self:SetAlpha(0)
+	end
+end)
+
+ManaBar:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
+	end
+end)
+
+ManaBar:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].statusbars.manaBar)
+	end
+end)
+
+SSA.ManaBar = ManaBar
+_G['SSA_ManaBar'] = ManaBar
 
 local function SetTidalWavesAnimationState(self,isAnimate,isShown,count,color)
 	if (isShown and (not count or count == 0)) then
-		self:SetValue(2);
-		self:SetStatusBarColor(color.r,color.g,color.b);
+		self:SetValue(2)
+		self:SetStatusBarColor(color.r,color.g,color.b)
 		
 		if (isAnimate) then
 			if (not self.Flash:IsPlaying()) then
-				self.Flash:Play();
+				self.Flash:Play()
 			end
 		else
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 			if (self.Flash:IsPlaying()) then
-				self.Flash:Stop();
+				self.Flash:Stop()
 			end
 		end
 	elseif (not isShown or count > 0) then
 		if (self.Flash:IsPlaying()) then
-			self.Flash:Stop();
+			self.Flash:Stop()
 		end
 		if (not isShown) then
-			self:SetAlpha(0);
+			self:SetAlpha(0)
 		else
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		end
-		self:SetStatusBarColor(0.35,0.76,1);
-		self:SetValue(count or 0);
-			
-		--self:SetAlpha(1);
+		self:SetStatusBarColor(0.35,0.76,1)
+		self:SetValue(count or 0)
 	end
-	
-	--[[if (not count) then
-			self:SetValue(2);
-			self:SetStatusBarColor(color.r,color.g,color.b);
-			
-			if (isAnimate) then
-				if (not self.Flash:IsPlaying()) then
-					self.Flash:Play();
-				end
-			else
-				if (self.Flash:IsPlaying()) then
-					self.Flash:Stop();
-				end
-				--self:SetAlpha(1);
-			end
-		else
-			if (self.Flash:IsPlaying()) then
-				self.Flash:Stop();
-			end
-			self:SetStatusBarColor(0.35,0.76,1);
-			self:SetValue(count or 0);
-		end]]
 end
 
 local function ToggleAlpha(self,value)
@@ -1200,176 +1621,198 @@ local function ToggleAlpha(self,value)
 	end
 end
 -- Build Tidal Waves Status Bar
-local TidalWavesBar = CreateFrame("StatusBar","TidalWavesBar",AuraGroup);
-TidalWavesBar:SetStatusBarTexture("Interface\\addons\\ShamanAuras\\media\\statusbar\\halvess");
-TidalWavesBar:GetStatusBarTexture():SetHorizTile(false);
-TidalWavesBar:GetStatusBarTexture():SetVertTile(false);
-TidalWavesBar:SetPoint("CENTER",AuraGroup,"CENTER",0,-202);
---TidalWavesBar:SetWidth(225);
---TidalWavesBar:SetHeight(7);
-TidalWavesBar:SetMinMaxValues(0,2);
-TidalWavesBar:SetFrameStrata("LOW");
-TidalWavesBar:SetStatusBarColor(0.35,0.76,1);
-TidalWavesBar:SetAlpha(0);
-TidalWavesBar:Show();
+local TidalWavesBar = CreateFrame('StatusBar','TidalWavesBar',AuraGroup)
+TidalWavesBar:SetStatusBarTexture([[Interface\addons\ShamanAuras\media\statusbar\Halves]])
+TidalWavesBar:GetStatusBarTexture():SetHorizTile(false)
+TidalWavesBar:GetStatusBarTexture():SetVertTile(false)
+TidalWavesBar:SetMinMaxValues(0,2)
+TidalWavesBar:SetAlpha(0)
+TidalWavesBar:Show()
 
-TidalWavesBar.bg = TidalWavesBar:CreateTexture(nil,"BACKGROUND");
-TidalWavesBar.bg:SetTexture("Interface\\TargetingFrame\\UI-StatusBar");
-TidalWavesBar.bg:SetAllPoints(true);
-TidalWavesBar.bg:SetVertexColor(0,0,0);
-TidalWavesBar.bg:SetAlpha(0.65);
+TidalWavesBar.bg = TidalWavesBar:CreateTexture(nil,'BACKGROUND')
+TidalWavesBar.bg:SetAllPoints(true)
 
 -- Animation for Tidal Waves Status Bar
-TidalWavesBar.Flash = TidalWavesBar:CreateAnimationGroup();
-TidalWavesBar.Flash:SetLooping("BOUNCE");
+TidalWavesBar.Flash = TidalWavesBar:CreateAnimationGroup()
+TidalWavesBar.Flash:SetLooping('BOUNCE')
 
-TidalWavesBar.Flash.fadeIn = TidalWavesBar.Flash:CreateAnimation("Alpha");
-TidalWavesBar.Flash.fadeIn:SetFromAlpha(1);
-TidalWavesBar.Flash.fadeIn:SetToAlpha(0.25);
-TidalWavesBar.Flash.fadeIn:SetDuration(0.33);
+TidalWavesBar.Flash.fadeIn = TidalWavesBar.Flash:CreateAnimation('Alpha')
+TidalWavesBar.Flash.fadeIn:SetFromAlpha(1)
+TidalWavesBar.Flash.fadeIn:SetToAlpha(0.25)
+TidalWavesBar.Flash.fadeIn:SetDuration(0.33)
 
-TidalWavesBar.Flash.fadeOut = TidalWavesBar.Flash:CreateAnimation("Alpha");
-TidalWavesBar.Flash.fadeOut:SetFromAlpha(0.25);
-TidalWavesBar.Flash.fadeOut:SetToAlpha(1);
-TidalWavesBar.Flash.fadeOut:SetDuration(0.33);
-TidalWavesBar.Flash.fadeOut:SetEndDelay(0);
+TidalWavesBar.Flash.fadeOut = TidalWavesBar.Flash:CreateAnimation('Alpha')
+TidalWavesBar.Flash.fadeOut:SetFromAlpha(0.25)
+TidalWavesBar.Flash.fadeOut:SetToAlpha(1)
+TidalWavesBar.Flash.fadeOut:SetDuration(0.33)
+TidalWavesBar.Flash.fadeOut:SetEndDelay(0)
 
-TidalWavesBar:SetScript("OnUpdate",function(self)
+TidalWavesBar.healTime = 0
+
+TidalWavesBar:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local buff,_,_,count,_,duration,expires = UnitBuff('player',Auras:GetSpellName(53390));
-		local color = Auras.db.char.config[3].tidalWavesBar.emptyColor;
-		local isAnimate = Auras.db.char.config[3].tidalWavesBar.animate;
-		local combatDisplay = Auras.db.char.config[3].tidalWavesBar.combatDisplay;
-		local OoCDisplay = Auras.db.char.config[3].tidalWavesBar.OoCDisplay;
-		local remaining,progress
-		
-		if (buff) then
-			remaining = expires - GetTime();
-			progress = 15 - remaining;
-		end
-		--[[local elapsed,isVisible = 0,false;
-		
-		if (healTime > 0) then
-			elapsed = GetTime() - healTime;
-			
-			if (elapsed <= Auras.db.char.triggers[3].TidalWaveTime) then
-				isVisible = true;
-			else
-				healTime = 0;
+		local db = Auras.db.char
+		local bar = db.elements[3].statusbars.tidalWavesBar
+		local isMoving = db.elements[3].isMoving
+
+		if (isMoving or bar.adjust.isEnabled) then
+			if (self.Flash:IsPlaying()) then
+				self.Flash:Stop()
 			end
-		else
-			isVisible = false;
-		end]]
-		--Auras:ToggleAuraVisibility(self,true,'showhide');
-		if (self:GetWidth() ~= Auras.db.char.layout[3].tidalWavesBar.width) then
-			self:SetWidth(Auras.db.char.layout[3].tidalWavesBar.width);
+			self:SetAlpha(1)
 		end
 		
-		if (self:GetHeight() ~= Auras.db.char.layout[3].tidalWavesBar.height) then
-			self:SetHeight(Auras.db.char.layout[3].tidalWavesBar.height);
+		ToggleProgressBarMove(self,isMoving,bar)
+		
+		if (isMoving) then
+			self:SetValue(2)
 		end
 		
-		if (Auras.db.char.aura[3].TidalWavesBar) then
-			if (not Auras.db.char.config[3].isMoving and not Auras.db.char.config[3].tidalWavesBar.isAdjustable) then
-				if (UnitAffectingCombat('player')) then
-					if (Auras:IsTargetFriendly()) then
-						if (combatDisplay == "Never" or combatDisplay == "On Heal Only") then
-							--self:SetAlpha(0);
-							SetTidalWavesAnimationState(self,isAnimate,false,count,color)
+		if (bar.adjust.isEnabled) then
+			if (self.Flash:IsPlaying()) then
+				self.Flash:Stop()
+			end
+			
+			if (bar.adjust.showBG) then
+				self:SetValue(1)
+			else
+				self:SetValue(2)
+			end
+			
+			self:SetStatusBarTexture(LSM.MediaTable.statusbar[bar.foreground.texture])
+			self:SetStatusBarColor(bar.foreground.color.r,bar.foreground.color.g,bar.foreground.color.b)
+			
+			self.bg:SetTexture(LSM.MediaTable.statusbar[bar.background.texture])
+			self.bg:SetVertexColor(bar.background.color.r,bar.background.color.g,bar.background.color.b,bar.background.color.a)
+			
+			self:SetWidth(bar.layout.width)
+			self:SetHeight(bar.layout.height)
+			self:SetPoint(bar.layout.point,AuraGroup,bar.layout.point,bar.layout.x,bar.layout.y)
+			self:SetFrameStrata(bar.layout.strata)
+		end
+		
+		if (bar.isEnabled and not isMoving and not bar.adjust.isEnabled) then
+			local buff,_,_,count,_,duration,expires = UnitBuff('player',Auras:GetSpellName(53390))
+			local remaining,progress
+			
+			if (buff) then
+				remaining = expires - GetTime()
+				progress = 15 - remaining
+			end
+		
+			if (UnitAffectingCombat('player')) then
+				if (Auras:IsTargetFriendly()) then
+					if (bar.combatDisplay == 'Never') then
+						--SSA.DataFrame.text:SetText("1")
+						SetTidalWavesAnimationState(self,bar.animate,false,count,bar.emptyColor)
+					elseif (bar.combatDisplay == 'On Heal Only') then
+						if ((progress or 0) <= bar.OoCTime and (progress or 0) ~= 0) then
+							--SSA.DataFrame.text:SetText("13")
+							SetTidalWavesAnimationState(self,bar.animate,true,count,bar.emptyColor)
 						else
-							--self:SetAlpha(1);
-							SetTidalWavesAnimationState(self,isAnimate,true,count,color)
+							--SSA.DataFrame.text:SetText("14")
+							SetTidalWavesAnimationState(self,bar.animate,false,count,bar.emptyColor)
 						end
 					else
-						if (combatDisplay == "Target Only") then
-							--self:SetAlpha(0);
-							SetTidalWavesAnimationState(self,isAnimate,false,count,color)
+						--SSA.DataFrame.text:SetText("2")
+						SetTidalWavesAnimationState(self,bar.animate,true,count,bar.emptyColor)
+					end
+				else
+					if (bar.combatDisplay == 'Target Only') then
+						--SSA.DataFrame.text:SetText("3")
+						SetTidalWavesAnimationState(self,bar.animate,false,count,bar.emptyColor)
+					else
+						if (bar.combatDisplay == 'Always') then
+							--SSA.DataFrame.text:SetText("4")
+							SetTidalWavesAnimationState(self,bar.animate,true,count,bar.emptyColor)
+						elseif (bar.combatDisplay == 'Never') then
+							--SSA.DataFrame.text:SetText("5")
+							SetTidalWavesAnimationState(self,bar.animate,false,count,bar.emptyColor)
+						elseif (bar.combatDisplay == 'Target & On Heal' or bar.combatDisplay == 'On Heal Only') then
+							if ((progress or 0) <= bar.OoCTime and (progress or 0) ~= 0) then
+								--SSA.DataFrame.text:SetText("6")
+								SetTidalWavesAnimationState(self,bar.animate,true,count,bar.emptyColor)
+							else
+								--SSA.DataFrame.text:SetText("7")
+								SetTidalWavesAnimationState(self,bar.animate,false,count,bar.emptyColor)
+							end
 						else
-							if (combatDisplay == "Always") then
-								--self:SetAlpha(1);
-								SetTidalWavesAnimationState(self,isAnimate,true,count,color)
-							elseif (combatDisplay == "Never") then
-								SetTidalWavesAnimationState(self,isAnimate,false,count,color)
-							elseif (combatDisplay == "Target & On Heal" or combatDisplay == "On Heal Only") then
-								if ((progress or 0) <= Auras.db.char.config[3].tidalWavesBar.OoCTime and (progress or 0) ~= 0) then
-									SetTidalWavesAnimationState(self,isAnimate,true,count,color)
-								else
-									SetTidalWavesAnimationState(self,isAnimate,false,count,color)
-								end
+							--SSA.DataFrame.text:SetText("??")
+						end
+					end
+				end
+			else
+				if (Auras:IsTargetFriendly()) then
+					if (bar.OoCDisplay == 'Never') then
+						--SSA.DataFrame.text:SetText("8")
+						SetTidalWavesAnimationState(self,bar.animate,false,count,bar.emptyColor)
+					elseif (bar.OoCDisplay == 'On Heal Only') then
+						if ((progress or 0) <= bar.OoCTime and (progress or 0) ~= 0) then
+							--SSA.DataFrame.text:SetText("13")
+							SetTidalWavesAnimationState(self,bar.animate,true,count,bar.emptyColor)
+						else
+							--SSA.DataFrame.text:SetText("14")
+							SetTidalWavesAnimationState(self,bar.animate,false,count,bar.emptyColor)
+						end
+					else
+						--SSA.DataFrame.text:SetText("9")
+						SetTidalWavesAnimationState(self,bar.animate,true,count,bar.emptyColor)
+					end
+				else
+					--SSA.DataFrame.text:SetText("15")
+					if (bar.OoCDisplay == 'Target Only') then
+						--SSA.DataFrame.text:SetText("10")
+						SetTidalWavesAnimationState(self,bar.animate,false,count,bar.emptyColor)
+					else
+						--SSA.DataFrame.text:SetText("16")
+						if (bar.OoCDisplay == 'Always') then
+							--SSA.DataFrame.text:SetText("11")
+							SetTidalWavesAnimationState(self,bar.animate,true,count,bar.emptyColor)
+						elseif (bar.OoCDisplay == 'Never') then
+							--SSA.DataFrame.text:SetText("12")
+							SetTidalWavesAnimationState(self,bar.animate,false,count,bar.emptyColor)
+						elseif (bar.OoCDisplay == 'Target & On Heal' or bar.OoCDisplay == 'On Heal Only') then
+							if ((progress or 0) <= bar.OoCTime and (progress or 0) ~= 0) then
+								--SSA.DataFrame.text:SetText("13")
+								SetTidalWavesAnimationState(self,bar.animate,true,count,bar.emptyColor)
+							else
+								--SSA.DataFrame.text:SetText("14")
+								SetTidalWavesAnimationState(self,bar.animate,false,count,bar.emptyColor)
 							end
 						end
 					end
-					--self:SetAlpha(1);
-				else
-					if (Auras:IsTargetFriendly()) then
-						if (OoCDisplay == "Never" or OoCDisplay == "On Heal Only") then
-							--ToggleAlpha(self,0);
-							SetTidalWavesAnimationState(self,isAnimate,false,count,color)
-						else
-							--ToggleAlpha(self,1);
-							SetTidalWavesAnimationState(self,isAnimate,true,count,color)
-						end
-					else
-						if (OoCDisplay == "Target Only") then
-							--print("Target Only");
-							--self:SetAlpha(0);
-							SetTidalWavesAnimationState(self,isAnimate,false,count,color);
-							--ToggleAlpha(self,0);
-						else
-							if (OoCDisplay == "Always") then
-								SetTidalWavesAnimationState(self,isAnimate,true,count,color);
-								--ToggleAlpha(self,1);
-							elseif (OoCDisplay == "Never") then
-								SetTidalWavesAnimationState(self,isAnimate,false,count,color)
-								--ToggleAlpha(self,0);
-							elseif (OoCDisplay == "Target & On Heal" or OoCDisplay == "On Heal Only") then
-								if ((progress or 0) <= Auras.db.char.config[3].tidalWavesBar.OoCTime and (progress or 0) ~= 0) then
-									--ToggleAlpha(self,1);
-									--print("On: "..tostring((progress or 0).." - "..Auras.db.char.triggers[3].TidalWaveTime));
-									SetTidalWavesAnimationState(self,isAnimate,true,count,color)
-								else
-									--ToggleAlpha(self,0);
-									--print("Off: "..tostring((progress or 0).." - "..Auras.db.char.triggers[3].TidalWaveTime));
-									SetTidalWavesAnimationState(self,isAnimate,false,count,color)
-								end
-							end
-						end
-					end	
-				end
-			else
-				if (self.Flash:IsPlaying()) then
-					self.Flash:Stop();
-				end
-				self:SetValue(2);
-				self:SetAlpha(1);
+				end	
 			end
-		else
+		elseif (not bar.isEnabled and not isMoving and not bar.adjust.isEnabled) then
+			
 			if (self.Flash:IsPlaying()) then
-				self.Flash:Stop();
+				self.Flash:Stop()
 			end
-			self:SetAlpha(0);
+			self:SetAlpha(0)
 		end
 	else
 		if (self.Flash:IsPlaying()) then
-			self.Flash:Stop();
+			self.Flash:Stop()
 		end
-		self:SetAlpha(0);
+		self:SetAlpha(0)
 	end
-end);
+end)
 
-TidalWavesBar:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseDown(self,'resGrp',button);
+TidalWavesBar:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
 	end
-end);
+end)
 
-TidalWavesBar:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseUp(self,'resGrp',button);
+TidalWavesBar:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].statusbars.tidalWavesBar)
 	end
-end);
+end)
 
-SSA.TidalWavesBar = TidalWavesBar;
+SSA.TidalWavesBar = TidalWavesBar
+_G["SSA_TidalWavesBar"] = TidalWavesBar
 -- Build Cloudburst Totem Status Bar
 --[[SSA.CloudburstAbsorbBar = CreateFrame("StatusBar","CloudburstAbsorbBar",AuraGroup);
 local CloudburstAbsorbBar = SSA.CloudburstAbsorbBar;
@@ -1423,108 +1866,118 @@ CloudburstAbsorbBar.Timer.text:SetTextColor(1,1,1,1);]]
 		bottom = 4,
 	},
 };]]
-local BackdropCB = SSA.BackdropCB;
+local BackdropCB = SSA.BackdropCB
 local BackdropCBInner = {
-	bgFile    = "Interface\\AddOns\\ShamanAuras\\media\\icons\\totems\\cloudburst_totem", 
-	edgeFile  = "Interface\\AddOns\\ShamanAuras\\media\\textures\\tooltip_border",
+	bgFile    = [[Interface\AddOns\ShamanAuras\media\icons\totems\cloudburst_totem]], 
+	edgeFile  = [[Interface\AddOns\ShamanAuras\media\textures\tooltip_border]],
 	tile      = false,
 	tileSize  = 16, 
 	edgeSize  = 16,
 }
---[[SSA.Cloudburst = CreateFrame("Frame","Cloudburst",AuraGroup);
-_G["SSA_Cloudburst"] = SSA.Cloudburst;
-local Cloudburst = SSA.Cloudburst;]]
+--[[SSA.Cloudburst = CreateFrame('Frame','Cloudburst',AuraGroup)
+_G['SSA_Cloudburst'] = SSA.Cloudburst
+local Cloudburst = SSA.Cloudburst]]
 local absorbed,duration,name
-local Cloudburst = CreateFrame("Frame","Cloudburst",AuraGroup);
-Cloudburst:SetFrameLevel(1);
---Cloudburst:SetWidth(150);
---Cloudburst:SetHeight(32);
-Cloudburst:SetPoint("CENTER",AuraGroup,"CENTER",-200,0);
-Cloudburst:SetBackdrop(BackdropCB);
-Cloudburst:SetBackdropColor(0.15,0.15,0.15,0.6);
-Cloudburst:SetBackdropBorderColor(1,1,1,1);
-Cloudburst:SetAlpha(0);
-Cloudburst:Show();
+local Cloudburst = CreateFrame('Frame','Cloudburst',AuraGroup)
+Cloudburst:SetFrameLevel(1)
+--Cloudburst:SetWidth(150)
+--Cloudburst:SetHeight(32)
+Cloudburst:SetPoint('CENTER',AuraGroup,'CENTER',-200,0)
+Cloudburst:SetBackdrop(BackdropCB)
+Cloudburst:SetBackdropColor(1,1,1,1)
+Cloudburst:SetBackdropBorderColor(1,1,1,1)
+Cloudburst:SetAlpha(0)
+Cloudburst:Show()
 
-Cloudburst.text = Cloudburst:CreateFontString(nil, "MEDIUM", "GameFontHighlightLarge");
-Cloudburst.text:SetPoint("RIGHT",Cloudburst,"RIGHT",-5,-1);
---Cloudburst.text:SetPoint("CENTER",0,0);
-Cloudburst.text:SetTextColor(0,1,0,1);
-Cloudburst.text:SetFont("Fonts\\FRIZQT__.TTF",22,"OUTLINE");
-Cloudburst.text:SetJustifyH("LEFT");
-Cloudburst.text:SetText('0');
---[[Cloudburst.inner = CreateFrame("Frame",nil,Cloudburst);
-Cloudburst.inner:SetPoint("TOPLEFT",Cloudburst,"TOPLEFT",8,-8);
-Cloudburst.inner:SetPoint("BOTTOMRIGHT",Cloudburst,"BOTTOMRIGHT",-8,8);
-Cloudburst.inner:SetBackdrop(BackdropCBInner);
-Cloudburst.inner:SetBackdropColor(0.15,0.8,1,0);
-Cloudburst.inner:SetBackdropBorderColor(1,1,1,1);]]
+Cloudburst.text = Cloudburst:CreateFontString(nil, 'MEDIUM', 'GameFontHighlightLarge')
+Cloudburst.text:SetPoint('RIGHT',Cloudburst,'RIGHT',-5,-1)
+--Cloudburst.text:SetPoint('CENTER',0,0)
+Cloudburst.text:SetTextColor(0,1,0,1)
+Cloudburst.text:SetFont([[Fonts\FRIZQT__.TTF]],22,'OUTLINE')
+Cloudburst.text:SetJustifyH('LEFT')
+Cloudburst.text:SetText('0')
+--[[Cloudburst.inner = CreateFrame('Frame',nil,Cloudburst)
+Cloudburst.inner:SetPoint('TOPLEFT',Cloudburst,'TOPLEFT',8,-8)
+Cloudburst.inner:SetPoint('BOTTOMRIGHT',Cloudburst,'BOTTOMRIGHT',-8,8)
+Cloudburst.inner:SetBackdrop(BackdropCBInner)
+Cloudburst.inner:SetBackdropColor(0.15,0.8,1,0)
+Cloudburst.inner:SetBackdropBorderColor(1,1,1,1)]]
 
-Cloudburst.icon = CreateFrame("Frame",nil,Cloudburst);
-Cloudburst:SetFrameLevel(2);
-Cloudburst.icon:SetWidth(40);
-Cloudburst.icon:SetHeight(40);
-Cloudburst.icon:SetPoint("LEFT",Cloudburst,"LEFT",0,0);
-Cloudburst.icon:SetBackdrop(BackdropCB);
-Cloudburst.icon:SetBackdropColor(1,1,1,0);
-Cloudburst.icon:SetBackdropBorderColor(1,1,1,1);
+Cloudburst.icon = CreateFrame('Frame',nil,Cloudburst)
+Cloudburst:SetFrameLevel(2)
+Cloudburst.icon:SetWidth(40)
+Cloudburst.icon:SetHeight(40)
+Cloudburst.icon:SetPoint('LEFT',Cloudburst,'LEFT',0,0)
+Cloudburst.icon:SetBackdrop(BackdropCB)
+Cloudburst.icon:SetBackdropColor(1,1,1,0)
+Cloudburst.icon:SetBackdropBorderColor(1,1,1,1)
 
-Cloudburst.icon.texture = Cloudburst.icon:CreateTexture(nil,"BACKGROUND");
-Cloudburst.icon.texture:SetTexture("Interface\\addons\\ShamanAuras\\Media\\icons\\totems\\cloudburst_totem_bevel");
-Cloudburst.icon.texture:SetAllPoints(Cloudburst.icon);
+Cloudburst.icon.texture = Cloudburst.icon:CreateTexture(nil,'BACKGROUND')
+Cloudburst.icon.texture:SetTexture([[Interface\addons\ShamanAuras\Media\icons\totems\cloudburst_totem_bevel]])
+Cloudburst.icon.texture:SetAllPoints(Cloudburst.icon)
 
-Cloudburst.icon.text = Cloudburst.icon:CreateFontString(nil, "MEDIUM", "GameFontHighlightLarge");
-Cloudburst.icon.text:SetAllPoints(Cloudburst.icon);
-Cloudburst.icon.text:SetPoint("CENTER",0,0);
-Cloudburst.icon.text:SetTextColor(1,1,0,1);
-Cloudburst.icon.text:SetFont("Interface\\addons\\ShamanAuras\\media\\fonts\\PT_Sans_Narrow.TTF", 16,"OUTLINE");
+Cloudburst.icon.text = Cloudburst.icon:CreateFontString(nil, 'MEDIUM', 'GameFontHighlightLarge')
+Cloudburst.icon.text:SetAllPoints(Cloudburst.icon)
+Cloudburst.icon.text:SetPoint('CENTER',0,0)
+Cloudburst.icon.text:SetTextColor(1,1,0,1)
+Cloudburst.icon.text:SetFont([[Interface\addons\ShamanAuras\media\fonts\PT_Sans_Narrow.TTF]], 20,'OUTLINE')
 	
-Cloudburst:SetScript("OnUpdate",function(self,elapsed)
+Cloudburst:SetScript('OnUpdate',function(self,elapsed)
 	if (Auras:CharacterCheck(3)) then
-		_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,absorbed = UnitBuff('player',Auras:GetSpellName(157153));
+		local db = Auras.db.char
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		local _,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,absorbed = UnitBuff('player',Auras:GetSpellName(157153))
 	
+		Auras:ToggleAuraVisibility(self,true,'showhide')
+		ToggleFrameMove(self,db.elements[3].isMoving)
+		
 		if (not self:IsShown()) then
-			self:Show();
+			self:Show()
 		end
 		
 		for i=1,5 do
-			_,name = GetTotemInfo(i);
-			if (name == "Cloudburst Totem") then
-				duration = GetTotemTimeLeft(i);
+			_,name = GetTotemInfo(i)
+			if (name == 'Cloudburst Totem') then
+				duration = GetTotemTimeLeft(i)
 			end
 		end
 
-		if (not Auras.db.char.config[3].isMoving) then
-			if (absorbed and Auras.db.char.aura[3].CloudburstAbsorbBar) then
-				self.icon.text:SetText(duration);
-				self:SetAlpha(1);
-				self.text:SetText(absorbed);
+		if (not db.elements[3].isMoving) then
+			if (not self:GetBackdrop()) then
+				self:SetBackdrop(BackdropCB)
+			end
+			
+			if (absorbed and db.elements[3].frames.Cloudburst.isEnabled) then
+				self.icon.text:SetText(duration)
+				self:SetAlpha(1)
+				self.text:SetText(absorbed)
 			else
-				self:SetAlpha(0);
-				self.text:SetText('0');
-				SSA.CloudburstTotemBar:Hide();
+				self:SetAlpha(0)
+				self.text:SetText('0')
+				SSA.CloudburstTotemBar:Hide()
 			end
 		else
-			self:SetAlpha(1);
+			self:SetAlpha(1)
 		end
+		
+		
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
-Cloudburst:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseDown(self,'resGrp',button);
+Cloudburst:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
 	end
-end);
+end)
 
-Cloudburst:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseUp(self,'resGrp',button);
+Cloudburst:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].frames[self:GetName()])
 	end
-end);
+end)
 
 _G["SSA_Cloudburst"] = Cloudburst;
 SSA.Cloudburst = Cloudburst;
@@ -1540,217 +1993,228 @@ Cloudburst.icon.inner:SetBackdropBorderColor(1,1,1,1);]]
 --local EarthenShieldTotemBar = SSA.EarthenShieldTotemBar;
 
 
-local EarthenShieldTotemBar = CreateFrame("StatusBar","EarthenShieldTotemBar",AuraGroup);
-_G["SSA_EarthenShield"] = EarthenShieldTotemBar;
-EarthenShieldTotemBar:SetStatusBarTexture("Interface\\addons\\ShamanAuras\\media\\statusbar\\fifths");
-EarthenShieldTotemBar:GetStatusBarTexture():SetHorizTile(false);
-EarthenShieldTotemBar:GetStatusBarTexture():SetVertTile(false);
-EarthenShieldTotemBar:SetPoint("CENTER",AuraGroup,"CENTER",0,-139);
---EarthenShieldTotemBar:SetWidth(260);
---EarthenShieldTotemBar:SetHeight(18);
-EarthenShieldTotemBar:SetFrameStrata("LOW");
-EarthenShieldTotemBar:SetStatusBarColor(0.91,0.41,1);
-EarthenShieldTotemBar:Show();
-EarthenShieldTotemBar:SetAlpha(0);
+local EarthenShieldTotemBar = CreateFrame('StatusBar','EarthenShieldTotemBar',AuraGroup)
+_G['SSA_EarthenShield'] = EarthenShieldTotemBar
+EarthenShieldTotemBar:SetStatusBarTexture([[Interface\addons\ShamanAuras\media\statusbar\fifths]])
+EarthenShieldTotemBar:GetStatusBarTexture():SetHorizTile(false)
+EarthenShieldTotemBar:GetStatusBarTexture():SetVertTile(false)
+EarthenShieldTotemBar:Show()
+EarthenShieldTotemBar:SetAlpha(0)
 
-EarthenShieldTotemBar.bg = EarthenShieldTotemBar:CreateTexture(nil,"BACKGROUND");
-EarthenShieldTotemBar.bg:SetTexture("Interface\\TargetingFrame\\UI-StatusBar");
-EarthenShieldTotemBar.bg:SetAllPoints(true);
-EarthenShieldTotemBar.bg:SetVertexColor(0,0,0);
-EarthenShieldTotemBar.bg:SetAlpha(0.5);
+EarthenShieldTotemBar.bg = EarthenShieldTotemBar:CreateTexture(nil,'BACKGROUND')
+EarthenShieldTotemBar.bg:SetAllPoints(true)
 
-EarthenShieldTotemBar.text = EarthenShieldTotemBar:CreateFontString(nil, "HIGH", "GameFontHighlightLarge");
-EarthenShieldTotemBar.text:SetPoint("CENTER",EarthenShieldTotemBar,"RIGHT",-25,0);
-EarthenShieldTotemBar.text:SetTextColor(1,1,1,1);
+EarthenShieldTotemBar.Timer = CreateFrame('StatusBar','EarthenShieldTimer',EarthenShieldTotemBar)
+EarthenShieldTotemBar.Timer:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
+EarthenShieldTotemBar.Timer:GetStatusBarTexture():SetHorizTile(false)
+EarthenShieldTotemBar.Timer:GetStatusBarTexture():SetVertTile(false)
+EarthenShieldTotemBar.Timer:SetMinMaxValues(0,15)
+EarthenShieldTotemBar.Timer:Show()
+--EarthenShieldTotemBar.Timer:SetAlpha(0)
 
--- Build Earthen Shield Timer Status Bar
-EarthenShieldTotemBar.Timer = CreateFrame("StatusBar","EarthenShieldTimer",EarthenShieldTotemBar);
-EarthenShieldTotemBar.Timer:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
-EarthenShieldTotemBar.Timer:GetStatusBarTexture():SetHorizTile(false);
-EarthenShieldTotemBar.Timer:GetStatusBarTexture():SetVertTile(false);
---EarthenShieldTotemBar.Timer:SetWidth(EarthenShieldTotemBar:GetWidth());
---EarthenShieldTotemBar.Timer:SetHeight(EarthenShieldTotemBar:GetHeight());
-EarthenShieldTotemBar.Timer:SetFrameStrata("MEDIUM");
-EarthenShieldTotemBar.Timer:SetPoint("CENTER",EarthenShieldTotemBar,"CENTER",0,0);
-EarthenShieldTotemBar.Timer:SetStatusBarColor(1,1,1,0.35);
-EarthenShieldTotemBar.Timer:SetMinMaxValues(0,15);
-EarthenShieldTotemBar.Timer:Show();
-EarthenShieldTotemBar.Timer:SetAlpha(0);
+EarthenShieldTotemBar.healthtext = EarthenShieldTotemBar.Timer:CreateFontString(nil, 'HIGH', 'GameFontHighlightLarge')
+EarthenShieldTotemBar.timetext = EarthenShieldTotemBar.Timer:CreateFontString(nil, 'HIGH', 'GameFontHighlightLarge')
 
-EarthenShieldTotemBar.Timer.text = EarthenShieldTotemBar.Timer:CreateFontString(nil, "HIGH", "GameFontHighlightLarge");
-EarthenShieldTotemBar.Timer.text:SetPoint("CENTER",EarthenShieldTotemBar.Timer,"LEFT",25,0);
---EarthenShieldTotemBar.Timer.text:SetFont("Interface\\addons\\ShamanAuras\\Media\\fonts\\Continuum_Medium.ttf", 12);
-EarthenShieldTotemBar.Timer.text:SetTextColor(1,1,1,1);
+EarthenShieldTotemBar.expires = 0
+EarthenShieldTotemBar.GUID = 0
+EarthenShieldTotemBar.isSummoned = false
 
-EarthenShieldTotemBar:SetScript("OnUpdate",function(self,elapsed)
+EarthenShieldTotemBar:SetScript('OnUpdate',function(self,elapsed)
 	if (Auras:CharacterCheck(3)) then
-		local timer,seconds = Auras:parseTime(((EST_Expires or 0) - GetTime()),true);
-		local _,font = self.text:GetFont();
+		local db = Auras.db.char
+		local bar = db.elements[3].statusbars.earthenShieldBar
+		local isMoving = db.elements[3].isMoving
+		local maxHealth = UnitHealthMax('player')
 		
-		--Auras:ToggleAuraVisibility(self,true,'showhide');
+		local timer,seconds = Auras:parseTime(((self.expires or 0) - GetTime()),true)
 		
-		if (self:GetWidth() ~= Auras.db.char.layout[3].earthenShieldBar.width) then
-			self:SetWidth(Auras.db.char.layout[3].earthenShieldBar.width);
-			self.Timer:SetWidth(self:GetWidth());
+		local _,maxVal = self:GetMinMaxValues()
+		
+		if (maxVal ~= maxHealth) then
+			self:SetMinMaxValues(0,maxHealth)
 		end
 		
-		if (self:GetHeight() ~= Auras.db.char.layout[3].earthenShieldBar.height) then
-			self:SetHeight(Auras.db.char.layout[3].earthenShieldBar.height);
-			self.Timer:SetHeight(self:GetHeight());
+		ToggleProgressBarMove(self,isMoving,bar)
+		
+		if (isMoving) then
+			self:SetValue(maxHealth)
+			self.healthtext:SetText('100%')
+			self.timetext:SetText('15.0')
+			self.Timer:SetValue(15)
 		end
 		
-		if (font ~= Auras.db.char.layout[3].earthenShieldBar.textSize) then
-			self.text:SetFont("Interface\\addons\\ShamanAuras\\Media\\fonts\\Continuum_Medium.ttf", Auras.db.char.layout[3].earthenShieldBar.textSize);
-			self.Timer.text:SetFont("Interface\\addons\\ShamanAuras\\Media\\fonts\\Continuum_Medium.ttf", Auras.db.char.layout[3].earthenShieldBar.textSize);
-		end
-		
-		if (not Auras.db.char.config[3].earthenShieldBar.isAdjustable and not Auras.db.char.config[3].isMoving) then				
-			if ((seconds or 0) > 0.1) then
-				self.Timer:SetValue(seconds);
-				if (UnitAffectingCombat('player')) then
-					self:SetAlpha(Auras.db.char.config[3].earthenShieldBar.alphaCombat);
-				else
-					self:SetAlpha(Auras.db.char.config[3].earthenShieldBar.alphaOoC);
-				end
-				if (Auras.db.char.config[3].earthenShieldBar.isDisplayTimerText) then
-					self.Timer.text:SetText(timer);
-				else
-					self.Timer.text:SetText('');
-				end
+		if (bar.adjust.isEnabled) then
+			self.healthtext:SetText('75%')
+			self.timetext:SetText('5.0')
+			
+			self:SetAlpha(1)
+			
+			AdjustStatusBarText(self.healthtext,bar.healthtext)
+			AdjustStatusBarText(self.timetext,bar.timetext)
+			
+			self:SetMinMaxValues(0,1)
+			self:SetValue(0.75)
+			self.Timer:SetValue(5)
+			
+			if (bar.adjust.showBG) then
+				self:SetValue(maxHealth - (maxHealth * 0.75))
+				self.healthtext:SetText("25%")
 			else
-				self:SetAlpha(0);
-				self.Timer:SetValue(0);
-				self.Timer.text:SetText('');
+				self:SetValue(maxHealth)
+				self.healthtext:SetText("100%")
 			end
-		elseif (Auras.db.char.config[3].earthenShieldBar.isAdjustable or Auras.db.char.config[3].isMoving) then
-			--self:SetAlpha(1);
-			--self.Timer:SetAlpha(1);
-			--self.bg:SetAlpha(1);
-			if (Auras.db.char.config[3].earthenShieldBar.alphaCombat == 0) then
-				self:SetAlpha(1);
-				self.Timer:SetAlpha(1);
+
+			if (bar.adjust.showTimer) then
+				self.Timer:SetStatusBarTexture(LSM.MediaTable.statusbar[bar.timerBar.texture])
 			else
-				self:SetAlpha(Auras.db.char.config[3].earthenShieldBar.alphaCombat);
-				self.Timer:SetAlpha(Auras.db.char.config[3].earthenShieldBar.alphaCombat);
-			end
-			if (Auras.db.char.config[3].earthenShieldBar.isDisplayHealthText) then
-				self.text:SetText("100%");
-			else
-				self.text:SetText('');
+				self.Timer:SetStatusBarTexture(nil)
 			end
 			
-			if (Auras.db.char.config[3].earthenShieldBar.isDisplayTimerText) then
-				self.Timer.text:SetText("5");
-				self.Timer:SetValue(5);
+			self:SetStatusBarTexture(LSM.MediaTable.statusbar[bar.foreground.texture])
+			self:SetStatusBarColor(bar.foreground.color.r,bar.foreground.color.g,bar.foreground.color.b)
+			
+			self.Timer:SetStatusBarColor(bar.timerBar.color.r,bar.timerBar.color.g,bar.timerBar.color.b,bar.timerBar.color.a)
+			
+			self.bg:SetTexture(LSM.MediaTable.statusbar[bar.background.texture])
+			self.bg:SetVertexColor(bar.background.color.r,bar.background.color.g,bar.background.color.b,bar.background.color.a)
+			
+			self:SetWidth(bar.layout.width)
+			self:SetHeight(bar.layout.height)
+			self:SetPoint(bar.layout.point,AuraGroup,bar.layout.point,bar.layout.x,bar.layout.y)
+			self:SetFrameStrata(bar.layout.strata)
+			
+			self.Timer:SetWidth(bar.layout.width)
+			self.Timer:SetHeight(bar.layout.height)
+			self.Timer:SetFrameStrata(bar.layout.strata)
+			self.Timer:SetAlpha(1)
+		end
+		
+		if (bar.isEnabled and not bar.adjust.isEnabled and not isMoving) then		
+			
+			if (self.GUID ~= 0) then
+				self.Timer:SetAlpha(1)
+				self.Timer:SetValue(seconds)
+				if (UnitAffectingCombat('player')) then
+					self:SetAlpha(bar.alphaCombat)
+				else
+					self:SetAlpha(bar.alphaOoC)
+				end
+				if (bar.timetext.isDisplayText) then
+					self.timetext:SetText(timer)
+				else
+					self.timetext:SetText('')
+				end
 			else
-				self.Timer.text:SetText('');
+				self:SetAlpha(0)
+				self.Timer:SetValue(0)
+				self.timetext:SetText('')
 			end
+			
+		elseif (not bar.isEnabled and not isMoving and not bar.adjust.isEnabled) then
+			self:SetAlpha(0)
 		end
 	else
-		self:SetAlpha(0);
+		self:SetAlpha(0)
 	end
-end);
+end)
 
-EarthenShieldTotemBar:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseDown(self,'resGrp',button);
+EarthenShieldTotemBar:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
 	end
-end);
+end)
 
-EarthenShieldTotemBar:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseUp(self,'resGrp',button);
+EarthenShieldTotemBar:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].statusbars.earthenShieldBar)
 	end
-end);
---[[EarthenShieldTotemBar:SetScript("OnUpdate",function(self)
-	local buff,_,_,count,_,_,expires = UnitBuff('player',Auras:GetSpellName(210714));
+end)
 
-	if (buff) then
-		local timer,seconds = Auras:parseTime(expires - GetTime(),false);
-		
-		self:SetAlpha(1);
-		self:SetValue(count);
-		self.Timer:SetValue(seconds);
-		self.Timer.text:SetText(string.format("%.1f",seconds));
-	else
-		self:SetAlpha(0);
-	end
-end)]]
-
-
-SSA.EarthenShieldTotemBar = EarthenShieldTotemBar;
-
---[[local function UpdateEarthenShield()
-	local progress = ((Auras.db.char.info.totems.eShield.dmg or 0) / Auras.db.char.info.totems.eShield.hp * 100);
-	progress = 100 - progress;
-	local remains = (Auras.db.char.info.totems.eShield.hp - (Auras.db.char.info.totems.eShield.dmg or 0));
-	
-	if (remains > 0) then
-		SSA.EarthenShieldTotemBar:SetValue(remains);
-		SSA.EarthenShieldTotemBar.text:SetText(tostring(math.ceil(progress)).."%");
-	else
-		SSA.EarthenShieldTotemBar:SetAlpha(0);
-		--SSA.EarthenShieldTotemBar.Timer:Hide();
-	end
-end]]
+SSA.EarthenShieldTotemBar = EarthenShieldTotemBar
 
 -- Build Buff Timer Status Bar Group
-SSA.BuffTimerBarGrpRes = CreateFrame("Frame","BuffTimerBarGrpRes",AuraGroup);
-local BuffTimerBarGrp = SSA.BuffTimerBarGrpRes;
-BuffTimerBarGrp:SetWidth(131);
-BuffTimerBarGrp:SetHeight(180);
-BuffTimerBarGrp:SetBackdrop(nil);
-BuffTimerBarGrp:Show();
-_G["SSA_BuffTimerGrpRes"] = BuffTimerBarGrp;
+SSA.BuffTimerBarGrpRes = CreateFrame('Frame','BuffTimerBarGrpRes',AuraGroup)
+local BuffTimerBarGrp = SSA.BuffTimerBarGrpRes
+BuffTimerBarGrp:SetWidth(131)
+BuffTimerBarGrp:SetHeight(180)
+BuffTimerBarGrp:SetBackdrop(nil)
+BuffTimerBarGrp:Show()
+_G['SSA_BuffTimerGrpRes'] = BuffTimerBarGrp
 
 -- Build Main Timer Status Bar Group
-SSA.MainTimerBarGrpRes = CreateFrame("Frame","MainTimerBarGrpRes",AuraGroup);
-local MainTimerBarGrp = SSA.MainTimerBarGrpRes;
-MainTimerBarGrp:SetWidth(105);
-MainTimerBarGrp:SetHeight(180);
-MainTimerBarGrp:SetBackdrop(nil);
-MainTimerBarGrp:Show();
-_G["SSA_MainTimerBarGrpRes"] = MainTimerBarGrp;
+SSA.MainTimerBarGrpRes = CreateFrame('Frame','MainTimerBarGrpRes',AuraGroup)
+local MainTimerBarGrp = SSA.MainTimerBarGrpRes
+MainTimerBarGrp:SetWidth(105)
+MainTimerBarGrp:SetHeight(180)
+MainTimerBarGrp:SetBackdrop(nil)
+MainTimerBarGrp:Show()
+_G['SSA_MainTimerBarGrpRes'] = MainTimerBarGrp
 
 -- Build Utility Timer Status Bar Group
-SSA.UtilTimerBarGrpRes = CreateFrame("Frame","UtilTimerBarGrpRes",AuraGroup);
-local UtilTimerBarGrp = SSA.UtilTimerBarGrpRes;
-UtilTimerBarGrp:SetWidth(47);
-UtilTimerBarGrp:SetHeight(180);
-UtilTimerBarGrp:SetBackdrop(nil);
-UtilTimerBarGrp:Show();
-_G["SSA_UtilTimerBarGrpRes"] = UtilTimerBarGrp;
+SSA.UtilTimerBarGrpRes = CreateFrame('Frame','UtilTimerBarGrpRes',AuraGroup)
+local UtilTimerBarGrp = SSA.UtilTimerBarGrpRes
+UtilTimerBarGrp:SetWidth(47)
+UtilTimerBarGrp:SetHeight(180)
+UtilTimerBarGrp:SetBackdrop(nil)
+UtilTimerBarGrp:Show()
+_G['SSA_UtilTimerBarGrpRes'] = UtilTimerBarGrp
 
 -- Build Restoration Vertical Status Bars
-SSA.AncestralGuidanceBarRes = CreateFrame("StatusBar","AncestralGuidanceBarRes",BuffTimerBarGrp);
-SSA.AncestralProtectionTotemBar = CreateFrame("StatusBar","AncestralProtectionTotemBar",MainTimerBarGrp);
-SSA.AscendanceBarRes = CreateFrame("StatusBar","AscendanceBarRes",BuffTimerBarGrp);
-SSA.AstralShiftBarRes = CreateFrame("StatusBar","AstralShiftBarRes",BuffTimerBarGrp);
-SSA.BloodlustBarRes = CreateFrame("StatusBar","BloodlustBarRes",BuffTimerBarGrp);
-SSA.CloudburstTotemBar = CreateFrame("StatusBar","CloudburstTotemBar",MainTimerBarGrp);
-SSA.EarthgrabTotemBarRes = CreateFrame("StatusBar","EarthgrabTotemBarRes",UtilTimerBarGrp);
-SSA.HealingStreamTotemOneBar = CreateFrame("StatusBar","HealingStreamTotemOneBar",MainTimerBarGrp);
-SSA.HealingStreamTotemTwoBar = CreateFrame("StatusBar","HealingStreamTotemTwoBar",MainTimerBarGrp);
-SSA.HealingTideTotemBar = CreateFrame("StatusBar","HealingTideTotemBar",MainTimerBarGrp);
-SSA.HeroismBarRes = CreateFrame("StatusBar","HeroismBarRes",BuffTimerBarGrp);
-SSA.HexBarRes = CreateFrame("StatusBar","HexBarRes",UtilTimerBarGrp);
-SSA.SpiritLinkTotemBar = CreateFrame("StatusBar","SpiritLinkTotemBar",MainTimerBarGrp);
-SSA.SpiritwalkersGraceBar = CreateFrame("StatusBar","SpiritwalkersGraceBar",BuffTimerBarGrp);
-SSA.TimeWarpBarRes = CreateFrame("StatusBar","TimeWarpBarRes",BuffTimerBarGrp);
-SSA.UnleashLifeBar = CreateFrame("StatusBar","UnleashLifeBar",BuffTimerBarGrp);
-SSA.VoodooTotemBarRes = CreateFrame("StatusBar","VoodooTotemBarRes",UtilTimerBarGrp);
-SSA.WindRushTotemBarRes = CreateFrame("StatusBar","WindRushTotemBarRes",UtilTimerBarGrp);
+SSA.AncestralGuidanceBarRes = CreateFrame('StatusBar','AncestralGuidanceBarRes',BuffTimerBarGrp)
+SSA.AncestralProtectionTotemBar = CreateFrame('StatusBar','AncestralProtectionTotemBar',MainTimerBarGrp)
+SSA.AscendanceBarRes = CreateFrame('StatusBar','AscendanceBarRes',BuffTimerBarGrp)
+SSA.AstralShiftBarRes = CreateFrame('StatusBar','AstralShiftBarRes',BuffTimerBarGrp)
+SSA.BloodlustBarRes = CreateFrame('StatusBar','BloodlustBarRes',BuffTimerBarGrp)
+SSA.CloudburstTotemBar = CreateFrame('StatusBar','CloudburstTotemBar',MainTimerBarGrp)
+SSA.EarthgrabTotemBarRes = CreateFrame('StatusBar','EarthgrabTotemBarRes',UtilTimerBarGrp)
+SSA.HealingStreamTotemOneBar = CreateFrame('StatusBar','HealingStreamTotemOneBar',MainTimerBarGrp)
+SSA.HealingStreamTotemTwoBar = CreateFrame('StatusBar','HealingStreamTotemTwoBar',MainTimerBarGrp)
+SSA.HealingTideTotemBar = CreateFrame('StatusBar','HealingTideTotemBar',MainTimerBarGrp)
+SSA.HeroismBarRes = CreateFrame('StatusBar','HeroismBarRes',BuffTimerBarGrp)
+SSA.HexBarRes = CreateFrame('StatusBar','HexBarRes',UtilTimerBarGrp)
+SSA.SpiritLinkTotemBar = CreateFrame('StatusBar','SpiritLinkTotemBar',MainTimerBarGrp)
+SSA.SpiritwalkersGraceBar = CreateFrame('StatusBar','SpiritwalkersGraceBar',BuffTimerBarGrp)
+SSA.TimeWarpBarRes = CreateFrame('StatusBar','TimeWarpBarRes',BuffTimerBarGrp)
+SSA.UnleashLifeBar = CreateFrame('StatusBar','UnleashLifeBar',BuffTimerBarGrp)
+SSA.VoodooTotemBarRes = CreateFrame('StatusBar','VoodooTotemBarRes',UtilTimerBarGrp)
+SSA.WindRushTotemBarRes = CreateFrame('StatusBar','WindRushTotemBarRes',UtilTimerBarGrp)
 
 local buffIDs = {
-	[108281] = SSA.AncestralGuidanceBarRes,
-	[114052] = SSA.AscendanceBarRes,
-	[108271] = SSA.AstralShiftBarRes,
-	[2825]   = SSA.BloodlustBarRes,
-	[32182]  = SSA.HeroismBarRes,
-	[79206]  = SSA.SpiritwalkersGraceBar,
-	[80353]  = SSA.TimeWarBarRes,
-	[73685]  = SSA.UnleashLifeBar,
+	[108281] = {
+		[1] = SSA.AncestralGuidanceBarRes,
+		[2] = 'ancestralGuidance',
+	},
+	[114052] = {
+		[1] = SSA.AscendanceBarRes,
+		[2] = 'ascendance',
+	},
+	[108271] = {
+		[1] = SSA.AstralShiftBarRes,
+		[2] = 'astralShift',
+	},
+	[2825] = {
+		[1] = SSA.BloodlustBarRes,
+		[2] = 'bloodlust',
+	},
+	[32182]  = {
+		[1] = SSA.HeroismBarRes,
+		[2] = 'heroism',
+	},
+	[79206] = {
+		[1] = SSA.SpiritwalkersGraceBar,
+		[2] = 'spiritwalkersGrace',
+	},
+	[80353] = {
+		[1] = SSA.TimeWarpBarRes,
+		[2] = 'timeWarp',
+	},
+	[73685] = {
+		[1] = SSA.UnleashLifeBar,
+		[2] = 'unleashLife',
+	},
 }
+
 local mainIDs = {
 	["Ancestral Protection Totem"] = {
 		[1] = false,
@@ -1826,575 +2290,488 @@ local xOffset = {
 	[9] = -193,
 }
 
-BuffTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
+BuffTimerBarGrp:SetScript('OnUpdate',function(self,event,...)
 	if (Auras:CharacterCheck(3)) then
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		local db = Auras.db.char
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
-		local xPosCtr = 1;
+		local xPosCtr = 1
 		
 		for i=1,50 do
-			local buff,_,_,_,_,duration,expires,caster,_,_,spellID = UnitBuff('player',i);
+			local buff,_,_,_,_,duration,expires,caster,_,_,spellID = UnitBuff('player',i)
 
 			if (buff) then
 				if (buffIDs[spellID]) then
-					if (Auras.db.char.aura[3][buffIDs[spellID]:GetName()]) then
-						local timer,seconds = Auras:parseTime(expires - GetTime(),true);
+					--if (db.auras[3][buffIDs[spellID]:GetName()]) then
+					if (db.elements[3].timerbars.buff[buffIDs[spellID][2]]) then
+						local timer,seconds = Auras:parseTime(expires - GetTime(),true)
 						
-						buffIDs[spellID]:SetMinMaxValues(0,duration);
-						buffIDs[spellID]:SetValue(seconds);
-						buffIDs[spellID].timetext:SetText(timer);
-						buffIDs[spellID]:SetPoint("LEFT",xPos[xPosCtr],0);
-						buffIDs[spellID]:Show();
+						buffIDs[spellID][1]:SetMinMaxValues(0,duration)
+						buffIDs[spellID][1]:SetValue(seconds)
+						buffIDs[spellID][1].timetext:SetText(timer)
+						buffIDs[spellID][1]:SetPoint('LEFT',xPos[xPosCtr],0)
+						buffIDs[spellID][1]:Show()
 						
-						xPosCtr = xPosCtr + 1;
+						xPosCtr = xPosCtr + 1
 					else
-						buffIDs[spellID]:Hide();
+						buffIDs[spellID][1]:Hide()
 					end
 				end
 			else
-				break;
+				break
 			end
 		end
 		
+		--SSA.DataFrame.text:SetText('')
 		for id in pairs(buffIDs) do
-			local buff = UnitBuff('player',Auras:GetSpellName(id));
-			
-			if (buffIDs[id]:IsShown() and not buff) then
-				buffIDs[id]:Hide();
+			local buff = UnitBuff('player',Auras:GetSpellName(id))
+			--SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."'"..tostring(id).."'\n")
+			if (buffIDs[id][1]:IsShown() and not buff) then
+				buffIDs[id][1]:Hide()
 			end
 		end
 		
-		if (Auras.db.char.config[3].isMoving) then
-			self:SetBackdrop(backdrop);
-			self:SetBackdropColor(0,0,0,0.85);
+		ToggleFrameMove(self,db.elements[3].isMoving)
+		--[[if (db.elements[3].isMoving) then
+			self:SetBackdrop(backdrop)
+			self:SetBackdropColor(0,0,0,0.85)
 		else
-			self:SetBackdrop(nil);
-		end
+			self:SetBackdrop(nil)
+		end]]
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
-BuffTimerBarGrp:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseDown(self,'resGrp',button);
+BuffTimerBarGrp:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
 	end
-end);
+end)
 
-BuffTimerBarGrp:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseUp(self,'resGrp',button);
+BuffTimerBarGrp:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].frames[self:GetName()])
 	end
-end);
+end)
 
-MainTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
+MainTimerBarGrp:SetScript('OnUpdate',function(self,event,...)
 	if (Auras:CharacterCheck(3)) then
+		local db = Auras.db.char
 		local totemCtr = 0
-		local streamCtr = 0;
+		local streamCtr = 0
 		local x
-		local _,_,_,selected = GetTalentInfo(6,3,1);
+		local _,_,_,selected = GetTalentInfo(6,3,1)
 	
-		mainIDs["Ancestral Protection Totem"][3] = false;
-		mainIDs["Cloudburst Totem"][3] = false;
-		mainIDs["Healing Stream Totem One"][3] = false;
-		mainIDs["Healing Stream Totem Two"][3] = false;
-		mainIDs["Healing Tide Totem"][3] = false;
-		mainIDs["Spirit Link Totem"][3] = false;
+		mainIDs['Ancestral Protection Totem'][3] = false
+		mainIDs['Cloudburst Totem'][3] = false
+		mainIDs['Healing Stream Totem One'][3] = false
+		mainIDs['Healing Stream Totem Two'][3] = false
+		mainIDs['Healing Tide Totem'][3] = false
+		mainIDs['Spirit Link Totem'][3] = false
 		
 		
 		
-		Auras:ToggleAuraVisibility(self,true,'showhide');
-		--SSA.DataFrame.text:SetText('');
-		for i=1,5 do
-			local _,name,start,duration = GetTotemInfo(i);
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 
-			if (secondTotemSlot > 0 and i == secondTotemSlot and name ~= "Healing Stream Totem") then
-				secondTotemSlot = 0;
+		for i=1,5 do
+			local _,name,start,duration = GetTotemInfo(i)
+
+			if (secondTotemSlot > 0 and i == secondTotemSlot and name ~= 'Healing Stream Totem') then
+				secondTotemSlot = 0
 			end
 					
 			if (duration > 0) then
-				local timer,seconds = Auras:parseTime((start + duration) - GetTime(),true);
+				local timer,seconds = Auras:parseTime((start + duration) - GetTime(),true)
 
-				if (name == "Healing Stream Totem" and not selected) then
-					name = "Healing Stream Totem One";
-				elseif (name == "Healing Stream Totem" and selected) then
-					streamCtr = streamCtr + 1;
+				if (name == 'Healing Stream Totem' and not selected) then
+					name = 'Healing Stream Totem One'
+				elseif (name == 'Healing Stream Totem' and selected) then
+					streamCtr = streamCtr + 1
 					
 					
 					if (streamCtr == 2) then
-						secondTotemSlot = i;
+						secondTotemSlot = i
 					end
 					
 					if (secondTotemSlot > 0 and i == secondTotemSlot) then
-						name = "Healing Stream Totem Two";
+						name = 'Healing Stream Totem Two'
 					else
-						name = "Healing Stream Totem One";
+						name = 'Healing Stream Totem One'
 					end
 				end
 
+				
 				if (mainIDs[name]) then
-					mainIDs[name][3] = true;
-					if (Auras.db.char.aura[3][gsub(name," ","").."Bar"]) then
-						totemCtr = totemCtr + 1;
+				--if (mainIDs[name]) then
+					mainIDs[name][3] = true
+					--if (db.auras[3][gsub(name,' ','')..'Bar']) then
+					subName = gsub(name," ",'')
+					subName = gsub(subName,"^%a",lower)
+					if (db.elements[3].timerbars.main[subName]) then
+						totemCtr = totemCtr + 1
 						if (seconds > 0.1) then
-							mainIDs[name][2]:SetMinMaxValues(0,duration);
-							mainIDs[name][2]:SetValue(seconds);
-							mainIDs[name][2].timetext:SetText(timer);
-							mainIDs[name][2]:SetPoint("RIGHT",(xPos[totemCtr] * -1),0);
-							mainIDs[name][2]:Show();
-							mainIDs[name][1] = true;
+							mainIDs[name][2]:SetMinMaxValues(0,duration)
+							mainIDs[name][2]:SetValue(seconds)
+							mainIDs[name][2].timetext:SetText(timer)
+							mainIDs[name][2]:SetPoint('RIGHT',(xPos[totemCtr] * -1),0)
+							mainIDs[name][2]:Show()
+							mainIDs[name][1] = true
 						else
-							totemCtr = totemCtr - 1;
-							mainIDs[name][2]:SetValue(0);
-							mainIDs[name][2]:Hide();
-							mainIDs[name][1] = false;
+							totemCtr = totemCtr - 1
+							mainIDs[name][2]:SetValue(0)
+							mainIDs[name][2]:Hide()
+							mainIDs[name][1] = false
 						end
 					else
-						mainIDs[name][2]:Hide();
+						mainIDs[name][2]:Hide()
 					end
 				end
+				--end
 			end
 			
 			if (i==5) then
-				if (not mainIDs["Ancestral Protection Totem"][3] and mainIDs["Ancestral Protection Totem"][1]) then
-					mainIDs["Ancestral Protection Totem"][1] = false;
+				if (not mainIDs['Ancestral Protection Totem'][3] and mainIDs['Ancestral Protection Totem'][1]) then
+					mainIDs['Ancestral Protection Totem'][1] = false
 				end
 				
-				if (not mainIDs["Cloudburst Totem"][3] and mainIDs["Cloudburst Totem"][1]) then
-					mainIDs["Cloudburst Totem"][1] = false;
+				if (not mainIDs['Cloudburst Totem'][3] and mainIDs['Cloudburst Totem'][1]) then
+					mainIDs['Cloudburst Totem'][1] = false
 				end
 				
-				if (not mainIDs["Healing Stream Totem One"][3] and mainIDs["Healing Stream Totem One"][1]) then
-					mainIDs["Healing Stream Totem One"][1] = false;
+				if (not mainIDs['Healing Stream Totem One'][3] and mainIDs['Healing Stream Totem One'][1]) then
+					mainIDs['Healing Stream Totem One'][1] = false
 				end
 				
-				if (not mainIDs["Healing Stream Totem Two"][3] and mainIDs["Healing Stream Totem Two"][1]) then
-					mainIDs["Healing Stream Totem Two"][1] = false;
+				if (not mainIDs['Healing Stream Totem Two'][3] and mainIDs['Healing Stream Totem Two'][1]) then
+					mainIDs['Healing Stream Totem Two'][1] = false
 				end
 				
-				if (not mainIDs["Healing Tide Totem"][3] and mainIDs["Healing Tide Totem"][1]) then
-					mainIDs["Healing Tide Totem"][1] = false;
+				if (not mainIDs['Healing Tide Totem'][3] and mainIDs['Healing Tide Totem'][1]) then
+					mainIDs['Healing Tide Totem'][1] = false
 				end
 				
-				if (not mainIDs["Spirit Link Totem"][3] and mainIDs["Spirit Link Totem"][1]) then
-					mainIDs["Spirit Link Totem"][1] = false;
+				if (not mainIDs['Spirit Link Totem'][3] and mainIDs['Spirit Link Totem'][1]) then
+					mainIDs['Spirit Link Totem'][1] = false
 				end
 			end
 		end
 		
 		for mainObj in pairs(mainIDs) do
-			--SSA_DataFrame.text:SetText(mainObj);
+			--SSA_DataFrame.text:SetText(mainObj)
 			if (not mainIDs[mainObj][1] and mainIDs[mainObj][2]:IsShown()) then
-				mainIDs[mainObj][2]:Hide();
-				mainIDs[mainObj][1] = false;
+				mainIDs[mainObj][2]:Hide()
+				mainIDs[mainObj][1] = false
 			end
 		end
 		
-		mainTotems = totemCtr;
+		mainTotems = totemCtr
 		
-		if (mainTotems == 0 and mainIDs["Cloudburst Totem"][2]:IsShown()) then
-			mainIDs["Cloudburst Totem"][2]:Hide();
-			mainIDs["Cloudburst Totem"][2]:SetValue(0);
+		if (mainTotems == 0 and mainIDs['Cloudburst Totem'][2]:IsShown()) then
+			mainIDs['Cloudburst Totem'][2]:Hide()
+			mainIDs['Cloudburst Totem'][2]:SetValue(0)
 		end
 		
-		--SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."\nNum Totems: "..tostring(mainTotems).."\nMemory Usage: "..GetAddOnMemoryUsage("ShamanAurasDev"));
-		if (Auras.db.char.config[3].isMoving) then
-			self:SetBackdrop(backdrop);
-			self:SetBackdropColor(0,0,0,0.85);
+		--SSA.DataFrame.text:SetText(Auras:CurText('DataFrame')..'\nNum Totems: '..tostring(mainTotems)..'\nMemory Usage: '..GetAddOnMemoryUsage('ShamanAurasDev'))
+		--[[if (db.elements[3].isMoving) then
+			self:SetBackdrop(backdrop)
+			self:SetBackdropColor(0,0,0,0.85)
 		else
-			self:SetBackdrop(nil);
-		end
+			self:SetBackdrop(nil)
+		end]]
+		ToggleFrameMove(self,db.elements[3].isMoving)
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
-MainTimerBarGrp:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseDown(self,'resGrp',button);
+MainTimerBarGrp:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
 	end
-end);
+end)
 
-MainTimerBarGrp:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseUp(self,'resGrp',button);
+MainTimerBarGrp:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].frames[self:GetName()])
 	end
-end);
+end)
 
-UtilTimerBarGrp:SetScript("OnUpdate",function(self,event,...)
+UtilTimerBarGrp:SetScript('OnUpdate',function(self,event,...)
 	if (Auras:CharacterCheck(3)) then
+		local db = Auras.db.char
 		local totemCtr = 0
 		local x
 	
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
-		utilIDs["Earthgrab Totem"][3] = false;
-		utilIDs["Voodoo Totem"][3] = false;
-		utilIDs["Wind Rush Totem"][3] = false;
+		utilIDs['Earthgrab Totem'][3] = false
+		utilIDs['Voodoo Totem'][3] = false
+		utilIDs['Wind Rush Totem'][3] = false
 		
 		for i=1,5 do
-			local _,name,start,duration = GetTotemInfo(i);
+			local _,name,start,duration = GetTotemInfo(i)
 			
 			if ((duration or 0) > 0 and name) then
-				if (Auras.db.char.aura[3][gsub(name," ",'').."BarRes"]) then
-					local timer,seconds = Auras:parseTime((start + duration) - GetTime(),true);
+				subName = gsub(name," ",'')
+				subName = gsub(subName,"^%a",lower)
+				if (db.elements[3].timerbars.util[subName]) then
+				--if (db.auras[3][gsub(name,' ','')..'BarRes']) then
+					local timer,seconds = Auras:parseTime((start + duration) - GetTime(),true)
 					
 					if (utilIDs[name]) then
-						utilIDs[name][3] = true;
-						totemCtr = totemCtr + 1;
+						utilIDs[name][3] = true
+						totemCtr = totemCtr + 1
 						
 						if (mainTotems > 0) then
-							x = xOffset[mainTotems + (totemCtr - 1)];
+							x = xOffset[mainTotems + (totemCtr - 1)]
 						else
-							x = (xPos[totemCtr] * -1);
+							x = (xPos[totemCtr] * -1)
 						end
 					
 						if (seconds > 0.1) then
-							utilIDs[name][2]:SetMinMaxValues(0,duration);
-							utilIDs[name][2]:SetValue(seconds);
-							utilIDs[name][2].timetext:SetText(timer);
-							utilIDs[name][2]:SetPoint("RIGHT",x,0);
-							utilIDs[name][2]:Show();
-							utilIDs[name][1] = true;
+							utilIDs[name][2]:SetMinMaxValues(0,duration)
+							utilIDs[name][2]:SetValue(seconds)
+							utilIDs[name][2].timetext:SetText(timer)
+							utilIDs[name][2]:SetPoint('RIGHT',x,0)
+							utilIDs[name][2]:Show()
+							utilIDs[name][1] = true
 						else
-							totemCtr = totemCtr - 1;
-							utilIDs[name][2]:SetValue(0);
-							utilIDs[name][2]:Hide();
-							utilIDs[name][1] = false;
+							totemCtr = totemCtr - 1
+							utilIDs[name][2]:SetValue(0)
+							utilIDs[name][2]:Hide()
+							utilIDs[name][1] = false
 						end
 					end
 				else
 					if (name and name ~= '' and utilIDs[name]) then
-						utilIDs[name][2]:Hide();
+						utilIDs[name][2]:Hide()
 					end
 				end
 			else
 				--[[if (name and name ~= '') then
-					utilIDs[name][2]:Hide();
+					utilIDs[name][2]:Hide()
 				end]]
 			end
 			
 			if (i==5) then
-				if (not utilIDs["Earthgrab Totem"][3] and utilIDs["Earthgrab Totem"][1]) then
-					utilIDs["Earthgrab Totem"][1] = false;
+				if (not utilIDs['Earthgrab Totem'][3] and utilIDs['Earthgrab Totem'][1]) then
+					utilIDs['Earthgrab Totem'][1] = false
 				end
 				
-				if (not utilIDs["Voodoo Totem"][3] and utilIDs["Voodoo Totem"][1]) then
-					utilIDs["Voodoo Totem"][1] = false;
+				if (not utilIDs['Voodoo Totem'][3] and utilIDs['Voodoo Totem'][1]) then
+					utilIDs['Voodoo Totem'][1] = false
 				end
 				
-				if (not utilIDs["Wind Rush Totem"][3] and utilIDs["Wind Rush Totem"][1]) then
-					utilIDs["Wind Rush Totem"][1] = false;
+				if (not utilIDs['Wind Rush Totem'][3] and utilIDs['Wind Rush Totem'][1]) then
+					utilIDs['Wind Rush Totem'][1] = false
 				end
 			end
 		end
 		
 		for utilObj in pairs(utilIDs) do
 			if (not utilIDs[utilObj][1] and utilIDs[utilObj][2]:IsShown()) then
-				utilIDs[utilObj][2]:Hide();
-				utilIDs[utilObj][1] = false;
+				utilIDs[utilObj][2]:Hide()
+				utilIDs[utilObj][1] = false
 			end
 		end
 		
-		if (Auras.db.char.config[3].isMoving) then
-			self:SetBackdrop(backdrop);
-			self:SetBackdropColor(0,0,0,0.85);
+		--[[if (db.elements[3].isMoving) then
+			self:SetBackdrop(backdrop)
+			self:SetBackdropColor(0,0,0,0.85)
 		else
-			self:SetBackdrop(nil);
-		end
+			self:SetBackdrop(nil)
+		end]]
+		ToggleFrameMove(self,db.elements[3].isMoving)
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
 UtilTimerBarGrp:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseDown(self,'resGrp',button);
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
 	end
-end);
+end)
 
 UtilTimerBarGrp:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseUp(self,'resGrp',button);
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].frames[self:GetName()])
 	end
-end);
+end)
 
 --[[-- Undulation Notification
-SSA.Undulation = CreateFrame("Frame","Undulation",AuraGroup);
-local Undulation = SSA.Undulation;
-Undulation:SetPoint("CENTER",0,-210);
-Undulation:SetWidth(400);
-Undulation:SetHeight(180);
-Undulation:SetFrameStrata("BACKGROUND");
-Undulation:Hide();
+SSA.Undulation = CreateFrame('Frame','Undulation',AuraGroup)
+local Undulation = SSA.Undulation
+Undulation:SetPoint('CENTER',0,-210)
+Undulation:SetWidth(400)
+Undulation:SetHeight(180)
+Undulation:SetFrameStrata('BACKGROUND')
+Undulation:Hide()
 
-Undulation.texture = Undulation:CreateTexture(nil,"LOW");
-Undulation.texture:SetTexture("Textures\\SpellActivationOverlays\\Monk_Serpent");
-Undulation.texture:SetPoint("CENTER",Undulation,"CENTER",0,0);
-Undulation.texture:SetWidth(Undulation:GetWidth() + 20);
-Undulation.texture:SetHeight(Undulation:GetHeight());
-Undulation.texture:SetRotation(math.rad(-90));
-Undulation.texture:SetAlpha(0.7);
+Undulation.texture = Undulation:CreateTexture(nil,'LOW')
+Undulation.texture:SetTexture('Textures\\SpellActivationOverlays\\Monk_Serpent')
+Undulation.texture:SetPoint('CENTER',Undulation,'CENTER',0,0)
+Undulation.texture:SetWidth(Undulation:GetWidth() + 20)
+Undulation.texture:SetHeight(Undulation:GetHeight())
+Undulation.texture:SetRotation(math.rad(-90))
+Undulation.texture:SetAlpha(0.7)
 
 -- Animation for Totem Mastery Notification Texture
-Undulation.Flash = Undulation.texture:CreateAnimationGroup();
-Undulation.Flash:SetLooping("BOUNCE");
+Undulation.Flash = Undulation.texture:CreateAnimationGroup()
+Undulation.Flash:SetLooping('BOUNCE')
 
-Undulation.Flash.fadeIn = Undulation.Flash:CreateAnimation("Alpha");
-Undulation.Flash.fadeIn:SetFromAlpha(1);
-Undulation.Flash.fadeIn:SetToAlpha(0.4);
-Undulation.Flash.fadeIn:SetDuration(0.4);
+Undulation.Flash.fadeIn = Undulation.Flash:CreateAnimation('Alpha')
+Undulation.Flash.fadeIn:SetFromAlpha(1)
+Undulation.Flash.fadeIn:SetToAlpha(0.4)
+Undulation.Flash.fadeIn:SetDuration(0.4)
 
-Undulation.Flash.fadeOut = Undulation.Flash:CreateAnimation("Alpha");
-Undulation.Flash.fadeOut:SetFromAlpha(0.4);
-Undulation.Flash.fadeOut:SetToAlpha(1);
-Undulation.Flash.fadeOut:SetDuration(0.4);
-Undulation.Flash.fadeOut:SetEndDelay(0);]]
+Undulation.Flash.fadeOut = Undulation.Flash:CreateAnimation('Alpha')
+Undulation.Flash.fadeOut:SetFromAlpha(0.4)
+Undulation.Flash.fadeOut:SetToAlpha(1)
+Undulation.Flash.fadeOut:SetDuration(0.4)
+Undulation.Flash.fadeOut:SetEndDelay(0)]]
 
---SSA.ErrorFrame.text:SetText("Name: "..StormkeeperCharges:GetName())
-local Undulation = CreateFrame("Frame","Undulation",AuraGroup);
---local StormkeeperCharge1 = SSA.StormkeeperCharge1;
-Undulation:SetWidth(60);
-Undulation:SetHeight(60);
-Undulation:SetPoint("CENTER",AuraGroup,"CENTER",0,-275);
-Undulation:SetAlpha(0);
-Undulation:Show();
+--SSA.ErrorFrame.text:SetText('Name: '..StormkeeperCharges:GetName())
+local Undulation = CreateFrame('Frame','Undulation',AuraGroup)
+--local StormkeeperCharge1 = SSA.StormkeeperCharge1
+Undulation:SetWidth(60)
+Undulation:SetHeight(60)
+Undulation:SetPoint('CENTER',AuraGroup,'CENTER',0,-275)
+Undulation:SetAlpha(0)
+Undulation:Show()
 
-Undulation.Orb = CreateFrame("PlayerModel","StormkeeperCharge1_Orb",Undulation);
-Undulation.Orb:SetModel("SPELLS/Monk_ForceSpere_Orb.m2");
-Undulation.Orb:SetFrameStrata(low);
-Undulation.Orb:SetAllPoints(Undulation);
---Undulation.Orb:SetCamera(1);
-Undulation.Orb:SetPosition(0,0,0);
-Undulation.Orb:SetAlpha(1);
---Undulation.Orb:SetModelScale(0.021);
-Undulation.Orb:SetSequence(1);
-Undulation.Orb:SetRotation(0);
-Undulation:SetScript("OnUpdate",function(self)
+Undulation.Model = CreateFrame('PlayerModel','StormkeeperCharge1_Orb',Undulation)
+Undulation.Model:SetModel('SPELLS/Monk_ForceSpere_Orb.m2')
+Undulation.Model:SetFrameStrata(low)
+Undulation.Model:SetAllPoints(Undulation)
+--Undulation.Model:SetCamera(1)
+Undulation.Model:SetPosition(0,0,0)
+Undulation.Model:SetAlpha(1)
+--Undulation.Model:SetModelScale(0.021)
+Undulation.Model:SetSequence(1)
+Undulation.Model:SetRotation(0)
+Undulation:SetScript('OnUpdate',function(self)
 	if (Auras:CharacterCheck(3)) then
-		local buff = UnitBuff('player',Auras:GetSpellName(216251));
+		local db = Auras.db.char
+		local buff = UnitBuff('player',Auras:GetSpellName(216251))
 		
-		Auras:ToggleAuraVisibility(self,true,'showhide');
+		Auras:ToggleAuraVisibility(self,true,'showhide')
 		
-		if (not Auras.db.char.config[3].isMoving) then
-			if (buff and Auras.db.char.aura[3].Undulation) then
-				self:SetAlpha(1);
+		if (not db.elements[3].isMoving) then
+			if (buff and db.elements[3].frames.Undulation.isEnabled) then
+				self:SetAlpha(1)
 			else
-				self:SetAlpha(0);
+				self:SetAlpha(0)
 			end
 		else
-			self:SetAlpha(1);
+			self:SetAlpha(1)
+			--self.Model:SetModel('SPELLS/Monk_ForceSpere_Orb.m2')
 		end
 		
-		if (Auras.db.char.config[3].isMoving) then
-			self:SetBackdrop(backdrop);
-			self:SetBackdropColor(0,0,0,0.85);
+		--[[if (db.elements[3].isMoving) then
+			self:SetBackdrop(backdrop)
+			self:SetBackdropColor(0,0,0,0.85)
 		else
-			self:SetBackdrop(nil);
-		end
+			self:SetBackdrop(nil)
+		end]]
+		ToggleFrameMove(self,db.elements[3].isMoving)
 	else
-		Auras:ToggleAuraVisibility(self,false,'showhide');
+		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
-end);
+end)
 
-Undulation:SetScript("OnMouseDown",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseDown(self,'resGrp',button);
+Undulation:SetScript('OnMouseDown',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseDown(self,'AuraGroupRes',button)
 	end
-end);
+end)
 
-Undulation:SetScript("OnMouseUp",function(self,button)
-	if (Auras.db.char.config[3].isMoving) then
-		Auras:MoveOnMouseUp(self,'resGrp',button);
+Undulation:SetScript('OnMouseUp',function(self,button)
+	if (Auras.db.char.elements[3].isMoving) then
+		Auras:MoveOnMouseUp(self,button)
+		Auras:UpdateLayout(self,Auras.db.char.elements[3].frames[self:GetName()])
 	end
-end);
+end)
 
 SSA.Undulation = Undulation;
 _G["SSA_Undulation"] = Undulation;
 
-EventFrame:SetScript("OnEvent",function(self,event,...)
+EventFrame:SetScript('OnEvent',function(self,event,...)
 	if (Auras:CharacterCheck(3)) then
-		local _,subevent,_,sGUID,source,_,_,petGUID,name,_,_,spellID,_,_,damage = ...
-
-		if (event ~= "COMBAT_LOG_EVENT_UNFILTERED") then
+		local _,subevent,_,sGUID,source,_,_,petGUID,name,_,_,spellID,spellName,_,damage = ...
+		local db = Auras.db.char
+		local auras = db.auras[3]
+		
+		if (event ~= 'COMBAT_LOG_EVENT_UNFILTERED') then
 			return
 		end
-		--SSA.ErrorFrame.text:SetText("SubEvent: "..subevent.."\n");
-		--SSA.ErrorFrame.text:SetText(Auras:CurText('ErrorFrame').."Spell ID: "..spellID.."\n");
+		
 		if (sGUID == UnitGUID('player')) then
-			if (subevent == "SPELL_CAST_SUCCESS") then
+			if (subevent == 'SPELL_CAST_SUCCESS') then
 				if (spellID == 61295 or spellID == 1064) then
-					healTime = GetTime();
+					TidalWavesBar.healTime = GetTime()
 				end
-			elseif (subevent == "SPELL_AURA_APPLIED") then
-				if (buffIDs[spellID]) then
-					local isValidBuff = false;
+			elseif (subevent == 'SPELL_AURA_APPLIED') then
+				--[[if (buffIDs[spellID]) then
+					local isValidBuff = false
 					
-					if ((spellID == 108271 and Auras.db.char.aura[3].AstralShiftBarRes) or (spellID == 114052 and Auras.db.char.aura[3].AscendanceBarRes) or (spellID == 108281 and Auras.db.char.aura[3].AncestralGuidanceBarRes) or (spellID == 2825 and Auras.db.char.aura[3].BloodlustBarRes) or (spellID == 79206 and Auras.db.char.aura[3].SpiritwalkersGraceBar) or (spellID == 32182 and Auras.db.char.aura[3].HeroismBarRes) or (spellID == 73685 and Auras.db.char.aura[3].UnleashLifeBar) or (spellID == 80353 and Auras.db.char.aura[3].TimeWarpBarRes)) then
-						isValidBuff = true;
+					if ((spellID == 108271 and auras.AstralShiftBarRes) or (spellID == 114052 and auras.AscendanceBarRes) or (spellID == 108281 and auras.AncestralGuidanceBarRes) or (spellID == 2825 and auras.BloodlustBarRes) or (spellID == 79206 and auras.SpiritwalkersGraceBar) or (spellID == 32182 and auras.HeroismBarRes) or (spellID == 73685 and auras.UnleashLifeBar) or (spellID == 80353 and auras.TimeWarpBarRes)) then
+						isValidBuff = true
 					end
 					
 					if (isValidBuff) then
-						table.insert(buffTable,spellID);
+						table.insert(buffTable,spellID)
 					end
-				end
-			elseif (subevent == "SPELL_AURA_REMOVED") then
-				if (buffIDs[spellID]) then
+				end]]
+			elseif (subevent == 'SPELL_AURA_REMOVED') then
+				--[[if (buffIDs[spellID]) then
 					for i=1,getn(buffTable) do
 						if (buffTable[i] == spellID) then
 							table.remove(buffTable,i)
 						end
 					end
-					buffIDs[spellID]:Hide();
+					buffIDs[spellID]:Hide()
+				end]]
+			elseif (subevent == 'SPELL_SUMMON' and spellID == 198838) then
+				if (db.elements[3].statusbars.earthenShieldBar.isEnabled) then
+					local EST = EarthenShieldTotemBar
+					
+					EST.expires = GetTime() + 15
+					EST.isSummoned = true
+					EST.GUID = petGUID
+
+					EST:SetMinMaxValues(0,UnitHealthMax('player'))
+					EST.healthtext:SetText('100%')
+					EST:SetValue(UnitHealthMax('player'))
+					
+					db.info.totems.eShield.hp = UnitHealthMax('player')
+					db.info.totems.eShield.dmg = 0
+					
 				end
-			elseif (subevent == "SPELL_SUMMON" and spellID == 198838) then
-				if (Auras.db.char.aura[3].EarthenShieldTotemBar) then
-					SSA.ErrorFrame.text:SetText("EST Summoned");
-					local EST = SSA.EarthenShieldTotemBar;
-					EST_Expires = GetTime() + 15;
-					print("SUMMONED!");
-					--SSA.EarthenShieldTotemBar:SetAlpha(1);
-					--SSA.EarthenShieldTotemBar.Timer:SetAlpha(1);
-					--[[if (UnitAffectingCombat('player')) then
-						EarthenShieldTotemBar:SetAlpha(Auras.db.char.config[3].manaBar.alphaCombat);
-						EarthenShieldTotemBar.Timer:SetAlpha(Auras.db.char.config[3].manaBar.alphaCombat);
-					else
-						EarthenShieldTotemBar:SetAlpha(Auras.db.char.config[3].manaBar.alphaOoC);
-						EarthenShieldTotemBar.Timer:SetAlpha(Auras.db.char.config[3].manaBar.alphaOoC);
-					end]]
-					SSA.EarthenShieldTotemBar:SetMinMaxValues(0,UnitHealthMax('player'));
-					SSA.EarthenShieldTotemBar.text:SetText("100%");
-					SSA.EarthenShieldTotemBar:SetValue(UnitHealthMax('player'));
-					Auras.db.char.info.totems.eShield.hp = UnitHealthMax('player');
-					Auras.db.char.info.totems.eShield.dmg = 0;
-					EST_GUID = petGUID;
-				end
-			elseif ((subevent == "SPELL_DAMAGE" or subevent == "SWING_DAMAGE") and name == L["Earthen Shield Totem"]) then
-				Auras.db.char.info.totems.eShield.dmg = (Auras.db.char.info.totems.eShield.dmg or 0) + damage;
-				if (not Auras.db.char.info.totems.eShield.hp) then
-					Auras.db.char.info.totems.eShield.hp = UnitHealthMax('player');
-				end
-				Auras:UpdateEarthenShield(EarthenShieldTotemBar);
-			elseif (subevent == "UNIT_DIED" and name == L["Earthen Shield Totem"]) then
-				SSA.ErrorFrame.text:SetText("DEAD");
-				
 			end
 		end
-		if (subevent == "UNIT_DIED" and EST_GUID == petGUID) then
-			EarthenShieldTotemBar:SetAlpha(0);
-			EarthenShieldTotemBar.Timer:SetAlpha(0);
-			EST_GUID = nil;
+		if (petGUID == EarthenShieldTotemBar.GUID) then
+			if (subevent == 'UNIT_DIED') then
+				EarthenShieldTotemBar:SetAlpha(0)
+				EarthenShieldTotemBar.Timer:SetAlpha(0)
+				EarthenShieldTotemBar.GUID = 0
+			elseif ((subevent == 'SPELL_DAMAGE' or subevent == 'SWING_DAMAGE') and (name == "Earthen Shield Totem" or spellName == "Earthen Shield")) then
+				db.info.totems.eShield.dmg = (db.info.totems.eShield.dmg or 0) + damage
+				if (not db.info.totems.eShield.hp) then
+					db.info.totems.eShield.hp = UnitHealthMax('player')
+				end
+				UpdateEarthenShield(EarthenShieldTotemBar)
+			end
 		end
 	end
-end);
+end)
 
 -------------------------------------------------------------------------------------------------------
 ----- Build Move UI
 -------------------------------------------------------------------------------------------------------
 
 SSA.MoveRes = CreateFrame("Frame","MoveRes",UIParent);
-
-SSA.AuraObjectsRes = {
-	[1] = {
-		alpha = nil,
-		object = AuraGroup,
-		backdrop = "BackdropSB",
-	},
-	[2] = {
-		alpha = nil,
-		object = LargeIconGrpTop,
-		backdrop = "BackdropSB",
-	},
-	[3] = {
-		alpha = nil,
-		object = LargeIconGrpBot,
-		backdrop = "BackdropSB",
-	},
-	[4] = {
-		alpha = nil,
-		object = SmallIconGrpLeft,
-		backdrop = "BackdropSB",
-	},
-	[5] = {
-		alpha = nil,
-		object = SmallIconGrpRight,
-		backdrop = "BackdropSB",
-	},
-	[6] = {
-		alpha = nil,
-		object = BuffTimerBarGrp,
-		backdrop = "BackdropSB",
-	},
-	[7] = {
-		alpha = nil,
-		object = MainTimerBarGrp,
-		backdrop = "BackdropSB",
-	},
-	[8] = {
-		alpha = nil,
-		object = UtilTimerBarGrp,
-		backdrop = "BackdropSB",
-	},
-	[9] = {
-		alpha = true,
-		object = EarthenShieldTotemBar,
-		statusbar = {
-			r = 0.91,
-			g = 0.41,
-			b = 1,
-			m = 'health',
-		},
-	},
-	[10] = {
-		alpha = nil,
-		object = TidalWavesBar,
-		statusbar = {
-			r = 0.35,
-			g = 0.76,
-			b = 1,
-			m = 2,
-		},
-	},
-	[11] = {
-		alpha = true,
-		object = ManaBar,
-		statusbar = {
-			r = 0,
-			g = 0.5,
-			b = 1,
-			m = 'mana',
-		},
-	},
-	--[11] = LavaSurge,
-	[12] = {
-		alpha = true,
-		model = {
-			[1] = Undulation.Orb,
-		},
-		object = Undulation,
-		backdrop = 'BackdropSB',
-	},
-	[13] = {
-		object = Cloudburst,
-		alpha = true,
-	},
-	--[[[11] = CloudburstAbsorbBar,
-	[12] = LavaSurge,]]
-}
-
-SSA.MoveStringsRes = {
-	[1] = L["Move All Auras"],
-	[2] = L["Move Top Auras"],
-	[3] = L["Move Bottom Auras"],
-	[4] = L["Move Left Auras"],
-	[5] = L["Move Right Auras"],
-	[6] = L["Move Buff Timer Bars"],
-	[7] = L["Move Main Timer Bars"],
-	[8] = L["Move Utility Timer Bars"],
-	[9] = L["Move Earthen Shield Bar"],
-	[10] = L["Move Tidal Waves Bar"],
-	--[11] = L["Move Lava Surge Texture"],
-	[11] = L["Move Undulation"],
-	[12] = L["Cloudburst Healing Stored"],
-	--[12] = L["Move Lava Surge Texture"],
-}

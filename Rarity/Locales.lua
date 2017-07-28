@@ -1047,13 +1047,9 @@ L["Ley Spider Eggs"] = true
 L["Glimmering Treasure Chest"] = true
 L["Ancient Mana"] = true
 L["Chromie"] = true
-
-
-
-
-
-
-
+L["Abyss Worm"] = true
+L["Blight Boar Microphone"] = true
+L["Nightmare Whelpling"] = true
 
 
 
@@ -1137,6 +1133,8 @@ L["A holiday event is available today for %s! Go get it!"] = "A holiday event is
 L["Abundant Bloodsail Wreckage"] = "Blutsegelwrackteile"
 L["Abundant Firefin Snapper School"] = "Ein ergiebiger Schwarm Feuerflossenschnapper"
 L["Abundant Oily Blackmouth School"] = "Ergiebiger Schwarm öliger Schwarzmaulfische"
+--Translation missing 
+L["Abyss Worm"] = "Abyss Worm"
 L["Abyssal Gulper School"] = "Ein Schwarm Tiefseeschluckaale"
 L["Adamantite Deposit"] = "Adamantitvorkommen"
 L["Added %d |4waypoint:waypoints; to TomTom"] = "%d |4Wegpunkt:Wegpunkte; zu TomTom hinzugefügt"
@@ -1215,6 +1213,8 @@ L["Blank line before tooltip additions"] = "Blank line before tooltip additions"
 L["Blazing Rune"] = "Lodernde Rune"
 L["Bleakclaw"] = "Trübklaue"
 L["Blessed Seed"] = "Gesegnetes Samenkorn"
+--Translation missing 
+L["Blight Boar Microphone"] = "Blight Boar Microphone"
 L["Blighted Spore"] = "Verseuchte Sporen"
 L["Blind Lake Sturgeon School"] = "Ein Schwarm blinder Seestöre"
 L["Bloodsail Wreckage"] = "Blutsegelwrackteile"
@@ -1758,6 +1758,8 @@ L["Nettlefish School"] = "Ein Schwarm Nesselfische"
 L["New item"] = "Neuer Gegenstand"
 L["Night Elf"] = "Nachtelf"
 L["Nightmare Bell"] = "Alptraumglocke"
+--Translation missing 
+L["Nightmare Whelpling"] = "Nightmare Whelpling"
 L["Nightshade Sproutling"] = "Nachtschattensprössling"
 --Translation missing 
 L[ [=[No items to display! Either you've obtained every item, or you have
@@ -2395,6 +2397,8 @@ L["A holiday event is available today for %s! Go get it!"] = "A holiday event is
 L["Abundant Bloodsail Wreckage"] = "Restos de los Velasangre abundantes"
 L["Abundant Firefin Snapper School"] = "Banco de Pargos de Fuego abundantes"
 L["Abundant Oily Blackmouth School"] = "Banco de Bocanegras Grasos abundantes"
+--Translation missing 
+L["Abyss Worm"] = "Abyss Worm"
 L["Abyssal Gulper School"] = "Banco de Anguila devoradora abisal"
 L["Adamantite Deposit"] = "Depósito de adamantita"
 --Translation missing 
@@ -2505,6 +2509,8 @@ L["Blazing Rune"] = "Blazing Rune"
 L["Bleakclaw"] = "Bleakclaw"
 --Translation missing 
 L["Blessed Seed"] = "Blessed Seed"
+--Translation missing 
+L["Blight Boar Microphone"] = "Blight Boar Microphone"
 --Translation missing 
 L["Blighted Spore"] = "Blighted Spore"
 L["Blind Lake Sturgeon School"] = "Banco de Esturión ciego de lago"
@@ -3245,6 +3251,8 @@ L["New item"] = "Nuevo objeto"
 L["Night Elf"] = "Elfo de la noche"
 --Translation missing 
 L["Nightmare Bell"] = "Nightmare Bell"
+--Translation missing 
+L["Nightmare Whelpling"] = "Nightmare Whelpling"
 --Translation missing 
 L["Nightshade Sproutling"] = "Nightshade Sproutling"
 --Translation missing 
@@ -4082,6 +4090,8 @@ L["Abundant Firefin Snapper School"] = "Abundant Firefin Snapper School"
 --Translation missing 
 L["Abundant Oily Blackmouth School"] = "Abundant Oily Blackmouth School"
 --Translation missing 
+L["Abyss Worm"] = "Abyss Worm"
+--Translation missing 
 L["Abyssal Gulper School"] = "Abyssal Gulper School"
 --Translation missing 
 L["Adamantite Deposit"] = "Adamantite Deposit"
@@ -4207,6 +4217,8 @@ L["Blazing Rune"] = "Blazing Rune"
 L["Bleakclaw"] = "Bleakclaw"
 --Translation missing 
 L["Blessed Seed"] = "Blessed Seed"
+--Translation missing 
+L["Blight Boar Microphone"] = "Blight Boar Microphone"
 --Translation missing 
 L["Blighted Spore"] = "Blighted Spore"
 --Translation missing 
@@ -5088,6 +5100,8 @@ L["New item"] = "New item"
 L["Night Elf"] = "Night Elf"
 --Translation missing 
 L["Nightmare Bell"] = "Nightmare Bell"
+--Translation missing 
+L["Nightmare Whelpling"] = "Nightmare Whelpling"
 --Translation missing 
 L["Nightshade Sproutling"] = "Nightshade Sproutling"
 --Translation missing 
@@ -6023,6 +6037,8 @@ L["A holiday event is available today for %s! Go get it!"] = "Un événement sai
 L["Abundant Bloodsail Wreckage"] = "Débris abondants de la Voile sanglante"
 L["Abundant Firefin Snapper School"] = "Banc abondant de lutjans de nagefeu"
 L["Abundant Oily Blackmouth School"] = "Banc abondant de bouches-noires huileux"
+--Translation missing 
+L["Abyss Worm"] = "Abyss Worm"
 L["Abyssal Gulper School"] = "Banc de grangousiers des abysses"
 L["Adamantite Deposit"] = "Gisement d'adamantite"
 L["Added %d |4waypoint:waypoints; to TomTom"] = "%d |4point de navigation ajouté:points de navigation ajoutés; à TomTom."
@@ -6092,6 +6108,8 @@ L["Blazing Rune"] = "Rune flamboyante"
 L["Bleakclaw"] = "Morne-Serre"
 --Translation missing 
 L["Blessed Seed"] = "Blessed Seed"
+--Translation missing 
+L["Blight Boar Microphone"] = "Blight Boar Microphone"
 L["Blighted Spore"] = "Spore chancreux"
 L["Blind Lake Sturgeon School"] = "Banc d’esturgeons jaunes aveugles"
 L["Bloodsail Wreckage"] = "Débris de la Voile sanglante"
@@ -6565,6 +6583,8 @@ L["Nettlefish School"] = "Banc de méduses"
 L["New item"] = "Nouvel objet"
 L["Night Elf"] = "Elfe de la nuit"
 L["Nightmare Bell"] = "Carillon cauchemardesque"
+--Translation missing 
+L["Nightmare Whelpling"] = "Nightmare Whelpling"
 L["Nightshade Sproutling"] = "Jeune pousse de belladone"
 L[ [=[No items to display! Either you've obtained every item, or you have
 one or more options turned on which hide things from the tooltip.]=] ] = "Aucun objet à afficher ! Soit vous avez obtenu tous les objets, soit vous avez une ou des options activées qui cachent des éléments de l'infobulle."
@@ -7097,6 +7117,8 @@ L["A holiday event is available today for %s! Go get it!"] = "축제 이벤트 %
 L["Abundant Bloodsail Wreckage"] = "풍부한 붉은해적단 잔해"
 L["Abundant Firefin Snapper School"] = "풍부한 불지느러미퉁돔 떼"
 L["Abundant Oily Blackmouth School"] = "풍부한 기름기 많은 아귀 떼"
+--Translation missing 
+L["Abyss Worm"] = "Abyss Worm"
 L["Abyssal Gulper School"] = "심연 풍선장어 떼"
 L["Adamantite Deposit"] = "아다만타이트 광맥"
 L["Added %d |4waypoint:waypoints; to TomTom"] = "TomTom에 %d 목표지점 추가됨"
@@ -7193,6 +7215,8 @@ L["Blazing Rune"] = "Blazing Rune"
 L["Bleakclaw"] = "Bleakclaw"
 --Translation missing 
 L["Blessed Seed"] = "Blessed Seed"
+--Translation missing 
+L["Blight Boar Microphone"] = "Blight Boar Microphone"
 --Translation missing 
 L["Blighted Spore"] = "Blighted Spore"
 L["Blind Lake Sturgeon School"] = "눈먼 철갑상어 떼"
@@ -7848,6 +7872,8 @@ L["New item"] = "새 아이템"
 L["Night Elf"] = "나이트 엘프"
 --Translation missing 
 L["Nightmare Bell"] = "Nightmare Bell"
+--Translation missing 
+L["Nightmare Whelpling"] = "Nightmare Whelpling"
 --Translation missing 
 L["Nightshade Sproutling"] = "Nightshade Sproutling"
 --Translation missing 
@@ -8520,6 +8546,8 @@ L["A holiday event is available today for %s! Go get it!"] = "Праздничн
 L["Abundant Bloodsail Wreckage"] = "Крупные обломки кораблекрушения шайки Кровавого Паруса"
 L["Abundant Firefin Snapper School"] = "Крупный косяк огнеперого луциана"
 L["Abundant Oily Blackmouth School"] = "Крупный косяк масляного черноротика"
+--Translation missing 
+L["Abyss Worm"] = "Abyss Worm"
 L["Abyssal Gulper School"] = "Косяк глубинного угря-мешкорота"
 L["Adamantite Deposit"] = "Залежи адамантита"
 L["Added %d |4waypoint:waypoints; to TomTom"] = "Добавлено %d |4направление:направления:направлений; в TomTom"
@@ -8600,6 +8628,8 @@ L["Blazing Rune"] = "Пылающая руна"
 L["Bleakclaw"] = "Хмурокоготь"
 --Translation missing 
 L["Blessed Seed"] = "Blessed Seed"
+--Translation missing 
+L["Blight Boar Microphone"] = "Blight Boar Microphone"
 L["Blighted Spore"] = "Спора порчи"
 L["Blind Lake Sturgeon School"] = "Косяк слепого озерного осетра"
 L["Bloodsail Wreckage"] = "Обломки кораблекрушения шайки Кровавого Паруса"
@@ -9146,6 +9176,8 @@ L["Nettlefish School"] = "Стайка медуз"
 L["New item"] = "Новый предмет"
 L["Night Elf"] = "Ночные эльфы"
 L["Nightmare Bell"] = "Колокол кошмаров"
+--Translation missing 
+L["Nightmare Whelpling"] = "Nightmare Whelpling"
 L["Nightshade Sproutling"] = "Росток Ночной Тени"
 --Translation missing 
 L[ [=[No items to display! Either you've obtained every item, or you have
@@ -9717,6 +9749,8 @@ L["A holiday event is available today for %s! Go get it!"] = "一个节日活动
 L["Abundant Bloodsail Wreckage"] = "大型的血帆残骸"
 L["Abundant Firefin Snapper School"] = "大型的火鳞鳝鱼群"
 L["Abundant Oily Blackmouth School"] = "大型的黑口鱼群"
+--Translation missing 
+L["Abyss Worm"] = "Abyss Worm"
 L["Abyssal Gulper School"] = "深渊大嘴鳗鱼群"
 L["Adamantite Deposit"] = "精金矿脉"
 L["Added %d |4waypoint:waypoints; to TomTom"] = "添加到 %d |4waypoint:waypoints; TomTom路点"
@@ -9804,6 +9838,8 @@ L["Blazing Rune"] = "炽烧符文"
 L["Bleakclaw"] = "Bleakclaw"
 --Translation missing 
 L["Blessed Seed"] = "Blessed Seed"
+--Translation missing 
+L["Blight Boar Microphone"] = "Blight Boar Microphone"
 L["Blighted Spore"] = "枯萎孢子"
 L["Blind Lake Sturgeon School"] = "盲眼湖鲟鱼群"
 L["Bloodsail Wreckage"] = "血帆船只残骸"
@@ -10413,6 +10449,8 @@ L["New item"] = "新物品"
 L["Night Elf"] = "暗夜精灵"
 --Translation missing 
 L["Nightmare Bell"] = "Nightmare Bell"
+--Translation missing 
+L["Nightmare Whelpling"] = "Nightmare Whelpling"
 L["Nightshade Sproutling"] = "夜影幼苗"
 --Translation missing 
 L[ [=[No items to display! Either you've obtained every item, or you have
@@ -11030,6 +11068,8 @@ L["A holiday event is available today for %s! Go get it!"] = "A holiday event is
 L["Abundant Bloodsail Wreckage"] = "豐碩漂浮殘骸"
 L["Abundant Firefin Snapper School"] = "豐碩火鰭鯛魚群"
 L["Abundant Oily Blackmouth School"] = "豐碩黑口魚群"
+--Translation missing 
+L["Abyss Worm"] = "Abyss Worm"
 L["Abyssal Gulper School"] = "深淵大嘴鰻群"
 L["Adamantite Deposit"] = "堅鋼礦床"
 --Translation missing 
@@ -11127,6 +11167,8 @@ L["Blazing Rune"] = "熾熱符文"
 L["Bleakclaw"] = "Bleakclaw"
 --Translation missing 
 L["Blessed Seed"] = "Blessed Seed"
+--Translation missing 
+L["Blight Boar Microphone"] = "Blight Boar Microphone"
 L["Blighted Spore"] = "荒疫污染孢子"
 L["Blind Lake Sturgeon School"] = "盲湖鱘魚群"
 L["Bloodsail Wreckage"] = "血帆殘骸"
@@ -11801,6 +11843,8 @@ L["New item"] = "新物品"
 L["Night Elf"] = "夜精靈"
 --Translation missing 
 L["Nightmare Bell"] = "Nightmare Bell"
+--Translation missing 
+L["Nightmare Whelpling"] = "Nightmare Whelpling"
 --Translation missing 
 L["Nightshade Sproutling"] = "Nightshade Sproutling"
 --Translation missing 
@@ -12531,6 +12575,8 @@ L["A holiday event is available today for %s! Go get it!"] = "A holiday event is
 L["Abundant Bloodsail Wreckage"] = "Destroços Abundante dos Vela Sangrenta"
 L["Abundant Firefin Snapper School"] = "Cardume Abundante de Pargo Pinafogo"
 L["Abundant Oily Blackmouth School"] = "Cardume Abundante de Bocanera Oleoso"
+--Translation missing 
+L["Abyss Worm"] = "Abyss Worm"
 L["Abyssal Gulper School"] = "Cardume de Boca-grandes Abissais"
 L["Adamantite Deposit"] = "Depósito de Adamantita"
 --Translation missing 
@@ -12633,6 +12679,8 @@ L["Blazing Rune"] = "Runa Flamejante"
 L["Bleakclaw"] = "Bleakclaw"
 --Translation missing 
 L["Blessed Seed"] = "Blessed Seed"
+--Translation missing 
+L["Blight Boar Microphone"] = "Blight Boar Microphone"
 L["Blighted Spore"] = "Esporos Empesteados"
 L["Blind Lake Sturgeon School"] = "Cardume de Esturjões Cegos do Lago"
 L["Bloodsail Wreckage"] = "Destroços dos Vela Sangrenta"
@@ -13336,6 +13384,8 @@ L["New item"] = "Novo item"
 L["Night Elf"] = "Elfo Noturno"
 --Translation missing 
 L["Nightmare Bell"] = "Nightmare Bell"
+--Translation missing 
+L["Nightmare Whelpling"] = "Nightmare Whelpling"
 --Translation missing 
 L["Nightshade Sproutling"] = "Nightshade Sproutling"
 --Translation missing 

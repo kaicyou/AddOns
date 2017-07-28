@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Akama", "DBM-BlackTemple")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 619 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 621 $"):sub(12, -3))
 mod:SetCreatureID(22841)
 mod:SetEncounterID(603)
 mod:SetModelID(21357)
@@ -58,13 +58,13 @@ end
 
 local function sorcLoop(self)
 	warnSorc:Show()
-	self:Schedule(25, addsEastLoop, self)
+	self:Schedule(25, sorcLoop, self)
 	timerSorcCD:Start(25)
 end
 
 local function defenderLoop(self)
 	warnDefender:Show()
-	self:Schedule(30, addsEastLoop, self)
+	self:Schedule(30, defenderLoop, self)
 	timerDefenderCD:Start(30)
 end
 

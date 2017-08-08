@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1840 $
-$Date: 2017-07-09 18:17:22 +1000 (Sun, 09 Jul 2017) $
+$Revision: 1848 $
+$Date: 2017-08-04 16:41:22 +1000 (Fri, 04 Aug 2017) $
 
 ]]--
 
@@ -2661,10 +2661,10 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 	
 	if sid == 9995 then
 		-- vault layout / void storage layout
-		s["!bagslot"] = string.format( "%04i %04i", i.bag_id, i.did or i.slot_id )
+		s["!bagslot"] = string.format( "%04i %04i", i.bag_id or 0, i.did or i.slot_id or 0 )
 	else
 		-- all other bag/slot
-		s["!bagslot"] = string.format( "%04i %04i", i.bag_id, i.slot_id )
+		s["!bagslot"] = string.format( "%04i %04i", i.bag_id or 0, i.slot_id or 0 )
 	end
 	
 	if sorting.used and not sorting.bagslot then
@@ -2677,11 +2677,12 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 		if sorting.active.slottype then
 			t = info.osd.slottype
 		end
-		s["!slottype"] = string.format( "%04i", t )
+		s["!slottype"] = string.format( "%04i", t or 0 )
 		
 		
 		-- item count (system)
-		s["!count"] = string.format( "%04i", i.count )
+		t = i.count
+		s["!count"] = string.format( "%04i", t or 1 )
 		
 		
 		-- item name
@@ -2691,7 +2692,7 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 			if i.h then
 				
 				t = info.name
-				if i.cn and ( i.cn ~= "" ) then
+				if t and type( i.cn ) == "string" and i.cn ~= "" then
 					t = string.format( "%s %s", t, i.cn )
 				end
 				t = t or "!"
@@ -2713,7 +2714,7 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 			end
 			
 		end
-		s["name"] = t
+		s["name"] = t or "!"
 		
 		
 		-- item quality
@@ -2721,17 +2722,17 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 		if i.q and sorting.active.quality then
 			t = i.q
 		end
-		s["quality"] = string.format( "%02i", t )
+		s["quality"] = string.format( "%02i", t or 0 )
 		
 		
 		-- location
 		t = "!"
 		if i.h and info.class == "item" and sorting.active.location then
-			if info.equiploc and info.equiploc ~= "" and _G[info.equiploc] then
+			if type( info.equiploc ) == "string" and info.equiploc ~= "" and _G[info.equiploc] then
 				t = _G[info.equiploc]
 			end
 		end
-		s["location"] = t
+		s["location"] = string.format( "%s", t or "!" )
 		
 		
 		-- item type / subtype
@@ -2796,20 +2797,20 @@ function ArkInventory.ItemSortKeyGenerate( i, bar_id )
 			end
 			
 		end
-		s["category"] = string.format( "%02i %04i %04i", cat_type, cat_order, cat_code )
+		s["category"] = string.format( "%02i %04i %04i", cat_type or 0, cat_order or 0, cat_code or 0 )
 		
 		
 		-- id
-		local id = 0
+		local t = 0
 		if i.h and sorting.active.id then
-			id = info.id
+			t = info.id
 		end
-		s["id"] = string.format( "%s:%010i:%02i", info.class, id, info.sb )
-
+		s["id"] = string.format( "%s:%010i:%02i", info.class or "error", t or 0, info.sb or 0 )
+		
 		
 		-- build key
 		for k, v in ipairs( sorting.order ) do
-			if s[v] then
+			if type( s[v] ) == "string" then
 				sx = string.format( "%s %s", sx, s[v] )
 			end
 		end
@@ -2911,7 +2912,7 @@ function ArkInventory.CategoryGenerate( )
 			
 			--ArkInventory.Output( k, " - ", v )
 			
-			local system, order, name, cat_id, cat_type, cat_code
+			local system, order, sort_order, name, cat_id, cat_type, cat_code
 			
 			if tn == "RULE" then
 				
@@ -3952,23 +3953,23 @@ function ArkInventory.ValidFrame( frame, visible, db )
 	
 	if frame and frame.ARK_Data and frame.ARK_Data.loc_id then
 		
-		local res1 = true
+		local r1 = true
 		if db then
 			local i = ArkInventory.Frame_Item_GetDB( frame )
 			if i == nil then
-				res1 = false
+				r1 = false
 			end
 		end
 		
-		local res2 = true
+		local r2 = true
 		if visible and not frame:IsVisible( ) then
-			res2 = false
+			r2 = false
 		end
 
-		return res1 and res2
+		return r1 and r2
 		
 	end
-
+	
 	return false
 	
 end
@@ -4274,7 +4275,7 @@ end
 
 function ArkInventory.Frame_Main_Paint( frame )
 	
-	if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 	
 	local loc_id = frame.ARK_Data.loc_id
 	local codex = ArkInventory.GetLocationCodex( loc_id )
@@ -4405,12 +4406,13 @@ end
 
 function ArkInventory.Frame_Main_Draw( frame )
 	
-	if not frame:IsVisible( ) then
-		return
-	end
-	
 	local loc_id = frame.ARK_Data.loc_id
 	local thread_id = string.format( ArkInventory.Global.Thread.Format.Window, loc_id )
+	
+	if ArkInventory.Global.Location[loc_id].drawState > ArkInventory.Const.Window.Draw.Init and not frame:IsVisible( ) then
+		ArkInventory.OutputThread( thread_id, " aborting, not init, not visible" )
+		return
+	end
 	
 	if not ArkInventory.Global.Thread.Use then
 		local tz = debugprofilestop( )
@@ -4830,7 +4832,7 @@ function ArkInventory.Frame_Main_Show( loc_id, player_id )
 	--ArkInventory.Output( "player=", codex.player.data.info.player_id )
 	--ArkInventory.Output( "layout=", codex.layout_id, ", style=", codex.style_id, ", catset=", codex.catset_id )
 	
-	if codex.style.sort.when == ArkInventory.Const.SortWhen.Open then
+	if codex.style.sort.when == ArkInventory.Const.SortWhen.Open or codex.style.sort.when == ArkInventory.Const.SortWhen.Instant then
 		ArkInventory.Frame_Main_DrawStatus( loc_id, ArkInventory.Const.Window.Draw.Resort )
 	end
 	
@@ -5883,7 +5885,8 @@ function ArkInventory.Frame_Bar_Paint_All( )
 			
 			c = _G[string.format( "%s%s%s", ArkInventory.Const.Frame.Main.Name, loc_id, ArkInventory.Const.Frame.Container.Name )]
 			
-			if c and c:IsVisible( ) then
+			--if c and c:IsVisible( ) then
+			if c then
 			
 				for bar_id = 1, loc_data.maxBar do
 					
@@ -6729,7 +6732,7 @@ end
 
 function ArkInventory.Frame_Item_Update_Quest( frame )
 	
-	if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 	
 	local questTexture = _G[string.format( "%s%s", frame:GetName( ), "IconQuestTexture" )]
 	questTexture:Hide( )
@@ -6764,7 +6767,7 @@ end
 
 function ArkInventory.Frame_Item_Update_UpgradeIcon( frame )
 	
-	if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 	
 	frame.UpgradeIcon:Hide( )
 	
@@ -6965,7 +6968,7 @@ end
 
 function ArkInventory.Frame_Item_Update_Fade( frame )
 	
-	if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 	
 	local loc_id = frame.ARK_Data.loc_id
 	local codex = ArkInventory.GetLocationCodex( loc_id )
@@ -7067,7 +7070,7 @@ end
 
 function ArkInventory.Frame_Item_Update_New( frame )
 	
-	--if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 
 	local loc_id = frame.ARK_Data.loc_id
 	local bag_id = frame.ARK_Data.bag_id
@@ -7329,7 +7332,7 @@ end
 
 function ArkInventory.Frame_Item_OnEnter_Tainted( frame )
 
-	if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 
 	if not ArkInventory.db.option.tooltip.show then
 		return
@@ -7549,12 +7552,10 @@ end
 
 function ArkInventory.Frame_Item_OnDrag( frame )
 	
-	if not ArkInventory.ValidFrame( frame, true ) then return end
-
+	if not ArkInventory.ValidFrame( frame ) then return end
+	
 	local loc_id = frame.ARK_Data.loc_id
 	local usedmycode = false
-	
-	
 	
 	if SpellIsTargeting( ) or ArkInventory.Global.Location[loc_id].isOffline or ArkInventory.Global.Mode.Edit then
 	
@@ -7634,7 +7635,7 @@ end
 
 function ArkInventory.Frame_Item_Update_Lock( frame )
 	
-	if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 	
 	local loc_id = frame.ARK_Data.loc_id
 	if ArkInventory.Global.Mode.Edit or ArkInventory.Global.Location[loc_id].isOffline then
@@ -7709,7 +7710,7 @@ end
 
 function ArkInventory.Frame_Item_Update_Tint( frame )
 	
-	if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 	
 	local obj = frame.ArkItemTinted
 	if not obj then return end
@@ -7849,7 +7850,7 @@ end
 
 function ArkInventory.Frame_Item_Update_Clickable( frame )
 
-	if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 	
 	local loc_id = frame.ARK_Data.loc_id
 	local click = true
@@ -8311,7 +8312,7 @@ function ArkInventory.Frame_Status_Update_Tracking( loc_id )
 	local frame = ArkInventory.Frame_Main_Get( ArkInventory.Const.Location.Bag )
 	frame = _G[string.format( "%s%s", frame:GetName( ), ArkInventory.Const.Frame.Status.Name )]
 	
-	if not frame:IsVisible( ) then return end
+--	if not frame:IsVisible( ) then return end
 	
 	for i = 1, MAX_WATCHED_TOKENS do
 		
@@ -8376,7 +8377,7 @@ end
 
 function ArkInventory.Frame_Changer_Primary_Update( frame )
 	
-	if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 	
 	local loc_id = frame.ARK_Data.loc_id
 	local bag_id = frame.ARK_Data.bag_id
@@ -8411,7 +8412,7 @@ function ArkInventory.Frame_Changer_Bank_Update( )
 	local parent = _G[string.format( "%s%s%s%s", ArkInventory.Const.Frame.Main.Name, loc_id, ArkInventory.Const.Frame.Changer.Name, "Window" )]
 	
 	if not parent:IsVisible( ) then
-		return
+--		return
 	end
 	
 	for x = 1, ArkInventory.Global.Location[loc_id].bagCount do
@@ -8523,7 +8524,7 @@ end
 
 function ArkInventory.Frame_Changer_Vault_Tab_OnClick( frame, button, mode )
 
-	if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 	
 	local mode = mode or GuildBankFrame.mode
 	
@@ -8629,7 +8630,7 @@ function ArkInventory.Frame_Changer_Vault_Update( )
 	local codex = ArkInventory.GetLocationCodex( loc_id )
 	
 	if not _G[parent]:IsVisible( ) then
-		return
+--		return
 	end
 	
 	for bag_id in pairs( ArkInventory.Global.Location[loc_id].Bags ) do
@@ -8657,7 +8658,7 @@ end
 
 function ArkInventory.Frame_Changer_Secondary_OnDragStart( frame )
 	
-	if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 	
 	local loc_id = frame.ARK_Data.loc_id
 	
@@ -8676,7 +8677,7 @@ end
 
 function ArkInventory.Frame_Changer_Secondary_OnReceiveDrag( frame )
 
-	if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 
 	local loc_id = frame.ARK_Data.loc_id
 	
@@ -8921,7 +8922,7 @@ end
 
 function ArkInventory.Frame_Changer_Slot_Update( frame )
 
-	if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 	
 	local loc_id = frame.ARK_Data.loc_id
 	local bag_id = frame.ARK_Data.bag_id
@@ -8972,7 +8973,7 @@ function ArkInventory.Frame_Changer_Slot_Update_Lock( loc_id, bag_id )
 
 	local frame = _G[string.format( "%s%s%sWindowBag%s", ArkInventory.Const.Frame.Main.Name, loc_id, ArkInventory.Const.Frame.Changer.Name, bag_id )]
 	
-	if not ArkInventory.ValidFrame( frame, true ) then return end
+	if not ArkInventory.ValidFrame( frame ) then return end
 	
 	if ArkInventory.Global.Location[loc_id].isOffline then return end
 	

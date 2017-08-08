@@ -1,7 +1,7 @@
-changeset:   153:43c2659818a9
-tag:         tip
+changeset:   176:cb678daef9bc
+tag:         a7.2.5.176-Alpha
 user:        Tercio
-date:        Fri Jul 14 18:27:53 2017 -0300
-summary:     - framework update to version v54 and localization updates.
+date:        Sat Aug 05 12:25:58 2017 -0300
+summary:     - Group Finder:
 
 

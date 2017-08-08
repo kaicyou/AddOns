@@ -335,12 +335,14 @@ function ArkInventory:EVENT_WOW_COMBAT_LEAVE( )
 			
 			if loc_data.tainted then
 				
+				--ArkInventory.Output( "tainted ", loc_id )
 				ArkInventory.Frame_Main_Generate( loc_id, ArkInventory.Const.Window.Draw.Recalculate )
 				
 			else
 				
 				local me = ArkInventory.GetPlayerCodex( loc_id )
 				if me.style.slot.cooldown.show and not me.style.slot.cooldown.combat  then
+					--ArkInventory.Output( "cooldown ", loc_id )
 					ArkInventory.Frame_Main_Generate( loc_id, ArkInventory.Const.Window.Draw.Refresh )
 				end
 				
@@ -378,7 +380,7 @@ function ArkInventory:EVENT_ARKINV_BAG_UPDATE_BUCKET( bagTable )
 			end
 		end
 	end
-
+	
 	
  	-- instant sorting enabled
 	for loc_id, loc_data in pairs( ArkInventory.Global.Location ) do
@@ -1741,10 +1743,10 @@ function ArkInventory.ScanBag_Threaded( blizzard_id, loc_id, bag_id, thread_id )
 	
 	if bag.type == ArkInventory.Const.Slot.Type.Unknown and bag.status == ArkInventory.Const.Bag.Status.Active then
 		
---		if ArkInventory.TranslationsLoaded and ArkInventory.db.option.message.bag.unknown then
+		if ArkInventory.TranslationsLoaded and ArkInventory.db.option.message.bag.unknown then
 			-- print the warning only after the translations are loaded (and the user wants to see them)
 			ArkInventory.OutputWarning( "bag [", blizzard_id, "] [", loc_id, ".", bag_id, "] [", ArkInventory.Global.Location[loc_id].Name, "] type is unknown, queuing for rescan" )
---		end
+		end
 		
 		ArkInventory:SendMessage( "EVENT_ARKINV_BAG_RESCAN_BUCKET", blizzard_id )
 		return
@@ -2181,7 +2183,6 @@ function ArkInventory.ScanMailInbox_Threaded( blizzard_id, loc_id, bag_id, threa
 	bag.status = ArkInventory.Const.Bag.Status.Active
 	
 	local slot_id = 0
-	local name, itemid, texture, quality
 	
 	for index = 1, GetInboxNumItems( ) do
 	
@@ -2253,7 +2254,7 @@ function ArkInventory.ScanMailInbox_Threaded( blizzard_id, loc_id, bag_id, threa
 			
 			for x = 1, ATTACHMENTS_MAX_RECEIVE do
 				
-				name, itemid, texture, count = GetInboxItem( index, x )
+				local name, itemid, texture, count = GetInboxItem( index, x )
 				
 				if name then
 					
@@ -2398,7 +2399,6 @@ function ArkInventory.ScanMailSentData( )
 	
 	local slot_id = bag.count
 	
-	local name, texture, count, quality
 	for x = 1, ATTACHMENTS_MAX do
 		
 		if ArkInventory.Global.Cache.SentMail[x] then

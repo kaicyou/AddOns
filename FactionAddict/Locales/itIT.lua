@@ -6,7 +6,7 @@ if GetLocale() == "itIT" then
 -- Titoli
 FactionAddictLocalization["ADDON_TITLE"] = "Faction Addict"
 
--- Etichette schede a piè di pagina dell' addon
+-- Etichette schede a piè di pagina dell'addon
 FactionAddictLocalization["TAB1_LABEL"] = "Fazioni"
 FactionAddictLocalization["TAB2_LABEL"] = "Log"
 FactionAddictLocalization["TAB3_LABEL"] = "Configurazione"
@@ -26,8 +26,8 @@ FactionAddictLocalization["CONFIG_TT_WOD"] = "Mostra le fazioni di Warlords of D
 FactionAddictLocalization["CONFIG_TT_LG"] = "Mostra le fazioni di Legion."
 FactionAddictLocalization["CONFIG_TT_OrderPct"] = "Ordina le fazioni in base alla percentuale di Osannato."
 FactionAddictLocalization["CONFIG_TT_OrderName"] = "Ordina le fazioni per nome."
-FactionAddictLocalization["CONFIG_TT_AO"] = "Mostra solo le fazioni dell'Alleanza."
-FactionAddictLocalization["CONFIG_TT_HO"] = "Mostra solo le fazioni dell'Orda."
+FactionAddictLocalization["CONFIG_TT_AO"] = "Mostra solo le fazioni dell'|cFF0070DEAlleanza|r."
+FactionAddictLocalization["CONFIG_TT_HO"] = "Mostra solo le fazioni dell'|cFFC41F3BOrda|r."
 FactionAddictLocalization["CONFIG_TT_AUTOBAR"] = "Cambia automaticamente la barra della reputazione in base all'ultima reputazione ottenuta."
 FactionAddictLocalization["CONFIG_TT_HIDEINACTIVE"] = "Nascondi le fazioni impostate come Inattive nell'addon, altrimenti quest'ultime verrano spostate in fondo all'elenco e verranno evidenziate con uno sfondo rosso."
 FactionAddictLocalization["CHECKBUTTON_TT_SETINACTIVE"] = "Sposta questa fazione in fondo all'elenco delle fazioni. (Le fazioni Inattive hanno uno sfondo rosso e possono essere nascoste in base alle impostazioni della Configurazione.)"
@@ -52,7 +52,7 @@ FactionAddictLocalization["TAB2_LASTGAIN_TXT"] = "Ultimo ottenimento"
 FactionAddictLocalization["TAB2_NOGAIN_TXT"] = "Niente in questa sessione"
 FactionAddictLocalization["TAB2_SESSIONTOTAL_TXT"] = "Totale Sessione: "
 
--- Scheda 3 - Testo della schedaConfigurazione
+-- Scheda 3 - Testo della scheda Configurazione
 FactionAddictLocalization["TAB3_DESC_TXT"] = "Configurazione"
 FactionAddictLocalization["TAB3_DISPLAY_CONFIG_TXT"] = "Quali fazioni devo mostrare?"
 FactionAddictLocalization["TAB3_DISPLAY_ORDER_TXT"] = "Ordina fazioni per"
@@ -81,7 +81,7 @@ FactionAddictLocalization["ABOUT_TXT"] = "Faction Addict è un addon che aiuta i
 FactionAddictLocalization["LAUNCH_WATCH_PANEL_TXT"] = "Lancia Pannello di Osservazione"
 FactionAddictLocalization["FACTION_URL_TXT"] = "https://it.wowhead.com/faction="
 FactionAddictLocalization["PCT_TO_EXALTED_TXT"] = "% di Osannato: "
-FactionAddictLocalization["PCT_TO_REWARD_TXT"] = "Pct to Next Reward: "
+FactionAddictLocalization["PCT_TO_REWARD_TXT"] = "% alla Prossima Impresa: "
 FactionAddictLocalization["CATEGORY_TXT"] = "Categoria: "
 
 -- Finestra Informativa - Categorie
@@ -128,5 +128,5 @@ FactionAddictLocalization["Sunday"] = "Domenica"
 FactionAddictLocalization["DATE_FORMAT"] = "D d/m/y"
 
 -- Misc Strings
-FactionAddictLocalization["MISC_PARAGON_TXT"] = "Paragon"
+FactionAddictLocalization["MISC_PARAGON_TXT"] = "Eccellenza"
 end;

@@ -1,4 +1,4 @@
--- these are base translations, so no commenting out!
+-- these are the ruRU translations,
 -- meaning, if some string is not localized,
 -- the string will default to these
 

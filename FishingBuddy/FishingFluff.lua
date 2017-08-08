@@ -579,8 +579,12 @@ FishingItems[116755] = {
 };
 -- Special bobbers
 local Bobbers = {}
+local function CanUseOversieBobber()
+	return GetItemCount(136377) > 0 and not FL:HasBuff(FishingItems[136377].buff);
+end
+
 local function CanUseSpecialBobber()
-	return CanUseFishingItem("SpecialBobbers", Bobbers) and not FL:HasBuff(FishingItems[136377].buff);
+	return not CanUseOversieBobber() and CanUseFishingItem("SpecialBobbers", Bobbers) and not FL:HasBuff(FishingItems[136377].buff);
 end
 
 FishingItems[136377] = {
@@ -590,14 +594,23 @@ FishingItems[136377] = {
 	visible = function(option)
 			return true;
 		end,
-	usable = CanUseSpecialBobber,
+	usable = CanUseOversieBobber,
+	check = function(info, buff, doit, itemid)
+			for id,info in pairs(Bobbers) do
+				if (FL:HasBuff(info.buff)) then
+					CancelUnitBuff("player", info.buff)
+				end
+			end
+
+			return doit, itemid, nil
+		end,
 	["default"] = true,
 };
 
 local function PickRandomBobber(info, buff, doit, itemid)
 	local baits = {};
 	for id,info in pairs(Bobbers) do
-	if (PlayerHasToy(id) and C_ToyBox.IsToyUsable(id)) then
+		if (PlayerHasToy(id) and C_ToyBox.IsToyUsable(id)) then
 			local start, duration, enable = GetItemCooldown(id);
 			local et = (start + duration) - GetTime();
 			if (et <= 0) then

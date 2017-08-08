@@ -57,25 +57,33 @@ end
 
 function ArkInventory.Collection.Mount.Summon( id )
 	local obj = ArkInventory.Collection.Mount.GetMount( id )
-	C_MountJournal.SummonByID( obj.index )
+	if obj then
+		C_MountJournal.SummonByID( obj.index )
+	end
 end
 
 function ArkInventory.Collection.Mount.GetFavorite( id )
 	local obj = ArkInventory.Collection.Mount.GetMount( id )
-	return C_MountJournal.GetIsFavorite( obj.index )
+	if obj then
+		return C_MountJournal.GetIsFavorite( obj.index )
+	end
 end
 
 function ArkInventory.Collection.Mount.SetFavorite( id, value )
 	-- value = true|false
 	local obj = ArkInventory.Collection.Mount.GetMount( id )
 	--ArkInventory.Output( id, " / ", value, " (", type(value), ") / ", obj )
-	C_MountJournal.SetIsFavorite( obj.index, value )
+	if obj then
+		C_MountJournal.SetIsFavorite( obj.index, value )
+	end
 end
 
 function ArkInventory.Collection.Mount.IsUsable( id )
 	local obj = ArkInventory.Collection.Mount.GetMount( id )
 	-- and yes its still buggy and returning true when you cant actually use the mount
-	return ( select( 5, C_MountJournal.GetMountInfoByID( obj.index ) ) )
+	if obj then
+		return ( select( 5, C_MountJournal.GetMountInfoByID( obj.index ) ) )
+	end
 end
 
 function ArkInventory.Collection.Mount.SkillLevel( )

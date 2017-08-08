@@ -4248,7 +4248,7 @@ if pssisavedbossinfo[pssichose1] and #pssisavedbossinfo[pssichose1]>0 then
       --все меняем в цвете --смена ТОЛЬКО красного и зеленого будет по ходу создания текста если эта откл
 
       local tablecolor={"|CFFC69B6D","|CFFC41F3B","|CFFF48CBA","|CFFFFFFFF","|CFF1a3caa","|CFFFF7C0A","|CFFFFF468","|CFF68CCEF","|CFF9382C9","|CFFAAD372","|CFF00FF96","|CFFA330C9","|cff00ff00","|cffff0000","|CFFFFFF00","|cff71d5ff","|cff999999"}
-      local tablecolor2={"#C79C6E","#C41F3B","#F58CBA","#FFFFFF","#0070DE","#FF7D0A","#FFF569","#69CCF0","#9482C9","#ABD473","#00FF96","green","red","orange","black","grey"}
+      local tablecolor2={"#C79C6E","#C41F3B","#F58CBA","#FFFFFF","#0070DE","#FF7D0A","#FFF569","#69CCF0","#9482C9","grey","#ABD473","#00FF96","green","red","orange","black","grey"}
 
       for i=1,#tablecolor do
         psstrochka=string.gsub(psstrochka, tablecolor[i], "[color="..tablecolor2[i].."]")

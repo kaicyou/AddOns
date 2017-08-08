@@ -2,56 +2,24 @@
 ## Title: Sweetsour's Shaman Auras
 ## Notes: A full package of auras for all 3 Shaman specializations
 ## Author: Sweetsour
-## Version: r54-beta
+## Version: r60-beta
 ## SavedVariables: SSA_db
-## X-Curse-Packaged-Version: r54-beta
+## X-Curse-Packaged-Version: r60-beta
 ## X-Curse-Project-Name: Sweetsour's Shaman Auras
 ## X-Curse-Project-ID: sweetsour-shaman-auras
 ## X-Curse-Repository-ID: wow/sweetsour-shaman-auras/mainline
 
 ## OptionalDeps: Ace3, LibAboutPanel
 
-#@no-lib-strip@
-Libs\LibStub\LibStub.lua
-Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
-Libs\AceAddon-3.0\AceAddon-3.0.xml
-Libs\AceGUI-3.0\AceGUI-3.0.xml
-Libs\AceHook-3.0\AceHook-3.0.xml
-Libs\AceConfig-3.0\AceConfig-3.0.xml
-Libs\AceConsole-3.0\AceConsole-3.0.xml
-Libs\AceDB-3.0\AceDB-3.0.xml
-Libs\AceEvent-3.0\AceEvent-3.0.xml
-Libs\AceLocale-3.0\AceLocale-3.0.xml
-Libs\AceTimer-3.0\AceTimer-3.0.xml
 
-Libs\LibSharedMedia-3.0\LibSharedMedia-3.0\lib.xml
-Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
-Libs\LibAboutPanel\lib.xml
-Media\load_media.xml
-#@end-no-lib-strip@
-Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 
 embeds.xml
 
-Locales\LocalizationCore.lua
-Locales\enUS.lua
-Locales\ptBR.lua
-Locales\frFR.lua
-Locales\deDE.lua
-Locales\itIT.lua
-Locales\koKR.lua
-Locales\esMX.lua
-Locales\ruRU.lua
-Locales\zhCN.lua
-Locales\esES.lua
-Locales\zhTW.lua
-
-SA_defaults.lua
-SA_Core.lua
-SA_Bulletin.lua
-SA_Frames_Elemental.lua
-SA_Frames_Enhancement.lua
-SA_Frames_Restoration.lua
-SA_Functions.lua
-SA_Config.lua
-SA_Init.lua
+Libs\load_libraries.xml
+Media\load_media.xml
+Locales\load_locales.xml
+init.lua
+defaults.lua
+Core\load_core.xml
+Frames\load_frames.xml
+Modules\load_modules.xml

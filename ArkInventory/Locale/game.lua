@@ -178,7 +178,7 @@ L["VIEW"] = VIEW or true
 L["WEEKLY"] = WEEKLY or true
 L["YES"] = YES or true
 
-function FormatForRegex( text )
+local function FormatForRegex( text )
 	local text = text
 	text = string.gsub( text, "%.", "%%%." ) -- replace . with %.
 	text = string.gsub( text, "%*", "%%%*" ) -- replace * with %*

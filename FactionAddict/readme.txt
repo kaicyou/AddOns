@@ -4,7 +4,7 @@
 -- Desc: Addon for World of Warcraft
 --
 -- Author: gmz323(Greg)
--- current version: v1.44
+-- current version: v1.45
 -- (c) 2011-2017
 --
 =============================================================================
@@ -68,6 +68,10 @@ My Other Addons:
 
 Changelog:
 ==========
+
+v1.45 (2017-08-03)
+------------------
+* Update to the Italian (itIT) client localization. Thanks Angelo!
 
 v1.44 (2017-04-30)
 ------------------

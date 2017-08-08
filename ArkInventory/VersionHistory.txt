@@ -14,6 +14,15 @@
  
 
 
+*3.07.33 (07-AUG-2017)*
+ * added - error prevention logic to mount, pet, and toy, collection scan code to handle potentially invalid returns from the blizzard api
+ * fixed - issue with refreshing windows that arent visible
+
+*3.07.32 (01-AUG-2017)*
+ * fixed - queue for rescan message will no longer print out when set to disabled
+ * fixed - removed a pet debug output that always displayed
+ * added - error prevention logic to sort key generation code to handle potentially invalid returns from the blizzard api
+
 *3.07.31 (09-JUL-2017)*
  * removed - config options for in-combat yielding
  * added - config options for thread timeout values (defaults to 100ms for in-combat and 100ms for out-of-combat)

@@ -66,14 +66,14 @@
 			
 			<OnUpdate>
 				if _G[string.format( "%s%s", self:GetName( ), "Highlight" )]:IsShown( ) then
-					h = _G[string.format( "%s%s", self:GetName( ), "Id" )]:GetText( )
+					local h = _G[string.format( "%s%s", self:GetName( ), "Id" )]:GetText( )
 					ArkInventory.GameTooltipSetHyperlink( self, h )
 				end
 			</OnUpdate>
 			
 			<OnEnter>
 				_G[string.format( "%s%s", self:GetName( ), "Highlight" )]:Show( )
-				h = _G[string.format( "%s%s", self:GetName( ), "Id" )]:GetText( )
+				local h = _G[string.format( "%s%s", self:GetName( ), "Id" )]:GetText( )
 				ArkInventory.GameTooltipSetHyperlink( self, h )
 			</OnEnter>
 			

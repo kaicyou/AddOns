@@ -13,6 +13,7 @@ credits[FBConstants.ROLE_TRANSLATE_ZHTW] = {
 	["zhTW"] = { "V1.0.9e", },
 	["titanium0107"] = { "V1.1e", "V1.2", "V1.2a", "V1.2c", "V1.2e", },
 	["alec65 "] = { "V1.4u", },
+	["gaspy10"] = { "V1.7.13c" }
 };
 
 credits[FBConstants.ROLE_TRANSLATE_ITIT] = {

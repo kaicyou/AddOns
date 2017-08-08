@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1815 $
-$Date: 2017-06-27 00:16:14 +1000 (Tue, 27 Jun 2017) $
+$Revision: 1843 $
+$Date: 2017-07-22 00:28:24 +1000 (Sat, 22 Jul 2017) $
 
 ]]--
 
@@ -2062,9 +2062,9 @@ function ArkInventoryRules.Frame_Rules_Paint( )
 	end
 	
 	-- title
-	obj = _G[frame:GetName( ) .. "TitleWho"]
+	local obj = _G[frame:GetName( ) .. "TitleWho"]
 	if obj then
-		t = string.format( "%s: %s %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Const.Program.Name, ArkInventory.Global.Version )
+		local t = string.format( "%s: %s %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Const.Program.Name, ArkInventory.Global.Version )
 		obj:SetText( t )
 	end
 	

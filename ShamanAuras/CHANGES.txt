@@ -1,4 +1,156 @@
 ------------------------------------------------------------------------
+r126 | SweetsourDev | 2017-08-07 14:11:33 -0500 (Mon, 07 Aug 2017) | 2 lines
+Changed paths:
+   M /trunk/Core/core.lua
+   M /trunk/Core/functions.lua
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Frames/elemental.lua
+   M /trunk/Frames/enhancement.lua
+   M /trunk/Frames/init.lua
+   M /trunk/Frames/restoration.lua
+   D /trunk/Locales/LocalizationCore - old.lua
+   M /trunk/Locales/deDE.lua
+   M /trunk/Locales/enUS.lua
+   M /trunk/Locales/esES.lua
+   M /trunk/Locales/esMX.lua
+   M /trunk/Locales/frFR.lua
+   M /trunk/Locales/itIT.lua
+   M /trunk/Locales/ptBR.lua
+   M /trunk/Locales/ruRU.lua
+   M /trunk/Locales/zhCN.lua
+   M /trunk/Locales/zhTW.lua
+   D /trunk/Media/Testing
+   D /trunk/Media/statusbar/Halves-old.tga
+   D /trunk/Media/statusbar/Halvess.tga
+   M /trunk/Modules/config.lua
+   M /trunk/Modules/cooldowns.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r60-beta
+FIX: [All] Minor bug fixes dealing with localization. (Thanks, Khisanth!)
+------------------------------------------------------------------------
+r125 | SweetsourDev | 2017-08-06 23:14:34 -0500 (Sun, 06 Aug 2017) | 4 lines
+Changed paths:
+   M /trunk/ShamanAuras.toc
+
+	r59-beta
+FIX: [All] Cooldown numbers showing for charge cooldowns should no longer appear.
+FIX: [Ele] Flame Shock's aura should no longer display a cooldown number that does not match the rest of the groups formatting.
+FIX: [Res] Flame Shock's aura should be displaying its cooldown and debuff timer correctly.
+------------------------------------------------------------------------
+r124 | SweetsourDev | 2017-08-06 23:11:43 -0500 (Sun, 06 Aug 2017) | 4 lines
+Changed paths:
+   M /trunk/Core/functions.lua
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Frames/elemental.lua
+   M /trunk/Frames/restoration.lua
+   M /trunk/Modules/cooldowns.lua
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r59-beta
+FIX: [All] Cooldown numbers showing for charge cooldowns should no longer appear.
+FIX: [Ele] Flame Shock's aura should no longer display a cooldown number that does not match the rest of the groups formatting.
+FIX: [Res] Flame Shock's aura should be displaying its cooldown and debuff timer correctly.
+------------------------------------------------------------------------
+r123 | SweetsourDev | 2017-08-06 20:08:49 -0500 (Sun, 06 Aug 2017) | 5 lines
+Changed paths:
+   A /trunk/Core
+   A /trunk/Core/core.lua
+   A /trunk/Core/functions.lua
+   A /trunk/Core/load_core.xml
+   A /trunk/Frames
+   A /trunk/Frames/bulletin.lua
+   A /trunk/Frames/elemental.lua
+   A /trunk/Frames/enhancement.lua
+   A /trunk/Frames/init.lua
+   A /trunk/Frames/load_frames.xml
+   A /trunk/Frames/restoration.lua
+   D /trunk/Libs/Changelog-Ace3-Release-r1151.txt
+   A /trunk/Libs/load_libraries.xml
+   A /trunk/Locales/LocalizationCore - old.lua
+   D /trunk/Locales/LocalizationCore.lua
+   M /trunk/Locales/enUS.lua
+   A /trunk/Locales/load_locales.xml
+   A /trunk/Media/statusbar/Halves-old.tga
+   A /trunk/Modules
+   A /trunk/Modules/config.lua
+   A /trunk/Modules/cooldowns.lua
+   A /trunk/Modules/load_modules.xml
+   D /trunk/SA_Bulletin.lua
+   D /trunk/SA_Config.lua
+   D /trunk/SA_Core.lua
+   D /trunk/SA_Frames_Elemental.lua
+   D /trunk/SA_Frames_Enhancement.lua
+   D /trunk/SA_Frames_Restoration.lua
+   D /trunk/SA_Functions.lua
+   D /trunk/SA_Init.lua
+   D /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   A /trunk/defaults.lua
+   D /trunk/embeds.xml
+   A /trunk/init.lua
+
+	r58-beta
+NEW: [All] Customizable cooldowns are now available!
+NEW: [All] Added functionality to prevent Blizzard's default cooldown numbers from appearing; eliminating dual cooldown number overlapping.
+NEW: [UI] More code clean-up.
+NEW: [UI] Fully restructured addon file directory.
+------------------------------------------------------------------------
+r122 | SweetsourDev | 2017-08-01 21:46:24 -0500 (Tue, 01 Aug 2017) | 2 lines
+Changed paths:
+   M /trunk/SA_Bulletin.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+
+	r57-beta
+[FIX] The vertical buff timer bars should now remain in their new location when moved after reloading your UI. (Thanks, Aingel!)
+------------------------------------------------------------------------
+r121 | SweetsourDev | 2017-07-30 19:06:48 -0500 (Sun, 30 Jul 2017) | 4 lines
+Changed paths:
+   D /trunk/Media/fonts/noto_sans
+   D /trunk/Media/fonts/wen_quan_yi_zen_hei
+   M /trunk/Media/sharedmedia.lua
+   M /trunk/SA_Bulletin.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+		r56-beta
+NEW: [All] Auras should no longer appear if it's not available due to player level.
+
+FIX: [Enhancement] The auras for the 2 and 4-set bonuses from T20 should be working correctly. (Special Thanks to Sky for helping with testing!)
+------------------------------------------------------------------------
+r120 | SweetsourDev | 2017-07-28 22:52:39 -0500 (Fri, 28 Jul 2017) | 6 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   M /trunk/SA_Bulletin.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/SA_Init.lua
+   M /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r55-beta
+NEW: [Enhancement] A new vertical timer bar has been added to track the Tier 20 2-set bonus: Lightning Crash. (Special Thanks to Sky for helping with testing!)
+NEW: [Enhancement] A "mini aura" has been attached the Crash Lightning aura to track the T20 4-set bonus: Crashing Lightning. (Special Thanks to Sky for helping with testing!)
+
+FIX: [Enhancement] Doom Winds's texture should now disappear when the buff isn't active. (Thanks, Sky!)
+FIX: [Restoration] The charges text for Lava Burst should disappear when you unlearn Echo of the Elements. (Thanks, Ives!)
+------------------------------------------------------------------------
 r119 | SweetsourDev | 2017-07-27 19:02:24 -0500 (Thu, 27 Jul 2017) | 4 lines
 Changed paths:
    M /trunk/Locales/enUS.lua

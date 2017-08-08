@@ -36,22 +36,18 @@ end
 
 local function FilterGetCollected( )
 	return C_ToyBox.GetCollectedShown( )
-	-- legion ok
 end
 
 local function FilterSetCollected( value )
 	C_ToyBox.SetCollectedShown( value )
-	-- legion ok
 end
 
 local function FilterGetUncollected( )
 	return C_ToyBox.GetUncollectedShown( )
-	-- legion ok
 end
 
 local function FilterSetUncollected( value )
 	C_ToyBox.SetUncollectedShown( value )
-	-- legion ok
 end
 
 local function FilterGetSourceTypes( )
@@ -70,7 +66,6 @@ local function FilterSetSource( t )
 	else
 		assert( false, "parameter is not a table or boolean" )
 	end
-	-- legion ok
 end
 
 local function FilterGetSource( t )
@@ -78,7 +73,6 @@ local function FilterGetSource( t )
 	for i = 1, FilterGetSourceTypes( ) do
 		t[i] = not C_ToyBox.IsSourceTypeFilterChecked( i )
 	end
-	-- legion ok
 end
 
 

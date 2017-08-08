@@ -11,8 +11,8 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion43 and pswasonbossLeg
 		pssetcrossbeforereport1=GetTime()
 
 		if psraidoptionson[4][4][3][1]==1 then
-			--strochkavezcrash=psiccdmgfrom.." |s4id203097|id ("..psmainmtotal.."): "
-			--reportafterboitwotab(psraidchats3[psraidoptionschat[4][4][3][1]], true, vezaxname, vezaxcrash, 1)
+			strochkavezcrash=psiccdmgfrom.." |s4id231768|id ("..psmainmtotal.."): "
+			reportafterboitwotab(psraidchats3[psraidoptionschat[4][4][3][1]], true, vezaxname, vezaxcrash, 1)
 		end
 		if psraidoptionson[4][4][3][2]==1 then
 			--strochkavezcrash=psiccdmgfrom.." |s4id179897|id ("..psmainmtotal.."): "
@@ -25,8 +25,8 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion43 and pswasonbossLeg
 
 		psiccsavinginf(psbossnames[4][4][3], try, pswasonbossLegion43)
 
-		--strochkavezcrash=psiccdmgfrom.." |s4id221028|id ("..psmainmtotal.."): "
-		--reportafterboitwotab("raid", true, vezaxname, vezaxcrash, nil, nil,0,1)
+		strochkavezcrash=psiccdmgfrom.." |s4id231768|id ("..psmainmtotal.."): "
+		reportafterboitwotab("raid", true, vezaxname, vezaxcrash, nil, nil,0,1)
 		--strochkavezcrash=psiccdmgfrom.." |s4id179897|id ("..psmainmtotal.."): "
 		--reportafterboitwotab("raid", true, vezaxname2, vezaxcrash2, nil, nil,0,1)
 
@@ -66,7 +66,7 @@ function pscombatlogbossLegion43(arg1, arg2, hideCaster, guid1, name1, flag1, ne
 
 
 
-if arg2=="SPELL_DAMAGE" and spellid==99999999999999999 and name2 then
+if arg2=="SPELL_PERIODIC_DAMAGE" and spellid==231768 and name2 then
   if pswasonbossLegion43==nil then
     pswasonbossLegion43=1
   end

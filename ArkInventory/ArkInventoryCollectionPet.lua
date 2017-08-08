@@ -202,38 +202,40 @@ function ArkInventory.Collection.Pet.Iterate( )
 end
 
 function ArkInventory.Collection.Pet.CanSummon( arg1 )
-	local pd = ArkInventory.Collection.Pet.GetPet( arg1 )
-	if pd then
-		return not C_PetJournal.PetIsRevoked( pd.guid ) and not C_PetJournal.PetIsLockedForConvert( pd.guid ) and C_PetJournal.PetIsSummonable( pd.guid )
+	local obj = ArkInventory.Collection.Pet.GetPet( arg1 )
+	if obj then
+		return not C_PetJournal.PetIsRevoked( obj.guid ) and not C_PetJournal.PetIsLockedForConvert( obj.guid ) and C_PetJournal.PetIsSummonable( obj.guid )
 	end
 end
 
 function ArkInventory.Collection.Pet.CanRelease( arg1 )
-	local pd = ArkInventory.Collection.Pet.GetPet( arg1 )
-	if pd then
-		return C_PetJournal.PetCanBeReleased( pd.guid )
+	local obj = ArkInventory.Collection.Pet.GetPet( arg1 )
+	if obj then
+		return C_PetJournal.PetCanBeReleased( obj.guid )
 	end
 end
 
 function ArkInventory.Collection.Pet.CanTrade( arg1 )
-	local pd = ArkInventory.Collection.Pet.GetPet( arg1 )
-	if pd then
-		return C_PetJournal.PetIsTradable( pd.guid )
+	local obj = ArkInventory.Collection.Pet.GetPet( arg1 )
+	if obj then
+		return C_PetJournal.PetIsTradable( obj.guid )
 	end
 end
 
 function ArkInventory.Collection.Pet.Summon( arg1 )
-	local pd = ArkInventory.Collection.Pet.GetPet( arg1 )
-	if pd then
-		C_PetJournal.SummonPetByGUID( pd.guid )
+	local obj = ArkInventory.Collection.Pet.GetPet( arg1 )
+	if obj then
+		C_PetJournal.SummonPetByGUID( obj.guid )
 	end
 end
 
 function ArkInventory.Collection.Pet.GetCurrent( )
 	local guid = C_PetJournal.GetSummonedPetGUID( )
 	if guid then
-		local pd = ArkInventory.Collection.Pet.GetPet( guid )
-		return pd.guid, guid, pd
+		local obj = ArkInventory.Collection.Pet.GetPet( guid )
+		if obj then
+			return obj.guid, guid, obj
+		end
 	end
 end
 
@@ -245,51 +247,51 @@ function ArkInventory.Collection.Pet.Dismiss( )
 end
 
 function ArkInventory.Collection.Pet.GetStats( arg1 )
-	local pd = ArkInventory.Collection.Pet.GetPet( arg1 )
-	if pd then
-		return C_PetJournal.GetPetStats( pd.guid )
+	local obj = ArkInventory.Collection.Pet.GetPet( arg1 )
+	if obj then
+		return C_PetJournal.GetPetStats( obj.guid )
 	end
 end
 
 function ArkInventory.Collection.Pet.PickupPet( arg1, arg2 )
-	local pd = ArkInventory.Collection.Pet.GetPet( arg1 )
-	if pd then
-		return C_PetJournal.PickupPet( pd.guid, arg2 )
+	local obj = ArkInventory.Collection.Pet.GetPet( arg1 )
+	if obj then
+		return C_PetJournal.PickupPet( obj.guid, arg2 )
 	end
 end
 
 function ArkInventory.Collection.Pet.IsRevoked( arg1 )
-	local pd = ArkInventory.Collection.Pet.GetPet( arg1 )
-	if pd then
-		return C_PetJournal.PetIsRevoked( pd.guid )
+	local obj = ArkInventory.Collection.Pet.GetPet( arg1 )
+	if obj then
+		return C_PetJournal.PetIsRevoked( obj.guid )
 	end
 end
 
 function ArkInventory.Collection.Pet.IsLockedForConvert( arg1 )
-	local pd = ArkInventory.Collection.Pet.GetPet( arg1 )
-	if pd then
-		return C_PetJournal.PetIsLockedForConvert( pd.guid )
+	local obj = ArkInventory.Collection.Pet.GetPet( arg1 )
+	if obj then
+		return C_PetJournal.PetIsLockedForConvert( obj.guid )
 	end
 end
 
 function ArkInventory.Collection.Pet.IsFavorite( arg1 )
-	local pd = ArkInventory.Collection.Pet.GetPet( arg1 )
-	if pd then
-		return C_PetJournal.PetIsFavorite( pd.guid )
+	local obj = ArkInventory.Collection.Pet.GetPet( arg1 )
+	if obj then
+		return C_PetJournal.PetIsFavorite( obj.guid )
 	end
 end
 
 function ArkInventory.Collection.Pet.IsSlotted( arg1 )
-	local pd = ArkInventory.Collection.Pet.GetPet( arg1 )
-	if pd then
-		return C_PetJournal.PetIsSlotted( pd.guid )
+	local obj = ArkInventory.Collection.Pet.GetPet( arg1 )
+	if obj then
+		return C_PetJournal.PetIsSlotted( obj.guid )
 	end
 end
 
 function ArkInventory.Collection.Pet.IsHurt( arg1 )
-	local pd = ArkInventory.Collection.Pet.GetPet( arg1 )
-	if pd then
-		return C_PetJournal.PetIsHurt( pd.guid )
+	local obj = ArkInventory.Collection.Pet.GetPet( arg1 )
+	if obj then
+		return C_PetJournal.PetIsHurt( obj.guid )
 	end
 end
 
@@ -298,8 +300,10 @@ function ArkInventory.Collection.Pet.InBattle( )
 end
 
 function ArkInventory.Collection.Pet.SetName( arg1, arg2 )
-	local pd = ArkInventory.Collection.Pet.GetPet( arg1 )
-	C_PetJournal.SetCustomName( pd.guid, arg2 )
+	local obj = ArkInventory.Collection.Pet.GetPet( arg1 )
+	if obj then
+		C_PetJournal.SetCustomName( obj.guid, arg2 )
+	end
 end
 
 function ArkInventory.Collection.Pet.IsUnlocked( )
@@ -308,8 +312,10 @@ end
 
 function ArkInventory.Collection.Pet.SetFavorite( arg1, arg2 )
 	-- arg2 = 0 (remove) | 1 (set)
-	local pd = ArkInventory.Collection.Pet.GetPet( arg1 )
-	C_PetJournal.SetFavorite( pd.guid, arg2 )
+	local obj = ArkInventory.Collection.Pet.GetPet( arg1 )
+	if obj then
+		C_PetJournal.SetFavorite( obj.guid, arg2 )
+	end
 end
 
 
@@ -1163,7 +1169,7 @@ function ArkInventory:EVENT_ARKINV_COLLECTION_PET_RELOAD_BUCKET( events )
 	end
 	
 	if PetJournal:IsVisible( ) then
-		ArkInventory.Output( "IGNORED (PET JOURNAL OPEN)" )
+		--ArkInventory.Output( "IGNORED (PET JOURNAL OPEN)" )
 		return
 	end
 	

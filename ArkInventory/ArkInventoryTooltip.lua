@@ -239,8 +239,8 @@ function ArkInventory.TooltipSetBattlepet( tooltip, h, i )
 		tooltip:AddLine( " " )
 		
 		
-		txt1 = LEVEL
-		txt2 = string.format( "%s %s", osd.level, "|TInterface\\PetBattles\\BattleBar-AbilityBadge-Strong-Small:0|t" )
+		local txt1 = LEVEL
+		local txt2 = string.format( "%s %s", osd.level, "|TInterface\\PetBattles\\BattleBar-AbilityBadge-Strong-Small:0|t" )
 		if pd and pd.xp and pd.maxXp and pd.xp > 0 then
 			
 			local pc = pd.xp / pd.maxXp * 100
@@ -330,7 +330,7 @@ function ArkInventory.TooltipHookSetUnit( ... )
 			
 			tooltip:Show( ) -- its a static tooltip, need to show it first to be able to add to it
 			
-			sd = ArkInventory.Collection.Pet.GetSpeciesInfo( speciesID )
+			local sd = ArkInventory.Collection.Pet.GetSpeciesInfo( speciesID )
 			
 			if sd then
 				

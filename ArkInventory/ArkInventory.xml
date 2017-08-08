@@ -2022,13 +2022,9 @@
 				self.timer = 0
 			</Onload>
 			<OnUpdate>
-				--self.timer = self.timer + elapsed
-				--if self.timer > 0.1 then
-					--self.timer = 0
-					if ArkInventory.ThreadResume( ) then
-						self:Hide( )
-					end
-				--end
+				if ArkInventory.ThreadResume( ) then
+					self:Hide( )
+				end
 			</OnUpdate>
 		</Scripts>
 	</Frame>

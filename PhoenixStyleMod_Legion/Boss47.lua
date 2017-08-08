@@ -11,12 +11,12 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion47 and pswasonbossLeg
 		pssetcrossbeforereport1=GetTime()
 
 		if psraidoptionson[4][4][7][1]==1 then
-			--strochkavezcrash=psiccdmgfrom.." |s4id203097|id ("..psmainmtotal.."): "
-			--reportafterboitwotab(psraidchats3[psraidoptionschat[4][4][7][1]], true, vezaxname, vezaxcrash, 1)
+			strochkavezcrash=psdidfriendlyf.." |s4id240170|id ("..psmainmtotal.."): "
+			reportafterboitwotab(psraidchats3[psraidoptionschat[4][4][7][1]], true, vezaxname, vezaxcrash, 1)
 		end
 		if psraidoptionson[4][4][7][2]==1 then
-			--strochkavezcrash=psiccdmgfrom.." |s4id179897|id ("..psmainmtotal.."): "
-			--reportafterboitwotab(psraidchats3[psraidoptionschat[4][4][7][2]], true, vezaxname2, vezaxcrash2, 1)
+			strochkavezcrash=psiccdmgfrom.." |s4id234896|id ("..psmainmtotal.."): "
+			reportafterboitwotab(psraidchats3[psraidoptionschat[4][4][7][2]], true, vezaxname2, vezaxcrash2, 1)
 		end
 
 
@@ -25,10 +25,10 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion47 and pswasonbossLeg
 
 		psiccsavinginf(psbossnames[4][4][7], try, pswasonbossLegion47)
 
-		--strochkavezcrash=psiccdmgfrom.." |s4id221028|id ("..psmainmtotal.."): "
-		--reportafterboitwotab("raid", true, vezaxname, vezaxcrash, nil, nil,0,1)
-		--strochkavezcrash=psiccdmgfrom.." |s4id179897|id ("..psmainmtotal.."): "
-		--reportafterboitwotab("raid", true, vezaxname2, vezaxcrash2, nil, nil,0,1)
+		strochkavezcrash=psdidfriendlyf.." |s4id240170|id ("..psmainmtotal.."): "
+		reportafterboitwotab("raid", true, vezaxname, vezaxcrash, nil, nil,0,1)
+		strochkavezcrash=psiccdmgfrom.." |s4id234896|id ("..psmainmtotal.."): "
+		reportafterboitwotab("raid", true, vezaxname2, vezaxcrash2, nil, nil,0,1)
 
 		psiccrefsvin()
 
@@ -66,28 +66,28 @@ function pscombatlogbossLegion47(arg1, arg2, hideCaster, guid1, name1, flag1, ne
 
 
 
-if arg2=="SPELL_DAMAGE" and spellid==99999999999999999 and name2 then
-  if pswasonbossLegion47==nil then
-    pswasonbossLegion47=1
+if arg2=="SPELL_DAMAGE" and spellid==240170 and name1 and name2 and name1~=name2 then
+  if pswasonbossLegion46==nil then
+    pswasonbossLegion46=1
   end
   psunitisplayer(guid2,name2)
   if psunitplayertrue then
 
     pscheckwipe1()
-    if pswipetrue and pswasonbossLegion47~=2 then
+    if pswipetrue and pswasonbossLegion46~=2 then
       psiccwipereport_legion1("wipe", "try")
     end
-    addtotwotables1(name2)
+    addtotwotables1(name1)
     vezaxsort1()
     local tt2=", "..psdamageceil(arg12)
       if arg13>=0 then
         tt2=", "..psdamageceil(arg12-arg13).." |cffff0000("..psoverkill..": "..psdamageceil(arg13)..")|r"
       end
-    pscaststartinfo(0,spellname..": "..psaddcolortxt(1,name2)..name2..psaddcolortxt(2,name2)..tt2, -1, "id1", 1, "|s4id"..spellid.."|id - "..psinfo,psbossnames[4][4][7],2)
+    pscaststartinfo(0,spellname..": "..psaddcolortxt(1,name1)..name1..psaddcolortxt(2,name1).." > "..psaddcolortxt(1,name2)..name2..psaddcolortxt(2,name2)..tt2, -1, "id1", 1, "|s4id"..spellid.."|id - "..psinfo,psbossnames[4][4][7],2)
   end
 end
 
-if arg2=="SPELL_DAMAGE" and spellid==99999999999999999 then
+if arg2=="SPELL_DAMAGE" and spellid==234896 then
   if pswasonbossLegion47==nil then
     pswasonbossLegion47=1
   end

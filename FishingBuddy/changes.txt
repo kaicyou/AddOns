@@ -1,4 +1,8 @@
-﻿Version 1.7.13b
+﻿Version 1.7.13c
+- Always try and use the Oversize Bobber if the user wants it
+- Updated Traditional Chinese translation (thanks gaspy10!)
+
+Version 1.7.13b
 - Don't globally define my custom CalendarGetDayEvent so as not to break other addons
 - Update LibTourist and LibPetJournal
 

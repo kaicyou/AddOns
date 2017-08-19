@@ -292,36 +292,6 @@ function Auras:InitializeProgressBar(bar1,bar2,db,text1,text2,spec)
 	end
 end
 
--- Convert time, in seconds, to a timer string
-function Auras:parseTime(timer,precision)
-	if (timer ~= nil and timer > 0) then
-		local m,s,ms,fs = floor(timer / 60),floor(fmod(timer,60)),(('%%.%df'):format(1)):format(fmod(timer,60),1),timer
-
-		if (m >= 1 and s == 0) then
-			return m..":00",fs
-		else
-			if (m > 0) then
-				m = m..":"
-				if (s < 10) then
-					s = "0"..s
-				end
-			else
-				m = ''
-				if (s < 0) then
-					s = ''
-				end
-			end
-		end
-		if (precision and tonumber(s) < 60) then
-			return m..ms,fs
-		else
-			return m..s,fs
-		end
-	else
-		return 0,0
-	end
-end
-
 --[[function Auras:ToggleCooldownSwipe(self,arg1)
 	local cooldown = _G[self:GetName()]
 	if (not arg1) then
@@ -347,53 +317,7 @@ end]]
 	self.text:SetText(3 + progress)
 end]]
 
--- Complete Cooldown Handler
-function Auras:CooldownHandler(self,spec,group,subgroup,start,duration,bypass)
-	local cd = Auras.db.char.elements[spec].cooldowns
-	
-	--Auras:ToggleCooldownSwipe(self,spec)
-	
-	if (cd.adjust and not UnitAffectingCombat('player')) then
-		--self:SetAlpha(1)
-		--[[if (self.ChargeCD) then
-			self.Charges.text:SetText('')
-		end]]
-		grp,subgrp = split(";",cd.selected)
-		--SSA.DataFrame.text:SetText("Group: "..tostring(group).." ("..tostring(grp)..")\nSubGroup: "..tostring(subgroup).." ("..tostring(subgrp)..")\n\n")
-		
-		
-		
-		if (group == grp and subgroup == tonumber(subgrp)) then
-			if (self.Charges) then
-				self.Charges:Hide()
-			end
-			--SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."TRUE: "..tostring(self:GetName()).."\n")
-			Auras:PreviewCooldown(self,group,tonumber(subgroup),spec)
-		else
-			--SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."FALSE: "..tostring(self:GetName()).."\n")
-			if (self.PCD:IsShown()) then
-				self.PCD:Hide()
-			end
-		end
-	else
-		if (self.PCD:IsShown()) then
-			self.PCD:Hide()
-		end
-		
-		if (self.Charges and not self.Charges:IsShown()) then
-			self.Charges:Show()
-		end
-		
-		Auras:ExecuteGCD(self,(start or 0),spec)
-		--Auras:ToggleCooldownSwipe(self,spec)
-		Auras:UpdateCooldown(self,spec,cd)
-		
-		if (not bypass and (duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,group,subgroup,spec)
-		end
-		
-	end
-end
+
 
 
 

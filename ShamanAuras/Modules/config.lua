@@ -2,46 +2,47 @@ local SSA, Auras, L, LSM = unpack(select(2,...))
 Auras.version = GetAddOnMetadata(..., 'Version')
 
 local split, tonumber = string.split, tonumber
+local upper = string.upper
 
--- ----------------------------------------------------------------------------
--- Constants.
--- ----------------------------------------------------------------------------
+--[[----------------------------------------------------------------
+	Constants
+------------------------------------------------------------------]]
 local FRAME_ANCHOR_OPTIONS = {
-	["TOPLEFT"] = L["TOPLEFT"],
-	["TOP"] = L["TOP"],
-	["TOPRIGHT"] = L["TOPRIGHT"],
-	["LEFT"] = L["LEFT"],
-	["CENTER"] = L["CENTER"],
-	["RIGHT"] = L["RIGHT"],
-	["BOTTOMLEFT"] = L["BOTTOMLEFT"],
-	["BOTTOM"] = L["BOTTOM"],
-	["BOTTOMRIGHT"] = L["BOTTOMRIGHT"],
+	["TOPLEFT"] = L["OPTION_TOP_LEFT"],
+	["TOP"] = L["OPTION_TOP"],
+	["TOPRIGHT"] = L["OPTION_TOP_RIGHT"],
+	["LEFT"] = L["OPTION_LEFT"],
+	["CENTER"] = L["OPTION_CENTER"],
+	["RIGHT"] = L["OPTION_RIGHT"],
+	["BOTTOMLEFT"] = L["OPTION_BOTTOM_LEFT"],
+	["BOTTOM"] = L["OPTION_BOTTOM"],
+	["BOTTOMRIGHT"] = L["OPTION_BOTTOM_RIGHT"],
 }
 
 local FONT_OUTLINES = {
 	[""] = NONE,
-	["OUTLINE"] = L["Outline"],
-	["THICKOUTLINE"] = L["Thick Outline"],
-	["MONOCHROME"] = L["Monochrome"],
-	["OUTLINE, MONOCHROME"] = L["Monochrome Outline"],
-	["THICKOUTLINE, MONOCHROME"] = L["Monochrome Thick Outline"],
+	["OUTLINE"] = L["OPTION_OUTLINE"],
+	["THICKOUTLINE"] = L["OPTION_OUTLINE_THICK"],
+	["MONOCHROME"] = L["OPTION_OUTLINE_MONOCHROME"],
+	["OUTLINE, MONOCHROME"] = L["OPTION_OUTLINE_MONOCHROME_OUTLINE"],
+	["THICKOUTLINE, MONOCHROME"] = L["OPTION_OUTLINE_MONOCHROME_THICK"],
 }
 
 local ORIENTATION = {
-	["Horizontal"] = L["Horizontal"],
-	["Vertical"] = L["Vertical"],
+	["Horizontal"] = L["OPTION_HORIZONTAL"],
+	["Vertical"] = L["OPTION_VERTICAL"],
 }
 
 local ICON_JUSTIFY = {
-	["LEFT"] = L["Left"],
-	["RIGHT"] = L["Right"],
+	["LEFT"] = L["OPTION_LEFT"],
+	["RIGHT"] = L["OPTION_RIGHT"],
 }
 
 local TIDAL_WAVES_OPTIONS = {
 	["Always"] = ALWAYS,
-	["Target & On Heal"] = L["Target & On Heal"],
-	["Target Only"] = L["Target Only"],
-	["On Heal Only"] = L["On Heal Only"],
+	["Target & On Heal"] = L["OPTION_TARGET_HEAL"],
+	["Target Only"] = L["OPTION_TARGET_ONLY"],
+	["On Heal Only"] = L["OPTION_HEAL_ONLY"],
 	["Never"] = NEVER,
 }
 
@@ -53,27 +54,14 @@ local COOLDOWN_OPTIONS = {
 	["secondary;2"] = SECONDARY.." #2",
 }
 
-local function SetBarValues(isNameText,isTimeText,obj,text1,text2)
-	if (isNameText and isTimeText) then
-		obj.values = {
-			[text1.." Text"] = L[text1.." Text"],
-			[text2.." Text"] = L[text2.." Text"],
-		}
-	elseif (isNameText and not isTimeText) then
-		obj.values = {
-			[text1.." Text"] = L[text1.." Text"],
-		}
-	elseif  (not isNameText and isTimeText) then
-		obj.values = {
-			[text2.." Text"] = L[text2.." Text"],
-		}
-	else
-		obj.hidden = true
-	end
-end
+local TIME_FORMATS = {
+	["full"] = "2:25",
+	["short"] = "2m",
+}
+
 
 --[[----------------------------------------------------------------
-	Copy formatting options from other cooldown groups.
+	Copy font options from other cooldown groups.
 ------------------------------------------------------------------]]
 local function CopyCooldownOptions(value,spec,group,subgroup)
 	local grp,subGrp = split(";",value)
@@ -97,6 +85,25 @@ local function CopyCooldownOptions(value,spec,group,subgroup)
 	dest.font.shadow.color.g = src.font.shadow.color.g
 	dest.font.shadow.color.b = src.font.shadow.color.b
 	dest.font.shadow.color.a = src.font.shadow.color.a
+end
+
+--[[----------------------------------------------------------------
+	Copy formatting options from other cooldown groups.
+------------------------------------------------------------------]]
+local function CopyCooldownFormatting(value,spec,group,subgroup)
+	local grp,subGrp = split(";",value)
+	local src = Auras.db.char.elements[spec].cooldowns[grp][tonumber(subGrp)].text
+	local dest = Auras.db.char.elements[spec].cooldowns[group][subgroup].text
+	
+	dest.formatting.length = src.formatting.length
+	dest.formatting.decimals = src.formatting.decimals
+	dest.formatting.alert.isEnabled = src.formatting.alert.isEnabled
+	dest.formatting.alert.threshold = src.formatting.alert.threshold
+	dest.formatting.alert.animate = src.formatting.alert.animate
+	dest.formatting.alert.color.r = src.formatting.alert.color.r
+	dest.formatting.alert.color.g = src.formatting.alert.color.g
+	dest.formatting.alert.color.b = src.formatting.alert.color.b
+	dest.formatting.alert.color.a = src.formatting.alert.color.a
 end
 
 --[[----------------------------------------------------------------
@@ -327,60 +334,85 @@ local function SetCooldownOptions(spec,options)
 	local selected = ''
 	
 	if (cd.selected == "primary;1") then
-		selected = 'p1_adjustGroup'
+		selected = 'p1'
 		cd.primary[1].isPreview = true
 		cd.primary[2].isPreview = false
 		cd.primary[3].isPreview = false
 		cd.secondary[1].isPreview = false
 		cd.secondary[2].isPreview = false
+		option.p1_formatting.hidden = false
+		option.p2_formatting.hidden = true
+		option.p3_formatting.hidden = true
+		option.s1_formatting.hidden = true
+		option.s2_formatting.hidden = true
 		option.p1_adjustGroup.hidden = false
 		option.p2_adjustGroup.hidden = true
 		option.p3_adjustGroup.hidden = true
 		option.s1_adjustGroup.hidden = true
 		option.s2_adjustGroup.hidden = true
 	elseif (cd.selected == "primary;2") then
-		selected = 'p2_adjustGroup'
+		selected = 'p2'
 		cd.primary[1].isPreview = false
 		cd.primary[2].isPreview = true
 		cd.primary[3].isPreview = false
 		cd.secondary[1].isPreview = false
 		cd.secondary[2].isPreview = false
+		option.p1_formatting.hidden = true
+		option.p2_formatting.hidden = false
+		option.p3_formatting.hidden = true
+		option.s1_formatting.hidden = true
+		option.s2_formatting.hidden = true
 		option.p1_adjustGroup.hidden = true
 		option.p2_adjustGroup.hidden = false
 		option.p3_adjustGroup.hidden = true
 		option.s1_adjustGroup.hidden = true
 		option.s2_adjustGroup.hidden = true
 	elseif (cd.selected == "primary;3") then
-		selected = 'p3_adjustGroup'
+		selected = 'p3'
 		cd.primary[1].isPreview = false
 		cd.primary[2].isPreview = false
 		cd.primary[3].isPreview = true
 		cd.secondary[1].isPreview = false
 		cd.secondary[2].isPreview = false
+		option.p1_formatting.hidden = true
+		option.p2_formatting.hidden = true
+		option.p3_formatting.hidden = false
+		option.s1_formatting.hidden = true
+		option.s2_formatting.hidden = true
 		option.p1_adjustGroup.hidden = true
 		option.p2_adjustGroup.hidden = true
 		option.p3_adjustGroup.hidden = false
 		option.s1_adjustGroup.hidden = true
 		option.s2_adjustGroup.hidden = true
 	elseif (cd.selected == "secondary;1") then
-		selected = 's1_adjustGroup'
+		selected = 's1'
 		cd.primary[1].isPreview = false
 		cd.primary[2].isPreview = false
 		cd.primary[3].isPreview = false
 		cd.secondary[1].isPreview = true
 		cd.secondary[2].isPreview = false
+		option.p1_formatting.hidden = true
+		option.p2_formatting.hidden = true
+		option.p3_formatting.hidden = true
+		option.s1_formatting.hidden = false
+		option.s2_formatting.hidden = true
 		option.p1_adjustGroup.hidden = true
 		option.p2_adjustGroup.hidden = true
 		option.p3_adjustGroup.hidden = true
 		option.s1_adjustGroup.hidden = false
 		option.s2_adjustGroup.hidden = true
 	elseif (cd.selected == "secondary;2") then
-		selected = 's2_adjustGroup'
+		selected = 's2'
 		cd.primary[1].isPreview = false
 		cd.primary[2].isPreview = false
 		cd.primary[3].isPreview = false
 		cd.secondary[1].isPreview = false
 		cd.secondary[2].isPreview = true
+		option.p1_formatting.hidden = true
+		option.p2_formatting.hidden = true
+		option.p3_formatting.hidden = true
+		option.s1_formatting.hidden = true
+		option.s2_formatting.hidden = false
 		option.p1_adjustGroup.hidden = true
 		option.p2_adjustGroup.hidden = true
 		option.p3_adjustGroup.hidden = true
@@ -422,14 +454,24 @@ local function SetCooldownOptions(spec,options)
 		option.adjustToggle.disabled = true
 	end
 	
-	if (cd[grp][tonumber(subGrp)].text.font.shadow.isEnabled and cd.adjust) then
-		option[selected].args.shadow.args.shadowColor.disabled = false
-		option[selected].args.shadow.args.shadowX.disabled = false
-		option[selected].args.shadow.args.shadowY.disabled = false
+	if (cd[grp][tonumber(subGrp)].text.formatting.alert.isEnabled) then
+		option[selected.."_formatting"].args.alertFlash.disabled = false
+		option[selected.."_formatting"].args.alertColor.disabled = false
+		option[selected.."_formatting"].args.alertThreshold.disabled = false
 	else
-		option[selected].args.shadow.args.shadowColor.disabled = true
-		option[selected].args.shadow.args.shadowX.disabled = true
-		option[selected].args.shadow.args.shadowY.disabled = true
+		option[selected.."_formatting"].args.alertFlash.disabled = true
+		option[selected.."_formatting"].args.alertColor.disabled = true
+		option[selected.."_formatting"].args.alertThreshold.disabled = true
+	end
+	
+	if (cd[grp][tonumber(subGrp)].text.font.shadow.isEnabled and cd.adjust) then
+		option[selected.."_adjustGroup"].args.shadow.args.shadowColor.disabled = false
+		option[selected.."_adjustGroup"].args.shadow.args.shadowX.disabled = false
+		option[selected.."_adjustGroup"].args.shadow.args.shadowY.disabled = false
+	else
+		option[selected.."_adjustGroup"].args.shadow.args.shadowColor.disabled = true
+		option[selected.."_adjustGroup"].args.shadow.args.shadowX.disabled = true
+		option[selected.."_adjustGroup"].args.shadow.args.shadowY.disabled = true
 	end
 	
 	if (not GetResetButtonState(cd.primary[1],default,'text')) then
@@ -504,10 +546,10 @@ local function CheckElementalDefaultValues(options,group,subgroup)
 			
 			not GetResetButtonState(bar,default,'nametext','timetext',true,true,true)) then
 			option.reset.disabled = false
-			option.reset.name = "|cFFFFCC00"..L["Reset "..group.." Bar"].."|r"
+			option.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_STATUSBAR_"..upper(group)].."|r"
 		else
 			option.reset.disabled = true
-			option.reset.name = "|cFF666666"..L["Reset "..group.." Bar"].."|r"
+			option.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_"..upper(group)].."|r"
 		end
 	elseif (group == "Maelstrom") then
 		local db = Auras.db.char
@@ -533,10 +575,10 @@ local function CheckElementalDefaultValues(options,group,subgroup)
 			
 			not GetResetButtonState(bar,default,'text',nil,true,true,true)) then
 			option.reset.disabled = false
-			option.reset.name = "|cFFFFCC00"..L["Reset Maelstrom Bar"].."|r"
+			option.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_STATUSBAR_MAELSTROM"].."|r"
 		else
 			option.reset.disabled = true
-			option.reset.name = "|cFF666666"..L["Reset Maelstrom Bar"].."|r"
+			option.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_MAELSTROM"].."|r"
 		end
 	elseif (group == 'Settings') then
 		local db = Auras.db.char
@@ -552,10 +594,10 @@ local function CheckElementalDefaultValues(options,group,subgroup)
 			settings.OoRColor.b ~= defaults.OoRColor.b or 
 			settings.OoRColor.a ~= defaults.OoRColor.a) then
 			option.reset.disabled = false
-			option.reset.name = "|cFFFFCC00"..L["Reset Settings Values"].."|r"
+			option.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_SETTINGS"].."|r"
 		else
 			option.reset.disabled = true
-			option.reset.name = "|cFF666666"..L["Reset Settings Values"].."|r"
+			option.reset.name = "|cFF666666"..L["BUTTON_RESET_SETTINGS"].."|r"
 		end
 	elseif (group == "Primary") then
 		local db = Auras.db.char
@@ -570,10 +612,10 @@ local function CheckElementalDefaultValues(options,group,subgroup)
 			layout.primary.bottom.icon ~= defaults.primary.bottom.icon or
 			layout.primary.bottom.spacing ~= defaults.primary.bottom.spacing) then
 			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.disabled = false
-			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFFFFCC00"..L["Reset Primary Layout"].."|r"
+			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFFFFCC00"..L["BUTTON_RESET_LAYOUT_PRIMARY"].."|r"
 		else
 			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.disabled = true
-			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFF666666"..L["Reset Primary Layout"].."|r"
+			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFF666666"..L["BUTTON_RESET_LAYOUT_PRIMARY"].."|r"
 		end
 	elseif (group == "Secondary") then
 		local db = Auras.db.char
@@ -587,10 +629,10 @@ local function CheckElementalDefaultValues(options,group,subgroup)
 			layout.secondary.right.icon ~= defaults.secondary.right.icon or
 			layout.secondary.right.spacing ~= defaults.secondary.right.spacing) then
 			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.disabled = false
-			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFFFFCC00"..L["Reset Secondary Layout"].."|r"
+			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFFFFCC00"..L["BUTTON_RESET_LAYOUT_SECONDARY"].."|r"
 		else
 			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.disabled = true
-			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFF666666"..L["Reset Secondary Layout"].."|r"
+			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFF666666"..L["BUTTON_RESET_LAYOUT_SECONDARY"].."|r"
 		end
 	elseif (group == "Icefury") then
 		local db = Auras.db.char
@@ -613,10 +655,10 @@ local function CheckElementalDefaultValues(options,group,subgroup)
 			
 			not GetResetButtonState(bar,default,'counttext','timetext',true,true,true,true)) then
 			option.reset.disabled = false
-			option.reset.name = "|cFFFFCC00"..L["Reset Icefury Bar"].."|r"
+			option.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_STATUSBAR_ICEFURY"].."|r"
 		else
 			option.reset.disabled = true
-			option.reset.name = "|cFF666666"..L["Reset Icefury Bar"].."|r"
+			option.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_ICEFURY"].."|r"
 		end
 	end
 end
@@ -646,10 +688,10 @@ local function CheckEnhancementDefaultValues(options,group,subgroup)
 			
 			not GetResetButtonState(bar,default,'nametext','timetext',true,true,true)) then
 			option.reset.disabled = false
-			option.reset.name = "|cFFFFCC00"..L["Reset "..group.." Bar"].."|r"
+			option.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_STATUSBAR_"..upper(group)].."|r"
 		else
 			option.reset.disabled = true
-			option.reset.name = "|cFF666666"..L["Reset "..group.." Bar"].."|r"
+			option.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_"..upper(group)].."|r"
 		end
 	elseif (group == "Maelstrom") then
 		local db = Auras.db.char
@@ -676,10 +718,10 @@ local function CheckEnhancementDefaultValues(options,group,subgroup)
 			
 			not GetResetButtonState(bar,default,'text',nil,true,true,true)) then
 			option.reset.disabled = false
-			option.reset.name = "|cFFFFCC00"..L["Reset Maelstrom Bar"].."|r"
+			option.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_STATUSBAR_MAELSTROM"].."|r"
 		else
 			option.reset.disabled = true
-			option.reset.name = "|cFF666666"..L["Reset Maelstrom Bar"].."|r"
+			option.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_MAELSTROM"].."|r"
 		end
 	elseif (group == "Settings") then
 		local db = Auras.db.char
@@ -695,10 +737,10 @@ local function CheckEnhancementDefaultValues(options,group,subgroup)
 			settings.OoRColor.b ~= defaults.OoRColor.b or
 			settings.OoRColor.a ~= defaults.OoRColor.a) then
 			options.args.general.args.settings.args.reset.disabled = false
-			options.args.general.args.settings.args.reset.name = "|cFFFFCC00"..L["Reset Settings Values"].."|r"
+			options.args.general.args.settings.args.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_SETTINGS"].."|r"
 		else
 			options.args.general.args.settings.args.reset.disabled = true
-			options.args.general.args.settings.args.reset.name = "|cFF666666"..L["Reset Settings Values"].."|r"
+			options.args.general.args.settings.args.reset.name = "|cFF666666"..L["BUTTON_RESET_SETTINGS"].."|r"
 		end
 	elseif (group == "Primary") then
 		local db = Auras.db.char
@@ -714,10 +756,10 @@ local function CheckEnhancementDefaultValues(options,group,subgroup)
 			layout.primary.bottom.spacing ~= defaults.primary.bottom.spacing or
 			layout.primary.bottom.charges ~= defaults.primary.bottom.charges) then
 			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.disabled = false
-			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFFFFCC00"..L["Reset Primary Layout"].."|r"
+			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFFFFCC00"..L["BUTTON_RESET_LAYOUT_PRIMARY"].."|r"
 		else
 			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.disabled = true
-			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFF666666"..L["Reset Primary Layout"].."|r"
+			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFF666666"..L["BUTTON_RESET_LAYOUT_PRIMARY"].."|r"
 		end
 	elseif (group == "Secondary") then
 		local db = Auras.db.char
@@ -731,10 +773,10 @@ local function CheckEnhancementDefaultValues(options,group,subgroup)
 			layout.secondary.right.icon ~= defaults.secondary.right.icon or
 			layout.secondary.right.spacing ~= defaults.secondary.right.spacing) then
 			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.disabled = false
-			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFFFFCC00"..L["Reset Secondary Layout"].."|r"
+			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFFFFCC00"..L["BUTTON_RESET_LAYOUT_SECONDARY"].."|r"
 		else
 			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.disabled = true
-			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFF666666"..L["Reset Secondary Layout"].."|r"
+			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFF666666"..L["BUTTON_RESET_LAYOUT_SECONDARY"].."|r"
 		end
 	end
 end
@@ -764,10 +806,10 @@ local function CheckRestorationDefaultValues(options,group,subgroup)
 			
 			not GetResetButtonState(bar,default,'nametext','timetext',true,true,true)) then
 			option.reset.disabled = false
-			option.reset.name = "|cFFFFCC00"..L["Reset "..group.." Bar"].."|r"
+			option.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_STATUSBAR_"..upper(group)].."|r"
 		else
 			option.reset.disabled = true
-			option.reset.name = "|cFF666666"..L["Reset "..group.." Bar"].."|r"
+			option.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_"..upper(group)].."|r"
 		end
 	elseif (group == "Settings") then
 		local db = Auras.db.char
@@ -781,10 +823,10 @@ local function CheckRestorationDefaultValues(options,group,subgroup)
 		settings.OoRColor.b ~= defaults.OoRColor.b or
 		settings.OoRColor.a ~= defaults.OoRColor.a) then
 			options.args.bars.args.general.args.settings.args.reset.disabled = false
-			options.args.bars.args.general.args.settings.args.reset.name = "|cFFFFCC00"..L["Reset Settings Values"].."|r"
+			options.args.bars.args.general.args.settings.args.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_SETTINGS"].."|r"
 		else
 			options.args.general.args.settings.args.reset.disabled = true
-			options.args.general.args.settings.args.reset.name = "|cFF666666"..L["Reset Settings Values"].."|r"
+			options.args.general.args.settings.args.reset.name = "|cFF666666"..L["BUTTON_RESET_SETTINGS"].."|r"
 		end
 	elseif (group == "Primary") then
 		local db = Auras.db.char
@@ -799,10 +841,10 @@ local function CheckRestorationDefaultValues(options,group,subgroup)
 			layout.primary.bottom.icon ~= defaults.primary.bottom.icon or
 			layout.primary.bottom.spacing ~= defaults.primary.bottom.spacing) then
 			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.disabled = false
-			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFFFFCC00"..L["Reset Primary Layout"].."|r"
+			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFFFFCC00"..L["BUTTON_RESET_LAYOUT_PRIMARY"].."|r"
 		else
 			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.disabled = true
-			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFF666666"..L["Reset Primary Layout"].."|r"
+			options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFF666666"..L["BUTTON_RESET_LAYOUT_PRIMARY"].."|r"
 		end
 	elseif (group == "Secondary") then
 		local db = Auras.db.char
@@ -817,10 +859,10 @@ local function CheckRestorationDefaultValues(options,group,subgroup)
 			layout.secondary.right.spacing ~= defaults.secondary.right.spacing or
 			layout.secondary.right.charges ~= defaults.secondary.right.charges) then
 			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.disabled = false
-			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFFFFCC00"..L["Reset Secondary Layout"].."|r"
+			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFFFFCC00"..L["BUTTON_RESET_LAYOUT_SECONDARY"].."|r"
 		else
 			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.disabled = true
-			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFF666666"..L["Reset Secondary Layout"].."|r"
+			options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFF666666"..L["BUTTON_RESET_LAYOUT_SECONDARY"].."|r"
 		end
 	elseif (group == "Earthen Shield") then
 		local db = Auras.db.char
@@ -843,10 +885,10 @@ local function CheckRestorationDefaultValues(options,group,subgroup)
 			
 			not GetResetButtonState(bar,default,'healthtext','timetext',true,true,true,true)) then
 			option.reset.disabled = false
-			option.reset.name = "|cFFFFCC00"..L["Reset Earthen Shield Bar"].."|r"
+			option.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_STATUSBAR_EARTHEN_SHIELD"].."|r"
 		else
 			option.reset.disabled = true
-			option.reset.name = "|cFF666666"..L["Reset Earthen Shield Bar"].."|r"
+			option.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_EARTHEN_SHIELD"].."|r"
 		end
 	elseif (group == "Mana") then
 		local db = Auras.db.char
@@ -871,10 +913,10 @@ local function CheckRestorationDefaultValues(options,group,subgroup)
 			
 			not GetResetButtonState(bar,default,'text',nil,true,true,true)) then
 			option.reset.disabled = false
-			option.reset.name = "|cFFFFCC00"..L["Reset Mana Bar"].."|r"
+			option.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_STATUSBAR_MANA"].."|r"
 		else
 			option.reset.disabled = false
-			option.reset.name = "|cFF666666"..L["Reset Mana Bar"].."|r"
+			option.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_MANA"].."|r"
 		end
 	elseif (group == "Tidal Waves") then
 		local db = Auras.db.char
@@ -928,10 +970,10 @@ local function CheckRestorationDefaultValues(options,group,subgroup)
 			bar.layout.height ~= default.layout.height or
 			bar.layout.strata ~= default.layout.strata) then
 			option.reset.disabled = false
-			option.reset.name = "|cFFFFCC00"..L["Reset Tidal Waves Bar"].."|r"
+			option.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_STATUSBAR_TIDAL_WAVES"].."|r"
 		else
 			option.reset.disabled = false
-			option.reset.name = "|cFF666666"..L["Reset Tidal Waves Bar"].."|r"
+			option.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_TIDAL_WAVES"].."|r"
 		end
 	end
 end
@@ -971,23 +1013,18 @@ local function GetElementalOptions()
 			type = "group",
 			childGroups = "tab",
 			order = 1,
-			name = L["Elemental Auras"],
-			desc = L["Auras used by the Elemental specialization"],
+			name = L["LABEL_AURAS_ELEMENTAL"],
+			desc = '',
 			args = {
 				display = {
 					name = DISPLAY,
 					order = 0,
 					type = "group",
 					args = {
-						--[[desc = {
-							order = 0,
-							type = "description",
-							name = L["Elemental Shaman Auras"],
-						},]]
 						show = {
 							order = 1,
-							name = L["Show Elemental Auras"],
-							desc = L["Toggle the display of Elemental Auras"],
+							name = L["LABEL_SHOW_ELEMENTAL_AURAS"],
+							desc = L["TOOLTIP_TOGGLE_ELEMENTAL_AURAS"],
 							type = "toggle",
 							get = function()
 								return db.elements[1].isEnabled
@@ -1002,7 +1039,7 @@ local function GetElementalOptions()
 							end,
 						},
 						MajorAuras = {
-							name = L["Major Auras"],
+							name = L["LABEL_AURAS_MAJOR"],
 							type = "group",
 							order = 2,
 							guiInline = true,
@@ -1010,7 +1047,7 @@ local function GetElementalOptions()
 								AncestralGuidance = {
 									order = 1,
 									type = "toggle",
-									name = L["Ancestral Guidance"],
+									name = Auras:GetSpellName(108281),
 									get = function() 
 										return auras.AncestralGuidance1
 									end,
@@ -1022,7 +1059,7 @@ local function GetElementalOptions()
 								Ascendance = {
 									order = 2,
 									type = "toggle",
-									name = L["Ascendance"],
+									name = Auras:GetSpellName(114050),
 									get = function() 
 										return auras.Ascendance1
 									end,
@@ -1034,7 +1071,7 @@ local function GetElementalOptions()
 								Concordance = {
 									order = 3,
 									type = "toggle",
-									name = L["Concordance of the Legionfall"],
+									name = Auras:GetSpellName(242586),
 									get = function()
 										return auras.Concordance1
 									end,
@@ -1046,7 +1083,7 @@ local function GetElementalOptions()
 								Earthquake = {
 									order = 4,
 									type = "toggle",
-									name = L["Earthquake"],
+									name = Auras:GetSpellName(61885),
 									get = function()
 										return auras.Earthquake
 									end,
@@ -1058,7 +1095,7 @@ local function GetElementalOptions()
 								EarthShock = {
 									order = 5,
 									type = "toggle",
-									name = L["Earth Shock"],
+									name = Auras:GetSpellName(8042),
 									get = function()
 										return auras.EarthShock
 									end,
@@ -1070,7 +1107,7 @@ local function GetElementalOptions()
 								ElementalBlast = {
 									order = 6,
 									type = "toggle",
-									name = L["Elemental Blast"],
+									name = Auras:GetSpellName(117014),
 									get = function()
 										return auras.ElementalBlast
 									end,
@@ -1082,7 +1119,7 @@ local function GetElementalOptions()
 								ElementalFocus = {
 									order = 7,
 									type = "toggle",
-									name = L["Elemental Focus"],
+									name = Auras:GetSpellName(16164),
 									get = function()
 										return auras.ElementalFocus
 									end,
@@ -1094,7 +1131,7 @@ local function GetElementalOptions()
 								ElementalMastery = {
 									order = 8,
 									type = "toggle",
-									name = L["Elemental Mastery"],
+									name = Auras:GetSpellName(16166),
 									get = function()
 										return auras.ElementalMastery
 									end,
@@ -1106,7 +1143,7 @@ local function GetElementalOptions()
 								FireElemental = {
 									order = 9,
 									type = "toggle",
-									name = L["Fire Elemental"],
+									name = Auras:GetSpellName(198067),
 									get = function() 
 										return auras.FireElemental
 									end,
@@ -1118,7 +1155,7 @@ local function GetElementalOptions()
 								FlameShock = {
 									order = 10,
 									type = "toggle",
-									name = L["Flame Shock"],
+									name = Auras:GetSpellName(188389),
 									get = function()
 										return auras.FlameShock
 									end,
@@ -1130,7 +1167,7 @@ local function GetElementalOptions()
 								Icefury = {
 									order = 11,
 									type = "toggle",
-									name = L["Icefury"],
+									name = Auras:GetSpellName(210714),
 									get = function() 
 										return auras.Icefury
 									end,
@@ -1142,7 +1179,7 @@ local function GetElementalOptions()
 								LavaBurst = {
 									order = 12,
 									type = "toggle",
-									name = L["Lava Burst"],
+									name = Auras:GetSpellName(51505),
 									get = function()
 										return auras.LavaBurst1
 									end,
@@ -1154,7 +1191,7 @@ local function GetElementalOptions()
 								LiquidMagmaTotem = {
 									order = 13,
 									type = "toggle",
-									name = L["Liquid Magma Totem"],
+									name = Auras:GetSpellName(192222),
 									get = function()
 										return auras.LiquidMagmaTotem
 									end,
@@ -1166,7 +1203,7 @@ local function GetElementalOptions()
 								PowerOfMaelstrom = {
 									order = 14,
 									type = "toggle",
-									name = L["Power of the Maelstrom"],
+									name = Auras:GetSpellName(191877),
 									get = function()
 										return auras.PowerOfMaelstrom
 									end,
@@ -1178,7 +1215,7 @@ local function GetElementalOptions()
 								StormElemental = {
 									order = 15,
 									type = "toggle",
-									name = L["Storm Elemental"],
+									name = Auras:GetSpellName(192249),
 									get = function() 
 										return auras.StormElemental
 									end,
@@ -1190,7 +1227,7 @@ local function GetElementalOptions()
 								Stormkeeper = {
 									order = 16,
 									type = "toggle",
-									name = L["Stormkeeper"],
+									name = Auras:GetSpellName(205495),
 									get = function() 
 										return auras.Stormkeeper
 									end,
@@ -1202,7 +1239,7 @@ local function GetElementalOptions()
 							},
 						},
 						MinorAuras = {
-							name = L["Minor Auras"],
+							name = L["LABEL_AURAS_MINOR"],
 							type = "group",
 							order = 3,
 							guiInline = true,
@@ -1210,7 +1247,7 @@ local function GetElementalOptions()
 								AstralShift = {
 									order = 1,
 									type = "toggle",
-									name = L["Astral Shift"],
+									name = Auras:GetSpellName(108271),
 									get = function()
 										return auras.AstralShift1
 									end,
@@ -1222,7 +1259,7 @@ local function GetElementalOptions()
 								CleanseSpirit = {
 									order = 2,
 									type = "toggle",
-									name = L["Cleanse Spirit"],
+									name = Auras:GetSpellName(51886),
 									get = function()
 										return auras.CleanseSpirit1
 									end,
@@ -1234,7 +1271,7 @@ local function GetElementalOptions()
 								EarthElemental = {
 									order = 3,
 									type = "toggle",
-									name = L["Earth Elemental"],
+									name = Auras:GetSpellName(198103),
 									get = function()
 										return auras.EarthElemental
 									end,
@@ -1246,7 +1283,7 @@ local function GetElementalOptions()
 								EarthgrabTotem = {
 									order = 4,
 									type = "toggle",
-									name = L["Earthgrab Totem"],
+									name = Auras:GetSpellName(51485),
 									get = function()
 										return auras.EarthgrabTotem1
 									end,
@@ -1258,7 +1295,7 @@ local function GetElementalOptions()
 								GustOfWind = {
 									order = 5,
 									type = "toggle",
-									name = L["Gust of Wind"],
+									name = Auras:GetSpellName(192063),
 									get = function()
 										return auras.GustWind1
 									end,
@@ -1270,7 +1307,7 @@ local function GetElementalOptions()
 								Hex = {
 									order = 6,
 									type = "toggle",
-									name = L["Hex"],
+									name = Auras:GetSpellName(51514),
 									get = function()
 										return auras.Hex1
 									end,
@@ -1282,7 +1319,7 @@ local function GetElementalOptions()
 								Thunderstorm = {
 									order = 7,
 									type = "toggle",
-									name = L["Thunderstorm"],
+									name = Auras:GetSpellName(51490),
 									get = function()
 										return auras.Thunderstorm
 									end,
@@ -1294,7 +1331,7 @@ local function GetElementalOptions()
 								LightningSurgeTotem = {
 									order = 8,
 									type = "toggle",
-									name = L["Lightning Surge Totem"],
+									name = Auras:GetSpellName(192058),
 									get = function()
 										return auras.LightningSurgeTotem1
 									end,
@@ -1306,7 +1343,7 @@ local function GetElementalOptions()
 								VoodooTotem = {
 									order = 9,
 									type = "toggle",
-									name = L["Voodoo Totem"],
+									name = Auras:GetSpellName(196932),
 									get = function()
 										return auras.VoodooTotem1
 									end,
@@ -1318,7 +1355,7 @@ local function GetElementalOptions()
 								WindRushTotem = {
 									order = 10,
 									type = "toggle",
-									name = L["Wind Rush Totem"],
+									name = Auras:GetSpellName(192077),
 									get = function()
 										return auras.WindRushTotem1
 									end,
@@ -1330,7 +1367,7 @@ local function GetElementalOptions()
 								Windshear = {
 									order = 11,
 									type = "toggle",
-									name = L["Wind Shear"],
+									name = Auras:GetSpellName(57944),
 									get = function() 
 										return auras.WindShear1
 									end,
@@ -1342,13 +1379,13 @@ local function GetElementalOptions()
 							},
 						},
 						ProgressBars = {
-							name = L["Progress Bars"],
+							name = L["LABEL_PROGRESS_BARS"],
 							type = "group",
 							order = 4,
 							guiInline = true,
 							args = {
 								BuffTimerBars = {
-									name = L["Buff Duration Timers"],
+									name = L["LABEL_STATUSBAR_BUFF_TIMER"],
 									type = "group",
 									order = 1,
 									guiInline = true,
@@ -1356,7 +1393,7 @@ local function GetElementalOptions()
 										AncestralGuidance = {
 											order = 1,
 											type = "toggle",
-											name = L["Ancestral Guidance"],
+											name = Auras:GetSpellName(108281),
 											get = function() 
 												return timerbars.buff.ancestralGuidance
 											end,
@@ -1367,7 +1404,7 @@ local function GetElementalOptions()
 										Ascendance = {
 											order = 2,
 											type = "toggle",
-											name = L["Ascendance"],
+											name = Auras:GetSpellName(114050),
 											get = function() 
 												return timerbars.buff.ascendance
 											end,
@@ -1378,7 +1415,7 @@ local function GetElementalOptions()
 										AstralShift = {
 											order = 3,
 											type = "toggle",
-											name = L["Astral Shift"],
+											name = Auras:GetSpellName(108271),
 											get = function() 
 												return timerbars.buff.astralShift
 											end,
@@ -1389,7 +1426,7 @@ local function GetElementalOptions()
 										Bloodlust = {
 											order = 4,
 											type = "toggle",
-											name = L["Bloodlust"],
+											name = Auras:GetSpellName(2825),
 											hidden = false,
 											get = function() 
 												return timerbars.buff.bloodlust
@@ -1401,7 +1438,7 @@ local function GetElementalOptions()
 										ElementalBlast = {
 											order = 5,
 											type = "toggle",
-											name = L["Elemental Blast"],
+											name = Auras:GetSpellName(117014),
 											get = function() 
 												return timerbars.buff.elementalBlast
 											end,
@@ -1414,7 +1451,7 @@ local function GetElementalOptions()
 										ElementalMastery = {
 											order = 6,
 											type = "toggle",
-											name = L["Elemental Mastery"],
+											name = Auras:GetSpellName(16166),
 											get = function() 
 												return timerbars.buff.elementalMastery
 											end,
@@ -1425,7 +1462,7 @@ local function GetElementalOptions()
 										Heroism = {
 											order = 7,
 											type = "toggle",
-											name = L["Heroism"],
+											name = Auras:GetSpellName(32182),
 											hidden = false,
 											get = function() 
 												return timerbars.buff.heroism
@@ -1437,7 +1474,7 @@ local function GetElementalOptions()
 										TimeWarp = {
 											order = 8,
 											type = "toggle",
-											name = L["Time Warp"],
+											name = Auras:GetSpellName(80353),
 											get = function() 
 												return timerbars.buff.timeWarp
 											end,
@@ -1448,7 +1485,7 @@ local function GetElementalOptions()
 									},
 								},
 								ElementalTimerBars = {
-									name = L["Elemental Duration Timers"],
+									name = L["LABEL_TIMERS_ELEMENTAL"],
 									type = "group",
 									order = 5,
 									guiInline = true,
@@ -1456,7 +1493,7 @@ local function GetElementalOptions()
 										EarthElemental = {
 											order = 1,
 											type = "toggle",
-											name = L["Earth Elemental"],
+											name = Auras:GetSpellName(198103),
 											get = function() 
 												return timerbars.main.earthElemental
 											end,
@@ -1467,7 +1504,7 @@ local function GetElementalOptions()
 										FireElemental = {
 											order = 2,
 											type = "toggle",
-											name = L["Fire Elemental"],
+											name = Auras:GetSpellName(198067),
 											get = function() 
 												return timerbars.main.fireElemental
 											end,
@@ -1478,7 +1515,7 @@ local function GetElementalOptions()
 										StormElemental = {
 											order = 3,
 											type = "toggle",
-											name = L["Storm Elemental"],
+											name = Auras:GetSpellName(192249),
 											get = function() 
 												return timerbars.main.stormElemental
 											end,
@@ -1489,7 +1526,7 @@ local function GetElementalOptions()
 									},
 								},
 								TotemTimerBars = {
-									name = L["Totem Duration Timers"],
+									name = L["LABEL_TIMERS_TOTEM"],
 									type = "group",
 									order = 6,
 									guiInline = true,
@@ -1497,7 +1534,7 @@ local function GetElementalOptions()
 										EarthgrabTotem = {
 											order = 1,
 											type = "toggle",
-											name = L["Earthgrab Totem"],
+											name = Auras:GetSpellName(51485),
 											get = function() 
 												return timerbars.util.earthgrabTotem
 											end,
@@ -1505,10 +1542,21 @@ local function GetElementalOptions()
 												timerbars.util.earthgrabTotem = value
 											end,
 										},
+										LiquidMagmaTotem = {
+											order = 4,
+											type = "toggle",
+											name = Auras:GetSpellName(192222),
+											get = function() 
+												return timerbars.util.liquidMagmaTotem
+											end,
+											set = function(self,value)
+												timerbars.util.liquidMagmaTotem = value
+											end,
+										},
 										VoodooTotem = {
 											order = 2,
 											type = "toggle",
-											name = L["Voodoo Totem"],
+											name = Auras:GetSpellName(196932),
 											get = function() 
 												return timerbars.util.voodooTotem
 											end,
@@ -1519,7 +1567,7 @@ local function GetElementalOptions()
 										WindRushTotem = {
 											order = 3,
 											type = "toggle",
-											name = L["Wind Rush Totem"],
+											name = Auras:GetSpellName(192077),
 											get = function() 
 												return timerbars.util.windRushTotem
 											end,
@@ -1527,23 +1575,12 @@ local function GetElementalOptions()
 												timerbars.util.windRushTotem = value
 											end,
 										},
-										LiquidMagmaTotem = {
-											order = 4,
-											type = "toggle",
-											name = L["Liquid Magma Totem"],
-											get = function() 
-												return timerbars.util.liquidMagmaTotem
-											end,
-											set = function(self,value)
-												timerbars.util.liquidMagmaTotem = value
-											end,
-										},
 									},
 								},
 							},
 						},
 						TextureAlerts = {
-							name = L["Texture Alerts"],
+							name = L["TOOLTIP_TEXTURE_ALERTS"],
 							type = "group",
 							order = 5,
 							guiInline = true,
@@ -1551,7 +1588,7 @@ local function GetElementalOptions()
 								TotemMastery = {
 									order = 1,
 									type = "toggle",
-									name = L["Totem Mastery"],
+									name = Auras:GetSpellName(210643),
 									get = function() 
 										return frames.TotemMastery.isEnabled
 									end,
@@ -1562,7 +1599,7 @@ local function GetElementalOptions()
 								Stormkeeper = {
 									order = 2,
 									type = "toggle",
-									name = L["Stormkeeper Orbs"],
+									name = L["LABEL_STORMKEEPER_ORBS"],
 									get = function() 
 										return frames.StormkeeperChargeGrp.isEnabled
 									end,
@@ -1582,7 +1619,7 @@ local function GetElementalOptions()
 					disabled = true,
 					args = {
 						settings = {
-							name = L["Aura Settings"],
+							name = L["LABEL_AURAS_SETTINGS"],
 							type = "group",
 							order = 3,
 							guiInline = true,
@@ -1590,8 +1627,8 @@ local function GetElementalOptions()
 								OoCAlpha = {
 									order = 1,
 									type = "range",
-									name = L["Alpha (OoC)"],
-									desc = L["Determines how opaque or transparent the auras will appear when out of combat"],
+									name = L["LABEL_ALPHA_NO_COMBAT"],
+									desc = L["TOOLTIP_AURAS_ALPHA_NO_COMBAT"],
 									min = 0,
 									max = 1,
 									step = 0.1,
@@ -1605,8 +1642,8 @@ local function GetElementalOptions()
 								FlameShock = {
 									order = 2,
 									type = "range",
-									name = L["Flame Shock"],
-									desc = L["The amount of seconds remaining when the \"Glow\" animation will appear"],
+									name = Auras:GetSpellName(188838),
+									desc = L["TOOLTIP_GLOW_TIME_TRIGGER"],
 									min = 5,
 									max = 15,
 									step = 1,
@@ -1620,8 +1657,8 @@ local function GetElementalOptions()
 								TotemMastery = {
 									order = 3,
 									type = "range",
-									name = L["Totem Mastery"],
-									desc = L["The amount of seconds remaining when the Totem Mastery texture will appear"],
+									name = Auras:GetSpellName(210643),
+									desc = L["TOOLTIP_TOTEM_MASTERY_TRIGGER_TIMER"],
 									min = 5,
 									max = 30,
 									step = 1,
@@ -1635,8 +1672,8 @@ local function GetElementalOptions()
 								OoRColor = {
 									type = "color",
 									order = 4,
-									name = L["Color (OoR)"],
-									desc = L["Determines the color of harmful auras will appear when out of range"],
+									name = L["LABEL_COLOR_NO_RANGE"],
+									desc = L["TOOLTIP_COLOR_OUT_OF_RANGE"],
 									hasAlpha = true,
 									get = function(info)
 										local color = settings.OoRColor
@@ -1656,7 +1693,7 @@ local function GetElementalOptions()
 								reset = {
 									order = 5,
 									type = "execute",
-									name = L["Reset Settings Values"],
+									name = L["BUTTON_RESET_SETTINGS"],
 									func = function()
 										settings.flameShock = settingDefaults[1].flameShock
 										settings.totemMastery = settingDefaults[1].totemMastery
@@ -1666,7 +1703,7 @@ local function GetElementalOptions()
 										settings.OoRColor.b = settingDefaults.OoRColor.b
 										settings.OoRColor.a = settingDefaults.OoRColor.a
 										ele_options.args.bars.args.general.args.settings.args.reset.disabled = true
-										ele_options.args.bars.args.general.args.settings.args.reset.name = "|cFF666666"..L["Reset Settings Values"].."|r"
+										ele_options.args.bars.args.general.args.settings.args.reset.name = "|cFF666666"..L["BUTTON_RESET_SETTINGS"].."|r"
 									end,
 								},
 							},
@@ -1674,7 +1711,7 @@ local function GetElementalOptions()
 					},
 				},
 				bars = {
-					name = L["Progress Bars"],
+					name = L["LABEL_PROGRESS_BARS"],
 					order = 3,
 					type = "group",
 					childGroups = "tab",
@@ -1687,15 +1724,15 @@ local function GetElementalOptions()
 							type = "group",
 							args = {
 								statusbars = {
-									name = L["Statusbar Manager"],
+									name = L["LABEL_STATUSBAR_MANAGER"],
 									type = "group",
 									order = 1,
 									guiInline = true,
 									args = {
 										defaultBarToggle = {
 											order = 1,
-											name = L["Blizzard Casting Bar"],
-											desc = L["Toggles the display of Blizzard's default casting bar"],
+											name = L["LABEL_STATUSBAR_BLIZZARD"],
+											desc = L["TOOLTIP_TOGGLE_BLIZZARD_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.defaultBar
@@ -1713,8 +1750,8 @@ local function GetElementalOptions()
 										},
 										castBarToggle = {
 											order = 2,
-											name = L["Toggle Cast Bar"],
-											desc = L["Toggles the display of the cast bar"],
+											name = L["TOGGLE_CAST_BAR"],
+											desc = L["TOOLTIP_TOGGLE_CAST_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.castBar.isEnabled
@@ -1731,8 +1768,8 @@ local function GetElementalOptions()
 										},
 										channelToggle = {
 											order = 3,
-											name = L["Toggle Channel Bar"],
-											desc = L["Toggles the display of the channel bar"],
+											name = L["TOGGLE_CHANNEL_BAR"],
+											desc = L["TOOLTIP_TOGGLE_CHANNEL_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.channelBar.isEnabled
@@ -1749,8 +1786,8 @@ local function GetElementalOptions()
 										},
 										healthToggle = {
 											order = 4,
-											name = L["Toggle Health Bar"],
-											desc = L["Toggles the display of the Health Bar"],
+											name = L["TOGGLE_HEALTH_BAR"],
+											desc = L["TOOLTIP_TOGGLE_HEALTH_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.healthBar.isEnabled
@@ -1767,8 +1804,8 @@ local function GetElementalOptions()
 										},
 										maelstromToggle = {
 											order = 5,
-											name = L["Toggle Maelstrom Bar"],
-											desc = L["Toggles the display of the Maelstrom Bar"],
+											name = L["TOGGLE_MAELSTROM_BAR"],
+											desc = L["TOOLTIP_TOGGLE_MAELSTROM_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.maelstromBar.isEnabled
@@ -1785,8 +1822,8 @@ local function GetElementalOptions()
 										},
 										icefuryToggle = {
 											order = 6,
-											name = L["Toggle Icefury Bar"],
-											desc = L["Toggles the display of the Icefury bar"],
+											name = L["TOGGLE_ICEFURY_BAR"],
+											desc = L["TOOLTIP_TOGGLE_ICEFURY_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.icefuryBar.isEnabled
@@ -1806,15 +1843,15 @@ local function GetElementalOptions()
 							},
 						},
 						--[[healthBar = {
-							name = L["Health Bar"],
+							name = L["LABEL_STATUSBAR_HEALTH"],
 							order = 7,
 							inline = false,
 							type = "group",
 							args = {
 								adjust = {
 									order = 1,
-									name = L["Modify Health Bar"],
-									desc = L["Toggle the adjustment of the Health Bar"],
+									name = L["LABEL_STATUSBAR_MODIFY_HEALTH"],
+									desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 									type = "toggle",
 									get = function()
 										return statusbars.healthBar.adjust.isEnabled
@@ -1826,8 +1863,8 @@ local function GetElementalOptions()
 								},
 								numtextToggle = {
 									order = 2,
-									name = L["Toggle Health Text"],
-									desc = L["Toggles the text display of the amount of health remaining"],
+									name = L["TOGGLE_HEALTH_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_HEALTH_TEXT"],
 									type = "toggle",
 									--disabled = true,
 									get = function()
@@ -1840,8 +1877,8 @@ local function GetElementalOptions()
 								},
 								perctextToggle = {
 									order = 3,
-									name = L["Toggle Percent Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_PERCENT_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_SPELL_TEXT"],
 									type = "toggle",
 									--disabled = true,
 									get = function()
@@ -1861,8 +1898,8 @@ local function GetElementalOptions()
 										alphaCombat = {
 											order = 1,
 											type = "range",
-											name = L["Alpha (In Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear while in combat"],
+											name = L["LABEL_ALPHA_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -1876,8 +1913,8 @@ local function GetElementalOptions()
 										alphaOoC = {
 											order = 2,
 											type = "range",
-											name = L["Alpha (Out of Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat"],
+											name = L["LABEL_ALPHA_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -1891,8 +1928,8 @@ local function GetElementalOptions()
 										alphaTar = {
 											order = 2,
 											type = "range",
-											name = L["Alpha (OoC - Target)"]"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat and targetting an enemy"],
+											name = L["LABEL_ALPHA_TARGET_NO_COMBAT"]"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_TARGET_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -1906,7 +1943,7 @@ local function GetElementalOptions()
 									},
 								},
 								numtext = {
-									name = '|cFFFFFFFF'..L['Health Text']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_TEXT_HEALTH"]..'|r',
 									type = "group",
 									order = 5,
 									disabled = true,
@@ -1915,8 +1952,8 @@ local function GetElementalOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.healthBar.numtext.font.color
@@ -1941,8 +1978,8 @@ local function GetElementalOptions()
 											order = 4,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.healthBar.numtext.font.name end,
 											set = function(self,value)
@@ -1954,7 +1991,7 @@ local function GetElementalOptions()
 											order = 5,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -1968,8 +2005,8 @@ local function GetElementalOptions()
 										fontOutline = {
 											order = 6,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.healthBar.numtext.font.flag
 											end,
@@ -1982,8 +2019,8 @@ local function GetElementalOptions()
 										numtextAnchor = {
 											order = 7,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.healthBar.numtext.justify
 											end,
@@ -1997,7 +2034,7 @@ local function GetElementalOptions()
 											order = 8,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -2012,7 +2049,7 @@ local function GetElementalOptions()
 											order = 9,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -2024,7 +2061,7 @@ local function GetElementalOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 10,
 											hidden = false,
@@ -2032,7 +2069,7 @@ local function GetElementalOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -2046,8 +2083,8 @@ local function GetElementalOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													get = function(info)
 														local color = statusbars.healthBar.numtext.font.shadow.color
@@ -2072,7 +2109,7 @@ local function GetElementalOptions()
 													order = 4,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -2088,7 +2125,7 @@ local function GetElementalOptions()
 													order = 5,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -2105,7 +2142,7 @@ local function GetElementalOptions()
 									},
 								},
 								perctext = {
-									name = '|cFFFFFFFFTimer Text|r',
+									name = '|cFFFFFFFF'..L["LABEL_TIME_TEXT"]..'|r',
 									type = "group",
 									order = 7,
 									disabled = true,
@@ -2114,8 +2151,8 @@ local function GetElementalOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.healthBar.perctext.font.color
@@ -2140,8 +2177,8 @@ local function GetElementalOptions()
 											order = 3,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.healthBar.perctext.font.name end,
 											set = function(self,value)
@@ -2153,7 +2190,7 @@ local function GetElementalOptions()
 											order = 4,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -2167,8 +2204,8 @@ local function GetElementalOptions()
 										timeFontOutline = {
 											order = 5,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.healthBar.perctext.font.flag
 											end,
@@ -2181,8 +2218,8 @@ local function GetElementalOptions()
 										timeTextAnchor = {
 											order = 6,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.healthBar.perctext.justify
 											end,
@@ -2196,7 +2233,7 @@ local function GetElementalOptions()
 											order = 7,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -2211,7 +2248,7 @@ local function GetElementalOptions()
 											order = 8,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -2223,7 +2260,7 @@ local function GetElementalOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 9,
 											hidden = false,
@@ -2231,7 +2268,7 @@ local function GetElementalOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													--disabled = true,
@@ -2246,8 +2283,8 @@ local function GetElementalOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													disabled = true,
 													get = function(info)
@@ -2273,7 +2310,7 @@ local function GetElementalOptions()
 													order = 4,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -2289,7 +2326,7 @@ local function GetElementalOptions()
 													order = 5,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -2306,7 +2343,7 @@ local function GetElementalOptions()
 									},
 								},
 								layout = {
-									name = L["Layout & Design"],
+									name = L["LABEL_LAYOUT_DESIGN"],
 									type = "group",
 									order = 8,
 									guiInline = true,
@@ -2314,8 +2351,8 @@ local function GetElementalOptions()
 										texture = {
 											order = 1,
 											type = "select",
-											name = L["Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_STATUSBAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.healthBar.foreground.texture
@@ -2329,7 +2366,7 @@ local function GetElementalOptions()
 										textureColor = {
 											type = "color",
 											order = 2,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											get = function(info)
 												local color = statusbars.healthBar.foreground.color
 												return color.r, color.g, color.b
@@ -2351,8 +2388,8 @@ local function GetElementalOptions()
 										backgroundTexture = {
 											order = 4,
 											type = "select",
-											name = L["Background Texture"],
-											desc = L["Set the bar's background texture."],
+											name = L["LABEL_STATUSBAR_BG_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_BG_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.healthBar.background.texture
@@ -2366,8 +2403,8 @@ local function GetElementalOptions()
 										backgroundColor = {
 											type = "color",
 											order = 5,
-											name = L["Background Color"],
-											desc = L["Set the color of the cast bar's background."],
+											name = L["LABEL_STATUSBAR_BG_COLOR"],
+											desc = L["TOOLTIP_STATUSBAR_BG_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.healthBar.background.color
@@ -2385,8 +2422,8 @@ local function GetElementalOptions()
 										},
 										backgroundToggle = {
 											order = 6,
-											name = L["Modify Background"],
-											desc = L["Toggle the adjustment of the bar's background texture"],
+											name = L["LABEL_STATUSBAR_MODIFY_BACKGROUND"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_BG_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.healthBar.adjust.showBG
@@ -2399,7 +2436,7 @@ local function GetElementalOptions()
 										width = {
 											order = 7,
 											type = "range",
-											name = L["Width"],
+											name = L["LABEL_WIDTH"],
 											desc = '',
 											min = 100,
 											max = 500,
@@ -2414,7 +2451,7 @@ local function GetElementalOptions()
 										height = {
 											order = 8,
 											type = "range",
-											name = L["Height"],
+											name = L["LABEL_HEIGHT"],
 											desc = '',
 											min = 10,
 											max = 100,
@@ -2431,7 +2468,7 @@ local function GetElementalOptions()
 								reset = {
 									order = 9,
 									type = "execute",
-									name = L["Reset Cast Bar"],
+									name = L["BUTTON_RESET_STATUSBAR_CAST"],
 									func = function()
 										local bar = statusbars.healthBar
 										local default = statusbarDefaults.healthBar
@@ -2496,7 +2533,7 @@ local function GetElementalOptions()
 										bar.layout.height = default.layout.height
 										bar.layout.strata = default.layout.strata
 										ele_options.args.bars.args.healthBar.args.reset.disabled = true
-										ele_options.args.bars.args.healthBar.args.reset.name = "|cFF666666"..L["Reset Cast Bar"].."|r"
+										ele_options.args.bars.args.healthBar.args.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_CAST"].."|r"
 										CheckElementalDefaultValues(ele_options,'Health')
 										
 										if (not bar.adjust.isEnabled) then
@@ -2507,15 +2544,15 @@ local function GetElementalOptions()
 							},
 						},]]
 						maelstromBar = {
-							name = L["Maelstrom Bar"],
+							name = L["LABEL_STATUSBAR_MAELSTROM"],
 							order = 6,
 							type = "group",
 							inline = false,
 							args = {
 								adjust = {
 									order = 1,
-									name = L["Modify Maelstrom Bar"],
-									desc = L["Toggle the adjustment of the Maelstrom Bar"],
+									name = L["LABEL_STATUSBAR_MODIFY_MAELSTROM"],
+									desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 									type = "toggle",
 									get = function()
 										return statusbars.maelstromBar.adjust.isEnabled
@@ -2527,8 +2564,8 @@ local function GetElementalOptions()
 								},
 								textToggle = {
 									order = 2,
-									name = L["Maelstrom Value Text"],
-									desc = L["Toggles the text display of the amount of maelstrom remaining"],
+									name = L["LABEL_TEXT_MAELSTROM"],
+									desc = L["TOOLTIP_TOGGLE_MAELSTROM_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.maelstromBar.text.isDisplayText
@@ -2541,7 +2578,7 @@ local function GetElementalOptions()
 								animation = {
 									order = 3,
 									type = "toggle",
-									name = L["Maelstrom Lightning"],
+									name = L["LABEL_STATUSBAR_ANIMATE_MAELSTROM"],
 									get = function() 
 										return statusbars.maelstromBar.animate
 									end,
@@ -2559,8 +2596,8 @@ local function GetElementalOptions()
 										alphaCombat = {
 											order = 1,
 											type = "range",
-											name = L["Alpha (In Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear while in combat"],
+											name = L["LABEL_ALPHA_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -2574,8 +2611,8 @@ local function GetElementalOptions()
 										alphaOoC = {
 											order = 2,
 											type = "range",
-											name = L["Alpha (OoC - No Target)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat"],
+											name = L["LABEL_ALPHA_NO_TARGET_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -2590,8 +2627,8 @@ local function GetElementalOptions()
 										alphaTarget = {
 											order = 3,
 											type = "range",
-											name = L["Alpha (OoC - Target)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat and targetting an enemy"],
+											name = L["LABEL_ALPHA_TARGET_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_TARGET_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -2606,8 +2643,8 @@ local function GetElementalOptions()
 										threshold = {
 											order = 4,
 											type = "range",
-											name = L["Maelstrom Trigger"],
-											desc = L["The amount of Maelstrom accumulated at which the \"Lightning\" animation will appear"],
+											name = L["LABEL_TRIGGER_MAELSTROM"],
+											desc = L["TOOLTIP_MAELSTROM_TIME_TRIGGER"],
 											min = 50,
 											max = 100,
 											step = 1,
@@ -2622,7 +2659,7 @@ local function GetElementalOptions()
 									},
 								},
 								text = {
-									name = '|cFFFFFFFF'..L['Maelstrom Text']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_TEXT_MAELSTROM"]..'|r',
 									type = "group",
 									order = 5,
 									disabled = true,
@@ -2631,8 +2668,8 @@ local function GetElementalOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.maelstromBar.text.font.color
@@ -2653,8 +2690,8 @@ local function GetElementalOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function()
 												return statusbars.maelstromBar.text.font.name 
@@ -2668,7 +2705,7 @@ local function GetElementalOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -2684,8 +2721,8 @@ local function GetElementalOptions()
 										timeFontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.maelstromBar.text.font.flag
 											end,
@@ -2698,8 +2735,8 @@ local function GetElementalOptions()
 										timeTextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.maelstromBar.text.justify
 											end,
@@ -2713,7 +2750,7 @@ local function GetElementalOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -2728,7 +2765,7 @@ local function GetElementalOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -2740,7 +2777,7 @@ local function GetElementalOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -2748,7 +2785,7 @@ local function GetElementalOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -2762,8 +2799,8 @@ local function GetElementalOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													get = function(info)
 														local color = statusbars.maelstromBar.text.font.shadow.color
@@ -2784,7 +2821,7 @@ local function GetElementalOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -2800,7 +2837,7 @@ local function GetElementalOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -2817,7 +2854,7 @@ local function GetElementalOptions()
 									},
 								},
 								layout = {
-									name = L["Layout & Design"],
+									name = L["LABEL_LAYOUT_DESIGN"],
 									type = "group",
 									order = 6,
 									guiInline = true,
@@ -2825,8 +2862,8 @@ local function GetElementalOptions()
 										texture = {
 											order = 1,
 											type = "select",
-											name = L["Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_STATUSBAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.maelstromBar.foreground.texture
@@ -2840,7 +2877,7 @@ local function GetElementalOptions()
 										textureColor = {
 											type = "color",
 											order = 2,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											get = function(info)
 												local color = statusbars.maelstromBar.foreground.color
 												return color.r, color.g, color.b
@@ -2858,8 +2895,8 @@ local function GetElementalOptions()
 										backgroundTexture = {
 											order = 3,
 											type = "select",
-											name = L["Background Texture"],
-											desc = L["Set the bar's background texture."],
+											name = L["LABEL_STATUSBAR_BG_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_BG_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.maelstromBar.background.texture
@@ -2873,8 +2910,8 @@ local function GetElementalOptions()
 										backgroundColor = {
 											type = "color",
 											order = 4,
-											name = L["Background Color"],
-											desc = L["Set the color of the cast bar's background."],
+											name = L["LABEL_STATUSBAR_BG_COLOR"],
+											desc = L["TOOLTIP_STATUSBAR_BG_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.maelstromBar.background.color
@@ -2893,8 +2930,8 @@ local function GetElementalOptions()
 										},
 										backgroundToggle = {
 											order = 5,
-											name = L["Modify Background"],
-											desc = L["Toggle the adjustment of the bar's background texture"],
+											name = L["LABEL_STATUSBAR_MODIFY_BACKGROUND"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_BG_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.maelstromBar.adjust.showBG
@@ -2907,7 +2944,7 @@ local function GetElementalOptions()
 										width = {
 											order = 6,
 											type = "range",
-											name = L["Width"],
+											name = L["LABEL_WIDTH"],
 											desc = '',
 											min = 100,
 											max = 500,
@@ -2922,7 +2959,7 @@ local function GetElementalOptions()
 										height = {
 											order = 7,
 											type = "range",
-											name = L["Height"],
+											name = L["LABEL_HEIGHT"],
 											desc = '',
 											min = 10,
 											max = 100,
@@ -2939,7 +2976,7 @@ local function GetElementalOptions()
 								reset = {
 									order = 7,
 									type = "execute",
-									name = L["Reset Maelstrom Bar"],
+									name = L["BUTTON_RESET_STATUSBAR_MAELSTROM"],
 									func = function()
 										local bar = statusbars.maelstromBar
 										local default = statusbarDefaults.maelstromBar
@@ -2984,7 +3021,7 @@ local function GetElementalOptions()
 										bar.layout.height = default.layout.height
 										bar.layout.strata = default.layout.strata
 										ele_options.args.bars.args.maelstromBar.args.reset.disabled = true
-										ele_options.args.bars.args.maelstromBar.args.reset.name = "|cFF666666"..L["Reset Maelstrom Bar"].."|r"
+										ele_options.args.bars.args.maelstromBar.args.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_MAELSTROM"].."|r"
 										CheckElementalDefaultValues(ele_options,'Maelstrom')
 										
 										if (not bar.adjust.isEnabled) then
@@ -2995,15 +3032,15 @@ local function GetElementalOptions()
 							},
 						},
 						castBar = {
-							name = L["Cast Bar"],
+							name = L["LABEL_STATUSBAR_CAST"],
 							order = 7,
 							inline = false,
 							type = "group",
 							args = {
 								adjust = {
 									order = 1,
-									name = L["Modify Cast Bar"],
-									desc = L["Toggle the adjustment of the Cast Bar"],
+									name = L["LABEL_STATUSBAR_MODIFY_CAST"],
+									desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 									type = "toggle",
 									get = function()
 										return statusbars.castBar.adjust.isEnabled
@@ -3015,8 +3052,8 @@ local function GetElementalOptions()
 								},
 								nametextToggle = {
 									order = 2,
-									name = L["Toggle Spell Name Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_SPELL_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_SPELL_TEXT"],
 									type = "toggle",
 									--disabled = true,
 									get = function()
@@ -3029,8 +3066,8 @@ local function GetElementalOptions()
 								},
 								timetextToggle = {
 									order = 3,
-									name = L["Toggle Time Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_TIME_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_TIME_TEXT"],
 									type = "toggle",
 									--disabled = true,
 									get = function()
@@ -3050,8 +3087,8 @@ local function GetElementalOptions()
 										alphaCombat = {
 											order = 1,
 											type = "range",
-											name = L["Alpha (In Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear while in combat"],
+											name = L["LABEL_ALPHA_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -3065,8 +3102,8 @@ local function GetElementalOptions()
 										alphaOoC = {
 											order = 2,
 											type = "range",
-											name = L["Alpha (Out of Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat"],
+											name = L["LABEL_ALPHA_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -3080,7 +3117,7 @@ local function GetElementalOptions()
 									},
 								},
 								iconSpark = {
-									name = '|cFFFFFFFF'..L['Icon & Spark']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_ICON_SPARK"]..'|r',
 									type = "group",
 									order = 5,
 									disabled = true,
@@ -3088,7 +3125,7 @@ local function GetElementalOptions()
 									args = {
 										sparkToggle = {
 											order = 1,
-											name = L["Toggle Spark"],
+											name = L["TOGGLE_SPARK"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -3101,7 +3138,7 @@ local function GetElementalOptions()
 										},
 										iconToggle = {
 											order = 2,
-											name = L["Toggle Icon"],
+											name = L["TOGGLE_ICON"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -3121,8 +3158,8 @@ local function GetElementalOptions()
 										iconJustify = {
 											order = 3,
 											type = "select",
-											name = L["Icon Justify"],
-											desc = L["Set the side of the progress bar that the icon will appear."],
+											name = L["LABEL_ICON_JUSTIFY"],
+											desc = L["TOOLTIP_STATUSBAR_ICON_LOCATION"],
 											get = function()
 												return statusbars.castBar.icon.justify
 											end,
@@ -3135,7 +3172,7 @@ local function GetElementalOptions()
 									},
 								},
 								nametext = {
-									name = '|cFFFFFFFF'..L['Spell Name Text']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_TEXT_SPELL"]..'|r',
 									type = "group",
 									order = 6,
 									disabled = true,
@@ -3144,8 +3181,8 @@ local function GetElementalOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.castBar.nametext.font.color
@@ -3166,8 +3203,8 @@ local function GetElementalOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.castBar.nametext.font.name end,
 											set = function(self,value)
@@ -3179,7 +3216,7 @@ local function GetElementalOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -3193,8 +3230,8 @@ local function GetElementalOptions()
 										fontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.castBar.nametext.font.flag
 											end,
@@ -3207,8 +3244,8 @@ local function GetElementalOptions()
 										nametextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.castBar.nametext.justify
 											end,
@@ -3222,7 +3259,7 @@ local function GetElementalOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -3237,7 +3274,7 @@ local function GetElementalOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -3249,7 +3286,7 @@ local function GetElementalOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -3257,7 +3294,7 @@ local function GetElementalOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -3271,8 +3308,8 @@ local function GetElementalOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													get = function(info)
 														local color = statusbars.castBar.nametext.font.shadow.color
@@ -3292,7 +3329,7 @@ local function GetElementalOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -3308,7 +3345,7 @@ local function GetElementalOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -3325,7 +3362,7 @@ local function GetElementalOptions()
 									},
 								},
 								timetext = {
-									name = '|cFFFFFFFFTimer Text|r',
+									name = '|cFFFFFFFF'..L["LABEL_TIME_TEXT"]..'|r',
 									type = "group",
 									order = 7,
 									disabled = true,
@@ -3334,8 +3371,8 @@ local function GetElementalOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.castBar.timetext.font.color
@@ -3356,8 +3393,8 @@ local function GetElementalOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.castBar.timetext.font.name end,
 											set = function(self,value)
@@ -3369,7 +3406,7 @@ local function GetElementalOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -3383,8 +3420,8 @@ local function GetElementalOptions()
 										timeFontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.castBar.timetext.font.flag
 											end,
@@ -3397,8 +3434,8 @@ local function GetElementalOptions()
 										timeTextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.castBar.timetext.justify
 											end,
@@ -3412,7 +3449,7 @@ local function GetElementalOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -3427,7 +3464,7 @@ local function GetElementalOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -3439,7 +3476,7 @@ local function GetElementalOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -3447,7 +3484,7 @@ local function GetElementalOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -3461,8 +3498,8 @@ local function GetElementalOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													disabled = true,
 													get = function(info)
@@ -3483,7 +3520,7 @@ local function GetElementalOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -3499,7 +3536,7 @@ local function GetElementalOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -3516,7 +3553,7 @@ local function GetElementalOptions()
 									},
 								},
 								layout = {
-									name = L["Layout & Design"],
+									name = L["LABEL_LAYOUT_DESIGN"],
 									type = "group",
 									order = 8,
 									guiInline = true,
@@ -3524,8 +3561,8 @@ local function GetElementalOptions()
 										texture = {
 											order = 1,
 											type = "select",
-											name = L["Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_STATUSBAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.castBar.foreground.texture
@@ -3539,7 +3576,7 @@ local function GetElementalOptions()
 										textureColor = {
 											type = "color",
 											order = 2,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											get = function(info)
 												local color = statusbars.castBar.foreground.color
 												return color.r, color.g, color.b
@@ -3557,8 +3594,8 @@ local function GetElementalOptions()
 										backgroundTexture = {
 											order = 3,
 											type = "select",
-											name = L["Background Texture"],
-											desc = L["Set the bar's background texture."],
+											name = L["LABEL_STATUSBAR_BG_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_BG_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.castBar.background.texture
@@ -3572,8 +3609,8 @@ local function GetElementalOptions()
 										backgroundColor = {
 											type = "color",
 											order = 4,
-											name = L["Background Color"],
-											desc = L["Set the color of the cast bar's background."],
+											name = L["LABEL_STATUSBAR_BG_COLOR"],
+											desc = L["TOOLTIP_STATUSBAR_BG_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.castBar.background.color
@@ -3591,8 +3628,8 @@ local function GetElementalOptions()
 										},
 										backgroundToggle = {
 											order = 5,
-											name = L["Modify Background"],
-											desc = L["Toggle the adjustment of the bar's background texture"],
+											name = L["LABEL_STATUSBAR_MODIFY_BACKGROUND"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_BG_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.castBar.adjust.showBG
@@ -3605,7 +3642,7 @@ local function GetElementalOptions()
 										width = {
 											order = 6,
 											type = "range",
-											name = L["Width"],
+											name = L["LABEL_WIDTH"],
 											desc = '',
 											min = 100,
 											max = 500,
@@ -3620,7 +3657,7 @@ local function GetElementalOptions()
 										height = {
 											order = 7,
 											type = "range",
-											name = L["Height"],
+											name = L["LABEL_HEIGHT"],
 											desc = '',
 											min = 10,
 											max = 100,
@@ -3637,7 +3674,7 @@ local function GetElementalOptions()
 								reset = {
 									order = 9,
 									type = "execute",
-									name = L["Reset Cast Bar"],
+									name = L["BUTTON_RESET_STATUSBAR_CAST"],
 									func = function()
 										local bar = statusbars.castBar
 										local default = statusbarDefaults.castBar
@@ -3702,7 +3739,7 @@ local function GetElementalOptions()
 										bar.layout.height = default.layout.height
 										bar.layout.strata = default.layout.strata
 										ele_options.args.bars.args.castBar.args.reset.disabled = true
-										ele_options.args.bars.args.castBar.args.reset.name = "|cFF666666"..L["Reset Cast Bar"].."|r"
+										ele_options.args.bars.args.castBar.args.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_CAST"].."|r"
 										CheckElementalDefaultValues(ele_options,'Cast','castBar')
 										
 										if (not bar.adjust.isEnabled) then
@@ -3713,15 +3750,15 @@ local function GetElementalOptions()
 							},
 						},
 						channelBar = {
-							name = L["Channel Bar"],
+							name = L["LABEL_STATUSBAR_CHANNEL"],
 							order = 8,
 							inline = false,
 							type = "group",
 							args = {
 								adjust = {
 									order = 1,
-									name = L["Modify Channel Bar"],
-									desc = L["Toggle the adjustment of the Channel Bar"],
+									name = L["LABEL_STATUSBAR_MODIFY_CHANNEL"],
+									desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 									type = "toggle",
 									get = function()
 										return statusbars.channelBar.adjust.isEnabled
@@ -3733,8 +3770,8 @@ local function GetElementalOptions()
 								},
 								nametextToggle = {
 									order = 2,
-									name = L["Toggle Spell Name Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_SPELL_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_SPELL_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.channelBar.nametext.isDisplayText
@@ -3746,8 +3783,8 @@ local function GetElementalOptions()
 								},
 								timetextToggle = {
 									order = 3,
-									name = L["Toggle Time Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_TIME_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_TIME_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.channelBar.timetext.isDisplayText
@@ -3766,8 +3803,8 @@ local function GetElementalOptions()
 										alphaCombat = {
 											order = 1,
 											type = "range",
-											name = L["Alpha (In Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear while in combat"],
+											name = L["LABEL_ALPHA_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -3781,8 +3818,8 @@ local function GetElementalOptions()
 										alphaOoC = {
 											order = 2,
 											type = "range",
-											name = L["Alpha (Out of Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat"],
+											name = L["LABEL_ALPHA_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -3796,7 +3833,7 @@ local function GetElementalOptions()
 									},
 								},
 								iconSpark = {
-									name = '|cFFFFFFFF'..L['Icon & Spark']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_ICON_SPARK"]..'|r',
 									type = "group",
 									order = 5,
 									disabled = true,
@@ -3804,7 +3841,7 @@ local function GetElementalOptions()
 									args = {
 										sparkToggle = {
 											order = 1,
-											name = L["Toggle Spark"],
+											name = L["TOGGLE_SPARK"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -3817,7 +3854,7 @@ local function GetElementalOptions()
 										},
 										iconToggle = {
 											order = 2,
-											name = L["Toggle Icon"],
+											name = L["TOGGLE_ICON"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -3831,8 +3868,8 @@ local function GetElementalOptions()
 										iconJustify = {
 											order = 3,
 											type = "select",
-											name = L["Icon Justify"],
-											desc = L["Set the side of the progress bar that the icon will appear."],
+											name = L["LABEL_ICON_JUSTIFY"],
+											desc = L["TOOLTIP_STATUSBAR_ICON_LOCATION"],
 											get = function()
 												return statusbars.channelBar.icon.justify
 											end,
@@ -3845,7 +3882,7 @@ local function GetElementalOptions()
 									},
 								},
 								nametext = {
-									name = '|cFFFFFFFF'..L['Spell Name Text']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_TEXT_SPELL"]..'|r',
 									type = "group",
 									order = 6,
 									disabled = true,
@@ -3854,8 +3891,8 @@ local function GetElementalOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.channelBar.nametext.font.color
@@ -3876,8 +3913,8 @@ local function GetElementalOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.channelBar.nametext.font.name end,
 											set = function(self,value)
@@ -3889,7 +3926,7 @@ local function GetElementalOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -3903,8 +3940,8 @@ local function GetElementalOptions()
 										fontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.channelBar.nametext.font.flag
 											end,
@@ -3917,8 +3954,8 @@ local function GetElementalOptions()
 										nametextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.channelBar.nametext.justify
 											end,
@@ -3932,7 +3969,7 @@ local function GetElementalOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -3947,7 +3984,7 @@ local function GetElementalOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -3959,7 +3996,7 @@ local function GetElementalOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -3967,7 +4004,7 @@ local function GetElementalOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -3981,8 +4018,8 @@ local function GetElementalOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													disabled = true,
 													get = function(info)
@@ -4003,7 +4040,7 @@ local function GetElementalOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -4019,7 +4056,7 @@ local function GetElementalOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -4036,7 +4073,7 @@ local function GetElementalOptions()
 									},
 								},
 								timetext = {
-									name = '|cFFFFFFFFTimer Text|r',
+									name = '|cFFFFFFFF'..L["LABEL_TIME_TEXT"]..'|r',
 									type = "group",
 									order = 6,
 									disabled = true,
@@ -4045,8 +4082,8 @@ local function GetElementalOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.channelBar.timetext.font.color
@@ -4067,8 +4104,8 @@ local function GetElementalOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.channelBar.timetext.font.name end,
 											set = function(self,value)
@@ -4080,7 +4117,7 @@ local function GetElementalOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -4094,8 +4131,8 @@ local function GetElementalOptions()
 										timeFontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.channelBar.timetext.font.flag
 											end,
@@ -4108,8 +4145,8 @@ local function GetElementalOptions()
 										timeTextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.channelBar.timetext.justify
 											end,
@@ -4123,7 +4160,7 @@ local function GetElementalOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -4138,7 +4175,7 @@ local function GetElementalOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -4150,7 +4187,7 @@ local function GetElementalOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -4158,7 +4195,7 @@ local function GetElementalOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													--disabled = true,
@@ -4173,8 +4210,8 @@ local function GetElementalOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													disabled = true,
 													get = function(info)
@@ -4195,7 +4232,7 @@ local function GetElementalOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -4211,7 +4248,7 @@ local function GetElementalOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -4228,7 +4265,7 @@ local function GetElementalOptions()
 									},
 								},
 								layout = {
-									name = L["Layout & Design"],
+									name = L["LABEL_LAYOUT_DESIGN"],
 									type = "group",
 									order = 7,
 									guiInline = true,
@@ -4236,8 +4273,8 @@ local function GetElementalOptions()
 										texture = {
 											order = 1,
 											type = "select",
-											name = L["Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_STATUSBAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.channelBar.foreground.texture
@@ -4251,7 +4288,7 @@ local function GetElementalOptions()
 										textureColor = {
 											type = "color",
 											order = 2,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											get = function(info)
 												local color = statusbars.channelBar.foreground.color
 												return color.r, color.g, color.b
@@ -4269,8 +4306,8 @@ local function GetElementalOptions()
 										backgroundTexture = {
 											order = 3,
 											type = "select",
-											name = L["Background Texture"],
-											desc = L["Set the bar's background texture."],
+											name = L["LABEL_STATUSBAR_BG_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_BG_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.channelBar.background.texture
@@ -4284,8 +4321,8 @@ local function GetElementalOptions()
 										backgroundColor = {
 											type = "color",
 											order = 4,
-											name = L["Background Color"],
-											desc = L["Set the color of the cast bar's background."],
+											name = L["LABEL_STATUSBAR_BG_COLOR"],
+											desc = L["TOOLTIP_STATUSBAR_BG_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.channelBar.background.color
@@ -4303,8 +4340,8 @@ local function GetElementalOptions()
 										},
 										backgroundToggle = {
 											order = 5,
-											name = L["Modify Background"],
-											desc = L["Toggle the adjustment of the bar's background texture"],
+											name = L["LABEL_STATUSBAR_MODIFY_BACKGROUND"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_BG_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.channelBar.adjust.showBG
@@ -4317,7 +4354,7 @@ local function GetElementalOptions()
 										width = {
 											order = 6,
 											type = "range",
-											name = L["Width"],
+											name = L["LABEL_WIDTH"],
 											desc = '',
 											min = 100,
 											max = 500,
@@ -4332,7 +4369,7 @@ local function GetElementalOptions()
 										height = {
 											order = 7,
 											type = "range",
-											name = L["Height"],
+											name = L["LABEL_HEIGHT"],
 											desc = '',
 											min = 10,
 											max = 100,
@@ -4349,7 +4386,7 @@ local function GetElementalOptions()
 								reset = {
 									order = 8,
 									type = "execute",
-									name = L["Reset Channel Bar"],
+									name = L["BUTTON_RESET_STATUSBAR_CHANNEL"],
 									func = function()
 										local bar = statusbars.channelBar
 										local default = statusbarDefaults.channelBar
@@ -4414,7 +4451,7 @@ local function GetElementalOptions()
 										bar.layout.height = default.layout.height
 										bar.layout.strata = default.layout.strata
 										ele_options.args.bars.args.channelBar.args.reset.disabled = true
-										ele_options.args.bars.args.channelBar.args.reset.name = "|cFF666666"..L["Reset Channel Bar"].."|r"
+										ele_options.args.bars.args.channelBar.args.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_CHANNEL"].."|r"
 										CheckElementalDefaultValues(ele_options,'Channel','channelBar')
 										
 										if (not bar.adjust.isEnabled) then
@@ -4425,15 +4462,15 @@ local function GetElementalOptions()
 							},
 						},
 						icefuryBar = {
-							name = L["Icefury Bar"],
+							name = L["LABEL_STATUSBAR_ICEFURY"],
 							order = 9,
 							inline = false,
 							type = "group",
 							args = {
 								adjust = {
 									order = 1,
-									name = L["Modify Icefury Bar"],
-									desc = L["Toggle the adjustment of the Icefury Bar"],
+									name = L["LABEL_STATUSBAR_MODIFY_ICEFURY"],
+									desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 									type = "toggle",
 									get = function()
 										return statusbars.icefuryBar.adjust.isEnabled
@@ -4445,8 +4482,8 @@ local function GetElementalOptions()
 								},
 								counttextToggle = {
 									order = 2,
-									name = L["Toggle Buff Count Text"],
-									desc = L["Toggles the text display of the remaining stacks on Icefury's buff"],
+									name = L["TOGGLE_COUNT_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_ICEFURY_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.icefuryBar.counttext.isDisplayText
@@ -4458,8 +4495,8 @@ local function GetElementalOptions()
 								},
 								timetextToggle = {
 									order = 3,
-									name = L["Toggle Time Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_TIME_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_TIME_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.icefuryBar.timetext.isDisplayText
@@ -4470,7 +4507,7 @@ local function GetElementalOptions()
 									end,
 								},
 								counttext = {
-									name = '|cFFFFFFFF'..L['Buff Count Text']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_TEXT_COUNT"]..'|r',
 									type = "group",
 									order = 4,
 									disabled = true,
@@ -4479,8 +4516,8 @@ local function GetElementalOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.icefuryBar.counttext.font.color
@@ -4501,8 +4538,8 @@ local function GetElementalOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.icefuryBar.counttext.font.name end,
 											set = function(self,value)
@@ -4514,7 +4551,7 @@ local function GetElementalOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -4528,8 +4565,8 @@ local function GetElementalOptions()
 										fontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.icefuryBar.counttext.font.flag
 											end,
@@ -4542,8 +4579,8 @@ local function GetElementalOptions()
 										counttextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.icefuryBar.counttext.justify
 											end,
@@ -4557,7 +4594,7 @@ local function GetElementalOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -4572,7 +4609,7 @@ local function GetElementalOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -4584,7 +4621,7 @@ local function GetElementalOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -4592,7 +4629,7 @@ local function GetElementalOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -4606,8 +4643,8 @@ local function GetElementalOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													disabled = true,
 													get = function(info)
@@ -4628,7 +4665,7 @@ local function GetElementalOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -4644,7 +4681,7 @@ local function GetElementalOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -4661,7 +4698,7 @@ local function GetElementalOptions()
 									},
 								},
 								timetext = {
-									name = '|cFFFFFFFFTimer Text|r',
+									name = '|cFFFFFFFF'..L["LABEL_TIME_TEXT"]..'|r',
 									type = "group",
 									order = 5,
 									disabled = true,
@@ -4670,8 +4707,8 @@ local function GetElementalOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.icefuryBar.timetext.font.color
@@ -4692,8 +4729,8 @@ local function GetElementalOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.icefuryBar.timetext.font.name end,
 											set = function(self,value)
@@ -4705,7 +4742,7 @@ local function GetElementalOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -4719,8 +4756,8 @@ local function GetElementalOptions()
 										timeFontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.icefuryBar.timetext.font.flag
 											end,
@@ -4733,8 +4770,8 @@ local function GetElementalOptions()
 										timeTextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.icefuryBar.timetext.justify
 											end,
@@ -4748,7 +4785,7 @@ local function GetElementalOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -4763,7 +4800,7 @@ local function GetElementalOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -4775,7 +4812,7 @@ local function GetElementalOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -4783,7 +4820,7 @@ local function GetElementalOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -4797,8 +4834,8 @@ local function GetElementalOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													disabled = true,
 													get = function(info)
@@ -4819,7 +4856,7 @@ local function GetElementalOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -4835,7 +4872,7 @@ local function GetElementalOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -4852,7 +4889,7 @@ local function GetElementalOptions()
 									},
 								},
 								layout = {
-									name = L["Layout & Design"],
+									name = L["LABEL_LAYOUT_DESIGN"],
 									type = "group",
 									order = 6,
 									guiInline = true,
@@ -4860,8 +4897,8 @@ local function GetElementalOptions()
 										texture = {
 											order = 1,
 											type = "select",
-											name = L["Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_STATUSBAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.icefuryBar.foreground.texture
@@ -4875,7 +4912,7 @@ local function GetElementalOptions()
 										textureColor = {
 											type = "color",
 											order = 2,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											get = function(info)
 												local color = statusbars.icefuryBar.foreground.color
 												return color.r, color.g, color.b
@@ -4892,8 +4929,8 @@ local function GetElementalOptions()
 										timerTexture = {
 											order = 3,
 											type = "select",
-											name = L["Timer Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_TIME_BAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.icefuryBar.timerBar.texture
@@ -4907,7 +4944,7 @@ local function GetElementalOptions()
 										timerColor = {
 											type = "color",
 											order = 4,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.icefuryBar.timerBar.color
@@ -4924,8 +4961,8 @@ local function GetElementalOptions()
 										},
 										timerToggle = {
 											order = 5,
-											name = L["Modify Timer Bar"],
-											desc = L["Toggle the adjustment of the Timer Bar"],
+											name = L["LABEL_STATUSBAR_MODIFY_TIMER"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.icefuryBar.adjust.showTimer
@@ -4938,8 +4975,8 @@ local function GetElementalOptions()
 										backgroundTexture = {
 											order = 6,
 											type = "select",
-											name = L["Background Texture"],
-											desc = L["Set the bar's background texture."],
+											name = L["LABEL_STATUSBAR_BG_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_BG_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.icefuryBar.background.texture
@@ -4954,7 +4991,7 @@ local function GetElementalOptions()
 											type = "color",
 											order = 7,
 											name = "BG Color",
-											desc = L["Set the color of the cast bar's background."],
+											desc = L["TOOLTIP_STATUSBAR_BG_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.icefuryBar.background.color
@@ -4971,8 +5008,8 @@ local function GetElementalOptions()
 										},
 										backgroundToggle = {
 											order = 8,
-											name = L["Modify Background"],
-											desc = L["Toggle the adjustment of the bar's background texture"],
+											name = L["LABEL_STATUSBAR_MODIFY_BACKGROUND"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_BG_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.icefuryBar.adjust.showBG
@@ -4985,7 +5022,7 @@ local function GetElementalOptions()
 										width = {
 											order = 9,
 											type = "range",
-											name = L["Width"],
+											name = L["LABEL_WIDTH"],
 											desc = '',
 											min = 100,
 											max = 500,
@@ -5000,7 +5037,7 @@ local function GetElementalOptions()
 										height = {
 											order = 10,
 											type = "range",
-											name = L["Height"],
+											name = L["LABEL_HEIGHT"],
 											desc = '',
 											min = 10,
 											max = 100,
@@ -5017,7 +5054,7 @@ local function GetElementalOptions()
 								reset = {
 									order = 7,
 									type = "execute",
-									name = L["Reset Icefury Bar"],
+									name = L["BUTTON_RESET_STATUSBAR_ICEFURY"],
 									func = function()
 										local bar = statusbars.icefuryBar
 										local default = statusbarDefaults.icefuryBar
@@ -5086,7 +5123,7 @@ local function GetElementalOptions()
 										bar.layout.height = default.layout.height
 										bar.layout.strata = default.layout.strata
 										ele_options.args.bars.args.icefuryBar.args.reset.disabled = true
-										ele_options.args.bars.args.icefuryBar.args.reset.name = "|cFF666666"..L["Reset Icefury Bar"].."|r"
+										ele_options.args.bars.args.icefuryBar.args.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_ICEFURY"].."|r"
 										CheckElementalDefaultValues(ele_options,'Icefury')
 										
 										if (not bar.adjust.isEnabled) then
@@ -5099,7 +5136,7 @@ local function GetElementalOptions()
 					},
 				},
 				cooldowns = {
-					name = L["Cooldowns"],
+					name = L["LABEL_COOLDOWN"],
 					order = 4,
 					type = "group",
 					disabled = true,
@@ -5107,7 +5144,7 @@ local function GetElementalOptions()
 						toggle = {
 							order = 1,
 							name = ENABLE,
-							desc = L["Toggle the display of cooldown text/numbers."],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_TEXT"],
 							type = "toggle",
 							get = function()
 								return cooldowns.isEnabled
@@ -5120,8 +5157,8 @@ local function GetElementalOptions()
 						},
 						text = {
 							order = 2,
-							name = L["Cooldown Values"],
-							desc = L["Toggle the display of cooldown text/numbers."],
+							name = L["LABEL_COOLDOWN_TEXT"],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_TEXT"],
 							type = "toggle",
 							get = function()
 								return cooldowns.text
@@ -5132,8 +5169,8 @@ local function GetElementalOptions()
 						},
 						sweep = {
 							order = 3,
-							name = L["Cooldown Sweep"],
-							desc = L["Toggle the display of the cooldown sweep animation"],
+							name = L["LABEL_COOLDOWN_SWEEP"],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_SWEEP"],
 							type = "toggle",
 							get = function()
 								return cooldowns.sweep
@@ -5142,22 +5179,13 @@ local function GetElementalOptions()
 								cooldowns.sweep = value
 								Auras:InitializeCooldowns('AuraGroup1',1)
 								CheckElementalDefaultValues(ele_options,'Cooldowns')
-								--[[if (not value) then
-									ele_options.args.cooldowns.args.GCD.disabled = true
-									ele_options.args.cooldowns.args.inverse.disabled = true
-									ele_options.args.cooldowns.args.bling.disabled = true
-								else
-									ele_options.args.cooldowns.args.GCD.disabled = false
-									ele_options.args.cooldowns.args.inverse.disabled = false
-									ele_options.args.cooldowns.args.bling.disabled = false
-								end]]
 							end,
 							width = "double",
 						},
 						GCD = {
 							order = 4,
-							name = L["GCD"],
-							desc = L["Toggles a GCD timer on auras."],
+							name = L["LABEL_COOLDOWN_GCD"],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_GCD"],
 							type = "toggle",
 							get = function()
 								return cooldowns.GCD.isEnabled
@@ -5168,8 +5196,8 @@ local function GetElementalOptions()
 						},
 						inverse = {
 							order = 5,
-							name = L["Reverse Sweep"],
-							desc = L["Reverses the cooldown sweep animation"],
+							name = L["LABEL_COOLDOWN_REVERSE_SWEEP"],
+							desc = L["TOOLTIP_COOLDOWN_REVERSE_SWEEP"],
 							type = "toggle",
 							get = function()
 								return cooldowns.inverse
@@ -5181,8 +5209,8 @@ local function GetElementalOptions()
 						},
 						bling = {
 							order = 6,
-							name = L["Bling Flash"],
-							desc = L["Toggles the bling flash animation that occurs at the end of a cooldown"],
+							name = L["LABEL_COOLDOWN_BLING"],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_BLING"],
 							type = "toggle",
 							get = function()
 								return cooldowns.bling
@@ -5195,8 +5223,8 @@ local function GetElementalOptions()
 						group = {
 							order = 7,
 							type = "select",
-							name = L["Cooldown Group"],
-							desc = L["Select the group of auras to adjust"],
+							name = L["LABEL_COOLDOWN_GROUP"],
+							desc = L["TOOLTIP_AURAS_GROUP_SELECT"],
 							get = function()
 								return cooldowns.selected
 							end,
@@ -5208,7 +5236,7 @@ local function GetElementalOptions()
 						},
 						adjustToggle = {
 							order = 8,
-							name = L["Adjust Cooldowns"],
+							name = L["LABEL_COOLDOWN_ADJUST"],
 							desc = '',
 							type = "toggle",
 							get = function()
@@ -5219,17 +5247,135 @@ local function GetElementalOptions()
 								CheckElementalDefaultValues(ele_options,'Cooldowns')
 							end,
 						},
-						p1_adjustGroup = {
-							name = L["Cooldown Settings"],
+						p1_formatting = {
+							name = FORMATTING,
 							type = "group",
 							order = 9,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[1].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.primary[1].text.formatting.alert.isEnabled = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,1,'primary',1)
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									values = {
+										["primary;2"] = PRIMARY.." #2",
+										["primary;3"] = PRIMARY.." #3",
+										["secondary;1"] = SECONDARY.." #1",
+										["secondary;2"] = SECONDARY.." #2",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[1].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.primary[1].text.formatting.alert.animate = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.primary[1].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.primary[1].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.primary[1].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.primary[1].text.formatting.alert.threshold = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[1].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.primary[1].text.formatting.decimals = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.primary[1].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.primary[1].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.primary[1].text.formatting.length = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						p1_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 10,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.primary[1].text.font.color
@@ -5247,16 +5393,14 @@ local function GetElementalOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
 									set = function(self,value)
-										--cooldowns.primary[1].text.justify = value
-										--CheckRestorationDefaultValues(res_options,'Cooldowns')
 										CopyCooldownOptions(value,1,'primary',1)
 										CheckElementalDefaultValues(ele_options,'Cooldowns')
 									end,
@@ -5268,11 +5412,11 @@ local function GetElementalOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.primary[1].text.font.name end,
 									set = function(self,value)
@@ -5281,10 +5425,10 @@ local function GetElementalOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -5296,10 +5440,10 @@ local function GetElementalOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.primary[1].text.font.flag
 									end,
@@ -5310,10 +5454,10 @@ local function GetElementalOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.primary[1].text.justify
 									end,
@@ -5324,10 +5468,10 @@ local function GetElementalOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -5339,10 +5483,10 @@ local function GetElementalOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -5354,15 +5498,15 @@ local function GetElementalOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -5376,8 +5520,8 @@ local function GetElementalOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.primary[1].text.font.shadow.color
@@ -5402,7 +5546,7 @@ local function GetElementalOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -5418,7 +5562,7 @@ local function GetElementalOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -5433,7 +5577,7 @@ local function GetElementalOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -5466,18 +5610,136 @@ local function GetElementalOptions()
 								},
 							},
 						},
-						p2_adjustGroup = {
-							name = L["Cooldown Settings"],
+						p2_formatting = {
+							name = FORMATTING,
 							type = "group",
-							order = 10,
+							order = 11,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[2].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.primary[2].text.formatting.alert.isEnabled = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,1,'primary',2)
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									values = {
+										["primary;1"] = PRIMARY.." #1",
+										["primary;3"] = PRIMARY.." #3",
+										["secondary;1"] = SECONDARY.." #1",
+										["secondary;2"] = SECONDARY.." #2",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[2].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.primary[2].text.formatting.alert.animate = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.primary[2].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.primary[2].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.primary[2].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.primary[2].text.formatting.alert.threshold = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[2].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.primary[2].text.formatting.decimals = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.primary[2].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.primary[1].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.primary[2].text.formatting.length = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						p2_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 12,
 							hidden = true,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.primary[2].text.font.color
@@ -5495,10 +5757,10 @@ local function GetElementalOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
@@ -5516,11 +5778,11 @@ local function GetElementalOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.primary[2].text.font.name end,
 									set = function(self,value)
@@ -5529,10 +5791,10 @@ local function GetElementalOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -5544,10 +5806,10 @@ local function GetElementalOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.primary[2].text.font.flag
 									end,
@@ -5558,10 +5820,10 @@ local function GetElementalOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.primary[2].text.justify
 									end,
@@ -5572,10 +5834,10 @@ local function GetElementalOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -5587,10 +5849,10 @@ local function GetElementalOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -5602,15 +5864,15 @@ local function GetElementalOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -5624,8 +5886,8 @@ local function GetElementalOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.primary[2].text.font.shadow.color
@@ -5650,7 +5912,7 @@ local function GetElementalOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -5666,7 +5928,7 @@ local function GetElementalOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -5681,7 +5943,7 @@ local function GetElementalOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -5714,18 +5976,136 @@ local function GetElementalOptions()
 								},
 							},
 						},
-						p3_adjustGroup = {
-							name = L["Cooldown Settings"],
+						p3_formatting = {
+							name = FORMATTING,
 							type = "group",
-							order = 11,
+							order = 13,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[3].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.primary[3].text.formatting.alert.isEnabled = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,1,'primary',3)
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									values = {
+										["primary;1"] = PRIMARY.." #1",
+										["primary;2"] = PRIMARY.." #2",
+										["secondary;1"] = SECONDARY.." #1",
+										["secondary;2"] = SECONDARY.." #2",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[3].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.primary[3].text.formatting.alert.animate = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.primary[3].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.primary[3].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.primary[3].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.primary[3].text.formatting.alert.threshold = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[3].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.primary[3].text.formatting.decimals = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.primary[3].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.primary[3].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.primary[3].text.formatting.length = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						p3_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 14,
 							hidden = true,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.primary[3].text.font.color
@@ -5743,10 +6123,10 @@ local function GetElementalOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
@@ -5764,11 +6144,11 @@ local function GetElementalOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.primary[3].text.font.name end,
 									set = function(self,value)
@@ -5777,10 +6157,10 @@ local function GetElementalOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -5792,10 +6172,10 @@ local function GetElementalOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.primary[3].text.font.flag
 									end,
@@ -5806,10 +6186,10 @@ local function GetElementalOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.primary[3].text.justify
 									end,
@@ -5820,10 +6200,10 @@ local function GetElementalOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -5835,10 +6215,10 @@ local function GetElementalOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -5850,15 +6230,15 @@ local function GetElementalOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -5872,8 +6252,8 @@ local function GetElementalOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.primary[3].text.font.shadow.color
@@ -5898,7 +6278,7 @@ local function GetElementalOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -5914,7 +6294,7 @@ local function GetElementalOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -5929,7 +6309,7 @@ local function GetElementalOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -5962,18 +6342,136 @@ local function GetElementalOptions()
 								},
 							},
 						},
-						s1_adjustGroup = {
-							name = L["Cooldown Settings"],
+						s1_formatting = {
+							name = FORMATTING,
 							type = "group",
-							order = 12,
+							order = 15,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[1].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.secondary[1].text.formatting.alert.isEnabled = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,1,'secondary',1)
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									values = {
+										["primary;1"] = PRIMARY.." #1",
+										["primary;2"] = PRIMARY.." #2",
+										["primary;3"] = PRIMARY.." #3",
+										["secondary;2"] = SECONDARY.." #2",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[1].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.secondary[1].text.formatting.alert.animate = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.secondary[1].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.secondary[1].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.secondary[1].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.secondary[1].text.formatting.alert.threshold = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[1].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.secondary[1].text.formatting.decimals = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.secondary[1].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.secondary[1].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.secondary[1].text.formatting.length = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						s1_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 16,
 							hidden = true,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.secondary[1].text.font.color
@@ -5991,10 +6489,10 @@ local function GetElementalOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
@@ -6012,11 +6510,11 @@ local function GetElementalOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.secondary[1].text.font.name end,
 									set = function(self,value)
@@ -6025,10 +6523,10 @@ local function GetElementalOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -6040,10 +6538,10 @@ local function GetElementalOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.secondary[1].text.font.flag
 									end,
@@ -6054,10 +6552,10 @@ local function GetElementalOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.secondary[1].text.justify
 									end,
@@ -6068,10 +6566,10 @@ local function GetElementalOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -6083,10 +6581,10 @@ local function GetElementalOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -6098,15 +6596,15 @@ local function GetElementalOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -6120,8 +6618,8 @@ local function GetElementalOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.secondary[1].text.font.shadow.color
@@ -6146,7 +6644,7 @@ local function GetElementalOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -6162,7 +6660,7 @@ local function GetElementalOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -6177,7 +6675,7 @@ local function GetElementalOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -6210,18 +6708,136 @@ local function GetElementalOptions()
 								},
 							},
 						},
-						s2_adjustGroup = {
-							name = L["Cooldown Settings"],
+						s2_formatting = {
+							name = FORMATTING,
 							type = "group",
-							order = 13,
+							order = 17,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[2].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.secondary[2].text.formatting.alert.isEnabled = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,1,'secondary',2)
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									values = {
+										["primary;1"] = PRIMARY.." #1",
+										["primary;2"] = PRIMARY.." #2",
+										["primary;3"] = PRIMARY.." #3",
+										["secondary;1"] = SECONDARY.." #1",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[2].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.secondary[2].text.formatting.alert.animate = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.secondary[2].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.secondary[2].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.secondary[2].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.secondary[2].text.formatting.alert.threshold = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[2].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.secondary[2].text.formatting.decimals = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.secondary[2].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.secondary[2].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.secondary[2].text.formatting.length = value
+										CheckElementalDefaultValues(ele_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						s2_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 18,
 							hidden = true,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.secondary[2].text.font.color
@@ -6239,10 +6855,10 @@ local function GetElementalOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
@@ -6260,11 +6876,11 @@ local function GetElementalOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.secondary[2].text.font.name end,
 									set = function(self,value)
@@ -6273,10 +6889,10 @@ local function GetElementalOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -6288,10 +6904,10 @@ local function GetElementalOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.secondary[2].text.font.flag
 									end,
@@ -6302,10 +6918,10 @@ local function GetElementalOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.secondary[2].text.justify
 									end,
@@ -6316,10 +6932,10 @@ local function GetElementalOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -6331,10 +6947,10 @@ local function GetElementalOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -6346,15 +6962,15 @@ local function GetElementalOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -6368,8 +6984,8 @@ local function GetElementalOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.secondary[2].text.font.shadow.color
@@ -6394,7 +7010,7 @@ local function GetElementalOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -6410,7 +7026,7 @@ local function GetElementalOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -6425,7 +7041,7 @@ local function GetElementalOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -6461,7 +7077,7 @@ local function GetElementalOptions()
 					},
 				},
 				layout = {
-					name = L["Layout"],
+					name = L["LABEL_LAYOUT"],
 					order = 5,
 					type = "group",
 					disabled = true,
@@ -6469,7 +7085,7 @@ local function GetElementalOptions()
 						MoveAuras = {
 							order = 1,
 							type = "execute",
-							name = "|cFFFFCC00"..L["Move Elemental Auras"].."|r",
+							name = "|cFFFFCC00"..L["BUTTON_MOVE_AURAS_ELEMENTAL"].."|r",
 							func = function()
 								elements.isMoving = true
 								SSA.Move1.Info:Show()
@@ -6479,13 +7095,13 @@ local function GetElementalOptions()
 						ResetAuras = {
 							order = 2,
 							type = "execute",
-							name = "|cFFFFCC00"..L["Reset Elemental Auras"].."|r",
+							name = "|cFFFFCC00"..L["BUTTON_RESET_AURAS_ELEMENTAL"].."|r",
 							func = function()
 								Auras:ResetAuraGroupPosition('AuraGroup1')
 							end,
 						},
 						primaryAuras = {
-							name = L["Primary Auras"],
+							name = L["LABEL_AURAS_PRIMARY"],
 							type = "group",
 							order = 3,
 							guiInline = true,
@@ -6493,8 +7109,8 @@ local function GetElementalOptions()
 								PrimaryOrientation1 = {
 									order = 1,
 									type = "select",
-									name = L["Primary Orientation 1"],
-									desc = L["Set the aura orientation to horizontal or vertical."],
+									name = L["LABEL_AURAS_ORIENTATION"].." 1",
+									desc = L["TOOLTIP_AURAS_ORIENTATION"],
 									get = function()
 										return layout.orientation.top
 									end,
@@ -6508,8 +7124,8 @@ local function GetElementalOptions()
 								PrimaryOrientation2 = {
 									order = 2,
 									type = "select",
-									name = L["Primary Orientation 2"],
-									desc = L["Set the aura orientation to horizontal or vertical."],
+									name = L["LABEL_AURAS_ORIENTATION"].." 2",
+									desc = L["TOOLTIP_AURAS_ORIENTATION"],
 									get = function()
 										return layout.orientation.bottom
 									end,
@@ -6528,8 +7144,8 @@ local function GetElementalOptions()
 								AuraSizeRow1 = {
 									order = 4,
 									type = "range",
-									name = L["Primary Size 1"],
-									desc = L["Determines the size of primary auras in row 1. (Default is 32)"],
+									name = L["LABEL_AURAS_SIZE"].." 1",
+									desc = L["TOOLTIP_AURAS_SIZE"],
 									min = 16,
 									max = 256,
 									step = 1,
@@ -6544,8 +7160,8 @@ local function GetElementalOptions()
 								AuraSpacingRow1 = {
 									order = 5,
 									type = "range",
-									name = L["Primary Spacing 1"],
-									desc = L["Determines the spacing of the primary auras in row 1. (Default is 50)"],
+									name = L["LABEL_AURAS_SPACING"].." 1",
+									desc = L["TOOLTIP_AURAS_SPACING"],
 									min = 32,
 									max = 300,
 									step = 1,
@@ -6560,8 +7176,8 @@ local function GetElementalOptions()
 								AuraChargesRow1 = {
 									order = 6,
 									type = "range",
-									name = L["Primary Charges 1"],
-									desc = L["Determines the size of the primary charge text in row 1. (Default is 13.5)"],
+									name = L["LABEL_AURAS_CHARGES"].." 1",
+									desc = L["TOOLTIP_AURAS_CHARGE_SIZE"],
 									min = 10,
 									max = 60,
 									step = 0.5,
@@ -6581,8 +7197,8 @@ local function GetElementalOptions()
 								AuraSizeRow2 = {
 									order = 8,
 									type = "range",
-									name = L["Primary Size 2"],
-									desc = L["Determines the size of primary auras in row 2. (Default is 32)"],
+									name = L["LABEL_AURAS_SIZE"].." 2",
+									desc = L["TOOLTIP_AURAS_SIZE"],
 									min = 16,
 									max = 256,
 									step = 1,
@@ -6597,8 +7213,8 @@ local function GetElementalOptions()
 								AuraSpacingRow2 = {
 									order = 9,
 									type = "range",
-									name = L["Primary Spacing 2"],
-									desc = L["Determines the spacing of the primary auras in row 2. (Default is 50)"],
+									name = L["LABEL_AURAS_SPACING"].." 2",
+									desc = L["TOOLTIP_AURAS_SPACING"],
 									min = 32,
 									max = 300,
 									step = 1,
@@ -6618,9 +7234,9 @@ local function GetElementalOptions()
 								ResetPrimaryLayout = {
 									order = 11,
 									type = "execute",
-									--name = "|cFFFFCC00"..L["Reset Primary Layout"].."|r",
+									--name = "|cFFFFCC00"..L["BUTTON_RESET_LAYOUT_PRIMARY"].."|r",
 									--disabled = false,
-									name = L["Reset Primary Layout"],
+									name = L["BUTTON_RESET_LAYOUT_PRIMARY"],
 									func = function()
 										layout.orientation.top = layoutDefaults.orientation.top
 										layout.orientation.bottom = layoutDefaults.orientation.bottom
@@ -6631,14 +7247,14 @@ local function GetElementalOptions()
 										layout.primary.bottom.spacing = layoutDefaults.primary.bottom.spacing
 										--layout.primary.bottom.charges = layoutDefaults.primary.bottom.charges
 										res_options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.disabled = true
-										res_options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFF666666"..L["Reset Primary Layout"].."|r"
+										res_options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFF666666"..L["BUTTON_RESET_LAYOUT_PRIMARY"].."|r"
 										Auras:UpdateTalents()
 									end,
 								},
 							},
 						},
 						secondaryAuras = {
-							name = L["Secondary Auras"],
+							name = L["LABEL_AURAS_SECONDARY"],
 							type = "group",
 							order = 4,
 							guiInline = true,
@@ -6646,8 +7262,8 @@ local function GetElementalOptions()
 								SecondaryOrientation1 = {
 									order = 1,
 									type = "select",
-									name = L["Secondary Orientation 1"],
-									desc = L["Set the aura orientation to horizontal or vertical."],
+									name = L["LABEL_AURAS_ORIENTATION"].." 1",
+									desc = L["TOOLTIP_AURAS_ORIENTATION"],
 									get = function()
 										return layout.orientation.left
 									end,
@@ -6661,8 +7277,8 @@ local function GetElementalOptions()
 								SecondaryOrientation2 = {
 									order = 2,
 									type = "select",
-									name = L["Secondary Orientation 2"],
-									desc = L["Set the aura orientation to horizontal or vertical."],
+									name = L["LABEL_AURAS_ORIENTATION"].." 2",
+									desc = L["TOOLTIP_AURAS_ORIENTATION"],
 									get = function()
 										return layout.orientation.right
 									end,
@@ -6681,8 +7297,8 @@ local function GetElementalOptions()
 								AuraSizeCol1 = {
 									order = 4,
 									type = "range",
-									name = L["Secondary Size 1"],
-									desc = L["Determines the size of secondary auras in column 1. (Default is 25)"],
+									name = L["LABEL_AURAS_SIZE"].." 1",
+									desc = L["TOOLTIP_AURAS_SIZE"],
 									min = 16,
 									max = 256,
 									step = 1,
@@ -6697,8 +7313,8 @@ local function GetElementalOptions()
 								AuraSpacingCol1 = {
 									order = 5,
 									type = "range",
-									name = L["Secondary Spacing 1"],
-									desc = L["Determines the spacing of the secondary auras in column 1. (Default is 30)"],
+									name = L["LABEL_AURAS_SPACING"].." 1",
+									desc = L["TOOLTIP_AURAS_SPACING"],
 									min = 32,
 									max = 300,
 									step = 1,
@@ -6713,8 +7329,8 @@ local function GetElementalOptions()
 								--[[AuraChargesCol1 = {
 									order = 16,
 									type = "range",
-									name = L["Secondary Charges 1"],
-									desc = L["Determines the size of the secondary charge text in column 1. (Default is 13.5)"],
+									name = L["LABEL_AURAS_CHARGES"].." 1",
+									desc = L["TOOLTIP_AURAS_CHARGE_SIZE"],
 									min = 10,
 									max = 20,
 									step = 0.5,
@@ -6733,8 +7349,8 @@ local function GetElementalOptions()
 								AuraSizeCol2 = {
 									order = 6,
 									type = "range",
-									name = L["Secondary Size 2"],
-									desc = L["Determines the size of secondary auras in column 2. (Default is 25)"],
+									name = L["LABEL_AURAS_SIZE"].." 2",
+									desc = L["TOOLTIP_AURAS_SIZE"],
 									min = 16,
 									max = 256,
 									step = 1,
@@ -6749,8 +7365,8 @@ local function GetElementalOptions()
 								AuraSpacingCol2 = {
 									order = 7,
 									type = "range",
-									name = L["Secondary Spacing 2"],
-									desc = L["Determines the spacing of the secondary auras in column 2. (Default is 30)"],
+									name = L["LABEL_AURAS_SPACING"].." 2",
+									desc = L["TOOLTIP_AURAS_SPACING"],
 									min = 32,
 									max = 300,
 									step = 1,
@@ -6766,7 +7382,7 @@ local function GetElementalOptions()
 									order = 20,
 									type = "range",
 									name = L["Secondary Charges 2"],
-									desc = L["Determines the size of the secondary charge text in column 2. (Default is 13.5)"],
+									desc = L["TOOLTIP_AURAS_CHARGE_SIZE"],
 									min = 10,
 									max = 20,
 									step = 0.5,
@@ -6785,9 +7401,9 @@ local function GetElementalOptions()
 								ResetSecondaryLayout = {
 									order = 9,
 									type = "execute",
-									--name = "|cFFFFCC00"..L["Reset Secondary Layout"].."|r",
+									--name = "|cFFFFCC00"..L["BUTTON_RESET_LAYOUT_SECONDARY"].."|r",
 									--disabled = false,
-									name = L["Reset Secondary Layout"],
+									name = L["BUTTON_RESET_LAYOUT_SECONDARY"],
 									func = function()
 										layout.orientation.left = layoutDefaults.orientation.left
 										layout.orientation.right = layoutDefaults.orientation.right
@@ -6798,7 +7414,7 @@ local function GetElementalOptions()
 										layout.secondary.right.spacing = layoutDefaults.secondary.right.spacing
 										--layout.secondary.right.charges = layoutDefaults.secondary.right.charges
 										ele_options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.disabled = true
-										ele_options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFF666666"..L["Reset Secondary Layout"].."|r"
+										ele_options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFF666666"..L["BUTTON_RESET_LAYOUT_SECONDARY"].."|r"
 										Auras:UpdateTalents()
 									end,
 								},
@@ -6845,8 +7461,8 @@ local function GetEnhancementOptions()
 			type = "group",
 			childGroups = "tab",
 			order = 1,
-			name = L["Enhancement Auras"],
-			desc = L["Auras used by the Enhancement specialization"],
+			name = L["LABEL_AURAS_ENHANCEMENT"],
+			desc = '',
 			args = {
 				display = {
 					name = DISPLAY,
@@ -6855,8 +7471,8 @@ local function GetEnhancementOptions()
 					args = {
 						show = {
 							order = 1,
-							name = L["Show Enhancement Auras"],
-							desc = L["Toggle the display of Elemental Auras"],
+							name = L["LABEL_SHOW_ENHANCEMENT_AURAS"],
+							desc = L["TOOLTIP_TOGGLE_ENHANCEMENT_AURAS"],
 							type = "toggle",
 							get = function()
 								return elements.isEnabled
@@ -6871,7 +7487,7 @@ local function GetEnhancementOptions()
 							end,
 						},
 						MajorAuras = {
-							name = L["Major Auras"],
+							name = L["LABEL_AURAS_MAJOR"],
 							type = "group",
 							order = 2,
 							guiInline = true,
@@ -6879,7 +7495,7 @@ local function GetEnhancementOptions()
 								Ascendance = {
 									order = 1,
 									type = "toggle",
-									name = L["Ascendance"],
+									name = Auras:GetSpellName(114051),
 									get = function() 
 										return auras.Ascendance2
 									end,
@@ -6892,7 +7508,7 @@ local function GetEnhancementOptions()
 								Concordance = {
 									order = 2,
 									type = "toggle",
-									name = L["Concordance of the Legionfall"],
+									name = Auras:GetSpellName(242586),
 									get = function()
 										return auras.Concordance2
 									end,
@@ -6904,7 +7520,7 @@ local function GetEnhancementOptions()
 								CrashLightning = {
 									order = 3,
 									type = "toggle",
-									name = L["Crash Lightning"],
+									name = Auras:GetSpellName(187874),
 									get = function()
 										return auras.CrashLightning
 									end,
@@ -6916,7 +7532,7 @@ local function GetEnhancementOptions()
 								DoomWinds = {
 									order = 4,
 									type = "toggle",
-									name = L["Doom Winds"],
+									name = Auras:GetSpellName(204945),
 									get = function()
 										return auras.DoomWinds
 									end,
@@ -6928,7 +7544,7 @@ local function GetEnhancementOptions()
 								EarthenSpike = {
 									order = 5,
 									type = "toggle",
-									name = L["Earthen Spike"],
+									name = Auras:GetSpellName(188089),
 									get = function()
 										return auras.EarthenSpike
 									end,
@@ -6940,7 +7556,7 @@ local function GetEnhancementOptions()
 								FeralLunge = {
 									order = 6,
 									type = "toggle",
-									name = L["Feral Lunge"],
+									name = Auras:GetSpellName(196884),
 									get = function()
 										return auras.FeralLunge
 									end,
@@ -6952,7 +7568,7 @@ local function GetEnhancementOptions()
 								FeralSpirit = {
 									order = 7,
 									type = "toggle",
-									name = L["Feral Spirit"],
+									name = Auras:GetSpellName(51533),
 									get = function()
 										return auras.FeralSpirit
 									end,
@@ -6964,7 +7580,7 @@ local function GetEnhancementOptions()
 								Flametongue = {
 									order = 8,
 									type = "toggle",
-									name = L["Flametongue"],
+									name = Auras:GetSpellName(193796),
 									get = function()
 										return auras.Flametongue
 									end,
@@ -6976,7 +7592,7 @@ local function GetEnhancementOptions()
 								Frostbrand = {
 									order = 9,
 									type = "toggle",
-									name = L["Frostbrand"],
+									name = Auras:GetSpellName(196834),
 									get = function()
 										return auras.Frostbrand
 									end,
@@ -6988,7 +7604,7 @@ local function GetEnhancementOptions()
 								LavaLash = {
 									order = 10,
 									type = "toggle",
-									name = L["Lava Lash"],
+									name = Auras:GetSpellName(60103),
 									get = function()
 										return auras.LavaLash
 									end,
@@ -7000,7 +7616,7 @@ local function GetEnhancementOptions()
 								Rockbiter = {
 									order = 11,
 									type = "toggle",
-									name = L["Rockbiter"],
+									name = Auras:GetSpellName(193786),
 									get = function()
 										return auras.Rockbiter
 									end,
@@ -7012,7 +7628,7 @@ local function GetEnhancementOptions()
 								Stormstrike = {
 									order = 12,
 									type = "toggle",
-									name = L["Stormstrike"],
+									name = Auras:GetSpellName(17364),
 									get = function()
 										return auras.Stormstrike
 									end,
@@ -7024,7 +7640,7 @@ local function GetEnhancementOptions()
 								Sundering = {
 									order = 13,
 									type = "toggle",
-									name = L["Sundering"],
+									name = Auras:GetSpellName(197214),
 									get = function()
 										return auras.Sundering
 									end,
@@ -7036,7 +7652,7 @@ local function GetEnhancementOptions()
 								UnleashDoom = {
 									order = 14,
 									type = "toggle",
-									name = L["Unleash Doom"],
+									name = Auras:GetSpellName(198736),
 									get = function()
 										return auras.UnleashDoom
 									end,
@@ -7048,7 +7664,7 @@ local function GetEnhancementOptions()
 								Windsong = {
 									order = 15,
 									type = "toggle",
-									name = L["Windsong"],
+									name = Auras:GetSpellName(201898),
 									get = function()
 										return auras.Windsong
 									end,
@@ -7060,7 +7676,7 @@ local function GetEnhancementOptions()
 							},
 						},
 						MinorAuras = {
-							name = L["Minor Auras"],
+							name = L["LABEL_AURAS_MINOR"],
 							type = "group",
 							order = 3,
 							guiInline = true,
@@ -7068,7 +7684,7 @@ local function GetEnhancementOptions()
 								AstralShift = {
 									order = 1,
 									type = "toggle",
-									name = L["Astral Shift"],
+									name = Auras:GetSpellName(108271),
 									get = function()
 										return auras.AstralShift2
 									end,
@@ -7080,7 +7696,7 @@ local function GetEnhancementOptions()
 								CleanseSpirit = {
 									order = 2,
 									type = "toggle",
-									name = L["Cleanse Spirit"],
+									name = Auras:GetSpellName(51886),
 									get = function()
 										return auras.CleanseSpirit2
 									end,
@@ -7092,7 +7708,7 @@ local function GetEnhancementOptions()
 								EarthgrabTotem = {
 									order = 3,
 									type = "toggle",
-									name = L["Earthgrab Totem"],
+									name = Auras:GetSpellName(51485),
 									get = function()
 										return auras.EarthgrabTotem2
 									end,
@@ -7104,7 +7720,7 @@ local function GetEnhancementOptions()
 								Hex = {
 									order = 4,
 									type = "toggle",
-									name = L["Hex"],
+									name = Auras:GetSpellName(51514),
 									get = function()
 										return auras.Hex2
 									end,
@@ -7116,7 +7732,7 @@ local function GetEnhancementOptions()
 								LightningSurgeTotem = {
 									order = 5,
 									type = "toggle",
-									name = L["Lightning Surge Totem"],
+									name = Auras:GetSpellName(192058),
 									get = function()
 										return auras.LightningSurgeTotem2
 									end,
@@ -7128,7 +7744,7 @@ local function GetEnhancementOptions()
 								Rainfall = {
 									order = 6,
 									type = "toggle",
-									name = L["Rainfall"],
+									name = Auras:GetSpellName(215864),
 									get = function()
 										return auras.Rainfall
 									end,
@@ -7140,7 +7756,7 @@ local function GetEnhancementOptions()
 								SpiritWalk = {
 									order = 7,
 									type = "toggle",
-									name = L["Spirit Walk"],
+									name = Auras:GetSpellName(58875),
 									get = function()
 										return auras.SpiritWalk
 									end,
@@ -7152,7 +7768,7 @@ local function GetEnhancementOptions()
 								VoodooTotem = {
 									order = 8,
 									type = "toggle",
-									name = L["Voodoo Totem"],
+									name = Auras:GetSpellName(196932),
 									get = function()
 										return auras.VoodooTotem2
 									end,
@@ -7164,7 +7780,7 @@ local function GetEnhancementOptions()
 								WindRushTotem = {
 									order = 9,
 									type = "toggle",
-									name = L["Wind Rush Totem"],
+									name = Auras:GetSpellName(192077),
 									get = function()
 										return auras.WindRushTotem2
 									end,
@@ -7176,7 +7792,7 @@ local function GetEnhancementOptions()
 								WindShear = {
 									order = 10,
 									type = "toggle",
-									name = L["Wind Shear"],
+									name = Auras:GetSpellName(57994),
 									get = function()
 										return auras.WindShear2
 									end,
@@ -7188,58 +7804,13 @@ local function GetEnhancementOptions()
 							},
 						},
 						ProgressBars = {
-							name = L["Progress Bars"],
+							name = L["LABEL_PROGRESS_BARS"],
 							type = "group",
 							order = 4,
 							guiInline = true,
 							args = {
-								--[[MaelstromBar2 = {
-									order = 1,
-									type = "toggle",
-									name = L["Maelstrom Bar"],
-									get = function() 
-										return Auras.db.char.aura[2].MaelstromBar2
-									end,
-									set = function(self,value)
-										Auras.db.char.aura[2].MaelstromBar2 = value
-									end,
-								},
-								
-								ShowBuffTimers = {
-									order = 1,
-									type = "toggle",
-									name = L["Show Buff Timers"],
-									get = function() 
-										return Auras.db.char.frames.timerbars.buff[2]
-									end,
-									set = function(self,value)
-										Auras.db.char.frames.timerbars.buff[2] = value
-									end,
-								},
-								ShowAbilityTimers = {
-									order = 2,
-									type = "toggle",
-									name = L["Show Ability Timers"],
-									get = function() 
-										return Auras.db.char.frames.timerbars.main[2]
-									end,
-									set = function(self,value)
-										Auras.db.char.frames.timerbars.main[2] = value
-									end,
-								},
-								ShowUtilityTimers = {
-									order = 3,
-									type = "toggle",
-									name = L["Show Utility Timers"],
-									get = function() 
-										return Auras.db.char.frames.timerbars.util[2]
-									end,
-									set = function(self,value)
-										Auras.db.char.frames.timerbars.util[2] = value
-									end,
-								},]]
 								BuffTimerBars = {
-									name = L["Buff Duration Timers"],
+									name = L["LABEL_STATUSBAR_BUFF_TIMER"],
 									type = "group",
 									order = 2,
 									guiInline = true,
@@ -7247,7 +7818,7 @@ local function GetEnhancementOptions()
 										AscendanceBar2 = {
 											order = 1,
 											type = "toggle",
-											name = L["Ascendance"],
+											name = Auras:GetSpellName(114051),
 											get = function() 
 												return timerbars.buff.ascendance
 											end,
@@ -7258,7 +7829,7 @@ local function GetEnhancementOptions()
 										AstralShiftBar2 = {
 											order = 2,
 											type = "toggle",
-											name = L["Astral Shift"],
+											name = Auras:GetSpellName(108271),
 											get = function() 
 												return timerbars.buff.astralShift
 											end,
@@ -7269,7 +7840,7 @@ local function GetEnhancementOptions()
 										Bloodlust = {
 											order = 3,
 											type = "toggle",
-											name = L["Bloodlust"],
+											name = Auras:GetSpellName(2825),
 											hidden = false,
 											get = function() 
 												return timerbars.buff.bloodlust
@@ -7281,7 +7852,7 @@ local function GetEnhancementOptions()
 										Heroism = {
 											order = 4,
 											type = "toggle",
-											name = L["Heroism"],
+											name = Auras:GetSpellName(32182),
 											hidden = false,
 											get = function() 
 												return timerbars.buff.heroism
@@ -7293,7 +7864,7 @@ local function GetEnhancementOptions()
 										HexBar2 = {
 											order = 5,
 											type = "toggle",
-											name = L["Hex"],
+											name = Auras:GetSpellName(51514),
 											get = function() 
 												return timerbars.buff.hex
 											end,
@@ -7304,7 +7875,7 @@ local function GetEnhancementOptions()
 										SpiritWalkBar = {
 											order = 6,
 											type = "toggle",
-											name = L["Spirit Walk"],
+											name = Auras:GetSpellName(58875),
 											get = function() 
 												return timerbars.buff.spiritWalk
 											end,
@@ -7315,7 +7886,7 @@ local function GetEnhancementOptions()
 										TimeWarp = {
 											order = 7,
 											type = "toggle",
-											name = L["Time Warp"],
+											name = Auras:GetSpellName(80353),
 											get = function() 
 												return timerbars.buff.timeWarp
 											end,
@@ -7326,27 +7897,15 @@ local function GetEnhancementOptions()
 									},
 								},
 								MainTimerBars = {
-									name = L["Ability Duration Timers"],
+									name = L["LABEL_TIMERS_ABILITY"],
 									type = "group",
 									order = 3,
 									guiInline = true,
-									--disabled = function() return (generalSettings.theme == "Graphical") end,
 									args = {
-										--[[BoulderfistBar = {
-											order = 1,
-											type = "toggle",
-											name = L["Boulderfist"],
-											get = function() 
-												return Auras.db.char.aura[2].BoulderfistBar
-											end,
-											set = function(self,value)
-												Auras.db.char.aura[2].BoulderfistBar = value
-											end,
-										},]]
 										CrashLightningBar = {
 											order = 2,
 											type = "toggle",
-											name = L["Crash Lightning"],
+											name = Auras:GetSpellName(187874),
 											get = function() 
 												return timerbars.main.crashLightning
 											end,
@@ -7357,7 +7916,7 @@ local function GetEnhancementOptions()
 										EarthenSpikeBar = {
 											order = 3,
 											type = "toggle",
-											name = L["Earthen Spike"],
+											name = Auras:GetSpellName(188089),
 											get = function() 
 												return timerbars.main.earthenSpike
 											end,
@@ -7368,7 +7927,7 @@ local function GetEnhancementOptions()
 										FlametongueBar = {
 											order = 4,
 											type = "toggle",
-											name = L["Flametongue"],
+											name = Auras:GetSpellName(193796),
 											get = function() 
 												return timerbars.main.flametongue
 											end,
@@ -7379,7 +7938,7 @@ local function GetEnhancementOptions()
 										FrostbrandBar = {
 											order = 5,
 											type = "toggle",
-											name = L["Frostbrand"],
+											name = Auras:GetSpellName(196834),
 											get = function() 
 												return timerbars.main.frostbrand
 											end,
@@ -7390,7 +7949,7 @@ local function GetEnhancementOptions()
 										Landslide = {
 											order = 6,
 											type = "toggle",
-											name = L["Landslide"],
+											name = Auras:GetSpellName(197992),
 											get = function() 
 												return timerbars.main.landslide
 											end,
@@ -7401,7 +7960,7 @@ local function GetEnhancementOptions()
 										WindsongBar = {
 											order = 7,
 											type = "toggle",
-											name = L["Windsong"],
+											name = Auras:GetSpellName(201898),
 											get = function() 
 												return timerbars.main.windsong
 											end,
@@ -7412,7 +7971,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								TotemTimerBars = {
-									name = L["Totem Duration Timers"],
+									name = L["LABEL_TIMERS_TOTEM"],
 									type = "group",
 									order = 4,
 									guiInline = true,
@@ -7420,7 +7979,7 @@ local function GetEnhancementOptions()
 										EarthgrabTotemBar2 = {
 											order = 1,
 											type = "toggle",
-											name = L["Earthgrab Totem"],
+											name = Auras:GetSpellName(51485),
 											get = function() 
 												return timerbars.util.earthgrabTotem
 											end,
@@ -7431,7 +7990,7 @@ local function GetEnhancementOptions()
 										VoodooTotemBar2 = {
 											order = 2,
 											type = "toggle",
-											name = L["Voodoo Totem"],
+											name = Auras:GetSpellName(196932),
 											get = function() 
 												return timerbars.util.voodooTotem
 											end,
@@ -7442,7 +8001,7 @@ local function GetEnhancementOptions()
 										WindRushTotemBar2 = {
 											order = 3,
 											type = "toggle",
-											name = L["Wind Rush Totem"],
+											name = Auras:GetSpellName(192077),
 											get = function() 
 												return timerbars.util.windRushTotem
 											end,
@@ -7455,7 +8014,7 @@ local function GetEnhancementOptions()
 							},
 						},
 						TextureAlerts = {
-							name = L["Texture Alerts"],
+							name = L["TOOLTIP_TEXTURE_ALERTS"],
 							type = "group",
 							order = 5,
 							guiInline = true,
@@ -7463,7 +8022,7 @@ local function GetEnhancementOptions()
 								DoomWinds = {
 									order = 1,
 									type = "toggle",
-									name = L["Doom Winds"],
+									name = Auras:GetSpellName(204945),
 									get = function() 
 										return frames.DoomWindsTexture.isEnabled
 									end,
@@ -7474,7 +8033,7 @@ local function GetEnhancementOptions()
 								StormstrikeOrbs = {
 									order = 2,
 									type = "toggle",
-									name = L["Stormstrike Lightning Orbs"],
+									name = L["LABEL_STORMSTRIKE_ORBS"],
 									get = function() 
 										return frames.StormstrikeChargeGrp.isEnabled
 									end,
@@ -7494,7 +8053,7 @@ local function GetEnhancementOptions()
 					disabled = true,
 					args = {
 						settings = {
-							name = L["Aura Settings"],
+							name = L["LABEL_AURAS_SETTINGS"],
 							type = "group",
 							order = 3,
 							guiInline = true,
@@ -7502,8 +8061,8 @@ local function GetEnhancementOptions()
 								OoCAlpha = {
 									order = 1,
 									type = "range",
-									name = L["Alpha (OoC)"],
-									desc = L["Determines how opaque or transparent the auras will appear when out of combat"],
+									name = L["LABEL_ALPHA_NO_COMBAT"],
+									desc = L["TOOLTIP_AURAS_ALPHA_NO_COMBAT"],
 									min = 0,
 									max = 1,
 									step = 0.1,
@@ -7517,8 +8076,8 @@ local function GetEnhancementOptions()
 								OoRColor = {
 									type = "color",
 									order = 2,
-									name = L["Color (OoR)"],
-									desc = L["Determines the color of harmful auras will appear when out of range"],
+									name = L["LABEL_COLOR_NO_RANGE"],
+									desc = L["TOOLTIP_COLOR_OUT_OF_RANGE"],
 									hasAlpha = true,
 									get = function(info)
 										local color = settings.OoRColor
@@ -7538,7 +8097,7 @@ local function GetEnhancementOptions()
 								reset = {
 									order = 3,
 									type = "execute",
-									name = L["Reset Settings Values"],
+									name = L["BUTTON_RESET_SETTINGS"],
 									func = function()
 										settings.OoCAlpha = settingDefaults.OoCAlpha
 										settings.OoRColor.r = settingDefaults.OoRColor.r
@@ -7546,7 +8105,7 @@ local function GetEnhancementOptions()
 										settings.OoRColor.b = settingDefaults.OoRColor.b
 										settings.OoRColor.a = settingDefaults.OoRColor.a
 										enh_options.args.bars.args.general.args.settings.args.reset.disabled = true
-										enh_options.args.bars.args.general.args.settings.args.reset.name = "|cFF666666"..L["Reset Settings Values"].."|r"
+										enh_options.args.bars.args.general.args.settings.args.reset.name = "|cFF666666"..L["BUTTON_RESET_SETTINGS"].."|r"
 									end,
 								},
 							},
@@ -7554,7 +8113,7 @@ local function GetEnhancementOptions()
 					},
 				},
 				bars = {
-					name = L["Progress Bars"],
+					name = L["LABEL_PROGRESS_BARS"],
 					order = 3,
 					type = "group",
 					childGroups = "tab",
@@ -7567,15 +8126,15 @@ local function GetEnhancementOptions()
 							type = "group",
 							args = {
 								statusbars = {
-									name = L["Statusbar Manager"],
+									name = L["LABEL_STATUSBAR_MANAGER"],
 									type = "group",
 									order = 1,
 									guiInline = true,
 									args = {
 										defaultBarToggle = {
 											order = 1,
-											name = L["Blizzard Casting Bar"],
-											desc = L["Toggles the display of Blizzard's default casting bar"],
+											name = L["LABEL_STATUSBAR_BLIZZARD"],
+											desc = L["TOOLTIP_TOGGLE_BLIZZARD_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.defaultBar
@@ -7586,8 +8145,8 @@ local function GetEnhancementOptions()
 										},
 										castBarToggle = {
 											order = 2,
-											name = L["Toggle Cast Bar"],
-											desc = L["Toggles the display of the cast bar"],
+											name = L["TOGGLE_CAST_BAR"],
+											desc = L["TOOLTIP_TOGGLE_CAST_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.castBar.isEnabled
@@ -7604,8 +8163,8 @@ local function GetEnhancementOptions()
 										},
 										channelToggle = {
 											order = 3,
-											name = L["Toggle Channel Bar"],
-											desc = L["Toggles the display of the channel bar"],
+											name = L["TOGGLE_CHANNEL_BAR"],
+											desc = L["TOOLTIP_TOGGLE_CHANNEL_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.channelBar.isEnabled
@@ -7622,8 +8181,8 @@ local function GetEnhancementOptions()
 										},
 										maelstromToggle = {
 											order = 4,
-											name = L["Toggle Maelstrom Bar"],
-											desc = L["Toggles the display of the Maelstrom Bar"],
+											name = L["TOGGLE_MAELSTROM_BAR"],
+											desc = L["TOOLTIP_TOGGLE_MAELSTROM_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.maelstromBar.isEnabled
@@ -7643,15 +8202,15 @@ local function GetEnhancementOptions()
 							},
 						},
 						maelstromBar = {
-							name = L["Maelstrom Bar"],
+							name = L["LABEL_STATUSBAR_MAELSTROM"],
 							order = 2,
 							type = "group",
 							inline = false,
 							args = {
 								adjust = {
 									order = 1,
-									name = L["Modify Maelstrom Bar"],
-									desc = L["Toggle the adjustment of the Maelstrom Bar"],
+									name = L["LABEL_STATUSBAR_MODIFY_MAELSTROM"],
+									desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 									type = "toggle",
 									get = function()
 										return statusbars.maelstromBar.adjust.isEnabled
@@ -7663,8 +8222,8 @@ local function GetEnhancementOptions()
 								},
 								textToggle = {
 									order = 2,
-									name = L["Maelstrom Value Text"],
-									desc = L["Toggles the text display of the amount of maelstrom remaining"],
+									name = L["LABEL_TEXT_MAELSTROM"],
+									desc = L["TOOLTIP_TOGGLE_MAELSTROM_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.maelstromBar.text.isDisplayText
@@ -7677,7 +8236,7 @@ local function GetEnhancementOptions()
 								animation = {
 									order = 3,
 									type = "toggle",
-									name = L["Maelstrom Lightning"],
+									name = L["LABEL_STATUSBAR_ANIMATE_MAELSTROM"],
 									get = function() 
 										return statusbars.maelstromBar.animate
 									end,
@@ -7695,8 +8254,8 @@ local function GetEnhancementOptions()
 										alphaCombat = {
 											order = 1,
 											type = "range",
-											name = L["Alpha (In Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear while in combat"],
+											name = L["LABEL_ALPHA_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -7710,8 +8269,8 @@ local function GetEnhancementOptions()
 										alphaOoC = {
 											order = 2,
 											type = "range",
-											name = L["Alpha (OoC - No Target)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat"],
+											name = L["LABEL_ALPHA_NO_TARGET_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -7725,8 +8284,8 @@ local function GetEnhancementOptions()
 										alphaTarget = {
 											order = 3,
 											type = "range",
-											name = L["Alpha (OoC - Target)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat and targetting an enemy"],
+											name = L["LABEL_ALPHA_TARGET_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_TARGET_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -7741,8 +8300,8 @@ local function GetEnhancementOptions()
 										threshold = {
 											order = 4,
 											type = "range",
-											name = L["Maelstrom Trigger"],
-											desc = L["The amount of Maelstrom accumulated at which the \"Lightning\" animation will appear"],
+											name = L["LABEL_TRIGGER_MAELSTROM"],
+											desc = L["TOOLTIP_MAELSTROM_TIME_TRIGGER"],
 											min = 50,
 											max = 100,
 											step = 5,
@@ -7757,7 +8316,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								text = {
-									name = '|cFFFFFFFF'..L['Maelstrom Text']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_TEXT_MAELSTROM"]..'|r',
 									type = "group",
 									order = 5,
 									disabled = true,
@@ -7766,8 +8325,8 @@ local function GetEnhancementOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.maelstromBar.text.font.color
@@ -7788,8 +8347,8 @@ local function GetEnhancementOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.maelstromBar.text.font.name end,
 											set = function(self,value)
@@ -7801,7 +8360,7 @@ local function GetEnhancementOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -7815,8 +8374,8 @@ local function GetEnhancementOptions()
 										timeFontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.maelstromBar.text.font.flag
 											end,
@@ -7829,8 +8388,8 @@ local function GetEnhancementOptions()
 										timeTextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.maelstromBar.text.justify
 											end,
@@ -7844,7 +8403,7 @@ local function GetEnhancementOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -7859,7 +8418,7 @@ local function GetEnhancementOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -7871,7 +8430,7 @@ local function GetEnhancementOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -7879,7 +8438,7 @@ local function GetEnhancementOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -7893,8 +8452,8 @@ local function GetEnhancementOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													get = function(info)
 														local color = statusbars.maelstromBar.text.font.shadow.color
@@ -7914,7 +8473,7 @@ local function GetEnhancementOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -7930,7 +8489,7 @@ local function GetEnhancementOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -7947,7 +8506,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								layout = {
-									name = L["Layout & Design"],
+									name = L["LABEL_LAYOUT_DESIGN"],
 									type = "group",
 									order = 6,
 									guiInline = true,
@@ -7955,8 +8514,8 @@ local function GetEnhancementOptions()
 										texture = {
 											order = 1,
 											type = "select",
-											name = L["Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_STATUSBAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.maelstromBar.foreground.texture
@@ -7970,7 +8529,7 @@ local function GetEnhancementOptions()
 										textureColor = {
 											type = "color",
 											order = 2,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											get = function(info)
 												local color = statusbars.maelstromBar.foreground.color
 												return color.r, color.g, color.b
@@ -7988,8 +8547,8 @@ local function GetEnhancementOptions()
 										backgroundTexture = {
 											order = 3,
 											type = "select",
-											name = L["Background Texture"],
-											desc = L["Set the bar's background texture."],
+											name = L["LABEL_STATUSBAR_BG_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_BG_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.maelstromBar.background.texture
@@ -8003,8 +8562,8 @@ local function GetEnhancementOptions()
 										backgroundColor = {
 											type = "color",
 											order = 4,
-											name = L["Background Color"],
-											desc = L["Set the color of the cast bar's background."],
+											name = L["LABEL_STATUSBAR_BG_COLOR"],
+											desc = L["TOOLTIP_STATUSBAR_BG_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.maelstromBar.background.color
@@ -8022,8 +8581,8 @@ local function GetEnhancementOptions()
 										},
 										backgroundToggle = {
 											order = 5,
-											name = L["Modify Background"],
-											desc = L["Toggle the adjustment of the bar's background texture"],
+											name = L["LABEL_STATUSBAR_MODIFY_BACKGROUND"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_BG_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.maelstromBar.adjust.showBG
@@ -8036,7 +8595,7 @@ local function GetEnhancementOptions()
 										width = {
 											order = 6,
 											type = "range",
-											name = L["Width"],
+											name = L["LABEL_WIDTH"],
 											desc = '',
 											min = 100,
 											max = 500,
@@ -8051,7 +8610,7 @@ local function GetEnhancementOptions()
 										height = {
 											order = 7,
 											type = "range",
-											name = L["Height"],
+											name = L["LABEL_HEIGHT"],
 											desc = '',
 											min = 10,
 											max = 100,
@@ -8068,7 +8627,7 @@ local function GetEnhancementOptions()
 								reset = {
 									order = 7,
 									type = "execute",
-									name = L["Reset Maelstrom Bar"],
+									name = L["BUTTON_RESET_STATUSBAR_MAELSTROM"],
 									func = function()
 										local bar = statusbars.maelstromBar
 										local default = statusbarDefaults.maelstromBar
@@ -8113,7 +8672,7 @@ local function GetEnhancementOptions()
 										bar.layout.height = default.layout.height
 										bar.layout.strata = default.layout.strata
 										enh_options.args.bars.args.maelstromBar.args.reset.disabled = true
-										enh_options.args.bars.args.maelstromBar.args.reset.name = "|cFF666666"..L["Reset Maelstrom Bar"].."|r"
+										enh_options.args.bars.args.maelstromBar.args.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_MAELSTROM"].."|r"
 										CheckEnhancementDefaultValues(enh_options,'Maelstrom')
 										
 										if (not bar.adjust.isEnabled) then
@@ -8124,15 +8683,15 @@ local function GetEnhancementOptions()
 							},
 						},
 						castBar = {
-							name = L["Cast Bar"],
+							name = L["LABEL_STATUSBAR_CAST"],
 							order = 3,
 							inline = false,
 							type = "group",
 							args = {
 								adjust = {
 									order = 1,
-									name = L["Modify Cast Bar"],
-									desc = L["Toggle the adjustment of the Cast Bar"],
+									name = L["LABEL_STATUSBAR_MODIFY_CAST"],
+									desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 									type = "toggle",
 									get = function()
 										return statusbars.castBar.adjust.isEnabled
@@ -8144,8 +8703,8 @@ local function GetEnhancementOptions()
 								},
 								nametextToggle = {
 									order = 2,
-									name = L["Toggle Spell Name Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_SPELL_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_SPELL_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.castBar.nametext.isDisplayText
@@ -8157,8 +8716,8 @@ local function GetEnhancementOptions()
 								},
 								timetextToggle = {
 									order = 3,
-									name = L["Toggle Time Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_TIME_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_TIME_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.castBar.timetext.isDisplayText
@@ -8177,8 +8736,8 @@ local function GetEnhancementOptions()
 										alphaCombat = {
 											order = 1,
 											type = "range",
-											name = L["Alpha (In Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear while in combat"],
+											name = L["LABEL_ALPHA_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -8192,8 +8751,8 @@ local function GetEnhancementOptions()
 										alphaOoC = {
 											order = 2,
 											type = "range",
-											name = L["Alpha (Out of Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat"],
+											name = L["LABEL_ALPHA_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -8207,7 +8766,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								iconSpark = {
-									name = '|cFFFFFFFF'..L['Icon & Spark']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_ICON_SPARK"]..'|r',
 									type = "group",
 									order = 5,
 									disabled = true,
@@ -8215,7 +8774,7 @@ local function GetEnhancementOptions()
 									args = {
 										sparkToggle = {
 											order = 1,
-											name = L["Toggle Spark"],
+											name = L["TOGGLE_SPARK"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -8228,7 +8787,7 @@ local function GetEnhancementOptions()
 										},
 										iconToggle = {
 											order = 2,
-											name = L["Toggle Icon"],
+											name = L["TOGGLE_ICON"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -8247,8 +8806,8 @@ local function GetEnhancementOptions()
 										iconJustify = {
 											order = 3,
 											type = "select",
-											name = L["Icon Justify"],
-											desc = L["Set the side of the progress bar that the icon will appear."],
+											name = L["LABEL_ICON_JUSTIFY"],
+											desc = L["TOOLTIP_STATUSBAR_ICON_LOCATION"],
 											get = function()
 												return statusbars.castBar.icon.justify
 											end,
@@ -8261,7 +8820,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								nametext = {
-									name = '|cFFFFFFFF'..L['Spell Name Text']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_TEXT_SPELL"]..'|r',
 									type = "group",
 									order = 6,
 									disabled = true,
@@ -8270,8 +8829,8 @@ local function GetEnhancementOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.castBar.nametext.font.color
@@ -8292,8 +8851,8 @@ local function GetEnhancementOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.castBar.nametext.font.name end,
 											set = function(self,value)
@@ -8305,7 +8864,7 @@ local function GetEnhancementOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -8319,8 +8878,8 @@ local function GetEnhancementOptions()
 										fontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.castBar.nametext.font.flag
 											end,
@@ -8333,8 +8892,8 @@ local function GetEnhancementOptions()
 										nametextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.castBar.nametext.justify
 											end,
@@ -8348,7 +8907,7 @@ local function GetEnhancementOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -8363,7 +8922,7 @@ local function GetEnhancementOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -8375,7 +8934,7 @@ local function GetEnhancementOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -8383,7 +8942,7 @@ local function GetEnhancementOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -8397,8 +8956,8 @@ local function GetEnhancementOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													get = function(info)
 														local color = statusbars.castBar.nametext.font.shadow.color
@@ -8418,7 +8977,7 @@ local function GetEnhancementOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -8434,7 +8993,7 @@ local function GetEnhancementOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -8451,7 +9010,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								timetext = {
-									name = '|cFFFFFFFFTimer Text|r',
+									name = '|cFFFFFFFF'..L["LABEL_TIME_TEXT"]..'|r',
 									type = "group",
 									order = 7,
 									disabled = true,
@@ -8460,8 +9019,8 @@ local function GetEnhancementOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.castBar.timetext.font.color
@@ -8482,8 +9041,8 @@ local function GetEnhancementOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.castBar.timetext.font.name end,
 											set = function(self,value)
@@ -8495,7 +9054,7 @@ local function GetEnhancementOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -8509,8 +9068,8 @@ local function GetEnhancementOptions()
 										timeFontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.castBar.timetext.font.flag
 											end,
@@ -8523,8 +9082,8 @@ local function GetEnhancementOptions()
 										timeTextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.castBar.timetext.justify
 											end,
@@ -8538,7 +9097,7 @@ local function GetEnhancementOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -8553,7 +9112,7 @@ local function GetEnhancementOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -8565,7 +9124,7 @@ local function GetEnhancementOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -8573,7 +9132,7 @@ local function GetEnhancementOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -8587,8 +9146,8 @@ local function GetEnhancementOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													disabled = true,
 													get = function(info)
@@ -8609,7 +9168,7 @@ local function GetEnhancementOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -8625,7 +9184,7 @@ local function GetEnhancementOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -8642,7 +9201,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								layout = {
-									name = L["Layout & Design"],
+									name = L["LABEL_LAYOUT_DESIGN"],
 									type = "group",
 									order = 8,
 									guiInline = true,
@@ -8650,8 +9209,8 @@ local function GetEnhancementOptions()
 										texture = {
 											order = 1,
 											type = "select",
-											name = L["Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_STATUSBAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.castBar.foreground.texture
@@ -8665,7 +9224,7 @@ local function GetEnhancementOptions()
 										textureColor = {
 											type = "color",
 											order = 2,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											get = function(info)
 												local color = statusbars.castBar.foreground.color
 												return color.r, color.g, color.b
@@ -8682,8 +9241,8 @@ local function GetEnhancementOptions()
 										backgroundTexture = {
 											order = 3,
 											type = "select",
-											name = L["Background Texture"],
-											desc = L["Set the bar's background texture."],
+											name = L["LABEL_STATUSBAR_BG_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_BG_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.castBar.background.texture
@@ -8697,8 +9256,8 @@ local function GetEnhancementOptions()
 										backgroundColor = {
 											type = "color",
 											order = 4,
-											name = L["Background Color"],
-											desc = L["Set the color of the cast bar's background."],
+											name = L["LABEL_STATUSBAR_BG_COLOR"],
+											desc = L["TOOLTIP_STATUSBAR_BG_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.castBar.background.color
@@ -8715,8 +9274,8 @@ local function GetEnhancementOptions()
 										},
 										backgroundToggle = {
 											order = 5,
-											name = L["Modify Background"],
-											desc = L["Toggle the adjustment of the bar's background texture"],
+											name = L["LABEL_STATUSBAR_MODIFY_BACKGROUND"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_BG_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.castBar.adjust.showBG
@@ -8729,7 +9288,7 @@ local function GetEnhancementOptions()
 										width = {
 											order = 6,
 											type = "range",
-											name = L["Width"],
+											name = L["LABEL_WIDTH"],
 											desc = '',
 											min = 100,
 											max = 500,
@@ -8744,7 +9303,7 @@ local function GetEnhancementOptions()
 										height = {
 											order = 7,
 											type = "range",
-											name = L["Height"],
+											name = L["LABEL_HEIGHT"],
 											desc = '',
 											min = 10,
 											max = 100,
@@ -8761,7 +9320,7 @@ local function GetEnhancementOptions()
 								reset = {
 									order = 9,
 									type = "execute",
-									name = L["Reset Cast Bar"],
+									name = L["BUTTON_RESET_STATUSBAR_CAST"],
 									func = function()
 										local bar = statusbars.castBar
 										local default = statusbarDefaults.castBar
@@ -8826,7 +9385,7 @@ local function GetEnhancementOptions()
 										bar.layout.height = default.layout.height
 										bar.layout.strata = default.layout.strata
 										enh_options.args.bars.args.castBar.args.reset.disabled = true
-										enh_options.args.bars.args.castBar.args.reset.name = "|cFF666666"..L["Reset Cast Bar"].."|r"
+										enh_options.args.bars.args.castBar.args.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_CAST"].."|r"
 										CheckEnhancementDefaultValues(enh_options,'Cast','castBar')
 										
 										if (not bar.adjust.isEnabled) then
@@ -8837,15 +9396,15 @@ local function GetEnhancementOptions()
 							},
 						},
 						channelBar = {
-							name = L["Channel Bar"],
+							name = L["LABEL_STATUSBAR_CHANNEL"],
 							order = 4,
 							inline = false,
 							type = "group",
 							args = {
 								adjust = {
 									order = 1,
-									name = L["Modify Channel Bar"],
-									desc = L["Toggle the adjustment of the Channel Bar"],
+									name = L["LABEL_STATUSBAR_MODIFY_CHANNEL"],
+									desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 									type = "toggle",
 									get = function()
 										return statusbars.channelBar.adjust.isEnabled
@@ -8857,8 +9416,8 @@ local function GetEnhancementOptions()
 								},
 								nametextToggle = {
 									order = 2,
-									name = L["Toggle Spell Name Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_SPELL_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_SPELL_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.channelBar.nametext.isDisplayText
@@ -8870,8 +9429,8 @@ local function GetEnhancementOptions()
 								},
 								timetextToggle = {
 									order = 3,
-									name = L["Toggle Time Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_TIME_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_TIME_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.channelBar.timetext.isDisplayText
@@ -8890,8 +9449,8 @@ local function GetEnhancementOptions()
 										alphaCombat = {
 											order = 1,
 											type = "range",
-											name = L["Alpha (In Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear while in combat"],
+											name = L["LABEL_ALPHA_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -8905,8 +9464,8 @@ local function GetEnhancementOptions()
 										alphaOoC = {
 											order = 2,
 											type = "range",
-											name = L["Alpha (Out of Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat"],
+											name = L["LABEL_ALPHA_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -8920,7 +9479,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								iconSpark = {
-									name = '|cFFFFFFFF'..L['Icon & Spark']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_ICON_SPARK"]..'|r',
 									type = "group",
 									order = 5,
 									disabled = true,
@@ -8928,7 +9487,7 @@ local function GetEnhancementOptions()
 									args = {
 										sparkToggle = {
 											order = 1,
-											name = L["Toggle Spark"],
+											name = L["TOGGLE_SPARK"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -8941,7 +9500,7 @@ local function GetEnhancementOptions()
 										},
 										iconToggle = {
 											order = 2,
-											name = L["Toggle Icon"],
+											name = L["TOGGLE_ICON"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -8955,8 +9514,8 @@ local function GetEnhancementOptions()
 										iconJustify = {
 											order = 3,
 											type = "select",
-											name = L["Icon Justify"],
-											desc = L["Set the side of the progress bar that the icon will appear."],
+											name = L["LABEL_ICON_JUSTIFY"],
+											desc = L["TOOLTIP_STATUSBAR_ICON_LOCATION"],
 											get = function()
 												return statusbars.channelBar.icon.justify
 											end,
@@ -8969,7 +9528,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								nametext = {
-									name = '|cFFFFFFFF'..L['Spell Name Text']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_TEXT_SPELL"]..'|r',
 									type = "group",
 									order = 6,
 									disabled = true,
@@ -8978,8 +9537,8 @@ local function GetEnhancementOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.channelBar.nametext.font.color
@@ -9000,8 +9559,8 @@ local function GetEnhancementOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.channelBar.nametext.font.name end,
 											set = function(self,value)
@@ -9013,7 +9572,7 @@ local function GetEnhancementOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -9027,8 +9586,8 @@ local function GetEnhancementOptions()
 										fontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.channelBar.nametext.font.flag
 											end,
@@ -9041,8 +9600,8 @@ local function GetEnhancementOptions()
 										nametextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.channelBar.nametext.justify
 											end,
@@ -9056,7 +9615,7 @@ local function GetEnhancementOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -9071,7 +9630,7 @@ local function GetEnhancementOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -9083,7 +9642,7 @@ local function GetEnhancementOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -9091,7 +9650,7 @@ local function GetEnhancementOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -9105,8 +9664,8 @@ local function GetEnhancementOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													disabled = true,
 													get = function(info)
@@ -9127,7 +9686,7 @@ local function GetEnhancementOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -9143,7 +9702,7 @@ local function GetEnhancementOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -9160,7 +9719,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								timetext = {
-									name = '|cFFFFFFFFTimer Text|r',
+									name = '|cFFFFFFFF'..L["LABEL_TIME_TEXT"]..'|r',
 									type = "group",
 									order = 6,
 									disabled = true,
@@ -9169,8 +9728,8 @@ local function GetEnhancementOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.channelBar.timetext.font.color
@@ -9191,8 +9750,8 @@ local function GetEnhancementOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.channelBar.timetext.font.name end,
 											set = function(self,value)
@@ -9204,7 +9763,7 @@ local function GetEnhancementOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -9218,8 +9777,8 @@ local function GetEnhancementOptions()
 										timeFontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.channelBar.timetext.font.flag
 											end,
@@ -9232,8 +9791,8 @@ local function GetEnhancementOptions()
 										timeTextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.channelBar.timetext.justify
 											end,
@@ -9247,7 +9806,7 @@ local function GetEnhancementOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -9262,7 +9821,7 @@ local function GetEnhancementOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -9274,7 +9833,7 @@ local function GetEnhancementOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -9282,7 +9841,7 @@ local function GetEnhancementOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -9296,8 +9855,8 @@ local function GetEnhancementOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													disabled = true,
 													get = function(info)
@@ -9318,7 +9877,7 @@ local function GetEnhancementOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -9334,7 +9893,7 @@ local function GetEnhancementOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -9351,7 +9910,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								layout = {
-									name = L["Layout & Design"],
+									name = L["LABEL_LAYOUT_DESIGN"],
 									type = "group",
 									order = 7,
 									guiInline = true,
@@ -9359,8 +9918,8 @@ local function GetEnhancementOptions()
 										texture = {
 											order = 1,
 											type = "select",
-											name = L["Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_STATUSBAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.channelBar.foreground.texture
@@ -9374,7 +9933,7 @@ local function GetEnhancementOptions()
 										textureColor = {
 											type = "color",
 											order = 2,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											get = function(info)
 												local color = statusbars.channelBar.foreground.color
 												return color.r, color.g, color.b
@@ -9391,8 +9950,8 @@ local function GetEnhancementOptions()
 										backgroundTexture = {
 											order = 3,
 											type = "select",
-											name = L["Background Texture"],
-											desc = L["Set the bar's background texture."],
+											name = L["LABEL_STATUSBAR_BG_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_BG_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.channelBar.background.texture
@@ -9406,8 +9965,8 @@ local function GetEnhancementOptions()
 										backgroundColor = {
 											type = "color",
 											order = 4,
-											name = L["Background Color"],
-											desc = L["Set the color of the cast bar's background."],
+											name = L["LABEL_STATUSBAR_BG_COLOR"],
+											desc = L["TOOLTIP_STATUSBAR_BG_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.channelBar.background.color
@@ -9424,8 +9983,8 @@ local function GetEnhancementOptions()
 										},
 										backgroundToggle = {
 											order = 5,
-											name = L["Modify Background"],
-											desc = L["Toggle the adjustment of the bar's background texture"],
+											name = L["LABEL_STATUSBAR_MODIFY_BACKGROUND"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_BG_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.channelBar.adjust.showBG
@@ -9438,7 +9997,7 @@ local function GetEnhancementOptions()
 										width = {
 											order = 6,
 											type = "range",
-											name = L["Width"],
+											name = L["LABEL_WIDTH"],
 											desc = '',
 											min = 100,
 											max = 500,
@@ -9453,7 +10012,7 @@ local function GetEnhancementOptions()
 										height = {
 											order = 7,
 											type = "range",
-											name = L["Height"],
+											name = L["LABEL_HEIGHT"],
 											desc = '',
 											min = 10,
 											max = 100,
@@ -9470,7 +10029,7 @@ local function GetEnhancementOptions()
 								reset = {
 									order = 8,
 									type = "execute",
-									name = L["Reset Channel Bar"],
+									name = L["BUTTON_RESET_STATUSBAR_CHANNEL"],
 									func = function()
 										local bar = statusbars.channelBar
 										local default = statusbarDefaults.channelBar
@@ -9535,7 +10094,7 @@ local function GetEnhancementOptions()
 										bar.layout.height = default.layout.height
 										bar.layout.strata = default.layout.strata
 										enh_options.args.bars.args.channelBar.args.reset.disabled = true
-										enh_options.args.bars.args.channelBar.args.reset.name = "|cFF666666"..L["Reset Channel Bar"].."|r"
+										enh_options.args.bars.args.channelBar.args.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_CHANNEL"].."|r"
 										CheckEnhancementDefaultValues(enh_options,'Channel','channelBar')
 										
 										if (not bar.adjust.isEnabled) then
@@ -9548,7 +10107,7 @@ local function GetEnhancementOptions()
 					},
 				},
 				cooldowns = {
-					name = L["Cooldowns"],
+					name = L["LABEL_COOLDOWN"],
 					order = 4,
 					type = "group",
 					disabled = true,
@@ -9556,7 +10115,7 @@ local function GetEnhancementOptions()
 						toggle = {
 							order = 1,
 							name = ENABLE,
-							desc = L["Toggle the display of cooldown text/numbers."],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_TEXT"],
 							type = "toggle",
 							get = function()
 								return cooldowns.isEnabled
@@ -9569,8 +10128,8 @@ local function GetEnhancementOptions()
 						},
 						text = {
 							order = 2,
-							name = L["Cooldown Values"],
-							desc = L["Toggle the display of cooldown text/numbers."],
+							name = L["LABEL_COOLDOWN_TEXT"],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_TEXT"],
 							type = "toggle",
 							get = function()
 								return cooldowns.text
@@ -9581,8 +10140,8 @@ local function GetEnhancementOptions()
 						},
 						sweep = {
 							order = 3,
-							name = L["Cooldown Sweep"],
-							desc = L["Toggle the display of the cooldown sweep animation"],
+							name = L["LABEL_COOLDOWN_SWEEP"],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_SWEEP"],
 							type = "toggle",
 							get = function()
 								return cooldowns.sweep
@@ -9591,22 +10150,13 @@ local function GetEnhancementOptions()
 								cooldowns.sweep = value
 								Auras:InitializeCooldowns('AuraGroup2',2)
 								CheckEnhancementDefaultValues(enh_options,'Cooldowns')
-								--[[if (not value) then
-									enh_options.args.cooldowns.args.GCD.disabled = true
-									enh_options.args.cooldowns.args.inverse.disabled = true
-									enh_options.args.cooldowns.args.bling.disabled = true
-								else
-									enh_options.args.cooldowns.args.GCD.disabled = false
-									enh_options.args.cooldowns.args.inverse.disabled = false
-									enh_options.args.cooldowns.args.bling.disabled = false
-								end]]
 							end,
 							width = "double",
 						},
 						GCD = {
 							order = 4,
-							name = L["GCD"],
-							desc = L["Toggles a GCD timer on auras."],
+							name = L["LABEL_COOLDOWN_GCD"],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_GCD"],
 							type = "toggle",
 							get = function()
 								return cooldowns.GCD.isEnabled
@@ -9617,8 +10167,8 @@ local function GetEnhancementOptions()
 						},
 						inverse = {
 							order = 5,
-							name = L["Reverse Sweep"],
-							desc = L["Reverses the cooldown sweep animation"],
+							name = L["LABEL_COOLDOWN_REVERSE_SWEEP"],
+							desc = L["TOOLTIP_COOLDOWN_REVERSE_SWEEP"],
 							type = "toggle",
 							get = function()
 								return cooldowns.inverse
@@ -9631,8 +10181,8 @@ local function GetEnhancementOptions()
 						
 						bling = {
 							order = 6,
-							name = L["Bling Flash"],
-							desc = L["Toggles the bling flash animation that occurs at the end of a cooldown"],
+							name = L["LABEL_COOLDOWN_BLING"],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_BLING"],
 							type = "toggle",
 							get = function()
 								return cooldowns.bling
@@ -9645,8 +10195,8 @@ local function GetEnhancementOptions()
 						group = {
 							order = 7,
 							type = "select",
-							name = L["Cooldown Group"],
-							desc = L["Select the group of auras to adjust"],
+							name = L["LABEL_COOLDOWN_GROUP"],
+							desc = L["TOOLTIP_AURAS_GROUP_SELECT"],
 							get = function()
 								return cooldowns.selected
 							end,
@@ -9658,7 +10208,7 @@ local function GetEnhancementOptions()
 						},
 						adjustToggle = {
 							order = 8,
-							name = L["Adjust Cooldowns"],
+							name = L["LABEL_COOLDOWN_ADJUST"],
 							desc = '',
 							type = "toggle",
 							get = function()
@@ -9669,17 +10219,135 @@ local function GetEnhancementOptions()
 								CheckEnhancementDefaultValues(enh_options,'Cooldowns')
 							end,
 						},
-						p1_adjustGroup = {
-							name = L["Cooldown Settings"],
+						p1_formatting = {
+							name = FORMATTING,
 							type = "group",
 							order = 9,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[1].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.primary[1].text.formatting.alert.isEnabled = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,2,'primary',1)
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									values = {
+										["primary;2"] = PRIMARY.." #2",
+										["primary;3"] = PRIMARY.." #3",
+										["secondary;1"] = SECONDARY.." #1",
+										["secondary;2"] = SECONDARY.." #2",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[1].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.primary[1].text.formatting.alert.animate = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.primary[1].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.primary[1].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.primary[1].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.primary[1].text.formatting.alert.threshold = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[1].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.primary[1].text.formatting.decimals = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.primary[1].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.primary[1].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.primary[1].text.formatting.length = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						p1_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 10,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.primary[1].text.font.color
@@ -9697,10 +10365,10 @@ local function GetEnhancementOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
@@ -9718,11 +10386,11 @@ local function GetEnhancementOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.primary[1].text.font.name end,
 									set = function(self,value)
@@ -9731,10 +10399,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -9746,10 +10414,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.primary[1].text.font.flag
 									end,
@@ -9760,10 +10428,10 @@ local function GetEnhancementOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.primary[1].text.justify
 									end,
@@ -9774,10 +10442,10 @@ local function GetEnhancementOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -9789,10 +10457,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -9804,15 +10472,15 @@ local function GetEnhancementOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -9826,8 +10494,8 @@ local function GetEnhancementOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.primary[1].text.font.shadow.color
@@ -9852,7 +10520,7 @@ local function GetEnhancementOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -9868,7 +10536,7 @@ local function GetEnhancementOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -9883,7 +10551,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -9916,18 +10584,136 @@ local function GetEnhancementOptions()
 								},
 							},
 						},
-						p2_adjustGroup = {
-							name = L["Cooldown Settings"],
+						p2_formatting = {
+							name = FORMATTING,
 							type = "group",
-							order = 10,
+							order = 11,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[2].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.primary[2].text.formatting.alert.isEnabled = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,2,'primary',2)
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									values = {
+										["primary;1"] = PRIMARY.." #1",
+										["primary;3"] = PRIMARY.." #3",
+										["secondary;1"] = SECONDARY.." #1",
+										["secondary;2"] = SECONDARY.." #2",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[2].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.primary[2].text.formatting.alert.animate = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.primary[2].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.primary[2].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.primary[2].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.primary[2].text.formatting.alert.threshold = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[2].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.primary[2].text.formatting.decimals = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.primary[2].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.primary[2].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.primary[2].text.formatting.length = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						p2_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 12,
 							hidden = true,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.primary[2].text.font.color
@@ -9945,16 +10731,14 @@ local function GetEnhancementOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
 									set = function(self,value)
-										--cooldowns.primary[1].text.justify = value
-										--CheckRestorationDefaultValues(res_options,'Cooldowns')
 										CopyCooldownOptions(value,2,'primary',2)
 										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
 									end,
@@ -9966,11 +10750,11 @@ local function GetEnhancementOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.primary[2].text.font.name end,
 									set = function(self,value)
@@ -9979,10 +10763,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -9994,10 +10778,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.primary[2].text.font.flag
 									end,
@@ -10008,10 +10792,10 @@ local function GetEnhancementOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.primary[2].text.justify
 									end,
@@ -10022,10 +10806,10 @@ local function GetEnhancementOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -10037,10 +10821,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -10052,15 +10836,15 @@ local function GetEnhancementOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -10074,8 +10858,8 @@ local function GetEnhancementOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.primary[2].text.font.shadow.color
@@ -10100,7 +10884,7 @@ local function GetEnhancementOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -10116,7 +10900,7 @@ local function GetEnhancementOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -10131,7 +10915,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -10164,18 +10948,136 @@ local function GetEnhancementOptions()
 								},
 							},
 						},
-						p3_adjustGroup = {
-							name = L["Cooldown Settings"],
+						p3_formatting = {
+							name = FORMATTING,
 							type = "group",
-							order = 11,
+							order = 13,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[3].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.primary[3].text.formatting.alert.isEnabled = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,2,'primary',3)
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									values = {
+										["primary;1"] = PRIMARY.." #1",
+										["primary;2"] = PRIMARY.." #2",
+										["secondary;1"] = SECONDARY.." #1",
+										["secondary;2"] = SECONDARY.." #2",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[3].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.primary[3].text.formatting.alert.animate = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.primary[3].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.primary[3].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.primary[3].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.primary[3].text.formatting.alert.threshold = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[3].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.primary[3].text.formatting.decimals = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.primary[3].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.primary[3].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.primary[3].text.formatting.length = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						p3_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 14,
 							hidden = true,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.primary[3].text.font.color
@@ -10193,16 +11095,14 @@ local function GetEnhancementOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
 									set = function(self,value)
-										--cooldowns.primary[1].text.justify = value
-										--CheckRestorationDefaultValues(res_options,'Cooldowns')
 										CopyCooldownOptions(value,2,'primary',3)
 										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
 									end,
@@ -10214,11 +11114,11 @@ local function GetEnhancementOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.primary[3].text.font.name end,
 									set = function(self,value)
@@ -10227,10 +11127,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -10242,10 +11142,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.primary[3].text.font.flag
 									end,
@@ -10256,10 +11156,10 @@ local function GetEnhancementOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.primary[3].text.justify
 									end,
@@ -10270,10 +11170,10 @@ local function GetEnhancementOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -10285,10 +11185,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -10300,15 +11200,15 @@ local function GetEnhancementOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -10322,8 +11222,8 @@ local function GetEnhancementOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.primary[3].text.font.shadow.color
@@ -10348,7 +11248,7 @@ local function GetEnhancementOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -10364,7 +11264,7 @@ local function GetEnhancementOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -10379,7 +11279,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -10412,18 +11312,136 @@ local function GetEnhancementOptions()
 								},
 							},
 						},
-						s1_adjustGroup = {
-							name = L["Cooldown Settings"],
+						s1_formatting = {
+							name = FORMATTING,
 							type = "group",
-							order = 12,
+							order = 15,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[1].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.secondary[1].text.formatting.alert.isEnabled = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,2,'secondary',1)
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									values = {
+										["primary;1"] = PRIMARY.." #1",
+										["primary;2"] = PRIMARY.." #2",
+										["primary;3"] = PRIMARY.." #3",
+										["secondary;2"] = SECONDARY.." #2",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[1].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.secondary[1].text.formatting.alert.animate = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.secondary[1].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.secondary[1].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.secondary[1].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.secondary[1].text.formatting.alert.threshold = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[1].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.secondary[1].text.formatting.decimals = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.secondary[1].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.secondary[1].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.secondary[1].text.formatting.length = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						s1_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 16,
 							hidden = true,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.secondary[1].text.font.color
@@ -10441,16 +11459,14 @@ local function GetEnhancementOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
 									set = function(self,value)
-										--cooldowns.primary[1].text.justify = value
-										--CheckRestorationDefaultValues(res_options,'Cooldowns')
 										CopyCooldownOptions(value,2,'secondary',1)
 										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
 									end,
@@ -10462,11 +11478,11 @@ local function GetEnhancementOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.secondary[1].text.font.name end,
 									set = function(self,value)
@@ -10475,10 +11491,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -10490,10 +11506,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.secondary[1].text.font.flag
 									end,
@@ -10504,10 +11520,10 @@ local function GetEnhancementOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.secondary[1].text.justify
 									end,
@@ -10518,10 +11534,10 @@ local function GetEnhancementOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -10533,10 +11549,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -10548,15 +11564,15 @@ local function GetEnhancementOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -10570,8 +11586,8 @@ local function GetEnhancementOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.secondary[1].text.font.shadow.color
@@ -10596,7 +11612,7 @@ local function GetEnhancementOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -10612,7 +11628,7 @@ local function GetEnhancementOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -10627,7 +11643,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -10660,18 +11676,136 @@ local function GetEnhancementOptions()
 								},
 							},
 						},
-						s2_adjustGroup = {
-							name = L["Cooldown Settings"],
+						s2_formatting = {
+							name = FORMATTING,
 							type = "group",
-							order = 13,
+							order = 17,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[2].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.secondary[2].text.formatting.alert.isEnabled = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,2,'secondary',2)
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									values = {
+										["primary;1"] = PRIMARY.." #1",
+										["primary;2"] = PRIMARY.." #2",
+										["primary;3"] = PRIMARY.." #3",
+										["secondary;1"] = SECONDARY.." #1",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[2].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.secondary[2].text.formatting.alert.animate = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.secondary[2].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.secondary[2].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.secondary[2].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.secondary[2].text.formatting.alert.threshold = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[2].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.secondary[2].text.formatting.decimals = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.secondary[2].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.secondary[2].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.secondary[2].text.formatting.length = value
+										CheckEnhancementDefaultValues(enh_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						s2_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 18,
 							hidden = true,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.secondary[2].text.font.color
@@ -10689,16 +11823,14 @@ local function GetEnhancementOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
 									set = function(self,value)
-										--cooldowns.primary[1].text.justify = value
-										--CheckRestorationDefaultValues(res_options,'Cooldowns')
 										CopyCooldownOptions(value,2,'secondary',2)
 										CheckRestorationDefaultValues(res_options,'Cooldowns')
 									end,
@@ -10710,11 +11842,11 @@ local function GetEnhancementOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.secondary[2].text.font.name end,
 									set = function(self,value)
@@ -10723,10 +11855,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -10738,10 +11870,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.secondary[2].text.font.flag
 									end,
@@ -10752,10 +11884,10 @@ local function GetEnhancementOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.secondary[2].text.justify
 									end,
@@ -10766,10 +11898,10 @@ local function GetEnhancementOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -10781,10 +11913,10 @@ local function GetEnhancementOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -10796,15 +11928,15 @@ local function GetEnhancementOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -10818,8 +11950,8 @@ local function GetEnhancementOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.secondary[2].text.font.shadow.color
@@ -10844,7 +11976,7 @@ local function GetEnhancementOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -10860,7 +11992,7 @@ local function GetEnhancementOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -10875,7 +12007,7 @@ local function GetEnhancementOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -10911,7 +12043,7 @@ local function GetEnhancementOptions()
 					},
 				},
 				layout = {
-					name = L["Layout"],
+					name = L["LABEL_LAYOUT"],
 					order = 5,
 					type = "group",
 					disabled = true,
@@ -10919,7 +12051,7 @@ local function GetEnhancementOptions()
 						MoveAuras = {
 							order = 1,
 							type = "execute",
-							name = "|cFFFFCC00"..L["Move Enhancement Auras"].."|r",
+							name = "|cFFFFCC00"..L["BUTTON_MOVE_AURAS_ENHANCEMENT"].."|r",
 							func = function()
 								elements.isMoving = true
 								SSA.Move2.Info:Show()
@@ -10929,13 +12061,13 @@ local function GetEnhancementOptions()
 						ResetAuras = {
 							order = 2,
 							type = "execute",
-							name = "|cFFFFCC00"..L["Reset Enhancement Auras"].."|r",
+							name = "|cFFFFCC00"..L["BUTTON_RESET_AURAS_ENHANCEMENT"].."|r",
 							func = function()
 								Auras:ResetAuraGroupPosition('AuraGroup2')
 							end,
 						},
 						primaryAuras = {
-							name = L["Primary Auras"],
+							name = L["LABEL_AURAS_PRIMARY"],
 							type = "group",
 							order = 3,
 							guiInline = true,
@@ -10943,8 +12075,8 @@ local function GetEnhancementOptions()
 								PrimaryOrientation1 = {
 									order = 1,
 									type = "select",
-									name = L["Primary Orientation 1"],
-									desc = L["Set the aura orientation to horizontal or vertical."],
+									name = L["LABEL_AURAS_ORIENTATION"].." 1",
+									desc = L["TOOLTIP_AURAS_ORIENTATION"],
 									get = function()
 										return layout.orientation.top
 									end,
@@ -10954,15 +12086,15 @@ local function GetEnhancementOptions()
 										Auras:UpdateTalents()
 									end,
 									values = {
-										["Horizontal"] = L["Horizontal"],
-										["Vertical"] = L["Vertical"],
+										["Horizontal"] = L["OPTION_HORIZONTAL"],
+										["Vertical"] = L["OPTION_VERTICAL"],
 									},
 								},
 								PrimaryOrientation2 = {
 									order = 2,
 									type = "select",
-									name = L["Primary Orientation 2"],
-									desc = L["Set the aura orientation to horizontal or vertical."],
+									name = L["LABEL_AURAS_ORIENTATION"].." 2",
+									desc = L["TOOLTIP_AURAS_ORIENTATION"],
 									get = function()
 										return layout.orientation.bottom
 									end,
@@ -10972,8 +12104,8 @@ local function GetEnhancementOptions()
 										Auras:UpdateTalents()
 									end,
 									values = {
-										["Horizontal"] = L["Horizontal"],
-										["Vertical"] = L["Vertical"],
+										["Horizontal"] = L["OPTION_HORIZONTAL"],
+										["Vertical"] = L["OPTION_VERTICAL"],
 									},
 								},
 								filler_1 = {
@@ -10984,8 +12116,8 @@ local function GetEnhancementOptions()
 								AuraSizeRow1 = {
 									order = 4,
 									type = "range",
-									name = L["Primary Size 1"],
-									desc = L["Determines the size of primary auras in row 1. (Default is 32)"],
+									name = L["LABEL_AURAS_SIZE"].." 1",
+									desc = L["TOOLTIP_AURAS_SIZE"],
 									min = 16,
 									max = 256,
 									step = 1,
@@ -11000,8 +12132,8 @@ local function GetEnhancementOptions()
 								AuraSpacingRow1 = {
 									order = 5,
 									type = "range",
-									name = L["Primary Spacing 1"],
-									desc = L["Determines the spacing of the primary auras in row 1. (Default is 50)"],
+									name = L["LABEL_AURAS_SPACING"].." 1",
+									desc = L["TOOLTIP_AURAS_SPACING"],
 									min = 32,
 									max = 300,
 									step = 1,
@@ -11016,8 +12148,8 @@ local function GetEnhancementOptions()
 								AuraChargesRow1 = {
 									order = 6,
 									type = "range",
-									name = L["Primary Charges 1"],
-									desc = L["Determines the size of the primary charge text in row 1. (Default is 13.5)"],
+									name = L["LABEL_AURAS_CHARGES"].." 1",
+									desc = L["TOOLTIP_AURAS_CHARGE_SIZE"],
 									min = 10,
 									max = 60,
 									step = 0.5,
@@ -11037,8 +12169,8 @@ local function GetEnhancementOptions()
 								AuraSizeRow2 = {
 									order = 8,
 									type = "range",
-									name = L["Primary Size 2"],
-									desc = L["Determines the size of primary auras in row 2. (Default is 32)"],
+									name = L["LABEL_AURAS_SIZE"].." 2",
+									desc = L["TOOLTIP_AURAS_SIZE"],
 									min = 16,
 									max = 256,
 									step = 1,
@@ -11053,8 +12185,8 @@ local function GetEnhancementOptions()
 								AuraSpacingRow2 = {
 									order = 9,
 									type = "range",
-									name = L["Primary Spacing 2"],
-									desc = L["Determines the spacing of the primary auras in row 2. (Default is 50)"],
+									name = L["LABEL_AURAS_SPACING"].." 2",
+									desc = L["TOOLTIP_AURAS_SPACING"],
 									min = 32,
 									max = 300,
 									step = 1,
@@ -11069,8 +12201,8 @@ local function GetEnhancementOptions()
 								AuraChargesRow2 = {
 									order = 10,
 									type = "range",
-									name = L["Primary Charges 2"],
-									desc = L["Determines the size of the primary charge text in row 2. (Default is 13.5)"],
+									name = L["LABEL_AURAS_CHARGES"].." 2",
+									desc = L["TOOLTIP_AURAS_CHARGE_SIZE"],
 									min = 10,
 									max = 60,
 									step = 0.5,
@@ -11090,9 +12222,9 @@ local function GetEnhancementOptions()
 								ResetPrimaryLayout = {
 									order = 12,
 									type = "execute",
-									--name = "|cFFFFCC00"..L["Reset Primary Layout"].."|r",
+									--name = "|cFFFFCC00"..L["BUTTON_RESET_LAYOUT_PRIMARY"].."|r",
 									--disabled = false,
-									name = L["Reset Primary Layout"],
+									name = L["BUTTON_RESET_LAYOUT_PRIMARY"],
 									func = function()
 										layout.orientation.top = layoutDefaults.orientation.top
 										layout.orientation.bottom = layoutDefaults.orientation.bottom
@@ -11103,7 +12235,7 @@ local function GetEnhancementOptions()
 										layout.primary.bottom.spacing = layoutDefaults.primary.bottom.spacing
 										layout.primary.bottom.charges = layoutDefaults.primary.bottom.charges
 										enh_options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.disabled = true
-										enh_options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFF666666"..L["Reset Primary Layout"].."|r"
+										enh_options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFF666666"..L["BUTTON_RESET_LAYOUT_PRIMARY"].."|r"
 										Auras:UpdateTalents()
 									end,
 								},
@@ -11122,10 +12254,10 @@ local function GetEnhancementOptions()
 						secondaryDesc = {
 							order = 19,
 							type = "description",
-							name = L["Secondary Auras"],
+							name = L["LABEL_AURAS_SECONDARY"],
 						},]]
 						secondaryAuras = {
-							name = L["Secondary Auras"],
+							name = L["LABEL_AURAS_SECONDARY"],
 							type = "group",
 							order = 4,
 							guiInline = true,
@@ -11133,8 +12265,8 @@ local function GetEnhancementOptions()
 								SecondaryOrientation1 = {
 									order = 1,
 									type = "select",
-									name = L["Secondary Orientation 1"],
-									desc = L["Set the aura orientation to horizontal or vertical."],
+									name = L["LABEL_AURAS_ORIENTATION"].." 1",
+									desc = L["TOOLTIP_AURAS_ORIENTATION"],
 									get = function()
 										return layout.orientation.left
 									end,
@@ -11144,15 +12276,15 @@ local function GetEnhancementOptions()
 										Auras:UpdateTalents()
 									end,
 									values = {
-										["Horizontal"] = L["Horizontal"],
-										["Vertical"] = L["Vertical"],
+										["Horizontal"] = L["OPTION_HORIZONTAL"],
+										["Vertical"] = L["OPTION_VERTICAL"],
 									},
 								},
 								SecondaryOrientation2 = {
 									order = 2,
 									type = "select",
-									name = L["Secondary Orientation 2"],
-									desc = L["Set the aura orientation to horizontal or vertical."],
+									name = L["LABEL_AURAS_ORIENTATION"].." 2",
+									desc = L["TOOLTIP_AURAS_ORIENTATION"],
 									get = function()
 										return layout.orientation.right
 									end,
@@ -11162,8 +12294,8 @@ local function GetEnhancementOptions()
 										Auras:UpdateTalents()
 									end,
 									values = {
-										["Horizontal"] = L["Horizontal"],
-										["Vertical"] = L["Vertical"],
+										["Horizontal"] = L["OPTION_HORIZONTAL"],
+										["Vertical"] = L["OPTION_VERTICAL"],
 									},
 								},
 								filler_6 = {
@@ -11174,8 +12306,8 @@ local function GetEnhancementOptions()
 								AuraSizeCol1 = {
 									order = 4,
 									type = "range",
-									name = L["Secondary Size 1"],
-									desc = L["Determines the size of secondary auras in column 1. (Default is 25)"],
+									name = L["LABEL_AURAS_SIZE"].." 1",
+									desc = L["TOOLTIP_AURAS_SIZE"],
 									min = 16,
 									max = 256,
 									step = 1,
@@ -11190,8 +12322,8 @@ local function GetEnhancementOptions()
 								AuraSpacingCol1 = {
 									order = 5,
 									type = "range",
-									name = L["Secondary Spacing 1"],
-									desc = L["Determines the spacing of the secondary auras in column 1. (Default is 30)"],
+									name = L["LABEL_AURAS_SPACING"].." 1",
+									desc = L["TOOLTIP_AURAS_SPACING"],
 									min = 32,
 									max = 300,
 									step = 1,
@@ -11211,8 +12343,8 @@ local function GetEnhancementOptions()
 								AuraSizeCol2 = {
 									order = 7,
 									type = "range",
-									name = L["Secondary Size 2"],
-									desc = L["Determines the size of secondary auras in column 2. (Default is 25)"],
+									name = L["LABEL_AURAS_SIZE"].." 2",
+									desc = L["TOOLTIP_AURAS_SIZE"],
 									min = 16,
 									max = 256,
 									step = 1,
@@ -11227,8 +12359,8 @@ local function GetEnhancementOptions()
 								AuraSpacingCol2 = {
 									order = 8,
 									type = "range",
-									name = L["Secondary Spacing 2"],
-									desc = L["Determines the spacing of the secondary auras in column 2. (Default is 30)"],
+									name = L["LABEL_AURAS_SPACING"].." 2",
+									desc = L["TOOLTIP_AURAS_SPACING"],
 									min = 32,
 									max = 300,
 									step = 1,
@@ -11253,9 +12385,9 @@ local function GetEnhancementOptions()
 								ResetSecondaryLayout = {
 									order = 10,
 									type = "execute",
-									--name = "|cFFFFCC00"..L["Reset Secondary Layout"].."|r",
+									--name = "|cFFFFCC00"..L["BUTTON_RESET_LAYOUT_SECONDARY"].."|r",
 									--disabled = false,
-									name = L["Reset Secondary Layout"],
+									name = L["BUTTON_RESET_LAYOUT_SECONDARY"],
 									func = function()
 										layout.orientation.left = layoutDefaults.orientation.left
 										layout.orientation.right = layoutDefaults.orientation.right
@@ -11264,7 +12396,7 @@ local function GetEnhancementOptions()
 										layout.secondary.right.icon = layoutDefaults.secondary.right.icon
 										layout.secondary.right.spacing = layoutDefaults.secondary.right.spacing
 										enh_options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.disabled = true
-										enh_options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFF666666"..L["Reset Secondary Layout"].."|r"
+										enh_options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFF666666"..L["BUTTON_RESET_LAYOUT_SECONDARY"].."|r"
 										Auras:UpdateTalents()
 									end,
 								},
@@ -11314,8 +12446,8 @@ local function GetRestorationOptions()
 			type = "group",
 			childGroups = "tab",
 			order = 1,
-			name = L["Restoration Auras"],
-			desc = L["Auras used by the Restoration specialization"],
+			name = L["LABEL_AURAS_RESTORATION"],
+			desc = '',
 			args = {
 				display = {
 					name = DISPLAY,
@@ -11324,8 +12456,8 @@ local function GetRestorationOptions()
 					args = {
 						show = {
 							order = 1,
-							name = L["Show Restoration Auras"],
-							desc = L["Toggle the display of Elemental Auras"],
+							name = L["LABEL_SHOW_RESTORATION_AURAS"],
+							desc = L["TOOLTIP_TOGGLE_RESTORATION_AURAS"],
 							type = "toggle",
 							get = function()
 								return elements.isEnabled
@@ -11340,7 +12472,7 @@ local function GetRestorationOptions()
 							end,
 						},
 						MajorAuras = {
-							name = L["Major Auras"],
+							name = L["LABEL_AURAS_MAJOR"],
 							type = "group",
 							order = 2,
 							guiInline = true,
@@ -11348,7 +12480,7 @@ local function GetRestorationOptions()
 								AncestralGuidance = {
 									order = 1,
 									type = "toggle",
-									name = L["Ancestral Guidance"],
+									name = Auras:GetSpellName(108281),
 									get = function() 
 										return auras.AncestralGuidance3
 									end,
@@ -11360,7 +12492,7 @@ local function GetRestorationOptions()
 								Ascendance = {
 									order = 2,
 									type = "toggle",
-									name = L["Ascendance"],
+									name = Auras:GetSpellName(114050),
 									get = function() 
 										return auras.Ascendance3
 									end,
@@ -11372,7 +12504,7 @@ local function GetRestorationOptions()
 								CloudburstTotem = {
 									order = 3,
 									type = "toggle",
-									name = L["Cloudburst Totem"],
+									name = Auras:GetSpellName(157153),
 									get = function() 
 										return auras.CloudburstTotem
 									end,
@@ -11384,7 +12516,7 @@ local function GetRestorationOptions()
 								Concordance = {
 									order = 4,
 									type = "toggle",
-									name = L["Concordance of the Legionfall"],
+									name = Auras:GetSpellName(242586),
 									get = function()
 										return auras.Concordance3
 									end,
@@ -11396,7 +12528,7 @@ local function GetRestorationOptions()
 								GiftOfQueen = {
 									order = 5,
 									type = "toggle",
-									name = L["Gift of the Queen"],
+									name = Auras:GetSpellName(207778),
 									get = function() 
 										return auras.GiftOfQueen
 									end,
@@ -11408,7 +12540,7 @@ local function GetRestorationOptions()
 								HealingRain = {
 									order = 6,
 									type = "toggle",
-									name = L["Healing Rain"],
+									name = Auras:GetSpellName(73920),
 									get = function()
 										return auras.HealingRain
 									end,
@@ -11420,7 +12552,7 @@ local function GetRestorationOptions()
 								HealingStreamTotem = {
 									order = 7,
 									type = "toggle",
-									name = L["Healing Stream Totem"],
+									name = Auras:GetSpellName(5394),
 									get = function() 
 										return auras.HealingStreamTotem
 									end,
@@ -11432,7 +12564,7 @@ local function GetRestorationOptions()
 								HealingTideTotem = {
 									order = 8,
 									type = "toggle",
-									name = L["Healing Tide Totem"],
+									name = Auras:GetSpellName(108280),
 									get = function() 
 										return auras.HealingTideTotem
 									end,
@@ -11444,7 +12576,7 @@ local function GetRestorationOptions()
 								Riptide = {
 									order = 9,
 									type = "toggle",
-									name = L["Riptide"],
+									name = Auras:GetSpellName(61295),
 									get = function()
 										return auras.Riptide
 									end,
@@ -11456,7 +12588,7 @@ local function GetRestorationOptions()
 								SpiritLinkTotem = {
 									order = 10,
 									type = "toggle",
-									name = L["Spirit Link Totem"],
+									name = Auras:GetSpellName(98008),
 									get = function() 
 										return auras.SpiritLinkTotem
 									end,
@@ -11468,7 +12600,7 @@ local function GetRestorationOptions()
 								UnleashLife = {
 									order = 11,
 									type = "toggle",
-									name = L["Unleash Life"],
+									name = Auras:GetSpellName(73685),
 									get = function()
 										return auras.UnleashLife
 									end,
@@ -11480,7 +12612,7 @@ local function GetRestorationOptions()
 								Wellspring = {
 									order = 12,
 									type = "toggle",
-									name = L["Wellspring"],
+									name = Auras:GetSpellName(197995),
 									get = function() 
 										return auras.Wellspring
 									end,
@@ -11492,7 +12624,7 @@ local function GetRestorationOptions()
 								WindRushTotem = {
 									order = 13,
 									type = "toggle",
-									name = L["Wind Rush Totem"],
+									name = Auras:GetSpellName(192077),
 									get = function() 
 										return auras.WindRushTotem3
 									end,
@@ -11504,7 +12636,7 @@ local function GetRestorationOptions()
 							},
 						},
 						MinorAuras = {
-							name = L["Minor Auras"],
+							name = L["LABEL_AURAS_MINOR"],
 							type = "group",
 							order = 3,
 							guiInline = true,
@@ -11512,7 +12644,7 @@ local function GetRestorationOptions()
 								AstralShift = {
 									order = 1,
 									type = "toggle",
-									name = L["Astral Shift"],
+									name = Auras:GetSpellName(108271),
 									get = function()
 										return auras.AstralShift3
 									end,
@@ -11524,7 +12656,7 @@ local function GetRestorationOptions()
 								EarthenShield = {
 									order = 2,
 									type = "toggle",
-									name = L["Earthen Shield Totem"],
+									name = Auras:GetSpellName(198838),
 									get = function()
 										return auras.EarthenShieldTotem
 									end,
@@ -11536,7 +12668,7 @@ local function GetRestorationOptions()
 								EarthgrabTotem = {
 									order = 3,
 									type = "toggle",
-									name = L["Earthgrab Totem"],
+									name = Auras:GetSpellName(51485),
 									get = function() 
 										return auras.EarthgrabTotem3
 									end,
@@ -11548,7 +12680,7 @@ local function GetRestorationOptions()
 								FlameShock = {
 									order = 4,
 									type = "toggle",
-									name = L["Flame Shock"],
+									name = Auras:GetSpellName(188838),
 									get = function() 
 										return auras.FlameShock3
 									end,
@@ -11560,7 +12692,7 @@ local function GetRestorationOptions()
 								GustWind = {
 									order = 5,
 									type = "toggle",
-									name = L["Gust of Wind"],
+									name = Auras:GetSpellName(192063),
 									get = function() 
 										return auras.GustWind3
 									end,
@@ -11572,7 +12704,7 @@ local function GetRestorationOptions()
 								Hex = {
 									order = 6,
 									type = "toggle",
-									name = L["Hex"],
+									name = Auras:GetSpellName(51514),
 									get = function()
 										return auras.Hex3
 									end,
@@ -11584,7 +12716,7 @@ local function GetRestorationOptions()
 								LavaBurst = {
 									order = 7,
 									type = "toggle",
-									name = L["Lava Burst"],
+									name = Auras:GetSpellName(51505),
 									get = function() 
 										return auras.LavaBurst3
 									end,
@@ -11596,7 +12728,7 @@ local function GetRestorationOptions()
 								LightningSurgeTotem = {
 									order = 8,
 									type = "toggle",
-									name = L["Lightning Surge Totem"],
+									name = Auras:GetSpellName(192058),
 									get = function() 
 										return auras.LightningSurgeTotem3
 									end,
@@ -11608,7 +12740,7 @@ local function GetRestorationOptions()
 								PurifySpirit = {
 									order = 9,
 									type = "toggle",
-									name = L["Purify Spirit"],
+									name = Auras:GetSpellName(77130),
 									get = function() 
 										return auras.PurifySpirit
 									end,
@@ -11620,7 +12752,7 @@ local function GetRestorationOptions()
 								SpiritwalkersGrace = {
 									order = 10,
 									type = "toggle",
-									name = L["Spiritwalker's Grace"],
+									name = Auras:GetSpellName(79206),
 									get = function() 
 										return auras.SpiritwalkersGrace
 									end,
@@ -11632,7 +12764,7 @@ local function GetRestorationOptions()
 								VoodooTotem = {
 									order = 11,
 									type = "toggle",
-									name = L["Voodoo Totem"],
+									name = Auras:GetSpellName(196932),
 									get = function() 
 										return auras.VoodooTotem3
 									end,
@@ -11644,7 +12776,7 @@ local function GetRestorationOptions()
 								WindRushTotem = {
 									order = 12,
 									type = "toggle",
-									name = L["Wind Rush Totem"],
+									name = Auras:GetSpellName(192077),
 									get = function()
 										return auras.WindRushTotem3
 									end,
@@ -11656,7 +12788,7 @@ local function GetRestorationOptions()
 								WindShear = {
 									order = 13,
 									type = "toggle",
-									name = L["Wind Shear"],
+									name = Auras:GetSpellName(57994),
 									get = function() 
 										return auras.WindShear3
 									end,
@@ -11668,13 +12800,13 @@ local function GetRestorationOptions()
 							},
 						},
 						ProgressBars = {
-							name = L["Progress Bars"],
+							name = L["LABEL_PROGRESS_BARS"],
 							type = "group",
 							order = 4,
 							guiInline = true,
 							args = {
 								BuffTimerBars = {
-									name = L["Buff Duration Timers"],
+									name = L["LABEL_STATUSBAR_BUFF_TIMER"],
 									type = "group",
 									order = 4,
 									guiInline = true,
@@ -11682,7 +12814,7 @@ local function GetRestorationOptions()
 										AncestralGuidanceBar = {
 											order = 1,
 											type = "toggle",
-											name = L["Ancestral Guidance"],
+											name = Auras:GetSpellName(108281),
 											get = function() 
 												return timerbars.buff.ancestralGuidance
 											end,
@@ -11693,7 +12825,7 @@ local function GetRestorationOptions()
 										AscendanceBar = {
 											order = 2,
 											type = "toggle",
-											name = L["Ascendance"],
+											name = Auras:GetSpellName(114052),
 											get = function() 
 												return timerbars.buff.ascendance
 											end,
@@ -11704,7 +12836,7 @@ local function GetRestorationOptions()
 										AstralShiftBar = {
 											order = 3,
 											type = "toggle",
-											name = L["Astral Shift"],
+											name = Auras:GetSpellName(108271),
 											get = function() 
 												return timerbars.buff.astralShift
 											end,
@@ -11715,7 +12847,7 @@ local function GetRestorationOptions()
 										Bloodlust = {
 											order = 4,
 											type = "toggle",
-											name = L["Bloodlust"],
+											name = Auras:GetSpellName(2825),
 											hidden = false,
 											get = function() 
 												return timerbars.buff.bloodlust
@@ -11727,7 +12859,7 @@ local function GetRestorationOptions()
 										Heroism = {
 											order = 5,
 											type = "toggle",
-											name = L["Heroism"],
+											name = Auras:GetSpellName(32182),
 											hidden = false,
 											get = function() 
 												return timerbars.buff.heroism
@@ -11739,7 +12871,7 @@ local function GetRestorationOptions()
 										SpiritwalkersGraceBar = {
 											order = 6,
 											type = "toggle",
-											name = L["Spiritwalker's Grace"],
+											name = Auras:GetSpellName(79206),
 											get = function() 
 												return timerbars.buff.spiritwalkersGrace
 											end,
@@ -11750,7 +12882,7 @@ local function GetRestorationOptions()
 										TimeWarp = {
 											order = 7,
 											type = "toggle",
-											name = L["Time Warp"],
+											name = Auras:GetSpellName(80353),
 											get = function() 
 												return timerbars.buff.timeWarp
 											end,
@@ -11761,7 +12893,7 @@ local function GetRestorationOptions()
 										UnleashLifeBar = {
 											order = 8,
 											type = "toggle",
-											name = L["Unleash Life"],
+											name = Auras:GetSpellName(73685),
 											get = function() 
 												return timerbars.buff.unleashLife
 											end,
@@ -11772,7 +12904,7 @@ local function GetRestorationOptions()
 									},
 								},
 								TotemTimerBars = {
-									name = L["Totem Duration Timers"],
+									name = L["LABEL_TIMERS_TOTEM"],
 									type = "group",
 									order = 5,
 									guiInline = true,
@@ -11780,7 +12912,7 @@ local function GetRestorationOptions()
 										AncestralProtectionTotemBar = {
 											order = 1,
 											type = "toggle",
-											name = L["Ancestral Protection Totem"],
+											name = Auras:GetSpellName(207399),
 											get = function() 
 												return timerbars.main.ancestralProtectionTotem
 											end,
@@ -11791,7 +12923,7 @@ local function GetRestorationOptions()
 										CloudburstTotemBar = {
 											order = 2,
 											type = "toggle",
-											name = L["Cloudburst Totem"],
+											name = Auras:GetSpellName(157153),
 											get = function() 
 												return timerbars.main.cloudburstTotem
 											end,
@@ -11802,7 +12934,7 @@ local function GetRestorationOptions()
 										EarthgrabTotemBar = {
 											order = 3,
 											type = "toggle",
-											name = L["Earthgrab Totem"],
+											name = Auras:GetSpellName(51485),
 											get = function() 
 												return timerbars.util.earthgrabTotem
 											end,
@@ -11813,7 +12945,7 @@ local function GetRestorationOptions()
 										HealingStreamTotemBar = {
 											order = 4,
 											type = "toggle",
-											name = L["Healing Stream Totem"],
+											name = Auras:GetSpellName(5394),
 											get = function() 
 												return timerbars.main.healingStreamTotemOne
 											end,
@@ -11825,7 +12957,7 @@ local function GetRestorationOptions()
 										HealingTideTotemBar = {
 											order = 5,
 											type = "toggle",
-											name = L["Healing Tide Totem"],
+											name = Auras:GetSpellName(108280),
 											get = function() 
 												return timerbars.main.healingTideTotem
 											end,
@@ -11836,7 +12968,7 @@ local function GetRestorationOptions()
 										SpiritLinkTotemBar = {
 											order = 6,
 											type = "toggle",
-											name = L["Spirit Link Totem"],
+											name = Auras:GetSpellName(98008),
 											get = function() 
 												return timerbars.main.spiritLinkTotem
 											end,
@@ -11847,7 +12979,7 @@ local function GetRestorationOptions()
 										VoodooTotemBar = {
 											order = 7,
 											type = "toggle",
-											name = L["Voodoo Totem"],
+											name = Auras:GetSpellName(196932),
 											get = function() 
 												return timerbars.util.voodooTotem
 											end,
@@ -11858,7 +12990,7 @@ local function GetRestorationOptions()
 										WindRushTotemBar = {
 											order = 8,
 											type = "toggle",
-											name = L["Wind Rush Totem"],
+											name = Auras:GetSpellName(192077),
 											get = function() 
 												return timerbars.util.windRushTotem
 											end,
@@ -11871,7 +13003,7 @@ local function GetRestorationOptions()
 							},
 						},
 						TextureAlerts = {
-							name = L["Texture Alerts"],
+							name = L["TOOLTIP_TEXTURE_ALERTS"],
 							type = "group",
 							order = 5,
 							guiInline = true,
@@ -11879,7 +13011,7 @@ local function GetRestorationOptions()
 								TotemMastery = {
 									order = 1,
 									type = "toggle",
-									name = L["Undulation"],
+									name = Auras:GetSpellName(200071),
 									get = function() 
 										return frames.Undulation
 									end,
@@ -11899,7 +13031,7 @@ local function GetRestorationOptions()
 					disabled = true,
 					args = {
 						settings = {
-							name = L["Aura Settings"],
+							name = L["LABEL_AURAS_SETTINGS"],
 							type = "group",
 							order = 3,
 							guiInline = true,
@@ -11907,8 +13039,8 @@ local function GetRestorationOptions()
 								OoCAlpha = {
 									order = 1,
 									type = "range",
-									name = L["Alpha (OoC)"],
-									desc = L["Determines how opaque or transparent the auras will appear when out of combat"],
+									name = L["LABEL_ALPHA_NO_COMBAT"],
+									desc = L["TOOLTIP_AURAS_ALPHA_NO_COMBAT"],
 									min = 0,
 									max = 1,
 									step = 0.1,
@@ -11922,8 +13054,8 @@ local function GetRestorationOptions()
 								FlameShock = {
 									order = 2,
 									type = "range",
-									name = L["Flame Shock"],
-									desc = L["The amount of seconds remaining when the \"Glow\" animation will appear"],
+									name = Auras:GetSpellName(188389),
+									desc = L["TOOLTIP_GLOW_TIME_TRIGGER"],
 									min = 5,
 									max = 15,
 									step = 1,
@@ -11937,8 +13069,8 @@ local function GetRestorationOptions()
 								OoRColor = {
 									type = "color",
 									order = 3,
-									name = L["Color (OoR)"],
-									desc = L["Determines the color of harmful auras will appear when out of range"],
+									name = L["LABEL_COLOR_NO_RANGE"],
+									desc = L["TOOLTIP_COLOR_OUT_OF_RANGE"],
 									hasAlpha = true,
 									get = function(info)
 										return settings.OoRColor.r, settings.OoRColor.g, settings.OoRColor.b, settings.OoRColor.a
@@ -11954,9 +13086,9 @@ local function GetRestorationOptions()
 								reset = {
 									order = 4,
 									type = "execute",
-									--name = "|cFFFFCC00"..L["Reset Settings Values"].."|r",
+									--name = "|cFFFFCC00"..L["BUTTON_RESET_SETTINGS"].."|r",
 									--disabled = false,
-									name = L["Reset Settings Values"],
+									name = L["BUTTON_RESET_SETTINGS"],
 									func = function()
 										settings.OoCAlpha = Auras.db.char.triggers.default.OoCAlpha
 										settings.flameShock = Auras.db.char.triggers.default[3].flameShock
@@ -11966,7 +13098,7 @@ local function GetRestorationOptions()
 										settings.OoRColor.a = Auras.db.char.triggers.default.OoRColor.a
 										
 										res_options.args.bars.args.triggers.args.reset.disabled = true
-										res_options.args.bars.args.triggers.args.reset.name = "|cFF666666"..L["Reset Settings Values"].."|r"
+										res_options.args.bars.args.triggers.args.reset.name = "|cFF666666"..L["BUTTON_RESET_SETTINGS"].."|r"
 									end,
 								},
 							},
@@ -11974,7 +13106,7 @@ local function GetRestorationOptions()
 					},
 				},
 				bars = {
-					name = L["Progress Bars"],
+					name = L["LABEL_PROGRESS_BARS"],
 					order = 3,
 					type = "group",
 					childGroups = "tab",
@@ -11987,15 +13119,15 @@ local function GetRestorationOptions()
 							type = "group",
 							args = {
 								statusbars = {
-									name = L["Statusbar Manager"],
+									name = L["LABEL_STATUSBAR_MANAGER"],
 									type = "group",
 									order = 1,
 									guiInline = true,
 									args = {
 										defaultBarToggle = {
 											order = 1,
-											name = L["Blizzard Casting Bar"],
-											desc = L["Toggles the display of Blizzard's default casting bar"],
+											name = L["LABEL_STATUSBAR_BLIZZARD"],
+											desc = L["TOOLTIP_TOGGLE_BLIZZARD_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.defaultBar
@@ -12013,8 +13145,8 @@ local function GetRestorationOptions()
 										},
 										castBarToggle = {
 											order = 2,
-											name = L["Toggle Cast Bar"],
-											desc = L["Toggles the display of the cast bar"],
+											name = L["TOGGLE_CAST_BAR"],
+											desc = L["TOOLTIP_TOGGLE_CAST_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.castBar.isEnabled
@@ -12032,8 +13164,8 @@ local function GetRestorationOptions()
 										},
 										channelToggle = {
 											order = 3,
-											name = L["Toggle Channel Bar"],
-											desc = L["Toggles the display of the channel bar"],
+											name = L["TOGGLE_CHANNEL_BAR"],
+											desc = L["TOOLTIP_TOGGLE_CHANNEL_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.channelBar.isEnabled
@@ -12051,8 +13183,8 @@ local function GetRestorationOptions()
 										},
 										manaBarToggle = {
 											order = 4,
-											name = L["Toggle Mana Bar"],
-											desc = L["Toggles the display of the Mana Bar"],
+											name = L["TOGGLE_MANA_BAR"],
+											desc = L["TOOLTIP_TOGGLE_MANA_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.manaBar.isEnabled
@@ -12070,8 +13202,8 @@ local function GetRestorationOptions()
 										},
 										earthenShieldToggle = {
 											order = 5,
-											name = L["Toggle Earthen Shield Bar"],
-											desc = L["Toggles the display of the Earthen Shield bar"],
+											name = L["TOGGLE_EARTHEN_SHIELD_BAR"],
+											desc = L["TOOLTIP_TOGGLE_EARTHEN_SHIELD_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.earthenShieldBar.isEnabled
@@ -12089,8 +13221,8 @@ local function GetRestorationOptions()
 										},
 										tidalWavesToggle = {
 											order = 6,
-											name = L["Toggle Tidal Waves Bar"],
-											desc = L["Toggles the display of the Tidal Waves bar"],
+											name = L["TOGGLE_TIDAL_WAVES_BAR"],
+											desc = L["TOOLTIP_TOGGLE_TIDAL_WAVES_BAR"],
 											type = "toggle",
 											get = function()
 												return statusbars.tidalWavesBar.isEnabled
@@ -12111,15 +13243,15 @@ local function GetRestorationOptions()
 							},
 						},
 						manaBar = {
-							name = L["Mana Bar"],
+							name = L["LABEL_STATUSBAR_MANA"],
 							order = 2,
 							type = "group",
 							inline = false,
 							args = {
 								adjust = {
 									order = 1,
-									name = L["Modify Mana Bar"],
-									desc = L["Toggle the adjustment of the Mana Bar"],
+									name = L["LABEL_STATUSBAR_MODIFY_MANA"],
+									desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 									type = "toggle",
 									get = function()
 										return statusbars.manaBar.adjust.isEnabled
@@ -12131,8 +13263,8 @@ local function GetRestorationOptions()
 								},
 								textToggle = {
 									order = 2,
-									name = L["Mana Value Text"],
-									desc = L["Toggles the text display of the amount of mana remaining"],
+									name = L["LABEL_TEXT_MANA"],
+									desc = L["TOOLTIP_TOGGLE_MANA_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.manaBar.text.isDisplayText
@@ -12151,8 +13283,8 @@ local function GetRestorationOptions()
 										alphaCombat = {
 											order = 1,
 											type = "range",
-											name = L["Alpha (In Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear while in combat"],
+											name = L["LABEL_ALPHA_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -12167,8 +13299,8 @@ local function GetRestorationOptions()
 										alphaOoC = {
 											order = 2,
 											type = "range",
-											name = L["Alpha (OoC - No Target)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat"],
+											name = L["LABEL_ALPHA_NO_TARGET_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -12183,8 +13315,8 @@ local function GetRestorationOptions()
 										alphaTarget = {
 											order = 3,
 											type = "range",
-											name = L["Alpha (OoC - Target)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat and targetting an enemy"],
+											name = L["LABEL_ALPHA_TARGET_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_TARGET_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -12198,8 +13330,8 @@ local function GetRestorationOptions()
 										},
 										ManaBarDigitGrouping = {
 											order = 4,
-											name = L["Digit Grouping"],
-											desc = L["Add or remove separating commas"],
+											name = L["LABEL_DIGIT_GROUPING"],
+											desc = L["TOOLTIP_DIGIT_GROUPING"],
 											type = "toggle",
 											get = function()
 												return statusbars.manaBar.grouping
@@ -12231,8 +13363,8 @@ local function GetRestorationOptions()
 										ManaBarPrecision = {
 											order = 5,
 											type = "select",
-											name = L["Mana Precision"],
-											desc = L["Set the aura orientation to horizontal or vertical."],
+											name = L["LABEL_PRECISION_MANA"],
+											desc = L["TOOLTIP_AURAS_ORIENTATION"],
 											get = function()
 												res_options.args.bars.args.manaBar.args.general.args.ManaBarPrecision.values = {
 													["Long"] = tostring(Auras:ManaPrecision("Long")),
@@ -12254,7 +13386,7 @@ local function GetRestorationOptions()
 									},
 								},
 								text = {
-									name = '|cFFFFFFFF'..L['Mana Value Text']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_TEXT_MANA"]..'|r',
 									type = "group",
 									order = 4,
 									disabled = true,
@@ -12263,8 +13395,8 @@ local function GetRestorationOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.manaBar.text.font.color
@@ -12285,8 +13417,8 @@ local function GetRestorationOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function()
 												return statusbars.manaBar.text.font.name 
@@ -12300,7 +13432,7 @@ local function GetRestorationOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -12316,8 +13448,8 @@ local function GetRestorationOptions()
 										timeFontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.manaBar.text.font.flag
 											end,
@@ -12330,8 +13462,8 @@ local function GetRestorationOptions()
 										timeTextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.manaBar.text.justify
 											end,
@@ -12345,7 +13477,7 @@ local function GetRestorationOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -12360,7 +13492,7 @@ local function GetRestorationOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -12372,7 +13504,7 @@ local function GetRestorationOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -12380,7 +13512,7 @@ local function GetRestorationOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -12394,8 +13526,8 @@ local function GetRestorationOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													get = function(info)
 														local color = statusbars.manaBar.text.font.shadow.color
@@ -12416,7 +13548,7 @@ local function GetRestorationOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -12432,7 +13564,7 @@ local function GetRestorationOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -12449,7 +13581,7 @@ local function GetRestorationOptions()
 									},
 								},
 								layout = {
-									name = L["Layout & Design"],
+									name = L["LABEL_LAYOUT_DESIGN"],
 									type = "group",
 									order = 5,
 									guiInline = true,
@@ -12457,8 +13589,8 @@ local function GetRestorationOptions()
 										texture = {
 											order = 1,
 											type = "select",
-											name = L["Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_STATUSBAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.manaBar.foreground.texture
@@ -12472,7 +13604,7 @@ local function GetRestorationOptions()
 										textureColor = {
 											type = "color",
 											order = 2,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											get = function(info)
 												local color = statusbars.manaBar.foreground.color
 												return color.r, color.g, color.b
@@ -12490,8 +13622,8 @@ local function GetRestorationOptions()
 										backgroundTexture = {
 											order = 3,
 											type = "select",
-											name = L["Background Texture"],
-											desc = L["Set the bar's background texture."],
+											name = L["LABEL_STATUSBAR_BG_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_BG_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.manaBar.background.texture
@@ -12505,8 +13637,8 @@ local function GetRestorationOptions()
 										backgroundColor = {
 											type = "color",
 											order = 4,
-											name = L["Background Color"],
-											desc = L["Set the color of the cast bar's background."],
+											name = L["LABEL_STATUSBAR_BG_COLOR"],
+											desc = L["TOOLTIP_STATUSBAR_BG_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.manaBar.background.color
@@ -12525,8 +13657,8 @@ local function GetRestorationOptions()
 										},
 										backgroundToggle = {
 											order = 5,
-											name = L["Modify Background"],
-											desc = L["Toggle the adjustment of the bar's background texture"],
+											name = L["LABEL_STATUSBAR_MODIFY_BACKGROUND"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_BG_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.manaBar.adjust.showBG
@@ -12539,7 +13671,7 @@ local function GetRestorationOptions()
 										width = {
 											order = 6,
 											type = "range",
-											name = L["Width"],
+											name = L["LABEL_WIDTH"],
 											desc = '',
 											min = 100,
 											max = 500,
@@ -12554,7 +13686,7 @@ local function GetRestorationOptions()
 										height = {
 											order = 7,
 											type = "range",
-											name = L["Height"],
+											name = L["LABEL_HEIGHT"],
 											desc = '',
 											min = 10,
 											max = 100,
@@ -12571,7 +13703,7 @@ local function GetRestorationOptions()
 								reset = {
 									order = 6,
 									type = "execute",
-									name = L["Reset Maelstrom Bar"],
+									name = L["BUTTON_RESET_STATUSBAR_MAELSTROM"],
 									func = function()
 										local bar = statusbars.manaBar
 										local default = statusbarDefaults.manaBar
@@ -12618,7 +13750,7 @@ local function GetRestorationOptions()
 										bar.layout.strata = default.layout.strata
 										
 										res_options.args.bars.args.manaBar.args.reset.disabled = true
-										res_options.args.bars.args.manaBar.args.reset.name = "|cFF666666"..L["Reset Mana Bar"].."|r"
+										res_options.args.bars.args.manaBar.args.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_MANA"].."|r"
 										CheckRestorationDefaultValues(res_options,"Mana")
 										
 										if (not bar.adjust.isEnabled) then
@@ -12629,15 +13761,15 @@ local function GetRestorationOptions()
 							},
 						},
 						castBar = {
-							name = L["Cast Bar"],
+							name = L["LABEL_STATUSBAR_CAST"],
 							order = 3,
 							inline = false,
 							type = "group",
 							args = {
 								adjust = {
 									order = 1,
-									name = L["Modify Cast Bar"],
-									desc = L["Toggle the adjustment of the Cast Bar"],
+									name = L["LABEL_STATUSBAR_MODIFY_CAST"],
+									desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 									type = "toggle",
 									get = function()
 										return statusbars.castBar.adjust.isEnabled
@@ -12649,8 +13781,8 @@ local function GetRestorationOptions()
 								},
 								nametextToggle = {
 									order = 2,
-									name = L["Toggle Spell Name Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_SPELL_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_SPELL_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.castBar.nametext.isDisplayText
@@ -12662,8 +13794,8 @@ local function GetRestorationOptions()
 								},
 								timetextToggle = {
 									order = 3,
-									name = L["Toggle Time Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_TIME_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_TIME_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.castBar.timetext.isDisplayText
@@ -12682,8 +13814,8 @@ local function GetRestorationOptions()
 										alphaCombat = {
 											order = 1,
 											type = "range",
-											name = L["Alpha (In Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear while in combat"],
+											name = L["LABEL_ALPHA_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -12697,8 +13829,8 @@ local function GetRestorationOptions()
 										alphaOoC = {
 											order = 2,
 											type = "range",
-											name = L["Alpha (Out of Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat"],
+											name = L["LABEL_ALPHA_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -12712,7 +13844,7 @@ local function GetRestorationOptions()
 									},
 								},
 								iconSpark = {
-									name = '|cFFFFFFFF'..L['Icon & Spark']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_ICON_SPARK"]..'|r',
 									type = "group",
 									order = 5,
 									disabled = true,
@@ -12720,7 +13852,7 @@ local function GetRestorationOptions()
 									args = {
 										sparkToggle = {
 											order = 1,
-											name = L["Toggle Spark"],
+											name = L["TOGGLE_SPARK"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -12733,7 +13865,7 @@ local function GetRestorationOptions()
 										},
 										iconToggle = {
 											order = 2,
-											name = L["Toggle Icon"],
+											name = L["TOGGLE_ICON"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -12753,8 +13885,8 @@ local function GetRestorationOptions()
 										iconJustify = {
 											order = 3,
 											type = "select",
-											name = L["Icon Justify"],
-											desc = L["Set the side of the progress bar that the icon will appear."],
+											name = L["LABEL_ICON_JUSTIFY"],
+											desc = L["TOOLTIP_STATUSBAR_ICON_LOCATION"],
 											get = function()
 												return statusbars.castBar.icon.justify
 											end,
@@ -12767,7 +13899,7 @@ local function GetRestorationOptions()
 									},
 								},
 								nametext = {
-									name = '|cFFFFFFFF'..L['Spell Name Text']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_TEXT_SPELL"]..'|r',
 									type = "group",
 									order = 6,
 									disabled = true,
@@ -12776,8 +13908,8 @@ local function GetRestorationOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.castBar.nametext.font.color
@@ -12798,8 +13930,8 @@ local function GetRestorationOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.castBar.nametext.font.name end,
 											set = function(self,value)
@@ -12811,7 +13943,7 @@ local function GetRestorationOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -12825,8 +13957,8 @@ local function GetRestorationOptions()
 										fontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.castBar.nametext.font.flag
 											end,
@@ -12839,8 +13971,8 @@ local function GetRestorationOptions()
 										nametextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.castBar.nametext.justify
 											end,
@@ -12854,7 +13986,7 @@ local function GetRestorationOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -12869,7 +14001,7 @@ local function GetRestorationOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -12881,7 +14013,7 @@ local function GetRestorationOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -12889,7 +14021,7 @@ local function GetRestorationOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -12903,8 +14035,8 @@ local function GetRestorationOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													get = function(info)
 														local color = statusbars.castBar.nametext.font.shadow.color
@@ -12924,7 +14056,7 @@ local function GetRestorationOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -12939,7 +14071,7 @@ local function GetRestorationOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -12955,7 +14087,7 @@ local function GetRestorationOptions()
 									},
 								},
 								timetext = {
-									name = '|cFFFFFFFFTimer Text|r',
+									name = '|cFFFFFFFF'..L["LABEL_TIME_TEXT"]..'|r',
 									type = "group",
 									order = 7,
 									disabled = true,
@@ -12964,8 +14096,8 @@ local function GetRestorationOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.castBar.timetext.font.color
@@ -12986,8 +14118,8 @@ local function GetRestorationOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.castBar.timetext.font.name end,
 											set = function(self,value)
@@ -12999,7 +14131,7 @@ local function GetRestorationOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -13013,8 +14145,8 @@ local function GetRestorationOptions()
 										timeFontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.castBar.timetext.font.flag
 											end,
@@ -13027,8 +14159,8 @@ local function GetRestorationOptions()
 										timeTextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.castBar.timetext.justify
 											end,
@@ -13042,7 +14174,7 @@ local function GetRestorationOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -13057,7 +14189,7 @@ local function GetRestorationOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -13069,7 +14201,7 @@ local function GetRestorationOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -13077,7 +14209,7 @@ local function GetRestorationOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -13091,8 +14223,8 @@ local function GetRestorationOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													disabled = true,
 													get = function(info)
@@ -13113,7 +14245,7 @@ local function GetRestorationOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -13129,7 +14261,7 @@ local function GetRestorationOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -13146,7 +14278,7 @@ local function GetRestorationOptions()
 									},
 								},
 								layout = {
-									name = L["Layout & Design"],
+									name = L["LABEL_LAYOUT_DESIGN"],
 									type = "group",
 									order = 8,
 									guiInline = true,
@@ -13154,8 +14286,8 @@ local function GetRestorationOptions()
 										texture = {
 											order = 1,
 											type = "select",
-											name = L["Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_STATUSBAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.castBar.foreground.texture
@@ -13169,7 +14301,7 @@ local function GetRestorationOptions()
 										textureColor = {
 											type = "color",
 											order = 2,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											get = function(info)
 												local color = statusbars.castBar.foreground.color
 												return color.r, color.g, color.b
@@ -13188,8 +14320,8 @@ local function GetRestorationOptions()
 										backgroundTexture = {
 											order = 3,
 											type = "select",
-											name = L["Background Texture"],
-											desc = L["Set the bar's background texture."],
+											name = L["LABEL_STATUSBAR_BG_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_BG_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.castBar.background.texture
@@ -13203,8 +14335,8 @@ local function GetRestorationOptions()
 										backgroundColor = {
 											type = "color",
 											order = 4,
-											name = L["Background Color"],
-											desc = L["Set the color of the cast bar's background."],
+											name = L["LABEL_STATUSBAR_BG_COLOR"],
+											desc = L["TOOLTIP_STATUSBAR_BG_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.castBar.background.color
@@ -13222,8 +14354,8 @@ local function GetRestorationOptions()
 										},
 										backgroundToggle = {
 											order = 5,
-											name = L["Modify Background"],
-											desc = L["Toggle the adjustment of the bar's background texture"],
+											name = L["LABEL_STATUSBAR_MODIFY_BACKGROUND"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_BG_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.castBar.adjust.showBG
@@ -13236,7 +14368,7 @@ local function GetRestorationOptions()
 										width = {
 											order = 6,
 											type = "range",
-											name = L["Width"],
+											name = L["LABEL_WIDTH"],
 											desc = '',
 											min = 100,
 											max = 500,
@@ -13251,7 +14383,7 @@ local function GetRestorationOptions()
 										height = {
 											order = 7,
 											type = "range",
-											name = L["Height"],
+											name = L["LABEL_HEIGHT"],
 											desc = '',
 											min = 10,
 											max = 100,
@@ -13268,7 +14400,7 @@ local function GetRestorationOptions()
 								reset = {
 									order = 9,
 									type = "execute",
-									name = L["Reset Cast Bar"],
+									name = L["BUTTON_RESET_STATUSBAR_CAST"],
 									func = function()
 										local bar = statusbars.castBar
 										local default = statusbarDefaults.castBar
@@ -13333,7 +14465,7 @@ local function GetRestorationOptions()
 										bar.layout.height = default.layout.height
 										bar.layout.strata = default.layout.strata
 										res_options.args.bars.args.castBar.args.reset.disabled = true
-										res_options.args.bars.args.castBar.args.reset.name = "|cFF666666"..L["Reset Cast Bar"].."|r"
+										res_options.args.bars.args.castBar.args.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_CAST"].."|r"
 										CheckRestorationDefaultValues(res_options,'Cast','castBar')
 										
 										if (not bar.adjust.isEnabled) then
@@ -13344,15 +14476,15 @@ local function GetRestorationOptions()
 							},
 						},
 						channelBar = {
-							name = L["Channel Bar"],
+							name = L["LABEL_STATUSBAR_CHANNEL"],
 							order = 4,
 							inline = false,
 							type = "group",
 							args = {
 								adjust = {
 									order = 1,
-									name = L["Modify Channel Bar"],
-									desc = L["Toggle the adjustment of the Channel Bar"],
+									name = L["LABEL_STATUSBAR_MODIFY_CHANNEL"],
+									desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 									type = "toggle",
 									get = function()
 										return statusbars.channelBar.adjust.isEnabled
@@ -13364,8 +14496,8 @@ local function GetRestorationOptions()
 								},
 								nametextToggle = {
 									order = 2,
-									name = L["Toggle Spell Name Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_SPELL_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_SPELL_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.channelBar.nametext.isDisplayText
@@ -13377,8 +14509,8 @@ local function GetRestorationOptions()
 								},
 								timetextToggle = {
 									order = 3,
-									name = L["Toggle Time Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_TIME_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_TIME_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.channelBar.timetext.isDisplayText
@@ -13397,8 +14529,8 @@ local function GetRestorationOptions()
 										alphaCombat = {
 											order = 1,
 											type = "range",
-											name = L["Alpha (In Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear while in combat"],
+											name = L["LABEL_ALPHA_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -13412,8 +14544,8 @@ local function GetRestorationOptions()
 										alphaOoC = {
 											order = 2,
 											type = "range",
-											name = L["Alpha (Out of Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat"],
+											name = L["LABEL_ALPHA_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -13427,7 +14559,7 @@ local function GetRestorationOptions()
 									},
 								},
 								iconSpark = {
-									name = '|cFFFFFFFF'..L['Icon & Spark']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_ICON_SPARK"]..'|r',
 									type = "group",
 									order = 5,
 									disabled = true,
@@ -13435,7 +14567,7 @@ local function GetRestorationOptions()
 									args = {
 										sparkToggle = {
 											order = 1,
-											name = L["Toggle Spark"],
+											name = L["TOGGLE_SPARK"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -13448,7 +14580,7 @@ local function GetRestorationOptions()
 										},
 										iconToggle = {
 											order = 2,
-											name = L["Toggle Icon"],
+											name = L["TOGGLE_ICON"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -13462,8 +14594,8 @@ local function GetRestorationOptions()
 										iconJustify = {
 											order = 3,
 											type = "select",
-											name = L["Icon Justify"],
-											desc = L["Set the side of the progress bar that the icon will appear."],
+											name = L["LABEL_ICON_JUSTIFY"],
+											desc = L["TOOLTIP_STATUSBAR_ICON_LOCATION"],
 											get = function()
 												return statusbars.channelBar.icon.justify
 											end,
@@ -13476,7 +14608,7 @@ local function GetRestorationOptions()
 									},
 								},
 								nametext = {
-									name = '|cFFFFFFFF'..L['Spell Name Text']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_TEXT_SPELL"]..'|r',
 									type = "group",
 									order = 6,
 									disabled = true,
@@ -13485,8 +14617,8 @@ local function GetRestorationOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.channelBar.nametext.font.color
@@ -13507,8 +14639,8 @@ local function GetRestorationOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.channelBar.nametext.font.name end,
 											set = function(self,value)
@@ -13520,7 +14652,7 @@ local function GetRestorationOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -13534,8 +14666,8 @@ local function GetRestorationOptions()
 										fontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.channelBar.nametext.font.flag
 											end,
@@ -13548,8 +14680,8 @@ local function GetRestorationOptions()
 										nametextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.channelBar.nametext.justify
 											end,
@@ -13563,7 +14695,7 @@ local function GetRestorationOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -13578,7 +14710,7 @@ local function GetRestorationOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -13590,7 +14722,7 @@ local function GetRestorationOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -13598,7 +14730,7 @@ local function GetRestorationOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -13612,8 +14744,8 @@ local function GetRestorationOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													disabled = true,
 													get = function(info)
@@ -13634,7 +14766,7 @@ local function GetRestorationOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -13650,7 +14782,7 @@ local function GetRestorationOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -13667,7 +14799,7 @@ local function GetRestorationOptions()
 									},
 								},
 								timetext = {
-									name = '|cFFFFFFFFTimer Text|r',
+									name = '|cFFFFFFFF'..L["LABEL_TIME_TEXT"]..'|r',
 									type = "group",
 									order = 7,
 									disabled = true,
@@ -13676,8 +14808,8 @@ local function GetRestorationOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.channelBar.timetext.font.color
@@ -13698,8 +14830,8 @@ local function GetRestorationOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.channelBar.timetext.font.name end,
 											set = function(self,value)
@@ -13711,7 +14843,7 @@ local function GetRestorationOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -13725,8 +14857,8 @@ local function GetRestorationOptions()
 										timeFontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.channelBar.timetext.font.flag
 											end,
@@ -13739,8 +14871,8 @@ local function GetRestorationOptions()
 										timeTextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.channelBar.timetext.justify
 											end,
@@ -13754,7 +14886,7 @@ local function GetRestorationOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -13769,7 +14901,7 @@ local function GetRestorationOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -13781,7 +14913,7 @@ local function GetRestorationOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -13789,7 +14921,7 @@ local function GetRestorationOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -13803,8 +14935,8 @@ local function GetRestorationOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													disabled = true,
 													get = function(info)
@@ -13825,7 +14957,7 @@ local function GetRestorationOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -13841,7 +14973,7 @@ local function GetRestorationOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -13858,7 +14990,7 @@ local function GetRestorationOptions()
 									},
 								},
 								layout = {
-									name = L["Layout & Design"],
+									name = L["LABEL_LAYOUT_DESIGN"],
 									type = "group",
 									order = 8,
 									guiInline = true,
@@ -13866,8 +14998,8 @@ local function GetRestorationOptions()
 										texture = {
 											order = 1,
 											type = "select",
-											name = L["Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_STATUSBAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.channelBar.foreground.texture
@@ -13881,7 +15013,7 @@ local function GetRestorationOptions()
 										textureColor = {
 											type = "color",
 											order = 2,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											get = function(info)
 												local color = statusbars.channelBar.foreground.color
 												return color.r, color.g, color.b
@@ -13899,8 +15031,8 @@ local function GetRestorationOptions()
 										backgroundTexture = {
 											order = 3,
 											type = "select",
-											name = L["Background Texture"],
-											desc = L["Set the bar's background texture."],
+											name = L["LABEL_STATUSBAR_BG_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_BG_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.channelBar.background.texture
@@ -13914,8 +15046,8 @@ local function GetRestorationOptions()
 										backgroundColor = {
 											type = "color",
 											order = 4,
-											name = L["Background Color"],
-											desc = L["Set the color of the cast bar's background."],
+											name = L["LABEL_STATUSBAR_BG_COLOR"],
+											desc = L["TOOLTIP_STATUSBAR_BG_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.channelBar.background.color
@@ -13933,8 +15065,8 @@ local function GetRestorationOptions()
 										},
 										backgroundToggle = {
 											order = 5,
-											name = L["Modify Background"],
-											desc = L["Toggle the adjustment of the bar's background texture"],
+											name = L["LABEL_STATUSBAR_MODIFY_BACKGROUND"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_BG_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.channelBar.adjust.showBG
@@ -13947,7 +15079,7 @@ local function GetRestorationOptions()
 										width = {
 											order = 6,
 											type = "range",
-											name = L["Width"],
+											name = L["LABEL_WIDTH"],
 											desc = '',
 											min = 100,
 											max = 500,
@@ -13962,7 +15094,7 @@ local function GetRestorationOptions()
 										height = {
 											order = 7,
 											type = "range",
-											name = L["Height"],
+											name = L["LABEL_HEIGHT"],
 											desc = '',
 											min = 10,
 											max = 100,
@@ -13979,7 +15111,7 @@ local function GetRestorationOptions()
 								reset = {
 									order = 9,
 									type = "execute",
-									name = L["Reset Channel Bar"],
+									name = L["BUTTON_RESET_STATUSBAR_CHANNEL"],
 									func = function()
 										local bar = statusbars.channelBar
 										local default = statusbarDefaults.channelBar
@@ -14044,7 +15176,7 @@ local function GetRestorationOptions()
 										bar.layout.height = default.layout.height
 										bar.layout.strata = default.layout.strata
 										res_options.args.bars.args.channelBar.args.reset.disabled = true
-										res_options.args.bars.args.channelBar.args.reset.name = "|cFF666666"..L["Reset Channel Bar"].."|r"
+										res_options.args.bars.args.channelBar.args.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_CHANNEL"].."|r"
 										CheckRestorationDefaultValues(res_options,'Channel','channelBar')
 										
 										if (not bar.adjust.isEnabled) then
@@ -14055,15 +15187,15 @@ local function GetRestorationOptions()
 							},
 						},
 						earthenShieldBar = {
-							name = L["Earthen Shield Bar"],
+							name = L["LABEL_STATUSBAR_EARTHEN_SHIELD"],
 							type = "group",
 							order = 5,
 							inline = false,
 							args = {
 								adjust = {
 									order = 1,
-									name = L["Modify Earthen Shield Bar"],
-									desc = L["Toggle the adjustment of the Earthen Shield Bar"],
+									name = L["LABEL_STATUSBAR_MODIFY_EARTHEN_SHIELD"],
+									desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 									type = "toggle",
 									get = function()
 										return statusbars.earthenShieldBar.adjust.isEnabled
@@ -14075,8 +15207,8 @@ local function GetRestorationOptions()
 								},
 								healthtextToggle = {
 									order = 2,
-									name = L["Toggle Totem Health Text"],
-									desc = L["Toggles the text display of the remaining health of the Earthen Shield Totem"],
+									name = L["TOGGLE_HEALTH_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_HEALTH_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.earthenShieldBar.healthtext.isDisplayText
@@ -14088,8 +15220,8 @@ local function GetRestorationOptions()
 								},
 								timetextToggle = {
 									order = 3,
-									name = L["Toggle Time Text"],
-									desc = L["Toggles the text display of the spell casted"],
+									name = L["TOGGLE_TIME_TEXT"],
+									desc = L["TOOLTIP_TOGGLE_TIME_TEXT"],
 									type = "toggle",
 									get = function()
 										return statusbars.earthenShieldBar.timetext.isDisplayText
@@ -14108,8 +15240,8 @@ local function GetRestorationOptions()
 										alphaCombat = {
 											order = 1,
 											type = "range",
-											name = L["Alpha (In Combat)"],
-											desc = L["Determines how opaque or transparent the bar will appear while in combat"],
+											name = L["LABEL_ALPHA_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -14123,8 +15255,8 @@ local function GetRestorationOptions()
 										alphaOoC = {
 											order = 2,
 											type = "range",
-											name = L["Alpha (OoC - No Target)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat"],
+											name = L["LABEL_ALPHA_NO_TARGET_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -14138,8 +15270,8 @@ local function GetRestorationOptions()
 										alphaTarget = {
 											order = 3,
 											type = "range",
-											name = L["Alpha (OoC - Target)"],
-											desc = L["Determines how opaque or transparent the bar will appear when out of combat and targetting an enemy"],
+											name = L["LABEL_ALPHA_TARGET_NO_COMBAT"],
+											desc = L["TOOLTIP_STATUSBAR_ALPHA_TARGET_NO_COMBAT"],
 											min = 0,
 											max = 1,
 											step = 0.1,
@@ -14154,7 +15286,7 @@ local function GetRestorationOptions()
 									},
 								},
 								healthtext = {
-									name = '|cFFFFFFFF'..L['Health Text']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_TEXT_HEALTH"]..'|r',
 									type = "group",
 									order = 5,
 									disabled = true,
@@ -14163,8 +15295,8 @@ local function GetRestorationOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.earthenShieldBar.healthtext.font.color
@@ -14185,8 +15317,8 @@ local function GetRestorationOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.earthenShieldBar.healthtext.font.name end,
 											set = function(self,value)
@@ -14198,7 +15330,7 @@ local function GetRestorationOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -14212,8 +15344,8 @@ local function GetRestorationOptions()
 										fontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.earthenShieldBar.healthtext.font.flag
 											end,
@@ -14226,8 +15358,8 @@ local function GetRestorationOptions()
 										healthtextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.earthenShieldBar.healthtext.justify
 											end,
@@ -14241,7 +15373,7 @@ local function GetRestorationOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -14256,7 +15388,7 @@ local function GetRestorationOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -14268,7 +15400,7 @@ local function GetRestorationOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -14276,7 +15408,7 @@ local function GetRestorationOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -14290,8 +15422,8 @@ local function GetRestorationOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													disabled = true,
 													get = function(info)
@@ -14312,7 +15444,7 @@ local function GetRestorationOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -14328,7 +15460,7 @@ local function GetRestorationOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -14345,7 +15477,7 @@ local function GetRestorationOptions()
 									},
 								},
 								timetext = {
-									name = '|cFFFFFFFFTimer Text|r',
+									name = '|cFFFFFFFF'..L["LABEL_TIME_TEXT"]..'|r',
 									type = "group",
 									order = 6,
 									disabled = true,
@@ -14354,8 +15486,8 @@ local function GetRestorationOptions()
 										color = {
 											type = "color",
 											order = 1,
-											name = L["Text Color"],
-											desc = L["Set the color of the text."],
+											name = L["LABEL_FONT_COLOR"],
+											desc = L["TOOLTIP_FONT_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.earthenShieldBar.timetext.font.color
@@ -14376,8 +15508,8 @@ local function GetRestorationOptions()
 											order = 2,
 											type = "select",
 											dialogControl = "LSM30_Font",
-											name = L["Font"],
-											desc = L["The font that will be used"],
+											name = L["LABEL_FONT"],
+											desc = L["TOOLTIP_FONT_NAME"],
 											values = LSM:HashTable("font"),
 											get = function() return statusbars.earthenShieldBar.timetext.font.name end,
 											set = function(self,value)
@@ -14389,7 +15521,7 @@ local function GetRestorationOptions()
 											order = 3,
 											type = "range",
 											name = FONT_SIZE,
-											desc = L["Customize the font size of the cooldown text"],
+											desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 											min = 5,
 											max = 40,
 											step = 1,
@@ -14403,8 +15535,8 @@ local function GetRestorationOptions()
 										timeFontOutline = {
 											order = 4,
 											type = "select",
-											name = L["Font Outline"],
-											desc = L["The outline of the font"],
+											name = L["LABEL_FONT_OUTLINE"],
+											desc = L["TOOLTIP_FONT_OUTLINE"],
 											get = function()
 												return statusbars.earthenShieldBar.timetext.font.flag
 											end,
@@ -14417,8 +15549,8 @@ local function GetRestorationOptions()
 										timeTextAnchor = {
 											order = 5,
 											type = "select",
-											name = L["Anchor Point"],
-											desc = L["Set the anchor point."],
+											name = L["LABEL_FONT_ANCHOR"],
+											desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 											get = function()
 												return statusbars.earthenShieldBar.timetext.justify
 											end,
@@ -14432,7 +15564,7 @@ local function GetRestorationOptions()
 											order = 6,
 											type = "range",
 											name = "X",
-											desc = L["Set location of text on the X axis"],
+											desc = L["TOOLTIP_FONT_X_OFFSET"],
 											min = -500,
 											max = 500,
 											step = 1,
@@ -14447,7 +15579,7 @@ local function GetRestorationOptions()
 											order = 7,
 											type = "range",
 											name = "Y",
-											desc = L["Set location of text on the Y axis"],
+											desc = L["TOOLTIP_FONT_Y_OFFSET"],
 											min = -100,
 											max = 100,
 											step = 1,
@@ -14459,7 +15591,7 @@ local function GetRestorationOptions()
 											end,
 										},
 										shadow = {
-											name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+											name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 											type = "group",
 											order = 8,
 											hidden = false,
@@ -14467,7 +15599,7 @@ local function GetRestorationOptions()
 											args = {
 												shadowToggle = {
 													order = 1,
-													name = L["Toggle"],
+													name = L["TOGGLE"],
 													desc = '',
 													type = "toggle",
 													get = function()
@@ -14481,8 +15613,8 @@ local function GetRestorationOptions()
 												shadowColor = {
 													type = "color",
 													order = 2,
-													name = L["Shadow Color"],
-													desc = L["Set the color of the text's shadow."],
+													name = L["LABEL_FONT_SHADOW_COLOR"],
+													desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 													hasAlpha = true,
 													disabled = true,
 													get = function(info)
@@ -14503,7 +15635,7 @@ local function GetRestorationOptions()
 													order = 3,
 													type = "range",
 													name = "X",
-													desc = L["Set the text shadow's X offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -14519,7 +15651,7 @@ local function GetRestorationOptions()
 													order = 4,
 													type = "range",
 													name = "Y",
-													desc = L["Set the text shadow's Y offset"],
+													desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 													min = -10,
 													max = 10,
 													step = 1,
@@ -14536,7 +15668,7 @@ local function GetRestorationOptions()
 									},
 								},
 								layout = {
-									name = L["Layout & Design"],
+									name = L["LABEL_LAYOUT_DESIGN"],
 									type = "group",
 									order = 7,
 									guiInline = true,
@@ -14544,8 +15676,8 @@ local function GetRestorationOptions()
 										texture = {
 											order = 1,
 											type = "select",
-											name = L["Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_STATUSBAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.earthenShieldBar.foreground.texture
@@ -14559,7 +15691,7 @@ local function GetRestorationOptions()
 										textureColor = {
 											type = "color",
 											order = 2,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											get = function(info)
 												local color = statusbars.earthenShieldBar.foreground.color
 												return color.r, color.g, color.b
@@ -14576,8 +15708,8 @@ local function GetRestorationOptions()
 										timerTexture = {
 											order = 3,
 											type = "select",
-											name = L["Timer Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_TIME_BAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.earthenShieldBar.timerBar.texture
@@ -14592,7 +15724,7 @@ local function GetRestorationOptions()
 										timerColor = {
 											type = "color",
 											order = 4,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.earthenShieldBar.timerBar.color
@@ -14609,8 +15741,8 @@ local function GetRestorationOptions()
 										},
 										timerToggle = {
 											order = 5,
-											name = L["Modify Timer Bar"],
-											desc = L["Toggle the adjustment of the Timer Bar"],
+											name = L["LABEL_STATUSBAR_MODIFY_TIMER"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.earthenShieldBar.adjust.showTimer
@@ -14623,8 +15755,8 @@ local function GetRestorationOptions()
 										backgroundTexture = {
 											order = 6,
 											type = "select",
-											name = L["Background Texture"],
-											desc = L["Set the bar's background texture."],
+											name = L["LABEL_STATUSBAR_BG_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_BG_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.earthenShieldBar.background.texture
@@ -14639,7 +15771,7 @@ local function GetRestorationOptions()
 											type = "color",
 											order = 7,
 											name = "BG Color",
-											desc = L["Set the color of the cast bar's background."],
+											desc = L["TOOLTIP_STATUSBAR_BG_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.earthenShieldBar.background.color
@@ -14656,8 +15788,8 @@ local function GetRestorationOptions()
 										},
 										backgroundToggle = {
 											order = 8,
-											name = L["Modify Background"],
-											desc = L["Toggle the adjustment of the bar's background texture"],
+											name = L["LABEL_STATUSBAR_MODIFY_BACKGROUND"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_BG_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.earthenShieldBar.adjust.showBG
@@ -14670,7 +15802,7 @@ local function GetRestorationOptions()
 										width = {
 											order = 9,
 											type = "range",
-											name = L["Width"],
+											name = L["LABEL_WIDTH"],
 											desc = '',
 											min = 100,
 											max = 500,
@@ -14685,7 +15817,7 @@ local function GetRestorationOptions()
 										height = {
 											order = 10,
 											type = "range",
-											name = L["Height"],
+											name = L["LABEL_HEIGHT"],
 											desc = '',
 											min = 10,
 											max = 100,
@@ -14702,7 +15834,7 @@ local function GetRestorationOptions()
 								reset = {
 									order = 8,
 									type = "execute",
-									name = L["Reset Earthen Shield Bar"],
+									name = L["BUTTON_RESET_STATUSBAR_EARTHEN_SHIELD"],
 									func = function()
 										local bar = statusbars.earthenShieldBar
 										local default = statusbarDefaults.earthenShieldBar
@@ -14770,7 +15902,7 @@ local function GetRestorationOptions()
 										bar.layout.height = default.layout.height
 										bar.layout.strata = default.layout.strata
 										res_options.args.bars.args.earthenShieldBar.args.reset.disabled = true
-										res_options.args.bars.args.earthenShieldBar.args.reset.name = "|cFF666666"..L["Reset Earthen Shield Bar"].."|r"
+										res_options.args.bars.args.earthenShieldBar.args.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_EARTHEN_SHIELD"].."|r"
 										CheckRestorationDefaultValues(res_options,'Earthen Shield')
 										
 										if (not bar.adjust.isEnabled) then
@@ -14781,15 +15913,15 @@ local function GetRestorationOptions()
 							},
 						},
 						tidalWavesBar = {
-							name = L["Tidal Waves Bar"],
+							name = L["LABEL_TIDAL_WAVES_BAR"],
 							type = "group",
 							order = 6,
 							inline = false,
 							args = {
 								adjust = {
 									order = 1,
-									name = L["Modify Tidal Waves Bar"],
-									desc = L["Toggle the adjustment of the Tidal Waves Bar"],
+									name = L["LABEL_STATUSBAR_MODIFY_TIDAL_WAVES"],
+									desc = L["TOOLTIP_TOGGLE_STATUSBAR_CUSTOMIZATON"],
 									type = "toggle",
 									get = function()
 										return statusbars.tidalWavesBar.adjust.isEnabled
@@ -14808,7 +15940,7 @@ local function GetRestorationOptions()
 										animate = {
 											order = 1,
 											type = "toggle",
-											name = L["Animate Tidal Waves Bar"],
+											name = L["LABEL_STATUSBAR_TIDAL_WAVES_ANIMATE"],
 											get = function() 
 												return statusbars.tidalWavesBar.animate
 											end,
@@ -14821,8 +15953,8 @@ local function GetRestorationOptions()
 										emptyColor = {
 											type = "color",
 											order = 2,
-											name = L["No Tidal Waves Color"],
-											desc = L["Determines the color of the Tidal Waves bar when no tidal wave charges are active"],
+											name = L["LABEL_STATUSBAR_TIDAL_WAVES_EMPTY"],
+											desc = L["TOOLTIP_STATUSBAR_TIDAL_WAVES_EMPTY"],
 											get = function(info)
 												local color = statusbars.tidalWavesBar.emptyColor
 												
@@ -14841,8 +15973,8 @@ local function GetRestorationOptions()
 										combatDisplay = {
 											order = 3,
 											type = "select",
-											name = L["Tidal Wave Display (In Combat)"],
-											desc = L["The method in which Tidal Wave will be displayed while in combat."],
+											name = L["LABEL_TIDAL_WAVES_DISPLAY_COMBAT"],
+											desc = L["TOOLTIP_TIDAL_WAVES_DISPLAY_METHOD_COMBAT"],
 											get = function()
 												return statusbars.tidalWavesBar.combatDisplay
 											end,
@@ -14855,8 +15987,8 @@ local function GetRestorationOptions()
 										OoCDisplay = {
 											order = 4,
 											type = "select",
-											name = L["Tidal Wave Display (OoC)"],
-											desc = L["The method in which Tidal Wave will be displayed while out of combat."],
+											name = L["LABEL_TIDAL_WAVES_DISPLAY_NO_COMBAT"],
+											desc = L["TOOLTIP_TIDAL_WAVES_DISPLAY_METHOD_NO_COMBAT"],
 											get = function()
 												return statusbars.tidalWavesBar.OoCDisplay
 											end,
@@ -14869,8 +16001,8 @@ local function GetRestorationOptions()
 										OoCTime = {
 											order = 5,
 											type = "range",
-											name = L["Tidal Wave Duration (OoC)"],
-											desc = L["The amount of seconds the Tidal Waves indicator bar will appear when casting a heal without a target while out of combat."],
+											name = L["LABEL_TIDAL_WAVES_DURATION_NO_COMBAT"],
+											desc = L["TOOLTIP_TIDAL_WAVES_TIMER_NO_TARGET_NO_COMBAT"],
 											min = 1,
 											max = 15,
 											step = 1,
@@ -14884,7 +16016,7 @@ local function GetRestorationOptions()
 									},
 								},
 								layout = {
-									name = L["Layout & Design"],
+									name = L["LABEL_LAYOUT_DESIGN"],
 									type = "group",
 									order = 3,
 									guiInline = true,
@@ -14892,8 +16024,8 @@ local function GetRestorationOptions()
 										texture = {
 											order = 1,
 											type = "select",
-											name = L["Bar Texture"],
-											desc = L["Set the bar's texture."],
+											name = L["LABEL_STATUSBAR_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.tidalWavesBar.foreground.texture
@@ -14907,7 +16039,7 @@ local function GetRestorationOptions()
 										textureColor = {
 											type = "color",
 											order = 2,
-											name = L["Bar Color"],
+											name = L["LABEL_STATUSBAR_COLOR"],
 											get = function(info)
 												local color = statusbars.tidalWavesBar.foreground.color
 												return color.r, color.g, color.b
@@ -14925,8 +16057,8 @@ local function GetRestorationOptions()
 										backgroundTexture = {
 											order = 3,
 											type = "select",
-											name = L["Background Texture"],
-											desc = L["Set the bar's background texture."],
+											name = L["LABEL_STATUSBAR_BG_TEXTURE"],
+											desc = L["TOOLTIP_STATUSBAR_BG_TEXTURE"],
 											dialogControl = "LSM30_Statusbar",
 											get = function()
 												return statusbars.tidalWavesBar.background.texture
@@ -14940,8 +16072,8 @@ local function GetRestorationOptions()
 										backgroundColor = {
 											type = "color",
 											order = 4,
-											name = L["Background Color"],
-											desc = L["Set the color of the cast bar's background."],
+											name = L["LABEL_STATUSBAR_BG_COLOR"],
+											desc = L["TOOLTIP_STATUSBAR_BG_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = statusbars.tidalWavesBar.background.color
@@ -14960,8 +16092,8 @@ local function GetRestorationOptions()
 										},
 										backgroundToggle = {
 											order = 5,
-											name = L["Modify Background"],
-											desc = L["Toggle the adjustment of the bar's background texture"],
+											name = L["LABEL_STATUSBAR_MODIFY_BACKGROUND"],
+											desc = L["TOOLTIP_TOGGLE_STATUSBAR_BG_CUSTOMIZATON"],
 											type = "toggle",
 											get = function()
 												return statusbars.tidalWavesBar.adjust.showBG
@@ -14974,7 +16106,7 @@ local function GetRestorationOptions()
 										width = {
 											order = 6,
 											type = "range",
-											name = L["Width"],
+											name = L["LABEL_WIDTH"],
 											desc = '',
 											min = 100,
 											max = 500,
@@ -14989,7 +16121,7 @@ local function GetRestorationOptions()
 										height = {
 											order = 7,
 											type = "range",
-											name = L["Height"],
+											name = L["LABEL_HEIGHT"],
 											desc = '',
 											min = 5,
 											max = 100,
@@ -15006,7 +16138,7 @@ local function GetRestorationOptions()
 								reset = {
 									order = 4,
 									type = "execute",
-									name = L["Reset Tidal Waves Bar"],
+									name = L["BUTTON_RESET_STATUSBAR_TIDAL_WAVES"],
 									func = function()
 										local bar = statusbars.tidalWavesBar
 										local default = statusbarDefaults.tidalWavesBar
@@ -15037,7 +16169,7 @@ local function GetRestorationOptions()
 										bar.layout.strata = default.layout.strata
 										
 										res_options.args.bars.args.tidalWavesBar.args.reset.disabled = true
-										res_options.args.bars.args.tidalWavesBar.args.reset.name = "|cFF666666"..L["Reset Tidal Waves Bar"].."|r"
+										res_options.args.bars.args.tidalWavesBar.args.reset.name = "|cFF666666"..L["BUTTON_RESET_STATUSBAR_TIDAL_WAVES"].."|r"
 									end,
 								},
 							},
@@ -15045,7 +16177,7 @@ local function GetRestorationOptions()
 					},
 				},
 				cooldowns = {
-					name = L["Cooldowns"],
+					name = L["LABEL_COOLDOWN"],
 					order = 5,
 					type = "group",
 					childGroups = "tab",
@@ -15054,7 +16186,7 @@ local function GetRestorationOptions()
 						toggle = {
 							order = 1,
 							name = ENABLE,
-							desc = L["Toggle the display of cooldown text/numbers."],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_TEXT"],
 							type = "toggle",
 							get = function()
 								return cooldowns.isEnabled
@@ -15067,8 +16199,8 @@ local function GetRestorationOptions()
 						},
 						text = {
 							order = 2,
-							name = L["Cooldown Values"],
-							desc = L["Toggle the display of cooldown text/numbers."],
+							name = L["LABEL_COOLDOWN_TEXT"],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_TEXT"],
 							type = "toggle",
 							get = function()
 								return cooldowns.text
@@ -15079,8 +16211,8 @@ local function GetRestorationOptions()
 						},
 						sweep = {
 							order = 3,
-							name = L["Cooldown Sweep"],
-							desc = L["Toggle the display of the cooldown sweep animation"],
+							name = L["LABEL_COOLDOWN_SWEEP"],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_SWEEP"],
 							type = "toggle",
 							get = function()
 								return cooldowns.sweep
@@ -15089,22 +16221,13 @@ local function GetRestorationOptions()
 								cooldowns.sweep = value
 								Auras:InitializeCooldowns('AuraGroup3',3)
 								CheckRestorationDefaultValues(res_options,'Cooldowns')
-								--[[if (not value) then
-									res_options.args.cooldowns.args.GCD.disabled = true
-									res_options.args.cooldowns.args.inverse.disabled = true
-									res_options.args.cooldowns.args.bling.disabled = true
-								else
-									res_options.args.cooldowns.args.GCD.disabled = false
-									res_options.args.cooldowns.args.inverse.disabled = false
-									res_options.args.cooldowns.args.bling.disabled = false
-								end]]
 							end,
 							width = "double",
 						},
 						GCD = {
 							order = 4,
-							name = L["GCD"],
-							desc = L["Toggles a GCD timer on auras."],
+							name = L["LABEL_COOLDOWN_GCD"],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_GCD"],
 							type = "toggle",
 							get = function()
 								return cooldowns.GCD.isEnabled
@@ -15115,8 +16238,8 @@ local function GetRestorationOptions()
 						},
 						inverse = {
 							order = 5,
-							name = L["Reverse Sweep"],
-							desc = L["Reverses the cooldown sweep animation"],
+							name = L["LABEL_COOLDOWN_REVERSE_SWEEP"],
+							desc = L["TOOLTIP_COOLDOWN_REVERSE_SWEEP"],
 							type = "toggle",
 							get = function()
 								return cooldowns.inverse
@@ -15128,8 +16251,8 @@ local function GetRestorationOptions()
 						},
 						bling = {
 							order = 6,
-							name = L["Bling Flash"],
-							desc = L["Toggles the bling flash animation that occurs at the end of a cooldown"],
+							name = L["LABEL_COOLDOWN_BLING"],
+							desc = L["TOOLTIP_TOGGLE_COOLDOWN_BLING"],
 							type = "toggle",
 							get = function()
 								return cooldowns.bling
@@ -15142,8 +16265,8 @@ local function GetRestorationOptions()
 						group = {
 							order = 7,
 							type = "select",
-							name = L["Cooldown Group"],
-							desc = L["Select the group of auras to adjust"],
+							name = L["LABEL_COOLDOWN_GROUP"],
+							desc = L["TOOLTIP_AURAS_GROUP_SELECT"],
 							get = function()
 								return cooldowns.selected
 							end,
@@ -15155,7 +16278,7 @@ local function GetRestorationOptions()
 						},
 						adjustToggle = {
 							order = 8,
-							name = L["Adjust Cooldowns"],
+							name = L["LABEL_COOLDOWN_ADJUST"],
 							desc = '',
 							type = "toggle",
 							get = function()
@@ -15166,17 +16289,135 @@ local function GetRestorationOptions()
 								CheckRestorationDefaultValues(res_options,'Cooldowns')
 							end,
 						},
-						p1_adjustGroup = {
-							name = L["Cooldown Settings"],
+						p1_formatting = {
+							name = FORMATTING,
 							type = "group",
 							order = 9,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[1].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.primary[1].text.formatting.alert.isEnabled = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,3,'primary',1)
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									values = {
+										["primary;2"] = PRIMARY.." #2",
+										["primary;3"] = PRIMARY.." #3",
+										["secondary;1"] = SECONDARY.." #1",
+										["secondary;2"] = SECONDARY.." #2",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[1].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.primary[1].text.formatting.alert.animate = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.primary[1].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.primary[1].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.primary[1].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.primary[1].text.formatting.alert.threshold = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[1].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.primary[1].text.formatting.decimals = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.primary[1].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.primary[1].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.primary[1].text.formatting.length = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						p1_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 10,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.primary[1].text.font.color
@@ -15194,10 +16435,10 @@ local function GetRestorationOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
@@ -15215,11 +16456,11 @@ local function GetRestorationOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.primary[1].text.font.name end,
 									set = function(self,value)
@@ -15228,10 +16469,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -15243,10 +16484,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.primary[1].text.font.flag
 									end,
@@ -15257,10 +16498,10 @@ local function GetRestorationOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.primary[1].text.justify
 									end,
@@ -15271,10 +16512,10 @@ local function GetRestorationOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -15286,10 +16527,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -15301,15 +16542,15 @@ local function GetRestorationOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -15323,8 +16564,8 @@ local function GetRestorationOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.primary[1].text.font.shadow.color
@@ -15349,7 +16590,7 @@ local function GetRestorationOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -15365,7 +16606,7 @@ local function GetRestorationOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -15380,7 +16621,7 @@ local function GetRestorationOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -15413,18 +16654,136 @@ local function GetRestorationOptions()
 								},
 							},
 						},
-						p2_adjustGroup = {
-							name = L["Cooldown Settings"],
+						p2_formatting = {
+							name = FORMATTING,
 							type = "group",
-							order = 10,
+							order = 11,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[2].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.primary[2].text.formatting.alert.isEnabled = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,3,'primary',2)
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									values = {
+										["primary;1"] = PRIMARY.." #1",
+										["primary;3"] = PRIMARY.." #3",
+										["secondary;1"] = SECONDARY.." #1",
+										["secondary;2"] = SECONDARY.." #2",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[2].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.primary[2].text.formatting.alert.animate = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.primary[2].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.primary[2].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.primary[2].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.primary[2].text.formatting.alert.threshold = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[2].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.primary[2].text.formatting.decimals = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.primary[2].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.primary[2].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.primary[2].text.formatting.length = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						p2_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 12,
 							hidden = true,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.primary[2].text.font.color
@@ -15442,10 +16801,10 @@ local function GetRestorationOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
@@ -15463,11 +16822,11 @@ local function GetRestorationOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.primary[2].text.font.name end,
 									set = function(self,value)
@@ -15476,10 +16835,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -15491,10 +16850,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.primary[2].text.font.flag
 									end,
@@ -15505,10 +16864,10 @@ local function GetRestorationOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.primary[2].text.justify
 									end,
@@ -15519,10 +16878,10 @@ local function GetRestorationOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -15534,10 +16893,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -15549,15 +16908,15 @@ local function GetRestorationOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -15571,8 +16930,8 @@ local function GetRestorationOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.primary[2].text.font.shadow.color
@@ -15597,7 +16956,7 @@ local function GetRestorationOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -15613,7 +16972,7 @@ local function GetRestorationOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -15628,7 +16987,7 @@ local function GetRestorationOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -15661,18 +17020,136 @@ local function GetRestorationOptions()
 								},
 							},
 						},
-						p3_adjustGroup = {
-							name = L["Cooldown Settings"],
+						p3_formatting = {
+							name = FORMATTING,
 							type = "group",
-							order = 11,
+							order = 13,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[3].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.primary[3].text.formatting.alert.isEnabled = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,3,'primary',3)
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									values = {
+										["primary;1"] = PRIMARY.." #1",
+										["primary;2"] = PRIMARY.." #2",
+										["secondary;1"] = SECONDARY.." #1",
+										["secondary;2"] = SECONDARY.." #2",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[3].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.primary[3].text.formatting.alert.animate = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.primary[3].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.primary[3].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.primary[3].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.primary[3].text.formatting.alert.threshold = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.primary[3].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.primary[3].text.formatting.decimals = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.primary[3].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.primary[3].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.primary[3].text.formatting.length = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						p3_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 14,
 							hidden = true,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.primary[3].text.font.color
@@ -15690,10 +17167,10 @@ local function GetRestorationOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
@@ -15711,11 +17188,11 @@ local function GetRestorationOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.primary[3].text.font.name end,
 									set = function(self,value)
@@ -15724,10 +17201,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -15739,10 +17216,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.primary[3].text.font.flag
 									end,
@@ -15753,10 +17230,10 @@ local function GetRestorationOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.primary[3].text.justify
 									end,
@@ -15767,10 +17244,10 @@ local function GetRestorationOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -15782,10 +17259,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -15797,15 +17274,15 @@ local function GetRestorationOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -15819,8 +17296,8 @@ local function GetRestorationOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.primary[3].text.font.shadow.color
@@ -15845,7 +17322,7 @@ local function GetRestorationOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -15861,7 +17338,7 @@ local function GetRestorationOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -15876,7 +17353,7 @@ local function GetRestorationOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -15909,18 +17386,136 @@ local function GetRestorationOptions()
 								},
 							},
 						},
-						s1_adjustGroup = {
-							name = L["Cooldown Settings"],
+						s1_formatting = {
+							name = FORMATTING,
 							type = "group",
-							order = 12,
+							order = 15,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[1].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.secondary[1].text.formatting.alert.isEnabled = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,3,'secondary',1)
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									values = {
+										["primary;1"] = PRIMARY.." #1",
+										["primary;2"] = PRIMARY.." #2",
+										["primary;3"] = PRIMARY.." #3",
+										["secondary;2"] = SECONDARY.." #2",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[1].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.secondary[1].text.formatting.alert.animate = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.secondary[1].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.secondary[1].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.secondary[1].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.secondary[1].text.formatting.alert.threshold = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[1].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.secondary[1].text.formatting.decimals = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.secondary[1].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.secondary[1].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.secondary[1].text.formatting.length = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						s1_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 16,
 							hidden = true,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.secondary[1].text.font.color
@@ -15938,10 +17533,10 @@ local function GetRestorationOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
@@ -15959,11 +17554,11 @@ local function GetRestorationOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.secondary[1].text.font.name end,
 									set = function(self,value)
@@ -15972,10 +17567,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -15987,10 +17582,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.secondary[1].text.font.flag
 									end,
@@ -16001,10 +17596,10 @@ local function GetRestorationOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.secondary[1].text.justify
 									end,
@@ -16015,10 +17610,10 @@ local function GetRestorationOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -16030,10 +17625,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -16045,15 +17640,15 @@ local function GetRestorationOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -16067,8 +17662,8 @@ local function GetRestorationOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.secondary[1].text.font.shadow.color
@@ -16093,7 +17688,7 @@ local function GetRestorationOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -16109,7 +17704,7 @@ local function GetRestorationOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -16124,7 +17719,7 @@ local function GetRestorationOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -16157,18 +17752,136 @@ local function GetRestorationOptions()
 								},
 							},
 						},
-						s2_adjustGroup = {
-							name = L["Cooldown Settings"],
+						s2_formatting = {
+							name = FORMATTING,
 							type = "group",
-							order = 13,
+							order = 17,
+							guiInline = true,
+							args = {
+								alertToggle = {
+									order = 1,
+									name = L["LABEL_ALERT"],
+									desc = L["TOOLTIP_ALERT"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[2].text.formatting.alert.isEnabled
+									end,
+									set = function(self,value)
+										cooldowns.secondary[2].text.formatting.alert.isEnabled = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									width = "double",
+								},
+								copy = {
+									order = 2,
+									type = "select",
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
+									get = function()
+										return ''
+									end,
+									set = function(self,value)
+										CopyCooldownFormatting(value,3,'secondary',2)
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									values = {
+										["primary;1"] = PRIMARY.." #1",
+										["primary;2"] = PRIMARY.." #2",
+										["primary;3"] = PRIMARY.." #3",
+										["secondary;1"] = SECONDARY.." #1",
+									},
+								},
+								alertFlash = {
+									order = 3,
+									name = L["LABEL_ALERT_ANIMATE"],
+									desc = L["TOOLTIP_ALERT_ANIMATE"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[2].text.formatting.alert.animate
+									end,
+									set = function(self,value)
+										cooldowns.secondary[2].text.formatting.alert.animate = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								alertColor = {
+									type = "color",
+									order = 4,
+									name = L["LABEL_ALERT_COLOR"],
+									desc = L["TOOLTIP_ALERT_COLOR"],
+									hasAlpha = true,
+									get = function(info)
+										local color = cooldowns.secondary[2].text.formatting.alert.color
+										return color.r, color.g, color.b, color.a
+									end,
+									set = function(info, r, g, b, a)
+										local color = cooldowns.secondary[2].text.formatting.alert.color
+										
+										color.r = tonumber(string.format("%.2f",r))
+										color.g = tonumber(string.format("%.2f",g))
+										color.b = tonumber(string.format("%.2f",b))
+										color.a = tonumber(string.format("%.2f",a))
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								alertThreshold = {
+									order = 5,
+									type = "range",
+									name = L["LABEL_ALERT_THRESHOLD"],
+									desc = L["TOOLTIP_ALERT_THRESHOLD"],
+									min = 3,
+									max = 10,
+									step = 1,
+									bigStep = 1,
+									get = function() return cooldowns.secondary[2].text.formatting.alert.threshold end,
+									set = function(self,value)
+										cooldowns.secondary[2].text.formatting.alert.threshold = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								decimals = {
+									order = 6,
+									name = L["LABEL_DECIMALS"],
+									desc = L["TOOLTIP_DECIMALS"],
+									type = "toggle",
+									get = function()
+										return cooldowns.secondary[2].text.formatting.decimals
+									end,
+									set = function(self,value)
+										cooldowns.secondary[2].text.formatting.decimals = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+								},
+								format = {
+									order = 7,
+									type = "select",
+									name = L["LABEL_MINUTE_FORMAT"],
+									desc = L["TOOLTIP_MINUTE_FORMAT"],
+									get = function()
+										return cooldowns.secondary[2].text.formatting.length
+									end,
+									set = function(self,value)
+										--cooldowns.secondary[2].text.justify = value
+										--CheckRestorationDefaultValues(res_options,'Cooldowns')
+										cooldowns.secondary[2].text.formatting.length = value
+										CheckRestorationDefaultValues(res_options,'Cooldowns')
+									end,
+									values = TIME_FORMATS,
+								},
+							},
+						},
+						s2_adjustGroup = {
+							name = L["LABEL_COOLDOWN_SETTINGS"],
+							type = "group",
+							order = 18,
 							hidden = true,
 							guiInline = true,
 							args = {
 								color = {
 									type = "color",
 									order = 1,
-									name = L["Text Color"],
-									desc = L["Set the color of the text."],
+									name = L["LABEL_FONT_COLOR"],
+									desc = L["TOOLTIP_FONT_COLOR"],
 									hasAlpha = true,
 									get = function(info)
 										local color = cooldowns.secondary[2].text.font.color
@@ -16186,10 +17899,10 @@ local function GetRestorationOptions()
 									width = "double",
 								},
 								copy = {
-									order = 2,
+									order = 3,
 									type = "select",
-									name = L["Copy From"],
-									desc = L["Copy all settings from an other cooldown group"],
+									name = L["LABEL_COOLDOWN_COPY_FROM"],
+									desc = L["TOOLTIP_COOLDOWN_COPY_FROM"],
 									get = function()
 										return ''
 									end,
@@ -16207,11 +17920,11 @@ local function GetRestorationOptions()
 									},
 								},
 								fontName = {
-									order = 3,
+									order = 4,
 									type = "select",
 									dialogControl = "LSM30_Font",
-									name = L["Font"],
-									desc = L["The font that will be used"],
+									name = L["LABEL_FONT"],
+									desc = L["TOOLTIP_FONT_NAME"],
 									values = LSM:HashTable("font"),
 									get = function() return cooldowns.secondary[2].text.font.name end,
 									set = function(self,value)
@@ -16220,10 +17933,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								fontSize = {
-									order = 4,
+									order = 5,
 									type = "range",
 									name = FONT_SIZE,
-									desc = L["Customize the font size of the cooldown text"],
+									desc = L["TOOLTIP_COOLDOWN_FONT_SIZE"],
 									min = 5,
 									max = 40,
 									step = 1,
@@ -16235,10 +17948,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								fontOutline = {
-									order = 5,
+									order = 6,
 									type = "select",
-									name = L["Font Outline"],
-									desc = L["The outline of the font"],
+									name = L["LABEL_FONT_OUTLINE"],
+									desc = L["TOOLTIP_FONT_OUTLINE"],
 									get = function()
 										return cooldowns.secondary[2].text.font.flag
 									end,
@@ -16249,10 +17962,10 @@ local function GetRestorationOptions()
 									values = FONT_OUTLINES,
 								},
 								textAnchor = {
-									order = 6,
+									order = 7,
 									type = "select",
-									name = L["Anchor Point"],
-									desc = L["Set the anchor point."],
+									name = L["LABEL_FONT_ANCHOR"],
+									desc = L["TOOLTIP_FONT_ANCHOR_POINT"],
 									get = function()
 										return cooldowns.secondary[2].text.justify
 									end,
@@ -16263,10 +17976,10 @@ local function GetRestorationOptions()
 									values = FRAME_ANCHOR_OPTIONS,
 								},
 								textX = {
-									order = 7,
+									order = 8,
 									type = "range",
 									name = "X",
-									desc = L["Set location of text on the X axis"],
+									desc = L["TOOLTIP_FONT_X_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -16278,10 +17991,10 @@ local function GetRestorationOptions()
 									end,
 								},
 								textY = {
-									order = 8,
+									order = 9,
 									type = "range",
 									name = "Y",
-									desc = L["Set location of text on the Y axis"],
+									desc = L["TOOLTIP_FONT_Y_OFFSET"],
 									min = -100,
 									max = 100,
 									step = 1,
@@ -16293,15 +18006,15 @@ local function GetRestorationOptions()
 									end,
 								},
 								shadow = {
-									name = '|cFFFFFFFF'..L['Text Shadow']..'|r',
+									name = '|cFFFFFFFF'..L["LABEL_FONT_SHADOW"]..'|r',
 									type = "group",
-									order = 9,
+									order = 10,
 									hidden = false,
 									guiInline = true,
 									args = {
 										shadowToggle = {
 											order = 1,
-											name = L["Toggle"],
+											name = L["TOGGLE"],
 											desc = '',
 											type = "toggle",
 											get = function()
@@ -16315,8 +18028,8 @@ local function GetRestorationOptions()
 										shadowColor = {
 											type = "color",
 											order = 2,
-											name = L["Shadow Color"],
-											desc = L["Set the color of the text's shadow."],
+											name = L["LABEL_FONT_SHADOW_COLOR"],
+											desc = L["TOOLTIP_FONT_SHADOW_COLOR"],
 											hasAlpha = true,
 											get = function(info)
 												local color = cooldowns.secondary[2].text.font.shadow.color
@@ -16341,7 +18054,7 @@ local function GetRestorationOptions()
 											order = 4,
 											type = "range",
 											name = "X",
-											desc = L["Set the text shadow's X offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_X_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -16357,7 +18070,7 @@ local function GetRestorationOptions()
 											order = 5,
 											type = "range",
 											name = "Y",
-											desc = L["Set the text shadow's Y offset"],
+											desc = L["TOOLTIP_FONT_SHADOW_Y_OFFSET"],
 											min = -10,
 											max = 10,
 											step = 1,
@@ -16372,7 +18085,7 @@ local function GetRestorationOptions()
 									},
 								},
 								reset = {
-									order = 10,
+									order = 11,
 									type = "execute",
 									name = RESET_TO_DEFAULT,
 									func = function()
@@ -16408,7 +18121,7 @@ local function GetRestorationOptions()
 					},
 				},
 				layout = {
-					name = L["Layout"],
+					name = L["LABEL_LAYOUT"],
 					order = 6,
 					type = "group",
 					disabled = true,
@@ -16416,7 +18129,7 @@ local function GetRestorationOptions()
 						MoveAuras = {
 							order = 1,
 							type = "execute",
-							name = "|cFFFFCC00"..L["Move Restoration Auras"].."|r",
+							name = "|cFFFFCC00"..L["BUTTON_MOVE_AURAS_RESTORATION"].."|r",
 							func = function()
 								elements.isMoving = true
 								SSA.Move3.Info:Show()
@@ -16426,13 +18139,13 @@ local function GetRestorationOptions()
 						ResetAuras = {
 							order = 2,
 							type = "execute",
-							name = "|cFFFFCC00"..L["Reset Restoration Auras"].."|r",
+							name = "|cFFFFCC00"..L["BUTTON_RESET_AURAS_RESTORATION"].."|r",
 							func = function()
 								Auras:ResetAuraGroupPosition('AuraGroup3')
 							end,
 						},
 						primaryAuras = {
-							name = L["Primary Auras"],
+							name = L["LABEL_AURAS_PRIMARY"],
 							type = "group",
 							order = 3,
 							guiInline = true,
@@ -16440,8 +18153,8 @@ local function GetRestorationOptions()
 								PrimaryOrientation1 = {
 									order = 1,
 									type = "select",
-									name = L["Primary Orientation 1"],
-									desc = L["Set the aura orientation to horizontal or vertical."],
+									name = L["LABEL_AURAS_ORIENTATION"].." 1",
+									desc = L["TOOLTIP_AURAS_ORIENTATION"],
 									get = function()
 										return layout.orientation.top
 									end,
@@ -16451,15 +18164,15 @@ local function GetRestorationOptions()
 										Auras:UpdateTalents()
 									end,
 									values = {
-										["Horizontal"] = L["Horizontal"],
-										["Vertical"] = L["Vertical"],
+										["Horizontal"] = L["OPTION_HORIZONTAL"],
+										["Vertical"] = L["OPTION_VERTICAL"],
 									},
 								},
 								PrimaryOrientation2 = {
 									order = 2,
 									type = "select",
-									name = L["Primary Orientation 2"],
-									desc = L["Set the aura orientation to horizontal or vertical."],
+									name = L["LABEL_AURAS_ORIENTATION"].." 2",
+									desc = L["TOOLTIP_AURAS_ORIENTATION"],
 									get = function()
 										return layout.orientation.bottom
 									end,
@@ -16469,8 +18182,8 @@ local function GetRestorationOptions()
 										Auras:UpdateTalents()
 									end,
 									values = {
-										["Horizontal"] = L["Horizontal"],
-										["Vertical"] = L["Vertical"],
+										["Horizontal"] = L["OPTION_HORIZONTAL"],
+										["Vertical"] = L["OPTION_VERTICAL"],
 									},
 								},
 								filler_0 = {
@@ -16481,8 +18194,8 @@ local function GetRestorationOptions()
 								AuraSizeRow1 = {
 									order = 4,
 									type = "range",
-									name = L["Primary Size 1"],
-									desc = L["Determines the size of primary auras in row 1. (Default is 32)"],
+									name = L["LABEL_AURAS_SIZE"].." 1",
+									desc = L["TOOLTIP_AURAS_SIZE"],
 									min = 16,
 									max = 256,
 									step = 1,
@@ -16497,8 +18210,8 @@ local function GetRestorationOptions()
 								AuraSpacingRow1 = {
 									order = 5,
 									type = "range",
-									name = L["Primary Spacing 1"],
-									desc = L["Determines the spacing of the primary auras in row 1. (Default is 50)"],
+									name = L["LABEL_AURAS_SPACING"].." 1",
+									desc = L["TOOLTIP_AURAS_SPACING"],
 									min = 32,
 									max = 300,
 									step = 1,
@@ -16513,8 +18226,8 @@ local function GetRestorationOptions()
 								AuraChargesRow1 = {
 									order = 6,
 									type = "range",
-									name = L["Primary Charges 1"],
-									desc = L["Determines the size of the primary charge text in row 1. (Default is 13.5)"],
+									name = L["LABEL_AURAS_CHARGES"].." 1",
+									desc = L["TOOLTIP_AURAS_CHARGE_SIZE"],
 									min = 10,
 									max = 60,
 									step = 0.5,
@@ -16534,8 +18247,8 @@ local function GetRestorationOptions()
 								AuraSizeRow2 = {
 									order = 8,
 									type = "range",
-									name = L["Primary Size 2"],
-									desc = L["Determines the size of primary auras in row 2. (Default is 32)"],
+									name = L["LABEL_AURAS_SIZE"].." 2",
+									desc = L["TOOLTIP_AURAS_SIZE"],
 									min = 16,
 									max = 256,
 									step = 1,
@@ -16550,8 +18263,8 @@ local function GetRestorationOptions()
 								AuraSpacingRow2 = {
 									order = 9,
 									type = "range",
-									name = L["Primary Spacing 2"],
-									desc = L["Determines the spacing of the primary auras in row 2. (Default is 50)"],
+									name = L["LABEL_AURAS_SPACING"].." 2",
+									desc = L["TOOLTIP_AURAS_SPACING"],
 									min = 32,
 									max = 300,
 									step = 1,
@@ -16571,9 +18284,9 @@ local function GetRestorationOptions()
 								ResetPrimaryLayout = {
 									order = 11,
 									type = "execute",
-									--name = "|cFFFFCC00"..L["Reset Primary Layout"].."|r",
+									--name = "|cFFFFCC00"..L["BUTTON_RESET_LAYOUT_PRIMARY"].."|r",
 									--disabled = false,
-									name = L["Reset Primary Layout"],
+									name = L["BUTTON_RESET_LAYOUT_PRIMARY"],
 									func = function()
 										layout.orientation.top = layoutDefaults.orientation.top
 										layout.orientation.bottom = layoutDefaults.orientation.bottom
@@ -16583,14 +18296,14 @@ local function GetRestorationOptions()
 										layout.primary.bottom.icon = layoutDefaults.primary.bottom.icon
 										layout.primary.bottom.spacing = layoutDefaults.primary.bottom.spacing
 										res_options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.disabled = true
-										res_options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFF666666"..L["Reset Primary Layout"].."|r"
+										res_options.args.layout.args.primaryAuras.args.ResetPrimaryLayout.name = "|cFF666666"..L["BUTTON_RESET_LAYOUT_PRIMARY"].."|r"
 										Auras:UpdateTalents()
 									end,
 								},
 							},
 						},
 						secondaryAuras = {
-							name = L["Secondary Auras"],
+							name = L["LABEL_AURAS_SECONDARY"],
 							type = "group",
 							order = 4,
 							guiInline = true,
@@ -16598,8 +18311,8 @@ local function GetRestorationOptions()
 								SecondaryOrientation1 = {
 									order = 1,
 									type = "select",
-									name = L["Secondary Orientation 1"],
-									desc = L["Set the aura orientation to horizontal or vertical."],
+									name = L["LABEL_AURAS_ORIENTATION"].." 1",
+									desc = L["TOOLTIP_AURAS_ORIENTATION"],
 									get = function()
 										return layout.orientation.left
 									end,
@@ -16609,15 +18322,15 @@ local function GetRestorationOptions()
 										Auras:UpdateTalents()
 									end,
 									values = {
-										["Horizontal"] = L["Horizontal"],
-										["Vertical"] = L["Vertical"],
+										["Horizontal"] = L["OPTION_HORIZONTAL"],
+										["Vertical"] = L["OPTION_VERTICAL"],
 									},
 								},
 								SecondaryOrientation2 = {
 									order = 2,
 									type = "select",
-									name = L["Secondary Orientation 2"],
-									desc = L["Set the aura orientation to horizontal or vertical."],
+									name = L["LABEL_AURAS_ORIENTATION"].." 2",
+									desc = L["TOOLTIP_AURAS_ORIENTATION"],
 									get = function()
 										return layout.orientation.right
 									end,
@@ -16627,8 +18340,8 @@ local function GetRestorationOptions()
 										Auras:UpdateTalents()
 									end,
 									values = {
-										["Horizontal"] = L["Horizontal"],
-										["Vertical"] = L["Vertical"],
+										["Horizontal"] = L["OPTION_HORIZONTAL"],
+										["Vertical"] = L["OPTION_VERTICAL"],
 									},
 								},
 								filler_5 = {
@@ -16639,8 +18352,8 @@ local function GetRestorationOptions()
 								AuraSizeCol1 = {
 									order = 4,
 									type = "range",
-									name = L["Secondary Size 1"],
-									desc = L["Determines the size of secondary auras in column 1. (Default is 25)"],
+									name = L["LABEL_AURAS_SIZE"].." 1",
+									desc = L["TOOLTIP_AURAS_SIZE"],
 									min = 16,
 									max = 256,
 									step = 1,
@@ -16655,8 +18368,8 @@ local function GetRestorationOptions()
 								AuraSpacingCol1 = {
 									order = 5,
 									type = "range",
-									name = L["Secondary Spacing 1"],
-									desc = L["Determines the spacing of the secondary auras in column 1. (Default is 30)"],
+									name = L["LABEL_AURAS_SPACING"].." 1",
+									desc = L["TOOLTIP_AURAS_SPACING"],
 									min = 32,
 									max = 300,
 									step = 1,
@@ -16676,8 +18389,8 @@ local function GetRestorationOptions()
 								AuraSizeCol2 = {
 									order = 7,
 									type = "range",
-									name = L["Secondary Size 2"],
-									desc = L["Determines the size of secondary auras in column 2. (Default is 25)"],
+									name = L["LABEL_AURAS_SIZE"].." 2",
+									desc = L["TOOLTIP_AURAS_SIZE"],
 									min = 16,
 									max = 256,
 									step = 1,
@@ -16692,8 +18405,8 @@ local function GetRestorationOptions()
 								AuraSpacingCol2 = {
 									order = 8,
 									type = "range",
-									name = L["Secondary Spacing 2"],
-									desc = L["Determines the spacing of the secondary auras in column 2. (Default is 30)"],
+									name = L["LABEL_AURAS_SPACING"].." 2",
+									desc = L["TOOLTIP_AURAS_SPACING"],
 									min = 30,
 									max = 300,
 									step = 1,
@@ -16708,8 +18421,8 @@ local function GetRestorationOptions()
 								AuraChargesCol2 = {
 									order = 9,
 									type = "range",
-									name = L["Secondary Charges 2"],
-									desc = L["Determines the size of the secondary charge text in column 2. (Default is 13.5)"],
+									name = L["LABEL_AURAS_CHARGES"].." 2",
+									desc = L["TOOLTIP_AURAS_CHARGE_SIZE"],
 									min = 10,
 									max = 60,
 									step = 0.5,
@@ -16724,9 +18437,9 @@ local function GetRestorationOptions()
 								ResetSecondaryLayout = {
 									order = 10,
 									type = "execute",
-									--name = "|cFFFFCC00"..L["Reset Secondary Layout"].."|r",
+									--name = "|cFFFFCC00"..L["BUTTON_RESET_LAYOUT_SECONDARY"].."|r",
 									--disabled = false,
-									name = L["Reset Secondary Layout"],
+									name = L["BUTTON_RESET_LAYOUT_SECONDARY"],
 									func = function()
 										layout.orientation.left = layoutDefaults.orientation.left
 										layout.orientation.right = layoutDefaults.orientation.right
@@ -16736,7 +18449,7 @@ local function GetRestorationOptions()
 										layout.secondary.right.spacing = layoutDefaults.secondary.right.spacing
 										layout.secondary.right.charges = layoutDefaults.secondary.right.charges
 										res_options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.disabled = true
-										res_options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFF666666"..L["Reset Secondary Layout"].."|r"
+										res_options.args.layout.args.secondaryAuras.args.ResetSecondaryLayout.name = "|cFF666666"..L["BUTTON_RESET_LAYOUT_SECONDARY"].."|r"
 										Auras:UpdateTalents()
 									end,
 								},
@@ -16760,9 +18473,9 @@ function Auras:SetupOptions()
 	--ACFG:RegisterOptionsTable("ShamanAuras Settings", GetSettingsOptions)
 
 	local ACD = LibStub("AceConfigDialog-3.0")
-	ACD:AddToBlizOptions("ShamanAuras Elemental Auras", L["Elemental Auras"], "ShamanAuras")
-	ACD:AddToBlizOptions("ShamanAuras Enhancement Auras", L["Enhancement Auras"], "ShamanAuras")
-	ACD:AddToBlizOptions("ShamanAuras Restoration Auras", L["Restoration Auras"], "ShamanAuras")
+	ACD:AddToBlizOptions("ShamanAuras Elemental Auras", L["LABEL_AURAS_ELEMENTAL"], "ShamanAuras")
+	ACD:AddToBlizOptions("ShamanAuras Enhancement Auras", L["LABEL_AURAS_ENHANCEMENT"], "ShamanAuras")
+	ACD:AddToBlizOptions("ShamanAuras Restoration Auras", L["LABEL_AURAS_RESTORATION"], "ShamanAuras")
 	--ACD:AddToBlizOptions("ShamanAuras Settings", SETTINGS, "ShamanAuras")
 end
 

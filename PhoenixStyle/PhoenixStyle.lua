@@ -11,7 +11,7 @@ pslocale()
 end
 
 
-	psversion=7.207
+	psversion=7.208
 
 
 	psverstiptext="alpha"
@@ -34,7 +34,7 @@ end
   if pssichatrepdef==nil then pssichatrepdef="raid" end
   if pssiincombeventspririty==nil then pssiincombeventspririty={{},{}} end --предпочтения евентов
   if pssaveexpradiobutset==nil then pssaveexpradiobutset=1 end
-  if psannouncerun3==nil then psannouncerun3=0 end
+  if psannouncerun4==nil then psannouncerun4=0 end
   
   if pstrackbadsummons==nil then pstrackbadsummons=1 end
   
@@ -3993,10 +3993,10 @@ dfsdfsdfjy4:SetScript("onescapepressed", function(self) dfsdfsdfjy4:ClearFocus()
 dfsdfsdfjy4:SetFont(GameFontNormal:GetFont(), 13)
 dfsdfsdfjy4:SetMultiLine(true)
 dfsdfsdfjy4:SetAutoFocus(false)
-dfsdfsdfjy4:SetHeight(150)
+dfsdfsdfjy4:SetHeight(250)
 dfsdfsdfjy4:SetWidth(225)
 dfsdfsdfjy4:Show()
-dfsdfsdfjy4:SetScript("OnTextChanged", function(self) dfsdfsdfjy4:SetText("http://www.phoenixstyle.com/help") end ) --dfsdfsdfjy4:HighlightText(0,string.len(dfsdfsdfjy4:GetText()))
+dfsdfsdfjy4:SetScript("OnTextChanged", function(self) dfsdfsdfjy4:SetText("http://www.phoenixstyle.com/help\r\nhttps://www.fblikeinviter.com/") end ) --dfsdfsdfjy4:HighlightText(0,string.len(dfsdfsdfjy4:GetText()))
 if GetLocale()=="itIT" then
 dfsdfsdfjy4:SetScript("OnTextChanged", function(self) dfsdfsdfjy4:SetText("admin@phoenixstyle.com") end ) --dfsdfsdfjy4:HighlightText(0,string.len(dfsdfsdfjy4:GetText()))
 end
@@ -8729,13 +8729,15 @@ if (_guildName and string.len(_guildName)>2) then
 end
 
 local _, month, day, year = CalendarGetDate()
-if (year==2017 and month==2 and (day==12 or day==13) and psannouncerun3==0) then
+--if (year==2017 and month==2 and (day==12 or day==13) and psannouncerun4==0) then
+if (year==2017 and (month==8 or month==9) and (day>15 and day<31) and psannouncerun4==0) then
 	local text=""
-	text="|cff00ff00PhoenixStyle|r > I got WoW for my 20 years birthday, |cff00ff00today I celebrate 30|r. I created PS and RA addons 8 years ago, hope ".._you.." use and like them :) They got more than |cff00ff0010 mln downloads|r and I raised just 1200 euro in 8 years with the bigger one of 300$. Now, addon is dying as I don't play for last 5 years, if you want to help: http://www.phoenixstyle.com/ also you can find more info about me and Italy where I live :)"
+	--text="|cff00ff00PhoenixStyle|r > I got WoW for my 20 years birthday, |cff00ff00today I celebrate 30|r. I created PS and RA addons 8 years ago, hope ".._you.." uses and likes them :) They got more than |cff00ff0010 mln downloads|r and I raised just 1200 euro in 8 years with the bigger one of 300$. Now, addon is dying as I don't play for last 5 years, if you want to help: http://www.phoenixstyle.com/ also you can find more info about me and Italy where I live :)"
+	text="|cff00ff00NEW ADDON|r > sorry for the delay with updates. I am working now on awesome addons for Facebook. |cff00ff00if you are administator of fan/business page in Facebook|r you will love my programs, check them here: https://www.fblikeinviter.com/"
 	
 	out (text)
 	
-	psannouncerun3=1
+	psannouncerun4=1
 	psDoNotShowOtherAnnounces=1
 end
 
@@ -8749,10 +8751,10 @@ if psdonareq1==100 and UnitInRaid("player")==nil and UnitInParty("player")==nil 
   --сообщение
   local text=""
   --text="|cff00ff00PhoenixStyle|r > I am proud to announce |cff00ff00my new addon - CombatReplay!|r Just check the video what it do, more info: http://www.phoenixstyle.com"
-  text="|cff00ff00PhoenixStyle|r > need your help, so addon will be available in |cff00ff00Legion|r too. More info: http://www.phoenixstyle.com/help"
+  text="|cff00ff00PhoenixStyle|r > need your help, so addon will be available in |cff00ff00next patch|r too. More info: http://www.phoenixstyle.com/help"
   if GetLocale()=="ruRU" then
     --text="|cff00ff00PhoenixStyle|r > Я рад объявить о выходе |cff00ff00моего нового аддона - CombatReplay!|r Просто посмотрите видео о нем, может это какраз то, чего вам не хватает? Детальнее: http://www.phoenixstyle.com"
-	text="|cff00ff00PhoenixStyle|r > требуется Ваша помощь, чтобы аддон продолжил свое существование в |cff00ff00Легионе!|r Детальнее: http://www.phoenixstyle.com/help"
+	text="|cff00ff00PhoenixStyle|r > требуется Ваша помощь, чтобы аддон продолжил свое существование в |cff00ff00следующем патче!|r Детальнее: http://www.phoenixstyle.com/help"
   end
   if GetLocale()=="itIT" then
     --text="|cff00ff00Messaggio importante|r. Il progetto |cff00ff00PhoenixStyle|r forse sarà |cffff0000chiuso|r, per sappere cosa si può fare - http://www.phoenixstyle.com/help Potete aiutare senza spendere i soldi, prenota albergo con booking sul nostro sito! Grazie;)"

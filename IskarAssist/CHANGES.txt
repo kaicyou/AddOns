@@ -1,7 +1,7 @@
-changeset:   128:ebbb1f817f4e
-tag:         v2.1.261 release
+changeset:   130:7914dcde9308
+tag:         v2.1.269 release
 user:        Tercio
-date:        Tue Jul 11 10:20:32 2017 -0300
-summary:     - Ticket #25: added an option to disable invite announcements (patch submited by @kowh).
+date:        Fri Aug 11 13:23:39 2017 -0300
+summary:     - restoring the mercurial repository on curse forge.
 
 

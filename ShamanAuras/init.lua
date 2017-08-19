@@ -117,6 +117,11 @@ local function ResetAdjustable()
 	local db = Auras.db.char
 
 	db.elements[1].cooldowns.adjust = false
+	db.elements[1].cooldowns.primary[1].isPreview = false
+	db.elements[1].cooldowns.primary[2].isPreview = false
+	db.elements[1].cooldowns.primary[2].isPreview = false
+	db.elements[1].cooldowns.secondary[1].isPreview = false
+	db.elements[1].cooldowns.secondary[2].isPreview = false
 	db.elements[1].statusbars.healthBar.adjust.isEnabled = false
 	db.elements[1].statusbars.healthBar.adjust.showBG = false
 	db.elements[1].statusbars.maelstromBar.adjust.isEnabled = false
@@ -130,6 +135,11 @@ local function ResetAdjustable()
 	db.elements[1].statusbars.icefuryBar.adjust.showTimer = false
 	
 	db.elements[2].cooldowns.adjust = false
+	db.elements[2].cooldowns.primary[1].isPreview = false
+	db.elements[2].cooldowns.primary[2].isPreview = false
+	db.elements[2].cooldowns.primary[2].isPreview = false
+	db.elements[2].cooldowns.secondary[1].isPreview = false
+	db.elements[2].cooldowns.secondary[2].isPreview = false
 	db.elements[2].statusbars.maelstromBar.adjust.isEnabled = false
 	db.elements[2].statusbars.maelstromBar.adjust.showBG = false
 	db.elements[2].statusbars.castBar.adjust.isEnabled = false
@@ -138,6 +148,11 @@ local function ResetAdjustable()
 	db.elements[2].statusbars.channelBar.adjust.showBG = false
 	
 	db.elements[3].cooldowns.adjust = false
+	db.elements[3].cooldowns.primary[1].isPreview = false
+	db.elements[3].cooldowns.primary[2].isPreview = false
+	db.elements[3].cooldowns.primary[2].isPreview = false
+	db.elements[3].cooldowns.secondary[1].isPreview = false
+	db.elements[3].cooldowns.secondary[2].isPreview = false
 	db.elements[3].statusbars.earthenShieldBar.adjust.isEnabled = false
 	db.elements[3].statusbars.earthenShieldBar.adjust.showBG = false
 	db.elements[3].statusbars.earthenShieldBar.adjust.showTimer = false
@@ -241,20 +256,20 @@ function Auras:OnEnable()
 	Auras:InitializeCooldowns('AuraGroup3',3)
 	
 	-- Clean up old version checks
-	for i=1,59 do
+	for i=1,62 do
 		if (db["isR"..tostring(i).."FirstLoad"] == false) then
 			db["isR"..tostring(i).."FirstLoad"] = nil
 		end
 	end
 	
-	if (db.isR60FirstLoad) then
+	if (db.isR63FirstLoad) then
 		SSA.Bulletin:Show()
-		db.isR60FirstLoad = false
+		db.isR63FirstLoad = false
 	end
 	
 	StaticPopupDialogs["SSA_CLASS_CHECKER"] = {
 		text = "You are currently running the addon \"Sweetsour's Shaman Auras\" while on a non-shaman character. It is recommended that you disable this addon.",
-		button1 = L["Show Addon List"],
+		button1 = L["LABEL_SHOW_ADDONS"],
 		button2 = "I'll disable it later",
 		OnAccept = function()
 			AddonList:Show()

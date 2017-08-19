@@ -177,6 +177,14 @@
 <FontString name="$parent_Text" inherits="GameFontNormal" text="psfserver">
 	<Anchors><Anchor point="RIGHT" relativePoint="TOPRIGHT"><Offset x="-46" y="-27"/></Anchor></Anchors>
 	</FontString>
+<FontString name="$parent_Text" inherits="GameFontNormalLarge" text="Do you administrate a page in Facebook?">
+<Color r="0" g="1" b="0" a="1"/>
+	<Anchors><Anchor point="CENTER" relativePoint="TOP"><Offset x="0" y="-330"/></Anchor></Anchors>
+	</FontString>
+<FontString name="$parent_Text" inherits="GameFontNormalLarge" text="If yes - you will be happy to find my new addon for Facebook!">
+<Color r="0" g="1" b="0" a="1"/>
+	<Anchors><Anchor point="CENTER" relativePoint="TOP"><Offset x="0" y="-350"/></Anchor></Anchors>
+	</FontString>
 <FontString name="$parent_Textver" inherits="GameFontNormal" text="psversion">
 	<Anchors><Anchor point="RIGHT" relativePoint="TOPRIGHT"><Offset x="-18" y="-50"/></Anchor></Anchors>
 	</FontString>

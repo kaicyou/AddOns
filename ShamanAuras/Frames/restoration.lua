@@ -200,10 +200,12 @@ local function InitializeFrames(name,parent,icon,iconSize,isGCD,glowSize,charge)
 	Frame:SetHeight(iconSize)
 	Frame:Show()
 
+	-- Add the spell icon to the frame
 	Frame.texture = Frame:CreateTexture(nil,'BACKGROUND')
 	Frame.texture:SetTexture([[Interface\addons\ShamanAuras\media\ICONS\]]..icon)
 	Frame.texture:SetAllPoints(Frame)
 	
+	-- Build Cooldown Frame
 	Frame.CD = CreateFrame('Cooldown', name..'CD', Frame, 'CooldownFrameTemplate')
 	Frame.CD:SetAllPoints(Frame)
 	
@@ -212,27 +214,56 @@ local function InitializeFrames(name,parent,icon,iconSize,isGCD,glowSize,charge)
 	Frame.CD.text:SetPoint('CENTER',0,0)
 	Frame.CD.text:SetTextColor(1,1,0,1)
 	
+	-- Animation for Cooldown Frame
+	Frame.CD.Flash = Frame.CD:CreateAnimationGroup()
+	Frame.CD.Flash:SetLooping('BOUNCE')
+
+	Frame.CD.Flash.fadeIn = Frame.CD.Flash:CreateAnimation('Alpha')
+	Frame.CD.Flash.fadeIn:SetFromAlpha(1)
+	Frame.CD.Flash.fadeIn:SetToAlpha(0.5)
+	Frame.CD.Flash.fadeIn:SetDuration(0.4)
+	Frame.CD.Flash.fadeIn:SetEndDelay(0.1)
+
+	Frame.CD.Flash.fadeOut = Frame.CD.Flash:CreateAnimation('Alpha')
+	Frame.CD.Flash.fadeOut:SetFromAlpha(0.5)
+	Frame.CD.Flash.fadeOut:SetToAlpha(1)
+	Frame.CD.Flash.fadeOut:SetDuration(0.4)
+	Frame.CD.Flash.fadeOut:SetEndDelay(0.1)
+	
+	-- Build Cooldown Preview Frame
 	Frame.PCD = CreateFrame("Cooldown", name.."PCD", Frame, "CooldownFrameTemplate");
 	Frame.PCD:SetAllPoints(Frame);
 	Frame.PCD:Hide();
 	
 	Frame.PCD.text = Frame.PCD:CreateFontString(nil, "MEDIUM", "GameFontHighlightLarge");
-	--Frame.PCD.text:SetAllPoints(Frame.PCD);
 	Frame.PCD.text:SetPoint("CENTER",0,0);
 	Frame.PCD.text:SetTextColor(1,0.85,0,1);
 	
+	-- Animation for Cooldown Preview
+	Frame.PCD.Flash = Frame.PCD:CreateAnimationGroup()
+	Frame.PCD.Flash:SetLooping('BOUNCE')
+
+	Frame.PCD.Flash.fadeIn = Frame.PCD.Flash:CreateAnimation('Alpha')
+	Frame.PCD.Flash.fadeIn:SetFromAlpha(1)
+	Frame.PCD.Flash.fadeIn:SetToAlpha(0.5)
+	Frame.PCD.Flash.fadeIn:SetDuration(0.4)
+	Frame.PCD.Flash.fadeIn:SetEndDelay(0.1)
+
+	Frame.PCD.Flash.fadeOut = Frame.PCD.Flash:CreateAnimation('Alpha')
+	Frame.PCD.Flash.fadeOut:SetFromAlpha(0.5)
+	Frame.PCD.Flash.fadeOut:SetToAlpha(1)
+	Frame.PCD.Flash.fadeOut:SetDuration(0.4)
+	Frame.PCD.Flash.fadeOut:SetEndDelay(0.1)
+	
+	-- If the current frame has a GCD (Global Cooldown) Frame, build it
 	if (isGCD) then
 		Frame.GCD = CreateFrame("Cooldown", name.."GCD", Frame, "CooldownFrameTemplate");
 		Frame.GCD:SetAllPoints(Frame);
 		Frame.GCD:Hide();
 	end
 	
+	-- If the current frame has a glow effect, build a glow frame
 	if (glowSize) then
-		--[[SSA[name..'Glow'] = CreateFrame('Frame',name..'Glow',parent)
-		local Glow = SSA[name..'Glow']
-		Glow:SetFrameStrata('BACKGROUND')
-		Glow:SetWidth(glowSize)
-		Glow:SetHeight(glowSize)]]
 		Frame.glow = CreateFrame('Frame',name..'Glow',Frame)
 		Frame.glow:SetPoint('CENTER',0,0)
 		Frame.glow:SetFrameStrata('BACKGROUND')
@@ -240,6 +271,8 @@ local function InitializeFrames(name,parent,icon,iconSize,isGCD,glowSize,charge)
 		Frame.glow:SetHeight(glowSize)
 		Frame.glow:Show()
 	end
+	
+	-- If the current frame has charges to track, but the Charges frame
 	if (charge) then
 		Frame.ChargeCD = CreateFrame('Cooldown', name..'ChargeCD', Frame, 'CooldownFrameTemplate')
 		Frame.ChargeCD:SetAllPoints(Frame)
@@ -271,7 +304,7 @@ SmallIconGrpLeft = CreateGroup('SmallIconGrpLeft3',AuraGroup)
 SmallIconGrpRight = CreateGroup('SmallIconGrpRight3',AuraGroup)
 
 -- Build Large Restoration Icon Frames
-InitializeFrames('Ascendance3',LargeIconGrpBot,[[shared\ascendance]],lgIcon,true)
+InitializeFrames('Ascendance3',LargeIconGrpBot,[[shared\ascendance]],lgIcon)
 InitializeFrames('CloudburstTotem',LargeIconGrpTop,[[totems\cloudburst_totem]],lgIcon,true)
 InitializeFrames('Concordance3',LargeIconGrpExt,[[shared\concordance_legionfall.tga]],lgIcon)
 InitializeFrames('GiftOfQueen',LargeIconGrpBot,[[restoration\gift_of_the_queen]],lgIcon,true)
@@ -427,6 +460,7 @@ SSA.FlameShock3:SetScript('OnUpdate', function(self)
 		local debuff,_,_,_,_,dur,expires,caster = UnitDebuff('target',Auras:GetSpellName(188838))
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(188838))
 		local timer,seconds
+		local remains = (expires or 0) - GetTime()
 		
 		if (not self.text) then
 			self.text = self:CreateFontString(nil, 'HIGH', 'GameFontHighlightLarge')
@@ -440,7 +474,7 @@ SSA.FlameShock3:SetScript('OnUpdate', function(self)
 			else
 			
 			end]]
-		Auras:SetCooldownFont(self,cd)
+		Auras:SetCooldownFont(self.CD,cd,remains)
 	
 		Auras:SpellRangeCheck(self,188838,true,3)
 		Auras:ToggleAuraVisibility(self,true,'showhide')
@@ -452,7 +486,11 @@ SSA.FlameShock3:SetScript('OnUpdate', function(self)
 		end]]
 		self.CD.text:Hide()
 		if (expires) then
-			timer,seconds = Auras:parseTime(expires - GetTime(),false)
+			if (remains < 10 and cd.text.formatting.alert.decimal) then
+				timer,seconds = Auras:parseTime(expires - GetTime(),true,3,'secondary',2)
+			else
+				timer,seconds = Auras:parseTime(expires - GetTime(),false,3,'secondary',2)
+			end
 		end
 		
 		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy()) then
@@ -516,6 +554,8 @@ SSA.FlameShock3:SetScript('OnUpdate', function(self)
 		Auras:ToggleAuraVisibility(self,false,'showhide')
 	end
 end)
+
+_G["SSA_FlameShockRes"] = SSA.FlameShock3
 
 -- Lava Burst
 SSA.LavaBurst3:SetScript('OnUpdate', function(self)
@@ -720,7 +760,7 @@ SSA.Concordance3:SetScript('OnUpdate',function(self)
 		local buff,_,_,count,_,duration,expires,caster = UnitBuff('player',Auras:GetSpellName(242586))
 		
 		Auras:ToggleAuraVisibility(self,true,'showhide')
-		Auras:CooldownHandler(self,3,'primary',3,start,duration)
+		Auras:CooldownHandler(self,3,'primary',3,((expires or 0) - (duration or 0)),duration)
 		
 		--[[if ((duration or 0) > 2) then
 			Auras:ExecuteCooldown(self,(expires - duration),duration,false,false,3)
@@ -1342,7 +1382,7 @@ SSA.WindRushTotem3:SetScript('OnUpdate',function(self)
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(192077))
 	
 		Auras:ToggleAuraVisibility(self,true,'showhide')
-		Auras:CooldownHandler(self,3,'secondary',2,start,duration)
+		Auras:CooldownHandler(self,3,'primary',2,start,duration)
 		
 		--[[if ((duration or 0) > 2) then
 			Auras:ExecuteCooldown(self,start,duration,true,false,3)

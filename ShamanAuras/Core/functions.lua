@@ -242,7 +242,7 @@ function Auras:BuildMoveUI(spec)
 	
 	Move.Grid:SetPoint("TOPLEFT",10,-10);
 	_G[Move.Grid:GetName().."Text"]:SetFont((LSM.MediaTable.font['PT Sans Narrow'] or LSM.DefaultMedia.font), 12);
-	_G[Move.Grid:GetName().."Text"]:SetText(L["Toggle Grid"]);
+	_G[Move.Grid:GetName().."Text"]:SetText(L["TOGGLE_MOVE_GRID"]);
 	_G[Move.Grid:GetName().."Text"]:SetPoint("LEFT",25,0);
 	Move.Grid:SetScript("OnClick",function(self)
 		if (self:GetChecked()) then
@@ -257,7 +257,7 @@ function Auras:BuildMoveUI(spec)
 	Move.InfoDisplay:SetPoint("TOPLEFT",10,-30);
 	Move.InfoDisplay:SetChecked(true);
 	_G[Move.InfoDisplay:GetName().."Text"]:SetFont((LSM.MediaTable.font['PT Sans Narrow'] or LSM.DefaultMedia.font), 12);
-	_G[Move.InfoDisplay:GetName().."Text"]:SetText(L["Toggle Info Frame"]);
+	_G[Move.InfoDisplay:GetName().."Text"]:SetText(L["TOGGLE_MOVE_INFO"]);
 	_G[Move.InfoDisplay:GetName().."Text"]:SetPoint("LEFT",25,0);
 	Move.InfoDisplay:SetScript("OnClick",function(self)
 		if (self:GetChecked()) then
@@ -1078,11 +1078,6 @@ function Auras:UpdateTalents(isTalentChange)
 			[5] = db.auras[3].Wellspring and select(4,GetTalentInfo(7,2,1)),
 			[6] = db.auras[3].WindRushTotem3 and select(4,GetTalentInfo(2,3,1)),
 		}
-		SSA.DataFrame.text:SetText(getn(rowList).."\n\n")
-		
-		for i=1,getn(rowList) do
-			SSA.DataFrame.text:SetText(Auras:CurText('DataFrame')..tostring(rowObj[i]:GetName())..": "..tostring(rowList[i]).."\n")
-		end
 		
 		--BuildHorizontalIconRow(rowObj,rowList,0,3,'bottom');
 		if (Auras.db.char.layout[3].orientation.bottom == "Horizontal") then

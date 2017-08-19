@@ -2,9 +2,9 @@
 ## Title: Sweetsour's Shaman Auras
 ## Notes: A full package of auras for all 3 Shaman specializations
 ## Author: Sweetsour
-## Version: r60-beta
+## Version: r63
 ## SavedVariables: SSA_db
-## X-Curse-Packaged-Version: r60-beta
+## X-Curse-Packaged-Version: r63
 ## X-Curse-Project-Name: Sweetsour's Shaman Auras
 ## X-Curse-Project-ID: sweetsour-shaman-auras
 ## X-Curse-Repository-ID: wow/sweetsour-shaman-auras/mainline
@@ -13,7 +13,6 @@
 
 
 
-embeds.xml
 
 Libs\load_libraries.xml
 Media\load_media.xml

@@ -4,7 +4,7 @@ local LSM = LibStub("LibSharedMedia-3.0")
 local defaults = {
 	char = {
 		EquippedArtifact = '',
-		isR60FirstLoad = true,
+		isR63FirstLoad = true,
 		version = nil,
 		name = nil,
 		isMoveGrid = true,
@@ -240,6 +240,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -273,6 +288,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -306,6 +336,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -341,6 +386,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -374,6 +434,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -1083,6 +1158,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -1116,6 +1206,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -1149,6 +1254,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -1184,6 +1304,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -1217,6 +1352,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -1692,6 +1842,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -1725,6 +1890,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -1758,6 +1938,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -1793,6 +1988,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -1826,6 +2036,21 @@ local defaults = {
 								justify = "CENTER",
 								x = 0,
 								y = 0,
+								formatting = {
+									length = "full",
+									decimals = false,
+									alert = {
+										isEnabled = false,
+										threshold = 5,
+										animate = false,
+										color = {
+											r = 1,
+											g = 0,
+											b = 0,
+											a = 1,
+										},
+									},
+								},
 								font = {
 									name = "Friz Quadrata TT",
 									size = 12,
@@ -2446,6 +2671,21 @@ local defaults = {
 							justify = "CENTER",
 							x = 0,
 							y = 0,
+							formatting = {
+								length = "full",
+								decimals = false,
+								alert = {
+									isEnabled = false,
+									threshold = 5,
+									animate = false,
+									color = {
+										r = 1,
+										g = 0,
+										b = 0,
+										a = 1,
+									},
+								},
+							},
 							font = {
 								name = "Friz Quadrata TT",
 								size = 12,

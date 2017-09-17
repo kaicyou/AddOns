@@ -63,6 +63,22 @@ function Simulationcraft:HandleChatCommand(input)
   self:PrintSimcProfile(debugOutput, noBags)
 end
 
+local function GetItemSplit(itemLink)
+  local itemString = string.match(itemLink, "item:([%-?%d:]+)")
+  local itemSplit = {}
+
+  -- Split data into a table
+  for _, v in ipairs({strsplit(":", itemString)}) do
+    if v == "" then
+      itemSplit[#itemSplit + 1] = 0
+    else
+      itemSplit[#itemSplit + 1] = tonumber(v)
+    end
+  end
+
+  return itemSplit
+end
+
 -- SimC tokenize function
 local function tokenize(str)
   str = str or ""
@@ -142,9 +158,22 @@ local function IsArtifactFrameOpen()
   return ArtifactFrame and ArtifactFrame:IsShown() or false
 end
 
-function Simulationcraft:GetArtifactString()
+local function GetPowerData(powerId)
+  if not powerId then
+    return 0, 0
+  end
+
+  local powerInfo = ArtifactUI.GetPowerInfo(powerId)
+  if powerInfo == nil then
+    return powerId, 0
+  end
+
+  return powerId, powerInfo.currentRank - powerInfo.bonusRanks
+end
+
+function Simulationcraft:OpenArtifact()
   if not HasArtifactEquipped() then
-    return nil
+    return false, false, 0
   end
 
   local artifactFrameOpen = IsArtifactFrameOpen()
@@ -159,14 +188,14 @@ function Simulationcraft:GetArtifactString()
     if not artifactFrameOpen then
       HideUIPanel(ArtifactFrame)
     end
-    return nil
+    return false, false, 0
   end
 
   if not select(1, IsUsableItem(itemId)) then
     if not artifactFrameOpen then
       HideUIPanel(ArtifactFrame)
     end
-    return nil
+    return false, false, 0
   end
 
   local mhId = select(1, GetInventoryItemID("player", GetInventorySlotInfo("MainHandSlot")))
@@ -181,26 +210,110 @@ function Simulationcraft:GetArtifactString()
     itemId = select(1, ArtifactUI.GetArtifactInfo())
   end
 
+  return artifactFrameOpen, correctArtifactOpen, itemId
+end
+
+function Simulationcraft:CloseArtifactFrame(wasOpen, correctOpen)
+  local ArtifactFrame = _G.ArtifactFrame
+
+  if ArtifactFrame and (not wasOpen or not correctOpen) then
+    HideUIPanel(ArtifactFrame)
+  end
+end
+
+function Simulationcraft:GetCrucibleString()
+  local artifactFrameOpen, correctArtifactOpen, itemId = self:OpenArtifact()
+
+  if not itemId then
+    self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
+    return nil
+  end
+
   local artifactId = artifactTable[itemId]
   if artifactId == nil then
+    self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
+    return nil
+  end
+
+  local crucibleData = {}
+  for ridx = 1, ArtifactUI.GetNumRelicSlots() do
+    local link = select(4, ArtifactUI.GetRelicInfo(ridx))
+    if link ~= nil then
+      local relicSplit     = GetItemSplit(link)
+      local baseLink       = select(2, GetItemInfo(relicSplit[1]))
+      local basePowers     = { ArtifactUI.GetPowersAffectedByRelicItemLink(baseLink) }
+      local relicPowers    = { ArtifactUI.GetPowersAffectedByRelic(ridx) }
+      local cruciblePowers = {}
+
+      for rpidx = 1, #relicPowers do
+        local found = false
+        for bpidx = 1, #basePowers do
+          if relicPowers[rpidx] == basePowers[bpidx] then
+            found = true
+            break
+          end
+        end
+
+        if not found then
+          cruciblePowers[#cruciblePowers + 1] = relicPowers[rpidx]
+        end
+      end
+
+      if #cruciblePowers == 0 then
+        crucibleData[ridx] = { 0 }
+      else
+        crucibleData[ridx] = cruciblePowers
+      end
+    else
+      crucibleData[ridx] = { 0 }
+    end
+  end
+
+  local crucibleStrings = {}
+  for ridx = 1, #crucibleData do
+    crucibleStrings[ridx] = table.concat(crucibleData[ridx], ':')
+  end
+
+  self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
+
+  return 'crucible=' .. table.concat(crucibleStrings, '/')
+end
+
+function Simulationcraft:GetArtifactString()
+  local artifactFrameOpen, correctArtifactOpen, itemId = self:OpenArtifact()
+
+  if not itemId then
+    self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
+    return nil
+  end
+
+  local artifactId = artifactTable[itemId]
+  if artifactId == nil then
+    self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
     return nil
   end
 
   -- Note, relics are handled by the item string
   local str = 'artifact=' .. artifactId .. ':0:0:0:0'
 
+  local baseRanks = {}
+  local crucibleRanks = {}
+
   local powers = ArtifactUI.GetPowers()
   for i = 1, #powers do
-    local powerId = powers[i]
-    local powerInfo = ArtifactUI.GetPowerInfo(powerId)
-    if powerInfo ~= nil and powerInfo.currentRank > 0 and powerInfo.currentRank - powerInfo.bonusRanks > 0 then
-      str = str .. ':' .. powerId .. ':' .. (powerInfo.currentRank - powerInfo.bonusRanks)
+    local powerId, powerRank = GetPowerData(powers[i])
+
+    if powerRank > 0 then
+      baseRanks[#baseRanks + 1] = powerId
+      baseRanks[#baseRanks + 1] = powerRank
     end
   end
 
-  if not artifactFrameOpen or not correctArtifactOpen then
-    HideUIPanel(ArtifactFrame)
+  if #baseRanks > 0 then
+    str = str .. ':' .. table.concat(baseRanks, ':')
   end
+
+  self:CloseArtifactFrame(artifactFrameOpen, correctArtifactOpen)
 
   return str
 end
@@ -214,24 +327,14 @@ local function GetGemItemID(itemLink, index)
       return tonumber(itemIdStr)
     end
   end
-  
+
   return 0
 end
 
 local function GetItemStringFromItemLink(slotNum, itemLink, debugOutput)
-  local itemString = string.match(itemLink, "item:([%-?%d:]+)")
-  local itemSplit = {}
+  local itemSplit = GetItemSplit(itemLink)
   local simcItemOptions = {}
   local gems = {}
-
-  -- Split data into a table
-  for _, v in ipairs({strsplit(":", itemString)}) do
-    if v == "" then
-      itemSplit[#itemSplit + 1] = 0
-    else
-      itemSplit[#itemSplit + 1] = tonumber(v)
-    end
-  end
 
   -- Item id
   local itemId = itemSplit[OFFSET_ITEM_ID]
@@ -461,6 +564,7 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags)
   -- Talents are more involved - method to handle them
   local playerTalents = CreateSimcTalentString()
   local playerArtifact = self:GetArtifactString()
+  local playerCrucible = self:GetCrucibleString()
 
   -- Build the output string for the player (not including gear)
   local simulationcraftProfile = player .. '\n'
@@ -474,6 +578,9 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags)
   simulationcraftProfile = simulationcraftProfile .. playerSpec .. '\n'
   if playerArtifact ~= nil then
     simulationcraftProfile = simulationcraftProfile .. playerArtifact .. '\n'
+  end
+  if playerCrucible ~= nil then
+    simulationcraftProfile = simulationcraftProfile .. playerCrucible .. '\n'
   end
   simulationcraftProfile = simulationcraftProfile .. '\n'
 

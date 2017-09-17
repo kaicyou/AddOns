@@ -128,9 +128,9 @@ local function CheckButton_OnClick(button, quiet)
 		end
 		if ( not quiet ) then
 			if ( value ) then
-				PlaySound("igMainMenuOptionCheckBoxOn");
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 			else
-				PlaySound("igMainMenuOptionCheckBoxOff");
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
 			end
 		end
 	end

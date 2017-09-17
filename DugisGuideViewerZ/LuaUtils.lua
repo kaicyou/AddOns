@@ -134,26 +134,48 @@ function LuaUtils:isInTable(item, tbl)
     return false
 end
 
+function LuaUtils:dumpString(text)
+    text = string.gsub(text, '|', '@')
+    print(text)
+end
 
-function LuaUtils:dumpVar ( t )
+function LuaUtils:dumpVar ( t, skipFunctions )
     local print_r_cache={}
+    
     local function sub_print_r(t,indent)
         if (print_r_cache[tostring(t)]) then
-        print(indent.."*"..tostring(t))
+            print(indent.."*"..tostring(t))
         else
             print_r_cache[tostring(t)]=true
             if (type(t)=="table") then
-                for pos,val in pairs(t) do
+            
+                local keysToBePrinted = {}
+                
+                for pos, _ in pairs(t) do
+                    keysToBePrinted[#keysToBePrinted + 1] = pos
+                end
+                
+                table.sort(keysToBePrinted, function(a,b)  
+                    return tostring(a) > tostring(b)
+                end)
+                
+                for i=#keysToBePrinted, 1 , -1 do 
+                    local pos = keysToBePrinted[i]
+                    local val = t[pos]
                     if (type(val)=="table") then
                         print(indent.."["..pos.."] => "..tostring(t).." {")
                         sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
                         print(indent..string.rep(" ",string.len(pos)+6).."}")
                     else
-                        print(indent.."["..pos.."] => "..tostring(val))
+                        if type(val)~="function" or not skipFunctions then
+                            print(indent.."["..pos.."] => "..tostring(val))
+                        end
                     end
                 end
             else
-                print(indent..tostring(t))
+                if type(t)~="function" or not skipFunctions then
+                    print(indent..tostring(t))
+                end
             end
         end
     end
@@ -271,12 +293,18 @@ function LuaUtils:CreateThread(threadName, threadFunction, onEnd, resumeAmountPe
     resumeAmountPerFrame = resumeAmountPerFrame or 40
     arguments = arguments or {}
 
+	threadThrottle = 0.01
+	resumeAmountPerFrame = 1
+
     if not DugiThreadFrame then
     
     CreateFrame("Frame", "DugiThreadFrame")
     
 	DugiThreadFrame:SetScript("OnUpdate" , function(self, elapsed)
-    
+		LuaUtils:CheckWindowActive()
+	
+		collectgarbage("step", 100)
+		
         LuaUtils:foreach(dugisThreads, function(thread, threadName_)
         
 		thread.threadCounter = thread.threadCounter + elapsed
@@ -338,10 +366,15 @@ function LuaUtils:Yield(isInThread)
     end
 end
 
+
+function LuaUtils:ShouldWaitForWindowActive()
+    return LuaUtils.isWindowActive ~= true
+end
+
 function LuaUtils:RunInThreadIfNeeded(threadName, threadFunction, onEnd, arguments, alwaysTunInThread)
     arguments = arguments or {}
-
-    if UnitAffectingCombat("player") or alwaysTunInThread then
+	
+    if UnitAffectingCombat("player") or alwaysTunInThread or LuaUtils:ShouldWaitForWindowActive() then
         MainFramePreloader:ShowPreloader()
         if SmallFramePreloader then
             SmallFramePreloader:ShowPreloader()
@@ -408,18 +441,18 @@ table.filter = function(t, filterIter)
 end
 
 function LuaUtils:WaitForCombatEnd(waitForever)
-    if not UnitAffectingCombat("player") then
+    if not UnitAffectingCombat("player") or LuaUtils:ShouldWaitForWindowActive() == false then
         return
     end
     
     if waitForever then
-        while UnitAffectingCombat("player") do
+        while UnitAffectingCombat("player") or LuaUtils:ShouldWaitForWindowActive() do
             coroutine.yield()
             OnPlayerInCombat()
         end
     else
         for i = 1, 1000 do
-            if UnitAffectingCombat("player") then
+            if UnitAffectingCombat("player") or LuaUtils:ShouldWaitForWindowActive() then
                 coroutine.yield()
                 OnPlayerInCombat()
             end
@@ -589,7 +622,7 @@ end
 ----Post combat loading
 local postCombatRunQueue = {}
 function LuaUtils:PostCombatRun(name, function_)
-    if UnitAffectingCombat("player") or InCinematic() then
+    if UnitAffectingCombat("player") or InCinematic() or LuaUtils:ShouldWaitForWindowActive() then
         if not postCombatRunQueue[name] then
             postCombatRunQueue[name] = function_
         end
@@ -608,17 +641,28 @@ function LuaUtils:RunPostCombatFunctions()
 end
 
 LuaUtils:CreateThread("dugi-post-combat-invoke", function()
-    while UnitAffectingCombat("player") or InCinematic() do
+    while UnitAffectingCombat("player") or InCinematic() or LuaUtils:ShouldWaitForWindowActive() do
         coroutine.yield()
     end
     LuaUtils:RunPostCombatFunctions()
 end)
 
+local invokeWhenCounter = 1
+function LuaUtils:invokeWhen(conditionFunction, runFunction)
+	LuaUtils:CreateThread("dugi-invoke-when-"..invokeWhenCounter, function()
+		while not conditionFunction() do
+			coroutine.yield()
+		end
+		runFunction()
+	end)
+	invokeWhenCounter = invokeWhenCounter + 1
+end
+
 function LuaUtils:collectgarbage(threading)
     if threading then
         LuaUtils:loop(100, function()
-           coroutine.yield()
-           collectgarbage ("step" , 100)
+           LuaUtils:RestIfNeeded(true)
+           collectgarbage("step" , 100)
         end)
     else
         collectgarbage()
@@ -723,3 +767,68 @@ function LuaUtils:FadeOut(frame, from, to, duration, endFunction)
         frame:SetAlpha(outQuad(n, from, to))
     end, endFunction)
 end
+
+function LuaUtils:GetPatchVer()
+	local patch = GetBuildInfo()
+	patch = string.gsub(patch, '%.', '')
+	return tonumber(patch)
+end
+
+function LuaUtils:PlaySound(soundNameOrKITId)
+
+	if LuaUtils:GetPatchVer() < 730 then
+		PlaySound(soundNameOrKITId)
+	else
+		if tonumber(soundNameOrKITId) then
+			PlaySound(soundNameOrKITId)
+		else
+			local legacyMap = {
+			 gsTitleOptionExit  =  SOUNDKIT.GS_TITLE_OPTION_EXIT            
+			,igCharacterInfoTab                   =  SOUNDKIT.IG_CHARACTER_INFO_TAB           
+			,igCharacterInfoClose                   =  SOUNDKIT.IG_CHARACTER_INFO_CLOSE           
+			,UChatScrollButton                    =  SOUNDKIT.U_CHAT_SCROLL_BUTTON            
+			,igInventoryRotateCharacter           =  SOUNDKIT.IG_INVENTORY_ROTATE_CHARACTER   
+			,igMainMenuClose                      =  SOUNDKIT.IG_MAINMENU_CLOSE               
+			,igMainMenuOptionCheckBoxOff          =  SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF 
+			,igMainMenuOptionCheckBoxOn           =  SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON  
+			,igMainMenuOption                     =  SOUNDKIT.IG_MAINMENU_OPTION              
+			,igCharacterInfoOpen                  =  SOUNDKIT.IG_CHARACTER_INFO_OPEN} 
+		
+			PlaySound(legacyMap[soundNameOrKITId])
+		end
+	end
+end
+
+local lastTimeRest = debugprofilestop() / 1000
+function LuaUtils:RestIfNeeded(threding)
+	if threding then
+		local elapsedRest_sec = (debugprofilestop() / 1000) - lastTimeRest
+		
+		if elapsedRest_sec >= 0.005 then
+			coroutine.yield()
+			lastTimeRest = debugprofilestop() / 1000
+		end
+	end
+end
+
+
+--Detecting minimized window
+LuaUtils.isWindowActive = false
+local lastWindowActiveTime = 0
+ 
+function LuaUtils:CheckWindowActive()
+	local currentTime = debugprofilestop() / 1000
+	
+	if (currentTime - lastWindowActiveTime) < 1 then
+		LuaUtils.isWindowActive = true
+	else
+		LuaUtils.isWindowActive = false
+	end
+ end
+ 
+ LuaUtils:CreateThread("active-window-checker", function()
+	while true do
+		lastWindowActiveTime = debugprofilestop() / 1000
+		coroutine.yield()
+	end
+ end)

@@ -7,7 +7,7 @@ if not L then return end
 L["INCOMPATIBLE_ADDON"] = "插件 %s 與 ElvUI 的 %s 模組不相容。請停用不相容的插件，或停用相關的模組."
 
 --*_MSG locales
-L["LOGIN_MSG"] = "歡迎使用%sElvUI |r %s%s|r 版, 請輸入/ec 進入設定介面. 如需技術支援請至http://www.tukui.org"
+L["LOGIN_MSG"] = "歡迎使用%sElvUI |r %s%s|r 版, 請輸入/ec 進入設定介面. 如需技術支援請至https://www.tukui.org"
 
 --ActionBars
 L["Binding"] = "綁定"
@@ -65,7 +65,7 @@ L["yells"] = "大喊"
 L["Current Level:"] = "目前等級"
 L["Honor Remaining:"] = "剩餘:"
 L["Honor XP:"] = "榮譽:"
-L["In Bags:"] = true;
+L["In Bags:"] = "背包內:"
 
 --DataTexts
 L["(Hold Shift) Memory Usage"] = "(按住Shift) 記憶體使用量"
@@ -79,8 +79,8 @@ L["Building(s) Report:"] = "建築報告"
 L["Character: "] = "角色: "
 L["Chest"] = "胸部"
 L["Combat"] = "戰鬥"
-L["Combat/Arena Time"] = true;
-L["Coords"] = true;
+L["Combat/Arena Time"] = "戰鬥時間"
+L["Coords"] = "坐標"
 L["copperabbrev"] = "|cffeda55f銅|r" --Also used in Bags
 L["Deficit:"] = "赤字:"
 L["Download"] = "下載"
@@ -89,7 +89,7 @@ L["Earned:"] = "賺取:"
 L["Feet"] = "腳部"
 L["Friends List"] = "好友列表"
 L["Friends"] = "好友" --Also in Skins
-L["Garrison"] = true;
+L["Garrison"] = "要塞"
 L["Gold"] = "金錢"
 L["goldabbrev"] = "|cffffd700金|r" --Also used in Bags
 L["Hands"] = "手部"
@@ -115,12 +115,12 @@ L["Session:"] = "本次登入:"
 L["Shoulder"] = "肩部"
 L["silverabbrev"] = "|cffc7c7cf銀|r" --Also used in Bags
 L["SP"] = "法術能量"
-L["Spell/Heal Power"] = true;
+L["Spell/Heal Power"] = "法術/治療強度"
 L["Spec"] = "專精"
 L["Spent:"] = "花費:"
 L["Stats For:"] = "統計:"
-L["System"] = true;
-L["Talent/Loot Specialization"] = true;
+L["System"] = "系統信息"
+L["Talent/Loot Specialization"] = "天賦/拾取專精"
 L["Total CPU:"] = "CPU佔用"
 L["Total Memory:"] = "總記憶體:"
 L["Total: "] = "合計: "
@@ -326,6 +326,8 @@ L["|cFFE30000Lua error recieved. You can view the error message when you exit co
 
 --Static Popups
 L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."] = "你所做的改動只會影響到使用這個插件的本角色, 你需要重新加載介面才能使改動生效."
+L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"] = true;
+L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"] = true;
 L["Are you sure you want to apply this font to all ElvUI elements?"] = "你確定要將此字型應用到所有 ElvUI 元素嗎?"
 L["Are you sure you want to delete all your gray items?"] = "是否確定要刪除所有灰色物品?"
 L["Are you sure you want to disband the group?"] = "確定要解散隊伍?"

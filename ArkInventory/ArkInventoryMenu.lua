@@ -1741,7 +1741,7 @@ function ArkInventory.MenuBagOpen( frame )
 								"tooltipText", string.format( "%s\n\n%s %s", REAGENTBANK_PURCHASE_TEXT, COSTS_LABEL, ArkInventory.MoneyText( cost, true ) ),
 								"closeWhenClicked", true,
 								"func", function( )
-									PlaySound( "igMainMenuOption" )
+									PlaySound( SOUNDKIT.IG_MAINMENU_OPTION )
 									StaticPopup_Show( "CONFIRM_BUY_REAGENTBANK_TAB" )
 								end
 							)
@@ -1758,7 +1758,7 @@ function ArkInventory.MenuBagOpen( frame )
 								"tooltipText", string.format( "%s\n\n%s %s", BANKSLOTPURCHASE_LABEL, COSTS_LABEL, ArkInventory.MoneyText( cost, true ) ),
 								"closeWhenClicked", true,
 								"func", function( )
-									PlaySound( "igMainMenuOption" )
+									PlaySound( SOUNDKIT.IG_MAINMENU_OPTION )
 									StaticPopup_Show( "CONFIRM_BUY_BANK_SLOT" )
 								end
 							)
@@ -1773,7 +1773,7 @@ function ArkInventory.MenuBagOpen( frame )
 							"tooltipTitle", REAGENTBANK_DEPOSIT,
 							"closeWhenClicked", true,
 							"func", function( )
-								PlaySound( "igMainMenuOption" )
+								PlaySound( SOUNDKIT.IG_MAINMENU_OPTION )
 								DepositReagentBank( )
 							end
 						)
@@ -2203,7 +2203,7 @@ function ArkInventory.MenuChangerVaultActionOpen( frame )
 						"text", DEPOSIT,
 						"closeWhenClicked", true,
 						"func", function( )
-							PlaySound( "igMainMenuOption" )
+							PlaySound( SOUNDKIT.IG_MAINMENU_OPTION )
 							StaticPopup_Hide( "GUILDBANK_WITHDRAW" )
 							if StaticPopup_Visible( "GUILDBANK_DEPOSIT") then
 								StaticPopup_Hide( "GUILDBANK_DEPOSIT" )
@@ -2252,7 +2252,7 @@ function ArkInventory.MenuChangerVaultActionOpen( frame )
 						"closeWhenClicked", true,
 						"disabled", not ok,
 						"func", function( )
-							PlaySound( "igMainMenuOption" )
+							PlaySound( SOUNDKIT.IG_MAINMENU_OPTION )
 							StaticPopup_Hide( "GUILDBANK_DEPOSIT" )
 							if StaticPopup_Visible( "GUILDBANK_WITHDRAW" ) then
 								StaticPopup_Hide( "GUILDBANK_WITHDRAW" )
@@ -2301,7 +2301,7 @@ function ArkInventory.MenuChangerVaultActionOpen( frame )
 							"closeWhenClicked", true,
 							"disabled", not ok,
 							"func", function( )
-								PlaySound( "igMainMenuOption" )
+								PlaySound( SOUNDKIT.IG_MAINMENU_OPTION )
 								StaticPopup_Show( "CONFIRM_BUY_GUILDBANK_TAB" )
 							end
 						)
@@ -4100,7 +4100,7 @@ function ArkInventory.MenuRestackOpen( frame )
 						"closeWhenClicked", true,
 						"disabled", ArkInventory.Global.Mode.Edit or not ArkInventory.Global.Mode.Bank,
 						"func", function( )
-							PlaySound( "igMainMenuOption" )
+							PlaySound( SOUNDKIT.IG_MAINMENU_OPTION )
 							DepositReagentBank( )
 						end
 					)

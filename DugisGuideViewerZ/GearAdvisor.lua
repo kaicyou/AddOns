@@ -1364,7 +1364,7 @@ function GA:Initialize()
 
 	local function GetBestBaselineRating(key, spec, pvp, level, uniqueInventorySlot, itemLink, threading)
 --DGV:DebugFormat("GetBestBaselineRating", "key", key, "spec", spec, "level", level, "uniqueInventorySlot", uniqueInventorySlot)
-		local dataTable = GA:GetSpecDataTable(spec, pvp, nil, nil, true):BindToAutoroutineLifetime(UnbindSpecDataTable)
+		local dataTable = GA:GetSpecDataTable(spec, pvp, nil, nil, threading):BindToAutoroutineLifetime(UnbindSpecDataTable)
 --if true then return 0 end
 		local invSlot
 		local inv1, inv2 = UniqueInventoryToInvSlot(uniqueInventorySlot)
@@ -1562,9 +1562,37 @@ function GA:Initialize()
 			end
 		end
 	end
+    
+    local IsLegendaryItemEquipped_lastExeTime
+    local IsLegendaryItemEquipped_cached
+    local function IsLegendaryItemEquipped()
+        if IsLegendaryItemEquipped_lastExeTime == GetTime() then
+            return IsLegendaryItemEquipped_cached
+        end
+        
+        IsLegendaryItemEquipped_lastExeTime = GetTime()
+        for control, iteratedItemLink in GeadAdvisorItemIterator, itemInvariant do
+            if ItemIsEquipped(iteratedItemLink) then
+                local _, _, itemRarity = GetItemInfo(iteratedItemLink) 
+                if itemRarity == 5 then
+                    IsLegendaryItemEquipped_cached = true
+                    return true
+                end
+            end
+        end
+        
+        IsLegendaryItemEquipped_cached = false
+    end    
 
 	local function ItemIsBanned(itemLink, itemIteratorTable)
-		return DGV.chardb.GA_Blacklist and DGV.chardb.GA_Blacklist[DGV:GetItemIdFromLink(itemLink)] and not ItemIsEquipped(itemLink, itemIteratorTable)
+        local equipped = ItemIsEquipped(itemLink, itemIteratorTable)
+        local _, _, quality = GetItemInfo_dugi(itemLink, true)
+        
+        if IsLegendaryItemEquipped() and quality == 5 and not equipped then
+            return true
+        end
+    
+		return DGV.chardb.GA_Blacklist and DGV.chardb.GA_Blacklist[DGV:GetItemIdFromLink(itemLink)] and not equipped
 	end
 
 	local function ItemIsBannedWeapon(itemLink)
@@ -2294,11 +2322,7 @@ function GA:Initialize()
 		for control,iteratedItemLink in ItemIterator,itemInvariant do
 			local reqLevel, itemClass, itemSubclass, itemEquipSlot
             
-            if threading then
-                for k = 1, 100 do
-                    coroutine.yield()
-                end
-            end
+			LuaUtils:RestIfNeeded(threading)
             
 			if not ItemIsBanned(iteratedItemLink, control) then
 				local score, armorSpecStatValue
@@ -2443,9 +2467,9 @@ function GA:Initialize()
 			not winnerGrantsArmorSpecSubclass and
 			IsArmorSpecSlot(invSlot)
 		then
-			local standardTable = GA:GetSpecDataTable(spec, pvp, nil, false, uncapped):BindToAutoroutineLifetime(UnbindSpecDataTable)
+			local standardTable = GA:GetSpecDataTable(spec, pvp, nil, false, uncapped, nil, not threading):BindToAutoroutineLifetime(UnbindSpecDataTable)
 --DGV:DebugFormat("GetCurrentBestInSlot", "standardTable", tostring(standardTable), "standardTable:IsBoundToAutoroutineLifetime()", standardTable:IsBoundToAutoroutineLifetime())
-			local enforcedTable = GA:GetSpecDataTable(spec, pvp, nil, true, uncapped):BindToAutoroutineLifetime(UnbindSpecDataTable)
+			local enforcedTable = GA:GetSpecDataTable(spec, pvp, nil, true, uncapped, nil, not threading):BindToAutoroutineLifetime(UnbindSpecDataTable)
 			if
 				IsEnforcedTableComplete(enforcedTable) and
 				not StandardTableGrantsArmorSpecialization(standardTable, enforcedTable)
@@ -2796,7 +2820,9 @@ function GA:Initialize()
 	end
 
 	local function StandardPredicate(criterion, link)
-		return IsEquipment((select(9, GetItemInfo(link))))
+		if link then
+			return IsEquipment((select(9, GetItemInfo(link))))
+		end
 	end
 
 	local function CoinPredicate(criterion, item)
@@ -2989,8 +3015,7 @@ function GA:Initialize()
 
 	local orig_GetNumEquipmentSets = (C_EquipmentSet and C_EquipmentSet.GetNumEquipmentSets) or GetNumEquipmentSets --For 7.2.0
 	local orig_GetEquipmentSetInfo = (C_EquipmentSet and C_EquipmentSet.GetEquipmentSetInfo) or GetEquipmentSetInfo
-	local orig_GetEquipmentSetInfoByName = (C_EquipmentSet and C_EquipmentSet.GetEquipmentSetInfoByName) or GetEquipmentSetInfoByName
-	local orig_GetEquipmentSetItemIDs = (C_EquipmentSet and C_EquipmentSet.GetEquipmentSetItemIDs) or GetEquipmentSetItemIDs
+	local orig_GetItemIDs = C_EquipmentSet.GetItemIDs
 	local orig_GetEquipmentSetIDs = (C_EquipmentSet and C_EquipmentSet.GetEquipmentSetIDs) or C_EquipmentSet
 	local equipmentSetDataTable = {}
 	local equipmentSetIdTable = {}
@@ -3116,14 +3141,12 @@ function GA:Initialize()
 		-- numMissing - Number of items missing from the set (current bags) (number)
 		-- numIgnored - Number of ignored slots (number)
        
-       --GetEquipmentSetInfo
-        local function fn(index)
+        local function fn(id)
             if shouldUseOriginalEquipmentFunctions() then
-                return orig_GetEquipmentSetInfo(index)
+                return orig_GetEquipmentSetInfo(id)
             end
 
-			if (C_EquipmentSet == nil and index==1 and SmartSetShown()) 
-             or (C_EquipmentSet ~= nil and index==dugiSmartSetID --[[and SmartSetShown()]] ) then
+			if id == dugiSmartSetID then
 				local cacheReaction = TryGetCacheReaction("GetEquipmentSetInfo") --keep a cache until next update.  Some addons call this a lot.
 				if cacheReaction then
 					return cacheReaction:UnpackCache()
@@ -3133,11 +3156,7 @@ function GA:Initialize()
                  
                 local index_SetId = dugiSmartSetID
                 
-                if C_EquipmentSet == nil then
-                   index_SetId = MAX_EQUIPMENT_SETS_PER_PLAYER
-                else
-                   index_SetId = dugiSmartSetID
-                end
+                index_SetId = dugiSmartSetID
                 
                 local result = {RegisterStopwatchReaction(0):SetCache("GetEquipmentSetInfo",
 					L["Dugi Smart Set"],
@@ -3153,63 +3172,12 @@ function GA:Initialize()
                 
 				return unpack(result)
 			else
-                if C_EquipmentSet == nil then
-                   return orig_GetEquipmentSetInfo(SmartSetShown() and index-1 or index)
-                else
-                   return orig_GetEquipmentSetInfo(--[[SmartSetShown() and index-1 or ]]index)
-                end
+                return orig_GetEquipmentSetInfo(id)
 			end
             
 		end
 
-        if GetEquipmentSetInfo then
-            GetEquipmentSetInfo = fn
-        end    
-            
-        if C_EquipmentSet and C_EquipmentSet.GetEquipmentSetInfo then
-            --For 7.2.0
-            C_EquipmentSet.GetEquipmentSetInfo = fn
-        end
-
-		-- Returns information about an equipment set
-		-- See also Equipment Manager functions.
-		-- Signature:
-		-- icon, setID, isEquipped, numItems, numEquipped, unknown, numMissing, numIgnored = GetEquipmentSetInfoByName("name")
-		-- Arguments:
-		-- name - Name of an equipment set (case sensitive) (string)
-		-- Returns:
-		-- icon - Path to an icon texture for the equipment set (string)
-		-- setID - Internal ID number for the set (not used elsewhere in API) (number)
-		-- isEquipped - If the set is equipped returns true, if not, false (boolean)
-		-- numItems - Number of items in the set (number)
-		-- numEquipped - Number of items in the set currently equipped (number)
-		-- unknown - Unknown, always seem to be 0 (number)
-		-- numMissing - Number of items missing from the set (current bags) (number)
-		-- numIgnored - Number of ignored slots (number)
-        
-        --GetEquipmentSetInfoByName
-		local function fn(name)
-            if shouldUseOriginalEquipmentFunctions() then
-                return orig_GetEquipmentSetInfoByName(name)
-            end
-
-			if name==L["Dugi Smart Set"] and SmartSetShown() then
-				local isEquipped = SmartSetIsEquipped(true)
---DGV:DebugFormat("GetEquipmentSetInfoByName", "isEquipped", isEquipped)
-				return GetSpecIcon(), MAX_EQUIPMENT_SETS_PER_PLAYER, isEquipped, 16, isEquipped and 16 or 0, 0, 0, 2
-			else
-				return orig_GetEquipmentSetInfoByName(name)
-			end
-		end
-        
-        if GetEquipmentSetInfoByName then
-            GetEquipmentSetInfoByName = fn
-        end
-        
-        if C_EquipmentSet and C_EquipmentSet.GetEquipmentSetInfoByName then
-            --For 7.2.0
-            C_EquipmentSet.GetEquipmentSetInfoByName = fn
-        end
+        C_EquipmentSet.GetEquipmentSetInfo = fn
 
 		local function GetItemForTable(uniqueInventorySlot, spec, pvp, enforceArmorSpecSubclass, uncapped, threading)
 			local sfo, option, pfo = SpecFromOption(DGV:UserSetting(DGV_GASMARTSETTARGET))
@@ -3231,7 +3199,8 @@ function GA:Initialize()
 
 		end
 
-		function GA:GetSpecDataTable(spec, pvp, preferredTable, enforceArmorSpecSubclass, uncapped, cachedOnly)
+        --Prepares smart-set items list
+		function GA:GetSpecDataTable(spec, pvp, preferredTable, enforceArmorSpecSubclass, uncapped, cachedOnly, notThreading)
 --DGV:DebugFormat("GetSpecDataTable 1", "spec", spec)
 			local sfo, option, pfo = SpecFromOption(DGV:UserSetting(DGV_GASMARTSETTARGET))
 			spec = spec or sfo
@@ -3246,7 +3215,7 @@ function GA:Initialize()
 --DGV:DebugFormat("GetSpecDataTable", "dataTable", tostring(dataTable))
 			dataTable.ArmorSpecStatTotal , dataTable.ScoreTotal = 0,0
 			for unique,inv1,inv2 in NextUniqueInventorySlot do
-				local winner, altWinner, armorSpecStatValue, score = GetItemForTable(unique, spec, pvp, enforceArmorSpecSubclass, uncapped, true)
+				local winner, altWinner, armorSpecStatValue, score = GetItemForTable(unique, spec, pvp, enforceArmorSpecSubclass, uncapped, not notThreading)
 				dataTable.ArmorSpecStatTotal = dataTable.ArmorSpecStatTotal + (armorSpecStatValue or 0)
 				dataTable.ScoreTotal = dataTable.ScoreTotal + score
 				dataTable[inv1] = winner
@@ -3275,39 +3244,29 @@ function GA:Initialize()
 		-- Returns a table listing the items in an equipment set
 		-- See also Equipment Manager functions.
 		-- Signature:
-		-- itemIDs = GetEquipmentSetItemIDs("name")
 		-- Arguments:
 		-- name - Name of an equipment set (case sensitive) (string)
 		-- Returns:
 		-- itemIDs - A table listing the itemIDs of the set's contents, keyed by inventoryID (table)
 		--EQUIPMENT_SET_IGNORED_SLOT
         
-        --GetEquipmentSetItemIDs
-		local function fn(name)
+		local function fn(setID)
             if shouldUseOriginalEquipmentFunctions() then
-                return orig_GetEquipmentSetItemIDs(name)
+                return orig_GetItemIDs(setID)
             end
 
-			if name==L["Dugi Smart Set"] then
-				GA:GetSpecDataTable(nil, nil, equipmentSetDataTable)
+			if setID == L["Dugi Smart Set"] or setID == dugiSmartSetID then
+				GA:GetSpecDataTable(nil, nil, equipmentSetDataTable, nil, nil, nil, true)
 				return equipmentSetIdTable
 			else
-				return orig_GetEquipmentSetItemIDs(name)
+				return orig_GetItemIDs(setID)
 			end
 		end
         
-        if GetEquipmentSetItemIDs then
-            GetEquipmentSetItemIDs = fn
-        end
-        
-        if C_EquipmentSet and C_EquipmentSet.GetEquipmentSetItemIDs then
-            --For 7.2.0
-            C_EquipmentSet.GetEquipmentSetItemIDs = fn
-        end        
+        C_EquipmentSet.GetItemIDs =  fn
 
         
     if C_EquipmentSet and C_EquipmentSet.GetIgnoredSlots then
-    
         local org_GetIgnoredSlots = C_EquipmentSet.GetIgnoredSlots
         C_EquipmentSet.GetIgnoredSlots = function(setID)
             if setID == dugiSmartSetID then
@@ -3585,10 +3544,11 @@ function GA:Initialize()
 						DugisGuideViewer.RefreshMainMenu()
 					end
 					
+					DugisEquipPromptFrame.notificationId = notification.id
+					
 					if DGV:UserSetting(DGV_ALWAYS_SHOW_STANDARD_PROMPT_GEAR) then
 						--Old standard prompt
 						DugisEquipPromptFrame:Show()
-						DugisEquipPromptFrame.notificationId = notification.id
 						DugisEquipPromptFrame.dontRemoveNotificationOnCancel = true
 					end
 				else
@@ -4227,14 +4187,11 @@ function GA:Initialize()
             --For 7.2.0
             C_EquipmentSet.GetEquipmentSetInfo = orig_GetEquipmentSetInfo
             C_EquipmentSet.GetNumEquipmentSets = orig_GetNumEquipmentSets
-            C_EquipmentSet.GetEquipmentSetInfoByName = orig_GetEquipmentSetInfoByName
-            C_EquipmentSet.GetEquipmentSetItemIDs = orig_GetEquipmentSetItemIDs
+            C_EquipmentSet.GetItemIDs = orig_GetItemIDs
             C_EquipmentSet.GetEquipmentSetIDs = orig_GetEquipmentSetIDs
         else
             GetEquipmentSetInfo = orig_GetEquipmentSetInfo
             GetNumEquipmentSets = orig_GetNumEquipmentSets
-            GetEquipmentSetInfoByName = orig_GetEquipmentSetInfoByName
-            GetEquipmentSetItemIDs = orig_GetEquipmentSetItemIDs
         end
 	end
 end

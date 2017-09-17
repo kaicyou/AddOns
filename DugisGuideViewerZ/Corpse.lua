@@ -87,8 +87,8 @@ function Corpse:Initialize()
 		
 		local desc = L["My Corpse"]
 		local m, f, x, y = DGV:GetPlayerPosition()
-		DebugPrint("corpse position:".."M:"..m.." f:"..f.." x"..x.." y"..y)
-		if x then 
+		DebugPrint("corpse position:".."M:"..(m or "").." f:"..(f or "").." x"..(x or "").." y"..(y or ""))
+		if x and y then 
 			DGV:AddCorpseWaypoint( m, f, x, y, desc)
 			DGV.DugisArrow:setArrow( m, f, x*100, y*100, desc )
 		end

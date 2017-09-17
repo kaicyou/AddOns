@@ -816,7 +816,7 @@ function LibDugi_UIDropDownMenuButton_OnClick(self)
 	end
 
 	if ( playSound ) then
-		PlaySound("UChatScrollButton");
+		LuaUtils:PlaySound("UChatScrollButton");
 	end
 end
 

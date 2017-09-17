@@ -5,6 +5,8 @@ local L = DugisLocals
 DGV.Modules = {}
 local _
 
+--By default DugiGuidesIsLoading is set to true because the game is loading from the begining
+DugiGuidesIsLoading = true
 
 local function PlaceUtilityStubs(name)
 	local evalName = function(n)return not name or name==n end
@@ -215,15 +217,14 @@ local function InitModule(module)
 	return true
 end
 
-local function LocalLoadModule(module)
+local function LocalLoadModule(module, threading)
 	if module and not module.loaded and module.Load and ShouldLoad(module) then
-		module:Load()
+		module:Load(threading)
 		module.loaded = true
 	end
 end
 
---By default DugiGuidesIsLoading is set to true because the game is loading from the begining
-DugiGuidesIsLoading = true
+
 
 function DugiGuidesOnLoadingStart()
     DugisGuideViewer:UpdateIconStatus()
@@ -248,20 +249,20 @@ local function DugiGuidesOnLoadingEnd()
     end
 end
 
-local function UpdateGameLoadingProgress(threading, currentProgress)
+local function UpdateGameLoadingProgress(threading, currentNormalizedProgress)
     if threading then
 	
 		MainFramePreloader:ShowPreloader()
 		
         GamePreloader:Show()
-        GamePreloader.TexWrapper.Text:SetText("Loading Dugi Guides "..(LuaUtils:Round(currentProgress, 2) * 100).."%..")
+        GamePreloader.TexWrapper.Text:SetText("Loading Dugi Guides "..(LuaUtils:Round(currentNormalizedProgress, 2) * 100).."%..")
         
-        if currentProgress >= 0.98 then
+        if currentNormalizedProgress >= 0.98 then
             GamePreloader:Hide()
             GamePreloader.animationGroup:Stop()
         end
 		
-		if currentProgress >= 0.98  then
+		if currentNormalizedProgress >= 0.98  then
 			MainFramePreloader:HidePreloader()
 		end
     end
@@ -281,7 +282,7 @@ local function LoadModules(threading)
         GamePreloader:Show()
         GamePreloader.animationGroup:Play()
         GamePreloader.TexWrapper.Background:SetVertexColor(0,0.0,0, 0.0);
-        GamePreloader:SetPoint("TOPLEFT", UIParent, GetScreenWidth() * 0.5 -100,  -GetScreenHeight() * 0.3 + 50)
+        GamePreloader:SetPoint("TOPLEFT", UIParent, GetScreenWidth() * 0.5 -100,  -GetScreenHeight() * 0.1 + 50)
         GamePreloader:SetWidth(225)
         GamePreloader.TexWrapper.Text:SetWidth(220)
     end
@@ -298,30 +299,27 @@ local function LoadModules(threading)
 		end
 	end
 	for _, module in ipairs(DGV.Modules) do
-        if threading then
-            LuaUtils:WaitForCombatEnd(true)
-            local yields = 105
-            
-            if strmatch(module.name, "DugisGuide_") then
-                yields = 2
-            end
-            
-            LuaUtils:loop(yields, function()
-                coroutine.yield()
-            end)
-
-        end
-            if strmatch(module.name, "DugisGuide_") then
-                LocalLoadModule(module)
-            else
-                LocalLoadModule(module)
-            end
+	
+		if threading then
+			LuaUtils:WaitForCombatEnd(true)
+			LuaUtils:RestIfNeeded(true)
+		end
+		
+		if strmatch(module.name, "DugisGuide_") then
+			LocalLoadModule(module, threading)
+		else
+			LocalLoadModule(module, threading)
+		end
             
         UpdateGameLoadingProgress(threading, progress)
         progress = progress + (0.95/#DGV.Modules)   
 	end
 	for _, module in pairs(DGV.Modules) do
 		if module.OnModulesLoaded and module.loaded and not module.Done then
+			if threading then
+				LuaUtils:RestIfNeeded(true)
+			end
+		
             module:OnModulesLoaded(threading)
 			module.Done = true  --OnModulesLoaded gets loaded twice in a row without this
 		end

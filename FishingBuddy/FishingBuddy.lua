@@ -869,9 +869,48 @@ PagleFish[110508] = {
 
 PagleFish[138777] = {
 	["enUS"] = "Drowned Mana",
+	zone = "Dalaran (Broken Isles)",
 	silent = 1,
 	limit = 100
 };
+
+PagleFish[146959] = {
+	["enUS"] = "Corrupted Globule",
+	zone = "Val'sharah",
+	silent = 1,
+	limit = 100
+};
+PagleFish[146960] = {
+	["enUS"] = "Ancient Totem Fragment",
+	zone = "Thunder Totem",
+	silent = 1,
+	limit = 100
+};
+PagleFish[146961] = {
+	["enUS"] = "Shiny Bauble",
+	zone = "Stormheim",
+	silent = 1,
+	limit = 100
+};
+PagleFish[146962] = {
+	["enUS"] = "Golden Minnow",
+	zone = "Suramar",
+	silent = 1,
+	limit = 100
+};
+PagleFish[146963] = {
+	["enUS"] = "Desecrated Seaweed",
+	zone = "Broken Shore",
+	silent = 1,
+	limit = 100
+};
+PagleFish[146848] = {
+	["enUS"] = "Fragmented Enchantment",
+	zone = "Azsuna",
+	silent = 1,
+	limit = 100
+};
+
 PagleFish[141975] = {
 	["enUS"] = "Mark of Aquaos",
 	getcolor = function ()
@@ -983,7 +1022,7 @@ local function AddFishie(color, id, name, zone, subzone, texture, quantity, qual
 
 	-- Play a sound on Nat Pagle rep
 	if ( PagleFish[id] and not PagleFish[id].silent and GSB("DingQuestFish") ) then
-		PlaySound("igQuestListComplete", "master");
+		PlaySound(SOUNDKIT.IG_QUEST_LIST_COMPLETE, "master");
 	end
 	
 	if ( not zone ) then
@@ -1921,7 +1960,8 @@ local lootcheck = false;
 local lootcount = 0;
 local function ProcessFishLoot()
 	local zone, subzone = FL:GetZoneInfo();
-	for _,info in ipairs(lootcache) do
+	while (table.getn(lootcache) > 0) do
+		info = table.remove(lootcache)
 		local texture, fishie, quantity, quality, link = info.texture, info.fishie, info.quantity, info.quality, info.link;
 		local nm,_,_,_,it,st,_,el,_,il = FL:GetItemInfo(link);
 		local color, id, name = FL:SplitFishLink(link);

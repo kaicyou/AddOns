@@ -1,11 +1,21 @@
 ﻿local E, L, V, P, G = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local mod = E:NewModule('NamePlates', 'AceHook-3.0', 'AceEvent-3.0', 'AceTimer-3.0')
+local LSM = LibStub("LibSharedMedia-3.0")
 
 --Cache global variables
 --Lua functions
+local select = select
+local next = next
+local unpack = unpack
+local ipairs = ipairs
+local tonumber = tonumber
+local strsplit = strsplit
 local pairs, type = pairs, type
 local twipe = table.wipe
-local format, match = string.format, string.match
+local tsort = table.sort
+local tinsert = table.insert
+local format = string.format
+local match = string.match
 --WoW API / Variables
 local CreateFrame = CreateFrame
 local C_NamePlate_GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
@@ -22,10 +32,12 @@ local GetBattlefieldScore = GetBattlefieldScore
 local GetNumArenaOpponentSpecs = GetNumArenaOpponentSpecs
 local GetNumBattlefieldScores = GetNumBattlefieldScores
 local GetSpecializationInfoByID = GetSpecializationInfoByID
+local GetSpellCooldown = GetSpellCooldown
 local hooksecurefunc = hooksecurefunc
 local IsInInstance = IsInInstance
 local RegisterUnitWatch = RegisterUnitWatch
 local SetCVar = SetCVar
+local GetCVar = GetCVar
 local UnitAffectingCombat = UnitAffectingCombat
 local UnitCanAttack = UnitCanAttack
 local UnitExists = UnitExists
@@ -38,11 +50,36 @@ local UnitIsPlayer = UnitIsPlayer
 local UnitIsUnit = UnitIsUnit
 local UnitName = UnitName
 local UnitPowerType = UnitPowerType
+local UnitGUID = UnitGUID
+local UnitLevel = UnitLevel
+local UnitReaction = UnitReaction
+local UnitIsQuestBoss = UnitIsQuestBoss
+local UnitClassification = UnitClassification
+local GetSpellInfo = GetSpellInfo
+local GetSpellCharges = GetSpellCharges
+local GetTime = GetTime
+local GetSpecializationInfo = GetSpecializationInfo
+local GetTalentInfo	= GetTalentInfo
+local GetPvpTalentInfo = GetPvpTalentInfo
+local GetInstanceInfo = GetInstanceInfo
 local UnregisterUnitWatch = UnregisterUnitWatch
 local UNKNOWN = UNKNOWN
+local FAILED = FAILED
+local INTERRUPTED = INTERRUPTED
 
 --Global variables that we don't cache, list them here for the mikk's Find Globals script
 -- GLOBALS: NamePlateDriverFrame, UIParent, InterfaceOptionsNamesPanelUnitNameplates
+-- GLOBALS: InterfaceOptionsNamesPanelUnitNameplatesAggroFlash
+-- GLOBALS: InterfaceOptionsNamesPanelUnitNameplatesEnemies
+-- GLOBALS: InterfaceOptionsNamesPanelUnitNameplatesEnemyMinions
+-- GLOBALS: InterfaceOptionsNamesPanelUnitNameplatesEnemyMinus
+-- GLOBALS: InterfaceOptionsNamesPanelUnitNameplatesFriendlyMinions
+-- GLOBALS: InterfaceOptionsNamesPanelUnitNameplatesMotionDropDown
+-- GLOBALS: InterfaceOptionsNamesPanelUnitNameplatesPersonalResource
+-- GLOBALS: InterfaceOptionsNamesPanelUnitNameplatesPersonalResourceOnEnemy
+-- GLOBALS: InterfaceOptionsNamesPanelUnitNameplatesShowAll
+-- GLOBALS: InterfaceOptionsNamesPanelUnitNameplatesMakeLarger
+-- GLOBALS: InterfaceOptionsNamesPanelUnitNameplatesFriends
 
 --Taken from Blizzard_TalentUI.lua
 local healerSpecIDs = {
@@ -100,9 +137,48 @@ function mod:CheckArenaHealers()
 	end
 end
 
+local namePlateDriverEvents = {
+	--"NAME_PLATE_CREATED", -- Leave this on always to prevent errors
+	"FORBIDDEN_NAME_PLATE_CREATED",
+	"NAME_PLATE_UNIT_ADDED",
+	"FORBIDDEN_NAME_PLATE_UNIT_ADDED",
+	"NAME_PLATE_UNIT_REMOVED",
+	"FORBIDDEN_NAME_PLATE_UNIT_REMOVED",
+	"PLAYER_TARGET_CHANGED",
+	"DISPLAY_SIZE_CHANGED",
+	"UNIT_AURA",
+	"VARIABLES_LOADED",
+	"CVAR_UPDATE",
+	"RAID_TARGET_UPDATE",
+	"UNIT_FACTION"
+}
+
+function mod:ToggleNamePlateDriverEvents(instanceType)
+	for _, event in pairs(namePlateDriverEvents) do
+		if instanceType == "none" then
+			NamePlateDriverFrame:UnregisterEvent(event)
+		else
+			NamePlateDriverFrame:RegisterEvent(event)
+		end
+	end
+
+	if instanceType == "none" then
+		E.LockedCVars["nameplateShowDebuffsOnFriendly"] = nil
+		SetCVar("nameplateShowDebuffsOnFriendly", true)
+	else
+		E:LockCVar("nameplateShowDebuffsOnFriendly", false)
+	end
+end
+
 function mod:PLAYER_ENTERING_WORLD()
 	twipe(self.Healers)
+
 	local inInstance, instanceType = IsInInstance()
+
+	if not self.db.hideBlizzardPlates then
+		self:ToggleNamePlateDriverEvents(instanceType)
+	end
+
 	if inInstance and instanceType == 'pvp' and self.db.units.ENEMY_PLAYER.markHealers then
 		self.CheckHealerTimer = self:ScheduleRepeatingTimer("CheckBGHealers", 3)
 		self:CheckBGHealers()
@@ -118,6 +194,7 @@ function mod:PLAYER_ENTERING_WORLD()
 			self.CheckHealerTimer = nil;
 		end
 	end
+
 	if self.db.units.PLAYER.useStaticPosition then
 		mod:UpdateVisibility()
 	end
@@ -130,7 +207,7 @@ function mod:ClassBar_Update(frame)
 		local targetFrame = self:GetNamePlateForUnit("target")
 
 		if(self.PlayerFrame and self.db.classbar.attachTo == "PLAYER" and not UnitHasVehicleUI("player")) then
-			frame = self.PlayerFrame.UnitFrame
+			frame = self.PlayerFrame.unitFrame
 			self.ClassBar:SetParent(frame)
 			self.ClassBar:ClearAllPoints()
 
@@ -151,7 +228,7 @@ function mod:ClassBar_Update(frame)
 			end
 			self.ClassBar:Show()
 		elseif(targetFrame and self.db.classbar.attachTo == "TARGET" and not UnitHasVehicleUI("player")) then
-			frame = targetFrame.UnitFrame
+			frame = targetFrame.unitFrame
 			if(frame.UnitType == "FRIENDLY_NPC" or frame.UnitType == "FRIENDLY_PLAYER" or frame.UnitType == "HEALER") then
 				self.ClassBar:Hide()
 			else
@@ -219,10 +296,12 @@ function mod:SetTargetFrame(frame)
 
 	local targetExists = UnitExists("target")
 	if(UnitIsUnit(frame.unit, "target") and not frame.isTarget) then
-		frame:SetFrameLevel(parent:GetFrameLevel() + 5)
-		frame.Glow:SetFrameLevel(parent:GetFrameLevel() + 3)
-		frame.Buffs:SetFrameLevel(parent:GetFrameLevel() + 4)
-		frame.Debuffs:SetFrameLevel(parent:GetFrameLevel() + 4)
+		if(parent) then
+			frame:SetFrameLevel(parent:GetFrameLevel() + 5)
+			frame.Glow:SetFrameLevel(parent:GetFrameLevel() + 3)
+			frame.Buffs:SetFrameLevel(parent:GetFrameLevel() + 4)
+			frame.Debuffs:SetFrameLevel(parent:GetFrameLevel() + 4)
+		end
 
 		if(self.db.useTargetScale) then
 			self:SetFrameScale(frame, self.db.targetScale)
@@ -328,109 +407,119 @@ end
 
 function mod:NAME_PLATE_UNIT_ADDED(_, unit, frame)
 	local frame = frame or self:GetNamePlateForUnit(unit);
-	frame.UnitFrame.unit = unit
-	frame.UnitFrame.displayedUnit = unit
+	frame.unitFrame.unit = unit
+	frame.unitFrame.displayedUnit = unit
 	self:UpdateInVehicle(frame, true)
 
 	local CanAttack = UnitCanAttack(unit, self.playerUnitToken)
 	local isPlayer = UnitIsPlayer(unit)
 
 	if(UnitIsUnit(unit, "player")) then
-		frame.UnitFrame.UnitType = "PLAYER"
+		frame.unitFrame.UnitType = "PLAYER"
 	elseif(not CanAttack and isPlayer) then
 		local role = UnitGroupRolesAssigned(unit)
 		if(role == "HEALER") then
-			frame.UnitFrame.UnitType = role
+			frame.unitFrame.UnitType = role
 		else
-			frame.UnitFrame.UnitType = "FRIENDLY_PLAYER"
+			frame.unitFrame.UnitType = "FRIENDLY_PLAYER"
 		end
 	elseif(not CanAttack and not isPlayer) then
-		frame.UnitFrame.UnitType = "FRIENDLY_NPC"
+		frame.unitFrame.UnitType = "FRIENDLY_NPC"
 	elseif(CanAttack and isPlayer) then
-		frame.UnitFrame.UnitType = "ENEMY_PLAYER"
-		self:UpdateElement_HealerIcon(frame.UnitFrame)
+		frame.unitFrame.UnitType = "ENEMY_PLAYER"
+		self:UpdateElement_HealerIcon(frame.unitFrame)
 	else
-		frame.UnitFrame.UnitType = "ENEMY_NPC"
+		frame.unitFrame.UnitType = "ENEMY_NPC"
 	end
 
-	if(frame.UnitFrame.UnitType == "PLAYER") then
+	if(frame.unitFrame.UnitType == "PLAYER") then
 		self.PlayerFrame = frame
 		self.PlayerNamePlateAnchor:SetParent(frame)
-		self.PlayerNamePlateAnchor:SetAllPoints(frame.UnitFrame)
+		self.PlayerNamePlateAnchor:SetAllPoints(frame.unitFrame)
 		self.PlayerNamePlateAnchor:Show()
 	end
 
-	if(self.db.units[frame.UnitFrame.UnitType].healthbar.enable or self.db.displayStyle ~= "ALL") then
-		self:ConfigureElement_HealthBar(frame.UnitFrame)
-		self:ConfigureElement_PowerBar(frame.UnitFrame)
-		self:ConfigureElement_CastBar(frame.UnitFrame)
-		self:ConfigureElement_Glow(frame.UnitFrame)
+	if(self.db.units[frame.unitFrame.UnitType].healthbar.enable or self.db.displayStyle ~= "ALL") then
+		self:ConfigureElement_HealthBar(frame.unitFrame)
+		self:ConfigureElement_PowerBar(frame.unitFrame)
+		self:ConfigureElement_CastBar(frame.unitFrame)
+		self:ConfigureElement_Glow(frame.unitFrame)
 
-		if(self.db.units[frame.UnitFrame.UnitType].buffs.enable) then
-			frame.UnitFrame.Buffs.db = self.db.units[frame.UnitFrame.UnitType].buffs
-			self:UpdateAuraIcons(frame.UnitFrame.Buffs)
+		if(self.db.units[frame.unitFrame.UnitType].buffs.enable) then
+			frame.unitFrame.Buffs.db = self.db.units[frame.unitFrame.UnitType].buffs
+			self:UpdateAuraIcons(frame.unitFrame.Buffs)
 		end
 
-		if(self.db.units[frame.UnitFrame.UnitType].debuffs.enable) then
-			frame.UnitFrame.Debuffs.db = self.db.units[frame.UnitFrame.UnitType].debuffs
-			self:UpdateAuraIcons(frame.UnitFrame.Debuffs)
+		if(self.db.units[frame.unitFrame.UnitType].debuffs.enable) then
+			frame.unitFrame.Debuffs.db = self.db.units[frame.unitFrame.UnitType].debuffs
+			self:UpdateAuraIcons(frame.unitFrame.Debuffs)
 		end
 	end
 
-	self:ConfigureElement_Portrait(frame.UnitFrame)
-	self:ConfigureElement_Level(frame.UnitFrame)
-	self:ConfigureElement_Name(frame.UnitFrame)
-	self:ConfigureElement_NPCTitle(frame.UnitFrame)
-	self:ConfigureElement_Elite(frame.UnitFrame)
-	self:ConfigureElement_Detection(frame.UnitFrame)
-	self:ConfigureElement_Highlight(frame.UnitFrame)
-	self:RegisterEvents(frame.UnitFrame, unit)
-	self:UpdateElement_All(frame.UnitFrame, unit)
+	self:ConfigureElement_Level(frame.unitFrame)
+	self:ConfigureElement_Name(frame.unitFrame)
+	self:ConfigureElement_Portrait(frame.unitFrame)
+	self:ConfigureElement_NPCTitle(frame.unitFrame)
+	self:ConfigureElement_Elite(frame.unitFrame)
+	self:ConfigureElement_Detection(frame.unitFrame)
+	self:ConfigureElement_Highlight(frame.unitFrame)
+	self:RegisterEvents(frame.unitFrame, unit)
+	self:UpdateElement_All(frame.unitFrame, unit, nil, true)
 
-	if (self.db.displayStyle == "TARGET" and not frame.UnitFrame.isTarget and frame.UnitFrame.UnitType ~= "PLAYER") then
+	if (self.db.displayStyle == "TARGET" and not frame.unitFrame.isTarget and frame.unitFrame.UnitType ~= "PLAYER") then
 		--Hide if we only allow our target to be displayed and the frame is not our current target and the frame is not the player nameplate
-		frame.UnitFrame:Hide()
+		frame.unitFrame:Hide()
 	elseif (frame.UnitType ~= "PLAYER" or not self.db.units.PLAYER.useStaticPosition) then --Visibility for static nameplate is handled in UpdateVisibility
-		frame.UnitFrame:Show()
+		frame.unitFrame:Show()
 	end
+
+	self:UpdateElement_Filters(frame.unitFrame)
 end
 
 function mod:NAME_PLATE_UNIT_REMOVED(_, unit, frame)
 	local frame = frame or self:GetNamePlateForUnit(unit);
-	frame.UnitFrame.unit = nil
+	frame.unitFrame.unit = nil
 
-	local unitType = frame.UnitFrame.UnitType
-	if(frame.UnitFrame.UnitType == "PLAYER") then
+	local unitType = frame.unitFrame.UnitType
+	if(frame.unitFrame.UnitType == "PLAYER") then
 		self.PlayerFrame = nil
 		self.PlayerNamePlateAnchor:Hide()
 	end
 
-	self:HideAuraIcons(frame.UnitFrame.Buffs)
-	self:HideAuraIcons(frame.UnitFrame.Debuffs)
-	frame.UnitFrame:UnregisterAllEvents()
-	frame.UnitFrame.Glow.r, frame.UnitFrame.Glow.g, frame.UnitFrame.Glow.b = nil, nil, nil
-	frame.UnitFrame.Glow:Hide()
-	frame.UnitFrame.HealthBar.r, frame.UnitFrame.HealthBar.g, frame.UnitFrame.HealthBar.b = nil, nil, nil
-	frame.UnitFrame.HealthBar:Hide()
-	frame.UnitFrame.PowerBar:Hide()
-	frame.UnitFrame.CastBar:Hide()
-	frame.UnitFrame.AbsorbBar:Hide()
-	frame.UnitFrame.HealPrediction:Hide()
-	frame.UnitFrame.PersonalHealPrediction:Hide()
-	frame.UnitFrame.Level:ClearAllPoints()
-	frame.UnitFrame.Level:SetText("")
-	frame.UnitFrame.Name:ClearAllPoints()
-	frame.UnitFrame.Name:SetText("")
-	frame.UnitFrame.NPCTitle:ClearAllPoints()
-	frame.UnitFrame.NPCTitle:SetText("")
-	frame.UnitFrame.Elite:Hide()
-	frame.UnitFrame.DetectionModel:Hide()
-	frame.UnitFrame:Hide()
-	frame.UnitFrame.isTarget = nil
-	frame.UnitFrame.displayedUnit = nil
+	self:HideAuraIcons(frame.unitFrame.Buffs)
+	self:HideAuraIcons(frame.unitFrame.Debuffs)
+	frame.unitFrame:UnregisterAllEvents()
+	frame.unitFrame.HealthBar.r, frame.unitFrame.HealthBar.g, frame.unitFrame.HealthBar.b = nil, nil, nil
+	frame.unitFrame.HealthBar:Hide()
+	frame.unitFrame.Glow.r, frame.unitFrame.Glow.g, frame.unitFrame.Glow.b = nil, nil, nil
+	frame.unitFrame.Glow:Hide()
+	frame.unitFrame.Glow2:Hide()
+	frame.unitFrame.TopArrow:Hide()
+	frame.unitFrame.LeftArrow:Hide()
+	frame.unitFrame.RightArrow:Hide()
+	frame.unitFrame.Name.r, frame.unitFrame.Name.g, frame.unitFrame.Name.b = nil, nil, nil
+	frame.unitFrame.Name:ClearAllPoints()
+	frame.unitFrame.Name:SetText("")
+	frame.unitFrame.Name.NameOnlyGlow:Hide()
+	frame.unitFrame.Highlight:Hide()
+	frame.unitFrame.Portrait:Hide()
+	frame.unitFrame.PowerBar:Hide()
+	frame.unitFrame.CastBar:Hide()
+	frame.unitFrame.AbsorbBar:Hide()
+	frame.unitFrame.HealPrediction:Hide()
+	frame.unitFrame.PersonalHealPrediction:Hide()
+	frame.unitFrame.Level:ClearAllPoints()
+	frame.unitFrame.Level:SetText("")
+	frame.unitFrame.NPCTitle:ClearAllPoints()
+	frame.unitFrame.NPCTitle:SetText("")
+	frame.unitFrame.Elite:Hide()
+	frame.unitFrame.DetectionModel:Hide()
+	frame.unitFrame:Hide()
+	frame.unitFrame.isTarget = nil
+	frame.unitFrame.displayedUnit = nil
 	frame.ThreatData = nil
-	frame.UnitFrame.UnitType = nil
-	frame.UnitFrame.TopLevelFrame = nil
+	frame.unitFrame.UnitType = nil
+	frame.unitFrame.TopLevelFrame = nil
 
 	if(self.ClassBar) then
 		if(unitType == "PLAYER") then
@@ -480,8 +569,8 @@ end
 
 function mod:ForEachPlate(functionToRun, ...)
 	for _, frame in pairs(C_NamePlate_GetNamePlates()) do
-		if(frame and frame.UnitFrame) then
-			self[functionToRun](self, frame.UnitFrame, ...)
+		if(frame and frame.unitFrame) then
+			self[functionToRun](self, frame.unitFrame, ...)
 		end
 	end
 end
@@ -525,12 +614,551 @@ function mod:UpdateInVehicle(frame, noEvents)
 	end
 end
 
-function mod:UpdateElement_All(frame, unit, noTargetFrame)
+local function filterAura(names, icons, mustHaveAll, missing, minTimeLeft, maxTimeLeft)
+	local total, count = 0, 0
+	for name, value in pairs(names) do
+		if value == true then --only if they are turned on
+			total = total + 1 --keep track of the names
+		end
+		for frameNum, icon in pairs(icons) do
+			if icons[frameNum]:IsShown() and (value == true) and ((icon.name and icon.name == name) or (icon.spellID and icon.spellID == tonumber(name)))
+				and (not minTimeLeft or (minTimeLeft == 0 or (icon.expirationTime and (icon.expirationTime - GetTime()) > minTimeLeft))) and (not maxTimeLeft or (maxTimeLeft == 0 or (icon.expirationTime and (icon.expirationTime - GetTime()) < maxTimeLeft))) then
+				count = count + 1 --keep track of how many matches we have
+			end
+		end
+	end
+
+	if total == 0 then
+		return nil --If no auras are checked just pass nil, we dont need to run the filter here.
+	else
+		return ((mustHaveAll and not missing) and total == count)	-- [x] Check for all [ ] Missing: total needs to match count
+		or ((not mustHaveAll and not missing) and count > 0)		-- [ ] Check for all [ ] Missing: count needs to be greater than zero
+		or ((not mustHaveAll and missing) and count == 0)			-- [ ] Check for all [x] Missing: count needs to be zero
+		or ((mustHaveAll and missing) and total ~= count)			-- [x] Check for all [x] Missing: count must not match total
+	end
+end
+
+
+local function filterCooldown(names, mustHaveAll)
+	local total, count, duration, charges, _ = 0, 0
+	--local _, gcd = GetSpellCooldown(61304)
+
+	for name, value in pairs(names) do
+		if value == "ONCD" or value == "OFFCD" then --only if they are turned on
+			total = total + 1 --keep track of the names
+		end
+
+		charges = GetSpellCharges(name)
+		_, duration = GetSpellCooldown(name)
+
+		if ((not charges or charges == 0) and duration > 0 --[[and duration >= gcd]] and value == "ONCD")
+		or (((not charges and duration == 0) or (charges and charges > 0)) and value == "OFFCD") then
+			count = count + 1
+			--[[ ~Simpy
+				1)	what about spells that dont have the GCD lockout?
+					there is no GCD check on "offcd" because we cant properly check it without math [duration - (GetTime() - start)]?
+				2)	spellID 61304 is `Global Cooldown` and maybe this is better than using 1.5
+				3)	actually im removing GCD stuff for now, lets just worry about real CDs until we can improve this later
+					other things need to be looked into here sometime..
+			]]
+		end
+	end
+
+	if total == 0 then
+		return nil
+	else
+		return (mustHaveAll and total == count) or (not mustHaveAll and count > 0)
+	end
+end
+
+local function HidePlayerNamePlate()
+	mod.PlayerFrame__.unitFrame:Hide()
+	mod.PlayerNamePlateAnchor:Hide()
+end
+
+local function backdropBorderColorLock(frame, backdrop, r, g, b, a)
+	backdrop:SetBackdropBorderColor(r, g, b, a)
+	backdrop.r, backdrop.g, backdrop.b, backdrop.a = r, g, b, a
+	if not backdrop.backdropBorderColorLocked then
+		backdrop.backdropBorderColorLocked = true
+		hooksecurefunc(backdrop, "SetBackdropBorderColor", function(self, r, g, b, a)
+			if self:GetParent():GetParent().BorderChanged then --only call this for ones we lock
+				if r ~= self.r or g ~= self.g or b ~= self.b or a ~= self.a then
+					self:SetBackdropBorderColor(self.r, self.g, self.b, self.a)
+				end
+			end
+		end)
+	end
+end
+
+local filterVisibility --[[ 0=hide 1=show 2=noTrigger ]]
+function mod:FilterStyle(frame, actions, castbarTriggered)
+	if castbarTriggered then
+		frame.castbarTriggered = castbarTriggered
+	end
+
+	if actions.hide then
+		if frame.UnitType == 'PLAYER' then
+			filterVisibility = 0
+			if self.db.units.PLAYER.useStaticPosition then
+				HidePlayerNamePlate()
+			else
+				E:LockCVar("nameplatePersonalShowAlways", "0")
+				frame:Hide()
+			end
+		else
+			frame:Hide()
+		end
+		return --We hide it. Lets not do other things (no point)
+	else
+		if frame.UnitType == 'PLAYER' then
+			filterVisibility = 1
+			if self.db.units.PLAYER.useStaticPosition then
+				self.PlayerNamePlateAnchor:Show()
+			else
+				E:LockCVar("nameplatePersonalShowAlways", "1")
+			end
+		end
+		frame:Show()
+	end
+
+	if frame.HealthBar:IsShown() then
+		if actions.color and actions.color.health then
+			frame.HealthColorChanged = true
+			frame.HealthBar:SetStatusBarColor(actions.color.healthColor.r, actions.color.healthColor.g, actions.color.healthColor.b, actions.color.healthColor.a);
+		end
+		if actions.color and actions.color.border and frame.HealthBar.backdrop then
+			frame.BorderChanged = true
+			--Lets lock this to the values we want (needed for when the media border color changes)
+			backdropBorderColorLock(frame, frame.HealthBar.backdrop, actions.color.borderColor.r, actions.color.borderColor.g, actions.color.borderColor.b, actions.color.borderColor.a)
+		end
+		if actions.texture and actions.texture.enable then
+			frame.TextureChanged = true
+			frame.Highlight.texture:SetTexture(LSM:Fetch("statusbar", actions.texture.texture))
+			frame.HealthBar:SetStatusBarTexture(LSM:Fetch("statusbar", actions.texture.texture))
+		end
+		if actions.scale and actions.scale ~= 1 then
+			frame.ScaleChanged = true
+			local scale = actions.scale
+			if frame.isTarget and self.db.useTargetScale then
+				scale = scale * self.db.targetScale
+			end
+			self:SetFrameScale(frame, scale)
+		end
+	end
+
+	if actions.color and actions.color.name then
+		frame.NameColorChanged = true
+		local nameText = frame.Name:GetText()
+		if nameText and nameText ~= "" then
+			frame.Name:SetTextColor(actions.color.nameColor.r, actions.color.nameColor.g, actions.color.nameColor.b, actions.color.nameColor.a)
+		end
+	end
+
+	if actions.usePortrait then
+		frame.PortraitShown = true
+		self:UpdateElement_Portrait(frame, true)
+	end
+end
+
+local filterList = {}
+local function filterSort(a,b)
+	if a[2] and b[2] then
+		return a[2]>b[2] --Sort by priority: 1=first, 2=second, 3=third, etc
+	end
+end
+
+function mod:UpdateElement_Filters(frame)
+	local trigger, failed, condition, name, guid, npcid, inCombat, questBoss, reaction, spell, health, maxHealth, percHealth, classification;
+	local underHealthThreshold, overHealthThreshold, level, myLevel, curLevel, minLevel, maxLevel, matchMyLevel, myRole, mySpecID;
+	local talentSelected, talentFunction, talentRows, instanceName, instanceType, instanceDifficulty;
+	local castbarShown = frame.CastBar:IsShown()
+	local castbarTriggered = false --We use this to prevent additional calls to `UpdateElement_All` when the castbar hides
+	local matchMyClass = false --Only check spec when we match the class condition
+
+	if frame.TextureChanged then
+		frame.TextureChanged = nil
+		frame.Highlight.texture:SetTexture(LSM:Fetch("statusbar", self.db.statusbar))
+		frame.HealthBar:SetStatusBarTexture(LSM:Fetch("statusbar", self.db.statusbar))
+	end
+	if frame.HealthColorChanged then
+		frame.HealthColorChanged = nil
+		frame.HealthBar:SetStatusBarColor(frame.HealthBar.r, frame.HealthBar.g, frame.HealthBar.b);
+	end
+	if frame.BorderChanged then
+		frame.BorderChanged = nil
+		frame.HealthBar.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+	end
+	if frame.ScaleChanged then
+		frame.ScaleChanged = nil
+		if self.db.useTargetScale then
+			if frame.isTarget then
+				self:SetFrameScale(frame, self.db.targetScale)
+			else
+				self:SetFrameScale(frame, frame.ThreatScale or 1)
+			end
+		end
+	end
+	if frame.NameColorChanged then
+		frame.NameColorChanged = nil
+		frame.Name:SetTextColor(frame.Name.r, frame.Name.g, frame.Name.b)
+	end
+	if frame.PortraitShown then
+		frame.PortraitShown = nil
+		frame.Portrait:Hide() --This could have been forced so hide it
+		self:UpdateElement_Portrait(frame) --Use the original check to determine if this should be shown
+	end
+
+	if frame.UnitType == 'PLAYER' then
+		filterVisibility = 2
+	end
+
+	twipe(filterList)
+
+	for filterName, filter in pairs(E.global.nameplate.filters) do
+		if filter.triggers and E.db.nameplates and E.db.nameplates.filters then
+			if E.db.nameplates.filters[filterName] and E.db.nameplates.filters[filterName].triggers and E.db.nameplates.filters[filterName].triggers.enable then
+				tinsert(filterList, {filterName, filter.triggers.priority or 1})
+			end
+		end
+	end
+
+	if not next(filterList) then
+		return --if all triggers are disabled just stop
+	end
+
+	tsort(filterList, filterSort) --sort by priority
+
+	for filterName, filter in ipairs(filterList) do
+		filter = E.global.nameplate.filters[filterList[filterName][1]];
+		if filter then
+			trigger = filter.triggers
+			failed = nil
+
+			if not failed and trigger.names and next(trigger.names) then
+				condition = 0
+				for unitName, value in pairs(trigger.names) do
+					if value == true then --only check names that are checked
+						condition = 1
+						if tonumber(unitName) then
+							guid = UnitGUID(frame.displayedUnit)
+							if guid then
+								npcid = select(6, strsplit('-', guid))
+								if tonumber(unitName) == tonumber(npcid) then
+									condition = 2
+									break
+								end
+							end
+						else
+							name = UnitName(frame.displayedUnit)
+							if unitName and unitName ~= "" and unitName == name then
+								condition = 2
+								break
+							end
+						end
+					end
+				end
+				if condition ~= 0 then
+					failed = (condition == 1)
+				end
+			end
+
+			--Try to match by casting spell name or spell id
+			if not failed and (trigger.casting and trigger.casting.spells) and next(trigger.casting.spells) then
+				condition = 0
+				for name, value in pairs(trigger.casting.spells) do
+					if value == true then --only check spell that are checked
+						condition = 1
+						if castbarShown then
+							spell = frame.CastBar.Name:GetText() --Make sure we can check spell name
+							if spell and spell ~= "" and spell ~= FAILED and spell ~= INTERRUPTED then
+								if tonumber(name) then
+									name = GetSpellInfo(name)
+								end
+								if name and name == spell then
+									condition = 2
+									break
+								end
+							end
+						end
+					end
+				end
+				if condition ~= 0 then --If we cant check spell name, we ignore this trigger when the castbar is shown
+					failed = (condition == 1)
+					castbarTriggered = (condition == 2)
+				end
+			end
+
+			--Try to match by casting interruptible
+			if not failed and (trigger.casting and trigger.casting.interruptible) then
+				condition = false
+				if castbarShown and frame.CastBar.canInterrupt then
+					condition = true
+					castbarTriggered = true
+				end
+				failed = not condition
+			end
+
+			--Try to match by player health conditions
+			if not failed and trigger.healthThreshold then
+				condition = false
+				health, maxHealth = UnitHealth(frame.displayedUnit), UnitHealthMax(frame.displayedUnit)
+				percHealth = (maxHealth > 0 and health/maxHealth) or 0
+				underHealthThreshold = (trigger.underHealthThreshold and (trigger.underHealthThreshold ~= 0) and (trigger.underHealthThreshold > percHealth))
+				overHealthThreshold = (trigger.overHealthThreshold and (trigger.overHealthThreshold ~= 0) and (trigger.overHealthThreshold < percHealth))
+				if underHealthThreshold or overHealthThreshold then
+					condition = true
+				end
+				failed = not condition
+			end
+
+			--Try to match by player combat conditions
+			if not failed and (trigger.inCombat or trigger.outOfCombat) then
+				condition = false
+				inCombat = UnitAffectingCombat("player")
+				if (trigger.inCombat and inCombat) or (trigger.outOfCombat and not inCombat) then
+					condition = true
+				end
+				failed = not condition
+			end
+
+			--Try to match by unit combat conditions
+			if not failed and (trigger.inCombatUnit or trigger.outOfCombatUnit) then
+				condition = false
+				inCombat = UnitAffectingCombat(frame.displayedUnit)
+				if (trigger.inCombatUnit and inCombat) or (trigger.outOfCombatUnit and not inCombat) then
+					condition = true
+				end
+				failed = not condition
+			end
+
+			--Try to match by target conditions
+			if not failed and (trigger.isTarget or trigger.notTarget) then
+				condition = false
+				if (trigger.isTarget and frame.isTarget) or (trigger.notTarget and not frame.isTarget) then
+					condition = true
+				end
+				failed = not condition
+			end
+
+			--Try to match if unit is a quest boss
+			if not failed and trigger.questBoss then
+				condition = false
+				questBoss = UnitIsQuestBoss(frame.displayedUnit)
+				if questBoss then
+					condition = true
+				end
+				failed = not condition
+			end
+
+			--Try to match by class conditions
+			if not failed and trigger.class and next(trigger.class) then
+				condition = false
+				if trigger.class[E.myclass] and trigger.class[E.myclass].enabled then
+					condition = true
+					matchMyClass = true
+				end
+				failed = not condition
+			end
+
+			--Try to match by spec conditions
+			if not failed and matchMyClass and (trigger.class[E.myclass] and trigger.class[E.myclass].specs and next(trigger.class[E.myclass].specs)) then
+				condition = false
+				mySpecID = GetSpecializationInfo(E.myspec)
+				if mySpecID and trigger.class[E.myclass].specs[mySpecID] then
+					condition = true
+				end
+				failed = not condition
+			end
+
+			--Try to match by classification conditions
+			if not failed and (trigger.classification.worldboss or trigger.classification.rareelite or trigger.classification.elite or trigger.classification.rare or trigger.classification.normal or trigger.classification.trivial or trigger.classification.minus) then
+				condition = false
+				classification = UnitClassification(frame.displayedUnit)
+				if classification
+				and ((trigger.classification.worldboss and classification == "worldboss")
+				or (trigger.classification.rareelite   and classification == "rareelite")
+				or (trigger.classification.elite	   and classification == "elite")
+				or (trigger.classification.rare		   and classification == "rare")
+				or (trigger.classification.normal	   and classification == "normal")
+				or (trigger.classification.trivial	   and classification == "trivial")
+				or (trigger.classification.minus	   and classification == "minus")) then
+					condition = true
+				end
+				failed = not condition
+			end
+
+			--Try to match by role conditions
+			if not failed and (trigger.role.tank or trigger.role.healer or trigger.role.damager) then
+				condition = false
+				myRole = E:GetPlayerRole()
+				if myRole and ((trigger.role.tank and myRole == "TANK") or (trigger.role.healer and myRole == "HEALER") or (trigger.role.damager and myRole == "DAMAGER")) then
+					condition = true
+				end
+				failed = not condition
+			end
+
+			--Try to match by instance conditions
+			if not failed and (trigger.instanceType.none or trigger.instanceType.scenario or trigger.instanceType.party or trigger.instanceType.raid or trigger.instanceType.arena or trigger.instanceType.pvp) then
+				condition = false
+				instanceName, instanceType, instanceDifficulty = GetInstanceInfo()
+				if instanceType
+				and ((trigger.instanceType.none	  and instanceType == "none")
+				or (trigger.instanceType.scenario and instanceType == "scenario")
+				or (trigger.instanceType.party	  and instanceType == "party")
+				or (trigger.instanceType.raid	  and instanceType == "raid")
+				or (trigger.instanceType.arena	  and instanceType == "arena")
+				or (trigger.instanceType.pvp	  and instanceType == "pvp")) then
+					condition = true
+				end
+				failed = not condition
+			end
+
+			--Try to match by instance difficulty
+			if not failed and (trigger.instanceType.party or trigger.instanceType.raid) then
+				if trigger.instanceType.party and instanceType == "party" and (trigger.instanceDifficulty.dungeon.normal or trigger.instanceDifficulty.dungeon.heroic or trigger.instanceDifficulty.dungeon.mythic or trigger.instanceDifficulty.dungeon["mythic+"] or trigger.instanceDifficulty.dungeon.timewalking) then
+					condition = false;
+					if ((trigger.instanceDifficulty.dungeon.normal		and instanceDifficulty == 1)
+					or (trigger.instanceDifficulty.dungeon.heroic		and instanceDifficulty == 2)
+					or (trigger.instanceDifficulty.dungeon.mythic		and instanceDifficulty == 23)
+					or (trigger.instanceDifficulty.dungeon["mythic+"]	and instanceDifficulty == 8)
+					or (trigger.instanceDifficulty.dungeon.timewalking	and instanceDifficulty == 24)) then
+						condition = true
+					end
+					failed = not condition;
+				end
+
+				if trigger.instanceType.raid and instanceType == "raid" and
+					(trigger.instanceDifficulty.raid.lfr or trigger.instanceDifficulty.raid.normal or trigger.instanceDifficulty.raid.heroic or trigger.instanceDifficulty.raid.mythic or trigger.instanceDifficulty.raid.timewalking
+					or trigger.instanceDifficulty.raid.legacy10normal or trigger.instanceDifficulty.raid.legacy25normal or trigger.instanceDifficulty.raid.legacy10heroic or trigger.instanceDifficulty.raid.legacy25heroic) then
+					condition = false;
+					if ((trigger.instanceDifficulty.raid.lfr           and (instanceDifficulty == 7 or instanceDifficulty == 17))
+					or (trigger.instanceDifficulty.raid.normal         and instanceDifficulty == 14)
+					or (trigger.instanceDifficulty.raid.heroic         and instanceDifficulty == 15)
+					or (trigger.instanceDifficulty.raid.mythic         and instanceDifficulty == 16)
+					or (trigger.instanceDifficulty.raid.timewalking    and instanceDifficulty == 24)
+					or (trigger.instanceDifficulty.raid.legacy10normal and instanceDifficulty == 3)
+					or (trigger.instanceDifficulty.raid.legacy25normal and instanceDifficulty == 4)
+					or (trigger.instanceDifficulty.raid.legacy10heroic and instanceDifficulty == 5)
+					or (trigger.instanceDifficulty.raid.legacy25heroic and instanceDifficulty == 6)) then
+						condition = true
+					end
+					failed = not condition
+				end
+			end
+
+			--Try to match by talent conditions
+			if not failed and trigger.talent.enabled then
+				condition = false
+
+				talentFunction = (trigger.talent.type == "pvp" and GetPvpTalentInfo) or GetTalentInfo
+				talentRows = (trigger.talent.type == "pvp" and 6) or 7
+
+				for i = 1, talentRows do
+					if (trigger.talent["tier"..i.."enabled"] and trigger.talent["tier"..i].column > 0) then
+						talentSelected = select(4, talentFunction(i, trigger.talent["tier"..i].column, 1))
+						if (talentSelected and not trigger.talent["tier"..i].missing) or (trigger.talent["tier"..i].missing and not talentSelected) then
+							condition = true
+							if not trigger.talent.requireAll then
+								break -- break when not using requireAll because we matched one
+							end
+						elseif trigger.talent.requireAll then
+							condition = false -- fail because requireAll failed
+							break -- break because requireAll failed
+						end
+					end
+				end
+
+				failed = not condition
+			end
+
+			--Try to match by level conditions
+			if not failed and trigger.level then
+				condition = false
+				myLevel = UnitLevel('player')
+				level = (frame.displayedUnit == 'player' and myLevel) or UnitLevel(frame.displayedUnit)
+				curLevel = (trigger.curlevel and trigger.curlevel ~= 0 and (trigger.curlevel == level))
+				minLevel = (trigger.minlevel and trigger.minlevel ~= 0 and (trigger.minlevel <= level))
+				maxLevel = (trigger.maxlevel and trigger.maxlevel ~= 0 and (trigger.maxlevel >= level))
+				matchMyLevel = trigger.mylevel and (level == myLevel)
+				if curLevel or minLevel or maxLevel or matchMyLevel then
+					condition = true
+				end
+				failed = not condition
+			end
+
+			--Try to match by unit type
+			if not failed and trigger.nameplateType and trigger.nameplateType.enable then
+				condition = false
+
+				if (trigger.nameplateType.friendlyPlayer and frame.UnitType=='FRIENDLY_PLAYER')
+				or (trigger.nameplateType.friendlyNPC	 and frame.UnitType=='FRIENDLY_NPC')
+				or (trigger.nameplateType.enemyPlayer	 and frame.UnitType=='ENEMY_PLAYER')
+				or (trigger.nameplateType.enemyNPC		 and frame.UnitType=='ENEMY_NPC')
+				or (trigger.nameplateType.healer		 and frame.UnitType=='HEALER')
+				or (trigger.nameplateType.player		 and frame.UnitType=='PLAYER') then
+					condition = true
+				end
+
+				failed = not condition
+			end
+
+			--Try to match by Reaction (or Reputation) type
+			if not failed and trigger.reactionType and trigger.reactionType.enable then
+				reaction = (trigger.reactionType.reputation and UnitReaction(frame.displayedUnit, 'player')) or UnitReaction('player', frame.displayedUnit)
+				condition = false
+
+				if (reaction==1 and trigger.reactionType.hated)
+				or (reaction==2 and trigger.reactionType.hostile)
+				or (reaction==3 and trigger.reactionType.unfriendly)
+				or (reaction==4 and trigger.reactionType.neutral)
+				or (reaction==5 and trigger.reactionType.friendly)
+				or (reaction==6 and trigger.reactionType.honored)
+				or (reaction==7 and trigger.reactionType.revered)
+				or (reaction==8 and trigger.reactionType.exalted) then
+					condition = true
+				end
+
+				failed = not condition
+			end
+
+			--cooldown conditions
+			if not failed and trigger.cooldowns and trigger.cooldowns.names and next(trigger.cooldowns.names) then
+				condition = filterCooldown(trigger.cooldowns.names, trigger.cooldowns.mustHaveAll)
+				if condition ~= nil then --Condition will be nil if none are set to ONCD or OFFCD
+					failed = not condition
+				end
+			end
+
+			--Try to match according to buff aura conditions
+			if not failed and trigger.buffs and trigger.buffs.names and next(trigger.buffs.names) then
+				condition = filterAura(trigger.buffs.names, frame.Buffs and frame.Buffs.icons, trigger.buffs.mustHaveAll, trigger.buffs.missing, trigger.buffs.minTimeLeft, trigger.buffs.maxTimeLeft)
+				if condition ~= nil then --Condition will be nil if none are selected
+					failed = not condition
+				end
+			end
+
+			--Try to match according to debuff aura conditions
+			if not failed and trigger.debuffs and trigger.debuffs.names and next(trigger.debuffs.names) then
+				condition = filterAura(trigger.debuffs.names, frame.Debuffs and frame.Debuffs.icons, trigger.debuffs.mustHaveAll, trigger.debuffs.missing, trigger.debuffs.minTimeLeft, trigger.debuffs.maxTimeLeft)
+				if condition ~= nil then --Condition will be nil if none are selected
+					failed = not condition
+				end
+			end
+
+			--If failed is nil it means the filter is empty so we dont run FilterStyle
+			if failed == false then --The conditions didn't fail so pass to FilterStyle
+				self:FilterStyle(frame, filter.actions, castbarTriggered);
+			end
+		end
+	end
+end
+
+function mod:UpdateElement_All(frame, unit, noTargetFrame, filterIgnore)
 	if(self.db.units[frame.UnitType].healthbar.enable or (self.db.displayStyle ~= "ALL") or (frame.isTarget and self.db.alwaysShowTargetHealth)) then
 		mod:UpdateElement_MaxHealth(frame)
 		mod:UpdateElement_Health(frame)
 		mod:UpdateElement_HealthColor(frame)
-		mod:UpdateElement_Glow(frame)
 		mod:UpdateElement_Cast(frame)
 		mod:UpdateElement_Auras(frame)
 		mod:UpdateElement_HealPrediction(frame)
@@ -540,6 +1168,14 @@ function mod:UpdateElement_All(frame, unit, noTargetFrame)
 		else
 			frame.PowerBar:Hide()
 		end
+		mod:UpdateElement_Glow(frame) -- this needs to run after we show the powerbar or not to place the new glow2 properly
+	else
+		-- make sure we hide the arrows and/or glow after disabling the healthbar
+		if frame.TopArrow and frame.TopArrow:IsShown() then frame.TopArrow:Hide() end
+		if frame.LeftArrow and frame.LeftArrow:IsShown() then frame.LeftArrow:Hide() end
+		if frame.RightArrow and frame.RightArrow:IsShown() then frame.RightArrow:Hide() end
+		if frame.Glow2 and frame.Glow2:IsShown() then frame.Glow2:Hide() end
+		if frame.Glow and frame.Glow:IsShown() then frame.Glow:Hide() end
 	end
 	mod:UpdateElement_RaidIcon(frame)
 	mod:UpdateElement_HealerIcon(frame)
@@ -554,33 +1190,48 @@ function mod:UpdateElement_All(frame, unit, noTargetFrame)
 	if(not noTargetFrame) then --infinite loop lol
 		mod:SetTargetFrame(frame)
 	end
+
+	if(not filterIgnore) then
+		mod:UpdateElement_Filters(frame)
+	end
 end
 
 function mod:NAME_PLATE_CREATED(_, frame)
-	frame.UnitFrame = CreateFrame("BUTTON", "ElvUI"..frame:GetName().."UnitFrame", UIParent);
-	frame.UnitFrame:EnableMouse(false);
-	frame.UnitFrame:SetAllPoints(frame)
-	frame.UnitFrame:SetFrameStrata("BACKGROUND")
-	frame.UnitFrame:SetScript("OnEvent", mod.OnEvent)
+	frame.unitFrame = CreateFrame("BUTTON", "ElvUI"..frame:GetName().."UnitFrame", UIParent);
+	frame.unitFrame:EnableMouse(false);
+	frame.unitFrame:SetAllPoints(frame)
+	frame.unitFrame:SetFrameStrata("BACKGROUND")
+	frame.unitFrame:SetScript("OnEvent", mod.OnEvent)
 
-	frame.UnitFrame.HealthBar = self:ConstructElement_HealthBar(frame.UnitFrame)
-	frame.UnitFrame.PowerBar = self:ConstructElement_PowerBar(frame.UnitFrame)
-	frame.UnitFrame.CastBar = self:ConstructElement_CastBar(frame.UnitFrame)
-	frame.UnitFrame.Level = self:ConstructElement_Level(frame.UnitFrame)
-	frame.UnitFrame.Name = self:ConstructElement_Name(frame.UnitFrame)
-	frame.UnitFrame.NPCTitle = self:ConstructElement_NPCTitle(frame.UnitFrame)
-	frame.UnitFrame.Glow = self:ConstructElement_Glow(frame.UnitFrame)
-	frame.UnitFrame.Buffs = self:ConstructElement_Auras(frame.UnitFrame, "LEFT")
-	frame.UnitFrame.Debuffs = self:ConstructElement_Auras(frame.UnitFrame, "RIGHT")
-	frame.UnitFrame.HealerIcon = self:ConstructElement_HealerIcon(frame.UnitFrame)
-	frame.UnitFrame.RaidIcon = self:ConstructElement_RaidIcon(frame.UnitFrame)
-	frame.UnitFrame.Elite = self:ConstructElement_Elite(frame.UnitFrame)
-	frame.UnitFrame.DetectionModel = self:ConstructElement_Detection(frame.UnitFrame)
-	frame.UnitFrame.Highlight = self:ConstructElement_Highlight(frame.UnitFrame)
-	frame.UnitFrame.Portrait = self:ConstructElement_Portrait(frame.UnitFrame)
+	frame.unitFrame.HealthBar = self:ConstructElement_HealthBar(frame.unitFrame)
+	frame.unitFrame.PowerBar = self:ConstructElement_PowerBar(frame.unitFrame)
+	frame.unitFrame.Level = self:ConstructElement_Level(frame.unitFrame)
+	frame.unitFrame.Name = self:ConstructElement_Name(frame.unitFrame)
+	frame.unitFrame.CastBar = self:ConstructElement_CastBar(frame.unitFrame)
+	frame.unitFrame.NPCTitle = self:ConstructElement_NPCTitle(frame.unitFrame)
+	frame.unitFrame.Glow = self:ConstructElement_Glow(frame.unitFrame)
+	frame.unitFrame.Buffs = self:ConstructElement_Auras(frame.unitFrame, "LEFT")
+	frame.unitFrame.Debuffs = self:ConstructElement_Auras(frame.unitFrame, "RIGHT")
+	frame.unitFrame.HealerIcon = self:ConstructElement_HealerIcon(frame.unitFrame)
+	frame.unitFrame.RaidIcon = self:ConstructElement_RaidIcon(frame.unitFrame)
+	frame.unitFrame.Elite = self:ConstructElement_Elite(frame.unitFrame)
+	frame.unitFrame.DetectionModel = self:ConstructElement_Detection(frame.unitFrame)
+	frame.unitFrame.Highlight = self:ConstructElement_Highlight(frame.unitFrame)
+	frame.unitFrame.Portrait = self:ConstructElement_Portrait(frame.unitFrame)
+
+    if frame.UnitFrame and not frame.unitFrame.onShowHooked then
+    	self:SecureHookScript(frame.UnitFrame, "OnShow", function(self)
+    		self:Hide() --Hide Blizzard's Nameplate
+    	end)
+    	--print('Hooked on NAME_PLATE_CREATED')
+    	frame.unitFrame.onShowHooked = true
+    end
 end
 
 function mod:OnEvent(event, unit, ...)
+	if event == "PLAYER_ENTERING_WORLD" and (not unit or type(unit) == "boolean") then
+		if self.unit then unit = self.unit else return end
+	end
 	if (unit and self.displayedUnit and (not UnitIsUnit(unit, self.displayedUnit) and not ((unit == "vehicle" or unit == "player") and (self.displayedUnit == "vehicle" or self.displayedUnit == "player")))) then
 		return
 	end
@@ -589,6 +1240,7 @@ function mod:OnEvent(event, unit, ...)
 		mod:UpdateElement_Health(self)
 		mod:UpdateElement_HealPrediction(self)
 		mod:UpdateElement_Glow(self)
+		mod:UpdateElement_Filters(self)
 		if unit == "vehicle" or unit == "player" then
 			mod:UpdateVisibility()
 		end
@@ -598,25 +1250,31 @@ function mod:OnEvent(event, unit, ...)
 		mod:UpdateElement_MaxHealth(self)
 		mod:UpdateElement_HealPrediction(self)
 		mod:UpdateElement_Glow(self)
+		mod:UpdateElement_Filters(self)
 	elseif(event == "UNIT_NAME_UPDATE") then
 		mod:UpdateElement_Name(self)
 		mod:UpdateElement_NPCTitle(self)
 		mod:UpdateElement_HealthColor(self) --Unit class sometimes takes a bit to load
+		mod:UpdateElement_Filters(self)
 	elseif(event == "UNIT_LEVEL") then
 		mod:UpdateElement_Level(self)
 	elseif(event == "UNIT_THREAT_LIST_UPDATE") then
 		mod:Update_ThreatList(self)
 		mod:UpdateElement_HealthColor(self)
+		mod:UpdateElement_Filters(self)
 	elseif(event == "PLAYER_TARGET_CHANGED") then
 		mod:SetTargetFrame(self)
 		mod:UpdateElement_Glow(self)
 		mod:UpdateElement_HealthColor(self)
+		mod:UpdateElement_Filters(self)
 		mod:UpdateVisibility()
 	elseif(event == "UNIT_AURA") then
 		mod:UpdateElement_Auras(self)
 		if(self.IsPlayerFrame) then
 			mod:ClassBar_Update(self)
 		end
+		mod:UpdateElement_HealthColor(self)
+		mod:UpdateElement_Filters(self)
 	elseif(event == "PLAYER_ROLES_ASSIGNED" or event == "UNIT_FACTION") then
 		mod:CheckUnitType(self)
 	elseif(event == "RAID_TARGET_UPDATE") then
@@ -644,6 +1302,8 @@ function mod:OnEvent(event, unit, ...)
 		mod:UpdateElement_Highlight(self)
 	elseif(event == "UNIT_PORTRAIT_UPDATE" or event == "UNIT_MODEL_CHANGED" or event == "UNIT_CONNECTION") then
 		mod:UpdateElement_Portrait(self)
+	elseif(event == "SPELL_UPDATE_COOLDOWN") then
+		mod:UpdateElement_Filters(self)
 	else
 		mod:UpdateElement_Cast(self, event, unit, ...)
 	end
@@ -670,7 +1330,7 @@ function mod:RegisterEvents(frame, unit)
 	--if(self.db.units[frame.UnitType].portrait.enable) then
 		frame:RegisterUnitEvent("UNIT_PORTRAIT_UPDATE", unit, displayedUnit);
 		frame:RegisterUnitEvent("UNIT_MODEL_CHANGED", unit, displayedUnit);
-		frame:RegisterUnitEvent("UNIT_CONNECTION", unit, displayedUnit);	
+		frame:RegisterUnitEvent("UNIT_CONNECTION", unit, displayedUnit);
 	--end
 
 	if(self.db.units[frame.UnitType].healthbar.enable or (frame.isTarget and self.db.alwaysShowTargetHealth)) then
@@ -703,7 +1363,7 @@ function mod:RegisterEvents(frame, unit)
 		if(self.db.units[frame.UnitType].buffs.enable or self.db.units[frame.UnitType].debuffs.enable) then
 			frame:RegisterUnitEvent("UNIT_AURA", unit, displayedUnit)
 		end
-		mod.OnEvent(frame, "PLAYER_ENTERING_WORLD")
+		mod.OnEvent(frame, "PLAYER_ENTERING_WORLD", unit or frame.unit)
 	end
 
 	frame:RegisterEvent("RAID_TARGET_UPDATE")
@@ -714,6 +1374,7 @@ function mod:RegisterEvents(frame, unit)
 	frame:RegisterEvent("PLAYER_ROLES_ASSIGNED")
 	frame:RegisterEvent("UNIT_FACTION")
 	frame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
+	frame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 end
 
 function mod:SetClassNameplateBar(frame)
@@ -735,11 +1396,13 @@ function mod:UpdateCVars()
 	E:LockCVar("nameplateOtherBottomInset", self.db.clampToScreen and "0.1" or "-1")
 
 	--Player nameplate
-	E:LockCVar("nameplateShowSelf", (self.db.units.PLAYER.useStaticPosition == true or self.db.units.PLAYER.enable ~= true) and "0" or "1")
-	E:LockCVar("nameplatePersonalShowAlways", (self.db.units.PLAYER.visibility.showAlways == true and "1" or "0"))
-	E:LockCVar("nameplatePersonalShowInCombat", (self.db.units.PLAYER.visibility.showInCombat == true and "1" or "0"))
-	E:LockCVar("nameplatePersonalShowWithTarget", (self.db.units.PLAYER.visibility.showWithTarget == true and "1" or "0"))
-	E:LockCVar("nameplatePersonalHideDelaySeconds", self.db.units.PLAYER.visibility.hideDelay)
+	if filterVisibility ~= 1 then --Forced shown, using filters visibility instead.
+		E:LockCVar("nameplateShowSelf", (self.db.units.PLAYER.useStaticPosition == true or self.db.units.PLAYER.enable ~= true) and "0" or "1")
+		E:LockCVar("nameplatePersonalShowAlways", (self.db.units.PLAYER.visibility.showAlways == true and "1" or "0"))
+		E:LockCVar("nameplatePersonalShowInCombat", (self.db.units.PLAYER.visibility.showInCombat == true and "1" or "0"))
+		E:LockCVar("nameplatePersonalShowWithTarget", (self.db.units.PLAYER.visibility.showWithTarget == true and "1" or "0"))
+		E:LockCVar("nameplatePersonalHideDelaySeconds", self.db.units.PLAYER.visibility.hideDelay)
+	end
 end
 
 local function CopySettings(from, to)
@@ -771,7 +1434,7 @@ function mod:TogglePlayerDisplayType()
 		E:EnableMover("PlayerNameplate")
 		self:NAME_PLATE_UNIT_ADDED("NAME_PLATE_UNIT_ADDED", "player", self.PlayerFrame__)
 		self.PlayerNamePlateAnchor:SetParent(self.PlayerFrame__)
-		self.PlayerNamePlateAnchor:SetAllPoints(self.PlayerFrame__.UnitFrame)
+		self.PlayerNamePlateAnchor:SetAllPoints(self.PlayerFrame__.unitFrame)
 		self:UpdateVisibility()
 	else
 		UnregisterUnitWatch(self.PlayerFrame__)
@@ -825,27 +1488,23 @@ function mod:PLAYER_REGEN_ENABLED()
 	self:UpdateVisibility()
 end
 
-local function HidePlayerNamePlate()
-	mod.PlayerFrame__.UnitFrame:Hide()
-	mod.PlayerNamePlateAnchor:Hide()
-end
-
 function mod:UpdateVisibility()
 	local frame = self.PlayerFrame__
 	if self.db.units.PLAYER.useStaticPosition then
+		if filterVisibility ~= 2 then return end --Using filters visibility instead.
 		if (self.db.units.PLAYER.visibility.showAlways) then
-			frame.UnitFrame:Show()
+			frame.unitFrame:Show()
 			self.PlayerNamePlateAnchor:Show()
 		else
 			local curHP, maxHP = UnitHealth("player"), UnitHealthMax("player")
 			local inCombat = UnitAffectingCombat("player")
 			local hasTarget = UnitExists("target")
 			local canAttack = UnitCanAttack("player", "target")
-			
+
 			if (curHP ~= maxHP) or (self.db.units.PLAYER.visibility.showInCombat and inCombat) or (self.db.units.PLAYER.visibility.showWithTarget and hasTarget and canAttack) then
-				frame.UnitFrame:Show()
+				frame.unitFrame:Show()
 				self.PlayerNamePlateAnchor:Show()
-			elseif frame.UnitFrame:IsShown() then
+			elseif frame.unitFrame:IsShown() then
 				if (self.db.units.PLAYER.visibility.hideDelay > 0) then
 					C_Timer_After(self.db.units.PLAYER.visibility.hideDelay, HidePlayerNamePlate)
 				else
@@ -854,13 +1513,180 @@ function mod:UpdateVisibility()
 			end
 		end
 	else
-		frame.UnitFrame:Hide()
+		frame.unitFrame:Hide()
+	end
+end
+
+function mod:UpdateFonts(plate)
+	-- used by the gui to update the aura icon text like duration/stacks
+	if not plate then return end
+
+	--buff fonts
+	if plate.Buffs and plate.Buffs.db and plate.Buffs.db.numAuras then
+		for i=1, plate.Buffs.db.numAuras do
+			if plate.Buffs.icons[i] and plate.Buffs.icons[i].cooldown and plate.Buffs.icons[i].cooldown.timer and plate.Buffs.icons[i].cooldown.timer.text then
+				plate.Buffs.icons[i].cooldown.timer.text:SetFont(LSM:Fetch("font", self.db.durationFont), self.db.durationFontSize, self.db.durationFontOutline)
+			end
+			if plate.Buffs.icons[i] and plate.Buffs.icons[i].count then
+				plate.Buffs.icons[i].count:SetFont(LSM:Fetch("font", self.db.stackFont), self.db.stackFontSize, self.db.stackFontOutline)
+			end
+		end
+	end
+
+	--debuff fonts
+	if plate.Debuffs and plate.Debuffs.db and plate.Debuffs.db.numAuras then
+		for i=1, plate.Debuffs.db.numAuras do
+			if plate.Debuffs.icons[i] and plate.Debuffs.icons[i].cooldown and plate.Debuffs.icons[i].cooldown.timer and plate.Debuffs.icons[i].cooldown.timer.text then
+				plate.Debuffs.icons[i].cooldown.timer.text:SetFont(LSM:Fetch("font", self.db.durationFont), self.db.durationFontSize, self.db.durationFontOutline)
+			end
+			if plate.Debuffs.icons[i] and plate.Debuffs.icons[i].count then
+				plate.Debuffs.icons[i].count:SetFont(LSM:Fetch("font", self.db.stackFont), self.db.stackFontSize, self.db.stackFontOutline)
+			end
+		end
+	end
+
+	--misc element fonts
+	if plate.Name then
+		plate.Name:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
+	end
+	if plate.CastBar and plate.CastBar.Name then
+		plate.CastBar.Name:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
+	end
+	if plate.CastBar and plate.CastBar.Time then
+		plate.CastBar.Time:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
+	end
+	if plate.HealthBar and plate.HealthBar.text then
+		plate.HealthBar.text:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
+	end
+	if plate.PowerBar and plate.PowerBar.text then
+		plate.PowerBar.text:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
+	end
+	if plate.Level then
+		plate.Level:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
+	end
+	if plate.NPCTitle then
+		plate.NPCTitle:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)
+	end
+end
+
+function mod:UpdatePlateFonts()
+	self:ForEachPlate("UpdateFonts")
+	if self.PlayerFrame__ then
+		self:UpdateFonts(self.PlayerFrame__.unitFrame)
+	end
+end
+
+-- Shamelessy taken from AceDB-3.0
+local function copyDefaults(dest, src)
+	-- this happens if some value in the SV overwrites our default value with a non-table
+	--if type(dest) ~= "table" then return end
+	for k, v in pairs(src) do
+		if k == "*" or k == "**" then
+			if type(v) == "table" then
+				-- This is a metatable used for table defaults
+				local mt = {
+					-- This handles the lookup and creation of new subtables
+					__index = function(t,k)
+							if k == nil then return nil end
+							local tbl = {}
+							copyDefaults(tbl, v)
+							rawset(t, k, tbl)
+							return tbl
+						end,
+				}
+				setmetatable(dest, mt)
+				-- handle already existing tables in the SV
+				for dk, dv in pairs(dest) do
+					if not rawget(src, dk) and type(dv) == "table" then
+						copyDefaults(dv, v)
+					end
+				end
+			else
+				-- Values are not tables, so this is just a simple return
+				local mt = {__index = function(t,k) return k~=nil and v or nil end}
+				setmetatable(dest, mt)
+			end
+		elseif type(v) == "table" then
+			if not rawget(dest, k) then rawset(dest, k, {}) end
+			if type(dest[k]) == "table" then
+				copyDefaults(dest[k], v)
+				if src['**'] then
+					copyDefaults(dest[k], src['**'])
+				end
+			end
+		else
+			if rawget(dest, k) == nil then
+				rawset(dest, k, v)
+			end
+		end
+	end
+end
+
+local function removeDefaults(db, defaults, blocker)
+	-- remove all metatables from the db, so we don't accidentally create new sub-tables through them
+	setmetatable(db, nil)
+	-- loop through the defaults and remove their content
+	for k,v in pairs(defaults) do
+		if k == "*" or k == "**" then
+			if type(v) == "table" then
+				-- Loop through all the actual k,v pairs and remove
+				for key, value in pairs(db) do
+					if type(value) == "table" then
+						-- if the key was not explicitly specified in the defaults table, just strip everything from * and ** tables
+						if defaults[key] == nil and (not blocker or blocker[key] == nil) then
+							removeDefaults(value, v)
+							-- if the table is empty afterwards, remove it
+							if next(value) == nil then
+								db[key] = nil
+							end
+						-- if it was specified, only strip ** content, but block values which were set in the key table
+						elseif k == "**" then
+							removeDefaults(value, v, defaults[key])
+						end
+					end
+				end
+			elseif k == "*" then
+				-- check for non-table default
+				for key, value in pairs(db) do
+					if defaults[key] == nil and v == value then
+						db[key] = nil
+					end
+				end
+			end
+		elseif type(v) == "table" and type(db[k]) == "table" then
+			-- if a blocker was set, dive into it, to allow multi-level defaults
+			removeDefaults(db[k], v, blocker and blocker[k])
+			if next(db[k]) == nil then
+				db[k] = nil
+			end
+		else
+			-- check if the current value matches the default, and that its not blocked by another defaults table
+			if db[k] == defaults[k] and (not blocker or blocker[k] == nil) then
+				db[k] = nil
+			end
+		end
+	end
+end
+
+function mod:InitFilter(tbl)
+	-- Heh, is this going to work?
+	copyDefaults(tbl, G.nameplate.StyleFilterDefaults);
+end
+
+function mod:PLAYER_LOGOUT()
+	for _, filterTable in pairs(E.global.nameplate.filters) do
+		removeDefaults(filterTable, G.nameplate.StyleFilterDefaults);
 	end
 end
 
 function mod:Initialize()
 	self.db = E.db["nameplates"]
 	if E.private["nameplates"].enable ~= true then return end
+
+	--Add metatable to all our style filters so they can grab default values if missing
+	for _, filterTable in pairs(E.global.nameplate.filters) do
+		self:InitFilter(filterTable);
+	end
 
 	--We don't allow player nameplate health to be disabled
 	self.db.units.PLAYER.healthbar.enable = true
@@ -884,17 +1710,10 @@ function mod:Initialize()
 	self.PlayerNamePlateAnchor:Hide()
 
 	self:UpdateCVars()
-	InterfaceOptionsNamesPanelUnitNameplates:Kill()
-	NamePlateDriverFrame:UnregisterAllEvents()
-	NamePlateDriverFrame.ApplyFrameOptions = E.noop --This taints and prevents default nameplates in dungeons and raids
-
-	--We need to re-register these in order for default nameplates to show in dungeons and raids
-	-- NamePlateDriverFrame:RegisterEvent("FORBIDDEN_NAME_PLATE_CREATED")
-	-- NamePlateDriverFrame:RegisterEvent("FORBIDDEN_NAME_PLATE_UNIT_ADDED")
-	-- NamePlateDriverFrame:RegisterEvent("FORBIDDEN_NAME_PLATE_UNIT_REMOVED")
 
 	self:RegisterEvent("PLAYER_REGEN_ENABLED");
 	self:RegisterEvent("PLAYER_REGEN_DISABLED");
+	self:RegisterEvent("PLAYER_LOGOUT");
 	self:RegisterEvent("NAME_PLATE_CREATED");
 	self:RegisterEvent("NAME_PLATE_UNIT_ADDED");
 	self:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
@@ -902,6 +1721,24 @@ function mod:Initialize()
 	self:RegisterEvent("UNIT_ENTERED_VEHICLE", "UpdateVehicleStatus")
 	self:RegisterEvent("UNIT_EXITED_VEHICLE", "UpdateVehicleStatus")
 	self:RegisterEvent("UNIT_PET", "UpdateVehicleStatus")
+
+	if self.db.hideBlizzardPlates then
+		InterfaceOptionsNamesPanelUnitNameplates:Kill()
+		NamePlateDriverFrame:UnregisterAllEvents()
+		NamePlateDriverFrame.ApplyFrameOptions = E.noop --This taints and prevents default nameplates in dungeons and raids
+	else
+		InterfaceOptionsNamesPanelUnitNameplatesAggroFlash:Kill()
+		InterfaceOptionsNamesPanelUnitNameplatesEnemyMinions:Kill()
+		InterfaceOptionsNamesPanelUnitNameplatesEnemyMinus:Kill()
+		InterfaceOptionsNamesPanelUnitNameplatesFriendlyMinions:Kill()
+		InterfaceOptionsNamesPanelUnitNameplatesMotionDropDown:Kill()
+		InterfaceOptionsNamesPanelUnitNameplatesPersonalResource:Kill()
+		InterfaceOptionsNamesPanelUnitNameplatesPersonalResourceOnEnemy:Kill()
+		InterfaceOptionsNamesPanelUnitNameplatesShowAll:Kill()
+		InterfaceOptionsNamesPanelUnitNameplatesMakeLarger:Point("TOPLEFT", InterfaceOptionsNamesPanelUnitNameplates, "TOPLEFT", 0, -20)
+		InterfaceOptionsNamesPanelUnitNameplatesFriends:Point("TOPLEFT", InterfaceOptionsNamesPanelUnitNameplates, "TOPLEFT", 0, -50)
+		InterfaceOptionsNamesPanelUnitNameplatesEnemies:Point("TOPLEFT", InterfaceOptionsNamesPanelUnitNameplates, "TOPLEFT", 0, -80)
+	end
 
 	--Best to just Hijack Blizzard's nameplate classbar
 	self.ClassBar = NamePlateDriverFrame.nameplateBar

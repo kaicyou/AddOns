@@ -1,4 +1,4 @@
-﻿*to-do*
+﻿to-do*
  * mail items expiry date/time
 
 *known issues*
@@ -13,6 +13,12 @@
  * faq - https://github.com/arkayenro/arkinventory/wiki/FAQ
  
 
+
+*3.07.35 (30-AUG-2017)*
+ * changed - toc updated to 70300
+
+*3.07.34 (30-AUG-2017)*
+ * fixed - calls to PlaySound( )
 
 *3.07.33 (07-AUG-2017)*
  * added - error prevention logic to mount, pet, and toy, collection scan code to handle potentially invalid returns from the blizzard api

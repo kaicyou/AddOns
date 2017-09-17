@@ -1,4 +1,101 @@
 ------------------------------------------------------------------------
+r133 | SweetsourDev | 2017-09-01 15:37:24 -0500 (Fri, 01 Sep 2017) | 3 lines
+Changed paths:
+   M /trunk/Frames/bulletin.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/CallbackHandler-1.0
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/CallbackHandler-1.0/CallbackHandler-1.0.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/Changelog-LibSharedMedia-3.0-7.1.0.txt
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0/lib.xml
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0.toc
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/LibStub
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/LibStub/LibStub.lua
+   M /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/lib.xml
+   M /trunk/Libs/LibSharedMedia-3.0/lib.xml
+   M /trunk/Libs/load_libraries.xml
+   M /trunk/Modules/config.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r67
+FIX: [Ele] Fixed a random error while navigating the config panel.
+FIX: [UI] An error caused by a library - that prevented the addon from loading - has been fixed. (Thanks, Stryker!)
+------------------------------------------------------------------------
+r132 | SweetsourDev | 2017-09-01 11:57:30 -0500 (Fri, 01 Sep 2017) | 2 lines
+Changed paths:
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Libs/Ace3.toc
+   M /trunk/Libs/AceConfig-3.0/AceConfig-3.0.lua
+   M /trunk/Libs/AceConfig-3.0/AceConfigCmd-3.0/AceConfigCmd-3.0.lua
+   M /trunk/Libs/AceConfig-3.0/AceConfigDialog-3.0/AceConfigDialog-3.0.lua
+   M /trunk/Libs/AceConfig-3.0/AceConfigRegistry-3.0/AceConfigRegistry-3.0.lua
+   M /trunk/Libs/AceEvent-3.0/AceEvent-3.0.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIContainer-Frame.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIContainer-Window.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-Button.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-CheckBox.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-DropDown-Items.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-DropDown.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-EditBox.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-Slider.lua
+   M /trunk/Libs/CHANGES.txt
+   A /trunk/Libs/LibButtonGlow-1.0/CHANGES.txt
+   D /trunk/Libs/LibButtonGlow-1.0/Changelog-LibButtonGlow-1.0-1.2.5.txt
+   M /trunk/Libs/LibButtonGlow-1.0/LibButtonGlow-1.0.lua
+   M /trunk/Libs/LibButtonGlow-1.0/LibButtonGlow-1.0.toc
+   A /trunk/Libs/LibButtonGlow-1.0/LibStub
+   A /trunk/Libs/LibButtonGlow-1.0/LibStub/LibStub.lua
+   A /trunk/Libs/LibButtonGlow-1.0/LibStub/LibStub.toc
+   M /trunk/Libs/changelog.txt
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r66
+FIX: [UI] Updated all libraries; fixing an error with the config panel. (Thanks, Mad!)
+------------------------------------------------------------------------
+r131 | SweetsourDev | 2017-08-30 00:40:10 -0500 (Wed, 30 Aug 2017) | 7 lines
+Changed paths:
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Frames/elemental.lua
+   M /trunk/Frames/enhancement.lua
+   M /trunk/Frames/restoration.lua
+   M /trunk/Locales/enUS.lua
+   M /trunk/Modules/config.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r65
+NEW: [Ele/Res] Having Soul of the Farseer equipped should now display charges on respective auras. (Thanks, TheLaughingMan!)
+NEW: [Enhancement] Lava Lash's aura will now display stacks of Lashing Flames and glow at 99 stacks (configurable in options). (Thanks, Kirix!)
+NEW: [UI] Updated addon to 7.3
+
+FIX: [Enhancement] The cooldown timer for the Lightning Crash mini-aura should no longer appear (needs testing).
+FIX: [UI] An error preventing the usage of the configuration tabs should be fixed. (Thanks, Del!)
+------------------------------------------------------------------------
+r130 | SweetsourDev | 2017-08-20 14:44:31 -0500 (Sun, 20 Aug 2017) | 3 lines
+Changed paths:
+   M /trunk/Core/core.lua
+   M /trunk/Core/functions.lua
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Frames/elemental.lua
+   M /trunk/Frames/enhancement.lua
+   M /trunk/Modules/config.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r64
+FIX: [All] Disabling auras for specific specs should now remain disabled after reloading the UI. (Thanks, ernetlo!)
+FIX: [Enhancement] The mini-aura icon for Crash Lightning's 4-piece bonus should no longer display a text timer.(Thanks, xtremekhaos!)
+------------------------------------------------------------------------
 r129 | SweetsourDev | 2017-08-13 18:24:23 -0500 (Sun, 13 Aug 2017) | 8 lines
 Changed paths:
    M /trunk/Core/functions.lua

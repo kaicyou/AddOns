@@ -1601,7 +1601,7 @@ function DugisArrow:Initialize()
 
 	local maxsetnext = 0
 	function DugisArrow:SetNextWaypoint(removeMe, isInThread)
-        LuaUtils:Yield(isInThread)
+        LuaUtils:RestIfNeeded(isInThread)
         
 		if maxsetnext > 30 then return end --Stops endless loop if 2 waypoints are very close together with |LOOP| tag which can crash the game
 		maxsetnext = maxsetnext + 1
@@ -2448,8 +2448,59 @@ function DugisArrow:Initialize()
 		DugisGuideViewer:RemoveAllWaypoints()
 		DugisArrow:Hide()
 	end
+    
+	function UpdateCurrentBeaconMode()
+        local TaxiData = DugisGuideViewer.Modules.TaxiData
+    
+        --FlightMapFrame
+        --Check for Argus
+		if FlightMapFrame and FlightMapFrame:IsShown() and FlightMapFrame.GetMapID and FlightMapFrame:GetMapID() == 1184 then
+			local activePool = FlightMapFrame.pinPools["FlightMap_FlightPointPinTemplate"]
+			for pin in activePool:EnumerateActive() do 
+                local taxiNodeData = pin.taxiNodeData
+              
+                if taxiNodeData then
+                    local id, x, y, name= taxiNodeData.nodeID, taxiNodeData.x, taxiNodeData.y, taxiNodeData.name
+                    
+                    x =  LuaUtils:Round(x, 7)
+                    y =  LuaUtils:Round(y, 7)
+                    
+                    if x == 0.3279081 and y == 0.5351712 then
+                        TaxiData.currentBeaconMode = "veiled-den"
+                    end    
+                        
+                    if x == 0.3434584 and y == 0.7191246 then
+                        TaxiData.currentBeaconMode = "lights-purchase"
+                    end
+                end
+			end
+		end
+        
+        --WorldMapFrame
+        if WorldMapFrame and WorldMapFrame:IsShown() then
+            local numPOIs = GetNumMapLandmarks();
+            for i=1, numPOIs do
+                local _, name, _, _, x, y = C_WorldMap.GetMapLandmarkInfo(i)
+            
+                x =  LuaUtils:Round(x, 7)
+                y =  LuaUtils:Round(y, 7)
+                
+                --Antoran Wastes
+                if GetCurrentMapAreaID() == 1171 then
+                    if x == 0.726423 and y == 0.7616945 then
+                        TaxiData.currentBeaconMode = "lights-purchase"
+                    end
+                    if x == 0.7059556 and y == 0.2547702 then
+                        TaxiData.currentBeaconMode = "veiled-den"
+                    end
+                end
+            end               
+        end
+	end
 	
 	hooksecurefunc("WorldMapFrame_Update", function()
+            UpdateCurrentBeaconMode()
+            
 			if not DugisMapOverlayFrame then return end
 			if GetCurrentMapContinent() == WORLDMAP_COSMIC_ID 
 				and GetCurrentMapAreaID() == WORLDMAP_COSMIC_ID

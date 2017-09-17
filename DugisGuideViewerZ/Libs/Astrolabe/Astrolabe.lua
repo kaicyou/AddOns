@@ -59,6 +59,7 @@ function Astrolabe:GetVersion()
 	return LIBRARY_VERSION_MAJOR, LIBRARY_VERSION_MINOR;
 end
 
+local HBD = LibStub("HereBeDragons-1.0", true)
 
 --------------------------------------------------------------------------------------------------------------
 -- Config Constants
@@ -162,9 +163,9 @@ local function tryGetMicroDungeonFloor(system, areaID, f)
 		return MicroDungeonSize[system][f]
 	elseif AlternateAreas[areaID] then
 		for _,m in ipairs(AlternateAreas[areaID]) do
-			local md = WorldMapSize[m] and 
-				WorldMapSize[m].system and 
-				MicroDungeonSize[WorldMapSize[m].system]
+			local md = Astrolabe:GetWorldMapSize(m) and 
+				Astrolabe:GetWorldMapSize(m).system and 
+				MicroDungeonSize[Astrolabe:GetWorldMapSize(m).system]
 			if md and md[f] and md[f].parent==m then
 				return md[f]
 			end
@@ -174,12 +175,18 @@ local function tryGetMicroDungeonFloor(system, areaID, f)
 end
 
 local function getFloorData(areaID, mapData, f)
+	local result = nil
+	
 	if f~=0 then
-		mapData = rawget(mapData, f) or tryGetMicroDungeonFloor(mapData.originSystem, areaID, f)
+		result = rawget(mapData, f) 
+		if not result or not result.xOffset or not result.yOffset then 
+			result = tryGetMicroDungeonFloor(mapData.originSystem, areaID, f)
+		end
 	else
-		mapData = rawget(mapData, f) or mapData
+		result = rawget(mapData, f) or mapData
 	end
-	return mapData
+	
+	return result
 end
 local function getSystemPosition( areaID, mapData, f, x, y )
 	mapData = getFloorData(areaID, mapData, f)
@@ -201,6 +208,58 @@ end
 -- General Utility Functions
 --------------------------------------------------------------------------------------------------------------
 
+--Getting data from HBD
+function Astrolabe:GetMapHBDFloors(mapID)
+    if not mapID or not HBD then 
+        return {} 
+    end
+    if type(mapID) == "string" then
+        local TERRAIN_MATCH = "_terrain%d+$"
+        mapID = mapID:gsub(TERRAIN_MATCH, "")
+        mapID = HBD.mapToID[mapID or "none"]
+        if not mapID then 
+            return {} 
+        end
+    end
+    
+    return HBD.mapData[mapID].floors or {}
+end
+
+function Astrolabe:GetWorldMapSize(mapId)
+    local result = {}
+
+    local map = WorldMapSize[mapId]
+    
+    if map then
+        result = map 
+    else
+        local floors = Astrolabe:GetMapHBDFloors(mapId)
+        LuaUtils:foreach(floors, function(floorData, level)
+            if floorData then
+                local width, height, xOffset, yOffset, instance = floorData[1], floorData[2], floorData[3], floorData[4], floorData.instance
+                local currentLevelInfo = {nil}
+                result[level] = currentLevelInfo
+                
+                if width and height and xOffset and yOffset then
+                    currentLevelInfo["width"] = width
+                    currentLevelInfo["height"] = height
+                    currentLevelInfo["xOffset"] = -xOffset
+                    currentLevelInfo["yOffset"] = -yOffset
+                    result["system"] = floorData.instance
+                    result["originSystem"] = floorData.instance
+                end
+            end
+         end)
+    end
+    
+    return result;
+end
+
+function Astrolabe:GetWorldMapSizeLength(mapId)
+    local res =  Astrolabe:GetWorldMapSize(mapId)
+    return #res
+end
+
 function Astrolabe:ComputeDistance( m1, f1, x1, y1, m2, f2, x2, y2 )
 	--[[
 	argcheck(m1, 2, "number");
@@ -217,19 +276,19 @@ function Astrolabe:ComputeDistance( m1, f1, x1, y1, m2, f2, x2, y2 )
 	
 	if not ( m1 and m2 and x1 and x2 ) then return end;
 
-	f1 = f1 or min(#WorldMapSize[m1], 1);
-	f2 = f2 or min(#WorldMapSize[m2], 1);
+	f1 = f1 or min(Astrolabe:GetWorldMapSizeLength(m1), 1);
+	f2 = f2 or min(Astrolabe:GetWorldMapSizeLength(m2), 1);
 	
 	local dist, xDelta, yDelta;
 	if ( m1 == m2 and f1 == f2 ) then
 		-- points in the same zone on the same floor
-		local mapData = WorldMapSize[m1];
+		local mapData = Astrolabe:GetWorldMapSize(m1);
 		mapData = getFloorData(m1, mapData, f1)
 		xDelta = (x2 - x1) * mapData.width;
 		yDelta = (y2 - y1) * mapData.height;
 	else
-		local map1 = WorldMapSize[m1];
-		local map2 = WorldMapSize[m2];
+		local map1 = Astrolabe:GetWorldMapSize(m1);
+		local map2 = Astrolabe:GetWorldMapSize(m2);
 		if map1 and map2 and( map1.system == map2.system ) then
 			-- points within the same system (continent)
 			x1, y1 = getSystemPosition(m1, map1, f1, x1, y1);
@@ -239,19 +298,19 @@ function Astrolabe:ComputeDistance( m1, f1, x1, y1, m2, f2, x2, y2 )
 		elseif map1 and map2 then
 			local s1 = map1.system;
 			local s2 = map2.system;
-			if ( (m1==0 or WorldMapSize[0][s1]) and (m2==0 or WorldMapSize[0][s2]) ) then
+			if ( (m1==0 or Astrolabe:GetWorldMapSize(0)[s1]) and (m2==0 or Astrolabe:GetWorldMapSize(0)[s2]) ) then
 				if s1~=-1 and s2~=-1 then
 					x1, y1 = getSystemPosition(m1, map1, f1, x1, y1);
 					x2, y2 = getSystemPosition(m1, map2, f2, x2, y2);
 					if ( m1 ~= 0 ) then
 						-- translate up from system 1
-						local cont1 = WorldMapSize[0][s1];
+						local cont1 = Astrolabe:GetWorldMapSize(0)[s1];
 						x1 = (x1 - cont1.xOffset) * cont1.scale;
 						y1 = (y1 - cont1.yOffset) * cont1.scale;
 					end
 					if ( m2 ~= 0 ) then
 						-- translate up from system 2
-						local cont2 = WorldMapSize[0][s2];
+						local cont2 = Astrolabe:GetWorldMapSize(0)[s2];
 						x2 = (x2 - cont2.xOffset) * cont2.scale;
 						y2 = (y2 - cont2.yOffset) * cont2.scale; 
 					end
@@ -281,8 +340,8 @@ function Astrolabe:TranslateWorldMapPosition( M, F, xPos, yPos, nM, nF )
 	--]]
 	
 	if not ( M and nM ) then return end;
-	F = F or min(#WorldMapSize[M], 1);
-	nF = nF or min(#WorldMapSize[nM], 1);
+	F = F or min(Astrolabe:GetWorldMapSizeLength(M), 1);
+	nF = nF or min(Astrolabe:GetWorldMapSizeLength(nM), 1);
 	if ( nM < 0 ) then
 		return;
 	end
@@ -292,34 +351,34 @@ function Astrolabe:TranslateWorldMapPosition( M, F, xPos, yPos, nM, nF )
 		return xPos, yPos;
 	
 	else
-		local map = WorldMapSize[M];
-		local nMap = WorldMapSize[nM];
+		local map = Astrolabe:GetWorldMapSize(M);
+		local nMap = Astrolabe:GetWorldMapSize(nM);
 		if ( map.system == nMap.system ) then
 			-- points within the same system (continent)
 			xPos, yPos = getSystemPosition(M, map, F, xPos, yPos);
-			mapData = getFloorData(nM, WorldMapSize[nM], nF)
+			mapData = getFloorData(nM, Astrolabe:GetWorldMapSize(nM), nF)
 		
 		else
 			-- different continents, same world
 			local S = map.system;
 			local nS = nMap.system;
-			if ( (M==0 or WorldMapSize[0][S]) and (nM==0 or WorldMapSize[0][nS]) ) then
-				mapData = WorldMapSize[M];
+			if ( (M==0 or Astrolabe:GetWorldMapSize(0)[S]) and (nM==0 or Astrolabe:GetWorldMapSize(0)[nS]) ) then
+				mapData = Astrolabe:GetWorldMapSize(M);
 				xPos, yPos = getSystemPosition(M, mapData, F, xPos, yPos);
 				if not xPos then return end
 				if ( M ~= 0 ) then
 					-- translate up to world map if we aren't there already
-					local cont = WorldMapSize[0][S];
+					local cont = Astrolabe:GetWorldMapSize(0)[S];
 					xPos = (xPos - cont.xOffset) * cont.scale;
 					yPos = (yPos - cont.yOffset) * cont.scale;
-					mapData = WorldMapSize[0];
+					mapData = Astrolabe:GetWorldMapSize(0);
 				end
 				if ( nM ~= 0 ) then
 					-- translate down to the new continent
-					local nCont = WorldMapSize[0][nS];
+					local nCont = Astrolabe:GetWorldMapSize(0)[nS];
 					xPos = (xPos / nCont.scale) + nCont.xOffset;
 					yPos = (yPos / nCont.scale) + nCont.yOffset;
-					mapData = getFloorData(nM, WorldMapSize[nM], nF)
+					mapData = getFloorData(nM, Astrolabe:GetWorldMapSize(nM), nF)
 				end
 			
 			else
@@ -454,7 +513,7 @@ end
 
 function Astrolabe:GetNumFloors( mapID )
 	if ( type(mapID) == "number" ) then
-		local mapData = WorldMapSize[mapID]
+		local mapData = Astrolabe:GetWorldMapSize(mapID)
 		return #mapData
 	end
 end
@@ -464,9 +523,9 @@ function Astrolabe:GetMapInfo( mapID, mapFloor )
 	assert(3, mapID >= 0, "GetMapInfo: Illegal map id to mapID: "..mapID);
 	argcheck(mapFloor, 3, "number", "nil");
 	
-	mapFloor = mapFloor or min(#WorldMapSize[mapID], 1);
+	mapFloor = mapFloor or min(Astrolabe:GetWorldMapSizeLength(mapID), 1);
 	local mapData = WorldMapSize[mapID];
-	local system, systemParent = mapData.system, WorldMapSize[0][mapData.system] and true or false
+	local system, systemParent = mapData.system, Astrolabe:GetWorldMapSize(0)[mapData.system] and true or false
 	mapData = getFloorData(mapID, mapData, mapFloor)
 	if ( mapData ~= zeroData ) then
 		return system, systemParent, mapData.width, mapData.height, mapData.xOffset, mapData.yOffset;
@@ -6200,7 +6259,140 @@ WorldMapSize = {
 			["xOffset"] = -5439.580078125,
 			["yOffset"] = 2806.25
 		},
-	},		
+	},	
+	[1135] = {
+		["width"] = 3714.5830078125, -- [1]
+		["height"] = 2477.0830078125, -- [2]
+		["xOffset"] = -3772.9169921875, -- [3]
+		["yOffset"] = -2654.1669921875, -- [4]
+		["numFloors"] = 0,
+		["name"] = "Krokuun",
+		["System"] = 1669,
+		["originSystem"] = 1669,
+			[1] = {
+				["width"] = 295, -- [1]
+				["height"] = 196.6669921875, -- [2]
+				["xOffset"] = -1598.343994140625, -- [3]  original 828.343994140625,
+				["yOffset"] = -546.016998291016, -- [4]  original  396.016998291016,
+				["System"] = 1669,
+			}, -- [1]
+			[2] = {
+				["width"] = 295, -- [1]
+				["height"] = 196.6669921875, -- [2]
+				["xOffset"] = -1598.343994140625, -- [3]  original 828.343994140625,
+				["yOffset"] = -546.016998291016, -- [4]  original  396.016998291016,
+				["System"] = 1669,
+			}, -- [2]
+			[7] = {
+				["width"] = 787.5, -- [1]
+				["height"] = 525, -- [2]
+				["xOffset"] = -2436.25, -- [3]
+				["yOffset"] = -2685, -- [4]
+				["System"] = 1669,
+			},					
+	},
+	[1136] = {
+		["width"] = 964.5830078125, -- [1]
+		["height"] = 643.75, -- [2]
+		["xOffset"] = -979.1669921875, -- [3]
+		["yOffset"] = 5962.5, -- [4]
+		["numFloors"] = 0,
+		["name"] = "Coldridge Valley",
+		["System"] = 1723,
+		["originSystem"] = 1723,
+	},
+	[1170] = {
+		["width"] = 3258.2998046875, -- [1]
+		["height"] = 2172.919921875, -- [2]
+		["xOffset"] = -11545.7998046875, -- [3]
+		["yOffset"] = -6622.919921875, -- [4]
+		["numFloors"] = 0,
+		["name"] = "Mac'Aree",
+		["System"] = 1669,
+		["originSystem"] = 1669,
+			[3] = {
+				["width"] = 340.5498046875, -- [1]
+				["height"] = 227.0400390625, -- [2]
+				["xOffset"] = -10030, -- [3] original  3480.9296875, 
+				["yOffset"] = -4784, -- [4] original 1816.14013671875,
+				["System"] = 1669,
+			},
+			[4] = {
+				["width"] = 340.5498046875, -- [1]
+				["height"] = 227.0400390625, -- [2]
+				["xOffset"] = -10030, -- [3] original  3480.9296875, 
+				["yOffset"] = -4784, -- [4] original 1816.14013671875,
+				["System"] = 1669,
+			},		
+	},	
+	[1171] = {
+		["width"] = 3400, -- [1]
+		["height"] = 2266.666015625, -- [2]
+		["xOffset"] = -11279.166015625, -- [3]
+		["yOffset"] = 1789.583984375, -- [4]
+		["numFloors"] = 0,
+		["name"] = "Antoran Wastes",
+		["System"] = 1669,
+		["originSystem"] = 1669,
+			[5] = {
+				["width"] = 324.984375, -- [1]
+				["height"] = 130.3720703125, -- [2]
+				["xOffset"] = -8808, -- [3] original -4728.38989257813, 
+				["yOffset"] = 2556, -- [4] original -1168.43896484375,
+				["System"] = 1669,
+			},
+			[6] = {
+				["width"] = 324.984375, -- [1] 293.8564453125,
+				["height"] = 130.3720703125, -- [2] 113.9560546875,
+				["xOffset"] = -8808, -- [3] original -4711.90844726563
+				["yOffset"] = 2556, -- [4] original -1160.61694335938
+				["System"] = 1669,
+			},		
+	},	
+	[1173] = {
+		["width"] = 2600, -- [1]
+		["height"] = 1733.32995605469, -- [2]
+		["xOffset"] = -1033.32995605469, -- [3]
+		["yOffset"] = -1133.32995605469, -- [4]
+		["numFloors"] = 2,
+		[1] = {
+			["width"] = 689.683979034424, -- [1]
+			["height"] = 459.789291381836, -- [2]
+			["xOffset"] = -59.5789985656738, -- [3]
+			["yOffset"] = -417.364990234375, -- [4]
+			["System"] = 1746,
+		}, -- [1]
+		[2] = {
+			["width"] = 546.048049926758, -- [1]
+			["height"] = 364.032012939453, -- [2]
+			["xOffset"] = -75.7610321044922, -- [3]
+			["yOffset"] = -441.032012939453, -- [4]
+			["System"] = 1746,
+		}, -- [2]
+		["name"] = "Arcatraz",
+		["System"] = 1746,
+		["originSystem"] = 1746,
+	},	
+	[1178] = {
+		["width"] = 1543.75, -- [1]
+		["height"] = 1029.166015625, -- [2]
+		["xOffset"] = -11156.25, -- [3]
+		["yOffset"] = -6304.166015625, -- [4]
+		["numFloors"] = 0,
+		["name"] = "The Seat of the Triumvirate",
+		["System"] = 1753,
+		["originSystem"] = 1753,
+	},	
+	[1184] = {
+		["width"] = 6765.98010253906, -- [1]
+		["height"] = 4033.82579040527, -- [2]
+		["xOffset"] =-7287.35009765625, -- [3]
+		["yOffset"] = -4263.77978515625, -- [4]
+		["numFloors"] = 0,
+		["name"] = "Argus",
+		["System"] = 1669,
+		["originSystem"] = 1669,
+	},	
 }
 
 MicroDungeonSize = {
@@ -6717,6 +6909,44 @@ MicroDungeonSize = {
 	},
 	[1116] = {
 	},
+	[1174] = {
+		["width"] = 4070.7998046875, -- [1]
+		["height"] = 2714.580078125, -- [2]
+		["xOffset"] = -10500, -- [3]
+		["yOffset"] = -2793.75, -- [4]
+		["numFloors"] = 4,
+		["name"] = "Azuremyst Isle",
+		["System"] = 1750,
+		["originSystem"] = 1750,		
+		[1] = {
+			["width"] = 4070.7998046875, -- [1]
+			["height"] = 2714.580078125, -- [2]
+			["xOffset"] = -10500, -- [3]
+			["yOffset"] = -2793.75, -- [4]
+			["System"] = 1750,
+		},
+		[2] = {
+			["width"] = 1057.099609375, -- [1]
+			["height"] = 704.730224609375, -- [2]
+			["xOffset"] = -11066.2001953125, -- [3]
+			["yOffset"] = -3609.65991210938, -- [4]
+			["System"] = 1750,
+		},
+		[3] = {
+			["width"] = 300, -- [1]
+			["height"] = 200, -- [2]
+			["xOffset"] = -11800, -- [3]
+			["yOffset"] = -3915, -- [4]
+			["System"] = 1750,
+		},
+		[4] = {
+			["width"] = 300, -- [1]
+			["height"] = 200, -- [2]
+			["xOffset"] = -11800, -- [3]
+			["yOffset"] = -3915, -- [4]
+			["System"] = 1750,
+		},
+	},		
 }
 -- MDS = MicroDungeonSize
 -- WMS = WorldMapSize
@@ -6775,7 +7005,7 @@ Astrolabe.HarvestedMapData.VERSION = nil
 for mapID, harvestedData in pairs(Astrolabe.HarvestedMapData) do
 	local terrainMapID, _, _, _, _, _, _, _, _, flags = GetAreaMapInfo(mapID)
 	local originSystem = terrainMapID;
-	local mapData = WorldMapSize[mapID];
+	local mapData = Astrolabe:GetWorldMapSize(mapID);
 	if not ( mapData ) then mapData = {}; end
 	mapData.firstFloor = harvestedData.firstFloor
 	mapData.numFloors = harvestedData.numFloors

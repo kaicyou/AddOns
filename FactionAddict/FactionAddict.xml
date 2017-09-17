@@ -272,7 +272,7 @@
  				</Animations>
  				<Scripts>
  					<OnClick>
-						PlaySound("igMainMenuOptionCheckBoxOn");
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 						SetLFGBonusFactionID(self.factionID);
 					</OnClick>
  					<OnEnter>
@@ -875,7 +875,7 @@
 										self.texture:SetPoint("TOPLEFT", 0, 0);
 									</OnMouseUp>
 									<OnClick>
-										PlaySound("igMainMenuOptionCheckBoxOn");
+										PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 										local editBox = self:GetParent();
 										FactionAddict_SearchClear_OnClick(editBox);
 									</OnClick>

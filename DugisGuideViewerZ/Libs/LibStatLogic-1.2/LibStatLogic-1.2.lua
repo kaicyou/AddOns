@@ -7451,17 +7451,8 @@ function StatLogic:GetSum(item, table, threadingMode)
     local counter = 0
     while threadingMode and tip:NumLines() == 1 and counter < 100 do
         counter = counter + 1
-        coroutine.yield()
-        coroutine.yield()
-        coroutine.yield()
-        coroutine.yield()
-        coroutine.yield()
-        coroutine.yield()
-        coroutine.yield()
-        coroutine.yield()
-        coroutine.yield()
-        coroutine.yield()
-        coroutine.yield()
+		
+		LuaUtils:RestIfNeeded(true)
     end
 
 	for i = 2, tip:NumLines() do

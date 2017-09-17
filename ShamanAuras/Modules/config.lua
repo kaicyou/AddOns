@@ -728,6 +728,8 @@ local function CheckEnhancementDefaultValues(options,group,subgroup)
 		local settings = db.settings[2]
 		local defaults = db.settings.defaults
 		
+		options.args.general.args.settings.args.lavaLash.args.LavaLashGlowStacks.disabled = not settings.lavaLash.glow
+		
 		if (settings.OoCAlpha ~= defaults.OoCAlpha or
 			settings.flametongue ~= defaults[2].flametongue or
 			settings.frostbrand ~= defaults[2].frostbrand or
@@ -735,7 +737,10 @@ local function CheckEnhancementDefaultValues(options,group,subgroup)
 			settings.OoRColor.r ~= defaults.OoRColor.r or
 			settings.OoRColor.g ~= defaults.OoRColor.g or
 			settings.OoRColor.b ~= defaults.OoRColor.b or
-			settings.OoRColor.a ~= defaults.OoRColor.a) then
+			settings.OoRColor.a ~= defaults.OoRColor.a or not
+			settings.lavaLash.stacks.isEnabled or not
+			settings.lavaLash.stacks.glow or
+			settings.lavaLash.stacks.value ~= defaults[2].lavaLash.stacks) then
 			options.args.general.args.settings.args.reset.disabled = false
 			options.args.general.args.settings.args.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_SETTINGS"].."|r"
 		else
@@ -822,8 +827,8 @@ local function CheckRestorationDefaultValues(options,group,subgroup)
 		settings.OoRColor.g ~= defaults.OoRColor.g or
 		settings.OoRColor.b ~= defaults.OoRColor.b or
 		settings.OoRColor.a ~= defaults.OoRColor.a) then
-			options.args.bars.args.general.args.settings.args.reset.disabled = false
-			options.args.bars.args.general.args.settings.args.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_SETTINGS"].."|r"
+			options.args.general.args.settings.args.reset.disabled = false
+			options.args.general.args.settings.args.reset.name = "|cFFFFCC00"..L["BUTTON_RESET_SETTINGS"].."|r"
 		else
 			options.args.general.args.settings.args.reset.disabled = true
 			options.args.general.args.settings.args.reset.name = "|cFF666666"..L["BUTTON_RESET_SETTINGS"].."|r"
@@ -1030,12 +1035,8 @@ local function GetElementalOptions()
 								return db.elements[1].isEnabled
 							end,
 							set = function(self,value)
-								db.elements[1].isEnabled = value
-								if (not value) then
-									AuraGroup1:Hide()
-								else
-									AuraGroup1:Show()
-								end
+								elements.isEnabled = value
+								Auras:UpdateTalents()
 							end,
 						},
 						MajorAuras = {
@@ -1702,8 +1703,8 @@ local function GetElementalOptions()
 										settings.OoRColor.g = settingDefaults.OoRColor.g
 										settings.OoRColor.b = settingDefaults.OoRColor.b
 										settings.OoRColor.a = settingDefaults.OoRColor.a
-										ele_options.args.bars.args.general.args.settings.args.reset.disabled = true
-										ele_options.args.bars.args.general.args.settings.args.reset.name = "|cFF666666"..L["BUTTON_RESET_SETTINGS"].."|r"
+										ele_options.args.general.args.settings.args.reset.disabled = true
+										ele_options.args.general.args.settings.args.reset.name = "|cFF666666"..L["BUTTON_RESET_SETTINGS"].."|r"
 									end,
 								},
 							},
@@ -1784,7 +1785,7 @@ local function GetElementalOptions()
 												statusbars.channelBar.isEnabled = value
 											end,
 										},
-										healthToggle = {
+										--[[healthToggle = {
 											order = 4,
 											name = L["TOGGLE_HEALTH_BAR"],
 											desc = L["TOOLTIP_TOGGLE_HEALTH_BAR"],
@@ -1801,7 +1802,7 @@ local function GetElementalOptions()
 												
 												statusbars.healthBar.isEnabled = value
 											end,
-										},
+										},]]
 										maelstromToggle = {
 											order = 5,
 											name = L["TOGGLE_MAELSTROM_BAR"],
@@ -7479,11 +7480,7 @@ local function GetEnhancementOptions()
 							end,
 							set = function(self,value)
 								elements.isEnabled = value
-								if (not value) then
-									SSA.AuraGroup2:Hide()
-								else
-									SSA.AuraGroup2:Show()
-								end
+								Auras:UpdateTalents()
 							end,
 						},
 						MajorAuras = {
@@ -8094,8 +8091,59 @@ local function GetEnhancementOptions()
 									end,
 									width = "double",
 								},
-								reset = {
+								lavaLash = {
+									name = L["LABEL_LAVA_LASH_OPTIONS"],
+									type = "group",
 									order = 3,
+									guiInline = true,
+									args = {
+										LavaLashStacks = {
+											order = 1,
+											name = L["TOGGLE_LAVA_LASH_STACKS"],
+											desc = L["TOOLTIP_TOGGLE_LAVA_LASH_STACKS"],
+											type = "toggle",
+											get = function()
+												return settings.lavaLash.stacks.isEnabled
+											end,
+											set = function(self,value)
+												settings.lavaLash.stacks.isEnabled = value
+
+												CheckEnhancementDefaultValues(enh_options,'Settings')
+											end,
+										},
+										LavaLashGlow = {
+											order = 2,
+											name = L["TOGGLE_LAVA_LASH_GLOW"],
+											desc = L["TOOLTIP_TOGGLE_LAVA_LASH_GLOW"],
+											type = "toggle",
+											get = function()
+												return settings.lavaLash.glow
+											end,
+											set = function(self,value)
+												settings.lavaLash.glow = value
+
+												CheckEnhancementDefaultValues(enh_options,'Settings')
+											end,
+										},
+										LavaLashGlowStacks = {
+											order = 3,
+											type = "range",
+											name = L["LABEL_LAVA_LASH_STACKS"],
+											desc = L["TOOLTIP_LAVA_LASH_STACKS"],
+											min = 1,
+											max = 99,
+											step = 1,
+											bigStep = 1,
+											get = function() return settings.lavaLash.stacks.value end,
+											set = function(self,value)
+												settings.lavaLash.stacks.value = value
+												CheckEnhancementDefaultValues(enh_options,'Settings')
+											end,
+										},
+									},
+								},
+								reset = {
+									order = 4,
 									type = "execute",
 									name = L["BUTTON_RESET_SETTINGS"],
 									func = function()
@@ -8104,8 +8152,12 @@ local function GetEnhancementOptions()
 										settings.OoRColor.g = settingDefaults.OoRColor.g
 										settings.OoRColor.b = settingDefaults.OoRColor.b
 										settings.OoRColor.a = settingDefaults.OoRColor.a
-										enh_options.args.bars.args.general.args.settings.args.reset.disabled = true
-										enh_options.args.bars.args.general.args.settings.args.reset.name = "|cFF666666"..L["BUTTON_RESET_SETTINGS"].."|r"
+										settings.lavaLash.stacks.isEnabled = true
+										settings.lavaLash.stacks.value = settingDefaults[2].lavaLash.stacks
+										settings.lavaLash.glow = true
+										enh_options.args.general.args.settings.args.lavaLash.args.LavaLashGlowStacks.disabled = false
+										enh_options.args.general.args.settings.args.reset.disabled = true
+										enh_options.args.general.args.settings.args.reset.name = "|cFF666666"..L["BUTTON_RESET_SETTINGS"].."|r"
 									end,
 								},
 							},
@@ -12464,11 +12516,7 @@ local function GetRestorationOptions()
 							end,
 							set = function(self,value)
 								elements.isEnabled = value
-								if (not value) then
-									SSA.AuraGroup3:Hide()
-								else
-									SSA.AuraGroup3:Show()
-								end
+								Auras:UpdateTalents()
 							end,
 						},
 						MajorAuras = {

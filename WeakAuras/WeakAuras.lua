@@ -14,8 +14,8 @@ local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsI
   = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
 local GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
   = GetNumGroupMembers, UnitIsUnit, GetRaidRosterInfo, GetSpecialization, GetSpecializationRole, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
-local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
-  = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySoundKitID, GetTime, GetSpellLink, GetItemInfo
+local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySound, GetTime, GetSpellLink, GetItemInfo
+  = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, PlaySoundFile, PlaySound, GetTime, GetSpellLink, GetItemInfo
 local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
   = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, random, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
 local debugstack, IsSpellKnown = debugstack, IsSpellKnown
@@ -25,6 +25,14 @@ local WeakAuras = WeakAuras
 local versionString = WeakAuras.versionString
 WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end})
 LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
+
+WeakAuras.maxTimerDuration = 60 * 60 * 24 * 7; -- A week
+function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
+  if (delay < WeakAuras.maxTimerDuration) then
+    return self:ScheduleTimer(func, delay, ...);
+  end
+end
+
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
 local HBD = LibStub("HereBeDragons-1.0")
 
@@ -357,6 +365,7 @@ local blockedFunctions = {
   SetBindingMacro = true,
   GuildDisband = true,
   GuildUninvite = true,
+  ForceQuit = true,
 }
 
 local overrideFunctions = {
@@ -666,7 +675,7 @@ function WeakAuras.scheduleConditionCheck(time, id, cloneId)
   end
 
   if (conditionChecksTimers.recheckTime[id][cloneId] == nil) then
-    conditionChecksTimers.recheckHandle[id][cloneId] = timer:ScheduleTimer(function()
+    conditionChecksTimers.recheckHandle[id][cloneId] = timer:ScheduleTimerFixed(function()
       local region;
       if(cloneId and cloneId ~= "") then
         region = clones[id] and clones[id][cloneId];
@@ -1358,13 +1367,22 @@ function WeakAuras.ScanForLoads(self, event, arg1)
     WeakAuras.LoadEncounterInitScripts();
   end
 
+  local group = nil;
+  if (IsInRaid()) then
+    group = "raid";
+  elseif (IsInGroup()) then
+    group = "group";
+  else
+    group = "solo";
+  end
+
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;
   for id, data in pairs(db.displays) do
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
-      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, IsInGroup(), inpetbattle, vehicle, vehicleUi, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
-      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, true, true, vehicle, vehicleUi, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
+      shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, vehicle, vehicleUi, inpetbattle, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
+      couldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", true, vehicle, vehicleUi, true, group, player, realm, class, spec, race, faction, playerLevel, zone, zoneId, encounter_id, size, difficulty, role);
 
       if(shouldBeLoaded and not loaded[id]) then
         WeakAuras.LoadDisplay(id);
@@ -1912,6 +1930,24 @@ function WeakAuras.Modernize(data)
   end
 
   local load = data.load;
+
+  if (not load.ingroup) then
+    load.ingroup = {};
+    if (load.use_ingroup == true) then
+      load.ingroup.single = nil;
+      load.ingroup.multi = {
+        ["group"] = true,
+        ["raid"] = true
+      };
+      load.use_ingroup = false;
+    elseif (load.use_ingroup == false) then
+        load.ingroup.single = "solo";
+      load.ingroup.multi = {};
+      load.use_ingroup = true;
+    end
+  end
+
+
   -- Convert load options into single/multi format
   for index, prototype in pairs(WeakAuras.load_prototype.args) do
     local protoname = prototype.name;
@@ -1936,6 +1972,7 @@ function WeakAuras.Modernize(data)
     load.talent.single = talent;
     load.talent.multi = {}
   end
+
 
   --upgrade to support custom trigger combination logic
   if (data.disjunctive == true) then
@@ -2568,7 +2605,7 @@ function WeakAuras.PerformActions(data, type, region)
         glow_frame = regions[frame_name].region;
       end
     else
-      glow_frame = _G[actions.glow_frame];
+      glow_frame = exec_env[actions.glow_frame];
       original_glow_frame = glow_frame
     end
 
@@ -3519,7 +3556,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
           timer:CancelTimer(record.handle);
         end
 
-        record.handle = timer:ScheduleTimer(
+        record.handle = timer:ScheduleTimerFixed(
           function()
             if (state.show ~= false and state.show ~= nil) then
               state.show = false;
@@ -3805,6 +3842,9 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc)
     value = value or "";
   else
     local variable = WeakAuras.dynamic_texts[textStr];
+    if (not variable) then
+      return nil;
+    end
     variable = variable and variable.value;
     value = variable and regionValues[variable] or "";
   end
@@ -4339,8 +4379,8 @@ local function GetAnchorFrame(id, anchorFrameType, parent, anchorFrameFrame)
       end
       postponeAnchor(id);
     else
-      if (_G[anchorFrameFrame]) then
-        return _G[anchorFrameFrame];
+      if (exec_env[anchorFrameFrame]) then
+        return exec_env[anchorFrameFrame];
       end
       postponeAnchor(id);
       return  parent;

@@ -50,6 +50,42 @@ function TaxiDB:Initialize()
 		if y then return DGV:PackXY(x,y) end
 	end
 	
+	function TaxiDB:UnhighlightAllFlightpoints()
+		if WorldFlightMapFrame then
+			local kids = { WorldFlightMapFrame:GetChildren() };
+			for _, child in ipairs(kids) do
+				local text = child:GetNormalTexture()
+				text:SetVertexColor(1,1,1)
+			end
+			
+			if not WorldFlightMapFrame.hookedOnShow then
+				WorldFlightMapFrame:HookScript("OnShow", function()
+					TaxiDB:UnhighlightAllFlightpoints()
+				end)
+				
+				WorldFlightMapFrame.hookedOnShow = true
+			end
+		elseif FlightMapFrame then
+			local activePool = FlightMapFrame.pinPools["FlightMap_FlightPointPinTemplate"]
+			for pin in activePool:EnumerateActive() do 
+				pin.Icon:SetVertexColor(1,1,1)
+			end
+			
+			if not FlightMapFrame.hookedOnShow then
+				FlightMapFrame:HookScript("OnShow", function()
+					TaxiDB:UnhighlightAllFlightpoints()
+				end)
+				
+				FlightMapFrame.hookedOnShow = true
+			end
+		end
+	end
+	
+	local function HighlightTaxiIconWithRed(normalTexture)
+		TaxiDB:UnhighlightAllFlightpoints()
+		normalTexture:SetVertexColor(1,0,0)
+	end
+	
 	local function GetPointerCoord()
 		local x,y = DGV:GetCurrentCursorPosition(DugisMapOverlayFrame)
 		if y then return DGV:PackXY(x,y) end
@@ -60,7 +96,7 @@ function TaxiDB:Initialize()
         
         for _, child in ipairs(kids) do
             if (i == child:GetID()) then
-                child:GetNormalTexture():SetTexture("Interface\\TaxiFrame\\UI-Taxi-Icon-Red")
+				HighlightTaxiIconWithRed(child:GetNormalTexture())
             end
         end
     end
@@ -99,19 +135,22 @@ function TaxiDB:Initialize()
 						local loopNPC = DGV.Modules.TaxiData:GetLookupTable()[cont][DGV:PackXY(x,y)]
 						if loopNPC and waypoint.flightMasterID==loopNPC then
                             if WorldFlightMapFrame == nil then
-                                --For Broken Isles
-                                if cont == 8 then
+                                --For Broken Isles or Argus
+                                if cont == 8 or cont == 9 then
                                     local activePool = FlightMapFrame.pinPools["FlightMap_FlightPointPinTemplate"]
                                     for pin in activePool:EnumerateActive() do 
                                         local pinSlot = pin.taxiNodeData.slotIndex
                                         if i == pinSlot then
                                             TryTakeTaxiNode(i)
-                                            pin.Icon:SetTexture("Interface\\TaxiFrame\\UI-Taxi-Icon-Red")
+											HighlightTaxiIconWithRed(pin.Icon)
                                         end
                                         
-                                        pin:HookScript("OnLeave", function()
-                                            HighlightFlightmasterDestination()
-                                        end)
+										if not pin.hooledOnLeave then
+											pin:HookScript("OnLeave", function()
+												HighlightFlightmasterDestination()
+											end)
+											pin.hooledOnLeave = true
+										end
                                         
                                     end
                                 else
@@ -119,7 +158,7 @@ function TaxiDB:Initialize()
                                     
                                     if btn and btn:GetNormalTexture() then
                                         TryTakeTaxiNode(i)
-                                        btn:GetNormalTexture():SetTexture("Interface\\TaxiFrame\\UI-Taxi-Icon-Red")
+										HighlightTaxiIconWithRed(btn:GetNormalTexture())
                                     end
                                 end
                             else
@@ -147,6 +186,8 @@ function TaxiDB:Initialize()
 	
 	TaxiDB.routeToRecalculate = {}
 	function DGV:TAXIMAP_OPENED()
+        UpdateCurrentBeaconMode()
+        
 		--if WorldMapFrame:IsShown() then HideUIPanel(WorldMapFrame) end
 		LuaUtils:DugiSetMapToCurrentZone()
 		local cont = GetCurrentMapContinent()
@@ -366,7 +407,7 @@ function TaxiDB:Initialize()
 			hooksecurefunc("TaxiNodeCost", function(event)
 				local cont = GetCurrentMapContinent()
 				--if ( event == "TAXIMAP_OPENED" ) then
-					if cont == 8 then
+					if cont == 8 or cont == 9 then
 					for i=1,NumTaxiNodes() do
 						local xyKey = DGV:PackXY(TaxiNodePosition(i))
 						local lookup = DGV.Modules.TaxiData:GetLookupTable()[cont][xyKey]				
@@ -374,7 +415,7 @@ function TaxiDB:Initialize()
 						for pin in activePool:EnumerateActive() do 
 							local pinSlot = pin.taxiNodeData.slotIndex
 							if i == pinSlot and not lookup then
-								pin.Icon:SetTexture("Interface\\TaxiFrame\\UI-Taxi-Icon-Red")
+								HighlightTaxiIconWithRed(pin.Icon)
 							end
 						end
 					end

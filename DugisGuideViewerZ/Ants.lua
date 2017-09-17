@@ -45,6 +45,7 @@ function Ants:Initialize()
 			if x1 < 0 and x2 < 0 then return end
 			
 			local x_div, y_div = (x2-x1), (y2-y1)
+			if x_div == 0 or y_div == 0 then return end
 			local x_0 = y1-x1/x_div*y_div
 			local x_1 = y1+(1-x1)/x_div*y_div
 			local y_0 = x1-y1/y_div*x_div

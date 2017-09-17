@@ -183,36 +183,38 @@ end
 
 -- Aura Group Builder
 function Auras:InitializeFrameGroup(db)
-	SSA.DataFrame.text:SetText('')
-	for groupObj in pairs(db) do
+	for groupObj in pairs(db.frames) do
 		if (SSA[groupObj]) then
-			local group = SSA[groupObj]
-			group:SetWidth(db[groupObj].width)
-			group:SetHeight(db[groupObj].height)
-
-			group:EnableMouse(false)
-			group:SetMovable(false)
-			group:RegisterForDrag('LeftButton')
-			
-
-			group:SetPoint(db[groupObj].point,(SSA[db[groupObj].relativeTo] or UIParent),db[groupObj].relativePoint,db[groupObj].x,db[groupObj].y)
-
-			
-			if (not db[group:GetName()].isEnabled or not Auras:CharacterCheck(0)) then
-				group:Hide()
-			else
+			if (db.isEnabled) then
+				local group = SSA[groupObj]
 				group:Show()
-			end
-			
-			if (group:GetName() == "Undulation") then
-				group.Model:SetModel('SPELLS/Monk_ForceSpere_Orb.m2')
-			elseif (group:GetName() == 'StormstrikeChargeGrp') then
-				group.Charge1.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
-				group.Charge2.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
-			elseif (group:GetName() == 'StormkeeperChargeGrp') then
-				group.Charge1.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
-				group.Charge2.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
-				group.Charge3.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
+				group:SetWidth(db.frames[groupObj].width)
+				group:SetHeight(db.frames[groupObj].height)
+
+				group:EnableMouse(false)
+				group:SetMovable(false)
+				group:RegisterForDrag('LeftButton')
+				
+				group:SetPoint(db.frames[groupObj].point,(SSA[db.frames[groupObj].relativeTo] or UIParent),db.frames[groupObj].relativePoint,db.frames[groupObj].x,db.frames[groupObj].y)
+
+				if (not db.frames[groupObj].isEnabled or not Auras:CharacterCheck(0)) then
+					group:Hide()
+				else
+					group:Show()
+				end
+				
+				if (group:GetName() == "Undulation") then
+					group.Model:SetModel('SPELLS/Monk_ForceSpere_Orb.m2')
+				elseif (group:GetName() == 'StormstrikeChargeGrp') then
+					group.Charge1.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
+					group.Charge2.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
+				elseif (group:GetName() == 'StormkeeperChargeGrp') then
+					group.Charge1.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
+					group.Charge2.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
+					group.Charge3.Lightning:SetModel('spells/Monk_chiblast_precast.m2')
+				end
+			else
+				SSA[groupObj]:Hide()
 			end
 		end
 	end
@@ -221,101 +223,81 @@ end
 function Auras:InitializeProgressBar(bar1,bar2,db,text1,text2,spec)
 	local curSpec = GetSpecialization();
 	
-	if (curSpec == spec) then
-		local bar1 = SSA[bar1]
-		
-		local db = Auras.db.char.elements[spec].statusbars[db]
-		if (text1) then
-			if (db[text1].isDisplayText) then
-				bar1[text1]:SetAlpha(1)
-			else
-				bar1[text1]:SetAlpha(0)
+	if (Auras.db.char.elements[spec].isEnabled) then
+		if (curSpec == spec) then
+			local bar1 = SSA[bar1]
+			
+			local db = Auras.db.char.elements[spec].statusbars[db]
+			if (text1) then
+				if (db[text1].isDisplayText) then
+					bar1[text1]:SetAlpha(1)
+				else
+					bar1[text1]:SetAlpha(0)
+				end
+				
+				bar1[text1]:SetPoint(db[text1].justify,db[text1].x,db[text1].y)
+				bar1[text1]:SetFont(LSM.MediaTable.font[db[text1].font.name] or LSM.DefaultMedia.font,db[text1].font.size,db[text1].font.flag)
+				bar1[text1]:SetTextColor(db[text1].font.color.r,db[text1].font.color.g,db[text1].font.color.b)
 			end
 			
-			bar1[text1]:SetPoint(db[text1].justify,db[text1].x,db[text1].y)
-			bar1[text1]:SetFont(LSM.MediaTable.font[db[text1].font.name] or LSM.DefaultMedia.font,db[text1].font.size,db[text1].font.flag)
-			bar1[text1]:SetTextColor(db[text1].font.color.r,db[text1].font.color.g,db[text1].font.color.b)
-		end
-		
-		if (text2) then
-			if (db[text2].isDisplayText) then
-				bar1[text2]:SetAlpha(1)
-			else
-				bar1[text2]:SetAlpha(0)
+			if (text2) then
+				if (db[text2].isDisplayText) then
+					bar1[text2]:SetAlpha(1)
+				else
+					bar1[text2]:SetAlpha(0)
+				end
+				
+				bar1[text2]:SetPoint(db[text2].justify,db[text2].x,db[text2].y)
+				bar1[text2]:SetFont(LSM.MediaTable.font[db[text2].font.name] or LSM.DefaultMedia.font,db[text2].font.size,db[text2].font.flag)
+				bar1[text2]:SetTextColor(db[text2].font.color.r,db[text2].font.color.g,db[text2].font.color.b)
 			end
 			
-			bar1[text2]:SetPoint(db[text2].justify,db[text2].x,db[text2].y)
-			bar1[text2]:SetFont(LSM.MediaTable.font[db[text2].font.name] or LSM.DefaultMedia.font,db[text2].font.size,db[text2].font.flag)
-			bar1[text2]:SetTextColor(db[text2].font.color.r,db[text2].font.color.g,db[text2].font.color.b)
-		end
-		
-		bar1:ClearAllPoints()
-		
-		if (bar1.icon and db.icon.isEnabled) then
-			local parentJustify
+			bar1:Show()
+			bar1:ClearAllPoints()
 			
-			if (db.icon.justify == 'LEFT') then
-				parentJustify = 'RIGHT';
-				bar1:SetPoint(db.layout.point,SSA[db.layout.relativeTo],db.layout.relativePoint,(db.layout.x + floor(db.layout.height / 2)) + 1,db.layout.y)
+			if (bar1.icon and db.icon.isEnabled) then
+				local parentJustify
+				
+				if (db.icon.justify == 'LEFT') then
+					parentJustify = 'RIGHT';
+					bar1:SetPoint(db.layout.point,SSA[db.layout.relativeTo],db.layout.relativePoint,(db.layout.x + floor(db.layout.height / 2)) + 1,db.layout.y)
+				else
+					parentJustify = 'LEFT'
+					bar1:SetPoint(db.layout.point,SSA[db.layout.relativeTo],db.layout.relativePoint,(db.layout.x - floor(db.layout.height / 2)) - 1,db.layout.y)
+				end
+				bar1:SetWidth(db.layout.width - db.layout.height)
+				
+				bar1.icon:SetWidth(db.layout.height)
+				bar1.icon:SetHeight(db.layout.height)
+				bar1.icon:SetPoint(parentJustify,bar1,db.icon.justify,0,0)
 			else
-				parentJustify = 'LEFT'
-				bar1:SetPoint(db.layout.point,SSA[db.layout.relativeTo],db.layout.relativePoint,(db.layout.x - floor(db.layout.height / 2)) - 1,db.layout.y)
+				bar1:SetPoint(db.layout.point,SSA[db.layout.relativeTo],db.layout.relativePoint,db.layout.x,db.layout.y)
+				bar1:SetWidth(db.layout.width)
 			end
-			bar1:SetWidth(db.layout.width - db.layout.height)
 			
-			bar1.icon:SetWidth(db.layout.height)
-			bar1.icon:SetHeight(db.layout.height)
-			bar1.icon:SetPoint(parentJustify,bar1,db.icon.justify,0,0)
-		else
-			bar1:SetPoint(db.layout.point,SSA[db.layout.relativeTo],db.layout.relativePoint,db.layout.x,db.layout.y)
-			bar1:SetWidth(db.layout.width)
+			bar1.bg:SetTexture(LSM.MediaTable.statusbar[db.background.texture])
+			bar1.bg:SetVertexColor(db.background.color.r,db.background.color.g,db.background.color.b,db.background.color.a)
+			
+			bar1:SetFrameStrata(db.layout.strata)
+			bar1:SetHeight(db.layout.height)
+			bar1:SetStatusBarColor(db.foreground.color.r,db.foreground.color.g,db.foreground.color.b)
+			bar1:SetStatusBarTexture(LSM.MediaTable.statusbar[db.foreground.texture])
+			
+			if (bar2) then
+				bar1[bar2]:ClearAllPoints()
+				bar1[bar2]:SetPoint('CENTER',bar1,'CENTER',0,0)
+				bar1[bar2]:SetFrameStrata('MEDIUM')
+				bar1[bar2]:SetWidth(db.layout.width)
+				bar1[bar2]:SetHeight(db.layout.height)
+				bar1[bar2]:SetStatusBarColor(db[lower(bar2).."Bar"].color.r,db[lower(bar2).."Bar"].color.g,db[lower(bar2).."Bar"].color.b,db[lower(bar2).."Bar"].color.a)
+			end
+			
+			db.adjust.isEnabled = false
 		end
-		
-		bar1.bg:SetTexture(LSM.MediaTable.statusbar[db.background.texture])
-		bar1.bg:SetVertexColor(db.background.color.r,db.background.color.g,db.background.color.b,db.background.color.a)
-		
-		bar1:SetFrameStrata(db.layout.strata)
-		bar1:SetHeight(db.layout.height)
-		bar1:SetStatusBarColor(db.foreground.color.r,db.foreground.color.g,db.foreground.color.b)
-		bar1:SetStatusBarTexture(LSM.MediaTable.statusbar[db.foreground.texture])
-		
-		if (bar2) then
-			bar1[bar2]:ClearAllPoints()
-			bar1[bar2]:SetPoint('CENTER',bar1,'CENTER',0,0)
-			bar1[bar2]:SetFrameStrata('MEDIUM')
-			bar1[bar2]:SetWidth(db.layout.width)
-			bar1[bar2]:SetHeight(db.layout.height)
-			bar1[bar2]:SetStatusBarColor(db[lower(bar2).."Bar"].color.r,db[lower(bar2).."Bar"].color.g,db[lower(bar2).."Bar"].color.b,db[lower(bar2).."Bar"].color.a)
-		end
-		
-		db.adjust.isEnabled = false
+	else
+		SSA[bar1]:Hide()
 	end
 end
-
---[[function Auras:ToggleCooldownSwipe(self,arg1)
-	local cooldown = _G[self:GetName()]
-	if (not arg1) then
-		cooldown:SetSwipeColor(0,0,0,0)
-	else
-		cooldown:SetSwipeColor(1,1,1,1)
-	end
-	cooldown:SetDrawSwipe(arg1)
-	cooldown:SetDrawEdge(arg1)
-	cooldown:SetDrawBling(arg1)
-end]]
-
---[[function Auras:PreviewCooldown(self)
-	local expire,progress
-	
-	if (not expire or GetTime() > expire) then
-		expire = GetTime() + 6
-	end
-	
-	self:Show()
-	progress = expire - GetTime()
-	print(progress)
-	self.text:SetText(3 + progress)
-end]]
 
 
 
@@ -386,13 +368,13 @@ function Auras:ResetAuraGroupPosition(auraGroup)
 	local elements = db.elements[spec]
 	local objName, obj, subName
 	
-	SSA.DataFrame.text:SetText('')
+	--SSA.DataFrame.text:SetText('')
 	for i=1,SSA[auraGroup]:GetNumChildren() do
 		objName = select(i,SSA[auraGroup]:GetChildren()):GetName()
 		
 		if (elements.frames[objName]) then
 			obj = db.elements.defaults[spec].frames[objName]
-			SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."="..objName.."\n")
+			--SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."="..objName.."\n")
 			SSA[objName]:SetPoint(obj.point,SSA[auraGroup],obj.relativePoint,obj.x,obj.y)
 			Auras:UpdateLayout(SSA[objName],elements.frames[objName])
 		else			
@@ -413,11 +395,11 @@ function Auras:ResetAuraGroupPosition(auraGroup)
 					parentJustify = 'LEFT'
 					SSA[objName]:SetPoint(obj.layout.point,SSA[obj.layout.relativeTo],obj.layout.relativePoint,(obj.layout.x - floor(obj.layout.height / 2)) - 1,obj.layout.y)
 				end
-				SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."-"..objName.."\n")
+				--SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."-"..objName.."\n")
 				SSA[objName].icon:SetPoint(parentJustify,SSA[objName],bar.icon.justify,0,0)
 				Auras:UpdateLayout(SSA[objName],elements.statusbars[subName])
 			else
-				SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."+"..objName.."\n")
+				--SSA.DataFrame.text:SetText(Auras:CurText('DataFrame').."+"..objName.."\n")
 				SSA[objName]:SetPoint(obj.layout.point,SSA[auraGroup],obj.layout.relativePoint,obj.layout.x,obj.layout.y)
 				Auras:UpdateLayout(SSA[objName],elements.statusbars[subName])
 			end

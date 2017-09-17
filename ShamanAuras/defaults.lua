@@ -4,7 +4,7 @@ local LSM = LibStub("LibSharedMedia-3.0")
 local defaults = {
 	char = {
 		EquippedArtifact = '',
-		isR63FirstLoad = true,
+		isR67FirstLoad = true,
 		version = nil,
 		name = nil,
 		isMoveGrid = true,
@@ -505,7 +505,7 @@ local defaults = {
 				},
 				statusbars = {
 					defaultBar = false,
-					healthBar = {
+					--[[healthBar = {
 						adjust = {
 							isEnabled = false,
 							showBG = false,
@@ -609,7 +609,7 @@ local defaults = {
 						alphaCombat = 1,
 						alphaOoC = 1,
 						alphaTar = 0.5,
-					},
+					},]]
 					maelstromBar = {
 						adjust = {
 							isEnabled = false,
@@ -4093,6 +4093,13 @@ local defaults = {
 				rockbiter = 5,
 				flametongue = 5,
 				frostbrand = 5,
+				lavaLash = {
+					stacks = {
+						isEnabled = true,
+						value = 99,
+					},
+					glow = true,
+				},
 				OoCAlpha = 0.5,
 				OoRColor = {
 					r = 1,
@@ -4128,6 +4135,9 @@ local defaults = {
 					rockbiter = 5,
 					flametongue = 5,
 					frostbrand = 5,
+					lavaLash = {
+						stacks = 99,
+					},
 				},
 				[3] = {
 					cloudburst = 300000,

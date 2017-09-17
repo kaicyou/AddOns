@@ -248,9 +248,16 @@ local function AutoroutinesOnUpdate()
 				-- local result = GetCreateTable()
 				DGV.currentAutoroutine = autoroutine
 				-- InsertList(result, coroutine.resume(autoroutine.coroutine, Unpack(autoroutine)))
-				local result, message = coroutine.resume(autoroutine.coroutine, Unpack(autoroutine))
-				DGV.currentAutoroutine = nil
+				
 				local status = coroutine.status(autoroutine.coroutine)
+				local result, message
+				
+				if status ~="dead" then
+					result, message = coroutine.resume(autoroutine.coroutine, Unpack(autoroutine))
+				end
+				
+				DGV.currentAutoroutine = nil
+				status = coroutine.status(autoroutine.coroutine)
 				if status=="dead" then
 					tremove(autoroutines, i)
 					local onCompletion = autoroutine.onCompletion
@@ -305,6 +312,8 @@ local function YieldAutoroutine(...)
 	if DGV.currentAutoroutine then
 		coroutine.yield(...)
 	end
+	
+	LuaUtils:RestIfNeeded()
 end
 DGV.YieldAutoroutine = YieldAutoroutine
 

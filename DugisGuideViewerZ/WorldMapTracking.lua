@@ -585,7 +585,12 @@ function WMT:Initialize()
 	end
 	
 	function DataProviders.PetBattles:IsTrackingEnabled()
-		return select(3,GetTrackingInfo(13))
+		for i=1, GetNumTrackingTypes() do 
+			local name, texture, active, category = real_GetTrackingInfo(i); 
+			if texture == 613074 then
+				return active
+			end
+		end
 	end
 	
 	function DataProviders.PetBattles:GetIcon(trackingType, location, speciesID, criteriaIndex, extraToolTip, ...)
@@ -1206,7 +1211,7 @@ function WMT:Initialize()
 		end
         
         if LuaUtils:IsElvUIInstalled() then
-            Lib_DropDownList1.showTimer = 1
+            L_DropDownList1.showTimer = 1
         else
             LibDugi_DropDownList1.showTimer = 1
         end        
@@ -1219,7 +1224,7 @@ function WMT:Initialize()
 		local listFrame = _G["DropDownList"..level];
         
         if LuaUtils:IsElvUIInstalled() then
-            listFrame = _G["Lib_DropDownList"..level];
+            listFrame = _G["L_DropDownList"..level];
         end
         
 		local listFrameName = listFrame:GetName();
@@ -1309,7 +1314,7 @@ function WMT:Initialize()
             local dropDownPrefix = ""
             
             if LuaUtils:IsElvUIInstalled() then
-                dropDownPrefix = "Lib_"
+                dropDownPrefix = "L_"
             end
             
             LuaUtils:loop(_G[dropDownPrefix.."DropDownList1"].numButtons, function(buttonIndex)
@@ -1337,7 +1342,7 @@ function WMT:Initialize()
             local dropDownPrefix = ""
             
             if LuaUtils:IsElvUIInstalled() then
-                dropDownPrefix = "Lib_"
+                dropDownPrefix = "L_"
             end
             
             LuaUtils:loop(_G[dropDownPrefix.."DropDownList1"].numButtons, function(buttonIndex)
@@ -1574,7 +1579,7 @@ function WMT:Initialize()
             local yMenuOffset = 0
             
             if LuaUtils:IsElvUIInstalled() then
-                local top = Lib_DropDownList1:GetTop()
+                local top = L_DropDownList1:GetTop()
                 if top ~= nil and top < GetScreenHeight() * 0.5 then
                     MinimapExtraMenuFrame.point = "BOTTOMRIGHT"
                     MinimapExtraMenuFrame.relativePoint = "TOPRIGHT"
@@ -1589,7 +1594,7 @@ function WMT:Initialize()
             end
 
              if LuaUtils:IsElvUIInstalled() then
-                LibDugi_EasyMenu(menu, MinimapExtraMenuFrame, Lib_DropDownList1, 0 , -5 + yMenuOffset, "MENU"); 
+                LibDugi_EasyMenu(menu, MinimapExtraMenuFrame, L_DropDownList1, 0 , -5 + yMenuOffset, "MENU"); 
                 LuaUtils:TransferBackdropFromElvUI()
              else
                 LibDugi_EasyMenu(menu, MinimapExtraMenuFrame, DropDownList1, 0 , 0, "MENU");
@@ -1601,7 +1606,7 @@ function WMT:Initialize()
                 local DropDownList = DropDownList1
                 
                 if LuaUtils:IsElvUIInstalled() then
-                    DropDownList = Lib_DropDownList1
+                    DropDownList = L_DropDownList1
                 end
             
                 LibDugi_DropDownList1:HookScript("OnEnter", function()

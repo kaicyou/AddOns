@@ -290,7 +290,7 @@ InitializeFrames('EarthenSpike',LargeIconGrpBot,[[enhancement\earthen_spike]],lg
 InitializeFrames('FeralSpirit',LargeIconGrpBot,[[enhancement\feral_spirit]],lgIcon,true)
 InitializeFrames('Flametongue',LargeIconGrpTop,[[enhancement\flametongue]],lgIcon,true,lgGlow)
 InitializeFrames('Frostbrand',LargeIconGrpTop,[[enhancement\frostbrand]],lgIcon,true,lgGlow)
-InitializeFrames('LavaLash',LargeIconGrpTop,[[enhancement\lava_lash]],lgIcon,true,lgGlow)
+InitializeFrames('LavaLash',LargeIconGrpTop,[[enhancement\lava_lash]],lgIcon,true,lgGlow,true)
 InitializeFrames('Rockbiter',LargeIconGrpBot,[[enhancement\rockbiter]],lgIcon,true,lgGlow,true)
 InitializeFrames('Stormstrike',LargeIconGrpTop,[[enhancement\stormstrike]],lgIcon,true,lgGlow,true)
 InitializeFrames('Sundering',LargeIconGrpBot,[[enhancement\sundering]],lgIcon,true)
@@ -617,7 +617,7 @@ SSA.CrashLightning:SetScript('OnUpdate', function(self)
 			local name,_,icon = GetSpellInfo(242286)
 			
 			if (not self.T21) then
-				local T21Frame = CreateFrame('Frame','CrashingLightning',self)
+				local T21Frame = CreateFrame('Frame','LightningCrash',self)
 				T21Frame:SetFrameStrata('MEDIUM')
 				T21Frame:SetWidth(smIcon)
 				T21Frame:SetHeight(smIcon)
@@ -627,8 +627,9 @@ SSA.CrashLightning:SetScript('OnUpdate', function(self)
 				T21Frame.texture:SetTexture(icon)
 				T21Frame.texture:SetAllPoints(T21Frame)
 				
-				T21Frame.CD = CreateFrame('Cooldown','CrashingLightningCD',T21Frame,'CooldownFrameTemplate')
+				T21Frame.CD = CreateFrame('Cooldown','LightningCrashCD',T21Frame,'CooldownFrameTemplate')
 				T21Frame.CD:SetAllPoints(T21Frame)
+				T21Frame.CD:SetHideCountdownNumbers(true)
 				
 				T21Frame.CD.text = T21Frame.CD:CreateFontString(nil,'MEDIUM','GameFontHighlightLarge')
 				T21Frame.CD.text:SetAllPoints(T21Frame.CD)
@@ -636,7 +637,7 @@ SSA.CrashLightning:SetScript('OnUpdate', function(self)
 				T21Frame.CD.text:SetTextColor(1,1,0,1)
 				--T21Frame.CD.text:SetFont(LSM.MediaTable.font['PT Sans Narrow'] or LSM.DefaultMedia.font)
 				
-				T21Frame.glow = CreateFrame('Frame','CrashingLightningGlow',T21Frame)
+				T21Frame.glow = CreateFrame('Frame','LightningCrashGlow',T21Frame)
 				T21Frame.glow:SetPoint("CENTER",0,0)
 				T21Frame.glow:SetWidth(smGlow)
 				T21Frame.glow:SetHeight(smGlow)
@@ -972,8 +973,10 @@ end)
 -- Lava Lash
 SSA.LavaLash:SetScript('OnUpdate', function(self)
 	if (Auras:CharacterCheck(2)) then
+		local db = Auras.db.char
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(60103))
 		local buff = UnitBuff('player',Auras:GetSpellName(201900))
+		local _,_,_,count = UnitDebuff('target',Auras:GetSpellName(240842))
 		
 		local power = UnitPower('player',11)
 		
@@ -981,11 +984,13 @@ SSA.LavaLash:SetScript('OnUpdate', function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide')
 		Auras:CooldownHandler(self,2,'primary',1,start,duration)
 		
-		--[[if ((duration or 0) > 2) then
-			Auras:ExecuteCooldown(self,start,duration,false,false,2)
-		end]]
+		if (count and db.settings[2].lavaLash.stacks.isEnabled) then
+			self.Charges.text:SetText(count)
+		else
+			self.Charges.text:SetText('')
+		end
 		
-		if (buff) then
+		if ((buff or (count or 0) >= db.settings[2].lavaLash.stacks.value) and db.settings[2].lavaLash.glow) then
 			Auras:ToggleOverlayGlow(self.glow,true)
 		else
 			Auras:ToggleOverlayGlow(self.glow,false)
@@ -998,7 +1003,6 @@ SSA.LavaLash:SetScript('OnUpdate', function(self)
 				self:SetAlpha(0.5)
 			end
 		else
-			--self:SetAlpha(Auras.db.char.settings[2].OoCAlpha)
 			if (Auras.db.char.elements[2].cooldowns.secondary[1].isPreview) then
 				self:SetAlpha(1)
 			else
@@ -1544,7 +1548,6 @@ CastBar:SetScript('OnUpdate',function(self)
 			self.timetext:SetText('1.2')
 			self:SetAlpha(1)
 			
-			SSA.DataFrame.text:SetText('')
 			AdjustStatusBarText(self.nametext,bar.nametext,"name")
 			AdjustStatusBarText(self.timetext,bar.timetext,"time")
 			AdjustStatusBarIcon(self,bar,texture)

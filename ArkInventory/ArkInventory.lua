@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2006-2016
 
-$Revision: 1848 $
-$Date: 2017-08-04 16:41:22 +1000 (Fri, 04 Aug 2017) $
+$Revision: 1852 $
+$Date: 2017-08-30 09:36:16 +1000 (Wed, 30 Aug 2017) $
 
 ]]--
 
@@ -4861,22 +4861,22 @@ function ArkInventory.Frame_Main_OnShow( frame )
 	ArkInventory.Frame_Main_Level( frame )
 	
 	if loc_id == ArkInventory.Const.Location.Bank then
-		PlaySound( "igCharacterInfoOpen" )
+		PlaySound( SOUNDKIT.IG_CHARACTER_INFO_OPEN )
 	elseif loc_id == ArkInventory.Const.Location.Bag then
-		PlaySound( "igBackPackOpen" )
+		PlaySound( SOUNDKIT.IG_BACKPACK_OPEN )
 	elseif loc_id == ArkInventory.Const.Location.Vault then
-		PlaySound( "GuildVaultOpen" )
+		PlaySound( SOUNDKIT.GUILD_VAULT_OPEN )
 	elseif loc_id == ArkInventory.Const.Location.Mail then
-		PlaySound( "igSpellBookOpen" )
+		PlaySound( SOUNDKIT.IG_SPELLBOOK_OPEN )
 	elseif loc_id == ArkInventory.Const.Location.Wearing then
-		PlaySound( "igBackPackOpen" )
+		PlaySound( SOUNDKIT.IG_BACKPACK_OPEN )
 	elseif loc_id == ArkInventory.Const.Location.Pet then
-		PlaySound( "igSpellBookOpen" )
+		PlaySound( SOUNDKIT.IG_SPELLBOOK_OPEN )
 	elseif loc_id == ArkInventory.Const.Location.Mount then
-		PlaySound( "igSpellBookOpen" )
+		PlaySound( SOUNDKIT.IG_SPELLBOOK_OPEN )
 	elseif loc_id == ArkInventory.Const.Location.Token then
 		ArkInventory.ScanLocation( loc_id )
-		PlaySound( "igSpellBookOpen" )
+		PlaySound( SOUNDKIT.IG_SPELLBOOK_OPEN )
 	elseif loc_id == ArkInventory.Const.Location.Auction then
 		
 	elseif loc_id == ArkInventory.Const.Location.Spellbook then
@@ -4884,7 +4884,7 @@ function ArkInventory.Frame_Main_OnShow( frame )
 	elseif loc_id == ArkInventory.Const.Location.Tradeskill then
 		
 	elseif loc_id == ArkInventory.Const.Location.Void then
-		PlaySound( "UI_EtherealWindow_Open" )
+		PlaySound( SOUNDKIT.UI_ETHEREAL_WINDOW_OPEN )
 	end
 	
 end
@@ -4930,7 +4930,7 @@ function ArkInventory.Frame_Main_OnHide( frame )
 	
 	if loc_id == ArkInventory.Const.Location.Bank then
 		
-		PlaySound( "igCharacterInfoClose" )
+		PlaySound( SOUNDKIT.IG_CHARACTER_INFO_CLOSE )
 		
 		if ArkInventory.Global.Mode.Bank and ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Bank ) then
 			-- close blizzards bank frame if we're hiding blizzard frames, we're at the bank, and the bank window was closed
@@ -4939,11 +4939,11 @@ function ArkInventory.Frame_Main_OnHide( frame )
 		
 	elseif loc_id == ArkInventory.Const.Location.Bag then
 		
-		PlaySound( "igBackPackClose" )
+		PlaySound( SOUNDKIT.IG_BACKPACK_CLOSE )
 		
 	elseif loc_id == ArkInventory.Const.Location.Vault then
 		
-		PlaySound( "GuildVaultClose" )
+		PlaySound( SOUNDKIT.GUILD_VAULT_CLOSE )
 		
 		if ArkInventory.Global.Mode.Vault and ArkInventory.LocationIsControlled( ArkInventory.Const.Location.Vault ) then
 			
@@ -4960,23 +4960,23 @@ function ArkInventory.Frame_Main_OnHide( frame )
 		
 	elseif loc_id == ArkInventory.Const.Location.Mail then
 		
-		PlaySound( "igSpellBookClose" )
+		PlaySound( SOUNDKIT.IG_SPELLBOOK_CLOSE )
 		
 	elseif loc_id == ArkInventory.Const.Location.Wearing then
 		
-		PlaySound( "igBackPackClose" )
+		PlaySound( SOUNDKIT.IG_BACKPACK_CLOSE )
 		
 	elseif loc_id == ArkInventory.Const.Location.Pet then
 		
-		PlaySound( "igSpellBookClose" )
+		PlaySound( SOUNDKIT.IG_SPELLBOOK_CLOSE )
 		
 	elseif loc_id == ArkInventory.Const.Location.Mount then
 		
-		PlaySound( "igSpellBookClose" )
+		PlaySound( SOUNDKIT.IG_SPELLBOOK_CLOSE )
 		
 	elseif loc_id == ArkInventory.Const.Location.Token then
 		
-		PlaySound( "igSpellBookClose" )
+		PlaySound( SOUNDKIT.IG_SPELLBOOK_CLOSE )
 		
 	elseif loc_id == ArkInventory.Const.Location.Auction then
 		
@@ -4986,7 +4986,7 @@ function ArkInventory.Frame_Main_OnHide( frame )
 		
 	elseif loc_id == ArkInventory.Const.Location.Void then
 		
-		PlaySound("UI_EtherealWindow_Close")
+		PlaySound( SOUNDKIT.UI_ETHEREAL_WINDOW_CLOSE )
 		
 	end
 	
@@ -8782,7 +8782,7 @@ function ArkInventory.Frame_Changer_Slot_OnClick( frame, button )
 		
 		if loc_id == ArkInventory.Const.Location.Bank then
 			if bag and bag.status == ArkInventory.Const.Bag.Status.Purchase then
-				PlaySound( "igMainMenuOption" )
+				PlaySound( SOUNDKIT.IG_MAINMENU_OPTION )
 				if bag_id == ArkInventory.Global.Location[loc_id].tabReagent then
 					StaticPopup_Show( "CONFIRM_BUY_REAGENTBANK_TAB" )
 				else

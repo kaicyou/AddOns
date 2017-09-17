@@ -1,4 +1,23 @@
-﻿	r63
+﻿	r67
+FIX: [Ele] Fixed a random error while navigating the config panel.
+FIX: [UI] An error caused by a library - that prevented the addon from loading - has been fixed. (Thanks, Stryker!)
+	
+	r66
+FIX: [UI] Updated all libraries; fixing an error with the config panel. (Thanks, Mad!)
+	
+	r65
+NEW: [Ele/Res] Having Soul of the Farseer equipped should now display charges on respective auras. (Thanks, TheLaughingMan!)
+NEW: [Enhancement] Lava Lash's aura will now display stacks of Lashing Flames and glow at 99 stacks (configurable in options). (Thanks, Kirix!)
+NEW: [UI] Updated addon to 7.3
+
+FIX: [Enhancement] The cooldown timer for the Lightning Crash mini-aura should no longer appear (needs testing).
+FIX: [UI] An error preventing the usage of the configuration tabs should be fixed. (Thanks, Del!)
+	
+	r64
+FIX: [All] Disabling auras for specific specs should now remain disabled after reloading the UI. (Thanks, ernetlo!)
+FIX: [Enhancement] The mini-aura icon for Crash Lightning's 4-piece bonus should no longer display a text timer.(Thanks, xtremekhaos!)
+
+	r63
 FIX: [All] Non-English WoW clients should no longer be experiencing a major bug caused by the cooldown module. (Thanks, AKFDI!)
 FIX: [Elemental] Flame Shock's timer should no longer appear when you don't have Flame Shock active and another Shaman's Flame Shock is on the target.
 FIX: [Enhancement] The T20 4-set bonus aura should be working correctly. (Thanks, Lifad!)

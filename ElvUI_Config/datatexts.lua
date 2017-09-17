@@ -207,34 +207,43 @@ E.Options.args.datatexts = {
 								E:GetModule('Layout'):SetDataPanelStyle()
 							end,
 						},
-						noCombatClick = {
+						panelBackdrop = {
 							order = 5,
+							name = L["Backdrop"],
+							type = 'toggle',
+							set = function(info, value)
+								E.db.datatexts[ info[#info] ] = value
+								E:GetModule('Layout'):SetDataPanelStyle()
+							end,
+						},
+						noCombatClick = {
+							order = 6,
 							type = "toggle",
 							name = L["Block Combat Click"],
 							desc = L["Blocks all click events while in combat."],
 						},
 						noCombatHover = {
-							order = 6,
+							order = 7,
 							type = "toggle",
 							name = L["Block Combat Hover"],
 							desc = L["Blocks datatext tooltip from showing in combat."],
 						},
 						goldFormat = {
-							order = 7,
+							order = 8,
 							type = 'select',
 							name = L["Gold Format"],
 							desc = L["The display format of the money text that is shown in the gold datatext and its tooltip."],
 							values = {
 								['SMART'] = L["Smart"],
 								['FULL'] = L["Full"],
-								['SHORT'] = L["Short"],
+								['SHORT'] = SHORT,
 								['SHORTINT'] = L["Short (Whole Numbers)"],
 								['CONDENSED'] = L["Condensed"],
 								['BLIZZARD'] = L["Blizzard Style"],
 							},
 						},
 						goldCoins = {
-							order = 8,
+							order = 9,
 							type = 'toggle',
 							name = L["Show Coins"],
 							desc = L["Use coin icons instead of colored text."],
@@ -255,7 +264,7 @@ E.Options.args.datatexts = {
 						},
 						fontSize = {
 							order = 2,
-							name = L["Font Size"],
+							name = FONT_SIZE,
 							type = "range",
 							min = 4, max = 212, step = 1,
 						},
@@ -265,7 +274,7 @@ E.Options.args.datatexts = {
 							desc = L["Set the font outline."],
 							type = "select",
 							values = {
-								['NONE'] = L["None"],
+								['NONE'] = NONE,
 								['OUTLINE'] = 'OUTLINE',
 								['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
 								['THICKOUTLINE'] = 'THICKOUTLINE',

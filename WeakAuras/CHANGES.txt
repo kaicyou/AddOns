@@ -1,140 +1,62 @@
-tag a079f18e499d2f24a75c74a57f818ce484b5c34a 2.4.17
+tag ff6fd7d6c088f0c10304be5d155ebfdc3cfc93d8 2.4.22
 Author:	Benjamin Staneck <staneck@gmail.com>
-Date:	Mon Aug 14 16:29:00 2017 +0200
+Date:	Mon Sep 11 20:04:10 2017 +0200
 
-commit e5c0b1c19aa0cf0c1eff984325d72e85ad124ac6
+commit d56bc8d435e462d25d99c3e9a994ca6f63251834
+Author: lqnrd <30536144+lqnrd@users.noreply.github.com>
+Date:   Mon Sep 11 19:51:11 2017 +0200
+
+    protect _G lookups (#283)
+    
+    * protect _G lookups
+    
+    * Revert "protect _G lookups"
+    
+    This reverts commit ce56767432bab5e4e726cb6e1e388b3517e290c4.
+    
+    * use exec_env instead
+    
+    as suggested by @emptyrivers
+
+commit 149003afcb3435d2b3199dfe528692d02e4962c5
 Author: Benjamin Staneck <staneck@gmail.com>
-Date:   Mon Aug 14 16:28:32 2017 +0200
+Date:   Mon Sep 11 16:56:53 2017 +0200
 
-    at per workspace indent settings for vscode
+    adding a function to a list
 
-commit c7501939d46107b6e49684c8df6b5171d3914f3d
+commit eabaad004b911d7958c853bff7ec74676c62bba5
 Author: Infus <infus@squorn.de>
-Date:   Fri Aug 11 18:57:36 2017 +0200
+Date:   Sun Sep 10 01:47:03 2017 +0200
 
-    Add a "remaining time" check to the Cast Trigger
+    Fix and extend Swing Timer
     
-    Github Issue: 265
+    - Use the combat log events parameter to distinguish between main
+    and off hand.
+    - Implement parry haste with code provided by Hamsda
+    
+    Ticket-Nr: 1045
 
-commit 50560979b9af8d8fe2e1767530de6ae88180cd73
+commit 8305cd5733c6b4470a84a8df37bd725e104b9c1c
 Author: Infus <infus@squorn.de>
-Date:   Fri Aug 11 18:24:30 2017 +0200
+Date:   Sat Sep 9 20:41:24 2017 +0200
 
-    Threat trigger: Add Focus and "Specific" to the unit selection
+    Work around Editboxes buggyness with 7.3
     
-    This allows tracking the player's threat against more unit ids.
-    
-    Ticket-Nr: 1021
+    Ticket-Nr: 1041
 
-commit 4f58152ca0f72783079de808ae06623cf9557774
+commit 5b079ddb09aef1828cc0d11eee2142dfa69eeaad
 Author: Infus <infus@squorn.de>
-Date:   Fri Aug 4 19:02:10 2017 +0200
+Date:   Sat Sep 9 20:41:00 2017 +0200
 
-    Fix Minimize with Templates open
+    Make the In Group load condition more powerful
     
-    Reported via a curse comment
+    Ticket-Nr: 1044
 
-commit 5787bd588d062b56267127d6758d3b1b6aa3cbe1
+commit 52c56328c7ac2cb0cb8ddfb25663db149c04785d
 Author: Infus <infus@squorn.de>
-Date:   Fri Aug 4 18:38:40 2017 +0200
+Date:   Sat Sep 2 18:35:05 2017 +0200
 
-    Circular Progress Texture: Fix background looking strange
+    Change one PlaySound to use kit ids
     
-    Instead of using self.texture:GetSize() use region.width.
-    
-    The former might not be up to date, due to how Blizzard's lazy
-    layouting works, whereas we can easily keep track of the size
-    the region should have.
-    
-    Ticket-Nr: 1018
-
-commit 151c1e4c5f3bf5e3926fd6e834a2246e260e3a9f
-Author: Benjamin Staneck <staneck@gmail.com>
-Date:   Mon Jul 31 00:44:13 2017 +0200
-
-    Delete old CONTRIBUTING.md
-
-commit 75a38c8807c5e4f12fc09b1d4a7f1c536fea8851
-Author: Benjamin Staneck <staneck@gmail.com>
-Date:   Mon Jul 31 00:40:28 2017 +0200
-
-    Add a CONTRIBUTING.md file
-    
-    Based on https://github.com/XhmikosR/mpc-hc/blob/develop/CONTRIBUTING.md and https://github.com/WeakAuras/WeakAuras2/pull/249
-    Closes https://github.com/WeakAuras/WeakAuras2/pull/249
-
-commit b0c413b4262f13276d011b013607b3f6a22d2f2f
-Author: Infus <infus@squorn.de>
-Date:   Sat Jul 29 20:02:48 2017 +0200
-
-    Fix duration info not clearing on switching states
-    
-    Github Ticket: 248
-
-commit 96d5515a6b9e6cc2018bb0eca1c89362bcb87adc
-Author: Infus <infus@squorn.de>
-Date:   Sat Jul 29 18:42:08 2017 +0200
-
-    Text: Work around a Blizzard bug in how text widths are calculated
-    
-    The automatic calculation of widths in OUTLINE or THICKOUTLINE mode
-    can introduce an additional line break into the text.
-    
-    By setting the width to 0, the automatic calculation is used.
-    We then set the text width to 1.2 times that calculated size
-    
-    Ticket-Nr: 1014
-
-commit e5fdd891009c600751474cc22c8b4c888cf8c700
-Author: Infus <infus@squorn.de>
-Date:   Sat Jul 29 01:54:07 2017 +0200
-
-    Add a Item Set trigger, which can check how many set items are equipped
-    
-    Code mostly by Asakawa
-
-commit 5972bebe8ff287cd7e46cca8f9723bded90aee01
-Author: Infus <infus@squorn.de>
-Date:   Fri Jul 28 21:42:18 2017 +0200
-
-    Add a Version field to auras which is shown in tooltips
-    
-    This is handled the same as the url. It's automatically filled by
-    websites such as wago.io.
-    
-    Github-Ticket: 257
-
-commit 83717c984ec98331c53457df6e71dd045641ed45
-Author: Benjamin Staneck <staneck@gmail.com>
-Date:   Thu Jul 27 07:17:16 2017 +0200
-
-    Whitespace cleanups
-
-commit 27afb8533a6900f0ed562f6c593bcdb8b6026081
-Author: Benjamin Staneck <staneck@gmail.com>
-Date:   Wed Jul 26 04:43:10 2017 +0200
-
-    add mixin stuff to .luacheckrc
-
-commit 48bd68d20f295d096f2ce2abcb8540e5ee995412
-Author: Benjamin Staneck <staneck@gmail.com>
-Date:   Wed Jul 26 02:23:02 2017 +0200
-
-    add the Antorus encounter ids
-
-commit a19fa74b3c23aed9242648d199add9f18265c04a
-Author: Infus <infus@squorn.de>
-Date:   Tue Jul 25 20:07:02 2017 +0200
-
-    Rename "Dungeon Difficulty" load option to "Instance Difficulty"
-    
-    Since it does include e.g. LFR
-    
-    Ticket-Nr: 1012
-
-commit 65c9dab9e996d70991d82d0dcc9344c5ba8579a3
-Author: kesava-wow <kesava-wow@users.noreply.github.com>
-Date:   Tue Jul 25 16:36:46 2017 +0100
-
-    fix PRD hook when KNP option 'ignore personal nameplate' is used
+    Report and patch by Exality on discord.
 

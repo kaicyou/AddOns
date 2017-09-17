@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1903, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 16590 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 16678 $"):sub(12, -3))
 mod:SetCreatureID(118523, 118374, 118518)--118523 Huntress kasparian, 118374 Captain Yathae Moonstrike, 118518 Prestess Lunaspyre
 mod:SetEncounterID(2050)
 mod:SetZone()
@@ -45,7 +45,7 @@ local warnLunarFire					= mod:NewStackAnnounce(239264, 2, nil, "Tank")
 local warnMoonBurn					= mod:NewTargetAnnounce(236519, 3)
 
 --All
-local specWarnFontofElune			= mod:NewSpecialWarningStack(236357, nil, 12, nil, 2, 1, 6)--Stack unknown
+local specWarnFontofElune			= mod:NewSpecialWarningStack(236357, nil, 12, nil, 2, 1, 6)
 local specWarnBerserk				= mod:NewSpecialWarningSpell(243262, nil, nil, nil, 3, 2)
 --Huntress Kasparian
 local specWarnGlaiveStorm			= mod:NewSpecialWarningDodge(239379, nil, nil, nil, 2, 2)
@@ -70,22 +70,22 @@ local specWarnLunarBeacon			= mod:NewSpecialWarningMoveAway(236712, nil, nil, ni
 local yellLunarBeacon				= mod:NewFadesYell(236712)
 local specWarnLunarFire				= mod:NewSpecialWarningStack(239264, nil, 2, nil, nil, 1, 2)
 local specWarnLunarFireOther		= mod:NewSpecialWarningTaunt(239264, nil, nil, nil, 1, 2)
-local specWarnMoonBurn				= mod:NewSpecialWarningMoveTo(236519, nil, DBM_CORE_AUTO_SPEC_WARN_OPTIONS.you:format(236519), nil, 1, 7)--Add voice filter when it has a voice
+local specWarnMoonBurn				= mod:NewSpecialWarningMoveTo(236519, nil, DBM_CORE_AUTO_SPEC_WARN_OPTIONS.you:format(236519), nil, 1, 7)
 
 --Huntress Kasparian
 mod:AddTimerLine(EJ_GetSectionInfo(14992))
-local timerGlaiveStormCD			= mod:NewNextTimer(54, 239379, nil, nil, nil, 3)--Moon change special (but also used while inactive?)
+local timerGlaiveStormCD			= mod:NewNextCountTimer(54, 239379, nil, nil, nil, 3)--Moon change special (but also used while inactive?)
 --local timerTwilightGlaiveCD			= mod:NewCDTimer(7.5, 237561, nil, nil, nil, 3)--6.1-34
 local timerMoonGlaiveCD				= mod:NewCDTimer(13.4, 236547, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--13.4-30 second variation, have fun with that
 --Captain Yathae Moonstrike
 mod:AddTimerLine(EJ_GetSectionInfo(14994))
-local timerIncorporealShotCD		= mod:NewNextTimer(54, 236305, nil, nil, nil, 3)--Moon change special (but also used while inactive?)
+local timerIncorporealShotCD		= mod:NewNextCountTimer(54, 236305, nil, nil, nil, 3)--Moon change special (but also used while inactive?)
 local timerCallMoontalonCD			= mod:NewCDTimer(31, 236694, nil, nil, nil, 1)
 local timerTwilightVolleyCD			= mod:NewCDTimer(12.8, 236442, nil, nil, nil, 2)--Cast while inactive. 8.5--20
 local timerRapidShotCD				= mod:NewCDTimer(18.2, 236596, nil, nil, nil, 3)--18.2 but sometimes 30
 --Priestess Lunaspyre
 mod:AddTimerLine(EJ_GetSectionInfo(14997))
-local timerEmbraceofEclipseCD		= mod:NewNextTimer(54, 233264, nil, nil, nil, 5, nil, DBM_CORE_HEALER_ICON..DBM_CORE_DAMAGE_ICON)--Moon change special (but also used while inactive in phase 1)
+local timerEmbraceofEclipseCD		= mod:NewNextCountTimer(54, 233264, nil, nil, nil, 5, nil, DBM_CORE_HEALER_ICON..DBM_CORE_DAMAGE_ICON)--Moon change special (but also used while inactive in phase 1)
 local timerLunarBeaconCD			= mod:NewCDTimer(20.6, 236712, nil, nil, nil, 3)--20.6-31.7
 local timerLunarFireCD				= mod:NewCDTimer(11, 239264, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
 local timerMoonBurnCD				= mod:NewCDTimer(23, 236519, nil, nil, nil, 3)--Used while inactive
@@ -123,6 +123,7 @@ mod.vb.eclipseCount = 0
 mod.vb.beaconCount = 0
 mod.vb.moonTalonCount = 0
 mod.vb.pulltime = 0
+mod.vb.specialCount = 0
 mod.vb.lastBeacon = false
 local astralPurge = GetSpellInfo(234998)
 
@@ -160,15 +161,16 @@ function mod:OnCombatStart(delay)
 	self.vb.eclipseCount = 0
 	self.vb.beaconCount = 0
 	self.vb.moonTalonCount = 0
+	self.vb.specialCount = 0
 	self.vb.pulltime = GetTime()
 	timerMoonBurnCD:Start(9.1-delay)
 	timerMoonGlaiveCD:Start(14.4-delay)--16.6 on lat mythic test
 	timerTwilightVolleyCD:Start(15.5-delay)--15.5-17
 	--timerTwilightGlaiveCD:Start(17.4-delay)
-	timerIncorporealShotCD:Start(48-delay)--Primary in phase 1 in all modes
+	timerIncorporealShotCD:Start(48-delay, 1)--Primary in phase 1 in all modes
 	countdownSpecials:Start(48-delay)
 	if not self:IsEasy() then
-		timerEmbraceofEclipseCD:Start(48-delay)--Secondary special for heroic/mythic
+		timerEmbraceofEclipseCD:Start(48-delay, 1)--Secondary special for heroic/mythic
 		if self:IsMythic() then
 			berserkTimer:Start()--11 min
 		end
@@ -193,12 +195,13 @@ function mod:SPELL_CAST_START(args)
 		self.vb.beaconCount = self.vb.beaconCount + 1
 		timerLunarBeaconCD:Start(20.7)
 		--["236712-Lunar Beacon"] = "pull:359.7, 31.7, 54.8, 23.1, 31.7, 23.1, 31.8, 21.9, 20.7, 29.2",
-		self:BossTargetScanner(args.sourceGUID, "BeaconTarget", 0.1, 12, true)
+		self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "BeaconTarget", 0.1, 12, true, nil, nil, nil, true)
 	elseif spellId == 239379 then
 		specWarnGlaiveStorm:Show()
 		voiceGlaiveStorm:Play("watchstep")
-		timerGlaiveStormCD:Start()
+		timerGlaiveStormCD:Start(nil, self.vb.specialCount+1)
 		if self:AntiSpam(5, 2) then
+			self.vb.specialCount = self.vb.specialCount + 1
 			countdownSpecials:Start()
 			for i = 1, 3 do
 	 			local unitGUID = UnitGUID("boss"..i)
@@ -218,7 +221,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		voiceCallMoontalon:Play("killbigmob")
 		if self.vb.moonTalonCount == 1 then
 			local remaining = GetTime() - self.vb.pulltime
-			timerCallMoontalonCD:Start(280-remaining)
+			timerCallMoontalonCD:Start(260-remaining)
 		end
 	elseif spellId == 237561 then--^^
 		self.vb.twilightGlaiveCount = self.vb.twilightGlaiveCount + 1
@@ -234,13 +237,14 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerMoonGlaiveCD:Start()
 	elseif spellId == 236518 then
 		if self.vb.phase == 3 then
-			timerMoonBurnCD:Start(16)
+			--timerMoonBurnCD:Start(16)--Not accurate in phase 3
 		else
 			timerMoonBurnCD:Start()
 		end
 	elseif spellId == 233263 then
-		timerEmbraceofEclipseCD:Start()
+		timerEmbraceofEclipseCD:Start(nil, self.vb.specialCount+1)
 		if self:AntiSpam(5, 2) then
+			self.vb.specialCount = self.vb.specialCount + 1
 			countdownSpecials:Start()
 			for i = 1, 3 do
 	 			local unitGUID = UnitGUID("boss"..i)
@@ -311,7 +315,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 236305 then
 		if self:AntiSpam(5, 3) then
-			timerIncorporealShotCD:Start()
+			timerIncorporealShotCD:Start(nil, self.vb.specialCount+1)
 		end
 		if args:IsPlayer() then
 			specWarnIncorpShot:Show()
@@ -325,6 +329,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:SetIcon(args.destName, 1)
 		end
 		if self:AntiSpam(5, 2) then
+			self.vb.specialCount = self.vb.specialCount + 1
 			countdownSpecials:Start()
 			for i = 1, 3 do
 	 			local unitGUID = UnitGUID("boss"..i)
@@ -341,8 +346,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 233263 then--Healer Embrace of the Eclipse
 		self.vb.eclipseCount = self.vb.eclipseCount + 1
 		if self:IsHealer() then
-			specWarnEmbraceofEclipse:CombinedShow(0.5, args.destName)
 			if self:AntiSpam(3, 1) then
+				specWarnEmbraceofEclipse:Show(ALL)
 				voiceEmbraceofEclipse:Play("healall")
 			end
 		end
@@ -464,6 +469,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, spellGUID)
 			timerIncorporealShotCD:Update(elapsedMoon, totalMoon)
 		end
 	elseif spellId == 61207 then--Sets all internal CDs back to 7 seconds
+		DBM:Debug("7 second internal CD activated")
 		for i = 1, 3 do
 	 		local unitGUID = UnitGUID("boss"..i)
 	 		if unitGUID then
@@ -474,9 +480,11 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, spellGUID)
 		local remaining = totalVolley - elapsedVolley
 		local extend = 7 - (totalVolley-elapsedVolley)
 		if totalVolley == 0 then
+			DBM:Debug("7 second timerTwilightVolleyCD started", 2)
 			timerTwilightVolleyCD:Start(7)
 		elseif remaining < 7 then
-			timerTwilightVolleyCD:Update(remaining, totalVolley+extend)
+			DBM:Debug(extend.." second timerTwilightVolleyCD extend activated", 2)
+			timerTwilightVolleyCD:Update(elapsedVolley, totalVolley+extend)
 		end
 	end
 end

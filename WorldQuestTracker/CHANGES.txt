@@ -1,7 +1,7 @@
-changeset:   186:50835119fc79
-tag:         v7.2.5.186-release
+changeset:   241:17daae45f1f3
+tag:         v7.3.0.241-release
 user:        Tercio
-date:        Thu Aug 17 11:12:27 2017 -0300
-summary:     - middle click on the icon on the quest tracker won't popup the group finder if the auto open is disabled.
+date:        Wed Sep 13 16:52:13 2017 -0300
+summary:     - Fixed old versions of WQT sending out dated comm data.
 
 

@@ -569,7 +569,7 @@ SSA.LavaBurst3:SetScript('OnUpdate', function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide')
 		Auras:CooldownHandler(self,3,'secondary',2,start,duration,true)
 		
-		if (selected) then
+		if (maxCharges > 1) then
 			if (not self.Charges:IsShown()) then
 				self.Charges:Show()
 			end
@@ -950,7 +950,7 @@ SSA.HealingStreamTotem:SetScript('OnUpdate', function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide')
 		Auras:CooldownHandler(self,3,'primary',1,start,duration,true)
 		
-		if (selected) then
+		if (maxCharges > 1) then
 			if (charges == 2) then
 				self.ChargeCD:Hide()
 				self.ChargeCD:SetCooldown(0,0)
@@ -1127,7 +1127,7 @@ SSA.Riptide:SetScript('OnUpdate', function(self)
 		Auras:ToggleAuraVisibility(self,true,'showhide')
 		Auras:CooldownHandler(self,3,'primary',1,start,duration,true)
 		
-		if (selected) then
+		if (maxCharges > 1) then
 			if (charges == 2) then
 				self.ChargeCD:Hide()
 				self.ChargeCD:SetCooldown(0,0)

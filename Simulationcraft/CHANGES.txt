@@ -1,18 +1,18 @@
-tag 259ac9e32ac552be8fb54a6f13f6578e04a8227e v1.7.5
+tag 0323d1a1be591b4cf8ca8c64edd99ff72f2cabfb v1.8.3
 Author:	Navv <navv1234@gmail.com>
-Date:	Thu Jul 6 20:25:35 2017 +0300
+Date:	Sat Sep 16 12:52:56 2017 +0300
 
-v1.7.5
+v1.8.3
 
-commit 450d3c6926f51eb0b253fd8899832fa8fae359ed
+commit 8769cb38dd41bbfd30d5ae4e0b0d6e601a7b96cb
 Author: Navv <navv1234@gmail.com>
-Date:   Thu Jul 6 20:07:20 2017 +0300
+Date:   Sat Sep 16 12:52:37 2017 +0300
 
-    Add debug/nobags options to /simc
+    Update version
 
-commit 03cb25906a733da324155216e8f43a68ea56805e
+commit c3ae58d8174d455e493220fcb0943404554c1501
 Author: Navv <navv1234@gmail.com>
-Date:   Thu Jul 6 19:48:26 2017 +0300
+Date:   Sat Sep 16 12:52:12 2017 +0300
 
-    Rewrite gem handling
+    Fix typo in Restoration Shaman artifact identifier
 

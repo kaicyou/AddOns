@@ -193,7 +193,7 @@ function Taxi:Initialize()
 			elseif reqType=="nqid" then
 				if IsQuestFlaggedCompleted(tonumber(req)) then return end
 			elseif reqType=="fac" then
-				pass = pass and UnitFactionGroup("player")==req
+				pass = pass and UnitFactionGroup("player")==tostring(req)
 			elseif reqType=="rep" then
 				local standing,fac = strmatch(req, "^(%d+)%.(.*)$", 1)
 				pass = false
@@ -517,7 +517,9 @@ function Taxi:Initialize()
 	local pandaria = 6
 	local draenor = 7
 	local brokenIsles = 8
-	local groundedMaps = {499, 463, 462, 480, 476, 464, 471, 708, 709, 795, 928, 951}
+	local groundedMaps = {499, 463, 462, 480, 476, 464, 471, 708, 709, 795, 928, 951,
+    1135, 1170, 1171 --Argus
+    }
 	local spellFlightMastersLicense = 90267
 	local spellColdWeatherFlying = 54197
 	local spellWisdomOfTheFourWinds = 115913
@@ -614,6 +616,10 @@ function Taxi:Initialize()
 		if not dist or not dx or not dy then
 			return
 		end
+		
+		if not Taxi:CanWalkTo(m1, f1, m2, f2) then
+			return
+		end		
 		
 		local contData = (TaxiDataCollection.ZoneTransData or TaxiData.ZoneTransData)[c]
 		
@@ -1138,6 +1144,22 @@ end
 		local mapName = DGV:GetMapNameFromID(route.tailMap)
 		local chDesc = format(L["Talk to %s and fly to %s"], 
 			DGV:GetFlightMasterName(route.headId), mapName)
+			
+		local continent = GetCurrentMapContinent()	
+		if continent == WORLDMAP_ARGUS_ID then 
+			local fullData = TaxiData:GetFullData()
+			
+			local point = fullData[continent][route.headId]
+			
+			if point and point.isBeacon then
+				chDesc = L["Use Beacon"]
+			end
+			
+			if point and point.isSpaceship then
+				chDesc = L["Navigation Console"]
+			end			
+		end
+			
 		--headRoute.builder:AddWaypoint(headRoute, chDesc)
 		local lastHopRoute = route[#(route)-1]
 		local headRouteWaypoint = headRoute.builder:AddWaypoint(headRoute, chDesc)
@@ -2302,6 +2324,27 @@ end
 		DGV:UnregisterEvent("CONFIRM_BINDER")
 		DGV:UnregisterEvent("UNIT_SPELLCAST_START")
 	end
+	
+	--Checks if it is possible to walk or fly from m1,f1 to m2,f2
+    function Taxi:CanWalkTo(m1, f1, m2, f2)
+    
+        local blockedWays = {
+            {m1 = 1171, m2 = 1171, f1 = 5, f2 = 0},
+            {m1 = 1171, m2 = 1171, f1 = 0, f2 = 5},
+            {m1 = 1170, m2 = 1170, f1 = 3, f2 = 0},
+            {m1 = 1170, m2 = 1170, f1 = 0, f2 = 3},
+            {m1 = 1135, m2 = 1135, f1 = 1, f2 = 0},
+            {m1 = 1135, m2 = 1135, f1 = 0, f2 = 1},
+        }
+
+        for _, val in pairs(blockedWays) do
+            if val.m1 == m1 and val.m2 == m2 and val.f1 == f1 and val.f2 == f2 then
+                return false
+            end
+        end
+
+        return true
+    end
 	
 	local function GetMapIDFromDungeonName(destName)
 		for key in pairs(TaxiData.InstancePortals) do

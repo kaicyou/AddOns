@@ -69,7 +69,7 @@
 
 
 -- Constants
-local FACTION_ADDICT_VERSION = "1.45"
+local FACTION_ADDICT_VERSION = "1.47"
 local FACTION_ADDICT_LOGGING_VERSION = 1
 local FACTION_ADDICT_LOGGING_DAYS = 20
 local GUILD_FACTION_ID = 1168
@@ -1208,7 +1208,7 @@ end
 -- @return 				false if arg1 invalid.
 -----------------------------------------------------------------------------
 local function fa_SetDDConfigValue(self, arg1, arg2, checked)
-	PlaySound("igInventoryRotateCharacter")
+	PlaySound(SOUNDKIT.IG_INVENTORY_ROTATE_CHARACTER)
 	
 	if (arg1 == "CB_STANDING_EXALTED") then
 		FactionAddictConfig.CB_STANDING_EXALTED = checked
@@ -1516,7 +1516,7 @@ function FactionAddict_LogEntry_OnClick(self)
 				faClickedFactionName = factionText
 			end
 
-			PlaySound("igInventoryRotateCharacter")
+			PlaySound(SOUNDKIT.IG_INVENTORY_ROTATE_CHARACTER)
 			frameFactionAddictInfoFrame:Hide()
 			frameFactionAddictInfoFrame:Show()
 		end
@@ -1578,7 +1578,7 @@ function FactionAddict_SetConfigVariables(self)
 	
 	local configName = self:GetName()
 	
-	PlaySound("igInventoryRotateCharacter")
+	PlaySound(SOUNDKIT.IG_INVENTORY_ROTATE_CHARACTER)
 
 	if (configName == "CheckButton_CF") then
 		faUpdateDisplayTable = true
@@ -1699,7 +1699,7 @@ function FactionAddict_FactionEntrySB_OnClick(self)
 	
 	faClickedFactionName =  tempDisplayData[faClickedRow][3]
 	
-	PlaySound("igInventoryRotateCharacter")
+	PlaySound(SOUNDKIT.IG_INVENTORY_ROTATE_CHARACTER)
 	frameFactionAddictInfoFrame:Hide()
 	frameFactionAddictInfoFrame:Show()
 
@@ -1716,7 +1716,7 @@ function FactionAddict_FactionEntry_OnClick(self)
 	
 	faClickedFactionName =  tempDisplayData[faClickedRow][3]
 	
-	PlaySound("igInventoryRotateCharacter")
+	PlaySound(SOUNDKIT.IG_INVENTORY_ROTATE_CHARACTER)
 	frameFactionAddictInfoFrame:Hide()
 	frameFactionAddictInfoFrame:Show()
 	
@@ -1812,7 +1812,7 @@ function FactionAddict_Tab_OnClick(self)
 		fa_HideFactions()
 		fa_HideLogging()
 	end
-	PlaySound("igCharacterInfoTab")
+	PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
 end
 
 
@@ -1836,7 +1836,7 @@ end
 -----------------------------------------------------------------------------
 function FactionAddictLauncher_OnClick(self)
 
-	PlaySound("igMainMenuOptionCheckBoxOn")
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	
 	if frameFactionAddict:IsShown() then
 		frameFactionAddict:Hide()
@@ -2014,7 +2014,7 @@ end
 -- Handles OnClick event that will show the Watch window.
 -----------------------------------------------------------------------------
 function FactionAddict_InfoWindow_Btn1_OnClick(self)
-	PlaySound("igMainMenuOption")
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
 	frameFactionAddictWatchFrame:Show()
 end
 
@@ -2024,7 +2024,7 @@ end
 -----------------------------------------------------------------------------
 function FactionAddict_OnShow(self)
 
-	PlaySound("igCharacterInfoOpen")
+	PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN)
 	fa_DebugOut("FactionAddict_OnShow: "..self:GetName())
 	fa_DebugOut(faSessionDate)
 	
@@ -2053,7 +2053,7 @@ end
 -----------------------------------------------------------------------------
 function FactionAddict_OnHide(self)
 
-	PlaySound("igCharacterInfoClose")
+	PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)
 	fa_DebugOut("FactionAddict_OnHide: "..self:GetName())
 
 	-- clear search params
@@ -2423,7 +2423,7 @@ end
 -- Handles OnClick event of dropdown menu.
 -----------------------------------------------------------------------------
 function FactionAddict_ConfigMenuButton_OnClick(self)
-	PlaySound("igInventoryRotateCharacter")
+	PlaySound(SOUNDKIT.IG_INVENTORY_ROTATE_CHARACTER)
 	ToggleDropDownMenu(1, nil, FactionAddict_ConfigMenu, self, 0, 0)
 	fa_DebugOut("FactionAddict_ConfigMenuButton_OnClick")
 end
@@ -2433,7 +2433,7 @@ end
 -- Handles OnClick of search toggle button. Shows or Hides search box.
 -----------------------------------------------------------------------------
 function FactionAddict_SearchToggle_OnClick(self)
-	PlaySound("igCharacterInfoTab")
+	PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
 
 	-- show or hide - edit box / header text
 	if FactionAddictTab1.SearchBox:IsShown() then

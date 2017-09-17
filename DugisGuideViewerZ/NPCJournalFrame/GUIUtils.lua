@@ -851,7 +851,7 @@ function GUIUtils:SetTreeData(targetTreeFrame, wrapper, treePrefix, nodes, paren
 
     local isRoot = false
     
-    LuaUtils:Yield(isInThread)
+	LuaUtils:RestIfNeeded(isInThread)
     
     if wrapper == nil then
         wrapper = _G[treePrefix.."wrapper"]
@@ -921,7 +921,7 @@ function GUIUtils:SetTreeData(targetTreeFrame, wrapper, treePrefix, nodes, paren
     
     -- Creating all visual nodes and leafs
     LuaUtils:foreach(nodes, function(nodeData, i)
-        LuaUtils:Yield(isInThread)
+		LuaUtils:RestIfNeeded(isInThread)
         if nodeData.isLeaf then
             local treeResultsLeafName = treePrefix .. "DGVTreeLeaf_L"..reqLevel.. "_" .. leafIndex
             leafIndex = leafIndex + 1
@@ -996,7 +996,7 @@ function GUIUtils:SetTreeData(targetTreeFrame, wrapper, treePrefix, nodes, paren
     local totalIndex = 0
     local function UpdateSubTree(visualNodes, visualParentNode, currentYOffset, wrapper, level, columnDeltaX, noScrollMode, columnWidth, isInThread)
     
-        LuaUtils:Yield(isInThread)
+		LuaUtils:RestIfNeeded(isInThread)
         
         columnDeltaX = columnDeltaX or 0
     
@@ -1009,7 +1009,8 @@ function GUIUtils:SetTreeData(targetTreeFrame, wrapper, treePrefix, nodes, paren
     
         local localYOffset = 0
         LuaUtils:foreach(visualNodes, function(visualNode, index)
-            LuaUtils:Yield(isInThread)
+			LuaUtils:RestIfNeeded(isInThread)
+			
             local x = 15 * level + columnDeltaX
 
             if visualNode.nodeData.isLeaf then
@@ -1355,14 +1356,20 @@ function GUIUtils:MakeColorPicker(checkox, initialColor, changedCallback )
 		
 		frame:SetScript("OnMouseDown", function()
 			local r, g, b = unpack(checkox:GetColor()) 
+			
+			GUIUtils.isShowing = true
 			GUIUtils:ShowColorPicker(r, g, b, 1, function()
-				local r, g, b = ColorPickerFrame:GetColorRGB()
-				checkox:SetColor({r, g, b})
-				
-				if changedCallback then
-					changedCallback(r, g, b)
+				if not GUIUtils.isShowing then
+					local r, g, b = ColorPickerFrame:GetColorRGB()
+					checkox:SetColor({r, g, b})
+					
+					if changedCallback then
+						changedCallback(r, g, b)
+					end
 				end
 			end)
+			
+			GUIUtils.isShowing = false
 		end)
 
 		local colorTexure = frame:CreateTexture("BACKGROUND")
@@ -1431,7 +1438,7 @@ function GUIUtils:ShowColorPicker(r, g, b, a, changedCallback)
 	ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = (a ~= nil), a;
 	ColorPickerFrame.previousValues = {r,g,b,a};
 	ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = 
-	changedCallback, changedCallback, changedCallback;
+	changedCallback, nil, nil;
 	ColorPickerFrame:Hide(); 
 	ColorPickerFrame:Show();
 end

@@ -1870,7 +1870,7 @@
 				
 				<Scripts>
 					<OnClick>
-						PlaySound( "igMainMenuOption" )
+						PlaySound( SOUNDKIT.IG_MAINMENU_OPTION )
 						StaticPopup_Hide( "GUILDBANK_DEPOSIT" )
 						if StaticPopup_Visible( "GUILDBANK_WITHDRAW" ) then
 							StaticPopup_Hide( "GUILDBANK_WITHDRAW" )
@@ -1906,7 +1906,7 @@
 				
 				<Scripts>
 					<OnClick>
-						PlaySound( "igMainMenuOption" )
+						PlaySound( SOUNDKIT.IG_MAINMENU_OPTION )
 						StaticPopup_Hide( "GUILDBANK_WITHDRAW" )
 						if StaticPopup_Visible( "GUILDBANK_DEPOSIT") then
 							StaticPopup_Hide( "GUILDBANK_DEPOSIT" )
@@ -1961,7 +1961,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								PlaySound( "igMainMenuOption" )
+								PlaySound( SOUNDKIT.IG_MAINMENU_OPTION )
 								StaticPopup_Show( "CONFIRM_BUY_GUILDBANK_TAB" )
 							</OnClick>
 						</Scripts>

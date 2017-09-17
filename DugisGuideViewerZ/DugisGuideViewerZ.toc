@@ -1,15 +1,20 @@
-## Interface: 70200
-## Title: Dugi Questing Essential |cffffffff4.211|r
+## Interface: 70300
+## Title: Dugi Questing Essential |cffffffff4.303|r
 ## Notes: Questing Addon Copyright 2010-2017 UltimateWoWGuide.com
-## Version: 4.211
+## Version: 4.303
 ## X-Website: http://www.ultimatewowguide.com/
 ## X-Email: support@ultimatewowguide.com
 ## X-Category: Quest
-## SavedVariablesPerCharacter: CurrentTitle, CurrentZone, DugisGuideUser, DugisGuideViewerDB, DugisArrowDb, DugisFlightmasterDataTable, DugisNPCFrameDB
-## SavedVariables: MapOverlays, DugisFlightmasterLookupTable, TaxiDataCollection, DugisGuideViewerProfiles, CollectedWorldMapTrackingPoints
+## SavedVariablesPerCharacter: CurrentTitle, CurrentZone, DugisGuideUser, DugisGuideViewerDB, DugisArrowDb, DugisFlightmasterDataTable, DugisNPCFrameDB, DataExport, DugisCharacterCache
+## SavedVariables: MapOverlays, DugisFlightmasterLookupTable, TaxiDataCollection, DugisGuideViewerProfiles, CollectedWorldMapTrackingPoints, FollowersCache, TutorialFrameDugisState, TutorialFrameDugisHidden
 ## X-CompatibleLocales: enUS, enGB, deDE, frFR, esES, esMX, koKR, ruRU
 
+
 LuaUtils.lua
+Libs\LibStub\LibStub.lua
+Libs\HereBeDragons-1.0\CallbackHandler-1.0\CallbackHandler-1.0.lua
+Libs\HereBeDragons-1.0\HereBeDragons-1.0.lua
+Libs\HereBeDragons-1.0\HereBeDragons-Pins-1.0.lua	
 # Library Files
 Libs\Astrolabe\Load.xml
 Libs\Load.xml

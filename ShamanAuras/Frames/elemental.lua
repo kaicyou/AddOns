@@ -567,13 +567,13 @@ SSA.LavaBurst1:SetScript('OnUpdate', function(self)
 		local ascendance = UnitBuff('player',Auras:GetSpellName(114050))
 		local start,duration = GetSpellCooldown(Auras:GetSpellName(51505))
 		local charges,maxCharges,chgStart,chgDuration = GetSpellCharges(51505)
-		local _,_,_,selected = GetTalentInfo(6,3,1)
+		--local _,_,_,selected = GetTalentInfo(6,3,1)
 		
 		Auras:ToggleAuraVisibility(self,true,'showhide')
 		Auras:SpellRangeCheck(self,51505,true,1)	
 		Auras:CooldownHandler(self,1,'primary',1,start,duration,true)
 		
-		if (selected) then
+		if (maxCharges > 1) then
 			if (charges == 2) then
 				self.ChargeCD:Hide()
 				self.ChargeCD:SetCooldown(0,0)
@@ -1457,11 +1457,8 @@ end)
 
 -- Casting Status Bar
 local ChannelBar = CreateFrame('StatusBar','ChannelBar1',AuraGroup)
-SSA.DataFrame.text:SetText("#1")
 ChannelBar:SetStatusBarTexture(LSM.MediaTable.statusbar['Glamour2'])
-SSA.DataFrame.text:SetText("#2")
 ChannelBar:GetStatusBarTexture():SetHorizTile(false)
-SSA.DataFrame.text:SetText("#3")
 ChannelBar:GetStatusBarTexture():SetVertTile(false)
 ChannelBar:RegisterForDrag('LeftButton')
 ChannelBar:SetPoint('TOPLEFT',AuraGroup,'CENTER',0,0)

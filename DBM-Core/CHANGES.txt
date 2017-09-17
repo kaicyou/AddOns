@@ -1,459 +1,85 @@
-tag 014abeab04da0dc625858e8bee64810ac009edec 7.2.17
+tag 2b09266b678cd65214562cbde5ee3bd6131f3388 7.3.2
 Author:	subversion <svn@deadlybossmods.com>
-Date:	Wed Aug 16 11:51:14 2017 +0200
+Date:	Wed Sep 6 00:13:54 2017 +0200
 
-Tagging as 7.2.17
+Tagging as 7.3.2
 
-commit 7d3f7a847b16e39d9724d4b0f6402c81366e3589
+commit 7102d25abc59b83244536bea927e7cf22230ab5b
 Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Aug 16 11:51:14 2017 +0200
+Date:   Wed Sep 6 00:13:54 2017 +0200
 
-    increment version number to 7.2.17
+    increment version number to 7.3.2
 
-commit 4e293193a37a7a69e8ff612f7d3c6790b5ff7c94
+commit c3ba62cd0516b46604faaaf2ef9ef5b6fe72ad95
 Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Aug 16 03:27:13 2017 +0200
+Date:   Tue Sep 5 23:26:00 2017 +0200
 
-    Omega via svn r16590:
-    Abort scanner for stutter casts or canceled casts
+    Omega via svn r16694:
+    Update Alluradel timers
+    scrap MC yell, looking away is hard for people so it?\226?\128?\153s spammy
 
-commit 7531ed58b549f1ae7160f50efa52e84883933ffa
+commit 67cf7daea1e8124c9d5ad5136b97729b4b2a34af
 Author: subversion <svn@deadlybossmods.com>
-Date:   Tue Aug 15 10:42:12 2017 +0200
+Date:   Tue Sep 5 23:11:02 2017 +0200
 
-    Omega via svn r16589:
-    More KJ fixes
+    Omega via svn r16693:
+    Some minor adjustments
 
-commit de12ce14b322696a6c7851e7aafecf68116a55fb
+commit 2ac50eae686eef6a123bcb1220410d40e7265715
 Author: subversion <svn@deadlybossmods.com>
-Date:   Mon Aug 14 15:30:22 2017 +0200
+Date:   Tue Sep 5 22:53:52 2017 +0200
 
-    Omega via svn r16588:
-    fix missing voices on Tormentorum
+    Omega via svn r16692:
+    mapID update
 
-commit 68e91370eb23dd8261a7ad9d4a0944bec2dfb5f6
+commit f07fe3fffb44b17d760c15e2b8134a4ae8c21180
 Author: subversion <svn@deadlybossmods.com>
-Date:   Mon Aug 14 10:12:14 2017 +0200
+Date:   Mon Sep 4 21:08:21 2017 +0200
 
-    Omega via svn r16587:
-    Update aggramar, shivarra,and varima from todays Testing with Towelliee and public WCL to fill in holes.
+    Omega via svn r16691:
+    more redundancy
 
-commit ed45b11ca6a69c40a1b96565ed198c7a7fb81b24
+commit 536377c3ee170b8b7cda48ecc98804a354c1abdd
 Author: subversion <svn@deadlybossmods.com>
-Date:   Mon Aug 14 04:04:17 2017 +0200
+Date:   Mon Sep 4 20:53:59 2017 +0200
 
-    Omega via svn r16586:
-    Update aggramar from normal testing
-    Do a much better job with phase change voice usage across a few encounters
+    Omega via svn r16690:
+    tidy up InGuildParty() stuff to be more pretty
 
-commit 54c43cfabcc292348ba966c9837e87582e710e11
+commit 55abd11652440af9ce187c3cef010dc0387d5c5e
 Author: subversion <svn@deadlybossmods.com>
-Date:   Mon Aug 14 00:49:54 2017 +0200
+Date:   Sun Sep 3 10:02:31 2017 +0200
 
-    Omega via svn r16585:
-    Fix beacon warning sound, it?\226?\128?\153s not a 2
+    Omega via svn r16689:
+    fix timer icon
 
-commit f2a8b460c99f89aa6114b69a69324f6c241dfb7a
+commit cf6ddd6f00c456f3bbdd10df80d9c29ac9ae5923
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Aug 13 06:00:33 2017 +0200
+Date:   Fri Sep 1 06:29:46 2017 +0200
 
-    Omega via svn r16584:
-    HF revisions
+    Omega via svn r16688:
+    TOC tweaks for defaultSkin
 
-commit 24a4017395d432b30c1a011832b703cf33c4e65d
+commit 003f18eba076f7e96fc8166055b1ca49250d1dd6
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Aug 13 05:55:59 2017 +0200
+Date:   Fri Sep 1 06:16:53 2017 +0200
 
-    Omega via svn r16583:
-    Because more than 2 bursting cast in phase 1.5, that can?\226?\128?\153t be used as phase detection for LFR, so now is a good of time as any to move that over to nether gale
-    Fixed a bunch of LFR timers on top of fixing broken phase 2 detection in LFR. Data is incomplete but probably good enough for most part. I looked at 2 10 min pulls on WCL
+    Omega via svn r16687:
+    Devouring maw now shows count in timer and cast
+    Devouring maw and crashing wave will no longer spam warnings if boss continues to recast i (usually during a wipe)
+    Reverted a change to tank taunt warning during cast that cause warning to sometimes not show AT ALL if boss was looking at a non tank target during the cast.
 
-commit e393619b58aab7b5631cb4630d90c16422ab1e21
+commit dc0b5b7ef098288c6fea918b225047e520eede8d
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Aug 13 04:53:08 2017 +0200
+Date:   Fri Sep 1 02:03:23 2017 +0200
 
-    Omega via svn r16582:
-    Correct some normal mode KJ timers and prevent some heroic timers starting in LFR
+    Omega via svn r16686:
+    fix two more soundkit IDs
 
-commit f17a3e3cfed82308c0712bc05090cf0c8ae5357c
+commit 9b5e249f53bf8fa28088faf58aaf6390091eed5e
 Author: subversion <svn@deadlybossmods.com>
-Date:   Sat Aug 12 10:08:06 2017 +0200
+Date:   Thu Aug 31 20:44:54 2017 +0200
 
-    ultrashining via svn r16581:
-    zhTW update
-
-commit 644ee4dcf2ea9a828dccf809ead88842d2cf352f
-Author: subversion <svn@deadlybossmods.com>
-Date:   Sat Aug 12 01:35:41 2017 +0200
-
-    Omega via svn r16580:
-    Add stage announces to Imonar
-
-commit 328dc8ec943508ded9b20b03d72bc30a5d0104e9
-Author: subversion <svn@deadlybossmods.com>
-Date:   Sat Aug 12 01:30:31 2017 +0200
-
-    Omega via svn r16579:
-    Rename phase messages to stage for consistency with transcriptor callbacks
-
-commit a6b565a609dbc7ea2e8b5c1d5dc24de3d3cbabd3
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 11 05:49:29 2017 +0200
-
-    Omega via svn r16578:
-    Oh fix this too floor number so it?\226?\128?\153s not stupid
-
-commit 3d2ff09ba569e7d6695682153fb12002c14f32c3
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 11 05:44:07 2017 +0200
-
-    Omega via svn r16577:
-    Tweak a few more warnings to include count
-
-commit 94dd60cf10cdd4c00c340a5f574b561130558bf6
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 11 05:36:30 2017 +0200
-
-    Omega via svn r16576:
-    Count dark mark as well
-
-commit a3aff0d799977e6ac59b678064ca197b99fbeff1
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 11 00:09:39 2017 +0200
-
-    Omega via svn r16575:
-    Fix Cid, preliminary adjustment to tank warnings
-
-commit ba568adfc39781ea8275da9042200e2b483289b6
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 11 00:05:12 2017 +0200
-
-    Omega via svn r16574:
-    fix up and begin phase work
-    disable interrupt warning for non interruptable spell that journal lied about
-
-commit 84ea9fde1728134af7496f3b5ce8d018f14a69f7
-Author: subversion <svn@deadlybossmods.com>
-Date:   Thu Aug 10 23:11:46 2017 +0200
-
-    Omega via svn r16573:
-    Enable pull AI timers now that I know Diima, Mother of Gloom is first one to go inactive.
-    Add counter to touch of sargeras on fallen avatar
-
-commit 55b506986ec63db4f204956929b98679fca6b178
-Author: subversion <svn@deadlybossmods.com>
-Date:   Thu Aug 10 22:32:38 2017 +0200
-
-    Omega via svn r16572:
-    Fix creature ID
-    change dark fissure to target information warning
-
-commit 954cbef4cc1af2d27c09b3edd532d13dc0879a26
-Author: subversion <svn@deadlybossmods.com>
-Date:   Thu Aug 10 09:50:35 2017 +0200
-
-    Omega via svn r16571:
-    Add Shivarra Coven drycode
-
-commit 24d27f728505a5b9a7b2910565622d828848d6d8
-Author: subversion <svn@deadlybossmods.com>
-Date:   Thu Aug 10 06:43:16 2017 +0200
-
-    Omega via svn r16570:
-    Fixed swap warnings for phase 3 sisters of moon for being too high
-    Added bufferfish timer to mythic sasszine
-    Globally disabled chat yells for shadow priests for countdowns, and regular yells that use raid icons
-
-commit 94552ca7e4ad281ef28ce82f874a01b07af88895
-Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Aug 9 10:31:27 2017 +0200
-
-    Omega via svn r16569:
-    Scan only boss unit IDs and filter tanks
-
-commit 125cdcf0d1743938e71d99cff6857221a8e1094e
-Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Aug 9 03:11:03 2017 +0200
-
-    Omega via svn r16568:
-    update inq berserk
-
-commit a19dee171107e0e0ca6aa6fbce2998747a02c316
-Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Aug 9 01:03:44 2017 +0200
-
-    Omega via svn r16567:
-    Fix the fix, and also floor numbers
-
-commit 0a8af1f3f51288bc63fa3a9de77cb3d8ec7302dc
-Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Aug 9 00:58:51 2017 +0200
-
-    Omega via svn r16566:
-    Fix bug
-
-commit 89861e1342d5046ace05165acf4dee404a6ef270
-Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Aug 9 00:33:09 2017 +0200
-
-    Omega via svn r16565:
-    Push updated mythic KJ data as well as adding sorrowful wail as requested
-
-commit a89b6f002d562e98691c742a3ea95753dc09ed38
-Author: subversion <svn@deadlybossmods.com>
-Date:   Tue Aug 8 22:59:02 2017 +0200
-
-    Omega via svn r16564:
-    fix more bad timer canceling stuff and unused stuff on imonar. fix missing conflag ID
-    Change absorb frames for players and bosses to show approx percent instead of just numbers
-    scrap custom frame on sisters and use the regular one since they never fixed boss absorbs from being collectable
-
-commit 58fe842ba37f13973098c6b4c3bf66c8a41e7d70
-Author: subversion <svn@deadlybossmods.com>
-Date:   Mon Aug 7 17:32:03 2017 +0200
-
-    Omega via svn r16563:
-    Apparently falling fix still hasn?\226?\128?\153t resolved script ran too long on loading, readd UnitAffectingCombat("player") in case maybe DBM is still trying to do it in combat with InCombatLockdown
-
-commit 1c42408b6dc459b149403f33de323af6356d2abf
-Author: subversion <svn@deadlybossmods.com>
-Date:   Mon Aug 7 09:09:45 2017 +0200
-
-    Omega via svn r16562:
-    Add notes for later
-
-commit 84530ad28be78e331067aa425e94719d61a62733
-Author: subversion <svn@deadlybossmods.com>
-Date:   Mon Aug 7 06:22:59 2017 +0200
-
-    Omega via svn r16561:
-    Remove delay, fire immediatey
-
-commit 92a23feee00398f41bbd604db7a37a26ee317d20
-Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Aug 6 22:55:41 2017 +0200
-
-    Omega via svn r16560:
-    Increase throttle
-
-commit 1afacefa20149d0ffeea01b4e10ccf14fa0d9f37
-Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Aug 6 22:19:24 2017 +0200
-
-    Omega via svn r16559:
-    Also do this while at it
-
-commit 11cd6f49e4ca36966cd579025cb26aa69ed1fcd0
-Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Aug 6 22:06:29 2017 +0200
-
-    Omega via svn r16558:
-    Add forced .2 second delay to twilight volley to ensure it doesn?\226?\128?\153t grab wrong target from bosses previous cast
-
-commit 6cd70d64f46e92c137bd69b4cf1ec06a9e1d1737
-Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Aug 6 10:39:59 2017 +0200
-
-    Omega via svn r16557:
-    Another fix. Didn?\226?\128?\153t mean to replace first 2 with that
-
-commit f518755b3678a421c68a8c1e2e434a95436286e0
-Author: subversion <svn@deadlybossmods.com>
-Date:   Sun Aug 6 02:32:59 2017 +0200
-
-    Omega via svn r16556:
-    actually register spellid
-
-commit 00de65609a6de7baa6176bd459f238e3d54d9f42
-Author: subversion <svn@deadlybossmods.com>
-Date:   Sat Aug 5 23:56:57 2017 +0200
-
-    Omega via svn r16555:
-    KR update
-
-commit f7effa61e01ceb99f6f2f606bb069c5d819c1019
-Author: subversion <svn@deadlybossmods.com>
-Date:   Sat Aug 5 19:42:14 2017 +0200
-
-    Omega via svn r16554:
-    Use both spellIds
-
-commit ce99f13b53f57088210833a4477b5109b047dde9
-Author: subversion <svn@deadlybossmods.com>
-Date:   Sat Aug 5 04:19:29 2017 +0200
-
-    Omega via svn r16553:
-    Update eonar timers and handle life force delaying them by 24 seconds when cast on normal difficulty
-    Announce life force and warp in
-
-commit ba8965d925b353307fe2d02f0f30489e1671f3aa
-Author: subversion <svn@deadlybossmods.com>
-Date:   Sat Aug 5 03:45:09 2017 +0200
-
-    Omega via svn r16552:
-    Update these too
-
-commit 73fdc504b79a4dc8323b49bb0d110cb951910b23
-Author: subversion <svn@deadlybossmods.com>
-Date:   Sat Aug 5 03:42:49 2017 +0200
-
-    Omega via svn r16551:
-    Renames, CID updates, deletions for Argus/Invasions
-
-commit a6ecbf165cb83e1d4cd620e41b0f22533a4a5a7f
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 4 22:56:46 2017 +0200
-
-    Omega via svn r16550:
-    Fix it this way
-
-commit b503164b68323b8de14ec6c9f292c17c74d363f1
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 4 22:15:36 2017 +0200
-
-    Omega via svn r16549:
-    Fix berserk timer canceling on Imonar
-    Fix missing voice pack sound for web on Hasabel
-    Fixed normal mode Fel barrage timer which has a much longer CD on normal on Hasabel
-    Fixed transport portal timer starting on normal Hasabel (there are no transport portals on normal)
-    Added the ?\226?\128?\156show all warnings option for platforms to Hasabel
-    Attempt to fix eonar info frame
-
-commit a96e33880380f939cb20aebb731bc3beffa99aa5
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 4 20:07:04 2017 +0200
-
-    Omega via svn r16548:
-    Fix lua error
-
-commit 90f12eeaba4f5627e26e172ba587110d394815cc
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 4 18:50:32 2017 +0200
-
-    Omega via svn r16547:
-    fix wipes counted s wins
-
-commit ccd1a578fcb128b62855b625ee86c6f39170fac2
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 4 17:14:13 2017 +0200
-
-    Omega via svn r16546:
-    Add fallen avatar RP timer
-    Add preliminary phase 2 timers to mythic KJ
-
-commit eec84a63d22b3e2e033f2d7a6022537a7328aafa
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 4 08:47:48 2017 +0200
-
-    Omega via svn r16545:
-    ix lua error on hasabel
-    Add first trash warning to antorus
-    Update kingaroth with more working warnings and timers
-    changed two abilities on sasszine to not start timers until SUCCESS to make them more robust against stutter casts when someone dies.
-
-commit 5063359b67a7ad5e8402b08858ead5226c1a46ae
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 4 06:59:54 2017 +0200
-
-    Omega via svn r16544:
-    Initial P3 timers for Imonar, generic announce for fire lines since target warnings don?\226?\128?\153t work
-    Add portal warnings (at least for english clients to hasabel) and move some events to combat log
-
-commit 4611463c74ce359a36b1ae05adfcd841912f6c86
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 4 05:45:03 2017 +0200
-
-    Omega via svn r16543:
-    Fixed bug where count was missing from hydra shot timer
-
-commit 07200fd839f56c7c1c3c7163159120cc34dadd85
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 4 05:07:39 2017 +0200
-
-    Omega via svn r16542:
-    Tweak this
-
-commit 282ef430c55069825aa03c76c53288bea3fee279
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 4 05:06:05 2017 +0200
-
-    Omega via svn r16541:
-    Fix a logic bug
-
-commit 898dda3778033d4ff0a62b209e5293e3d20b09e9
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 4 02:47:11 2017 +0200
-
-    Omega via svn r16540:
-    Fix bug
-
-commit e9920fc706d37d70190e05b1ffb9ac7cac3e1763
-Author: subversion <svn@deadlybossmods.com>
-Date:   Fri Aug 4 02:02:27 2017 +0200
-
-    Omega via svn r16539:
-    More will have to come after raid, but here are a couple fixes
-
-commit 4c5d65f73b7670489013a807877ed6e2fa83f7c0
-Author: subversion <svn@deadlybossmods.com>
-Date:   Thu Aug 3 22:04:12 2017 +0200
-
-    Omega via svn r16538:
-    Correct CID
-
-commit d4abaa595ce70007cc4bdfac5b1a994edb0b4eab
-Author: subversion <svn@deadlybossmods.com>
-Date:   Thu Aug 3 10:14:13 2017 +0200
-
-    Omega via svn r16537:
-    More Hasabel prep
-
-commit b8ae409fa62feb6df9c87f0eb6bfbeebdfe2a1fe
-Author: subversion <svn@deadlybossmods.com>
-Date:   Thu Aug 3 06:30:34 2017 +0200
-
-    Omega via svn r16536:
-    Less space
-
-commit 7c0ab5576342fa9ebac19e075bad09c3b0a13a59
-Author: subversion <svn@deadlybossmods.com>
-Date:   Thu Aug 3 06:22:29 2017 +0200
-
-    Omega via svn r16535:
-    Some hydra shot improvement to even more emphasize icon
-
-commit a05c7c3b62d9181b428ef7ab253841d9ffce144d
-Author: subversion <svn@deadlybossmods.com>
-Date:   Thu Aug 3 03:18:51 2017 +0200
-
-    Omega via svn r16534:
-    Remove CRT_Enabled feature. It?\226?\128?\153s imperfect, hackish, and most of all, bosses have too many timers these days to have one more of them. this is something you should use ORA3 (or similar) for
-
-commit 55f5ce4fc947e137d2f3add4b09348273e2b86b7
-Author: subversion <svn@deadlybossmods.com>
-Date:   Thu Aug 3 01:29:57 2017 +0200
-
-    Omega via svn r16533:
-    few minor fixes, more after raid
-
-commit daf5649be49c58e2d1ff665c69964a770f47c692
-Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Aug 2 20:35:12 2017 +0200
-
-    Omega via svn r16532:
-    Another nil error prevention from bad syncs?
-
-commit c24566b2fd43736dc36be0fb2b3f04e7409181c1
-Author: subversion <svn@deadlybossmods.com>
-Date:   Wed Aug 2 04:28:22 2017 +0200
-
-    Omega via svn r16531:
-    Fix thundershock voice not working correctly
-
-commit e35cfcd7d256caef2622db07f2cf149fa975d12a
-Author: subversion <svn@deadlybossmods.com>
-Date:   Tue Aug 1 21:59:59 2017 +0200
-
-    tandanu via svn r16530:
+    tandanu via svn r16685:
     increment alpha version
 

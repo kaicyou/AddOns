@@ -79,7 +79,11 @@ function DGV:GetMapNameFromID(mapId)
 end
 
 function DGV:GetMapIDFromName(mapName)
-	return mapdata:MapAreaId(mapName)
+	if mapName then
+		return mapdata:MapAreaId(mapName)
+	else
+		return 0
+	end 
 end
 
 --[[function DGV:InitMapping( )
@@ -309,7 +313,7 @@ end
 
 function DGV:GetCZByMapId(mapId)
 	if getCZ(mapId) == 0 then 
-		return 10, 0
+		return 12, 0
 	else
 		return getCZ(mapId)
 	end

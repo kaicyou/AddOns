@@ -1,4 +1,23 @@
-﻿Version 1.7.13c
+﻿Version 1.7.13i
+- Keep track of the new fishing friends' items
+- Handle new bobbers (thanks bsmorgan!)
+
+Version 1.7.13h
+- Bump version in an attempt to work around the "Curse of Curse" bug
+
+Version 1.7.13g
+- Fix calls to PlaySound to use new SoundKit index
+
+Version 1.7.13f
+- Update LibBabble-SubZone
+
+Version 1.7.13e
+- Fix LibTourist
+
+Version 1.7.13d
+- Update TOC
+
+Version 1.7.13c
 - Always try and use the Oversize Bobber if the user wants it
 - Updated Traditional Chinese translation (thanks gaspy10!)
 

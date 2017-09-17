@@ -122,8 +122,8 @@ local function ResetAdjustable()
 	db.elements[1].cooldowns.primary[2].isPreview = false
 	db.elements[1].cooldowns.secondary[1].isPreview = false
 	db.elements[1].cooldowns.secondary[2].isPreview = false
-	db.elements[1].statusbars.healthBar.adjust.isEnabled = false
-	db.elements[1].statusbars.healthBar.adjust.showBG = false
+	--db.elements[1].statusbars.healthBar.adjust.isEnabled = false
+	--db.elements[1].statusbars.healthBar.adjust.showBG = false
 	db.elements[1].statusbars.maelstromBar.adjust.isEnabled = false
 	db.elements[1].statusbars.maelstromBar.adjust.showBG = false
 	db.elements[1].statusbars.castBar.adjust.isEnabled = false
@@ -256,15 +256,15 @@ function Auras:OnEnable()
 	Auras:InitializeCooldowns('AuraGroup3',3)
 	
 	-- Clean up old version checks
-	for i=1,62 do
+	for i=1,66 do
 		if (db["isR"..tostring(i).."FirstLoad"] == false) then
 			db["isR"..tostring(i).."FirstLoad"] = nil
 		end
 	end
 	
-	if (db.isR63FirstLoad) then
+	if (db.isR67FirstLoad) then
 		SSA.Bulletin:Show()
-		db.isR63FirstLoad = false
+		db.isR67FirstLoad = false
 	end
 	
 	StaticPopupDialogs["SSA_CLASS_CHECKER"] = {

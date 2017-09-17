@@ -289,6 +289,8 @@ local function LoadSettings()
 	DGV_GOOD_COLOR = 95
 	DGV_EXACT_COLOR = 96
 	DGV_QUESTING_AREA_COLOR = 97
+    DGV_ENABLED_JOURNAL_NOTIFICATIONS = 98
+    DGV_USE_NOTIFICATIONS_MARK = 99
 
 	--Sliders
 	DGV_MINIBLOBQUALITY = 200
@@ -343,7 +345,7 @@ local function LoadSettings()
 					SettingsRevision = 0,
 					WatchFrameSnapped = true,
 					GuideOn = true,
-					sz = 97, --Num check boxes
+					sz = 99, --Num check boxes
 					[DGV_QUESTLEVELON]			= { category = "Other",	text = "Display Quest Level", 	checked = false,	tooltip = "Show the quest level on the large and small frames", module = "Guides"},
 					[DGV_QUESTCOLORON] 		= { category = "Other",	text = "Color Code Quest", 	checked = true,		tooltip = "Color code quest against your character's level", module = "Guides"},
 					[DGV_LOCKSMALLFRAME] 		= { category = "Frames",	text = "Lock Small Frame", 	checked = false,	tooltip = "Lock small frame into place", module = "SmallFrame"},
@@ -428,6 +430,8 @@ local function LoadSettings()
 					
 					[DGV_ENABLED_GEAR_NOTIFICATIONS]			= { category = "Notifications",		text = "Gear Advisor Suggestions as Notifications", checked = true, tooltip = "If disabled standard gear suggestion prompts will be shown.", module = "GearAdvisor"},													
 					[DGV_ENABLED_GUIDE_NOTIFICATIONS]			= { category = "Notifications",		text = "Leveling Guide Suggestions as Notifications", checked = true, tooltip = "If disabled standard guide suggestion prompts will be shown.", module = "Guides"},													
+					[DGV_ENABLED_JOURNAL_NOTIFICATIONS]			= { category = "Notifications",		text = "NPC Journal Frame targets as Notifications", checked = true, tooltip = "If enabled NPC Journal Frame prompts will be shown.", module = "Guides"},													
+					[DGV_USE_NOTIFICATIONS_MARK]			= { category = "Notifications",		text = "Show |TInterface\\AddOns\\DugisGuideViewerZ\\Artwork\\notification.tga:20:20:0:0:64:64:39:64:0:25|t mark for new Notifications.", checked = true, tooltip = "If enabled |TInterface\\AddOns\\DugisGuideViewerZ\\Artwork\\notification.tga:16:16:0:0:64:64:39:64:0:25|t mark will be shown when new Notifications come.", module = "Guides"},													
 					
 					[DGV_ALWAYS_SHOW_STANDARD_PROMPT_GEAR]			= { category = "Notifications", indent = true, position = DGV_ENABLED_GEAR_NOTIFICATIONS, text = "Always Show Standard Prompt", checked = true, tooltip = "", module = "Guides"},													
 					[DGV_ALWAYS_SHOW_STANDARD_PROMPT_GUIDE]			= { category = "Notifications", indent = true, text = "Always Show Standard Prompt", checked = true, tooltip = "", module = "Guides"},													
@@ -901,7 +905,7 @@ end
 function DugisGuideViewer:UpdateNotificationsMarkVisibility()
     local notifications = DugisGuideViewer:GetNotifications()
     
-    if #notifications > 0 then
+    if #notifications > 0 and DugisGuideViewer:UserSetting(DGV_USE_NOTIFICATIONS_MARK) then
         NotificationsMark:Show()
     else
         NotificationsMark:Hide()
@@ -936,24 +940,53 @@ function DugisGuideViewer:Notification2VisualNotification(id)
     return result
 end
 
-local lastUsedId = 0
-function DugisGuideViewer:AddNotification(definition)
+local lastUsedId = 1
+function DugisGuideViewer:AddNotification(definition, limitPerNotificationType)
     local notifications = DugisGuideViewer:GetNotifications()
     
-    --Check if some gear suggestion already exists. In case it does remove it.
-    LuaUtils:foreach(notifications, function(notification, index)
-        if notification.notificationType == "gear-suggestion" then
-            DugisGuideViewer:RemoveNotification(notification.id)
-        end
-    end)
+    --Check if some gear suggestion already exists. In case it does remove it. 
+    --This ensures that only one gear-suggestion is shown
+    if definition.notificationType == "gear-suggestion" then
+        LuaUtils:foreach(notifications, function(notification, index)
+            if notification.notificationType == "gear-suggestion" then
+                DugisGuideViewer:RemoveNotification(notification.id)
+            end
+        end)
+    end
     
     definition = definition or {}
+    
+    --Check if the same notification already exists
+    if definition.notificationType == "journal-frame-notification" then
+        local alreadyExisting = DugisGuideViewer:GetNotificationsBy(function(notification) 
+            return notification.journalData and notification.journalData.guideObjectId == definition.guideObjectId and notification.journalData.guideType == definition.guideType  
+        end)
+        
+        if alreadyExisting and #alreadyExisting > 0 then
+            return 
+        end
+    end
+    
+    --Removing items above the limit
+    if limitPerNotificationType then
+        local oldAmount = DugisGuideViewer:CountNotificationsByType(definition.notificationType)
+        while oldAmount >= limitPerNotificationType do
+            local theOldest = DugisGuideViewer:GetTheOldestNotification()
+            DugisGuideViewer:RemoveNotification(theOldest.id)
+            oldAmount = DugisGuideViewer:CountNotificationsByType(definition.notificationType)
+        end
+    end
     
     notifications[#notifications + 1] = {
         title = definition.title
         , notificationType = definition.notificationType
         , id = lastUsedId
+        , created = GetTime()
     }
+    
+    if definition.notificationType == "journal-frame-notification" then
+        notifications[#notifications].journalData = {guideObjectId = definition.guideObjectId, guideType = definition.guideType}
+    end
     
     lastUsedId = lastUsedId + 1
     
@@ -990,7 +1023,9 @@ function DugisGuideViewer:RemoveNotificationWithAnimation(id)
             DugisGuideViewer:ShowNotifications()
             DugisGuideViewer.RefreshMainMenu()
         end)
-    end
+    else
+		DugisGuideViewer:RemoveNotification(id)
+	end
 end
 
 function DugisGuideViewer:GetNotification(id)
@@ -1008,35 +1043,56 @@ function DugisGuideViewer:GetNotification(id)
 end
 
 function DugisGuideViewer:GetNotificationByTitle(title)
+    local notifications = DugisGuideViewer:GetNotificationsBy(function(notification)
+        return notification.title == title
+    end)
+    
+    return notifications and notifications[1]
+end
+
+
+function DugisGuideViewer:GetTheOldestNotification()
     local notifications = DugisGuideViewer:GetNotifications()
-    local result
-    if #notifications > 0 then
-        LuaUtils:foreach(notifications, function(notification, index)
-            if notification.title == title then
-                result = notification
-                return "break"
-            end
-        end)
-    end
+    local theOldest
+    LuaUtils:foreach(notifications, function(notification, index)
+        if theOldest == nil or notification.created < theOldest.created then
+            theOldest = notification
+        end
+    end)
+    
+    return theOldest
+end
+
+function DugisGuideViewer:CountNotificationsByType(notificationType)
+    return #DugisGuideViewer:GetNotificationsByType(notificationType)
+end
+
+
+function DugisGuideViewer:GetNotificationsBy(filterFunction)
+    local notifications = DugisGuideViewer:GetNotifications()
+    local result = {}
+
+    LuaUtils:foreach(notifications, function(notification, index)
+        if filterFunction(notification) then
+            result[#result + 1] = notification
+        end
+    end)
     
     return result
+end
+
+function DugisGuideViewer:GetNotificationsByType(notificationType)
+    return DugisGuideViewer:GetNotificationsBy(function(notification)
+        return notification.notificationType == notificationType
+    end)
 end
 
 function DugisGuideViewer:GetNotificationByType(notificationType)
-    local notifications = DugisGuideViewer:GetNotifications()
-    local result
-    if #notifications > 0 then
-        LuaUtils:foreach(notifications, function(notification, index)
-            if notification.notificationType == notificationType then
-                result = notification
-                return "break"
-            end
-        end)
+    local result = DugisGuideViewer:GetNotificationsByType(notificationType)
+    if #result > 0 then
+        return result[1]
     end
-    
-    return result
 end
-
 
 local lastNotificationParent = nil
 local lastNotificationsConfig = nil
@@ -1055,6 +1111,27 @@ function DugisGuideViewer:ShowNotifications(parent, config)
     local dY = 0
     
     DugisGuideViewer:HideNotifications()
+    
+    if not self.NotificationsHeader then
+        self.NotificationsHeaderParent = CreateFrame("Frame", nil, lastNotificationParent)
+        self.NotificationsHeaderParent:SetPoint("TOPLEFT", lastNotificationParent, "TOPLEFT", 15, -12) 
+        self.NotificationsHeaderParent:Show()
+        self.NotificationsHeaderParent:SetWidth(100)
+        self.NotificationsHeaderParent:SetHeight(20)
+        
+        self.NotificationsHeader = self.NotificationsHeaderParent:CreateFontString(nil, "ARTWORK", "GameFontNormalSmallLeft") 
+        self.NotificationsHeader:SetText("Notifications")
+        self.NotificationsHeader:Show()
+        self.NotificationsHeader:SetPoint("TOPLEFT", self.NotificationsHeaderParent, "TOPLEFT", 0, 0)    
+        self.NotificationsHeader:SetAlpha(1) 
+    end
+    
+    if #notifications > 0 then
+        dY = -20
+        self.NotificationsHeaderParent:Show()
+    else
+        self.NotificationsHeaderParent:Hide()
+    end
     
     LuaUtils:foreach(notifications, function(notification, index)
         --Building notification 
@@ -1105,6 +1182,25 @@ function DugisGuideViewer:HideNotifications()
 end
 
 function DugisGuideViewer:OnNotificationClicked(notification)
+
+    if notification.notificationType == "journal-frame-notification" then
+        local guideType = notification.journalData.guideType
+        local guideObjectId = notification.journalData.guideObjectId
+        
+        DugisGuideViewer.NPCJournalFrame:SetGuideData(guideType, guideObjectId, true)
+        
+        LuaUtils:FadeOut(LibDugi_DropDownList1, 1, 0, 0.7, 
+        function()
+            DugisGuideViewer:RemoveNotification(notification.id)
+            DugisGuideViewer:UpdateNotificationsMarkVisibility()
+            LibDugi_DropDownList1:Hide()
+            LibDugi_DropDownList1:SetAlpha(1)
+        end)
+		return
+        
+    end    
+
+
     if notification.notificationType == "gear-suggestion" then
         DugisEquipPromptFrame:Show()
         DugisEquipPromptFrame.notificationId = notification.id
@@ -1657,14 +1753,14 @@ local function GetSettingsCategoryFrame(category, parent)
                 
                 --Extra separators/labels
                 if SettingNum == DGV_ENABLEDGEARFINDER then
-                    local fontstring = frame:CreateFontString("DugisGearScoringLabel","ARTWORK", "GameFontHighlightLeft")
+                    local fontstring = frame:CreateFontString("SearchGearsFromDungeonGuidesLabel","ARTWORK", "GameFontHighlightLeft")
                     fontstring:SetText("Search gears from dungeon guides:")
                     fontstring:SetPoint("TOPLEFT", frame, "TOPLEFT", 18 + xShift, top - 16)
                     top = top - fontstring:GetStringHeight() - 20
                 end
                 
                 if SettingNum == DGV_INCLUDE_DUNG_TIMEWALKING then
-                    local fontstring = frame:CreateFontString("DugisGearScoringLabel","ARTWORK", "GameFontHighlightLeft")
+                    local fontstring = frame:CreateFontString("SearchGearsFromRaidGuidesLabel","ARTWORK", "GameFontHighlightLeft")
                     fontstring:SetText("Search gears from raid guides:")
                     fontstring:SetPoint("TOPLEFT", frame, "TOPLEFT", 18 + xShift, top - 5)
                     top = top - fontstring:GetStringHeight() - 10
@@ -1843,6 +1939,8 @@ local function GetSettingsCategoryFrame(category, parent)
             
                 local firstContainer = {}
                 local secondContainer = {}
+                local unsortedTempFirstContainer = {}
+                local unsortedTempSecondContainer = {}
             
                 LuaUtils:foreach(C_MountJournal.GetMountIDs(), function(mountId)
                     local name, _, icon, _, isUsable, _, isFavorite, isFactionSpecific, faction, _, isCollected = C_MountJournal.GetMountInfoByID(mountId)
@@ -1857,14 +1955,25 @@ local function GetSettingsCategoryFrame(category, parent)
                     
                     if isCollected and rightFaction then
                         --use requestedMountType for order purposes
-                        local container = secondContainer
+                        local container = unsortedTempSecondContainer
                         if requestedMountType ==  DugisGuideViewer:GetNamedMountType(mountType) then
-                            container = firstContainer
+                            container = unsortedTempFirstContainer
                         end
                         
                         container[#container + 1] = {name = name, icon = icon, onMouseEnter = onMountIconEnter, onMouseLeave = onMountIconLeave,
                         data = {mountId = mountId, mountType = requestedMountType, buttonType = "mount-item"}}
                     end
+                end)
+                
+                table.sort(unsortedTempFirstContainer, function(a,b) return a.name < b.name end)
+                table.sort(unsortedTempSecondContainer, function(a,b) return a.name < b.name end)
+                
+                LuaUtils:foreach(unsortedTempFirstContainer, function(mount)
+                    firstContainer[#firstContainer + 1] = mount
+                end)                
+                
+                LuaUtils:foreach(unsortedTempSecondContainer, function(mount)
+                    secondContainer[#secondContainer + 1] = mount
                 end)
                 
                 LuaUtils:foreach(firstContainer, function(item)
@@ -2723,6 +2832,11 @@ local function GetSettingsCategoryFrame(category, parent)
 	if SettingsDB[DGV_LARGEFRAMEBORDER].category==category  and not DGV_LargeFrameBorderDropdown then
 		local dropdown = self:CreateDropdown("DGV_LargeFrameBorderDropdown", frame, "Frames", DGV_LARGEFRAMEBORDER, self.LargeFrameBorderDropdown_OnClick)
 		local left = 3
+        
+        if not DugisGuideViewer:IsModuleRegistered("SmallFrame") then
+            topRightColumn = topRightColumn - 40
+        end
+        
 		if DGV_StatusFrameEffectDropdownTitle then left = DGV_StatusFrameEffectDropdownTitle:GetWidth() + 20 end
 		dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX + left, topRightColumn)
 	end
@@ -3781,6 +3895,10 @@ function DugisGuideViewer:SettingFrameChkOnClick(box, skip)
        UpdateProgressBarPosition()
     end
     
+    if boxindex ==  DGV_USE_NOTIFICATIONS_MARK then
+        DugisGuideViewer:UpdateNotificationsMarkVisibility()
+    end    
+    
     if boxindex == DGV_STICKYFRAMESHOWDESCRIPTIONS then
 		DugisGuideViewer:UpdateStickyFrame( )
 	end   
@@ -4247,7 +4365,7 @@ end
 function DugisGuideViewer:HideLargeWindow()	
 	DugisMainBorder:Hide()
 	--Dugis:Hide()
-	PlaySound("igCharacterInfoClose")
+	LuaUtils:PlaySound("igCharacterInfoClose")
 end
 
 function DugisGuideViewer_Close_ButtonClick()
@@ -4393,6 +4511,8 @@ function DugisGuideViewer:PLAYER_LOGIN()
 	hooksecurefunc("ToggleWorldMap", function() 
 		DugisGuideViewer:WatchLocalQuest()
     end)
+	
+	DugisGuideViewer.specializaton = GetSpecialization()
 end
 
 function DugisGuideViewer:GARRISON_MISSION_NPC_OPENED( )
@@ -4528,7 +4648,7 @@ function DugisGuideViewer:Dugi_QUEST_LOG_UPDATE()
 				if n>1 then
 					for j=1,n do
 						local text, objtype, finished = GetQuestLogLeaderBoard(j, i)
-                        LuaUtils:Yield(isInThread)
+                        LuaUtils:RestIfNeeded(isInThread)
 						if not finished then
 							questFinished = false
 						end

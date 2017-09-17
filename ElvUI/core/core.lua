@@ -8,7 +8,7 @@ local _G = _G
 local tonumber, pairs, ipairs, error, unpack, select, tostring = tonumber, pairs, ipairs, error, unpack, select, tostring
 local assert, print, type, collectgarbage, pcall, date = assert, print, type, collectgarbage, pcall, date
 local twipe, tinsert, tremove = table.wipe, tinsert, tremove
-local floor = floor
+local floor, gsub, match = floor, string.gsub, string.match
 local format, find, strrep, len, sub = string.format, string.find, strrep, string.len, string.sub
 --WoW API / Variables
 local CreateFrame = CreateFrame
@@ -171,14 +171,10 @@ E.ClassRole = {
 	},
 }
 
-E.DEFAULT_FILTER = {
-	["CCDebuffs"] = "Whitelist",
-	["TurtleBuffs"] = "Whitelist",
-	["PlayerBuffs"] = "Whitelist",
-	["Blacklist"] = "Blacklist",
-	["Whitelist"] = "Whitelist",
-	["RaidDebuffs"] = "Whitelist",
-}
+E.DEFAULT_FILTER = {}
+for filter, tbl in pairs(G.unitframe.aurafilters) do
+	E.DEFAULT_FILTER[filter] = tbl.type
+end
 
 E.noop = function() end;
 
@@ -443,6 +439,11 @@ function E:PLAYER_ENTERING_WORLD()
 	elseif self.BGTimer then
 		self:CancelTimer(self.BGTimer)
 		self.BGTimer = nil;
+	end
+	
+	if tonumber(E.version) >= 10.60 and not E.global.userInformedNewChanges1 then
+		E:StaticPopup_Show("ELVUI_INFORM_NEW_CHANGES")
+		E.global.userInformedNewChanges1 = true
 	end
 end
 
@@ -796,9 +797,8 @@ local profileFormat = {
 	["profile"] = "E.db",
 	["private"] = "E.private",
 	["global"] = "E.global",
-	["filtersNP"] = "E.global",
-	["filtersUF"] = "E.global",
-	["filtersAll"] = "E.global",
+	["filters"] = "E.global",
+	["styleFilters"] = "E.global",
 }
 
 local lineStructureTable = {}
@@ -1313,50 +1313,31 @@ function E:InitializeModules()
 end
 
 --DATABASE CONVERSIONS
+local function auraFilterStrip(name, content, value)
+	if match(name, value) then
+		E.global.unitframe.aurafilters[gsub(name, value, '')] = E:CopyTable({}, content)
+		E.global.unitframe.aurafilters[name] = nil
+	end
+end
+
 function E:DBConversions()
-	--Convert actionbar button spacing to backdrop spacing, so users don't get any unwanted changes
-	if not E.db.actionbar.backdropSpacingConverted then
-		for i = 1, 10 do
-			if E.db.actionbar["bar"..i] then
-				E.db.actionbar["bar"..i].backdropSpacing = E.db.actionbar["bar"..i].buttonspacing
-			end
-		end
-		E.db.actionbar.barPet.backdropSpacing = E.db.actionbar.barPet.buttonspacing
-		E.db.actionbar.stanceBar.backdropSpacing = E.db.actionbar.stanceBar.buttonspacing
-
-		E.db.actionbar.backdropSpacingConverted = true
-	end
-
-	--Convert E.db.actionbar.showGrid to E.db.actionbar["barX"].showGrid
-	if E.db.actionbar.showGrid ~= nil then
-		local gridEnabled = E.db.actionbar.showGrid
-		for i = 1, 10 do
-			if E.db.actionbar["bar"..i] then
-				E.db.actionbar["bar"..i].showGrid = gridEnabled
-			end
-		end
-		E.db.actionbar.showGrid = nil
-	end
-
-	--Convert old WorldMapCoordinates from boolean to new table format
-	if type(E.global.general.WorldMapCoordinates) == "boolean" then
-		local enabledState = E.global.general.WorldMapCoordinates
-
-		--Remove boolean value
-		E.global.general.WorldMapCoordinates = nil
-
-		--Add old enabled state
-		E.global.general.WorldMapCoordinates.enable = enabledState
-	end
-
-	--Remove old nameplate settings, no need for them to take up space
-	if E.db.nameplate then
-		E.db.nameplate = nil
-	end
-
 	--Make sure default filters use the correct filter type
 	for filter, filterType in pairs(E.DEFAULT_FILTER) do
 		E.global.unitframe.aurafilters[filter].type = filterType
+	end
+
+	--Add missing nameplates table to Minimalistic profile
+	if ElvDB.profiles["Minimalistic"] and not ElvDB.profiles["Minimalistic"].nameplates then
+		ElvDB.profiles["Minimalistic"].nameplates = {
+			["filters"] = {},
+		}
+	end
+
+	--Remove commas from aura filters
+	for name, content in pairs(E.global.unitframe.aurafilters) do
+		auraFilterStrip(name, content, ',')
+		auraFilterStrip(name, content, '^Friendly:')
+		auraFilterStrip(name, content, '^Enemy:')
 	end
 end
 

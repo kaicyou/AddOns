@@ -1,3 +1,9 @@
+-- Overlay for the crafting windows.
+
+
+----------------------------
+-- UpdateIcon functions   --
+----------------------------
 
 local function string_starts(String,Start)
    return string.sub(String,1,string.len(Start))==Start
@@ -28,13 +34,28 @@ function CIMI_UpdateTradeSkillIcons()
 end
 
 
-function CanIMogIt.frame:TradeSkillEvents(event, addon)
+------------------------
+-- Function hooks     --
+------------------------
+
+
+----------------------------
+-- Begin adding to frames --
+----------------------------
+
+
+------------------------
+-- Event functions    --
+------------------------
+
+
+local function TradeSkillEvents(event, addon)
     if event == "ADDON_LOADED" and addon == "Blizzard_TradeSkillUI" then
 
         local tradeSkillFrame = _G["TradeSkillFrame"]
         -- Update on most things (like clicking)
         hooksecurefunc(tradeSkillFrame.RecipeList, "RefreshDisplay", CIMI_UpdateTradeSkillIcons)
-        
+
         -- Update on scroll
         tradeSkillFrame.RecipeList.scrollBar:HookScript("OnValueChanged", CIMI_UpdateTradeSkillIcons)
 
@@ -53,3 +74,5 @@ function CanIMogIt.frame:TradeSkillEvents(event, addon)
         CanIMogIt:RegisterMessage("OptionUpdate", function () C_Timer.After(.25, UpdateTradskillWindow) end)
     end
 end
+
+CanIMogIt.frame:AddEventFunction(TradeSkillEvents)

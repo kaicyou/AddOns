@@ -1,6 +1,6 @@
 
 DBM_CORE_NEED_LOCALS				= "Are you good with programming or languages? If yes, the DBM needs your help in localizing DBM in more languages. If you can help, visit our forums by |HDBM:localizersneeded|h|cff3588ffclicking here|r"
-DBM_CORE_NEED_LOGS					= "DBM needs Transcriptor (http://www.wowace.com/addons/transcriptor/) logs of these test fights to make best mods possible. If you want to help, log these fights with transcriptor and post them to our forums. Only interested in 7.0 raid & dungeon logs."
+DBM_CORE_NEED_LOGS					= "DBM needs Transcriptor (http://www.wowace.com/addons/transcriptor/) log of this fight to make best mods possible. If you want to help, log this fight with transcriptor and post them to DBM forums or discord"
 DBM_HOW_TO_USE_MOD					= "Welcome to DBM. Type /dbm help for a list of supported commands. To access options type /dbm in your chat to begin configuration. Load specific zones manually to configure any boss specific settings to your liking as well. DBM tries to do this for you by scanning your spec on first run, but some might want additional options turned on anyways."
 DBM_SILENT_REMINDER					= "Reminder: DBM is still in silent mode."
 
@@ -18,7 +18,7 @@ DBM_CORE_LOAD_MOD_VER_MISMATCH		= "%s could not be loaded because your DBM-Core 
 DBM_CORE_LOAD_MOD_DISABLED			= "%s is installed but currently disabled. This mod will not be loaded unless you enable it."
 DBM_CORE_LOAD_MOD_DISABLED_PLURAL	= "%s are installed but currently disabled. These mods will not be loaded unless you enable them."
 
-DBM_CORE_WHATS_NEW					= "The Overwatch & Heroes of the Storm countdown sounds have been split from DBM core and moved to a seperate optional downloads. To get these counts back, just install DBM-CountPack-Overwatch & DBM-CountPack-HoTS. This was done to significantly reduce the pointless redownloading of media files, especially with a LOT of additional counts having just been added. There is also a new setting to hide notes like this from ever being shown again."
+DBM_CORE_WHATS_NEW					= "'Expand Upwards' and 'Fill Bars' options can now be adjusted per bar type (small/large) instead of globally. Try it out!"
 DBM_CORE_WHATS_NEW_LINK				= "Remember: You can report bugs, give feedback, or just hang out in DBM Discord. |HDBM:forumsnews|h|cff3588ffDiscord Link|r"
 
 --Post Patch 7.1
@@ -124,6 +124,7 @@ DBM_CORE_OPTION_TIMER_BERSERK		= "Show timer for $spell:26662"
 DBM_CORE_GENERIC_TIMER_COMBAT		= "Combat starts"
 DBM_CORE_OPTION_TIMER_COMBAT		= "Show timer for combat start"
 DBM_CORE_OPTION_HEALTH_FRAME		= "Show boss health frame"
+DBM_CORE_BAD						= "Bad"
 
 DBM_CORE_OPTION_CATEGORY_TIMERS			= "Bars"
 DBM_CORE_OPTION_CATEGORY_WARNINGS		= "General Announces"
@@ -154,7 +155,7 @@ DBM_CORE_VERSIONCHECK_ENTRY_NO_DBM	= "%s: No boss mod installed"
 DBM_CORE_VERSIONCHECK_FOOTER		= "Found %d player(s) with DBM & %d player(s) with Bigwigs"
 DBM_CORE_VERSIONCHECK_OUTDATED		= "Following %d player(s) have outdated boss mod version: %s"
 DBM_CORE_YOUR_VERSION_OUTDATED      = "Your version of Deadly Boss Mods is out-of-date. Please visit http://www.deadlybossmods.com to get the latest version."
-DBM_CORE_VOICE_PACK_OUTDATED		= "Your DBM voice pack may be missing sounds supported by this version of DBM. Some special warning sounds will not be supressed for alerts using voices not supported by your voice pack version. Please download a newer version of voice pack or contact author for an update that contains missing audio files"
+DBM_CORE_VOICE_PACK_OUTDATED		= "Your selected DBM voice pack is missing some sounds supported by DBM. Some warning sounds will still play default sounds. Please download a newer version of voice pack or pack contact author for an update that contains missing audio"
 DBM_CORE_VOICE_MISSING				= "You had a DBM voice pack selected that could not be found. Your selection has been reset to 'None'. If this is an error, make sure your voice pack is properly installed and enabled in addons."
 DBM_CORE_VOICE_DISABLED				= "You currently have at least one DBM voice pack installed but none enabled. If you intend to use a voice pack, make sure it's chosen in 'Spoken Alerts', else uninstall unused voice packs to hide this message"
 DBM_CORE_VOICE_COUNT_MISSING		= "Countdown voice %d is set to a voice/count pack that could not be found. It has be reset to default setting: %s."
@@ -352,14 +353,15 @@ DBM_CORE_AUTO_SPEC_WARN_TEXTS = {
 	jump			= "%s - jump",
 	run				= "%s - run away",
 	cast			= "%s - stop casting",
+	lookaway		= "%s - look away",
 	reflect			= "%s on >%%s< - stop attacking",
 	count			= "%s! (%%s)",
 	stack			= "%%d stacks of %s on you",
 	switch			= "%s - switch targets",
 	switchcount		= "%s - switch targets (%%s)",
-	gtfo			= "Bad under you - move away",
+	gtfo			= "%%s under you - move away",
 	Adds			= "Incoming Adds - switch targets",
-	Addscustom	= "Incoming Adds - %s"
+	Addscustom		= "Incoming Adds - %s"
 }
 
 -- Auto-generated Special Warning Localizations
@@ -388,6 +390,7 @@ DBM_CORE_AUTO_SPEC_WARN_OPTIONS = {
 	jump			= "Show special warning to move to jump for $spell:%s",
 	run 			= "Show special warning to run away from $spell:%s",
 	cast 			= "Show special warning to stop casting for $spell:%s",--Spell Interrupt
+	lookaway		= "Show special warning to look away for $spell:%s",
 	reflect 		= "Show special warning to stop attacking $spell:%s",--Spell Reflect
 	count 			= "Show special warning (with count) for $spell:%s",
 	stack 			= "Show special warning when you are affected by >=%d stacks of $spell:%s",
@@ -462,18 +465,21 @@ DBM_CORE_AUTO_YELL_OPTION_TEXT = {
 	count			= "Yell (with count) when you are affected by $spell:%s",
 	fade			= "Yell (with countdown and spell name) when $spell:%s is fading",
 	shortfade		= "Yell (with countdown) when $spell:%s is fading",
+	iconfade		= "Yell (with countdown and icon) when $spell:%s is fading",
 	position		= "Yell (with position) when you are affected by $spell:%s"
 }
 DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT = {
 	shortyell		= "%s",
-	yell			= "%s on " .. UnitName("player") .. "!",
-	count			= "%s on " .. UnitName("player") .. "! (%%d)",
+	yell			= "%s on " .. UnitName("player"),
+	count			= "%s on " .. UnitName("player") .. " (%%d)",
 	fade			= "%s fading in %%d",
 	shortfade		= "%%d",
+	iconfade		= "{rt%%2$d}%%1$d",
 	position 		= "%s %%s on {rt%%d}"..UnitName("player").."{rt%%d}"
 }
 DBM_CORE_AUTO_YELL_CUSTOM_POSITION		= "{rt%d}%s{rt%d}"--Doesn't need translating. Has no strings
 DBM_CORE_AUTO_YELL_CUSTOM_POSITION2		= "{rt%d}{rt%d}%s{rt%d}{rt%d}"--Doesn't need translating. Has no strings
+DBM_CORE_AUTO_YELL_CUSTOM_FADE			= "%s faded"
 DBM_CORE_AUTO_HUD_OPTION_TEXT			= "Show HudMap for $spell:%s (Retired)"
 DBM_CORE_AUTO_HUD_OPTION_TEXT_MULTI		= "Show HudMap for various mechanics (Retired)"
 DBM_CORE_AUTO_NAMEPLATE_OPTION_TEXT		= "Show Nameplate Auras for $spell:%s"

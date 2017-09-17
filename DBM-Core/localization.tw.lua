@@ -1,7 +1,7 @@
 if GetLocale() ~= "zhTW" then return end
 
 DBM_CORE_NEED_LOCALS				= "你是否擁有良好的程式開發或語言能力? 如果是的話, DBM需要你的本地化翻譯。拜訪我們的討論區|HDBM:localizersneeded|h|cff3588ffclicking here|r"
-DBM_CORE_NEED_LOGS					= "DBM需要Transcriptor (http://www.wowace.com/addons/transcriptor/) 去紀錄測試伺服器的戰鬥紀錄讓插件更加完美。如果你願意幫忙，請使用transcriptor去紀錄這些戰鬥過程然後將記錄發佈在。需要7.0的團隊和五人副本戰鬥紀錄，。"
+DBM_CORE_NEED_LOGS					= "DBM需要Transcriptor (http://www.wowace.com/addons/transcriptor/) 去紀錄此戰鬥紀錄讓插件更加完美。如果你願意幫忙，請使用transcriptor去紀錄這些戰鬥過程然後將記錄發佈在DBM討論區或discord。"
 DBM_HOW_TO_USE_MOD					= "歡迎使用DBM。在聊天頻道輸入 /dbm 打開設定開始設定。你可以載入特定區域後為任何首領設定你喜歡的特別設置。DBM會在第一次啟動時嘗試掃描你的職業天賦，但有些選項你可能想打開。"
 DBM_SILENT_REMINDER					= "提醒：DBM正處於無聲模式。"
 
@@ -19,8 +19,8 @@ DBM_CORE_LOAD_MOD_VER_MISMATCH		= "%s不能被讀取因為你的DBM核心未達�
 DBM_CORE_LOAD_MOD_DISABLED			= "%s已安裝但目前停用中。此模組不會載入除非你啟用它。"
 DBM_CORE_LOAD_MOD_DISABLED_PLURAL	= "%s已安裝但目前停用中。這些模組不會載入除非你啟用它們。"
 
-DBM_CORE_WHATS_NEW					= "鬥陣特攻和暴雪英霸倒數音效已經從DBM核心分離而且有獨立的插件包下載。想重新取得這些音效。請安裝插件DBM-CountPack-Overwatch和DBM-CountPack-HoTS。也有新功能可關閉類似更新註釋再次提示。"
-DBM_CORE_WHATS_NEW_LINK				= "記得：你可以到DBM Discord裡回報臭蟲，給些回饋或是只是到這看看：|HDBM:forumsnews|h|cff3588ffDiscord連結|r"
+DBM_CORE_WHATS_NEW					= "'計時條向上延伸'和'填滿計時條'選項能夠獨立設定計時條類型(小大計時條)而非統一設定。試試看！"
+DBM_CORE_WHATS_NEW_LINK				= "記得：你可以到DBM Discord裡回報臭蟲，給些回饋或是到這走走：|HDBM:forumsnews|h|cff3588ffDiscord連結|r"
 
 --Post Patch 7.1
 DBM_CORE_NO_RANGE					= "距離雷達不能在副本中使用，使用傳統文字距離框架取代"
@@ -125,6 +125,7 @@ DBM_CORE_OPTION_TIMER_BERSERK		= "為$spell:26662顯示計時器"
 DBM_CORE_GENERIC_TIMER_COMBAT		= "戰鬥開始"
 DBM_CORE_OPTION_TIMER_COMBAT		= "為戰鬥開始顯示計時器"
 DBM_CORE_OPTION_HEALTH_FRAME		= "顯示首領血量框架"
+DBM_CORE_BAD						= "地板技"
 
 DBM_CORE_OPTION_CATEGORY_TIMERS			= "計時器"
 DBM_CORE_OPTION_CATEGORY_WARNINGS		= "一般提示"
@@ -267,6 +268,7 @@ DBM_ALLY							= "隊友"
 DBM_ADDS							= "小怪"
 DBM_CORE_ROOM_EDGE					= "房間邊緣"
 DBM_CORE_SAFE						= "安全"
+DBM_INCOMING						= "%s來了"
 --Common Locals end
 
 DBM_CORE_BREAK_USAGE				= "休息時間不能長於60分鐘。請確定你輸入的時間是分鐘不是秒。"
@@ -344,12 +346,13 @@ DBM_CORE_AUTO_SPEC_WARN_TEXTS.moveto		= "%s - 快跑向>%%s<"
 DBM_CORE_AUTO_SPEC_WARN_TEXTS.jump			= "%s - 快跳躍"
 DBM_CORE_AUTO_SPEC_WARN_TEXTS.run			= "%s - 快跑開"
 DBM_CORE_AUTO_SPEC_WARN_TEXTS.cast			= "%s - 停止施法"
+DBM_CORE_AUTO_SPEC_WARN_TEXTS.lookaway		= "%s - 快轉頭"
 DBM_CORE_AUTO_SPEC_WARN_TEXTS.reflect		= "%s - 停止攻擊"
 DBM_CORE_AUTO_SPEC_WARN_TEXTS.count			= "%s!(%%s)"
 DBM_CORE_AUTO_SPEC_WARN_TEXTS.stack			= "你中了%%d層%s"
 DBM_CORE_AUTO_SPEC_WARN_TEXTS.switch		= "%s - 快更換目標!"
 DBM_CORE_AUTO_SPEC_WARN_TEXTS.switchcount	= "%s - 快更換目標!(%%s)"
-DBM_CORE_AUTO_SPEC_WARN_TEXTS.gtfo			= "注意腳下 - 快移動"
+DBM_CORE_AUTO_SPEC_WARN_TEXTS.gtfo			= "注意%%s - 快移動"
 DBM_CORE_AUTO_SPEC_WARN_TEXTS.Adds			= "小怪來了 - 快更換目標!"
 DBM_CORE_AUTO_SPEC_WARN_TEXTS.Addscustom	= "小怪來了 - %s"
 
@@ -377,6 +380,7 @@ DBM_CORE_AUTO_SPEC_WARN_OPTIONS.moveto		= "為$spell:%s需要跑向某人或某�
 DBM_CORE_AUTO_SPEC_WARN_OPTIONS.jump		= "當你中了$spell:%s需跳起來時顯示特別警告"
 DBM_CORE_AUTO_SPEC_WARN_OPTIONS.run			= "為$spell:%s顯示特別警告"
 DBM_CORE_AUTO_SPEC_WARN_OPTIONS.cast		= "為$spell:%s施放時顯示停止施法的特別警告"
+DBM_CORE_AUTO_SPEC_WARN_OPTIONS.lookaway		= "當需要為$spell:%s轉頭時顯示特別警告"
 DBM_CORE_AUTO_SPEC_WARN_OPTIONS.reflect		= "為$spell:%s施放時顯示停止攻擊的特別警告"
 DBM_CORE_AUTO_SPEC_WARN_OPTIONS.count 		= "為$spell:%s顯示特別警告"
 DBM_CORE_AUTO_SPEC_WARN_OPTIONS.stack		= "為中了>=%d層$spell:%s時顯示特別警告"
@@ -443,13 +447,16 @@ DBM_CORE_AUTO_YELL_OPTION_TEXT.yell		= "當你中了$spell:%s時大喊(玩家名
 DBM_CORE_AUTO_YELL_OPTION_TEXT.count	= "當你中了$spell:%s時大喊(次數)"
 DBM_CORE_AUTO_YELL_OPTION_TEXT.fade		= "當$spell:%s正消退時大喊(倒數和技能名稱)"
 DBM_CORE_AUTO_YELL_OPTION_TEXT.shortfade	= "當$spell:%s正消退時大喊(倒數)"
+DBM_CORE_AUTO_YELL_OPTION_TEXT.iconfade	= "當$spell:%s正消退時大喊(倒數和圖示)"
 DBM_CORE_AUTO_YELL_OPTION_TEXT.position	= "當你中了$spell:%s時大喊(位置)"
 DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.shortyell	= "%s"
-DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.yell	= "" .. UnitName("player") .. "中了%s!"
-DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.count	= "" .. UnitName("player") .. "中了%s!(%%d)"
+DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.yell	= "" .. UnitName("player") .. "中了%s"
+DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.count	= "" .. UnitName("player") .. "中了%s(%%d)"
 DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.fade	= "%s在%%d秒後消退!"
 DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.shortfade	= "%%d"
-DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.position = "" .. UnitName("player") .. "中了%s!(%%s)".."{rt%%d}"--Arg order is going to be a problem. any way to word differently for playername at end?
+DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.iconfade	= "{rt%%2$d}%%1$d"
+DBM_CORE_AUTO_YELL_ANNOUNCE_TEXT.position = "" .. UnitName("player") .. "中了%s(%%s)".."{rt%%d}"--Arg order is going to be a problem. any way to word differently for playername at end?
+DBM_CORE_AUTO_YELL_CUSTOM_FADE			= "%s消退了"
 DBM_CORE_AUTO_HUD_OPTION_TEXT			= "為$spell:%s顯示HudMap(已退役)"
 DBM_CORE_AUTO_HUD_OPTION_TEXT_MULTI		= "為不同的機制顯示HudMap(已退役)"
 DBM_CORE_AUTO_NAMEPLATE_OPTION_TEXT		= "為$spell:%s顯示名條光環"

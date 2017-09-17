@@ -1,3 +1,4 @@
+local FOLDER_NAME = ...
 local SSA, Auras, L, LSM = unpack(select(2,...))
 local ErrorMsg = '';
 SSA.InterfaceListItem = nil;
@@ -690,14 +691,14 @@ function Auras:UpdateTalents(isTalentChange)
 		end
 
 		-- Initialize Progress Bars Upon Specialization Change
-		Auras:InitializeProgressBar('HealthBar1',nil,'healthBar','numtext','perctext',1)
+		--Auras:InitializeProgressBar('HealthBar1',nil,'healthBar','numtext','perctext',1)
 		Auras:InitializeProgressBar('MaelstromBar1',nil,'maelstromBar','text',nil,1)
 		Auras:InitializeProgressBar('CastBar1',nil,'castBar','nametext','timetext',1)
 		Auras:InitializeProgressBar('ChannelBar1',nil,'channelBar','nametext','timetext',1)
 		Auras:InitializeProgressBar('IcefuryBar','Timer','icefuryBar','counttext','timetext',1)
 		
 		-- Initialize Frame Groups Upon Specialization Change
-		Auras:InitializeFrameGroup(Auras.db.char.elements[1].frames)
+		Auras:InitializeFrameGroup(Auras.db.char.elements[1])
 		
 		------------------------------------------------------------
 		---- Primary Aura Group #1
@@ -864,7 +865,7 @@ function Auras:UpdateTalents(isTalentChange)
 		Auras:InitializeProgressBar('ChannelBar2',nil,'channelBar','nametext','timetext',2)
 		
 		-- Initialize Frame Groups Upon Specialization Change
-		Auras:InitializeFrameGroup(Auras.db.char.elements[2].frames)
+		Auras:InitializeFrameGroup(Auras.db.char.elements[2])
 		
 		------------------------------------------------------------
 		---- Top Icon Row
@@ -1028,7 +1029,7 @@ function Auras:UpdateTalents(isTalentChange)
 		Auras:InitializeProgressBar('EarthenShieldTotemBar','Timer','earthenShieldBar','healthtext','timetext',3)
 		
 		-- Initialize Frame Groups Upon Specialization Change
-		Auras:InitializeFrameGroup(Auras.db.char.elements[3].frames)
+		Auras:InitializeFrameGroup(Auras.db.char.elements[3])
 		
 		------------------------------------------------------------
 		---- Top Icon Row

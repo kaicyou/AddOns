@@ -353,7 +353,7 @@ function FishingPets_UpdateMenu()
 end
 
 function FishingPetsButton_OnClick(self)
-	PlaySound("igMainMenuOptionCheckBoxOff");
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
 	local petnames = FishingPetFrame.petnames;
 	if ( self.meta ) then
 		FishingBuddy.SetSetting(PETSETTING, self.cID);	
@@ -408,10 +408,10 @@ end
 
 function FishingPetsMenu_Toggle()
 	if ( FishingPetsMenuHolder:IsShown() ) then
-		PlaySound("igMainMenuOptionCheckBoxOff");
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
 		FishingPetsMenuHolder:Hide(); 
 	else		
-		PlaySound("igMainMenuOptionCheckBoxOn");
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 		FishingPetsMenuHolder:SetFrameLevel(FishingPetFrame:GetFrameLevel()+3);
 		FishingPetsMenuHolder:Show();
 		FishingPetsMenu_Update();	
@@ -674,6 +674,60 @@ Bobbers[142528] = {
 	["enUS"] = "Can of Worms Bobber",
 	setting = "SpecialBobbers",
 	spell = 231291,
+	toy = 1,
+	usable = CanUseSpecialBobber,
+	check = PickRandomBobber,
+	ignore = true,
+};
+Bobbers[147309] = { -- Keeper Raynae, 120456
+	["enUS"] = "Face of the Forest",
+	setting = "SpecialBobbers",
+	spell = 240806,
+	toy = 1,
+	usable = CanUseSpecialBobber,
+	check = PickRandomBobber,
+	ignore = true,
+};
+Bobbers[147310] = { -- Akule Riverhorn, 120457
+	["enUS"] = "Floating Totem",
+	setting = "SpecialBobbers",
+	spell = 240802,
+	toy = 1,
+	usable = CanUseSpecialBobber,
+	check = PickRandomBobber,
+	ignore = true,
+};
+Bobbers[147307] = { -- Corbyn, 120458
+	["enUS"] = "Carved Wooden Helm",
+	setting = "SpecialBobbers",
+	spell = 240803,
+	toy = 1,
+	usable = CanUseSpecialBobber,
+	check = PickRandomBobber,
+	ignore = true,
+};
+Bobbers[147311] = { -- Sha'leth, 120459
+	["enUS"] = "Replica Gondola",
+	setting = "SpecialBobbers",
+	spell = 240804,
+	toy = 1,
+	usable = CanUseSpecialBobber,
+	check = PickRandomBobber,
+	ignore = true,
+};
+Bobbers[147312] = { -- Impus, 120460
+	["enUS"] = "Demon Noggin",
+	setting = "SpecialBobbers",
+	spell = 240801,
+	toy = 1,
+	usable = CanUseSpecialBobber,
+	check = PickRandomBobber,
+	ignore = true,
+};
+Bobbers[147308] = { -- Ilyssia of the Waters, 120266
+	["enUS"] = "Enchanted Bobber",
+	setting = "SpecialBobbers",
+	spell = 240800,
 	toy = 1,
 	usable = CanUseSpecialBobber,
 	check = PickRandomBobber,

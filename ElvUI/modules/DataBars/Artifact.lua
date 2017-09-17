@@ -57,6 +57,11 @@ function mod:UpdateArtifact(event, unit)
 		local _, _, _, _, totalXP, pointsSpent, _, _, _, _, _, _, artifactTier = C_ArtifactUI_GetEquippedArtifactInfo();
 		local _, xp, xpForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(pointsSpent, totalXP, artifactTier);
 
+		--Damn fishing artifacts and its inconsistent returns
+		if xpForNextPoint <= 0 then
+			xpForNextPoint = xp
+		end
+
 		bar.statusBar:SetMinMaxValues(0, xpForNextPoint)
 		bar.statusBar:SetValue(xp)
 
@@ -103,12 +108,17 @@ function mod:ArtifactBar_OnEnter()
 	GameTooltip:AddDoubleLine(ARTIFACT_POWER, artifactName, nil, nil, nil, 0.90, 0.80,	0.50)
 	GameTooltip:AddLine(' ')
 
+	--Damn fishing artifacts and its inconsistent returns
+	if xpForNextPoint <= 0 then
+		xpForNextPoint = xp
+	end
+
 	local remaining = xpForNextPoint - xp
 	local apInBags = self.BagArtifactPower
 
-	GameTooltip:AddDoubleLine(L["XP:"], format(' %s / %s (%d%%)', BreakUpLargeNumbers(xp), BreakUpLargeNumbers(xpForNextPoint), xp/xpForNextPoint * 100), 1, 1, 1)
-	GameTooltip:AddDoubleLine(L["Remaining:"], format(' %s (%d%% - %d %s)', BreakUpLargeNumbers(xpForNextPoint - xp), remaining / xpForNextPoint * 100, 20 * remaining / xpForNextPoint, L["Bars"]), 1, 1, 1)
-	GameTooltip:AddDoubleLine(L["In Bags:"], format(' %s (%d%% - %d %s)', BreakUpLargeNumbers(apInBags), apInBags / xpForNextPoint * 100, 20 * apInBags / xpForNextPoint, L["Bars"]), 1, 1, 1)
+	GameTooltip:AddDoubleLine(L["XP:"], format(' %s / %s (%d%%)', E:ShortValue(xp), E:ShortValue(xpForNextPoint), xp/xpForNextPoint * 100), 1, 1, 1)
+	GameTooltip:AddDoubleLine(L["Remaining:"], format(' %s (%d%% - %d %s)', E:ShortValue(xpForNextPoint - xp), remaining / xpForNextPoint * 100, 20 * remaining / xpForNextPoint, L["Bars"]), 1, 1, 1)
+	GameTooltip:AddDoubleLine(L["In Bags:"], format(' %s (%d%% - %d %s)', E:ShortValue(apInBags), apInBags / xpForNextPoint * 100, 20 * apInBags / xpForNextPoint, L["Bars"]), 1, 1, 1)
 	if (numPointsAvailableToSpend > 0) then
 		GameTooltip:AddLine(' ')
 		GameTooltip:AddLine(format(ARTIFACT_POWER_TOOLTIP_BODY, numPointsAvailableToSpend), nil, nil, nil, true)

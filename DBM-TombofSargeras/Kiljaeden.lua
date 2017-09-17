@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1898, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 16589 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 16672 $"):sub(12, -3))
 mod:SetCreatureID(117269)--121227 Illiden? 121193 Shadowsoul
 mod:SetEncounterID(2051)
 mod:SetZone()
@@ -59,8 +59,8 @@ local specWarnRupturingSingularity	= mod:NewSpecialWarningSoon(235059, nil, nil,
 local specWarnArmageddon			= mod:NewSpecialWarningCount(240910, nil, nil, nil, 2, 2)
 local specWarnSRWailing				= mod:NewSpecialWarningYou(236378, nil, nil, nil, 1, 2)
 local yellSRWailing					= mod:NewFadesYell(236378, 236075)--Keep name in tank one for now
-local specWarnSRErupting			= mod:NewSpecialWarningYou(236710, nil, nil, nil, 1, 2)
-local yellSRErupting				= mod:NewShortFadesYell(236710, 243160)
+local specWarnSRErupting			= mod:NewSpecialWarningYouPos(236710, nil, nil, nil, 1, 2)
+local yellSRErupting				= mod:NewIconFadesYell(236710, 243160)
 local specWarnLingeringEruption		= mod:NewSpecialWarningDodge(243536, nil, nil, nil, 2, 2)
 --Intermission: Eternal Flame
 local specWarnFocusedDreadflame		= mod:NewSpecialWarningYou(238502, nil, nil, nil, 1, 2)
@@ -168,7 +168,7 @@ local riftName, gravitySqueezeBuff = GetSpellInfo(239130), GetSpellInfo(239154)
 local phase1LFRArmageddonTimers = {10, 22, 42}--Incomplete
 local phase1MythicArmageddonTimers = {10, 54, 38, 46}--Incomplete
 local phase1MythicSingularityTimers = {55, 25, 25}--Incomplete
-local phase1point5MythicSingularityTimers = {15.1, 5, 13.2, 5, 5, 5, 25, 4.98}
+local phase1point5MythicSingularityTimers = {15.1, 5, 13.2, 5, 5, 5, 25, 4.98}--Timers, if all of the emotes exist. Not all of them do, DBM attempts to hack fix this
 local phase2LFRArmageddonTimers = {55.9, 27.8, 56.6, 26.6, 12.2}
 local phase2NormalArmageddonTimers = {50, 45, 31, 35, 31}
 local phase2HeroicArmageddonTimers = {50, 75, 35, 30}
@@ -186,37 +186,6 @@ local phase2HeroicSingularityTimers = {74, 26, 55, 44}
 local phase2MythicSingularityTimers = {22, 50, 66.9, 78, 84}
 local playerName = UnitName("player")
 
---[[
-local debuffFilter
-local UnitDebuff = UnitDebuff
-local playerDebuff = nil
-do
-	local spellName = GetSpellInfo(231311)
-	debuffFilter = function(uId)
-		if not playerDebuff then return true end
-		if not select(11, UnitDebuff(uId, spellName)) == playerDebuff then
-			return true
-		end
-	end
-end
-
-local expelLight, stormOfJustice = GetSpellInfo(228028), GetSpellInfo(227807)
-local function updateRangeFrame(self)
-	if not self.Options.RangeFrame then return end
-	if self.vb.brandActive then
-		DBM.RangeCheck:Show(15, debuffFilter)--There are no 15 yard items that are actually 15 yard, this will round to 18 :\
-	elseif UnitDebuff("player", expelLight) or UnitDebuff("player", stormOfJustice) then
-		DBM.RangeCheck:Show(8)
-	elseif self.vb.hornCasting then--Spread for Horn of Valor
-		DBM.RangeCheck:Show(5)
-	else
-		DBM.RangeCheck:Hide()
-	end
-end
---]]
-
---https://www.warcraftlogs.com/reports/CTMzhXkF6W3majct#fight=5&pins=2%24Off%24%23244F4B%24expression%24ability.name%20%3D%20%22Demonic%20Obelisk%22%20or%20ability.id%20%3D%20238999%20and%20type%20%3D%20%22begincast%22&view=events
---https://www.warcraftlogs.com/reports/CTMzhXkF6W3majct#fight=17&pins=2%24Off%24%23244F4B%24expression%24ability.name%20%3D%20%22Demonic%20Obelisk%22%20or%20ability.id%20%3D%20238999%20and%20type%20%3D%20%22begincast%22&view=events
 local function ObeliskWarning(self)
 	self.vb.obeliskCount = self.vb.obeliskCount + 1
 	specWarnObelisk:Show(self.vb.obeliskCount)
@@ -225,6 +194,20 @@ local function ObeliskWarning(self)
 	if self.vb.obeliskCount % 2 == 1 then
 		timerObeliskCD:Start(36, self.vb.obeliskCount+1)
 		self:Schedule(36, ObeliskWarning, self)
+	end
+end
+
+local function handleMissingEmote(self)
+	self:Unschedule(handleMissingEmote)
+	self.vb.singularityCount = self.vb.singularityCount + 1
+	timerRupturingSingularity:Start(8.2, self.vb.singularityCount)
+	countdownSingularity:Start(8.2)
+	if self:IsMythic() then
+		local timer = phase1MythicSingularityTimers[self.vb.singularityCount+1]
+		if timer then
+			self:Schedule(timer, handleMissingEmote, self)--Already scheduled on delya
+			timerRupturingSingularityCD:Start(timer-1.5, self.vb.singularityCount+1)
+		end
 	end
 end
 
@@ -254,7 +237,7 @@ function mod:OnCombatStart(delay)
 	end
 	if self:IsMythic() then
 		timerShadReflectionWailingCD:Start(56, 1)
-		berserkTimer:Start(850-delay)--It's definitely > 14 min, some 14:07 kills with no berserk. Will try 14:10 for now
+		berserkTimer:Start(840-delay)--apparently it's anywhere between 14:00 and 14:10 depending on RNG
 	else
 		berserkTimer:Start(600-delay)
 	end
@@ -509,13 +492,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 236710 then--Erupting Shadow Reflection (Stage 1)
 		warnEruptingRelections:CombinedShow(0.3, args.destName)
+		local icon = self.vb.eruptingReflectionIcon
 		if args:IsPlayer() then
-			specWarnSRErupting:Show()
+			specWarnSRErupting:Show(self:IconNumToTexture(icon))
 			voiceSRErupting:Play("targetyou")
-			yellSRErupting:Countdown(8)
+			yellSRErupting:Countdown(8, nil, icon)
 		end
 		if self.Options.SetIconOnEruptingReflection and self:IsMythic() then
-			self:SetIcon(args.destName, self.vb.eruptingReflectionIcon)
+			self:SetIcon(args.destName, icon)
 		end
 		self.vb.eruptingReflectionIcon = self.vb.eruptingReflectionIcon + 1
 	elseif spellId == 237590 then--Hopeless Shadow Reflection (Stage 2)
@@ -583,6 +567,7 @@ function mod:SPELL_AURA_REMOVED(args)
 			voiceFelclaws:Play("tauntboss")
 		end
 	elseif spellId == 241983 and self:IsInCombat() then--Deceiver's Veil
+		self:Unschedule(handleMissingEmote)
 		self.vb.phase = 3
 		self.vb.armageddonCast = 0
 		self.vb.focusedDreadCast = 0
@@ -609,6 +594,7 @@ function mod:SPELL_AURA_REMOVED(args)
 			end
 		end
 	elseif spellId == 244834 then--Nether Gale
+		self:Unschedule(handleMissingEmote)
 		self.vb.phase = 2
 		self.vb.armageddonCast = 0
 		self.vb.focusedDreadCast = 0
@@ -691,7 +677,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 		if not self:IsEasy() then--TODO, this isn't mentioned in intermission, only in phase 2+ version. Investigate
 			voiceFocusedDreadflame:Schedule(1, "range5")
 			if self.Options.RangeFrame then
-				DBM.RangeCheck:Show(5)
+				DBM.RangeCheck:Show(5, nil, nil, nil, nil, 6)
 			end
 		end
 		local target = DBM:GetUnitFullName(target)
@@ -706,10 +692,11 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 				voiceFocusedDreadflame:Play("helpsoak")
 			end
 			if self.Options.SetIconOnFocusedDread then
-				self:SetIcon(target, 2)
+				self:SetIcon(target, 2, 6)
 			end
 		end
 	elseif msg:find("spell:235059") then
+		self:Unschedule(handleMissingEmote)
 		self.vb.singularityCount = self.vb.singularityCount + 1
 		specWarnRupturingSingularity:Show()
 		voiceRupturingSingularity:Play("carefly")
@@ -739,6 +726,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 			if self:IsMythic() then
 				local timer = phase1MythicSingularityTimers[self.vb.singularityCount+1]
 				if timer then
+					self:Schedule(timer+1.5, handleMissingEmote, self)
 					timerRupturingSingularityCD:Start(timer, self.vb.singularityCount+1)
 				end
 			elseif self:IsEasy() then
@@ -775,8 +763,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
 		timerShadReflectionEruptingCD:Stop()
 		voicePhaseChange:Play("phasechange")
 		if self:IsMythic() then
-			timerArmageddonCD:Start(7.4, 1)
-			countdownArmageddon:Start(7.4)
+			timerArmageddonCD:Start(7.0, 1)
+			countdownArmageddon:Start(7.0)
 			timerBurstingDreadflameCD:Start(11, 1)
 			timerRupturingSingularityCD:Start(15, 1)--Approx, no cast ID so time damage - 9.7
 			timerFocusedDreadflameCD:Start(31.8, 1)
@@ -788,8 +776,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
 				countdownArmageddon:Start(6.4)
 				timerBurstingDreadflameCD:Start(7.7, 1)
 			else
-				timerArmageddonCD:Start(7.4, 1)
-				countdownArmageddon:Start(7.4)
+				timerArmageddonCD:Start(7.0, 1)
+				countdownArmageddon:Start(7.0)
 				timerBurstingDreadflameCD:Start(8.7, 1)
 				if not self:IsNormal() then
 					timerRupturingSingularityCD:Start(14.2, 1)

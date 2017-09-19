@@ -1,10 +1,22 @@
-tag a0d30a59d5d2f17127a28b93e8a940c11881cfc3 7.2.0.2
+tag 749e7af888f7d62af1c6c0d7b029d0fc3050cbb1 7.3.0.2
 Author:	James D. Callahan III <jcallahan@curse.com>
-Date:	Mon May 1 10:07:02 2017 -0500
+Date:	Tue Sep 19 09:03:08 2017 -0500
 
-commit c5b15225c85fcaefee6c31a67e2c9a1c2828696c
+commit 7869afc6f648faff4741448ec7a1f9b907ed5615
 Author: James D. Callahan III <jcallahan@curse.com>
-Date:   Fri Apr 28 10:19:30 2017 -0500
+Date:   Tue Sep 19 09:00:58 2017 -0500
 
-    Add missing factionGroup for Sergeant Curtis, Heggin Stonewhisker, Malgin Barleybrew, Digger Flameforge, Captain Gerogg Hammertoe, Jalinde Summerdrake, and Tamra Stormpike.
+    Add preference to ignore dead NPCs; on by default. Addresses https://www.wowace.com/projects/npcscan/issues/175
+
+commit 45354bc46c71863d6bea829986f15438d98ccd63
+Author: James D. Callahan III <jcallahan@curse.com>
+Date:   Tue Sep 19 08:15:00 2017 -0500
+
+    Add preference to disable creation of TargetButtons. Addresses https://www.wowace.com/projects/npcscan/issues/180
+
+commit 93de7dca6ea204fcd37e1fb0dd0b5410334d842b
+Author: James D. Callahan III <jcallahan@curse.com>
+Date:   Tue Sep 19 08:12:17 2017 -0500
+
+    Move dispatching of sensory cues from TargetButton creation to immediately upon NPC detection.
 

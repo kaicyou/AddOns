@@ -22,7 +22,7 @@ G["nameplate"]["filters"] = {
 	},
 }
 
-G["nameplate"]["StyleFilterDefaults"] = {
+E["StyleFilterDefaults"] = {
 	["triggers"] = {
 		["priority"] = 1,
 		["isTarget"] = false,
@@ -180,8 +180,15 @@ G["nameplate"]["StyleFilterDefaults"] = {
 			["enable"] = false,
 			["texture"] = "ElvUI Norm",
 		},
+		["flash"] = {
+			["enable"] = false,
+			["color"] = {r=1,g=1,b=1,a=1},
+			["speed"] = 4,
+		},
 		["hide"] = false,
 		["usePortrait"] = false,
+		["nameOnly"] = false,
 		["scale"] = 1.0,
+		["alpha"] = -1,
 	},
 }

@@ -321,3 +321,7 @@ L["Your Archaeology skill is at %d of %d.  Are you sure you would like to solve 
 L["Zone Font Options"] = "区域字体选项"
 L["Zone Font Outline"] = "区域字体轮廓"
 L["Zone Font Size"] = "区域字体大小"
+
+-- ProjectNames
+L["Mummified Monkey Paw"] = "蠕行之爪"
+

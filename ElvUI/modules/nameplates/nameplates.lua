@@ -50,6 +50,7 @@ local UnitIsPlayer = UnitIsPlayer
 local UnitIsUnit = UnitIsUnit
 local UnitName = UnitName
 local UnitPowerType = UnitPowerType
+local UnitPower = UnitPower
 local UnitGUID = UnitGUID
 local UnitLevel = UnitLevel
 local UnitReaction = UnitReaction
@@ -66,6 +67,9 @@ local UnregisterUnitWatch = UnregisterUnitWatch
 local UNKNOWN = UNKNOWN
 local FAILED = FAILED
 local INTERRUPTED = INTERRUPTED
+local setmetatable = setmetatable
+local rawget = rawget
+local rawset = rawset
 
 --Global variables that we don't cache, list them here for the mikk's Find Globals script
 -- GLOBALS: NamePlateDriverFrame, UIParent, InterfaceOptionsNamesPanelUnitNameplates
@@ -641,26 +645,22 @@ end
 
 local function filterCooldown(names, mustHaveAll)
 	local total, count, duration, charges, _ = 0, 0
-	--local _, gcd = GetSpellCooldown(61304)
+	local _, gcd = GetSpellCooldown(61304)
 
 	for name, value in pairs(names) do
 		if value == "ONCD" or value == "OFFCD" then --only if they are turned on
 			total = total + 1 --keep track of the names
-		end
 
-		charges = GetSpellCharges(name)
-		_, duration = GetSpellCooldown(name)
+			charges = GetSpellCharges(name)
+			_, duration = GetSpellCooldown(name)
 
-		if ((not charges or charges == 0) and duration > 0 --[[and duration >= gcd]] and value == "ONCD")
-		or (((not charges and duration == 0) or (charges and charges > 0)) and value == "OFFCD") then
-			count = count + 1
-			--[[ ~Simpy
-				1)	what about spells that dont have the GCD lockout?
-					there is no GCD check on "offcd" because we cant properly check it without math [duration - (GetTime() - start)]?
-				2)	spellID 61304 is `Global Cooldown` and maybe this is better than using 1.5
-				3)	actually im removing GCD stuff for now, lets just worry about real CDs until we can improve this later
-					other things need to be looked into here sometime..
-			]]
+			if (charges and charges == 0 and value == "ONCD") --charges exist and the current number of charges is 0 means that it is completely on cooldown.
+			or (charges and charges > 0 and value == "OFFCD") --charges exist and the current number of charges is greater than 0 means it is not on cooldown.
+			or (charges == nil and (duration > gcd and value == "ONCD")) --no charges exist and the duration of the cooldown is greater than the GCD spells current cooldown then it is on cooldown.
+			or (charges == nil and (duration <= gcd and value == "OFFCD")) then --no charges exist and the duration of the cooldown is at or below the current GCD cooldown spell then it is not on cooldown.
+				count = count + 1
+				--print(((charges and charges == 0 and value == "ONCD") and name.." (charge) passes because it is on cd") or ((charges and charges > 0 and value == "OFFCD") and name.." (charge) passes because it is offcd") or ((charges == nil and (duration > gcd and value == "ONCD")) and name.."passes because it is on cd.") or ((charges == nil and (duration <= gcd and value == "OFFCD")) and name.." passes because it is off cd."))
+			end
 		end
 	end
 
@@ -677,8 +677,8 @@ local function HidePlayerNamePlate()
 end
 
 local function backdropBorderColorLock(frame, backdrop, r, g, b, a)
-	backdrop:SetBackdropBorderColor(r, g, b, a)
 	backdrop.r, backdrop.g, backdrop.b, backdrop.a = r, g, b, a
+	backdrop:SetBackdropBorderColor(r, g, b, a)
 	if not backdrop.backdropBorderColorLocked then
 		backdrop.backdropBorderColorLocked = true
 		hooksecurefunc(backdrop, "SetBackdropBorderColor", function(self, r, g, b, a)
@@ -691,8 +691,477 @@ local function backdropBorderColorLock(frame, backdrop, r, g, b, a)
 	end
 end
 
+function mod:SetStyleFilter(frame, actions, HealthColorChanged, BorderChanged, FlashingHealth, TextureChanged, ScaleChanged, AlphaChanged, NameColorChanged, PortraitShown, NameOnlyChanged)
+	if HealthColorChanged then
+		frame.HealthColorChanged = true
+		frame.HealthBar:SetStatusBarColor(actions.color.healthColor.r, actions.color.healthColor.g, actions.color.healthColor.b, actions.color.healthColor.a);
+	end
+	if BorderChanged then --Lets lock this to the values we want (needed for when the media border color changes)
+		frame.BorderChanged = true
+		backdropBorderColorLock(frame, frame.HealthBar.backdrop, actions.color.borderColor.r, actions.color.borderColor.g, actions.color.borderColor.b, actions.color.borderColor.a)
+	end
+	if FlashingHealth then
+		frame.FlashingHealth = true
+		if not TextureChanged then
+			frame.FlashTexture:SetTexture(LSM:Fetch("statusbar", self.db.statusbar))
+		end
+		frame.FlashTexture:SetVertexColor(actions.flash.color.r, actions.flash.color.g, actions.flash.color.b)
+		frame.FlashTexture:SetAlpha(actions.flash.color.a)
+		frame.FlashTexture:Show()
+		E:Flash(frame.FlashTexture, actions.flash.speed * 0.1, true)
+	end
+	if TextureChanged then
+		frame.TextureChanged = true
+		frame.Highlight.texture:SetTexture(LSM:Fetch("statusbar", actions.texture.texture))
+		frame.HealthBar:SetStatusBarTexture(LSM:Fetch("statusbar", actions.texture.texture))
+		if FlashingHealth then
+			frame.FlashTexture:SetTexture(LSM:Fetch("statusbar", actions.texture.texture))
+		end
+	end
+	if ScaleChanged then
+		frame.ScaleChanged = true
+		local scale = actions.scale
+		if frame.isTarget and self.db.useTargetScale then
+			scale = scale * self.db.targetScale
+		end
+		self:SetFrameScale(frame, scale)
+	end
+	if AlphaChanged then
+		frame.AlphaChanged = true
+		frame:SetAlpha(actions.alpha / 100)
+	end
+	if NameColorChanged then
+		frame.NameColorChanged = true
+		local nameText = frame.Name:GetText()
+		if nameText and nameText ~= "" then
+			frame.Name:SetTextColor(actions.color.nameColor.r, actions.color.nameColor.g, actions.color.nameColor.b, actions.color.nameColor.a)
+		end
+	end
+	if PortraitShown then
+		frame.PortraitShown = true
+		self:UpdateElement_Portrait(frame, true)
+	end
+	if NameOnlyChanged then
+		frame.NameOnlyChanged = true
+		--hide the bars
+		if frame.CastBar:IsShown() then frame.CastBar:Hide() end
+		if frame.PowerBar:IsShown() then frame.PowerBar:Hide() end
+		if frame.HealthBar:IsShown() then frame.HealthBar:Hide() end
+		--hide the target indicator
+		self:UpdateElement_Glow(frame)
+		--position the name and update its color
+		frame.Name:ClearAllPoints()
+		frame.Name:SetJustifyH("CENTER")
+		frame.Name:SetPoint("TOP", frame, "CENTER")
+		frame.Level:ClearAllPoints()
+		frame.Level:SetPoint("LEFT", frame.Name, "RIGHT")
+		frame.Level:SetJustifyH("LEFT")
+		if not NameColorChanged then
+			self:UpdateElement_Name(frame, true)
+		end
+		--position the portrait
+		self:ConfigureElement_Portrait(frame, true)
+	end
+end
+
+function mod:ClearStyleFilter(frame, HealthColorChanged, BorderChanged, FlashingHealth, TextureChanged, ScaleChanged, AlphaChanged, NameColorChanged, PortraitShown, NameOnlyChanged)
+	if HealthColorChanged then
+		frame.HealthColorChanged = nil
+		frame.HealthBar:SetStatusBarColor(frame.HealthBar.r, frame.HealthBar.g, frame.HealthBar.b);
+	end
+	if BorderChanged then
+		frame.BorderChanged = nil
+		frame.HealthBar.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+	end
+	if FlashingHealth then
+		frame.FlashingHealth = nil
+		E:StopFlash(frame.FlashTexture)
+		frame.FlashTexture:Hide()
+	end
+	if TextureChanged then
+		frame.TextureChanged = nil
+		frame.Highlight.texture:SetTexture(LSM:Fetch("statusbar", self.db.statusbar))
+		frame.HealthBar:SetStatusBarTexture(LSM:Fetch("statusbar", self.db.statusbar))
+	end
+	if ScaleChanged then
+		frame.ScaleChanged = nil
+		if self.db.useTargetScale then
+			if frame.isTarget then
+				self:SetFrameScale(frame, self.db.targetScale)
+			else
+				self:SetFrameScale(frame, frame.ThreatScale or 1)
+			end
+		end
+	end
+	if AlphaChanged then
+		frame.AlphaChanged = nil
+		if frame.isTarget then
+			frame:SetAlpha(1)
+		elseif not UnitIsUnit(frame.displayedUnit, "player") then
+			frame:SetAlpha(1 - self.db.nonTargetTransparency)
+		end
+	end
+	if NameColorChanged then
+		frame.NameColorChanged = nil
+		frame.Name:SetTextColor(frame.Name.r, frame.Name.g, frame.Name.b)
+	end
+	if PortraitShown then
+		frame.PortraitShown = nil
+		frame.Portrait:Hide() --This could have been forced so hide it
+		self:UpdateElement_Portrait(frame) --Use the original check to determine if this should be shown
+	end
+	if NameOnlyChanged then
+		frame.NameOnlyChanged = nil
+		if self.db.units[frame.UnitType].healthbar.enable or (self.db.displayStyle ~= "ALL") or (frame.isTarget and self.db.alwaysShowTargetHealth) then
+			frame.HealthBar:Show()
+			self:UpdateElement_Glow(frame)
+			if self.db.units[frame.UnitType].powerbar.enable then
+				local curValue = UnitPower(frame.displayedUnit, frame.PowerType);
+				if not (curValue == 0 and self.db.units[frame.UnitType].powerbar.hideWhenEmpty) then
+					frame.PowerBar:Show()
+				end
+			end
+		end
+		if self.db.units[frame.UnitType].showName then
+			self:ConfigureElement_Level(frame)
+			self:ConfigureElement_Name(frame)
+			self:UpdateElement_Name(frame)
+		else
+			frame.Name:SetText()
+		end
+		if self.db.units[frame.UnitType].portrait.enable then
+			self:ConfigureElement_Portrait(frame)
+		end
+	end
+end
+
+function mod:CheckStyleConditions(frame, filter, trigger, failed)
+	local condition, name, guid, npcid, inCombat, questBoss, reaction, spell, health, maxHealth, percHealth, classification;
+	local underHealthThreshold, overHealthThreshold, level, myLevel, curLevel, minLevel, maxLevel, matchMyLevel, myRole, mySpecID;
+	local talentSelected, talentFunction, talentRows, instanceName, instanceType, instanceDifficulty;
+	local castbarShown = frame.CastBar:IsShown()
+	local castbarTriggered = false --We use this to prevent additional calls to `UpdateElement_All` when the castbar hides
+	local matchMyClass = false --Only check spec when we match the class condition
+
+	if not failed and trigger.names and next(trigger.names) then
+		condition = 0
+		for unitName, value in pairs(trigger.names) do
+			if value == true then --only check names that are checked
+				condition = 1
+				if tonumber(unitName) then
+					guid = UnitGUID(frame.displayedUnit)
+					if guid then
+						npcid = select(6, strsplit('-', guid))
+						if tonumber(unitName) == tonumber(npcid) then
+							condition = 2
+							break
+						end
+					end
+				else
+					name = UnitName(frame.displayedUnit)
+					if unitName and unitName ~= "" and unitName == name then
+						condition = 2
+						break
+					end
+				end
+			end
+		end
+		if condition ~= 0 then
+			failed = (condition == 1)
+		end
+	end
+
+	--Try to match by casting spell name or spell id
+	if not failed and (trigger.casting and trigger.casting.spells) and next(trigger.casting.spells) then
+		condition = 0
+		for name, value in pairs(trigger.casting.spells) do
+			if value == true then --only check spell that are checked
+				condition = 1
+				if castbarShown then
+					spell = frame.CastBar.Name:GetText() --Make sure we can check spell name
+					if spell and spell ~= "" and spell ~= FAILED and spell ~= INTERRUPTED then
+						if tonumber(name) then
+							name = GetSpellInfo(name)
+						end
+						if name and name == spell then
+							condition = 2
+							break
+						end
+					end
+				end
+			end
+		end
+		if condition ~= 0 then --If we cant check spell name, we ignore this trigger when the castbar is shown
+			failed = (condition == 1)
+			castbarTriggered = (condition == 2)
+		end
+	end
+
+	--Try to match by casting interruptible
+	if not failed and (trigger.casting and trigger.casting.interruptible) then
+		condition = false
+		if castbarShown and frame.CastBar.canInterrupt then
+			condition = true
+			castbarTriggered = true
+		end
+		failed = not condition
+	end
+
+	--Try to match by player health conditions
+	if not failed and trigger.healthThreshold then
+		condition = false
+		health, maxHealth = UnitHealth(frame.displayedUnit), UnitHealthMax(frame.displayedUnit)
+		percHealth = (maxHealth > 0 and health/maxHealth) or 0
+		underHealthThreshold = (trigger.underHealthThreshold and (trigger.underHealthThreshold ~= 0) and (trigger.underHealthThreshold > percHealth))
+		overHealthThreshold = (trigger.overHealthThreshold and (trigger.overHealthThreshold ~= 0) and (trigger.overHealthThreshold < percHealth))
+		if underHealthThreshold or overHealthThreshold then
+			condition = true
+		end
+		failed = not condition
+	end
+
+	--Try to match by player combat conditions
+	if not failed and (trigger.inCombat or trigger.outOfCombat) then
+		condition = false
+		inCombat = UnitAffectingCombat("player")
+		if (trigger.inCombat and inCombat) or (trigger.outOfCombat and not inCombat) then
+			condition = true
+		end
+		failed = not condition
+	end
+
+	--Try to match by unit combat conditions
+	if not failed and (trigger.inCombatUnit or trigger.outOfCombatUnit) then
+		condition = false
+		inCombat = UnitAffectingCombat(frame.displayedUnit)
+		if (trigger.inCombatUnit and inCombat) or (trigger.outOfCombatUnit and not inCombat) then
+			condition = true
+		end
+		failed = not condition
+	end
+
+	--Try to match by target conditions
+	if not failed and (trigger.isTarget or trigger.notTarget) then
+		condition = false
+		if (trigger.isTarget and frame.isTarget) or (trigger.notTarget and not frame.isTarget) then
+			condition = true
+		end
+		failed = not condition
+	end
+
+	--Try to match if unit is a quest boss
+	if not failed and trigger.questBoss then
+		condition = false
+		questBoss = UnitIsQuestBoss(frame.displayedUnit)
+		if questBoss then
+			condition = true
+		end
+		failed = not condition
+	end
+
+	--Try to match by class conditions
+	if not failed and trigger.class and next(trigger.class) then
+		condition = false
+		if trigger.class[E.myclass] and trigger.class[E.myclass].enabled then
+			condition = true
+			matchMyClass = true
+		end
+		failed = not condition
+	end
+
+	--Try to match by spec conditions
+	if not failed and matchMyClass and (trigger.class[E.myclass] and trigger.class[E.myclass].specs and next(trigger.class[E.myclass].specs)) then
+		condition = false
+		mySpecID = GetSpecializationInfo(E.myspec)
+		if mySpecID and trigger.class[E.myclass].specs[mySpecID] then
+			condition = true
+		end
+		failed = not condition
+	end
+
+	--Try to match by classification conditions
+	if not failed and (trigger.classification.worldboss or trigger.classification.rareelite or trigger.classification.elite or trigger.classification.rare or trigger.classification.normal or trigger.classification.trivial or trigger.classification.minus) then
+		condition = false
+		classification = UnitClassification(frame.displayedUnit)
+		if classification
+		and ((trigger.classification.worldboss and classification == "worldboss")
+		or (trigger.classification.rareelite   and classification == "rareelite")
+		or (trigger.classification.elite	   and classification == "elite")
+		or (trigger.classification.rare		   and classification == "rare")
+		or (trigger.classification.normal	   and classification == "normal")
+		or (trigger.classification.trivial	   and classification == "trivial")
+		or (trigger.classification.minus	   and classification == "minus")) then
+			condition = true
+		end
+		failed = not condition
+	end
+
+	--Try to match by role conditions
+	if not failed and (trigger.role.tank or trigger.role.healer or trigger.role.damager) then
+		condition = false
+		myRole = E:GetPlayerRole()
+		if myRole and ((trigger.role.tank and myRole == "TANK") or (trigger.role.healer and myRole == "HEALER") or (trigger.role.damager and myRole == "DAMAGER")) then
+			condition = true
+		end
+		failed = not condition
+	end
+
+	--Try to match by instance conditions
+	if not failed and (trigger.instanceType.none or trigger.instanceType.scenario or trigger.instanceType.party or trigger.instanceType.raid or trigger.instanceType.arena or trigger.instanceType.pvp) then
+		condition = false
+		instanceName, instanceType, instanceDifficulty = GetInstanceInfo()
+		if instanceType
+		and ((trigger.instanceType.none	  and instanceType == "none")
+		or (trigger.instanceType.scenario and instanceType == "scenario")
+		or (trigger.instanceType.party	  and instanceType == "party")
+		or (trigger.instanceType.raid	  and instanceType == "raid")
+		or (trigger.instanceType.arena	  and instanceType == "arena")
+		or (trigger.instanceType.pvp	  and instanceType == "pvp")) then
+			condition = true
+		end
+		failed = not condition
+	end
+
+	--Try to match by instance difficulty
+	if not failed and (trigger.instanceType.party or trigger.instanceType.raid) then
+		if trigger.instanceType.party and instanceType == "party" and (trigger.instanceDifficulty.dungeon.normal or trigger.instanceDifficulty.dungeon.heroic or trigger.instanceDifficulty.dungeon.mythic or trigger.instanceDifficulty.dungeon["mythic+"] or trigger.instanceDifficulty.dungeon.timewalking) then
+			condition = false;
+			if ((trigger.instanceDifficulty.dungeon.normal		and instanceDifficulty == 1)
+			or (trigger.instanceDifficulty.dungeon.heroic		and instanceDifficulty == 2)
+			or (trigger.instanceDifficulty.dungeon.mythic		and instanceDifficulty == 23)
+			or (trigger.instanceDifficulty.dungeon["mythic+"]	and instanceDifficulty == 8)
+			or (trigger.instanceDifficulty.dungeon.timewalking	and instanceDifficulty == 24)) then
+				condition = true
+			end
+			failed = not condition;
+		end
+
+		if trigger.instanceType.raid and instanceType == "raid" and
+			(trigger.instanceDifficulty.raid.lfr or trigger.instanceDifficulty.raid.normal or trigger.instanceDifficulty.raid.heroic or trigger.instanceDifficulty.raid.mythic or trigger.instanceDifficulty.raid.timewalking
+			or trigger.instanceDifficulty.raid.legacy10normal or trigger.instanceDifficulty.raid.legacy25normal or trigger.instanceDifficulty.raid.legacy10heroic or trigger.instanceDifficulty.raid.legacy25heroic) then
+			condition = false;
+			if ((trigger.instanceDifficulty.raid.lfr           and (instanceDifficulty == 7 or instanceDifficulty == 17))
+			or (trigger.instanceDifficulty.raid.normal         and instanceDifficulty == 14)
+			or (trigger.instanceDifficulty.raid.heroic         and instanceDifficulty == 15)
+			or (trigger.instanceDifficulty.raid.mythic         and instanceDifficulty == 16)
+			or (trigger.instanceDifficulty.raid.timewalking    and instanceDifficulty == 24)
+			or (trigger.instanceDifficulty.raid.legacy10normal and instanceDifficulty == 3)
+			or (trigger.instanceDifficulty.raid.legacy25normal and instanceDifficulty == 4)
+			or (trigger.instanceDifficulty.raid.legacy10heroic and instanceDifficulty == 5)
+			or (trigger.instanceDifficulty.raid.legacy25heroic and instanceDifficulty == 6)) then
+				condition = true
+			end
+			failed = not condition
+		end
+	end
+
+	--Try to match by talent conditions
+	if not failed and trigger.talent.enabled then
+		condition = false
+
+		talentFunction = (trigger.talent.type == "pvp" and GetPvpTalentInfo) or GetTalentInfo
+		talentRows = (trigger.talent.type == "pvp" and 6) or 7
+
+		for i = 1, talentRows do
+			if (trigger.talent["tier"..i.."enabled"] and trigger.talent["tier"..i].column > 0) then
+				talentSelected = select(4, talentFunction(i, trigger.talent["tier"..i].column, 1))
+				if (talentSelected and not trigger.talent["tier"..i].missing) or (trigger.talent["tier"..i].missing and not talentSelected) then
+					condition = true
+					if not trigger.talent.requireAll then
+						break -- break when not using requireAll because we matched one
+					end
+				elseif trigger.talent.requireAll then
+					condition = false -- fail because requireAll failed
+					break -- break because requireAll failed
+				end
+			end
+		end
+
+		failed = not condition
+	end
+
+	--Try to match by level conditions
+	if not failed and trigger.level then
+		condition = false
+		myLevel = UnitLevel('player')
+		level = (frame.displayedUnit == 'player' and myLevel) or UnitLevel(frame.displayedUnit)
+		curLevel = (trigger.curlevel and trigger.curlevel ~= 0 and (trigger.curlevel == level))
+		minLevel = (trigger.minlevel and trigger.minlevel ~= 0 and (trigger.minlevel <= level))
+		maxLevel = (trigger.maxlevel and trigger.maxlevel ~= 0 and (trigger.maxlevel >= level))
+		matchMyLevel = trigger.mylevel and (level == myLevel)
+		if curLevel or minLevel or maxLevel or matchMyLevel then
+			condition = true
+		end
+		failed = not condition
+	end
+
+	--Try to match by unit type
+	if not failed and trigger.nameplateType and trigger.nameplateType.enable then
+		condition = false
+
+		if (trigger.nameplateType.friendlyPlayer and frame.UnitType=='FRIENDLY_PLAYER')
+		or (trigger.nameplateType.friendlyNPC	 and frame.UnitType=='FRIENDLY_NPC')
+		or (trigger.nameplateType.enemyPlayer	 and frame.UnitType=='ENEMY_PLAYER')
+		or (trigger.nameplateType.enemyNPC		 and frame.UnitType=='ENEMY_NPC')
+		or (trigger.nameplateType.healer		 and frame.UnitType=='HEALER')
+		or (trigger.nameplateType.player		 and frame.UnitType=='PLAYER') then
+			condition = true
+		end
+
+		failed = not condition
+	end
+
+	--Try to match by Reaction (or Reputation) type
+	if not failed and trigger.reactionType and trigger.reactionType.enable then
+		reaction = (trigger.reactionType.reputation and UnitReaction(frame.displayedUnit, 'player')) or UnitReaction('player', frame.displayedUnit)
+		condition = false
+
+		if (reaction==1 and trigger.reactionType.hated)
+		or (reaction==2 and trigger.reactionType.hostile)
+		or (reaction==3 and trigger.reactionType.unfriendly)
+		or (reaction==4 and trigger.reactionType.neutral)
+		or (reaction==5 and trigger.reactionType.friendly)
+		or (reaction==6 and trigger.reactionType.honored)
+		or (reaction==7 and trigger.reactionType.revered)
+		or (reaction==8 and trigger.reactionType.exalted) then
+			condition = true
+		end
+
+		failed = not condition
+	end
+
+	--Try to match according to cooldown conditions
+	if not failed and trigger.cooldowns and trigger.cooldowns.names and next(trigger.cooldowns.names) then
+		condition = filterCooldown(trigger.cooldowns.names, trigger.cooldowns.mustHaveAll)
+		if condition ~= nil then --Condition will be nil if none are set to ONCD or OFFCD
+			failed = not condition
+		end
+	end
+
+	--Try to match according to buff aura conditions
+	if not failed and trigger.buffs and trigger.buffs.names and next(trigger.buffs.names) then
+		condition = filterAura(trigger.buffs.names, frame.Buffs and frame.Buffs.icons, trigger.buffs.mustHaveAll, trigger.buffs.missing, trigger.buffs.minTimeLeft, trigger.buffs.maxTimeLeft)
+		if condition ~= nil then --Condition will be nil if none are selected
+			failed = not condition
+		end
+	end
+
+	--Try to match according to debuff aura conditions
+	if not failed and trigger.debuffs and trigger.debuffs.names and next(trigger.debuffs.names) then
+		condition = filterAura(trigger.debuffs.names, frame.Debuffs and frame.Debuffs.icons, trigger.debuffs.mustHaveAll, trigger.debuffs.missing, trigger.debuffs.minTimeLeft, trigger.debuffs.maxTimeLeft)
+		if condition ~= nil then --Condition will be nil if none are selected
+			failed = not condition
+		end
+	end
+
+	--If failed is nil it means the filter is empty so we dont run FilterStyle
+	if failed == false then --The conditions didn't fail so pass to FilterStyle
+		self:PassFilterStyle(frame, filter.actions, castbarTriggered);
+	end
+end
+
 local filterVisibility --[[ 0=hide 1=show 2=noTrigger ]]
-function mod:FilterStyle(frame, actions, castbarTriggered)
+function mod:PassFilterStyle(frame, actions, castbarTriggered)
 	if castbarTriggered then
 		frame.castbarTriggered = castbarTriggered
 	end
@@ -722,43 +1191,18 @@ function mod:FilterStyle(frame, actions, castbarTriggered)
 		frame:Show()
 	end
 
-	if frame.HealthBar:IsShown() then
-		if actions.color and actions.color.health then
-			frame.HealthColorChanged = true
-			frame.HealthBar:SetStatusBarColor(actions.color.healthColor.r, actions.color.healthColor.g, actions.color.healthColor.b, actions.color.healthColor.a);
-		end
-		if actions.color and actions.color.border and frame.HealthBar.backdrop then
-			frame.BorderChanged = true
-			--Lets lock this to the values we want (needed for when the media border color changes)
-			backdropBorderColorLock(frame, frame.HealthBar.backdrop, actions.color.borderColor.r, actions.color.borderColor.g, actions.color.borderColor.b, actions.color.borderColor.a)
-		end
-		if actions.texture and actions.texture.enable then
-			frame.TextureChanged = true
-			frame.Highlight.texture:SetTexture(LSM:Fetch("statusbar", actions.texture.texture))
-			frame.HealthBar:SetStatusBarTexture(LSM:Fetch("statusbar", actions.texture.texture))
-		end
-		if actions.scale and actions.scale ~= 1 then
-			frame.ScaleChanged = true
-			local scale = actions.scale
-			if frame.isTarget and self.db.useTargetScale then
-				scale = scale * self.db.targetScale
-			end
-			self:SetFrameScale(frame, scale)
-		end
-	end
-
-	if actions.color and actions.color.name then
-		frame.NameColorChanged = true
-		local nameText = frame.Name:GetText()
-		if nameText and nameText ~= "" then
-			frame.Name:SetTextColor(actions.color.nameColor.r, actions.color.nameColor.g, actions.color.nameColor.b, actions.color.nameColor.a)
-		end
-	end
-
-	if actions.usePortrait then
-		frame.PortraitShown = true
-		self:UpdateElement_Portrait(frame, true)
-	end
+	local healthBarShown = frame.HealthBar:IsShown()
+	self:SetStyleFilter(frame, actions,
+		(healthBarShown and actions.color and actions.color.health), --HealthColorChanged
+		(healthBarShown and actions.color and actions.color.border and frame.HealthBar.backdrop), --BorderChanged
+		(healthBarShown and actions.flash and actions.flash.enable and frame.FlashTexture), --FlashingHealth
+		(healthBarShown and actions.texture and actions.texture.enable), --TextureChanged
+		(healthBarShown and actions.scale and actions.scale ~= 1), --ScaleChanged
+		(actions.alpha and actions.alpha ~= -1), --AlphaChanged
+		(actions.color and actions.color.name), --NameColorChanged
+		(actions.usePortrait), --PortraitShown
+		(actions.nameOnly) --NameOnlyChanged
+	)
 end
 
 local filterList = {}
@@ -769,52 +1213,13 @@ local function filterSort(a,b)
 end
 
 function mod:UpdateElement_Filters(frame)
-	local trigger, failed, condition, name, guid, npcid, inCombat, questBoss, reaction, spell, health, maxHealth, percHealth, classification;
-	local underHealthThreshold, overHealthThreshold, level, myLevel, curLevel, minLevel, maxLevel, matchMyLevel, myRole, mySpecID;
-	local talentSelected, talentFunction, talentRows, instanceName, instanceType, instanceDifficulty;
-	local castbarShown = frame.CastBar:IsShown()
-	local castbarTriggered = false --We use this to prevent additional calls to `UpdateElement_All` when the castbar hides
-	local matchMyClass = false --Only check spec when we match the class condition
-
-	if frame.TextureChanged then
-		frame.TextureChanged = nil
-		frame.Highlight.texture:SetTexture(LSM:Fetch("statusbar", self.db.statusbar))
-		frame.HealthBar:SetStatusBarTexture(LSM:Fetch("statusbar", self.db.statusbar))
-	end
-	if frame.HealthColorChanged then
-		frame.HealthColorChanged = nil
-		frame.HealthBar:SetStatusBarColor(frame.HealthBar.r, frame.HealthBar.g, frame.HealthBar.b);
-	end
-	if frame.BorderChanged then
-		frame.BorderChanged = nil
-		frame.HealthBar.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
-	end
-	if frame.ScaleChanged then
-		frame.ScaleChanged = nil
-		if self.db.useTargetScale then
-			if frame.isTarget then
-				self:SetFrameScale(frame, self.db.targetScale)
-			else
-				self:SetFrameScale(frame, frame.ThreatScale or 1)
-			end
-		end
-	end
-	if frame.NameColorChanged then
-		frame.NameColorChanged = nil
-		frame.Name:SetTextColor(frame.Name.r, frame.Name.g, frame.Name.b)
-	end
-	if frame.PortraitShown then
-		frame.PortraitShown = nil
-		frame.Portrait:Hide() --This could have been forced so hide it
-		self:UpdateElement_Portrait(frame) --Use the original check to determine if this should be shown
-	end
-
 	if frame.UnitType == 'PLAYER' then
 		filterVisibility = 2
 	end
 
-	twipe(filterList)
+	self:ClearStyleFilter(frame, frame.HealthColorChanged, frame.BorderChanged, frame.FlashingHealth, frame.TextureChanged, frame.ScaleChanged, frame.AlphaChanged, frame.NameColorChanged, frame.PortraitShown, frame.NameOnlyChanged)
 
+	twipe(filterList)
 	for filterName, filter in pairs(E.global.nameplate.filters) do
 		if filter.triggers and E.db.nameplates and E.db.nameplates.filters then
 			if E.db.nameplates.filters[filterName] and E.db.nameplates.filters[filterName].triggers and E.db.nameplates.filters[filterName].triggers.enable then
@@ -822,334 +1227,15 @@ function mod:UpdateElement_Filters(frame)
 			end
 		end
 	end
-
 	if not next(filterList) then
 		return --if all triggers are disabled just stop
 	end
-
 	tsort(filterList, filterSort) --sort by priority
 
-	for filterName, filter in ipairs(filterList) do
-		filter = E.global.nameplate.filters[filterList[filterName][1]];
+	for filterNum, filter in ipairs(filterList) do
+		filter = E.global.nameplate.filters[filterList[filterNum][1]];
 		if filter then
-			trigger = filter.triggers
-			failed = nil
-
-			if not failed and trigger.names and next(trigger.names) then
-				condition = 0
-				for unitName, value in pairs(trigger.names) do
-					if value == true then --only check names that are checked
-						condition = 1
-						if tonumber(unitName) then
-							guid = UnitGUID(frame.displayedUnit)
-							if guid then
-								npcid = select(6, strsplit('-', guid))
-								if tonumber(unitName) == tonumber(npcid) then
-									condition = 2
-									break
-								end
-							end
-						else
-							name = UnitName(frame.displayedUnit)
-							if unitName and unitName ~= "" and unitName == name then
-								condition = 2
-								break
-							end
-						end
-					end
-				end
-				if condition ~= 0 then
-					failed = (condition == 1)
-				end
-			end
-
-			--Try to match by casting spell name or spell id
-			if not failed and (trigger.casting and trigger.casting.spells) and next(trigger.casting.spells) then
-				condition = 0
-				for name, value in pairs(trigger.casting.spells) do
-					if value == true then --only check spell that are checked
-						condition = 1
-						if castbarShown then
-							spell = frame.CastBar.Name:GetText() --Make sure we can check spell name
-							if spell and spell ~= "" and spell ~= FAILED and spell ~= INTERRUPTED then
-								if tonumber(name) then
-									name = GetSpellInfo(name)
-								end
-								if name and name == spell then
-									condition = 2
-									break
-								end
-							end
-						end
-					end
-				end
-				if condition ~= 0 then --If we cant check spell name, we ignore this trigger when the castbar is shown
-					failed = (condition == 1)
-					castbarTriggered = (condition == 2)
-				end
-			end
-
-			--Try to match by casting interruptible
-			if not failed and (trigger.casting and trigger.casting.interruptible) then
-				condition = false
-				if castbarShown and frame.CastBar.canInterrupt then
-					condition = true
-					castbarTriggered = true
-				end
-				failed = not condition
-			end
-
-			--Try to match by player health conditions
-			if not failed and trigger.healthThreshold then
-				condition = false
-				health, maxHealth = UnitHealth(frame.displayedUnit), UnitHealthMax(frame.displayedUnit)
-				percHealth = (maxHealth > 0 and health/maxHealth) or 0
-				underHealthThreshold = (trigger.underHealthThreshold and (trigger.underHealthThreshold ~= 0) and (trigger.underHealthThreshold > percHealth))
-				overHealthThreshold = (trigger.overHealthThreshold and (trigger.overHealthThreshold ~= 0) and (trigger.overHealthThreshold < percHealth))
-				if underHealthThreshold or overHealthThreshold then
-					condition = true
-				end
-				failed = not condition
-			end
-
-			--Try to match by player combat conditions
-			if not failed and (trigger.inCombat or trigger.outOfCombat) then
-				condition = false
-				inCombat = UnitAffectingCombat("player")
-				if (trigger.inCombat and inCombat) or (trigger.outOfCombat and not inCombat) then
-					condition = true
-				end
-				failed = not condition
-			end
-
-			--Try to match by unit combat conditions
-			if not failed and (trigger.inCombatUnit or trigger.outOfCombatUnit) then
-				condition = false
-				inCombat = UnitAffectingCombat(frame.displayedUnit)
-				if (trigger.inCombatUnit and inCombat) or (trigger.outOfCombatUnit and not inCombat) then
-					condition = true
-				end
-				failed = not condition
-			end
-
-			--Try to match by target conditions
-			if not failed and (trigger.isTarget or trigger.notTarget) then
-				condition = false
-				if (trigger.isTarget and frame.isTarget) or (trigger.notTarget and not frame.isTarget) then
-					condition = true
-				end
-				failed = not condition
-			end
-
-			--Try to match if unit is a quest boss
-			if not failed and trigger.questBoss then
-				condition = false
-				questBoss = UnitIsQuestBoss(frame.displayedUnit)
-				if questBoss then
-					condition = true
-				end
-				failed = not condition
-			end
-
-			--Try to match by class conditions
-			if not failed and trigger.class and next(trigger.class) then
-				condition = false
-				if trigger.class[E.myclass] and trigger.class[E.myclass].enabled then
-					condition = true
-					matchMyClass = true
-				end
-				failed = not condition
-			end
-
-			--Try to match by spec conditions
-			if not failed and matchMyClass and (trigger.class[E.myclass] and trigger.class[E.myclass].specs and next(trigger.class[E.myclass].specs)) then
-				condition = false
-				mySpecID = GetSpecializationInfo(E.myspec)
-				if mySpecID and trigger.class[E.myclass].specs[mySpecID] then
-					condition = true
-				end
-				failed = not condition
-			end
-
-			--Try to match by classification conditions
-			if not failed and (trigger.classification.worldboss or trigger.classification.rareelite or trigger.classification.elite or trigger.classification.rare or trigger.classification.normal or trigger.classification.trivial or trigger.classification.minus) then
-				condition = false
-				classification = UnitClassification(frame.displayedUnit)
-				if classification
-				and ((trigger.classification.worldboss and classification == "worldboss")
-				or (trigger.classification.rareelite   and classification == "rareelite")
-				or (trigger.classification.elite	   and classification == "elite")
-				or (trigger.classification.rare		   and classification == "rare")
-				or (trigger.classification.normal	   and classification == "normal")
-				or (trigger.classification.trivial	   and classification == "trivial")
-				or (trigger.classification.minus	   and classification == "minus")) then
-					condition = true
-				end
-				failed = not condition
-			end
-
-			--Try to match by role conditions
-			if not failed and (trigger.role.tank or trigger.role.healer or trigger.role.damager) then
-				condition = false
-				myRole = E:GetPlayerRole()
-				if myRole and ((trigger.role.tank and myRole == "TANK") or (trigger.role.healer and myRole == "HEALER") or (trigger.role.damager and myRole == "DAMAGER")) then
-					condition = true
-				end
-				failed = not condition
-			end
-
-			--Try to match by instance conditions
-			if not failed and (trigger.instanceType.none or trigger.instanceType.scenario or trigger.instanceType.party or trigger.instanceType.raid or trigger.instanceType.arena or trigger.instanceType.pvp) then
-				condition = false
-				instanceName, instanceType, instanceDifficulty = GetInstanceInfo()
-				if instanceType
-				and ((trigger.instanceType.none	  and instanceType == "none")
-				or (trigger.instanceType.scenario and instanceType == "scenario")
-				or (trigger.instanceType.party	  and instanceType == "party")
-				or (trigger.instanceType.raid	  and instanceType == "raid")
-				or (trigger.instanceType.arena	  and instanceType == "arena")
-				or (trigger.instanceType.pvp	  and instanceType == "pvp")) then
-					condition = true
-				end
-				failed = not condition
-			end
-
-			--Try to match by instance difficulty
-			if not failed and (trigger.instanceType.party or trigger.instanceType.raid) then
-				if trigger.instanceType.party and instanceType == "party" and (trigger.instanceDifficulty.dungeon.normal or trigger.instanceDifficulty.dungeon.heroic or trigger.instanceDifficulty.dungeon.mythic or trigger.instanceDifficulty.dungeon["mythic+"] or trigger.instanceDifficulty.dungeon.timewalking) then
-					condition = false;
-					if ((trigger.instanceDifficulty.dungeon.normal		and instanceDifficulty == 1)
-					or (trigger.instanceDifficulty.dungeon.heroic		and instanceDifficulty == 2)
-					or (trigger.instanceDifficulty.dungeon.mythic		and instanceDifficulty == 23)
-					or (trigger.instanceDifficulty.dungeon["mythic+"]	and instanceDifficulty == 8)
-					or (trigger.instanceDifficulty.dungeon.timewalking	and instanceDifficulty == 24)) then
-						condition = true
-					end
-					failed = not condition;
-				end
-
-				if trigger.instanceType.raid and instanceType == "raid" and
-					(trigger.instanceDifficulty.raid.lfr or trigger.instanceDifficulty.raid.normal or trigger.instanceDifficulty.raid.heroic or trigger.instanceDifficulty.raid.mythic or trigger.instanceDifficulty.raid.timewalking
-					or trigger.instanceDifficulty.raid.legacy10normal or trigger.instanceDifficulty.raid.legacy25normal or trigger.instanceDifficulty.raid.legacy10heroic or trigger.instanceDifficulty.raid.legacy25heroic) then
-					condition = false;
-					if ((trigger.instanceDifficulty.raid.lfr           and (instanceDifficulty == 7 or instanceDifficulty == 17))
-					or (trigger.instanceDifficulty.raid.normal         and instanceDifficulty == 14)
-					or (trigger.instanceDifficulty.raid.heroic         and instanceDifficulty == 15)
-					or (trigger.instanceDifficulty.raid.mythic         and instanceDifficulty == 16)
-					or (trigger.instanceDifficulty.raid.timewalking    and instanceDifficulty == 24)
-					or (trigger.instanceDifficulty.raid.legacy10normal and instanceDifficulty == 3)
-					or (trigger.instanceDifficulty.raid.legacy25normal and instanceDifficulty == 4)
-					or (trigger.instanceDifficulty.raid.legacy10heroic and instanceDifficulty == 5)
-					or (trigger.instanceDifficulty.raid.legacy25heroic and instanceDifficulty == 6)) then
-						condition = true
-					end
-					failed = not condition
-				end
-			end
-
-			--Try to match by talent conditions
-			if not failed and trigger.talent.enabled then
-				condition = false
-
-				talentFunction = (trigger.talent.type == "pvp" and GetPvpTalentInfo) or GetTalentInfo
-				talentRows = (trigger.talent.type == "pvp" and 6) or 7
-
-				for i = 1, talentRows do
-					if (trigger.talent["tier"..i.."enabled"] and trigger.talent["tier"..i].column > 0) then
-						talentSelected = select(4, talentFunction(i, trigger.talent["tier"..i].column, 1))
-						if (talentSelected and not trigger.talent["tier"..i].missing) or (trigger.talent["tier"..i].missing and not talentSelected) then
-							condition = true
-							if not trigger.talent.requireAll then
-								break -- break when not using requireAll because we matched one
-							end
-						elseif trigger.talent.requireAll then
-							condition = false -- fail because requireAll failed
-							break -- break because requireAll failed
-						end
-					end
-				end
-
-				failed = not condition
-			end
-
-			--Try to match by level conditions
-			if not failed and trigger.level then
-				condition = false
-				myLevel = UnitLevel('player')
-				level = (frame.displayedUnit == 'player' and myLevel) or UnitLevel(frame.displayedUnit)
-				curLevel = (trigger.curlevel and trigger.curlevel ~= 0 and (trigger.curlevel == level))
-				minLevel = (trigger.minlevel and trigger.minlevel ~= 0 and (trigger.minlevel <= level))
-				maxLevel = (trigger.maxlevel and trigger.maxlevel ~= 0 and (trigger.maxlevel >= level))
-				matchMyLevel = trigger.mylevel and (level == myLevel)
-				if curLevel or minLevel or maxLevel or matchMyLevel then
-					condition = true
-				end
-				failed = not condition
-			end
-
-			--Try to match by unit type
-			if not failed and trigger.nameplateType and trigger.nameplateType.enable then
-				condition = false
-
-				if (trigger.nameplateType.friendlyPlayer and frame.UnitType=='FRIENDLY_PLAYER')
-				or (trigger.nameplateType.friendlyNPC	 and frame.UnitType=='FRIENDLY_NPC')
-				or (trigger.nameplateType.enemyPlayer	 and frame.UnitType=='ENEMY_PLAYER')
-				or (trigger.nameplateType.enemyNPC		 and frame.UnitType=='ENEMY_NPC')
-				or (trigger.nameplateType.healer		 and frame.UnitType=='HEALER')
-				or (trigger.nameplateType.player		 and frame.UnitType=='PLAYER') then
-					condition = true
-				end
-
-				failed = not condition
-			end
-
-			--Try to match by Reaction (or Reputation) type
-			if not failed and trigger.reactionType and trigger.reactionType.enable then
-				reaction = (trigger.reactionType.reputation and UnitReaction(frame.displayedUnit, 'player')) or UnitReaction('player', frame.displayedUnit)
-				condition = false
-
-				if (reaction==1 and trigger.reactionType.hated)
-				or (reaction==2 and trigger.reactionType.hostile)
-				or (reaction==3 and trigger.reactionType.unfriendly)
-				or (reaction==4 and trigger.reactionType.neutral)
-				or (reaction==5 and trigger.reactionType.friendly)
-				or (reaction==6 and trigger.reactionType.honored)
-				or (reaction==7 and trigger.reactionType.revered)
-				or (reaction==8 and trigger.reactionType.exalted) then
-					condition = true
-				end
-
-				failed = not condition
-			end
-
-			--cooldown conditions
-			if not failed and trigger.cooldowns and trigger.cooldowns.names and next(trigger.cooldowns.names) then
-				condition = filterCooldown(trigger.cooldowns.names, trigger.cooldowns.mustHaveAll)
-				if condition ~= nil then --Condition will be nil if none are set to ONCD or OFFCD
-					failed = not condition
-				end
-			end
-
-			--Try to match according to buff aura conditions
-			if not failed and trigger.buffs and trigger.buffs.names and next(trigger.buffs.names) then
-				condition = filterAura(trigger.buffs.names, frame.Buffs and frame.Buffs.icons, trigger.buffs.mustHaveAll, trigger.buffs.missing, trigger.buffs.minTimeLeft, trigger.buffs.maxTimeLeft)
-				if condition ~= nil then --Condition will be nil if none are selected
-					failed = not condition
-				end
-			end
-
-			--Try to match according to debuff aura conditions
-			if not failed and trigger.debuffs and trigger.debuffs.names and next(trigger.debuffs.names) then
-				condition = filterAura(trigger.debuffs.names, frame.Debuffs and frame.Debuffs.icons, trigger.debuffs.mustHaveAll, trigger.debuffs.missing, trigger.debuffs.minTimeLeft, trigger.debuffs.maxTimeLeft)
-				if condition ~= nil then --Condition will be nil if none are selected
-					failed = not condition
-				end
-			end
-
-			--If failed is nil it means the filter is empty so we dont run FilterStyle
-			if failed == false then --The conditions didn't fail so pass to FilterStyle
-				self:FilterStyle(frame, filter.actions, castbarTriggered);
-			end
+			self:CheckStyleConditions(frame, filter, filter.triggers, nil)
 		end
 	end
 end
@@ -1669,13 +1755,18 @@ local function removeDefaults(db, defaults, blocker)
 end
 
 function mod:InitFilter(tbl)
-	-- Heh, is this going to work?
-	copyDefaults(tbl, G.nameplate.StyleFilterDefaults);
+	copyDefaults(tbl, E.StyleFilterDefaults);
 end
 
 function mod:PLAYER_LOGOUT()
-	for _, filterTable in pairs(E.global.nameplate.filters) do
-		removeDefaults(filterTable, G.nameplate.StyleFilterDefaults);
+	for filterName, filterTable in pairs(E.global.nameplate.filters) do
+		if G.nameplate.filters[filterName] then
+			local defaultTable = E:CopyTable({}, E.StyleFilterDefaults);
+			E:CopyTable(defaultTable, G.nameplate.filters[filterName]);
+			removeDefaults(filterTable, defaultTable);
+		else
+			removeDefaults(filterTable, E.StyleFilterDefaults);
+		end
 	end
 end
 

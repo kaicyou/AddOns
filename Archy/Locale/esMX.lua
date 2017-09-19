@@ -121,3 +121,7 @@ L["Sort by distance"] = "Ordenar por distancia"
 L["Sort the dig sites by your distance to them"] = "Ordenar los sitios de excavación por su distancia a ellos"
 L["Survey"] = "Excavar"
 L["Survey Distance Indicator"] = "Indicador de Distancia de excavación"
+
+-- ProjectNames
+L["Mummified Monkey Paw"] = "Mano de mono momificada"
+

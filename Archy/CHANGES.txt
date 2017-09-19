@@ -1,28 +1,22 @@
-tag 02fc4a604664643684b8df5cb35a2b1ffbfebb25 7.2.0.1
+tag 61547a68ef457185faf4f6c70b55284075c32f64 7.3.0.1
 Author:	James D. Callahan III <jcallahan@curse.com>
-Date:	Tue May 2 11:05:10 2017 -0500
+Date:	Tue Sep 19 02:57:09 2017 -0500
 
-commit c1638dbd75cfbad16171316a74f6dba4ffcd377e
+commit 7c00a861c63ff5445c63f7ee25fa42e38e672a30
 Author: James D. Callahan III <jcallahan@curse.com>
-Date:   Tue May 2 11:02:14 2017 -0500
+Date:   Tue Sep 19 02:54:44 2017 -0500
 
-    GetMapLandmarkInfo => C_WorldMap.GetMapLandmarkInfo
+    Add RaceTextureIDToRaceLabel table and use it to replace the old raceTexturePath string logic. Fixes https://www.wowace.com/projects/archy/issues/670
 
-commit 58faa9eb1186bd70d0a8f2b6753b1ad61f3458b9
-Author: MMOSimca <mmosimca@gmail.com>
-Date:   Sat Feb 4 21:00:28 2017 -0500
+commit de2209134bb4aef0eeb3d8b0b06e2c4213dde6fe
+Author: James D. Callahan III <jcallahan@curse.com>
+Date:   Tue Sep 19 01:56:37 2017 -0500
 
-    Updated digsite races of Demon sites in Val'sharah; we previously assumed all Val'sharah digsites were Highborne Night Elf, which is not true.
+    Update ToC Interface to 70300.
 
-commit 92d068f7b6f77034caed3dae0a93c7c6f3a84af1
-Author: MMOSimca <mmosimca@gmail.com>
-Date:   Sat Feb 4 19:50:13 2017 -0500
+commit 50592b68df7e4f0cfd6f86ac556452828f3a609d
+Author: James D. Callahan III <jcallahan@curse.com>
+Date:   Tue Sep 19 01:55:56 2017 -0500
 
-    Updated the coordinates for The Wildwood digsite in Val'sharah, which were apparently changed in Patch 7.1.5.
-
-commit 9caf1518e9ea37db817bae6549767db50c522018
-Author: Caleb Atherton <catherton@curse.com>
-Date:   Tue Jan 31 01:11:43 2017 -0500
-
-    Updated coordinates for Nor'daniel Wellspring digsite, which were apparently changed in Patch 7.1.5.
+    Typo fix.
 

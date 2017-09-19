@@ -321,3 +321,7 @@ L["Your Archaeology skill is at %d of %d.  Are you sure you would like to solve 
 L["Zone Font Options"] = "Opzioni Carattere Zona"
 L["Zone Font Outline"] = "Bordo Carattere Zone"
 L["Zone Font Size"] = "Dimensione Carattere Zone"
+
+-- ProjectNames
+L["Mummified Monkey Paw"] = "Zampa Mummificata di Scimmia"
+

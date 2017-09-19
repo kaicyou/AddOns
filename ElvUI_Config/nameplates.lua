@@ -19,6 +19,8 @@ local GetTalentInfo = GetTalentInfo
 local GetPvpTalentInfo = GetPvpTalentInfo
 local GetDifficultyInfo = GetDifficultyInfo
 local pairs, type, strsplit, match, gsub = pairs, type, strsplit, string.match, string.gsub
+local DUNGEON_DIFFICULTY, RAID_INFO_WORLD_BOSS = DUNGEON_DIFFICULTY, RAID_INFO_WORLD_BOSS
+local PLAYER_DIFFICULTY1, ITEM_QUALITY3_DESC, SPEED = PLAYER_DIFFICULTY1, ITEM_QUALITY3_DESC, SPEED
 local LEVEL, NONE, REPUTATION, COMBAT, FILTERS, TALENT, ELITE = LEVEL, NONE, REPUTATION, COMBAT, FILTERS, TALENT, ELITE
 local ARENA, RAID, DUNGEONS, BATTLEFIELDS, SCENARIOS = ARENA, RAID, DUNGEONS, BATTLEFIELDS, SCENARIOS
 local FRIEND, ENEMY, CLASS, ROLE, TANK, HEALER, DAMAGER, COLOR = FRIEND, ENEMY, CLASS, ROLE, TANK, HEALER, DAMAGER, COLOR
@@ -537,6 +539,7 @@ local function UpdateStyleLists()
 					name = spell,
 					type = "select",
 					values = {
+						["DISABLED"] = DISABLE,
 						["ONCD"] = L["On Cooldown"],
 						["OFFCD"] = L["Off Cooldown"],
 					},
@@ -634,30 +637,6 @@ local function UpdateStyleLists()
 	end
 end
 
-local function GetStyleFilterDefaultOptions(filter)
-	if filter and G.nameplate.filters[filter] and P.nameplates.filters[filter] then
-		E.db.nameplates.filters[filter] = E:CopyTable({}, P.nameplates.filters[filter]) --copy the profile options
-		local newTable = E:CopyTable({}, G["nameplate"].StyleFilterDefaults)
-		return E:CopyTable(setmetatable({}, {__index = newTable}), G.nameplate.filters[filter])
-	end
-
-	local styleFilterProfileOptions = {
-		["triggers"] = {
-			["enable"] = true
-		}
-	}
-
-	if not E.db.nameplates then E.db.nameplates = {} end
-	if not E.db.nameplates.filters then E.db.nameplates.filters = {} end
-
-	if filter then
-		E.db.nameplates.filters[filter] = styleFilterProfileOptions
-	end
-
-	local newTable = E:CopyTable({}, G["nameplate"].StyleFilterDefaults)
-	return setmetatable({}, {__index = newTable})
-end
-
 local function UpdateFilterGroup()
 	if not selectedNameplateFilter or not E.global.nameplate.filters[selectedNameplateFilter] then
 		E.Options.args.nameplate.args.filters.args.header = nil
@@ -714,6 +693,9 @@ local function UpdateFilterGroup()
 					type = "execute",
 					func = function()
 						local filter = {};
+						if G.nameplate.filters[selectedNameplateFilter] then
+							filter = E:CopyTable(filter, G.nameplate.filters[selectedNameplateFilter]);
+						end
 						NP:InitFilter(filter);
 						E.global.nameplate.filters[selectedNameplateFilter] = filter;
 						UpdateStyleLists()
@@ -1276,10 +1258,10 @@ local function UpdateFilterGroup()
 							end,
 						}
 					},
-				},				
+				},
 				buffs = {
 					name = L["Buffs"],
-					order = 15,
+					order = 16,
 					type = "group",
 					disabled = function() return not (E.db.nameplates and E.db.nameplates.filters and E.db.nameplates.filters[selectedNameplateFilter] and E.db.nameplates.filters[selectedNameplateFilter].triggers and E.db.nameplates.filters[selectedNameplateFilter].triggers.enable) end,
 					args = {
@@ -1377,7 +1359,7 @@ local function UpdateFilterGroup()
 				},
 				debuffs = {
 					name = L["Debuffs"],
-					order = 16,
+					order = 17,
 					type = "group",
 					disabled = function() return not (E.db.nameplates and E.db.nameplates.filters and E.db.nameplates.filters[selectedNameplateFilter] and E.db.nameplates.filters[selectedNameplateFilter].triggers and E.db.nameplates.filters[selectedNameplateFilter].triggers.enable) end,
 					args = {
@@ -1475,7 +1457,7 @@ local function UpdateFilterGroup()
 				},
 				nameplateType = {
 					name = L["Unit Type"],
-					order = 17,
+					order = 18,
 					type = "group",
 					disabled = function() return not (E.db.nameplates and E.db.nameplates.filters and E.db.nameplates.filters[selectedNameplateFilter] and E.db.nameplates.filters[selectedNameplateFilter].triggers and E.db.nameplates.filters[selectedNameplateFilter].triggers.enable) end,
 					args = {
@@ -1576,7 +1558,7 @@ local function UpdateFilterGroup()
 				},
 				reactionType = {
 					name = L["Reaction Type"],
-					order = 18,
+					order = 19,
 					type = "group",
 					disabled = function() return not (E.db.nameplates and E.db.nameplates.filters and E.db.nameplates.filters[selectedNameplateFilter] and E.db.nameplates.filters[selectedNameplateFilter].triggers and E.db.nameplates.filters[selectedNameplateFilter].triggers.enable) end,
 					args = {
@@ -1719,7 +1701,7 @@ local function UpdateFilterGroup()
 					},
 				},
 				instanceType = {
-					order = 19,
+					order = 20,
 					type = 'group',
 					name = L["Instance Type"],
 					disabled = function() return not (E.db.nameplates and E.db.nameplates.filters and E.db.nameplates.filters[selectedNameplateFilter] and E.db.nameplates.filters[selectedNameplateFilter].triggers and E.db.nameplates.filters[selectedNameplateFilter].triggers.enable) end,
@@ -1809,7 +1791,7 @@ local function UpdateFilterGroup()
 			disabled = function() return not (E.db.nameplates and E.db.nameplates.filters and E.db.nameplates.filters[selectedNameplateFilter] and E.db.nameplates.filters[selectedNameplateFilter].triggers and E.db.nameplates.filters[selectedNameplateFilter].triggers.enable) end,
 			args = {
 				hide = {
-					order = 0,
+					order = 1,
 					type = 'toggle',
 					name = L["Hide Frame"],
 					get = function(info)
@@ -1820,8 +1802,37 @@ local function UpdateFilterGroup()
 						NP:ConfigureAll()
 					end,
 				},
-				scale = {
+				usePortrait = {
 					order = 2,
+					type = 'toggle',
+					name = L["Use Portrait"],
+					get = function(info)
+						return E.global.nameplate.filters[selectedNameplateFilter].actions.usePortrait
+					end,
+					set = function(info, value)
+						E.global.nameplate.filters[selectedNameplateFilter].actions.usePortrait = value
+						NP:ConfigureAll()
+					end,
+				},
+				nameOnly = {
+					name = L["Name Only"],
+					order = 3,
+					type = 'toggle',
+					get = function(info)
+						return E.global.nameplate.filters[selectedNameplateFilter].actions.nameOnly
+					end,
+					set = function(info, value)
+						E.global.nameplate.filters[selectedNameplateFilter].actions.nameOnly = value
+						NP:ConfigureAll()
+					end,
+				},
+				spacer1 = {
+					order = 4,
+					type = "description",
+					name = " ",
+				},
+				scale = {
+					order = 5,
 					type = "range",
 					name = L["Scale"],
 					disabled = function() return E.global.nameplate.filters[selectedNameplateFilter].actions.hide end,
@@ -1834,20 +1845,22 @@ local function UpdateFilterGroup()
 					end,
 					min=0.35, max = 1.5, step = 0.01,
 				},
-				usePortrait = {
-					order = 0,
-					type = 'toggle',
-					name = L["Use Portrait"],
+				alpha = {
+					order = 6,
+					type = "range",
+					name = L["Alpha"],
+					disabled = function() return E.global.nameplate.filters[selectedNameplateFilter].actions.hide end,
 					get = function(info)
-						return E.global.nameplate.filters[selectedNameplateFilter].actions.usePortrait
+						return E.global.nameplate.filters[selectedNameplateFilter].actions.alpha or -1
 					end,
 					set = function(info, value)
-						E.global.nameplate.filters[selectedNameplateFilter].actions.usePortrait = value
+						E.global.nameplate.filters[selectedNameplateFilter].actions.alpha = value
 						NP:ConfigureAll()
 					end,
+					min=-1, max = 100, step = 1,
 				},
 				color = {
-					order = 4,
+					order = 10,
 					type = "group",
 					name = COLOR,
 					guiInline = true,
@@ -1950,7 +1963,7 @@ local function UpdateFilterGroup()
 					},
 				},
 				texture = {
-					order = 5,
+					order = 20,
 					type = "group",
 					name = L["Texture"],
 					guiInline = true,
@@ -1980,6 +1993,57 @@ local function UpdateFilterGroup()
 							end,
 							set = function(info, value)
 								E.global.nameplate.filters[selectedNameplateFilter].actions.texture.texture = value
+								NP:ConfigureAll()
+							end,
+						},
+					},
+				},
+				flashing = {
+					order = 30,
+					type = "group",
+					name = L["Flash"],
+					guiInline = true,
+					disabled = function() return E.global.nameplate.filters[selectedNameplateFilter].actions.hide end,
+					args = {
+						enable = {
+							name = L["Enable"],
+							order = 1,
+							type = 'toggle',
+							get = function(info)
+								return E.global.nameplate.filters[selectedNameplateFilter].actions.flash.enable
+							end,
+							set = function(info, value)
+								E.global.nameplate.filters[selectedNameplateFilter].actions.flash.enable = value
+								NP:ConfigureAll()
+							end,
+						},
+						speed = {
+							order = 2,
+							type = "range",
+							name = SPEED,
+							disabled = function() return E.global.nameplate.filters[selectedNameplateFilter].actions.hide end,
+							get = function(info)
+								return E.global.nameplate.filters[selectedNameplateFilter].actions.flash.speed or 4
+							end,
+							set = function(info, value)
+								E.global.nameplate.filters[selectedNameplateFilter].actions.flash.speed = value
+								NP:ConfigureAll()
+							end,
+							min=1, max = 10, step = 1,
+						},
+						color = {
+							name = COLOR,
+							type = 'color',
+							order = 3,
+							hasAlpha = true,
+							disabled = function() return E.global.nameplate.filters[selectedNameplateFilter].actions.hide end,
+							get = function(info)
+								local t = E.global.nameplate.filters[selectedNameplateFilter].actions.flash.color
+								return t.r, t.g, t.b, t.a, 104/255, 138/255, 217/255, 1
+							end,
+							set = function(info, r, g, b, a)
+								local t = E.global.nameplate.filters[selectedNameplateFilter].actions.flash.color
+								t.r, t.g, t.b, t.a = r, g, b, a
 								NP:ConfigureAll()
 							end,
 						},
@@ -3265,7 +3329,7 @@ E.Options.args.nameplate = {
 						name = {
 							type = "group",
 							order = 3,
-							name = L["Name"],
+							name = L["Default Font"],
 							guiInline = true,
 							args = {
 								font = {
@@ -3591,7 +3655,9 @@ E.Options.args.nameplate = {
 							E:Print(L["Filter already exists!"])
 							return
 						end
-						E.global.nameplate.filters[value] = GetStyleFilterDefaultOptions(value);
+						local filter = {};
+						NP:InitFilter(filter);
+						E.global.nameplate.filters[value] = filter;
 						UpdateFilterGroup();
 						NP:ConfigureAll()
 					end,

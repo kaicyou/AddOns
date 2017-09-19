@@ -1,3 +1,51 @@
+commit f6b919e145d05664c6c7e2520e10ce84b2a0f1fe
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Sep 5 12:36:05 2017 -0400
+
+    Don't force refresh when the number of targets changes...
+    
+    I suspect this is where the CPU-intensiveness gets out of hand for WW.
+
+commit 300a54920e4dcc1cc6a55b6d0d781d2cb5317f97
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Sep 5 12:31:46 2017 -0400
+
+    Elemental, test-fix for redundant Flame Shocking.
+    
+    BrM, fix for, you know, not working (IV Default will now call IV APLs).
+
+commit 9a0f811a18d53338f3d6f1249a0af862d99ff1be
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Sep 1 18:51:09 2017 -0400
+
+    Fix Doom Winds desync logic to only apply to Ascendance builds...
+
+commit e7c12b706f666e180cd71bb2e90fd70261dc9c0b
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Sep 1 13:21:54 2017 -0400
+
+    Fix Specter of Betrayal in Ret CDs APL.
+
+commit 7484913f7bbf4aa32a663b982aaea4ba791f3819
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Sep 1 09:33:52 2017 -0400
+
+    Switch to Lib_UI
+
+commit d9ed920d1c1c87e23f851deee62341783502478c
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Sep 1 09:22:32 2017 -0400
+
+    Support new Unholy DK APL logic for Outbreak.
+    
+    PTR flag is now when the client version is not 7.3.0.
+
+commit 668978f9ecd4df09b9963f4e220ad51ff1ee836f
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Sep 1 08:50:20 2017 -0400
+
+    Force Paladins to refresh their action lists, in case they didn't.
+
 commit f0e2476e3b53e041e0feda31a907f6688e6759ef
 Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Tue Aug 29 22:20:30 2017 -0400
@@ -1204,95 +1252,4 @@ Date:   Sat Mar 18 10:52:15 2017 -0400
     (blocking higher priority lists).
     o Added 0.05s of padding to regenerated resource prediction time.  Wew
     lads!
-
-commit 218a68f4bdca3a9c745e9c1e012e41eb4d74d3c0
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Tue Mar 14 00:22:14 2017 -0400
-
-    Improved Debugging, Incremental Fixes
-    
-    + The debug system will now allow you to generate a text-log of its
-    decision-making process for clearer debugging.  There will be some
-    iterating on this.
-    + The 'Pause' key will generate a snapshot that can be viewed through
-    /hekili.  The 'Pause' key can be set to *just* take a snapshot instead
-    of freezing the display.
-    + Energy/Focus abilities default to a CPU-intensive decision-making
-    process to help offset issues with resource regeneration.  This can be
-    disabled by checking "Low Impact Mode" under general settings.
-    
-    + Added 'Fatigued' to the list of Bloodlust-blocking auras.
-
-commit 33b10ee32a612e0aa8b745f507d36dec4c02207a
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Mon Feb 27 00:24:55 2017 -0500
-
-    FIXES
-    
-    o Reset the delay after advance to the cast time of a selected action
-    (failing to do so could cause distortions in the predicted game state,
-    i.e. if the addon had a delay of 0.5s to refresh a buff that was falling
-    off in 0.75s, when the addon advanced 0.5s then tried to update, it
-    would result in checking buff duration at 0.5s + 0.5s and the buff would
-    already be down).  Discussing time offsets is a pain in the ass and I
-    understand why Murozond would want to destroy the timeline.
-    o Time Script and Conditions debugging will have more accurate and
-    useful information.
-    o Added 'time_to_max_charges' attribute to cooldowns.
-    o Removed an error() call that just annoyed me; it should've known
-    better than to mess with me.
-    o Removed more tick-based regen stuff, just using time seems to work
-    better.
-
-commit 08b86c4d6376002b929da7e210b2cc3cf11b7d90
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sat Feb 25 18:20:32 2017 -0500
-
-    Debug Info, Resource Ticks
-    
-    o Fix for debug tooltip; show the amount of resources when an entry is
-    recommended.
-    o Turn off tick-based resource regeneration prediction for a bit.
-
-commit 369dcbaf04526c4afe68f1a4674cbf235092eecc
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sat Feb 25 01:31:14 2017 -0500
-
-    Pet stuff, channel stuff.
-
-commit 8800504c77628b000c1da9fc225ab6f0f9d0fd26
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Fri Feb 24 22:42:10 2017 -0500
-
-    Display Updates, Forced Updates, Remove Rounding
-    
-    o Display Updates will happen more frequently (even if the
-    recommendations haven't been refreshed).  This helps text timers work
-    properly.
-    o Talent-swapping and cooldown toggling will force immediate
-    recommendation updates.
-    o Remove a lot of rounding that wasn't needed after the refresh bug was
-    found.
-
-commit 18efb2692f835c0438045b91098bdebb740d34ad
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Mon Feb 20 13:08:53 2017 -0500
-
-    Masque Fixes
-    
-    + The addon should properly update Masque textures for modularized specs
-    (Monks, Hunters).
-    + If you disable Masque, the icon texture should return to the right
-    size (P.S. HOW DARE YOU RESIZE MY ICON TEXTURES, MASQUE).
-
-commit 7f17cd43524ddf6954995779f31aefd1723aeeec
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Mon Feb 20 11:51:50 2017 -0500
-
-    Range-check and Judgment
-    
-    + Add 'range' value to abilities; when set, the range-coloring will use
-    the specified spellID instead of the action spellID for range-checking.
-    + Use range on Hand of Reckoning for Judgment since IsSpellInRange()
-    returns bad data for Judgment.
 

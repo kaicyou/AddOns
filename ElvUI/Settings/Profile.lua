@@ -1073,6 +1073,8 @@ P['unitframe'] = {
 				["iconPosition"] = "LEFT",
 				["iconXOffset"] = -10,
 				["iconYOffset"] = 0,
+				["tickWidth"] = 1,
+				["tickColor"] = {r = 0, g = 0, b = 0, a = 0.8},
 			},
 			['classbar'] = {
 				['enable'] = true,
@@ -2874,6 +2876,7 @@ P["actionbar"] = {
 	["lockActionBars"] = true,
 	["hideCooldownBling"] = false,
 	["useDrawSwipeOnCharges"] = false,
+	["addNewSpells"] = false,
 
 	['bar1'] = {
 		['enabled'] = true,

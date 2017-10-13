@@ -1605,5 +1605,24 @@ tappend(points["BrokenShore:0"],
 	"A:52.04,37.80:11543:3", --Soul Ruin
 	"A:62.46,23.04:11543:6") --Tomb of Sargeras
 	
---Disable atomatic addition of key/table combos
+tappend(points["ArgusMacAree:0"], --1170
+	"A:57.0,53.6:12069:2", --Conservatory of the Arcane 
+	"A:48.8,70.0:12069:7", --Ruins of Oronaar 
+	"A:49.7,66.1:12069:8", --Azurelight Square 
+	"A:38.1,52.5:12069:9", --Shadowguard Incursion 
+	"A:55.0,80.4:12069:12", --Triumvirate's End 
+	"A:55.1,43.4:12069:13") --Arinor Gardens 
+	
+tappend(points["ArgusSurface:0"], --1135
+	"A:58.9,59.8:12069:1", --Annihilan Pits 
+	"A:61.4,44.9:12069:5", --Nath'raxas Hold 
+	"A:61.2,62.4:12069:6", --Petrified Forest 
+	"A:42.4,58.7:12069:10") --Shattered Fields 
+	
+tappend(points["ArgusCore:0"], --1171
+	"A:68.1,32.3:12069:3", --Defiled Path 
+	"A:64.8,55.2:12069:4", --Felfire Armory 
+	"A:70.1,58.7:12069:11") --Terminus 
+
+--Disable automatic addition of key/table combos
 --getmetatable(DugisWorldMapTrackingPoints).__index = nil

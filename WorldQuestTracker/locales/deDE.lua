@@ -40,6 +40,8 @@ L["S_GROUPFINDER_LEAVEOPTIONS_IMMEDIATELY"] = "Nach Questabschluss sofort verlas
 L["S_GROUPFINDER_NOPVP"] = "PvP-Realms vermeiden"
 L["S_GROUPFINDER_OT_ENABLED"] = "Buttons auf der Questverfolgung zeigen."
 L["S_GROUPFINDER_QUEUEBUSY"] = "Du bist bereits in einer Warteschlange."
+--Translation missing 
+-- L["S_GROUPFINDER_QUEUEBUSY2"] = ""
 L["S_GROUPFINDER_RESULTS_APPLYING"] = "Es gibt noch %d verbleibende Gruppen, klicke nochmal"
 L["S_GROUPFINDER_RESULTS_APPLYING1"] = "Es gibt noch 1 verbleibende Gruppe, klicke nochmal"
 L["S_GROUPFINDER_RESULTS_FOUND"] = [=[Es wurden %s Gruppen gefunden

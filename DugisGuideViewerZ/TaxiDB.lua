@@ -78,11 +78,17 @@ function TaxiDB:Initialize()
 				
 				FlightMapFrame.hookedOnShow = true
 			end
+		elseif TaxiFrame then 
+			for i=1,NumTaxiNodes() do
+				local btn = _G["TaxiButton"..i]
+				if btn and btn:GetNormalTexture() then 
+					btn:GetNormalTexture():SetVertexColor(1,1,1)
+				end
+			end
 		end
 	end
 	
 	local function HighlightTaxiIconWithRed(normalTexture)
-		TaxiDB:UnhighlightAllFlightpoints()
 		normalTexture:SetVertexColor(1,0,0)
 	end
 	
@@ -92,6 +98,7 @@ function TaxiDB:Initialize()
 	end
     
     local function HighlightFlightmasterDestination_on_WorldFlightMap(i)
+		TaxiDB:UnhighlightAllFlightpoints()
         local kids = { WorldFlightMapFrame:GetChildren() };
         
         for _, child in ipairs(kids) do
@@ -113,7 +120,7 @@ function TaxiDB:Initialize()
     
 	
 	local function HighlightFlightmasterDestination()
-    
+    	TaxiDB:UnhighlightAllFlightpoints()
         if is_WorldFlightMapFrame_Hooked == false and WorldFlightMapFrame ~= nil then
             hooksecurefunc(WorldFlightMapFrame, "WORLD_MAP_UPDATE", function() 
                 HighlightFlightmasterDestination()

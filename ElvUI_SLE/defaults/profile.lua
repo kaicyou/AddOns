@@ -532,6 +532,7 @@ P["sle"] = {
 			["customColor"] = {r = 1, g = 1, b = 1 },
 			["customColor_Coords"] = {r = 1, g = 1, b = 1 },
 			["combathide"] = false,
+			["orderhallhide"] = false,
 			["portals"] = {
 				["enable"] = true,
 				["HSplace"] = true,
@@ -557,8 +558,18 @@ P["sle"] = {
 	},
 	--Nameplate Options
 	["nameplates"] = {
-		["showthreat"] = false,
-		["targetcount"] = false,
+		["threat"] = {
+			["enable"] = false,
+			["font"] = "PT Sans Narrow",
+			["fontOutline"] = "OUTLINE",
+			["size"] = 12,
+		},
+		["targetcount"] = {
+			["enable"] = false,
+			["font"] = "PT Sans Narrow",
+			["fontOutline"] = "OUTLINE",
+			["size"] = 12,
+		},
 		["visibleRange"] = 60,
 	},
 	--Order Halls
@@ -777,6 +788,18 @@ P["sle"] = {
 				},
 				["higherPortrait"] = false,
 				["portraitAlpha"] = 0.35,
+			},
+			["pet"] = {
+				["higherPortrait"] = false,
+				["portraitAlpha"] = 0.35,
+				["auras"] = {
+					["buffs"] = {
+						["threshold"] = 4,
+					},
+					["debuffs"] = {
+						["threshold"] = 4,
+					},
+				},
 			},
 			["target"] = {
 				["higherPortrait"] = false,

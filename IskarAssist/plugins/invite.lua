@@ -21,6 +21,7 @@ local default_config = {
 	auto_invite_keywords = {},
 	auto_accept_invites = false,
 	auto_accept_invites_limited = true,
+	invite_interval = 60,
 }
 
 local icon_texcoord = {l=1, r=0, t=0, b=1}
@@ -770,6 +771,18 @@ function Invite.BuildOptions (frame)
 		invite_msg_repeats_switch:SetAsCheckBox()
 		invite_msg_repeats_label:SetPoint ("topleft", main_frame, "topleft", x_start, -440)	
 	
+	--> interval between each wave
+		--> welcome msg
+		local welcome_text6 = RA:CreateLabel (main_frame, "Interval in seconds between each invite wave.", Invite:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
+		welcome_text6:SetPoint ("topleft", main_frame, "topleft", x_start, -460)
+		
+		local invite_interval_slider, invite_interval_label = RA:CreateSlider (main_frame, 180, 20, 60, 180, 1, Invite.db.invite_interval, _, "InviteInterval", _, "Inverval", Invite:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Invite:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
+		invite_interval_label:SetPoint ("topleft", main_frame, "topleft", x_start, -480)	
+		invite_interval_slider.OnValueChanged = function (_, _, value) 
+			Invite.db.invite_interval = value 
+		end
+	
+	
 	-------------- fim
 	
 	------- functions
@@ -966,11 +979,11 @@ function Invite.AutoInviteTick()
 		Invite:SendInviteAnnouncementMsg()
 		
 	elseif (Invite.auto_invite_wave_time == 0) then
-		Invite.auto_invite_frame.statusbar:SetTimer (61)
+		Invite.auto_invite_frame.statusbar:SetTimer (Invite.db.invite_interval + 1)
 		Invite.auto_invite_wave_number = Invite.auto_invite_wave_number + 1
 		
 		Invite.auto_invite_frame.statusbar.lefttext = "next wave (" .. Invite.auto_invite_wave_number .. ") in:"
-		Invite.auto_invite_wave_time = 59
+		Invite.auto_invite_wave_time = Invite.db.invite_interval - 1
 		
 		Invite.DoInvitesForPreset (Invite.auto_invite_preset)
 		
@@ -1031,10 +1044,10 @@ function Invite:StartInvitesAuto (preset, remaining)
 	Invite.invite_preset = preset
 	Invite.auto_invite_preset = preset
 	Invite.auto_invite_wave_number = 2
-	Invite.auto_invite_wave_time = 59
+	Invite.auto_invite_wave_time = Invite.db.invite_interval - 1
 	Invite.auto_invite_ticks = remaining
 	
-	Invite.auto_invite_frame.statusbar:SetTimer (61)
+	Invite.auto_invite_frame.statusbar:SetTimer (Invite.db.invite_interval + 1)
 	Invite.auto_invite_frame.statusbar.lefttext = "next wave (" .. Invite.auto_invite_wave_number .. ") in:"
 	
 	Invite:SetRaidDifficultyForPreset (preset)
@@ -1060,7 +1073,6 @@ function Invite:StartInvites (preset_number)
 	
 	local preset = Invite:GetPreset (preset_number)
 	if (preset) then
-	
 		Invite:DisableInviteButtons()
 	
 		if (preset.keepinvites and preset.keepinvites > 0) then
@@ -1099,6 +1111,7 @@ function Invite.CheckForAutoInvites()
 					
 					if (next_event_in <= (keep_invites*60) and next_event_in > 1) then
 						local invite_time = (keep_invites and keep_invites > 0 and keep_invites * 60 or false) or (next_event_in > 121 and next_event_in or 121)
+						print ("|cFFFFDD00RaidAssist (/raa):|cFFFFFF00 starting auto invites.|r")
 						return Invite:StartInvitesAuto (preset, invite_time)
 					elseif (next_event_in > (keep_invites*60)) then
 						C_Timer.After (next_event_in - ((keep_invites*60)-1), Invite.CheckForAutoInvites)
@@ -1114,5 +1127,7 @@ end
 function Invite:SendInviteAnnouncementMsg()
 	SendChatMessage (Invite.db.invite_msg, "GUILD")
 end
+
+
 
 --endd

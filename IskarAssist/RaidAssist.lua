@@ -11,7 +11,7 @@ local DATABASE = "RADataBase"
 local FOLDERPATH = "IskarAssist"
 local _
 
--- jï¿½ existe uma versï¿½o do raidassist instaldo.
+-- já existe uma versão do raidassist instaldo.
 if (_G.RaidAssist) then
 	print ("|cFFFFAA00RaidAssist|r: Another addon is using RaidAssist namespace.")
 	_G.RaidAssistLoadDeny = true

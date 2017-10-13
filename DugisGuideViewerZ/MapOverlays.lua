@@ -1590,7 +1590,27 @@ function MapOverlays:Initialize()
 					["SMOLDERHIDE"] = 515736006997,
 					["TEMPLEOFELUNE"] = 258179558616,
 					["THASTALAH"] = 447035384026,
-				},				
+				},		
+				["ArgusCore"] = {
+					["DEFILEDPATH"] = 307627634,
+					["FELFIREARMORY"] = 684692,
+					["TERMINUS"] = 256111983059,
+				},
+				["ArgusMacAree"] = {
+					["CONSERVATORY"] = 119707895097,
+					["RUINSOFORONAAR"] = 305234499849,
+					["SEATOFTRIUMVIRATE"] = 58260463055,
+					["SHADOWGUARD"] = 472562,
+					["TRIUMVIRATES"] = 403083370780,
+					["UPPERTERRACE"] = 331453,
+				},
+				["ArgusSurface"] = {
+					["ANNIHILANPITS"] = 191515410728,
+					["KROKULHOVEL"] = 391291126067,
+					["NATHRAXAS"] = 175545155,
+					["PETRIFIEDFOREST"] = 310895832509,
+					["SHATTEREDFIELDS"] = 148215712242,
+				},						
 				['*'] = {},
 			},
 		}

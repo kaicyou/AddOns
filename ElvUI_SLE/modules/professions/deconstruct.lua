@@ -33,7 +33,8 @@ Pr.ItemTable = {
 		["11287"] = true, --Lesser Magic Wand
 		["11288"] = true, --Greater Magic Wand
 		["116985"] = true, --Archeology Mail Hat
-		["136630"] = true, --Eng reagent rifle
+		["136629"] = true, --Eng reagent rifle
+		["136630"] = true, --Eng reagent rifle 2
 	},
 	--Bnet bound treasures in Pandaria
 	["PandariaBoA"] = {
@@ -210,6 +211,7 @@ function Pr:DeconstructParser(tt)
 	local _, id = T.split(":", itemString)
 	if not id or id == "" then return end
 	if(item and not T.InCombatLockdown()) and (Pr.DeconstructMode == true or (E.global.sle.LOCK.TradeOpen and self:GetOwner():GetName() == "TradeRecipientItem7ItemButton")) then
+		local r, g, b
 		if lib:IsOpenable(id) and Pr:IsUnlockable(link) then
 			r, g, b = 0, 1, 1
 			Pr:ApplyDeconstruct(link, Pr.LOCKname, "spell", r, g, b)

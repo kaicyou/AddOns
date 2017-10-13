@@ -428,7 +428,7 @@ end
 
 function AddonsCheck.BuildAddonList()
 	local addonsList = AddonsCheck.LatestSyncAddonNames --tabela numerica com os nomes dos addons
-	local addonsInstalled = {} --tabela hash com os nomes dos addons e se esta instalado ou nï¿½o
+	local addonsInstalled = {} --tabela hash com os nomes dos addons e se esta instalado ou não
 	for i = 1, GetNumAddOns() do
 		local name, title, notes, loadable, reason, security, newVersion = GetAddOnInfo (i)
 		addonsInstalled [name] = loadable and RESPONSE_TYPE_HAVE or RESPONSE_TYPE_NOT_HAVE

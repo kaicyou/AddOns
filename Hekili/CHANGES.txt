@@ -1,3 +1,74 @@
+commit c1a1db26055f1657bf134f62135867eaface09e2
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Sep 24 14:45:29 2017 -0400
+
+    Re-embed my mangled LibArtifactData.
+
+commit c0a4588ae3069b0456afee5b8e601f9716e1f6c5
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Sep 24 12:08:36 2017 -0400
+
+    Wake up, Curse.
+
+commit e7d0ca51f8c6a40d8f3aaaaf43d2ed0c554911cb
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Sep 24 11:43:52 2017 -0400
+
+    Drop LAD from .pkgmeta...
+
+commit 792c103666ecc1dbcb5ac257a25088464a6a1527
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Sep 24 11:41:36 2017 -0400
+
+    Don't embed LibArtifactData since I use my dumb modified version.
+    
+    May also fix packaging bug from CurseForge.
+
+commit 999d6e5f0d61724fb16f53104644c490e92e1182
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Sep 24 11:28:53 2017 -0400
+
+    Update embeds.xml.
+
+commit fac9a6cc916bf2cdd8cc7bfb5c24a404769b7f44
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Sep 24 11:25:27 2017 -0400
+
+    Actually update OptionalDeps.
+
+commit a8ed46ba0289133b36f444a354f0b46cd9589a1f
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Sep 24 11:25:15 2017 -0400
+
+    Update OptionalDeps.
+
+commit e7e3a609314f684b8d1cbbe8dc6e475f52d828fe
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Sep 24 11:18:42 2017 -0400
+
+    Update .gitignore.
+
+commit 39422543e946e7813957ed3ce91630eceb3d290d
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Sep 20 16:54:54 2017 -0400
+
+    Retribution
+    
+    Fix for "TV spam" when people disable the Wake of Ashes / Artifact
+    Ability recommendation.  The APL recommends spending TV even w/o
+    Judgment up if Wake of Ashes is off CD or coming off CD soon.  The APL
+    will now only make this recommendation if you're allowing the addon to
+    recommend WoA.
+
+commit 2b87f369ef6cc117aa0895b3ea6e27aa9199ad52
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Sep 15 20:50:29 2017 -0400
+
+    Cleanups, APL stuff...
+    
+    Monk APLs, fixed 4pc set bonus check.
+    Remove ST Fury setting for Enhancement Shamans; it is obsolete.
+
 commit f6b919e145d05664c6c7e2520e10ce84b2a0f1fe
 Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Tue Sep 5 12:36:05 2017 -0400
@@ -1156,100 +1227,4 @@ Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Sun Apr 2 13:36:11 2017 -0400
 
     Manually include LibArtifactData-1.0 (as LibArtifactData-1.0h) because Curse won't package the new one.
-
-commit f149f59b9f5fc9bac36d97bf11386344bf397ac1
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun Apr 2 13:17:15 2017 -0400
-
-    Try updated LibArtifactData-1.0...
-
-commit 63bc63c64e7ed83edb44af328200faf070d93e70
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun Apr 2 13:11:38 2017 -0400
-
-    Fixes, Tweaks, Refinements
-    
-    + Added a system to force one-time changes to
-    displays/profiles/action-lists.  This enables me to fix settings without
-    pushing people to reset their whole profiles.  Example usage here will
-    be that I'm going to turn off 'Debug' mode because it uses a lot of CPU
-    for folks who aren't actually debugging.
-    o Added Spell ID for Lashing Flames because duhhh.
-    
-    + Added simplified Mode Visibility to displays.  This basically makes it
-    easier to quickly decide whether a display is a "Primary" or "AOE"
-    display (like how I make them) with regard to both target detection and
-    visibility.  This includes a fix that makes it so the two-display,
-    ST/AOE mode only happens under the right circumstances.  Your experience
-    with the addon may change.
-    + Refinements made to which events are tracked and which force updates.
-    + Minor tweaks to default Paladin/Shaman displays.
-
-commit b34cd76afd034e20b6300a0e62463ca576db9119
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Thu Mar 30 21:13:48 2017 -0400
-
-    Update helper system.
-    
-    + When I screw things up, I can set up one-time profile patches now.
-    The addon will now make a good faith effort to fix up your APL hooks
-    under the new system.  Once.
-    + Forcing Debug mode off one time only.  Shouldn't have it on by
-    default.
-    + Really, really don't do unnecessary data crunching with Debug mode
-    off.
-    + More tweaks to forced addon updates based on events.
-
-commit e90f9b4223215634af9efd99b19d35e79ff37d9f
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Wed Mar 29 16:25:05 2017 -0400
-
-    Ascendance is 15 seconds.  Adjust forced updates.
-
-commit f1cfb1dfb0c641684644b39d6504cab1dacee672
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Tue Mar 28 23:27:41 2017 -0400
-
-    7.2:  Force update on CLEU: SPELL_CAST_START/SUCCESS rather than UNIT_SPELLCAST_START/SUCCEEDED.
-
-commit b092925522e93f7dc841c85d1d410671679ba3f4
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Tue Mar 28 18:41:56 2017 -0400
-
-    7.2:  Update some PTR data to live.
-
-commit 49d6017332d1d05f0ff9d0908205b2ef4a9daf0c
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Tue Mar 28 18:40:03 2017 -0400
-
-    7.2:  Update Paladin Defaults
-
-commit 3bf3cce2818118cc4a356d93bb3cb9c1461c352f
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Tue Mar 28 18:29:44 2017 -0400
-
-    7.2:  So much stuff.
-    
-    This update note is objectively bad.
-
-commit de640f1f8ced7fc6463ab6a9335c96d6ba723c7a
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sat Mar 18 23:30:31 2017 -0400
-
-    ALPHA:  Try event-driven (with 0.05 ICD) updates instead of interval updates.
-    
-    + Add resource.time_to_XX calculation.
-
-commit 5cbec630ff5d800987bd91140db622507f6d752e
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sat Mar 18 10:52:15 2017 -0400
-
-    Fixes for run_action_list, call_action_list, ...
-    
-    o When an action list's criteria is checked, it will not use padded
-    criteria (i.e., recheck in 0.1s, half-GCD, etc.) because this has caused
-    the addon to test inferior action lists before their criteria are met
-    (blocking higher priority lists).
-    o Added 0.05s of padding to regenerated resource prediction time.  Wew
-    lads!
 

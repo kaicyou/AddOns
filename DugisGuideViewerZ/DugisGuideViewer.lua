@@ -902,6 +902,10 @@ function DugisGuideViewer:RestoreFramesPositions()
     end
 end
 
+function DugisGuideViewer:NotificationsEnabled()
+    return DugisGuideViewer:UserSetting(DGV_DISABLE_QUICK_SETTINGS) ~= true
+end
+
 function DugisGuideViewer:UpdateNotificationsMarkVisibility()
     local notifications = DugisGuideViewer:GetNotifications()
     
@@ -1338,11 +1342,13 @@ function DugisGuideViewer:SetMemoryOptions()
 	collectgarbage()
 end
 
-local function Disable(frame)
+local function Disable(frame, dontChangeState)
 	if frame then 
 		--DebugPrint("frame type:"..frame:GetObjectType())
 		if frame:GetObjectType() == "CheckButton" then
-			frame:SetChecked(false)
+			if not dontChangeState then
+				frame:SetChecked(false)
+			end
 			frame.Text:SetTextColor(0.5, 0.5, 0.5)
 		end
 		frame:Disable() 
@@ -1656,11 +1662,28 @@ function DugisGuideViewer:InsertControlAfterCheckbox(SettingNum, category, top, 
 			DugisGuideViewer.onColorChange("DGV_QUESTING_AREA_COLOR", unpack(DugisGuideViewer.defaultQuestingAreaColor))
 		end)
 	end
-
+	
+	if category=="Notifications" and SettingNum == DGV_USE_NOTIFICATIONS_MARK then
+		top = top - 12
+		if not enableNotificationsInfo then
+			frame:CreateFontString("enableNotificationsInfo","ARTWORK", "GameFontHighlightSmall")
+			enableNotificationsInfo:SetText(L["Enable Quick Settings option in 'Other' category to use Notifications."])
+		end
+		enableNotificationsInfo:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, top )    	
+	end
     
     return top, topRightColumn
 end
 
+function DugisGuideViewer:UpdateCheckbox(SettingNum)
+	if SettingNum == DGV_USE_NOTIFICATIONS_MARK then
+		if DugisGuideViewer:NotificationsEnabled() then
+			enableNotificationsInfo:Hide()
+		else
+			enableNotificationsInfo:Show()
+		end
+	end
+end
 
 local AceGUI = LibStub("AceGUI-3.0")
 local function GetSettingsCategoryFrame(category, parent)
@@ -1770,6 +1793,8 @@ local function GetSettingsCategoryFrame(category, parent)
                 
 			end
 			chkBox:SetChecked(SettingsDB[SettingNum].checked)
+			
+			DugisGuideViewer:UpdateCheckbox(SettingNum)
 		end
 	end)
 	
@@ -2700,6 +2725,26 @@ local function GetSettingsCategoryFrame(category, parent)
 		end
 	end
 	
+	local ChkBoxes = {
+		 DGV_ALWAYS_SHOW_STANDARD_PROMPT_GEAR
+		,DGV_ALWAYS_SHOW_STANDARD_PROMPT_GUIDE
+		,DGV_ENABLED_GEAR_NOTIFICATIONS
+		,DGV_ENABLED_GUIDE_NOTIFICATIONS
+		,DGV_ENABLED_JOURNAL_NOTIFICATIONS
+		,DGV_USE_NOTIFICATIONS_MARK
+	}
+	
+	LuaUtils:foreach(ChkBoxes, function(checkboxId)
+		if SettingsDB[checkboxId].category == category then
+			local chkBox = _G["DGV.ChkBox"..checkboxId]
+			if DugisGuideViewer:NotificationsEnabled() then
+				Enable(chkBox)
+			else
+				Disable(chkBox, true)
+			end
+		end
+	end)
+	
 	if not DugisGuideViewer:UserSetting(DGV_AUTOREPAIR) then
 		DugisGuideViewer:SetDB(false, DGV_AUTOREPAIRGUILD)
 		local Chk = _G["DGV.ChkBox"..DGV_AUTOREPAIRGUILD]
@@ -3208,6 +3253,7 @@ end
 function DugisGuideViewer.GASmartSetTargetDropdown_OnClick(button)
 	LibDugi_UIDropDownMenu_SetSelectedValue(DGV_GASmartSetTargetDropdown, button.value )
 	DugisGuideViewer:SetDB(button.value, DGV_GASMARTSETTARGET)
+	PaperDollEquipmentManagerPane_Update(true)
 end
 
 --StatCapLevelDifferenceDropdown
@@ -5333,7 +5379,9 @@ end
 
 function DugisGuideViewer:OnCastingSpell(spellID)
     if spellID and not IsMountSpell(spellID) then
-	    if tonumber(spellID) ~= 219223 and tonumber(spellID) ~= 219222 and tonumber(spellID) ~= 197886 and tonumber(spellID) ~= 240022 then  -- Hunter Windrunning spell effect from Marksman Artifact Bow 
+	    if tonumber(spellID) ~= 219223 and tonumber(spellID) ~= 219222 and tonumber(spellID) ~= 197886 and tonumber(spellID) ~= 240022 -- Hunter Windrunning spell effect from Marksman Artifact Bow
+		and tonumber(spellID) ~= 241330 and tonumber(spellID) ~= 242597 and tonumber(spellID) ~= 242599 and tonumber(spellID) ~= 242601 -- Rethu's Incessant Courage from Legendary
+		then   
 	        lastCastingNoneMountTime = GetTime()
 		end
     end
@@ -5646,9 +5694,3 @@ function DugisGuideViewer.ShowMainMenu()
 	
 	DugisGuideViewer.showInProgress = false
 end
-
-
-
-
-
-

@@ -3076,7 +3076,10 @@ function GA:Initialize()
                 end
             
                 local res = orig_GetEquipmentSetIDs()
-                res[#res + 1] = dugiSmartSetID
+				
+				if SmartSetShown() then
+					res[#res + 1] = dugiSmartSetID
+				end
                 return res
             end    
         end        
@@ -3531,7 +3534,7 @@ function GA:Initialize()
                 
                 local name, _, _, _, _, _, _, _, _, texture = GetItemInfo(itemLink)
                   
-				if DGV:UserSetting(DGV_ENABLED_GEAR_NOTIFICATIONS) then
+				if DGV:UserSetting(DGV_ENABLED_GEAR_NOTIFICATIONS) and DugisGuideViewer:NotificationsEnabled() then
 					local notificationTitle = "Gear Upgrade Suggested"
 					local notification =  DugisGuideViewer:GetNotificationByTitle(notificationTitle)
 					

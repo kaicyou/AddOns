@@ -1,7 +1,7 @@
 -- AskMrRobot-Serializer will serialize and communicate character data between users.
 -- This is used primarily to associate character information to logs uploaded to askmrrobot.com.
 
-local MAJOR, MINOR = "AskMrRobot-Serializer", 52
+local MAJOR, MINOR = "AskMrRobot-Serializer", 54
 local Amr, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not Amr then return end -- already loaded by something else
@@ -1169,9 +1169,11 @@ function Amr:SerializePlayerData(data, complete)
 						prevPowerId = serializeCrucibleInfo(crucibleinfos, relicInfo, i, prevPowerId)
 					end
 				end
-				for k,relicInfo in pairs(artifactInfo.Crucible.Inventory) do
-					if relicInfo then
-						prevPowerId = serializeCrucibleInfo(crucibleinfos, relicInfo, 4, prevPowerId)
+				if artifactInfo.Crucible.Previewed then
+					for k,relicInfo in pairs(artifactInfo.Crucible.Previewed) do
+						if relicInfo then
+							prevPowerId = serializeCrucibleInfo(crucibleinfos, relicInfo, 4, prevPowerId)
+						end
 					end
 				end
 			end

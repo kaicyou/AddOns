@@ -1,7 +1,7 @@
 ## Interface: 70300
-## Title: Dugi Questing Essential |cffffffff4.303|r
+## Title: Dugi Questing Essential |cffffffff4.304|r
 ## Notes: Questing Addon Copyright 2010-2017 UltimateWoWGuide.com
-## Version: 4.303
+## Version: 4.304
 ## X-Website: http://www.ultimatewowguide.com/
 ## X-Email: support@ultimatewowguide.com
 ## X-Category: Quest
@@ -28,7 +28,8 @@ Localization\Localization.itIT.lua
 Localization\Localization.koKR.lua
 Localization\Localization.ptBR.lua
 Localization\Localization.ruRU.lua
-Localization\Localization.zhTW.lua
+Localization\Localization.ruRU.lua
+Localization\Localization.zhCN.lua
 Localization\LibBabble-SubZone-3.0\Lib.xml
 Localization\LibBabble-Class-3.0\Lib.xml
 Localization\LibBabble-Race-3.0\Lib.xml

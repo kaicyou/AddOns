@@ -509,9 +509,13 @@ function WMT:Initialize()
 	
 	function DataProviders.PetBattles:GetTooltipText(trackingType, location, speciesID, extraToolTip)
 		local value = petJournalLookup[tonumber(speciesID)]
-		if not value then
-			DGV:DebugFormat("GetTooltipText Unknown speciesID", "speciesID", speciesID)
-			return
+		if not value and speciesID then
+		   local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(tonumber(speciesID))
+			petJournalLookup[tonumber(speciesID)] = 
+				string.format("%d:%s:%s:%d:%d", companionID, speciesName, tooltipDescription:gsub("(:)", "%%3A"), petType, nil)
+			value = petJournalLookup[tonumber(speciesID)]
+		elseif not speciesID then
+			return false
 		end
 		local _, speciesName, flavorText, familyType, collected = strsplit(":", value)
 		if flavorText then
@@ -565,8 +569,13 @@ function WMT:Initialize()
 		ValidateNumber(speciesID, trackingType, location, speciesID, ...)
         
             local value = petJournalLookup[tonumber(speciesID)]
-            if not value then
-                return false
+            if not value and speciesID then
+               local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(tonumber(speciesID))
+				petJournalLookup[tonumber(speciesID)] = 
+					string.format("%d:%s:%s:%d:%d", companionID, speciesName, tooltipDescription:gsub("(:)", "%%3A"), petType, nil)
+				value = petJournalLookup[tonumber(speciesID)]
+			elseif not speciesID then
+				return false
             end
             
             local _, _, petType = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
@@ -603,13 +612,25 @@ function WMT:Initialize()
 	
 	function DataProviders.PetBattles:GetNPC(trackingType, location, speciesID)
 		local value = petJournalLookup[tonumber(speciesID)]
-		if not value then return end
+		if not value and speciesID then
+		   local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(tonumber(speciesID))
+			petJournalLookup[tonumber(speciesID)] = 
+				string.format("%d:%s:%s:%d:%d", companionID, speciesName, tooltipDescription:gsub("(:)", "%%3A"), petType, nil)
+			value = petJournalLookup[tonumber(speciesID)]
+		elseif not speciesID then
+			return false
+		end
 		return tonumber((strsplit(":", value)))
 	end
 	
 	function DataProviders.PetBattles:GetDetailIcon(trackingType, location, speciesID)
-		if not petJournalLookup[tonumber(speciesID)] then return end
-		local familyType = tonumber((select(4, strsplit(":", petJournalLookup[tonumber(speciesID)]))))
+		--if not petJournalLookup[tonumber(speciesID)] then return end
+		local familyType
+		if petJournalLookup[tonumber(speciesID)] then 
+			familyType = tonumber((select(4, strsplit(":", petJournalLookup[tonumber(speciesID)]))))
+		elseif speciesID then 
+			familyType = tonumber((select(3, C_PetJournal.GetPetInfoBySpeciesID(speciesID))))
+		end 
 		if PET_TYPE_SUFFIX[familyType] then
 			return "Interface\\PetBattles\\PetIcon-"..PET_TYPE_SUFFIX[familyType];
 		else
@@ -628,7 +649,12 @@ function WMT:Initialize()
 			end
 		end
 		if not tonumber(coord) then return end
-		local factor = 2^16
+		local factor 
+		if tonumber(coord) > 99999999 then
+			factor = 2^16
+		else 
+			factor = 10000 --Handy notes coord
+		end
 		local x,y =  floor(coord / factor) / factor, (coord % factor) / factor
 		--DGV:DebugFormat("GetXY", "x", x, "y", y)
 		return x,y
@@ -889,7 +915,7 @@ function WMT:Initialize()
 		DugisWaypointTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
 		self = self.point or self
 		overPoint = self
-		DugisWaypointTooltip:SetFrameStrata("DIALOG")
+		DugisWaypointTooltip:SetFrameStrata("TOOLTIP")
     
         local texts = {DataProviders:GetTooltipText(self.provider, unpack(self.args))}
 
@@ -1005,6 +1031,11 @@ function WMT:Initialize()
 		local nsMapName = UnspecifyMapName(mapName)
 		if nsMapName then
 			if not DugisGuideUser.CurrentMapVersions or DugisGuideUser.CurrentMapVersions[nsMapName]~=mapName then return end
+		end
+		
+		--Case made for "Dalaran70" mapName
+		if not nsMapName and not tonumber(mapName) then
+			mapName = mapName:gsub('[0-9]*', "") 
 		end
 		
 		map = DGV:GetMapIDFromName(nsMapName or mapName)

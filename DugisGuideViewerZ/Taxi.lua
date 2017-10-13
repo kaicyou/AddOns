@@ -117,7 +117,7 @@ function Taxi:Initialize()
 	end]]
 	
 	local function GetAngle(x1, y1, x2, y2, x3, y3)
-		if not x1 then return end
+		if not x1 or not y1 or not x2 or not y2 or not x3 or not y3 then return end
 		local ax = x1 - x2
 		local ay = y1 - y2
 		
@@ -285,7 +285,7 @@ function Taxi:Initialize()
 	end
 	
 	local function sortFunc(a,b)
-		return a[5]<b[5]
+		return a[5] == nil or b[5] == nil or a[5]<b[5]
 	end
 	local function BacktrackCharacterPath(contData, m1, f1, x1, y1, mTrans, fTrans, m2, f2, x2, y2, ...)
 		if not contData or not x1 then return end

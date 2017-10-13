@@ -1,7 +1,7 @@
-changeset:   112:57c6cac5143c
-tag:         v52
+changeset:   116:bccce18e12cb
+tag:         v54
 user:        yellowfive
-date:        Mon Aug 28 19:33:14 2017 -0700
-summary:     7.3 update, preparation for reading crucible.
+date:        Wed Oct 04 11:18:19 2017 -0700
+summary:     Fixed a bug with transition from v52 crucible data to v53+.
 
 

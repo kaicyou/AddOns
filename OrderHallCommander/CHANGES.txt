@@ -1,16 +1,24 @@
-tag c6b8aae8ee336de97c8d107e4077df427220ab75 1.4.4
+tag 125ee3f64e791aa43b10d769c4c4ea62adb8c896 1.5.3
 Author:	Alar of Runetotem <alar@aspide.it>
-Date:	Tue Sep 5 16:28:21 2017 +0200
+Date:	Mon Oct 9 01:53:07 2017 +0200
 
-Feature: updated equipment list
-Fix: "Not enough champions" warning now works. Give it a trt again
-Fix: #67 UI messed up on opening it after closing it with followers tab
-last opened
-Fix: MAKEITVERYQUICK switch testing had a typo
+Feature: you can now disable a troop type clicking its icon nin the OHC
+troop bar
+Fix: Maximize xp was ignoring cap
+Fix: #119 Bad display when more than 5 types of troops
+Fix: #109 Future mission were missing in tooltip
+Fix: #118 Troops with random abilities should now be considered
+Fix: #99 Caused by same issue of 118, should be fixed
 
-commit 0a1222ca65037266e480c8dc9adab3174e2c4788
+commit 2d344dfe440ad559a350ea6894cc797c12343f5f
 Author: Alar of Runetotem <alar@aspide.it>
-Date:   Tue Sep 5 16:26:08 2017 +0200
+Date:   Mon Oct 9 01:51:15 2017 +0200
 
-    Fix: MAKEITVERYQUICK switch testing had a typo
+    Rel notes
+
+commit 86fe28b28f559ad8f64275b563a42073123ec5c3
+Author: Alar of Runetotem <alar@aspide.it>
+Date:   Thu Oct 5 20:59:36 2017 +0200
+
+    Improved tropps shipments display
 

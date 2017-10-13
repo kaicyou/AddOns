@@ -325,7 +325,13 @@ function WF:Initialize()
 
 	local objectiveTrackerUpdateReaction--, manageFramePositionsReaction
 	function WF:Load()
-		objectiveTrackerUpdateReaction = RegisterFunctionReaction("ObjectiveTracker_Update", nil, WF.ObjectiveTrackerDelayUpdate)
+		objectiveTrackerUpdateReaction = RegisterFunctionReaction("ObjectiveTracker_Update", nil, function()
+			if SpellBookFrame and SpellBookFrame:IsShown() then
+				WF:ObjectiveTrackerDelayUpdate(0)
+			else
+				WF:ObjectiveTrackerDelayUpdate(0.1)
+			end
+		end)
 		--manageFramePositionsReaction = RegisterFunctionReaction("UIParent_ManageFramePositions", nil, WF.DelayUpdate)
 		if DugisWatchBackground and (GetNumQuestWatches() > 0 or GetNumTrackedAchievements() > 0) then 
 			WF.WatchBackground = DugisWatchBackground 
@@ -400,16 +406,16 @@ function WF:Initialize()
 		end
 	end)
 	
-	function WF:DelayUpdate()
+	function WF:DelayUpdate(delay)
 	    if lastOnOffButtonClickedTime ~= nil and (GetTime() - lastOnOffButtonClickedTime) < 7 then
 	        WF:Update()
 	    end	
-		DelayandWatchFrameUpdate(0.1)
+		DelayandWatchFrameUpdate(delay or 0.1)
 	end	
 	
-	function WF:ObjectiveTrackerDelayUpdate()
+	function WF:ObjectiveTrackerDelayUpdate(delay)
 		if ObjectiveTrackerFrame.isUpdateDirty == true then return end
-		WF:DelayUpdate()
+		WF:DelayUpdate(delay)
 	end
 	
 	if IsAddOnLoaded("DBM-Core") and DugisGuideViewer:GuideOn() and DugisGuideViewer.chardb.EssentialsMode ~= 1 then 

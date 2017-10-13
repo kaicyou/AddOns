@@ -73,12 +73,12 @@ LP.PortItems = {
 	{43824, nil, true}, --The Schools of Arcane Magic - Mastery
 	{64457}, --The Last Relic of Argus
 	{141605}, --Flight Masters's Whistle
-	{152964}, --Krokul Flute
 	{128502}, --Hunter's Seeking Crystal
 	{128503}, --Master Hunter's Seeking Crystal
 	{140324, nil, true}, --Mobile Telemancy Beacon
 	{129276}, --Beginner's Guide to Dimensional Rifting
 	{140493}, --Adept's Guide to Dimensional Rifting
+	{112059, nil, true}, --Wormhole Generator: Argus
 }
 LP.Spells = {
 	["DEATHKNIGHT"] = {
@@ -366,6 +366,7 @@ function LP:Toggle()
 		loc_panel:Hide()
 		E:DisableMover(loc_panel.mover:GetName())
 	end
+	LP:UNIT_AURA(nil, "player")
 end
 
 function LP:PopulateItems()
@@ -499,6 +500,15 @@ end
 function LP:PLAYER_ENTERING_WORLD()
 	local x, y = T.GetPlayerMapPosition("player")
 	if x then LP.RestrictedArea = false else LP.RestrictedArea = true end
+	LP:UNIT_AURA(nil, "player")
+end
+
+function LP:UNIT_AURA(event, unit)
+	if unit ~= "player" then return end
+	if LP.db.enable and LP.db.orderhallhide then
+		local inOrderHall = C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0);
+		loc_panel:SetShown(not inOrderHall);
+	end
 end
 
 function LP:Initialize()
@@ -523,6 +533,7 @@ function LP:Initialize()
 	LP:RegisterEvent("PLAYER_REGEN_DISABLED")
  	LP:RegisterEvent("PLAYER_REGEN_ENABLED")
  	LP:RegisterEvent("PLAYER_ENTERING_WORLD")
+	LP:RegisterEvent("UNIT_AURA")
 end
 
 SLE:RegisterModule(LP:GetName())

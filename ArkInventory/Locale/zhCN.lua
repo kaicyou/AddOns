@@ -195,6 +195,8 @@ if not L then return end
 	L["MENU_BAR_RESET_TEXT"] = "移除所有除了预设分类以外指定到此的类别"
 	L["MENU_BAR_INSERT_TEXT"] = "插入空白分组，将其他分组往后移"
 	L["MENU_BAR_DELETE_TEXT"] = "移除此分组，此分组内的类别将会被放回预设分组"
+--	L["MENU_BAR_WIDTH_MINIMUM_TEXT"] = ""
+--	L["MENU_BAR_WIDTH_MAXIMUM_TEXT"] = ""
 --	L["MENU_BAR_MOVE_START_TEXT"] = ""
 --	L["MENU_BAR_MOVE_COMPLETE_TEXT"] = ""
 --	L["MENU_BAR_MOVE_FAIL_OUTSIDE"] = ""

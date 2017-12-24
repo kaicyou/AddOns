@@ -17,6 +17,13 @@ local QueueInvocation, strformat, RegisterReaction, RegisterFunctionReaction, Re
 		DGV.QueueInvocation, string.format, DGV.RegisterReaction, DGV.RegisterFunctionReaction, DGV.RegisterMemberFunctionReaction, DGV.RegisterStopwatchReaction, DGV.TryGetCacheReaction, DGV.ListContains, DGV.PackStrings
 local InitTable, BeginAutoroutine, InterruptAutoroutine, YieldAutoroutine, tPool, DoOutOfCombat, GetRunningAutoroutine = 
 	DGV.InitTable, DGV.BeginAutoroutine, DGV.InterruptAutoroutine, DGV.YieldAutoroutine, DGV.tPool, DGV.DoOutOfCombat, DGV.GetRunningAutoroutine
+	
+-- Standard calculations stack limit. If calculations take more than reducedLimitEnabledAfter_sec then stack limit is reduced to routeStackReducedLimit. 
+-- This way if alhorithm detects long calculations it decides to calculate route less "optimal" but calculate it faster.
+local routeStackDefaultLimit = 7
+local routeStackReducedLimit = 2
+local reducedLimitEnabledAfter_sec = 10
+local currentRouteStackLimit = routeStackDefaultLimit
 
 function Taxi:Initialize()
 	local pm, pf, px, py
@@ -728,7 +735,14 @@ function Taxi:Initialize()
 		if GetSpellBookItemInfo(GetSpellInfo(spellRideLikeTheWind)) then
 			flyingMult = flyingMult * multRideLikeTheWind
 		end
-		return flyingMult
+		
+		local argusMult = 1
+		
+		if GetCurrentMapContinent()	== WORLDMAP_ARGUS_ID then 
+			argusMult = 1000
+		end
+		
+		return flyingMult * argusMult
 	end
 
 	function RouteBuilders.FlightHop:Build(continent, npc1, npc2)
@@ -1544,7 +1558,11 @@ end
 	function RouteBuilders.FlightMasterWhistle.Iterate(best, parentRoute, m1, f1, x1, y1, m2, f2, x2, y2, lastRoute)
 		if lastRoute or parentRoute then return end
 		local c1, c2 = DGV:GetCZByMapId(m1), DGV:GetCZByMapId(m2)
-		if c1~=8 or c2~=8 --only valid within the broken isles
+		local validcont
+		if GetCurrentMapContinent() == 8 or (GetCurrentMapContinent() == 9 and IsQuestFlaggedCompleted(49006)) then --Argus need Krokul Flute
+			validcont = true
+		end 
+		if validcont ~= true --only valid within the broken isles / argus
 			or GetItemCount(141605)==0
 			or GetItemCooldown(141605)~=0
 			or IsIndoors()
@@ -1562,11 +1580,12 @@ end
 		route.builder = self
 		local fullData = TaxiData:GetFullData()
 		local t = DugisFlightmasterDataTable
-		if not t or not t[8] or IsInInstance() then return end
-		local headDistances,headNPCs = GetDistances(m1, f1, x1, y1, t[8], fullData[8])
+		local cont = GetCurrentMapContinent()
+		if not t or not t[cont] or IsInInstance() then return end
+		local headDistances,headNPCs = GetDistances(m1, f1, x1, y1, t[cont], fullData[cont])
 		local startDist = headDistances[1]
 		local startId = headNPCs[startDist]
-		local data = t[8][startId]
+		local data = t[cont][startId]
 		if not data then return end
 		tPool(headDistances)
 		tPool(headNPCs)
@@ -1593,10 +1612,14 @@ end
 	RouteBuilders.FlightMasterWhistle.Estimate = RouteBuilders.UnboundTeleport.Estimate
 	RouteBuilders.FlightMasterWhistle.AddWaypoint = RouteBuilders.UnboundTeleport.AddWaypoint
 
-	local routeStackLimit = 6
+	
 	local function CheckStackLoop(parentRoute, comparison, hop)
+		if DGV.startCalculationsTime and (GetTime() - DGV.startCalculationsTime) > reducedLimitEnabledAfter_sec then
+			currentRouteStackLimit = routeStackReducedLimit
+		end
+		
 		if not hop then hop=1 end
-		if hop>routeStackLimit then return true end
+		if hop>currentRouteStackLimit then return true end
 		if not parentRoute then return end
 		if parentRoute.mPort==comparison or parentRoute.data==comparison then
 			return true
@@ -2197,6 +2220,7 @@ end
 				
 --DGV:DebugFormat("GetBestRoute", "iter", iter, "invariant", invariant, "control", control)
 				while true do
+					LuaUtils:RestIfNeeded(not DGV.SetSmartWaypointNoThread)			
 					iteratorData:SetList(builder.Iterate(best, parentRoute, m1, f1, x1, y1, m2, f2, x2, y2, iteratorData:Unpack()))
 					local route = iteratorData[1]
 					if not route then break end
@@ -2208,7 +2232,7 @@ end
 					else
 						PoolRoute(route)
 					end
-					YieldAutoroutine()
+					--YieldAutoroutine()
 				end
 				tPool(iteratorData)
 			end
@@ -2277,6 +2301,9 @@ end
 	end
 
 	function DGV:SetSmartWaypoint(mapID, mapFloor, x, y, desc, originMap, originFloor, originX, originY)
+		DGV.startCalculationsTime = GetTime()
+		currentRouteStackLimit = routeStackDefaultLimit
+	
 		originX, originY = originX and originX/100, originY and originY/100
 		if not mapID then mapID = GetCurrentMapAreaID() end
 		if not mapFloor then
@@ -2331,10 +2358,16 @@ end
         local blockedWays = {
             {m1 = 1171, m2 = 1171, f1 = 5, f2 = 0},
             {m1 = 1171, m2 = 1171, f1 = 0, f2 = 5},
+            {m1 = 1171, m2 = 1171, f1 = 6, f2 = 0},
+            {m1 = 1171, m2 = 1171, f1 = 0, f2 = 6},			
             {m1 = 1170, m2 = 1170, f1 = 3, f2 = 0},
             {m1 = 1170, m2 = 1170, f1 = 0, f2 = 3},
+            {m1 = 1170, m2 = 1170, f1 = 4, f2 = 0},
+            {m1 = 1170, m2 = 1170, f1 = 0, f2 = 4},			
             {m1 = 1135, m2 = 1135, f1 = 1, f2 = 0},
             {m1 = 1135, m2 = 1135, f1 = 0, f2 = 1},
+			{m1 = 1135, m2 = 1135, f1 = 2, f2 = 0},
+			{m1 = 1135, m2 = 1135, f1 = 0, f2 = 2},
         }
 
         for _, val in pairs(blockedWays) do

@@ -83,7 +83,7 @@ local inventorySlotsMap = {
     [RANGED_RIGHT] = {16},
     [WEAPON_OFF_HAND] = {17},
     [HOLDABLE] = {17},
-    [TABARD] = false,
+    [TABARD] = {19},
 }
 
 
@@ -181,17 +181,6 @@ local simpleTextMap = {
 }
 
 
--- Texts that we want to display on the left instead of right because of length.
-local LEFT_TEXT_THRESHOLD = 200
-
-local leftTexts = {}
-for text, full_text in pairs(CanIMogIt.tooltipTexts) do
-    if string.len(text) > LEFT_TEXT_THRESHOLD then
-        leftTexts[full_text] = true
-    end
-end
-
-
 -- List of all Known texts
 local knownTexts = {
     [CanIMogIt.KNOWN] = true,
@@ -222,26 +211,34 @@ local unknownTexts = {
 
 local exceptionItems = {
     [HEAD] = {
-        [134110] = CanIMogIt.KNOWN, -- Hidden Helm
-        [133320] = CanIMogIt.KNOWN, -- Illidari Blindfold (Alliance)
-        [112450] = CanIMogIt.KNOWN, -- Illidari Blindfold (Horde)
+        -- [134110] = CanIMogIt.KNOWN, -- Hidden Helm
+        [133320] = CanIMogIt.NOT_TRANSMOGABLE, -- Illidari Blindfold (Alliance)
+        [112450] = CanIMogIt.NOT_TRANSMOGABLE, -- Illidari Blindfold (Horde)
+        -- [150726] = CanIMogIt.NOT_TRANSMOGABLE, -- Illidari Blindfold (Alliance) - starting item
+        -- [150716] = CanIMogIt.NOT_TRANSMOGABLE, -- Illidari Blindfold (Horde) - starting item
+        [130064] = CanIMogIt.NOT_TRANSMOGABLE, -- Deadeye Monocle
     },
     [SHOULDER] = {
-        [119556] = CanIMogIt.KNOWN, -- Trailseeker Spaulders
-        [119588] = CanIMogIt.KNOWN, -- Mistdancer Pauldrons
+        [119556] = CanIMogIt.NOT_TRANSMOGABLE, -- Trailseeker Spaulders
+        [119588] = CanIMogIt.NOT_TRANSMOGABLE, -- Mistdancer Pauldrons
         [134112] = CanIMogIt.KNOWN, -- Hidden Shoulders
     },
     [BODY] = {},
     [CHEST] = {},
     [ROBE] = {},
-    [WAIST] = {},
+    [WAIST] = {
+        [143539] = CanIMogIt.KNOWN, -- Hidden Belt
+    },
     [LEGS] = {},
     [FEET] = {},
     [WRIST] = {},
     [HAND] = {
         [119585] = CanIMogIt.NOT_TRANSMOGABLE, -- Mistdancer Handguards
     },
-    [CLOAK] = {},
+    [CLOAK] = {
+        -- [134111] = CanIMogIt.KNOWN, -- Hidden Cloak
+        [112462] = CanIMogIt.NOT_TRANSMOGABLE, -- Illidari Drape
+    },
     [WEAPON] = {},
     [SHIELD] = {},
     [WEAPON_2HAND] = {},
@@ -250,131 +247,10 @@ local exceptionItems = {
     [RANGED_RIGHT] = {},
     [WEAPON_OFF_HAND] = {},
     [HOLDABLE] = {},
-    [TABARD] = {},
+    [TABARD] = {
+        -- [142504] = CanIMogIt.KNOWN, -- Hidden Tabard
+    },
 }
-
-
------------------------------
--- Adding to tooltip       --
------------------------------
-
-local function addDoubleLine(tooltip, left_text, right_text)
-    tooltip:AddDoubleLine(left_text, right_text)
-    tooltip:Show()
-end
-
-
-local function addLine(tooltip, text)
-    tooltip:AddLine(text, nil, nil, nil, true)
-    tooltip:Show()
-end
-
-
------------------------------
--- Debug functions         --
------------------------------
-
-
-local function printDebug(tooltip, itemLink, bag, slot)
-    -- Add debug statements to the tooltip, to make it easier to understand
-    -- what may be going wrong.
-
-    addDoubleLine(tooltip, "Addon Version:", GetAddOnMetadata("CanIMogIt", "Version"))
-    local playerClass = select(2, UnitClass("player"))
-    local playerLevel = UnitLevel("player")
-    local playerSpec = GetSpecialization()
-    local playerSpecName = playerSpec and select(2, GetSpecializationInfo(playerSpec)) or "None"
-    addDoubleLine(tooltip, "Player Class:", playerClass)
-    addDoubleLine(tooltip, "Player Spec:", playerSpecName)
-    addDoubleLine(tooltip, "Player Level:", playerLevel)
-
-    addLine(tooltip, '--------')
-
-    local itemID = CanIMogIt:GetItemID(itemLink)
-    addDoubleLine(tooltip, "Item ID:", tostring(itemID))
-    local _, _, quality, _, _, itemClass, itemSubClass, _, equipSlot = GetItemInfo(itemID)
-    addDoubleLine(tooltip, "Item quality:", tostring(quality))
-    addDoubleLine(tooltip, "Item class:", tostring(itemClass))
-    addDoubleLine(tooltip, "Item subClass:", tostring(itemSubClass))
-    addDoubleLine(tooltip, "Item equipSlot:", tostring(equipSlot))
-
-    local sourceID = CanIMogIt:GetSourceID(itemLink)
-    if sourceID ~= nil then
-        addDoubleLine(tooltip, "Item sourceID:", tostring(sourceID))
-    else
-        addDoubleLine(tooltip, "Item sourceID:", 'nil')
-    end
-    local appearanceID = CanIMogIt:GetAppearanceID(itemLink)
-    addDoubleLine(tooltip, "Item appearanceID:", tostring(appearanceID))
-
-    local setID = CanIMogIt:SetsDBGetSetFromSourceID(sourceID) or "nil"
-    addDoubleLine(tooltip, "Item setID:", tostring(setID))
-
-    local baseSetID = setID ~= nil and setID ~= "nil" and C_TransmogSets.GetBaseSetID(setID) or "nil"
-    addDoubleLine(tooltip, "Item baseSetID:", tostring(setID))
-
-    addLine(tooltip, '--------')
-
-    local playerHasTransmog = C_TransmogCollection.PlayerHasTransmog(itemID)
-    if playerHasTransmog ~= nil then
-        addDoubleLine(tooltip, "BLIZZ PlayerHasTransmog:", tostring(playerHasTransmog))
-    end
-    if sourceID then
-        local playerHasTransmogItem = C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(sourceID)
-        if playerHasTransmogItem ~= nil then
-            addDoubleLine(tooltip, "BLIZZ PlayerHasTransmogItemModifiedAppearance:", tostring(playerHasTransmogItem))
-        end
-    end
-
-    addDoubleLine(tooltip, "IsTransmogable:", tostring(CanIMogIt:IsTransmogable(itemLink)))
-    local playerKnowsTransmogFromItem = CanIMogIt:PlayerKnowsTransmogFromItem(itemLink)
-    if playerKnowsTransmogFromItem ~= nil then
-        addDoubleLine(tooltip, "PlayerKnowsTransmogFromItem:", tostring(playerKnowsTransmogFromItem))
-    end
-
-    local playerKnowsTrasmog = CanIMogIt:_PlayerKnowsTransmog(itemLink, appearanceID)
-    if playerKnowsTrasmog ~= nil then
-        addDoubleLine(tooltip, "PlayerKnowsTransmog:", tostring(playerKnowsTrasmog))
-    end
-    local characterCanLearnTransmog = CanIMogIt:CharacterCanLearnTransmog(itemLink)
-    if characterCanLearnTransmog ~= nil then
-        addDoubleLine(tooltip, "CharacterCanLearnTransmog:", tostring(characterCanLearnTransmog))
-    end
-
-    addLine(tooltip, '--------')
-
-    addDoubleLine(tooltip, "IsItemSoulbound:", tostring(CanIMogIt:IsItemSoulbound(itemLink, bag, slot)))
-    addDoubleLine(tooltip, "CharacterCanEquipItem:", tostring(CanIMogIt:CharacterCanEquipItem(itemLink)))
-    addDoubleLine(tooltip, "IsValidAppearanceForCharacter:", tostring(CanIMogIt:IsValidAppearanceForCharacter(itemLink)))
-    addDoubleLine(tooltip, "CharacterIsTooLowLevelForItem:", tostring(CanIMogIt:CharacterIsTooLowLevelForItem(itemLink)))
-
-    addLine(tooltip, '--------')
-
-    if appearanceID ~= nil then
-        addDoubleLine(tooltip, "DBHasAppearance:", tostring(CanIMogIt:DBHasAppearance(appearanceID, itemLink)))
-    else
-        addDoubleLine(tooltip, "DBHasAppearance:", 'nil')
-    end
-
-    if appearanceID ~= nil and sourceID ~= nil then
-        addDoubleLine(tooltip, "DBHasSource:", tostring(CanIMogIt:DBHasSource(appearanceID, sourceID, itemLink)))
-    else
-        addDoubleLine(tooltip, "DBHasSource:", 'nil')
-    end
-    if CanIMogIt:DBHasItem(itemLink) ~= nil then
-        addDoubleLine(tooltip, "DBHasItem:", tostring(CanIMogIt:DBHasItem(itemLink)))
-    else
-        addDoubleLine(tooltip, "DBHasItem:", 'nil')
-    end
-end
-
-
------------------------------
--- CanIMogIt variables     --
------------------------------
-
-
-CanIMogIt.tooltip = nil;
 
 
 -----------------------------
@@ -435,50 +311,6 @@ function spairs(t, order)
         end
     end
 end
-
---------------------------------
--- CanIMogIt Caching methods  --
---------------------------------
-
-CanIMogIt.cache = {}
-
-function CanIMogIt.cache:Clear()
-    self.data = {}
-end
-
-function CanIMogIt.cache:GetItemTextValue(itemLink)
-    return self.data["text"..itemLink]
-end
-
-function CanIMogIt.cache:SetItemTextValue(itemLink, value)
-    self.data["text"..itemLink] = value
-end
-
-function CanIMogIt.cache:GetItemSourcesValue(itemLink)
-    return self.data["source"..itemLink]
-end
-
-function CanIMogIt.cache:SetItemSourcesValue(itemLink, value)
-    self.data["source"..itemLink] = value
-end
-
-function CanIMogIt.cache:GetSetsInfoTextValue(itemLink)
-    return self.data["sets"..itemLink]
-end
-
-function CanIMogIt.cache:SetSetsInfoTextValue(itemLink, value)
-    self.data["sets"..itemLink] = value
-end
-
-function CanIMogIt.cache:GetSetsSumRatioTextValue(key)
-    return self.data["setsSumRatio"..key]
-end
-
-function CanIMogIt.cache:SetSetsSumRatioTextValue(key, value)
-    self.data["setsSumRatio"..key] = value
-end
-
-CanIMogIt.cache:Clear()
 
 -----------------------------
 -- CanIMogIt Core methods  --
@@ -946,6 +778,17 @@ function CanIMogIt:GetItemSlotName(itemLink)
 end
 
 
+function CanIMogIt:IsReadyForCalculations(itemLink)
+    -- Returns true of the item's GetItemInfo is ready, or if it's a keystone.
+    local itemInfo = GetItemInfo(itemLink)
+    local type = string.match(itemLink, ".*(keystone):.*")
+    if not itemInfo and type ~= "keystone" then
+        return false
+    end
+    return true
+end
+
+
 function CanIMogIt:IsItemArmor(itemLink)
     local itemClass = CanIMogIt:GetItemClassName(itemLink)
     if itemClass == nil then return end
@@ -1032,8 +875,7 @@ end
 
 
 function CanIMogIt:IsItemSoulbound(itemLink, bag, slot)
-    if not (bag and slot) then return false end
-    return CanIMogItTooltipScanner:IsItemSoulbound(bag, slot)
+    return CanIMogItTooltipScanner:IsItemSoulbound(itemLink, bag, slot)
 end
 
 
@@ -1068,8 +910,17 @@ function CanIMogIt:IsEquippable(itemLink)
 end
 
 
+local sourceIDGoodResultFound = false
+
+
 function CanIMogIt:GetSourceID(itemLink)
-    -- Gets the sourceID for the item.
+    local sourceID = select(2, C_TransmogCollection.GetItemInfo(itemLink))
+    if sourceID then
+        return sourceID
+    end
+
+    -- Some items don't have the C_TransmogCollection.GetItemInfo data,
+    -- so use the old way to find the sourceID (using the DressUpModel).
     local itemID, _, _, slotName = GetItemInfoInstant(itemLink)
     local slots = inventorySlotsMap[slotName]
 
@@ -1078,8 +929,17 @@ function CanIMogIt:GetSourceID(itemLink)
     CanIMogIt.DressUpModel:Undress()
     for i, slot in pairs(slots) do
         CanIMogIt.DressUpModel:TryOn(itemLink, slot)
-        local sourceID = CanIMogIt.DressUpModel:GetSlotTransmogSources(slot)
+        sourceID = CanIMogIt.DressUpModel:GetSlotTransmogSources(slot)
         if sourceID ~= 0 then
+            if not sourceIDGoodResultFound then
+                local appearanceID = CanIMogIt:GetAppearanceIDFromSourceID(sourceID)
+                if not appearanceID then
+                    -- This likely means that the game hasn't finished loading things
+                    -- yet, so let's wait until we get good data first.
+                    return
+                end
+                sourceIDGoodResultFound = true
+            end
             return sourceID
         end
     end
@@ -1280,7 +1140,7 @@ function CanIMogIt:CalculateTooltipText(itemLink, bag, slot)
     ]]
     local exception_text = CanIMogIt:GetExceptionText(itemLink)
     if exception_text then
-        return exception_text
+        return exception_text, exception_text
     end
 
     local isTransmogable = CanIMogIt:IsTransmogable(itemLink)
@@ -1440,12 +1300,12 @@ function CanIMogIt:GetTooltipText(itemLink, bag, slot)
         end
     end
     if not itemLink then return "", "" end
+    if not CanIMogIt:IsReadyForCalculations(itemLink) then
+        return
+    end
+
     local text = ""
     local unmodifiedText = ""
-
-    -- Must have GetItemInfo available for item.
-    local itemInfo = GetItemInfo(itemLink)
-    if itemInfo == nil then return end
 
     if not CanIMogIt:PreLogicOptionsContinue(itemLink) then return "", "" end
 
@@ -1482,89 +1342,3 @@ function CanIMogIt:GetIconText(itemLink, bag, slot)
     end
     return icon
 end
-
-
------------------------------
--- Tooltip hooks           --
------------------------------
-
-
-local function addToTooltip(tooltip, itemLink)
-    -- Does the calculations for determining what text to
-    -- display on the tooltip.
-    local itemInfo = GetItemInfo(itemLink)
-    if itemInfo == nil then
-        return
-    end
-
-    local bag, slot;
-    if tooltip:GetOwner() and tooltip:GetOwner():GetName()
-            and tooltip:GetOwner():GetName():find("ContainerFrame") then
-        -- Get the bag and slot, if it's in the inventory.
-        bag, slot = tooltip:GetOwner():GetParent():GetID(), tooltip:GetOwner():GetID()
-    end
-
-    if CanIMogItOptions["debug"] then
-        printDebug(CanIMogIt.tooltip, itemLink, bag, slot)
-    end
-
-    local text;
-    text = CanIMogIt.GetTooltipText(CanIMogIt, itemLink, bag, slot)
-    if text and text ~= "" then
-        if leftTexts[text] then
-            addLine(tooltip, text)
-        else
-            addDoubleLine(tooltip, " ", text)
-        end
-    end
-
-    if CanIMogItOptions["showSetInfo"] then
-        local setFirstLineText, setSecondLineText = CanIMogIt:GetSetsText(itemLink)
-        if setFirstLineText and setFirstLineText ~= "" then
-            addDoubleLine(tooltip, " ", setFirstLineText)
-        end
-        if setSecondLineText and setSecondLineText ~= "" then
-            addDoubleLine(tooltip, " ", setSecondLineText)
-        end
-    end
-
-    if CanIMogItOptions["showSourceLocationTooltip"] then
-        local sourceTypesText = CanIMogIt:GetSourceLocationText(itemLink)
-        if sourceTypesText and sourceTypesText ~= "" then
-            addDoubleLine(tooltip, " ", sourceTypesText)
-        end
-    end
-end
-
-
-function CanIMogIt_AttachItemTooltip(self)
-    -- Hook for normal tooltips.
-    CanIMogIt.tooltip = self
-    local link = select(2, self:GetItem())
-    if link then
-        addToTooltip(CanIMogIt.tooltip, link)
-    end
-end
-
-
-GameTooltip:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
-ItemRefTooltip:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
-ItemRefShoppingTooltip1:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
-ItemRefShoppingTooltip2:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
-ShoppingTooltip1:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
-ShoppingTooltip2:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
-WorldMapTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
-
-
-function CanIMogIt_OnSetHyperlink(self, link)
-    -- Hook for Hyperlinked tooltips.
-    CanIMogIt.tooltip = self
-    local type, id = string.match(link, "^(%a+):(%d+)")
-    if not type or not id then return end
-    if type == "item" then
-        addToTooltip(CanIMogIt.tooltip, link)
-    end
-end
-
-
-hooksecurefunc(GameTooltip, "SetHyperlink", CanIMogIt_OnSetHyperlink)

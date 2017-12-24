@@ -195,6 +195,8 @@ if not L then return end
 	L["MENU_BAR_RESET_TEXT"] = "Entfernt alle dieser Leiste zugeordneten Kategorien, mit Ausnahme der Standardkategorie."
 	L["MENU_BAR_INSERT_TEXT"] = "F\195\188gt an dieser Stelle eine Leiste ein, welche alle Kategorien um eins nach oben verschiebt."
 	L["MENU_BAR_DELETE_TEXT"] = "Entfernt diese Leiste (alle Gegenst\195\164nde kommen wieder in die Standardleiste) und die Leiste dar\195\188ber nimmt diesen Platz ein.\n\nFalls dies die Standardleiste ist, wird Leiste 1 zur neuen Standardleiste."
+--	L["MENU_BAR_WIDTH_MINIMUM_TEXT"] = ""
+--	L["MENU_BAR_WIDTH_MAXIMUM_TEXT"] = ""
 --	L["MENU_BAR_MOVE_START_TEXT"] = ""
 --	L["MENU_BAR_MOVE_COMPLETE_TEXT"] = ""
 --	L["MENU_BAR_MOVE_FAIL_OUTSIDE"] = ""

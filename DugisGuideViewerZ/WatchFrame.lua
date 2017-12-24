@@ -245,7 +245,11 @@ function WF:Initialize()
 				end
 			else
 				if DGV:UserSetting(DGV_WATCHFRAMEBORDER) then
-					DGV:SetFrameBackdrop(WF.WatchBackground, DGV.BACKGRND_PATH, DGV:GetBorderPath(), 10, 4, 12, 6)
+					if WF.WatchBackground:GetWidth() > 5 then
+						DGV:SetFrameBackdrop(WF.WatchBackground, DGV.BACKGRND_PATH, DGV:GetBorderPath(), 10, 4, 12, 6)
+					else
+						 WF.WatchBackground:Hide()
+					end
 					WF.WatchBackground:SetBackdropColor(0,0,0,1)
 				else
 					DGV:SetFrameBackdrop(WF.WatchBackground)

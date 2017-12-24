@@ -1,3 +1,576 @@
+commit e4262022de33bb0e204124ce8756de79b0e1020b
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Dec 10 21:43:30 2017 -0500
+
+    More update tuning.
+
+commit 1f90cb7b03ce972157acdc45181f503419e00999
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Dec 10 19:56:35 2017 -0500
+
+    Death Knight:  Clean up Gathering Storm buff/talent.
+    
+    Forced refreshes have a CD of 0.1s.
+    UNIT_AURA will no longer trigger a forced update (use CLEU).
+
+commit 942ddcf01de09974a924ea1bf9f9b40f8963c423
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Dec 10 15:23:59 2017 -0500
+
+    Force a recommendation refresh after CLEU tells us a spellcast started or succeeded.
+    
+    Trying to eliminate recommendation lag while casting.
+
+commit 3eb5df733d413ec8e05c15b25df9ace23119ef28
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Dec 10 10:40:14 2017 -0500
+
+    Throttle engine updates to maximum of 20/sec.
+
+commit c9d650e6488b913eac3e9356500830deef40c86d
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Dec 10 01:26:15 2017 -0500
+
+    Only fake CDs for abilities that are toggled off if they would've otherwise be known.
+    
+    (Specifically, don't fake a CD for Ascendance when Ascendance isn't
+    talented.)
+    
+    Add recheck functions for Enhancement (helps the engine run more
+    efficiently).
+
+commit 7a0b7717865fe4ba6d9e9bfb1c61ed2e95c90d75
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sat Dec 9 23:52:01 2017 -0500
+
+    Refine rechecking for WW.
+
+commit 569056c7e89b1bbda28290b5ef1d6336b55d3c07
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sat Dec 9 22:46:21 2017 -0500
+
+    Update Windwalker default APLs.
+    
+    Monk:  Correct T21 2pc -> T21 4pc for consuming BOK proc.
+    
+    More tweaking to reduce unnecessary CPU wastage (don't reset game state
+    when you don't need to).
+
+commit e0a70341ac6b75ca01a652b206be76e7dc50d8d3
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sat Dec 9 22:23:01 2017 -0500
+
+    Engine:  Eliminate unnecessary resets of our game state.
+    
+    Monk:  Energizing Elixir is treated as unusable if you'd regenerate too
+    much energy before the GCD ends.
+    
+    Warlock:  More stuff to not get excited about.
+    
+    Options:  Don't store ability names in the options menu, because
+    abilities from items may not have loaded yet on first login.
+
+commit d781c3a00cd11c5cfe6775be04830e3e6560737c
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sat Dec 9 14:26:43 2017 -0500
+
+    Warlock - some cleanup and updates, still wip.
+    
+    When restoring displays, respect all player config options except APL
+    choices.
+    Druid:  Update APLs, displays for Feral and Guardian.
+    Options:  Hide old Trinket Settings.
+
+commit 425b3e05f503c86c980e98b91b292b97cd5457af
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Thu Dec 7 20:13:07 2017 -0500
+
+    Test measures for hit-based target detection...
+    
+    Trying to make sure allies aren't counted as enemies due to spell
+    damage.
+
+commit c0bd9a41d014bb0b0e00af433ab42bef1c94d9d4
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Thu Dec 7 09:43:00 2017 -0500
+
+    Test fix for Cold Heart.
+    
+    Also, shorten "BUTTONx" bindings to "mx".
+
+commit eb8d0b85393476f083c12d8542b635cea7322f16
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Dec 6 16:03:29 2017 -0500
+
+    Add cold_heart buff to the addon since spell IDs are strict now.
+    
+    Babyproof the script modifier importer -- may be hiding a more insidious
+    bug, though...
+
+commit b020e76ae37f836f7373305b27fa1d09eac16d6b
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Dec 6 09:17:04 2017 -0500
+
+    Fix typo causing errors when an ability is disabled/excluded.
+
+commit 27ea66f5205783b6558184adb78e3f2365ae1964
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Dec 5 23:21:48 2017 -0500
+
+    Fix for Swipe cost (in Cat Form).
+
+commit 78c66b18f8ab3451f2171b9078ce2458178f5391
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Dec 5 19:59:20 2017 -0500
+
+    Druid:  Swipe is not known when Brutal Swipe is talented.
+    
+    Minor Options.lua cleanup.
+
+commit 1d71a3aae253216008032c53bdddb16668895c36
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Dec 5 10:14:36 2017 -0500
+
+    Fix for dumb bug in Abilities and Items section.
+
+commit a2645682a0f7080b6d40b524c748c0e5aa487685
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Dec 5 00:38:09 2017 -0500
+
+    Commit the options frame size change.
+
+commit f3df1b0336f57fc34d2b7cf5591ac37b841d7109
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Dec 5 00:37:50 2017 -0500
+
+    Bugfixes, options changes.
+    
+    Merged Abilities and Trinkets/Gear sections into one.
+    
+    Druid:
+    Added more descriptive information re: Feral Druid class options.
+    Fix for Swipe not being known because of ID swapping.
+    Scent of Blood decreases Swipe's cost, rather than increasing it.
+    
+    Warrior:
+    Improve Rage generation model, use more accurate calculations...
+    Update Warriors APLs and displays.
+    
+    If any ability is blacklisted or toggled off, the addon will pretend it
+    is on cooldown (no longer a user setting).
+    
+    The configuration frame is now larger by default.
+
+commit 2998934cff9ee5a9df19d7d7c2266e9de75bada1
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Dec 3 13:09:53 2017 -0500
+
+    Put in the newer imported APLs for Warriors.
+
+commit c5a3c7a46d38b0a76b242d5ecf2cd7967a1f3947
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Dec 3 13:00:51 2017 -0500
+
+    Fixes.
+    
+    Incarnation / KotJ / GoU are all the same ability.
+    Separate aura stuff from damage detection to fix up target detection.
+
+commit c2d5711798c22161de6b80aed7342711263a7ee1
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Nov 29 23:45:41 2017 -0500
+
+    Fix for egregiously stupid typos (typoes? Ironic...) in Ret APL item logic.
+
+commit a929f588d42c635c5e342b71afa49889e7fae198
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Nov 29 23:30:41 2017 -0500
+
+    Fix for CD detection for abilities that were toggled off.
+    
+    Test fix for Enhancement (recasting FT when Doom Winds is up).
+    Test fix for Unholy DK casting Outbreak too much.
+    Hardcoded SEF texture for Monks.
+
+commit b6082ccf1bb059094293eb7676ff4753833c840b
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Nov 29 17:17:28 2017 -0500
+
+    Fix for missing level 100 talent for Elemental Shamans.
+
+commit 88b7a5efa97a0780cc338bf3ba9c0e947a3b4dde
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Nov 29 17:13:18 2017 -0500
+
+    Retribution - use Vial with Crusade stacks.
+
+commit 47eb00dd8195a312f7c9459941bf025447a13026
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Nov 29 17:02:49 2017 -0500
+
+    Fix typo in Faulty Countermeasure's handler.
+
+commit c433c9650f3d328ace01c492f8a80f6aef53a227
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Nov 28 22:30:08 2017 -0500
+
+    Fix Retribution APL.
+    
+    variable.ds_castable was evaluating incorrectly.
+    Feigned CDs from toggles were not operating ideally.
+
+commit 012a95693e01d159de6d5c7b7f3fe327ff4acd12
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Nov 28 21:13:26 2017 -0500
+
+    Hardcode KJBW's texture.
+    
+    Set Interace in TOC to 70300 so you don't have to load old addons to use
+    the addon.
+
+commit cc5da737b29dc78c4724ad7acf67e13b07301335
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Nov 28 21:01:17 2017 -0500
+
+    More feigned CDs.
+    
+    Addon will pretend Serenity, SEF, ToD are on CD when disabled for Monks.
+    Addon will pretend that Crusade, AW are on CD when disabled for
+    Paladins.
+    Updated ability requirements for Monks.
+
+commit 7e8131a25689924eca40becca8bbef7b3af23411
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Nov 28 20:39:38 2017 -0500
+
+    Fixes, Items, Monks
+    
+    Add Tiny Oozeline and Unbridled Fury.
+    Add Monk APL updates and set bonuses.
+    Test fix for "Sacred Judgment" being the aura for two different
+    Retribution set bonuses.
+
+commit 2535b88df93b0501064dafad1b424e0a4a8bbd44
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Nov 28 19:41:22 2017 -0500
+
+    Alpha Commit 1
+    
+    Addon
+    A new Use More CPU toggle is added in case you hate having extra frames.
+    Separated Ability options into its own tab.
+    You can tell the addon to pretend an ability is on cooldown if/when it
+    is toggled off.  This works better for some SimulationCraft APLs (i.e.,
+    Retribution’s default APL would otherwise hold Holy Power forever
+    waiting to hit Crusade).
+    Trinkets tab renamed Trinkets/Gear because there are rings, too.
+    
+    All Classes:
+    Expanded Use Items, added more trinkets (and a ring), updated its
+    (hidden) APL.
+    Arcane Torrent is now flagged as an interrupt, not a DPS CD.
+    Support for pool_resource started.  This is used by Feral Druids if Use
+    More CPU is checked.
+    New Legendaries added, including their buffs/procs.
+    If you have an entry for Use Items in your APL, it will not try to use
+    any items that were used *previously* in your action list.  So “Use
+    Items” is the fallback if your class/spec doesn’t have its own logic.
+    If Use Items is placed first, then the settings from the Trinkets/Gear
+    tab will be used.
+    
+    Death Knight:
+    Updated Frost and Unholy APLs.
+    Gave the addon some extra insight into when to re-test abilities, to
+    help avoid entries popping forward in the queue.
+    Added missing Master of Ghouls and Unholy Frenzy auras.
+    Added T21 gear set.
+    
+    Demon Hunter:
+    Added T21 gear set.
+    Taught the addon when to recheck some abilities.
+    Updated Havoc APLs.
+    Vengeance will need further attention/revision in the near future.
+    
+    Druid:
+    Fix for Ashamane’s Energy.
+    Support T20 2pc energy gains from Rip ticks (from current target only).
+    Add missing Jungle Stalker, Moonfire Cat, Scent of Blood auras.
+    T20 4pc will extend Rip’s base duration.
+    Add T21, Apex Predator buff (4pc).
+    Update/revise/fix the persistent multiplier for dot snapshots.
+    Adjust Brutal Slash’s ready time based on how many charges you specified
+    for single-target.
+    Ferocious Bite is usable w/ 0 combo points if Apex Predator is up.
+    Moonfire Cat is the same as Moonfire in the ability DB.
+    Prowl is treated as unusable outside of boss fights (I should also check
+    if you’re in a dungeon) to avoid dropping combat in the world.
+    Removed the old ready timer for Rake since the recheck system will
+    handle it.
+    Swipe Cat/Bear/Swipe are the same ability.
+    Thrash Cat/Thrash Bear/Thrash are the same ability.
+    Updated the Feral APLs.
+    
+    Hunter:
+    Changed from old known() system to talent/notalent for many abilities.
+    Implemented rechecks for important dots/buffs/debuffs.
+    Updated SimC APLs, twice.
+    
+    Paladin:
+    Updated Ret APLs.
+    Implemented Ret T21.
+    Added many items to the Ret APL.
+    TODO:  Add in Rechecks.
+    
+    Shaman:
+    Updated APLs.
+    Implemented T21 for both specs.
+    TODO:  Add in Rechecks.
+    TODO:  Support Gnawed Thumb Ring.
+    
+    Warrior:
+    Initial build of Warrior abilities, both Fury and Arms.  Still a hot
+    mess.
+    
+    Engine/Core:
+    Removed a lot of commented out, deprecated code.
+    Implemented recheck system in predictive engine.
+    Implemented pool_resource in iterative engine.
+    Iterative engine looks for a better ability when you’d otherwise be
+    waiting for something.  Requires “Use More CPU” to be checked.
+    Revised the APL stack system.
+    When the predictive engine checks for abilities after a “Run Action
+    List” has occurred, the following entries will check to be sure we
+    weren’t supposed to give up in RAL.
+    I can type /run Hekili:Test() when Use More CPU is enabled and it will
+    tell me when it scrapes up a better recommendation (very rare if a spec
+    supports rechecks).
+    Displays will now update when paused, but new recommendations won’t be
+    generated.
+    The event system will force addon updates a lot more frequently.  Will
+    continue to tune this.
+    
+    Options:
+    Added UI support for setting up Pool Resources.
+    Will feign cooldown when abilities are disabled for many default CDs.
+    Class Settings became Class/Specialization.
+    Abilities can be modified a bit via their own options tab.
+    Removed “display” component to hidden SimulationCraft importer.
+    
+    Scripts:
+    Made adjustments to the timeToReady function when pooling.
+    
+    Targets:
+    The target system will trust your judgment more when considering how to
+    count targets.
+
+commit 0933c59e9bce68a9c7cc1fa03981c89f10aac4b8
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Nov 19 11:12:41 2017 -0500
+
+    Elemental updates.
+    
+    Removed "aggressive stormkeeper option."  Replaced with "save for aoe"
+    toggle that applies to both SK and LMT.
+    Fixed the addon to actually spend Maelstrom as an Elemental Shaman.
+    Aftershock revised to reduce MP costs by 30% rather than refund the
+    costs (saves CPU, helps w/ Maelstrom spending issue).
+
+commit 9c8bd88b092d52e1686f2e3e3bf6d4e5c036540f
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Nov 19 04:23:14 2017 -0500
+
+    Tweak Havoc APLs, hopefully Chaos Strike more.
+    
+    Add toggle for pooling resources since the addon doesn't predict add
+    waves in boss fights.
+
+commit 9082846ab560e38de8eb0fce01d80900b4a2eef3
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sat Nov 18 16:53:57 2017 -0500
+
+    Paladin:  Force update of APLs.
+    
+    Remove outdated priority code.
+
+commit 7c3660d36ae12cbf93fbb85069fa335048d12de6
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Nov 15 09:52:43 2017 -0500
+
+    Fix spell IDs for Rime, Killing Machine.
+    
+    Rehook correct APLs for Frost DK.
+
+commit eae6d237508bbfca044baad0e402e01fbfe34384
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Nov 14 17:01:57 2017 -0500
+
+    Importing SimC APLs -- catch error case for failed imports.
+
+commit e9641fe575a0b02e9254abeccb30b56a86f20703
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Nov 14 16:58:14 2017 -0500
+
+    Fix Druid APL for Feral - incarnation is not incarnation_king_of_the_jungle.
+    
+    Added Fiery Red Maimers support, hopefully.
+
+commit 64ff98df0ada9e27cffad2aef6b10b20781fd7ea
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Nov 14 00:21:58 2017 -0500
+
+    Update Monk APLs.
+    
+    Fix Eye of Tyr to use new Artifact toggle.
+
+commit 27cea8492e91ca60332dc768d4959c72cb481828
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Nov 13 17:14:12 2017 -0500
+
+    Update Monk APLs; avert odd Serenity behavior.
+    
+    Show Call Action List / Run Action List conditions when debugging.
+    Remove old legacy code.
+
+commit 15001fddb5fdccb902fe5c267c2ba866d1873768
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Nov 12 23:16:56 2017 -0500
+
+    More Havoc tweaks.
+
+commit 00b20e3eaffc04097a4309f2dafa1269f5f69d76
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Nov 12 22:56:10 2017 -0500
+
+    Ashes to Ashes and Demon Hunter tweaks.
+
+commit 026ee3fa23a91a2d275e856b89f50cfdab54e475
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Nov 12 17:04:06 2017 -0500
+
+    Fix spell ID for Crusade.
+
+commit b3881088bb3d10445d4e9f7cb4b074061cc6723f
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Nov 12 16:59:17 2017 -0500
+
+    Default Artifact Ability to active/true/on.
+    
+    Clean up precombat logic.
+
+commit 1ba6414c133405e06a33bd7ef630480f546cbc7f
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Sun Nov 12 01:07:42 2017 -0500
+
+    More Feral Druid tinkering.
+    
+    Model Ashamane's Energy.
+    Clean up Incarnation implementation between addons.
+    Clean up snapshots.
+    Track debuffs by spell ID rather than names.
+    Fix aura-learning to not overwrite or confuse spells.
+
+commit 77a722697a19cfd85998701039156b2ec42f189f
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Nov 7 07:12:16 2017 -0500
+
+    More iteration on (Feral) Druids.
+
+commit 7a05ee72113d2fcda85d4823e84ad0766534aae8
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Mon Nov 6 00:13:03 2017 -0500
+
+    Work on Druid support, iterating on keybind detection.
+    
+    Shadowmeld only available during boss fights (so the enemies don't
+    reset).
+
+commit 694626cf10f294028e5123c61b89e764bc53cc8b
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Nov 3 18:10:39 2017 -0400
+
+    Make artifact ability bindings consistent.
+    
+    Druid:  Swipe not usable if you talented for Brutal Slash.
+    Monk:  Try to remove more overhead in WW.
+    Fix for Run Action List to actually stop after the action list is run.
+    May need to revisit.
+    Make Notification Panel stop grabbing mouse-clicks when movers are not
+    active.
+
+commit edae0e8ae95f4a546670e6a22613db05fc3800d0
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Oct 11 08:30:47 2017 -0400
+
+    Tweaks for Retribution (fix finishers when cooldowns are disabled).
+
+commit 5193abffcf39752424d85e65a4aebeafde51ba54
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Oct 10 21:52:13 2017 -0400
+
+    Reduce workload in DK APLs.
+
+commit db1c325b74bd2ae295b313435fdc40807687045b
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Oct 10 21:08:07 2017 -0400
+
+    Death Knight: Frost - include all the default APLs, duh.
+
+commit bdf0946fc7774823a3dc80fd2957ebb0910b7d75
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Oct 10 20:14:01 2017 -0400
+
+    Warlock: Affliction tweaks.
+    
+    Still bad, but funny.
+
+commit 5f5a0c6b37d689634a9fd2633596d6b792c68dd1
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Oct 10 19:40:54 2017 -0400
+
+    Update Retribution APLs.
+    
+    APLs updated.
+    Specter of Betrayal will be disabled for the Use Items action because it
+    appears in the Retribution APL.
+
+commit 7b67c6d2f1fa246c2d2bed1ccde2d2ff1e48ead2
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Tue Oct 10 19:25:06 2017 -0400
+
+    APL updates.
+    
+    Death Knight: Unholy and Frost updated.
+    
+    Demon Hunter: Havoc APLs imported.  Option for Fel Rush adjusted to
+    simply turn-off the ability if you don't want the addon to mess with it
+    (obviously has negative affects for some talent builds).
+    
+    Druid:  Feral APL imported, messed w/ it a bit.  Still not fully
+    functional.
+    Druids will also see the delay timers on the upper left.
+    The keybind scraper will be more aggressive for druids because of forms
+    and it annoys me.
+    
+    Monk: Windwalker APL updated, "strict check" toggle applied to APL
+    checks but this still will need more work.
+    The auto-APL for using trinkets will be adjusted to *not* use Vial or
+    Moonglaives because those have their own entries in the Windwalker APLs.
+
+commit 968110c359842316b81a115a445c019d9026ae6c
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Fri Oct 6 16:20:02 2017 -0400
+
+    Fix Val'kyr Battlemaiden duration.
+
+commit ce22abb0cf9103089da5e4062693eb774c724a01
+Author: Hekili <Hekili@users.noreply.github.com>
+Date:   Wed Sep 27 20:44:48 2017 -0400
+
+    Update WW APLs, use "Strict Check" modifier to reduce overhead for WW APLs...
+    
+    For specs whose power regeneration isn't modeled, we will reliably
+    initiate the starting point from here on out.
+
 commit c1a1db26055f1657bf134f62135867eaface09e2
 Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Sun Sep 24 14:45:29 2017 -0400
@@ -414,817 +987,4 @@ Author: Hekili <Hekili@users.noreply.github.com>
 Date:   Sun Jun 25 21:23:44 2017 -0400
 
     Maelstrom doesn't auto-regen.
-
-commit a044572d556512f9f3c50377b00401f5e686eeb6
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun Jun 25 21:23:29 2017 -0400
-
-    Lots of Post 7.2.5 Updates/Fixes/Testing...
-    
-    Classes.lua
-    - Do a better job of labeling resources/modeling/resources.
-    - Preliminary support for the legendary talent rings, not able to test
-    personally at this time.
-    - Support some more on-use trinkets (have to manually add to your APLs,
-    unfortunately).
-    
-    DeathKnight.lua
-    - Model Runes/RP more accurately.
-    - Update APLs.
-    
-    DemonHunter.lua
-    - Model resources.
-    - Update APLs.
-    
-    Druid.lua
-    - Update resource installation process.
-    
-    Hunter.lua
-    - Update Survival APLs.
-    
-    Monk.lua
-    - Update resource regen model.
-    - Update RJW talent detection.
-    
-    Paladin.lua
-    - Update APLs.
-    
-    Shaman.lua
-    - Update resource regen/detection.
-    - Add in default clash for Windstrike.
-    
-    Warrior.lua
-    - Initial Warrior stuff ( later prediction stuff not yet supported )
-    from UnleashedD3.
-    
-    Constants.lua
-    - Update resource names/IDs.
-    
-    Core.lua
-    - Revamped base engine again, still work-in-progress...
-    
-    Events.lua
-    - Still working on keybinding detection (and responsiveness)...
-    
-    Options.lua
-    - Add clashes to the Class Settings tab.
-    
-    State.lua
-    - Revise mt_resources to handle forecasting.
-    
-    Targets.lua
-    - Ignore enemies not in your phase (i.e., Desolate Host adds).
-    
-    UI.lua
-    - Maybe fix a bug where locking/unlocking via minimap icon would leave
-    your displays unlocked even though you locked them.
-    
-    Utils.lua
-    - Convert APLs with "cds" sections to read "CDs" because ugh.
-
-commit 0547fa8d3190697f2c8c6f0e8bc65434a2644546
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Thu Jun 15 08:50:17 2017 -0400
-
-    Fixes.
-    
-    - prevent infinite loop in modelResources()
-    - workaround for Windstrike CD (it can end up about a hundredth of a
-    second greater than GCD, leading to two lower priority abilities woven
-    in instead of alternating Windstrikes).  Better fix is pending.
-    - prevent bug that allowed lower priority abilities to sometimes sneak
-    through.  Sneaky abilities.
-
-commit 49a852733e3150bba97ee58c08967b218987130f
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Wed Jun 14 00:32:23 2017 -0400
-
-    Preliminary fix for Frost Strike.
-
-commit f001da37f573a3004f08c498b6d03a4be70b6c16
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Wed Jun 14 00:23:31 2017 -0400
-
-    Fix mt_default_action.
-    
-    action.X.whatever should return the value of whatever, not the function
-    (if it is a function).
-
-commit 62f896a15f768a4eb0e2556fbc89e646e34baf1e
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Wed Jun 14 00:23:03 2017 -0400
-
-    Paladin bugfix.
-    
-    Fix divine_hammer detection; IsSpellKnown( id ) fails after reloading or
-    changing talents.
-
-commit 7a3ba5771d5d4a0652d6704f76ee13f28f6b870f
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Tue Jun 13 22:11:32 2017 -0400
-
-    Shaman fixes.
-    
-    Update Shaman APLs.
-    Fix Windstrike CD duration.
-    
-    Disable equipped/set_bonus in BG and arenas.
-
-commit 78952ae9e2129d936cca0be5af9e5564d9c9dfa8
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Tue Jun 13 18:52:59 2017 -0400
-
-    Revert to old engine til further testing is completed.
-    
-    Revert TOC to 70200, 70205 reports Out of Date.
-
-commit 44e4c934b5bb5923c01966005cb32330200cf81b
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Tue Jun 13 12:41:32 2017 -0400
-
-    7.2.5
-    
-    Overview
-    --------
-    Updated for 7.2.5.
-    
-    Engine is now autotuned, there's no slider for it.
-    
-    Engine now crawls through slices of time instead of attempting to
-    project ready times.  The former method was inconsistent with
-    SimulationCraft *AND* could fail due to ability criteria timing (i.e.,
-    if the conditions were buff.X.remains < 3, then the timing for that
-    ability could be much later).
-    
-    Classes:
-    Added Shadowmeld (mainly for Feral Druid support).
-    
-    Demon Hunters:
-    Testing logic to make Fel Rush reflect the 0.25s GCD like in-game.
-    Updated APLs; dumped the SimC APLs and using handwritten APL from Icy
-    Veins (Havoc).
-    
-    Feral Druid:
-    Some iteration on the Feral Druid model.  Long way to go.  Don't use it.
-    
-    Survival Hunters:
-    Added logic for spending Bone Apron stacks.
-    Updated APLs.
-    
-    Paladins:
-    Updated Retribution APLs.
-    
-    Shamans:
-    Updated APLs, removed old MP generation logic, using new model.
-    
-    Core:
-    Cache known/ready/usable criteria to reduce CPU load in each cycle.
-    Addon will give up after 50 iterations through an APL (that's around 1s
-    + 10 GCDs).
-    Delay text only shows tenths of a second at < 1s remaining.
-    
-    Events:
-    Updates Per Second is 0.25s baseline, w/ auto-updates based on events.
-    
-    Options:
-    Minor tweaks.
-    
-    State:
-    Minor fixes for checking ability cost (action.X.cost) and regenerating
-    resources as needed.
-    
-    Targets:
-    Nameplate checks will also check boss1 - boss5 in case a huge boss has a
-    nameplate that goes off the screen.
-    Preliminary support for storing permanent modifiers on auras (for Feral
-    Druids, mainly).
-
-commit ab6d3c027336fbf7ac29260e0e60ef97bca6e83e
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Fri Jun 9 00:56:51 2017 -0400
-
-    Regen Modeling, 7.2.5 Prep
-    
-    Death Knight:
-    + Rune, Runic Power regen models added.
-    + T20 modeling.
-    + Added Unholy artifact traits.
-    + New legendaries.
-    
-    Demon Hunter:
-    + Regen model.
-    + Added Blade Turning, Empower Wards, Fel Barrage auras.
-    + 7.2.5 stuff.
-    + Tier 20.
-    + New legendaries.
-    + Class setting for making sure you're actually in melee range before
-    hitting Fury of the Illidari.
-    + Fel Barrage updates.
-    + Added Demonic Infusion and Empower Wards for Vengeance.
-    
-    Hunter:
-    + Added T20, new legendaries.
-    + Actually proc Mongoose Power.
-    
-    Monk:
-    + T20, legendaries.
-    + 7.2.5 mechanics changes.
-    + RJW changes for Brewmaster.
-    + CDR adjustment for split_personality.
-    
-    Paladin:
-    + New legendaries.
-    + New regen model for Liadrin's.
-    
-    Shaman:
-    + New maelstrom regen model for Enhancement.
-    
-    Core:
-    + Fixed texture cache for Windstrike, Stormstrike.
-    + Adjusted linear time stepping for new engine.
-    + Show delay timers for Death Knights; don't use CD wheel for abilities
-    that don't have real CDs (should make Frost DK less silly when Hungering
-    Rune Weapon is up).
-    
-    Scripts:
-    + Fix conversion of "!0>1" to "not (0>1)" as "not 0>1" is "false>1"
-    which is a mismatch.
-    
-    State:
-    + Use new regen model system (linear, not projecting forward).
-    + isReadyNow() uses 'ready' resource vs. 'spend' when appropriate.
-
-commit 1b593a81c019ed30dd44a87dc3b849e5cfc2e78e
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Mon Jun 5 00:10:49 2017 -0400
-
-    I should split things off more often.
-    
-    General
-    -------
-    + Trying out a new time-slice based engine instead of the
-    projection-based system.  The projection-based system has required too
-    many special accommodations (time scripts, hidden retesting, etc.).  The
-    major difference is that the addon will try to see what to recommend
-    now, and if it doesn't find something, it will just step forward a bit
-    in time and try again.  This is more like SimulationCraft, which tests
-    for an action and waits 0.1 seconds if no action is available.  The
-    addon takes a first 0.1s step and if it doesn't find anything there, it
-    starts looking at every quarter-GCD for a recommendation until it finds
-    one or runs out of time trying.  Work in progress.
-    
-    + The remnants of a new resource modeling system has been added, but
-    will likely be removed again soon.  It was build for the projection
-    system which is no longer used.
-    
-    Classes
-    -------
-    + Qualify some auras as "incapacitates" so that the addon will assume
-    you can't use abilities during that time frame.  (And by some, I mean
-    only Draught of Souls for now.)
-    
-    Paladin
-    -------
-    + Guarantee that Liadrin's grants you the first Holy Power from
-    AW/Crusade.
-    
-    Warlock
-    -------
-    + Rebuilt Soul Shard model; they don't regenerate in any way that we are
-    concerned with.
-    
-    Scripts
-    -------
-    + Legend has it that C++ "!0>1" and Lua "not 0 > 1" are not equivalent.
-    Fix up auto-conversion to make the addon use "not ( 0 > 1 )" where
-    applicable.
-    
-    State
-    -----
-    + Lots of resource modeling nonsense still in here.
-    + Support 'in_flight' check (if an ability has been cast before the
-    addon simulation, but hasn't hit).
-
-commit 8a799c74ab268821f9e8e82c0a197d4a4a09f8a0
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Thu May 25 18:39:37 2017 -0400
-
-    Ensure no more than 5 Unstable Afflictions can be applied to the target...
-
-commit 1a2db35a0098b760d025363e83162d78c035fac9
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Thu May 25 09:59:54 2017 -0400
-
-    Fix DH APLs.
-
-commit a73ff160a0cea5895704aba4b215078a17c33341
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Thu May 25 00:47:23 2017 -0400
-
-    Paladin:  Added latency option for Judgment.
-    
-    + If checked, the use_latency flag will require Judgment to remain up
-    for at least latency x 2 before recommending spenders.
-    + Updated APLs to use judgment_override again, which includes the
-    use_latency behavior above.
-
-commit 25adca9caad7438aa0691d3c58fa9342be06fb76
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Wed May 24 07:59:59 2017 -0400
-
-    Test auto-versioning.
-    
-    + Include WARNING.blp
-    + Test flagging APLs as having issues in the configuration UI.
-
-commit 4db9a70f724a3c4faf200a8a7792045f55b0cb75
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Tue May 23 21:18:32 2017 -0400
-
-    Many fixes, handle it.
-    
-    Classes
-    + Instead of requiring custom funcions for abilities that require a
-    talent (or replace a talent), added talent= and notalent= fields to
-    abilities.
-    + Added Faulty Countermeasure to usable items.
-    + Added some shared legendaries and related auras.
-    
-    Death Knight:
-    + pre-populate gargoyle as a pet.
-    + sudden_doom stacks to 2 with artifact trait.
-    + clawing_shadows fixed.
-    
-    Demon Hunter
-    + health regen effects will no longer cause the addon to stop updating
-    health information.
-    + APL tweaks to reduce Fel Rush overusage, added class setting for Keep
-    Fel Rush Recharging.
-    
-    Druid
-    + Health gains should affect health.actual (to avoid breaking
-    health.current) or use gain().
-    
-    Hunter
-    + Fix for T19 detection (wrong itemID used for 1 of the pieces).
-    + Health gains should affect health.actual or use gain().
-    
-    Monk
-    + Added healing_elixir, touch_of_karma per request (ToK is in the
-    updated APL).
-    + Imported latest WW APL, hope nothing breaks.
-    
-    Core/Engine
-    + Start looking up to 60 seconds out, to be more friendly to
-    Brewmaster's defensive icon.
-    
-    Formatting/UI/Debug
-    + Show 'nil' value for variables/conditions that are nil, when looking
-    at tooltips, etc.
-    
-    Options
-    + Don't let people disable the Global Cooldown using Class Settings /
-    Exclusions.
-    + Imported APLs will now be spaced out for readability's sake.
-    + Added Issue Reporting tab to simplify complaining about my shoddy
-    coding.
-    + Special modifiers that tend to be string values (i.e., action list
-    names) will return string values consistently.
-    
-    State
-    + Possible improvement in time-to-die calculations, though I think I
-    still want to rewrite this.
-    + Non-boss enemy time-to-die now starts at 15 seconds instead of 300
-    seconds.
-    
-    Utils
-    + Imported APL names will get cleaned up a little more
-    consistently/accurately using "frontier match" logic.
-
-commit 2b09cacc26f2d8302a5cc8a33a9255f89a9d3600
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun May 21 13:36:22 2017 -0400
-
-    Improve pet handling (mainly for UH DK)...
-    
-    + Improve pet.ghoul/abomination/valkyr_battlemaiden handling.
-    + Improve buff.dark_transformation handling.
-    + Fix Sudden Doom spell ID.
-    + Fix use_item imports.
-    + Reset pet data on reload.
-
-commit 16d0cda19e2e4ff8923f5868d880399d7bcf1628
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Thu May 18 23:20:28 2017 -0400
-
-    ...
-
-commit 854994d5a2316105527751df126449788ab73c78
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Thu May 18 23:20:18 2017 -0400
-
-    Support unstable_afflictions table (like buff.active_uas, but not a fake buff...).
-    
-    + unstable_afflictions.stack will return the # of active UAs on the
-    target.
-    + Importer should convert the above.
-    + Importer should also convert 'use_item,name=X' to use ability 'X' if
-    the ability exists.
-
-commit fae2590baa424bc6f7d6d26e1b195b07d402391b
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Wed May 17 22:19:32 2017 -0400
-
-    Fixes
-    
-    + Recheck item names after entering world, may not be available at
-    login.
-    + Fix Stormstrike/Windstrike cost.
-
-commit 6b4da6bcc0e0dcb42cab37016532f4c1280d280e
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Wed May 17 19:45:13 2017 -0400
-
-    PTR Bugfix.
-    
-    + Ability entries in APLs that are no longer supported will be ignored
-    (i.e., Boulderfist is not a spell).
-    + Add some default APLs for PTR.
-
-commit 8eed5bda0a14d0048e2005764f889e4d4a6d5dbe
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Wed May 17 19:19:03 2017 -0400
-
-    Very alpha.  Much warning.
-    
-    + Preliminary support for on-use items (Draught of Souls, KJBW) -- but
-    need to update the importer to convert use_item,name=X to just
-    draught_of_souls or kiljaedens_burning_wish.
-    + PTR changes for Enhancement Shaman for testing purposes.
-    + Affliction Warlock uses prolonged_power pot.
-    + Low Impact Mode is now default, uncheck for stronger predictions
-    further out, but uses more CPU.
-
-commit b7991e62a22b13201990f19e93fa3fd9fe7120e5
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Fri May 12 23:27:12 2017 -0400
-
-    Testing Warlock stuff (thanks UnleashedD3!)
-    
-    + Warlock (Affliction) module started by UnleashedD3.
-    + Added a feature to tell the addon to break a cast/channel -- the addon
-    won't assume you're planning to complete every 6 second channel and will
-    instead show you what to do at the next GCD.
-    + The feature above is specifically for Drain Soul -- addon will show
-    you what to do at next GCD.  Will iterate on this.
-    o Also, working on keybindings again, please disregard keybind
-    weirdness.
-    
-    Will prevent this from showing up on Curse for now.
-
-commit c6ed58e902f92fe19f0c42531d962222cb7a2cb5
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Thu May 11 17:39:50 2017 -0400
-
-    Remove debug print from Empower Rune Weapon.
-
-commit 3a4400380a7954536aac6dc4d859a222169a5501
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Thu May 11 16:13:08 2017 -0400
-
-    Fixes.
-    
-    + Block bad regen values for resources that don't regen.
-    + Fix swing-based resource regen.
-    o WiP:  use_item support, not ready for primetime.
-    + For modifiers, if the value doesn't resolve to an actual value, the
-    value will be stored as a string.  So name=blah will first try to assign
-    the value of blah to args.name, but if that is nil, it will store the
-    strong "blah" in args.name.  Because.
-
-commit 5ff769d5e1235a1eda890eae504ea1c557ae35bb
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Mon May 8 12:01:27 2017 -0400
-
-    Add Blinding Sleet aura.  Flag Breath of Sindragosa as a friendly DoT.
-
-commit c8f5690dffe670b7aa610e53acdb7c307976bfc8
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun May 7 23:49:46 2017 -0400
-
-    Commit new APLs for Ret from Solsacra.
-
-commit 9857b56dab4d3fa5f5ca58d90fb0b8d694c2d628
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun May 7 23:01:05 2017 -0400
-
-    Resource Fixes
-    
-    + Fury, Pain, Holy Power, Maelstrom do not "regenerate" under the new
-    model.
-
-commit 353ceed8f7e7363195a9917ed432322fe138c3d4
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun May 7 22:50:46 2017 -0400
-
-    Start of DK (Unholy, Frost) and Druid (Feral) support.
-    
-    + Fix for Survival Hunter
-    + Fixes for MP generation from weapon swings.
-    + Fix for Snapshots actually grabbing the right values for some
-    keywords.
-
-commit dcd66c464aa05d99aff878922383610dc0851ed4
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Thu Apr 27 22:47:38 2017 -0400
-
-    Quick fixes.
-    
-    + Allow action lists flagged as "Any" spec to work.
-    + Don't default spell duration to 0 if no other value is available.
-
-commit a18bd35960612a45417ead8427994c031a6b48e5
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Tue Apr 25 21:48:49 2017 -0400
-
-    Update Elemental APLs...
-    
-    + Used the tweaked importer to try SimC's Elemental APLs instead of my
-    handwritten versions from SEL.  Will see how that goes.
-    + Aura Info can actually be shown on displays now.  Added Buff/Debuff
-    Remaining Time as an option.
-    
-    o Tweaked the aura counting code to leave auras alone since debuffs
-    won't actually "tick" to keep themselves off the clock.  May be adverse
-    impacts...
-    + Added customization options for Show Aura Info consistent with the
-    other Extras.
-    + Quick and dirty fix for Snapshots doing duplicate string replacements
-    (i.e., 'buff.X.duration' and 'duration' in the same script).
-    + Buffs/debuffs will grab info from the class aura table if it exists,
-    so that we anticipate 'duration' information for auras we know about.
-
-commit 61b366ff9ae63de471b157c2e1043e757f8373c8
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Mon Apr 24 23:27:03 2017 -0400
-
-    Assorted Fixes
-    
-    o Fixed assignment of textures for abilities that change during
-    Metamorphosis.
-    o Use NoTaint_UIDropDownMenu to avoid taint issues.
-    o Skin the dropdown menu if ElvUI is installed.
-
-commit 2ba73ef1935a7560e8e36732153b582d0b1aec2d
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Mon Apr 24 18:54:54 2017 -0400
-
-    Clear all stashed gear when updateGear() fires.
-
-commit 9ac60dd657511ccfcc536eab8f601cfe7dc80c7d
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Mon Apr 24 18:40:15 2017 -0400
-
-    Added Class Settings: Exclusions
-    
-    + Added checklist of abilities one can use to exclude abilities from
-    your displays.  This is done on a per-profile basis for now, but could
-    conceivably be done per-display if needed.
-    
-    + Added 'active_mongoose_fury' which compares buff.mongoose_fury.remains
-    > latency * 2 -- this hopefully makes the addon slightly less likely to
-    recommend another Mongoose Bite when Mongoose Fury is falling off faster
-    than you can realistically react.  APL will be updated to use this.
-
-commit 1b9d51eafd4d2c8ce2da1c821b9891834190e5b2
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Mon Apr 24 00:26:10 2017 -0400
-
-    Fix Demon Hunter APL.
-    
-    Fix 'arget.time_to_die' -> 'target.time_to_die'
-
-commit 89af533533a708c1aa2417f35dd6562bdf8d875c
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun Apr 23 22:59:46 2017 -0400
-
-    Fix LibDataBroker-1.1 bake-in.
-
-commit d55a496c7deda8ee1f46b8811c919926e4a51683
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun Apr 23 22:29:08 2017 -0400
-
-    Unleashed Demons is an artifact trait, not a talent.
-
-commit 9058d498f75071b7f2fee6983e9c7e2c2fb8fec9
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun Apr 23 22:18:57 2017 -0400
-
-    Import latest Hunter APLs.
-    
-    + Fix import when the specific potion isn't indicated.
-
-commit 657c45745304a67b3113f770e9d6d34c43d49bf6
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun Apr 23 22:04:40 2017 -0400
-
-    Paladin - make sure APLs are up to date.
-    
-    Fix extraneous code in DH module.
-
-commit f8d30dcd944b57e87eb4ab1b8605e31725430ea5
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun Apr 23 21:52:35 2017 -0400
-
-    Ugh.
-
-commit 4bf32a5275d1aab0f2456b99d18614c8896b21a5
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun Apr 23 21:51:21 2017 -0400
-
-    Tweaks, work on DH, etc.
-    
-    o Delay keybind overrides until out of combat, if needed.
-    o Fix typo 'csating' -> 'casting'.
-    + Added DH traits and legendary effects (very few, really).
-    + Change 'variable' or "Store Value" actions to just grab the result
-    from the action list, instead of snapshotting it.
-    o Do a better job of grabbing keybinds for abilities that shift between
-    forms.
-    + Create some really, really ugly string manipulation code to simplify
-    importing the DH Havoc APL directly from SimulationCraft.
-    + target.distance will now return the average of the minimum and maximum
-    range estimates.
-    + target.exists is now a valid check.
-    + target.in_range is now a valid check, will check on a per-ability
-    basis or default to true.
-    + cooldown.X.adjusted_remains added, simply returns the 'remains' value.
-
-commit d692fffedbf4da4a6913ac2d1d304ab25f83c570
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Fri Apr 21 09:27:32 2017 -0400
-
-    Shaman traits.
-
-commit 28cd3f75242b14b3121dc0ba98505966f2b69c10
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Fri Apr 21 09:27:19 2017 -0400
-
-    Fixes, tweaks.
-    
-    + Artifact traits will now use the English-version SimC-like keys
-    regardless of region.  (Ashes to Ashes -> ashes_to_ashes, even if your
-    client is in Spanish or German or whatever.)
-    
-    o Fix for Rainfall duration extension, because that matters.
-    
-    o Iterate on minimap icon.
-    
-    o Don't force update on UNIT_SPELLCAST_START or
-    UNIT_SPELLCAST_SUCCEEDED.  Wait for SPELL_CAST_START and
-    SPELL_CAST_SUCCESS in the combat log.
-
-commit ff87fdedac818c897b449e48dff295a5037d6588
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun Apr 16 23:22:39 2017 -0400
-
-    Minimap Icon, integrate Monk and Hunter support
-    
-    + Added LibDataBroker and LibDBIcon to support a minimap icon, some
-    quick setting adjustment w/o keybindings.
-    + Brought the Monk and Hunter modules into the addon.
-    + Iterated on Demon Hunter support.
-    + Debug setting is no longer needed.  When you pause, debug info is
-    collected for one cycle and then shut off again.
-    + Put Custom Toggles back in.
-    
-    ? Still trying to figure out when to rescrape keybindings to
-    most-efficiently catch when abilities change due to a form change.
-    
-    + SEL and SimC Elemental APLs will default to the Ascendance APL when
-    you aren't 110 yet (so that you at least get *something*).
-    
-    + Intentionally broke the module code (for now) so that the forked
-    modules stop working.
-
-commit b9f85b23c4902ec85c7f1345fffb0913c92d6646
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Thu Apr 13 23:40:10 2017 -0400
-
-    Reduce aura caching workload.
-    
-    Instead of recaching auras on every UNIT_AURA for player/target, notify
-    the addon to update auras on the next reset if UNIT_AURA fired for
-    player or target.  Much less CPU, such performance.  WoW.
-
-commit b541a599a0142cf6e244ea96d595615c6e201dc3
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Thu Apr 13 21:30:50 2017 -0400
-
-    Fix for projectiles; clean-up actionlist and potion options.
-
-commit d5a37249971b2958211aec13daeaff98801ec3bb
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Thu Apr 13 20:00:06 2017 -0400
-
-    Harder, faster, better, stronger...ish.
-    
-    Re-fix judgment_override to work at 4+ HoPo (the previous issue was
-    related to aura-detection rather than HoPo check).
-    
-    Trying new on-demand debug system that only snapshots info when you push
-    the button.
-    
-    Fix broken update frequency logic that slowed the addon down in boss
-    fights.
-    
-    ...Need to decide when to queued abilities that haven't actually fired
-    yet.
-
-commit 6dcf5ce499c2a6f7a1471ba9866c8e2fd8150087
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Wed Apr 12 21:38:20 2017 -0400
-
-    Efforts to improve reactivity and responsiveness.
-    
-    + Fix for spells that are 'in flight' or have been cast but have not yet
-    impacted.
-
-commit 5ecb683d4222ccadc02b6141b289340204623970
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Tue Apr 11 23:22:44 2017 -0400
-
-    Test fix for 'oh_speed' error.
-
-commit 758dae7f231a5bd01a3b272e04a4af266ec78cfe
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Tue Apr 11 21:43:59 2017 -0400
-
-    Fix for aura detection by spell ID (use localized name as backup).
-
-commit 0531136f2b2c06893d84d332fa6780cc119d3c5c
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Tue Apr 11 20:47:17 2017 -0400
-
-    Fix for buff/debuff detection.
-
-commit 3e850e7486c260dcaa036bcdc4cd10ab1b7ea69b
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Tue Apr 11 18:22:49 2017 -0400
-
-    Please don't look.
-    
-    1.  Fixed a bug with judgment_override for Retribution Paladins.  Thanks
-    @Notcalx for the report.
-    
-    2.  Please ignore the Demon Hunter stuff.  It's not anywhere near ready.
-    
-    3.  Added 'variable' (a.k.a. Store Value) support like SimC.  Specify a
-    value name "taco" and the conditions are stored in it.  Other actions
-    can use value.taco to retrieve that.  SimC does stuff with this.  Just
-    embrace it.
-    
-    4.  Action Lists can no longer be disabled because wtf is the point of
-    disabling an action list?
-    
-    5.  Added 'deficit_pct' and 'deficit_percent' to resource values.
-    
-    6.  Uggh.
-
-commit 5fcd42f17883ff2652f96e68d317e122c8de0ebf
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun Apr 9 21:27:22 2017 -0400
-
-    Tweaks, Updates, Fixes
-    
-    + The addon will now try to learn about buffs that aren't manually
-    entered into the addon.
-    + The addon will now cache aura information instead of grabbing it fresh
-    from the API every update cycle.
-    + The addon will now throttle itself to 1 update/second outside of
-    combat, unless something relevant happens (target change, buffs/debuffs
-    drop/refresh, you cast something...).
-    
-    Shaman:
-    + Added duration info to several auras.
-    + Corrected Stormbringer ID.
-    + Removed the special logic for Spiritual Journey, since the game
-    handles it well-enough without workarounds.
-    + Added Lightning Rod as a target-cycling aura when it is talented (this
-    means that using cycle_targets for Lightning Bolt/Chain Lightning should
-    work at least a little better until I suppose the target_if syntax).
-    + Imported the newer SimC APLs for Elemental and made adjustments
-    accordingly.
-
-commit 9f26b2cf865a15657ecbf971412e33152e29d3ff
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Mon Apr 3 00:31:08 2017 -0400
-
-    Tweak placement of SpellFlash settings.
-
-commit 3b4bba30b83cc55512d8d201522a5f1b37e8c561
-Author: Hekili <Hekili@users.noreply.github.com>
-Date:   Sun Apr 2 13:36:11 2017 -0400
-
-    Manually include LibArtifactData-1.0 (as LibArtifactData-1.0h) because Curse won't package the new one.
 

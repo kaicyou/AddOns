@@ -503,6 +503,14 @@ function WMT:Initialize()
 		end
 	end
 	
+	--[[function DGV:LOOT_CLOSED()
+		WMT:UpdateTrackingMap()
+	end	
+	
+	function DGV:LOOT_SLOT_CLEARED()
+		WMT:UpdateTrackingMap()
+	end]]
+	
 	function DataProviders.PetBattles:ProvidesFor(trackingType)
 		return trackingType=="P"
 	end
@@ -739,6 +747,22 @@ function WMT:Initialize()
 			GetCurrentMapAreaID(), GetCurrentMapDungeonLevel())
 	end
 
+	function WMT:GetAchievementProgress(achievementID)
+		local numCompleted = 0
+		
+		if achievementID and achievementID ~= "" then
+			local num = GetAchievementNumCriteria(achievementID)
+			LuaUtils:loop(num, function(index)
+				local _, _, completed = GetAchievementCriteriaInfo(achievementID, index)
+				
+				if completed then
+					numCompleted = numCompleted + 1
+				end
+			end)
+		end
+		return numCompleted
+	end
+	
 	local function point_OnClick(self, button)
 		self = self.point or self
 		if button == "RightButton" then
@@ -855,6 +879,21 @@ function WMT:Initialize()
 	local modelFrame = CreateFrame("PlayerModel", nil, DugisWaypointTooltip)
 	WMT.modelFrame = modelFrame
 	modelFrame:SetFrameStrata("TOOLTIP")
+	
+	local function GetMaxLineWidth()
+		local maxW
+		LuaUtils:loop(10, function(index)
+			local line = _G["DugisWaypointTooltipTextLeft"..index]
+			if line then
+				if not maxW or line:GetWidth() > maxW then
+					maxW = line:GetWidth()
+				end
+			else
+				return "break"
+			end
+		end)
+		return maxW
+	end
 
     DugisWaypointTooltip.updateModel = function()
         npcId = DugisWaypointTooltip.npcId
@@ -865,12 +904,26 @@ function WMT:Initialize()
     
 		if not npcId then return end
         
-        if (DugisWaypointTooltip:GetWidth() < 160) then
-            DugisWaypointTooltip:SetWidth(160)
+		local width = 150
+		local maxLine = (GetMaxLineWidth() or width) + 30
+		
+		if maxLine > width then
+			width = maxLine
+		end
+		
+		if width > 225 then
+			width = 225
+			DugisWaypointTooltipTextLeft1:SetWidth(210)		
+			if DugisWaypointTooltipTextLeft2 then
+				DugisWaypointTooltipTextLeft2:SetWidth(210)
+			end
+		end
+		
+        if (DugisWaypointTooltip:GetWidth() < width) then
+            DugisWaypointTooltip:SetWidth(width)
         end
 
-		DugisWaypointTooltip:SetWidth(160) 
-		DugisWaypointTooltipTextLeft1:SetWidth(150)		
+		DugisWaypointTooltip:SetWidth(width) 
         
         local textHeight = DugisWaypointTooltip:GetHeight()
         DugisWaypointTooltip:SetHeight(DugisWaypointTooltip:GetWidth() + textHeight - 15)
@@ -890,9 +943,14 @@ function WMT:Initialize()
 		modelFrame:Show()
 		modelFrame:ClearModel()
 		if mv and mv.npcDB and mv.npcDB[npcId] then
-			modelFrame:SetDisplayInfo(mv.npcDB[npcId])
+			local value = mv.npcDB[npcId]
+			if value and value ~= "" then
+				modelFrame:SetDisplayInfo(value)
+			end
 		else
-			modelFrame:SetCreature(npcId)
+			if npcId and npcId ~= "" then
+				modelFrame:SetCreature(npcId)
+			end
 		end
 		modelFrame:Show()
         
@@ -1121,7 +1179,7 @@ function WMT:Initialize()
 				key,value = next(trackingPointTable, key)
 				if not key then 
 					if trackingPointTable==DugisWorldMapTrackingPoints then 
-						trackingPointTable = CollectedWorldMapTrackingPoints
+						trackingPointTable = CollectedWorldMapTrackingPoints_v2
 						if trackingPointTable then
 							return rootIterator()
 						end
@@ -1329,8 +1387,8 @@ function WMT:Initialize()
 					AddPointData(DugisWorldMapTrackingPoints[nsMapName..":"..level])
 				end
 			end
-			if CollectedWorldMapTrackingPoints and CollectedWorldMapTrackingPoints[UnitFactionGroup("player")] then
-				AddPointData(CollectedWorldMapTrackingPoints[UnitFactionGroup("player")][mapName..":"..level])
+			if CollectedWorldMapTrackingPoints_v2 and CollectedWorldMapTrackingPoints_v2[UnitFactionGroup("player")] then
+				AddPointData(CollectedWorldMapTrackingPoints_v2[UnitFactionGroup("player")][mapName..":"..level])
 			end
 			AddFlightPointData()
 			
@@ -1379,11 +1437,11 @@ function WMT:Initialize()
             LuaUtils:loop(_G[dropDownPrefix.."DropDownList1"].numButtons, function(buttonIndex)
                 local button = _G[dropDownPrefix.."DropDownList1Button"..buttonIndex]
                 
-                if button:GetText() == MINIMAP_TRACKING_NONE then
+                if button:GetText() == MINIMAP_TRACKING_NONE and button:IsShown() and button:IsVisible() then
                     result = result + 1
                 end 
                 
-                if button:GetText() == TOWNSFOLK_TRACKING_TEXT then
+                if button:GetText() == TOWNSFOLK_TRACKING_TEXT and button:IsShown() and button:IsVisible() then
                     result = result + 1
                 end
             end)
@@ -1450,9 +1508,7 @@ function WMT:Initialize()
 
         local function ShowExtraMenu()
             if not IsShowMinimapMenu() then
-                if not LuaUtils:IsElvUIInstalled() then
-                    return
-                end
+                return
             end
             
             if not MinimapExtraMenuFrame then
@@ -1666,7 +1722,9 @@ function WMT:Initialize()
 
         if ElvUIMiniMapTrackingDropDown then
             hooksecurefunc(ElvUIMiniMapTrackingDropDown, "initialize", function()
-                ShowExtraMenu(true)
+				LuaUtils:Delay(0.01, function()
+					 ShowExtraMenu()
+				end)
             end)
 
             hooksecurefunc("LibDugi_UIDropDownMenu_Initialize",  function()
@@ -1674,7 +1732,9 @@ function WMT:Initialize()
             end)
             
             DropDownList1:HookScript("OnShow", function()
-                ShowExtraMenu()
+				LuaUtils:Delay(0.01, function()
+					 ShowExtraMenu()
+				end)
             end)
             
         else
@@ -1683,12 +1743,16 @@ function WMT:Initialize()
             end)
         end
 
+		--DGV:RegisterEvent("LOOT_CLOSED")
+		--DGV:RegisterEvent("LOOT_SLOT_CLEARED")
 		DGV:RegisterEvent("PET_JOURNAL_LIST_UPDATE")
 		DGV:RegisterEvent("MINIMAP_UPDATE_TRACKING")
 		WMT:UpdateTrackingMap()
 	end
 	
 	function WMT:Unload()
+		--DGV:UnregisterEvent("LOOT_CLOSED")
+		--DGV:UnregisterEvent("LOOT_SLOT_CLEARED")
 		DGV:UnregisterEvent("PET_JOURNAL_LIST_UPDATE")
 		DGV:UnregisterEvent("TRAINER_SHOW")
 		DGV:UnregisterEvent("MINIMAP_UPDATE_TRACKING")

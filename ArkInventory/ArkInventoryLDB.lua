@@ -559,7 +559,7 @@ function ArkInventory.LDB.Mounts:OnClick( button )
 		
 	else
 		
-		if UnitInVehicle( "player" ) or IsIndoors( ) or not IsOutdoors( ) or not ArkInventory.Collection.Mount.IsReady( ) then
+		if InCombatLockdown( ) or UnitInVehicle( "player" ) or IsIndoors( ) or not IsOutdoors( ) or not ArkInventory.Collection.Mount.IsReady( ) then
 			-- not even going to try
 			return
 		end

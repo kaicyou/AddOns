@@ -307,7 +307,7 @@ function CA:Setup_CharacterArmory()
 	--<< Average Item Level >>--
 	-- KF:TextSetting(self, nil, { Tag = 'AverageItemLevel', FontSize = 12 }, 'BOTTOM', CharacterModelFrame, 'TOP', 0, 14)
 	-- local function ValueColorUpdate()
-	-- 	self.AverageItemLevel:SetText(KF:Color_Value(STAT_AVERAGE_ITEM_LEVEL)..' : '..format('%.2f', select(2, GetAverageItemLevel())))
+		-- self.AverageItemLevel:SetText(KF:Color_Value(STAT_AVERAGE_ITEM_LEVEL)..' : '..format('%.2f', select(2, GetAverageItemLevel())))
 	-- end
 	-- E.valueColorUpdateFuncs[ValueColorUpdate] = true
 	
@@ -351,7 +351,6 @@ function CA:Setup_CharacterArmory()
 			if E.db.sle.Armory.Character.Level.Display == 'Hide' then
 				Slot.ItemLevel:Hide()
 			end
-			
 			-- Enchantment Name
 			KF:TextSetting(Slot, nil, { Tag = 'ItemEnchant',
 				Font = E.db.sle.Armory.Character.Enchant.Font,
@@ -1053,6 +1052,11 @@ function CA:Update_Gear()
 							or
 							TrueItemLevel
 						)
+						if E.db.sle.Armory.Character.Level.ItemColor then
+							Slot.ItemLevel:SetTextColor(R, G, B)
+						else
+							Slot.ItemLevel:SetTextColor(1, 1, 1)
+						end
 					end
 					
 					if E.db.sle.Armory.Character.NoticeMissing ~= false then
@@ -1237,6 +1241,7 @@ do --<< Artifact Monitor >>
 	
 	
 	function CA:LegionArtifactMonitor_UpdateData()
+		if not self.ArtifactMonitor then return end
 		Artifact_ItemID, _, _, _, Artifact_Power, Artifact_Rank,_, _, _, _, _, _, Artifact_Tier = C_ArtifactUI.GetEquippedArtifactInfo()
 		if Artifact_ItemID then
 			Legion_ArtifactData.ItemID = Artifact_ItemID
@@ -1563,6 +1568,7 @@ KF.Modules.CharacterArmory = function()
 		_G["CharacterModelFrame"].BackgroundTopRight:Hide()
 		_G["CharacterModelFrame"].BackgroundBotLeft:Hide()
 		_G["CharacterModelFrame"].BackgroundBotRight:Hide()
+		_G["CharacterModelFrame"].backdrop:Hide()
 		
 		if _G["PaperDollFrame"]:IsShown() then
 			_G["CharacterFrame"]:SetWidth(_G["CharacterFrame"].Expanded and 650 or 444)
@@ -1618,6 +1624,7 @@ KF.Modules.CharacterArmory = function()
 		_G["CharacterModelFrame"].BackgroundTopRight:Show()
 		_G["CharacterModelFrame"].BackgroundBotLeft:Show()
 		_G["CharacterModelFrame"].BackgroundBotRight:Show()
+		_G["CharacterModelFrame"].backdrop:Show()
 		
 		-- Turn off ArmoryFrame
 		CA:Hide()
@@ -1635,6 +1642,7 @@ KF.Modules.CharacterArmory = function()
 	end
 	
 	hooksecurefunc(E, "UpdateMedia", function(self)
+		if (not E.db.sle.Armory.Character.Enable) and (not CA.ArtifactMonitor) then return end
 		CA.ArtifactMonitor.BarExpected:SetStatusBarColor(unpack(E.media.rgbvaluecolor))
 		CA:LegionArtifactMonitor_UpdateData()
 	end)

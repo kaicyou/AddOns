@@ -110,6 +110,7 @@ local savablePositionsFrameNames = {
 	,"ObjectiveTrackerFrameHandlerFrame"
 	,"DugisGuideViewer_ModelViewer"
 	,"DugisOnOffButton"
+	,"GPSArrowScroll"
 }
 
 DugisGuideViewer.eventFrame:SetScript("OnEvent", function(self, event, ...)
@@ -132,6 +133,9 @@ DugisGuideViewer.eventFrame:SetScript("OnEvent", function(self, event, ...)
 	end
 end)
 
+
+DugisGuideViewer:RegisterEvent("PLAYER_ENTERING_WORLD")
+DugisGuideViewer:RegisterEvent("PLAYER_ALIVE")
 DugisGuideViewer:RegisterEvent("ADDON_LOADED")
 DugisGuideViewer:RegisterEvent("WORLD_MAP_UPDATE")
 
@@ -166,6 +170,30 @@ DugisGuideViewer.defaultMiddleArrowColor = {1, 0.5, 0}
 DugisGuideViewer.defaultGoodArrowColor = {1, 0.5, 0}
 DugisGuideViewer.defaultExactArrowColor = {1, 1, 0}
 DugisGuideViewer.defaultQuestingAreaColor = {0, 1, 0}
+
+DugisGuideViewer.defaultWaySegmentColor = function()
+
+	--Backward compatibility
+	local oldSettings = DugisGuideViewer:UserSetting(104) --DGV_ANTCOLOR 
+	
+	if oldSettings ==[[Interface\COMMON\Indicator-Gray]] then
+		return {0.2, 0.2, 0.2}
+	end
+	
+	if oldSettings ==[[Interface\COMMON\Indicator-Red]] then
+		return {0.8, 0, 0}
+	end	
+	
+	if oldSettings ==[[Interface\COMMON\Indicator-Yellow]] then
+		return {0.8, 0.8, 0}
+	end	
+	
+	if oldSettings ==[[Interface\COMMON\Indicator-Green]] then
+		return {0.0, 0.7, 0}
+	end		
+	
+	return {0, 0.8, 0}
+end
 
 local function LocalizePrint(message)
 	if Localize == 1 then
@@ -291,6 +319,14 @@ local function LoadSettings()
 	DGV_QUESTING_AREA_COLOR = 97
     DGV_ENABLED_JOURNAL_NOTIFICATIONS = 98
     DGV_USE_NOTIFICATIONS_MARK = 99
+	
+	DGV_WAY_SEGMENT_COLOR = 1001
+	DGV_ENABLED_GPS_ARROW = 1002
+	DGV_GPS_ARROW_AUTOZOOM = 1003
+	DGV_GPS_ARROW_POIS = 1004
+	DGV_GPS_AUTO_HIDE = 1005
+	DGV_GPS_MERGE_WITH_DUGI_ARROW = 1006
+	DGV_GPS_MINIMAP_TERRAIN_DETAIL = 1007
 
 	--Sliders
 	DGV_MINIBLOBQUALITY = 200
@@ -305,17 +341,23 @@ local function LoadSettings()
 	DGV_SMALLFRAME_STEPS = 208
 	DGV_MOUNT_DELAY = 209
 	
+	DGV_GPS_BORDER_OPACITY = 210
+	DGV_GPS_MAPS_OPACITY = 211
+	DGV_GPS_MAPS_SIZE = 212
+	DGV_GPS_ARROW_SIZE = 213
+	
 	--Dropdowns
 	DGV_GUIDEDIFFICULTY = 100
 	DGV_SMALLFRAMETRANSITION = 101
 	DGV_LARGEFRAMEBORDER = 102
 	DGV_STEPCOMPLETESOUND = 103
-	DGV_ANTCOLOR = 104
+	--DGV_ANTCOLOR = 104
 	DGV_TAXIFLIGHTMASTERS = 109
 	DGV_GASTATCAPLEVELDIFFERENCE = 111
 	DGV_SMALLFRAMEDOCKING = 112
 	DGV_WEAPONPREF = 113
 	DGV_MAIN_FRAME_BACKGROUND = 114
+	DGV_ROUTE_STYLE = 115
 		
 	--DGV_MINIBLOBS = 104
 	DGV_TOOLTIPANCHOR = 105
@@ -323,6 +365,8 @@ local function LoadSettings()
 	DGV_QUESTCOMPLETESOUND = 107
 	DGV_DISPLAYPRESET = 108
 	DGV_GASMARTSETTARGET = 110
+	
+	DGV_GPS_BORDER = 116
 	
 	--Custom
 	DGV_TARGETBUTTONCUSTOM = 300
@@ -345,28 +389,28 @@ local function LoadSettings()
 					SettingsRevision = 0,
 					WatchFrameSnapped = true,
 					GuideOn = true,
-					sz = 99, --Num check boxes
+					sz = {}, --check boxes ids
 					[DGV_QUESTLEVELON]			= { category = "Other",	text = "Display Quest Level", 	checked = false,	tooltip = "Show the quest level on the large and small frames", module = "Guides"},
 					[DGV_QUESTCOLORON] 		= { category = "Other",	text = "Color Code Quest", 	checked = true,		tooltip = "Color code quest against your character's level", module = "Guides"},
 					[DGV_LOCKSMALLFRAME] 		= { category = "Frames",	text = "Lock Small Frame", 	checked = false,	tooltip = "Lock small frame into place", module = "SmallFrame"},
 					[DGV_MOVEWATCHFRAME] 		= { category = "Frames",	text = "Move Objective Tracker", showOnRightColumn = true, checked = false,	tooltip = "Allow movement of the watch frame, not available if other incompatible addons are loaded.", module = "DugisWatchFrame"},
 					[DGV_ANCHOREDSMALLFRAME] 	= { category = "Display",	text = "Anchored Small Frame", 	checked = true,	tooltip = "Allow a fixed Anchored Small Frame that will integrate with the Objective Tracker", module = "SmallFrame"},
 					[DGV_LOCKLARGEFRAME] 		= { category = "Frames",	text = "Lock Large Frame", 	checked = false,	tooltip = "Lock large frame into place", module = "Guides"},
-					[DGV_WAYPOINTSON]			= { category = "Waypoints",	text = "Automatic Waypoints", 	checked = true,		tooltip = "Automatically map waypoints from the Small Frame or from the Objective Tracker in essential mode",},
+					[DGV_WAYPOINTSON]			= { category = "Dugi Arrow",	text = "Automatic Waypoints", 	checked = true,		tooltip = "Automatically map waypoints from the Small Frame or from the Objective Tracker in essential mode",},
 					[DGV_ITEMBUTTONON] 		= { category = "Questing",	text = "Floating Item Button",		checked = true,		tooltip = "Shows a small window to click when an item is needed for a quest",},
 					[DGV_ENABLEQW] 			= { category = "Display",	text = "Automatic Quest Matching", checked = false,		tooltip = "Disable Blizzard's Automatic Quest Tracking feature and use Dugi Automatic Quest Matching feature which will sync your Objective tracker with the current guide", },
-					[DGV_DUGIARROW]			= { category = "Waypoints",	text = "Show Dugi Arrow",	checked = true,		tooltip = "Show Dugis waypoint arrow",},
-					[DGV_SHOWCORPSEARROW]		= { category = "Waypoints",	text = "Show Corpse Arrow",	checked = true,		tooltip = "Show the corpse arrow to direct you to your body", indent = true},
-					[DGV_CLASSICARROW]			= { category = "Waypoints",	text = "Classic Arrow",		checked = true,		tooltip = "Switch between modern and classic arrow icons", indent = true,},
-					[DGV_CARBONITEARROW] 		= { category = "Waypoints",	text = "Use Carbonite Arrow",	checked = true,	tooltip = "Use the Carbonite arrow instead of the built in arrow"},
-					[DGV_TOMTOMARROW] 		= { category = "Waypoints",	text = "Use TomTom Arrow", 	checked = false,	tooltip = "Use the TomTom arrow instead of the built in arrow"},
-					[DGV_SHOWANTS] 			= { category = "Waypoints",	text = "Show Ant Trail",	checked = true,		tooltip = "Display ant trail between waypoints on the world map",},
+					[DGV_DUGIARROW]			= { category = "Dugi Arrow",	text = "Show Dugi Arrow",	checked = true,		tooltip = "Show Dugis waypoint arrow",},
+					[DGV_SHOWCORPSEARROW]		= { category = "Dugi Arrow",	text = "Show Corpse Arrow",	checked = true,		tooltip = "Show the corpse arrow to direct you to your body", indent = true},
+					[DGV_CLASSICARROW]			= { category = "Dugi Arrow",	text = "Classic Arrow",		checked = true,		tooltip = "Switch between modern and classic arrow icons", indent = true,},
+					[DGV_CARBONITEARROW] 		= { category = "Dugi Arrow",	text = "Use Carbonite Arrow",	checked = true,	tooltip = "Use the Carbonite arrow instead of the built in arrow"},
+					[DGV_TOMTOMARROW] 		= { category = "Dugi Arrow",	text = "Use TomTom Arrow", 	checked = false,	tooltip = "Use the TomTom arrow instead of the built in arrow"},
+					[DGV_SHOWANTS] 			= { category = "Dugi Arrow",	text = "Show Ant Trail",	checked = true,		tooltip = "Display ant trail between waypoints on the world map",},
 					[DGV_AUTOQUESTACCEPT] 		= { category = "Questing",	text = "Auto Quest Accept",	checked = false,	tooltip = "Automatically accept quests from NPCs. Disable with shift",},
 					[DGV_AUTOQUESTACCEPTALL]	= { category = "Questing",	text = "Only Quests in Current Guide",	checked = true,	tooltip = "Auto quest accept feature will only accept quests in current guide", indent = true, module = "Guides"},							
 					[DGV_AUTOQUESTTURNIN]	= { category = "Questing",	text = "Auto Quest Turn in",	checked = false,	tooltip = "Automatically turn in quests from NPCs. Disable with shift"},							
 					[DGV_AUTOSELL]         		= { category = "Other",		text = "Auto Sell Greys",    	checked = true,    	tooltip = "Automatically sell grey quality items to merchant NPCs",},
 					[DGV_AUTOREPAIR]			= { category = "Other",		text = "Auto Repair",    		checked = false,    tooltip = "Automatically repair all damaged equipment at repair NPC",},
-					[DGV_AUTOFLIGHTPATHSELECT]			= { category = "Waypoints",	showOnRightColumn = true,	text = "Auto Select Flight Path",	checked = false,	tooltip = "Automatically select the suggested flight path after opening the flightmaster map",},
+					[DGV_AUTOFLIGHTPATHSELECT]			= { category = "Dugi Arrow",	showOnRightColumn = true,	text = "Auto Select Flight Path",	checked = false,	tooltip = "Automatically select the suggested flight path after opening the flightmaster map",},
 					[DGV_USETAXISYSTEM]			= { category = "Taxi System", text = "Use Taxi System",	checked = true,	tooltip = "Taxi system will find the fastest route to get to your destination with the use of portals, teleports, vehicles etc. Disabling this option will give you a direct waypoint instead.",},
 					[DGV_TAXISYSTEM_ZONE_PORTALS]			= { category = "Taxi System",	text = "Use Zone Portals",	checked = true,	tooltip = "",},
 					[DGV_TAXISYSTEM_PLAYER_PORTALS]			= { category = "Taxi System",	text = "Use Player Portals",	checked = true,	tooltip = "",},
@@ -395,12 +439,12 @@ local function LoadSettings()
 					[DGV_ENABLENPCNAMEDB]		= { category = "Other",	text = "NPC Name Database",	checked = true,		tooltip = "Provides localized NPC names. Required for target button.", module = "Disabled"},
 					[DGV_ENABLEQUESTLEVELDB]		= { category = "Other",	text = "Quest Level Database", showOnRightColumn = true,	checked = true,		tooltip = "Shows minimum level required for quests.\n\nAlso used for color coding the quests.", module = "ReqLevel"},
 					[DGV_UNLOADMODULES]		= { category = "Other",	text = "Unload Modules", showOnRightColumn = true,	checked = false,	tooltip = "Unloading modules will allow the addon to run on low memory setting in Essential Mode but will require a UI reload to return back to normal. ", module = "Guides"},
-					[DGV_ENABLED_MAPPREVIEW]	= { category = "Maps",	text = "Enabled Map Preview",showOnRightColumn = true,		checked = true,		tooltip = "",},
+					[DGV_ENABLED_MAPPREVIEW]	= { category = "Maps",	text = "Enabled Map Preview",showOnRightColumn = true,		checked = false,		tooltip = "",},
                     [DGV_MAPPREVIEWHIDEBORDER]	= { category = "Maps",	text = "Hide Border",showOnRightColumn = true,		checked = true,	position = DGV_HIDE_MODELS_IN_WORLDMAP + 1,	tooltip = "Hides the minimized map border when map preview is on.",},
 					[DGV_AUTOQUESTITEMLOOT]	= { category = "Questing",	text = "Auto Loot Quest Item",	checked = true,		tooltip = "Automatically loot quest items.",},
 					[DGV_ACCOUNTWIDEACH]		= { category = "Other",text = "Account Wide Achievement",	checked = false,		tooltip = "Detects account wide achievements completion.", module = "Guides"},
 					[DGV_DISABLE_QUICK_SETTINGS]		= { category = "Other",text = "Disable Quick Settings Under "..[[|T]]..DugisGuideViewer.ARTWORK_PATH.."iconbutton"..[[:20:20|t]].."Icon",	checked = false,		tooltip = "", module = "Guides"},
-					[DGV_AUTO_MOUNT]		= { category = "Auto Mount", text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tEnabled auto mount",	checked = false,		tooltip = "Automatically mounts the fastest available mount.", module = "GearAdvisor"},
+					[DGV_AUTO_MOUNT]		= { category = "Auto Mount", text = "Enable auto mount",	checked = false,		tooltip = "Automatically mounts the fastest available mount.", module = "GearAdvisor"},
 					[DGV_EMBEDDEDTOOLTIP]		= { category = "Display",	text = "Embedded Tooltip",	checked = true,	tooltip = "Displays tooltip information under guide step", module = "Guides"},
 					[DGV_FIXEDWIDTHSMALL]		= { category = "Display",	text = "Fixed Width Small Frame",	checked = true,	tooltip = "Floating Small Frame won't adjust size horizontally and remain the same width as the Objective Tracker.", module = "Guides"},
 					[DGV_OBJECTIVECOUNTER]		= { category = "Display",	text = "Show Quest Objectives",	checked = true,		tooltip = "Display quest objectives in small/anchored frame instead of the watch frame", module = "Guides"},
@@ -409,8 +453,8 @@ local function LoadSettings()
 					[DGV_AUTOEQUIPSMARTSET]		= { category = "Gear Set",		text = "Auto Equip Smart Set",	checked = true,		tooltip = "Automatically maintain the best item for each slot as player level, active spec and inventory changes occur.", module = "GearAdvisor"},
 					[DGV_SHOWAUTOEQUIPPROMPT]	= { category = "Gear Set",		text = "Show Auto Equip Prompt",checked = true,		tooltip = "Display a prompt to verify before committing auto equip changes", module = "GearAdvisor"},
 					[DGV_DISABLEWATCHFRAMEMOD]	= { category = "Frames",		text = "Lock Objective Tracker", showOnRightColumn = true, indent = true, checked = true,		tooltip = "Lock the objective tracker frame.", module = "DugisWatchFrame"},
-					[DGV_MANUALWAYPOINT]		= { category = "Waypoints",		text = "Manual Waypoints",checked = true,		tooltip = "Enable user placed waypoints on the world map by pressing Ctrl + Right click or Shift + Right click to link them together, disable this option if the hotkey conflict with another addon",},
-					[DGV_TOMTOMEMULATION]		= { category = "Waypoints",		text = "TomTom Addon Emulation",checked = true,		tooltip = "Enable /way commands and compatibility with other addons that use TomTom addon (eg LightHeaded)",},					
+					[DGV_MANUALWAYPOINT]		= { category = "Dugi Arrow",		text = "Manual Waypoints",checked = true,		tooltip = "Enable user placed waypoints on the world map by pressing Ctrl + Right click or Shift + Right click to link them together, disable this option if the hotkey conflict with another addon",},
+					[DGV_TOMTOMEMULATION]		= { category = "Dugi Arrow",		text = "TomTom Addon Emulation",checked = true,		tooltip = "Enable /way commands and compatibility with other addons that use TomTom addon (eg LightHeaded)",},					
 					[DGV_LOCKMODELFRAME]		= { category = "Frames", text = "Lock Model Frame",  checked = true,  tooltip = "Lock model viewer frame into place", module = "ModelViewer"},
 					[DGV_JOURNALFRAME]			= { category = "Frames",		text = "NPC Journal Button", checked = true,		tooltip = "Enable NPC Journal Frame", module = "NPCJournalFrame"},					
                     [DGV_JOURNALFRAMEBUTTONSTICKED]			= { category = "Frames",		text = "Floating NPC Journal Button", checked = false, tooltip = "Allow NPC Journal to float anywhere on the screen", indent=true, module = "NPCJournalFrame"},	
@@ -420,20 +464,28 @@ local function LoadSettings()
 					[DGV_WATCHLOCALQUEST]			= { category = "Questing",		text = "Auto Track Local Quest", checked = false, tooltip = "Automatically remove non-local (not in current map) quest and track local quest to the objective tracker. This will trigger when you accept a quest or during a zone change event"},
 					[DGV_TARGETBUTTONCUSTOM]	= { category = "Target",	text = "Customize Macro",		checked = false,	tooltip = "Customize Target Macro", module = "Target", indent = true, editBox = "",},
 					[DGV_TARGETTOOLTIP]			= { category = "Target",		text = "Target Button Tooltip", checked = true, tooltip = "Display a tooltip for the target button to display the target name and model", indent = true, module = "Target"},						
-					[DGV_WAYPOINT_PING]			= { category = "Waypoints",		text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tWaypoint Reached Sound", checked = true, tooltip = "Plays a ping sound upon reaching each waypoint", showOnRightColumn = true},													
+					[DGV_WAYPOINT_PING]			= { category = "Dugi Arrow",		text = "Waypoint Reached Sound", checked = true, tooltip = "Plays a ping sound upon reaching each waypoint", showOnRightColumn = true},													
 					
-					[DGV_BAD_COLOR]			= { category = "Waypoints",	text = "Bad Color", checked = false, tooltip = "", showOnRightColumn = true},													
-					[DGV_MIDDLE_COLOR]			= { category = "Waypoints",	dX = 120, dY = 26,		text = "Middle Color", checked = false, tooltip = "", showOnRightColumn = true},													
-					[DGV_GOOD_COLOR]			= { category = "Waypoints",		text = "Good Color", checked = false, tooltip = "", showOnRightColumn = true},													
-					[DGV_EXACT_COLOR]			= { category = "Waypoints",	dX = 120, dY = 26,		text = "Exact Color", checked = false, tooltip = "", showOnRightColumn = true},													
-					[DGV_QUESTING_AREA_COLOR]	= { category = "Waypoints",	dX = 0, dY = -5,		text = "Questing Area Color", checked = false, tooltip = "", showOnRightColumn = true},													
+					[DGV_BAD_COLOR]			= { category = "Dugi Arrow",	text = "Bad Color", checked = false, tooltip = "", showOnRightColumn = true},													
+					[DGV_MIDDLE_COLOR]			= { category = "Dugi Arrow",	dX = 120, dY = 26,		text = "Middle Color", checked = false, tooltip = "", showOnRightColumn = true},													
+					[DGV_GOOD_COLOR]			= { category = "Dugi Arrow",		text = "Good Color", checked = false, tooltip = "", showOnRightColumn = true},													
+					[DGV_EXACT_COLOR]			= { category = "Dugi Arrow",	dX = 120, dY = 26,		text = "Exact Color", checked = false, tooltip = "", showOnRightColumn = true},													
+					[DGV_QUESTING_AREA_COLOR]	= { category = "Dugi Arrow",	dX = 0, dY = -5,		text = "Questing Area Color", checked = false, tooltip = "", showOnRightColumn = true},													
+				
+					[DGV_WAY_SEGMENT_COLOR]		= { category = "Dugi Arrow",	position = DGV_TOMTOMEMULATION + 1,	text = "Ant Trail Color", dY = -18, dX = 100, checked = false,	tooltip = "",},					
+					[DGV_ENABLED_GPS_ARROW]		= { category = "Dugi Zone Map", text = "Enable Zone Map", checked = true,	tooltip = "Turn on / off the Dugi Zone Map feature",},					
+					[DGV_GPS_ARROW_AUTOZOOM]		= { category = "Dugi Zone Map", text = "Enable Auto Zoom", checked = true, default = true,	tooltip = "Automatically Zoom in / out the map based on the current waypoint",},					
+					[DGV_GPS_ARROW_POIS]		= { category = "Dugi Zone Map", text = "Show Quests POI", checked = true, default = true,	tooltip = "Turn on /off the point of interest icons for quests on the map",},					
+					[DGV_GPS_AUTO_HIDE]		= { category = "Dugi Zone Map", text = "Auto Hide Zone Map", checked = true, default = true,	tooltip = "Automatically hides Dugi Map in case there are no waypoints.",},					
+					[DGV_GPS_MERGE_WITH_DUGI_ARROW]		= { category = "Dugi Zone Map", text = "Merge With Dugi Arrow", checked = true, default = true,	tooltip = "Dugi Arrow text is displayed underneath the Zone Map and Dugi arrow is automatically shown within close range of the waypoints",},					
+					[DGV_GPS_MINIMAP_TERRAIN_DETAIL]		= { category = "Dugi Zone Map", text = "Minimap Terrain Detail", checked = true, default = true,	tooltip = "Turns minimap terrain details on.",},					
 					
 					[DGV_ENABLED_GEAR_NOTIFICATIONS]			= { category = "Notifications",		text = "Gear Advisor Suggestions as Notifications", checked = true, tooltip = "If disabled standard gear suggestion prompts will be shown.", module = "GearAdvisor"},													
 					[DGV_ENABLED_GUIDE_NOTIFICATIONS]			= { category = "Notifications",		text = "Leveling Guide Suggestions as Notifications", checked = true, tooltip = "If disabled standard guide suggestion prompts will be shown.", module = "Guides"},													
 					[DGV_ENABLED_JOURNAL_NOTIFICATIONS]			= { category = "Notifications",		text = "NPC Journal Frame targets as Notifications", checked = true, tooltip = "If enabled NPC Journal Frame prompts will be shown.", module = "Guides"},													
 					[DGV_USE_NOTIFICATIONS_MARK]			= { category = "Notifications",		text = "Show |TInterface\\AddOns\\DugisGuideViewerZ\\Artwork\\notification.tga:20:20:0:0:64:64:39:64:0:25|t mark for new Notifications.", checked = true, tooltip = "If enabled |TInterface\\AddOns\\DugisGuideViewerZ\\Artwork\\notification.tga:16:16:0:0:64:64:39:64:0:25|t mark will be shown when new Notifications come.", module = "Guides"},													
 					
-					[DGV_ALWAYS_SHOW_STANDARD_PROMPT_GEAR]			= { category = "Notifications", indent = true, position = DGV_ENABLED_GEAR_NOTIFICATIONS, text = "Always Show Standard Prompt", checked = true, tooltip = "", module = "Guides"},													
+					[DGV_ALWAYS_SHOW_STANDARD_PROMPT_GEAR]			= { category = "Notifications", indent = true, position = DGV_ENABLED_GEAR_NOTIFICATIONS + 1, text = "Always Show Standard Prompt", checked = true, tooltip = "", module = "Guides"},													
 					[DGV_ALWAYS_SHOW_STANDARD_PROMPT_GUIDE]			= { category = "Notifications", indent = true, text = "Always Show Standard Prompt", checked = true, tooltip = "", module = "Guides"},													
 					
 					[DGV_GAWINCRITERIACUSTOM] = {category = "Gear Scoring", text = "Loot Suggestion Priority", tooltip = "Determines how gear should be scored, in order of greatest to least importance.", module = "GearAdvisor",
@@ -478,7 +530,13 @@ local function LoadSettings()
 							{	text = "Solid", },
 							{	text = "Transparent", },
 						}
-					},                    
+					}, 
+					[DGV_ROUTE_STYLE] 	= { category = "Dugi Arrow",		text = "Ant Trail",	checked = "Dotted",
+						options = {
+							{	text = "Dotted", },
+							{	text = "Solid", },
+						}
+					}, 
 					[DGV_LARGEFRAMEBORDER] 		= { category = "Frames",		text = "Borders",	checked = "BlackGold",
 						options = {
 							{	text = "Default", },
@@ -495,6 +553,12 @@ local function LoadSettings()
 							{	text = "StonePattern", },
 							{	text = "Thin", },
 							{	text = "Wood", },
+						}
+					}, 
+					[DGV_GPS_BORDER] 		= { category = "Dugi Zone Map",  text = "Dugi Map Borders",	checked = "TextPanel", default = 1,
+						options = {
+							{	text = "TextPanel", },
+							{	text = "ElvUI2", },
 						}
 					},
 					[DGV_STEPCOMPLETESOUND]		= { category = "Questing",	text = "Step Complete Sound", checked = "Sound\\Interface\\MapPing.ogg", module = "Guides",
@@ -513,15 +577,6 @@ local function LoadSettings()
 							{	text = "War Drums",		value = [[Sound\Event Sounds\Event_wardrum_ogre.ogg]]},
 							{	text = "Humm",			value = [[Sound\Spells\SimonGame_Visual_GameStart.ogg]]},
 							{	text = "Short Circuit",		value = [[Sound\Spells\SimonGame_Visual_BadPress.ogg]]},
-						}
-					},
-					[DGV_ANTCOLOR]		= { category = "Waypoints",	text = "Ant Trail Color", checked = "Interface\\COMMON\\Indicator-Green",
-
-						options = {
-							{	text = "Gray", colorCode = GRAY_FONT_COLOR_CODE,	value	= [[Interface\COMMON\Indicator-Gray]] },
-							{	text = "Green",  colorCode = GREEN_FONT_COLOR_CODE,	value = [[Interface\COMMON\Indicator-Green]]},
-							{	text = "Red", colorCode = RED_FONT_COLOR_CODE,	value = [[Interface\COMMON\Indicator-Red]]},
-							{	text = "Yellow", colorCode = YELLOW_FONT_COLOR_CODE,	value = [[Interface\COMMON\Indicator-Yellow]]},
 						}
 					},
 					[DGV_TAXIFLIGHTMASTERS]		= { category = "Taxi System",	text = "Use Flightmasters", checked = "Auto",
@@ -627,7 +682,7 @@ local function LoadSettings()
                     [DGV_SHOWQUESTABANDONBUTTON]			= { category = "Questing",	showOnRightColumn = true,	text = "Abandon Quests Button",	checked = true,	tooltip = "Mass abandon quests button in your quest log to automatically abandon all quests by their category or zone",},
                     [DGV_SUGGESTTRINKET]			= { category = "Gear Set",	showOnRightColumn = true,	text = "Suggest Trinkets",	checked = false,	tooltip = "A trinket is scored by its stats and item level but not the 'use' or special effect which can make the trinket suggestion inaccurate.\n\nUnticking this setting will disable the trinkets suggestion.",},					
                     
-                    [DGV_ENABLEDGEARFINDER]			= { category = "Gear Finder",	showOnRightColumn = false,	text = "Enabled Gear Finder",	checked = true,	tooltip = "Gear Finder",},					
+                    [DGV_ENABLEDGEARFINDER]			= { category = "Gear Finder",	showOnRightColumn = false,	text = "Enable Gear Finder",	checked = true,	tooltip = "Gear Finder",},					
                       
                     [DGV_INCLUDE_DUNG_NORMAL]		= { category = "Gear Finder",	showOnRightColumn = false,	text = "Normal",	    checked = true,     tooltip = "",},					
                     [DGV_INCLUDE_DUNG_HEROIC]		= { category = "Gear Finder",	showOnRightColumn = false,	text = "Heroic",	    checked = false,     tooltip = "",},					
@@ -644,16 +699,42 @@ local function LoadSettings()
                   
                     [DGV_JOURNALFRAMEBUTTONSCALE]	    = {	category = "Frames",	text = "NPC Journal Button Size (%.1f)", checked = 4, module = "SmallFrame", tooltip = "Size of the NPC Journal Frame button." },
                     [DGV_SMALLFRAME_STEPS]	    = {	category = "Display",	text = "Maximum Multi Step (%.0f)", checked = 6, module = "SmallFrame", tooltip = "Maximum amout of steps in the Small Frame." },
+                    [DGV_GPS_BORDER_OPACITY]	    = {	category = "Dugi Zone Map",	text = "Zone Map Border Opacity (%.1f)", checked = 1, default = 1, tooltip = "" },
+                    [DGV_GPS_MAPS_OPACITY]	    = {	category = "Dugi Zone Map",	text = "Zone Map Opacity (%.1f)", checked = 0.4, default = 0.4, tooltip = "" },
+                    [DGV_GPS_MAPS_SIZE]	    = {	category = "Dugi Zone Map",	text = "Zone Map Size (%.1f)", checked = 5, default = 5, tooltip = "" },
+                    [DGV_GPS_ARROW_SIZE]	    = {	category = "Dugi Zone Map",	text = "Character Arrow Size (%.1f)", checked = 4, default = 4, tooltip = "" },
 					[DGV_RECORDSIZE]			= { checked = 50 },
 				},
 			},
 		}
 	}
+	
+	
+    --Number 100 for checkboxes was reached. It cannot be used because it would conflict with DGV_GUIDEDIFFICULTY.  
+	local sz = defaults.profile.char.settings.sz
+	
+	LuaUtils:loop(99, function(val)
+		sz[#sz + 1] = val
+	end)
+	
+    --For new checkboxes their ids should be added here.
+	sz[#sz + 1] = DGV_WAY_SEGMENT_COLOR
+	sz[#sz + 1] = DGV_ENABLED_GPS_ARROW
+	sz[#sz + 1] = DGV_GPS_ARROW_AUTOZOOM
+	sz[#sz + 1] = DGV_GPS_ARROW_POIS
+	sz[#sz + 1] = DGV_GPS_AUTO_HIDE
+	sz[#sz + 1] = DGV_GPS_MERGE_WITH_DUGI_ARROW
+	sz[#sz + 1] = DGV_GPS_MINIMAP_TERRAIN_DETAIL
+	
 	self.db 		= LibStub("AceDB-3.0"):New("DugisGuideViewerProfiles", defaults)
 	self.chardb		= self.db.profile.char.settings
 	self.db.RegisterCallback(self, "OnProfileChanged", "ProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileCopied", "ProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileReset", "ProfileChanged")
+end
+
+function DugisGuideViewer:GetDefaultValue(settingId)
+	return DugisGuideViewer.chardb[settingId].default
 end
 
 function DugisGuideViewer:GuideOn()
@@ -738,27 +819,28 @@ function DugisGuideViewer:OnInitialize()
 
 		{ value = "Search Locations", 	text = L["Search Locations"], 	icon = nil }, --1
 		{ value = "Questing", 	text = L["Questing"], 	icon = nil }, --2
-		{ value = "Waypoints", 	text = L["Waypoints"], icon = nil }, --3
-		{ value = "Display", 	text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Display"], 	icon = nil }, --4
-		{ value = "Frames", 	text = L["Frames"], 	icon = nil }, --5
-		{ value = "Maps", 		text = L["Maps"], 		icon = nil }, --6
-		{ value = "Taxi System",text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Taxi System"],icon = nil }, --7
-		{ value = "Target",		text = L["Target Button"],	icon = nil }, --8
-		{ value = "Tooltip", 	text = L["Tooltip"], 	icon = nil }, --9
-		{ value = "Gear Set",		text = L["Gear Set"],		icon = nil },		 --10	
-		{ value = "Gear Scoring",		text = L["Gear Scoring"],		icon = nil }, --11
-		{ value = "Gear Finder",		text = L["Gear Finder"],		icon = nil }, --12
-		{ value = "Auto Mount", 		text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Auto Mount"], 	icon = nil }, --13
-		{ value = "Notifications", 		text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Notifications"], 	icon = nil }, --14
-		{ value = "Other", 		text = L["Other"], 	icon = nil }, --15
-		{ value = "Profiles", 	text = L["Profiles"] }, --16
+		{ value = "Dugi Arrow", 	text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Dugi Arrow"], icon = nil }, --3
+		{ value = "Dugi Zone Map", 	text = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"..L["Dugi Zone Map"] }, --4
+		{ value = "Display", 	text = L["Display"], 	icon = nil }, --5
+		{ value = "Frames", 	text = L["Frames"], 	icon = nil }, --6
+		{ value = "Maps", 		text = L["Maps"], 		icon = nil }, --7
+		{ value = "Taxi System",text = L["Taxi System"],icon = nil }, --8
+		{ value = "Target",		text = L["Target Button"],	icon = nil }, --9
+		{ value = "Tooltip", 	text = L["Tooltip"], 	icon = nil }, --10
+		{ value = "Gear Set",		text = L["Gear Set"],		icon = nil },		 --11
+		{ value = "Gear Scoring",		text = L["Gear Scoring"],		icon = nil }, --12
+		{ value = "Gear Finder",		text = L["Gear Finder"],		icon = nil }, --13
+		{ value = "Auto Mount", 		text = L["Auto Mount"], 	icon = nil }, --14
+		{ value = "Notifications", 		text = L["Notifications"], 	icon = nil }, --15
+		{ value = "Other", 		text = L["Other"], 	icon = nil }, --16
+		{ value = "Profiles", 	text = L["Profiles"] }, --17
 	}
 
-    if not DugisGuideViewer:IsModuleRegistered("GearFinder") or not DugisGearFinder.allGearIds then tremove(CATEGORY_TREE, 12) end --Gear Finder 
-	if not DugisGuideViewer:IsModuleRegistered("Guides") then tremove(CATEGORY_TREE, 9) end --Tooltip
+    if not DugisGuideViewer:IsModuleRegistered("GearFinder") or not DugisGearFinder.allGearIds then tremove(CATEGORY_TREE, 13) end --Gear Finder 
+	if not DugisGuideViewer:IsModuleRegistered("Guides") then tremove(CATEGORY_TREE, 10) end --Tooltip
 
-	if not DugisGuideViewer:IsModuleRegistered("Target") then tremove(CATEGORY_TREE, 8) end --Target
-	if not DugisGuideViewer:IsModuleRegistered("Guides") then tremove(CATEGORY_TREE, 4) end --Display
+	if not DugisGuideViewer:IsModuleRegistered("Target") then tremove(CATEGORY_TREE, 9) end --Target
+	if not DugisGuideViewer:IsModuleRegistered("Guides") then tremove(CATEGORY_TREE, 5) end --Display
 	
 	LoadSettings()
 	if DugisGuideViewerDB and DugisGuideViewerDB.char then --migrate old user data
@@ -1623,7 +1705,7 @@ function DugisGuideViewer:InsertControlBeforeCheckbox(SettingNum, category, top,
 		fontstring:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX + columnPaddingLeft, topRightColumn - 77)    
 	end
 	
-	if category=="Waypoints" and SettingNum == DGV_BAD_COLOR then
+	if category=="Dugi Arrow" and SettingNum == DGV_BAD_COLOR then
 		local fontstring = frame:CreateFontString(nil,"ARTWORK", "GameFontNormal")
 		fontstring:SetText(L["Dugi Arrow Colors"])
 		fontstring:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX + columnPaddingLeft, topRightColumn - 7)   
@@ -1643,7 +1725,7 @@ end
 
 function DugisGuideViewer:InsertControlAfterCheckbox(SettingNum, category, top, topRightColumn, frame)
 	--Reset Profile Button
-	if category=="Waypoints" and not DGV_ResetColorsButton and SettingNum == DGV_QUESTING_AREA_COLOR then
+	if category=="Dugi Arrow" and not DGV_ResetColorsButton and SettingNum == DGV_QUESTING_AREA_COLOR then
 	
 		topRightColumn = topRightColumn - 15
 		local button = CreateFrame("Button", "DGV_ResetColorsButton", frame, "UIPanelButtonTemplate")
@@ -1660,6 +1742,38 @@ function DugisGuideViewer:InsertControlAfterCheckbox(SettingNum, category, top, 
 			DugisGuideViewer.onColorChange("DGV_GOOD_COLOR", unpack(DugisGuideViewer.defaultGoodArrowColor))
 			DugisGuideViewer.onColorChange("DGV_EXACT_COLOR", unpack(DugisGuideViewer.defaultExactArrowColor))
 			DugisGuideViewer.onColorChange("DGV_QUESTING_AREA_COLOR", unpack(DugisGuideViewer.defaultQuestingAreaColor))
+		end)
+	end
+	
+	if category=="Dugi Zone Map" and not DGV_ResetGPSButton and SettingNum == DGV_GPS_MERGE_WITH_DUGI_ARROW then
+	
+		local button = CreateFrame("Button", "DGV_ResetGPSButton", frame, "UIPanelButtonTemplate")
+		local btnText = L["Default Setting"]
+		local fontwidth = DugisGuideViewer:GetFontWidth(btnText, "GameFontHighlight")
+		button:SetText(btnText)
+		button:SetWidth(fontwidth + 30)
+		button:SetHeight(22)
+		button:SetPoint("TOPLEFT", frame, "TOPLEFT", columnPaddingLeft, top - 90)
+		button:RegisterForClicks("LeftButtonUP")
+		button:SetScript("OnClick", function() 
+			DugisGuideViewer.SetSettingDefaultValue(DGV_GPS_ARROW_AUTOZOOM)
+			DugisGuideViewer.SetSettingDefaultValue(DGV_GPS_ARROW_POIS)
+			DugisGuideViewer.SetSettingDefaultValue(DGV_GPS_AUTO_HIDE)
+			DugisGuideViewer.SetSettingDefaultValue(DGV_GPS_MERGE_WITH_DUGI_ARROW)
+			DugisGuideViewer.SetSettingDefaultValue(DGV_GPS_MINIMAP_TERRAIN_DETAIL)
+			
+			DugisGuideViewer.SetSettingDefaultValue(DGV_GPS_BORDER_OPACITY)
+			DugisGuideViewer.SetSettingDefaultValue(DGV_GPS_MAPS_OPACITY)
+			DugisGuideViewer.SetSettingDefaultValue(DGV_GPS_MAPS_SIZE)
+			DugisGuideViewer.SetSettingDefaultValue(DGV_GPS_ARROW_SIZE)
+			
+			DugisGuideViewer.SetSettingDefaultValue(DGV_GPS_BORDER)
+			
+			DugisGuideViewer.Modules.GPSArrowModule.UpdateVisibility()
+			DugisGuideViewer.Modules.GPSArrowModule.UpdateMerged()
+			DugisGuideViewer.Modules.GPSArrowModule.UpdatePOISVisibility()
+			DugisGuideViewer.Modules.GPSArrowModule:UpdateBorder()
+			DugisGuideViewer.Modules.GPSArrowModule.UpdateMinimapAlpha()
 		end)
 	end
 	
@@ -1681,6 +1795,49 @@ function DugisGuideViewer:UpdateCheckbox(SettingNum)
 			enableNotificationsInfo:Hide()
 		else
 			enableNotificationsInfo:Show()
+		end
+	end
+end
+
+function DugisGuideViewer.UpdateSettingsCheckbox(settingsId)
+    local value = DugisGuideViewer:GetDB(settingsId)
+    local chkBoxName = "DGV.ChkBox"..settingsId
+    local chkBox = _G[chkBoxName]
+    if chkBox then
+        chkBox:SetChecked(value)
+    end
+end
+
+function DugisGuideViewer.SetCheckboxChecked(settingsId, newValue)
+	DugisGuideViewer:SetDB(newValue, settingsId)
+	DugisGuideViewer.UpdateSettingsCheckbox(settingsId)
+end
+
+function DugisGuideViewer.SetSettingDefaultValue(settingsId)
+	local defaultValue = DugisGuideViewer:GetDefaultValue(settingsId)
+	if defaultValue ~= nil then
+		if DugisGuideViewer.sliderControls[settingsId] then
+			--Slider
+			DugisGuideViewer.sliderControls[settingsId]:SetValue(defaultValue)
+		elseif DugisGuideViewer.dropdownControls[settingsId] then
+		
+			local defaultIndex = defaultValue
+			local defaultValue
+			if type(DugisGuideViewer.chardb[settingsId].options[defaultIndex]) == "string" then
+				defaultValue = DugisGuideViewer.chardb[settingsId].options[defaultIndex]
+			else
+				defaultValue = DugisGuideViewer.chardb[settingsId].options[defaultIndex].text
+			end
+			
+			LibDugi_UIDropDownMenu_SetSelectedID(DugisGuideViewer.dropdownControls[settingsId], defaultIndex)
+			LibDugi_UIDropDownMenu_SetSelectedValue(DugisGuideViewer.dropdownControls[settingsId], defaultValue)
+			LibDugi_UIDropDownMenu_SetText(DugisGuideViewer.dropdownControls[settingsId], defaultValue)
+			
+			DugisGuideViewer:SetDB(defaultValue, settingsId)
+		else
+			--Checkbox
+			DugisGuideViewer:SetDB(defaultValue, settingsId)
+			DugisGuideViewer.UpdateSettingsCheckbox(settingsId)
 		end
 	end
 end
@@ -1708,9 +1865,9 @@ local function GetSettingsCategoryFrame(category, parent)
 	
 	local checkboxesInfo = {}
 	
-	for SettingNum = 1, SettingsDB.sz do
+	LuaUtils:foreach(SettingsDB.sz, function(SettingNum)
 		checkboxesInfo[#checkboxesInfo + 1] = {SettingNum = SettingNum, info = SettingsDB[SettingNum]}
-	end
+	end)
 	
     --Sorting table by ids (standard past behaviour). In case position parameter exists sorts by position.
     table.sort(checkboxesInfo, function(a, b)
@@ -1756,6 +1913,7 @@ local function GetSettingsCategoryFrame(category, parent)
                     topRightColumn = topRightColumn - chkBox:GetHeight()
                     topRightColumn = topRightColumn + (SettingsDB[SettingNum].dY or 0)
 				else
+					topValue = topValue + (SettingsDB[SettingNum].dY or 0)
                     top = top - chkBox:GetHeight()
 					top = top + (SettingsDB[SettingNum].dY or 0)
                 end
@@ -1798,7 +1956,7 @@ local function GetSettingsCategoryFrame(category, parent)
 		end
 	end)
 	
-	if category=="Waypoints" then
+	if category=="Dugi Arrow" then
 		function DugisGuideViewer.onColorChange(id, r, g, b)
 			DugisGuideUser[id] = {r, g, b}
 			DugisArrowGlobal.lastAngle = -1000
@@ -1824,6 +1982,10 @@ local function GetSettingsCategoryFrame(category, parent)
 		
 		GUIUtils:MakeColorPicker(_G["DGV.ChkBox"..DGV_QUESTING_AREA_COLOR], DugisGuideUser.DGV_QUESTING_AREA_COLOR or DugisGuideViewer.defaultQuestingAreaColor, function(r, g, b)
 			DugisGuideViewer.onColorChange("DGV_QUESTING_AREA_COLOR", r, g, b)
+		end)		
+		
+		GUIUtils:MakeColorPicker(_G["DGV.ChkBox"..DGV_WAY_SEGMENT_COLOR], DugisGuideUser.DGV_WAY_SEGMENT_COLOR or DugisGuideViewer.defaultWaySegmentColor(), function(r, g, b)
+			DugisGuideViewer.onColorChange("DGV_WAY_SEGMENT_COLOR", r, g, b)
 		end)
 	end
 	
@@ -2395,6 +2557,7 @@ local function GetSettingsCategoryFrame(category, parent)
                 
                 if  SettingsSearchScroll.frame.wrapper.height > 200 then
                     SettingsSearchScroll.scrollBar:Show()
+
                 else
                     SettingsSearchScroll.scrollBar:Hide()
                 end
@@ -2868,9 +3031,17 @@ local function GetSettingsCategoryFrame(category, parent)
 	if SettingsDB[DGV_MAIN_FRAME_BACKGROUND].category==category 
 		and not DGV_Main_Frame_Background_Dropdown
 	then
-		local dropdown = self:CreateDropdown("DGV_Main_Frame_Background_Dropdown", frame, "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tMain Frame Background"
+		local dropdown = self:CreateDropdown("DGV_Main_Frame_Background_Dropdown", frame, "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tLarge Frame Background"
         , DGV_MAIN_FRAME_BACKGROUND, self.MainFrameBackgroundDropDown_OnClick)
 		dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 333, -190)
+	end
+    
+	if SettingsDB[DGV_ROUTE_STYLE].category==category 
+		and not DGV_route_style
+	then
+		local dropdown = self:CreateDropdown("DGV_route_style", frame, "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tAnt Trail"
+        , DGV_ROUTE_STYLE, self.RouteStyleDropDown_OnClick)
+		dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -297)
 	end
 
 	--Large Frame Border  Dropdown
@@ -2890,6 +3061,17 @@ local function GetSettingsCategoryFrame(category, parent)
 		LibDugi_UIDropDownMenu_SetSelectedValue(DGV_LargeFrameBorderDropdown, DugisGuideViewer:UserSetting(DGV_LARGEFRAMEBORDER))
 	end
 	
+	--GPS Border  Dropdown
+	if SettingsDB[DGV_GPS_BORDER].category==category  and not DGV_gps_border then
+		local dropdown = self:CreateDropdown("DGV_gps_border", frame, "Zone Map Border", DGV_GPS_BORDER, self.GPSBorderDropdown_OnClick)
+		local left = 3
+		dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", left, top)
+	end
+	if DGV_gps_border then
+		LibDugi_UIDropDownMenu_Initialize(DGV_gps_border, DGV_gps_border.initFunc)
+		LibDugi_UIDropDownMenu_SetSelectedValue(DGV_gps_border, DugisGuideViewer:UserSetting(DGV_GPS_BORDER))
+	end
+	
 	--Step Complete Sound Dropdown
 	if SettingsDB[DGV_STEPCOMPLETESOUND].category==category
 		and(not DugisGuideViewer:GetDB(DGV_STEPCOMPLETESOUND, "module")
@@ -2907,16 +3089,6 @@ local function GetSettingsCategoryFrame(category, parent)
 	if DGV_StepCompleteSoundDropdown then
 		LibDugi_UIDropDownMenu_Initialize(DGV_StepCompleteSoundDropdown, DGV_StepCompleteSoundDropdown.initFunc)
 		LibDugi_UIDropDownMenu_SetSelectedValue(DGV_StepCompleteSoundDropdown, DugisGuideViewer:UserSetting(DGV_STEPCOMPLETESOUND))
-	end
-
-	--Ant Trail Color Dropdown
-	if SettingsDB[DGV_ANTCOLOR].category==category and not DGV_AntColorDropdown then
-		local dropdown = self:CreateDropdown("DGV_AntColorDropdown", frame, "Ant Trail Color", DGV_ANTCOLOR, self.AntColorDropdown_OnClick)
-		dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, top)
-	end
-	if DGV_AntColorDropdown then
-		LibDugi_UIDropDownMenu_Initialize(DGV_AntColorDropdown, DGV_AntColorDropdown.initFunc)
-		LibDugi_UIDropDownMenu_SetSelectedValue(DGV_AntColorDropdown, DugisGuideViewer:UserSetting(DGV_ANTCOLOR))
 	end
 	
 	--Flightmaster Handling Dropdown
@@ -3140,6 +3312,81 @@ local function GetSettingsCategoryFrame(category, parent)
 	if DGV_Smallframe_Steps then
 		DGV_Smallframe_Steps:SetValue(DugisGuideViewer:GetDB(DGV_SMALLFRAME_STEPS) or 6)
 	end	
+	
+	--DGV_GPS_MAPS_OPACITY
+	if SettingsDB[DGV_GPS_MAPS_OPACITY].category==category and not DGV_gps_maps_opacity then
+		local slider = self:CreateSlider("DGV_gps_maps_opacity", frame, SettingsDB[DGV_GPS_MAPS_OPACITY].text, 
+			DGV_GPS_MAPS_OPACITY, 0, 1, 0.1, 0.1, "0", "1")
+		slider:HookScript("OnValueChanged", function()
+			if DugisGuideViewer.Modules.GPSArrowModule then
+				DugisGuideViewer.Modules.GPSArrowModule.UpdateOpacity()
+			end
+		end)	
+		
+		slider:HookScript("OnMouseUp", function()
+			if DugisGuideViewer.Modules.GPSArrowModule then
+				DugisGuideViewer.Modules.GPSArrowModule.UpdateMinimapAlpha()
+			end
+		end)
+		
+		slider:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX + 50, topRightColumn)
+		topRightColumn = topRightColumn-55
+	end
+	if DGV_gps_maps_opacity then
+		DGV_gps_maps_opacity:SetValue(DugisGuideViewer:GetDB(DGV_GPS_MAPS_OPACITY) or DGV:GetDefaultValue(DGV_GPS_MAPS_OPACITY))
+	end	
+	
+	
+	--DGV_GPS_BORDER_OPACITY
+	if SettingsDB[DGV_GPS_BORDER_OPACITY].category==category and not DGV_gps_border_opacity then
+		local slider = self:CreateSlider("DGV_gps_border_opacity", frame, SettingsDB[DGV_GPS_BORDER_OPACITY].text, 
+			DGV_GPS_BORDER_OPACITY, 0, 1, 0.1, 0.1, "0", "1")
+		slider:HookScript("OnValueChanged", function()
+			if DugisGuideViewer.Modules.GPSArrowModule then
+				DugisGuideViewer.Modules.GPSArrowModule.UpdateOpacity()
+			end
+		end)
+		slider:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX+ 50, topRightColumn)
+		topRightColumn = topRightColumn+27
+	end
+	if DGV_gps_border_opacity then
+		DGV_gps_border_opacity:SetValue(DugisGuideViewer:GetDB(DGV_GPS_BORDER_OPACITY) or DGV:GetDefaultValue(DGV_GPS_BORDER_OPACITY))
+	end			
+	
+	--DGV_GPS_MAPS_SIZE
+	if SettingsDB[DGV_GPS_MAPS_SIZE].category==category and not DGV_gps_maps_size then
+		local slider = self:CreateSlider("DGV_gps_maps_size", frame, SettingsDB[DGV_GPS_MAPS_SIZE].text, 
+			DGV_GPS_MAPS_SIZE, 1, 20, 0.1, 0.1, "1", "20")
+		slider:HookScript("OnValueChanged", function()
+			if DugisGuideViewer.Modules.GPSArrowModule then
+				DugisGuideViewer.Modules.GPSArrowModule.UpdateSize()
+			end
+		end)
+		topRightColumn = topRightColumn-77
+		slider:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX+ 50, topRightColumn)
+		topRightColumn = topRightColumn+27
+	end
+	if DGV_gps_maps_size then
+		DGV_gps_maps_size:SetValue(DugisGuideViewer:GetDB(DGV_GPS_MAPS_SIZE) or DGV:GetDefaultValue(DGV_GPS_MAPS_SIZE))
+	end		
+	
+	--DGV_GPS_ARROW_SIZE
+	if SettingsDB[DGV_GPS_ARROW_SIZE].category==category and not DGV_gps_arrow_size then
+		local slider = self:CreateSlider("DGV_gps_arrow_size", frame, SettingsDB[DGV_GPS_ARROW_SIZE].text, 
+			DGV_GPS_ARROW_SIZE, 1, 10, 0.1, 0.1, "1", "10")
+		slider:HookScript("OnValueChanged", function()
+			if DugisGuideViewer.Modules.GPSArrowModule then
+				DugisGuideViewer.Modules.GPSArrowModule.UpdateArrowSize()
+			end
+		end)
+		topRightColumn = topRightColumn - 77
+		slider:SetPoint("TOPLEFT", frame, "TOPLEFT", rightColumnX + 50, topRightColumn)
+		topRightColumn = topRightColumn + 27
+	end
+	if DGV_gps_arrow_size then
+		DGV_gps_arrow_size:SetValue(DugisGuideViewer:GetDB(DGV_GPS_ARROW_SIZE) or DGV:GetDefaultValue(DGV_GPS_ARROW_SIZE))
+	end			
+	
     
     local old_DGV_JOURNALFRAMEBUTTONSCALE = DugisGuideViewer:UserSetting(DGV_JOURNALFRAMEBUTTONSCALE)
     --DGV_JOURNALFRAMEBUTTONSCALE
@@ -3299,6 +3546,12 @@ function DugisGuideViewer.MainFrameBackgroundDropDown_OnClick(button)
     DugisGuideViewer:UpdateCurrentGuideExpanded()
 end
 
+function DugisGuideViewer.RouteStyleDropDown_OnClick(button)
+	LibDugi_UIDropDownMenu_SetSelectedID(DGV_route_style, button:GetID() )
+	DugisGuideViewer:SetDB(button.value, DGV_ROUTE_STYLE)
+    DugisGuideViewer:UpdateCurrentGuideExpanded()
+end
+
 function DugisGuideViewer:SetFrameBackdrop(frame, bgFile, edgeFile, left, right, top, bottom, edgeSize)
 	if not frame then return end
 	if not bgFile and not edgeFile then
@@ -3310,13 +3563,43 @@ function DugisGuideViewer:SetFrameBackdrop(frame, bgFile, edgeFile, left, right,
 			insets = { left = left, right = right, top = top, bottom = bottom }
 		})
 	end
+	
+	DugisGuideViewer.ApplyElvUIColor(frame)	
+	
 end
 
 function DugisGuideViewer:GetBorderPath()
 	return self.ARTWORK_PATH.."Border-"..DugisGuideViewer:UserSetting(DGV_LARGEFRAMEBORDER)
 end
 
+function DugisGuideViewer:GetGPSBorderPath()
+	return self.ARTWORK_PATH.."Border-"..DugisGuideViewer:UserSetting(DGV_GPS_BORDER)
+end
+
+function DugisGuideViewer.ApplyElvUIColor(frame)
+	local path = DugisGuideViewer:GetBorderPath()
+	if frame and string.match(path, "ElvUI") then
+		if ElvUI then
+			local E = unpack(ElvUI);
+			frame:SetBackdropBorderColor(unpack(E['media'].bordercolor));
+		else
+			frame:SetBackdropBorderColor(0,0,0);
+		end
+	end
+end
+
 function DugisGuideViewer:SetAllBorders( )
+	if ElvUI and not DugisGuideViewer.ElvUIhooked then
+		LuaUtils:foreach({"UpdateAll",  "UpdateBorderColors"}, function(functionName)
+			local E = unpack(ElvUI);
+			hooksecurefunc(E, functionName, function()
+				DugisGuideViewer:SetAllBorders()
+				DugisGuideViewer.Modules.DugisWatchFrame:Update()	
+			end)
+		end)
+		DugisGuideViewer.ElvUIhooked = true
+	end
+
 	self:SetSmallFrameBorder( )
 	self:SetFrameBackdrop(DugisMainBorder, DugisGuideViewer.chardb.EssentialsMode>0 and self.BACKGRND_PATH, self:GetBorderPath(), 10, 3, 11, 5)
 	if DugisGuideViewer:IsModuleLoaded("ModelViewer") then
@@ -3543,6 +3826,15 @@ function DugisGuideViewer.LargeFrameBorderDropdown_OnClick(button)
 	if DugisGuideViewer.NPCJournalFrame and DugisGuideViewer.NPCJournalFrame.UpdateBorders then DugisGuideViewer.NPCJournalFrame:UpdateBorders() end
 end
 
+--GPS Frame Border Dropdown
+function DugisGuideViewer.GPSBorderDropdown_OnClick(button)
+	LibDugi_UIDropDownMenu_SetSelectedID(DGV_gps_border, button:GetID() )
+	DugisGuideViewer:SetDB(button.value, DGV_GPS_BORDER)
+	if DugisGuideViewer.Modules.GPSArrowModule then
+		DugisGuideViewer.Modules.GPSArrowModule:UpdateBorder()
+	end	
+end
+
 --Step Complete Sound Dropdown
 function DugisGuideViewer.StepCompleteSoundDropdown_OnClick(button)
 	LibDugi_UIDropDownMenu_SetSelectedID(DGV_StepCompleteSoundDropdown, button:GetID() )
@@ -3551,14 +3843,6 @@ function DugisGuideViewer.StepCompleteSoundDropdown_OnClick(button)
 	--DugisGuideViewer:SetDB(button.value, DGV_STEPCOMPLETESOUND, "value")
 	DebugPrint("Debug StepCompleteSoundDropdown_OnClick: DugisGuideViewer:GetDB(DGV_STEPCOMPLETESOUND)="..DugisGuideViewer:GetDB(DGV_STEPCOMPLETESOUND))
 	PlaySoundFile(DugisGuideViewer:GetDB(DGV_STEPCOMPLETESOUND))
-end
-
---Ant Trail Color Dropdown
-
-function DugisGuideViewer.AntColorDropdown_OnClick(button)
-	LibDugi_UIDropDownMenu_SetSelectedID(DGV_AntColorDropdown, button:GetID() )
-	DugisGuideViewer:SetDB(button.value, DGV_ANTCOLOR)
-	DugisGuideViewer.Ants:UpdateAntTrailDot(10)
 end
 
 --Flightmaster Handling Dropdown
@@ -3696,11 +3980,11 @@ function DugisGuideViewer:SettingFrameChkOnClick(box, skip)
 	end
 	
 	--Save to DB
-	for i = 1, self.chardb.sz do
+	LuaUtils:foreach(self.chardb.sz, function(i)
 		if _G["DGV.ChkBox"..i] then
 		if _G["DGV.ChkBox"..i]:GetChecked() then self.chardb[i].checked = true else self.chardb[i].checked = false end
 		end
-	end
+	end)
 	if _G["DGV.ChkBox"..DGV_TARGETBUTTONCUSTOM] then
 		if _G["DGV.ChkBox"..DGV_TARGETBUTTONCUSTOM]:GetChecked() then 
 			self.chardb[DGV_TARGETBUTTONCUSTOM].checked = true 
@@ -3943,6 +4227,45 @@ function DugisGuideViewer:SettingFrameChkOnClick(box, skip)
     
     if boxindex ==  DGV_USE_NOTIFICATIONS_MARK then
         DugisGuideViewer:UpdateNotificationsMarkVisibility()
+    end        
+	
+    if boxindex ==  DGV_ENABLED_GPS_ARROW then
+        if DugisGuideViewer:UserSetting(DGV_ENABLED_GPS_ARROW) then
+			DugisGuideViewer.Modules.GPSArrowModule:Initialize()
+			DugisGuideViewer.Modules.GPSArrowModule.initialized = true
+			
+        else
+			if DugisGuideViewer.Modules.GPSArrowModule then
+				DugisGuideViewer.Modules.GPSArrowModule:Unload()
+				DugisGuideViewer.Modules.GPSArrowModule.loaded = false
+			end
+        end
+		
+		DugisGuideViewer.Modules.GPSArrowModule.UpdateVisibility()
+    end    
+
+	if boxindex == DGV_GPS_ARROW_POIS then
+		if DugisGuideViewer.Modules.GPSArrowModule then
+			DugisGuideViewer.Modules.GPSArrowModule.UpdatePOISVisibility()
+		end
+    end   
+	
+	if boxindex == DGV_GPS_AUTO_HIDE then
+		if DugisGuideViewer.Modules.GPSArrowModule then
+			DugisGuideViewer.Modules.GPSArrowModule.UpdateVisibility()
+		end
+    end   
+ 	
+	if boxindex == DGV_GPS_MERGE_WITH_DUGI_ARROW then
+		if DugisGuideViewer.Modules.GPSArrowModule then
+			DugisGuideViewer.Modules.GPSArrowModule.UpdateMerged()
+		end
+    end   	
+	
+	if boxindex == DGV_GPS_MINIMAP_TERRAIN_DETAIL then
+		if DugisGuideViewer.Modules.GPSArrowModule then
+			DugisGuideViewer.Modules.GPSArrowModule.UpdateMinimapAlpha()
+		end
     end    
     
     if boxindex == DGV_STICKYFRAMESHOWDESCRIPTIONS then
@@ -4615,6 +4938,9 @@ end
 function DugisGuideViewer:QUEST_COMPLETE()
 	DugisGuideViewer:OnQuestComplete()
 	DugisGuideViewer:UpdateCompletionVisuals()
+	--if DugisGuideViewer.Modules.WorldMapTracking then
+		--DugisGuideViewer.Modules.WorldMapTracking:UpdateTrackingMap()
+	--end	
 end
 
 local function OnQuestObjectivesComplete()
@@ -4740,9 +5066,18 @@ function DugisGuideViewer:ACHIEVEMENT_EARNED()
 	DugisGuideViewer:UpdateAchieveFrame()
 end
 
-function DugisGuideViewer:ADDON_LOADED(event, addon)
+function DugisGuideViewer:PLAYER_ALIVE(event, addon)
+	DugisArrowGlobal.DetectTeleportUsage()
+end
 
+function DugisGuideViewer:ADDON_LOADED(event, addon)
 	if addon == "DugisGuideViewerZ" then
+		if not DugisLastPosition then
+			DugisLastPosition = {}
+		end
+
+		DugisArrowGlobal.DetectTeleportUsage()
+	
 		self:UnregisterEvent("ADDON_LOADED")
 		DugisGuideViewer:OnInitialize()
 		if DugisGuideViewer:GetDB(DGV_MAPPREVIEWDURATION) > 0 then
@@ -4751,8 +5086,34 @@ function DugisGuideViewer:ADDON_LOADED(event, addon)
 	end
 
 end
+
+local lastAllAchProgress = 0
 function DugisGuideViewer:WORLD_MAP_UPDATE(event, addon)
     lastMapUpdate = GetTime()
+	
+	local checkedTable = {}
+	
+	if DugisGuideViewer.Modules.WorldMapTracking and DugisGuideViewer.Modules.WorldMapTracking.trackingPoints then
+	
+		local allAchProgress = 0
+		for _,point in ipairs(DugisGuideViewer.Modules.WorldMapTracking.trackingPoints) do
+			local trackingType = unpack(point.args)
+			local id = point.args[3]
+			
+			if trackingType == "A" then
+				if not checkedTable[id] then
+					allAchProgress = allAchProgress + DugisGuideViewer.Modules.WorldMapTracking:GetAchievementProgress(id)
+					checkedTable[id] = true
+				end
+			end
+		end
+		
+		if allAchProgress ~= lastAllAchProgress then
+			DugisGuideViewer.Modules.WorldMapTracking:UpdateTrackingMap()
+		end
+		lastAllAchProgress = allAchProgress
+	end
+	
 end
 
 function DugisGuideViewer:UpdateIconStatus()
@@ -4874,6 +5235,11 @@ function DugisGuideViewer:InitFramePositions()
 	if DugisGuideViewer:IsModuleLoaded("DugisWatchFrame") then
 	    DugisGuideViewer.Modules.DugisWatchFrame:ResetWatchFrameMovable()
 	end
+	
+	if DugisGuideViewer:IsModuleLoaded("GPSArrowModule") then
+	    DugisGuideViewer.Modules.GPSArrowModule.UpdateMerged(true)
+	end
+	
 end
 
 local function getQuestIndexByQuestName(name)
@@ -5381,6 +5747,7 @@ function DugisGuideViewer:OnCastingSpell(spellID)
     if spellID and not IsMountSpell(spellID) then
 	    if tonumber(spellID) ~= 219223 and tonumber(spellID) ~= 219222 and tonumber(spellID) ~= 197886 and tonumber(spellID) ~= 240022 -- Hunter Windrunning spell effect from Marksman Artifact Bow
 		and tonumber(spellID) ~= 241330 and tonumber(spellID) ~= 242597 and tonumber(spellID) ~= 242599 and tonumber(spellID) ~= 242601 -- Rethu's Incessant Courage from Legendary
+		and tonumber(spellID) ~= 241835 and tonumber(spellID) ~= 241334 and tonumber(spellID) ~= 242600 and tonumber(spellID) ~= 241836 --Starlight of Celumbra priest legendary
 		then   
 	        lastCastingNoneMountTime = GetTime()
 		end
@@ -5518,15 +5885,6 @@ function DugisGuideViewer:UpdateAutoMountEnabled()
     end
 end
 
-function DugisGuideViewer.UpdateSettingsCheckbox(settingsId)
-    local value = DugisGuideViewer:GetDB(settingsId)
-    local chkBoxName = "DGV.ChkBox"..settingsId
-    local chkBox = _G[chkBoxName]
-    if chkBox then
-        chkBox:SetChecked(value)
-    end
-end
-
 function DugisGuideViewer.ClickedMenuItem(settingsId, itemInfo)
     local checked = itemInfo.checked
     
@@ -5534,6 +5892,7 @@ function DugisGuideViewer.ClickedMenuItem(settingsId, itemInfo)
     or settingsId == DGV_AUTOEQUIPSMARTSET
     or settingsId == DGV_AUTOQUESTACCEPT
     or settingsId == DGV_AUTOFLIGHTPATHSELECT
+    or settingsId == DGV_ENABLED_GPS_ARROW
     or settingsId == DGV_ENABLED_MAPPREVIEW then
         local newValue = not DugisGuideViewer:GetDB(settingsId)
     
@@ -5635,6 +5994,9 @@ function DugisGuideViewer.ShowMainMenu()
         
         {text = "Auto Select Flight Path", isNotRadio = true, keepShownOnClick = true, checked = function() return DugisGuideViewer:UserSetting(DGV_AUTOFLIGHTPATHSELECT) end
         , func = function(itemInfo) clickCallback(DGV_AUTOFLIGHTPATHSELECT, itemInfo) end},
+		
+		{text = "Dugi Zone Map", isNotRadio = true, keepShownOnClick = true, checked = function() return DugisGuideViewer:UserSetting(DGV_ENABLED_GPS_ARROW) end
+        , func = function(itemInfo) clickCallback(DGV_ENABLED_GPS_ARROW, itemInfo) end},
         
         {text = "More settings..", isNotRadio = true, notCheckable = true
         , disabled = function()
@@ -5694,3 +6056,9 @@ function DugisGuideViewer.ShowMainMenu()
 	
 	DugisGuideViewer.showInProgress = false
 end
+
+--Potentially used teleport
+hooksecurefunc("UseAction", function(index, b, c, d) 
+	--Saving current map id
+	DugisLastPosition.z, DugisLastPosition.f = GetCurrentMapZone(), GetCurrentMapDungeonLevel()
+end)

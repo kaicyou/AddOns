@@ -195,6 +195,8 @@ if not L then return end
 	L["MENU_BAR_RESET_TEXT"] = "해당 바의 기본 분류를 제외하고 현재 지정된 모든 분류를 제거합니다."
 	L["MENU_BAR_INSERT_TEXT"] = "모든 분류을 위로 이동시키고 빈 바를 삽입합니다."
 	L["MENU_BAR_DELETE_TEXT"] = "해당 바를 제거합니다, 현재 모든 지정된 분류를 이전의 기본 바로 되돌리고 다른 것들은 아래 바로 이동합니다."
+--	L["MENU_BAR_WIDTH_MINIMUM_TEXT"] = ""
+--	L["MENU_BAR_WIDTH_MAXIMUM_TEXT"] = ""
 --	L["MENU_BAR_MOVE_START_TEXT"] = ""
 --	L["MENU_BAR_MOVE_COMPLETE_TEXT"] = ""
 --	L["MENU_BAR_MOVE_FAIL_OUTSIDE"] = ""

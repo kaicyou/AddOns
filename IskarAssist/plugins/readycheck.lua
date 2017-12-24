@@ -375,7 +375,7 @@ function ReadyCheck:READY_CHECK_CONFIRM (event, player, status, arg4, arg5)
 	
 	--print (event, player, UnitName (player), status, arg4, arg5)
 	
-	-- retornou false pra não pronto
+	-- retornou false pra nï¿½o pronto
 	-- retornou true para pronto
 	
 	if (ReadyCheck.db.enabled and ReadyCheck.AnswerTable and ReadyCheck.ScreenPanel) then

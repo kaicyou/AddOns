@@ -1,3 +1,61 @@
+7.3.2v1.4 Release - 2017/12/16
+
+Bug fix: Overlay and tooltip should now always update after learning an item.  If it does not please let us know!
+
+* [#133](https://gitlab.com/toreltwiddler/CanIMogIt/issues/133) Changed how caching is stored, from itemLink to sourceID to hopefully properly remove items from the cache.
+
+*****
+
+7.3.2v1.3 Release - 2017/11/29
+
+Bug fix: Set appearance list now properly updates.
+
+* [142](https://gitlab.com/toreltwiddler/CanIMogIt/issues/142) Fixed set list ratio text not updating when learning appearance.
+
+*****
+
+7.3.2v1.2 Release - 2017/11/27
+
+Bug fixes
+
+* [#14](https://gitlab.com/toreltwiddler/CanIMogIt/issues/14) Duplicate tooltips should no longer happen (ElvUI, TipTac, Guild Rewards window, etc.)
+* [#105](https://gitlab.com/toreltwiddler/CanIMogIt/issues/105) Deadeye Monocle marked as Cannot be learned.
+* [#133](https://gitlab.com/toreltwiddler/CanIMogIt/issues/133) Slight delay added to tooltip/icon update to try to prevent it missing the event and not updating at all.
+* [#134](https://gitlab.com/toreltwiddler/CanIMogIt/issues/134) Patterns that craft an item now properly show tooltips.  (Only the pattern shows the tooltip, not the item listed on it.)
+* [#138](https://gitlab.com/toreltwiddler/CanIMogIt/issues/138) Set count now updates when learning/unlearning an item.
+* [#139](https://gitlab.com/toreltwiddler/CanIMogIt/issues/139) Hopefully fixed the bad sourceID issue which was causing Cannot Learn messages on unexpected items.
+
+Improvments
+
+* [#132](https://gitlab.com/toreltwiddler/CanIMogIt/issues/132) Tooltip and overlay added to Mythic Keystones.
+* Added tooltips to crafting reagents in crafting windows.
+* Rework of tooltip generation to be more consistent across the game.
+
+*****
+
+7.3.2v1.1 Release - 2017/11/19
+
+Bug fix: Resolved the lag when learning or unlearning an appearance.
+
+* [#120](https://gitlab.com/toreltwiddler/CanIMogIt/issues/120) Learning an appearance now only clears that item from the cache.  The cache is no longer reset every time an item is learned.
+
+*****
+
+7.3.2v1.0 Release - 2017/10/30
+
+Bug fixes including preventing an error caused by Bagnon.
+
+Tweaks to Auctioneer exception and Soulbound overlay display.
+
+* [#62](https://gitlab.com/toreltwiddler/CanIMogIt/issues/62) Fixed Exception items not showing the overlay.
+* [#63](https://gitlab.com/toreltwiddler/CanIMogIt/issues/63) Changed some exception items to show Cannot be learned instead of Learned because while they're invisible and share AppearanceID with the Hidden items, technically they cannot be learned themselves.  Added a few more exception items.
+* [#103](https://gitlab.com/toreltwiddler/CanIMogIt/issues/103) Fixed old work-around with Tabard assignment.
+* [#129](https://gitlab.com/toreltwiddler/CanIMogIt/issues/129) Improved Auctioneer check to only disable the overlay when CompactUI is enabled.
+* [#130](https://gitlab.com/toreltwiddler/CanIMogIt/issues/130) Bind on Pickup items that cannot be learned by your current character will now show the green negative icon everywhere (vendors, looting, etc.).
+* [#131](https://gitlab.com/toreltwiddler/CanIMogIt/issues/131) Fixed bug when Blizzard's guild bank frames aren't loaded due to an addon (Bagnon).
+
+*****
+
 7.3.0.04 Release - 2017/10/08
 
 Prevent Auctioneer from loading icons.

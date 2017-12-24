@@ -2,7 +2,9 @@ local SLE, T, E, L, V, P, G = unpack(select(2, ...))
 local BNET_CLIENT_WOW = BNET_CLIENT_WOW
 local BNSendGameData = BNSendGameData
 local SendAddonMessage = SendAddonMessage
+local _G = _G
 
+-- GLOBALS: RegisterAddonMessagePrefix, CreateFrame
 
 --Building user list for dev tool
 local function SendRecieve(self, event, prefix, message, channel, sender)

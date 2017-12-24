@@ -747,6 +747,7 @@ L["Item Info Size"] = "Размер информации"
 L["Item Info Outline"] = "Граница информации"
 L["Remove Parchment"] = "Удалить пергамент"
 L["Stage Background"] = "Фон стадии"
+L["Hide the talking head frame at the top center of the screen."] = "Скрыть говорящую голову"
 
 --Toolbars
 L["We are sorry, but you can't do this now. Try again after the end of this combat."] = "Извините, но Вы не можете этого сделать сейчас. Попробуйте снова после окончания текущего боя."
@@ -794,6 +795,7 @@ L["RAID_TOS"] = "ГС"
 L["RAID_NH"] = "ЦН"
 L["RAID_TOV"] = "ИД"
 L["RAID_EN"] = "ИК"
+L["RAID_ANTO"] = "АПТ"
 L["Raid Progression"] = "Рейдовый прогресс"
 L["Show raid experience of character in tooltip (requires holding shift)."] = "Отображает рейдовый опыт данного персонажа (требуется зажатый shift)"
 L["Name Style"] = "Стиль названия"
@@ -845,8 +847,6 @@ L["Makes frame portrait visible regardless of health level when overlay portrait
 L["Classbar Texture"] = "Текстура классовой полосы"
 L["Resize Health Prediction"] = "Подогнать входящее исцеление"
 L["Slightly changes size of health prediction bars."] = "Немного изменяет размер полос входящего исцеления."
-L["Custom Texture"] = "Своя текстура"
-
 
 --Viewport
 L["Viewport"] = true

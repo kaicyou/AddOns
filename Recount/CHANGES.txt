@@ -1,9 +1,9 @@
 ------------------------------------------------------------------------
-r1445 | Resike | 2017-10-06 05:37:55 -0500 (Fri, 06 Oct 2017) | 1 line
+r1449 | Resike | 2017-12-13 12:12:10 -0600 (Wed, 13 Dec 2017) | 2 lines
 Changed paths:
-   M /trunk/Recount.lua
-   M /trunk/zonefilters.lua
+   M /trunk/Tracker.lua
 
-- Fixed pet battle visibility issues.
+- Fixed an issue with DPS calculating.
+
 ------------------------------------------------------------------------
 

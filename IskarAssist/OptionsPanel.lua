@@ -18,13 +18,14 @@ function RA.OpenMainOptions (plugin)
 	end
 
 	RA.db.options_panel = RA.db.options_panel or {}
-	local f = RA:CreateStandardFrame (UIParent, 1000, 500, "Raid Assist (|cFFFFAA00/raa|r)", "RaidAssistOptionsPanel", RA.db.options_panel)
+	local f = RA:CreateStandardFrame (UIParent, 1000, 600, "Raid Assist (|cFFFFAA00/raa|r)", "RaidAssistOptionsPanel", RA.db.options_panel)
 	f:SetBackdropBorderColor (1, .7, 0, .8)
+	f:SetBackdropColor (0, 0, 0, 1)
 	
 	local label_plugins = RA:CreateLabel (f, "Plugins:")
 	label_plugins:SetPoint (10, -35)	
 	local label_mods = RA:CreateLabel (f, "Options Panel For:")
-	label_mods:SetPoint (10, -345)
+	label_mods:SetPoint (10, -405)
 	
 	f.Menu = {}
 	f.Mods = {}
@@ -32,11 +33,11 @@ function RA.OpenMainOptions (plugin)
 	f.Menu.x = 10
 	f.Menu.y = -50
 	f.Menu.button_width = 140
-	f.Menu.button_height = 16
+	f.Menu.button_height = 20
 	f.Mods.button_width = 140
 	f.Mods.button_height = 16
 	f.Mods.x = 10
-	f.Mods.y = -360
+	f.Mods.y = -420
 	f.Main.x = 190
 	f.Main.y = -40
 	f.AllOptionsButtons = {}
@@ -180,9 +181,9 @@ function RA.OpenMainOptions (plugin)
 		local button = RA:CreateButton (f, on_select_plugin, f.Menu.button_width, f.Menu.button_height, text, plugin, nil, nil, nil, nil, 1, button_template, button_text_template)
 		
 		if (icon_texcoord) then
-			button:SetIcon (icon_texture, 16, 16, "overlay", {icon_texcoord.l, icon_texcoord.r, icon_texcoord.t, icon_texcoord.b}, nil, 2, 2)
+			button:SetIcon (icon_texture, 18, 18, "overlay", {icon_texcoord.l, icon_texcoord.r, icon_texcoord.t, icon_texcoord.b}, nil, 2, 2)
 		else
-			button:SetIcon (icon_texture, 16, 16, "overlay", {0, 1, 0, 1}, nil, 2, 2)
+			button:SetIcon (icon_texture, 18, 18, "overlay", {0, 1, 0, 1}, nil, 2, 2)
 		end
 		
 		if (not plugin.IsBossMod) then

@@ -1,22 +1,16 @@
-tag 61547a68ef457185faf4f6c70b55284075c32f64 7.3.0.1
+tag 64ae0c70ded1fd152d952a847bf09e1b3940fbb6 7.3.0.2
 Author:	James D. Callahan III <jcallahan@curse.com>
-Date:	Tue Sep 19 02:57:09 2017 -0500
+Date:	Fri Oct 27 03:47:34 2017 -0500
 
-commit 7c00a861c63ff5445c63f7ee25fa42e38e672a30
+commit 5baa7674419d836d3210278fbfac5b54237cc026
 Author: James D. Callahan III <jcallahan@curse.com>
-Date:   Tue Sep 19 02:54:44 2017 -0500
+Date:   Fri Oct 27 03:47:01 2017 -0500
 
-    Add RaceTextureIDToRaceLabel table and use it to replace the old raceTexturePath string logic. Fixes https://www.wowace.com/projects/archy/issues/670
+    Remove sound string from solve confirmation dialog - fixes https://www.wowace.com/projects/archy/issues/674
 
-commit de2209134bb4aef0eeb3d8b0b06e2c4213dde6fe
+commit c8a061f4569e6b7fc2cdb60156797062616f84c6
 Author: James D. Callahan III <jcallahan@curse.com>
-Date:   Tue Sep 19 01:56:37 2017 -0500
+Date:   Thu Sep 21 11:01:21 2017 -0500
 
-    Update ToC Interface to 70300.
-
-commit 50592b68df7e4f0cfd6f86ac556452828f3a609d
-Author: James D. Callahan III <jcallahan@curse.com>
-Date:   Tue Sep 19 01:55:56 2017 -0500
-
-    Typo fix.
+    Corrected lookup key for Digsite: Nor'Danil Wellspring.
 

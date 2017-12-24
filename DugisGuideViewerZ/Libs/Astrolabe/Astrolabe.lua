@@ -260,6 +260,12 @@ function Astrolabe:GetWorldMapSizeLength(mapId)
     return #res
 end
 
+function Astrolabe:GetMapDimension(m1, f1)
+	local mapData = Astrolabe:GetWorldMapSize(m1);
+	mapData = getFloorData(m1, mapData, f1)
+	return  mapData.width, mapData.height
+end
+
 function Astrolabe:ComputeDistance( m1, f1, x1, y1, m2, f2, x2, y2 )
 	--[[
 	argcheck(m1, 2, "number");

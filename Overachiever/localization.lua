@@ -218,6 +218,10 @@ School of %s
 	OPT_SELECTSOUND_CHECKCOMBAT = "Exclude kill reminders if in combat with creature";
 	OPT_SELECTSOUND_CHECKCOMBAT_TIP = "Don't play reminder sound from needing to kill a creature while you are in combat with it.";
 
+	OPT_LABEL_MISC = "Miscellaneous";
+	OPT_THROTTLE_ACHLOOKUP = "Startup: Throttle achievement lookup";
+	OPT_THROTTLE_ACHLOOKUP_TIP = "Overachiever looks up certain data on startup. If this is unchecked, lookup happens all at once while the UI is first loading. If checked, data is gathered over time after the player enters the world.|n|nThe advantage to throttled lookup is a faster initial loading time, but, for some users and on some characters, this can temporarily impact performance.";
+
 	SOUND_BELL_ALLIANCE = "Bell - Alliance";
 	SOUND_BELL_HORDE = "Bell - Horde";
 	SOUND_BELL_NIGHTELF = "Bell - Night Elf";

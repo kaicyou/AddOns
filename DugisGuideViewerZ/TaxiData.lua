@@ -29409,22 +29409,24 @@ function TaxiData:Initialize()
 			":301:0:3143512645:640:0:2092992794:qid:27203:fac:Alliance:passlvl:90", --Stormwind - Deepholm 
 			":321:1:2183552263:640:0:2172946312:qid:27203:fac:Horde:passlvl:90", -- Orgrimmar - Deepholm  
 		}, --Maelstrom
-		{
-			":321:1:2948491323:806:0:1224680418:lvl:85:qid:29690:fac:Horde:passlvl:90", -- Orgrimmar > Jade Forest (req level 85 and QID 29690)
-			":301:0:2952866787:806:0:1983502790:lvl:85:qid:31732:fac:Alliance:passlvl:90", -- Stormwind City > Jade Forest (req level 85 and QID 31732)
-			
+		{		
 			":1014:10:36.55,66.88:811:0:86.30,61.05:fac:Alliance",--Dalaran Legion > Vale of Eternal Blossoms
-			":1014:10:55.03,25.63:811:0:62.50,21.82:fac:Horde",--Dalaran Legion > Vale of Eternal Blossoms			
+			":1014:10:55.03,25.63:811:0:62.50,21.82:fac:Horde",--Dalaran Legion > Vale of Eternal Blossoms	
+			":321:1:2948491323:806:0:1224680418:lvl:85:qid:29690:fac:Horde:passlvl:90", -- Orgrimmar > Jade Forest (req level 85 and QID 29690)
+			":301:0:2952866787:806:0:1983502790:lvl:85:qid:31732:fac:Alliance:passlvl:90", -- Stormwind City > Jade Forest (req level 85 and QID 31732)					
 		},-- Pandaria
 		{
-			":321:1:47.65,72.19:1011:0:44.42,35.53:qid:34446:fac:Horde", --Orgrimmar > Warspear, Ashran			
-			":301:0:87.54,35.22:1009:0:31.71,52.48:qid:35884:fac:Alliance", --Stormwind > Stormshield, Ashran	
 			":19:0:54.94,53.88:1011:0:44.42,35.53:qid:34446:fac:Horde",--Blasted Lands Dark Portal > Warspear, Ashran	
 			":19:0:54.94,53.88:1009:0:31.71,52.48:qid:35884:fac:Alliance", --Blasted Lands Dark Portal > Stormshield, Ashran	
+			":321:1:47.65,72.19:1011:0:44.42,35.53:qid:34446:fac:Horde", --Orgrimmar > Warspear, Ashran			
+			":301:0:87.54,35.22:1009:0:31.71,52.48:qid:35884:fac:Alliance", --Stormwind > Stormshield, Ashran				
 		}, -- Draenor
 		{
-			":301:0:80.25,34.83:1014:10:60.92,44.73:qid:44663:fac:Alliance",--Stormwind > Dalaran Legion
-			":321:2:36.32,71.14:1014:10:60.92,44.73:qid:44184:fac:Horde",--Orgrimmar Cleft of Shadow > Dalaran Legion		
+			":1135:2:43.39,25.49:1014:10:60.92,44.73:qid:48440", -- The Vindicaar, Krokuun > Dalaran Legion
+			":1170:4:49.39,25.84:1014:10:60.92,44.73:qid:48081", -- The Vindicaar, Mac'Aree > Dalaran Legion
+			":1171:6:35.07,56.02:1014:10:60.92,44.73:qid:48199", -- The Vindicaar, Antoran Waste > Dalaran Legion				
+			":1172:1:49.78,8.80:1014:10:39.65,50.54", -- Whisper of Frightened World Scenario > Dalaran Legion
+						
 			":1044:0:52.40,57.17:1014:10:60.92,44.73:cls:MONK", --Monk Order Hall > Dalaran Legion
 			
 			":1068:1:57.31,90.12:1014:10:60.92,44.73:cls:MAGE", --Mage Order Hall > Dalaran Legion			
@@ -29436,11 +29438,9 @@ function TaxiData:Initialize()
 			":23:20:37.79,63.84:1014:10:33.20,68.89:fac:Alliance:cls:PALADIN:qid:38576", --Paladin Order Hall > Dalaran Legion
 			":23:20:37.79,63.84:1014:10:61.27,14.82:fac:Horde:cls:PALADIN:qid:38576", --Paladin Order Hall > Dalaran Legion
 			":1048:0:45.52,23.93:1077:0:51.60,35.07:cls:DRUID:qid:40645", --Emerald Dreamway > Dreamgrove			
-			
-			":1135:2:43.39,25.49:1014:10:60.92,44.73:qid:48440", -- The Vindicaar, Krokuun > Dalaran Legion
-			":1170:4:49.39,25.84:1014:10:60.92,44.73:qid:48081", -- The Vindicaar, Mac'Aree > Dalaran Legion
-			":1171:6:35.07,56.02:1014:10:60.92,44.73:qid:48199", -- The Vindicaar, Antoran Waste > Dalaran Legion				
-			":1172:1:49.78,8.80:1014:10:39.65,50.54", -- Whisper of Frightened World Scenario > Dalaran Legion
+
+			":301:0:80.25,34.83:1014:10:60.92,44.73:qid:44663:fac:Alliance",--Stormwind > Dalaran Legion
+			":321:2:36.32,71.14:1014:10:60.92,44.73:qid:44184:fac:Horde",--Orgrimmar Cleft of Shadow > Dalaran Legion					
 		}, -- Broken Isles
 		{
 			":1014:10:74.26,49.29:1135:1:61.15,81.37:qid:48440", --Dalaran Legion >  The Vindicaar, Krokuun 

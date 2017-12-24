@@ -427,7 +427,7 @@ local function FindProfessionItem( loc_id, cl, cb, bp, cs, ct )
 										end
 									end
 									
-									local it = GetItemFamily( h )
+									local it = GetItemFamily( h ) or 0
 									
 									if check_item and bit.band( it, ct ) > 0 then
 										--ArkInventory.Output( "prof> ", loc_id, ".", bag_id, ".", slot_id, " " , h )
@@ -1310,7 +1310,7 @@ local function RestackRun( loc_id )
 end
 
 function ArkInventory.Restack( loc_id )
-		RestackRun( loc_id )
+	RestackRun( loc_id )
 end
 
 function ArkInventory.EmptyBag( loc_id, cbag )
@@ -1355,7 +1355,7 @@ function ArkInventory.EmptyBag( loc_id, cbag )
 						PickupContainerItem( bag_id, slot_id )
 						ClearCursor( )
 						
-						Restack_Yield( )
+						--ArkInventory.ThreadYield( threadid )
 						
 					end
 				

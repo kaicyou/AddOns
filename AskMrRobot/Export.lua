@@ -351,11 +351,12 @@ local function scanCrucible()
 	if spec then
 	
 		-- sometimes this event can fire when no crucible data is available, don't overwrite non-blank crucible data with blank crucible data
+		local badEquipped = false
 		if Amr.db.char.Artifacts[spec] then
 			local oldCrucible = Amr.db.char.Artifacts[spec].Crucible
 			if oldCrucible then
 				if #oldCrucible.Equipped > 0 and oldCrucible.Equipped[1] and not equipped[1] then
-					return
+					badEquipped = true
 				end
 			end
 		end
@@ -374,7 +375,11 @@ local function scanCrucible()
 		end		
 		
 		local crucible = dataz.Crucible		
-		crucible.Equipped = equipped
+		
+		if not badEquipped then
+			crucible.Equipped = equipped
+		end
+		
 		if preview then
 			local previewKey = {}
 			table.insert(previewKey, preview.ItemLink)

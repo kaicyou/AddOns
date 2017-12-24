@@ -1,4 +1,22 @@
 ------------------------------------------------------------------------
+r134 | SweetsourDev | 2017-11-30 23:09:05 -0600 (Thu, 30 Nov 2017) | 5 lines
+Changed paths:
+   M /trunk/Core/functions.lua
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Frames/elemental.lua
+   A /trunk/Media/icons/elemental/lightning_rod.blp
+   M /trunk/Modules/config.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r68
+NEW: [Ele] A new aura for "Lightning Rod" has been added.
+
+FIX: [Ele] The timer bar for Primal Elementals should now continue to appear after their first usage.
+FIX: [UI] Enabling the addon on a different character should no longer reset all settings.
+------------------------------------------------------------------------
 r133 | SweetsourDev | 2017-09-01 15:37:24 -0500 (Fri, 01 Sep 2017) | 3 lines
 Changed paths:
    M /trunk/Frames/bulletin.lua

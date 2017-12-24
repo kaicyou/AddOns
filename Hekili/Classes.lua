@@ -13,6 +13,8 @@ local getSpecializationKey = ns.getSpecializationKey
 
 local mt_resource = ns.metatables.mt_resource
 
+local upper = string.upper
+
 
 ns.initializeClassModule = function()
     -- do nothing, overwrite this stub with a class module.
@@ -233,7 +235,7 @@ function addItemSettings( key, itemID, options )
 
     options = options or {}
 
-    options.icon = {
+    --[[ options.icon = {
         type = "description",
         name = function () return select( 2, GetItemInfo( itemID ) ) or format( "[%d]", itemID )  end,
         order = 1,
@@ -247,21 +249,25 @@ function addItemSettings( key, itemID, options )
         imageCoords = { 0.1, 0.9, 0.1, 0.9 },
         width = "full",
         fontSize = "large"
-    }
+    } ]]
 
     options.disabled = {
         type = "toggle",
-        name = function () return format( "Disable %s", select( 2, GetItemInfo( itemID ) ) or ( "[" .. itemID .. "]" ) ) end,
-        desc = "If disabled, the addon will not recommend this trinket via the [Use Items] action.  You can still manually include the trinket in your action lists with your own tailored criteria.",
-        order = 2,
+        name = function () return format( "Disable %s via |cff00ccff[Use Items]|r", select( 2, GetItemInfo( itemID ) ) or ( "[" .. itemID .. "]" ) ) end,
+        desc = function( info )
+            local output = "If disabled, the addon will not recommend this item via the |cff00ccff[Use Items]|r action.  " ..
+                "You can still manually include the item in your action lists with your own tailored criteria."
+            return output
+        end,
+        order = 25,
         width = "full"
     }
 
     options.minimum = {
         type = "range",
         name = "Minimum Targets",
-        desc = "The addon will only recommend this trinket (via [Use Items]) when there are at least this many targets available to hit.",
-        order = 3,
+        desc = "The addon will only recommend this trinket (via |cff00ccff[Use Items]|r) when there are at least this many targets available to hit.",
+        order = 26,
         width = "full",
         min = 1,
         max = 10,
@@ -271,20 +277,21 @@ function addItemSettings( key, itemID, options )
     options.maximum = {
         type = "range",
         name = "Maximum Targets",
-        desc = "The addon will only recommend this trinket (via [Use Items]) when there are no more than this many targets detected.\n\n" ..
+        desc = "The addon will only recommend this trinket (via |cff00ccff[Use Items]|r) when there are no more than this many targets detected.\n\n" ..
             "This setting is ignored if set to 0.",
-        order = 4,
+        order = 27,
         width = "full",
         min = 0,
         max = 10,
         step = 1
     }
 
-    table.insert( class.itemSettings, {
+    class.itemSettings[ itemID ] = {
         key = key,
+        name = function () return select( 2, GetItemInfo( itemID ) ) or ( "[" .. itemID .. "]" ) end,
         item = itemID,
-        options = options
-    } )  
+        options = options,
+    }
 
 end
 
@@ -316,7 +323,7 @@ local function addAbility( key, values, ... )
     end
 
     if values.item then
-        values.name = select( 2, GetItemInfo( values.item ) )
+        values.name, values.link = GetItemInfo( values.item )
 
         if not values.name then
             values.name = tostring( key )
@@ -351,7 +358,8 @@ local function addAbility( key, values, ... )
     storeAbilityElements( key, values )
     
     if not values.item or not values.recheck_name then
-        class.searchAbilities[ key ] = format( "|T%s:0|t %s", tostring( values.texture or GetSpellTexture( values.id ) or 'Interface\\ICONS\\Spell_Nature_BloodLust' ), name )
+        class.searchAbilities[ key ] = "|T" .. ( values.texture or GetSpellTexture( values.id ) or 'Interface\\ICONS\\Spell_Nature_BloodLust' ) .. ":0|t " .. name
+        if values.suffix then class.searchAbilities[ key ] = class.searchAbilities[ key ] .. " " .. values.suffix end
     end
 
     ns.commitKey( key )    
@@ -450,7 +458,7 @@ end
 ns.addGlyph = addGlyph 
 
 
-local function addPet( key )
+local function addPet( key, permanent )
     state.pet[ key ] = rawget( state.pet, key ) or {}
     state.pet[ key ].name = key
     state.pet[ key ].expires = 0
@@ -525,7 +533,7 @@ ns.addResource = addResource
 local function removeResource( resource )
 
     class.resources[ resource ] = nil
-    class.regenModel = nil
+    -- class.regenModel = nil
 
     if class.primaryResource == resource then class.primaryResource = nil end
 
@@ -592,6 +600,7 @@ local function runHandler( key, no_start )
     if state.time == 0 and not no_start and not ability.passive then
         state.false_start = state.query_time - 0.01
 
+        --[[ Old System -- remove?
         -- Generate fake weapon swings.
         state.nextMH = state.query_time + 0.01
         state.nextOH = state.swings.oh_speed and state.query_time + ( state.swings.oh_speed / 2 ) or 0
@@ -599,7 +608,7 @@ local function runHandler( key, no_start )
         if state.swings.mh_actual < state.query_time then        
             state.swings.mh_pseudo = state.query_time + 0.01
             if state.swings.oh_speed then state.swings.oh_pseudo = state.query_time + ( state.swings.oh_speed / 2 ) end
-        end
+        end ]]
         
     end
 
@@ -848,7 +857,7 @@ addAbility( 'arcane_torrent', {
     cast = 0,
     gcdType = 'off',
     cooldown = 120,
-    -- toggle = 'cooldowns'
+    toggle = 'cooldowns'
     }, 50613, 80483, 129597, 155145, 25046, 69179 )
 
 modifyAbility( 'arcane_torrent', 'id', function( x )
@@ -858,7 +867,6 @@ modifyAbility( 'arcane_torrent', 'id', function( x )
 end )
 
 addHandler( 'arcane_torrent', function ()
-
     interrupt()
     
     if class.death_knight then gain( 20, "runic_power" )
@@ -868,7 +876,6 @@ addHandler( 'arcane_torrent', function ()
     elseif class.rogue then gain( 15, "energy" )
     elseif class.warrior then gain( 15, "rage" )
     elseif class.hunter then gain( 15, "focus" ) end
-
 end )
 
 ns.registerInterrupt( 'arcane_torrent' )
@@ -878,11 +885,12 @@ addAura( "shadowmeld", 58984, "duration", 3600 )
 
 addAbility( "shadowmeld", {
     id = 58984,
-    spend = 0,
     cast = 0,
-    gcdType = "spell",
+    gcdType = "off",
     cooldown = 120,
+    passive = true,
     known = function () return race.night_elf end,
+    usable = function () return boss end, -- Only use in boss combat, dropping aggro is for the birds.
 } )
 
 addHandler( "shadowmeld", function ()
@@ -892,8 +900,7 @@ end )
 
 addAbility( 'call_action_list', {
     id = -1,
-    name = 'Call Action List',
-    spend = 0,
+    name = '|cff00ccff[Call Action List]|r',
     cast = 0,
     gcdType = 'off',
     cooldown = 0,
@@ -903,8 +910,7 @@ addAbility( 'call_action_list', {
 
 addAbility( 'run_action_list', {
     id = -2,
-    name = 'Run Action List',
-    spend = 0,
+    name = '|cff00ccff[Run Action List]|r',
     cast = 0,
     gcdType = 'off',
     cooldown = 0,
@@ -915,8 +921,7 @@ addAbility( 'run_action_list', {
 -- Special Instructions
 addAbility( 'wait', {
     id = -3,
-    name = 'Wait',
-    spend = 0,
+    name = '|cff00ccff[Wait]|r',
     cast = 0,
     gcdType = 'off',
     cooldown = 0,
@@ -924,25 +929,78 @@ addAbility( 'wait', {
 } )
 
 
+addAbility( 'pool_resource', {
+    id = -4,
+    name = '|cff00ccff[Pool Resource]|r',
+    cast = 0,
+    gcdType = 'off',
+    cooldown = 0,
+    passive = true
+} )
+
+
 
 -- Universal Gear Stuff
 addGearSet( 'rethus_incessant_courage', 146667 )
-addAura( 'rethus_incessant_courage', 241330 )
+    addAura( 'rethus_incessant_courage', 241330 )
 
 addGearSet( 'vigilance_perch', 146668 )
-addAura( 'vigilance_perch', 241332, 'duration', 60, 'max_stack', 5 )
+    addAura( 'vigilance_perch', 241332, 'duration', 60, 'max_stack', 5 )
 
 addGearSet( 'the_sentinels_eternal_refuge', 146669 )
-addAura( 'the_sentinels_eternal_refuge', 241331, 'duration', 60, 'max_stack', 5 )
+    addAura( 'the_sentinels_eternal_refuge', 241331, 'duration', 60, 'max_stack', 5 )
 
 addGearSet( 'prydaz_xavarics_magnum_opus', 132444 )
-addAura( 'xavarics_magnum_opus', 207428, 'duration', 30 )
+    addAura( 'xavarics_magnum_opus', 207428, 'duration', 30 )
 
 addGearSet( 'aggramars_stride', 132443 )
-addAura( 'aggramars_stride', 207438, 'duration', 3600 )
+    addAura( 'aggramars_stride', 207438, 'duration', 3600 )
 
 addGearSet( 'sephuzs_secret', 132452 )
-addAura( 'sephuzs_secret', 208051, 'duration', 10 )
+    addAura( 'sephuzs_secret', 208051, 'duration', 10 )
+
+addGearSet( 'amanthuls_vision', 154172 )
+    addAura( 'glimpse_of_enlightenment', 256818, 'duration', 12 )
+    addAura( 'amanthuls_grandeur', 256832, 'duration', 15 )
+
+addGearSet( 'insignia_of_the_grand_army', 152626 )
+
+addGearSet( 'eonars_compassion', 154172 )
+    addAura( 'mark_of_eonar', 256824, 'duration', 12 )
+    addAura( 'eonars_verdant_embrace', 257475, 'duration', 20 )
+        class.auras[ 257470 ] = class.auras[ 257475 ]
+        class.auras[ 257471 ] = class.auras[ 257475 ]
+        class.auras[ 257472 ] = class.auras[ 257475 ]
+        class.auras[ 257473 ] = class.auras[ 257475 ]
+        class.auras[ 257474 ] = class.auras[ 257475 ]
+    modifyAura( 'eonars_verdant_embrace', 'id', function( x )
+        if class.file == "SHAMAN" then return x end
+        if class.file == "DRUID" then return 257470 end
+        if class.file == "MONK" then return 257471 end
+        if class.file == "PALADIN" then return 257472 end
+        if class.file == "PRIEST" then
+            if spec.discipline then return 257473 end
+            if spec.holy then return 257474 end
+        end
+        return x
+    end )
+    addAura( 'verdant_embrace', 257444, 'duration', 30 )
+
+
+addGearSet( 'aggramars_conviction', 154173 )
+    addAura( 'celestial_bulwark', 256816, 'duration', 14 )
+    addAura( 'aggramars_fortitude', 256831, 'duration', 15 )
+
+addGearSet( 'golganneths_vitality', 154174 )
+    addAura( 'golganneths_thunderous_wrath', 256833, 'duration', 15 )
+
+addGearSet( 'khazgoroths_courage', 154176 )
+    addAura( 'worldforgers_flame', 256826, 'duration', 12 )
+    addAura( 'khazgoroths_shaping', 256835, 'duration', 15 )
+
+addGearSet( 'norgannons_prowess', 154177 )
+    addAura( 'rush_of_knowledge', 256828, 'duration', 12 )
+    addAura( 'norgannons_command', 256836, 'duration', 15, 'max_stack', 6 )
 
 
 class.potions = {
@@ -963,7 +1021,7 @@ class.potions = {
 
 addAbility( 'potion', {
     id = -4,
-    name = 'Potion',
+    name = '|cff00ccff[Potion]|r',
     spend = 0,
     cast = 0,
     gcdType = 'off',
@@ -998,109 +1056,25 @@ addHandler( 'potion', function ()
 end )
 
 
-
-
---[[ ns.addToggle = function( name, default, optionName, optionDesc )
-
-    table.insert( class.toggles, {
-        name = name,
-        state = default,
-        option = optionName,
-        oDesc = optionDesc
-    } )
-
-    if Hekili.DB.profile[ 'Toggle State: ' .. name ] == nil then
-        Hekili.DB.profile[ 'Toggle State: ' .. name ] = default
-    end
-
-end
-
-
-ns.addSetting = function( name, default, options )
-
-    table.insert( class.settings, {
-        name = name,
-        state = default,
-        option = options
-    } )
-
-    if Hekili.DB.profile[ 'Class Option: ' .. name ] == nil then
-        Hekili.DB.profile[ 'Class Option: ' ..name ] = default
-    end
-
-end ]]
-
-
 addAbility( "use_items", {
     id = -99,
-    name = "Use Items",
+    name = "|cff00ccff[Use Items]|r",
     spend = 0,
     cast = 0,
     cooldown = 120,
     gcdType = 'off',
+    toggle = 'cooldowns',
 } )
-
-addUsableItem( "kiljaedens_burning_wish", 144259 )
-
-addAbility( "kiljaedens_burning_wish", {
-    id = -101,
-    item = 144259,
-    spend = 0,
-    cast = 0,
-    cooldown = 75,
-    gcdType = 'off',
-} )
-
-
-addUsableItem( "umbral_moonglaives", 147012 )
-
-addAbility( "umbral_moonglaives", {
-    id = -102,
-    item = 147012,
-    spend = 0,
-    cast = 0,
-    cooldown = 90,
-    gcdType = 'off',
-} )
-
-
-addUsableItem( "specter_of_betrayal", 151190 )
-
-addAbility( "specter_of_betrayal", {
-    id = -103,
-    item = 151190,
-    spend = 0,
-    cast = 0,
-    cooldown = 45,
-    gcdType = 'off',
-} )
-
-
-addUsableItem( "vial_of_ceaseless_toxins", 147011 )
-
-addAbility( "vial_of_ceaseless_toxins", {
-    id = -104,
-    item = 147011,
-    spend = 0,
-    cast = 0,
-    cooldown = 60,
-    gcdType = 'off',
-} )
-
-addAura( "ceaseless_toxin", 242497, "duration", 20 )
-
-addHandler( "vial_of_ceaseless_toxins", function ()
-    applyDebuff( "target", "ceaseless_toxin", 20 )
-end )
 
 
 addAbility( "draught_of_souls", {
-    id = -100,
+    id = -101,
     item = 140808,
     spend = 0,
     cast = 0,
     cooldown = 80,
     gcdType = 'off',
+    toggle = 'cooldowns',
 } )
 
 addAura( "fel_crazed_rage", 225141, "duration", 3, "incapacitate", true )
@@ -1118,6 +1092,7 @@ addAbility( "faulty_countermeasure", {
     cast = 0,
     cooldown = 120,
     gcdType = 'off',
+    toggle = 'cooldowns',
 } )
 
 addAura( "sheathed_in_frost", 214962, "duration", 30 )
@@ -1127,9 +1102,197 @@ addHandler( "faulty_countermeasure", function ()
 end )
 
 
+addUsableItem( "feloiled_infernal_machine", 144482 )
+
+addAbility( "feloiled_infernal_machine", {
+    id = -103,
+    item = 144482,
+    spend = 0,
+    cast = 0,
+    cooldown = 80,
+    gcdType = 'off',
+    toggle = 'cooldowns'
+} )
+
+addAura( "grease_the_gears", 238534, "duration", 20 )
+
+addHandler( "feloiled_infernal_machine", function ()
+    applyBuff( "grease_the_gears" )
+end )
+
+
+addAbility( "forgefiends_fabricator", {
+    id = -104,
+    item = 151963,
+    spend = 0,
+    cast = 0,
+    cooldown = 30,
+    gcdType = 'off',
+} )
+
+
+addUsableItem( "horn_of_valor", 133642 )
+
+addAbility( "horn_of_valor", {
+    id = -105,
+    item = 133642,
+    spend = 0,
+    cast = 0,
+    cooldown = 120,
+    gcdType = 'off',
+    toggle = 'cooldowns',
+} )
+
+addAura( "valarjars_path", 215956, "duration", 30 )
+
+addHandler( "horn_of_valor", function ()
+    applyBuff( "valarjars_path" )
+end )
+
+
+addUsableItem( "kiljaedens_burning_wish", 144259 )
+
+addAbility( "kiljaedens_burning_wish", {
+    id = -106,
+    item = 144259,
+    spend = 0,
+    cast = 0,
+    cooldown = 75,
+    texture = 1357805,
+    gcdType = 'off',
+    toggle = 'cooldowns',
+} )
+
+
+addAbility( "might_of_krosus", {
+    id = -107,
+    item = 140799,
+    spend = 0,
+    cast = 0,
+    cooldown = 30,
+    gcdType = 'off',
+} )
+
+addHandler( "might_of_krosus", function ()
+    if active_enemies > 3 then setCooldown( "might_of_krosus", 15 ) end
+end )
+
+
+addUsableItem( "ring_of_collapsing_futures", 142173 )
+
+addAbility( "ring_of_collapsing_futures", {
+    id = -108,
+    item = 142173,
+    spend = 0,
+    cast = 0,
+    cooldown = 15,
+    gcdType = 'off',
+} )
+
+addAura( 'temptation', 234143, 'duration', 30, 'max_stack', 20 )
+
+addHandler( "ring_of_collapsing_futures", function ()
+    applyDebuff( "player", "temptation", 30, buff.temptation.stack + 1 )
+end )
+
+
+addUsableItem( "specter_of_betrayal", 151190 )
+
+addAbility( "specter_of_betrayal", {
+    id = -109,
+    item = 151190,
+    spend = 0,
+    cast = 0,
+    cooldown = 45,
+    gcdType = 'off',
+} )
+
+
+addUsableItem( "tiny_oozeling_in_a_jar", 137439 )
+
+addAbility( "tiny_oozeling_in_a_jar", {
+    id = -110,
+    item = 137439,
+    spend = 0,
+    cast = 0,
+    cooldown = 20,
+    gcdType = "off",
+    usable = function () return buff.congealing_goo.stack == 6 end,
+} )
+
+addAura( "congealing_goo", 215126, "duration", 60, "max_stack", 6 )
+
+addHandler( "tiny_oozeling_in_a_jar", function ()
+    removeBuff( "congealing_goo" )
+end )
+
+
+addUsableItem( "umbral_moonglaives", 147012 )
+
+addAbility( "umbral_moonglaives", {
+    id = -111,
+    item = 147012,
+    spend = 0,
+    cast = 0,
+    cooldown = 90,
+    gcdType = 'off',
+    toggle = 'cooldowns',
+} )
+
+
+addUsableItem( "unbridled_fury", 139327 )
+
+addAbility( "unbridled_fury", {
+    id = -112,
+    item = 139327,
+    spend = 0,
+    cast = 0,
+    cooldown = 120,
+    gcdType = 'off',
+    toggle = 'cooldowns',
+} )
+
+addAura( "wild_gods_fury", 221695, "duration", 30 )
+
+addHandler( "unbridled_fury", function ()
+    applyBuff( "unbridled_fury" )
+end )
+
+
+addUsableItem( "vial_of_ceaseless_toxins", 147011 )
+
+addAbility( "vial_of_ceaseless_toxins", {
+    id = -113,
+    item = 147011,
+    spend = 0,
+    cast = 0,
+    cooldown = 60,
+    gcdType = 'off',
+    toggle = 'cooldowns',
+} )
+
+addAura( "ceaseless_toxin", 242497, "duration", 20 )
+
+addHandler( "vial_of_ceaseless_toxins", function ()
+    applyDebuff( "target", "ceaseless_toxin", 20 )
+end )
+
+
+class.itemsInAPL = {}
+
+-- If an item is handled by a spec's APL, drop it from Use Items.
+function ns.registerItem( key, spec )
+    if not key or not spec then return end
+
+    class.itemsInAPL[ spec ] = class.itemsInAPL[ spec ] or {}
+
+    class.itemsInAPL[ spec ][ key ] = not class.itemsInAPL[ spec ][ key ]
+end
+
+
 addAbility( 'variable', {
     id = -5,
-    name = 'Store Value',
+    name = '|cff00ccff[Store Value]|r',
     spend = 0,
     cast = 0,
     gcdType = 'off',
@@ -1179,7 +1342,6 @@ end
     
     
 -- DEFAULTS
-
 
 class.retiredDefaults = {}
 
@@ -1311,80 +1473,51 @@ ns.restoreDefaults = function( category, purge )
                         import.Default = true
                         
                         if index then
-                            local existing = profile.displays[index]
-                            import.Enabled = existing.Enabled
-                            import.spellFlash = existing.spellFlash
-                            import.spellFlashColor = existing.spellFlashColor
-                            
-                            -- import['PvE Visibility'] = existing['PvE Visibility']
-                            import.alwaysPvE = existing.alwaysPvE
-                            import.alphaAlwaysPvE = existing.alphaAlwaysPvE
-                            import.targetPvE = existing.targetPvE
-                            import.alphaTargetPvE = existing.alphaTargetPvE
-                            import.combatPvE = existing.combatPvE
-                            import.alphaCombatPvE = existing.alphaCombatPvE
-                            -- import['PvE Visibility'] = existing['PvE Visibility']
-                            import.alwaysPvP = existing.alwaysPvP
-                            import.alphaAlwaysPvP = existing.alphaAlwaysPvP
-                            import.targetPvP = existing.targetPvP
-                            import.alphaTargetPvP = existing.alphaTargetPvP
-                            import.combatPvP = existing.combatPvP
-                            import.alphaCombatPvP = existing.alphaCombatPvP
-                            --[[ Mode Overrides - cancel, go ahead and overwrite them
-                            import.minAuto = existing.minAuto
-                            import.maxAuto = existing.maxAuto
-                            import.minST = existing.minST
-                            import.maxST = existing.maxST
-                            import.minAE = existing.minAE
-                            import.maxAE = existing.maxAE ]]
-                            
-                            import.x = existing.x
-                            import.y = existing.y
-                            import.rel = existing.rel
-                            
-                            import.numIcons = existing.numIcons
-                            import.iconSpacing = existing.iconSpacing
-                            import.queueDirection = existing.queueDirection
-                            import.queueAlignment = existing.queueAlignment
-                            import.primaryIconSize = existing.primaryIconSize
-                            import.queuedIconSize = existing.queuedIconSize
-                            
-                            import.font = existing.font
-                            import.primaryFontSize = existing.primaryFontSize
-                            import.queuedFontSize = existing.queuedFontSize
-                            import.rangeType = existing.rangeType
-                            
-                            import.showCaptions = existing.showCaptions
+                            local existing = profile.displays[ index ]
+
+                            -- Overwrite only what wasn't customized.
+                            for setting, value in pairs( import ) do
+                                if existing[ setting ] == nil then existing[ setting ] = value end
+                            end
+
+                            -- Except APLs and release.
+                            existing.Release = default.version
+                            existing.Default = true
+                            existing.precombatAPL = import.precombatAPL
+                            existing.defaultAPL = import.defaultAPL
+                        
                         else
                             index = #profile.displays + 1
+                            profile.displays[ index ] = import
+
                         end
-                        
-                        if type( import.precombatAPL ) == 'string' then
+
+                        local updated = profile.displays[ index ]
+
+                        if type( updated.precombatAPL ) == 'string' then
                             for i, list in pairs( profile.actionLists ) do
-                                if list.Name == import.precombatAPL then
-                                    import.precombatAPL = i
+                                if list.Name == updated.precombatAPL then
+                                    updated.precombatAPL = i
                                 end
                             end
 
-                            if type( import.precombatAPL ) == 'string' then
-                                import.precombatAPL = 0
+                            if type( updated.precombatAPL ) == 'string' then
+                                updated.precombatAPL = 0
                             end
                         end
 
-                        if type( import.defaultAPL ) == 'string' then
+                        if type( updated.defaultAPL ) == 'string' then
                             for i, list in pairs( profile.actionLists ) do
-                                if list.Name == import.defaultAPL then
-                                    import.defaultAPL = i
+                                if list.Name == updated.defaultAPL then
+                                    updated.defaultAPL = i
                                 end
                             end
 
-                            if type( import.defaultAPL ) == 'string' then
-                                import.defaultAPL = 0
+                            if type( updated.defaultAPL ) == 'string' then
+                                updated.defaultAPL = 0
                             end
                         end
 
-                        profile.displays[ index ] = import
-                        
                     else
                         ns.Error( "restoreDefaults() - unable to import '" .. default.name .. "' display." )
                     end
@@ -1415,7 +1548,8 @@ end
 
 
 -- Trinket APL
-ns.storeDefault( [[Usable Items]], 'actionLists', 20170720.182352, [[da0ahaqiPGnjf9jcGrjQQtjQ0UeLHPqhJGwgs0ZqsrtdjvDncO2gHuFJqmprvUNuzFIkoirLfIeEibOjIKsxuk0grsWirsItsu1kLsEjskCtKK0oHWsfPEQstLOCvciBfjP8vKKQ9I6VkyWsoSQwSu1JryYI4YGntG(mrgnHKttA1iPYRrsKzROBd1Uv53iA4qulhPEUW0P66qA7eQVJKOgVi58qK1JKqZxk1(PmlKLXl1cc(OtNPGxepg4vGIVFcwjVd4GxQIMKahtbVPHj8bWiOCuOiJIiu0zuos9JcSO5DjOvKDE5vocxjVGLXieYY4TX77NqctbVlbTISZBdwfG76jfzjA89tiXQMwzTEcxfddWbyfcRYPZQaCxpPidRNIrXw10kRv(wfG76jfz4pLIrXw11z1OvTBB1t4QyyaoaRqyvEDwfG76jfz4pLIrXwLlViEmWlv4rNoswjGKONd0y4duAGx561P6iXRGp60rAGGe9CGgdFGsd8k)LOeVtsZ7rEaVPHj8bWiOCuOich5nneKO0eqWYyNDgbLSmEB8((jKWuW7sqRi782Gvb4UEsrwIgF)esSQPvwRNWvXWaCawHWQC6Ska31tkYW6PyuSvnTYALVvb4UEsrg(tPyuSvDDwnAv72w9eUkggGdWkewLxNvb4UEsrg(tPyuSv5YlIhd8kq4E6FAfvLK8KMVkgcELRxNQJeVO4E6FoGjjpP5RIHGx5VeL4DsAEpYd4nnmHpagbLJcfr4iVPHGeLMacwg7SZiOMSmEB8((jKWuWlIhd8sT0pQKOCRif0QLeDg8Ue0kYoVnyvaURNuKLOX3pHeRAAL16jCvmmahGviSkNoRcWD9KImSEkgfBvtRSw5BvaURNuKH)ukgfBvxNvJw1UTvpHRIHb4aScHv51zvaURNuKH)ukgfBvU8MgMWhaJGYrHIiCK30qqIstablJDELRxNQJeVj0pQKO8bsbhcs0zWR8xIs8ojnVh5bSZiOEwgVnEF)esyk4DjOvKDEBWQaCxpPilrJVFcjw10kR1t4QyyaoaRqyvoDwfG76jfzy9umk2QMwzTY3QaCxpPid)Pumk2QUoRgTQDBREcxfddWbyfcRYRZQaCxpPid)Pumk2QC5fXJbEPg6uaOUhsGtacROaL(0tYkQUgIIx561P6iXlvsNu3djWfd9O0NEsduznefVYFjkX7K08EKhWBAycFamckhfkIWrEtdbjknbeSm2zNriWSmEB8((jKWuW7sqRi782Gvb4UEsrwIgF)esSQPvwRNWvXWaCawHWQC6Ska31tkYW6PyuSvnTYALVvb4UEsrg(tPyuSvDDwnAv72w9eUkggGdWkewLxNvb4UEsrg(tPyuSv5YlIhd8s10FAfPGwjGWhWeIWkzKP0l4vUEDQos8kw)5aPGdeWhWeIyWjtPxWR8xIs8ojnVh5b8MgMWhaJGYrHIiCK30qqIstablJD2zeIMLXBJ33pHeMcExcAfzN3gSka31tkYs047NqIvnTYA9eUkggGdWkewLtNvb4UEsrgwpfJITQPvwR8Tka31tkYWFkfJITQRZQrRA32QNWvXWaCawHWQ86Ska31tkYWFkfJITkxEr8yG3fzGWbARif0kkaN(r6N8kxVovhjEdKbchOhifCOhC6hPFYR8xIs8ojnVh5b8MgMWhaJGYrHIiCK30qqIstablJD2zN3fzGq)PsfFxjpgXi7md]] )
+ns.storeDefault( [[Usable Items]], 'actionLists', 20171128.001745, [[dqeFmaqijvTjPKpjrrJssXPKu6wiLi7ssgMQ4yeYYuOEgHcMgsjvxdPeABiLO(grLXHus5CekY8Ku5EsL9jr1bjQAHiv9qcLAIiLsxuHyJsuAKekQtsOALsHxsOq3uIc7uv6NekPLkrEQktvcUkHsSvKsXxrkj2lP)kvnyrhg0IvWJryYe5YqBwk1Njy0kKonQvJuQ8AKsvZwr3gy3k9Bv1WrkwoIEUW0P66iz7eLVJucgVe68ivwpsjP5lfTFkRI0c69cbOEILaomrlf3rqO3rdsWWjtRcD(V67JEIzwscxLE9kHtegO(o(rKCIenwmu9iMgpE8y9ocsMgxp9KNW5)gAb9vKwqVrw4WeLu617fcq9OTKqkHrDl)TT8(uZqVJGKPX1REld0DEfIkjoGdtuYYwwAnGeold7XfbmgwwENLb6oVcrfGxgqbSSLLwJASmq35viQaWImGcyzxNLpw2SPLqcNLH94IagdlRRZYaDNxHOcalYakGL1QxjCIWa13XpIKt0JELW4trsGHwqD9KFGNStNEsKqkHr9(F7(4tnd9eFLycO)j1B)lQU(owlO3ilCyIsk96DeKmnUE1BzGUZRqujXbCyIsw2YsRbKWzzypUiGXWYY7Smq35viQa8YakGLTS0AuJLb6oVcrfawKbual76S8XYMnTes4SmShxeWyyzDDwgO78kevayrgqbSSw9EHauVYcPMoDwk2FQ1rsacdksup5h4j70PxBi10PRN4tToscqyqrI6j(kXeq)tQ3(xuVs4eHbQVJFejNOh9kHXNIKadTG6QRVIbTGEJSWHjkP0R3rqY046vVLb6oVcrLehWHjkzzllTgqcNLH94IagdllVZYaDNxHOcWldOaw2YsRrnwgO78kevayrgqbSSRZYhlB20siHZYWECraJHL11zzGUZRqubGfzafWYA1RegFkscm0cQRN8d8KD60Rno)8eL65TnsUWzpasmkVOEIVsmb0)K6T)f1ReoryG674hrYj6rVxia1RS4KwsSYtuYsX32i5cNwwgqIr5fvxFP11c6nYchMOKsVEVqaQxz)KcyBgxPYmSSSWbsMa6Fs9ocsMgxV6Tmq35viQK4aomrjlBzP1as4SmShxeWyyz5DwgO78kevaEzafWYwwAnQXYaDNxHOcalYakGLDDw(yzZMwcjCwg2JlcymSSUold0DEfIkaSidOawwREYpWt2PtV2FsbSnJRu03goqYeq)tQN4Reta9pPE7Fr9kHtegO(o(rKCIE0RegFkscm0cQRU(slQf0BKfomrjLE9ocsMgxV6Tmq35viQK4aomrjlBzP1as4SmShxeWyyz5DwgO78kevaEzafWYwwAnQXYaDNxHOcalYakGLDDw(yzZMwcjCwg2JlcymSSUold0DEfIkaSidOawwRELW4trsGHwqD9KFGNStNEJ(j3(F7EzW5NupXxjMa6Fs92)I6vcNimq9D8Ji5e9O3leG6jM)KRL)2wsBGZpP66lTSwqVrw4WeLu617iizAC9Q3YaDNxHOsId4WeLSSLLwdiHZYWECraJHLL3zzGUZRqub4LbualBzP1Ogld0DEfIkaSidOaw21z5JLnBAjKWzzypUiGXWY66Smq35viQaWImGcyzT69cbOEIrEwM0oikHBzgwspf5YRGL0kCmQEYpWt2PtpAppPDquc3OFGIC5vONwGJr1t8vIjG(NuV9VOELWjcduFh)isorp6vcJpfjbgAb1vxFLtlO3ilCyIsk969cbOELblmQB5VTLIrYFqf6DeKmnUE1BzGUZRqujXbCyIsw2YsRbKWzzypUiGXWYY7Smq35viQa8YakGLTS0AuJLb6oVcrfawKbual76S8XYMnTes4SmShxeWyyzDDwgO78kevayrgqbSSw9KFGNStNEawyuV)3UN2t(dQqpXxjMa6Fs92)I6vcNimq9D8Ji5e9Oxjm(uKeyOfuxD9LwtlO3ilCyIsk96DeKmnUE1BzGUZRqujXbCyIsw2YsRbKWzzypUiGXWYY7Smq35viQa8YakGLTS0AuJLb6oVcrfawKbual76S8XYMnTes4SmShxeWyyzDDwgO78kevayrgqbSSw9kHXNIKadTG66j)apzNo9i5vO)3UN4pNqAcEf6Bt5uKyON4Reta9pPE7Fr9kHtegO(o(rKCIE07fcq9kXRGL)2wk2)5estWRGLLLYPiXqD9vmPf0BKfomrjLE9ocsMgxV6Tmq35viQK4aomrjlBzP1as4SmShxeWyyz5DwgO78kevaEzafWYwwAnQXYaDNxHOcalYakGLDDw(yzZMwcjCwg2JlcymSSUold0DEfIkaSidOawwREVqaQ3rds4iPL)2wsp6Kq6Gt9KFGNStNEbniHJK9)29dOtcPdo1t8vIjG(NuV9VOELWjcduFh)isorp6vcJpfjbgAb1vxFf9Of0BKfomrjLE9ocsMgxV6Tmq35viQK4aomrjlBzP1as4SmShxeWyyz5DwgO78kevaEzafWYwwAnQXYaDNxHOcalYakGLDDw(yzZMwcjCwg2JlcymSSUold0DEfIkaSidOawwREVqaQNybmqcNwwg))kmHSmm0t(bEYoD6rbgiHZEW)Vctildd9eFLycO)j1B)lQxjCIWa13XpIKt0JELW4trsGHwqD11xrI0c6nYchMOKsVEhbjtJRx9wgO78kevsCahMOKLTS0AajCwg2JlcymSS8old0DEfIkaVmGcyzllTg1yzGUZRqubGfzafWYUolFSSztlHeold7XfbmgwwxNLb6oVcrfawKbualRvVxia1J2WWPL)2wk2imWjgHLf(f5n0t(bEYoD6jJHZ(F7Eceg4eJO3)f5n0t8vIjG(NuV9VOELWjcduFh)isorp6vcJpfjbgAb1vxD9OTyBi10v6vxva]] )
+
 
 -- Was for module support; disabled.
 function Hekili.RetrieveFromNamespace( key )

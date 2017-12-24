@@ -1,4 +1,8 @@
 // WoD voices:(probably just record these should be enough)
+group 1-5
+heal full
+use item
+movetotank
 "silencesoon" => "silence soon",
 "moveboss" => "Move Boss",
 "bosstobeam" => "Move boss to beam",
@@ -665,6 +669,7 @@
 "getboned" => "get bone",
 "ghostsoon" => "spirit incoming",
 "healall" => "heal team",
+heal full-
 "helpdispel" => "dispel",
 "helpkick" => "interrupt",
 "helpme" => "Help",
@@ -689,6 +694,7 @@
 "moveleft" => "move left",
 "moveright" => "move right",
 "movesoon" => "get moving",
+newportal => new portal
 "orbrun" => "orb. run.",
 "otherin" => "player in",
 "otherout" => "player out",

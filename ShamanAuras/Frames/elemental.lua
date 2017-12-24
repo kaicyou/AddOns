@@ -312,6 +312,7 @@ InitializeFrames('FireElemental',LargeIconGrpBot,[[elemental\fire_elemental]],lg
 InitializeFrames('FlameShock',LargeIconGrpTop,[[shared\flame_shock]],lgIcon,true,lgGlow)
 InitializeFrames('Icefury',LargeIconGrpBot,[[elemental\icefury]],lgIcon,true)
 InitializeFrames('LavaBurst1',LargeIconGrpTop,[[elemental\lava_burst]],lgIcon,true,lgGlow,true)
+InitializeFrames('LightningRod',LargeIconGrpExt,[[elemental\lightning_rod]],lgIcon)
 InitializeFrames('LiquidMagmaTotem',LargeIconGrpBot,[[totems\liquid_magma_totem]],lgIcon,true)
 InitializeFrames('PowerOfMaelstrom',LargeIconGrpExt,[[elemental\power_of_the_maelstrom]],lgIcon,false,nil,true)
 InitializeFrames('StormElemental',LargeIconGrpBot,[[elemental\storm_elemental]],lgIcon,true)
@@ -482,7 +483,7 @@ SSA.FlameShock:SetScript('OnUpdate', function(self)
 			self:SetAlpha(1)
 			
 			if (debuff and caster == 'player') then
-				SSA.DataFrame.text:SetText("Caster: "..tostring(caster));
+				--SSA.DataFrame.text:SetText("Caster: "..tostring(caster));
 				local timer,seconds = Auras:parseTime(expires - GetTime(),false,1,'primary',1)
 				--self.text:SetText(timer)
 				self.CD:Show()
@@ -1214,6 +1215,36 @@ SSA.Icefury:SetScript('OnUpdate',function(self)
 		else
 			--self:SetAlpha(Auras.db.char.settings[1].OoCAlpha)
 			if (Auras.db.char.elements[1].cooldowns.primary[2].isPreview) then
+				self:SetAlpha(1)
+			else
+				self:SetAlpha(Auras.db.char.settings[1].OoCAlpha)
+			end
+		end
+	else
+		Auras:ToggleAuraVisibility(self,false,'showhide')
+	end
+end)
+
+-- Lightning Rod
+SSA.LightningRod:SetScript('OnUpdate',function(self)
+	if (Auras:CharacterCheck(1)) then
+		local debuff,_,_,_,_,duration,expires,caster = UnitDebuff('target',Auras:GetSpellName(197209))
+		
+		Auras:ToggleAuraVisibility(self,true,'showhide')
+		Auras:CooldownHandler(self,1,'primary',3,((expires or 0) - (duration or 0)),duration)
+		
+		--[[if ((duration or 0) > 2) then
+			Auras:ExecuteCooldown(self,start,duration,false,false,1)
+			self.CD:Show()
+		else
+			self.CD:Hide()
+		end]]
+			
+		if (UnitAffectingCombat('player') and Auras:IsTargetEnemy() and caster == "player") then
+			self:SetAlpha(1)
+		else
+			--self:SetAlpha(Auras.db.char.settings[1].OoCAlpha)
+			if (Auras.db.char.elements[1].cooldowns.primary[3].isPreview) then
 				self:SetAlpha(1)
 			else
 				self:SetAlpha(Auras.db.char.settings[1].OoCAlpha)
@@ -2513,6 +2544,8 @@ MainTimerBarGrp:SetScript('OnUpdate',function(self,event,...)
 --			end
 --		end
 		
+
+		
 		-- Run the following code if Primal Elementalist is talented and an elemental pet is active.
 		if (UnitExists('pet') and mainIDs[UnitName('pet')]) then
 			--local eleStr = GetElementalString(UnitName('pet'))
@@ -2536,6 +2569,7 @@ MainTimerBarGrp:SetScript('OnUpdate',function(self,event,...)
 					mainIDs[name][1]:Hide()
 				end
 			else
+				mainIDs[name][3] = 0;
 				mainIDs[name][1]:SetValue(0)
 				mainIDs[name][1]:Hide()
 			end

@@ -23,6 +23,7 @@ function ArkInventory.EraseSavedData( player_id, loc_id, silent )
 	ArkInventory.Table.Clean( ArkInventory.Global.Cache.ItemCount, nil, true )
 	
 	local info = ArkInventory.GetPlayerInfo( )
+	local a = ArkInventory.PlayerIDAccount( )
 	
 	-- erase data
 	for pk, pv in pairs( ArkInventory.db.player.data ) do
@@ -51,6 +52,10 @@ function ArkInventory.EraseSavedData( player_id, loc_id, silent )
 						ArkInventory.Output( "Saved ", string.lower( ArkInventory.Global.Location[lk].Name ), " data for ", pk, " has been erased" )
 					end
 					
+					if pk == a then
+						rescan = true
+					end
+					
 				end
 				
 			end
@@ -68,7 +73,7 @@ function ArkInventory.EraseSavedData( player_id, loc_id, silent )
 	end
 	
 	if rescan then
-		-- current player was wiped, need to rescan
+		-- current player, or account, was wiped, need to rescan
 		ArkInventory.PlayerInfoSet( )
 		ArkInventory.ScanLocation( )
 	end
@@ -317,12 +322,12 @@ function ArkInventory:EVENT_WOW_COMBAT_LEAVE( )
 	
 	if ArkInventory.Global.LeaveCombatRun.Mount then
 		ArkInventory.Global.LeaveCombatRun.Mount = false
-		ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_MOUNT_UPDATE_BUCKET", "RESCAN" )
+		ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_MOUNT_RELOAD_BUCKET", "RESCAN" )
 	end
 	
 	if ArkInventory.Global.LeaveCombatRun.Toybox then
 		ArkInventory.Global.LeaveCombatRun.Toybox = false
-		ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_TOYBOX_UPDATE_BUCKET", "RESCAN" )
+		ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_TOYBOX_RELOAD_BUCKET", "RESCAN" )
 	end
 	
 	if ArkInventory.Global.LeaveCombatRun.Heirloom then
@@ -2446,7 +2451,7 @@ function ArkInventory.ScanCollectionMount( )
 	
 	if ( not ArkInventory.Collection.Mount.IsReady( ) ) then
 		--ArkInventory.Output( "mount journal not ready" )
-		ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_MOUNT_UPDATE_BUCKET", "RESCAN" )
+		ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_MOUNT_RELOAD_BUCKET", "RESCAN" )
 		return
 	end
 	--ArkInventory.Output( "mount journal ready" )
@@ -2684,11 +2689,11 @@ function ArkInventory.ScanCollectionToybox( )
 	--ArkInventory.Output( "ScanCollectionToybox( ) start" )
 	
 	if not ArkInventory.Collection.Toybox.IsReady( ) then
-		--ArkInventory.Output( "toybox journal not ready" )
-		ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_TOYBOX_UPDATE_BUCKET", "RESCAN" )
+		--ArkInventory.Output( "toybox not ready" )
+		ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_TOYBOX_RELOAD_BUCKET", "NOT READY" )
 		return
 	end
-	--ArkInventory.Output( "toybox journal ready" )
+	--ArkInventory.Output( "toybox ready", { ArkInventory.Collection.Toybox } )
 	
 	if ArkInventory.Collection.Toybox.GetCount( ) == 0 then
 		--ArkInventory.Output( "no toys" )
@@ -2739,8 +2744,6 @@ function ArkInventory.ScanCollectionToybox_Threaded( blizzard_id, loc_id, bag_id
 	bag.empty = 0
 	bag.type = ArkInventory.BagType( blizzard_id )
 	bag.status = ArkInventory.Const.Bag.Status.Active
-	
-	--ArkInventory.Output( "scanning toybox [", ArkInventory.Collection.Toybox.data.owned, "]" )
 	
 	local slot_id = 0
 	

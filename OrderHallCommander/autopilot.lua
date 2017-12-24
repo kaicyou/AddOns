@@ -69,12 +69,29 @@ local LE_GARRISON_TYPE_7_0=LE_GARRISON_TYPE_7_0
 local GARRISON_FOLLOWER_COMBAT_ALLY=GARRISON_FOLLOWER_COMBAT_ALLY
 local GARRISON_FOLLOWER_ON_MISSION=GARRISON_FOLLOWER_ON_MISSION
 local GARRISON_FOLLOWER_INACTIVE=GARRISON_FOLLOWER_INACTIVE
+local GARRISON_FOLLOWER_IN_PARTY=GARRISON_FOLLOWER_IN_PARTY
+local GARRISON_FOLLOWER_AVAILABLE=AVAILABLE
 local ViragDevTool_AddData=_G.ViragDevTool_AddData
 if not ViragDevTool_AddData then ViragDevTool_AddData=function() end end
 local KEY_BUTTON1 = "\124TInterface\\TutorialFrame\\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:228:283\124t" -- left mouse button
 local KEY_BUTTON2 = "\124TInterface\\TutorialFrame\\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:330:385\124t" -- right mouse button
 local CTRL_KEY_TEXT,SHIFT_KEY_TEXT=CTRL_KEY_TEXT,SHIFT_KEY_TEXT
-
+local CTRL_KEY_TEXT,SHIFT_KEY_TEXT=CTRL_KEY_TEXT,SHIFT_KEY_TEXT
+local CTRL_SHIFT_KEY_TEXT=CTRL_KEY_TEXT .. '-' ..SHIFT_KEY_TEXT
+local format,pcall=format,pcall
+local function safeformat(mask,...)
+  local rc,result=pcall(format,mask,...)
+  if not rc then
+    for k,v in pairs(L) do
+      if v==mask then
+        mask=k
+        break
+      end
+    end
+ end
+  rc,result=pcall(format,mask,...)
+  return rc and result or mask 
+end
 
 -- End Template - DO NOT MODIFY ANYTHING BEFORE THIS LINE
 --*BEGIN 
@@ -123,64 +140,60 @@ function module:DoRunMissions()
 				local key=addon:GetMissionKey(missionID)
 				local party=addon:GetMissionParties(missionID):GetSelectedParty(key)
 				local members = addon:GetMembersFrame(frame)
-				addon:Print(format(L["Attempting %s"],C(mission.name,'orange')))
+				addon:Print(safeformat(L["Attempting %s"],C(mission.name,'orange')))
 				 
-				if party.perc >= baseChance then
-					local info=""
-					for i=1,#members.Champions do
-						local followerID=members.Champions[i]:GetFollower()
-						if followerID then
-							safeguard[followerID]=missionID
-							local rc,res = pcall(G.AddFollowerToMission,missionID,followerID)
-							if rc then
-								info=info .. G.GetFollowerLink(followerID)
-							else
-								addon:Print(C(L["Unable to start mission, aborting"],"red"))
-								self:Cleanup()
-								break
-							end
+				local info=""
+				for i=1,#members.Champions do
+					local followerID=members.Champions[i]:GetFollower()
+					if followerID then
+						safeguard[followerID]=missionID
+						local rc,res = pcall(G.AddFollowerToMission,missionID,followerID)
+						if rc then
+							info=info .. G.GetFollowerLink(followerID)
+						else
+							addon:Print(C(L["Unable to start mission, aborting"],"red"))
+							self:Cleanup()
+							break
 						end
 					end
-					local timestring,timeseconds,timeImproved,chance,buffs,missionEffects,xpBonus,materials,gold=G.GetPartyMissionInfo(missionID)
-          
-					if party.perc < chance then
-						addon:Print(C(L["Could not fulfill mission, aborting"],"red"))
-						self:Cleanup()
-						break
+				end
+				local timestring,timeseconds,timeImproved,chance,buffs,missionEffects,xpBonus,materials,gold=G.GetPartyMissionInfo(missionID)
+        
+				if party.perc < chance then
+					addon:Print(C(L["Could not fulfill mission, aborting"],"red"))
+					self:Cleanup()
+					break
+				end
+        local r,n,i=addon:GetResources(true)
+        if select(2,G.GetMissionCost(missionID)) > r then
+          addon:Print(C(GARRISON_NOT_ENOUGH_MATERIALS_TOOLTIP,"red"))
+          self:Cleanup()
+          break
+        end
+				
+				nothing=false
+				if truerun then
+					self:RegisterEvent("GARRISON_MISSION_STARTED")
+					G.StartMission(missionID)						
+					addon:Print(C(L["Started with "],"green") ..info)
+					PlaySound(SOUNDKIT.UI_GARRISON_COMMAND_TABLE_MISSION_START)
+					--[===[@debug@
+					dprint("Calling OHF:UpdateMissions")  
+					--@end-debug@]===]
+					OHFFollowerList.dirtyList=true
+					OHFFollowerList:UpdateFollowers();	
+					OHFMissions:UpdateMissions()						
+					--[===[@debug@												
+					if multiple then
+					  addon:Print("Multiple is running")
+						self:ScheduleTimer("DoRunMissions",1)
 					end
-          local r,n,i=addon:GetResources(true)
-          if select(2,G.GetMissionCost(missionID)) > r then
-            addon:Print(C(GARRISON_NOT_ENOUGH_MATERIALS_TOOLTIP,"red"))
-            self:Cleanup()
-            break
-          end
-					
-					nothing=false
-					if truerun then
-						self:RegisterEvent("GARRISON_MISSION_STARTED")
-						G.StartMission(missionID)						
-						addon:Print(C(L["Started with "],"green") ..info)
-						PlaySound(SOUNDKIT.UI_GARRISON_COMMAND_TABLE_MISSION_START)
-						--[===[@debug@
-						dprint("Calling OHF:UpdateMissions")  
-						--@end-debug@]===]
-						OHFFollowerList.dirtyList=true
-						OHFFollowerList:UpdateFollowers();	
-						OHFMissions:UpdateMissions()						
-						--[===[@debug@												
-						if multiple then
-						  addon:Print("Multiple is running")
-							self:ScheduleTimer("DoRunMissions",1)
-						end
-						--@end-debug@]===]
-						break
-					else
-						addon:Print(C(L["Would start with "],"green") ..info)
-						addon:Print(C("Shift-Click to actually start mission","green"))
-						self:Cleanup()
-					end
+					--@end-debug@]===]
+					break
 				else
-					addon:Print(C(format(L["%1$d%% lower than %2$d%%. Lower %s"],party.perc,baseChance,L["Base Chance"]),"red"))
+					addon:Print(C(L["Would start with "],"green") ..info)
+					addon:Print(C(safeformat(L["%s to actually start mission"],SHIFT_KEY_TEXT .. KEY_BUTTON1),"green"))
+					self:Cleanup()
 				end
 			end
 		end
@@ -196,7 +209,7 @@ function module:FireMission(missionID,frame,truerun)
     local key=addon:GetMissionKey(missionID)
     local party=addon:GetMissionParties(missionID):GetSelectedParty(key)
     local members = addon:GetMembersFrame(frame)
-    if party.perc >= baseChance then
+    if party.perc >= baseChance or addon:GetBoolean("QUICKSTART") then
       local info=""
       for i=1,#members.Champions do
         local followerID=members.Champions[i]:GetFollower()
@@ -238,11 +251,11 @@ function module:FireMission(missionID,frame,truerun)
         return
       else
         addon:Print(C(L["Would start with "],"green") ..info)
-        addon:Print(C("Shift-Click to actually start mission","green"))
+        addon:Print(C(safeformat(L["%s to actually start mission"],SHIFT_KEY_TEXT .. KEY_BUTTON1),"green"))
         self:Cleanup()
       end
     else
-      addon:Print(C(format(L["%1$d%% lower than %2$d%%. Lower %s"],party.perc,baseChance,L["Base Chance"]),"red"))
+      addon:Print(C(safeformat(L["%1$d%% lower than %2$d%%. Lower %s"],party.perc,baseChance,L["Base Chance"]),"red"))
     end
   end
 end

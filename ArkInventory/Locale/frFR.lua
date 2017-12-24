@@ -195,6 +195,8 @@ if not L then return end
 	L["MENU_BAR_RESET_TEXT"] = "Supprimer toutes les catégories assignées actuellement à ce groupe sauf la catégorie par défaut"
 	L["MENU_BAR_INSERT_TEXT"] = "Insérer un groupe vide ici en déplacant toutes les catégories d'un groupe vers le haut"
 	L["MENU_BAR_DELETE_TEXT"] = "Remettre toutes les catégories de ce groupe vers le groupe par défaut et déplacer tous les groupes au-dessus de celui-ci d'un groupe vers le bas.\n\nSi la catégorie par défaut est dans ce groupe elle va retourner vers le groupe 1"
+--	L["MENU_BAR_WIDTH_MINIMUM_TEXT"] = ""
+--	L["MENU_BAR_WIDTH_MAXIMUM_TEXT"] = ""
 --	L["MENU_BAR_MOVE_START_TEXT"] = ""
 --	L["MENU_BAR_MOVE_COMPLETE_TEXT"] = ""
 --	L["MENU_BAR_MOVE_FAIL_OUTSIDE"] = ""

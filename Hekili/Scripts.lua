@@ -259,7 +259,10 @@ local specialModifiers = {
     MaximumTargets = true,
     CheckMovement = true,
     Movement = true,
-    ModName = false
+    ModName = false,
+    WaitSeconds = true,
+    PoolTime = true,
+    PoolForNext = true
 }
 
 
@@ -482,11 +485,13 @@ ns.importModifiers = function( list, entry )
     state.args[ k ] = nil
   end
 
-  if not scripts['A'][list..':'..entry].Modifiers then return end
+  local script = scripts.A[ key ]
 
-  for k,v in pairs( scripts['A'][list..':'..entry].Modifiers ) do
-    local success, value = pcall(v)
-    if success then state.args[k] = value end
+  if not script or not script.Modifiers then return end
+
+  for k,v in pairs( script.Modifiers ) do
+    local success, value = pcall( v )
+    if success then state.args[ k ] = value end
   end
 
 end
@@ -525,7 +530,7 @@ ns.loadScripts = function()
       if action.Ability == 'call_action_list' or action.Ability == 'run_action_list' then
         -- check for time sensitive conditions.
         local lua = Actions[ aKey ].Lua
-        if lua and ( lua:match( "time" ) or lua:match( "cooldown" ) or lua:match( "charges" ) or lua:match( "buff" ) or lua:match( "focus" ) or lua:match( "energy" ) ) then
+        if lua and ( lua:match( "time" ) or lua:match( "cooldown" ) or lua:match( "charge" ) or lua:match( "buff" ) or lua:match( "focus" ) or lua:match( "energy" ) ) then
             Actions[ aKey ].TimeSensitive = true
         else
             Actions[ aKey ].TimeSensitive = false

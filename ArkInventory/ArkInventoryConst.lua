@@ -109,6 +109,7 @@ ArkInventory.Const = { -- constants
 		--TabInfo = 5,
 		--SkillUpdate = 6,
 		--ItemUpdate = 7,
+		--BagEmpty = 8,
 	},
 
 	Location = {

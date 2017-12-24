@@ -1,28 +1,12 @@
 ------------------------------------------------------------------------
-r673 | arkayenro | 2017-08-29 18:58:00 -0500 (Tue, 29 Aug 2017) | 6 lines
+r680 | arkayenro | 2017-11-29 01:41:43 -0600 (Wed, 29 Nov 2017) | 3 lines
 Changed paths:
+   M /trunk/ArkInventory.lua
    M /trunk/ArkInventory.toc
    M /trunk/VersionHistory.txt
 
-*3.07.35 (30-AUG-2017)*
- * changed - toc updated to 70300
-
-*3.07.34 (30-AUG-2017)*
- * fixed - calls to PlaySound( )
-
-------------------------------------------------------------------------
-r672 | arkayenro | 2017-08-29 18:52:54 -0500 (Tue, 29 Aug 2017) | 4 lines
-Changed paths:
-   M /trunk/ArkInventory.toc
-   M /trunk/Modules/ArkInventoryConfig/ArkInventoryConfig.toc
-   M /trunk/Modules/ArkInventoryRules/ArkInventoryRules.toc
-   M /trunk/Modules/ArkInventoryRules_Example/ArkInventoryRules_Example.toc
-   M /trunk/Modules/ArkInventorySearch/ArkInventorySearch.toc
-   M /trunk/VersionHistory.txt
-
-*3.07.34 (30-AUG-2017)*
- * changed - toc updated to 70300
- * fixed - calls to PlaySound( )
+*3.07.37 (29-NOV-2017)*
+ * fixed - issue with ilvl sorting
 
 ------------------------------------------------------------------------
 

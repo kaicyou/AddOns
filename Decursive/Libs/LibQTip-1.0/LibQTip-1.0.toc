@@ -2,9 +2,9 @@
 ## Title: Lib: QTip-1.0
 ## Notes: Library providing multi-column tooltips.
 ## Author: Torhal, Adirelle, Elkano, Tristanian
-## Version: r179 
+## Version: @project-version@ 
 ## LoadOnDemand: 1
-## X-Date: 2016-11-18T21:08:47Z
+## X-Date: @project-date-iso@
 ## X-Credits: Kaelten (input on initial design)
 ## X-Category: Library, Tooltip
 ## X-License: Ace3 BSD-like license

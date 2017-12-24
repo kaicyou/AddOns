@@ -85,7 +85,7 @@ function ArkInventory.MenuMainOpen( frame )
 							ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
 						end
 					)
-
+					
 					ArkInventory.Lib.Dewdrop:AddLine(
 						"icon", ArkInventory.Const.Actions[ArkInventory.Const.ActionID.Restack].Texture,
 						"text", ArkInventory.Const.Actions[ArkInventory.Const.ActionID.Restack].Name,
@@ -248,6 +248,12 @@ function ArkInventory.MenuBarOpen( frame )
 						"text", ArkInventory.Localise["ACTION"],
 						"hasArrow", true,
 						"value", "BAR_ACTION"
+					)
+					
+					ArkInventory.Lib.Dewdrop:AddLine(
+						"text", ArkInventory.Localise["WIDTH"],
+						"hasArrow", true,
+						"value", "BAR_WIDTH"
 					)
 					
 					end
@@ -832,6 +838,61 @@ function ArkInventory.MenuBarOpen( frame )
 					end
 					
 					
+					if value == "BAR_WIDTH" then
+						
+						ArkInventory.Lib.Dewdrop:AddLine(
+							"text", ArkInventory.Localise["WIDTH"],
+							"isTitle", true
+						)
+						
+						ArkInventory.Lib.Dewdrop:AddLine( )
+						
+						local c = codex.layout.bar.data[bar_id].width.min
+						local text = c
+						if not c then
+							text = ArkInventory.Localise["AUTOMATIC"]
+						end
+						text = string.format( ArkInventory.Localise["MENU_BAR_WIDTH_MINIMUM"], ArkInventory.Localise["MINIMUM"], text )
+						
+						ArkInventory.Lib.Dewdrop:AddLine(
+							"text", text,
+							"tooltipTitle", ArkInventory.Localise["MINIMUM"],
+							"tooltipText", string.format( ArkInventory.Localise["MENU_BAR_WIDTH_MINIMUM_TEXT"], bar_id ),
+							"hasArrow", true,
+							"hasEditBox", true,
+							"editBoxText", c,
+							"editBoxFunc", function( v )
+								local z = math.floor( tonumber( v ) or 0 )
+								if z < 1 then z = nil end
+								codex.layout.bar.data[bar_id].width.min = z
+								ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
+							end
+						)
+						
+						local c = codex.layout.bar.data[bar_id].width.max
+						local text = c
+						if not c then
+							text = ArkInventory.Localise["AUTOMATIC"]
+						end
+						text = string.format( ArkInventory.Localise["MENU_BAR_WIDTH_MAXIMUM"], ArkInventory.Localise["MAXIMUM"], text )
+						
+						ArkInventory.Lib.Dewdrop:AddLine(
+							"text", text,
+							"tooltipTitle", ArkInventory.Localise["MAXIMUM"],
+							"tooltipText", string.format( ArkInventory.Localise["MENU_BAR_WIDTH_MAXIMUM_TEXT"], bar_id ),
+							"hasArrow", true,
+							"hasEditBox", true,
+							"editBoxText", c,
+							"editBoxFunc", function( v )
+								local z = math.floor( tonumber( v ) or 0 )
+								if z < 1 then z = nil end
+								codex.layout.bar.data[bar_id].width.max = z
+								ArkInventory.Frame_Main_Generate( nil, ArkInventory.Const.Window.Draw.Recalculate )
+							end
+						)
+					
+					end
+					
 				end
 
 				
@@ -1289,7 +1350,7 @@ function ArkInventory.MenuItemOpen( frame )
 								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", AUCTION_STACK_SIZE, LIGHTYELLOW_FONT_COLOR_CODE, info.stacksize ) )
 								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["TEXTURE"], LIGHTYELLOW_FONT_COLOR_CODE, info.texture ) )
 								
-								local ifam = GetItemFamily( i.h )
+								local ifam = GetItemFamily( i.h ) or 0
 								ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_FAMILY"], LIGHTYELLOW_FONT_COLOR_CODE, ifam ) )
 								
 							elseif info.class == "battlepet" then
@@ -1996,7 +2057,7 @@ function ArkInventory.MenuBagOpen( frame )
 						
 						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["TEXTURE"], LIGHTYELLOW_FONT_COLOR_CODE, info.texture ) )
 						
-						local ifam = GetItemFamily( i.h )
+						local ifam = GetItemFamily( i.h ) or 0
 						ArkInventory.Lib.Dewdrop:AddLine( "text", string.format( "%s: %s%s", ArkInventory.Localise["MENU_ITEM_DEBUG_FAMILY"], LIGHTYELLOW_FONT_COLOR_CODE, ifam ) )
 						
 					end

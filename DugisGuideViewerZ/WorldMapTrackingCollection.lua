@@ -9,10 +9,10 @@ local _
 local mailReaction, auctionReaction, bankReaction, battlemasterReaction, trainerReaction, vendorReaction, confirmBindReaction, dataTooltip
 
 function WMTCollection:Initialize()
-	if not CollectedWorldMapTrackingPoints then
-		CollectedWorldMapTrackingPoints = {}
+	if not CollectedWorldMapTrackingPoints_v2 then
+		CollectedWorldMapTrackingPoints_v2 = {}
 	end
-	local collectedPoints = CollectedWorldMapTrackingPoints
+	local collectedPoints = CollectedWorldMapTrackingPoints_v2
 	local playerFaction = UnitFactionGroup("player")
 	if not collectedPoints[playerFaction] then
 		collectedPoints[playerFaction] = {}
@@ -80,7 +80,7 @@ function WMTCollection:Initialize()
 						dataTooltip:SetItemByID(itemID)
 						local text = dataTooltip.left[2]:GetText()
 						if text then
-							if text:match(L["Use: Restores [%d/,/.]+ health"]) then return true end
+							if text:match(L["Use: Restores [%d/,/.]+"]) then return true end
 						end
 					end
 				end
@@ -158,7 +158,7 @@ function WMTCollection:Initialize()
 			then return end
 			local x,y = GetCoords()
 			local mapName, level = GetMapInfo(), GetCurrentMapDungeonLevel()
-			if x and not PointExists(mapName, level, trackingType, x, y, ...) then
+			if x and not PointExists(mapName, level, trackingType, x, y, npcId) then
 				local mapKey = mapName..":"..level
 				if not collectedPoints[playerFaction][mapKey] then
 					collectedPoints[playerFaction][mapKey] = {}

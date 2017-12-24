@@ -376,12 +376,12 @@ function ArkInventory.Collection.Pet.Scan_Threaded( thread_id )
 	
 	local update = false
 	
-	if ( data.total ~= total ) or ( not data.ready ) then
+	if data.total ~= total or not data.ready then
 		data.total = total
 		update = true
 	end
 	
-	if ( data.owned ~= owned ) or ( not data.ready ) then
+	if data.owned ~= owned or not data.ready then
 		
 		data.owned = owned
 		update = true
@@ -390,11 +390,9 @@ function ArkInventory.Collection.Pet.Scan_Threaded( thread_id )
 		
 	end
 	
-	local check = true
-	
-	for i = 1, total do
+	for index = 1, total do
 		
-		local guid, speciesID, owned = C_PetJournal.GetPetInfoByIndex( i, false )
+		local guid, speciesID, owned = C_PetJournal.GetPetInfoByIndex( index, false )
 		
 		-- species data (all pets)
 		local sd = ArkInventory.Collection.Pet.ScanSpecies( speciesID )
@@ -413,9 +411,9 @@ function ArkInventory.Collection.Pet.Scan_Threaded( thread_id )
 		
 		-- pet data (owned pets)
 		if owned then
-			local pd, upd = ArkInventory.Collection.Pet.ScanPet( i, guid, update )
+			local pd, upd = ArkInventory.Collection.Pet.ScanPet( index, guid, update )
 			if not pd then
-				--ArkInventory.Output( "* pet journal not ready at ", i, " / ", guid )
+				--ArkInventory.Output( "* pet journal not ready at ", index, " / ", guid )
 				FilterActionRestore( )
 				ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_PET_RELOAD_BUCKET", "RESCAN" )
 				return false

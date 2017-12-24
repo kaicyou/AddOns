@@ -1,4 +1,10 @@
-﻿	r67
+﻿	r68
+NEW: [Ele] A new aura for "Lightning Rod" has been added.
+
+FIX: [Ele] The timer bar for Primal Elementals should now continue to appear after their first usage.
+FIX: [UI] Enabling the addon on a different character should no longer reset all settings.
+
+	r67
 FIX: [Ele] Fixed a random error while navigating the config panel.
 FIX: [UI] An error caused by a library - that prevented the addon from loading - has been fixed. (Thanks, Stryker!)
 	

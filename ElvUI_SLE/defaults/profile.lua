@@ -361,6 +361,7 @@ P["sle"] = {
 			["trial"] = false,
 			["palace"] = false,
 			["tomb"] = false,
+			["antorus"] = false,
 		},
 	},
 	--Loot 
@@ -701,6 +702,9 @@ P["sle"] = {
 				["subOutline"] = "OUTLINE",
 			},
 		},
+		["talkinghead"] = {
+			["hide"] = false,
+		},
 	},
 	--Tooltip
 	["tooltip"] = {
@@ -717,6 +721,7 @@ P["sle"] = {
 				["trial"] = true,
 				["nighthold"] = true,
 				["sargeras"] = true,
+				["antorus"] = true,
 			},
 		},
 	},
@@ -759,20 +764,6 @@ P["sle"] = {
 	["unitframes"] = {
 		["unit"] = {
 			["player"] = {
-				["combatico"] = {
-					["xoffset"] = 0,
-					["yoffset"] = 0,
-					["size"] = 19,
-					["texture"] = "DEFAULT",
-					["red"] = true,
-				},
-				["rested"] = {
-					["xoffset"] = 0,
-					["yoffset"] = 0,
-					["size"] = 22,
-					["texture"] = "DEFAULT",
-					["customTexture"] = "",
-				},
 				["pvpIconText"] = {
 					["enable"] = false,
 					["xoffset"] = 0,

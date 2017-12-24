@@ -69,15 +69,35 @@ local LE_GARRISON_TYPE_7_0=LE_GARRISON_TYPE_7_0
 local GARRISON_FOLLOWER_COMBAT_ALLY=GARRISON_FOLLOWER_COMBAT_ALLY
 local GARRISON_FOLLOWER_ON_MISSION=GARRISON_FOLLOWER_ON_MISSION
 local GARRISON_FOLLOWER_INACTIVE=GARRISON_FOLLOWER_INACTIVE
+local GARRISON_FOLLOWER_IN_PARTY=GARRISON_FOLLOWER_IN_PARTY
+local GARRISON_FOLLOWER_AVAILABLE=AVAILABLE
 local ViragDevTool_AddData=_G.ViragDevTool_AddData
 if not ViragDevTool_AddData then ViragDevTool_AddData=function() end end
 local KEY_BUTTON1 = "\124TInterface\\TutorialFrame\\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:228:283\124t" -- left mouse button
 local KEY_BUTTON2 = "\124TInterface\\TutorialFrame\\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:330:385\124t" -- right mouse button
 local CTRL_KEY_TEXT,SHIFT_KEY_TEXT=CTRL_KEY_TEXT,SHIFT_KEY_TEXT
-
+local CTRL_KEY_TEXT,SHIFT_KEY_TEXT=CTRL_KEY_TEXT,SHIFT_KEY_TEXT
+local CTRL_SHIFT_KEY_TEXT=CTRL_KEY_TEXT .. '-' ..SHIFT_KEY_TEXT
+local format,pcall=format,pcall
+local function safeformat(mask,...)
+  local rc,result=pcall(format,mask,...)
+  if not rc then
+    for k,v in pairs(L) do
+      if v==mask then
+        mask=k
+        break
+      end
+    end
+ end
+  rc,result=pcall(format,mask,...)
+  return rc and result or mask 
+end
 
 -- End Template - DO NOT MODIFY ANYTHING BEFORE THIS LINE
 --*BEGIN
+local function safecat(...)
+  return strjoin(' ',tostringall(...))
+end
 addon.lastChange=GetTime()
 local matchtimer={time=0,count=0}
 local lethalMechanicEffectID = 437;
@@ -102,7 +122,7 @@ __index = function(t,key)
 }
 --upvalues
 local assert,ipairs,pairs,wipe,GetFramesRegisteredForEvent=assert,ipairs,pairs,wipe,GetFramesRegisteredForEvent
-local select,tinsert,format,pcall,setmetatable,coroutine=select,tinsert,format,pcall,setmetatable,coroutine
+local select,tinsert,setmetatable,coroutine=select,tinsert,setmetatable,coroutine
 local tostringall,strsplit,strjoin=tostringall,strsplit,strjoin
 local followerType=LE_FOLLOWER_TYPE_GARRISON_7_0
 local emptyTable=setmetatable({},{__newindex=function() end})
@@ -146,9 +166,14 @@ local busyCache={}
 function addon:BusyFor(candidate)
 	if not candidate then wipe(busyCache) return end
 	local busyUntil=0
+	local now=GetTime()
+	local never=now+7*24*3600
 	for _,followerID in candidate:IterateFollowers() do
+	  if G.GetFollowerStatus(followerID)== GARRISON_FOLLOWER_INACTIVE then
+	   return never
+	  end
 		if not busyCache[followerID] then
-			busyCache[followerID]=G.GetFollowerMissionTimeLeftSeconds(followerID) or 0
+			busyCache[followerID]=now + (G.GetFollowerMissionTimeLeftSeconds(followerID) or 0)
 		end
 		if busyCache[followerID]>busyUntil then
 			busyUntil=busyCache[followerID]
@@ -187,8 +212,14 @@ local partiesPool=CreateObjectPool(
 
 --	addon:RegisterForMenu("mission","SAVETROOPS","SPARE","MAKEITQUICK","MAXIMIZEXP")
 function partyManager:Fail(reason,...)
-	self.current.reason=strjoin(' ',tostringall(reason,...))
+  self.failed=true
+	self:SetReason(safecat(reason,...))
 	return false,reason
+end
+function partyManager:SetReason(reason)
+  if not self.current.reason then
+    self.current.reason=reason
+  end    
 end
 
 function partyManager:SatisfyCondition(candidate,index)
@@ -304,6 +335,33 @@ function partyManager:GetChanceForKey(key)
 	local candidate=self.candidates[key]
 	return candidate and candidate.perc or 0
 end
+function partyManager:Cap(perc,key)
+  if perc == self.capChance then
+    -- Allelujah just found a perfect match. We are done
+     self.cappedkey=key
+     self.bestcappedfound=true
+  elseif perc >= self.bonusChance and perc < self.capChance then
+     -- We didnt found a perfetc match so here we look for something which is not overcapping AND in allowable bonus 
+     self.cappedkey=key
+     self.bestcappedfound=true
+  elseif perc == 100 then
+     -- We didnt found anything between requested bonus and cap, so a 100% match is a perfect capped nmatch
+     self.cappedkey=key
+     self.bestcappedfound=true
+  elseif perc > 100 then
+    -- Alas, no uncapped perfect nor capped perfect
+  -- We get as candidate any key which is over 100
+  -- but will continue lowering it 
+     self.cappedkey=key
+  end
+  if perc < 100 and perc >=self.baseChance then
+    if not self.overCap  then
+      self.cappedkey=key
+    end
+    self.bestcappedfound=true
+  end
+  return self.bestcappedfound
+end
 function partyManager:GetSelectedParty(key,dbg)
 	-- When we receive a key we MUST return the selected party, no question asked
 	if type(key)=="string" and self.candidates[key] then
@@ -322,11 +380,13 @@ function partyManager:GetSelectedParty(key,dbg)
 	self.dontKillTroops=addon:GetBoolean("NEVERKILLTROOPS")
 	self.capChance=self.elite and 100 or 200
 	self.maxXp=0
-	self.bestkey,self.xpkey,self.absolutebestkey,self.lastkey,self.uncappedkey=nil,nil,nil,nil,nil
+	self.bestkey,self.xpkey,self.absolutebestkey,self.lastkey,self.uncappedkey,self.cappedkey=nil,nil,nil,nil,nil,nil
 	self.mandatoryFollowers=new()
 	self.lastreason='GOOD'
 	self.maxChampions=addon:GetNumber("MAXCHAMP")
+	self.bestcappedfound=false
 	self.mandatoryFollowers=addon:GetReservedFollowers(missionID)
+	self.overCap=self.elite and addon:GetBoolean("ELITEOVERCAP") or false
 	for i=1,#self.candidatesIndex do
 		local candidate=self.candidates[self.candidatesIndex[i]]
 		self.current=candidate
@@ -334,37 +394,44 @@ function partyManager:GetSelectedParty(key,dbg)
 			local key = candidate.key 
 			candidate.reservedChampions=0
 			if self:CheckParty(candidate) then
-				if self.maximizeXP and candidate.totalXP >self.maxXp and candidate.perc <=self.capChance then 
+				if candidate.perc <= self.capChance and candidate.totalXP >self.maxXp then 
 					self.maxXp=candidate.totalXP
 					self.xpkey=key 
 				end
 				if candidate.champions > math.max(candidate.reservedChampions,self.maxChampions) then 
-					self:Fail(format("TOOMANYCHAMPIONS %d over %d",candidate.champions,self.maxChampions))
+					self:Fail(format("%d champions, ony %d allowed",candidate.champions,self.maxChampions))
 				else
+				  self:SetReason("Acceptable")
 					if not self.uncappedkey then self.uncappedkey=key end
-					if not self.absolutebestkey then self.absolutebestkey=key end
-					if not self.bestkey then self.bestkey=self:CheckCaps(i) end
+           -- If already found the best capped or if the current key has same chance of the previous one
+           -- we dont go in cap search
+					if not self.bestcappedfound and self:GetChanceForKey(self.cappedkey)~=self:GetChanceForKey(key) then
+            self:Cap(candidate.perc,candidate.key)
+					end
+					if not self.bestkey then self.bestkey=key end
 					self.lastkey=key
 				end
 			end
-			if self.bestkey and not self.maximizeXP then break end
 --[===[@debug@
 			if dbg then
 				print(i,candidate.key,candidate.reason)
 			end
 --@end-debug@			]===]
 		end
+    candidate.busyUntil=addon:BusyFor(candidate)
+		
 	end -- for i,key in ipairs(self.candidatesIndex) do
 	self.current=nil
 	del(self.mandatoryFollowers,false)
 	self.mandatoryFollowers=nil
 	local selected
-	if self.xpkey then
+	if self.maximizeXP and self.xpkey then
+    self.candidates[self.xpkey].reason="Best xp value"
 		selected = self.candidates[self.xpkey]
+  elseif self.cappedkey then
+    selected = self.candidates[self.cappedkey]
 	elseif self.bestkey then
 		selected = self.candidates[self.bestkey]
-	elseif not addon:GetBoolean("IGNOREBUSY") and self.absolutebestkey then
-		selected = self.candidates[self.absolutebestkey]
 	elseif self.lastkey then
 		--if self.candidates[lastkey].busyUntil <= GetTime() then
 			selected = self.candidates[self.lastkey] -- should not return busy followers
@@ -374,7 +441,6 @@ function partyManager:GetSelectedParty(key,dbg)
 	end
 	self.bestChance=selected.perc or 0
 	self.bestTimeseconds=selected.timeseconds or 0
-	self.previouskey=selected.key
 	return selected,selected.key
 end
 function partyManager:Remove(...)
@@ -533,8 +599,8 @@ function module:OnInitialized()
 	addon:AddLabel(L["Missions"],L["Configuration for mission party builder"])
 	addon:AddBoolean("SAVETROOPS",false,L["Counter kill Troops"],L["Always counter kill troops (ignored if we can only use troops with just 1 durability left)"])
 	addon:AddBoolean("NEVERKILLTROOPS",false,L["Never kill Troops"],L["Makes sure that no troops will be killed"])
+  addon:AddBoolean("NOTROOPS",false,L["Don't use troops"],L["Only use champions even if troops are available"])
 	addon:AddBoolean("PREFERHIGH",false,L["Prefer high durability"],L["Uses troops with the highest durability instead of the ones with the lowest"])
-	addon:AddBoolean("NOTROOPS",false,L["Don't use troops"],L["Only use champions even if troops are available"])
 	addon:AddBoolean("BONUS",true,L["Keep extra bonus"],L["Always counter no bonus loot threat"])
 	addon:AddBoolean("SPARE",false,L["Keep cost low"],L["Always counter increased resource cost"])
 	addon:AddBoolean("MAKEITQUICK",true,L["Keep time short"],L["Always counter increased time"])
@@ -542,10 +608,11 @@ function module:OnInitialized()
 	addon:AddBoolean("MAXIMIZEXP",false,L["Maximize xp gain"],L["Favours leveling follower for xp missions"])
 	addon:AddRange("MAXCHAMP",3,1,3,L["Max champions"],L["Use at most this many champions"],1)
 	addon:AddRange("BONUSCHANCE",100,100,200,L["Bonus Chance"],
-	format(L["If %1$s is lower than this, then we try to achieve at least %2$s without going over 100%%. Ignored for elite missions."],
+	safeformat(L["If %1$s is lower than this, then we try to achieve at least %2$s without going over 100%%. Ignored for elite missions."],
 	 L["Bonus Chance"],L["Base Chance"]),
 	5)
-	addon:AddRange("BASECHANCE",0,5,100,L["Base Chance"],format(L["When we cant achieve the requested %1$s, we try to reach at least this one without (if possible) going over 100%%"],L["Bonus Chance"]),5)
+	addon:AddRange("BASECHANCE",0,0,120,L["Base Chance"],safeformat(L["When we cant achieve the requested %1$s, we try to reach at least this one without (if possible) going over 100%%"],L["Bonus Chance"]),5)
+  addon:AddBoolean("ELITEOVERCAP",true,L["Elite: Prefer overcap"],L["For elite missions, tries hard to not go under 100% even at cost of overcapping"])
 	addon:AddBoolean("USEALLY",false,L["Use combat ally"],L["Combat ally is proposed for missions so you can consider unassigning him"])
 	addon:AddBoolean("IGNOREBUSY",true,L["Ignore busy followers"],L["When no free followers are available shows empty follower"])
 	addon:AddBoolean("IGNOREINACTIVE",true,L["Ignore inactive followers"],L["If not checked, inactive followers are used as last chance"])
@@ -562,22 +629,10 @@ function module:OnInitialized()
 		'MAXCHAMP',
     'BONUSCHANCE',
 		'BASECHANCE',
+		'ELITEOVERCAP',
 		'USEALLY',
 		'IGNOREBUSY',
 		'IGNOREINACTIVE')
-end
-function module:remEvents()
-	self:RegisterEvent("GARRISON_FOLLOWER_XP_CHANGED","Refresh")
-	self:RegisterEvent("GARRISON_FOLLOWER_UPGRADED","Refresh")
-	self:RegisterEvent("GARRISON_FOLLOWER_ADDED","Refresh")
-	self:RegisterEvent("GARRISON_MISSION_STARTED","Refresh")
-	self:RegisterEvent("GARRISON_MISSION_COMPLETE_RESPONSE","Refresh")
-	self:RegisterEvent("FOLLOWER_LIST_UPDATE","Refresh")
-end
-function module:Refresh(event)
-	self:ResetParties()
-	addon.lastChange=GetTime()
-	return addon:RefreshMissions()
 end
 function module:ResetParties()
 	partiesPool:ReleaseAll()

@@ -615,7 +615,7 @@ function Invite.BuildOptions (frame)
 		local on_edit_select = function (_, _, preset)
 			Invite:ShowPreset (Invite:GetPreset (preset))
 			Invite:DisableCreatePanel()
-			InviteNewProfileFrame:Hide()
+			--InviteNewProfileFrame:Hide()
 		end
 		local dropdown_edit_fill = function()
 			local t = {}
@@ -650,7 +650,7 @@ function Invite.BuildOptions (frame)
 				local preset = Invite:GetPreset (preset_number)
 				if (preset) then
 					if (Invite.is_editing and Invite.is_editing_table == preset) then
-						InviteNewProfileFrame:Hide()
+						--InviteNewProfileFrame:Hide()
 						Invite.is_editing = nil
 						Invite.is_editing_table = nil
 					end
@@ -1005,7 +1005,11 @@ function Invite:StopAutoInvites()
 	Invite.invite_preset = nil
 	Invite.auto_invite_frame:Hide()
 	Invite:UnregisterEvent ("GROUP_ROSTER_UPDATE")
-	Invite:EnableInviteButtons()
+	
+	--> check first in case the options panel isn't loaded yet
+	if (Invite.EnableInviteButtons) then
+		Invite:EnableInviteButtons()
+	end
 end
 
 local do_first_wave = function()
@@ -1063,7 +1067,11 @@ end
 local finish_invite_wave = function()
 	Invite.invite_preset = nil
 	Invite.invites_in_progress = nil
-	Invite:EnableInviteButtons()
+	
+	--> check first in case the options panel isn't loaded yet
+	if (Invite.EnableInviteButtons) then
+		Invite:EnableInviteButtons()
+	end	
 end
 
 function Invite:StartInvites (preset_number)

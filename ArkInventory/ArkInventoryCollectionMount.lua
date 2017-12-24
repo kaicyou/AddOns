@@ -22,7 +22,7 @@ ArkInventory.Collection.Mount = {
 
 
 function ArkInventory.Collection.Mount.OnHide( )
-	ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_MOUNT_UPDATE_BUCKET", "RESCAN" )
+	ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_MOUNT_RELOAD_BUCKET", "RESCAN" )
 end
 
 function ArkInventory.Collection.Mount.IsReady( )
@@ -265,17 +265,17 @@ function ArkInventory.Collection.Mount.Scan_Threaded( thread_id )
 end
 
 
-function ArkInventory:EVENT_WOW_COLLECTION_MOUNT_UPDATE( event )
+function ArkInventory:EVENT_WOW_COLLECTION_MOUNT_RELOAD( event )
 	
 	if event ~= "COMPANION_UPDATE" then
-		ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_MOUNT_UPDATE_BUCKET", event )
+		ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_MOUNT_RELOAD_BUCKET", event )
 	end
 	
 end
 
-function ArkInventory:EVENT_ARKINV_COLLECTION_MOUNT_UPDATE_BUCKET( events )
+function ArkInventory:EVENT_ARKINV_COLLECTION_MOUNT_RELOAD_BUCKET( events )
 	
-	--ArkInventory.Output( "EVENT_ARKINV_COLLECTION_MOUNT_UPDATE_BUCKET( ", events, " )" ) -- ****
+	--ArkInventory.Output( "EVENT_ARKINV_COLLECTION_MOUNT_RELOAD_BUCKET( ", events, " )" ) -- ****
 	
 	if not ArkInventory:IsEnabled( ) then return end
 	

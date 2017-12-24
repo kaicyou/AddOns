@@ -752,6 +752,7 @@ L["Item Info Size"] = true
 L["Item Info Outline"] = true
 L["Remove Parchment"] = true
 L["Stage Background"] = true
+L["Hide the talking head frame at the top center of the screen."] = true
 
 --Toolbars
 L["We are sorry, but you can't do this now. Try again after the end of this combat."] = true
@@ -799,6 +800,7 @@ L["RAID_TOS"] = "ToS"
 L["RAID_NH"] = "NH"
 L["RAID_TOV"] = "ToV"
 L["RAID_EN"] = "EN"
+L["RAID_ANTO"] = "ATBT"
 L["Raid Progression"] = true
 L["Show raid experience of character in tooltip (requires holding shift)."] = true
 L["Name Style"] = true
@@ -850,8 +852,6 @@ L["Makes frame portrait visible regardless of health level when overlay portrait
 L["Classbar Texture"] = true
 L["Resize Health Prediction"] = true
 L["Slightly changes size of health prediction bars."] = true
-L["Custom Texture"] = true
-
 
 --Viewport
 L["Viewport"] = true

@@ -132,6 +132,7 @@ T.twipe = table.wipe
 T.unpack = unpack
 T.select = select
 T.sort = sort
+T.next = next
 --Camera
 T.FlipCameraYaw = FlipCameraYaw
 --Instance
@@ -407,21 +408,19 @@ function SLE:GetModules(...)
 end
 
 --Trying to determine the region player is in, not entirely reliable cause based on a client not an actual region id
-local GetCurrentRegion = GetCurrentRegion
 function SLE:GetRegion()
-	local rid = GetCurrentRegion()
-	local region = {
-		[1] = "US",
-		[2] = "KR",
-		[3] = "EU",
-		[4] = "TW",
-		[5] = "CN",
-	}
-	SLE.region = region[rid]
-	if not SLE.region then 
-		SLE.region = T.format("An error happened. Your region is unknown. Realm: %s. RID: %s. Please report your realm name and the region you are playing in to |cff1784d1Shadow & Light|r authors.", E.myrealm, rid)
-		SLE:Print(SLE.region)
-		SLE.region = ""
+	local lib = LibStub("LibRealmInfo")
+	-- local guid = UnitGUID("player")
+	if not GetPlayerInfoByGUID(E.myguid) then return end
+	-- local rid, _, _, _, _, _, region = lib:GetRealmInfoByUnit("player")
+	local rid, _, _, _, _, _, region = lib:GetRealmInfoByGUID(E.myguid)
+	SLE.region = region
+	if not SLE.region then
+		if not IsTestBuild() then
+			SLE.region = T.format("An error happened. Your region is unknown. Realm: %s. RID: %s. Please report your realm name and the region you are playing in to |cff1784d1Shadow & Light|r authors.", E.myrealm, rid or "nil")
+			SLE:Print(SLE.region)
+		end
+		SLE.region = "PTR"
 	end
 end
 

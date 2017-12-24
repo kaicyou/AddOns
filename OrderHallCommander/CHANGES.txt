@@ -1,24 +1,23 @@
-tag 125ee3f64e791aa43b10d769c4c4ea62adb8c896 1.5.3
+tag c1a0e3bc1cf5a739e2ce32936d1333340da5369a 1.5.13
 Author:	Alar of Runetotem <alar@aspide.it>
-Date:	Mon Oct 9 01:53:07 2017 +0200
+Date:	Mon Dec 11 15:11:18 2017 +0100
 
-Feature: you can now disable a troop type clicking its icon nin the OHC
-troop bar
-Fix: Maximize xp was ignoring cap
-Fix: #119 Bad display when more than 5 types of troops
-Fix: #109 Future mission were missing in tooltip
-Fix: #118 Troops with random abilities should now be considered
-Fix: #99 Caused by same issue of 118, should be fixed
+Retagged as 1.5.13 cause packager failed
+Fix: lua error when both sorts were on "Original method" Thanks to Septh
+for noting it
+Feature: added Squires'Oath for paladins
 
-commit 2d344dfe440ad559a350ea6894cc797c12343f5f
+commit cd8ebf6c0cc67b89780b9c2ee1b4d9a3571effaa
 Author: Alar of Runetotem <alar@aspide.it>
-Date:   Mon Oct 9 01:51:15 2017 +0200
+Date:   Mon Dec 11 15:00:46 2017 +0100
 
-    Rel notes
+    Fix: lua error when both sorts were on "Original method" Thanks to Septh
+    for noting it
+    Feature: added Squires'Oath for paladins
 
-commit 86fe28b28f559ad8f64275b563a42073123ec5c3
+commit 9e7f665089c2785cfa734480121a2d53302ac01a
 Author: Alar of Runetotem <alar@aspide.it>
-Date:   Thu Oct 5 20:59:36 2017 +0200
+Date:   Mon Dec 11 12:35:34 2017 +0100
 
-    Improved tropps shipments display
+    Fix: added Squires'Oath for paladins
 

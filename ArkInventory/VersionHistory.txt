@@ -13,7 +13,22 @@
  * faq - https://github.com/arkayenro/arkinventory/wiki/FAQ
  
 
-
+*3.07.37 (29-NOV-2017)*
+ * fixed - issue with ilvl sorting
+ 
+*3.07.36 (30-OCT-2017)*
+ * changed - (druid) if "use travel form" is selected as a mount then cat form will now be used when indoors
+ * changed - mount action will now dismount you if you are in combat, mounted, and not flying (you used to have to attack/heal something to dismount)
+ * updated - companion item/critter data to 7.3.0
+ * added - bar menu option to set a minimum width (this might be a bit flaky, and will ignore window width if you set it for all the bars in that row)
+ * added - bar menu option to set a maximum width
+ * fixed - issue where GetItemFamily( ) appears to be returning nil
+ * fixed - issue with removing a bag from a slot
+ * fixed - issue with emptying a bags contents (it no longer yields so may hit the script timer)
+ * changed - window drawing should be better.  the initial window draw should be a lot better
+ * fixed - toybox scanning
+ * fixed - erasing account data (pets, toys, mounts, heirlooms) will now cause an immediate rescan like it does for other player locations
+ 
 *3.07.35 (30-AUG-2017)*
  * changed - toc updated to 70300
 

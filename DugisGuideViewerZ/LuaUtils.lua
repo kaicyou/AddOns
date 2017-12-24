@@ -134,6 +134,26 @@ function LuaUtils:isInTable(item, tbl)
     return false
 end
 
+function LuaUtils:Avg(list, getValueFunction)
+    local sum = 0
+    local count = 0
+
+    for _, v in pairs(list) do
+        if getValueFunction then
+            sum = sum + getValueFunction(v)
+        else
+            sum = sum + v
+        end
+        count = count + 1
+    end
+    
+    if count == 0 then
+        return 0
+    end
+    return (sum / count)
+end
+
+
 function LuaUtils:dumpString(text)
     text = string.gsub(text, '|', '@')
     print(text)
@@ -702,7 +722,7 @@ function LuaUtils:ProcessInTime(durationInSec, function_, endFunction)
         
         local thread = dugisThreads[threadName]
         
-        while true do
+        while thread.shouldBeCanceled ~= true do
             local normlizedTime = (GetTime() - thread.startTime) / durationInSec
             
             if normlizedTime >= 1 then
@@ -712,10 +732,14 @@ function LuaUtils:ProcessInTime(durationInSec, function_, endFunction)
                 end
                 break
             else
-                function_(normlizedTime)
+				if function_(normlizedTime) == "break" then
+					break
+				end
                 coroutine.yield()
             end
         end
+		
+		thread.shouldBeCanceled = nil
         
     end)
     
@@ -728,6 +752,7 @@ function LuaUtils:ProcessInTime(durationInSec, function_, endFunction)
 		lastProcessId = 0
 	end
 	
+	return thread	
 end
 
 --b = x1
@@ -832,3 +857,186 @@ function LuaUtils:CheckWindowActive()
 		coroutine.yield()
 	end
  end)
+ 
+ 
+local debugMouseFocus = false
+if debugMouseFocus then
+    C_Timer.NewTicker(0.5, function()
+        local frame = GetMouseFocus()
+        if frame and frame.GetName then
+            print(frame:GetName())
+        end
+    end)
+end
+
+--More accurate (average FPS)
+local measureFPS = false
+if measureFPS then
+	local fpsBuffer = {}
+	local fpsCounter = 1
+	local fpsBufferSize = 250 --N
+    C_Timer.NewTicker(0.1, function()
+        local fps = GetFramerate()
+		fpsBuffer[fpsCounter] = fps
+		fpsCounter = fpsCounter + 1
+		if fpsCounter > fpsBufferSize then
+			fpsCounter = 1
+		end
+    end)
+    C_Timer.NewTicker(2, function()
+        local avgFPS = LuaUtils:Avg(fpsBuffer, function(val)
+			return val
+		end)
+		
+		print("Accurate avg N="..fpsBufferSize.." FPS:", avgFPS)
+    end)
+end
+
+LuaUtils.visualLines = {}
+ 
+--{"frame name 1" = {line1, line2...}, ...}
+local visualLinesCounters = {}
+
+function LuaUtils:StartChangingLinesPositions(frameNames)
+	LuaUtils:foreach(frameNames, function(frameName)
+		visualLinesCounters[frameName] = 1
+	end)
+end
+
+function LuaUtils:StopChangingLinesPositions(frameNames)
+	 LuaUtils:foreach(frameNames, function(frameName)
+		local firstUnusedIndex = (visualLinesCounters[frameName] or 0)
+		
+		if LuaUtils.visualLines[frameName] then
+			local lines_ = LuaUtils.visualLines[frameName]
+			for i = firstUnusedIndex, #lines_ do
+				lines_[i]:Hide()
+			end
+		end
+	end)
+end    
+
+--Before looping this function the StartChangingLinesPositions needs to be invoked.
+function LuaUtils:GetNextVisualLine(frameName, frame, texturePath)
+	local index = visualLinesCounters[frameName]
+	visualLinesCounters[frameName] = index + 1
+	if not LuaUtils.visualLines[frameName] then
+		LuaUtils.visualLines[frameName] = {}
+	end
+	
+	local frameVisualLines = LuaUtils.visualLines[frameName]
+
+	local visualLine = frameVisualLines[index]
+	if not visualLine then
+		visualLine = frame:CreateTexture()
+		visualLine:SetTexture(texturePath);
+		frameVisualLines[index] = visualLine
+	end
+	return visualLine
+end
+
+local function LimitCoord(coord)
+	if coord < 0 then
+		coord = 0
+	end
+	if coord > 1 then
+		coord = 1
+	end
+	return coord
+end
+
+local function LimitCoords(mx1, my1, mx2, my2)
+	return LimitCoord(mx1), LimitCoord(my1), LimitCoord(mx2), LimitCoord(my2)
+end
+
+
+local function LimitValue(val)
+	if val >= 10000 then
+		val= 10000
+	end	
+	
+	if val <= -10000 then
+		val= -10000
+	end
+	
+	return val
+end
+ 
+function LuaUtils:DrawLineDugi(texture, canvasFrame, startX, startY, endX, endY, lineWidth, lineFactor, relPoint)
+	if (not relPoint) then relPoint = "BOTTOMLEFT"; end
+	lineFactor = lineFactor * .5;
+
+	-- Determine dimensions and center point of line
+	local dx,dy = endX - startX, endY - startY;
+	local cx,cy = (startX + endX) / 2, (startY + endY) / 2;
+
+	-- Normalize direction if necessary
+	if (dx < 0) then
+		dx,dy = -dx,-dy;
+	end
+
+	-- Calculate actual length of line
+	local lineLength = sqrt((dx * dx) + (dy * dy));
+
+	-- Quick escape if it'sin zero length
+	if (lineLength == 0) then
+		texture:SetTexCoord(0,0,0,0,0,0,0,0);
+		texture:SetPoint("BOTTOMLEFT", canvasFrame, relPoint, cx,cy);
+		texture:SetPoint("TOPRIGHT",   canvasFrame, relPoint, cx,cy);
+		return;
+	end
+
+	-- Sin and Cosine of rotation, and combination (for later)
+	local sin, cos = -dy / lineLength, dx / lineLength;
+	local sinCos = sin * cos;
+
+	-- Calculate bounding box size and texture coordinates
+	local boundingWidth, boundingHeight, bottomLeftX, bottomLeftY, topLeftX, topLeftY, topRightX, topRightY, bottomRightX, bottomRightY;
+	if (dy >= 0) then
+		boundingWidth = ((lineLength * cos) - (lineWidth * sin)) * lineFactor;
+		boundingHeight = ((lineWidth * cos) - (lineLength * sin)) * lineFactor;
+
+		bottomLeftX = (lineWidth / lineLength) * sinCos;
+		bottomLeftY = sin * sin;
+		bottomRightY = (lineLength / lineWidth) * sinCos;
+		bottomRightX = 1 - bottomLeftY;
+
+		topLeftX = bottomLeftY;
+		topLeftY = 1 - bottomRightY;
+		topRightX = 1 - bottomLeftX;
+		topRightY = bottomRightX;
+	else
+		boundingWidth = ((lineLength * cos) + (lineWidth * sin)) * lineFactor;
+		boundingHeight = ((lineWidth * cos) + (lineLength * sin)) * lineFactor;
+
+		bottomLeftX = sin * sin;
+		bottomLeftY = -(lineLength / lineWidth) * sinCos;
+		bottomRightX = 1 + (lineWidth / lineLength) * sinCos;
+		bottomRightY = bottomLeftX;
+
+		topLeftX = 1 - bottomRightX;
+		topLeftY = 1 - bottomLeftX;
+		topRightY = 1 - bottomLeftY;
+		topRightX = topLeftY;
+	end
+
+	-- Set texture coordinates and anchors
+	texture:ClearAllPoints()
+	
+	texture:SetTexCoord(
+	  LimitValue(topLeftX       )
+	, LimitValue(topLeftY       )
+	, LimitValue(bottomLeftX    )
+	, LimitValue(bottomLeftY    )
+	, LimitValue(topRightX      )
+	, LimitValue(topRightY      )
+	, LimitValue(bottomRightX   )
+	, LimitValue(bottomRightY   )
+	);
+
+	texture:SetPoint("BOTTOMLEFT", canvasFrame, relPoint, cx - boundingWidth, cy - boundingHeight);
+	texture:SetPoint("TOPRIGHT",   canvasFrame, relPoint, cx + boundingWidth, cy + boundingHeight);
+end
+
+ 
+ 

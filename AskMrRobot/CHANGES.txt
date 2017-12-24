@@ -1,7 +1,7 @@
-changeset:   116:bccce18e12cb
-tag:         v54
+changeset:   118:5cb881417bbf
+tag:         v55
 user:        yellowfive
-date:        Wed Oct 04 11:18:19 2017 -0700
-summary:     Fixed a bug with transition from v52 crucible data to v53+.
+date:        Fri Nov 24 19:46:27 2017 -0800
+summary:     Added Antorus to auto-logging.
 
 

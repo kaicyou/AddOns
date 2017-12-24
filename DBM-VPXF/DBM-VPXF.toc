@@ -1,12 +1,12 @@
-## Interface: 70200
-## X-Min-Interface: 70200
+## Interface: 70300
+## X-Min-Interface: 70300
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Voicepack XF|r
 ## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0XFVoicepack|r
 ## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0XFVoicepack|r
 ## DefaultState: enabled
 ## RequiredDeps: DBM-Core
 ## Author: XF
-## Version: 8
+## Version: 7.3.5
 ## Notes: NIL  
 ## X-DBM-Voice: 1
 ## X-DBM-Voice-Name: XF

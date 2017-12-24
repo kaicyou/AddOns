@@ -294,12 +294,14 @@ function TaxiDB:Initialize()
 			if recalulateRoute then
 				DGV:RemoveAllWaypoints()	
 				DGV.Modules.DugisArrow:VisitFlightmaster(key)
+				DGV.SetSmartWaypointNoThread = true
 				DGV:SetSmartWaypoint(
 					TaxiDB.routeToRecalculate.m, 
 					TaxiDB.routeToRecalculate.f, 
 					TaxiDB.routeToRecalculate.x*100, 
 					TaxiDB.routeToRecalculate.y*100, 
 					TaxiDB.routeToRecalculate.desc)
+				DGV.SetSmartWaypointNoThread = false
 			end
 			if (DGV:IsModuleLoaded("Guides") and DGV.actions[DugisGuideUser.CurrentQuestIndex] == "f") then
 				DGV:SetChkToComplete(DugisGuideUser.CurrentQuestIndex)

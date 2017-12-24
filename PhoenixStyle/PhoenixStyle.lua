@@ -11,7 +11,7 @@ pslocale()
 end
 
 
-	psversion=7.300
+	psversion=7.302
 
 
 	psverstiptext="alpha"
@@ -66,8 +66,8 @@ end
 	if psdeathrepsavemain==nil then psdeathrepsavemain={0,1,0,1,0,0,0,1,0,"raid",1,3,6,1,"party",2,1,1} end
 	if psautoinvsave==nil then psautoinvsave={1,1,1,0,3,{psautoinvtxtdef1,psautoinvtxtdef2,psautoinvtxtdef3,psautoinvtxtdef4,"+","1"},{},{},0,psannouncephrase,1} end --7 это промоут, 8 мл, 9 - спамить ли фразу при инвайте ги, 10 фраза для анонса, 11 - ценность добычи
 	if psautoinvraiddiffsave==nil then psautoinvraiddiffsave={1,1} end
-	psdrsounds={"iCreateCharacterA.wav","alarmclockbeeps1.ogg","Xylo.ogg","SheepDeath.wav", "WispPissed1.wav", "igQuestFailed","AuctionWindowOpen","AuctionWindowClose"}
-	psdrsounds2={"Sound\\interface\\","2","2","Sound\\Creature\\Sheep\\","Sound\\Event Sounds\\Wisp\\","1","1","1"} --1 игра, 2 файл
+	psdrsounds={"iCreateCharacterA.ogg","alarmclockbeeps1.ogg","Xylo.ogg","SheepDeath.wav", "WispPissed1.wav", "igQuestFailed","AuctionWindowOpen","AuctionWindowClose"}
+	psdrsounds2={"2","2","2","Sound\\Creature\\Sheep\\","Sound\\Event Sounds\\Wisp\\","1","1","1"} --1 игра, 2 файл
 
 
 
@@ -164,9 +164,9 @@ psdeathgriplocal=GetSpellInfo(49560)
 
 
 --cataclysm & Panda data
-pslocations={{752,754,758,773,800,824},{77777,897,896,886,930,953},{994,988,1026},{1094,1088,1114,1147}}
-pslocationnamesdef={{"Baradin Hold","Blackwing Descent","The Bastion of Twilight","Throne of the Four Winds","Firelands", "Dragon Soul"},{"New Baradin Hold","Heart of Fear","Mogu'shan Vaults","Terrace of Endless Spring","Throne of Thunder","Siege of Orgrimmar"},{"Highmaul", "Blackrock Foundry","Hellfire Citadel"},{"The Emerald Nightmare","The Nighthold","Trial of Valor","Tomb of Sargeras"}}
-psaddontoload={{"PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_Firelands","PhoenixStyleMod_DragonSoul"},{"PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier2","PhoenixStyleMod_Panda_tier3"},{"PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1"},{"PhoenixStyleMod_Legion","PhoenixStyleMod_Legion","PhoenixStyleMod_Legion","PhoenixStyleMod_Legion"}}
+pslocations={{752,754,758,773,800,824},{77777,897,896,886,930,953},{994,988,1026},{1094,1088,1114,1147,1188}}
+pslocationnamesdef={{"Baradin Hold","Blackwing Descent","The Bastion of Twilight","Throne of the Four Winds","Firelands", "Dragon Soul"},{"New Baradin Hold","Heart of Fear","Mogu'shan Vaults","Terrace of Endless Spring","Throne of Thunder","Siege of Orgrimmar"},{"Highmaul", "Blackrock Foundry","Hellfire Citadel"},{"The Emerald Nightmare","The Nighthold","Trial of Valor","Tomb of Sargeras","Antorus"}}
+psaddontoload={{"PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_CataMiniRaids","PhoenixStyleMod_Firelands","PhoenixStyleMod_DragonSoul"},{"PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier1","PhoenixStyleMod_Panda_tier2","PhoenixStyleMod_Panda_tier3"},{"PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1","PhoenixStyleMod_WoD_tier1"},{"PhoenixStyleMod_Legion","PhoenixStyleMod_Legion","PhoenixStyleMod_Legion","PhoenixStyleMod_Legion",""}}
 
 psbossnamesdef={
 {{"Argaloth","Occu'thar", "Alizabal, Mistress of Hate"},{"Magmaw","Omnitron Defense System","Maloriak","Atramedes","Chimaeron","Nefarian"},{"Halfus Wyrmbreaker","Valiona & Theralion","Twilight Ascendant Council","Cho'gall","Sinestra"},{"Conclave of Wind", "Al'Akir"},{"Beth'tilac", "Lord Rhyolith","Alysrazor","Shannox","Baleroc","Majordomo Staghelm","Ragnaros"},{"Morchok","Warlord Zon'ozz","Yor'sahj the Unsleeping","Hagara the Stormbinder","Ultraxion","Warmaster Blackhorn","Spine of Deathwing","Madness of Deathwing"}},
@@ -183,7 +183,8 @@ psbossnamesdef={
 {{"Nythendra","Il´gynoth, the Heart of Corruption","Elerethe Renferal","Ursoc","Dragons of Nightmare","Cenarius","Xavius"},
 {"Skorpyron","Chronomatic Anomaly","Trilliax","Spellblade Aluriel","High Botanist Tel'arn","Star Augur Etraeus","Tichondrius","Krosus","Grand Magistrix Elisande","Gul'dan"},
 {"Odyn","Guarm","Helya"},
-{"Goroth","Demonic Inquisition","Harjatan","Sisters of the Moon","Mistress Sassz'ine","The Desolate Host","Maiden of Vigilance","Fallen Avatar","Kil'jaeden"}
+{"Goroth","Demonic Inquisition","Harjatan","Sisters of the Moon","Mistress Sassz'ine","The Desolate Host","Maiden of Vigilance","Fallen Avatar","Kil'jaeden"},
+{""}
 }
 
 
@@ -202,7 +203,8 @@ psbossid={
 {{{102672},{105393},{106087},{100497},{39407},{106912,104636},{103769}},
 {{102263},{104415},{104288},{110908},{104528},{103758},{103685},{101002},{110965},{110533}},
 {{114263},{114344},{96759}},
-{{115844},{120996},{116407},{118523},{115767},{118460},{118289},{120436},{108573}}
+{{115844},{120996},{116407},{118523},{115767},{118460},{118289},{120436},{108573}},
+{{}}
 }
 
 }
@@ -228,7 +230,8 @@ ps_modelid={
 {{{0},{0},{0},{0},{0},{0},{0}},
 {{0},{0},{0},{0},{0},{0},{0},{0},{0},{0}},
 {{0},{0},{0}},
-{{74493},{74282},{74020},{74874},{74287},{74496},{74875},{74497},{74504}}
+{{74493},{74282},{74020},{74874},{74287},{74496},{74875},{74497},{74504}},
+{{0}}
 }
 
 
@@ -254,6 +257,7 @@ ps_sa_id={
 {{},{},{},{},{},{},{},{},{},{}},
 {{},{},{}},
 {{},{},{},{},{},{},{},{},{}},
+{{}}
 }
 
 }
@@ -8732,6 +8736,9 @@ local _, month, day, year = CalendarGetDate()
 --if (year==2017 and month==2 and (day==12 or day==13) and psannouncerun4==0) then
 if (year==2017 and (month==8 or month==9) and (day>15 and day<31) and psannouncerun4==0) then
 	local text=""
+	-- ВАЖНО:
+	-- В феникс и ра аддоны добавить коммент что если я буду писать про др то ссылку на инсту вставить, в ра лучше не писать ток в настройках
+	--------
 	--text="|cff00ff00PhoenixStyle|r > I got WoW for my 20 years birthday, |cff00ff00today I celebrate 30|r. I created PS and RA addons 8 years ago, hope ".._you.." uses and likes them :) They got more than |cff00ff0010 mln downloads|r and I raised just 1200 euro in 8 years with the bigger one of 300$. Now, addon is dying as I don't play for last 5 years, if you want to help: http://www.phoenixstyle.com/ also you can find more info about me and Italy where I live :)"
 	--text="|cff00ff00NEW ADDON|r > sorry for the delay with updates. I am working now on awesome addons for Facebook. |cff00ff00if you are administator of fan/business page in Facebook|r you will love my programs, check them here: https://www.fblikeinviter.com/"
 	

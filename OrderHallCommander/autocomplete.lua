@@ -69,12 +69,29 @@ local LE_GARRISON_TYPE_7_0=LE_GARRISON_TYPE_7_0
 local GARRISON_FOLLOWER_COMBAT_ALLY=GARRISON_FOLLOWER_COMBAT_ALLY
 local GARRISON_FOLLOWER_ON_MISSION=GARRISON_FOLLOWER_ON_MISSION
 local GARRISON_FOLLOWER_INACTIVE=GARRISON_FOLLOWER_INACTIVE
+local GARRISON_FOLLOWER_IN_PARTY=GARRISON_FOLLOWER_IN_PARTY
+local GARRISON_FOLLOWER_AVAILABLE=AVAILABLE
 local ViragDevTool_AddData=_G.ViragDevTool_AddData
 if not ViragDevTool_AddData then ViragDevTool_AddData=function() end end
 local KEY_BUTTON1 = "\124TInterface\\TutorialFrame\\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:228:283\124t" -- left mouse button
 local KEY_BUTTON2 = "\124TInterface\\TutorialFrame\\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:330:385\124t" -- right mouse button
 local CTRL_KEY_TEXT,SHIFT_KEY_TEXT=CTRL_KEY_TEXT,SHIFT_KEY_TEXT
-
+local CTRL_KEY_TEXT,SHIFT_KEY_TEXT=CTRL_KEY_TEXT,SHIFT_KEY_TEXT
+local CTRL_SHIFT_KEY_TEXT=CTRL_KEY_TEXT .. '-' ..SHIFT_KEY_TEXT
+local format,pcall=format,pcall
+local function safeformat(mask,...)
+  local rc,result=pcall(format,mask,...)
+  if not rc then
+    for k,v in pairs(L) do
+      if v==mask then
+        mask=k
+        break
+      end
+    end
+ end
+  rc,result=pcall(format,mask,...)
+  return rc and result or mask 
+end
 
 -- End Template - DO NOT MODIFY ANYTHING BEFORE THIS LINE
 --*BEGIN
@@ -183,7 +200,15 @@ function module:EventsOn()
 	self:RegisterEvent("GARRISON_FOLLOWER_DURABILITY_CHANGED","MissionAutoComplete")
 end
 function module:AutoClose()
-	if report then pcall(report.Close,report) report=nil end
+	if report then 
+	 local rc,message=pcall(report.Close,report)
+	 --[===[@debug@
+	 if not rc then
+	   pp("Failed closing report due to",message)
+	 end
+	 --@end-debug@ ]===]
+	 report=nil 
+  end
 	pcall(OHF.CloseMissionComplete,OHF)
 end
 function module:CloseReport()
@@ -210,6 +235,11 @@ function module:MissionComplete(this,button,skiprescheck)
 		end
 		local message=C("WARNING",'red')
 		local wasted={}
+		--[===[@debug@
+		if _G.ONEONE then
+		  missions={missions[1]}
+		end
+		--@end-debug@]===]
 		for i=1,#missions do
 			for _,v in pairs(missions[i].followers) do
 				rewards.followerQLevel[v]=addon:GetFollowerData(v,'qLevel',0)

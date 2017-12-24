@@ -2411,7 +2411,7 @@
         <HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 	</Button>
 
-    <Button name="DugisTargetButtonTemplate" inherits="SecureActionButtonTemplate" virtual='true'>
+    <Button name="DugisTargetButtonTemplate" inherits="SecureActionButtonTemplate" virtual='true' frameStrata="HIGH"  frameLevel = "2" >
         <Layers>
             <Layer level="ARTWORK">
                 <FontString parentKey="HotKey" inherits="NumberFontNormalSmallGray" justifyH="LEFT" text="">
@@ -2424,7 +2424,7 @@
         </Layers>
 	</Button>
 
-	<Button name="DugisSecureQuestButton" inherits="DugisSecureQuestButtonTemplate" parent="UIParent">
+	<Button name="DugisSecureQuestButton" inherits="DugisSecureQuestButtonTemplate" parent="UIParent"  frameStrata="HIGH"  frameLevel = "3">
 	</Button>
 
     <Script file="TutorialFrameDugis.lua"/>

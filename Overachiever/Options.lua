@@ -54,6 +54,7 @@ Overachiever.DefaultSettings = {
   ToastCalendar_misc = false;
   ToastCalendar_noautofade = false;
   ToastCalendar_onlyclickfade = false;
+  Throttle_AchLookup = true;
   Version = THIS_VERSION;
 };
 
@@ -122,6 +123,9 @@ function Overachiever.CreateOptions(THIS_TITLE, BuildCriteriaLookupTab_check, Au
 	  tooltip = L.OPT_SELECTSOUND_ANGLERCHECKPOLE_TIP, xOffset = 15 },
 	{ variable = "SoundAchIncomplete_KillCheckCombat", text = L.OPT_SELECTSOUND_CHECKCOMBAT,
 	  tooltip = L.OPT_SELECTSOUND_CHECKCOMBAT_TIP, xOffset = 15 },
+
+	{ type = "labelwrap", text = L.OPT_LABEL_MISC, topBuffer = 4, xOffset = 0 },
+	{ variable = "Throttle_AchLookup", text = L.OPT_THROTTLE_ACHLOOKUP, tooltip = L.OPT_THROTTLE_ACHLOOKUP_TIP },
   }
 
   local items_reminders = {

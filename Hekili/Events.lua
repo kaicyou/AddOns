@@ -26,11 +26,15 @@ local unitEvents = CreateFrame( "Frame" )
 local unitHandlers = {}
 
 ns.displayUpdates = {}
+local displayUpdates = ns.displayUpdates
+local lastRecount = 0
+
+local forceRefresh = {}
+local superForce = {}
 
 local lastRefresh = {}
-local lastRecount = 0
-local displayUpdates = ns.displayUpdates
 local lastDisplay = 0
+
 
 
 function ns.StartEventHandler()
@@ -63,19 +67,41 @@ function ns.StartEventHandler()
             lastRecount = now
         end
 
-        local updatePeriod = state.combat == 0 and 1 or 0.2
+        local updatePeriod = state.combat == 0 and 0.5 or 0.2
+        local forcedPeriod = 0.1
 
         local numDisplays = #Hekili.DB.profile.displays
 
-        for i = 1, numDisplays do
-            local index = lastDisplay + i
-            index = index > numDisplays and index - numDisplays or index
+        if Hekili.DB.profile.Enabled and not Hekili.Pause then
+            for i = 1, numDisplays do
+                local index = lastDisplay + i
+                index = index > numDisplays and index - numDisplays or index
 
-            if ns.visible.display[ index ] and ( not displayUpdates[ index ] or ( not lastRefresh[ index ] or now - lastRefresh[ index ] >= updatePeriod ) ) then 
-                Hekili:ProcessHooks( index )
-                lastRefresh[ index ] = now
-                lastDisplay = index
-                break
+                if ns.visible.display[ index ] then
+                    if ( not lastRefresh[ index ] or -- We've never refreshed this display.
+                       ( superForce[ index ] ) or -- Something happened that requires an *immediate* refresh.
+                       ( forceRefresh[ index ] and now - lastRefresh[ index ] >= forcedPeriod ) or -- A less-urgent refresh was requested.
+                       ( now - lastRefresh[ index ] >= updatePeriod ) ) then -- We've reached the default update period, 2x/sec ooc, 5x/sec ic.
+                    
+                        local dScriptPass = Hekili:CheckDisplayCriteria( index ) or 0
+                        
+                        if ( dScriptPass > 0 ) then
+
+                            Hekili:ProcessHooks( index )
+
+                            lastRefresh[ index ] = now
+                            forceRefresh[ index ] = false
+                            superForce[ index ] = false
+                            lastDisplay = index
+
+                            break
+                        end
+                    end
+                else
+                    -- Display isn't visible, cancel the forced update.
+                    forceRefresh[ index ] = false
+                    superForce[ index ] = false
+                end
             end
         end
 
@@ -105,17 +131,42 @@ end
 local RegisterEvent = ns.RegisterEvent
 
 
+function ns.UnregisterEvent( event, handler )
+    local hands = handlers[ event ]
+
+    if not hands then return end
+
+    for i = #hands, 1, -1 do
+        if hands[i] == handler then
+            table.remove( hands, i )
+        end
+    end
+end
+
+
 -- For our purposes, all UnitEvents are player/target oriented.
 ns.RegisterUnitEvent = function( event, handler, u1, u2 )
 
     unitHandlers[ event ] = unitHandlers[ event ] or {}
-
     table.insert( unitHandlers[ event ], handler )
 
     unitEvents:RegisterUnitEvent( event, 'player', 'target' )
 
 end
 local RegisterUnitEvent = ns.RegisterUnitEvent
+
+
+function ns.UnregisterUnitEvent( event, handler )
+    local hands = unitHandlers[ event ]
+
+    if not hands then return end
+
+    for i = #hands, 1, -1 do
+        if hands[i] == handler then
+            table.remove( hands, i )
+        end
+    end
+end
 
 
 ns.FeignEvent = function( event, ... )
@@ -161,21 +212,21 @@ local itemAuditComplete = false
 
 function ns.auditItemNames()
 
-    local options = Hekili.Options.args.trinkets.args
     local failure = false
 
     for key, ability in pairs( class.abilities ) do
         if ability.recheck_name then
-            local _, name = GetItemInfo( ability.item )
+            local name, link = GetItemInfo( ability.item )
 
             if name then
                 ability.name = name
                 ability.texture = nil
+                ability.link = link
                 ability.elem.name = name
                 ability.elem.texture = select( 10, GetItemInfo( ability.item ) )
 
                 class.abilities[ name ] = ability
-                class.searchAbilities[ ability.key ] = format( "|T%s:0|t %s", ( ability.texture or 'Interface\\ICONS\\Spell_Nature_BloodLust' ), name )
+                class.searchAbilities[ ability.key ] = format( "|T%s:0|t %s", ( ability.texture or 'Interface\\ICONS\\Spell_Nature_BloodLust' ), link )
                 ability.recheck_name = nil
             else
                 failure = true
@@ -427,6 +478,7 @@ ns.updateGear = function ()
         C_Timer.After( 3, ns.updateGear )
     else
         ns.updateArtifact()
+        ns.ReadKeybindings()
     end
 
 end
@@ -470,11 +522,11 @@ local castsOn, castsOff, castsAll = ns.castsOn, ns.castsOff, ns.castsAll
 
 
 
-
 local function forceUpdate( from, super )
 
     for i = 1, #Hekili.DB.profile.displays do
-        displayUpdates[ i ] = nil
+        forceRefresh[ i ] = true
+        if super then superForce[ i ] = true end
     end
 
     return
@@ -672,20 +724,29 @@ local autoAuraKey = setmetatable( {}, {
 } )
 
 
-RegisterUnitEvent( "UNIT_AURA", function( event, unit )
+--[[ RegisterUnitEvent( "UNIT_AURA", function( event, unit )
     if unit == 'player' then
         state.player.updated = true
-        -- forceUpdate( event, true )
     else
         state.target.updated = true
     end
-end )
+end ) ]]
 
 
 RegisterEvent( "PLAYER_TARGET_CHANGED", function ( event )
     state.target.updated = true
     forceUpdate( event, true )
 end )
+
+
+local aura_events = {
+    SPELL_AURA_APPLIED      = true,
+    SPELL_AURA_REFRESH      = true,
+    SPELL_AURA_APPLIED_DOSE = true,
+    SPELL_AURA_REMOVED      = true,
+    SPELL_AURA_BROKEN       = true,
+    SPELL_AURA_BROKEN_SPELL = true
+}
 
 
 -- Use dots/debuffs to count active targets.
@@ -718,11 +779,10 @@ RegisterEvent( "COMBAT_LOG_EVENT_UNFILTERED", function( event, _, subtype, _, so
             state.player.queued_tt = nil
             state.player.queued_lands = nil
             state.player.queued_gcd = nil
-            state.player.queued_off = nil
+            state.player.queued_off = nil           
         end
         forceUpdate( subtype, true )
     end
-
 
     if state.role.tank and state.GUID == destGUID and subtype:sub(1,5) == 'SWING' then
         ns.updateTarget( sourceGUID, time, true )
@@ -745,57 +805,70 @@ RegisterEvent( "COMBAT_LOG_EVENT_UNFILTERED", function( event, _, subtype, _, so
         end
 
     -- Player/Minion Event
-    elseif not class.exclusions[ spellID ] then
-        if hostile and sourceGUID ~= destGUID and not ( class.auras[ spellID ] and class.auras[ spellID ].friendly ) then
+    elseif not class.exclusions[ spellID ] and ( sourceGUID == state.GUID or ns.isMinion( sourceGUID ) ) then
 
-            -- Aura Tracking
-            if subtype == 'SPELL_AURA_APPLIED'  or subtype == 'SPELL_AURA_REFRESH' or subtype == 'SPELL_AURA_APPLIED_DOSE' then
-                ns.trackDebuff( spellName, destGUID, time, true )
-                ns.updateTarget( destGUID, time, sourceGUID == state.GUID )
-
-            elseif subtype == 'SPELL_PERIODIC_DAMAGE' or subtype == 'SPELL_PERIODIC_MISSED' then
-                ns.trackDebuff( spellName, destGUID, time )
-                -- ns.updateTarget( destGUID, time, sourceGUID == state.GUID )
-
-            elseif subtype == 'SPELL_DAMAGE' or subtype == 'SPELL_MISSED' then
-                ns.updateTarget( destGUID, time, sourceGUID == state.GUID )
-
-            elseif destGUID and subtype == 'SPELL_AURA_REMOVED' or subtype == 'SPELL_AURA_BROKEN' or subtype == 'SPELL_AURA_BROKEN_SPELL' then
-                ns.trackDebuff( spellName, destGUID )
-
+        if aura_events[ subtype ] then
+            if state.GUID == destGUID then 
+                state.player.updated = true
+                forceUpdate( subtype )
             end
+   
+            if UnitGUID( 'target' ) == destGUID then
+                state.target.updated = true
+                forceUpdate( subtype )
+            end
+        end
 
-            if subtype == 'SPELL_DAMAGE' or subtype == 'SPELL_PERIODIC_DAMAGE' or subtype == 'SPELL_PERIODIC_MISSED' then
-                ns.updateTarget( destGUID, time, sourceGUID == state.GUID )
+        local aura = class.auras and class.auras[ spellID ]
+        
+        if aura then
 
-                if state.spec.enhancement and spellName == class.abilities.fury_of_air.name then
-                    state.swings.last_foa_tick = time
+            if hostile and sourceGUID ~= destGUID and not aura.friendly then
+
+                -- Aura Tracking
+                if subtype == 'SPELL_AURA_APPLIED'  or subtype == 'SPELL_AURA_REFRESH' or subtype == 'SPELL_AURA_APPLIED_DOSE' then
+                    ns.trackDebuff( spellID, destGUID, time, true )
+                    ns.updateTarget( destGUID, time, sourceGUID == state.GUID )
+
+                elseif subtype == 'SPELL_PERIODIC_DAMAGE' or subtype == 'SPELL_PERIODIC_MISSED' then
+                    ns.trackDebuff( spellID, destGUID, time )
+
+                elseif destGUID and subtype == 'SPELL_AURA_REMOVED' or subtype == 'SPELL_AURA_BROKEN' or subtype == 'SPELL_AURA_BROKEN_SPELL' then
+                    ns.trackDebuff( spellID, destGUID )
+
                 end
 
-            end
+            elseif sourceGUID == state.GUID and aura.friendly then -- friendly effects
 
-            local action = class.abilities[ spellID ]
-            
-            if subtype ~= 'SPELL_CAST_SUCCESS' and action and action.velocity then
-                ns.removeSpellFromFlight( class.abilities[ spellID ].key )
-            end
+                if subtype == 'SPELL_AURA_APPLIED'  or subtype == 'SPELL_AURA_REFRESH' or subtype == 'SPELL_AURA_APPLIED_DOSE' then
+                    ns.trackDebuff( spellID, destGUID, time, subtype == 'SPELL_AURA_APPLIED' )
 
+                elseif subtype == 'SPELL_PERIODIC_HEAL' or subtype == 'SPELL_PERIODIC_MISSED' then
+                    ns.trackDebuff( spellID, destGUID, time )
 
-        elseif sourceGUID == state.GUID and class.auras[ spellID ] and class.auras[ spellID ].friendly then -- friendly effects
+                elseif destGUID and subtype == 'SPELL_AURA_REMOVED' or subtype == 'SPELL_AURA_BROKEN' or subtype == 'SPELL_AURA_BROKEN_SPELL' then
+                    ns.trackDebuff( spellID, destGUID )
 
-            if subtype == 'SPELL_AURA_APPLIED'  or subtype == 'SPELL_AURA_REFRESH' or subtype == 'SPELL_AURA_APPLIED_DOSE' then
-                ns.trackDebuff( spellName, destGUID, time, subtype == 'SPELL_AURA_APPLIED' )
-
-            elseif subtype == 'SPELL_PERIODIC_HEAL' or subtype == 'SPELL_PERIODIC_MISSED' then
-                ns.trackDebuff( spellName, destGUID, time )
-
-            elseif destGUID and subtype == 'SPELL_AURA_REMOVED' or subtype == 'SPELL_AURA_BROKEN' or subtype == 'SPELL_AURA_BROKEN_SPELL' then
-                ns.trackDebuff( spellName, destGUID )
+                end
 
             end
 
         end
 
+        local action = class.abilities[ spellID ]
+        
+        if subtype ~= 'SPELL_CAST_SUCCESS' and action and action.velocity then
+            ns.removeSpellFromFlight( action.key )
+        end
+
+        if hostile and subtype == 'SPELL_DAMAGE' or subtype == 'SPELL_PERIODIC_DAMAGE' or subtype == 'SPELL_PERIODIC_MISSED' then
+            ns.updateTarget( destGUID, time, sourceGUID == state.GUID )
+
+            if state.spec.enhancement and spellName == class.abilities.fury_of_air.name then
+                state.swings.last_foa_tick = time
+                -- forceUpdate( subtype )
+            end
+        end
     end
 
     -- This is dumb.  Just let modules used the event handler.
@@ -890,7 +963,8 @@ local bindingSubs = {
     ["PLUS"] = "+",
     ["MINUS"] = "-",
     ["MULTIPLY"] = "*",
-    ["DIVIDE"] = "/"
+    ["DIVIDE"] = "/",
+    ["BUTTON"] = "m"
 }
 
 local function improvedGetBindingText( binding )
@@ -904,7 +978,7 @@ local function improvedGetBindingText( binding )
 end
 
 
-local function StoreKeybindInfo( key, aType, id )
+local function StoreKeybindInfo( page, key, aType, id )
 
     if not key then return end
 
@@ -919,80 +993,128 @@ local function StoreKeybindInfo( key, aType, id )
         ability = sID and class.abilities[ sID ] and class.abilities[ sID ].key
     
     elseif aType == "item" then
-        ability = select( 2, GetItemInfo( id ) )
+        ability = GetItemInfo( id )
         ability = class.abilities[ ability ] and class.abilities[ ability ].key
 
     end
 
     if ability then
-        keys[ ability ] = keys[ ability ] or {}
-        keys[ ability ].binding = lower( improvedGetBindingText( key ) )
-        keys[ ability ].upper = upper( keys[ ability ].binding )
+        keys[ ability ] = keys[ ability ] or {
+            lower = {},
+            upper = {}
+        }
+        keys[ ability ].lower[ page ] = lower( improvedGetBindingText( key ) )
+        keys[ ability ].upper[ page ] = upper( keys[ ability ].lower[ page ] )
         updatedKeys[ ability ] = true
 
         if ability.bind then
             local bind = ability.bind
 
-            keys[ bind ] = keys[ bind ] or {}
-            keys[ bind ].binding = keys[ ability ].binding
-            keys[ bind ].upper = keys[ ability ].upper
+            keys[ bind ] = keys[ bind ] or {
+                lower = {},
+                upper = {}
+            }
+
+            keys[ bind ].lower[ page ] = keys[ ability ].lower[ page ]
+            keys[ bind ].upper[ page ] = keys[ ability ].upper[ page ]
+
             updatedKeys[ bind ] = true
         end
     end
 end        
 
 
+
+local defaultBarMap = {
+    WARRIOR = {
+        { bonus = 1, bar = 7 },
+        { bonus = 2, bar = 8 },
+    },
+    ROGUE = {
+        { bonus = 1, bar = 7 },
+        { bonus = 2, bar = 7 },
+        { bonus = 3, bar = 7 },
+    },
+    DRUID = {
+        { bonus = 1, stealth = false, bar = 7 },
+        { bonus = 1, stealth = true,  bar = 8 },
+        { bonus = 2, bar = 8 },
+        { bonus = 3, bar = 9 },
+        { bonus = 4, bar = 10 },
+    },
+    MONK = {
+        { bonus = 1, bar = 7 },
+        { bonus = 2, bar = 8 },
+        { bonus = 3, bar = 9 },
+    },
+    PRIEST = {
+        { bonus = 1, bar = 7 },
+    },
+}
+
+
+
 local function ReadKeybindings()
 
-    -- if class.file == "DRUID" then return end
-
-    for k in pairs( updatedKeys ) do
-        updatedKeys[ k ] = nil
+    for k, v in pairs( keys ) do
+        table.wipe( v.upper )
+        table.wipe( v.lower )
     end
 
     for i = 1, 12 do
-        StoreKeybindInfo( GetBindingKey( "ACTIONBUTTON" .. i ), GetActionInfo( i ) )
+        StoreKeybindInfo( 1, GetBindingKey( "ACTIONBUTTON" .. i ), GetActionInfo( i ) )
     end
 
-    --[[ for i = 13, 24 do
-        StoreKeybindInfo( GetBindingKey( "ACTIONBUTTON" .. i - 12 ), GetActionInfo( i ) )
-    end ]]
+    for i = 13, 24 do
+        StoreKeybindInfo( 2, GetBindingKey( "ACTIONBUTTON" .. i - 12 ), GetActionInfo( i ) )
+    end
 
     for i = 25, 36 do
-        StoreKeybindInfo( GetBindingKey( "MULTIACTIONBAR3BUTTON" .. i - 24 ), GetActionInfo( i ) )
+        StoreKeybindInfo( 3, GetBindingKey( "MULTIACTIONBAR3BUTTON" .. i - 24 ), GetActionInfo( i ) )
     end
 
     for i = 37, 48 do
-        StoreKeybindInfo( GetBindingKey( "MULTIACTIONBAR4BUTTON" .. i - 36 ), GetActionInfo( i ) )
+        StoreKeybindInfo( 4, GetBindingKey( "MULTIACTIONBAR4BUTTON" .. i - 36 ), GetActionInfo( i ) )
     end
 
     for i = 49, 60 do
-        StoreKeybindInfo( GetBindingKey( "MULTIACTIONBAR2BUTTON" .. i - 48 ), GetActionInfo( i ) )
+        StoreKeybindInfo( 5, GetBindingKey( "MULTIACTIONBAR2BUTTON" .. i - 48 ), GetActionInfo( i ) )
     end
 
     for i = 61, 72 do
-        StoreKeybindInfo( GetBindingKey( "MULTIACTIONBAR1BUTTON" .. i - 60 ), GetActionInfo( i ) )
+        StoreKeybindInfo( 6, GetBindingKey( "MULTIACTIONBAR1BUTTON" .. i - 60 ), GetActionInfo( i ) )
     end
 
-    --[[ for i = 73, 120 do
-        StoreKeybindInfo( GetBindingKey( "ACTIONBUTTON" .. ( i - 60 ) % 12 ), GetActionInfo( i ) )
+    for i = 73, 120 do
+        StoreKeybindInfo( 7 + floor( ( i - 72 ) / 12 ), GetBindingKey( "ACTIONBUTTON" .. ( i - 72 ) % 12 ), GetActionInfo( i ) )
+    end
+
+    --[[ for k in pairs( keys ) do
+        if not updatedKeys[ k ] then
+            for key in pairs( keys[ k ].lower ) do
+                keys[ k ].lower[ key ] = nil
+                keys[ k ].upper[ key ] = nil
+                keys[ k ].empty = true
+            end
+        end
     end ]]
-
-    for k in pairs( keys ) do
-        if not updatedKeys[ k ] then keys[ k ] = nil end
-    end
 
     for k in pairs( keys ) do
         local ability = class.abilities[ k ]
 
         if ability and ability.bind then
-            keys[ ability.bind ] = keys[ k ]
+            for key, value in pairs( keys[ k ].lower ) do
+                keys[ ability.bind ] = keys[ ability.bind ] or {
+                    lower = {},
+                    upper = {}
+                }
+                keys[ ability.bind ].lower[ key ] = value
+                keys[ ability.bind ].upper[ key ] = keys[ k ].upper[ key ]
+            end
         end
     end
 
 end    
-
-
 ns.ReadKeybindings = ReadKeybindings
 
 
@@ -1007,10 +1129,39 @@ RegisterEvent( "SPELL_UPDATE_ICON", ReadKeybindings )
 RegisterEvent( "SPELLS_CHANGED", ReadKeybindings )
 
 RegisterEvent( "UPDATE_SHAPESHIFT_FORM", ReadKeybindings )
-RegisterUnitEvent( "PLAYER_TALENT_UPDATE", ReadKeybindings() )
+RegisterUnitEvent( "PLAYER_TALENT_UPDATE", ReadKeybindings )
+RegisterUnitEvent( "PLAYER_EQUIPMENT_CHANGED", ReadKeybindings )
 
-function Hekili:GetBindingForAction( key, caps )
-    return ( key and keys[ key ] ) and ( caps and keys[ key ].upper or keys[ key ].binding ) or ""
+
+if select( 2, UnitClass( "player" ) ) == "DRUID" then
+    function Hekili:GetBindingForAction( key, caps )
+        if not key or not keys[ key ] then return "" end
+
+        local db = caps and keys[ key ].upper or keys[ key ].lower
+
+        if state.prowling then
+            return db[ 8 ] or db[ 7 ] or db[ 1 ] or db[ 2 ] or db[ 3 ] or db[ 4 ] or db[ 5 ] or db[ 6 ] or db[ 9 ] or db[ 10 ] or ""
+
+        elseif state.buff.cat_form.up then
+            return db[ 7 ] or db[ 8 ] or db[ 1 ] or db[ 2 ] or db[ 3 ] or db[ 4 ] or db[ 5 ] or db[ 6 ] or db[ 9 ] or db[ 10 ] or ""
+
+        elseif state.buff.bear_form.up then
+            return db[ 9 ] or db[ 3 ] or db[ 4 ] or db[ 5 ] or db[ 6 ] or db[ 1 ] or db[ 2 ] or db [ 7 ] or db[ 8 ] or db[ 10 ] or ""
+
+        elseif state.buff.moonkin_form.up then
+            return db[ 10 ] or db[ 1 ] or db[ 2 ] or db[ 3 ] or db[ 4 ] or db[ 5 ] or db[ 6 ] or db[ 7 ] or db[ 8 ] or db[ 9 ] or ""
+
+        end
+    
+        return db[ 1 ] or db[ 2 ] or db[ 3 ] or db[ 4 ] or db[ 5 ] or db[ 6 ] or db[ 7 ] or db[ 8 ] or db[ 9 ] or db[ 10 ] or ""
+    end
+else
+    function Hekili:GetBindingForAction( key, caps )
+        if not key or not keys[ key ] then return "" end
+
+        local db = caps and keys[ key ].upper or keys[ key ].lower
+
+        return db[ 1 ] or db[ 2 ] or db[ 3 ] or db[ 4 ] or db[ 5 ] or db[ 6 ] or db[ 7 ] or db[ 8 ] or db[ 9 ] or db[ 10 ] or ""
+    end
+
 end
-
-

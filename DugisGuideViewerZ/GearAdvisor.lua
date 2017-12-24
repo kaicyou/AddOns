@@ -1349,7 +1349,11 @@ function GA:Initialize()
 		elseif uniqueInventorySlot=="INVTYPE_CLOAK" then
 			return INVSLOT_BACK
 		else
-			return _G["INVSLOT"..strsub(uniqueInventorySlot, 8)]
+			if uniqueInventorySlot ~= nil then
+				return _G["INVSLOT"..strsub(uniqueInventorySlot, 8)]
+			else
+				return nil
+			end
 		end
 	end
 
@@ -1368,6 +1372,11 @@ function GA:Initialize()
 --if true then return 0 end
 		local invSlot
 		local inv1, inv2 = UniqueInventoryToInvSlot(uniqueInventorySlot)
+		
+		if not inv1 then
+			return 0
+		end
+		
 		local current1, current2 = GetInventoryItemLink("player", inv1), GetInventoryItemLink("player", inv2)
 		local bestEquippedSlot =
 			(dataTable[inv1] == current1 and inv1) or
@@ -1677,7 +1686,6 @@ function GA:Initialize()
 			if not keyTransform then return 0 end
 			local itemSum = GetItemStatSum(keyTransform, itemLink, uniqueInventorySlot, itemSums, forGearFinder)
 --if true then return itemSum*value end
-			local slot1, slot2 = UniqueInventoryToInvSlot(uniqueInventorySlot)
 			if uncapped or itemSum==0 or not select(1, ...) or not GetCurrentRatingBonus(keyTransform, spec) then
 				return itemSum*value, itemSum
 			end

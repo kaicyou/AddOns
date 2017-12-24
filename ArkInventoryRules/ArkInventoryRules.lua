@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1843 $
-$Date: 2017-07-22 00:28:24 +1000 (Sat, 22 Jul 2017) $
+$Revision: 1862 $
+$Date: 2017-10-14 15:47:51 +1100 (Sat, 14 Oct 2017) $
 
 ]]--
 
@@ -204,7 +204,6 @@ function ArkInventoryRules.AppliesToItem( i )
 					ArkInventory.OutputError( res )
 					ArkInventory.OutputWarning( string.format( ArkInventory.Localise["RULE_DAMAGED"], cat_code ) )
 					ArkInventory.db.option.category[cat_type].data[cat_code].damaged = true
-					--error( res )
 					
 				end
 				
@@ -266,7 +265,7 @@ end
 
 function ArkInventoryRules.System.type( ... )
 	
-	if not ArkInventoryRules.Object.h or ( ArkInventoryRules.Object.class ~= "item" ) then
+	if not ArkInventoryRules.Object.h or ArkInventoryRules.Object.class ~= "item" then
 		return false
 	end
 	
@@ -593,7 +592,7 @@ function ArkInventoryRules.System.itemfamily( ... )
 			
 		elseif itemloc ~= "INVTYPE_BAG" then
 			
-			local it = GetItemFamily( ArkInventoryRules.Object.h )
+			local it = GetItemFamily( ArkInventoryRules.Object.h ) or 0
 			
 			if bit.band( it, arg ) > 0 then
 				return true
@@ -1082,7 +1081,7 @@ function ArkInventoryRules.System.characterlevelrange( ... )
 
 	-- ( levels below, levels above )
 	
-	if not ArkInventoryRules.Object.h or not ArkInventoryRules.Object.class == "item" then
+	if not ArkInventoryRules.Object.h or ArkInventoryRules.Object.class ~= "item" then
 		return false
 	end
 	
@@ -1415,7 +1414,7 @@ end
 
 function ArkInventoryRules.System.bonus( ... )
 	
-	if not ArkInventoryRules.Object.h or ArkInventoryRules.Object.class ~= "item" then
+	if not ArkInventoryRules.Object.h or not ( ArkInventoryRules.Object.class == "item" or ArkInventoryRules.Object.class == "keystone" ) then
 		return false
 	end
 	

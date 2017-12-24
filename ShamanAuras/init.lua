@@ -256,15 +256,15 @@ function Auras:OnEnable()
 	Auras:InitializeCooldowns('AuraGroup3',3)
 	
 	-- Clean up old version checks
-	for i=1,66 do
+	for i=1,67 do
 		if (db["isR"..tostring(i).."FirstLoad"] == false) then
 			db["isR"..tostring(i).."FirstLoad"] = nil
 		end
 	end
 	
-	if (db.isR67FirstLoad) then
+	if (db.isR68FirstLoad) then
 		SSA.Bulletin:Show()
-		db.isR67FirstLoad = false
+		db.isR68FirstLoad = false
 	end
 	
 	StaticPopupDialogs["SSA_CLASS_CHECKER"] = {

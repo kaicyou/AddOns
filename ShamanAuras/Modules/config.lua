@@ -1189,8 +1189,20 @@ local function GetElementalOptions()
 										Auras:UpdateTalents()
 									end,
 								},
-								LiquidMagmaTotem = {
+								LightningRod = {
 									order = 13,
+									type = "toggle",
+									name = Auras:GetSpellName(210689),
+									get = function()
+										return auras.LightningRod
+									end,
+									set = function(self,value)
+										auras.LightningRod = value
+										Auras:UpdateTalents()
+									end,
+								},
+								LiquidMagmaTotem = {
+									order = 14,
 									type = "toggle",
 									name = Auras:GetSpellName(192222),
 									get = function()
@@ -1202,7 +1214,7 @@ local function GetElementalOptions()
 									end,
 								},
 								PowerOfMaelstrom = {
-									order = 14,
+									order = 15,
 									type = "toggle",
 									name = Auras:GetSpellName(191877),
 									get = function()
@@ -1214,7 +1226,7 @@ local function GetElementalOptions()
 									end,
 								},
 								StormElemental = {
-									order = 15,
+									order = 16,
 									type = "toggle",
 									name = Auras:GetSpellName(192249),
 									get = function() 
@@ -1226,7 +1238,7 @@ local function GetElementalOptions()
 									end,
 								},
 								Stormkeeper = {
-									order = 16,
+									order = 17,
 									type = "toggle",
 									name = Auras:GetSpellName(205495),
 									get = function() 

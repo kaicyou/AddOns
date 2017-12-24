@@ -1,12 +1,12 @@
 ## Interface: 70300
-## Title: Dugi Questing Essential |cffffffff4.304|r
+## Title: Dugi Questing Essential |cffffffff4.407|r
 ## Notes: Questing Addon Copyright 2010-2017 UltimateWoWGuide.com
-## Version: 4.304
+## Version: 4.407
 ## X-Website: http://www.ultimatewowguide.com/
 ## X-Email: support@ultimatewowguide.com
 ## X-Category: Quest
 ## SavedVariablesPerCharacter: CurrentTitle, CurrentZone, DugisGuideUser, DugisGuideViewerDB, DugisArrowDb, DugisFlightmasterDataTable, DugisNPCFrameDB, DataExport, DugisCharacterCache
-## SavedVariables: MapOverlays, DugisFlightmasterLookupTable, TaxiDataCollection, DugisGuideViewerProfiles, CollectedWorldMapTrackingPoints, FollowersCache, TutorialFrameDugisState, TutorialFrameDugisHidden
+## SavedVariables: MapOverlays, DugisFlightmasterLookupTable, TaxiDataCollection, DugisGuideViewerProfiles, CollectedWorldMapTrackingPoints_v2, FollowersCache, TutorialFrameDugisState, TutorialFrameDugisHidden
 ## X-CompatibleLocales: enUS, enGB, deDE, frFR, esES, esMX, koKR, ruRU
 
 
@@ -62,6 +62,9 @@ DugisGuideViewer.xml
 WatchFrame.lua
 ItemButton.lua
 NPCJournalFrame\GUIUtils.lua
+
+GPSArrow.xml
+
 arrow.lua
 Ants.lua
 Corpse.lua

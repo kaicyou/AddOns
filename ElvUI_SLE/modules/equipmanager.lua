@@ -63,12 +63,11 @@ EM.TagsTable = {
 		if index == T.GetSpecialization() then return true; else return false; end
 	end,
 	["talent"] = function(tier, column)
+		local tier, column = T.tonumber(tier), T.tonumber(column)
 		if not (tier or column) then return false end
-		if not (T.tonumber(tier) or T.tonumber(column)) then return false end
 		if tier < 0 or tier > 7 then SLE:ErrorPrint(T.format(L["SLE_EM_TAG_INVALID_TALENT_TIER"], tier)) return false end
 		if column < 0 or column > 3 then SLE:ErrorPrint(T.format(L["SLE_EM_TAG_INVALID_TALENT_COLUMN"], column)) return false end
-		local index = T.GetSpecialization()
-		local _, _, _, selected = GetTalentInfo(tier, column, index)
+		local _, _, _, selected = T.GetTalentInfo(tier, column, 1)
 		if selected then
 			return true
 		else
@@ -151,10 +150,10 @@ function EM:TagsProcess(msg)
 				if cnd then
 					local command, argument = (":"):split(cnd)
 					local argTable = {}
-					if T.find(argument, "%.") then
+					if argument and T.find(argument, "%.") then
 						SLE:ErrorPrint(L["SLE_EM_TAG_DOT_WARNING"])
 					else
-						if ("/"):split(argument) then
+						if argument and ("/"):split(argument) then
 							local put
 							while argument and ("/"):split(argument) do
 								put, argument = ("/"):split(argument)

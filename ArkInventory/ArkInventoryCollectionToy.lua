@@ -134,13 +134,13 @@ function ArkInventory.Collection.Toybox.Scan( )
 		ArkInventory.Collection.Toybox.Scan_Threaded( thread_id )
 	end
 	
-	ArkInventory.ThreadStart( thread_id, tf )
+	return ArkInventory.ThreadStart( thread_id, tf )
 	
 end
 
 function ArkInventory.Collection.Toybox.Scan_Threaded( thread_id )
 	
-	--ArkInventory.Output( "Toys: Start Scan @ ", time( ) )
+	--ArkInventory.Output( "Toybox: Start Scan @ ", time( ) )
 	
 	if ArkInventory.Global.Mode.Combat then
 		-- set to scan when leaving combat
@@ -148,68 +148,88 @@ function ArkInventory.Collection.Toybox.Scan_Threaded( thread_id )
 		return
 	end
 	
-	local update = false
+	local data = ArkInventory.Collection.Toybox
 	
+	FilterActionBackup( )
+	FilterActionClear( )
+
 	local total = C_ToyBox.GetNumTotalDisplayedToys( )
 	local owned = C_ToyBox.GetNumLearnedDisplayedToys( )
-	--ArkInventory.Output( "toys: ", owned, " of ", total )
 	
-	if ArkInventory.Collection.Toybox.total ~= total or not ArkInventory.Collection.Toybox.ready then
-		ArkInventory.Collection.Toybox.total = total
+	if total == 0 or owned == 0 then
+		
+		--ArkInventory.Output( "no toys found" )
+		FilterActionRestore( )
+		--ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_TOYBOX_RELOAD_BUCKET", "RESCAN" )
+		return
+		
+	end
+
+	local update = false
+	
+	if data.total ~= total or not data.ready then
+		data.total = total
 		update = true
 	end
 	
-	if ArkInventory.Collection.Toybox.owned ~= owned or not ArkInventory.Collection.Toybox.ready then
-		ArkInventory.Collection.Toybox.owned = owned
+	if data.owned ~= owned or not data.ready then
+		
+		data.owned = owned
 		update = true
+		
+		wipe( data.cache )
+		
 	end
 	
-	ArkInventory.Collection.Toybox.ready = true
-	
-	if owned == 0 then return end
-	
-	local c = ArkInventory.Collection.Toybox.cache
+	--ArkInventory.Output( "toys: ", data.owned, " of ", data.total )
 	
 	for index = 1, total do
 		
 		local i = C_ToyBox.GetToyFromIndex( index )
-		local i, name, icon, fav = C_ToyBox.GetToyInfo( i )
-		local owned = PlayerHasToy( i )
+		local i, name, icon = C_ToyBox.GetToyInfo( i )
+		local hastoy = PlayerHasToy( i )
+		local fav = C_ToyBox.GetIsFavorite( i )
 		
---		if not hide then
-			
-			--ArkInventory.Output( item, " / ", name )
-			if ( not update ) and ( ( not c[i] ) or ( c[i].owned ~= owned or c[i].fav ~= fav ) ) then
-				update = true
-			end
-			
-			if not c[i] then
-				c[i] = {
-					index = index,
-					item = i,
-					name = name,
-					link = C_ToyBox.GetToyLink( i ),
-					texture = icon,
-				}
-			end
-			
-			c[i].owned = owned
-			c[i].fav = fav
-			
---		end
+		--ArkInventory.Output( i, " / ", name )
+		if ( not update ) and ( ( not data.cache[i] ) or ( data.cache[i].owned ~= hastoy or data.cache[i].fav ~= fav ) ) then
+			update = true
+		end
+		
+		if not data.cache[i] then
+			data.cache[i] = {
+				index = index,
+				item = i,
+				name = name,
+				link = C_ToyBox.GetToyLink( i ),
+				texture = icon,
+			}
+		end
+		
+		data.cache[i].owned = hastoy
+		data.cache[i].fav = fav
 		
 		ArkInventory.ThreadYield_Scan( thread_id )
 		
 	end
 	
-	return update
+	--ArkInventory.Output( "Toybox: End Scan @ ", time( ), " ( ", data.owned, " of ", data.total, " )" )
+	
+	FilterActionRestore( )
+	
+	ArkInventory.Collection.Toybox.ready = true
+	
+	if update then
+		ArkInventory.ScanCollectionToybox( )
+	end
+	
+	return true
 	
 end
 
 
 function ArkInventory.Collection.Toybox.OnHide( )
 	filter.ignore = false
-	ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_TOYBOX_UPDATE_BUCKET", "RESCAN" )
+	ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_TOYBOX_RELOAD_BUCKET", "RESCAN" )
 end
 
 function ArkInventory.Collection.Toybox.IsReady( )
@@ -221,77 +241,64 @@ function ArkInventory.Collection.Toybox.GetCount( )
 end
 
 function ArkInventory.Collection.Toybox.GetToy( value )
-	
 	if type( value ) == "number" then
 		return ArkInventory.Collection.Toybox.cache[value]
 	end
-	
 end
 
 function ArkInventory.Collection.Toybox.Iterate( )
-	local t = ArkInventory.Collection.Toybox.cache
-	return ArkInventory.spairs( t, function( a, b ) return ( t[a].item or 0 ) < ( t[b].item or 0 ) end )
+	return ArkInventory.spairs( ArkInventory.Collection.Toybox.cache, function( a, b ) return ( ArkInventory.Collection.Toybox.cache[a].item or 0 ) < ( ArkInventory.Collection.Toybox.cache[b].item or 0 ) end )
 end
 
 function ArkInventory.Collection.Toybox.Summon( index )
-	local td = ArkInventory.Collection.Toybox.GetToy( index )
-	--UseToy( td.item ) -- secure action, cant be done
+	local obj = ArkInventory.Collection.Toybox.GetToy( index )
+	if obj then
+		--UseToy( obj.item ) -- secure action, cant be done
+	end
 end
 
 function ArkInventory.Collection.Toybox.GetFavorite( index )
-	-- index = item id
-	local td = ArkInventory.Collection.Toybox.GetToy( index )
-	return C_ToyBox.GetIsFavorite( td.item )
+	local obj = ArkInventory.Collection.Toybox.GetToy( index )
+	if obj then
+		return C_ToyBox.GetIsFavorite( obj.item )
+	end
 end
 
 function ArkInventory.Collection.Toybox.SetFavorite( index, value )
-	-- value = true | false
-	local td = ArkInventory.Collection.Toybox.GetToy( index )
-	C_ToyBox.SetIsFavorite( td.item, value )
+	local obj = ArkInventory.Collection.Toybox.GetToy( index )
+	if obj then
+		C_ToyBox.SetIsFavorite( obj.item, value )
+	end
 end
 
 
 
-function ArkInventory:EVENT_WOW_COLLECTION_TOYBOX_UPDATE( event, ... )
+function ArkInventory:EVENT_WOW_COLLECTION_TOYBOX_RELOAD( event, ... )
 	
-	--ArkInventory.Output( "EVENT_WOW_COLLECTION_TOYBOX_UPDATE( ", event, " )" )
+	--ArkInventory.Output( "EVENT_WOW_COLLECTION_TOYBOX_RELOAD( ", event, " )" )
 	
-	ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_TOYBOX_UPDATE_BUCKET", event )
+	ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_TOYBOX_RELOAD_BUCKET", event )
 	
 end
 
-function ArkInventory:EVENT_ARKINV_COLLECTION_TOYBOX_UPDATE_BUCKET( events )
+function ArkInventory:EVENT_ARKINV_COLLECTION_TOYBOX_RELOAD_BUCKET( events )
 	
-	--ArkInventory.Output( "EVENT_ARKINV_COLLECTION_TOYBOX_UPDATE_BUCKET( ", events, " )" )
+	--ArkInventory.Output( "EVENT_ARKINV_COLLECTION_TOYBOX_RELOAD_BUCKET( ", events, " )" )
 	
 	if not ArkInventory:IsEnabled( ) then return end
 	
 	local loc_id = ArkInventory.Const.Location.Toybox
 	
 	if not ArkInventory.LocationIsMonitored( loc_id ) then
-		--ArkInventory.Output( "IGNORED (NOT MONITORED)" )
+		--ArkInventory.Output( "IGNORED (TOYBOX NOT MONITORED)" )
 		return
 	end
 	
-	if ToyBox and ToyBox:IsVisible( ) then
-		--ArkInventory.Output( "IGNORED (COLLECTION OPEN)" )
+	if ToyBox:IsVisible( ) then
+		--ArkInventory.Output( "IGNORED (TOYBOX OPEN)" )
 		return
 	end
 	
-	if filter.ignore then
-		--ArkInventory.Output( "IGNORED (FILTER CHANGED BY ME)" )
-		filter.ignore = false
-		return
-	end
-	
-	
-	FilterActionBackup( )
-	FilterActionClear( )
-	local update = ArkInventory.Collection.Toybox.Scan( )
-	FilterActionRestore( )
-	
-	if update then
-		ArkInventory.ScanCollectionToybox( )
-	end
+	ArkInventory.Collection.Toybox.Scan( )
 	
 end

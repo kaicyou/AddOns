@@ -152,6 +152,10 @@ function Dugi_ItemButton_OnUpdate(self, elapsed)
 end
 
 function Dugi_Item_UpdateCooldown(itemButton)
+	if not itemButton or not itemButton.questLogIndex then
+		return
+	end
+
 	local start, duration, enable = GetQuestLogSpecialItemCooldown(itemButton.questLogIndex)
 	if ( start ) then
 		CooldownFrame_Set(itemButton.cooldown, start, duration, enable)

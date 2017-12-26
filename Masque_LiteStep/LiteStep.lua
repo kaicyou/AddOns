@@ -4,8 +4,6 @@
 	please see the included License.txt file.
 
 	* File...: LiteStep.lua
-	* Date...: 2016-07-26T5:35:55Z
-	* Hash...: 4a85baa
 	* Author.: StormFX
 
 ]]
@@ -13,12 +11,15 @@
 local MSQ = LibStub("Masque", true)
 if not MSQ then return end
 
+local AddOn, _ = ...
+local Version = GetAddOnMetadata(AddOn, "Version")
+
 -- LiteStep
 MSQ:AddSkin("LiteStep", {
 	Author = "StormFX",
-	Version = "7.2.0",
+	Version = Version,
 	Shape = "Square",
-	Masque_Version = 60200,
+	Masque_Version = 70200,
 	Backdrop = {
 		Width = 36,
 		Height = 36,
@@ -38,6 +39,7 @@ MSQ:AddSkin("LiteStep", {
 	Cooldown = {
 		Width = 32,
 		Height = 32,
+		Color = {0, 0, 0, 0.7},
 	},
 	ChargeCooldown = {
 		Width = 32,
@@ -60,14 +62,15 @@ MSQ:AddSkin("LiteStep", {
 	Checked = {
 		Width = 36,
 		Height = 36,
-		BlendMode = "ADD",
-		Color = {0, 0.8, 1, 0.8},
+		BlendMode = "BLEND",
+		Color = {0, 0.7, 0.9, 0.7},
 		Texture = [[Interface\AddOns\Masque_LiteStep\Textures\Border]],
 	},
 	Border = {
 		Width = 36,
 		Height = 36,
-		BlendMode = "ADD",
+		BlendMode = "BLEND",
+		Color = {0, 1, 0, 0.5},
 		Texture = [[Interface\AddOns\Masque_LiteStep\Textures\Border]],
 	},
 	Gloss = {

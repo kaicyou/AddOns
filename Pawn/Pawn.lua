@@ -7,7 +7,7 @@
 -- Main non-UI code
 ------------------------------------------------------------
 
-PawnVersion = 2.0205
+PawnVersion = 2.0214
 
 -- Pawn requires this version of VgerCore:
 local PawnVgerCoreVersionRequired = 1.09
@@ -3703,6 +3703,9 @@ end
 
 -- Called whenever the artifact UI is used.
 function PawnOnArtifactUpdated(NewItem)
+	-- Compatibility fix with AethysRotation and any other addon that scans artifacts at startup
+	if not PawnOptions then return nil end
+
 	-- Get details about this artifact and then cache them.
 	local ArtifactItemID, _, ArtifactName = C_ArtifactUI.GetArtifactInfo()
 	if not ArtifactItemID then return end
@@ -3727,13 +3730,12 @@ function PawnOnArtifactUpdated(NewItem)
 
 	local NumRelicSlots = C_ArtifactUI.GetNumRelicSlots() or 0
 	local RelicIndex
-	local PlayerLevel = UnitLevel("player")
 	for RelicIndex = 1, NumRelicSlots do
 		local _, _, _, ThisRelicItemLink = C_ArtifactUI.GetRelicInfo(RelicIndex)
 		local LockedReason = C_ArtifactUI.GetRelicLockedReason(RelicIndex)
 
-		if LockedReason == nil or PlayerLevel >= 110 then
-			-- This relic slot is unlocked, or the player is 110 and so it's close to being unlocked.
+		if LockedReason == nil then
+			-- Only count relic slots that are unlocked.  (Previously, this had "or UnitLevel("player") >= 110", but that ended up being annoying.)
 			local ThisRelic = ThisArtifact.Relics[RelicIndex]
 			if not ThisRelic then
 				ThisRelic = {}
@@ -3758,6 +3760,8 @@ end
 -- This function does the same as C_ArtifactUI.GetItemLevelIncreaseProvidedByRelic, but provides two fixes:
 -- (1) It works in WoW 7.2, which the in-game method doesn't
 -- (2) It works on level-scaled relics, which GetItemStats doesn't
+--
+-- Also, this method ignores bonus item levels imbued by the Netherlight Crucible.
 local PawnTempRelicTable = {}
 function PawnGetItemLevelIncreaseProvidedByRelic(ItemLink)
 	local Parts = PawnTempRelicTable
@@ -4717,6 +4721,10 @@ function PawnAddPluginScale(ProviderInternalName, ScaleInternalName, LocalizedNa
 	NewScale.LocalizedName = LocalizedName
 	NewScale.Header = PawnScaleProviders[ProviderInternalName].Name
 	NewScale.NormalizationFactor = NormalizationFactor
+	-- If the plugin supplied any stat values of 0, remove them now.
+	for StatName, Value in pairs(Values) do
+		if Value == 0 then Values[StatName] = nil end
+	end
 	NewScale.Values = Values
 	if not NewScale.PerCharacterOptions then NewScale.PerCharacterOptions = {} end
 	if not NewScale.PerCharacterOptions[PawnPlayerFullName] then NewScale.PerCharacterOptions[PawnPlayerFullName] = {} end

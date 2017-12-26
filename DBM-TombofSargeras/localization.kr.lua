@@ -6,17 +6,6 @@ local L
 ---------------------------
 L= DBM:GetModLocalization(1862)
 
-L:SetTimerLocalization({
-	timerComboWamboCD =	"다음 유성/가시 (%d)"
-})
-
-L:SetOptionLocalization({
-	timerComboWamboCD =	"다음 몰아치는 유성/지옥불 가시 타이머 바 보기"
-})
-
-L:SetMiscLocalization({
-})
-
 ---------------------------
 -- Demonic Inquisition --
 ---------------------------
@@ -53,13 +42,29 @@ L= DBM:GetModLocalization(1897)
 L= DBM:GetModLocalization(1873)
 
 L:SetOptionLocalization({
-	InfoFrame =	"보스 기력을 정보 창에 표시"
+	InfoFrame =	"전투의 전반적인 상황을 정보 창에 표시"
+})
+
+L:SetMiscLocalization({
+	FallenAvatarDialog	= "네 눈앞의 껍데기는 한때 살게라스의 무지막지한 힘을 담던 그릇이었다. 그러나 이 사원 자체가 우리에겐 포상이다. 이곳이 우리가 너희 세상을 잿더미로 만드는 발판이 되리라!"
 })
 
 ---------------------------
 -- Kil'jaeden --
 ---------------------------
 L= DBM:GetModLocalization(1898)
+
+L:SetWarningLocalization({
+	warnSingularitySoon		= "%d초 후 넉백"
+})
+
+L:SetOptionLocalization({
+	warnSingularitySoon		= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.soon:format(235059)
+})
+
+L:SetMiscLocalization({
+	Obelisklasers	= "방첨탑 레이저"
+})
 
 -------------
 --  Trash  --

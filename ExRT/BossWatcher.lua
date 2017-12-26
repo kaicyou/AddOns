@@ -72,6 +72,7 @@ module.db.data = {
 		other = {
 			blessing = {},
 			roles = {},
+			rolesGUID = {},
 		},
 	},
 }
@@ -524,6 +525,7 @@ function module.main:ADDON_LOADED()
 	end
 end
 
+local negateHealing = {}
 
 local SLTReductionAuraSpellID = 98007
 local SLTReductionAuraName = GetSpellInfo(SLTReductionAuraSpellID)
@@ -1026,6 +1028,33 @@ local BossPhasesData = {
 			[2] = -14719,
 		},		
 	},	--ToS: Аватара Падшего
+	[2051] = {
+		events = {"COMBAT_LOG_EVENT_UNFILTERED"},
+		func = function(_,_,_,event,_,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellId)
+			if event == "SPELL_CAST_SUCCESS" then
+				if spellId == 244834 then
+					active_phase = 2
+				elseif spellId == 241983 then
+					active_phase = 4
+				end
+			elseif event == "SPELL_AURA_REMOVED" then 
+				if spellId == 244834 and active_phase then
+					active_phase = 3
+				end
+			elseif event == "SPELL_CAST_START" then 
+				if spellId == 238999 and active_phase ~= 5 then
+					active_phase = 5
+				end
+			end
+		end,
+		names = {
+			[1] = -14921,
+			[2] = -15221,
+			[3] = -15229,
+			[4] = -15394,
+			[5] = -15255,
+		},
+	},	--ToS: Kj
 }
 local BossPhasesFrame = CreateFrame("Frame")
 local BossPhasesBossmodPhaseCounter, BossPhasesBossmodPhase, BossPhasesBossmodEnabled = 1
@@ -1138,6 +1167,7 @@ function _BW_Start(encounterID,encounterName)
 		other = {
 			blessing = {},
 			roles = {},
+			rolesGUID = {},
 		},
 	}
 	
@@ -1154,7 +1184,9 @@ function _BW_Start(encounterID,encounterName)
 	segmentsData = fightData.segments
 	
 	active_segment = 1
-	active_phase = 1	
+	active_phase = 1
+	
+	wipe(negateHealing)
 	
 	module:RegisterEvents('COMBAT_LOG_EVENT_UNFILTERED','UNIT_TARGET','RAID_BOSS_EMOTE','RAID_BOSS_WHISPER','UPDATE_MOUSEOVER_UNIT')
 	
@@ -1220,6 +1252,8 @@ function _BW_Start(encounterID,encounterName)
 					raidGUIDs[ guid ] = name
 					
 					addReductionOnPull(name,guid)
+					
+					fightData.other.rolesGUID[guid] = UnitGroupRolesAssigned(name)
 				end
 				
 				fightData.other.roles[name] = UnitGroupRolesAssigned(name)
@@ -1246,6 +1280,8 @@ function _BW_Start(encounterID,encounterName)
 					raidGUIDs[ guid ] = name
 					
 					addReductionOnPull(name,guid)
+					
+					fightData.other.rolesGUID[guid] = UnitGroupRolesAssigned(name)
 				end
 				
 				fightData.other.roles[name] = UnitGroupRolesAssigned(name)
@@ -2030,6 +2066,16 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 				
 		
 		--------------> Other
+		if negateHealing[destGUID] then
+			spellTable.amount = spellTable.amount - amount
+			spellTable.over = spellTable.over + amount + absorbed
+			spellTable.absorbed = spellTable.absorbed - absorbed
+			if critical then
+				spellTable.crit = spellTable.crit - amount - absorbed
+				spellTable.critcount = spellTable.critcount - 1
+				spellTable.critover = spellTable.critover - overhealing
+			end
+		end
 		if spellID == 183998 then	--Light of the Martyr: effective healing fix
 			local lotmData = spellFix_LotM[sourceGUID]
 			if not lotmData then
@@ -2172,6 +2218,8 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		
 		if spellID == 45181 or spellID == 211336 or spellID == 87024 or spellID == 229333 or spellID == 116888 or spellID == 209261 then	--Cheated Death, Archbishop Benedictus' Restitution, Cauterize, Sands of Time (Trinket), Shroud of Purgatory, Uncontained Fel 
 			AddNotRealDeath(destGUID,timestamp,spellID)
+		elseif spellID == 243961 then	--Varimatras Disable Healing Debuff
+			negateHealing[destGUID] = true
 		end
 		
 		
@@ -2225,6 +2273,8 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		--------------> Other
 		if spellID == 187464 then	--Shadow Mend
 			spellFix_SM[destGUID] = nil
+		elseif spellID == 243961 then	--Varimatras Disable Healing Debuff
+			negateHealing[destGUID] = nil
 		end
 
 	---------------------------------
@@ -2275,17 +2325,17 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 	------ powers
 	---------------------------------	
 	elseif event == "SPELL_ENERGIZE" or event == "SPELL_PERIODIC_ENERGIZE" then
-		local spellID,_,_,amount,powerType = ...
+		local spellID, _, _, amount, overEnergize, powerType, alternatePowerType = ...
 		
-		local sourceData = fightData_power[sourceGUID]
+		local sourceData = fightData_power[destGUID]
 		if not sourceData then
 			sourceData = {}
-			fightData_power[sourceGUID] = sourceData
+			fightData_power[destGUID] = sourceData
 		end
-		local powerData = sourceData[powerType]
+		local powerData = sourceData[powerType or 0]
 		if not powerData then
 			powerData = {}
-			sourceData[powerType] = powerData
+			sourceData[powerType or 0] = powerData
 		end
 		local spellData = powerData[spellID]
 		if not spellData then
@@ -2851,6 +2901,7 @@ function module:ClearData()
 			other = {
 				blessing = {},
 				roles = {},
+				rolesGUID = {},
 			},	
 		},
 	}
@@ -2917,10 +2968,16 @@ function BWInterfaceFrameLoad()
 		---Tab with mobs fix
 		if activeTab == 4 then
 			local activeTabOnPage = BWInterfaceFrame.tab.tabs[4].infoTabs.selected
+			for i=1,#reportData[4][activeTabOnPage] do
+				reportData[4][activeTabOnPage][i] = reportData[4][activeTabOnPage][i]:gsub("||","")
+			end
 			ExRT.F:ToChatWindow(reportData[4][activeTabOnPage])
 			return		
 		end
 		
+		for i=1,#reportData[activeTab] do
+			reportData[activeTab][i] = reportData[activeTab][i]:gsub("||","")
+		end
 		ExRT.F:ToChatWindow(reportData[activeTab],nil,reportOptions[activeTab])
 	end)
 	BWInterfaceFrame.report:Hide()
@@ -9811,6 +9868,23 @@ function BWInterfaceFrameLoad()
 		HealingTab_UpdatePage()
 	end
 	
+	local function HealingTab_SelectDropDown_OptionTanks(_,destTable,onlyTanks)
+		ELib:DropDownClose()
+		local Back_destVar = ExRT.F.table_copy2(HdestVar)
+		local Back_sourceVar = ExRT.F.table_copy2(HsourceVar)
+		wipe(HdestVar)
+		for i=1,#destTable do
+			local isTank
+			if CurrentFight.other.rolesGUID[ destTable[i][1] ] == "TANK" then
+				isTank = true
+			end
+			if (isTank and onlyTanks) or (not isTank and not onlyTanks) then
+				HdestVar[ destTable[i][1] ] = true
+			end
+		end
+		HealingTab_UpdatePage()
+	end
+	
 	local function HealingTab_CheckDropDownSource(self,checked)
 		if checked then
 			HsourceVar[self.arg1] = true
@@ -9890,6 +9964,20 @@ function BWInterfaceFrameLoad()
 				checkable = true,
 			}
 		end
+		tinsert(BWInterfaceFrame.tab.tabs[2].targetDropDown.List,2,{
+			text = L.BossWatcherHealToTanks,
+			padding = 16,
+			func = HealingTab_SelectDropDown_OptionTanks,
+			arg1 = destTable,
+			arg2 = true,
+		})
+		tinsert(BWInterfaceFrame.tab.tabs[2].targetDropDown.List,2,{
+			text = L.BossWatcherHealToNonTanks,
+			padding = 16,
+			func = HealingTab_SelectDropDown_OptionTanks,
+			arg1 = destTable,
+			arg2 = false,
+		})
 		if not disableUpdateVars then
 			wipe(HsourceVar)
 			wipe(HdestVar)

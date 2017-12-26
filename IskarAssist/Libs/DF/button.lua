@@ -155,6 +155,14 @@ local ButtonMetaFunctions = _G [DF.GlobalWidgetControlNames ["button"]]
 	local smember_function = function (_object, _value)
 		return _rawset (_object, "func", _value)
 	end
+	--> param1
+	local smember_param1 = function (_object, _value)
+		return _rawset (_object, "param1", _value)
+	end
+	--> param2
+	local smember_param2 = function (_object, _value)
+		return _rawset (_object, "param2", _value)
+	end
 	--> text color
 	local smember_textcolor = function (_object, _value)
 		local _value1, _value2, _value3, _value4 = DF:ParseColors (_value)
@@ -225,6 +233,8 @@ local ButtonMetaFunctions = _G [DF.GlobalWidgetControlNames ["button"]]
 	ButtonMetaFunctions.SetMembers ["height"] = smember_height
 	ButtonMetaFunctions.SetMembers ["text"] = smember_text
 	ButtonMetaFunctions.SetMembers ["clickfunction"] = smember_function
+	ButtonMetaFunctions.SetMembers ["param1"] = smember_param1
+	ButtonMetaFunctions.SetMembers ["param2"] = smember_param2
 	ButtonMetaFunctions.SetMembers ["textcolor"] = smember_textcolor
 	ButtonMetaFunctions.SetMembers ["textfont"] = smember_textfont
 	ButtonMetaFunctions.SetMembers ["textsize"] = smember_textsize
@@ -394,7 +404,7 @@ local ButtonMetaFunctions = _G [DF.GlobalWidgetControlNames ["button"]]
 	end
 
 -- icon
-	function ButtonMetaFunctions:SetIcon (texture, width, height, layout, texcoord, overlay, textdistance, leftpadding, textheight)
+	function ButtonMetaFunctions:SetIcon (texture, width, height, layout, texcoord, overlay, textdistance, leftpadding, textheight, short_method)
 		if (not self.icon) then
 			self.icon = self:CreateTexture (nil, "artwork")
 			self.icon:SetSize (self.height*0.8, self.height*0.8)
@@ -427,9 +437,13 @@ local ButtonMetaFunctions = _G [DF.GlobalWidgetControlNames ["button"]]
 		local iconw = self.icon:GetWidth()
 		local text_width = self.button.text:GetStringWidth()
 		if (text_width > w-15-iconw) then
-			if (not short_method) then
+
+			if (short_method == false) then
+			
+			elseif (not short_method) then
 				local new_width = text_width+15+iconw
 				self.button:SetWidth (new_width)
+				
 			elseif (short_method == 1) then
 				local loop = true
 				local textsize = 11
@@ -443,6 +457,7 @@ local ButtonMetaFunctions = _G [DF.GlobalWidgetControlNames ["button"]]
 						textsize = textsize - 1
 					end
 				end
+				
 			end
 		end
 		
@@ -856,9 +871,21 @@ local ButtonMetaFunctions = _G [DF.GlobalWidgetControlNames ["button"]]
 			(button.mouse_down+0.5 > GetTime() and button:IsMouseOver())
 		) then
 			if (buttontype == "LeftButton") then
-				button.MyObject.func (button, buttontype, button.MyObject.param1, button.MyObject.param2)
+			
+				local success, errorText = pcall (button.MyObject.func, button, buttontype, button.MyObject.param1, button.MyObject.param2)
+				if (not success) then
+					error ("Details! Framework: button " .. button:GetName() ..  " error: " .. errorText)
+				end
+			
+				--button.MyObject.func (button, buttontype, button.MyObject.param1, button.MyObject.param2)
 			else
-				button.MyObject.funcright (button, buttontype, button.MyObject.param1, button.MyObject.param2)
+			
+				local success, errorText = pcall (button.MyObject.funcright, button, buttontype, button.MyObject.param1, button.MyObject.param2)
+				if (not success) then
+					error ("Details! Framework: button " .. button:GetName() ..  " error: " .. errorText)
+				end
+			
+				--button.MyObject.funcright (button, buttontype, button.MyObject.param1, button.MyObject.param2)
 			end
 		end
 	end
@@ -913,6 +940,21 @@ function ButtonMetaFunctions:SetTemplate (template)
 		self:SetIcon (i.texture, i.width, i.height, i.layout, i.texcoord, i.color, i.textdistance, i.leftpadding)
 	end
 	
+	if (template.textsize) then
+		self.textsize = template.textsize
+	end
+	
+	if (template.textfont) then
+		self.textfont = template.textfont
+	end
+	
+	if (template.textcolor) then
+		self.textcolor = template.textcolor
+	end
+	
+	if (template.textalign) then
+		self.textalign = template.textalign
+	end
 end
 
 ------------------------------------------------------------------------------------------------------------
@@ -1015,6 +1057,9 @@ function DF:NewButton (parent, container, name, member, w, h, func, param1, para
 					textsize = textsize - 1
 				end
 			end
+			
+		elseif (short_method == 2) then
+			
 		end
 	end
 	

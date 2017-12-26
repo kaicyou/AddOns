@@ -2,7 +2,7 @@ local me,addon=...
 if addon.die then return end
 local C=addon:GetColorTable()
 local module=addon:GetWidgetsModule()
-local Type,Version,unique="OHCMissionsList",1,0
+local Type,Version,unique="OHCMissionsList",2,0
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local C=addon:GetColorTable()
@@ -15,6 +15,7 @@ local GARRISON_FOLLOWER_XP_UPGRADE_STRING=GARRISON_FOLLOWER_XP_UPGRADE_STRING
 local GARRISON_FOLLOWER_XP_STRING=GARRISON_FOLLOWER_XP_STRING
 local GARRISON_FOLLOWER_DISBANDED=GARRISON_FOLLOWER_DISBANDED
 local BONUS_LOOT_LABEL=C(" (".. BONUS_LOOT_LABEL .. ")","Green")
+local GetItemInfo,GetItemIcon=GetItemInfo,GetItemIcon
 local m={} --#Widget
 function m:ScrollDown()
 	local obj=self.scroll
@@ -103,15 +104,16 @@ function m:AddPlayerXP(xpgain)
 end
 function m:AddFollower(followerID,xp,levelup,portrait,fullname)
 	if xp < 0 then
-		return self:AddFollowerIcon(portrait,format(GARRISON_FOLLOWER_DISBANDED,fullname))
+		return self:AddFollowerIcon(portrait,format(GARRISON_FOLLOWER_DISBANDED,fullname or FOLLOWERLIST_LABEL_TROOPS))
 	end
-	local isMaxLevel=addon:GetFollowerData(followerID,'isMaxLevel',false)
+	if addon:GetFollowerData(followerID,'isTroop',false) then return end
+	local isMaxLevel=addon:GetFollowerData(followerID,'qLevel',0) >= addon:MAXQLEVEL()
 	if isMaxLevel and not levelup then
-		return
---			return self:AddFollowerIcon(followerType,follower.portraitIconID,format("%s is already at maximum xp",follower.fullname))
+--		return
+		return self:AddFollowerIcon(portrait,format("%s is already at maximum xp",fullname))
 	end
 	if levelup then
-		PlaySound("UI_Garrison_CommandTable_Follower_LevelUp");
+		PlaySound(SOUNDKIT.UI_GARRISON_COMMAND_TABLE_FOLLOWER_LEVEL_UP);
 	end
 	
 	local message=GARRISON_FOLLOWER_XP_ADDED_ZONE_SUPPORT:format(fullname,xp)
@@ -124,7 +126,7 @@ function m:AddFollower(followerID,xp,levelup,portrait,fullname)
 	end
 	if levelXP > 0 then
 		message=message .. ' ' ..
-			GARRISON_FOLLOWER_XP_LEFT:format(levelXP-addon:GetFollowerData(followerID,'xp',levelXP)) ..
+			GARRISON_FOLLOWER_XP_LEFT:format(levelXP-XP) ..
 			' ' ..
 			(isMaxLevel and GARRISON_FOLLOWER_XP_UPGRADE_STRING or GARRISON_FOLLOWER_XP_STRING)
 	end		
@@ -156,6 +158,7 @@ end
 function m:AddItem(itemID,qt,isBonus)
 	local obj=self.scroll
 	local _,itemlink,itemquality,_,_,_,_,_,_,itemtexture=GetItemInfo(itemID)
+	if not itemtexture then itemtexture=GetItemIcon(itemID) end
 	if not itemlink then
 		self:AddIconText(itemtexture,itemID,qt,isBonus)
 	else

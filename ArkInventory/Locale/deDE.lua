@@ -32,6 +32,14 @@ if not L then return end
 	L["WOW_ITEM_TOOLTIP_POTION_MANA"] = "Stellt %d+ bis %d+ Mana wieder her"
 	L["WOW_ITEM_TOOLTIP_ELIXIR_BATTLE"] = "Kampfelixier"
 	L["WOW_ITEM_TOOLTIP_ELIXIR_GUARDIAN"] = "W\195\164chterelixier"
+	L["WOW_ITEM_TOOLTIP_10P3T"] = "tausend,tausende"
+--	L["WOW_ITEM_TOOLTIP_10P3S"] = ""
+	L["WOW_ITEM_TOOLTIP_10P6T"] = "million,millionen"
+--	L["WOW_ITEM_TOOLTIP_10P6S"] = ""
+	L["WOW_ITEM_TOOLTIP_10P9T"] = "milliarde,milliarden"
+--	L["WOW_ITEM_TOOLTIP_10P9S"] = ""
+	L["WOW_ITEM_TOOLTIP_10P12T"] = "billion,billionen,trillionen"
+--	L["WOW_ITEM_TOOLTIP_10P12S"] = ""
 	
 	
 --	location names
@@ -60,6 +68,7 @@ if not L then return end
 --	L["RESTACK_TOPUP_FROM_BAGS"] = ""
 --	L["RESTACK_TOPUP_FROM_BAGS_TEXT"] = ""
 --	L["RESTACK_FILL_FROM_BAGS_TEXT"] = ""
+--	L["RESTACK_REFRESH_WHEN_COMPLETE"] = ""
 	
 
 --	vault tab tooltips
@@ -178,11 +187,16 @@ if not L then return end
 --	L["MENU_BAR_CATEGORY_MOVE_COMPLETE_TEXT"] = ""
 --	L["MENU_BAR_CATEGORY_ENABLE_TEXT"] = ""
 --	L["MENU_BAR_CATEGORY_DISABLE_TEXT"] = ""
+--	L["MENU_BAR_CATEGORY_STATUS"] = ""
+--	L["MENU_BAR_CATEGORY_STATUS_TEXT"] = ""
+--	L["MENU_BAR_CATEGORY_JUNK_TEXT"] = ""
 --	L["MENU_BAR_BAG_ASSIGN_TEXT"] = ""
 	L["MENU_BAR_OPTIONS"] = "Leisteneinstellungen"
 	L["MENU_BAR_RESET_TEXT"] = "Entfernt alle dieser Leiste zugeordneten Kategorien, mit Ausnahme der Standardkategorie."
 	L["MENU_BAR_INSERT_TEXT"] = "F\195\188gt an dieser Stelle eine Leiste ein, welche alle Kategorien um eins nach oben verschiebt."
 	L["MENU_BAR_DELETE_TEXT"] = "Entfernt diese Leiste (alle Gegenst\195\164nde kommen wieder in die Standardleiste) und die Leiste dar\195\188ber nimmt diesen Platz ein.\n\nFalls dies die Standardleiste ist, wird Leiste 1 zur neuen Standardleiste."
+--	L["MENU_BAR_WIDTH_MINIMUM_TEXT"] = ""
+--	L["MENU_BAR_WIDTH_MAXIMUM_TEXT"] = ""
 --	L["MENU_BAR_MOVE_START_TEXT"] = ""
 --	L["MENU_BAR_MOVE_COMPLETE_TEXT"] = ""
 --	L["MENU_BAR_MOVE_FAIL_OUTSIDE"] = ""
@@ -280,9 +294,14 @@ if not L then return end
 --	L["CONFIG_SYSTEM_WORKAROUND_ZEROSIZEBAG"] = ""
 --	L["CONFIG_SYSTEM_WORKAROUND_ZEROSIZEBAG_TEXT"] = ""
 --	L["CONFIG_SYSTEM_WORKAROUND_ZEROSIZEBAG_ALERT_TEXT"] = ""
---	L["CONFIG_SYSTEM_WORKAROUND_COMBAT_YIELD"] = ""
---	L["CONFIG_SYSTEM_WORKAROUND_COMBAT_YIELD_ENABLED_TEXT"] = ""
---	L["CONFIG_SYSTEM_WORKAROUND_COMBAT_YIELD_COUNT_TEXT"] = ""
+--	L["CONFIG_SYSTEM_WORKAROUND_THREAD"] = ""
+--	L["CONFIG_SYSTEM_WORKAROUND_THREAD_DEBUG_TEXT"] = ""
+--	L["CONFIG_SYSTEM_WORKAROUND_THREAD_DISABLED_TEXT"] = ""
+--	L["CONFIG_SYSTEM_WORKAROUND_THREAD_TIMEOUT"] = ""
+--	L["CONFIG_SYSTEM_WORKAROUND_THREAD_TIMEOUT_NORMAL"] = ""
+--	L["CONFIG_SYSTEM_WORKAROUND_THREAD_TIMEOUT_NORMAL_TEXT"] = ""
+--	L["CONFIG_SYSTEM_WORKAROUND_THREAD_TIMEOUT_COMBAT"] = ""
+--	L["CONFIG_SYSTEM_WORKAROUND_THREAD_TIMEOUT_COMBAT_TEXT"] = ""
 --	L["BUGFIX_TAINTED_ALERT_MOUSEOVER_TEXT"] = ""
 --	L["BUGFIX_TAINTED_ALERT_OPEN_TEXT"] = ""
 	
@@ -469,10 +488,18 @@ if not L then return end
 --	L["CONFIG_JUNK_SELL_TEXT"] = ""
 --	L["CONFIG_JUNK_SELL_NOTIFY_SOLD"] = ""
 --	L["CONFIG_JUNK_SELL_NOTIFY_DESTROYED"] = ""
+--	L["CONFIG_JUNK_SELL_NOTIFY_LIMIT"] = ""
 --	L["CONFIG_JUNK_LIMIT"] = ""
 --	L["CONFIG_JUNK_LIMIT_TEXT"] = ""
 --	L["CONFIG_JUNK_DELETE_TEXT"] = ""
 --	L["CONFIG_JUNK_NOTIFY_TEXT"] = ""
+--	L["CONFIG_JUNK_RARITY_CUTOFF_TEXT"] = ""
+--	L["CONFIG_JUNK_CATEGORY_TEXT"] = ""
+--	L["CONFIG_JUNK_LIST_TEXT"] = ""
+--	L["CONFIG_JUNK_LIST_SELL_TEXT"] = ""
+--	L["CONFIG_JUNK_LIST_DESTROY_TEXT"] = ""
+--	L["CONFIG_JUNK_TEST_TEXT"] = ""
+--	L["CONFIG_JUNK_TEST_ALERT"] = ""
 	
 	
 -- sorting
@@ -514,6 +541,8 @@ if not L then return end
 	L["CONFIG_SORTING_INCLUDE_VENDORPRICE_TEXT"] = "Der Verkaufspreis (gestapelte Gegenst\195\164nde werden aufsummiert) bestimmt die Sortierreihenfolge."
 --	L["CONFIG_SORTING_INCLUDE_ID"] = ""
 --	L["CONFIG_SORTING_INCLUDE_ID_TEXT"] = ""
+--	L["CONFIG_SORTING_INCLUDE_SLOTTYPE"] = ""
+--	L["CONFIG_SORTING_INCLUDE_SLOTTYPE_TEXT"] = ""
 	
 	L["CONFIG_SORTING_DIRECTION_TEXT"] = "Gegenst\195\164nde in aufsteigender oder absteigender Reihenfolge sortieren."
 	L["CONFIG_SORTING_ORDER"] = "Sortierreihenfolge"
@@ -721,6 +750,8 @@ if not L then return end
 --	L["LAST"] = ""
 --	L["NONE_USABLE"] = ""
 --	L["NONE_OWNED"] = ""
+--	L["TEST"] = ""
+--	L["LIST"] = ""
 	
 	
 -- libdatabroker

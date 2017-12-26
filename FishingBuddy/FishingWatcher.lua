@@ -460,9 +460,10 @@ end
 -- Handle display of caught Pagle fish
 local function DisplayPagleFish()
 	local line = nil;
+	local zone, subzone = FL:GetZoneInfo();
 	for id,info in pairs(FishingBuddy.PagleFish) do
 		local havesome = GetItemCount(id);
-		if ( havesome > 0 ) then
+		if ( havesome > 0 and (not info.zone or zone == info.zone) ) then
 			local _,_,_,_,_,name,_ = FishingBuddy.GetFishieRaw(id);
 
 			if (not name) then

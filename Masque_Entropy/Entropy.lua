@@ -4,8 +4,6 @@
 	please see the included License.txt file.
 
 	* File...: Entropy.lua
-	* Date...: 2016-07-26T5:16:44Z
-	* Hash...: 0cb0e58
 	* Author.: StormFX
 
 ]]
@@ -13,12 +11,15 @@
 local MSQ = LibStub("Masque", true)
 if not MSQ then return end
 
--- Entropy: Silver
-MSQ:AddSkin("Entropy: Silver", {
+local AddOn, _ = ...
+local Version = GetAddOnMetadata(AddOn, "Version")
+
+-- Entropy - Silver
+MSQ:AddSkin("Entropy - Silver", {
 	Author = "StormFX",
-	Version = "7.2.0",
+	Version = Version,
 	Shape = "Square",
-	Masque_Version = 60200,
+	Masque_Version = 70200,
 	Backdrop = {
 		Width = 32,
 		Height = 32,
@@ -37,6 +38,7 @@ MSQ:AddSkin("Entropy: Silver", {
 	Cooldown = {
 		Width = 28,
 		Height = 28,
+		Color = {0, 0, 0, 0.7},
 	},
 	ChargeCooldown = {
 		Width = 28,
@@ -59,14 +61,15 @@ MSQ:AddSkin("Entropy: Silver", {
 	Checked = {
 		Width = 32,
 		Height = 32,
-		BlendMode = "ADD",
-		Color = {0, 0.8, 1, 0.5},
+		BlendMode = "BLEND",
+		Color = {0, 0.7, 0.9, 0.7},
 		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Border]],
 	},
 	Border = {
 		Width = 32,
 		Height = 32,
-		BlendMode = "ADD",
+		BlendMode = "BLEND",
+		Color = {0, 1, 0, 0.5},
 		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Border]],
 	},
 	Gloss = {
@@ -118,9 +121,9 @@ MSQ:AddSkin("Entropy: Silver", {
 	},
 }, true)
 
--- Entropy: Adamantite
-MSQ:AddSkin("Entropy: Adamantite", {
-	Template = "Entropy: Silver",
+-- Entropy - Adamantite
+MSQ:AddSkin("Entropy - Adamantite", {
+	Template = "Entropy - Silver",
 	Normal = {
 		Width = 32,
 		Height = 32,
@@ -129,9 +132,9 @@ MSQ:AddSkin("Entropy: Adamantite", {
 	},
 }, true)
 
--- Entropy: Bronze
-MSQ:AddSkin("Entropy: Bronze", {
-	Template = "Entropy: Silver",
+-- Entropy - Bronze
+MSQ:AddSkin("Entropy - Bronze", {
+	Template = "Entropy - Silver",
 	Normal = {
 		Width = 32,
 		Height = 32,
@@ -140,9 +143,9 @@ MSQ:AddSkin("Entropy: Bronze", {
 	},
 }, true)
 
--- Entropy: Cobalt
-MSQ:AddSkin("Entropy: Cobalt", {
-	Template = "Entropy: Silver",
+-- Entropy - Cobalt
+MSQ:AddSkin("Entropy - Cobalt", {
+	Template = "Entropy - Silver",
 	Normal = {
 		Width = 32,
 		Height = 32,
@@ -151,9 +154,9 @@ MSQ:AddSkin("Entropy: Cobalt", {
 	},
 }, true)
 
--- Entropy: Copper
-MSQ:AddSkin("Entropy: Copper", {
-	Template = "Entropy: Silver",
+-- Entropy - Copper
+MSQ:AddSkin("Entropy - Copper", {
+	Template = "Entropy - Silver",
 	Normal = {
 		Width = 32,
 		Height = 32,
@@ -162,9 +165,9 @@ MSQ:AddSkin("Entropy: Copper", {
 	},
 }, true)
 
--- Entropy: Fel Iron
-MSQ:AddSkin("Entropy: Fel Iron", {
-	Template = "Entropy: Silver",
+-- Entropy - Fel Iron
+MSQ:AddSkin("Entropy - Fel Iron", {
+	Template = "Entropy - Silver",
 	Normal = {
 		Width = 32,
 		Height = 32,
@@ -173,9 +176,9 @@ MSQ:AddSkin("Entropy: Fel Iron", {
 	},
 }, true)
 
--- Entropy: Gold
-MSQ:AddSkin("Entropy: Gold", {
-	Template = "Entropy: Silver",
+-- Entropy - Gold
+MSQ:AddSkin("Entropy - Gold", {
+	Template = "Entropy - Silver",
 	Normal = {
 		Width = 32,
 		Height = 32,
@@ -184,9 +187,9 @@ MSQ:AddSkin("Entropy: Gold", {
 	},
 }, true)
 
--- Entropy: Iron
-MSQ:AddSkin("Entropy: Iron", {
-	Template = "Entropy: Silver",
+-- Entropy - Iron
+MSQ:AddSkin("Entropy - Iron", {
+	Template = "Entropy - Silver",
 	Normal = {
 		Width = 32,
 		Height = 32,
@@ -195,9 +198,9 @@ MSQ:AddSkin("Entropy: Iron", {
 	},
 }, true)
 
--- Entropy: Khorium
-MSQ:AddSkin("Entropy: Khorium", {
-	Template = "Entropy: Silver",
+-- Entropy - Khorium
+MSQ:AddSkin("Entropy - Khorium", {
+	Template = "Entropy - Silver",
 	Normal = {
 		Width = 32,
 		Height = 32,
@@ -206,9 +209,9 @@ MSQ:AddSkin("Entropy: Khorium", {
 	},
 }, true)
 
--- Entropy: Obsidium
-MSQ:AddSkin("Entropy: Obsidium", {
-	Template = "Entropy: Silver",
+-- Entropy - Obsidium
+MSQ:AddSkin("Entropy - Obsidium", {
+	Template = "Entropy - Silver",
 	Normal = {
 		Width = 32,
 		Height = 32,
@@ -217,9 +220,9 @@ MSQ:AddSkin("Entropy: Obsidium", {
 	},
 }, true)
 
--- Entropy: Saronite
-MSQ:AddSkin("Entropy: Saronite", {
-	Template = "Entropy: Silver",
+-- Entropy - Saronite
+MSQ:AddSkin("Entropy - Saronite", {
+	Template = "Entropy - Silver",
 	Normal = {
 		Width = 32,
 		Height = 32,
@@ -228,9 +231,9 @@ MSQ:AddSkin("Entropy: Saronite", {
 	},
 }, true)
 
--- Entropy: Titanium
-MSQ:AddSkin("Entropy: Titanium", {
-	Template = "Entropy: Silver",
+-- Entropy - Titanium
+MSQ:AddSkin("Entropy - Titanium", {
+	Template = "Entropy - Silver",
 	Normal = {
 		Width = 32,
 		Height = 32,

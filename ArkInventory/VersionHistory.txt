@@ -1,4 +1,4 @@
-﻿*to-do*
+﻿to-do*
  * mail items expiry date/time
 
 *known issues*
@@ -13,6 +13,67 @@
  * faq - https://github.com/arkayenro/arkinventory/wiki/FAQ
  
 
+*3.07.37 (29-NOV-2017)*
+ * fixed - issue with ilvl sorting
+ 
+*3.07.36 (30-OCT-2017)*
+ * changed - (druid) if "use travel form" is selected as a mount then cat form will now be used when indoors
+ * changed - mount action will now dismount you if you are in combat, mounted, and not flying (you used to have to attack/heal something to dismount)
+ * updated - companion item/critter data to 7.3.0
+ * added - bar menu option to set a minimum width (this might be a bit flaky, and will ignore window width if you set it for all the bars in that row)
+ * added - bar menu option to set a maximum width
+ * fixed - issue where GetItemFamily( ) appears to be returning nil
+ * fixed - issue with removing a bag from a slot
+ * fixed - issue with emptying a bags contents (it no longer yields so may hit the script timer)
+ * changed - window drawing should be better.  the initial window draw should be a lot better
+ * fixed - toybox scanning
+ * fixed - erasing account data (pets, toys, mounts, heirlooms) will now cause an immediate rescan like it does for other player locations
+ 
+*3.07.35 (30-AUG-2017)*
+ * changed - toc updated to 70300
+
+*3.07.34 (30-AUG-2017)*
+ * fixed - calls to PlaySound( )
+
+*3.07.33 (07-AUG-2017)*
+ * added - error prevention logic to mount, pet, and toy, collection scan code to handle potentially invalid returns from the blizzard api
+ * fixed - issue with refreshing windows that arent visible
+
+*3.07.32 (01-AUG-2017)*
+ * fixed - queue for rescan message will no longer print out when set to disabled
+ * fixed - removed a pet debug output that always displayed
+ * added - error prevention logic to sort key generation code to handle potentially invalid returns from the blizzard api
+
+*3.07.31 (09-JUL-2017)*
+ * removed - config options for in-combat yielding
+ * added - config options for thread timeout values (defaults to 100ms for in-combat and 100ms for out-of-combat)
+ * changed - bag, pet, mount, toybox, heirloom, mailbox, auction, void storage, and vault scans are now threaded
+ * changed - window drawing is now threaded all the time (not just in combat) - initial window draw can be a bit laggy
+ * changed - restack should be a bit slower but leave the game more responsive (depends on what you set the out of combat thread timeout to)
+ * fixed - issue where pet scanning might sometimes not run
+ * fixed - bag rescans will now just rescan the bag having an issue, not all the bags in that location
+ * fixed - issue with search filter initilisation causing a second window rebuild at the first open
+ * fixed - issue with font size on initial window load
+
+*3.07.30 (25-JUN-2017)*
+ * fixed - issue with some tooltip text containing a UTF-8 non breaking space sequence (its not the same as a normal space character so doesnt match)
+ * fixed - issue with artifact power items not being categorised properly for non-english languages
+ * fixed - issue with ancient mana items not being categorised properly
+ * fixed - issue with artifact power and ancient mana amounts not displaying for non-english languages (the amount should show up but still requires translation of some suffixes)
+ * note - some languages (RU) do not have the text "Ancient Mana" in the toltip for Ancient Mana items so the values cannot be extracted at this time
+ * note - some languages (KR, CN, TW) have different structures so the values cannot be extracted at this time
+ 
+*3.07.29 (22-JUN-2017)*
+ * added - artifact power and ancient mana items will now display their values in the ilvl field (if item level is displayed)
+ * changed - disabled ldb update code after zoning, its not really needed and seems to be causing "script ran too long" errors while out of combat
+ * added - maximum quality option for auto sell
+ * fixed - bar and item category menus now use the same structure and colouring scheme
+ * reverted - you can click on a category name to assign it to a bar again (if its already assigned it will remove it)
+ * added - bar/item menu option to set auto sell flag for an individual category, option is per categoryset
+ * added - config option for testing auto sell mode (this is enabled by default, if you currently have auto sell enabled it will display a warning and wont sell anything until you disable this)
+
+*3.07.28 (17-JUN-2017)*
+ * fixed - display issue with backpack currency icons in status section
 
 *3.07.27 (08-MAY-2017)*
  * changed - cooldown event handling should use less cpu
@@ -34,7 +95,7 @@
  * added - keystone object class to stop error message (still needs work to integrate fully)
  
 *3.07.24 (24-MAR-2017)*
- * fixed - issue with sell junk limit option being inverted (it still has issues selling large number of items)
+ * fixed - issue with sell junk limit option being inverted (it still has issues selling large numbers of items)
  * added - option to disable showing the upgrade arrow under config > settings > styles / layouts > (id) > items > style > items (disabling shouldnt impact other mods, like pawn, that use it)
  * fixed - mount issue when reaching level 20 and not purchasing a riding skill locks out all mounts including the chauffered ones that youve been using up to level 20
  * fixed - illidari felstalker changed from flying to land mount

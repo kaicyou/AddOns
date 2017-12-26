@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1819, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 16177 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 16987 $"):sub(12, -3))
 mod:SetCreatureID(114263, 114361, 114360)--114263 Odyn, 114361 Hymdall, 114360 Hyrja 
 mod:SetEncounterID(1958)
 mod:SetZone()
@@ -28,8 +28,8 @@ mod:RegisterEventsInCombat(
 --TODO, phase 3 storms (area of affect). not in combat log or even transcriptor. appears every 30 seconds give or take. verify in more attempts and add scheduler for it
 --TODO, Cleansing flame timers/target announces?
 --Stage 1: Halls of Valor was merely a set back
-local hymdall = EJ_GetSectionInfo(14005)
-local hyrja = EJ_GetSectionInfo(14006)
+local hymdall = DBM:EJ_GetSectionInfo(14005)
+local hyrja = DBM:EJ_GetSectionInfo(14006)
 
 local warnDancingBlade				= mod:NewCountAnnounce(228003, 3)--Change if target scanning works, but considering it doesn't in 5 man version of this spell, omitting for now
 local warnRevivify					= mod:NewCastAnnounce(228171, 4)
@@ -52,7 +52,7 @@ local yellShieldofLightFades		= mod:NewFadesYell(228270)
 local specWarnBranded				= mod:NewSpecialWarningMoveTo(227503, nil, nil, nil, 3, 6)
 local yellBranded					= mod:NewPosYell(227490, DBM_CORE_AUTO_YELL_CUSTOM_POSITION)
 --Stage 2: Odyn immitates margok
-local specWarnOdynsTest				= mod:NewSpecialWarningCount(227626, nil, DBM_CORE_AUTO_SPEC_WARN_OPTIONS.stack:format(5, 159515))
+local specWarnOdynsTest				= mod:NewSpecialWarningCount(227626, nil, DBM_CORE_AUTO_SPEC_WARN_OPTIONS.stack:format(5, 159515), nil, 1, 2)
 local specWarnOdynsTestOther		= mod:NewSpecialWarningTaunt(227626, nil, nil, nil, 1, 2)
 local specWarnShatterSpears			= mod:NewSpecialWarningDodge(231013, false, nil, 2, 2, 2)--Every 8 seconds, so off by default
 local specWarnHyrja					= mod:NewSpecialWarningSwitch("ej14006", nil, nil, nil, 1, 2)

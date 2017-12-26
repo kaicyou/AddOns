@@ -34,7 +34,7 @@ local function FrameTab_Onclick(self)
 	PanelTemplates_Tab_OnClick(self, self.parent);
 	self.parent.currentTab = self;
 	self.parent:ResetTabFrames();
-	PlaySound("igCharacterInfoTab");
+	PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB);
 end
 
 local function FrameTab_OnShow(self)

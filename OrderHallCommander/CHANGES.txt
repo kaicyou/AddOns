@@ -1,50 +1,23 @@
-tag dbd813b666b9e3706695c0fac2a714db4c51dce8 1.2.2
+tag c1a0e3bc1cf5a739e2ce32936d1333340da5369a 1.5.13
 Author:	Alar of Runetotem <alar@aspide.it>
-Date:	Tue May 2 00:46:04 2017 +0200
+Date:	Mon Dec 11 15:11:18 2017 +0100
 
-Bug fixes
+Retagged as 1.5.13 cause packager failed
+Fix: lua error when both sorts were on "Original method" Thanks to Septh
+for noting it
+Feature: added Squires'Oath for paladins
 
-commit 363269f0160900c8b32fdc50a7d4ec2fc4a96cd0
+commit cd8ebf6c0cc67b89780b9c2ee1b4d9a3571effaa
 Author: Alar of Runetotem <alar@aspide.it>
-Date:   Tue May 2 00:11:05 2017 +0200
+Date:   Mon Dec 11 15:00:46 2017 +0100
 
-    Release Notes
+    Fix: lua error when both sorts were on "Original method" Thanks to Septh
+    for noting it
+    Feature: added Squires'Oath for paladins
 
-commit 682bbe595c67daaa3b8fa4de729e230c64c6cbd1
+commit 9e7f665089c2785cfa734480121a2d53302ac01a
 Author: Alar of Runetotem <alar@aspide.it>
-Date:   Tue May 2 00:10:10 2017 +0200
+Date:   Mon Dec 11 12:35:34 2017 +0100
 
-    Added type member to widgets
-    
-    Needed from Aurora_RealUI
-
-commit 259c491c9148b9f5db67f668a6d3e424b8514b65
-Author: Alar of Runetotem <alar@aspide.it>
-Date:   Mon May 1 23:34:05 2017 +0200
-
-    "Better party available" tooltip improvement
-    
-    Now also lists party composition
-
-commit b82346c00a610753a1a24de662fe307a774110fa
-Author: Alar of Runetotem <alar@aspide.it>
-Date:   Mon May 1 19:45:07 2017 +0200
-
-    https://wow.curseforge.com/projects/orderhallcommander/issues/47
-    
-    Fixed
-
-commit 1c50ae89d221bdd0028775f324c285edc2126066
-Author: Alar of Runetotem <alar@aspide.it>
-Date:   Mon May 1 19:29:01 2017 +0200
-
-    https://wow.curseforge.com/projects/orderhallcommander/issues/44
-    
-    Fixed
-
-commit 4718a79ca640d46acce1e63d73f6c4747823dca0
-Author: Alar of Runetotem <alar@aspide.it>
-Date:   Mon May 1 19:28:06 2017 +0200
-
-    Fixed "Not enough champions" message appearing too often
+    Fix: added Squires'Oath for paladins
 

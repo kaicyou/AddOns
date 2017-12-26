@@ -122,7 +122,7 @@ local function GetFreePoolIcon()
 	return iconcache[pdx];
 end
 
-function CalendarGetDayEvent(monthOffset, monthDay, index)
+local function CalendarGetDayEvent(monthOffset, monthDay, index)
 	local event = C_Calendar.GetDayEvent(monthOffset, monthDay, index);
 	if (event) then
 		local hour, minute;

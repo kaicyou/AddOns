@@ -10,6 +10,51 @@ L["S_ERROR_NOTLOADEDYET"] = "Cette quête n'est pas encore chargée, merci de pa
 L["S_FLYMAP_SHOWTRACKEDONLY"] = "Suivi seulement"
 L["S_FLYMAP_SHOWTRACKEDONLY_DESC"] = "Afficher seulement les quêtes suivies"
 L["S_FLYMAP_SHOWWORLDQUESTS"] = "Affiche les Expéditions"
+L["S_GROUPFINDER_ACTIONS_CANCEL_APPLICATIONS"] = [=[cliquez pour se désinscrire... 
+]=]
+L["S_GROUPFINDER_ACTIONS_CANCELING"] = "annulation..."
+L["S_GROUPFINDER_ACTIONS_CREATE"] = [=[aucun groupe trouvé? Cliquez pour en créer un
+]=]
+L["S_GROUPFINDER_ACTIONS_CREATE_DIRECT"] = "créer un groupe"
+L["S_GROUPFINDER_ACTIONS_LEAVEASK"] = "Quitter le groupe?"
+L["S_GROUPFINDER_ACTIONS_LEAVINGIN"] = [=[Sortie du groupe dans (cliquez pour quitter maintenant):
+]=]
+L["S_GROUPFINDER_ACTIONS_RETRYSEARCH"] = "nouvelle recherche"
+L["S_GROUPFINDER_ACTIONS_SEARCH"] = "cliquez pour chercher un groupe"
+L["S_GROUPFINDER_ACTIONS_SEARCH_RARENPC"] = [=[chercher un groupe pour tuer cette élite
+]=]
+L["S_GROUPFINDER_ACTIONS_SEARCH_TOOLTIP"] = "Rejoindre un groupe faisant cette quête"
+L["S_GROUPFINDER_ACTIONS_SEARCHING"] = "recherche en cours..."
+L["S_GROUPFINDER_ACTIONS_SEARCHMORE"] = "cliquez pour chercher plus de joueurs"
+L["S_GROUPFINDER_ACTIONS_SEARCHOTHER"] = "Quitter et chercher un autre groupe?"
+L["S_GROUPFINDER_ACTIONS_UNAPPLY1"] = [=[cliquez pour se désinscrire et créer un nouveau groupe
+]=]
+L["S_GROUPFINDER_ACTIONS_UNLIST"] = "cliquez pour désinscrire votre groupe"
+L["S_GROUPFINDER_ACTIONS_UNLISTING"] = "désinscription..."
+L["S_GROUPFINDER_ACTIONS_WAITING"] = "en attente..."
+L["S_GROUPFINDER_AUTOOPEN_RARENPC_TARGETED"] = "Ouverture auto. lors du ciblage d'une élite."
+L["S_GROUPFINDER_ENABLED"] = "Ouverture auto. pour chaque nouvelle quête"
+L["S_GROUPFINDER_INVASION_ENABLED"] = "Ouverture auto. sur un point d'invasion"
+L["S_GROUPFINDER_LEAVEOPTIONS"] = "Option de sortie de groupe"
+L["S_GROUPFINDER_LEAVEOPTIONS_AFTERX"] = "Quitter après x secondes"
+L["S_GROUPFINDER_LEAVEOPTIONS_ASKX"] = "Pas de sortie auto., mais demander après x secondes"
+L["S_GROUPFINDER_LEAVEOPTIONS_DONTLEAVE"] = "Ne pas afficher le menu de sortie"
+L["S_GROUPFINDER_LEAVEOPTIONS_IMMEDIATELY"] = "Quitter dès que la quête est terminée"
+L["S_GROUPFINDER_NOPVP"] = "Éviter les royaumes PVP"
+L["S_GROUPFINDER_OT_ENABLED"] = "Afficher les boutons sur le traqueur d'objectifs"
+L["S_GROUPFINDER_QUEUEBUSY"] = "vous êtes déjà en file d'attente."
+L["S_GROUPFINDER_QUEUEBUSY2"] = "impossible d'afficher la fenêtre de recherche de groupe: vous êtes déjà dans un groupe ou en file d'attente."
+L["S_GROUPFINDER_RESULTS_APPLYING"] = "Il y a %d groupes restants, re-cliquez"
+L["S_GROUPFINDER_RESULTS_APPLYING1"] = "Il reste 1 groupe à rejoindre, re-cliquez :"
+L["S_GROUPFINDER_RESULTS_FOUND"] = [=[%d groupes trouvés
+cliquez pour les rejoindre]=]
+L["S_GROUPFINDER_RESULTS_FOUND1"] = [=[un groupe trouvé
+cliquez pour le rejoindre]=]
+L["S_GROUPFINDER_RESULTS_UNAPPLY"] = "%d inscriptions restantes..."
+L["S_GROUPFINDER_RIGHTCLICKCLOSE"] = "clic droit pour fermer"
+L["S_GROUPFINDER_SECONDS"] = "Secondes"
+L["S_GROUPFINDER_TITLE"] = "Recherche de groupe"
+L["S_GROUPFINDER_TUTORIAL1"] = "Faites vos expéditions rapidement grâce à un groupe!"
 L["S_MAPBAR_AUTOWORLDMAP"] = "Carte du monde (mode auto)"
 L["S_MAPBAR_AUTOWORLDMAP_DESC"] = "Quand vous êtes à Dalaran ou au Hall de classe, presser la touche 'M' affiche directement les îles brisées"
 L["S_MAPBAR_FILTER"] = "Filtre"
@@ -69,6 +114,20 @@ L["S_QUESTTYPE_PROFESSION"] = "Profession"
 L["S_QUESTTYPE_PVP"] = "JcJ"
 L["S_QUESTTYPE_RESOURCE"] = "Ressources"
 L["S_QUESTTYPE_TRADESKILL"] = "Artisanat"
+L["S_RAREFINDER_ADDFROMPREMADE"] = "Ajouter les élites trouvés dans les groupes personnalisés. "
+L["S_RAREFINDER_NPC_NOTREGISTERED"] = "élite non répertoriée"
+L["S_RAREFINDER_OPTIONS_ENGLISHSEARCH"] = "Toujours chercher en anglais"
+L["S_RAREFINDER_OPTIONS_SHOWICONS"] = "Afficher les icônes pour les élites en vie"
+L["S_RAREFINDER_SOUND_ALWAYSPLAY"] = "Émettre un son même si les effets sonores sont désactivés"
+L["S_RAREFINDER_SOUND_ENABLED"] = "Émettre un son en cas d'élite sur la minicarte."
+L["S_RAREFINDER_SOUNDWARNING"] = "son émis à cause d'une élite sur la minicarte, vous pouvez le désactiver dans les options, puis élite tracker."
+L["S_RAREFINDER_TITLE"] = "Élite tracker"
+L["S_RAREFINDER_TOOLTIP_REMOVE"] = [=[Supprimer
+]=]
+L["S_RAREFINDER_TOOLTIP_SEACHREALM"] = "Chercher sur d'autres royaumes"
+L["S_RAREFINDER_TOOLTIP_SPOTTEDBY"] = "Repéré par"
+--Translation missing 
+-- L["S_RAREFINDER_TOOLTIP_TIMEAGO"] = ""
 L["S_SHAREPANEL_THANKS"] = [=[Merci de partager World Quest Tracker !
 Envoyez notre lien à vos amis sur Facebook, Twitter, à l'Élysée...]=]
 L["S_SHAREPANEL_TITLE"] = "For All Those About to Rock!"
@@ -89,5 +148,6 @@ L["S_TUTORIAL_REWARD"] = "indique la récompense (équipement, or, pouvoir d'art
 L["S_TUTORIAL_TIMELEFT"] = "Indique le temps restant (+4 heures, +90 minutes, +30 minutes, moins de 30 minutes)"
 L["S_TUTORIAL_WORLDMAPBUTTON"] = "Ce bouton vous apporte la carte des îles brisées."
 L["S_UNKNOWNQUEST"] = "Quête inconnue"
+L["S_WORLDMAP_TOOGLEQUESTS"] = "Afficher les quêtes"
 L["S_WORLDQUESTS"] = "Expéditions"
 

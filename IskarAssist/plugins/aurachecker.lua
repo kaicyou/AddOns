@@ -37,6 +37,9 @@ local RESPONSE_TYPE_NOWA = -1
 local RESPONSE_TYPE_WAITING = -2
 local RESPONSE_TYPE_OFFLINE = -3
 
+local CONST_RESULTAURALIST_ROWS = 20
+local CONST_AURALIST_ROWS = 24
+
 local valid_results = {
 	[RESPONSE_TYPE_NOSAMEGUILD] = true,
 	[RESPONSE_TYPE_DECLINED_ALREADYHAVE] = true,
@@ -162,7 +165,7 @@ function AuraCheck.OnShowOnOptionsPanel()
 end
 
 function AuraCheck.BuildOptions (frame)
-
+	
 	if (frame.FirstRun) then
 		return
 	end
@@ -199,7 +202,7 @@ function AuraCheck.BuildOptions (frame)
 		local showMainFrameButton = AuraCheck:CreateButton (frame, AuraCheck.ShowAurasPanel, 100, 18, "Results", _, _, _, "showMainFrameButton", _, _, mainButtonTemplate, AuraCheck:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 		showMainFrameButton:SetPoint ("topleft", frame, "topleft", 0, 5)
 		showMainFrameButton:SetIcon ([[Interface\BUTTONS\UI-GuildButton-PublicNote-Up]], 14, 14, "overlay", {0, 1, 0, 1}, {1, 1, 1}, 2, 1, 0)
-
+	
 		--button - show history
 		local showHistoryFrameButton = AuraCheck:CreateButton (frame, AuraCheck.ShowHistoryPanel, 100, 18, "Received Auras", _, _, _, "showHistoryFrameButton", _, _, mainButtonTemplate, AuraCheck:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 		showHistoryFrameButton:SetPoint ("left", showMainFrameButton, "right", 2, 0)
@@ -251,11 +254,11 @@ function AuraCheck.BuildOptions (frame)
 			
 			table.sort (auras, sortFunction2)
 			
-			FauxScrollFrame_Update (self, #auras, 20, 21) --self, amt, amt frames, height of each frame
+			FauxScrollFrame_Update (self, #auras, CONST_AURALIST_ROWS, 21) --self, amt, amt frames, height of each frame
 			
 			local offset = FauxScrollFrame_GetOffset (self)
 			
-			for i = 1, 20 do
+			for i = 1, CONST_AURALIST_ROWS do
 				local index = i + offset
 				local button = self.Frames [i]
 				local data = auras [index]
@@ -279,7 +282,7 @@ function AuraCheck.BuildOptions (frame)
 		
 		local auraScroll = CreateFrame ("scrollframe", "AuraCheckerAurasFrameAuraScroll", frame, "FauxScrollFrameTemplate")
 		auraScroll:SetPoint ("topleft", aurasFrame, "topleft", 595, -5)
-		auraScroll:SetSize (180, 420)
+		auraScroll:SetSize (180, CONST_AURALIST_ROWS*21)
 		auraScroll.CurrentAuraSelected = "-none-"
 		auraScroll.SearchingFor = ""
 
@@ -321,7 +324,7 @@ function AuraCheck.BuildOptions (frame)
 		end
 		
 		--> aura selection
-		for i = 1, 20 do
+		for i = 1, CONST_AURALIST_ROWS do
 			local f = CreateFrame ("frame", "AuraCheckerAurasFrameAuraScroll_Button" .. i, auraScroll)
 			f:SetPoint ("topleft", auraScroll, "topleft", 2, -(i-1)*21)
 			f:SetScript ("OnMouseUp", on_mousedown)
@@ -596,7 +599,9 @@ function AuraCheck.BuildOptions (frame)
 		
 		historyScroll.Frames = {}
 		
-		for i = 1, 20 do
+		
+		
+		for i = 1, CONST_RESULTAURALIST_ROWS do
 			local f = CreateFrame ("frame", "AuraCheckerHistoryFrameHistoryScroll_Button" .. i, historyScroll)
 			f:SetPoint ("topleft", historyScroll, "topleft", 2, -(i-1)*19)
 			f:SetSize (571, 18)

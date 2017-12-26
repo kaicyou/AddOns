@@ -118,7 +118,7 @@ L["DEFAULT"] = DEFAULT or true
 L["DELETE"] = DELETE or true
 L["DESCRIPTION"] = QUEST_DESCRIPTION or true
 L["DISABLE"] = DISABLE or true
-L["DISABLED"] = ADDON_DISABLED or true
+L["DISABLED"] = VIDEO_OPTIONS_DISABLED or true
 L["DISPLAY"] = DISPLAY or true
 L["DURATION"] = AUCTION_DURATION or true
 L["EDIT"] = EDIT or true
@@ -139,6 +139,8 @@ L["JUNK"] = BAG_FILTER_JUNK or true
 L["LOCK"] = LOCK or true
 L["LOCKED"] = LOCKED or true
 L["MAIL"] = MAIL_LABEL or true
+L["MAXIMUM"] = MAXIMUM or true
+L["MINIMUM"] = MINIMUM or true
 L["MOUNT"] = MOUNT or true
 L["MODE"] = MODE or true
 L["MOVE"] = NPE_MOVE or true
@@ -178,7 +180,7 @@ L["VIEW"] = VIEW or true
 L["WEEKLY"] = WEEKLY or true
 L["YES"] = YES or true
 
-function FormatForRegex( text )
+local function FormatForRegex( text )
 	local text = text
 	text = string.gsub( text, "%.", "%%%." ) -- replace . with %.
 	text = string.gsub( text, "%*", "%%%*" ) -- replace * with %*
@@ -214,8 +216,9 @@ L["WOW_TOOLTIP_REQUIRES_CLASS"] = FormatForCapture( ITEM_CLASSES_ALLOWED )
 L["WOW_TOOLTIP_REQUIRES"] = FormatForCapture( ITEM_REQ_SKILL )
 L["WOW_TOOLTIP_ITEMUPGRADELEVEL"] = FormatForCapture( ITEM_UPGRADE_TOOLTIP_FORMAT )
 L["WOW_TOOLTIP_ITEM_LEVEL"] = FormatForCapture( ITEM_LEVEL )
-L["WOW_TOOLTIP_ANCIENT_MANA"] = string.format( "%%d %s", ( FormatForRegex( ( GetCurrencyInfo( 1155 ) ) ) ) )
+L["WOW_TOOLTIP_ANCIENT_MANA"] = ( GetCurrencyInfo( 1155 ) )
 L["WOW_TOOLTIP_ARTIFACT_POWER"] = FormatForCapture( ARTIFACT_POWER )
+L["WOW_TOOLTIP_ARTIFACT_POWER_AMOUNT"] = "^.-([%d,.]+)%s(.+)"
 L["WOW_TOOLTIP_CRAFTING_REAGENT"] = FormatForCapture( PROFESSIONS_USED_IN_COOKING )
 
 L["WOW_TOOLTIP_RELIC_LEVEL"] = FormatForCapture( RELIC_TOOLTIP_ILVL_INCREASE )

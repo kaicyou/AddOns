@@ -12,9 +12,9 @@ local orderedPairs = ns.orderedPairs
 local round = ns.round
 
 local Masque, MasqueGroup
-local UIDropDownMenuTemplate = Lib_UIDropDownMenuTemplate
-local UIDropDownMenu_AddButton = Lib_UIDropDownMenu_AddButton
-local UIDropDownMenu_AddSeparator = Lib_UIDropDownMenu_AddSeparator
+local UIDropDownMenuTemplate = L_UIDropDownMenuTemplate
+local UIDropDownMenu_AddButton = L_UIDropDownMenu_AddButton
+local UIDropDownMenu_AddSeparator = L_UIDropDownMenu_AddSeparator
 
 
 function Hekili:GetScale()
@@ -67,13 +67,13 @@ local function Mover_OnMouseUp( self, btn )
       stopScreenMovement( self )
     end
     Hekili.DB.profile.Locked = true
-    local MouseInteract = ( Hekili.Pause ) or Hekili.Config or ( not Hekili.DB.profile.Locked )
+    local MouseInteract = Hekili.Pause or Hekili.Config or not Hekili.DB.profile.Locked
     for i = 1, #ns.UI.Buttons do
       for j = 1, #ns.UI.Buttons[i] do
         ns.UI.Buttons[i][j]:EnableMouse( MouseInteract )
       end
     end
-    ns.UI.Notification:EnableMouse( MouseInteract )
+    ns.UI.Notification:EnableMouse( Hekili.Config or ( not Hekili.DB.profile.Locked ) )
     -- Hekili:SetOption( { "locked" }, true )
     GameTooltip:Hide()
   end
@@ -104,7 +104,7 @@ local function Button_OnMouseUp( self, btn )
         ns.UI.Buttons[i][j]:EnableMouse( MouseInteract )
       end
     end
-    ns.UI.Notification:EnableMouse( MouseInteract )
+    ns.UI.Notification:EnableMouse( Hekili.Config or ( not Hekili.DB.profile.Locked ) )
     -- Hekili:SetOption( { "locked" }, true )
     GameTooltip:Hide()
   end
@@ -115,17 +115,16 @@ end
 local function Button_OnMouseDown( self, btn )
   local display = self:GetName():match("Hekili_D(%d+)_B(%d+)")
   local mover = _G[ "HekiliDisplay" .. display ]
-  startScreenMovement( mover )
+  if ( Hekili.Config or not Hekili.DB.profile.Locked ) and btn == "LeftButton" and not mover.Moving then
+    startScreenMovement( mover )
+  end
 end
 
 
 function ns.StartConfiguration( external )
   Hekili.Config = true
 
-  local scaleFactor = 1
-  if GetCVar( "UseUIScale" ) == 1 then
-    scaleFactor = GetScreenHeight() / select( GetCurrentResolution(), GetScreenResolutions() ):match("%d+x(%d+)")
-  end
+  local scaleFactor = Hekili:GetScale()
 
   -- Notification Panel
   ns.UI.Notification:EnableMouse(true)
@@ -196,13 +195,14 @@ function ns.StartConfiguration( external )
   -- HekiliNotification:EnableMouse(true)
   -- HekiliNotification:SetMovable(true)
   if not external then
-    ns.lib.AceConfigDialog:SetDefaultSize( "Hekili", 805, 605 )
-    ns.lib.AceConfigDialog:Open("Hekili")
+    local ACD = LibStub( "AceConfigDialog-3.0" )
+    ACD:SetDefaultSize( "Hekili", min( 900, GetScreenWidth() - 200 ), min( 800, GetScreenHeight() - 100 ) )
+    ACD:Open("Hekili")
     ns.OnHideFrame = ns.OnHideFrame or CreateFrame("Frame", nil)
-    ns.OnHideFrame:SetParent( ns.lib.AceConfigDialog.OpenFrames["Hekili"].frame )
+    ns.OnHideFrame:SetParent( ACD.OpenFrames["Hekili"].frame )
     ns.OnHideFrame:SetScript( "OnHide", function(self)
       ns.StopConfiguration()
-      self:SetScript("OnHide", nil)
+      self:SetScript( "OnHide", nil )
       collectgarbage()
     end )
   end
@@ -214,10 +214,7 @@ end
 function ns.StopConfiguration()
   Hekili.Config = false
 
-  local scaleFactor = 1
-  if GetCVar( "UseUIScale" ) == 1 then
-    scaleFactor = GetScreenHeight() / select( GetCurrentResolution(), GetScreenResolutions() ):match("%d+x(%d+)")
-  end
+  local scaleFactor = Hekili:GetScale()
 
   local MouseInteract = ( Hekili.Pause ) or ( not Hekili.DB.profile.Locked )
 
@@ -228,8 +225,8 @@ function ns.StopConfiguration()
     end
   end
 
-  HekiliNotification:EnableMouse( MouseInteract )
-  HekiliNotification:SetMovable( not Hekili.DB.profile.Locked )
+  HekiliNotification:EnableMouse( false )
+  HekiliNotification:SetMovable( false )
   HekiliNotification.Mover:Hide()
   -- HekiliNotification.Mover.Header:Hide()
 
@@ -268,10 +265,12 @@ local function menu_Locked()
 
     p.Locked = not p.Locked
 
+    local MouseInteract = Hekili.Pause or Hekili.Config or ( not p.Locked )
+
     for _, v in ipairs( ns.UI.Buttons ) do
-        v[1]:EnableMouse( not p.Locked )
+        v[1]:EnableMouse( MouseInteract )
     end
-    ns.UI.Notification:EnableMouse( not p.Locked )
+    ns.UI.Notification:EnableMouse( MouseInteract )
 end
 
 local function menu_Paused()
@@ -471,10 +470,7 @@ function ns.buildUI()
   end)
 
 
-  local scaleFactor = 1
-  if GetCVar( "UseUIScale" ) == 1 then
-    scaleFactor = GetScreenHeight() / select( GetCurrentResolution(), GetScreenResolutions() ):match("%d+x(%d+)")
-  end
+  local scaleFactor = Hekili:GetScale()
 
   local MouseInteract = ( Hekili.Pause ) or ( not Hekili.DB.profile.Locked )
 
@@ -487,13 +483,13 @@ function ns.buildUI()
   f.Text = f.Text or f:CreateFontString( "HekiliNotificationText", "OVERLAY" )
   f.Text:SetSize( Hekili.DB.profile['Notification Width'] * scaleFactor, Hekili.DB.profile['Notification Height'] * scaleFactor )
   f.Text:SetPoint( "TOP", f, "TOP" )
-  f.Text:SetFont( ns.lib.SharedMedia:Fetch("font", Hekili.DB.profile['Notification Font']), Hekili.DB.profile['Notification Font Size'] * scaleFactor, "OUTLINE" )
+  f.Text:SetFont( LibStub( "LibSharedMedia-3.0" ):Fetch("font", Hekili.DB.profile['Notification Font']), Hekili.DB.profile['Notification Font Size'] * scaleFactor, "OUTLINE" )
   f.Text:SetJustifyV( "MIDDLE" )
   f.Text:SetJustifyH( "CENTER" )
   f.Text:SetTextColor(1, 1, 1, 1)
 
   ns.UI.Notification = f
-  ns.UI.Menu = ns.UI.Menu or CreateFrame( "Frame", "Hekili_Menu", UIParent, "Lib_UIDropDownMenuTemplate" )
+  ns.UI.Menu = ns.UI.Menu or CreateFrame( "Frame", "Hekili_Menu", UIParent, "L_UIDropDownMenuTemplate" )
 
   if not Hekili.DB.profile['Notification Enabled'] then
     ns.UI.Notification:Hide()
@@ -509,10 +505,12 @@ function ns.buildUI()
 
     local f = ns.UI.Displays[dispID] or CreateFrame( "Frame", "HekiliDisplay"..dispID, UIParent )
 
+    local border = scaleFactor * 4
+
     if display.queueDirection == 'TOP' or display.queueDirection == 'BOTTOM' then
-      f:SetSize( max( Hekili.DB.profile.displays[dispID].primaryIconSize, Hekili.DB.profile.displays[dispID].queuedIconSize ), Hekili.DB.profile.displays[dispID].primaryIconSize + ( Hekili.DB.profile.displays[dispID].queuedIconSize * ( Hekili.DB.profile.displays[dispID].numIcons - 1 ) ) + ( Hekili.DB.profile.displays[dispID].iconSpacing * ( Hekili.DB.profile.displays[dispID].numIcons - 1 ) ) )
+      f:SetSize( scaleFactor * max( Hekili.DB.profile.displays[dispID].primaryIconSize, Hekili.DB.profile.displays[dispID].queuedIconSize ), border + scaleFactor * ( Hekili.DB.profile.displays[dispID].primaryIconSize + ( Hekili.DB.profile.displays[dispID].queuedIconSize * ( Hekili.DB.profile.displays[dispID].numIcons - 1 ) ) + ( Hekili.DB.profile.displays[dispID].iconSpacing * ( Hekili.DB.profile.displays[dispID].numIcons - 1 ) ) ) )
     else
-      f:SetSize( Hekili.DB.profile.displays[dispID].primaryIconSize + ( Hekili.DB.profile.displays[dispID].queuedIconSize * ( Hekili.DB.profile.displays[dispID].numIcons - 1 ) ) + ( Hekili.DB.profile.displays[dispID].iconSpacing * ( Hekili.DB.profile.displays[dispID].numIcons - 1 ) ), max( Hekili.DB.profile.displays[dispID].primaryIconSize, Hekili.DB.profile.displays[dispID].queuedIconSize ) )
+      f:SetSize( scaleFactor * ( Hekili.DB.profile.displays[dispID].primaryIconSize + ( Hekili.DB.profile.displays[dispID].queuedIconSize * ( Hekili.DB.profile.displays[dispID].numIcons - 1 ) ) + ( Hekili.DB.profile.displays[dispID].iconSpacing * ( Hekili.DB.profile.displays[dispID].numIcons - 1 ) ) ), border + scaleFactor * max( Hekili.DB.profile.displays[dispID].primaryIconSize, Hekili.DB.profile.displays[dispID].queuedIconSize ) )
     end
     f:SetPoint( "CENTER", Screen, "CENTER", Hekili.DB.profile.displays[ dispID ].x, Hekili.DB.profile.displays[ dispID ].y )
     f:SetFrameStrata( "MEDIUM" )
@@ -723,10 +721,7 @@ function Hekili:CreateButton( display, ID )
   local btnAlignment = disp.queueAlignment or 'c'
   local btnSpacing = disp.iconSpacing
 
-  local scaleFactor = 1
-  if GetCVar( "UseUIScale" ) == 1 then
-    scaleFactor = GetScreenHeight() / select( GetCurrentResolution(), GetScreenResolutions() ):match("%d+x(%d+)")
-  end
+  local scaleFactor = Hekili:GetScale()
 
   button:SetFrameStrata( "LOW" )
   button:SetFrameLevel( display * 10 )
@@ -741,6 +736,8 @@ function Hekili:CreateButton( display, ID )
   end
   button.Texture:SetAllPoints(button)
 
+  local SharedMedia = LibStub( "LibSharedMedia-3.0", true )
+
   -- Indicator Icons
   button.Icon = button.Icon or button:CreateTexture( nil, "OVERLAY" )
   button.Icon:SetSize( max( 10, button:GetWidth() / 3 ), max( 10, button:GetHeight() / 3 ) )
@@ -750,21 +747,21 @@ function Hekili:CreateButton( display, ID )
 
   button.Caption = button.Caption or button:CreateFontString(name.."Caption", "OVERLAY" )
   local capFont = disp.captionFont or ( ElvUI and "PT Sans Narrow" or "Arial Narrow" )  
-  button.Caption:SetFont( ns.lib.SharedMedia:Fetch( "font", capFont ), disp.captionFontSize or 12, disp.captionFontStyle or "OUTLINE" )
+  button.Caption:SetFont( SharedMedia:Fetch( "font", capFont ), disp.captionFontSize or 12, disp.captionFontStyle or "OUTLINE" )
   button.Caption:SetSize( button:GetWidth(), button:GetHeight() / 2 )
   local capAnchor = disp.captionAnchor or "BOTTOM"
   button.Caption:ClearAllPoints()
   button.Caption:SetPoint( capAnchor, button, capAnchor, disp.xOffsetCaptions or 0, disp.yOffsetCaptions or 0 )
   button.Caption:SetJustifyV( capAnchor )
   button.Caption:SetJustifyH( disp.captionAlign or "CENTER" )
-  button.Caption:SetTextColor(1, 1, 1, 1)
+  button.Caption:SetTextColor( 1, 1, 1, 1 )
 
   if ID == 1 then
       button.Targets = button.Targets or button:CreateFontString( name.."Targets", "OVERLAY" )
 
       local tarFont = disp.targetFont or ( ElvUI and "PT Sans Narrow" or "Arial Narrow" )
-      button.Targets:SetFont( ns.lib.SharedMedia:Fetch( "font", tarFont ), disp.targetFontSize or 12, disp.targetFontStyle or "OUTLINE" )
-      button.Targets:SetSize( button:GetWidth() / 2, button:GetHeight() / 2 )
+      button.Targets:SetFont( SharedMedia:Fetch( "font", tarFont ), disp.targetFontSize or 12, disp.targetFontStyle or "OUTLINE" )
+      button.Targets:SetSize( button:GetWidth(), button:GetHeight() / 2 )
       
       local tarAnchor = disp.targetAnchor or "BOTTOM"
       button.Targets:ClearAllPoints()
@@ -776,12 +773,31 @@ function Hekili:CreateButton( display, ID )
       button.Targets:SetJustifyV( tarAlignV )
       
       button.Targets:SetTextColor( 1, 1, 1, 1 )
+  
+      
+      button.Auras = button.Auras or button:CreateFontString( name.."Auras", "OVERLAY" )
+
+      local auraFont = disp.auraFont or ( ElvUI and "PT Sans Narrow" or "Arial Narrow" )
+      button.Auras:SetFont( SharedMedia:Fetch( "font", auraFont ), disp.auraFontSize or 12, disp.auraFontStyle or "OUTLINE" )
+      button.Auras:SetSize( button:GetWidth(), button:GetHeight() / 2 )
+
+      local auraAnchor = disp.auraAnchor or "BOTTOM"
+      button.Auras:ClearAllPoints()
+      button.Auras:SetPoint( auraAnchor, button, auraAnchor, disp.xOffsetAuras or 0, disp.yOffsetAuras or 0 )
+
+      local auraAlign = auraAnchor:match( "RIGHT" ) and "RIGHT" or ( auraAnchor:match( "LEFT" ) and "LEFT" or "CENTER" )
+      button.Auras:SetJustifyH( auraAlign )
+      local auraAlignV = auraAnchor:match( "TOP" ) and "TOP" or ( auraAnchor:match( "BOTTOM" ) and "BOTTOM" or "MIDDLE" )
+      button.Auras:SetJustifyV( auraAlignV )
+      
+      button.Auras:SetTextColor( 1, 1, 1, 1 )
+
   end
 
   -- Keybinding Text
   button.Keybinding = button.Keybinding or button:CreateFontString(name.."KB", "OVERLAY" )
   local kbFont = disp.kbFont or ( ElvUI and "PT Sans Narrow" or "Arial Narrow" )
-  button.Keybinding:SetFont( ns.lib.SharedMedia:Fetch( "font", kbFont ), disp.kbFontSize or 12, disp.kbFontStyle or "OUTLINE" )
+  button.Keybinding:SetFont( SharedMedia:Fetch( "font", kbFont ), disp.kbFontSize or 12, disp.kbFontStyle or "OUTLINE" )
   button.Keybinding:SetSize( button:GetWidth(), button:GetHeight() / 2 )
   local kbAnchor = disp.kbAnchor or "TOPRIGHT"
   button.Keybinding:ClearAllPoints()
@@ -799,7 +815,7 @@ function Hekili:CreateButton( display, ID )
   button.Delay:SetJustifyH( "LEFT" )
   button.Delay:SetTextColor( 1, 1, 1, 1 )
 
-  button.Cooldown = button.Cooldown or CreateFrame("Cooldown", name .. "_Cooldown", button, "CooldownFrameTemplate")
+  button.Cooldown = button.Cooldown or CreateFrame( "Cooldown", name .. "_Cooldown", button, "CooldownFrameTemplate" )
   button.Cooldown:SetAllPoints(button)
   button.Cooldown:SetFrameStrata( "MEDIUM" )
   button.Cooldown:SetDrawBling( false ) -- disabled until Blizzard fixes the animation.
@@ -812,14 +828,14 @@ function Hekili:CreateButton( display, ID )
     button.Overlay:SetAllPoints(button)
     button.Overlay:Hide()
 
-    -- button.Caption:SetFont( ns.lib.SharedMedia:Fetch( "font", disp.Font ), disp.primaryFontSize, "OUTLINE" )
-    button.Delay:SetFont( ns.lib.SharedMedia:Fetch( "font", disp.Font ), disp.primaryFontSize * 0.67, "OUTLINE" )
+    -- button.Caption:SetFont( SharedMedia:Fetch( "font", disp.Font ), disp.primaryFontSize, "OUTLINE" )
+    button.Delay:SetFont( SharedMedia:Fetch( "font", disp.Font ), disp.primaryFontSize * 0.67, "OUTLINE" )
 
     button:SetPoint( getInverseDirection( btnDirection ), ns.UI.Displays[ display ], getInverseDirection( btnDirection ) )
     -- button:SetPoint( "LEFT", ns.UI.Displays[ display ], "LEFT" ) -- self.DB.profile.displays[ display ].rel or "CENTER", self.DB.profile.displays[ display ].x, self.DB.profile.displays[ display ].y )
 
   else
-    -- button.Caption:SetFont( ns.lib.SharedMedia:Fetch("font", disp.Font), disp.queuedFontSize, "OUTLINE" )
+    -- button.Caption:SetFont( SharedMedia:Fetch("font", disp.Font), disp.queuedFontSize, "OUTLINE" )
 
     if btnDirection == 'RIGHT' then
       local align
@@ -828,7 +844,7 @@ function Hekili:CreateButton( display, ID )
       elseif btnAlignment == 'b' then align = 'BOTTOM'
       else align = '' end
     
-      button:SetPoint( align .. getInverseDirection( btnDirection ), 'Hekili_D' .. display.. "_B" .. ID - 1,  align .. btnDirection, btnSpacing, 0 )
+      button:SetPoint( align .. getInverseDirection( btnDirection ), 'Hekili_D' .. display.. "_B" .. ID - 1,  align .. btnDirection, btnSpacing * scaleFactor, 0 )
     elseif btnDirection == 'LEFT' then
       local align
       
@@ -836,7 +852,7 @@ function Hekili:CreateButton( display, ID )
       elseif btnAlignment == 'b' then align = 'BOTTOM'
       else align = '' end
     
-      button:SetPoint( align .. getInverseDirection( btnDirection ), 'Hekili_D' .. display.. "_B" .. ID - 1,  align .. btnDirection, -1 *  btnSpacing, 0 )
+      button:SetPoint( align .. getInverseDirection( btnDirection ), 'Hekili_D' .. display.. "_B" .. ID - 1,  align .. btnDirection, -1 *  btnSpacing * scaleFactor, 0 )
     elseif btnDirection == 'TOP' then
       local align
       
@@ -844,7 +860,7 @@ function Hekili:CreateButton( display, ID )
       elseif btnAlignment == 'b' then align = 'RIGHT'
       else align = '' end
     
-      button:SetPoint( getInverseDirection( btnDirection ) .. align, 'Hekili_D' .. display.. "_B" .. ID - 1,  btnDirection .. align, 0, btnSpacing )
+      button:SetPoint( getInverseDirection( btnDirection ) .. align, 'Hekili_D' .. display.. "_B" .. ID - 1,  btnDirection .. align, 0, btnSpacing * scaleFactor )
     else -- BOTTOM
       local align
       
@@ -852,7 +868,7 @@ function Hekili:CreateButton( display, ID )
       elseif btnAlignment == 'b' then align = 'RIGHT'
       else align = '' end
     
-      button:SetPoint( getInverseDirection( btnDirection ) .. align, 'Hekili_D' .. display.. "_B" .. ID - 1,  btnDirection .. align, 0, -1 * btnSpacing )
+      button:SetPoint( getInverseDirection( btnDirection ) .. align, 'Hekili_D' .. display.. "_B" .. ID - 1,  btnDirection .. align, 0, -1 * btnSpacing * scaleFactor )
     end
 
   end

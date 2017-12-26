@@ -608,7 +608,134 @@
                 </Layer>
             </Layers>
     </Frame>
-	<Button name="DugisOnOffButton" parent = "UIParent"  movable="true" enableMouse='true' frameStrata="HIGH" >
+    
+   <Button name="IconicButtonTemplate" hidden="false" virtual="true">
+        <Size>
+            <AbsDimension x="14" y="16"/>
+        </Size>
+        <Anchors>
+            <Anchor point="RIGHT" relativePoint = "RIGHT" >
+                <Offset>
+                <AbsDimension x="-35" y="0"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="Icon" file="Interface/AddOns/DugisGuideViewerZ/Artwork/check16px" alphaMode="ADD">
+                   <Size>
+                        <AbsDimension x="10" y="10"/>
+                    </Size>
+                     <Anchors>
+                        <Anchor point="RIGHT"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+              <Layer level="BACKGROUND">
+                <FontString parentKey="Text" text="Accept"
+                    inherits="GameFontNormal" wraponspaces="true" justifyH="RIGHT" 
+                    font="GameFontNormal">
+                    <Color a="1" r="1" g="1" b="1" />
+                    <Anchors>
+                        <Anchor point="RIGHT">
+                            <Offset>
+                                <AbsDimension x="-18" y="0"/>
+                            </Offset>                                
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                self.Icon:SetVertexColor(1,.82,0);
+            </OnLoad>
+            <OnEnter>
+                self:GetParent():GetScript("OnEnter")(self:GetParent())
+            </OnEnter> 
+            <OnLeave>
+                self:GetParent():GetScript("OnLeave")(self:GetParent())
+            </OnLeave>
+        </Scripts>
+    </Button>
+	<Frame name="NotificationItemTemplate" virtual="true"  hidden="true">
+		<Layers>
+			<Layer>
+				<FontString  parentKey="Title" wordwrap="true" text="title"
+                inherits="GameFontHighlightSmall" wraponspaces="true" justifyH="LEFT" 
+                font="GameFontHighlightSmall">
+					<Size>
+						<AbsDimension x="165" y="12"/>
+					</Size>                
+                    <Color a="1" r="0.1" g="1" b="0" />
+					<Anchors>
+						<Anchor point="LEFT" >
+                            <Offset>
+                                <AbsDimension x="4" y="0"/>
+                            </Offset>
+                        </Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+            <Layer  level="BACKGROUND">
+                <Texture parentKey="Background" visible="true"  alpha="0.3">
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="" y=""/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                   <Color r="0" g="0" b="0" />
+                </Texture>
+            </Layer>
+		</Layers>
+        <Frames>
+            <Button parentKey="Dismiss" hidden="false" inherits="IconicButtonTemplate">
+                <Anchors>
+                    <Anchor point="RIGHT" relativePoint = "RIGHT" >
+                        <Offset>
+                        <AbsDimension x="-8" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        self.Icon:SetTexture("Interface/AddOns/DugisGuideViewerZ/Artwork/x16px")
+                        self.Text:Hide()
+                    </OnLoad>
+                    <OnClick>
+                        local parent = self:GetParent()
+                        DugisGuideViewer:OnNotificationDismissClicked(DugisGuideViewer:GetNotification(parent.id))
+                        DugisGuideViewer:RemoveNotificationWithAnimation(parent.id)
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        
+        <Scripts>
+            <OnEnter>
+                self.Background:SetAlpha(1)
+                self.Background:SetColorTexture(0.2, 0.2, 0.2)
+                LibDugi_DropDownList1.showTimer = 10000
+			</OnEnter>       
+            <OnLeave>
+                self.Background:SetAlpha(0.3)
+                self.Background:SetColorTexture(0, 0, 0)
+			    --To prevent menu hide
+                LibDugi_DropDownList1.showTimer = 3
+			</OnLeave>
+            <OnClick>
+                DugisGuideViewer:OnNotificationClicked(DugisGuideViewer:GetNotification(self.id))
+			</OnClick>
+			<OnDragStart>
+			</OnDragStart>
+            <OnLoad>
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    
+	<Button name="DugisOnOffButton" parent = "UIParent"  movable="true" enableMouse='true' frameStrata="HIGH"  frameLevel = "1" >
 		<Size x="32" y="32"/>
 		<NormalTexture file ="Interface\AddOns\DugisGuideViewerZ\Artwork\iconbutton.tga"/>
 		<HighlightTexture alphaMode ="ADD" file ="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
@@ -638,6 +765,23 @@
 			DugisGuideViewer:OnDragStop(self);
 		</OnDragStop>
 	</Scripts>
+		<Frames>
+			<Frame name="NotificationsMark" frameLevel="2"  visible="false" hidden="true">
+				<Size x="32" y="32"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="DugisOnOffButton" relativePoint = "TOPLEFT" >
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>		
+				<Layers>
+					<Layer >
+						<Texture file="Interface\AddOns\DugisGuideViewerZ\Artwork\notification.tga"/>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
 	</Button>
 
 	<Button name='GearOptionButtonTemplate' virtual='true' >
@@ -781,6 +925,7 @@
 				<Scripts>
 					<OnClick>
 						self:GetParent():Hide()
+                        DugisGuideViewer:RemoveNotificationWithAnimation(DugisEquipPromptFrame.notificationId)
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -801,6 +946,10 @@
 						parent.action = "CANCEL"
 						parent.blacklist:SetChecked(false)
 						parent:Hide()
+						
+						if DugisEquipPromptFrame.dontRemoveNotificationOnCancel ~= true then
+							DugisGuideViewer:RemoveNotificationWithAnimation(DugisEquipPromptFrame.notificationId)
+						end
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1288,7 +1437,7 @@
                 if self.tabInfo.text == "Help" then
                     TutorialFrameDugisReset()
                 end
-				PlaySound("igCharacterInfoTab");
+				LuaUtils:PlaySound("igCharacterInfoTab");
 			</OnClick>
 			<OnEnter>
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -1437,7 +1586,7 @@
             </OnDisable>
 			<OnClick>
 
-                if _G["searchThread"] ~= nil or _G["searchDelayTimer"] ~= nil then
+                if _G["searchThread"] ~= nil or _G["searchDelayTimer"] ~= nil or not self.tabInfo then
                     return
                 end
 
@@ -1449,12 +1598,12 @@
 				self.selectedGlow:Show();
                 DugisGuideViewer.currentTabText = self.tabInfo.text
 				self.tabInfo:Activate()
-				PlaySound("igCharacterInfoTab");
+				LuaUtils:PlaySound("igCharacterInfoTab");
 			</OnClick>
         </Scripts>
     </Button>
 
-	<Frame name="DugisMainBorder" parent='UIParent' movable ="true" visible="false">
+	<Frame name="DugisMainBorder" parent='UIParent' movable ="true" visible="false" frameStrata="DIALOG">
 		<Size x="818" y="420"/>
 		<Anchors>
             <Anchor point="CENTER" x="0" y="0"/>
@@ -1929,10 +2078,13 @@
 								self.icon:Hide()
 							</OnShow>
 							<OnClick>
+								if not self.tabInfo then
+									return
+								end
 								DugisGuideViewer.DeselectTopTabs()
 								self:SetChecked(true)
 								self.tabInfo:Activate()
-								PlaySound("igCharacterInfoTab");
+								LuaUtils:PlaySound("igCharacterInfoTab");
                                 DugisGuideViewer.currentTabText = "Settings"
                                 DugisGuideViewer:UpdateCurrentGuideExpanded()
                                 StaticPopup_Hide("SCORES_IMPORT_DIALOG")
@@ -1947,7 +2099,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								PlaySound("igMainMenuOptionCheckBoxOn");
+								LuaUtils:PlaySound("igMainMenuOptionCheckBoxOn");
 								ToggleDropDownMenu(1, nil, EJTierDropDown, self:GetName(), 74, 15);
 							</OnClick>
 						</Scripts>
@@ -2033,7 +2185,7 @@
 							<Slider name="$parentScrollBar" inherits="MinimalScrollBarTemplate" parentKey="bar">
 								<Anchors>
 									<Anchor point="TOPRIGHT" x="25" y="-14"/>
-									<Anchor point="BOTTOMRIGHT" x="25" y="20"/>
+									<Anchor point="BOTTOMRIGHT" x="25" y="-10"/>
 								</Anchors>
 								<Scripts>
 									<OnLoad>
@@ -2102,7 +2254,7 @@
 							</Layer>
 						</Layers>
 					</Button>
-                    <Button name="CurrentGuideExpandButton" hidden="false" frameStrata="MEDIUM" frameLevel="100">
+                    <Button name="CurrentGuideExpandButton" hidden="false" frameStrata="DIALOG" frameLevel="100">
                         <Size x="32" y="32"/>
                         <Anchors>
                             <Anchor point="BOTTOMLEFT" relativeTo="DugisMainRightFrameHost" x="-52" y="-1"/>
@@ -2259,7 +2411,7 @@
         <HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 	</Button>
 
-    <Button name="DugisTargetButtonTemplate" inherits="SecureActionButtonTemplate" virtual='true'>
+    <Button name="DugisTargetButtonTemplate" inherits="SecureActionButtonTemplate" virtual='true' frameStrata="HIGH"  frameLevel = "2" >
         <Layers>
             <Layer level="ARTWORK">
                 <FontString parentKey="HotKey" inherits="NumberFontNormalSmallGray" justifyH="LEFT" text="">
@@ -2272,7 +2424,7 @@
         </Layers>
 	</Button>
 
-	<Button name="DugisSecureQuestButton" inherits="DugisSecureQuestButtonTemplate" parent="UIParent">
+	<Button name="DugisSecureQuestButton" inherits="DugisSecureQuestButtonTemplate" parent="UIParent"  frameStrata="HIGH"  frameLevel = "3">
 	</Button>
 
     <Script file="TutorialFrameDugis.lua"/>
@@ -2847,4 +2999,105 @@
 		<NormalTexture file="Interface\PaperDollInfoFrame\UI-GearManager-FlyoutButton"/>
 		<HighlightTexture file="Interface\PaperDollInfoFrame\UI-GearManager-FlyoutButton"/>
 	</Button>
+    
+    <!--  SimpleHTML with improved hovering.  -->
+    <SimpleHTML name="InteractiveSimpleHTML"  enableMouse='false' inherits="SimpleHTML"  virtual="true">
+        <Scripts>
+            <OnLoad>
+                local parent = self:GetParent()
+                self.iconsFrame = CreateFrame("SimpleHTML",nil, parent)
+
+                self.iconsFrame:SetFontObject(GameFontHighlight)
+                self.iconsFrame:SetWidth(282)
+                self.iconsFrame:SetHeight(510)
+                self.iconsFrame:SetJustifyH("CENTER")
+                self.iconsFrame:SetJustifyV("TOP")    
+                self.iconsFrame:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, -0) 
+                self.iconsFrame:SetSpacing(2)
+                
+                --Make so only icons are visible. Text is hidden.
+                self.iconsFrame:SetAlpha(0)
+                
+                self.iconsFrame:SetFrameLevel(self:GetFrameLevel() - 1)
+                
+                local buttonImage = "Interface\\AddOns\\DugisGuideViewerZ\\Artwork\\waypoint_16_t.tga"
+                buttonImage = "Interface\\AddOns\\DugisGuideViewerZ\\Artwork\\waypoint_y_16_t.tga"
+                
+                function self:SetNewText(text)
+                    text = text or ""
+                    self.rawText = text
+                    self:HighlightElement()
+                end
+                
+                --elementId - if empty all icons will be unhighlighted
+                --updateAlsoBaseText - if true then also base text (with transparent icons) will be updated.
+                function self:HighlightElement(elementId, updateOnlyIconsHighlights)
+                    
+                    --Replacing mouse-hover interactive icons with transparent icon - to make for the top layer icons invisible.
+                    local topText = self.rawText
+                    topText = string.gsub(topText, "|NORMAL.-|e", "")
+                    topText = string.gsub(topText, "|HOVER.-|e", "")
+                    topText = string.gsub(topText, "|EMPTY.-|ID", "")
+                    topText = string.gsub(topText, "|e", "")
+                    
+                    if not updateOnlyIconsHighlights then
+                        self:SetText(topText)
+                    end
+                    
+                    --Replacing mouse-hover interactive icons with highlighted or unhighlighted icon.
+                    
+                    elementId = tonumber(elementId)
+                    local lowText = self.rawText
+                    
+                    --Showing hovered icons
+                    lowText = string.gsub(lowText, "|EMPTY.-|e", "")
+                    lowText = string.gsub(lowText, "|HOVER.-|e", function(text)
+                        local id = string.gsub(text, "|ID.-|e", "")
+                        id = string.gsub(id, "|HOVER", "")
+                        id = tonumber(id)
+                        if id and elementId and id == elementId then
+                            text = string.gsub(text, "|HOVER.-|ID", "") 
+                            text = string.gsub(text, "|e", "") 
+                            return text
+                        end
+                        return ""
+                    end)
+                    
+                    --Showing normal state icons
+                    lowText = string.gsub(lowText, "|NORMAL.-|e", function(text)
+                        local id = string.gsub(text, "|ID.-|e", "")
+                        id = string.gsub(id, "|NORMAL", "")
+                        id = tonumber(id)
+                        if not (id and elementId and id == elementId) then
+                            text = string.gsub(text, "|NORMAL.-|ID", "") 
+                            text = string.gsub(text, "|e", "") 
+                            return text
+                        end
+                        return ""
+                    end)
+                    
+                    self.iconsFrame:SetText(lowText)
+                end
+                
+                hooksecurefunc(self, "SetFontObject", function(frame, ...)  self.iconsFrame:SetFontObject(...) end)
+                hooksecurefunc(self, "SetFont", function(frame, ...)  self.iconsFrame:SetFont(...) end)
+                hooksecurefunc(self, "SetWidth", function(frame, ...)  self.iconsFrame:SetWidth(...) end)
+                hooksecurefunc(self, "SetHeight", function(frame, ...)  self.iconsFrame:SetHeight(...) end)
+                hooksecurefunc(self, "SetJustifyH", function(frame, ...)  self.iconsFrame:SetJustifyH(...) end)
+                hooksecurefunc(self, "SetJustifyV", function(frame, ...)  self.iconsFrame:SetJustifyV(...) end)
+                hooksecurefunc(self, "SetSpacing", function(frame, ...)  self.iconsFrame:SetSpacing(...) end)
+                hooksecurefunc(self, "Show", function(frame, ...)  self.iconsFrame:Show(...) end)
+                hooksecurefunc(self, "Hide", function(frame, ...)  self.iconsFrame:Hide(...) end)
+                hooksecurefunc(self, "SetPoint", function(frame, ...)  self.iconsFrame:SetPoint(...) end)
+                
+                hooksecurefunc(self, "SetFrameLevel", function(frame, ...) 
+                    self.iconsFrame:SetFrameLevel(self:GetFrameLevel() - 1) 
+                end)
+                
+                self.iconsFrame:Show()
+            </OnLoad>
+        </Scripts>
+    </SimpleHTML>    
+    
+    
 </Ui>

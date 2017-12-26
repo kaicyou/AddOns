@@ -206,6 +206,17 @@ function UF:Configure_Castbar(frame)
 	--Adjust tick heights
 	castbar.tickHeight = castbar:GetHeight()
 
+	if db.castbar.ticks then --Only player unitframe has this
+		--Set tick width and color
+		castbar.tickWidth = db.castbar.tickWidth
+		castbar.tickColor = db.castbar.tickColor
+
+		for i = 1, #ticks do
+			ticks[i]:SetVertexColor(castbar.tickColor.r, castbar.tickColor.g, castbar.tickColor.b, castbar.tickColor.a)
+			ticks[i]:Width(castbar.tickWidth)
+		end
+	end
+
 	if db.castbar.enable and not frame:IsElementEnabled('Castbar') then
 		frame:EnableElement('Castbar')
 	elseif not db.castbar.enable and frame:IsElementEnabled('Castbar') then
@@ -282,8 +293,8 @@ function UF:SetCastTicks(frame, numTicks, extraTickRatio)
 			ticks[i] = frame:CreateTexture(nil, 'OVERLAY')
 			ticks[i]:SetTexture(E["media"].normTex)
 			E:RegisterStatusBar(ticks[i])
-			ticks[i]:SetVertexColor(0, 0, 0, 0.8)
-			ticks[i]:Width(1)
+			ticks[i]:SetVertexColor(frame.tickColor.r, frame.tickColor.g, frame.tickColor.b, frame.tickColor.a)
+			ticks[i]:Width(frame.tickWidth)
 		end
 
 		ticks[i]:Height(frame.tickHeight)
@@ -408,7 +419,7 @@ function UF:PostCastStart(unit, name)
 		r, g, b = t[1], t[2], t[3]
 	end
 
-	if  self.interrupt and unit ~= "player" and UnitCanAttack("player", unit) then
+	if  self.notInterruptible and unit ~= "player" and UnitCanAttack("player", unit) then
 		r, g, b = colors.castNoInterrupt[1], colors.castNoInterrupt[2], colors.castNoInterrupt[3]
 	end
 
@@ -508,7 +519,7 @@ function UF:PostCastInterruptible(unit)
 		r, g, b = t[1], t[2], t[3]
 	end
 
-	if self.interrupt and UnitCanAttack("player", unit) then
+	if self.notInterruptible and UnitCanAttack("player", unit) then
 		r, g, b = colors.castNoInterrupt[1], colors.castNoInterrupt[2], colors.castNoInterrupt[3]
 	end
 

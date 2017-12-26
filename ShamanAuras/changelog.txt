@@ -1,4 +1,125 @@
-﻿	r48-beta
+﻿	r68
+NEW: [Ele] A new aura for "Lightning Rod" has been added.
+
+FIX: [Ele] The timer bar for Primal Elementals should now continue to appear after their first usage.
+FIX: [UI] Enabling the addon on a different character should no longer reset all settings.
+
+	r67
+FIX: [Ele] Fixed a random error while navigating the config panel.
+FIX: [UI] An error caused by a library - that prevented the addon from loading - has been fixed. (Thanks, Stryker!)
+	
+	r66
+FIX: [UI] Updated all libraries; fixing an error with the config panel. (Thanks, Mad!)
+	
+	r65
+NEW: [Ele/Res] Having Soul of the Farseer equipped should now display charges on respective auras. (Thanks, TheLaughingMan!)
+NEW: [Enhancement] Lava Lash's aura will now display stacks of Lashing Flames and glow at 99 stacks (configurable in options). (Thanks, Kirix!)
+NEW: [UI] Updated addon to 7.3
+
+FIX: [Enhancement] The cooldown timer for the Lightning Crash mini-aura should no longer appear (needs testing).
+FIX: [UI] An error preventing the usage of the configuration tabs should be fixed. (Thanks, Del!)
+	
+	r64
+FIX: [All] Disabling auras for specific specs should now remain disabled after reloading the UI. (Thanks, ernetlo!)
+FIX: [Enhancement] The mini-aura icon for Crash Lightning's 4-piece bonus should no longer display a text timer.(Thanks, xtremekhaos!)
+
+	r63
+FIX: [All] Non-English WoW clients should no longer be experiencing a major bug caused by the cooldown module. (Thanks, AKFDI!)
+FIX: [Elemental] Flame Shock's timer should no longer appear when you don't have Flame Shock active and another Shaman's Flame Shock is on the target.
+FIX: [Enhancement] The T20 4-set bonus aura should be working correctly. (Thanks, Lifad!)
+FIX: [UI] A complete re-work of all global locale strings.
+		• Replaced many strings with built-in global strings for automatic translating.
+		• 150+ unused and redundant strings have been removed for easier translating.
+		• Many tooltip descriptions have been simplified or re-worded.
+	
+	r62
+NEW: [UI] Expanded the customization capabilities for cooldowns!
+
+FIX: [All] Applied fixes from r61 and r59-beta that somehow didn't end up in the actual releases; apologies!
+FIX: [UI] Corrected an issue that prevented the addon from loading (Thanks, wiwahib2012!)
+	
+	r61
+FIX: [Enh/Res] Certain auras' cooldown parameters weren't configured correctly and caused massive errors. This has been fixed. (Thanks, Felmara & Nusse!)
+FIX: [All] Ascendance should no longer show an inactive cooldown when GCD is enabled.
+	
+	r60-beta
+FIX: [All] Minor bug fixes dealing with localization. (Thanks, Khisanth!)
+	
+	r59-beta
+FIX: [All] Cooldown numbers showing for charge cooldowns should no longer appear.
+FIX: [Ele] Flame Shock's aura should no longer display a cooldown number that does not match the rest of the groups formatting.
+FIX: [Res] Flame Shock's aura should be displaying its cooldown and debuff timer correctly.
+	
+	r58-beta
+NEW: [All] Customizable cooldowns are now available!
+NEW: [All] Added functionality to prevent Blizzard's default cooldown numbers from appearing; eliminating dual cooldown number overlapping.
+NEW: [UI] More code clean-up.
+NEW: [UI] Fully restructured addon file directory.
+
+	r57-beta
+[FIX] The vertical buff timer bars should now remain in their new location when moved after reloading your UI. (Thanks, Aingel!)
+
+	r56-beta
+NEW: [All] Auras should no longer appear if it's not available due to player level.
+
+FIX: [Enhancement] The auras for the 2 and 4-set bonuses from T20 should be working correctly. (Special Thanks to Sky for helping with testing!)
+
+	r55-beta
+NEW: [Enhancement] A new vertical timer bar has been added to track the Tier 20 2-set bonus: Lightning Crash. (Special Thanks to Sky for helping with testing!)
+NEW: [Enhancement] A "mini aura" has been attached the Crash Lightning aura to track the T20 4-set bonus: Crashing Lightning. (Special Thanks to Sky for helping with testing!)
+
+FIX: [Enhancement] Doom Winds's texture should now disappear when the buff isn't active. (Thanks, Sky!)
+FIX: [Restoration] The charges text for Lava Burst should disappear when you unlearn Echo of the Elements. (Thanks, Ives!)
+
+	r54-beta
+FIX: [UI] Fixes more issues caused by fonts not compatible with non-English langes. (Thanks, AKFDI!)
+FIX: [UI] An issue preventing all progress bars from being modified when playing WoW in a non-English language has been fixed.
+FIX: [UI] Added more asian-compatible fonts.
+	
+	r53-beta
+NEW: [UI] Added the ability to disable Blizzard's default casting bar.	
+	
+FIX: [Elemental] The timer bars for the elementals has been re-coded to work better and correctly.
+FIX: [Resto] Corrected incorrect spell names for the Buff Duration Timers display options.
+FIX: [UI] Fixed an issue caused by fonts not being compatible with certain non-English languages. (Thanks, baga & BurningBear!)
+FIX: [UI] The ability to toggle the vertical timer bars should once again be working. (Thanks, Yakuzai!)
+
+	r52-beta
+NEW: [All] All progress bars are shown as full when modifying them, but added the ability to modify the bar's background with a toggle; reducing the bar's value to reveal the background texture. (Thanks, Jay040792!)
+NEW: [Ele/Res] When modifying the Icefury and Earthen Shield progress bars, the Timer bar can be toggled on or off.
+NEW: [UI] Added many new fonts and statusbar textures. Many more can be attained by downloading the "SharedMedia" addon. (Thanks, Jay040792!)
+
+FIX: Some Lib files were missing with the update. They have been included in this update, fixing several bugs.
+
+	r51-beta
+
+NEW: [Elemental] Stormkeeper's aura now glows and shows remaining charges as well as buff duration timer. (Thanks, eric1375!)
+NEW: [Ele/Enh] The Maelstrom Bar's width limit has been increased to 500 (was 300) and height limit to 100 (was 50). (Thanks, Jay040792!)
+NEW: [UI] A cast bar and channel bar are now available. (Thanks, Jay040792!)
+NEW: [Restoration] A glow effect has been added to Riptide for the T20 2-piece bonus.
+NEW: [Restoration] A glow effect has been added to Healing Rain for the T20 4-piece bonus.
+NEW: [UI] Now supports SharedMedia
+NEW: [UI] All "primary" progress bars can now be heavily modified.
+	
+FIX: [UI] Major code clean up to yield better performance and reduced memory usage.
+FIX: [All] Wind Shear's Glow animation should no longer appear when targetting a friendly target that's casting an interruptible ability.
+FIX: [All] Added "Wind Rush Totem" to display configuration list for Minor Auras.
+FIX: [Elemental] The Maelstrom Trigger threshold slider will now update to 125 when you have obtained the "Swelling Maelstrom" artifact trait. (Thanks, Morrd!)
+FIX: [Enhancement] Moved the "Doom Winds" aura to the artifact aura group to fix overlapping auras in the bottom aura row.
+FIX: [Restoration] Spirit Link's aura should once again show its cooldown. (Thanks, Guvna!)
+FIX: [Restoration] Earthen Shield Totem's progress bar should be more accurate.
+FIX: [Restoration] Tidal Waves Bar should now correctly appear when targetting a friendly target and with OoC Display set to "On Heal Only"
+
+	r50-beta
+FIX: [Enhancement] Boulderfist's aura has been replaced with a Rockbiter aura. (Thanks, Netharion & Hooper005!)
+FIX: [Enhancement] Rockbiter's glow alert time range has been adjusted to 2 - 6 seconds (from 5 - 10 seconds; when Landslide is active).
+
+	r49-beta
+
+FIX: [Enh/Res] Fixed an issue that would cause certain buff duration timers from behaving incorrectly (Thanks, Netharion!).
+FIX: [Elemental] Fixed a random bug (Thanks, xaroc_!).
+	
+	r48-beta
 NEW: [All] Concordance of the Legionfall has been added.
 NEW: [Enhancement] Unleash Doom has been added.
 NEW: [Enhancement] Timer duration bar added for Landslide (Thanks, Orfin!)

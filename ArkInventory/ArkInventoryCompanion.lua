@@ -18,7 +18,7 @@ local TempData = { -- temporary table for item to spell translations.
 
 -- [itemid] = {sid=ddddd,cid=ddddd,r={'aaaaa'}}
 -- sid = spell id for mount
--- cid = critter id for battlepet
+-- cid = npc/critter id for battlepet
 -- r = { restrictions }
 -- only zone based restrictions are checked
 
@@ -486,51 +486,155 @@ local TempData = { -- temporary table for item to spell translations.
 [128706]={sid=191633,mt=0x02}, -- Soaring Skyterror
 [129923]={sid=194464,mt=0x02}, -- Eclipse Dragonhawk
 [133543]={sid=201098,mt=0x02}, -- Infinite Timereaver
+["S215545"]={sid=215545,mt=0x02}, -- Fel Bat (Test)
+
+-- 22248 7.0.3
+[140228]={sid=222202,mt=0x01}, -- Prestigious Bronze Courser
+[140232]={sid=222237,mt=0x01}, -- Prestigious Forest Courser
+[140233]={sid=222238,mt=0x01}, -- Prestigious Ivory Courser
+[140407]={sid=222241,mt=0x01}, -- Prestigious Midnight Courser
+[140408]={sid=222240,mt=0x01}, -- Prestigious Azure Courser
+[140230]={sid=222236,mt=0x01}, -- Prestigious Royal Courser
+[131734]={sid=196681,mt=0x01}, -- Spirit of Eche'ro
 [137570]={sid=213115,mt=0x01}, -- Bloodfang Widow
 [137574]={sid=213134,mt=0x01}, -- Felblaze Infernal
+[137575]={sid=171827,mt=0x01}, -- Hellfire Infernal
+[137576]={sid=171840,mt=0x01}, -- Coldflame Infernal
 [137577]={sid=213158,mt=0x01}, -- Predatory Bloodgazer
 [137578]={sid=213163,mt=0x02}, -- Snowfeather Hunter
 [137579]={sid=213164,mt=0x01}, -- Brilliant Direbeak
 [137580]={sid=213165,mt=0x01}, -- Viridian Sharptalon
+[137614]={sid=213350,mt=0x01}, -- Frostshard Infernal
+[137615]={sid=213349,mt=0x01}, -- Flarecore Infernal
 [137686]={sid=213209,mt=0x01}, -- Steelbound Devourer
-[129962]={sid=213339,mt=0x01}, -- Great Northern Elderhorn
-[138811]={sid=214791,mt=0x08}, -- Brinedeep Bottom-Feeder
-[138258]={sid=215159,mt=0x02}, -- Long-Forgotten Hippogryph
-["S215545"]={sid=215545,mt=0x02}, -- Fel Bat (Test)
-[138387]={sid=215558,mt=0x01}, -- Ratstallion
-[140228]={sid=222202,mt=0x01}, -- Prestigious Bronze Courser
-[140230]={sid=222236,mt=0x01}, -- Prestigious Royal Courser
-[140232]={sid=222237,mt=0x01}, -- Prestigious Forest Courser
-[140233]={sid=222238,mt=0x01}, -- Prestigious Ivory Courser
-[140408]={sid=222240,mt=0x01}, -- Prestigious Azure Courser
-[140407]={sid=222241,mt=0x01}, -- Prestigious Midnight Courser
-["S229499"]={sid=229499,mt=0x02}, -- Midnight
 [138201]={sid=223018,mt=0x08}, -- Fathom Dweller
-[140353]={sid=223341,mt=0x01}, -- Vicious Gilnean Warhorse
-[140354]={sid=223354,mt=0x01}, -- Vicious War Trike
-[140348]={sid=223363,mt=0x01}, -- Vicious Warstrider
-[140350]={sid=223578,mt=0x01}, -- Vicious War Elekk
-[140500]={sid=223814,mt=0x02}, -- Mechanized Lumber Extractor
+[138258]={sid=215159,mt=0x02}, -- Long-Forgotten Hippogryph
+[138387]={sid=215558,mt=0x01}, -- Ratstallion
+[141216]={sid=193007,mt=0x01}, -- Grove Defiler
 [141217]={sid=225765,mt=0x02}, -- Leyfeather Hippogryph
-[141713]={sid=227956,mt=0x01}, -- Arcadian War Turtle
 [141843]={sid=227986,mt=0x02}, -- Vindictive Gladiator's Storm Dragon
 [141844]={sid=227988,mt=0x02}, -- Fearless Gladiator's Storm Dragon
 [141845]={sid=227989,mt=0x02}, -- Cruel Gladiator's Storm Dragon
 [141846]={sid=227991,mt=0x02}, -- Ferocious Gladiator's Storm Dragon
 [141847]={sid=227994,mt=0x02}, -- Fierce Gladiator's Storm Dragon
 [141848]={sid=227995,mt=0x02}, -- Demonic Gladiator's Storm Dragon
-[142398]={sid=228919,mt=0x08}, -- Sting Ray
-["S230401"]={sid=230401,mt=0x01}, -- White Hawkstrider
-[142403]={sid=230844,mt=0x01}, -- Rockspine Basilisk
+[129962]={sid=213339,mt=0x01}, -- Great Northern Elderhorn
+[137573]={sid=171850,mt=0x01}, -- Llothien Prowler
+[138811]={sid=214791,mt=0x08}, -- Brinedeep Bottom-Feeder
+[129280]={sid=193695,mt=0x01}, -- Prestigious War Steed
+[140348]={sid=223363,mt=0x01}, -- Vicious Warstrider
+[140350]={sid=223578,mt=0x01}, -- Vicious War Elekk
+[140353]={sid=223341,mt=0x01}, -- Vicious Gilnean Warhorse
+[140354]={sid=223354,mt=0x01}, -- Vicious War Trike
+[141713]={sid=227956,mt=0x01}, -- Arcadian War Turtle
+[129744]={sid=142910,mt=0x01}, -- Ironbound Wraithcharger
+[140500]={sid=223814,mt=0x02}, -- Mechanized Lumber Extractor
+
+-- 22731 7.1.0
 [142436]={sid=230987,mt=0x01}, -- Arcanist's Manasaber
-["S231428"]={sid=231428,mt=0x02}, -- Smoldering Ember Wyrm
+[142552]={sid=231428,mt=0x01}, -- Smoldering Ember Wyrm
+[142403]={sid=230844,mt=0x01}, -- Rockspine Basilisk
+[142236]={sid=229499,mt=0x01}, -- Midnight
+[142398]={sid=228919,mt=0x08}, -- Darkwater Skate
+[142369]={sid=230401,mt=0x01}, -- White Hawkstrider
 
+-- 22864 7.1.0
+[143864]={sid=204166,mt=0x01}, -- Prestigious War Wolf
 
+-- 23436 7.2.0
+[143503]={sid=231587,mt=0x02}, -- Highlord's Vengeful Charger
+[142224]={sid=229377,mt=0x02}, -- High Priest's Lightsworn Seeker
+[142226]={sid=229438,mt=0x02}, -- Huntmaster's Fierce Wolfhawk
+[142227]={sid=229386,mt=0x02}, -- Huntmaster's Loyal Wolfhawk
+[142228]={sid=229439,mt=0x02}, -- Huntmaster's Dire Wolfhawk
+[142231]={sid=229387,mt=0x02}, -- Deathlord's Vilebrood Vanquisher
+[142232]={sid=229388,mt=0x02}, -- Battlelord's Bloodthirsty War Wyrm
+[142233]={sid=238454,mt=0x02}, -- Netherlord's Accursed Wrathsteed
+[143489]={sid=231442,mt=0x02}, -- Farseer's Raging Tempest
+[143490]={sid=231525,mt=0x02}, -- Shadowblade's Crimson Omen
+[143491]={sid=231524,mt=0x02}, -- Shadowblade's Baneful Omen
+[143492]={sid=231523,mt=0x02}, -- Shadowblade's Lethal Omen
+[143493]={sid=231434,mt=0x02}, -- Shadowblade's Murderous Omen
+[143502]={sid=231435,mt=0x02}, -- Highlord's Golden Charger
+[142225]={sid=229385,mt=0x02}, -- Ban-Lu, Grandmaster's Companion
+[143504]={sid=231588,mt=0x02}, -- Highlord's Vigilant Charger
+[143505]={sid=231589,mt=0x02}, -- Highlord's Valorous Charger
+[143637]={sid=238452,mt=0x02}, -- Netherlord's Brimstone Wrathsteed
+[143638]={sid=231437,mt=0x02}, -- Archdruid's Lunarwing Form
+[143643]={sid=232519,mt=0x01}, -- Abyss Worm
+[143764]={sid=233364,mt=0x02}, -- Leywoven Flying Carpet
+[142234]={sid=229487,mt=0x01}, -- Vicious War Bear
+[142235]={sid=229486,mt=0x01}, -- Vicious War Bear
+[142237]={sid=229512,mt=0x01}, -- Vicious War Lion
+[142437]={sid=230988,mt=0x01}, -- Vicious War Scorpion
+[143648]={sid=232523,mt=0x01}, -- Vicious War Turtle
+[143649]={sid=232525,mt=0x01}, -- Vicious War Turtle
+[143752]={sid=230844,mt=0x01}, -- Brawler's Burly Basilisk
+
+-- 23623 7.2.0
+[147804]={sid=242875,mt=0x01}, -- Wild Dreamrunner
+[147805]={sid=242882,mt=0x01}, -- Valarjar Stormwing
+[147806]={sid=242881,mt=0x01}, -- Cloudwing Hippogryph
+[147807]={sid=242874,mt=0x01}, -- Highmountain Elderhorn
+
+-- 23657 7.2.0
+[147835]={sid=243025,mt=0x01}, -- Riddler's Mind-Worm
+
+-- 23801 7.2.0
+[143631]={sid=232405,mt=0x01}, -- Primal Flamesaber
+
+-- 24484 7.3.0
+[151623]={sid=247402,mt=0x01}, -- Lucid Nightmare
+
+-- 24608 7.3.0
+[152814]={sid=253058,mt=0x01}, -- Maddened Chaosrunner
+[152788]={sid=239013,mt=0x02}, -- Lightforged Warframe
+[152790]={sid=243652,mt=0x01}, -- Vile Fiend
+[152791]={sid=242305,mt=0x01}, -- Sable Ruinstrider
+[152793]={sid=253006,mt=0x01}, -- Russet Ruinstrider
+[152794]={sid=253004,mt=0x01}, -- Amethyst Ruinstrider
+[152795]={sid=253005,mt=0x01}, -- Beryl Ruinstrider
+[152796]={sid=253008,mt=0x01}, -- Umber Ruinstrider
+[152797]={sid=253007,mt=0x01}, -- Cerulean Ruinstrider
+[152789]={sid=243651,mt=0x01}, -- Shackled Ur'zul
+[152815]={sid=253087,mt=0x01}, -- Antoran Gloomhound
+[152816]={sid=253088,mt=0x01}, -- Antoran Charhound
+[152840]={sid=253109,mt=0x02}, -- Scintillating Mana Ray
+[152841]={sid=253108,mt=0x02}, -- Felglow Mana Ray
+[152842]={sid=253106,mt=0x02}, -- Vibrant Mana Ray
+[152843]={sid=235764,mt=0x02}, -- Darkspore Mana Ray
+[152844]={sid=253107,mt=0x02}, -- Lambent Mana Ray
+[152869]={sid=242897,mt=0x01}, -- Vicious War Fox
+[152870]={sid=242896,mt=0x01}, -- Vicious War Fox
+
+-- 24651 7.3.0
+[152901]={sid=253639,mt=0x01}, -- Violet Spellwing
+[152903]={sid=253660,mt=0x01}, -- Biletooth Gnasher
+[152904]={sid=253662,mt=0x01}, -- Acid Belcher
+[152905]={sid=253661,mt=0x01}, -- Crimson Slavermaw
+[152912]={sid=253711,mt=0x08}, -- Pond Nettle
+
+-- 24727 7.3.0
+[153041]={sid=254260,mt=0x01}, -- Bleakhoof Ruinstrider
+[153042]={sid=254069,mt=0x01}, -- Glorious Felcrusher
+[153043]={sid=254258,mt=0x01}, -- Blessed Felcrusher
+[153044]={sid=254259,mt=0x01}, -- Avenging Felcrusher
+
+-- 24781 7.3.0
+[147901]={sid=243512,mt=0x02}, -- Luminous Starseeker
+[153485]={sid=247448,mt=0x02}, -- Darkmoon Dirigible
+
+-- 25021 7.3.0
+-- http://www.wowhead.com/mount-items/live-only:on?filter=198;25021;0
+[151617]={sid=245725,mt=0x02}, -- Orgrimmar Interceptor
+[151618]={sid=245723,mt=0x02}, -- Stormwind Skychaser
 
 
 -- pets (only the ones that come from items)
 
--- source companion spells; http://www.wowhead.com/spells/companions?filter=112;19890;0
+-- source companion spells;
+
+-- [item] = [npc]
 
 -- xxxxx 1.11.1
 [4401]={cid=2671}, -- Mechanical Squirrel Box / Mechanical Squirrel
@@ -1231,8 +1335,102 @@ local TempData = { -- temporary table for item to spell translations.
 [141352]={cid=113855}, -- Rescued Fawn
 [141348]={cid=113827}, -- Wonderous Wisdomball
 
--- 21796 7.0.3
+-- 21846 7.0.3
 [141530]={cid=114063}, -- Snowfang
+
+-- 21874 7.0.3
+[141894]={cid=113983}, -- Knight-Captain Murky
+[141895]={cid=113984}, -- Legionnaire Murky
+
+-- 23360 7.0.3
+[142448]={cid=116080}, -- Albino Buzzard
+[142096]={cid=115148}, -- Putricide's Alchemy Supplies / Blightbreath
+[142095]={cid=115147}, -- Remains of a Blood Beast / Blood Boil
+[142094]={cid=115146}, -- Fragment of Frozen Bone / Boneshard
+[142093]={cid=115145}, -- Wriggling Darkness / Creeping Tentacle
+[142083]={cid=115135}, -- Giant Worm Egg / Dreadmaw
+[142098]={cid=115150}, -- Drudge Remains / Drudge Ghoul
+[142380]={cid=115919}, -- Dutiful Gruntling
+[142379]={cid=115918}, -- Dutiful Squire
+[142092]={cid=115144}, -- Overcomplicated Controller / G0-R41-0N Ultratonk
+[141714]={cid=114543}, -- Igneous Flameling
+[143953]={cid=118060}, -- Infinite Hatchling
+[142087]={cid=115139}, -- Ironbound Collar / Ironbound Proto-Whelp
+[142086]={cid=115138}, -- Red-Hot Coal / Magma Rageling
+[142085]={cid=115137}, -- Nerubian Relic / Nerubian Swarmer
+[141532]={cid=33975}, -- Noblegarden Bunny
+[143954]={cid=118063}, -- Paradox Spirit
+[142088]={cid=115140}, -- Stormforged Rune / Runeforged Servitor
+[142089]={cid=115141}, -- Glittering Ball of Yarn / Sanctum Cub
+[142091]={cid=115143}, -- Blessed Seed / Snaplasher
+[142084]={cid=115136}, -- Magnataur Hunting Horn / Snobold Runt
+[142097]={cid=115149}, -- Skull of a Frozen Whelp / Soulbroken Whelpling
+[142100]={cid=115158}, -- Stardust
+[143842]={cid=117371}, -- Trashy
+[144394]={cid=119040}, -- Tylarr Gronnden
+[142099]={cid=115152}, -- Call of the Frozen Blade / Wicked Soul
+[142090]={cid=115142}, -- Ominous Pile of Snow / Winter Rageling
+
+-- 23835 7.2.0
+[147542]={cid=120830}, -- Ban-Fu, Cub of Ban-Lu
+[147539]={cid=119498}, -- Bloodbrood Whelpling
+[143754]={cid=117182}, -- Cavern Moccasin
+[143679]={cid=116871}, -- Crackers
+[151645]={cid=117340}, -- Model D1-BB-L3R / Dibbler
+[143756]={cid=117180}, -- Everliving Spore
+[147540]={cid=119499}, -- Frostbrood Whelpling
+[233649]={cid=117341}, -- Naxxy
+[147841]={cid=121715}, -- Orphaned Felbat
+[146953]={cid=120397}, -- Scraps
+[147543]={cid=121317}, -- Son of Skum
+[142223]={cid=61087}, -- Sun Darter Hatchling
+[147541]={cid=119500}, -- Vilebrood Whelpling
+[143755]={cid=117184}, -- Young Venomfang
+
+-- 24330 7.2.5
+[151633]={cid=124594}, -- Dig Rat
+[101426]={cid=63724}, -- Micronax Controller / Micronax
+[151632]={cid=124589}, -- Mining Monkey
+[150742]={cid=122629}, -- Pet Reaper 0.9 / Foe Reaper 0.9
+[150739]={cid=119794}, -- Pocket Cannon
+[151569]={cid=124389}, -- Sneaky Marmot
+[151828]={cid=124944}, -- Ageless Bronze Drake
+[151829]={cid=124858}, -- Bronze Proto-Whelp
+[150741]={cid=122612}, -- Tricorne
+
+-- 24920 7.3.0
+[152963]={cid=127956}, -- Amalgam of Destruction
+[152975]={cid=127947}, -- Smoldering Treat / Blazehound
+[152970]={cid=127858}, -- Lesser Circle of Binding / Bound Stream
+[152976]={cid=127948}, -- Cinderweb Egg / Cinderweb Recluse
+[152980]={cid=127953}, -- Elementium Back Plate / Corrupted Blood
+[153026]={cid=128118}, -- Cross Gazer
+[152967]={cid=127852}, -- Experiment-In-A-Jar / Discarded Experiment
+[153054]={cid=128157}, -- Docile Skyfin
+[152974]={cid=127863}, -- Breezy Essence / Drafty
+[152979]={cid=127952}, -- Puddle of Black Liquid / Faceless Mindlasher
+[152972]={cid=127859}, -- Twilight Summoning Portal / Faceless Minion
+[153045]={cid=128137}, -- Fel Lasher
+[153055]={cid=128158}, -- Fel-Afflicted Skyfin
+[153040]={cid=128146}, -- Felclaw Marsuul
+[153057]={cid=128160}, -- Fossorial Bile Larva
+[152555]={cid=126579}, -- Ghost Shark
+[153056]={cid=128159}, -- Grasping Manifestation
+[152978]={cid=127951}, -- Fandral's Pet Carrier / Infernal Pyreclaw
+[153027]={cid=128119}, -- Orphaned Marsuul
+[152968]={cid=127853}, -- Shadowy Pile of Bones / Rattlejaw
+[153252]={cid=128388}, -- Rebellious Imp
+[152977]={cid=127950}, -- Vibrating Stone / Surger
+[152966]={cid=127850}, -- Rough-Hewn Remote / Tinytron
+[147900]={cid=122033}, -- Twilight
+[152969]={cid=127857}, -- Odd Twilight Egg / Twilight Clutch-Sister
+[152981]={cid=127954}, -- Severed Tentacle / Unstable Tendril
+[153195]={cid=128396}, -- Uuna's Doll / Uuna
+[152973]={cid=127862}, -- Zephyr's Call / Zephyrian Prince
+
+-- 25021 7.3.0
+-- http://www.wowhead.com/spells/companions/live-only:on?filter=112;25021;0
+[151234]={cid=123650}, -- Shadow
 
 }
 
@@ -1255,7 +1453,7 @@ local function importCompanionCrossRefTable( )
 			
 			if ( data.cid ) and ( type( data.cid ) == "number" ) then
 				
-				speciesID = ArkInventory.PetJournal.GetSpeciesIDForCreatureID( data.cid )
+				speciesID = ArkInventory.Collection.Pet.GetSpeciesIDForCreatureID( data.cid )
 				if speciesID then
 					
 					key2 = ArkInventory.ObjectIDCount( string.format( "battlepet:%s", speciesID ) )

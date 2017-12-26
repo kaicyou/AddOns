@@ -19,8 +19,9 @@ local WORLDMAP_WINDOWED_SIZE = WORLDMAP_WINDOWED_SIZE
 
 --Global variables that we don't cache, list them here for mikk's FindGlobals script
 -- GLOBALS: WorldMapFrame, WorldMapFrameSizeUpButton, WorldMapFrameSizeDownButton
--- GLOBALS: UIParent, CoordsHolder, WorldMapDetailFrame, DropDownList1, WORLD_MAP_MIN_ALPHA
+-- GLOBALS: UIParent, CoordsHolder, WorldMapDetailFrame, WORLD_MAP_MIN_ALPHA
 -- GLOBALS: NumberFontNormal, WORLDMAP_SETTINGS, BlackoutWorld, WorldMapScrollFrame
+-- GLOBALS: WorldMapTooltip, WorldMapCompareTooltip1, WorldMapCompareTooltip2
 
 local INVERTED_POINTS = {
 	["TOPLEFT"] = "BOTTOMLEFT",
@@ -50,9 +51,6 @@ function M:SetLargeWorldMap()
 		SetUIPanelAttribute(WorldMapFrame, "allowOtherPanels", true)
 	end
 
-	WorldMapFrameSizeUpButton:Hide()
-	WorldMapFrameSizeDownButton:Show()
-
 	WorldMapFrame:ClearAllPoints()
 	WorldMapFrame:Point("CENTER", UIParent, "CENTER", 0, 100)
 	WorldMapFrame:SetSize(1002, 668)
@@ -60,19 +58,14 @@ end
 
 function M:SetSmallWorldMap()
 	if InCombatLockdown() then return; end
-
-	WorldMapFrameSizeUpButton:Show()
-	WorldMapFrameSizeDownButton:Hide()
 end
 
 function M:PLAYER_REGEN_ENABLED()
-	WorldMapFrameSizeDownButton:Enable()
-	WorldMapFrameSizeUpButton:Enable()
+
 end
 
 function M:PLAYER_REGEN_DISABLED()
-	WorldMapFrameSizeDownButton:Disable()
-	WorldMapFrameSizeUpButton:Disable()
+
 end
 
 local inRestrictedArea = false
@@ -93,8 +86,8 @@ end
 function M:UpdateCoords()
 	if (not WorldMapFrame:IsShown() or inRestrictedArea) then return end
 	local x, y = GetPlayerMapPosition("player")
-	x = E:Round(100 * x, 2)
-	y = E:Round(100 * y, 2)
+	x = x and E:Round(100 * x, 2) or 0
+	y = y and E:Round(100 * y, 2) or 0
 
 	if x ~= 0 and y ~= 0 then
 		CoordsHolder.playerCoords:SetText(PLAYER..":   "..x..", "..y)
@@ -106,7 +99,7 @@ function M:UpdateCoords()
 	local width = WorldMapDetailFrame:GetWidth()
 	local height = WorldMapDetailFrame:GetHeight()
 	local centerX, centerY = WorldMapDetailFrame:GetCenter()
-	local x, y = GetCursorPosition()
+	x, y = GetCursorPosition()
 	local adjustedX = (x / scale - (centerX - (width/2))) / width
 	local adjustedY = (centerY + (height/2) - y / scale) / height
 

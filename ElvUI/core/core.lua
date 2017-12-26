@@ -7,10 +7,11 @@ local Masque = LibStub("Masque", true)
 local _G = _G
 local tonumber, pairs, ipairs, error, unpack, select, tostring = tonumber, pairs, ipairs, error, unpack, select, tostring
 local assert, print, type, collectgarbage, pcall, date = assert, print, type, collectgarbage, pcall, date
-local twipe, tinsert, tremove = table.wipe, tinsert, tremove
-local floor = floor
+local twipe, tinsert, tremove, next = table.wipe, tinsert, tremove, next
+local floor, gsub, match = floor, string.gsub, string.match
 local format, find, strrep, len, sub = string.format, string.find, strrep, string.len, string.sub
 --WoW API / Variables
+local UnitGUID = UnitGUID
 local CreateFrame = CreateFrame
 local C_Timer_After = C_Timer.After
 local C_PetBattles_IsInBattle = C_PetBattles.IsInBattle
@@ -22,7 +23,6 @@ local GetFunctionCPUUsage = GetFunctionCPUUsage
 local GetMapNameByID = GetMapNameByID
 local GetSpecialization, GetActiveSpecGroup = GetSpecialization, GetActiveSpecGroup
 local GetSpecializationRole = GetSpecializationRole
-local GetSpellInfo = GetSpellInfo
 local InCombatLockdown = InCombatLockdown
 local IsAddOnLoaded = IsAddOnLoaded
 local IsInInstance, IsInGroup, IsInRaid = IsInInstance, IsInGroup, IsInRaid
@@ -32,35 +32,33 @@ local UnitGroupRolesAssigned = UnitGroupRolesAssigned
 local UnitHasVehicleUI = UnitHasVehicleUI
 local UnitLevel, UnitStat, UnitAttackPower = UnitLevel, UnitStat, UnitAttackPower
 local COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN = COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 local ERR_NOT_IN_COMBAT = ERR_NOT_IN_COMBAT
 local LE_PARTY_CATEGORY_HOME = LE_PARTY_CATEGORY_HOME
 local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 --Global variables that we don't cache, list them here for the mikk's Find Globals script
--- GLOBALS: LibStub, UIParent, MAX_PLAYER_LEVEL, ScriptErrorsFrame_OnError
+-- GLOBALS: LibStub, UIParent, MAX_PLAYER_LEVEL, ScriptErrorsFrame
 -- GLOBALS: ElvUIPlayerBuffs, ElvUIPlayerDebuffs, LeftChatPanel, RightChatPanel
 -- GLOBALS: ElvUI_StaticPopup1, ElvUI_StaticPopup1Button1, OrderHallCommandBar
 -- GLOBALS: ElvUI_StanceBar, ObjectiveTrackerFrame, GameTooltip, Minimap
 -- GLOBALS: ElvUIParent, ElvUI_TopPanel, hooksecurefunc, InterfaceOptionsCameraPanelMaxDistanceSlider
-
+-- GLOBALS: CUSTOM_CLASS_COLORS, ElvDB
 
 --Constants
 E.myclass = select(2, UnitClass("player"));
-E.myspec = GetSpecialization()
-E.myrace = select(2, UnitRace("player"))
-E.myfaction = select(2, UnitFactionGroup('player'))
+E.myClassID = select(3, UnitClass("player"));
+E.myspec = GetSpecialization();
+E.myrace = select(2, UnitRace("player"));
+E.myfaction = select(2, UnitFactionGroup('player'));
 E.myname = UnitName("player");
-E.myguid = UnitGUID('player');
 E.version = GetAddOnMetadata("ElvUI", "Version");
 E.myrealm = GetRealmName();
 E.wowbuild = select(2, GetBuildInfo()); E.wowbuild = tonumber(E.wowbuild);
---Currently in Legion logging in while in Windowed mode will cause the game to use "Custom" resolution and GetCurrentResolution() returns 0. We use GetCVar("gxWindowedResolution") as fail safe
-E.resolution = ({GetScreenResolutions()})[GetCurrentResolution()] or GetCVar("gxWindowedResolution")
-E.screenwidth, E.screenheight = DecodeResolution(E.resolution)
-E.isMacClient = IsMacClient()
-E.LSM = LSM
+E.resolution = ({GetScreenResolutions()})[GetCurrentResolution()] or GetCVar("gxWindowedResolution"); --only used for now in our install.lua line 779
+E.screenwidth, E.screenheight = GetPhysicalScreenSize();
+E.isMacClient = IsMacClient();
+E.LSM = LSM;
 
 --Tables
 E["media"] = {};
@@ -170,6 +168,11 @@ E.ClassRole = {
 	},
 }
 
+E.DEFAULT_FILTER = {}
+for filter, tbl in pairs(G.unitframe.aurafilters) do
+	E.DEFAULT_FILTER[filter] = tbl.type
+end
+
 E.noop = function() end;
 
 local hexvaluecolor
@@ -251,7 +254,7 @@ function E:UpdateMedia()
 	end
 
 	self["media"].bordercolor = {border.r, border.g, border.b}
-	
+
 	--UnitFrame Border Color
 	border = E.db['unitframe'].colors.borderColor
 	if self:CheckClassColor(border.r, border.g, border.b) then
@@ -434,6 +437,11 @@ function E:PLAYER_ENTERING_WORLD()
 		self:CancelTimer(self.BGTimer)
 		self.BGTimer = nil;
 	end
+
+	if tonumber(E.version) >= 10.60 and not E.global.userInformedNewChanges1 then
+		E:StaticPopup_Show("ELVUI_INFORM_NEW_CHANGES")
+		E.global.userInformedNewChanges1 = true
+	end
 end
 
 function E:ValueFuncCall()
@@ -450,7 +458,7 @@ function E:UpdateFrameTemplates()
 			self["frames"][frame] = nil;
 		end
 	end
-	
+
 	for frame in pairs(self["unitFrameElements"]) do
 		if frame and frame.template and not frame.ignoreUpdates then
 			frame:SetTemplate(frame.template, frame.glossTex);
@@ -470,7 +478,7 @@ function E:UpdateBorderColors()
 			self["frames"][frame] = nil;
 		end
 	end
-	
+
 	for frame, _ in pairs(self["unitFrameElements"]) do
 		if frame and not frame.ignoreUpdates then
 			if frame.template == 'Default' or frame.template == 'Transparent' or frame.template == nil then
@@ -498,7 +506,7 @@ function E:UpdateBackdropColors()
 			self["frames"][frame] = nil;
 		end
 	end
-	
+
 	for frame, _ in pairs(self["unitFrameElements"]) do
 		if frame then
 			if frame.template == 'Default' or frame.template == nil then
@@ -573,16 +581,6 @@ function E:IsDispellableByMe(debuffType)
 
 	if self.DispelClasses[self.myclass][debuffType] then
 		return true;
-	end
-end
-
-local SymbiosisName = GetSpellInfo(110309)
-local CleanseName = GetSpellInfo(4987)
-function E:SPELLS_CHANGED()
-	if GetSpellInfo(SymbiosisName) == CleanseName then
-		self.DispelClasses["DRUID"].Disease = true
-	else
-		self.DispelClasses["DRUID"].Disease = false
 	end
 end
 
@@ -690,13 +688,6 @@ function E:CopyTable(currentTable, defaultTable)
 	return currentTable
 end
 
-local function IsTableEmpty(tbl)
-	for _, _ in pairs(tbl) do
-		return false
-	end
-	return true
-end
-
 function E:RemoveEmptySubTables(tbl)
 	if type(tbl) ~= "table" then
 		E:Print("Bad argument #1 to 'RemoveEmptySubTables' (table expected)")
@@ -705,7 +696,7 @@ function E:RemoveEmptySubTables(tbl)
 
 	for k, v in pairs(tbl) do
 		if type(v) == "table" then
-			if IsTableEmpty(v) then
+			if next(v) == nil then
 				tbl[k] = nil
 			else
 				self:RemoveEmptySubTables(v)
@@ -767,7 +758,7 @@ function E:TableToLuaString(inTable)
 			if(type(v) == "number") then
 				ret = ret..v..",\n"
 			elseif(type(v) == "string") then
-				ret = ret.."\""..v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\"").."\",\n"
+				ret = ret.."\""..v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\""):gsub("\124", "\124\124").."\",\n"
 			elseif(type(v) == "boolean") then
 				if(v) then
 					ret = ret.."true,\n"
@@ -796,9 +787,8 @@ local profileFormat = {
 	["profile"] = "E.db",
 	["private"] = "E.private",
 	["global"] = "E.global",
-	["filtersNP"] = "E.global",
-	["filtersUF"] = "E.global",
-	["filtersAll"] = "E.global",
+	["filters"] = "E.global",
+	["styleFilters"] = "E.global",
 }
 
 local lineStructureTable = {}
@@ -854,7 +844,7 @@ function E:ProfileTableToPluginFormat(inTable, profileType)
 				if type(v) == "number" then
 					returnString = returnString..v.."\n"
 				elseif type(v) == "string" then
-					returnString = returnString.."\""..v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\"").."\"\n"
+					returnString = returnString.."\""..v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\""):gsub("\124", "\124\124").."\"\n"
 				elseif type(v) == "boolean" then
 					if v then
 						returnString = returnString.."true\n"
@@ -916,11 +906,9 @@ function E:SendMessage()
 	end
 end
 
-local myName = E.myname.."-"..E.myrealm;
-myName = myName:gsub("%s+", "")
-
+local myRealm = gsub(E.myrealm,'[%s%-]','')
+local myName = E.myname..'-'..myRealm
 local function SendRecieve(_, event, prefix, message, _, sender)
-
 	if event == "CHAT_MSG_ADDON" then
 		if(sender == myName) then return end
 
@@ -1098,7 +1086,7 @@ function E:RegisterPetBattleHideFrames(object, originalParent, originalStrata)
 		return
 	end
 
-	local object = _G[object] or object
+	object = _G[object] or object
 	--If already doing pokemon
 	if C_PetBattles_IsInBattle() then
 		object:SetParent(E.HiddenFrame)
@@ -1115,7 +1103,7 @@ function E:UnregisterPetBattleHideFrames(object)
 		return
 	end
 
-	local object = _G[object] or object
+	object = _G[object] or object
 	--Check if object was registered to begin with
 	if not E.FrameLocks[object] then
 		return
@@ -1159,7 +1147,7 @@ function E:RegisterObjectForVehicleLock(object, originalParent)
 		return
 	end
 
-	local object = _G[object] or object
+	object = _G[object] or object
 	--Entering/Exiting vehicles will often happen in combat.
 	--For this reason we cannot allow protected objects.
 	if object.IsProtected and object:IsProtected() then
@@ -1182,7 +1170,7 @@ function E:UnregisterObjectForVehicleLock(object)
 		return
 	end
 
-	local object = _G[object] or object
+	object = _G[object] or object
 	--Check if object was registered to begin with
 	if not E.VehicleLocks[object] then
 		return
@@ -1277,11 +1265,11 @@ function E:InitializeInitialModules()
 
 	--Old deprecated initialize method, we keep it for any plugins that may need it
 	for _, module in pairs(E['RegisteredInitialModules']) do
-		local module = self:GetModule(module, true)
+		module = self:GetModule(module, true)
 		if module and module.Initialize then
 			local _, catch = pcall(module.Initialize, module)
 			if catch and GetCVarBool('scriptErrors') == true then
-				ScriptErrorsFrame_OnError(catch, false)
+				ScriptErrorsFrame:OnError(catch, false, false)
 			end
 		end
 	end
@@ -1303,64 +1291,53 @@ function E:InitializeModules()
 
 	--Old deprecated initialize method, we keep it for any plugins that may need it
 	for _, module in pairs(E['RegisteredModules']) do
-		local module = self:GetModule(module)
+		module = self:GetModule(module)
 		if module.Initialize then
 			local _, catch = pcall(module.Initialize, module)
 
 			if catch and GetCVarBool('scriptErrors') == true then
-				ScriptErrorsFrame_OnError(catch, false)
+				ScriptErrorsFrame:OnError(catch, false, false)
 			end
 		end
 	end
 end
 
 --DATABASE CONVERSIONS
+local function auraFilterStrip(name, content, value)
+	if match(name, value) then
+		E.global.unitframe.aurafilters[gsub(name, value, '')] = E:CopyTable({}, content)
+		E.global.unitframe.aurafilters[name] = nil
+	end
+end
+
 function E:DBConversions()
-	--Convert actionbar button spacing to backdrop spacing, so users don't get any unwanted changes
-	if not E.db.actionbar.backdropSpacingConverted then
-		for i = 1, 10 do
-			if E.db.actionbar["bar"..i] then
-				E.db.actionbar["bar"..i].backdropSpacing = E.db.actionbar["bar"..i].buttonspacing
-			end
-		end
-		E.db.actionbar.barPet.backdropSpacing = E.db.actionbar.barPet.buttonspacing
-		E.db.actionbar.stanceBar.backdropSpacing = E.db.actionbar.stanceBar.buttonspacing
-
-		E.db.actionbar.backdropSpacingConverted = true
+	--Make sure default filters use the correct filter type
+	for filter, filterType in pairs(E.DEFAULT_FILTER) do
+		E.global.unitframe.aurafilters[filter].type = filterType
 	end
 
-	--Convert E.db.actionbar.showGrid to E.db.actionbar["barX"].showGrid
-	if E.db.actionbar.showGrid ~= nil then
-		local gridEnabled = E.db.actionbar.showGrid
-		for i = 1, 10 do
-			if E.db.actionbar["bar"..i] then
-				E.db.actionbar["bar"..i].showGrid = gridEnabled
-			end
-		end
-		E.db.actionbar.showGrid = nil
+	--Add missing nameplates table to Minimalistic profile
+	if ElvDB.profiles["Minimalistic"] and not ElvDB.profiles["Minimalistic"].nameplates then
+		ElvDB.profiles["Minimalistic"].nameplates = {
+			["filters"] = {},
+		}
 	end
 
-	--Convert old WorldMapCoordinates from boolean to new table format
-	if type(E.global.general.WorldMapCoordinates) == "boolean" then
-		local enabledState = E.global.general.WorldMapCoordinates
-
-		--Remove boolean value
-		E.global.general.WorldMapCoordinates = nil
-
-		--Add old enabled state
-		E.global.general.WorldMapCoordinates.enable = enabledState
+	--Combat & Resting Icon options update
+	if E.db.unitframe.units.player.combatIcon ~= nil then
+		E.db.unitframe.units.player.CombatIcon.enable = E.db.unitframe.units.player.combatIcon
+		E.db.unitframe.units.player.combatIcon = nil
+	end
+	if E.db.unitframe.units.player.restIcon ~= nil then
+		E.db.unitframe.units.player.RestIcon.enable = E.db.unitframe.units.player.restIcon
+		E.db.unitframe.units.player.restIcon = nil
 	end
 
-	--Remove old nameplate settings, no need for them to take up space
-	if E.db.nameplate then
-		E.db.nameplate = nil
-	end
-	
-	if not E.db.thinBorderColorSet then
-		if E.PixelMode then
-			E.db.general.bordercolor = {r = 0, g = 0, b = 0}
-		end
-		E.db.thinBorderColorSet = true
+	--Remove commas from aura filters
+	for name, content in pairs(E.global.unitframe.aurafilters) do
+		auraFilterStrip(name, content, ',')
+		auraFilterStrip(name, content, '^Friendly:')
+		auraFilterStrip(name, content, '^Enemy:')
 	end
 end
 
@@ -1413,7 +1390,7 @@ function E:GetTopCPUFunc(msg)
 	if module == "all" then
 		for _, registeredModule in pairs(self['RegisteredModules']) do
 			mod = self:GetModule(registeredModule, true) or self
-			for name, func in pairs(mod) do
+			for name in pairs(mod) do
 				if type(mod[name]) == "function" and name ~= "GetModule" then
 					CPU_USAGE[registeredModule..":"..name] = GetFunctionCPUUsage(mod[name], true)
 				end
@@ -1421,7 +1398,7 @@ function E:GetTopCPUFunc(msg)
 		end
 	else
 		mod = self:GetModule(module, true) or self
-		for name, func in pairs(mod) do
+		for name in pairs(mod) do
 			if type(mod[name]) == "function" and name ~= "GetModule" then
 				CPU_USAGE[module..":"..name] = GetFunctionCPUUsage(mod[name], true)
 			end
@@ -1471,6 +1448,7 @@ function E:Initialize()
 	twipe(self.global)
 	twipe(self.private)
 
+	self.myguid = UnitGUID("player")
 	self.data = LibStub("AceDB-3.0"):New("ElvDB", self.DF);
 	self.data.RegisterCallback(self, "OnProfileChanged", "UpdateAll")
 	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateAll")
@@ -1518,9 +1496,6 @@ function E:Initialize()
 	self:RegisterEvent("UNIT_ENTERED_VEHICLE", "EnterVehicleHideFrames")
 	self:RegisterEvent("UNIT_EXITED_VEHICLE", "ExitVehicleShowFrames")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED")
-	if self.myclass == "DRUID" then
-		self:RegisterEvent("SPELLS_CHANGED")
-	end
 
 	if self.db.general.kittys then
 		self:CreateKittys()

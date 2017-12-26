@@ -4,6 +4,9 @@ if not DGV then return end
 local TaxiData = DGV:RegisterModule("TaxiData")
 TaxiData.essential = true
 
+--Possible modes: "veiled-den", "lights-purchase"
+TaxiData.currentBeaconMode = "unknown"
+
 function TaxiData:Initialize()
 
 	local fullData
@@ -13006,6 +13009,103 @@ function TaxiData:Initialize()
 			requirements = "cls:DRUID"
 		},		
 	},	
+	[9] = {
+		[118830] = {
+			["name"] = "Krokul Hovel, Krokuun",
+			["direct"] = "123139:123260:124569:124313:122509:125407:125410:126951",
+			["m"] = 1135,
+			["coord"] = 2383064171,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[125461] = {
+			["name"] = "Vindicaar, Mac'Aree",
+			["direct"] = "118830:123139:123260:124569:124313:122509:125407:125410:125514:126951",
+			["m"] = 1170,
+			["coord"] = 2091072516,
+			["f"] = 3,
+			["isSpaceship"] = true,
+		},
+		[122509] = {
+			["name"] = "Triumvirate's End, Mac'Aree",
+			["direct"] = "118830:123260:124569:125461:124313:125407:125410:126951",
+			["m"] = 1170,
+			["coord"] = 2270347563,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[123260] = {
+			["name"] = "Shattered Fields, Krokuun",
+			["direct"] = "118830:123139:124569:124313:122509:125407:125410:126951",
+			["m"] = 1135,
+			["coord"] = 1731109521,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[126951] = {
+			["name"] = "City Center, Mac'Aree",
+			["direct"] = "118830:123260:124569:125461:124313:122509:125407:125410",
+			["m"] = 1170,
+			["coord"] = 2020118034,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[125407] = {
+			["name"] = "Hope's Landing, Antoran Wastes",
+			["direct"] = "118830:123260:124569:124313:122509:125410:125514:126951",
+			["m"] = 1171,
+			["coord"] = 3133768023,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[124313] = {
+			["name"] = "Conservatory of the Arcane, Mac'Aree",
+			["direct"] = "118830:123260:124569:125461:122509:125407:125410:126951",
+			["m"] = 1170,
+			["coord"] = 2699191586,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[124569] = {
+			["name"] = "Destiny Point, Krokuun",
+			["direct"] = "118830:123139:123260:124313:122509:125407:125410:126951",
+			["m"] = 1135,
+			["coord"] = 2692513213,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[125410] = { --Dynamic
+			["name"] = "Light's Purchase, Antoran Wastes",
+			["direct"] = "118830:123260:124569:124313:122509:125407:125514:126951",
+			["m"] = 1171,
+			["coord"] = 3119956734,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[125514] = {
+			["name"] = "Vindicaar, Antoran Wastes",
+			["direct"] = "118830:123139:123260:124569:125461:124313:122509:125407:125410:126951",
+			["m"] = 1171,
+			["coord"] = 1407291736,
+			["f"] = 5,
+			["isSpaceship"] = true,
+		},
+		[123139] = {
+			["m"] = 1135,
+			["direct"] = "118830:123260:124569:125461:124313:122509:125407:125410:125514:126951",
+			["coord"] = 1809529829,
+			["f"] = 1,
+			["isSpaceship"] = true,
+		},
+		[125409] = { --Dynamic
+            ["name"] = "The Veiled Den, Antoran Wastes",
+			["m"] = 1171,
+			["f"] = 0,
+			["direct"] = "118830:123260:124569:124313:122509:125407:125514:126951",
+			["coord"] = 3034464598,
+			["isBeacon"] = true,
+		}, 
+	},
 },
 	["Alliance"] = {
 		{
@@ -27280,11 +27380,145 @@ function TaxiData:Initialize()
 			requirements = "cls:DRUID"	
 		},
 	},	
+	[9] = {
+		[118830] = {
+			["name"] = "Krokul Hovel, Krokuun",
+			["direct"] = "123139:123260:124569:124313:122509:125407:125410:126951:123258:125350",
+			["m"] = 1135,
+			["coord"] = 2383064171,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[125461] = {
+			["name"] = "Vindicaar, Mac'Aree",
+			["direct"] = "118830:123139:123260:124569:124313:122509:125407:125410:125514:126951:123258:125350",
+			["m"] = 1170,
+			["coord"] = 2091072516,
+			["f"] = 3,
+			["isSpaceship"] = true,
+		},
+		[122509] = {
+			["name"] = "Triumvirate's End, Mac'Aree",
+			["direct"] = "118830:123260:124569:125461:124313:125407:125410:126951:123258:125350",
+			["m"] = 1170,
+			["coord"] = 2270347563,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[123260] = {
+			["name"] = "Shattered Fields, Krokuun",
+			["direct"] = "118830:123139:124569:124313:122509:125407:125410:126951:123258:125350",
+			["m"] = 1135,
+			["coord"] = 1731109521,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[126951] = {
+			["name"] = "City Center, Mac'Aree",
+			["direct"] = "118830:123260:124569:125461:124313:122509:125407:125410:123258:125350",
+			["m"] = 1170,
+			["coord"] = 2020118034,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[125407] = {
+			["name"] = "Hope's Landing, Antoran Wastes",
+			["direct"] = "118830:123260:124569:124313:122509:125410:125514:126951:123258:125350",
+			["m"] = 1171,
+			["coord"] = 3133768023,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[124313] = {
+			["name"] = "Conservatory of the Arcane, Mac'Aree",
+			["direct"] = "118830:123260:124569:125461:122509:125407:125410:126951:123258:125350",
+			["m"] = 1170,
+			["coord"] = 2699191586,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[124569] = {
+			["name"] = "Destiny Point, Krokuun",
+			["direct"] = "118830:123139:123260:124313:122509:125407:125410:126951:123258:125350",
+			["m"] = 1135,
+			["coord"] = 2692513213,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[125410] = { --Dynamic
+			["name"] = "Light's Purchase, Antoran Wastes",
+			["direct"] = "118830:123260:124569:124313:122509:125407:125514:126951:123258:125350",
+			["m"] = 1171,
+			["coord"] = 3119956734,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},
+		[125514] = {
+			["name"] = "Vindicaar, Antoran Wastes",
+			["direct"] = "118830:123139:123260:124569:125461:124313:122509:125407:125410:126951",
+			["m"] = 1171,
+			["coord"] = 1407291736,
+			["f"] = 5,
+			["isSpaceship"] = true,
+		},
+		[123139] = {
+			["m"] = 1135,
+			["direct"] = "118830:123260:124569:125461:124313:122509:125407:125410:125514:126951",
+			["coord"] = 1809529829,
+			["f"] = 1,
+			["isSpaceship"] = true,
+		},
+		[125409] = { --Dynamic
+            ["name"] = "The Veiled Den, Antoran Wastes",
+			["m"] = 1171,
+			["f"] = 0,
+			["direct"] = "118830:123260:124569:124313:122509:125407:125514:126951:123258:125350",
+			["coord"] = 3034464598,
+			["isBeacon"] = true,
+		}, 
+		[125350] = {
+			["m"] = 1170,
+			["coord"] = 1885086975,
+			["direct"] = "118830:123260:124569:125461:124313:123258:122509:125407:125409:126951:123258:125350",
+			["f"] = 0,
+			["isBeacon"] = true,
+		},	
+		[123258] = {
+			["name"] = "Shadowguard Incursion, Mac'Aree",
+			["direct"] = "118830:123260:124569:125461:124313:122509:125407:125350:125409:126951:123258:125350",
+			["coord"] = 1294171850,
+			["m"] = 1170,
+			["f"] = 0,
+			["isBeacon"] = true,
+		},		
+	},
 }
 }
 		end
 		local faction = UnitFactionGroup("player")
-		return fullData[faction]
+      
+        --Checking for dynamic flight nodes
+
+        --Saving original subtable for Argus (9) for further use.
+        TaxiData.copies = TaxiData.copies or {}
+        TaxiData.copies[faction] = TaxiData.copies[faction] or {}
+        TaxiData.copies[faction][9] = TaxiData.copies[faction][9] or LuaUtils:clone(fullData[faction][9])
+        
+        --Restoring original table
+        fullData[faction][9] = LuaUtils:clone(TaxiData.copies[faction][9])
+        
+        local result = fullData[faction]
+        
+        --Checking for mode
+        if TaxiData.currentBeaconMode == "veiled-den" then
+            result[9][125410] = nil
+        end
+        
+        if TaxiData.currentBeaconMode == "lights-purchase" then
+            result[9][125409] = nil
+        end
+        
+		return result
 	end
 
 	TaxiData.NonZeroOpenWorldFloors = {
@@ -28546,12 +28780,12 @@ function TaxiData:Initialize()
 				[1072] = "34.34,46.77", --Hunter only
 				[1018] = "26.06,62.98-1018:0:69.85,28.12",
 				[1017] = "59.59,68.67-1017:0:27.16,38.97",
-				[1080] = "49.05,55.21-1080:0:58.86,14.81|50.14,63.75-1080:0:66.59,68.44|44.91,65.68-1080:0:33.69,77.56|44.10,59.38-1080:0:31.71,41.56",
+				[1080] = "49.05,55.21-1080:0:58.86,14.81|50.14,63.75-1080:0:66.59,68.44|44.91,65.68-1080:0:33.69,77.56|44.10,59.38-1080:0:31.71,41.56|45.02,56.07-1080:0:32.79,16.93",
 				["1024:20"] = "38.36,61.30-1024:20:73.12,78.46",
 				["1024:5"] = "41.39,72.51-1024:5:17.60,27.90",
 				["1024:8"] = "37.59,33.44-1024:8:51.82,18.62",
-				["1024:16"] = "41.56,46.90-1024:16:52.69,88.76|38.93,43.21-1024:16:32.66,60.74",
-				["1024:29"] = "44.73,72.22-1024:29:23.51,42.65",
+				["1024:16"] = "41.27,46.34-1024:16:52.69,88.76|38.93,43.21-1024:16:32.66,60.74",
+				["1024:29"] = "44.73,72.22-1024:29:23.51,42.65|44.77,72.25-1024:29:22.83,42.62",
 				["1024:31"] = "42.56,25.42-1024:31:20.96,78.85",
 				["1024:30"] = "47.66,84.15-1024:30:42.18,90.39",
 			},
@@ -28562,7 +28796,7 @@ function TaxiData:Initialize()
 				[1024] = "51.82,18.62-1024:0:37.59,33.44",
 			},				
 			["1024:16"] = { --Mucksnout Den
-				[1024] = "52.69,88.76-1024:0:41.56,46.90|32.66,60.74-1024:0:38.93,43.21",
+				[1024] = "52.69,88.76-1024:0:41.27,46.34|32.66,60.74-1024:0:38.93,43.21",
 			},
 			["1024:20"] = { --Lifespring Cavern
 				[1024] = "73.12,78.46-1024:0:38.36,61.30",
@@ -28580,10 +28814,10 @@ function TaxiData:Initialize()
 				[1024] = "42.18,90.39-1024:0:47.66,84.15",
 			},				
 			["1024:31"] = { --Stonedark Grotto
-				[1024] = "20.96,78.85-1024:0:47.36,84.56",
+				[1024] = "20.96,78.85-1024:0:42.52,25.5",
 			},	
 			[1080] ={ --Thunder Totem
-				[1024] = "58.86,14.81-1024:0:49.05,55.21|66.59,68.44-1024:0:50.14,63.75|33.69,77.56-1024:0:44.91,65.68|31.71,41.56-1024:0:44.10,59.38",
+				[1024] = "58.86,14.81-1024:0:49.05,55.21|66.59,68.44-1024:0:50.14,63.75|33.69,77.56-1024:0:44.91,65.68|31.71,41.56-1024:0:44.10,59.38|32.79,16.93-1024:0:45.02,56.07",
 				["1080:6"] = "49.17,45.95|45.95,59.09|27.77,79.22|36.4,45.53|42.73,35.61",
 			},
 			["1080:6"] = { --Thunder Totem lower floor
@@ -28686,8 +28920,42 @@ function TaxiData:Initialize()
 			},			
 		},-- [8]		
 		{
-		},-- [9]	
-		{			
+			["1135:1"] = {
+				["1135:2"] = "58.61,41.52-1135:2:59.18,45.96|42.03,52.75-1135:2:43.45,55.88",
+			}, 
+			["1135:2"] = {
+				["1135:1"] = "59.18,45.96-1135:1:58.61,41.52|43.45,55.88-1135:1:42.03,52.75",
+			}, 
+			[1135] = {
+				["1135:7"] = "50.32,17.33-1135:7:66.69,86.09",
+			}, 
+			["1135:7"] = {
+				[1135] = "66.69,86.09-1135:0:50.32,17.33",
+			}, 						
+			["1170:3"] = {
+				["1170:4"] = "60.48,43.40-1170:4:60.48,43.40|45.08,49.56-1170:4:47.02,53.56",
+			},
+			["1170:4"] = {
+				["1170:3"] = "60.48,43.40-1170:3:60.48,43.40|47.02,53.56-1170:3:45.08,49.56",
+			},
+			["1171:5"] = {
+				["1171:6"] = "46.08,38.63-1171:6:49.68,39.34|50.42,61.98-1171:6:53.67,58.07",
+			},	
+			["1171:6"] = {
+				["1171:5"] = "49.68,39.34-1171:5:46.08,38.63|53.67,58.07-1171:5:50.42,61.98",
+			},						
+		},-- [9]
+		{
+		},-- [10]
+		{
+		},-- [11]	
+		{		
+			["1173:1"] = {
+				["1173:2"] = "66.63,35.06-1173:2:89.47,46.94",
+			}, 
+			["1173:2"] = {
+				["1173:1"] = "89.47,46.94-1173:1:66.63,35.06",
+			},					
 			["1045:1"] = { --Vault of the Wardens
 				["1045:2"] = "24.37,18.20-1045:2:46.75,48.16",
 			},
@@ -28788,7 +29056,13 @@ function TaxiData:Initialize()
 			["1087:3"] ={
 				["1087:2"] = "54.76,53.74-1087:2:47.80,39.54",
 			},		
-		},-- [10]
+			["1174:1"] = {
+				["1174:2"] = "24.57,49.70-1174:2:42.15,71.73",
+			},
+			["1174:2"]  = {
+				["1174:1"] = "42.15,71.73-1174:1:24.57,49.70",
+			},				
+		},-- [12] 
 	}
 	
 	--[[
@@ -28800,8 +29074,10 @@ function TaxiData:Initialize()
 	[6]="Pandaria"
 	[7]="Draenor"
 	[8]="Broken Isles"
-	[9]= Reserve for next expansion continent
-	[10]= Instances for now
+	[9]= "Argus"
+	[10]= Reserve for next expansion continent
+	[11]= Reserve for next expansion continent	
+	[12]= Instances for now
 	]]
 	
 	TaxiData.UnboundTeleportData = 
@@ -28886,7 +29162,11 @@ function TaxiData:Initialize()
 			[50977] = "50977:1021:2:27.43,30.44:qid:39757", --Death Gate Death Knight Order Hall
 		}, --Broken Isle
 		{
-		}, --Reserve
+		}, -- Argus
+		{
+		}, -- Reserve
+		{
+		}, -- Reserve	
 		{
 			[193753] = "193753:1048:0:35.33,53.15", --Dreamwalk Emerald Dreamway			
 			[126892] = "126892:1044:0:51.46,48.65:qid:40236", --Zen Pilgrimage Legion
@@ -29006,7 +29286,12 @@ function TaxiData:Initialize()
 			--":1021:0:46.29,61.62:1080:0:39.22,45.71:qid:46286", --Broken Shore > Highmountain				
 		}, --Broken Isles
 		{
-		}, --Reserve
+			":1135:1:43.35,23.36:1135:0:62.59,81.79:1:Grand Artificer Romuul:qid:48440", --Speak to Grand Artificer Romuul > To Krookun
+		}, -- Argus
+		{
+		}, -- Reserve
+		{
+		}, -- Reserve	
 		{
 		}, --Instances
 	}
@@ -29089,8 +29374,8 @@ function TaxiData:Initialize()
 			":1048:0:50.27,65.20:26:0:62.48,23.50:cls:DRUID:qid:40645", --Emerald Dreamway > Hinterlands
 			":1048:0:39.81,68.92:34:0:46.59,37.06:cls:DRUID:qid:40645", --Emerald Dreamway > Duskwood	
 			
-			":1014:10:32.67,69.76:23:20:38.63,62.61:cls:PALADIN:fac:Alliance:qid:38576", --Dalaran Legion > Paladin Order Hall
-			":1014:10:61.92,13.49:23:20:39.42,61.46:cls:PALADIN:fac:Horde:qid:38576", --Dalaran Legion > Paladin Order Hall			
+			":1014:10:32.67,69.76:23:20:38.63,62.61:fac:Alliance:cls:PALADIN:qid:38576", --Dalaran Legion > Paladin Order Hall
+			":1014:10:61.92,13.49:23:20:39.42,61.46:fac:Horde:cls:PALADIN:qid:38576", --Dalaran Legion > Paladin Order Hall			
 			":32:21:38.82,64.2:301:0:49.59,86.53:fac:Alliance", --Dalaran Deadwind Pass > Stormwind
 			":301:0:80.25,34.83:32:21:72.60,46.05:qid:40718:fac:Alliance:nqid:44663",--Stormwind > Dalaran Legion
 			":321:2:36.32,71.14:32:21:72.60,46.05:qid:40718:fac:Horde:nqid:44184",--Orgrimmar Cleft of Shadow > Dalaran Legion				
@@ -29124,22 +29409,24 @@ function TaxiData:Initialize()
 			":301:0:3143512645:640:0:2092992794:qid:27203:fac:Alliance:passlvl:90", --Stormwind - Deepholm 
 			":321:1:2183552263:640:0:2172946312:qid:27203:fac:Horde:passlvl:90", -- Orgrimmar - Deepholm  
 		}, --Maelstrom
-		{
-			":321:1:2948491323:806:0:1224680418:lvl:85:qid:29690:fac:Horde:passlvl:90", -- Orgrimmar > Jade Forest (req level 85 and QID 29690)
-			":301:0:2952866787:806:0:1983502790:lvl:85:qid:31732:fac:Alliance:passlvl:90", -- Stormwind City > Jade Forest (req level 85 and QID 31732)
-			
+		{		
 			":1014:10:36.55,66.88:811:0:86.30,61.05:fac:Alliance",--Dalaran Legion > Vale of Eternal Blossoms
-			":1014:10:55.03,25.63:811:0:62.50,21.82:fac:Horde",--Dalaran Legion > Vale of Eternal Blossoms			
+			":1014:10:55.03,25.63:811:0:62.50,21.82:fac:Horde",--Dalaran Legion > Vale of Eternal Blossoms	
+			":321:1:2948491323:806:0:1224680418:lvl:85:qid:29690:fac:Horde:passlvl:90", -- Orgrimmar > Jade Forest (req level 85 and QID 29690)
+			":301:0:2952866787:806:0:1983502790:lvl:85:qid:31732:fac:Alliance:passlvl:90", -- Stormwind City > Jade Forest (req level 85 and QID 31732)					
 		},-- Pandaria
 		{
-			":321:1:47.65,72.19:1011:0:44.42,35.53:qid:34446:fac:Horde", --Orgrimmar > Warspear, Ashran			
-			":301:0:87.54,35.22:1009:0:31.71,52.48:qid:35884:fac:Alliance", --Stormwind > Stormshield, Ashran	
 			":19:0:54.94,53.88:1011:0:44.42,35.53:qid:34446:fac:Horde",--Blasted Lands Dark Portal > Warspear, Ashran	
 			":19:0:54.94,53.88:1009:0:31.71,52.48:qid:35884:fac:Alliance", --Blasted Lands Dark Portal > Stormshield, Ashran	
+			":321:1:47.65,72.19:1011:0:44.42,35.53:qid:34446:fac:Horde", --Orgrimmar > Warspear, Ashran			
+			":301:0:87.54,35.22:1009:0:31.71,52.48:qid:35884:fac:Alliance", --Stormwind > Stormshield, Ashran				
 		}, -- Draenor
 		{
-			":301:0:80.25,34.83:1014:10:60.92,44.73:qid:44663:fac:Alliance",--Stormwind > Dalaran Legion
-			":321:2:36.32,71.14:1014:10:60.92,44.73:qid:44184:fac:Horde",--Orgrimmar Cleft of Shadow > Dalaran Legion		
+			":1135:2:43.39,25.49:1014:10:60.92,44.73:qid:48440", -- The Vindicaar, Krokuun > Dalaran Legion
+			":1170:4:49.39,25.84:1014:10:60.92,44.73:qid:48081", -- The Vindicaar, Mac'Aree > Dalaran Legion
+			":1171:6:35.07,56.02:1014:10:60.92,44.73:qid:48199", -- The Vindicaar, Antoran Waste > Dalaran Legion				
+			":1172:1:49.78,8.80:1014:10:39.65,50.54", -- Whisper of Frightened World Scenario > Dalaran Legion
+						
 			":1044:0:52.40,57.17:1014:10:60.92,44.73:cls:MONK", --Monk Order Hall > Dalaran Legion
 			
 			":1068:1:57.31,90.12:1014:10:60.92,44.73:cls:MAGE", --Mage Order Hall > Dalaran Legion			
@@ -29148,12 +29435,20 @@ function TaxiData:Initialize()
 			":1068:1:66.84,46.01:1018:0:51.30,56.10:spell:223413:cls:MAGE", --Mage Order Hall > Val'shara (Teleporation Nexus)
 			":1068:1:67.09,41.96:1017:0:31.34,60.51:spell:223413:cls:MAGE", --Mage Order Hall > Stormheim (Teleporation Nexus)						
 			
-			":23:20:37.79,63.84:1014:10:33.20,68.89:cls:PALADIN:fac:Alliance:qid:38576", --Paladin Order Hall > Dalaran Legion
-			":23:20:37.79,63.84:1014:10:61.27,14.82:cls:PALADIN:fac:Horde:qid:38576", --Paladin Order Hall > Dalaran Legion
+			":23:20:37.79,63.84:1014:10:33.20,68.89:fac:Alliance:cls:PALADIN:qid:38576", --Paladin Order Hall > Dalaran Legion
+			":23:20:37.79,63.84:1014:10:61.27,14.82:fac:Horde:cls:PALADIN:qid:38576", --Paladin Order Hall > Dalaran Legion
 			":1048:0:45.52,23.93:1077:0:51.60,35.07:cls:DRUID:qid:40645", --Emerald Dreamway > Dreamgrove			
+
+			":301:0:80.25,34.83:1014:10:60.92,44.73:qid:44663:fac:Alliance",--Stormwind > Dalaran Legion
+			":321:2:36.32,71.14:1014:10:60.92,44.73:qid:44184:fac:Horde",--Orgrimmar Cleft of Shadow > Dalaran Legion					
 		}, -- Broken Isles
 		{
+			":1014:10:74.26,49.29:1135:1:61.15,81.37:qid:48440", --Dalaran Legion >  The Vindicaar, Krokuun 
+		}, -- Argus
+		{
 		}, -- Reserve
+		{
+		}, -- Reserve		
 		{
 			":606:0:59.07,26.10:1048:0:51.59,51.88:cls:DRUID:qid:40645", --Mount Hyjal > Emerald Dreamway 
 			":606:0:59.07,26.10:1048:0:51.59,51.88:cls:DRUID:qid:40645",--Mount Hyjal > Emerald Dreamway 
@@ -29163,6 +29458,7 @@ function TaxiData:Initialize()
 			":490:0:50.35,29.32:1048:0:32.40,29.53:cls:DRUID:qid:40645",--Grizzly Hills > Emerald Dreamway
 			":241:0:67.96,60.23:1048:0:26.31,77.76:cls:DRUID:qid:40645",--Moonglade > Emerald Dreamway
 			":13:0:51.31,10.68:1048:0:26.31,77.76:cls:DRUID:qid:40645",--Feralas > Emerald Dreamway
+			":493:0:88.43,53.00:1172:1:43.69,82.00", --Sholazar Basin > Whisper of Frightened World Scenario
 		}, -- Instances
 	}
 	
@@ -29197,7 +29493,9 @@ function TaxiData:Initialize()
 			"341:0:3281945379:301:0:2979483730:100:Tram:fac:Alliance", --Deeprun Tram
 			"301:0:2979483730:341:0:3281945379:100:Tram:fac:Alliance",
 			"161:17:55.01,28.08:161:18:47.49,37.22:54:Steward of Time:qid:10279", --Timeless Tunnel 
-		},{},
+		},
+		{
+		},
 		{
 			"301:0:760365605:486:0:2567090641:345:Boat:fac:Alliance", --Stormwind City - Borean Tundra 85s
 			"40:0:201690863:491:0:2637144144:632:Boat:fac:Alliance", --Stormwind City - Howling Fjord 201s
@@ -29209,14 +29507,26 @@ function TaxiData:Initialize()
 			"491:0:1009226723:488:0:2131282115:682:Boat", --Kamagua - Moa'ki Harbor - 186s
 			"486:0:3388442954:488:0:2059323792:601:Boat", -- Unu'pe - Moa'ki Harbor - 157s
 			"488:0:2059323792:486:0:3388442954:611:Boat", -- Moa'ki Harbor - Unu'pe - 167s
-		},{},{},
+		},
+		{
+		},
+		{
+		},
 		{
 			"945:0:60.02,47.43:945:0:55.59,27.17:29:B2 Personnel Relocator:qid:38599:fac:Horde", -- B-2 Personnel Relocator  - Vol'mar (Tanaan) > Throne of Kil'jaeden - 29s
 			"945:0:57.67,58.73:945:0:55.51,27.29:29:Gnomish Flying Machine:qid:38603:fac:Alliance", -- Gnomish Flying Machine  - Lion's Watch (Tanaan) > Throne of Kil'jaeden - 29s			
-		},
+		}, --Draenor
 		{
 			"1014:10:72.77,41.30:1072:0:36.64,27.83:11:Great Eagle:cls:HUNTER:qid:40959",--Great Eagle - Dalaran > Trueshot Lodge -6s Hunter only
-		},
+		}, --Broken Isle
+		{
+		}, --Argus
+		{
+		},	--Reserve
+		{
+		},	--Reserve
+		{
+		},	-- Instances
 	}
 	
 	--Debug ShowLocation:  player location=38:0:3259134883
@@ -29736,6 +30046,22 @@ function TaxiData:Initialize()
 			[-149302116] = 107457,
 			[1888714003] = 120272,
 		}, -- [8]        
+		{
+			[1894616831] = 124569,
+			[605248335] = 125410,
+			[1749060424] = 123260,
+			[298301919] = 123258,
+			[1890092347] = 123139,
+			[394508422] = 126951,
+			[376422864] = 125350,
+			[485473319] = 124313,
+			[593061708] = 125409,
+			[420917591] = 125461,
+			[607150432] = 125407,
+			[1847822921] = 118830,
+			[427734015] = 122509,
+			[624387198] = 125514,
+		}, -- [9]
 	},
 				["Alliance"] = {
 					{
@@ -30119,6 +30445,22 @@ function TaxiData:Initialize()
 			[-149302116] = 107457,
 			[1888714003] = 120272,
 		}, -- [8]        
+		{
+			[1894616831] = 124569,
+			[605248335] = 125410,
+			[1749060424] = 123260,
+			[298301919] = 123258,
+			[1890092347] = 123139,
+			[394508422] = 126951,
+			[376422864] = 125350,
+			[485473319] = 124313,
+			[593061708] = 125409,
+			[420917591] = 125461,
+			[607150432] = 125407,
+			[1847822921] = 118830,
+			[427734015] = 122509,
+			[624387198] = 125514,
+		}, -- [9]
 		}
 	}
 		end

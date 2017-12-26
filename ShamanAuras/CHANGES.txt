@@ -1,4 +1,659 @@
 ------------------------------------------------------------------------
+r134 | SweetsourDev | 2017-11-30 23:09:05 -0600 (Thu, 30 Nov 2017) | 5 lines
+Changed paths:
+   M /trunk/Core/functions.lua
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Frames/elemental.lua
+   A /trunk/Media/icons/elemental/lightning_rod.blp
+   M /trunk/Modules/config.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r68
+NEW: [Ele] A new aura for "Lightning Rod" has been added.
+
+FIX: [Ele] The timer bar for Primal Elementals should now continue to appear after their first usage.
+FIX: [UI] Enabling the addon on a different character should no longer reset all settings.
+------------------------------------------------------------------------
+r133 | SweetsourDev | 2017-09-01 15:37:24 -0500 (Fri, 01 Sep 2017) | 3 lines
+Changed paths:
+   M /trunk/Frames/bulletin.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/CallbackHandler-1.0
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/CallbackHandler-1.0/CallbackHandler-1.0.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/Changelog-LibSharedMedia-3.0-7.1.0.txt
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0/lib.xml
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0.toc
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/LibStub
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/LibStub/LibStub.lua
+   M /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/lib.xml
+   M /trunk/Libs/LibSharedMedia-3.0/lib.xml
+   M /trunk/Libs/load_libraries.xml
+   M /trunk/Modules/config.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r67
+FIX: [Ele] Fixed a random error while navigating the config panel.
+FIX: [UI] An error caused by a library - that prevented the addon from loading - has been fixed. (Thanks, Stryker!)
+------------------------------------------------------------------------
+r132 | SweetsourDev | 2017-09-01 11:57:30 -0500 (Fri, 01 Sep 2017) | 2 lines
+Changed paths:
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Libs/Ace3.toc
+   M /trunk/Libs/AceConfig-3.0/AceConfig-3.0.lua
+   M /trunk/Libs/AceConfig-3.0/AceConfigCmd-3.0/AceConfigCmd-3.0.lua
+   M /trunk/Libs/AceConfig-3.0/AceConfigDialog-3.0/AceConfigDialog-3.0.lua
+   M /trunk/Libs/AceConfig-3.0/AceConfigRegistry-3.0/AceConfigRegistry-3.0.lua
+   M /trunk/Libs/AceEvent-3.0/AceEvent-3.0.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIContainer-Frame.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIContainer-Window.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-Button.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-CheckBox.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-DropDown-Items.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-DropDown.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-EditBox.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-Slider.lua
+   M /trunk/Libs/CHANGES.txt
+   A /trunk/Libs/LibButtonGlow-1.0/CHANGES.txt
+   D /trunk/Libs/LibButtonGlow-1.0/Changelog-LibButtonGlow-1.0-1.2.5.txt
+   M /trunk/Libs/LibButtonGlow-1.0/LibButtonGlow-1.0.lua
+   M /trunk/Libs/LibButtonGlow-1.0/LibButtonGlow-1.0.toc
+   A /trunk/Libs/LibButtonGlow-1.0/LibStub
+   A /trunk/Libs/LibButtonGlow-1.0/LibStub/LibStub.lua
+   A /trunk/Libs/LibButtonGlow-1.0/LibStub/LibStub.toc
+   M /trunk/Libs/changelog.txt
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r66
+FIX: [UI] Updated all libraries; fixing an error with the config panel. (Thanks, Mad!)
+------------------------------------------------------------------------
+r131 | SweetsourDev | 2017-08-30 00:40:10 -0500 (Wed, 30 Aug 2017) | 7 lines
+Changed paths:
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Frames/elemental.lua
+   M /trunk/Frames/enhancement.lua
+   M /trunk/Frames/restoration.lua
+   M /trunk/Locales/enUS.lua
+   M /trunk/Modules/config.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r65
+NEW: [Ele/Res] Having Soul of the Farseer equipped should now display charges on respective auras. (Thanks, TheLaughingMan!)
+NEW: [Enhancement] Lava Lash's aura will now display stacks of Lashing Flames and glow at 99 stacks (configurable in options). (Thanks, Kirix!)
+NEW: [UI] Updated addon to 7.3
+
+FIX: [Enhancement] The cooldown timer for the Lightning Crash mini-aura should no longer appear (needs testing).
+FIX: [UI] An error preventing the usage of the configuration tabs should be fixed. (Thanks, Del!)
+------------------------------------------------------------------------
+r130 | SweetsourDev | 2017-08-20 14:44:31 -0500 (Sun, 20 Aug 2017) | 3 lines
+Changed paths:
+   M /trunk/Core/core.lua
+   M /trunk/Core/functions.lua
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Frames/elemental.lua
+   M /trunk/Frames/enhancement.lua
+   M /trunk/Modules/config.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r64
+FIX: [All] Disabling auras for specific specs should now remain disabled after reloading the UI. (Thanks, ernetlo!)
+FIX: [Enhancement] The mini-aura icon for Crash Lightning's 4-piece bonus should no longer display a text timer.(Thanks, xtremekhaos!)
+------------------------------------------------------------------------
+r129 | SweetsourDev | 2017-08-13 18:24:23 -0500 (Sun, 13 Aug 2017) | 8 lines
+Changed paths:
+   M /trunk/Core/functions.lua
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Frames/elemental.lua
+   M /trunk/Frames/enhancement.lua
+   M /trunk/Frames/init.lua
+   M /trunk/Locales/enUS.lua
+   M /trunk/Locales/koKR.lua
+   M /trunk/Locales/ruRU.lua
+   M /trunk/Modules/config.lua
+   M /trunk/Modules/cooldowns.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r63
+FIX: [All] Non-English WoW clients should no longer be experiencing a major bug caused by the cooldown module. (Thanks, AKFDI!)
+FIX: [Elemental] Flame Shock's timer should no longer appear when you don't have Flame Shock active and another Shaman's Flame Shock is on the target.
+FIX: [Enhancement] The T20 4-set bonus aura should be working correctly. (Thanks, Lifad!)
+FIX: [UI] A complete re-work of all global locale strings.
+		� Replaced many strings with built-in global strings for automatic translating.
+		� 150+ unused and redundant strings have been removed for easier translating.
+		� Many tooltip descriptions have been simplified or re-worded.
+------------------------------------------------------------------------
+r128 | SweetsourDev | 2017-08-09 13:41:00 -0500 (Wed, 09 Aug 2017) | 5 lines
+Changed paths:
+   M /trunk/Core/core.lua
+   M /trunk/Core/functions.lua
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Frames/elemental.lua
+   M /trunk/Frames/enhancement.lua
+   M /trunk/Frames/restoration.lua
+   M /trunk/Libs/load_libraries.xml
+   M /trunk/Locales/enUS.lua
+   M /trunk/Modules/config.lua
+   M /trunk/Modules/cooldowns.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r62
+NEW: [UI] Expanded the customization capabilities for cooldowns!
+
+FIX: [All] Applied fixes from r61 and r59-beta that somehow didn't end up in the actual releases; apologies!
+FIX: [UI] Corrected an issue that prevented the addon from loading (Thanks, wiwahib2012!)
+------------------------------------------------------------------------
+r127 | SweetsourDev | 2017-08-08 11:32:55 -0500 (Tue, 08 Aug 2017) | 4 lines
+Changed paths:
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Frames/enhancement.lua
+   M /trunk/Frames/restoration.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r61
+FIX: [All] Ascendance should no longer show an inactive cooldown when GCD is enabled.
+FIX: [All] Cooldowns that are reset after a boss fight should once again disappear.
+FIX: [Enh/Res] Certain auras' cooldown parameters weren't configured correctly and caused massive errors. This has been fixed. (Thanks, Felmara & Nusse!)
+------------------------------------------------------------------------
+r126 | SweetsourDev | 2017-08-07 14:11:33 -0500 (Mon, 07 Aug 2017) | 2 lines
+Changed paths:
+   M /trunk/Core/core.lua
+   M /trunk/Core/functions.lua
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Frames/elemental.lua
+   M /trunk/Frames/enhancement.lua
+   M /trunk/Frames/init.lua
+   M /trunk/Frames/restoration.lua
+   D /trunk/Locales/LocalizationCore - old.lua
+   M /trunk/Locales/deDE.lua
+   M /trunk/Locales/enUS.lua
+   M /trunk/Locales/esES.lua
+   M /trunk/Locales/esMX.lua
+   M /trunk/Locales/frFR.lua
+   M /trunk/Locales/itIT.lua
+   M /trunk/Locales/ptBR.lua
+   M /trunk/Locales/ruRU.lua
+   M /trunk/Locales/zhCN.lua
+   M /trunk/Locales/zhTW.lua
+   D /trunk/Media/Testing
+   D /trunk/Media/statusbar/Halves-old.tga
+   D /trunk/Media/statusbar/Halvess.tga
+   M /trunk/Modules/config.lua
+   M /trunk/Modules/cooldowns.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r60-beta
+FIX: [All] Minor bug fixes dealing with localization. (Thanks, Khisanth!)
+------------------------------------------------------------------------
+r125 | SweetsourDev | 2017-08-06 23:14:34 -0500 (Sun, 06 Aug 2017) | 4 lines
+Changed paths:
+   M /trunk/ShamanAuras.toc
+
+	r59-beta
+FIX: [All] Cooldown numbers showing for charge cooldowns should no longer appear.
+FIX: [Ele] Flame Shock's aura should no longer display a cooldown number that does not match the rest of the groups formatting.
+FIX: [Res] Flame Shock's aura should be displaying its cooldown and debuff timer correctly.
+------------------------------------------------------------------------
+r124 | SweetsourDev | 2017-08-06 23:11:43 -0500 (Sun, 06 Aug 2017) | 4 lines
+Changed paths:
+   M /trunk/Core/functions.lua
+   M /trunk/Frames/bulletin.lua
+   M /trunk/Frames/elemental.lua
+   M /trunk/Frames/restoration.lua
+   M /trunk/Modules/cooldowns.lua
+   M /trunk/changelog.txt
+   M /trunk/defaults.lua
+   M /trunk/init.lua
+
+	r59-beta
+FIX: [All] Cooldown numbers showing for charge cooldowns should no longer appear.
+FIX: [Ele] Flame Shock's aura should no longer display a cooldown number that does not match the rest of the groups formatting.
+FIX: [Res] Flame Shock's aura should be displaying its cooldown and debuff timer correctly.
+------------------------------------------------------------------------
+r123 | SweetsourDev | 2017-08-06 20:08:49 -0500 (Sun, 06 Aug 2017) | 5 lines
+Changed paths:
+   A /trunk/Core
+   A /trunk/Core/core.lua
+   A /trunk/Core/functions.lua
+   A /trunk/Core/load_core.xml
+   A /trunk/Frames
+   A /trunk/Frames/bulletin.lua
+   A /trunk/Frames/elemental.lua
+   A /trunk/Frames/enhancement.lua
+   A /trunk/Frames/init.lua
+   A /trunk/Frames/load_frames.xml
+   A /trunk/Frames/restoration.lua
+   D /trunk/Libs/Changelog-Ace3-Release-r1151.txt
+   A /trunk/Libs/load_libraries.xml
+   A /trunk/Locales/LocalizationCore - old.lua
+   D /trunk/Locales/LocalizationCore.lua
+   M /trunk/Locales/enUS.lua
+   A /trunk/Locales/load_locales.xml
+   A /trunk/Media/statusbar/Halves-old.tga
+   A /trunk/Modules
+   A /trunk/Modules/config.lua
+   A /trunk/Modules/cooldowns.lua
+   A /trunk/Modules/load_modules.xml
+   D /trunk/SA_Bulletin.lua
+   D /trunk/SA_Config.lua
+   D /trunk/SA_Core.lua
+   D /trunk/SA_Frames_Elemental.lua
+   D /trunk/SA_Frames_Enhancement.lua
+   D /trunk/SA_Frames_Restoration.lua
+   D /trunk/SA_Functions.lua
+   D /trunk/SA_Init.lua
+   D /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+   A /trunk/defaults.lua
+   D /trunk/embeds.xml
+   A /trunk/init.lua
+
+	r58-beta
+NEW: [All] Customizable cooldowns are now available!
+NEW: [All] Added functionality to prevent Blizzard's default cooldown numbers from appearing; eliminating dual cooldown number overlapping.
+NEW: [UI] More code clean-up.
+NEW: [UI] Fully restructured addon file directory.
+------------------------------------------------------------------------
+r122 | SweetsourDev | 2017-08-01 21:46:24 -0500 (Tue, 01 Aug 2017) | 2 lines
+Changed paths:
+   M /trunk/SA_Bulletin.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+
+	r57-beta
+[FIX] The vertical buff timer bars should now remain in their new location when moved after reloading your UI. (Thanks, Aingel!)
+------------------------------------------------------------------------
+r121 | SweetsourDev | 2017-07-30 19:06:48 -0500 (Sun, 30 Jul 2017) | 4 lines
+Changed paths:
+   D /trunk/Media/fonts/noto_sans
+   D /trunk/Media/fonts/wen_quan_yi_zen_hei
+   M /trunk/Media/sharedmedia.lua
+   M /trunk/SA_Bulletin.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+		r56-beta
+NEW: [All] Auras should no longer appear if it's not available due to player level.
+
+FIX: [Enhancement] The auras for the 2 and 4-set bonuses from T20 should be working correctly. (Special Thanks to Sky for helping with testing!)
+------------------------------------------------------------------------
+r120 | SweetsourDev | 2017-07-28 22:52:39 -0500 (Fri, 28 Jul 2017) | 6 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   M /trunk/SA_Bulletin.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/SA_Init.lua
+   M /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r55-beta
+NEW: [Enhancement] A new vertical timer bar has been added to track the Tier 20 2-set bonus: Lightning Crash. (Special Thanks to Sky for helping with testing!)
+NEW: [Enhancement] A "mini aura" has been attached the Crash Lightning aura to track the T20 4-set bonus: Crashing Lightning. (Special Thanks to Sky for helping with testing!)
+
+FIX: [Enhancement] Doom Winds's texture should now disappear when the buff isn't active. (Thanks, Sky!)
+FIX: [Restoration] The charges text for Lava Burst should disappear when you unlearn Echo of the Elements. (Thanks, Ives!)
+------------------------------------------------------------------------
+r119 | SweetsourDev | 2017-07-27 19:02:24 -0500 (Thu, 27 Jul 2017) | 4 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   M /trunk/Locales/koKR.lua
+   M /trunk/Locales/ruRU.lua
+   A /trunk/Media/fonts/noto_sans
+   A /trunk/Media/fonts/noto_sans/NotoSansCJKtc-Bold.otf
+   A /trunk/Media/fonts/noto_sans/NotoSansCJKtc-Light.otf
+   A /trunk/Media/fonts/noto_sans/NotoSansCJKtc-Regular.otf
+   M /trunk/Media/sharedmedia.lua
+   M /trunk/SA_Bulletin.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r54-beta
+FIX: [UI] Fixes more issues caused by fonts not compatible with non-English langes. (Thanks, AKFDI!)
+FIX: [UI] An issue preventing all progress bars from being modified when playing WoW in a non-English language has been fixed.
+FIX: [UI] Added more asian-compatible fonts.
+------------------------------------------------------------------------
+r118 | SweetsourDev | 2017-07-26 16:08:26 -0500 (Wed, 26 Jul 2017) | 7 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   A /trunk/Media/fonts/deja_vu
+   A /trunk/Media/fonts/deja_vu/DejaVuLGCSans.ttf
+   A /trunk/Media/fonts/deja_vu/DejaVuLGCSerif.ttf
+   A /trunk/Media/fonts/deja_vu/LICENSE
+   A /trunk/Media/fonts/gentium_plus
+   A /trunk/Media/fonts/gentium_plus/GentiumPlus-R.ttf
+   A /trunk/Media/fonts/gentium_plus/OFL.txt
+   A /trunk/Media/fonts/liberation
+   A /trunk/Media/fonts/liberation/LICENSE
+   A /trunk/Media/fonts/liberation/LiberationSans-Regular.ttf
+   A /trunk/Media/fonts/liberation/LiberationSerif-Regular.ttf
+   A /trunk/Media/fonts/wen_quan_yi_zen_hei
+   A /trunk/Media/fonts/wen_quan_yi_zen_hei/COPYING
+   A /trunk/Media/fonts/wen_quan_yi_zen_hei/README
+   A /trunk/Media/fonts/wen_quan_yi_zen_hei/wqy-zenhei.ttf
+   M /trunk/Media/sharedmedia.lua
+   M /trunk/SA_Bulletin.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r53-beta
+NEW: [UI] Added the ability to disable Blizzard's default casting bar.	
+	
+FIX: [Elemental] The timer bars for the elementals has been re-coded to work better and correctly.
+FIX: [Resto] Corrected incorrect spell names for the Buff Duration Timers display options.
+FIX: [UI] Fixed an issue caused by fonts not being compatible with certain non-English languages. (Thanks, baga & BurningBear!)
+FIX: [UI] The ability to toggle the vertical timer bars should once again be working. (Thanks, Yakuzai!)
+------------------------------------------------------------------------
+r117 | SweetsourDev | 2017-07-25 19:24:19 -0500 (Tue, 25 Jul 2017) | 6 lines
+Changed paths:
+   M /trunk/Libs/Ace3.toc
+   M /trunk/Libs/AceAddon-3.0/AceAddon-3.0.xml
+   M /trunk/Libs/AceConfig-3.0/AceConfig-3.0.xml
+   M /trunk/Libs/AceConfig-3.0/AceConfigCmd-3.0/AceConfigCmd-3.0.xml
+   M /trunk/Libs/AceConfig-3.0/AceConfigDialog-3.0/AceConfigDialog-3.0.xml
+   M /trunk/Libs/AceConfig-3.0/AceConfigRegistry-3.0/AceConfigRegistry-3.0.xml
+   M /trunk/Libs/AceConsole-3.0/AceConsole-3.0.xml
+   M /trunk/Libs/AceDB-3.0/AceDB-3.0.xml
+   M /trunk/Libs/AceEvent-3.0/AceEvent-3.0.xml
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIContainer-Frame.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIContainer-ScrollFrame.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIContainer-TreeGroup.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIContainer-Window.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-ColorPicker.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-DropDown-Items.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-InteractiveLabel.lua
+   M /trunk/Libs/AceGUI-3.0/widgets/AceGUIWidget-Label.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets/BackgroundWidget.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets/BorderWidget.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets/FontWidget.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets/SoundWidget.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets/StatusbarWidget.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets/prototypes.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets/widget.xml
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/AceGUI-3.0-SharedMediaWidgets.toc
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Changelog-AceGUI-3.0-SharedMediaWidgets-r57-release.txt
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/AceGUI-3.0.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/AceGUI-3.0.xml
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-BlizOptionsGroup.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-DropDownGroup.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-Frame.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-InlineGroup.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-ScrollFrame.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-SimpleGroup.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-TreeGroup.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIContainer-Window.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-Button.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-CheckBox.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-ColorPicker.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-DropDown-Items.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-DropDown.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-EditBox.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-Heading.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-Icon.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-InteractiveLabel.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-Keybinding.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-Label.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-MultiLineEditBox.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/AceGUI-3.0/widgets/AceGUIWidget-Slider.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/CallbackHandler-1.0
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/CallbackHandler-1.0/CallbackHandler-1.0.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/CallbackHandler-1.0/CallbackHandler-1.0.xml
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibSharedMedia-3.0/lib.xml
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibStub
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibStub/LibStub.lua
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/Libs/LibStub/LibStub.toc
+   A /trunk/Libs/AceGUI-3.0-SharedMediaWidgets/widget.xml
+   M /trunk/Libs/AceHook-3.0/AceHook-3.0.xml
+   M /trunk/Libs/AceLocale-3.0/AceLocale-3.0.xml
+   M /trunk/Libs/AceTimer-3.0/AceTimer-3.0.xml
+   A /trunk/Libs/CHANGES.txt
+   M /trunk/Libs/CallbackHandler-1.0/CallbackHandler-1.0.xml
+   A /trunk/Libs/LibSharedMedia-3.0
+   A /trunk/Libs/LibSharedMedia-3.0/CallbackHandler-1.0
+   A /trunk/Libs/LibSharedMedia-3.0/CallbackHandler-1.0/CallbackHandler-1.0.lua
+   A /trunk/Libs/LibSharedMedia-3.0/Changelog-LibSharedMedia-3.0-7.1.0.txt
+   A /trunk/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0
+   A /trunk/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0/lib.xml
+   A /trunk/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0.lua
+   A /trunk/Libs/LibSharedMedia-3.0/LibSharedMedia-3.0.toc
+   A /trunk/Libs/LibSharedMedia-3.0/LibStub
+   A /trunk/Libs/LibSharedMedia-3.0/LibStub/LibStub.lua
+   A /trunk/Libs/LibSharedMedia-3.0/lib.xml
+   M /trunk/Libs/changelog.txt
+   M /trunk/Locales/enUS.lua
+   A /trunk/Media/fonts/Accidental_Presidency.ttf
+   A /trunk/Media/fonts/Action_Man.ttf
+   A /trunk/Media/fonts/Adventure.ttf
+   A /trunk/Media/fonts/Arial.ttf
+   A /trunk/Media/fonts/Avqest.ttf
+   A /trunk/Media/fonts/DieDieDie.ttf
+   A /trunk/Media/fonts/Expressway.ttf
+   A /trunk/Media/fonts/FiraMono-Medium.ttf
+   A /trunk/Media/fonts/Homespun.ttf
+   A /trunk/Media/fonts/VeraSe.ttf
+   M /trunk/Media/sharedmedia.lua
+   A /trunk/Media/statusbar/Aluminium.tga
+   A /trunk/Media/statusbar/Armory.tga
+   A /trunk/Media/statusbar/BantoBar.tga
+   A /trunk/Media/statusbar/Flat.tga
+   A /trunk/Media/statusbar/Frost.tga
+   A /trunk/Media/statusbar/Glaze2.tga
+   A /trunk/Media/statusbar/Gloss.tga
+   A /trunk/Media/statusbar/Graphite.tga
+   A /trunk/Media/statusbar/Grid.tga
+   A /trunk/Media/statusbar/Healbot.tga
+   A /trunk/Media/statusbar/LiteStep.tga
+   A /trunk/Media/statusbar/Minimalist.tga
+   A /trunk/Media/statusbar/Otravi.tga
+   A /trunk/Media/statusbar/Outline.tga
+   A /trunk/Media/statusbar/Perl.tga
+   A /trunk/Media/statusbar/Rocks.tga
+   A /trunk/Media/statusbar/Round.tga
+   A /trunk/Media/statusbar/Runes.tga
+   A /trunk/Media/statusbar/Smooth.tga
+   A /trunk/Media/statusbar/Xeon.tga
+   M /trunk/SA_Bulletin.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r52-beta
+NEW: [All] All progress bars are shown as full when modifying them, but added the ability to modify the bar's background with a toggle; reducing the bar's value to reveal the background texture. (Thanks, Jay040792!)
+NEW: [Ele/Res] When modifying the Icefury and Earthen Shield progress bars, the Timer bar can be toggled on or off.
+NEW: [UI] Added many new fonts and statusbar textures. Many more can be attained by downloading the "SharedMedia" addon. (Thanks, Jay040792!)
+
+FIX: Some Lib files were missing with the update. They have been included in this update, fixing several bugs.
+------------------------------------------------------------------------
+r116 | SweetsourDev | 2017-07-24 22:47:32 -0500 (Mon, 24 Jul 2017) | 18 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   A /trunk/Media/load_media.xml
+   A /trunk/Media/sharedmedia.lua
+   M /trunk/Media/statusbar/Halves.tga
+   A /trunk/SA_Bulletin.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/SA_Functions.lua
+   A /trunk/SA_defaults.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r51-beta
+
+NEW: [Elemental] Stormkeeper's aura now glows and shows remaining charges as well as buff duration timer. (Thanks, eric1375!)
+NEW: [Ele/Enh] The Maelstrom Bar's width limit has been increased to 500 (was 300) and height limit to 100 (was 50). (Thanks, Jay040792!)
+NEW: [UI] A cast bar and channel bar are now available. (Thanks, Jay040792!)
+NEW: [Restoration] A glow effect has been added to Riptide for the T20 2-piece bonus.
+NEW: [Restoration] A glow effect has been added to Healing Rain for the T20 4-piece bonus.
+NEW: [UI] Now supports SharedMedia
+NEW: [UI] All "primary" progress bars can now be heavily modified.
+	
+FIX: [UI] Major code clean up to yield better performance and reduced memory usage.
+FIX: [All] Wind Shear's Glow animation should no longer appear when targetting a friendly target that's casting an interruptible ability.
+FIX: [All] Added "Wind Rush Totem" to display configuration list for Minor Auras.
+FIX: [Elemental] The Maelstrom Trigger threshold slider will now update to 125 when you have obtained the "Swelling Maelstrom" artifact trait. (Thanks, Morrd!)
+FIX: [Enhancement] Moved the "Doom Winds" aura to the artifact aura group to fix overlapping auras in the bottom aura row.
+FIX: [Restoration] Spirit Link's aura should once again show its cooldown. (Thanks, Guvna!)
+FIX: [Restoration] Earthen Shield Totem's progress bar should be more accurate.
+FIX: [Restoration] Tidal Waves Bar should now correctly appear when targetting a friendly target and with OoC Display set to "On Heal Only"
+------------------------------------------------------------------------
+r115 | SweetsourDev | 2017-06-17 11:50:45 -0500 (Sat, 17 Jun 2017) | 3 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   M /trunk/SA_Config.lua
+   M /trunk/SA_Core.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Functions.lua
+   M /trunk/SA_Init.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r50-beta
+FIX: [Enhancement] Boulderfist's aura has been replaced with a Rockbiter aura. (Thanks, Netharion & Hooper005!)
+FIX: [Enhancement] Rockbiter's glow alert time range has been adjusted to 2 - 6 seconds (from 5 - 10 seconds; when Landslide is active).
+------------------------------------------------------------------------
+r114 | SweetsourDev | 2017-06-10 12:09:04 -0500 (Sat, 10 Jun 2017) | 1 line
+Changed paths:
+   D /trunk/Desktop.ini
+   D /trunk/README.txt
+   D /trunk/conf
+   D /trunk/db
+   D /trunk/format
+   D /trunk/hooks
+   D /trunk/locks
+   D /trunk/svn.ico
+
+
+------------------------------------------------------------------------
+r113 | SweetsourDev | 2017-06-10 12:04:35 -0500 (Sat, 10 Jun 2017) | 4 lines
+Changed paths:
+   A /trunk/Media/icons/elemental/earth_elemental.png
+   A /trunk/Media/icons/shared/concordance_legionfall.png
+   M /trunk/SA_Frames_Elemental.lua
+   M /trunk/SA_Frames_Enhancement.lua
+   M /trunk/SA_Frames_Restoration.lua
+   M /trunk/ShamanAuras.toc
+   M /trunk/changelog.txt
+
+	r49-beta
+
+FIX: [Enh/Res] Fixed an issue that would cause certain buff duration timers from behaving incorrectly (Thanks, Netharion!).
+FIX: [Elemental] Fixed a random bug (Thanks, xaroc_!).
+------------------------------------------------------------------------
+r112 | SweetsourDev | 2017-06-10 11:26:16 -0500 (Sat, 10 Jun 2017) | 1 line
+Changed paths:
+   A /trunk/Desktop.ini
+   A /trunk/README.txt
+   A /trunk/conf
+   A /trunk/conf/authz
+   A /trunk/conf/hooks-env.tmpl
+   A /trunk/conf/passwd
+   A /trunk/conf/svnserve.conf
+   A /trunk/db
+   A /trunk/db/current
+   A /trunk/db/format
+   A /trunk/db/fs-type
+   A /trunk/db/fsfs.conf
+   A /trunk/db/min-unpacked-rev
+   A /trunk/db/rep-cache.db
+   A /trunk/db/rep-cache.db-journal
+   A /trunk/db/revprops
+   A /trunk/db/revprops/0
+   A /trunk/db/revprops/0/0
+   A /trunk/db/revprops/0/1
+   A /trunk/db/revs
+   A /trunk/db/revs/0
+   A /trunk/db/revs/0/0
+   A /trunk/db/revs/0/1
+   A /trunk/db/transactions
+   A /trunk/db/txn-current
+   A /trunk/db/txn-current-lock
+   A /trunk/db/txn-protorevs
+   A /trunk/db/uuid
+   A /trunk/db/write-lock
+   A /trunk/format
+   A /trunk/hooks
+   A /trunk/hooks/post-commit.tmpl
+   A /trunk/hooks/post-lock.tmpl
+   A /trunk/hooks/post-revprop-change.tmpl
+   A /trunk/hooks/post-unlock.tmpl
+   A /trunk/hooks/pre-commit.tmpl
+   A /trunk/hooks/pre-lock.tmpl
+   A /trunk/hooks/pre-revprop-change.tmpl
+   A /trunk/hooks/pre-unlock.tmpl
+   A /trunk/hooks/start-commit.tmpl
+   A /trunk/locks
+   A /trunk/locks/db-logs.lock
+   A /trunk/locks/db.lock
+   A /trunk/svn.ico
+
+
+------------------------------------------------------------------------
 r111 | SweetsourDev | 2017-05-22 00:47:22 -0500 (Mon, 22 May 2017) | 6 lines
 Changed paths:
    M /trunk/Locales/enUS.lua

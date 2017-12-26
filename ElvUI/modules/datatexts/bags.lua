@@ -18,12 +18,11 @@ local lastPanel
 
 local function OnEvent(self)
 	lastPanel = self
-	local free, total,used = 0, 0, 0
+	local free, total = 0, 0
 	for i = 0, NUM_BAG_SLOTS do
 		free, total = free + GetContainerNumFreeSlots(i), total + GetContainerNumSlots(i)
 	end
-	used = total - free
-	self.text:SetFormattedText(displayString, L["Bags"]..': ', used, total)
+	self.text:SetFormattedText(displayString, L["Bags"]..': ', total - free, total)
 end
 
 local function OnClick()
@@ -54,14 +53,4 @@ local function ValueColorUpdate(hex)
 end
 E['valueColorUpdateFuncs'][ValueColorUpdate] = true
 
---[[
-	DT:RegisterDatatext(name, events, eventFunc, updateFunc, clickFunc, onEnterFunc)
-
-	name - name of the datatext (required)
-	events - must be a table with string values of event names to register
-	eventFunc - function that gets fired when an event gets triggered
-	updateFunc - onUpdate script target function
-	click - function to fire when clicking the datatext
-	onEnterFunc - function to fire OnEnter
-]]
-DT:RegisterDatatext('Bags', {"PLAYER_ENTERING_WORLD", "BAG_UPDATE"}, OnEvent, nil, OnClick, OnEnter)
+DT:RegisterDatatext('Bags', {"PLAYER_ENTERING_WORLD", "BAG_UPDATE"}, OnEvent, nil, OnClick, OnEnter, nil, L["Bags"])

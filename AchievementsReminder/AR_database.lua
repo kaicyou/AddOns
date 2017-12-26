@@ -403,7 +403,7 @@ ralltrack ={
 {0,0,0,0,0},--"Trial of Valor"
 {0,0,0,0,0,0}, --"Return to Karazhan"
 {0,0,0,0,0}, --"Cathedral of Eternal Night"
-{1,0,1,1,0,0,0,0,1,0,0,0,0}, --"Tomb of Sargeras"
+{0,0,1,1,0,0,0,0,1,0,0,0,0}, --"Tomb of Sargeras"
 }--1 если трекерится
 
 

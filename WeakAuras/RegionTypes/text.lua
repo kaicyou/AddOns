@@ -14,7 +14,10 @@ local default = {
   font = "Friz Quadrata TT",
   fontSize = 12,
   frameStrata = 1,
-  customTextUpdate = "update"
+  customTextUpdate = "update",
+  automaticWidth = "Auto",
+  fixedWidth = 200,
+  wordWrap = "WordWrap"
 };
 
 local properties = {
@@ -33,22 +36,32 @@ local properties = {
   }
 }
 
+WeakAuras.regionPrototype.AddProperties(properties);
+
+local function GetProperties(data)
+  return properties;
+end
+
 local function create(parent)
   local region = CreateFrame("FRAME", nil, parent);
   region:SetMovable(true);
 
   local text = region:CreateFontString(nil, "OVERLAY");
   region.text = text;
+  text:SetWordWrap(true);
   text:SetNonSpaceWrap(true);
 
   region.values = {};
   region.duration = 0;
   region.expirationTime = math.huge;
 
+  WeakAuras.regionPrototype.create(region);
+
   return region;
 end
 
 local function modify(parent, region, data)
+  WeakAuras.regionPrototype.modify(parent, region, data);
   local text = region.text;
 
   region.useAuto = WeakAuras.CanHaveAuto(data);
@@ -61,7 +74,7 @@ local function modify(parent, region, data)
     text:SetFont("Fonts\\FRIZQT__.TTF", data.fontSize, data.outline);
   end
   if text:GetFont() then
-    text:SetText(data.displayText);
+    WeakAuras.regionPrototype.SetTextOnText(text, data.displayText);
   end
   text.displayText = data.displayText;
   text:SetJustifyH(data.justify);
@@ -79,35 +92,63 @@ local function modify(parent, region, data)
   text:ClearAllPoints();
   text:SetPoint(data.justify, region, data.justify);
 
-  region:ClearAllPoints();
-  WeakAuras.AnchorFrame(data, region, parent);
+  local SetText;
 
-  local function SetText(textStr)
-    if(textStr ~= text.displayText) then
+  if (data.automaticWidth == "Fixed") then
+    if (data.wordWrap == "WordWrap") then
+      text:SetWordWrap(true);
+      text:SetNonSpaceWrap(true);
+    else
+      text:SetWordWrap(false);
+      text:SetNonSpaceWrap(false);
+    end
+
+    text:SetWidth(data.fixedWidth);
+    region:SetWidth(data.fixedWidth);
+    SetText = function(textStr)
       if text:GetFont() then
         text:SetText(textStr);
       end
-    end
-    if(#textStr ~= #text.displayText) then
-      data.width = text:GetWidth();
-      data.height = text:GetHeight();
-      region:SetWidth(data.width);
-      region:SetHeight(data.height);
-      if(data.parent and WeakAuras.regions[data.parent].region.ControlChildren) then
-        WeakAuras.regions[data.parent].region:ControlChildren();
-      else
-        region:ClearAllPoints();
-        WeakAuras.AnchorFrame(data, region, parent);
+
+      local height = text:GetHeight();
+
+      if(data.height ~= height) then
+        data.height = text:GetHeight();
+        region:SetHeight(data.height);
+        if(data.parent and WeakAuras.regions[data.parent].region.ControlChildren) then
+          WeakAuras.regions[data.parent].region:ControlChildren();
+        end
       end
     end
-    text.displayText = textStr;
+  else
+    text:SetWidth(0);
+    text:SetWordWrap(true);
+    text:SetNonSpaceWrap(true);
+    SetText = function(textStr)
+      if(textStr ~= text.displayText) then
+        if text:GetFont() then
+          WeakAuras.regionPrototype.SetTextOnText(text, textStr);
+        end
+      end
+      local width = text:GetWidth();
+      local height = text:GetHeight();
+      if(width ~= data.width or height ~= data.height ) then
+        data.width = width;
+        data.height = height;
+        region:SetWidth(data.width);
+        region:SetHeight(data.height);
+        if(data.parent and WeakAuras.regions[data.parent].region.ControlChildren) then
+          WeakAuras.regions[data.parent].region:ControlChildren();
+        end
+      end
+    end
   end
 
   local UpdateText;
   if (data.displayText:find('%%')) then
     UpdateText = function()
       local textStr = data.displayText;
-      textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
+      textStr = WeakAuras.ReplacePlaceHolders(textStr, region);
       if (textStr == nil or textStr == "") then
         textStr = " ";
       end
@@ -150,7 +191,21 @@ local function modify(parent, region, data)
     region.color_g = g;
     region.color_b = b;
     region.color_a = a;
-    text:SetTextColor(r, g, b, a);
+    if (r or g or b) then
+      a = a or 1;
+    end
+    text:SetTextColor(region.color_anim_r or r, region.color_anim_g or g, region.color_anim_b or b, region.color_anim_a or a);
+  end
+
+  function region:ColorAnim(r, g, b, a)
+    region.color_anim_r = r;
+    region.color_anim_g = g;
+    region.color_anim_b = b;
+    region.color_anim_a = a;
+    if (r or g or b) then
+      a = a or 1;
+    end
+    text:SetTextColor(r or region.color_r, g or region.color_g, b or region.color_b, a or region.color_a);
   end
 
   function region:GetColor()
@@ -197,7 +252,9 @@ local function modify(parent, region, data)
   function region:SetTextHeight(size)
     local fontPath = SharedMedia:Fetch("font", data.font);
     region.text:SetFont(fontPath, size, data.outline);
+    region.text:SetWidth(0);
     region.text:SetTextHeight(size)
+    region.text:SetWidth(region.text:GetWidth() + 1);
   end
 
   function region:SetName(name)
@@ -211,11 +268,12 @@ local function modify(parent, region, data)
   end
 end
 
-WeakAuras.RegisterRegionType("text", create, modify, default, properties);
+WeakAuras.RegisterRegionType("text", create, modify, default, GetProperties);
 
 -- Fallback region type
 
 local function fallbackmodify(parent, region, data)
+  WeakAuras.regionPrototype.modify(parent, region, data);
   local text = region.text;
 
   text:SetFont("Fonts\\FRIZQT__.TTF", data.fontSize, data.outline and "OUTLINE" or nil);
@@ -228,9 +286,6 @@ local function fallbackmodify(parent, region, data)
 
   region:SetWidth(text:GetWidth());
   region:SetHeight(text:GetHeight());
-
-  region:ClearAllPoints();
-  WeakAuras.AnchorFrame(data, region, parent);
 end
 
 WeakAuras.RegisterRegionType("fallback", create, fallbackmodify, default);

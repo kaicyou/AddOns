@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1825, "DBM-Party-Legion", 11, 860)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 15607 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 16801 $"):sub(12, -3))
 mod:SetCreatureID(113971)
 mod:SetEncounterID(1954)
 mod:SetZone()
@@ -18,8 +18,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 227817",
 	"SPELL_AURA_REMOVED 227817",
 	"SPELL_INTERRUPT",
-	"RAID_BOSS_WHISPER",
-	"CHAT_MSG_ADDON"
+	"RAID_BOSS_WHISPER"
 )
 
 --Fix timers for repent and abilites after repent
@@ -45,7 +44,7 @@ local voiceHolyShock				= mod:NewVoice(227800, "HasInterrupt")--kickcast
 local voiceHolyWrath				= mod:NewVoice(227823, "HasInterrupt")--kickcast
 
 mod:AddRangeFrameOption(8, 227809)--TODO, keep looking for a VALID 6 yard item/spell
-mod:AddBoolOption("HealthFrame", true)
+mod:AddInfoFrameOption(227817, true)
 
 function mod:OnCombatStart(delay)
 	timerSacredGroundCD:Start(10.9)
@@ -59,6 +58,9 @@ end
 function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
+	end
+	if self.Options.InfoFrame then
+		DBM.InfoFrame:Hide()
 	end
 end
 
@@ -82,18 +84,23 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 227817 and DBM.BossHealth:IsShown() then
-		self:ShowShieldHealthBar(args.destGUID, args.spellName, 4680000)
+	if spellId == 227817 then
+		if self.Options.InfoFrame then
+			DBM.InfoFrame:SetHeader(args.spellName)
+			DBM.InfoFrame:Show(2, "enemyabsorb", nil, 4680000)
+		end
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 227817 then
-		self:RemoveShieldHealthBar(args.destGUID)
 		if UnitCastingInfo("boss1") then
 			specWarnHolyWrath:Show(L.name)
 			voiceHolyWrath:Play("kickcast")
+		end
+		if self.Options.InfoFrame then
+			DBM.InfoFrame:Hide()
 		end
 	end
 end
@@ -112,9 +119,7 @@ function mod:RAID_BOSS_WHISPER(msg)
 	end
 end
 
---per usual, use transcriptor message to get messages from both bigwigs and DBM, all without adding comms to this mod at all
-function mod:CHAT_MSG_ADDON(prefix, msg, channel, targetName)
-	if prefix ~= "Transcriptor" then return end
+function mod:OnTranscriptorSync(msg, targetName)
 	if msg:find("spell:227789") then
 		targetName = Ambiguate(targetName, "none")
 		if self:AntiSpam(5, targetName) then--Antispam sync by target name, since this doesn't use dbms built in onsync handler.

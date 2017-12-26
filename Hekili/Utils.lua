@@ -54,8 +54,27 @@ ns.titleCase = function( s )
 end
 
 
+local replacements = {
+    ['_'] = " ",
+    aoe = "AOE",
+    rjw = "RJW",
+    chix = "ChiX",
+    st = "ST",
+    cd = "CD",
+    cds = "CDs"
+}
+
 ns.titlefy = function( s )
-    return s:gsub( "_", " " ):gsub( "[Aa]oe", "AOE" ):gsub( "[Rr]jw", "RJW" ):gsub( "[Cc]hix", "ChiX" ):gsub( "(%W?)[Ss]t(%W?)", "%1ST%2" ):gsub( "[Cc]d", "CD" )
+    for k, v in pairs( replacements ) do
+        s = s:gsub( '%f[%w]' .. k .. '%f[%W]', v ):gsub( "_", " " )
+    end
+
+    return s
+end
+
+
+ns.fsub = function( s, pattern, repl )
+    return s:gsub( "%f[%w]" .. k .. "%f[%W]", repl )
 end
 
 
@@ -64,17 +83,19 @@ ns.escapeMagic = function( s )
 end
 
 
+local tblUnpack = {}
+
 ns.multiUnpack = function( ... )
 
-    local merge = {}
+    table.wipe( tblUnpack )
 
     for i = 1, select( '#', ... ) do
         for _, value in ipairs( select( i, ... ) ) do
-            merge[ #merge + 1 ] = value
+            tblUnpack[ #tblUnpack + 1 ] = value
         end
     end
 
-    return unpack( merge )
+    return unpack( tblUnpack )
 
 end
 
@@ -182,7 +203,7 @@ function ns.safeMax( ... )
 
     for i = 1, select( "#", ... ) do
         local val = select( i, ... )
-        if val then result = ( not result or val > result ) and val or result end
+        if val and type(val) == 'number' then result = ( not result or val > result ) and val or result end
     end
 
     return result or 0

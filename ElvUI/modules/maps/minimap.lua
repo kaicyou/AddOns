@@ -22,9 +22,9 @@ local GuildInstanceDifficulty = GuildInstanceDifficulty
 local InCombatLockdown = InCombatLockdown
 local IsAddOnLoaded = IsAddOnLoaded
 local IsShiftKeyDown = IsShiftKeyDown
-local Lib_ToggleDropDownMenu = Lib_ToggleDropDownMenu
-local Lib_UIDropDownMenu_AddButton = Lib_UIDropDownMenu_AddButton
-local Lib_UIDropDownMenu_CreateInfo = Lib_UIDropDownMenu_CreateInfo
+local L_ToggleDropDownMenu = L_ToggleDropDownMenu
+local L_UIDropDownMenu_AddButton = L_UIDropDownMenu_AddButton
+local L_UIDropDownMenu_CreateInfo = L_UIDropDownMenu_CreateInfo
 local MainMenuMicroButton_SetNormal = MainMenuMicroButton_SetNormal
 local MiniMapTrackingDropDownButton_IsActive = MiniMapTrackingDropDownButton_IsActive
 local MiniMapTrackingDropDown_IsNoTrackingActive = MiniMapTrackingDropDown_IsNoTrackingActive
@@ -57,25 +57,25 @@ local TOWNSFOLK_TRACKING_TEXT = TOWNSFOLK_TRACKING_TEXT
 -- GLOBALS: AudioOptionsFrameCancel, InterfaceOptionsFrame, InterfaceOptionsFrameCancel
 -- GLOBALS: LibStub, ElvUIPlayerBuffs, MMHolder, StoreMicroButton, TimeManagerClockButton
 -- GLOBALS: FeedbackUIButton, MiniMapTrackingDropDown, LeftMiniPanel, RightMiniPanel
--- GLOBALS: MinimapMover, AurasHolder, AurasMover, ElvConfigToggle
+-- GLOBALS: MinimapMover, AurasHolder, AurasMover
 -- GLOBALS: GarrisonLandingPageMinimapButton, GarrisonLandingPageTutorialBox, MiniMapMailFrame
 -- GLOBALS: QueueStatusMinimapButton, QueueStatusFrame, MiniMapInstanceDifficulty
 -- GLOBALS: MiniMapChallengeMode, MinimapBorder, MinimapBorderTop, MinimapZoomIn, MinimapZoomOut
 -- GLOBALS: MiniMapVoiceChatFrame, MinimapNorthTag, MinimapZoneTextButton, MiniMapTracking
 -- GLOBALS: MiniMapMailBorder, MiniMapMailIcon, QueueStatusMinimapButtonBorder, UIParent
 -- GLOBALS: BottomMiniPanel, BottomLeftMiniPanel, BottomRightMiniPanel, TopMiniPanel
--- GLOBALS: TopLeftMiniPanel, TopRightMiniPanel, MinimapBackdrop, LIB_UIDROPDOWNMENU_MENU_VALUE
+-- GLOBALS: TopLeftMiniPanel, TopRightMiniPanel, MinimapBackdrop, L_UIDROPDOWNMENU_MENU_VALUE
 
 --This function is copied from FrameXML and modified to use DropDownMenu library function calls
 --Using the regular DropDownMenu code causes taints in various places.
 local function MiniMapTrackingDropDown_Initialize(self, level)
-	local name, texture, active, category, nested, numTracking;
+	local name, texture, category, nested, numTracking;
 	local count = GetNumTrackingTypes();
 	local info;
 	local _, class = UnitClass("player");
-	
-	if (level == 1) then 
-		info = Lib_UIDropDownMenu_CreateInfo();
+
+	if (level == 1) then
+		info = L_UIDropDownMenu_CreateInfo();
 		info.text=MINIMAP_TRACKING_NONE;
 		info.checked = MiniMapTrackingDropDown_IsNoTrackingActive;
 		info.func = ClearAllTracking;
@@ -83,40 +83,40 @@ local function MiniMapTrackingDropDown_Initialize(self, level)
 		info.arg1 = nil;
 		info.isNotRadio = true;
 		info.keepShownOnClick = true;
-		Lib_UIDropDownMenu_AddButton(info, level);
-		
+		L_UIDropDownMenu_AddButton(info, level);
+
 		if (class == "HUNTER") then --only show hunter dropdown for hunters
 			numTracking = 0;
 			-- make sure there are at least two options in dropdown
 			for id=1, count do
-				name, texture, active, category, nested = GetTrackingInfo(id);
+				_, _, _, category, nested = GetTrackingInfo(id);
 				if (nested == HUNTER_TRACKING and category == "spell") then
 					numTracking = numTracking + 1;
 				end
 			end
-			if (numTracking > 1) then 
+			if (numTracking > 1) then
 				info.text = HUNTER_TRACKING_TEXT;
 				info.func =  nil;
 				info.notCheckable = true;
 				info.keepShownOnClick = false;
 				info.hasArrow = true;
 				info.value = HUNTER_TRACKING;
-				Lib_UIDropDownMenu_AddButton(info, level)
+				L_UIDropDownMenu_AddButton(info, level)
 			end
 		end
-		
+
 		info.text = TOWNSFOLK_TRACKING_TEXT;
 		info.func =  nil;
 		info.notCheckable = true;
 		info.keepShownOnClick = false;
 		info.hasArrow = true;
 		info.value = TOWNSFOLK;
-		Lib_UIDropDownMenu_AddButton(info, level)
+		L_UIDropDownMenu_AddButton(info, level)
 	end
 
 	for id=1, count do
-		name, texture, active, category, nested  = GetTrackingInfo(id);
-		info = Lib_UIDropDownMenu_CreateInfo();
+		name, texture, _, category, nested  = GetTrackingInfo(id);
+		info = L_UIDropDownMenu_CreateInfo();
 		info.text = name;
 		info.checked = MiniMapTrackingDropDownButton_IsActive;
 		info.func = MiniMapTracking_SetTracking;
@@ -135,23 +135,23 @@ local function MiniMapTrackingDropDown_Initialize(self, level)
 			info.tCoordTop = 0;
 			info.tCoordBottom = 1;
 		end
-		if (level == 1 and 
+		if (level == 1 and
 			(nested < 0 or -- this tracking shouldn't be nested
-			(nested == HUNTER_TRACKING and class ~= "HUNTER") or 
+			(nested == HUNTER_TRACKING and class ~= "HUNTER") or
 			(numTracking == 1 and category == "spell"))) then -- this is a hunter tracking ability, but you only have one
-			Lib_UIDropDownMenu_AddButton(info, level);
-		elseif (level == 2 and (nested == TOWNSFOLK or (nested == HUNTER_TRACKING and class == "HUNTER")) and nested == LIB_UIDROPDOWNMENU_MENU_VALUE) then
-			Lib_UIDropDownMenu_AddButton(info, level);
+			L_UIDropDownMenu_AddButton(info, level);
+		elseif (level == 2 and (nested == TOWNSFOLK or (nested == HUNTER_TRACKING and class == "HUNTER")) and nested == L_UIDROPDOWNMENU_MENU_VALUE) then
+			L_UIDropDownMenu_AddButton(info, level);
 		end
 	end
 end
 
 --Create the new minimap tracking dropdown frame and initialize it
-local ElvUIMiniMapTrackingDropDown = CreateFrame("Frame", "ElvUIMiniMapTrackingDropDown", UIParent, "Lib_UIDropDownMenuTemplate")
+local ElvUIMiniMapTrackingDropDown = CreateFrame("Frame", "ElvUIMiniMapTrackingDropDown", UIParent, "L_UIDropDownMenuTemplate")
 ElvUIMiniMapTrackingDropDown:SetID(1)
 ElvUIMiniMapTrackingDropDown:SetClampedToScreen(true)
 ElvUIMiniMapTrackingDropDown:Hide()
-Lib_UIDropDownMenu_Initialize(ElvUIMiniMapTrackingDropDown, MiniMapTrackingDropDown_Initialize, "MENU");
+L_UIDropDownMenu_Initialize(ElvUIMiniMapTrackingDropDown, MiniMapTrackingDropDown_Initialize, "MENU");
 ElvUIMiniMapTrackingDropDown.noResize = true
 
 --Create the minimap micro menu
@@ -180,17 +180,17 @@ local menuList = {
 	{text = TIMEMANAGER_TITLE,
 	func = function() ToggleFrame(TimeManagerFrame) end},
 	{text = ACHIEVEMENT_BUTTON,
-	func = function() ToggleAchievementFrame() end},
+	func = ToggleAchievementFrame},
 	{text = SOCIAL_BUTTON,
-	func = function() ToggleFriendsFrame() end},
+	func = ToggleFriendsFrame},
 	{text = L["Calendar"],
 	func = function() GameTimeFrame:Click() end},
 	{text = GARRISON_LANDING_PAGE_TITLE,
 	func = function() GarrisonLandingPageMinimapButton_OnClick() end},
 	{text = ACHIEVEMENTS_GUILD_TAB,
-	func = function() ToggleGuildFrame() end},
+	func = ToggleGuildFrame},
 	{text = LFG_TITLE,
-	func = function() ToggleLFDParentFrame(); end},
+	func = ToggleLFDParentFrame},
 	{text = ENCOUNTER_JOURNAL,
 	func = function() if not IsAddOnLoaded('Blizzard_EncounterJournal') then EncounterJournal_LoadUI(); end ToggleFrame(EncounterJournal) end},
 	{text = MAINMENU_BUTTON,
@@ -205,10 +205,10 @@ local menuList = {
 			end
 			CloseMenus();
 			CloseAllWindows()
-			PlaySound("igMainMenuOpen");
+			PlaySound(850) --IG_MAINMENU_OPEN
 			ShowUIPanel(GameMenuFrame);
 		else
-			PlaySound("igMainMenuQuit");
+			PlaySound(854) --IG_MAINMENU_QUIT
 			HideUIPanel(GameMenuFrame);
 			MainMenuMicroButton_SetNormal();
 		end
@@ -218,7 +218,7 @@ local menuList = {
 --if(C_StorePublic.IsEnabled()) then
 	tinsert(menuList, {text = BLIZZARD_STORE, func = function() StoreMicroButton:Click() end})
 --end
-tinsert(menuList, 	{text = HELP_BUTTON, func = function() ToggleHelpFrame() end})
+tinsert(menuList, 	{text = HELP_BUTTON, func = ToggleHelpFrame})
 
 function M:GetLocTextColor()
 	local pvpType = GetZonePVPInfo()
@@ -239,7 +239,7 @@ function M:GetLocTextColor()
 	end
 end
 
-function M:ADDON_LOADED(event, addon)
+function M:ADDON_LOADED(_, addon)
 	if addon == "Blizzard_TimeManager" then
 		TimeManagerClockButton:Kill()
 	elseif addon == "Blizzard_FeedbackUI" then
@@ -256,7 +256,7 @@ function M:Minimap_OnMouseUp(btn)
 			E:DropDown(menuList, menuFrame, -160, 0)
 		end
 	elseif btn == "RightButton" then
-		Lib_ToggleDropDownMenu(1, nil, ElvUIMiniMapTrackingDropDown, "cursor");
+		L_ToggleDropDownMenu(1, nil, ElvUIMiniMapTrackingDropDown, "cursor");
 	else
 		Minimap_OnClick(self)
 	end
@@ -476,6 +476,14 @@ function M:UpdateSettings()
 	end
 end
 
+local function MinimapPostDrag()
+	--Make sure these invisible frames follow the minimap.
+	MinimapCluster:ClearAllPoints()
+	MinimapCluster:SetAllPoints(Minimap)
+	MinimapBackdrop:ClearAllPoints()
+	MinimapBackdrop:SetAllPoints(Minimap)
+end
+
 function M:Initialize()
 	menuFrame:SetTemplate("Transparent", true)
 	self:UpdateSettings()
@@ -567,7 +575,7 @@ function M:Initialize()
 		FeedbackUIButton:Kill()
 	end
 
-	E:CreateMover(MMHolder, 'MinimapMover', L["Minimap"])
+	E:CreateMover(MMHolder, 'MinimapMover', L["Minimap"], nil, nil, MinimapPostDrag)
 
 	Minimap:EnableMouseWheel(true)
 	Minimap:SetScript("OnMouseWheel", M.Minimap_OnMouseWheel)
@@ -579,12 +587,6 @@ function M:Initialize()
 	self:RegisterEvent("ZONE_CHANGED_INDOORS", "Update_ZoneText")
 	self:RegisterEvent('ADDON_LOADED')
 	self:UpdateSettings()
-
-	--Make sure these invisible frames follow the minimap.
-	MinimapCluster:ClearAllPoints()
-	MinimapCluster:SetAllPoints(Minimap)
-	MinimapBackdrop:ClearAllPoints()
-	MinimapBackdrop:SetAllPoints(Minimap)
 end
 
 local function InitializeCallback()

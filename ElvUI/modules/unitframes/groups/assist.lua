@@ -25,8 +25,8 @@ function UF:Construct_AssistFrames()
 
 	self.Health = UF:Construct_HealthBar(self, true)
 	self.Name = UF:Construct_NameText(self)
-	self.Threat = UF:Construct_Threat(self)
-	self.RaidIcon = UF:Construct_RaidIcon(self)
+	self.ThreatIndicator = UF:Construct_Threat(self)
+	self.RaidTargetIndicator = UF:Construct_RaidIcon(self)
 	self.Range = UF:Construct_Range(self)
 
 	if not self.isChild then
@@ -66,7 +66,7 @@ function UF:Update_AssistHeader(header, db)
 
 	UF:ClearChildPoints(header:GetChildren())
 	header:SetAttribute("yOffset", db.verticalSpacing)
-	
+
 	local width, height = header:GetSize()
 	header.dirtyWidth, header.dirtyHeight = width, max(height, 2*db.height + db.verticalSpacing)
 

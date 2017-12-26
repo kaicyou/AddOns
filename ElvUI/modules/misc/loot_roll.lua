@@ -26,7 +26,6 @@ local C_LootHistoryGetItem = C_LootHistory.GetItem
 local C_LootHistoryGetPlayerInfo = C_LootHistory.GetPlayerInfo
 local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
 local NEED = NEED
 local GREED = GREED
 local ROLL_DISENCHANT = ROLL_DISENCHANT
@@ -35,6 +34,7 @@ local PASS = PASS
 --Global variables that we don't cache, list them here for mikk's FindGlobals script
 -- GLOBALS: GameTooltip, AlertFrameHolder, WorldFrame
 -- GLOBALS: MAX_PLAYER_LEVEL, UIParent, AlertFrame
+-- GLOBALS: CUSTOM_CLASS_COLORS
 
 local pos = 'TOP';
 local cancelled_rolls = {}
@@ -85,7 +85,7 @@ local function LootClick(frame)
 	elseif IsShiftKeyDown() then ChatEdit_InsertLink(frame.link) end
 end
 
-local function OnEvent(frame, event, rollID)
+local function OnEvent(frame, _, rollID)
 	cancelled_rolls[rollID] = true
 	if frame.rollID ~= rollID then return end
 
@@ -204,7 +204,7 @@ function M:CreateRollFrame()
 end
 
 local function GetFrame()
-	for i,f in ipairs(M.RollBars) do
+	for _,f in ipairs(M.RollBars) do
 		if not f.rollID then return f end
 	end
 
@@ -218,7 +218,7 @@ local function GetFrame()
 	return f
 end
 
-function M:START_LOOT_ROLL(event, rollID, time)
+function M:START_LOOT_ROLL(_, rollID, time)
 	if cancelled_rolls[rollID] then return end
 	local f = GetFrame()
 	f.rollID = rollID
@@ -280,7 +280,7 @@ function M:START_LOOT_ROLL(event, rollID, time)
 	end
 end
 
-function M:LOOT_HISTORY_ROLL_CHANGED(event, itemIdx, playerIdx)
+function M:LOOT_HISTORY_ROLL_CHANGED(_, itemIdx, playerIdx)
 	local rollID = C_LootHistoryGetItem(itemIdx);
 	local name, class, rollType = C_LootHistoryGetPlayerInfo(itemIdx, playerIdx);
 

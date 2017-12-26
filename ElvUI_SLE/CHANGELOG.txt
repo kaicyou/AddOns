@@ -1,3 +1,96 @@
+v3.31 12/6/17
+Additions:
+- LFR completion info in time datatext.
+Fixes:
+- Inspect aromory shows illusion now.
+- Chat history now works again.
+
+v3.30 12/1/17
+Fixes:
+- Fixed region check for chat history throwing unintended errors. Also made it more aware of non existant values. Blizzard changed relmIDs around again *sigh*
+
+v3.29 12/1/17
+Changes:
+- Take changes in oUF into consideration
+- Account for changes in chat history
+- Combat icon and rested icon options removed due to those being in core ElvUI now
+Additions:
+- Option to hide annoying NPCs talking about stuff in the middle of your screen
+- Option to color item levels as item rarity in armory
+- Vehicle actionbar now supports Masque
+- Raid progression for Antorus in tooltips
+Fixes:
+- Fixed talent equip tag working incorrectly
+- Fixed a number of weird things in armory
+- Fix numbers for weird resolutions
+- Fix the script always expecting additional arguments for equip tags
+- Chat tabs selected indicator not properly updating sometimes
+- Fixed instance indicator showing flags when it shouldn't
+- Fixed a number of weird errors everywhere
+
+v3.28 10/1/17
+Additions:
+- Added missed currencies to the datatext
+- Added "Hide in class hall" for location bar
+- Added options for threat and target count on nameplates
+Fixes:
+- Fixed bug in config for threat bar settings
+- Fixed "damn elusive" bug with portrait overlay
+- Compatibility fixes to work with ElvUI 10.64
+
+v3.27 08/29/17
+Changes:
+- Changed the way aura threshold works to avoid incompatibility with CustomTweaks
+- Changed calls for playing sounds to account for patch 7.3
+- Altered the way deconstruct checks are executed. Should be more consistent now
+Fixes:
+- Fixed backround positioning resetting
+Additions:
+- Added an option to disable inspecting message in chat
+
+v3.26 06/28/17
+Changes:
+- Changed the way tomtom waypoints are ignored by minimap button skinning process
+Fixes:
+- 2 new currencies are back to the corresponding datatext, could swear I added those some time ago but who knows
+- Corrected min ilvl required for Tomb of Sargeras LFR
+
+
+v3.25 06/28/17
+Fixes:
+- Fixed another black box instead of icon on quest progression
+- Fixed prestige icon pvp timer
+- Fixed white borders in inspect armory when thin borders are disabled
+- Fixed skinning for tomtom stuff
+Additions:
+- Added [talent] tag for equip manager
+- Added Tomb of Sargers to tooltip raid progression and LFR lockout in time DT
+
+
+v3.24 06/17/17
+Fixes:
+- Fixed AP in bags showing 0 for non-AP items after ElvUI update
+Changes:
+- Account for changes in ElvUI v10.55
+
+v3.23 06/12/17
+Addition:
+- Replaced equipment manager options with a new option. Now you can use tag system to make spec switching more flexible
+- Added an option to set a threshold on unitframe auras for showing decimals
+Fixes:
+- Probably fixed a rare error in deconstruct mode when item info could not be adequately processed
+- Should have fixed the camera issues with afk screen closing
+- Fixed some errors in inspect
+- Fixed relam names in guild datatext for realms consisting of 2 words
+- Fixed decoonstruct mode not accounting for legion lockboxes
+- Fixed giant black box for world quests progress bars in objective tracker
+Changes:
+- Replaced deprecated functions
+- Accounted for ElvUI's chat changes
+- Preventing taints for tooltips in 7.2.5
+- Using ElvUI's functions to calculate AP in bags
+- Altered Darth's install profile. healer layout now looks caster-ish
+
 v3.22 04/09/17
 Fixes:
 - Fixed error in enhnced shadows module caused by microbar being disabled

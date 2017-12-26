@@ -23,7 +23,7 @@ function UF:Construct_HealComm(frame)
 	healAbsorbBar:SetReverseFill(true)
 	healAbsorbBar:Hide()
 
-	return {
+	local HealthPrediction = {
 		myBar = mhpb,
 		otherBar = ohpb,
 		absorbBar = absorbBar,
@@ -31,15 +31,18 @@ function UF:Construct_HealComm(frame)
 		maxOverflow = 1,
 		PostUpdate = UF.UpdateHealComm
 	}
+	HealthPrediction.parent = frame
+
+	return HealthPrediction
 end
 
 function UF:Configure_HealComm(frame)
-	local healPrediction = frame.HealPrediction
+	local healPrediction = frame.HealthPrediction
 	local c = self.db.colors.healPrediction
 
 	if frame.db.healPrediction then
-		if not frame:IsElementEnabled('HealPrediction') then
-			frame:EnableElement('HealPrediction')
+		if not frame:IsElementEnabled('HealthPrediction') then
+			frame:EnableElement('HealthPrediction')
 		end
 
 		if not frame.USE_PORTRAIT_OVERLAY then
@@ -66,16 +69,16 @@ function UF:Configure_HealComm(frame)
 		healPrediction.otherBar:SetStatusBarColor(c.others.r, c.others.g, c.others.b, c.others.a)
 		healPrediction.absorbBar:SetStatusBarColor(c.absorbs.r, c.absorbs.g, c.absorbs.b, c.absorbs.a)
 		healPrediction.healAbsorbBar:SetStatusBarColor(c.healAbsorbs.r, c.healAbsorbs.g, c.healAbsorbs.b, c.healAbsorbs.a)
-	
+
 		healPrediction.maxOverflow = (1 + (c.maxOverflow or 0))
 	else
-		if frame:IsElementEnabled('HealPrediction') then
-			frame:DisableElement('HealPrediction')
+		if frame:IsElementEnabled('HealthPrediction') then
+			frame:DisableElement('HealthPrediction')
 		end
 	end
 end
 
-local function UpdateFillBar(frame, previousTexture, bar, amount, inverted)
+function UF:UpdateFillBar(frame, previousTexture, bar, amount, inverted)
 	if ( amount == 0 ) then
 		bar:Hide();
 		return previousTexture;
@@ -111,12 +114,12 @@ local function UpdateFillBar(frame, previousTexture, bar, amount, inverted)
 	return bar:GetStatusBarTexture();
 end
 
-function UF:UpdateHealComm(unit, myIncomingHeal, allIncomingHeal, totalAbsorb, healAbsorb)
+function UF:UpdateHealComm(_, myIncomingHeal, allIncomingHeal, totalAbsorb, healAbsorb)
 	local frame = self.parent
 	local previousTexture = frame.Health:GetStatusBarTexture();
 
-	UpdateFillBar(frame, previousTexture, self.healAbsorbBar, healAbsorb, true);
-	previousTexture = UpdateFillBar(frame, previousTexture, self.myBar, myIncomingHeal);
-	previousTexture = UpdateFillBar(frame, previousTexture, self.otherBar, allIncomingHeal);
-	previousTexture = UpdateFillBar(frame, previousTexture, self.absorbBar, totalAbsorb);
+	UF:UpdateFillBar(frame, previousTexture, self.healAbsorbBar, healAbsorb, true);
+	previousTexture = UF:UpdateFillBar(frame, previousTexture, self.myBar, myIncomingHeal);
+	previousTexture = UF:UpdateFillBar(frame, previousTexture, self.otherBar, allIncomingHeal);
+	previousTexture = UF:UpdateFillBar(frame, previousTexture, self.absorbBar, totalAbsorb);
 end

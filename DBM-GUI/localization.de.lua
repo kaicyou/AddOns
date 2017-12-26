@@ -6,7 +6,7 @@ L.MainFrame = "Deadly Boss Mods"
 
 L.TranslationByPrefix		= "Übersetzt von "
 L.TranslationBy 			= "Ebmor@EU-Malorne"
-L.Website					= "Besuche die Diskussions-/Support-Foren: |cFF73C2FBwww.deadlybossmods.com|r. Folge auf Twitter: @deadlybossmods oder @MysticalOS"
+L.Website					= "Besuche uns auf Discord: |cFF73C2FBhttps://discord.gg/DF5mffk|r. Folge auf Twitter: @deadlybossmods oder @MysticalOS"
 L.WebsiteButton				= "Foren"
 
 L.OTabBosses	= "Bosse"
@@ -86,12 +86,12 @@ L.Warn_FontType				= "Schriftart"
 L.Warn_FontStyle			= "Schriftstil"
 L.Warn_FontShadow			= "Schatten"
 L.Warn_FontSize				= "Schriftgröße: %d"
-L.Warn_Duration				= "Warnungsdauer: %ds"
+L.Warn_Duration				= "Warnungsdauer: %0.1fs"
 L.None						= "normal"
 L.Outline					= "mit Umriss"
 L.ThickOutline				= "mit dickem Umriss"
-L.MonochromeOutline			= "ohne Kantenglättung, mit Umriss"
-L.MonochromeThickOutline	= "ohne Kantenglättung, mit dickem Umriss"
+L.MonochromeOutline			= "ohne Glättung, mit Umriss"
+L.MonochromeThickOutline	= "ohne Glätt., mit dickem Umriss"
 L.RaidWarnSound				= "Sound für Schlachtzugwarnungen"
 
 -- Tab: Generalwarnings
@@ -102,12 +102,14 @@ L.ShowAllVersions	 		= "Zeige beim Durchführen einer Versionsprüfung die Boss 
 L.CombatMessages			= "Kampfmeldungen"
 L.ShowEngageMessage 		= "Zeige Meldungen für den Beginn von Kämpfen im Chatfenster"
 L.ShowDefeatMessage 		= "Zeige Meldungen für Siege/Niederlagen im Chatfenster"
-L.ShowGuildMessages 		= "Zeige Meldungen für Kampfbeginn/Siege/Niederlagen deiner Gilde im Chatfenster"
+L.ShowGuildMessages 		= "Zeige Meldungen für Kampfbeginn/Siege/Niederlagen für Schlachtzüge deiner Gilde im Chatfenster"
+L.ShowGuildMessagesPlus		= "Zeige auch Meldungen für Kampfbeginn/Siege/Niederlagen für Mythisch+ Gildengruppen (benötigt Schlachtzugeinstellung)"
 L.WhisperMessages			= "Flüstermeldungen"
 L.AutoRespond 				= "Aktiviere automatische Antwort während eines Bosskampfes"
 L.EnableStatus 				= "Antworte auf 'status'-Flüsteranfragen"
 L.WhisperStats 				= "Füge Sieg-/Niederlagestatistik den Flüsterantworten hinzu"
-L.DisableStatusWhisper 		= "Deaktiviere 'status'-Flüsteranfragen für die gesamte Gruppe (nur als Gruppenleiter; nur für normale/heroische/mythische Schlachtzüge und Herausforderungsmodus/mythische Dungeons)"
+L.DisableStatusWhisper 		= "Deaktiviere 'status'-Flüsteranfragen für die gesamte Gruppe (nur als Gruppenleiter; nur für normale/heroische/mythische Schlachtzüge und Mythisch+ Dungeons)"
+L.DisableGuildStatus 		= "Deaktiviere das Senden von Fortschrittsmeldungen an die Gilde für die gesamte Gruppe (nur als Gruppenleiter)"
 
 -- Tab: Barsetup
 L.BarSetup					= "Balkeneinstellungen"
@@ -210,7 +212,7 @@ L.HUDAlphaSlider			= "Alpha: %0.1f"
 
 -- Tab: Spoken Alerts Frame
 L.Panel_SpokenAlerts		= "Gesprochene Warnungen"
-L.Area_VoiceSelection		= "Stimmenauswahl für akustische Zählungen und gesprochene Warnungen"
+L.Area_VoiceSelection		= "Stimmenauswahl für akustische Zählungen und gesprochene Warnungen (scrollbar per Mausrad)"
 L.CountdownVoice			= "Primäre Stimme für Zählungen"
 L.CountdownVoice2			= "Sekundäre Stimme für Zählungen"
 L.CountdownVoice3			= "Tertiäre Stimme für Zählungen"
@@ -248,6 +250,7 @@ L.SpamBlockNoHealthFrame	= "Zeige keine Lebensanzeige an"
 L.SpamBlockNoCountdowns		= "Spiele keine Countdown-Sounds"
 L.SpamBlockNoYells			= "Sende keine automatischen Schreie"
 L.SpamBlockNoNoteSync		= "Akzeptiere keine geteilten Notizen"
+L.SpamBlockNoReminders		= "Zeige keine Anmeldungs-, Empfehlungs-, und Aktualisierungsmeldungen (NICHT empfohlen)"
 
 L.Area_Restore				= "DBM-Wiederherstellungseinstellungen (Setzen des vorherigen Nutzerzustands nach Mod-Ende)"
 L.SpamBlockNoIconRestore	= "Setze Markierungszeichen am Kampfende nicht auf den vorherigen Zustand zurück"
@@ -257,7 +260,6 @@ L.SpamBlockNoRangeRestore	= "Setze das Abstandsfenster nicht auf den vorherigen 
 L.Area_SpamFilter			= "Spam-Filter"
 L.DontShowFarWarnings		= "Zeige keine Mitteilungen/Timer für weit entfernte Ereignisse"
 L.StripServerName			= "Entferne den Realmnamen der Spieler in Warnungen und Timern"
-L.SpamBlockBossWhispers		= "Aktiviere Filter für &lt;DBM&gt;-Flüstermitteilungen im Kampf"
 L.BlockVersionUpdateNotice	= "Zeige häufigere Meldungen zur Aktualisierung einer veralteten DBM-Version im Chatfenster statt als Pop-up"
 
 L.Area_SpecFilter			= "Filtereinstellungen für Rollen"
@@ -272,7 +274,7 @@ L.DontShowPTNoID			= "Blockiere Pull-Timer, die nicht aus deiner derzeitigen Zon
 L.DontShowPT				= "Zeige keinen Timerbalken für Pull-/Pausen-Timer"
 L.DontShowPTText			= "Zeige keine Mitteilungen für Pull-/Pausen-Timer im Chatfenster"
 L.DontPlayPTCountdown		= "Spiele keinen akustischen Countdown für Pull-, Pausen-, Kampf- und benutzerdefinierte Timer"
-L.DontShowPTCountdownText	= "Zeige keinen optischen Countdown für Pull-, Pausen-, Kampf- und benutzerdefinierte Timer"
+L.DontShowPTCountdownText	= "Zeige keinen optischen Countdown für Pull-Timer"
 L.PT_Threshold				= "Zeige keinen opt. Countd. für Pausen-/Kampf-/Nutzer-Timer über: %d"
 
 L.Panel_HideBlizzard		= "Deaktivierung von Spielelementen"
@@ -284,7 +286,6 @@ L.HideGuildChallengeUpdates	= "Verberge Gildenerfolgsmeldungen während Bosskäm
 L.HideQuestTooltips			= "Verberge Questziele in Tooltips während Bosskämpfen"
 L.HideTooltips				= "Verberge Tooltips vollständig während Bosskämpfen"
 L.DisableSFX				= "Deaktiviere Soundeffekte während Bosskämpfen"
-L.SpamBlockSayYell			= "Sprechblasen-Ansagen im Chatfenster ausblenden"
 L.DisableCinematics			= "Verberge Videosequenzen"
 L.AfterFirst				= "Nach jeweils einmaligem Abspielen"
 L.Always					= ALWAYS
@@ -307,7 +308,6 @@ L.AFKHealthWarning			= "Spiele Alarmsound und lasse Anwendungsymbol aufblicken, 
 --
 L.TimerGeneral 				= "Allgemeine Einstellungen für Timer"
 L.SKT_Enabled				= "Zeige Timer für Rekordzeit für aktuellen Kampf (falls verfügbar)"
-L.CRT_Enabled				= "Zeige Zeit bis zur nächsten Wiederbelebungsaufladung im Kampf"
 L.ShowRespawn				= "Zeige Zeit bis zum Wiedererscheinen des Bosses nach einer Niederlage"
 L.ShowQueuePop				= "Zeige verbleibende Zeit zur Annahme einer Warteschlangeneinladung (Gruppensuche, Schlachtfelder, etc.)"
 --

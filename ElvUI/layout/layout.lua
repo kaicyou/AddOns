@@ -10,7 +10,7 @@ local UIFrameFadeIn, UIFrameFadeOut = UIFrameFadeIn, UIFrameFadeOut
 --Global variables that we don't cache, list them here for the mikk's Find Globals script
 -- GLOBALS: HideLeftChat, HideRightChat, HideBothChat, LeftChatPanel, RightChatPanel, Minimap
 -- GLOBALS: GameTooltip, LeftChatTab, RightChatTab, LeftChatToggleButton, RightChatToggleButton
--- GLOBALS: LeftChatDataPanel, LeftMiniPanel, RightChatDataPanel, RightMiniPanel, ElvConfigToggle
+-- GLOBALS: LeftChatDataPanel, LeftMiniPanel, RightChatDataPanel, RightMiniPanel
 
 local PANEL_HEIGHT = 22;
 local SIDE_BUTTON_WIDTH = 16;
@@ -25,7 +25,7 @@ end
 function LO:Initialize()
 	self:CreateChatPanels()
 	self:CreateMinimapPanels()
-
+	self:SetDataPanelStyle()
 
 	self.BottomPanel = CreateFrame('Frame', 'ElvUI_BottomPanel', E.UIParent)
 	self.BottomPanel:SetTemplate('Transparent')
@@ -149,14 +149,18 @@ function LO:SetChatTabStyle()
 end
 
 function LO:SetDataPanelStyle()
-	if E.db.datatexts.panelTransparency then
+	if not E.db.datatexts.panelBackdrop then
+		LeftChatDataPanel:SetTemplate("NoBackdrop")
+		LeftChatToggleButton:SetTemplate("NoBackdrop")
+		RightChatDataPanel:SetTemplate("NoBackdrop")
+		RightChatToggleButton:SetTemplate("NoBackdrop")
+	elseif E.db.datatexts.panelTransparency then
 		LeftChatDataPanel:SetTemplate("Transparent")
 		LeftChatToggleButton:SetTemplate("Transparent")
 		LeftMiniPanel:SetTemplate("Transparent")
 		RightChatDataPanel:SetTemplate("Transparent")
 		RightChatToggleButton:SetTemplate("Transparent")
 		RightMiniPanel:SetTemplate("Transparent")
-		-- ElvConfigToggle:SetTemplate("Transparent")
 	else
 		LeftChatDataPanel:SetTemplate("Default", true)
 		LeftChatToggleButton:SetTemplate("Default", true)
@@ -164,7 +168,6 @@ function LO:SetDataPanelStyle()
 		RightChatDataPanel:SetTemplate("Default", true)
 		RightChatToggleButton:SetTemplate("Default", true)
 		RightMiniPanel:SetTemplate("Default", true)
-		-- ElvConfigToggle:SetTemplate("Default", true)
 	end
 end
 
@@ -188,7 +191,7 @@ function LO:ToggleChatPanels()
 		RightChatDataPanel:Hide()
 		RightChatToggleButton:Hide()
 	end
-	
+
 	local panelBackdrop = E.db.chat.panelBackdrop
 	if panelBackdrop == 'SHOWBOTH' then
 		LeftChatPanel.backdrop:Show()
@@ -264,7 +267,7 @@ function LO:CreateChatPanels()
 	lchatdp:Point('BOTTOMLEFT', lchat, 'BOTTOMLEFT', SPACING + SIDE_BUTTON_WIDTH, SPACING)
 	lchatdp:Point('TOPRIGHT', lchat, 'BOTTOMRIGHT', -SPACING, (SPACING + PANEL_HEIGHT))
 	lchatdp:SetTemplate(E.db.datatexts.panelTransparency and 'Transparent' or 'Default', true)
-	
+
 	E:GetModule('DataTexts'):RegisterPanel(lchatdp, 3, 'ANCHOR_TOPLEFT', -17, 4)
 
 	--Left Chat Toggle Button
@@ -364,41 +367,41 @@ function LO:CreateMinimapPanels()
 		LeftMiniPanel:Hide()
 		RightMiniPanel:Hide()
 	end
-	
+
 	local f = CreateFrame("Frame", 'BottomMiniPanel', Minimap)
 	f:SetPoint("BOTTOM", Minimap, "BOTTOM")
 	f:Width(75)
 	f:Height(20)
 	f:SetFrameLevel(Minimap:GetFrameLevel() + 5)
 	E:GetModule('DataTexts'):RegisterPanel(f, 1, 'ANCHOR_BOTTOM', 0, -10)
-	
+
 	f = CreateFrame("Frame", 'TopMiniPanel', Minimap)
 	f:SetPoint("TOP", Minimap, "TOP")
 	f:Width(75)
 	f:Height(20)
 	f:SetFrameLevel(Minimap:GetFrameLevel() + 5)
-	E:GetModule('DataTexts'):RegisterPanel(f, 1, 'ANCHOR_BOTTOM', 0, -10)		
-	
+	E:GetModule('DataTexts'):RegisterPanel(f, 1, 'ANCHOR_BOTTOM', 0, -10)
+
 	f = CreateFrame("Frame", 'TopLeftMiniPanel', Minimap)
 	f:SetPoint("TOPLEFT", Minimap, "TOPLEFT")
 	f:Width(75)
 	f:Height(20)
 	f:SetFrameLevel(Minimap:GetFrameLevel() + 5)
-	E:GetModule('DataTexts'):RegisterPanel(f, 1, 'ANCHOR_BOTTOMLEFT', 0, -10)	
+	E:GetModule('DataTexts'):RegisterPanel(f, 1, 'ANCHOR_BOTTOMLEFT', 0, -10)
 
 	f = CreateFrame("Frame", 'TopRightMiniPanel', Minimap)
 	f:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT")
 	f:Width(75)
 	f:Height(20)
 	f:SetFrameLevel(Minimap:GetFrameLevel() + 5)
-	E:GetModule('DataTexts'):RegisterPanel(f, 1, 'ANCHOR_BOTTOMRIGHT', 0, -10)	
-	
+	E:GetModule('DataTexts'):RegisterPanel(f, 1, 'ANCHOR_BOTTOMRIGHT', 0, -10)
+
 	f = CreateFrame("Frame", 'BottomLeftMiniPanel', Minimap)
 	f:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT")
 	f:Width(75)
 	f:Height(20)
 	f:SetFrameLevel(Minimap:GetFrameLevel() + 5)
-	E:GetModule('DataTexts'):RegisterPanel(f, 1, 'ANCHOR_BOTTOMLEFT', 0, -10)	
+	E:GetModule('DataTexts'):RegisterPanel(f, 1, 'ANCHOR_BOTTOMLEFT', 0, -10)
 
 	f = CreateFrame("Frame", 'BottomRightMiniPanel', Minimap)
 	f:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT")

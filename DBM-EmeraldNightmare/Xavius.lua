@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1726, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 16089 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17021 $"):sub(12, -3))
 mod:SetCreatureID(103769)
 mod:SetEncounterID(1864)
 mod:SetZone()
@@ -24,7 +24,6 @@ mod:RegisterEventsInCombat(
 
 --"<271.21 22:57:25> [CLEU] SPELL_PERIODIC_ENERGIZE##nil#Player-3693-07CA07EE#Jaybee#208385#Tainted Discharge#3#10", -- [5739]
 --TODO, infoframe for remaining tainted discharge maybe? Has to be combined with alt power infoframe
---TODO, figure out why arrows still flip and randomly change directions on blades, or remove arrows entirely and just use line texture.
 --TODO, reverify mythic/LFR timers
 --Nightmare Corruption
 local warnDescentIntoMadness			= mod:NewTargetAnnounce(208431, 4)
@@ -99,7 +98,7 @@ local voiceDreaming						= mod:NewVoice(205843)--stepring
 local voiceNightmareBlades				= mod:NewVoice(206656)--runout
 local voiceCorruptionHorror				= mod:NewVoice("ej12973", "-Healer")--bigmob
 local voiceCorruptingNova				= mod:NewVoice(207830, "HasInterrupt")--kickcast
-local voiceDarkeningSoul				= mod:NewVoice(206651, "Tank")--tauntboss
+local voiceDarkeningSoul				= mod:NewVoice(206651)--stackhigh/tauntboss
 local voiceTormentingFixation			= mod:NewVoice(205771)--targetyou (iffy, is there no voice that says fixate, run?)
 --Stage Two: From the Shadows
 local voiceBondsOfTerror				= mod:NewVoice(209034)--linegather
@@ -115,7 +114,7 @@ mod:AddSetIconOption("SetIconOnBlades", 206656)
 mod:AddSetIconOption("SetIconOnMeteor", 206308)
 
 local lurkingTimers = {17, 20.5, 41, 20.5, 20.5}--{13.6, 26.3, 47.4, 20.7, 25.9} old. TODO, get more data, if all but one are 20.5, just code smarter without table
-local corruptionName = EJ_GetSectionInfo(12970)
+local corruptionName = DBM:EJ_GetSectionInfo(12970)
 local darkSoul, blackSoul = GetSpellInfo(206651), GetSpellInfo(209158)
 local bladesTarget = {}
 local gatherTarget = {}
@@ -526,7 +525,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, spellGUID)
 	elseif spellId == 226194 then--Writhing Deep
 		warnNightmareTentacles:Show()
 		timerNightmareTentacleCD:Start()
-	elseif spellId == 205843 then
+	elseif spellId == 205843 and self:IsMythic() then
 		self.vb.dreamCount = self.vb.dreamCount + 1
 		local count = self.vb.dreamCount
 		specWarnDreaming:Show(count)

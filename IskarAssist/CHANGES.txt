@@ -1,7 +1,7 @@
-changeset:   124:c91c26070f62
-tag:         v2.1.247 release
+changeset:   145:299d526fb4b1
+tag:         v7.3.2.145
 user:        Tercio
-date:        Mon May 08 15:16:33 2017 -0300
-summary:     - added harmful spell list for the two last wings of the nighthold raid.
+date:        Fri Dec 22 09:32:16 2017 -0200
+summary:     - Ticket #30: fixed the invite dropdown selection.
 
 

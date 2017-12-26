@@ -1,0 +1,17 @@
+------------------------------------------------------------------------
+r619 | Cakechart | 2017-12-19 05:49:51 -0600 (Tue, 19 Dec 2017) | 1 line
+Changed paths:
+   M /trunk/Options_Defaults.lua
+
+Fixed container ID for the Crashin' Thrashin' Flamer Controller toy (should've been Stolen Present all along)
+------------------------------------------------------------------------
+r618 | Cakechart | 2017-12-19 01:58:47 -0600 (Tue, 19 Dec 2017) | 3 lines
+Changed paths:
+   M /trunk/Locales.lua
+   M /trunk/Options_Defaults.lua
+
+* Added Stormforged Vrykul Horn (from the chest in the Skyhold Arena of Glory / Warrior Order Hall)
+* Added Golden Hearthstone Card: Lord Jaraxxus (drops from Gul'dan in The Nighthold, any difficulty)
+* Updated toy drops for this year's Feast of Winter Veil: Crashin' Thrashin' Shredder Controller, Crashin' Thrashin' Flamer Controller, Disposable Winter Veil Suits, and Red Wooden Sled can now be obtained from Stolen Presents
+------------------------------------------------------------------------
+

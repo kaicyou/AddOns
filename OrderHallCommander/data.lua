@@ -22,6 +22,11 @@ local new=addon:Wrap("NewTable")
 local del=addon:Wrap("DelTable")
 local kpairs=addon:Wrap("Kpairs")
 local empty=addon:Wrap("Empty")
+
+local todefault=addon:Wrap("todefault")
+
+local tonumber=tonumber
+local type=type
 local OHF=OrderHallMissionFrame
 local OHFMissionTab=OrderHallMissionFrame.MissionTab --Container for mission list and single mission
 local OHFMissions=OrderHallMissionFrame.MissionTab.MissionList -- same as OrderHallMissionFrameMissions Call Update on this to refresh Mission Listing
@@ -31,6 +36,8 @@ local OHFFollowers=OrderHallMissionFrameFollowers -- Contains scroll list
 local OHFMissionPage=OrderHallMissionFrame.MissionTab.MissionPage -- Contains mission description and party setup 
 local OHFMapTab=OrderHallMissionFrame.MapTab -- Contains quest map
 local OHFCompleteDialog=OrderHallMissionFrameMissions.CompleteDialog
+local OHFMissionScroll=OrderHallMissionFrameMissionsListScrollFrame
+local OHFMissionScrollChild=OrderHallMissionFrameMissionsListScrollFrameScrollChild
 local followerType=LE_FOLLOWER_TYPE_GARRISON_7_0
 local garrisonType=LE_GARRISON_TYPE_7_0
 local FAKE_FOLLOWERID="0x0000000000000000"
@@ -57,161 +64,212 @@ local print=function() end
 --@end-non-debug@
 local LE_FOLLOWER_TYPE_GARRISON_7_0=LE_FOLLOWER_TYPE_GARRISON_7_0
 local LE_GARRISON_TYPE_7_0=LE_GARRISON_TYPE_7_0
+local GARRISON_FOLLOWER_COMBAT_ALLY=GARRISON_FOLLOWER_COMBAT_ALLY
+local GARRISON_FOLLOWER_ON_MISSION=GARRISON_FOLLOWER_ON_MISSION
+local GARRISON_FOLLOWER_INACTIVE=GARRISON_FOLLOWER_INACTIVE
+local GARRISON_FOLLOWER_IN_PARTY=GARRISON_FOLLOWER_IN_PARTY
+local GARRISON_FOLLOWER_AVAILABLE=AVAILABLE
+local ViragDevTool_AddData=_G.ViragDevTool_AddData
+if not ViragDevTool_AddData then ViragDevTool_AddData=function() end end
+local KEY_BUTTON1 = "\124TInterface\\TutorialFrame\\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:228:283\124t" -- left mouse button
+local KEY_BUTTON2 = "\124TInterface\\TutorialFrame\\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:330:385\124t" -- right mouse button
+local CTRL_KEY_TEXT,SHIFT_KEY_TEXT=CTRL_KEY_TEXT,SHIFT_KEY_TEXT
+local CTRL_KEY_TEXT,SHIFT_KEY_TEXT=CTRL_KEY_TEXT,SHIFT_KEY_TEXT
+local CTRL_SHIFT_KEY_TEXT=CTRL_KEY_TEXT .. '-' ..SHIFT_KEY_TEXT
+local format,pcall=format,pcall
+local function safeformat(mask,...)
+  local rc,result=pcall(format,mask,...)
+  if not rc then
+    for k,v in pairs(L) do
+      if v==mask then
+        mask=k
+        break
+      end
+    end
+ end
+  rc,result=pcall(format,mask,...)
+  return rc and result or mask 
+end
 
 -- End Template - DO NOT MODIFY ANYTHING BEFORE THIS LINE
 --*BEGIN
 local fake={}
 local data={
-	Upgrades={
-		136412,
-		137207,
-		137208,
-		
+	ArtifactNotes={
+		146745
 	},
-	Upgrades2={
-		147348,
-		147349,
-		147350,
-		
+	U850={
+		136412, -- Heavy Armor Set +5 (capped 850)
+		137207, -- Fortified Armor Set +10 (capped 850)
+		137208, -- Indestructible Armor Set +15 (capped 850)
+
+	},
+	U880={
+		153005, -- Relinquished Armor Set 800
+	},
+	U900={
+    147348, -- Bulky Armor Set +5 (capped 900(
+    147349, -- Spiked Armor Set +10 (capped 900)
+    147350, -- Invincible Armor Set +15 (capped 900)
+    151842, -- Krokul Armor Set 900
+	},
+	U925={
+	 151843, -- Mac'Aree Armor Set 925
+	},
+	U950={
+		151844, -- Xenedar Armor Set 950
 	},
 	Buffs={
-		140749,
-		139419,
-		140760,
-		140156,
-		139428,
-		143605,
-		139177,
-		139420,
-		138883,
-		139376,
-		139418,
-		138412,
-		139670,	
+		140749, -- Horn of Winter Increases Chance
+		143852, -- Lucky Rabbit's Foot Increases Chance
+		139419, -- Golden Banana Increases Chance
+		140760, -- Libram of Truth Increases Chance
+		140156, -- Blessing of the Order Increases Chance
+		139428, -- A Master Plan Increases Chance
+		143605, -- Strange Ball of Energy Increases Chance
+		139177, -- Shattered Soul +1 vitality 
+		139420, -- Wild Mushroom +1 vitality
+		138883, -- Meryl's Conjured Refreshment +1 vitality
+		139376, -- Healing Well +1 vitality
+		139418, -- Healing Stream Totem +1 vitality
+		138412, -- Iresoul's Healthstone +1 vitality
+		--140922, -- Imp Pact Summon
+		--139670, -- Scream of the Dead Summon
+    --143849, -- Summon Royal Guard Summon
+    --143850, -- Summon Grimtotem Warrior Summon
+		--142209, -- Dinner Invitation Summon
 	},
 	Xp={
-		141028
+		141028, -- Grimoire of Knowledge
 	},
-	Equipment={
-		'Success Chance Increase',
-		139816,
-		139801,
-		139802,
-		140572,
-		140571,
-		140573,
-		140581,
-		140582,
-		140583,
-		'Mission Time Reduction',
-		139813,
-		139814,
-		139799,
-		'Combat Ally Bonus',
-		139792,
-		139808,
-		139809,
-		139795,
-		139811,
-		139812,
-		'Troop Affinity',
-		139875,
-		139876,
-		139877,
-		139878,
-		139835,
-		139836,
-		139837,
-		139838,
-		139863,
-		139864,
-		139865,
-		139866,
-		139847,
-		139848,
-		139849,
-		139850,
-		139843,
-		139844,
-		139845,
-		139846,
-		139859,
-		139860,
-		139861,
-		139862,
-		139867,
-		139868,
-		139869,
-		139870,
-		139871,
-		139872,
-		139873,
-		139874,
-		139831,
-		139832,
-		139833,
-		139834,
-		139839,
-		139840,
-		139841,
-		139842,
-		139855,
-		139856,
-		139857,
-		139858,
-		139851,
-		139852,
-		139853,
-		139854,
-		'Legendary Equipment',
-		139830,
-		139828,
-		139829,
-		139827,
-		139825,
-		139826,
-		139821,
-		139804,
-		139819,
-		139824,
-		139823,
-		139822,
+	Krokuls={
+	 152095, -- Krokul Ridgestalke
+   152096, -- Void-Purged Krokul
+   152097, -- Lightforged Bulwark
 	},
-	ArtifactPower={130152,131751,131753,131763,131795,131802,131808,132897,132950,136356,136655,136656,136657,136658,136659,136660,136661,136662,136663,136664,138480,138487,138732,138781,138782,138783,138785,138786,138812,138813,138814,138816,138839,138864,138865,138880,138881,138885,138886,139390,139506,139507,139508,139509,139510,139511,139512,139591,139608,139609,139610,139611,139612,139613,139614,139615,139616,139617,140176,140237,140238,140241,140244,140247,140250,140251,140252,140254,140255,140304,140305,140306,140307,140310,140322,140349,140357,140358,140359,140361,140364,140365,140366,140367,140368,140369,140370,140371,140372,140373,140374,140377,140379,140380,140381,140382,140383,140384,140385,140386,140387,140388,140389,140391,140392,140393,140396,140409,140410,140421,140422,140444,140445,140459,140460,140461,140462,140463,140466,140467,140468,140469,140470,140471,140473,140474,140475,140476,140477,140478,140479,140480,140481,140482,140484,140485,140486,140487,140488,140489,140490,140491,140492,140494,140497,140498,140503,140504,140505,140507,140508,140509,140510,140511,140512,140513,140515,140516,140517,140518,140519,140520,140521,140522,140523,140524,140525,140528,140529,140530,140531,140532,140685,140847,141023,141024,141310,141313,141314,141335,141383,141384,141385,141386,141387,141388,141389,141390,141391,141392,141393,141394,141395,141396,141397,141398,141399,141400,141401,141402,141403,141404,141405,141638,141639,141667,141668,141669,141670,141671,141672,141673,141674,141675,141676,141677,141678,141679,141680,141681,141682,141683,141684,141685,141689,141690,141699,141701,141702,141703,141704,141705,141706,141707,141708,141709,141710,141711,141852,141853,141854,141855,141856,141857,141858,141859,141863,141872,141876,141877,141883,141886,141887,141888,141889,141890,141891,141892,141896,141921,141922,141923,141924,141925,141926,141927,141928,141929,141930,141931,141932,141933,141934,141935,141936,141937,141940,141941,141942,141943,141944,141945,141946,141947,141948,141949,141950,141951,141952,141953,141954,141955,141956,142001,142002,142003,142004,142005,142006,142007,142054,142449,142450,142451,142454,142455,142533,142534,142535,142555,143333,143486,143487,143488,143498,143499,143533,143536,143538,143540,143677,143680,143713,143714,143715,143716,143738,143739,143740,143741,143742,143743,143744,143745,143746,143747,143749,143757,143844,143868,143869,143870,143871}
+	ANY={
+	 143605, -- Strange Ball of Energy
+	 142209, --  Dinner Invitation
+	},
+	DEATHKNIGHT={
+	 140767, -- Pile of Bits and Bones
+	 140749, -- Horn of Winter
+	},
+	DEMONHUNTER={
+	 143849, -- Summon Royal Guard
+	 139177, -- Shattered Soul
+	},
+	DRUID={
+	 139420, --  Wild Mushroom
+	},
+	HUNTER={
+	},
+	MAGE={
+	 138883, --  Meryl's Conjured Refreshment
+	 143852, -- Lucky Rabbit's Foo
+	},
+	MONK={
+	 139419, -- Golden Banana
+	},
+	PALADIN={
+	 140760, -- Libram of Truth 
+	 140929, -- Squire's Oath
+	},
+	PRIEST={
+	 139376, -- Healing Well
+	},
+	ROGUE={
+	 139428, -- A Master Plan 
+	 140931, -- Bandit wanted poster
+	},
+	SHAMAN={
+	 143850, -- Summon Grimtotem Warrior
+	 139418, -- Healing Stream Totem
+	},
+	WARLOCK={
+	 138412, -- Iresoul's Healthstone
+   140922, -- Imp Pact 
+	},
+	WARRIOR={
+	 139670, --  Scream of the Dead
+	},
+	Class={},
+	Equipments={}
 }
+local icon2item={}
+local itemquality={}
 function addon:GetData(key)
 	key=key or "none"
 	return data[key] or fake
 end
+local tickle
 function module:OnInitialized()
-	if addon.allArtifactPower then
-		wipe(data.ArtifactPower)
+  data.Equipments=addon.allEquipments
+  local cs=data[select(2,UnitClass("player"))]
+  if cs then
+    data.Class=cs
+  end
+  for _,i in ipairs(data.ANY) do
+    tinsert(data.Class,i)
+  end
 	--[===[@debug@
-	addon:Print("Updating artifact with wowhead data")
+	DevTools_Dump(data.Class)
+	addon:Print("Starting coroutine")
 	--@end-debug@]===]
-		for k,_ in pairs(addon.allArtifactPower) do
-			tinsert(data.ArtifactPower,tonumber(k))
-		end
-	end
-	addon.coroutineExecute(module,0,"TickleServer")
+	addon.coroutineExecute(module,0.1,"TickleServer")
 end
+local GetItemIcon=GetItemIcon
+local GetItemInfo=GetItemInfo
+local pcall=pcall
 function module:AddItem(itemID)
 
 end
-function module:TickleServer()
-	local i=0
-	for _,categories in pairs(data) do
-		for _,itemid in pairs(categories) do
-			if type(itemid)=="number" then
-				local rc,name=pcall(GetItemInfo,itemid)
-				if rc and name then
-					i=i+1
-				end
-				coroutine.yield()
-			end
-		end
-	end
-	--[===[@debug@
-	addon:Print("Precached " .. i .. "items")
-	--@end-debug@]===]
+function addon:GetItemIdByIcon(iconid)
+  if not icon2item[iconid] then icon2item[iconid] = select(2,pcall,GetItemIcon,iconid) end 
+	return icon2item[iconid]
+end
+function addon:GetItemQuality(itemid)
+  if not itemquality[itemid] then itemquality[itemid] = select(4,pcall,GetItemInfo,itemid) end
+	return itemquality[itemid]
+end
+
+do
+  local pairs=pairs
+  local type=type
+  local GetItemIcon=GetItemIcon
+  local GetItemInfo=GetItemInfo
+  local coroutine=coroutine
+  local pcall=pcall
+  local i=0
+  local debugprofilestop=debugprofilestop
+  local start=0
+  local function tickle(category,useleft)
+    for left,right in pairs(category) do
+      local itemid=useleft and left or right
+  		if type(itemid)=="number" and itemid > 10 then
+  			if not itemquality[itemid] then
+  				local rc,name,link,quality=pcall(GetItemInfo,itemid)
+  				if rc and name then
+  					itemquality[itemid]=quality
+  					icon2item[GetItemIcon(itemid)]=itemid
+  					i=i+1
+  --[===[@debug@
+  					if i % 100 == 0 then
+  						addon:Print(format("Precached %d items in %.3f so far",i,(debugprofilestop()-start)))
+  					end
+  --@end-debug@]===]
+  				end
+  				if coroutine.running() then coroutine.yield() end
+  			end
+  		end
+  	end
+  end
+  function module:TickleServer()
+  	start=debugprofilestop()
+  	tickle(data.Equipments)
+    tickle(addon.allArtifactPower,true)
+  	--[===[@debug@
+  	addon:Print(format("Precached %d items in %.3f seconds",i,(debugprofilestop()-start)/1000))
+  	--@end-debug@]===]
+  end
 end

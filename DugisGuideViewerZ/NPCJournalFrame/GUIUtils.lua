@@ -293,6 +293,7 @@ function GUIUtils:CreateHintFrame(x, y, width, height, hintTexture)
     frame:SetMovable(false)
     frame:EnableMouse(false)
     self:SetNextFrameLevel(frame, 30)
+    frame:SetFrameStrata("DIALOG")
     
     window.width = width
     
@@ -850,7 +851,7 @@ function GUIUtils:SetTreeData(targetTreeFrame, wrapper, treePrefix, nodes, paren
 
     local isRoot = false
     
-    LuaUtils:Yield(isInThread)
+	LuaUtils:RestIfNeeded(isInThread)
     
     if wrapper == nil then
         wrapper = _G[treePrefix.."wrapper"]
@@ -920,7 +921,7 @@ function GUIUtils:SetTreeData(targetTreeFrame, wrapper, treePrefix, nodes, paren
     
     -- Creating all visual nodes and leafs
     LuaUtils:foreach(nodes, function(nodeData, i)
-        LuaUtils:Yield(isInThread)
+		LuaUtils:RestIfNeeded(isInThread)
         if nodeData.isLeaf then
             local treeResultsLeafName = treePrefix .. "DGVTreeLeaf_L"..reqLevel.. "_" .. leafIndex
             leafIndex = leafIndex + 1
@@ -995,7 +996,7 @@ function GUIUtils:SetTreeData(targetTreeFrame, wrapper, treePrefix, nodes, paren
     local totalIndex = 0
     local function UpdateSubTree(visualNodes, visualParentNode, currentYOffset, wrapper, level, columnDeltaX, noScrollMode, columnWidth, isInThread)
     
-        LuaUtils:Yield(isInThread)
+		LuaUtils:RestIfNeeded(isInThread)
         
         columnDeltaX = columnDeltaX or 0
     
@@ -1008,7 +1009,8 @@ function GUIUtils:SetTreeData(targetTreeFrame, wrapper, treePrefix, nodes, paren
     
         local localYOffset = 0
         LuaUtils:foreach(visualNodes, function(visualNode, index)
-            LuaUtils:Yield(isInThread)
+			LuaUtils:RestIfNeeded(isInThread)
+			
             local x = 15 * level + columnDeltaX
 
             if visualNode.nodeData.isLeaf then
@@ -1334,6 +1336,53 @@ function GUIUtils:HighlightFrame(frame, color)
     end
 end
 
+function GUIUtils:MakeColorPicker(checkox, initialColor, changedCallback )
+	if not checkox.colorInitialized then
+	
+		function checkox:SetColor(color)
+			self.color = color
+			return self.colorTexure:SetColorTexture(unpack(self.color))
+		end		
+	
+		function checkox:GetColor()
+			return self.color
+		end	
+	
+		local frame = CreateFrame("Frame", nil , checkox)
+		frame:SetPoint("TOPLEFT", checkox, "TOPLEFT", 4, -4)
+		frame:SetPoint("BOTTOMRIGHT", checkox, "BOTTOMRIGHT", -4, 4)
+		frame:EnableMouse(true)
+		frame:Show()
+		
+		frame:SetScript("OnMouseDown", function()
+			local r, g, b = unpack(checkox:GetColor()) 
+			
+			GUIUtils.isShowing = true
+			GUIUtils:ShowColorPicker(r, g, b, 1, function()
+				if not GUIUtils.isShowing then
+					local r, g, b = ColorPickerFrame:GetColorRGB()
+					checkox:SetColor({r, g, b})
+					
+					if changedCallback then
+						changedCallback(r, g, b)
+					end
+				end
+			end)
+			
+			GUIUtils.isShowing = false
+		end)
+
+		local colorTexure = frame:CreateTexture("BACKGROUND")
+		colorTexure:SetAllPoints()
+		colorTexure:Show()
+		
+		checkox.colorInitialized = true
+		checkox.colorTexure = colorTexure
+	end
+	
+	checkox:SetColor(initialColor or {1, 1, 1})
+end
+
 function GUIUtils:CreatePreloader(name, parent)
     local preloader = CreateFrame("Frame", name , parent, "DugisPreloader")
     preloader:SetAllPoints()
@@ -1382,4 +1431,14 @@ function GUIUtils:ShowBindings(categoryName)
             button:Click()
         end
     end)
+end
+
+function GUIUtils:ShowColorPicker(r, g, b, a, changedCallback)
+	ColorPickerFrame:SetColorRGB(r,g,b);
+	ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = (a ~= nil), a;
+	ColorPickerFrame.previousValues = {r,g,b,a};
+	ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = 
+	changedCallback, nil, nil;
+	ColorPickerFrame:Hide(); 
+	ColorPickerFrame:Show();
 end

@@ -11,6 +11,10 @@ local state = ns.state
 local getResourceID = ns.getResourceID
 local getSpecializationKey = ns.getSpecializationKey
 
+local mt_resource = ns.metatables.mt_resource
+
+local upper = string.upper
+
 
 ns.initializeClassModule = function()
     -- do nothing, overwrite this stub with a class module.
@@ -26,8 +30,8 @@ ns.addToggle = function( name, default, optionName, optionDesc )
         oDesc = optionDesc
     } )
 
-    if Hekili.DB.profile['Toggle State: '..name] == nil then
-        Hekili.DB.profile['Toggle State: '..name] = default
+    if Hekili.DB.profile[ 'Toggle State: ' .. name ] == nil then
+        Hekili.DB.profile[ 'Toggle State: ' .. name ] = default
     end
 
 end
@@ -41,8 +45,8 @@ ns.addSetting = function( name, default, options )
         option = options
     } )
 
-    if Hekili.DB.profile['Class Option: '..name] == nil then
-        Hekili.DB.profile['Class Option: '..name] = default
+    if Hekili.DB.profile[ 'Class Option: ' .. name ] == nil then
+        Hekili.DB.profile[ 'Class Option: ' ..name ] = default
     end
 
 end
@@ -78,12 +82,12 @@ ns.overrideBinds = function()
 
     for i, toggle in ipairs( class.toggles ) do
         for j = 1, 5 do
-            if Hekili.DB.profile['Toggle '..j..' Name'] == toggle.name then
-                Hekili.DB.profile['Toggle '..j..' Name'] = nil
+            if Hekili.DB.profile[ 'Toggle ' .. j .. ' Name' ] == toggle.name then
+                Hekili.DB.profile[ 'Toggle ' .. j .. ' Name' ] = nil
             end
         end
-        if Hekili.DB.profile['Toggle Bind: ' .. toggle.name] then
-            SetOverrideBindingClick( Hekili_Keyhandler, true, Hekili.DB.profile['Toggle Bind: '..toggle.name], "Hekili_Keyhandler", toggle.name )
+        if Hekili.DB.profile[ 'Toggle Bind: ' .. toggle.name ] then
+            SetOverrideBindingClick( Hekili_Keyhandler, true, Hekili.DB.profile[ 'Toggle Bind: ' .. toggle.name ], "Hekili_Keyhandler", toggle.name )
             overrideInitialized = true
         end
     end
@@ -98,6 +102,11 @@ end
 
 ns.addCastExclusion = function( spellID )
     class.castExclusions[ spellID ] = true
+end
+
+
+ns.ignoreCastOnReset = function( spellID )
+    class.resetCastExclusions[ spellID ] = true
 end
 
 
@@ -198,6 +207,105 @@ end
 ns.modifyElement = modifyElement
 
 
+local function addGearSet( name, ... )
+
+    class.gearsets[ name ] = class.gearsets[ name ] or {}
+
+    for i = 1, select( '#', ... ) do
+        local id = select( i, ... )
+        local key = ns.formatKey( GetItemInfo( select( i, ... ) ) or "nothing" )
+        class.gearsets[ name ][ id ] = key
+    end
+
+    ns.commitKey( name )
+
+end
+ns.addGearSet = addGearSet
+
+
+local function setUsableItemCooldown( cd )
+    state.setCooldown( "usable_items", cd or 10 )
+end
+
+
+-- For Trinket Settings.
+class.itemSettings = {}
+
+function addItemSettings( key, itemID, options )
+
+    options = options or {}
+
+    --[[ options.icon = {
+        type = "description",
+        name = function () return select( 2, GetItemInfo( itemID ) ) or format( "[%d]", itemID )  end,
+        order = 1,
+        image = function ()
+            local tex = select( 10, GetItemInfo( itemID ) )
+            if tex then
+                return tex, 50, 50 
+            end
+            return nil
+        end,
+        imageCoords = { 0.1, 0.9, 0.1, 0.9 },
+        width = "full",
+        fontSize = "large"
+    } ]]
+
+    options.disabled = {
+        type = "toggle",
+        name = function () return format( "Disable %s via |cff00ccff[Use Items]|r", select( 2, GetItemInfo( itemID ) ) or ( "[" .. itemID .. "]" ) ) end,
+        desc = function( info )
+            local output = "If disabled, the addon will not recommend this item via the |cff00ccff[Use Items]|r action.  " ..
+                "You can still manually include the item in your action lists with your own tailored criteria."
+            return output
+        end,
+        order = 25,
+        width = "full"
+    }
+
+    options.minimum = {
+        type = "range",
+        name = "Minimum Targets",
+        desc = "The addon will only recommend this trinket (via |cff00ccff[Use Items]|r) when there are at least this many targets available to hit.",
+        order = 26,
+        width = "full",
+        min = 1,
+        max = 10,
+        step = 1
+    }
+
+    options.maximum = {
+        type = "range",
+        name = "Maximum Targets",
+        desc = "The addon will only recommend this trinket (via |cff00ccff[Use Items]|r) when there are no more than this many targets detected.\n\n" ..
+            "This setting is ignored if set to 0.",
+        order = 27,
+        width = "full",
+        min = 0,
+        max = 10,
+        step = 1
+    }
+
+    class.itemSettings[ itemID ] = {
+        key = key,
+        name = function () return select( 2, GetItemInfo( itemID ) ) or ( "[" .. itemID .. "]" ) end,
+        item = itemID,
+        options = options,
+    }
+
+end
+
+
+local function addUsableItem( key, id )
+    class.items = class.items or {}
+    class.items[ key ] = id
+
+    addGearSet( key, id )
+    addItemSettings( key, id )
+end
+ns.addUsableItem = addUsableItem
+
+
 -- Wrapper for the ability table.
 local function modifyAbility( k, elem, value )
 
@@ -213,8 +321,21 @@ local function addAbility( key, values, ... )
         ns.Error( "addAbility( " .. key .. " ) - values table is missing 'id' element." )
         return
     end
+
+    if values.item then
+        values.name, values.link = GetItemInfo( values.item )
+
+        if not values.name then
+            values.name = tostring( key )
+            values.recheck_name = true
+        end
+
+        values.texture = select( 10, GetItemInfo( values.item ) ) or 'Interface\\ICONS\\Spell_Nature_BloodLust'
+        addUsableItem( key, values.item )
+    end
     
-    local name = GetSpellInfo( values.id )
+    local name = values.name or GetSpellInfo( values.id )
+
     if not name and values.id > 0 then
         ns.Error( "addAbility( " .. key .. " ) - unable to get name of spell #" .. values.id .. "." )
         return
@@ -233,12 +354,15 @@ local function addAbility( key, values, ... )
     for i = 1, select( "#", ... ) do
         class.abilities[ select( i, ... ) ] = class.abilities[ key ]
     end
-    
-    ns.commitKey( key )
-    
+
     storeAbilityElements( key, values )
     
-    class.searchAbilities[ key ] = '|T' .. ( GetSpellTexture( values.id ) or 'Interface\\ICONS\\Spell_Nature_BloodLust' ) .. ':O|t ' .. class.abilities[ key ].name
+    if not values.item or not values.recheck_name then
+        class.searchAbilities[ key ] = "|T" .. ( values.texture or GetSpellTexture( values.id ) or 'Interface\\ICONS\\Spell_Nature_BloodLust' ) .. ":0|t " .. name
+        if values.suffix then class.searchAbilities[ key ] = class.searchAbilities[ key ] .. " " .. values.suffix end
+    end
+
+    ns.commitKey( key )    
     
 end
 ns.addAbility = addAbility
@@ -299,7 +423,11 @@ local function addAura( key, id, ... )
 
         -- Add the elements, front-loading defaults and just overriding them if something else is specified.
         storeAuraElements( key, 'name', name, 'duration', 30, 'max_stack', 1, ... )
-        
+
+        if class.auras[ key ].incapacitate then
+            table.insert( class.incapacitates, key )
+        end
+                
     end
     
     -- Allow reference by ID and name as well.
@@ -330,6 +458,16 @@ end
 ns.addGlyph = addGlyph 
 
 
+local function addPet( key, permanent )
+    state.pet[ key ] = rawget( state.pet, key ) or {}
+    state.pet[ key ].name = key
+    state.pet[ key ].expires = 0
+
+    ns.commitKey( key )
+end
+ns.addPet = addPet
+
+
 local function addPerk( key, id )
 
     local name = GetSpellInfo( id )
@@ -340,13 +478,12 @@ local function addPerk( key, id )
     end
 
     class.perks[ key ] = {
-    id = id,
-    key = key,
-    name = name
-}
+        id = id,
+        key = key,
+        name = name
+    }
 
-ns.commitKey( key )
-
+    ns.commitKey( key )
 end
 ns.addPerk = addPerk
 
@@ -371,11 +508,21 @@ end
 ns.addTalent = addTalent
 
 
-local function addResource( resource, primary )
+local function addResource( resource, power_type )
 
-    class.resources[ resource ] = true
+    class.resources[ resource ] = power_type
 
     if primary or #class.resources == 1 then class.primaryResource = resource end
+
+    state[ resource ] = rawget( state, resource ) or setmetatable( {
+        resource = key,
+        forecast = {},
+        fcount = 0,
+        times = {},
+        values = {},
+        last_tick = 0
+    }, mt_resource )
+    state[ resource ].regenerates = not no_regen
 
     ns.commitKey( resource )
 
@@ -386,24 +533,18 @@ ns.addResource = addResource
 local function removeResource( resource )
 
     class.resources[ resource ] = nil
+    -- class.regenModel = nil
+
     if class.primaryResource == resource then class.primaryResource = nil end
 
 end
 ns.removeResource = removeResource
 
 
-local function addGearSet( name, ... )
-
-    class.gearsets[ name ] = class.gearsets[ name ] or {}
-
-    for i = 1, select( '#', ... ) do
-        class.gearsets[ name ][ select( i, ... ) ] = ns.formatKey( GetItemInfo( select( i, ... ) ) or "nothing" )
-    end
-
-    ns.commitKey( name )
-
+local function setRegenModel( db )
+    class.regenModel = db
 end
-ns.addGearSet = addGearSet
+ns.setRegenModel = setRegenModel
 
 
 local function setPotion( potion )
@@ -459,6 +600,7 @@ local function runHandler( key, no_start )
     if state.time == 0 and not no_start and not ability.passive then
         state.false_start = state.query_time - 0.01
 
+        --[[ Old System -- remove?
         -- Generate fake weapon swings.
         state.nextMH = state.query_time + 0.01
         state.nextOH = state.swings.oh_speed and state.query_time + ( state.swings.oh_speed / 2 ) or 0
@@ -466,7 +608,7 @@ local function runHandler( key, no_start )
         if state.swings.mh_actual < state.query_time then        
             state.swings.mh_pseudo = state.query_time + 0.01
             if state.swings.oh_speed then state.swings.oh_pseudo = state.query_time + ( state.swings.oh_speed / 2 ) end
-        end
+        end ]]
         
     end
 
@@ -517,22 +659,30 @@ ns.specializationChanged = function()
     state.GUID = UnitGUID( 'player' )
     state.player.unit = UnitGUID( 'player' )
 
-    ns.updateTalents()
     ns.updateGear()
+    ns.updateTalents()
 
     ns.callHook( 'specializationChanged' )
     ns.cacheCriteria()
 
-    for i, v in ipairs( ns.queue ) do
+    ns.forceUpdate()
+    --[[ for i, v in ipairs( ns.queue ) do
         for j = 1, #v do
             ns.queue[i][j] = nil
         end
         ns.queue[i] = nil
-    end
+    end ]]
 
 end
 
 
+local function setTalentLegendary( item, spec, talent )
+
+    class.talentLegendary[ item ] = class.talentLegendary[ item ] or {}
+    class.talentLegendary[ item ][ spec ] = talent
+
+end
+ns.setTalentLegendary = setTalentLegendary
 
 ------------------------------
 -- SHARED SPELLS/BUFFS/ETC. --
@@ -613,8 +763,6 @@ addAura( 'archmages_greater_incandescence_str', 177175, 'duration', 10 )
 addAura( 'maalus', 187620, 'duration', 15 )
 addAura( 'thorasus', 187619, 'duration', 15 )
 
-addAura( 'xavarics_magnum_opus', 207428, 'duration', 30 )
-
 -- Raid Buffs
 addAura( 'str_agi_int', -1, 'duration', 3600 )
 addAura( 'stamina', -2, 'duration', 3600 )
@@ -625,6 +773,7 @@ addAura( 'critical_strike', -6, 'duration', 3600 )
 addAura( 'mastery', -7, 'duration', 3600 )
 addAura( 'multistrike', -8, 'duration', 3600 )
 addAura( 'versatility', -9, 'duration', 3600 )
+
 
 addAura( 'casting', -10, 'feign', function()
     if target.casting then
@@ -641,6 +790,8 @@ addAura( 'casting', -10, 'feign', function()
     debuff.casting.caster = 'unknown'
 end )
 
+
+addAura( 'unknown_buff', -11 )
 
 
 
@@ -716,7 +867,6 @@ modifyAbility( 'arcane_torrent', 'id', function( x )
 end )
 
 addHandler( 'arcane_torrent', function ()
-
     interrupt()
     
     if class.death_knight then gain( 20, "runic_power" )
@@ -726,16 +876,31 @@ addHandler( 'arcane_torrent', function ()
     elseif class.rogue then gain( 15, "energy" )
     elseif class.warrior then gain( 15, "rage" )
     elseif class.hunter then gain( 15, "focus" ) end
-
 end )
 
 ns.registerInterrupt( 'arcane_torrent' )
 
 
+addAura( "shadowmeld", 58984, "duration", 3600 )
+
+addAbility( "shadowmeld", {
+    id = 58984,
+    cast = 0,
+    gcdType = "off",
+    cooldown = 120,
+    passive = true,
+    known = function () return race.night_elf end,
+    usable = function () return boss end, -- Only use in boss combat, dropping aggro is for the birds.
+} )
+
+addHandler( "shadowmeld", function ()
+    applyBuff( "shadowmeld" )
+end )
+
+
 addAbility( 'call_action_list', {
     id = -1,
-    name = 'Call Action List',
-    spend = 0,
+    name = '|cff00ccff[Call Action List]|r',
     cast = 0,
     gcdType = 'off',
     cooldown = 0,
@@ -745,8 +910,7 @@ addAbility( 'call_action_list', {
 
 addAbility( 'run_action_list', {
     id = -2,
-    name = 'Run Action List',
-    spend = 0,
+    name = '|cff00ccff[Run Action List]|r',
     cast = 0,
     gcdType = 'off',
     cooldown = 0,
@@ -757,8 +921,7 @@ addAbility( 'run_action_list', {
 -- Special Instructions
 addAbility( 'wait', {
     id = -3,
-    name = 'Wait',
-    spend = 0,
+    name = '|cff00ccff[Wait]|r',
     cast = 0,
     gcdType = 'off',
     cooldown = 0,
@@ -766,15 +929,78 @@ addAbility( 'wait', {
 } )
 
 
+addAbility( 'pool_resource', {
+    id = -4,
+    name = '|cff00ccff[Pool Resource]|r',
+    cast = 0,
+    gcdType = 'off',
+    cooldown = 0,
+    passive = true
+} )
+
+
+
 -- Universal Gear Stuff
 addGearSet( 'rethus_incessant_courage', 146667 )
-addAura( 'rethus_incessant_courage', 241330 )
+    addAura( 'rethus_incessant_courage', 241330 )
 
 addGearSet( 'vigilance_perch', 146668 )
-addAura( 'vigilance_perch', 241332, 'duration', 60, 'max_stack', 5 )
+    addAura( 'vigilance_perch', 241332, 'duration', 60, 'max_stack', 5 )
 
 addGearSet( 'the_sentinels_eternal_refuge', 146669 )
-addAura( 'the_sentinels_eternal_refuge', 241331, 'duration', 60, 'max_stack', 5 )
+    addAura( 'the_sentinels_eternal_refuge', 241331, 'duration', 60, 'max_stack', 5 )
+
+addGearSet( 'prydaz_xavarics_magnum_opus', 132444 )
+    addAura( 'xavarics_magnum_opus', 207428, 'duration', 30 )
+
+addGearSet( 'aggramars_stride', 132443 )
+    addAura( 'aggramars_stride', 207438, 'duration', 3600 )
+
+addGearSet( 'sephuzs_secret', 132452 )
+    addAura( 'sephuzs_secret', 208051, 'duration', 10 )
+
+addGearSet( 'amanthuls_vision', 154172 )
+    addAura( 'glimpse_of_enlightenment', 256818, 'duration', 12 )
+    addAura( 'amanthuls_grandeur', 256832, 'duration', 15 )
+
+addGearSet( 'insignia_of_the_grand_army', 152626 )
+
+addGearSet( 'eonars_compassion', 154172 )
+    addAura( 'mark_of_eonar', 256824, 'duration', 12 )
+    addAura( 'eonars_verdant_embrace', 257475, 'duration', 20 )
+        class.auras[ 257470 ] = class.auras[ 257475 ]
+        class.auras[ 257471 ] = class.auras[ 257475 ]
+        class.auras[ 257472 ] = class.auras[ 257475 ]
+        class.auras[ 257473 ] = class.auras[ 257475 ]
+        class.auras[ 257474 ] = class.auras[ 257475 ]
+    modifyAura( 'eonars_verdant_embrace', 'id', function( x )
+        if class.file == "SHAMAN" then return x end
+        if class.file == "DRUID" then return 257470 end
+        if class.file == "MONK" then return 257471 end
+        if class.file == "PALADIN" then return 257472 end
+        if class.file == "PRIEST" then
+            if spec.discipline then return 257473 end
+            if spec.holy then return 257474 end
+        end
+        return x
+    end )
+    addAura( 'verdant_embrace', 257444, 'duration', 30 )
+
+
+addGearSet( 'aggramars_conviction', 154173 )
+    addAura( 'celestial_bulwark', 256816, 'duration', 14 )
+    addAura( 'aggramars_fortitude', 256831, 'duration', 15 )
+
+addGearSet( 'golganneths_vitality', 154174 )
+    addAura( 'golganneths_thunderous_wrath', 256833, 'duration', 15 )
+
+addGearSet( 'khazgoroths_courage', 154176 )
+    addAura( 'worldforgers_flame', 256826, 'duration', 12 )
+    addAura( 'khazgoroths_shaping', 256835, 'duration', 15 )
+
+addGearSet( 'norgannons_prowess', 154177 )
+    addAura( 'rush_of_knowledge', 256828, 'duration', 12 )
+    addAura( 'norgannons_command', 256836, 'duration', 15, 'max_stack', 6 )
 
 
 class.potions = {
@@ -795,7 +1021,7 @@ class.potions = {
 
 addAbility( 'potion', {
     id = -4,
-    name = 'Potion',
+    name = '|cff00ccff[Potion]|r',
     spend = 0,
     cast = 0,
     gcdType = 'off',
@@ -806,6 +1032,7 @@ addAbility( 'potion', {
         if not toggle.potions then return false end
 
         local pName = args.ModName or args.name or class.potion
+
         local potion = class.potions[ pName ]
 
         if not potion or GetItemCount( potion.item ) == 0 then return false end
@@ -829,25 +1056,243 @@ addHandler( 'potion', function ()
 end )
 
 
-
---[[ 
-addAbility( 'use_item', {
-    id = -3,
-    name = 'Use Item',
+addAbility( "use_items", {
+    id = -99,
+    name = "|cff00ccff[Use Items]|r",
     spend = 0,
     cast = 0,
+    cooldown = 120,
     gcdType = 'off',
-    cooldown = 60,
+    toggle = 'cooldowns',
+} )
+
+
+addAbility( "draught_of_souls", {
+    id = -101,
+    item = 140808,
+    spend = 0,
+    cast = 0,
+    cooldown = 80,
+    gcdType = 'off',
+    toggle = 'cooldowns',
+} )
+
+addAura( "fel_crazed_rage", 225141, "duration", 3, "incapacitate", true )
+
+addHandler( "draught_of_souls", function ()
+    applyBuff( "fel_crazed_rage", 3 )
+    setCooldown( "global_cooldown", 3 )
+end )
+
+
+addAbility( "faulty_countermeasure", {
+    id = -102,
+    item = 137539,
+    spend = 0,
+    cast = 0,
+    cooldown = 120,
+    gcdType = 'off',
+    toggle = 'cooldowns',
+} )
+
+addAura( "sheathed_in_frost", 214962, "duration", 30 )
+
+addHandler( "faulty_countermeasure", function ()
+    applyBuff( "sheathed_in_frost", 30 )
+end )
+
+
+addUsableItem( "feloiled_infernal_machine", 144482 )
+
+addAbility( "feloiled_infernal_machine", {
+    id = -103,
+    item = 144482,
+    spend = 0,
+    cast = 0,
+    cooldown = 80,
+    gcdType = 'off',
     toggle = 'cooldowns'
 } )
 
-class.items = {
-} ]]
+addAura( "grease_the_gears", 238534, "duration", 20 )
+
+addHandler( "feloiled_infernal_machine", function ()
+    applyBuff( "grease_the_gears" )
+end )
+
+
+addAbility( "forgefiends_fabricator", {
+    id = -104,
+    item = 151963,
+    spend = 0,
+    cast = 0,
+    cooldown = 30,
+    gcdType = 'off',
+} )
+
+
+addUsableItem( "horn_of_valor", 133642 )
+
+addAbility( "horn_of_valor", {
+    id = -105,
+    item = 133642,
+    spend = 0,
+    cast = 0,
+    cooldown = 120,
+    gcdType = 'off',
+    toggle = 'cooldowns',
+} )
+
+addAura( "valarjars_path", 215956, "duration", 30 )
+
+addHandler( "horn_of_valor", function ()
+    applyBuff( "valarjars_path" )
+end )
+
+
+addUsableItem( "kiljaedens_burning_wish", 144259 )
+
+addAbility( "kiljaedens_burning_wish", {
+    id = -106,
+    item = 144259,
+    spend = 0,
+    cast = 0,
+    cooldown = 75,
+    texture = 1357805,
+    gcdType = 'off',
+    toggle = 'cooldowns',
+} )
+
+
+addAbility( "might_of_krosus", {
+    id = -107,
+    item = 140799,
+    spend = 0,
+    cast = 0,
+    cooldown = 30,
+    gcdType = 'off',
+} )
+
+addHandler( "might_of_krosus", function ()
+    if active_enemies > 3 then setCooldown( "might_of_krosus", 15 ) end
+end )
+
+
+addUsableItem( "ring_of_collapsing_futures", 142173 )
+
+addAbility( "ring_of_collapsing_futures", {
+    id = -108,
+    item = 142173,
+    spend = 0,
+    cast = 0,
+    cooldown = 15,
+    gcdType = 'off',
+} )
+
+addAura( 'temptation', 234143, 'duration', 30, 'max_stack', 20 )
+
+addHandler( "ring_of_collapsing_futures", function ()
+    applyDebuff( "player", "temptation", 30, buff.temptation.stack + 1 )
+end )
+
+
+addUsableItem( "specter_of_betrayal", 151190 )
+
+addAbility( "specter_of_betrayal", {
+    id = -109,
+    item = 151190,
+    spend = 0,
+    cast = 0,
+    cooldown = 45,
+    gcdType = 'off',
+} )
+
+
+addUsableItem( "tiny_oozeling_in_a_jar", 137439 )
+
+addAbility( "tiny_oozeling_in_a_jar", {
+    id = -110,
+    item = 137439,
+    spend = 0,
+    cast = 0,
+    cooldown = 20,
+    gcdType = "off",
+    usable = function () return buff.congealing_goo.stack == 6 end,
+} )
+
+addAura( "congealing_goo", 215126, "duration", 60, "max_stack", 6 )
+
+addHandler( "tiny_oozeling_in_a_jar", function ()
+    removeBuff( "congealing_goo" )
+end )
+
+
+addUsableItem( "umbral_moonglaives", 147012 )
+
+addAbility( "umbral_moonglaives", {
+    id = -111,
+    item = 147012,
+    spend = 0,
+    cast = 0,
+    cooldown = 90,
+    gcdType = 'off',
+    toggle = 'cooldowns',
+} )
+
+
+addUsableItem( "unbridled_fury", 139327 )
+
+addAbility( "unbridled_fury", {
+    id = -112,
+    item = 139327,
+    spend = 0,
+    cast = 0,
+    cooldown = 120,
+    gcdType = 'off',
+    toggle = 'cooldowns',
+} )
+
+addAura( "wild_gods_fury", 221695, "duration", 30 )
+
+addHandler( "unbridled_fury", function ()
+    applyBuff( "unbridled_fury" )
+end )
+
+
+addUsableItem( "vial_of_ceaseless_toxins", 147011 )
+
+addAbility( "vial_of_ceaseless_toxins", {
+    id = -113,
+    item = 147011,
+    spend = 0,
+    cast = 0,
+    cooldown = 60,
+    gcdType = 'off',
+    toggle = 'cooldowns',
+} )
+
+addAura( "ceaseless_toxin", 242497, "duration", 20 )
+
+addHandler( "vial_of_ceaseless_toxins", function ()
+    applyDebuff( "target", "ceaseless_toxin", 20 )
+end )
+
+
+class.itemsInAPL = {}
+
+-- If an item is handled by a spec's APL, drop it from Use Items.
+function ns.registerItem( key, spec )
+    if not key or not spec then return end
+
+    class.itemsInAPL[ spec ] = class.itemsInAPL[ spec ] or {}
+
+    class.itemsInAPL[ spec ][ key ] = not class.itemsInAPL[ spec ][ key ]
+end
 
 
 addAbility( 'variable', {
     id = -5,
-    name = 'Store Value',
+    name = '|cff00ccff[Store Value]|r',
     spend = 0,
     cast = 0,
     gcdType = 'off',
@@ -856,991 +1301,8 @@ addAbility( 'variable', {
     
     
 class.trinkets = {
-        [0] = { -- for when nothing is equipped.
-        },
-        [124225] = { -- Soul Capacitor
-        duration = 10,
-        },
-        [114429] = {
-        stat = 'mastery',
-        duration = 10,
-        },
-        [109998] = {
-        stat = 'multistrike',
-        duration = 15,
-        cooldown = 90,
-        },
-        [114430] = {
-        stat = 'haste',
-        duration = 10,
-        },
-        [110007] = {
-        stat = 'critical_strike',
-        duration = 20,
-        cooldown = 120,
-        },
-        [109999] = {
-        stat = 'haste',
-        duration = 10,
-        },
-        [110008] = {
-        stat = 'mastery',
-        duration = 15,
-        cooldown = 90,
-        },
-        [110009] = {
-        stat = 'versatility',
-        duration = 10,
-        },
-        [114427] = {
-        stat = 'critical_strike',
-        duration = 10,
-        },
-        [110012] = {
-        stat = 'critical_strike',
-        duration = 20,
-        cooldown = 120,
-        },
-        [110013] = {
-        stat = 'versatility',
-        duration = 15,
-        cooldown = 90,
-        },
-        [110002] = {
-        stat = 'haste',
-        duration = 20,
-        cooldown = 120,
-        },
-        [110014] = {
-        stat = 'haste',
-        duration = 10,
-        },
-        [114428] = {
-        stat = 'versatility',
-        duration = 10,
-        },
-        [110003] = {
-        stat = 'versatility',
-        duration = 15,
-        cooldown = 90
-        },
-        [109997] = {
-        stat = 'mastery',
-        duration = 20,
-        cooldown = 120,
-        },
-        [110017] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [110004] = {
-        stat = 'multistrike',
-        duration = 10,
-        },
-        [110018] = {
-        stat = 'mastery',
-        duration = 15,
-        cooldown = 90
-        },
-        [110019] = {
-        stat = 'mastery',
-        duration = 10,
-        },
-        [114431] = {
-        stat = 'versatility',
-        duration = 10,
-        },
-        [119937] = {
-        stat = 'strength',
-        duration = 20,
-        },
-        [120049] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [109262] = {
-        stat = 'primary',
-        duration = 15,
-        },
-        [115149] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [115150] = {
-        stat = 'agility',
-        duration = 20,
-        },
-        [115151] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [115152] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [115153] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [115154] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [115155] = {
-        stat = 'intellect',
-        duration = 20,
-        },
-        [115159] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [115160] = {
-        stat = 'strength',
-        duration = 20
-        },
-        [115521] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [119926] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [119927] = {
-        stat = 'agility',
-        duration = 20,
-        },
-        [119928] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [119929] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [119930] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [119934] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [119932] = {
-        stat = 'intellect',
-        duration = 20,
-        },
-        [119936] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [110018] = {
-        stat = 'mastery',
-        duration = 15,
-        cooldown = 90,
-        },
-        [110019] = {
-        stat = 'mastery',
-        duration = 10,
-        },
-        [110014] = {
-        stat = 'haste',
-        duration = 10,
-        },
-        [110013] = {
-        stat = 'versatility',
-        duration = 15,
-        cooldown = 90,
-        },
-        [110012] = {
-        stat = 'critical_strike',
-        duration = 20,
-        cooldown = 120,
-        },
-        [110009] = {
-        stat = 'versatility',
-        duration = 10,
-        },
-        [110008] = {
-        stat = 'mastery',
-        duration = 15,
-        cooldown = 90,
-        },
-        [110007] = {
-        stat = 'critical_strike',
-        duration = 20,
-        cooldown = 120,
-        },
-        [114488] = {
-        stat = 'mastery',
-        duration = 15,
-        cooldown = 90,
-        },
-        [114489] = {
-        stat = 'haste',
-        duration = 20,
-        cooldown = 120,
-        },
-        [114490] = {
-        stat = 'mastery',
-        duration = 15,
-        cooldown = 90,
-        },
-        [114491] = {
-        stat = 'multistrike',
-        duration = 20,
-        cooldown = 120,
-        },
-        [114492] = {
-        stat = 'haste',
-        duration = 15,
-        cooldown = 90,
-        },
-        [117357] = {
-        stat = 'bonus_armor',
-        duration = 20,
-        cooldown = 120,
-        },
-        [117360] = {
-        stat = 'critical_strike',
-        duration = 10,
-        },
-        [117359] = {
-        stat = 'haste',
-        duration = 10,
-        cooldown = 55,
-        internal = true,
-        },
-        [117358] = {
-        stat = 'critical_strike',
-        duration = 10,
-        cooldown = 55,
-        internal = true,
-        },
-        [122601] = {
-        stat = 'primary',
-        duration = 15,
-        },
-        [116292] = {
-        stat = 'versatility',
-        duration = 10,
-        },
-        [116291] = {
-        stat = 'critical_strike',
-        duration = 10,
-        },
-        [112317] = {
-        stat = 'spirit',
-        duration = 20,
-        cooldown = 115,
-        internal = true,
-        },
-        [112318] = {
-        stat = 'critical_strike',
-        duration = 20,
-        cooldown = 115,
-        internal = true,
-        },
-        [112319] = {
-        stat = 'critical_strike',
-        duration = 20,
-        cooldown = 115,
-        internal = true,
-        },
-        [112320] = {
-        stat = 'critical_strike',
-        duration = 20,
-        cooldown = 115,
-        internal = true,
-        },
-        [114613] = {
-        stat = 'multistrike',
-        duration = 10,
-        },
-        [113645] = {
-        stat = 'critical_strike',
-        duration = 10,
-        },
-        [113612] = {
-        stat = 'multistrike',
-        duration = 10,
-        },
-        [113861] = {
-        stat = 'armor',
-        duration = 10,
-        },
-        [113842] = {
-        stat = 'haste',
-        duration = 20,
-        cooldown = 120,
-        },
-        [113835] = {
-        stat = 'haste',
-        duration = 20,
-        cooldown = 120,
-        },
-        [113834] = {
-        stat = 'mastery',
-        duration = 20,
-        cooldown = 120,
-        },
-        [113663] = {
-        stat = 'mastery',
-        duration = 10,
-        },
-        [114610] = {
-        stat = 'mastery',
-        duration = 10,
-        },
-        [122602] = {
-        stat = 'primary',
-        duration = 15,
-        },
-        [116318] = {
-        stat = 'critical_strike',
-        duration = 10,
-        },
-        [114611] = {
-        stat = 'mastery',
-        duration = 10,
-        },
-        [114612] = {
-        stat = 'haste',
-        duration = 10,
-        },
-        [116315] = {
-        stat = 'haste',
-        duration = 10,
-        },
-        [116314] = {
-        stat = 'multistrike',
-        duration = 10,
-        },
-        [114614] = {
-        stat = 'haste',
-        duration = 10,
-        },
-        [115752] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [115751] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [111222] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [111228] = {
-        stat = 'intellect',
-        duration = 20,
-        },
-        [115760] = {
-        stat = 'strength',
-        duration = 20,
-        },
-        [122754] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [111223] = {
-        stat = 'agility',
-        duration = 20,
-        },
-        [115496] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [111224] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [115753] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [115495] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [115755] = {
-        stat = 'intellect',
-        duration = 20,
-        },
-        [111233] = {
-        stat = 'strength',
-        duration = 20,
-        },
-        [111225] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [115749] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [111232] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [111226] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [115750] = {
-        stat = 'agility',
-        duration = 20,
-        },
-        [115759] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [111227] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [118884] = {
-        stat = 'max_health',
-        duration = 20,
-        cooldown = 120,
-        },
-        [118882] = {
-        stat = 'strength',
-        duration = 15,
-        cooldown = 90
-        },
-        [118880] = {
-        stat = 'mana',
-        cooldown = 120,
-        },
-        [118878] = {
-        stat = 'spell_power',
-        duration = 20,
-        cooldown = 120,
-        },
-        [118876] = {
-        stat = 'agility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [113842] = {
-        stat = 'haste',
-        duration = 20,
-        cooldown = 120,
-        },
-        [113987] = {
-        stacking_stat = 'haste',
-        inverse = true,
-        duration = 10,
-        },
-        [122603] = {
-        stat = 'primary',
-        duration = 15,
-        },
-        [113986] = {
-        stacking_stat = 'haste',
-        inverse = true,
-        duration = 10,
-        },
-        [113985] = {
-        stacking_stat = 'critical_strike',
-        inverse = true,
-        duration = 10,
-        },
-        [113984] = {
-        stacking_stat = 'multistrike',
-        inverse = true,
-        duration = 10,
-        },
-        [118114] = {
-        stat = 'haste',
-        duration = 10,
-        },
-        [113983] = {
-        stacking_stat = 'multistrike',
-        inverse = true,
-        duration = 10,
-        },
-        [113969] = {
-        stat = 'multistrike',
-        duration = 20,
-        cooldown = 120,
-        },
-        [113948] = {
-        stat = 'haste',
-        duration = 10,
-        },
-        [113931] = {
-        stat = 'multistrike',
-        duration = 20,
-        cooldown = 120,
-        },
-        [113905] = {
-        stat = 'bonus_armor',
-        duration = 20,
-        cooldown = 120,
-        },
-        [113893] = {
-        stat = 'mastery',
-        duration = 10,
-        },
-        [113889] = {
-        stat = 'multistrike',
-        duration = 10,
-        },
-        [119192] = {
-        stat = 'spirit',
-        duration = 10,
-        },
-        [119193] = {
-        stat = 'mastery',
-        duration = 10,
-        },
-        [119194] = {
-        stat = 'critical_strike',
-        duration = 10,
-        },
-        [125508] = {
-        stat = 'agility',
-        duration = 20,
-        },
-        [126634] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [126633] = { 
-        stat = 'strength',
-        duration = 20,
-        },
-        [126632] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [126627] = {
-        stat = 'intellect',
-        duration = 20,
-        },
-        [126626] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [126625] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [126624] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [126623] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [126622] = {
-        stat = 'agility',
-        duration = 20,
-        },
-        [126621] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [126157] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [126156] = {
-        stat = 'strength',
-        duration = 20,
-        },
-        [126155] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [126150] = {
-        stat = 'intellect',
-        duration = 20,
-        },
-        [126149] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [126148] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [126147] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [126146] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [126145] = {
-        stat = 'agility',
-        duration = 20,
-        },
-        [126144] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [125520] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [125519] = {
-        stat = 'strength',
-        duration = 20,
-        },
-        [125518] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [125513] = {
-        stat = 'intellect',
-        duration = 20,
-        },
-        [125512] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [125511] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [125510] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [125509] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [125507] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [125030] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [125031] = {
-        stat = 'agility',
-        duration = 20,
-        },
-        [125032] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [125033] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [125034] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120,
-        },
-        [125035] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [125036] = {
-        stat = 'intellect',
-        duration = 20,
-        },
-        [125041] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [125042] = {
-        stat = 'strength',
-        duration = 20,
-        },
-        [125043] = {
-        stat = 'versatility',
-        duration = 20,
-        cooldown = 120,
-        },
-        [124228] = {
-        stat = 'intellect',
-        duration = 20,
-        },
-        [124226] = {
-        stat = 'agility',
-        duration = 20,
-        },
-        [124241] = {
-        stat = 'mastery',
-        duration = 10,
-        },
-        [124236] = {
-        stacking_stat = 'strength',
-        inverse = true,
-        duration = 20,
-            -- need a stack counter function, based on # of attacks.
-            },
-            [124232] = {
-            stat = 'critical_strike',
-            duration = 15,
-            cooldown = 90,
-            },
-            [126460] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [126459] = {
-            stat = 'strength',
-            duration = 20,
-            },
-            [126458] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [124856] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [124857] = {
-            stat = 'agility',
-            duration = 20,
-            },
-            [124858] = {
-            stat = 'max_health',
-            duration = 15,
-            cooldown = 120,
-            },
-            [124859] = {
-            stat = 'max_health',
-            duration = 15,
-            cooldown = 120,
-            },
-            [124860] = {
-            stat = 'max_health',
-            duration = 15,
-            cooldown = 120,
-            },
-            [124861] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [124862] = {
-            stat = 'intellect',
-            duration = 20,
-            },
-            [124867] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [124868] = {
-            stat = 'strength',
-            duration = 20,
-            },
-            [124869] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [125335] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [125336] = {
-            stat = 'agility',
-            duration = 20,
-            },
-            [125337] = {
-            stat = 'max_health',
-            duration = 15,
-            cooldown = 120,
-            },
-            [125338] = {
-            stat = 'max_health',
-            duration = 15,
-            cooldown = 120,
-            },
-            [125339] = {
-            stat = 'max_health',
-            duration = 15,
-            cooldown = 120,
-            },
-            [125340] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [125341] = {
-            stat = 'intellect',
-            duration = 20,
-            },
-            [125344] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [125345] = {
-            stat = 'strength',
-            duration = 20,
-            },
-            [125346] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [126455] = {
-            stat = 'intellect',
-            duration = 20,
-            },
-            [125970] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [125971] = {
-            stat = 'agility',
-            duration = 20,
-            },
-            [125972] = {
-            stat = 'max_health',
-            duration = 15,
-            cooldown = 120,
-            },
-            [125973] = {
-            stat = 'max_health',
-            duration = 15,
-            cooldown = 120,
-            },
-            [125974] = {
-            stat = 'max_health',
-            duration = 15,
-            cooldown = 120,
-            },
-            [125975] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [125976] = {
-            stat = 'intellect',
-            duration = 20,
-            },
-            [125981] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [125982] = {
-            stat = 'strength',
-            duration = 20,
-            },
-            [125983] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [126449] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-            [126450] = {
-            stat = 'agility',
-            duration = 20,
-            },
-            [126451] = {
-            stat = 'max_health',
-            duration = 15,
-            cooldown = 120,
-            },
-            [126452] = {
-            stat = 'max_health',
-            duration = 15,
-            cooldown = 120,
-            },
-            [126453] = {
-            stat = 'max_health',
-            duration = 15,
-            cooldown = 120,
-            },
-            [126454] = {
-            stat = 'versatility',
-            duration = 20,
-            cooldown = 120,
-            },
-
-        --heirlooms
-        [122530] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120
-        },
-        [93900] = {
-        stat = 'max_health',
-        duration = 15,
-        cooldown = 120
-    }
+    [0] = { -- for when nothing is equipped.
+    },
 }
 
 
@@ -1851,31 +1313,35 @@ end
 } )
 
 
-for k, v in pairs( class.trinkets ) do
-    local item = k
-    local buffs = ns.lib.LibItemBuffs:GetItemBuffs( k )
+-- Initialize trinket stuff.
+do
+    local LIB = LibStub( "LibItemBuffs-1.0", true )
+    if LIB then
+        for k, v in pairs( class.trinkets ) do
+            local item = k
+            local buffs = LIB:GetItemBuffs( k )
 
-    if type( buffs ) == 'table' then
-        for i, buff in ipairs( buffs ) do
-            buff = GetSpellInfo( buff )
-            if buff then
-                addAura( ns.formatKey( buff ), i, 'stat', v.stat, v.duration and "duration", v.duration )
-                class.trinkets[ k ].buff = ns.formatKey( buff )
+            if type( buffs ) == 'table' then
+                for i, buff in ipairs( buffs ) do
+                    buff = GetSpellInfo( buff )
+                    if buff then
+                        addAura( ns.formatKey( buff ), i, 'stat', v.stat, v.duration and "duration", v.duration )
+                        class.trinkets[ k ].buff = ns.formatKey( buff )
+                    end
+                end
+            elseif type( buffs ) == 'number' then
+                local buff = GetSpellInfo( buffs )
+                if buff then
+                    addAura( ns.formatKey( buff ), buffs, 'stat', v.stat, v.duration and "duration", v.duration )
+                    class.trinkets[ k ].buff = ns.formatKey( buff )
+                end
             end
-        end
-    elseif type( buffs ) == 'number' then
-        local buff = GetSpellInfo( buffs )
-        if buff then
-            addAura( ns.formatKey( buff ), buffs, 'stat', v.stat, v.duration and "duration", v.duration )
-            class.trinkets[ k ].buff = ns.formatKey( buff )
         end
     end
 end
     
     
-    
 -- DEFAULTS
-
 
 class.retiredDefaults = {}
 
@@ -2007,80 +1473,51 @@ ns.restoreDefaults = function( category, purge )
                         import.Default = true
                         
                         if index then
-                            local existing = profile.displays[index]
-                            import.Enabled = existing.Enabled
-                            import.spellFlash = existing.spellFlash
-                            import.spellFlashColor = existing.spellFlashColor
-                            
-                            -- import['PvE Visibility'] = existing['PvE Visibility']
-                            import.alwaysPvE = existing.alwaysPvE
-                            import.alphaAlwaysPvE = existing.alphaAlwaysPvE
-                            import.targetPvE = existing.targetPvE
-                            import.alphaTargetPvE = existing.alphaTargetPvE
-                            import.combatPvE = existing.combatPvE
-                            import.alphaCombatPvE = existing.alphaCombatPvE
-                            -- import['PvE Visibility'] = existing['PvE Visibility']
-                            import.alwaysPvP = existing.alwaysPvP
-                            import.alphaAlwaysPvP = existing.alphaAlwaysPvP
-                            import.targetPvP = existing.targetPvP
-                            import.alphaTargetPvP = existing.alphaTargetPvP
-                            import.combatPvP = existing.combatPvP
-                            import.alphaCombatPvP = existing.alphaCombatPvP
-                            --[[ Mode Overrides - cancel, go ahead and overwrite them
-                            import.minAuto = existing.minAuto
-                            import.maxAuto = existing.maxAuto
-                            import.minST = existing.minST
-                            import.maxST = existing.maxST
-                            import.minAE = existing.minAE
-                            import.maxAE = existing.maxAE ]]
-                            
-                            import.x = existing.x
-                            import.y = existing.y
-                            import.rel = existing.rel
-                            
-                            import.numIcons = existing.numIcons
-                            import.iconSpacing = existing.iconSpacing
-                            import.queueDirection = existing.queueDirection
-                            import.queueAlignment = existing.queueAlignment
-                            import.primaryIconSize = existing.primaryIconSize
-                            import.queuedIconSize = existing.queuedIconSize
-                            
-                            import.font = existing.font
-                            import.primaryFontSize = existing.primaryFontSize
-                            import.queuedFontSize = existing.queuedFontSize
-                            import.rangeType = existing.rangeType
-                            
-                            import.showCaptions = existing.showCaptions
+                            local existing = profile.displays[ index ]
+
+                            -- Overwrite only what wasn't customized.
+                            for setting, value in pairs( import ) do
+                                if existing[ setting ] == nil then existing[ setting ] = value end
+                            end
+
+                            -- Except APLs and release.
+                            existing.Release = default.version
+                            existing.Default = true
+                            existing.precombatAPL = import.precombatAPL
+                            existing.defaultAPL = import.defaultAPL
+                        
                         else
                             index = #profile.displays + 1
+                            profile.displays[ index ] = import
+
                         end
-                        
-                        if type( import.precombatAPL ) == 'string' then
+
+                        local updated = profile.displays[ index ]
+
+                        if type( updated.precombatAPL ) == 'string' then
                             for i, list in pairs( profile.actionLists ) do
-                                if list.Name == import.precombatAPL then
-                                    import.precombatAPL = i
+                                if list.Name == updated.precombatAPL then
+                                    updated.precombatAPL = i
                                 end
                             end
 
-                            if type( import.precombatAPL ) == 'string' then
-                                import.precombatAPL = 0
+                            if type( updated.precombatAPL ) == 'string' then
+                                updated.precombatAPL = 0
                             end
                         end
 
-                        if type( import.defaultAPL ) == 'string' then
+                        if type( updated.defaultAPL ) == 'string' then
                             for i, list in pairs( profile.actionLists ) do
-                                if list.Name == import.defaultAPL then
-                                    import.defaultAPL = i
+                                if list.Name == updated.defaultAPL then
+                                    updated.defaultAPL = i
                                 end
                             end
 
-                            if type( import.defaultAPL ) == 'string' then
-                                import.defaultAPL = 0
+                            if type( updated.defaultAPL ) == 'string' then
+                                updated.defaultAPL = 0
                             end
                         end
 
-                        profile.displays[ index ] = import
-                        
                     else
                         ns.Error( "restoreDefaults() - unable to import '" .. default.name .. "' display." )
                     end
@@ -2110,7 +1547,11 @@ ns.isDefault = function( name, category )
 end
 
 
+-- Trinket APL
+ns.storeDefault( [[Usable Items]], 'actionLists', 20171128.001745, [[dqeFmaqijvTjPKpjrrJssXPKu6wiLi7ssgMQ4yeYYuOEgHcMgsjvxdPeABiLO(grLXHus5CekY8Ku5EsL9jr1bjQAHiv9qcLAIiLsxuHyJsuAKekQtsOALsHxsOq3uIc7uv6NekPLkrEQktvcUkHsSvKsXxrkj2lP)kvnyrhg0IvWJryYe5YqBwk1Njy0kKonQvJuQ8AKsvZwr3gy3k9Bv1WrkwoIEUW0P66iz7eLVJucgVe68ivwpsjP5lfTFkRI0c69cbOEILaomrlf3rqO3rdsWWjtRcD(V67JEIzwscxLE9kHtegO(o(rKCIenwmu9iMgpE8y9ocsMgxp9KNW5)gAb9vKwqVrw4WeLu617fcq9OTKqkHrDl)TT8(uZqVJGKPX1REld0DEfIkjoGdtuYYwwAnGeold7XfbmgwwENLb6oVcrfGxgqbSSLLwJASmq35viQaWImGcyzxNLpw2SPLqcNLH94IagdlRRZYaDNxHOcalYakGL1QxjCIWa13XpIKt0JELW4trsGHwqD9KFGNStNEsKqkHr9(F7(4tnd9eFLycO)j1B)lQU(owlO3ilCyIsk96DeKmnUE1BzGUZRqujXbCyIsw2YsRbKWzzypUiGXWYY7Smq35viQa8YakGLTS0AuJLb6oVcrfawKbual76S8XYMnTes4SmShxeWyyzDDwgO78kevayrgqbSSw9EHauVYcPMoDwk2FQ1rsacdksup5h4j70PxBi10PRN4tToscqyqrI6j(kXeq)tQ3(xuVs4eHbQVJFejNOh9kHXNIKadTG6QRVIbTGEJSWHjkP0R3rqY046vVLb6oVcrLehWHjkzzllTgqcNLH94IagdllVZYaDNxHOcWldOaw2YsRrnwgO78kevayrgqbSSRZYhlB20siHZYWECraJHL11zzGUZRqubGfzafWYA1RegFkscm0cQRN8d8KD60Rno)8eL65TnsUWzpasmkVOEIVsmb0)K6T)f1ReoryG674hrYj6rVxia1RS4KwsSYtuYsX32i5cNwwgqIr5fvxFP11c6nYchMOKsVEVqaQxz)KcyBgxPYmSSSWbsMa6Fs9ocsMgxV6Tmq35viQK4aomrjlBzP1as4SmShxeWyyz5DwgO78kevaEzafWYwwAnQXYaDNxHOcalYakGLDDw(yzZMwcjCwg2JlcymSSUold0DEfIkaSidOawwREYpWt2PtV2FsbSnJRu03goqYeq)tQN4Reta9pPE7Fr9kHtegO(o(rKCIE0RegFkscm0cQRU(slQf0BKfomrjLE9ocsMgxV6Tmq35viQK4aomrjlBzP1as4SmShxeWyyz5DwgO78kevaEzafWYwwAnQXYaDNxHOcalYakGLDDw(yzZMwcjCwg2JlcymSSUold0DEfIkaSidOawwRELW4trsGHwqD9KFGNStNEJ(j3(F7EzW5NupXxjMa6Fs92)I6vcNimq9D8Ji5e9O3leG6jM)KRL)2wsBGZpP66lTSwqVrw4WeLu617iizAC9Q3YaDNxHOsId4WeLSSLLwdiHZYWECraJHLL3zzGUZRqub4LbualBzP1Ogld0DEfIkaSidOaw21z5JLnBAjKWzzypUiGXWY66Smq35viQaWImGcyzT69cbOEIrEwM0oikHBzgwspf5YRGL0kCmQEYpWt2PtpAppPDquc3OFGIC5vONwGJr1t8vIjG(NuV9VOELWjcduFh)isorp6vcJpfjbgAb1vxFLtlO3ilCyIsk969cbOELblmQB5VTLIrYFqf6DeKmnUE1BzGUZRqujXbCyIsw2YsRbKWzzypUiGXWYY7Smq35viQa8YakGLTS0AuJLb6oVcrfawKbual76S8XYMnTes4SmShxeWyyzDDwgO78kevayrgqbSSw9KFGNStNEawyuV)3UN2t(dQqpXxjMa6Fs92)I6vcNimq9D8Ji5e9Oxjm(uKeyOfuxD9LwtlO3ilCyIsk96DeKmnUE1BzGUZRqujXbCyIsw2YsRbKWzzypUiGXWYY7Smq35viQa8YakGLTS0AuJLb6oVcrfawKbual76S8XYMnTes4SmShxeWyyzDDwgO78kevayrgqbSSw9kHXNIKadTG66j)apzNo9i5vO)3UN4pNqAcEf6Bt5uKyON4Reta9pPE7Fr9kHtegO(o(rKCIE07fcq9kXRGL)2wk2)5estWRGLLLYPiXqD9vmPf0BKfomrjLE9ocsMgxV6Tmq35viQK4aomrjlBzP1as4SmShxeWyyz5DwgO78kevaEzafWYwwAnQXYaDNxHOcalYakGLDDw(yzZMwcjCwg2JlcymSSUold0DEfIkaSidOawwREVqaQ3rds4iPL)2wsp6Kq6Gt9KFGNStNEbniHJK9)29dOtcPdo1t8vIjG(NuV9VOELWjcduFh)isorp6vcJpfjbgAb1vxFf9Of0BKfomrjLE9ocsMgxV6Tmq35viQK4aomrjlBzP1as4SmShxeWyyz5DwgO78kevaEzafWYwwAnQXYaDNxHOcalYakGLDDw(yzZMwcjCwg2JlcymSSUold0DEfIkaSidOawwREVqaQNybmqcNwwg))kmHSmm0t(bEYoD6rbgiHZEW)Vctildd9eFLycO)j1B)lQxjCIWa13XpIKt0JELW4trsGHwqD11xrI0c6nYchMOKsVEhbjtJRx9wgO78kevsCahMOKLTS0AajCwg2JlcymSS8old0DEfIkaVmGcyzllTg1yzGUZRqubGfzafWYUolFSSztlHeold7XfbmgwwxNLb6oVcrfawKbualRvVxia1J2WWPL)2wk2imWjgHLf(f5n0t(bEYoD6jJHZ(F7Eceg4eJO3)f5n0t8vIjG(NuV9VOELWjcduFh)isorp6vcJpfjbgAb1vxD9OTyBi10v6vxva]] )
 
+
+-- Was for module support; disabled.
 function Hekili.RetrieveFromNamespace( key )
     return nil
 end

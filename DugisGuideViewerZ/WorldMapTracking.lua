@@ -503,15 +503,27 @@ function WMT:Initialize()
 		end
 	end
 	
+	--[[function DGV:LOOT_CLOSED()
+		WMT:UpdateTrackingMap()
+	end	
+	
+	function DGV:LOOT_SLOT_CLEARED()
+		WMT:UpdateTrackingMap()
+	end]]
+	
 	function DataProviders.PetBattles:ProvidesFor(trackingType)
 		return trackingType=="P"
 	end
 	
 	function DataProviders.PetBattles:GetTooltipText(trackingType, location, speciesID, extraToolTip)
 		local value = petJournalLookup[tonumber(speciesID)]
-		if not value then
-			DGV:DebugFormat("GetTooltipText Unknown speciesID", "speciesID", speciesID)
-			return
+		if not value and speciesID then
+		   local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(tonumber(speciesID))
+			petJournalLookup[tonumber(speciesID)] = 
+				string.format("%d:%s:%s:%d:%d", companionID, speciesName, tooltipDescription:gsub("(:)", "%%3A"), petType, nil)
+			value = petJournalLookup[tonumber(speciesID)]
+		elseif not speciesID then
+			return false
 		end
 		local _, speciesName, flavorText, familyType, collected = strsplit(":", value)
 		if flavorText then
@@ -565,8 +577,13 @@ function WMT:Initialize()
 		ValidateNumber(speciesID, trackingType, location, speciesID, ...)
         
             local value = petJournalLookup[tonumber(speciesID)]
-            if not value then
-                return false
+            if not value and speciesID then
+               local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(tonumber(speciesID))
+				petJournalLookup[tonumber(speciesID)] = 
+					string.format("%d:%s:%s:%d:%d", companionID, speciesName, tooltipDescription:gsub("(:)", "%%3A"), petType, nil)
+				value = petJournalLookup[tonumber(speciesID)]
+			elseif not speciesID then
+				return false
             end
             
             local _, _, petType = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
@@ -585,7 +602,12 @@ function WMT:Initialize()
 	end
 	
 	function DataProviders.PetBattles:IsTrackingEnabled()
-		return select(3,GetTrackingInfo(13))
+		for i=1, GetNumTrackingTypes() do 
+			local name, texture, active, category = real_GetTrackingInfo(i); 
+			if texture == 613074 then
+				return active
+			end
+		end
 	end
 	
 	function DataProviders.PetBattles:GetIcon(trackingType, location, speciesID, criteriaIndex, extraToolTip, ...)
@@ -598,13 +620,25 @@ function WMT:Initialize()
 	
 	function DataProviders.PetBattles:GetNPC(trackingType, location, speciesID)
 		local value = petJournalLookup[tonumber(speciesID)]
-		if not value then return end
+		if not value and speciesID then
+		   local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(tonumber(speciesID))
+			petJournalLookup[tonumber(speciesID)] = 
+				string.format("%d:%s:%s:%d:%d", companionID, speciesName, tooltipDescription:gsub("(:)", "%%3A"), petType, nil)
+			value = petJournalLookup[tonumber(speciesID)]
+		elseif not speciesID then
+			return false
+		end
 		return tonumber((strsplit(":", value)))
 	end
 	
 	function DataProviders.PetBattles:GetDetailIcon(trackingType, location, speciesID)
-		if not petJournalLookup[tonumber(speciesID)] then return end
-		local familyType = tonumber((select(4, strsplit(":", petJournalLookup[tonumber(speciesID)]))))
+		--if not petJournalLookup[tonumber(speciesID)] then return end
+		local familyType
+		if petJournalLookup[tonumber(speciesID)] then 
+			familyType = tonumber((select(4, strsplit(":", petJournalLookup[tonumber(speciesID)]))))
+		elseif speciesID then 
+			familyType = tonumber((select(3, C_PetJournal.GetPetInfoBySpeciesID(speciesID))))
+		end 
 		if PET_TYPE_SUFFIX[familyType] then
 			return "Interface\\PetBattles\\PetIcon-"..PET_TYPE_SUFFIX[familyType];
 		else
@@ -623,7 +657,12 @@ function WMT:Initialize()
 			end
 		end
 		if not tonumber(coord) then return end
-		local factor = 2^16
+		local factor 
+		if tonumber(coord) > 99999999 then
+			factor = 2^16
+		else 
+			factor = 10000 --Handy notes coord
+		end
 		local x,y =  floor(coord / factor) / factor, (coord % factor) / factor
 		--DGV:DebugFormat("GetXY", "x", x, "y", y)
 		return x,y
@@ -708,6 +747,22 @@ function WMT:Initialize()
 			GetCurrentMapAreaID(), GetCurrentMapDungeonLevel())
 	end
 
+	function WMT:GetAchievementProgress(achievementID)
+		local numCompleted = 0
+		
+		if achievementID and achievementID ~= "" then
+			local num = GetAchievementNumCriteria(achievementID)
+			LuaUtils:loop(num, function(index)
+				local _, _, completed = GetAchievementCriteriaInfo(achievementID, index)
+				
+				if completed then
+					numCompleted = numCompleted + 1
+				end
+			end)
+		end
+		return numCompleted
+	end
+	
 	local function point_OnClick(self, button)
 		self = self.point or self
 		if button == "RightButton" then
@@ -824,6 +879,21 @@ function WMT:Initialize()
 	local modelFrame = CreateFrame("PlayerModel", nil, DugisWaypointTooltip)
 	WMT.modelFrame = modelFrame
 	modelFrame:SetFrameStrata("TOOLTIP")
+	
+	local function GetMaxLineWidth()
+		local maxW
+		LuaUtils:loop(10, function(index)
+			local line = _G["DugisWaypointTooltipTextLeft"..index]
+			if line then
+				if not maxW or line:GetWidth() > maxW then
+					maxW = line:GetWidth()
+				end
+			else
+				return "break"
+			end
+		end)
+		return maxW
+	end
 
     DugisWaypointTooltip.updateModel = function()
         npcId = DugisWaypointTooltip.npcId
@@ -834,12 +904,26 @@ function WMT:Initialize()
     
 		if not npcId then return end
         
-        if (DugisWaypointTooltip:GetWidth() < 160) then
-            DugisWaypointTooltip:SetWidth(160)
+		local width = 150
+		local maxLine = (GetMaxLineWidth() or width) + 30
+		
+		if maxLine > width then
+			width = maxLine
+		end
+		
+		if width > 225 then
+			width = 225
+			DugisWaypointTooltipTextLeft1:SetWidth(210)		
+			if DugisWaypointTooltipTextLeft2 then
+				DugisWaypointTooltipTextLeft2:SetWidth(210)
+			end
+		end
+		
+        if (DugisWaypointTooltip:GetWidth() < width) then
+            DugisWaypointTooltip:SetWidth(width)
         end
 
-		DugisWaypointTooltip:SetWidth(160) 
-		DugisWaypointTooltipTextLeft1:SetWidth(150)		
+		DugisWaypointTooltip:SetWidth(width) 
         
         local textHeight = DugisWaypointTooltip:GetHeight()
         DugisWaypointTooltip:SetHeight(DugisWaypointTooltip:GetWidth() + textHeight - 15)
@@ -859,9 +943,14 @@ function WMT:Initialize()
 		modelFrame:Show()
 		modelFrame:ClearModel()
 		if mv and mv.npcDB and mv.npcDB[npcId] then
-			modelFrame:SetDisplayInfo(mv.npcDB[npcId])
+			local value = mv.npcDB[npcId]
+			if value and value ~= "" then
+				modelFrame:SetDisplayInfo(value)
+			end
 		else
-			modelFrame:SetCreature(npcId)
+			if npcId and npcId ~= "" then
+				modelFrame:SetCreature(npcId)
+			end
 		end
 		modelFrame:Show()
         
@@ -884,7 +973,7 @@ function WMT:Initialize()
 		DugisWaypointTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
 		self = self.point or self
 		overPoint = self
-		DugisWaypointTooltip:SetFrameStrata("DIALOG")
+		DugisWaypointTooltip:SetFrameStrata("TOOLTIP")
     
         local texts = {DataProviders:GetTooltipText(self.provider, unpack(self.args))}
 
@@ -1002,6 +1091,11 @@ function WMT:Initialize()
 			if not DugisGuideUser.CurrentMapVersions or DugisGuideUser.CurrentMapVersions[nsMapName]~=mapName then return end
 		end
 		
+		--Case made for "Dalaran70" mapName
+		if not nsMapName and not tonumber(mapName) then
+			mapName = mapName:gsub('[0-9]*', "") 
+		end
+		
 		map = DGV:GetMapIDFromName(nsMapName or mapName)
 		level = tonumber(level)
 		if 
@@ -1085,7 +1179,7 @@ function WMT:Initialize()
 				key,value = next(trackingPointTable, key)
 				if not key then 
 					if trackingPointTable==DugisWorldMapTrackingPoints then 
-						trackingPointTable = CollectedWorldMapTrackingPoints
+						trackingPointTable = CollectedWorldMapTrackingPoints_v2
 						if trackingPointTable then
 							return rootIterator()
 						end
@@ -1206,7 +1300,7 @@ function WMT:Initialize()
 		end
         
         if LuaUtils:IsElvUIInstalled() then
-            Lib_DropDownList1.showTimer = 1
+            L_DropDownList1.showTimer = 1
         else
             LibDugi_DropDownList1.showTimer = 1
         end        
@@ -1219,7 +1313,7 @@ function WMT:Initialize()
 		local listFrame = _G["DropDownList"..level];
         
         if LuaUtils:IsElvUIInstalled() then
-            listFrame = _G["Lib_DropDownList"..level];
+            listFrame = _G["L_DropDownList"..level];
         end
         
 		local listFrameName = listFrame:GetName();
@@ -1293,8 +1387,8 @@ function WMT:Initialize()
 					AddPointData(DugisWorldMapTrackingPoints[nsMapName..":"..level])
 				end
 			end
-			if CollectedWorldMapTrackingPoints and CollectedWorldMapTrackingPoints[UnitFactionGroup("player")] then
-				AddPointData(CollectedWorldMapTrackingPoints[UnitFactionGroup("player")][mapName..":"..level])
+			if CollectedWorldMapTrackingPoints_v2 and CollectedWorldMapTrackingPoints_v2[UnitFactionGroup("player")] then
+				AddPointData(CollectedWorldMapTrackingPoints_v2[UnitFactionGroup("player")][mapName..":"..level])
 			end
 			AddFlightPointData()
 			
@@ -1309,7 +1403,7 @@ function WMT:Initialize()
             local dropDownPrefix = ""
             
             if LuaUtils:IsElvUIInstalled() then
-                dropDownPrefix = "Lib_"
+                dropDownPrefix = "L_"
             end
             
             LuaUtils:loop(_G[dropDownPrefix.."DropDownList1"].numButtons, function(buttonIndex)
@@ -1337,17 +1431,17 @@ function WMT:Initialize()
             local dropDownPrefix = ""
             
             if LuaUtils:IsElvUIInstalled() then
-                dropDownPrefix = "Lib_"
+                dropDownPrefix = "L_"
             end
             
             LuaUtils:loop(_G[dropDownPrefix.."DropDownList1"].numButtons, function(buttonIndex)
                 local button = _G[dropDownPrefix.."DropDownList1Button"..buttonIndex]
                 
-                if button:GetText() == MINIMAP_TRACKING_NONE then
+                if button:GetText() == MINIMAP_TRACKING_NONE and button:IsShown() and button:IsVisible() then
                     result = result + 1
                 end 
                 
-                if button:GetText() == TOWNSFOLK_TRACKING_TEXT then
+                if button:GetText() == TOWNSFOLK_TRACKING_TEXT and button:IsShown() and button:IsVisible() then
                     result = result + 1
                 end
             end)
@@ -1414,9 +1508,7 @@ function WMT:Initialize()
 
         local function ShowExtraMenu()
             if not IsShowMinimapMenu() then
-                if not LuaUtils:IsElvUIInstalled() then
-                    return
-                end
+                return
             end
             
             if not MinimapExtraMenuFrame then
@@ -1574,7 +1666,7 @@ function WMT:Initialize()
             local yMenuOffset = 0
             
             if LuaUtils:IsElvUIInstalled() then
-                local top = Lib_DropDownList1:GetTop()
+                local top = L_DropDownList1:GetTop()
                 if top ~= nil and top < GetScreenHeight() * 0.5 then
                     MinimapExtraMenuFrame.point = "BOTTOMRIGHT"
                     MinimapExtraMenuFrame.relativePoint = "TOPRIGHT"
@@ -1589,7 +1681,7 @@ function WMT:Initialize()
             end
 
              if LuaUtils:IsElvUIInstalled() then
-                LibDugi_EasyMenu(menu, MinimapExtraMenuFrame, Lib_DropDownList1, 0 , -5 + yMenuOffset, "MENU"); 
+                LibDugi_EasyMenu(menu, MinimapExtraMenuFrame, L_DropDownList1, 0 , -5 + yMenuOffset, "MENU"); 
                 LuaUtils:TransferBackdropFromElvUI()
              else
                 LibDugi_EasyMenu(menu, MinimapExtraMenuFrame, DropDownList1, 0 , 0, "MENU");
@@ -1601,7 +1693,7 @@ function WMT:Initialize()
                 local DropDownList = DropDownList1
                 
                 if LuaUtils:IsElvUIInstalled() then
-                    DropDownList = Lib_DropDownList1
+                    DropDownList = L_DropDownList1
                 end
             
                 LibDugi_DropDownList1:HookScript("OnEnter", function()
@@ -1630,7 +1722,9 @@ function WMT:Initialize()
 
         if ElvUIMiniMapTrackingDropDown then
             hooksecurefunc(ElvUIMiniMapTrackingDropDown, "initialize", function()
-                ShowExtraMenu(true)
+				LuaUtils:Delay(0.01, function()
+					 ShowExtraMenu()
+				end)
             end)
 
             hooksecurefunc("LibDugi_UIDropDownMenu_Initialize",  function()
@@ -1638,7 +1732,9 @@ function WMT:Initialize()
             end)
             
             DropDownList1:HookScript("OnShow", function()
-                ShowExtraMenu()
+				LuaUtils:Delay(0.01, function()
+					 ShowExtraMenu()
+				end)
             end)
             
         else
@@ -1647,12 +1743,16 @@ function WMT:Initialize()
             end)
         end
 
+		--DGV:RegisterEvent("LOOT_CLOSED")
+		--DGV:RegisterEvent("LOOT_SLOT_CLEARED")
 		DGV:RegisterEvent("PET_JOURNAL_LIST_UPDATE")
 		DGV:RegisterEvent("MINIMAP_UPDATE_TRACKING")
 		WMT:UpdateTrackingMap()
 	end
 	
 	function WMT:Unload()
+		--DGV:UnregisterEvent("LOOT_CLOSED")
+		--DGV:UnregisterEvent("LOOT_SLOT_CLEARED")
 		DGV:UnregisterEvent("PET_JOURNAL_LIST_UPDATE")
 		DGV:UnregisterEvent("TRAINER_SHOW")
 		DGV:UnregisterEvent("MINIMAP_UPDATE_TRACKING")

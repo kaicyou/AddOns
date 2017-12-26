@@ -101,8 +101,19 @@ local properties = {
     display = L["Color"],
     setter = "Color",
     type = "color"
+  },
+  inverse = {
+    display = L["Inverse"],
+    setter = "SetInverse",
+    type = "bool"
   }
 };
+
+WeakAuras.regionPrototype.AddProperties(properties);
+
+local function GetProperties(data)
+  return properties;
+end
 
 local function GetTexCoord(region, texWidth)
   local texCoord
@@ -207,6 +218,8 @@ local function create(parent, data)
     end
   end
 
+  WeakAuras.regionPrototype.create(region);
+
   return region;
 end
 
@@ -243,6 +256,7 @@ local function configureText(fontString, icon, enabled, point, width, height, co
 end
 
 local function modify(parent, region, data)
+  WeakAuras.regionPrototype.modify(parent, region, data);
   local button, icon, cooldown, stacks, text2 = region.button, region.icon, region.cooldown, region.stacks, region.text2;
 
   region.useAuto = data.auto and WeakAuras.CanHaveAuto(data);
@@ -271,10 +285,6 @@ local function modify(parent, region, data)
   region.scaley = 1;
   icon:SetAllPoints();
 
-  region:ClearAllPoints();
-
-  WeakAuras.AnchorFrame(data, region, parent);
-
   configureText(stacks, icon, data.text1Enabled, data.text1Point, data.width, data.height, data.text1Containment, data.text1Font, data.text1FontSize, data.text1FontFlags, data.text1Color);
   configureText(text2, icon, data.text2Enabled, data.text2Point, data.width, data.height, data.text2Containment, data.text2Font, data.text2FontSize, data.text2FontFlags, data.text2Color);
 
@@ -302,9 +312,26 @@ local function modify(parent, region, data)
     region.color_g = g;
     region.color_b = b;
     region.color_a = a;
-    icon:SetVertexColor(r, g, b, a);
+    if (r or g or b) then
+      a = a or 1;
+    end
+    icon:SetVertexColor(region.color_anim_r or r, region.color_anim_r or g, region.color_anim_r or b, region.color_anim_r or a);
+    if region.button then
+      region.button:SetAlpha(region.color_anim_r or a or 1);
+    end
+  end
+
+  function region:ColorAnim(r, g, b, a)
+    region.color_anim_r = r;
+    region.color_anim_g = g;
+    region.color_anim_b = b;
+    region.color_anim_a = a;
+    if (r or g or b) then
+      a = a or 1;
+    end
+    icon:SetVertexColor(r or region.color_r, g or region.color_g, b or region.color_b, a or region.color_a);
     if MSQ then
-      button:SetAlpha(a or 1);
+      region.button:SetAlpha(a or region.color_a or 1);
     end
   end
 
@@ -320,11 +347,11 @@ local function modify(parent, region, data)
     UpdateText = function()
       if (data.text1Enabled) then
         local textStr = data.text1 or "";
-        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
+        textStr = WeakAuras.ReplacePlaceHolders(textStr, region);
 
         if(stacks.text ~= textStr) then
           if stacks:GetFont() then
-            stacks:SetText(textStr);
+            WeakAuras.regionPrototype.SetTextOnText(stacks, textStr);
             stacks.text = textStr;
           end
         end
@@ -332,11 +359,11 @@ local function modify(parent, region, data)
 
       if (data.text2Enabled) then
         local textStr = data.text2 or "";
-        textStr = WeakAuras.ReplacePlaceHolders(textStr, region.values, region.state);
+        textStr = WeakAuras.ReplacePlaceHolders(textStr, region);
 
         if(text2.text ~= textStr) then
           if text2:GetFont() then
-            text2:SetText(textStr);
+            WeakAuras.regionPrototype.SetTextOnText(text2, textStr);
             text2.text = textStr;
           end
         end
@@ -344,12 +371,12 @@ local function modify(parent, region, data)
     end
   else
     if (data.text1Enabled) then
-      stacks:SetText(data.text1);
+      WeakAuras.regionPrototype.SetTextOnText(stacks, data.text1);
       stacks.text = data.text1;
     end
 
     if (data.text2Enabled) then
-      text2:SetText(data.text2);
+      WeakAuras.regionPrototype.SetTextOnText(text2, data.text2);
       text2.text = data.text2;
     end
 
@@ -488,6 +515,10 @@ local function modify(parent, region, data)
     region.text2:SetTextHeight(height);
   end
 
+  function region:SetInverse(inverse)
+    cooldown:SetReverse(not inverse);
+  end
+
   function region:SetGlow(showGlow)
     if (showGlow) then
       if (not region.__WAGlowFrame) then
@@ -550,4 +581,4 @@ local function modify(parent, region, data)
   end
 end
 
-WeakAuras.RegisterRegionType("icon", create, modify, default, properties);
+WeakAuras.RegisterRegionType("icon", create, modify, default, GetProperties);

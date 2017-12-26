@@ -169,7 +169,7 @@ E.PopupDialogs["CONFIG_RL"] = {
 	text = L["One or more of the changes you have made require a ReloadUI."],
 	button1 = ACCEPT,
 	button2 = CANCEL,
-	OnAccept = function() ReloadUI() end,
+	OnAccept = ReloadUI,
 	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false,
@@ -179,7 +179,7 @@ E.PopupDialogs["GLOBAL_RL"] = {
 	text = L["One or more of the changes you have made will effect all characters using this addon. You will have to reload the user interface to see the changes you have made."],
 	button1 = ACCEPT,
 	button2 = CANCEL,
-	OnAccept = function() ReloadUI() end,
+	OnAccept = ReloadUI,
 	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false,
@@ -189,7 +189,48 @@ E.PopupDialogs["PRIVATE_RL"] = {
 	text = L["A setting you have changed will change an option for this character only. This setting that you have changed will be uneffected by changing user profiles. Changing this setting requires that you reload your User Interface."],
 	button1 = ACCEPT,
 	button2 = CANCEL,
-	OnAccept = function() ReloadUI() end,
+	OnAccept = ReloadUI,
+	timeout = 0,
+	whileDead = 1,
+	hideOnEscape = false,
+}
+
+E.PopupDialogs["RESET_UF_AF"] = {
+	text = L["Accepting this will reset your Filter Priority lists for all auras on UnitFrames. Are you sure?"],
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	OnAccept = function()
+		for unitName, content in pairs(E.db.unitframe.units) do
+			if content.buffs then
+				content.buffs.priority = P.unitframe.units[unitName].buffs.priority
+			end
+			if content.debuffs then
+				content.debuffs.priority = P.unitframe.units[unitName].debuffs.priority
+			end
+			if content.aurabar then
+				content.aurabar.priority = P.unitframe.units[unitName].aurabar.priority
+			end
+		end
+	end,
+	timeout = 0,
+	whileDead = 1,
+	hideOnEscape = false,
+}
+
+E.PopupDialogs["RESET_NP_AF"] = {
+	text = L["Accepting this will reset your Filter Priority lists for all auras on NamePlates. Are you sure?"],
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	OnAccept = function()
+		for unitType, content in pairs(E.db.nameplates.units) do
+			if content.buffs and content.buffs.filters then
+				content.buffs.filters.priority = P.nameplates.units[unitType].buffs.filters.priority
+			end
+			if content.debuffs and content.debuffs.filters then
+				content.debuffs.filters.priority = P.nameplates.units[unitType].debuffs.filters.priority
+			end
+		end
+	end,
 	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false,
@@ -199,8 +240,8 @@ E.PopupDialogs["KEYBIND_MODE"] = {
 	text = L["Hover your mouse over any actionbutton or spellbook button to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."],
 	button1 = L["Save"],
 	button2 = L["Discard"],
-	OnAccept = function() local AB = E:GetModule('ActionBars'); AB:DeactivateBindMode(true) end,
-	OnCancel = function() local AB = E:GetModule('ActionBars'); AB:DeactivateBindMode(false) end,
+	OnAccept = function() E:GetModule('ActionBars'):DeactivateBindMode(true) end,
+	OnCancel = function() E:GetModule('ActionBars'):DeactivateBindMode(false) end,
 	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false,
@@ -210,7 +251,7 @@ E.PopupDialogs["DELETE_GRAYS"] = {
 	text = L["Are you sure you want to delete all your gray items?"],
 	button1 = YES,
 	button2 = NO,
-	OnAccept = function() local B = E:GetModule('Bags'); B:VendorGrays(true) end,
+	OnAccept = function() E:GetModule('Bags'):VendorGrays(true) end,
 	OnShow = function(self)
 		MoneyFrame_Update(self.moneyFrame, E.PopupDialogs["DELETE_GRAYS"].Money);
 	end,
@@ -224,9 +265,7 @@ E.PopupDialogs["BUY_BANK_SLOT"] = {
 	text = CONFIRM_BUY_BANK_SLOT,
 	button1 = YES,
 	button2 = NO,
-	OnAccept = function()
-		PurchaseSlot()
-	end,
+	OnAccept = PurchaseSlot,
 	OnShow = function(self)
 		MoneyFrame_Update(self.moneyFrame, GetBankSlotCost())
 	end,
@@ -389,10 +428,55 @@ E.PopupDialogs['APPLY_FONT_WARNING'] = {
 	hideOnEscape = false,
 }
 
+E.PopupDialogs["ELVUI_INFORM_NEW_CHANGES"] = {
+	text = "There have been some major changes in this version of ElvUI. Style Filters have been introduced to NamePlates, and the Aura Filtering system for NamePlates and UnitFrames has been reworked. We recommend you read the following forum post for more information.",
+	OnShow = function(self)
+		self.editBox:SetAutoFocus(false)
+		self.editBox.width = self.editBox:GetWidth()
+		self.editBox:Width(300)
+		self.editBox:SetText("https://www.tukui.org/forum/viewtopic.php?f=8&t=286")
+		self.editBox:HighlightText()
+		self.button1:Disable()
+		self.HideOrig = self.Hide
+		self.Hide = E.noop
+		ChatEdit_FocusActiveWindow();
+	end,
+	OnHide = function(self)
+		self.editBox:Width(self.editBox.width or 50)
+		self.editBox.width = nil
+	end,
+	EditBoxOnTextChanged = function(self)
+		if(self:GetText() ~= "https://www.tukui.org/forum/viewtopic.php?f=8&t=286") then
+			self:SetText("https://www.tukui.org/forum/viewtopic.php?f=8&t=286")
+		end
+		self:HighlightText()
+		self:ClearFocus()
+		ChatEdit_FocusActiveWindow();
+	end,
+	OnEditFocusGained = function(self)
+		self:HighlightText()
+	end,
+	OnCancel = function(self, _, reason)
+		if ( reason == "timeout" ) then
+			self.button1:Enable();
+		end
+	end,
+	OnAccept = function(self)
+		self.Hide = self.HideOrig
+		self.HideOrig = nil
+		E:StaticPopup_Hide('ELVUI_INFORM_NEW_CHANGES')
+	end,
+	button1 = OKAY,
+	showAlert = 1,
+	timeout = 15,
+	hideOnEscape = 0,
+	hasEditBox = 1,
+}
+
 local MAX_STATIC_POPUPS = 4
 
 function E:StaticPopup_OnShow()
-	PlaySound("igMainMenuOpen");
+	PlaySound(850); --IG_MAINMENU_OPEN
 
 	local dialog = E.PopupDialogs[self.which];
 	local OnShow = dialog.OnShow;
@@ -510,7 +594,7 @@ function E:StaticPopup_OnKeyDown(key)
 end
 
 function E:StaticPopup_OnHide()
-	PlaySound("igMainMenuClose");
+	PlaySound(851); --IG_MAINMENU_CLOSE
 
 	E:StaticPopup_CollapseTable();
 
@@ -730,10 +814,8 @@ function E:StaticPopup_Show(which, text_arg1, text_arg2, data)
 		end
 	end
 
-	-- Pick a free dialog to use
-	local dialog = nil;
-	-- Find an open dialog of the requested type
-	dialog = E:StaticPopup_FindVisible(which, data);
+	-- Pick a free dialog to use, find an open dialog of the requested type
+	local dialog = E:StaticPopup_FindVisible(which, data);
 	if ( dialog ) then
 		if ( not info.noCancelOnReuse ) then
 			local OnCancel = info.OnCancel;

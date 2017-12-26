@@ -322,16 +322,18 @@ L["UIPANEL_TOOLTIP_ROWS"] = "Setzt die Anzahl der Reihen in dieser Gruppe"
 L["UIPANEL_TOOLTIP_UPDATEINTERVAL"] = "Legt fest wie oft (in Sekunden) Symbole auf zeigen/verstecken, Transparenz, Bedingungen usw. überprüft werden. Null ist so schnell wie möglich. Niedrigere Werte können erheblichen Einfluss auf die Framerate für Low-End-Rechner haben."
 L["UIPANEL_UPDATEINTERVAL"] = "Aktualisierungs-Intervall"
 L["worldboss"] = "Weltboss"
+
 elseif locale == "esES" then
 L["!!Main Addon Description"] = "Proporciona notificaciones visuales, auditivas y textuales sobre tiempos de reutilización, ventajas y básicamente cualquier otra cosa. "
 L["ABSORBAMT"] = "Cantidad de escudos de absorción"
 L["ABSORBAMT_DESC"] = "Comprueba la cantidad total de escudos de absorción que tiene la unidad.  "
 L["ACTIVE"] = "%d Activo"
+L["ADDONSETTINGS_DESC"] = "Configurar todos los parámetros generales de los addon."
 L["AIR"] = "Aire"
 L["ALLOWCOMM"] = "Permitir compartir en el juego"
 L["ALLOWCOMM_DESC"] = "Permitir a otros usuarios de TellMeWhen enviarle datos. "
 L["ALLOWVERSIONWARN"] = "Notificar de nueva versión"
-L["ALPHA"] = "Alfa"
+L["ALPHA"] = "Opacidad"
 L["ANCHORTO"] = "Anclar a"
 L["ANIM_ACTVTNGLOW"] = "Icono: Borde de Activación"
 L["ANIM_ACTVTNGLOW_DESC"] = "Muestra el borde de activación de hechizo de Blizzard en el icono. "
@@ -1790,6 +1792,7 @@ L["WARN_DRMISMATCH"] = [=[Advertencia! Está comprobando rendimientos decrecient
 Todos los hechizos deben ser de la misma categoría de rendimiento decreciente para que el icono funcione correctamente. Se detectaron las siguientes categorías y hechizos:]=]
 L["WATER"] = "Agua"
 L["worldboss"] = "Jefe del Mundo"
+
 elseif locale == "esMX" then
 L["CHOOSENAME_DIALOG"] = "Introduzca el nombre o la identificación de los hechizos / Capacidad / artículo / Buff / Debuff desea que este icono de la pantalla. Usted puede agregar múltiples Buffs / Debuffs separándolas con';'."
 L["CHOOSENAME_DIALOG_PETABILITIES"] = "|cFFFF5959HABILIDADES PET|r debe utilizar SpellIDs."
@@ -1862,6 +1865,7 @@ L["UIPANEL_TOOLTIP_ONLYINCOMBAT"] = "Comprobar para mostrar sólo este grupo de 
 L["UIPANEL_TOOLTIP_ROWS"] = "Establecer el número de filas en el icono de este grupo"
 L["UIPANEL_TOOLTIP_UPDATEINTERVAL"] = "Establece la frecuencia (en segundos) que los iconos son revisados para mostrar / ocultar, alfa, condiciones, etc, no afecta demasiado bares. Cero es tan rápido como sea posible. Los valores más bajos pueden tener un impacto significativo en la tasa de fotogramas de gama baja computadoras "
 L["UIPANEL_UPDATEINTERVAL"] = "Intervalo de actualización"
+
 elseif locale == "frFR" then
 L["ALPHA"] = "Alpha"
 L["ANIM_ACTVTNGLOW"] = "Icône: Activation des bordures"
@@ -2005,6 +2009,7 @@ L["UIPANEL_TOOLTIP_ONLYINCOMBAT"] = "Cocher pour ne montrer ce groupe d'icônes 
 L["UIPANEL_TOOLTIP_ROWS"] = "Nombre de lignes d'icônes pour ce groupe"
 L["UIPANEL_TOOLTIP_UPDATEINTERVAL"] = "Règle l'intervalle de temps (en secondes) pendant lequel les icônes sont vérifiées pour être montrées/cachées, leur niveau alpha, les conditions, etc. Cela n'affecte pas les barres. Zéro : le plus rapide possible. De faibles valeurs peuvent avoir un impact important sur le nombre d'IPS pour des ordinateurs anciens."
 L["UIPANEL_UPDATEINTERVAL"] = "Intervalle de mise à jour"
+
 elseif locale == "itIT" then
 L["ACTIVE"] = "Attiva"
 L["AIR"] = [=[Aria
@@ -2016,6 +2021,7 @@ L["ANN_EDITBOX_DESC"] = "Scrivi il testo che desideri esportare quando appare la
 L["ANN_TAB"] = "Testo"
 L["ASCENDING"] = "Ascendente"
 L["ASPECT"] = "Aspetto"
+
 elseif locale == "koKR" then
 L["!!Main Addon Description"] = "재사용 대기시간, 강화 효과, 그 밖의 꽤 많은 것에 대해 시각적, 청각적, 문자적인 알림을 제공합니다."
 L["ABSORBAMT"] = "흡수 보호막 수치"
@@ -2030,7 +2036,7 @@ UI를 다시 불러오거나 재접속 해야 데이터를 수신할 수 있습�
 L["ALLOWVERSIONWARN"] = "새로운 버전 알리기"
 L["ALPHA"] = "불투명도"
 L["ANCHOR_CURSOR_DUMMY"] = "TellMeWhen 커서 위치 기준 더미"
-L["ANCHOR_CURSOR_DUMMY_DESC"] = [=[커서에 주변에 위치시킬 아이콘의 위치 설정을 도와주는 더미 커서입니다.
+L["ANCHOR_CURSOR_DUMMY_DESC"] = [=[커서 주변에 위치시킬 아이콘의 위치 설정을 도와주는 더미 커서입니다.
 
 그룹을 커서 주변에 위치시키면 '마우스오버' 유닛을 확인하는 아이콘에 유용합니다.
 
@@ -2425,6 +2431,8 @@ L["COLOR_OVERRIDE_GLOBAL"] = "공통 색상 강제 적용"
 L["COLOR_OVERRIDE_GLOBAL_DESC"] = "공통으로 정의된 색상을 독립적으로 설정하려면 체크하세요."
 L["COLOR_OVERRIDE_GROUP"] = "그룹 색상 강제 적용"
 L["COLOR_OVERRIDE_GROUP_DESC"] = "아이콘의 그룹 별로 색상을 독립적으로 설정하려면 체크하세요."
+L["COLOR_USECLASS"] = "직업 색상 사용"
+L["COLOR_USECLASS_DESC"] = "바에 해당되는 유닛의 직업 색상을 입히려면 체크하세요."
 L["COLORPICKER_BRIGHTNESS"] = "밝기"
 L["COLORPICKER_BRIGHTNESS_DESC"] = "색상의 밝기를 설정합니다 (종종 값이라고 부릅니다)."
 L["COLORPICKER_DESATURATE"] = "흑백"
@@ -2577,6 +2585,9 @@ L["CONDITIONPANEL_INSTANCETYPE_LEGACY"] = "%s (낭만)"
 L["CONDITIONPANEL_INSTANCETYPE_NONE"] = "외부"
 L["CONDITIONPANEL_INTERRUPTIBLE"] = "방해 가능"
 L["CONDITIONPANEL_ITEMRANGE"] = "유닛의 사정 거리 내 아이템"
+L["CONDITIONPANEL_LASTCAST"] = "마지막으로 사용한 기술"
+L["CONDITIONPANEL_LASTCAST_ISNTSPELL"] = "불일치"
+L["CONDITIONPANEL_LASTCAST_ISSPELL"] = "일치"
 L["CONDITIONPANEL_LESS"] = "보다 작음"
 L["CONDITIONPANEL_LESSEQUAL"] = "보다 작거나/같음"
 L["CONDITIONPANEL_LEVEL"] = "유닛 레벨"
@@ -2610,9 +2621,13 @@ L["CONDITIONPANEL_OLD"] = "<|cffff1300구|r>"
 L["CONDITIONPANEL_OLD_DESC"] = "<|cffff1300구|r> - 사용 가능한 이 조건의 최신/개선 버전이 있습니다."
 L["CONDITIONPANEL_OPERATOR"] = "연산자"
 L["CONDITIONPANEL_OR"] = "또는"
+L["CONDITIONPANEL_OVERLAYED"] = "주문 활성화 강조"
+L["CONDITIONPANEL_OVERLAYED_DESC"] = "주어진 주문이 활성화 경보 효과를 갖고 있는지 확인합니다 (행동 단축바에 표시되는 밝은 노란색 테두리)"
 L["CONDITIONPANEL_OVERRBAR"] = "행동 단축바 강제 적용"
 L["CONDITIONPANEL_OVERRBAR_DESC"] = "주 행동 단축바를 강제 적용하는 몇몇 효과를 가지고 있는지 확인합니다. 애완동물 대전은 포함하지 않습니다."
 L["CONDITIONPANEL_PERCENT"] = "백분율"
+L["CONDITIONPANEL_PERCENTOFCURHP"] = "현재 생명력의 백분율"
+L["CONDITIONPANEL_PERCENTOFMAXHP"] = "최대 생명력의 백분율"
 L["CONDITIONPANEL_PETMODE"] = "소환수 공격 모드"
 L["CONDITIONPANEL_PETMODE_DESC"] = "현재 소환수의 공격 모드를 확인합니다."
 L["CONDITIONPANEL_PETMODE_NONE"] = "소환수 없음"
@@ -2634,6 +2649,8 @@ L["CONDITIONPANEL_RUNESLOCK"] = "룬 갯수 잠금"
 L["CONDITIONPANEL_RUNESLOCK_DESC"] = "원하는 룬의 갯수가 언제 잠기는 지 (충전 중) 확인하려면 이 조건 유형을 사용하세요."
 L["CONDITIONPANEL_RUNESRECH"] = "충전 중인 룬 갯수"
 L["CONDITIONPANEL_RUNESRECH_DESC"] = "원하는 룬의 갯수가 언제 충전되는 지 확인하려면 이 조건 유형을 사용하세요."
+L["CONDITIONPANEL_SPELLCOST"] = "주문 비용"
+L["CONDITIONPANEL_SPELLCOST_DESC"] = "주문의 비용을 확인합니다. 개체는 마나/분노/기력/등등입니다."
 L["CONDITIONPANEL_SPELLRANGE"] = "유닛의 사정 거리 내 주문"
 L["CONDITIONPANEL_SWIMMING"] = "수영 중"
 L["CONDITIONPANEL_THREAT_RAW"] = "유닛 위협 수준 - 원래의"
@@ -2734,6 +2751,7 @@ L["DT_DOC_gsub"] = [=[강력한 문자열 조작 기능의 DogTags를 위해 Lua
 L["DT_DOC_IsShown"] = "아이콘의 표시 여부를 반환합니다."
 L["DT_DOC_LocType"] = [=[아이콘이 표시하고 있는 제어 불가 효과의 유형을 반환합니다.
 (이 태그는 %s 형식의 아이콘과 사용할 수 있습니다).]=]
+L["DT_DOC_MaxDuration"] = "아이콘의 최대 지속시간을 반환합니다. 현재 지속시간이 아닌, 타이머가 시작할 때의 지속시간입니다."
 L["DT_DOC_Name"] = "유닛의 이름을 반환합니다. DogTag에서 제공한 기본 [Name] 태그의 향상된 버전입니다."
 L["DT_DOC_Opacity"] = "아이콘의 불투명도를 반환합니다. 0에서 1 사이의 값을 반환합니다."
 L["DT_DOC_PreviousUnit"] = "현재 유닛 이전에 아이콘이 확인한 유닛이나 유닛의 이름을 반환합니다. [Name] 태그와 함께 사용하는 것이 가장 좋습니다."
@@ -2797,9 +2815,11 @@ L["ERROR_NOTINITIALIZED_OPT_NO_ACTION"] = "애드온 초기 실행에 실패하�
 L["ERRORS_FRAME"] = "오류 프레임"
 L["ERRORS_FRAME_DESC"] = "%q같은 일반 표시 메시지를 표준 오류 프레임에 출력합니다"
 L["EVENT_CATEGORY_CHANGED"] = "데이터 변경됨"
+L["EVENT_CATEGORY_CHARGES"] = "충전량"
 L["EVENT_CATEGORY_CLICK"] = "상호 작용"
 L["EVENT_CATEGORY_CONDITION"] = "조건"
 L["EVENT_CATEGORY_MISC"] = "기타"
+L["EVENT_CATEGORY_STACKS"] = "중첩"
 L["EVENT_CATEGORY_TIMER"] = "타이머"
 L["EVENT_CATEGORY_VISIBILITY"] = "표시"
 L["EVENT_FREQUENCY"] = "발생 주기"
@@ -3263,6 +3283,8 @@ L["ICONMENU_REACTIVE_DESC"] = [=[반응 능력의 사용 가능성을 추적합�
 
 반응 능력은 %s, %s, 그리고 %s 같은 것들입니다 - 특정 조건에서만 사용할 수 있는 능력입니다.]=]
 L["ICONMENU_READY"] = "준비"
+L["ICONMENU_REVERSEBARS"] = "뒤집기"
+L["ICONMENU_REVERSEBARS_DESC"] = "시작점을 왼쪽에서 오른쪽으로 바꿉니다."
 L["ICONMENU_RUNES"] = "룬 재사용 대기시간"
 L["ICONMENU_RUNES_CHARGES"] = "충전으로 사용할 수 없는 룬"
 L["ICONMENU_RUNES_CHARGES_DESC"] = "아이콘이 사용 가능한 룬을 표시할 때 재사용 대기 중인 룬을 추가 충전으로 취급하게 하려면 이 설정을 활성화하세요."
@@ -3304,6 +3326,12 @@ L["ICONMENU_SHOWWHEN_OPACITY_GENERIC_DESC"] = "이 아이콘 상태일 때 표�
 L["ICONMENU_SHOWWHEN_OPACITYWHEN_WRAP"] = "%s일 때 불투명도|r"
 L["ICONMENU_SHOWWHENNONE"] = "결과 없으면 표시"
 L["ICONMENU_SHOWWHENNONE_DESC"] = "어떤 유닛에서도 점감 효과를 발견할 수 없을 때 아이콘을 비점감으로 표시하도록 허용하려면 체크하세요."
+L["ICONMENU_SHRINKGROUP"] = "그룹 최소화"
+L["ICONMENU_SHRINKGROUP_DESC"] = [=[이 설정을 사용하면 그룹의 경계 상자가 표시된 모든 아이콘에 딱 맞게 유동적으로 조정됩니다.
+
+그룹 배치 방향의 시작점은 그룹의 한쪽 모서리를 형성하고, 이 모서리로부터 가장 먼 아이콘의 가장자리가 다른 쪽을 형성합니다.
+
+위의 표시된 아이콘 정렬 방법과 미세 조정 위치 설정과 함께 사용하면 유동적 중앙 정렬 그룹을 만들 수 있습니다.]=]
 L["ICONMENU_SORT_STACKS_ASC"] = "낮은 중첩"
 L["ICONMENU_SORT_STACKS_ASC_DESC"] = "체크하면 낮은 중첩 순으로 주문을 표시합니다."
 L["ICONMENU_SORT_STACKS_DESC"] = "높은 중첩"
@@ -3666,6 +3694,7 @@ L["RESIZE"] = "크기 조절"
 L["RESIZE_GROUP_CLOBBERWARN"] = "|cff7fffff오른쪽 클릭하고 끌기|r를 사용하여 그룹을 축소하면, 몇몇 아이콘이 잘릴 수 있습니다. 이 아이콘들은 임시로 저장되며  |cff7fffff오른쪽 클릭하고 끌기|r로 크기를 다시 늘리면 복원됩니다, 하지만 접속 종료나 UI를 다시 불러오면 영원히 잃게 됩니다."
 L["RESIZE_TOOLTIP"] = "|cff7fffff클릭하고 끌어서|r 크기 조절"
 L["RESIZE_TOOLTIP_CHANGEDIMS"] = "|cff7fffff오른쪽 클릭하고 끌어서|r 그룹과 열의 숫자 변경"
+L["RESIZE_TOOLTIP_IEEXTRA"] = "일반 옵션에서 크기 변경을 사용합니다."
 L["RESIZE_TOOLTIP_SCALEX_SIZEY"] = "|cff7fffff클릭하고 끌어서|r 크기 비율 조절"
 L["RESIZE_TOOLTIP_SCALEXY"] = [=[|cff7fffff클릭하고 끌어서|r 크기 비율 조절
 |cff7fffffControl을 누른 상태면|r 크기 비율 축 반전]=]
@@ -3741,6 +3770,10 @@ L["SOUND_EVENT_ONALPHAINC"] = "불투명도 증가 시"
 L["SOUND_EVENT_ONALPHAINC_DESC"] = [=[이 이벤트는 아이콘의 불투명도가 증가할 때 발동합니다.
 
 주의: 이 이벤트는 0% 불투명도에서 증가할 때는 발동하지 않습니다 (표시될 때).]=]
+L["SOUND_EVENT_ONCHARGEGAINED"] = "충전량 획득 시"
+L["SOUND_EVENT_ONCHARGEGAINED_DESC"] = "추적 중인 능력의 충전량을 얻으면 이 이벤트가 발생합니다."
+L["SOUND_EVENT_ONCHARGELOST"] = "충전량 소비 시"
+L["SOUND_EVENT_ONCHARGELOST_DESC"] = "추적 중인 능력의 충전량이 사용되면 이 이벤트가 발생합니다."
 L["SOUND_EVENT_ONCLEU"] = "전투 이벤트 발생 시"
 L["SOUND_EVENT_ONCLEU_DESC"] = "이 이벤트는 아이콘이 전투 이벤트를 처리할 때 발동합니다."
 L["SOUND_EVENT_ONCONDITION"] = "조건 세트 만족 시"
@@ -3773,6 +3806,8 @@ L["SOUND_EVENT_ONSTACK"] = "중첩 변경 시"
 L["SOUND_EVENT_ONSTACK_DESC"] = [=[이 이벤트는 아이콘이 추적 중인 것의 중첩이 변경되면 발동합니다.
 
 %s 아이콘의 감소 수치도 포함합니다.]=]
+L["SOUND_EVENT_ONSTACKDEC"] = "중첩 감소 시"
+L["SOUND_EVENT_ONSTACKINC"] = "중첩 증가 시"
 L["SOUND_EVENT_ONSTART"] = "시작 시"
 L["SOUND_EVENT_ONSTART_DESC"] = "이 이벤트는 재사용 대기시간이 시작되거나, 강화 효과/약화 효과가 적용되면 발동합니다."
 L["SOUND_EVENT_ONUIERROR"] = "전투 오류 이벤트 시"
@@ -3992,6 +4027,8 @@ L["TEXTLAYOUTS_USEDBY_NONE"] = "이 배치는 TellMeWhen 프로필 중 어떤 �
 L["TEXTMANIP"] = "문자 조작"
 L["TOOLTIPSCAN"] = "효과 변수"
 L["TOOLTIPSCAN_DESC"] = "이 조건 유형은 효과와 연관된 첫번째 변수를 확인하도록 허용합니다. 숫자는 블리자드 API로 제공되며 효과의 툴팁에서 찾은 숫자와 일치할 필요는 없습니다. 또한 효과에 대한 숫자를 얻을 수 있다는 보장이 없습니다. 그래도 실제로 대부분은 올바른 숫자가 확인됩니다."
+L["TOOLTIPSCAN2"] = "툴팁 숫자 #%d"
+L["TOOLTIPSCAN2_DESC"] = "이 조건 유형은 효과의 툴팁에서 찾은 숫자를 확인할 수 있습니다."
 L["TOP"] = "상단"
 L["TOPLEFT"] = "좌측 상단"
 L["TOPRIGHT"] = "우측 상단"
@@ -4000,6 +4037,10 @@ L["TREEf"] = "트리: %s"
 L["TRUE"] = "True (참)"
 L["UIPANEL_ADDGROUP2"] = "새로운 %s 그룹"
 L["UIPANEL_ADDGROUP2_DESC"] = "|cff7fffff클릭|r하여 새로운 %s 그룹을 추가합니다."
+L["UIPANEL_ALLOWSCALEIE"] = "아이콘 편집기 확장 허용"
+L["UIPANEL_ALLOWSCALEIE_DESC"] = [=[기본적으로 아이콘 편집기는 선명하고 완벽한 배치를 얻기 위해 크기를 변경할 수 없습니다.
+
+이 문제에 관심이 없고 직접 크기를 조절할 수 있는 경우 이 설정을 사용하세요.]=]
 L["UIPANEL_ANCHORNUM"] = "고정 %d"
 L["UIPANEL_BAR_BORDERBAR"] = "바 테두리"
 L["UIPANEL_BAR_BORDERBAR_DESC"] = "바 주위의 테두리를 설정합니다."
@@ -4160,6 +4201,7 @@ L["UIPANEL_POSITION"] = "위치"
 L["UIPANEL_PRIMARYSPEC"] = "주 특성 전문화"
 L["UIPANEL_PROFILES"] = "프로필"
 L["UIPANEL_PTSINTAL"] = "특성 포인트"
+L["UIPANEL_PVPTALENTLEARNED"] = "PvP 특성 배움"
 L["UIPANEL_RELATIVEPOINT"] = "대상 지점"
 L["UIPANEL_RELATIVEPOINT2_DESC"] = "고정 대상의 %s|1으로;로; 그룹을 고정시킵니다."
 L["UIPANEL_RELATIVETO"] = "고정 대상"
@@ -4169,6 +4211,7 @@ L["UIPANEL_ROLE_DESC"] = "자신의 현재 전문화가 이 역할을 수행할 
 L["UIPANEL_ROWS"] = "열 개수"
 L["UIPANEL_SCALE"] = "크기 비율"
 L["UIPANEL_SECONDARYSPEC"] = "보조 특성 전문화"
+L["UIPANEL_SHOWCONFIGWARNING"] = "설정 모드 경고 표시"
 L["UIPANEL_SPEC"] = "이중 특성 전문화"
 L["UIPANEL_SPECIALIZATION"] = "특성 전문화"
 L["UIPANEL_SPECIALIZATIONROLE"] = "전문화 역할"
@@ -4190,7 +4233,11 @@ L["UIPANEL_TOOLTIP_UPDATEINTERVAL"] = [=[보이기/숨기기, 투명도, 조건 
 0 값은 가능한 가장 빠른 속도입니다. 낮은 값은 성능이 낮은 컴퓨터에 대해 프레임율에 상당한 영향을 미칠 수 있습니다.]=]
 L["UIPANEL_TREE_DESC"] = "이 전문화가 활성화 중일 때 이 그룹을 표시하려면 체크하고, 비활성 중일 때 숨기려면 체크해제 하세요."
 L["UIPANEL_UPDATEINTERVAL"] = "갱신 주기"
+L["UIPANEL_USE_PROFILE"] = "프로필 설정 사용"
 L["UIPANEL_WARNINVALIDS"] = "올바르지 않은 아이콘에 대해 경고"
+L["UIPANEL_WARNINVALIDS_DESC"] = [=[이 설정을 사용하면 TellMeWhen이 아이콘에서 올바르지 않은 구성을 감지했을 때 당신에게 경고합니다.
+
+이 설정을 사용하길 적극 추천합니다, 이런 구성 오류는 성능 저하를 일으킬 수 있습니다]=]
 L["UNDO"] = "실행 취소"
 L["UNDO_DESC"] = "이 설정들의 마지막 변경점을 취소합니다."
 L["UNITCONDITIONS"] = "유닛 조건"
@@ -4215,6 +4262,7 @@ L["WARN_DRMISMATCH"] = [=[경고! 두개의 다르게 알려진 범주로 주문
 아이콘이 정상 작동하려면 모든 주문은 같은 점감 효과 범주에 있어야 합니다. 다음 범주와 주문이 감지되었습니다:]=]
 L["WATER"] = "물"
 L["worldboss"] = "야외 우두머리"
+
 elseif locale == "ptBR" then
 L["ABSORBAMT"] = "Quantidade de absorção do escudo"
 L["ABSORBAMT_DESC"] = "Verifique o total de absorção que o escudo de sua unidade teve."
@@ -5334,11 +5382,13 @@ Todas as magias devem ser da mesma categoria para que o ícone funcione corretam
 uma lista de categorias e magias está sendo anexada]=]
 L["WATER"] = "Àgua"
 L["worldboss"] = "Chefe do mundo"
+
 elseif locale == "ruRU" then
-L["!!Main Addon Description"] = "Визуальные, звуковые и текстовые оповещения о готовности заклинаний, способностей, наличии баффов/дебаффов и многого другого."
+L["!!Main Addon Description"] = "Обеспечивает визуальные, звуковые и текстовые оповещения о готовности заклинаний, способностей, наличии баффов/дебаффов и почти всего остального."
 L["ABSORBAMT"] = "Количество поглощаемого урона"
 L["ABSORBAMT_DESC"] = "Проверяет общую сумму поглощающих щитов, которые имеет объект"
 L["ACTIVE"] = "% активно"
+L["ADDONSETTINGS_DESC"] = "Настройка всех основных параметров аддона"
 L["AIR"] = "Воздух"
 L["ALLOWCOMM"] = "Разрешает поделиться в игре"
 L["ALLOWCOMM_DESC"] = "Позволяет другим пользователям TellMeWhen выслать вам данные"
@@ -5452,11 +5502,16 @@ L["CASTERFORM"] = "Может произносить заклинания"
 L["CENTER"] = "В центре"
 L["CHANGELOG"] = "Список изменений"
 L["CHANGELOG_DESC"] = "Отображает список изменений, внесенных в текущей и предыдущих версиях TellMeWhen."
+L["CHANGELOG_INFO2"] = [=[Добро пожаловать в TellMeWhen версия %s!
+<br/><br/>
+Когда вы ознакомитесь с изменениями, нажмите на %s tab or %s tab внизу что начать настройку аддона.]=]
+L["CHANGELOG_LAST_VERSION"] = "Предыдущая установленная версия"
 L["CHAT_FRAME"] = "Область чата"
 L["CHAT_MSG_CHANNEL"] = "Канал чата"
 L["CHAT_MSG_CHANNEL_DESC"] = "Отображает в виде сообщения в канале чата (например Торговля или любой другой к которому вы присоединены)"
 L["CHAT_MSG_SMART"] = "Умный чат"
 L["CHAT_MSG_SMART_DESC"] = "Сообщение отображается в наиболее подходящем канале чата: Рейд, Группа, Поле сражения или Сказать."
+L["CHOOSEICON"] = "Выберите иконку для проверки"
 L["CHOOSEICON_DESC"] = [=[|cff7fffffClick|r для выбора иконки/группы.
 |cff7fffffLeft-Click and drag|r для переназначения.
 |cff7fffffRight-Click and drag|r для перестановки.]=]
@@ -5497,7 +5552,26 @@ L["CLEU_COMBATLOG_OBJECT_REACTION_HOSTILE"] = "Реакция объекта: в
 L["CLEU_COMBATLOG_OBJECT_REACTION_HOSTILE_DESC"] = "Отметьте, чтобы исключить объекты враждебные к Вам"
 L["CLEU_COMBATLOG_OBJECT_REACTION_MASK"] = "Реакция объекта"
 L["CLEU_COMBATLOG_OBJECT_REACTION_NEUTRAL"] = "Реакция объекта: Нейтральный"
+L["CLEU_COMBATLOG_OBJECT_REACTION_NEUTRAL_DESC"] = "Выберите что бы исключить цели, которые нейтральные по отношению к вам"
+L["CLEU_COMBATLOG_OBJECT_TARGET"] = "Разное: Ваша цель"
+L["CLEU_COMBATLOG_OBJECT_TARGET_DESC"] = "Выберите, что бы исключить юнита, выбранного в данный момент"
+L["CLEU_COMBATLOG_OBJECT_TYPE_GUARDIAN"] = "Тип цели: Стражник"
 L["CLEU_COMBATLOG_OBJECT_TYPE_GUARDIAN_DESC"] = "С галочкой исключить Охрану. Охрана - объекты, которые защищают свой контроллер, но не могут управляться непосредственно."
+L["CLEU_COMBATLOG_OBJECT_TYPE_MASK"] = [=[Тип юнита
+]=]
+L["CLEU_COMBATLOG_OBJECT_TYPE_NPC"] = "Тип юинта: НИП (NPC)"
+L["CLEU_COMBATLOG_OBJECT_TYPE_NPC_DESC"] = "Выберите что бы исключить персонажей не управляемых игроками (NPC)"
+L["CLEU_COMBATLOG_OBJECT_TYPE_OBJECT"] = "Тип юнита: Объект"
+L["CLEU_COMBATLOG_OBJECT_TYPE_OBJECT_DESC"] = "Выберите что бы исключить юнитов, таких как: ловушки, рыболовные буйки или любые другие не попадающие под другие категории \"Тип юнита\""
+L["CLEU_COMBATLOG_OBJECT_TYPE_PET"] = "Тип юнита: Питомец"
+L["CLEU_COMBATLOG_OBJECT_TYPE_PET_DESC"] = "Выберите что бы исключить питомцев. Питомцы это юниты которые защищают своего владельца и могут быть контролируемы непосредственно."
+L["CLEU_COMBATLOG_OBJECT_TYPE_PLAYER"] = "Тип юнита: Персонаж Игрока"
+L["CLEU_COMBATLOG_OBJECT_TYPE_PLAYER_DESC"] = "Выберите что бы исключить персонажей игрока"
+L["CLEU_CONDITIONS_DESC"] = [=[Настройка состояний которым каждый юнит должен соответствовать для проверки.
+
+Эти состояния доступны только при вводе юнитов для проверки, и все введенные единицы являются идентификаторами unitID - имена не могут использоваться с этими условиями]=]
+L["CLEU_CONDITIONS_DEST"] = "Условия состояний"
+L["CLEU_CONDITIONS_SOURCE"] = "Источник состояний"
 L["CLEU_DAMAGE_SHIELD"] = "Щит от урона"
 L["CLEU_DAMAGE_SHIELD_DESC"] = "Возникает, если вредоносный щит (%s, %s, итд., но не %s) повреждает объект."
 L["CLEU_DAMAGE_SHIELD_MISSED"] = "Щит от урона пропущен"
@@ -5516,10 +5590,15 @@ L["CLEU_ENVIRONMENTAL_DAMAGE_DESC"] = "Включает урон от лавы, 
 L["CLEU_EVENTS"] = "События для проверки"
 L["CLEU_EVENTS_ALL"] = "Все"
 L["CLEU_EVENTS_DESC"] = "Выберите на какие события боя вы хотите, чтобы реагировала иконка."
+L["CLEU_FLAGS_DESC"] = "Содержит перечень атрибутов, которые могут быть использованы для исключения определённых юнитов из перечня для срабатывания иконки. После проверки на исключения, а юнит обладает указанными атрибутами, иконка не будет обрабатывать событие, в котором находился элемент."
 L["CLEU_FLAGS_DEST"] = "Исключения"
 L["CLEU_FLAGS_SOURCE"] = "Исключения"
 L["CLEU_HEADER"] = "Фильтры события боя"
+L["CLEU_HEADER_DEST"] = "Целевой юнит(ы)"
+L["CLEU_HEADER_SOURCE"] = "Исходный юнит(ы)"
+L["CLEU_NOFILTERS"] = "%s Иконка %s не имеет определяющих фильтров. Она не будет функционировать до указания хотя бы одного фильтра."
 L["CLEU_PARTY_KILL"] = "Кил партии"
+L["CLEU_PARTY_KILL_DESC"] = "Срабатывает когда член вашей группы убивает что либо."
 L["CLEU_RANGE_DAMAGE"] = "Урон на растоянии (дальний)"
 L["CLEU_RANGE_MISSED"] = "Дальний промах"
 L["CLEU_SOURCEUNITS"] = "Источник объекта(ов) для проверки"
@@ -5541,6 +5620,7 @@ L["CLEU_SPELL_CAST_START_DESC"] = [=[Происходит, когда начин
 ВАЖНО: Чтобы предотвратить потенциальные злоупотребления, Blizzard исключил из этого события объект назначения, таким образом, Вы не можете это выбрать.]=]
 L["CLEU_SPELL_CAST_SUCCESS"] = "Успешное применение заклинания"
 L["CLEU_SPELL_CAST_SUCCESS_DESC"] = "Происходит, когда заклинание успешно применено."
+L["CLEU_SPELL_CREATE"] = "Создание заклинания"
 L["CLEU_SPELL_CREATE_DESC"] = "Происходит, когда объект, такой как ловушка охотника или портал мага, создан."
 L["CLEU_SPELL_DAMAGE"] = "Урон от заклинания"
 L["CLEU_SPELL_DAMAGE_CRIT"] = "Критический эффект заклинания"
@@ -5613,6 +5693,8 @@ L["CLEU_UNIT_DIED"] = "Объект Мертв"
 L["CLEU_WHOLECATEGORYEXCLUDED"] = [=[Вы исключили каждую часть %q категории, вследствие чего, эта с иконкой не будут происходить никакие события.
 
 Отмените хотя бы одно выделение для правильного функционирования.]=]
+L["CLICK_TO_EDIT"] = "Нажмите для редактирования."
+L["CMD_CHANGELOG"] = "Список изменений"
 L["CMD_DISABLE"] = "Выкл."
 L["CMD_ENABLE"] = "Вкл."
 L["CMD_OPTIONS"] = "Параметры"
@@ -5623,6 +5705,10 @@ L["CMD_TOGGLE"] = "переключение"
 L["CNDT_DEPRECATED_DESC"] = "Свойство %s более не функционирует. Это результат изменений в механике игры. Удалите его или смените на другое свойство."
 L["CNDT_MULTIPLEVALID"] = "Вы можете ввести несколько названий/IDs для проверки, разделяя их точкой с запятой."
 L["CNDT_ONLYFIRST"] = "Только первое заклинание/предмет будет проверяться - списки, разделённые \";\" некорректны для условия этого типа"
+L["CNDT_RANGE"] = "Радиус действия юнита"
+L["CNDT_RANGE_DESC"] = "Проверяет приблизительный радиус юнита, используя LibRangeCheck-2.0. Условие будет расценено невыполненным, если юнит не будет соответствовать."
+L["CNDT_RANGE_IMPRECISE"] = "%d метров. (|cffff1300 Не точно |r)"
+L["CNDT_RANGE_PRECISE"] = "%d метров. (|cffff1300 Точно |r)"
 L["CNDT_SLIDER_DESC_CLICKSWAP_TOMANUAL"] = "|cff7fffffRight-Click|r для переключения на ручной ввод."
 L["CNDT_SLIDER_DESC_CLICKSWAP_TOSLIDER"] = "|cff7fffffRight-Click|r для переключения на выбор с использованием ползунка."
 L["CNDT_SLIDER_DESC_CLICKSWAP_TOSLIDER_DISALLOWED"] = "Только ручной ввод разрешен для значений свыше %s (ползунки Blizzard's могут странно срабатывать с большими значениями.)"
@@ -5631,18 +5717,27 @@ L["CNDT_TOTEMNAME_DESC"] = [=[Оставьте пустым, чтобы отсл
 
 Введите название тотема, или список названий, разделенных точкой с запятой, для отслеживания конкретных тотемов.]=]
 L["CNDT_UNKNOWN_DESC"] = "Ваши параметры содержат состояние с названием %s, но такого состояния не найдено. Возможно Вы используете старую версию TMW, или данное состояние было удалено."
+L["CNDTCAT_ARCHFRAGS"] = "Археологические фрагменты"
 L["CNDTCAT_ATTRIBUTES_PLAYER"] = "Свойства игрока"
 L["CNDTCAT_ATTRIBUTES_UNIT"] = "Свойства объекта"
+L["CNDTCAT_BOSSMODS"] = "Режимы боссов"
 L["CNDTCAT_BUFFSDEBUFFS"] = "Баффы/Дебаффы"
 L["CNDTCAT_CURRENCIES"] = "Деньги"
 L["CNDTCAT_FREQUENTLYUSED"] = "Часто используемый"
+L["CNDTCAT_LOCATION"] = "Группа и расположение"
 L["CNDTCAT_MISC"] = "Разный"
 L["CNDTCAT_RESOURCES"] = "Ресурсы"
 L["CNDTCAT_SPELLSABILITIES"] = "Заклинания/Предметы"
 L["CNDTCAT_STATS"] = "Характеристики"
+L["CNDTCAT_TALENTS"] = "Классы и таланты"
+L["CODESNIPPET_ADD2"] = "Новый %s Отрывок"
+L["CODESNIPPET_ADD2_DESC"] = "|cff7fffff Нажмите |r чтобы добавить новый отрывок"
 L["CODESNIPPET_AUTORUN"] = "Автозапуск при загрузке"
+L["CODESNIPPET_AUTORUN_DESC"] = "Если включено, этот отрывок будет запущен когда включается TMW_INITIALIZE  (что происходит вовремя входи игрока в игру, но до создания любых групп и иконок)."
+L["CODESNIPPET_CODE"] = "Принимает код для запуска."
 L["CODESNIPPET_DELETE"] = "Удалить фрагмент."
 L["CODESNIPPET_DELETE_CONFIRM"] = "Вы уверены, что хотите удалить фрагмент кода %q?"
+L["CODESNIPPET_EDIT_DESC"] = "|cff7fffff Нажмите |r чтобы редактировать отрывок."
 L["CODESNIPPET_GLOBAL"] = "Глобальные Фрагменты"
 L["CODESNIPPET_ORDER"] = "Порядок запуска"
 L["CODESNIPPET_ORDER_DESC"] = [=[Установите порядок, в котором данный фрагмент будет запускаться относительно других фрагментов.
@@ -5655,9 +5750,35 @@ L["CODESNIPPET_RENAME"] = "Название Фрагмента кода"
 L["CODESNIPPET_RENAME_DESC"] = [=[Выберите название для данного фрагмента для простого его распознавания.
 
 Названия не обязаны быть уникальными.]=]
-L["CODESNIPPET_RUNNOW"] = "Запустить Фрагмент сейчас"
-L["CODETOEXE"] = "Код для исключения"
-L["COLOR_MSQ_ONLY"] = "Только цвет границы Маски"
+L["CODESNIPPET_RUNAGAIN"] = "Запустить отрывок снова"
+L["CODESNIPPET_RUNAGAIN_DESC"] = [=[Этот отрывок уже был запущен в этой игровой сессии.
+
+|cff7fffff Нажмите | r что бы запустить его снова.]=]
+L["CODESNIPPET_RUNNOW"] = "Запустить фрагмент сейчас"
+L["CODESNIPPET_RUNNOW_DESC"] = "|cff7fffffЩелкните|r, чтобы запустить код этих фрагментов."
+L["CODESNIPPETS"] = "Фрагменты кода Lua"
+L["CODESNIPPETS_DEFAULTNAME"] = "Новый фрагмент"
+L["CODESNIPPETS_DESC"] = [=[Эта функция позволяет писать куски кода на lua, который будет выполнен, когда TellMeWhen инициализируется.
+
+Это расширенная функция для тех, кто имеет опыт работы с Lua (или для тех, кому был предоставлен фрагмент другим пользователям TellMeWhen).
+
+Использование может включать написание пользовательских функций для использования в условиях Lua.
+
+Фрагменты могут быть определены как по профилю, так и глобально (глобальные фрагменты будут выполняться для всех профилей).
+
+Чтобы вставить, ссылку на значок TellMeWhen в ваш код, |cff7fffffshift-щелчок|r на этот значок.]=]
+L["CODESNIPPETS_DESC_SHORT"] = "Писать куски кода на lua, который будет выполнен, когда TellMeWhen инициализируется."
+L["CODESNIPPETS_IMPORT_GLOBAL"] = "Новый глобальный фрагмент"
+L["CODESNIPPETS_IMPORT_GLOBAL_DESC"] = "Импорт фрагмента в качестве глобального фрагмента."
+L["CODESNIPPETS_IMPORT_PROFILE"] = "Новый фрагмент профиля"
+L["CODESNIPPETS_IMPORT_PROFILE_DESC"] = "Импортируйте фрагмент как фрагмент, специфичный для профиля."
+L["CODESNIPPETS_TITLE"] = "Lua фрагменты"
+L["CODETOEXE"] = "Код для выполнения"
+L["COLOR_MSQ_COLOR"] = "Граница маски цвета"
+L["COLOR_MSQ_COLOR_DESC"] = "Проверка этого приведет к тому, что граница скина маски (если скин, на которой вы используете, имеет границу) должен быть окрашен."
+L["COLOR_MSQ_ONLY"] = "Только цвет границы маски"
+L["COLOR_MSQ_ONLY_DESC"] = "Проверка этого приведет к ТОЛЬКО границе скина маски (если скин, который вы используете, имеет границу), для цвета. Иконки НЕ будут окрашены"
+L["COLOR_OVERRIDE_GLOBAL"] = "Переопределить глобальный цвет"
 L["COMPARISON"] = "Сравнение"
 L["CONDITIONALPHA_METAICON"] = "Неудачные сосотояния"
 L["CONDITIONALPHA_METAICON_DESC"] = "Эта непрозрачность будет применяться когда спадут условия."
@@ -6325,6 +6446,7 @@ L["UIPANEL_TREE_DESC"] = "Проверка позволяет показать �
 L["UIPANEL_UPDATEINTERVAL"] = "Интервал обновления"
 L["UIPANEL_WARNINVALIDS"] = "Предупреждать о недействительных иконках"
 L["UNDO"] = "Отменить"
+L["UNDO_DESC"] = "Отменить последние изменения, внесенные в эти настройки."
 L["UNITTWO"] = "Второй объект"
 L["UNKNOWN_ICON"] = "<Неизвестная/Недоступная иконка>"
 L["UNKNOWN_UNKNOWN"] = "<Неизвестно ???>"
@@ -6333,8 +6455,9 @@ L["VALIDITY_CONDITION2_DESC"] = "#%d состояние"
 L["VALIDITY_ISINVALID"] = "недействительно"
 L["WARN_DRMISMATCH"] = [=[Внимание! Вы проверяете убывающую эффективность залинаний из двух различных известных категорий.
 Все заклинания обязаны быть из одной убывающей категории чтобы иконка фунционировала должным образом. Были обнаружены следующие категории и заклинания :]=]
-L["WATER"] = "Вода"
-L["worldboss"] = "Ворлд Босс"
+L["WATER"] = "Водa"
+L["worldboss"] = "Мировой босс"
+
 elseif locale == "zhCN" then
 L["!!Main Addon Description"] = "为冷却、增益/减益及其他各个方面提供视觉、听觉以及文字上的通知。"
 L["ABSORBAMT"] = "护盾吸收量"
@@ -8600,6 +8723,7 @@ L["WARN_DRMISMATCH"] = [=[警告!你正在检测递减的法术来自两个不�
 检测到下列你所使用的法术及其分类:]=]
 L["WATER"] = "水之图腾"
 L["worldboss"] = "首领"
+
 elseif locale == "zhTW" then
 L["!!Main Addon Description"] = "為冷卻、增益/減益及其他各個方面提供視覺、聽覺以及文字上的通知。"
 L["ABSORBAMT"] = "護盾吸收量"
@@ -10856,6 +10980,7 @@ L["WARN_DRMISMATCH"] = [=[警告！你正在檢查遞減的法術來自兩個不
 檢測到下列你所使用的法術及其分類：]=]
 L["WATER"] = "水之圖騰"
 L["worldboss"] = "首領"
+
 end
 
 -- How long before DR resets ?

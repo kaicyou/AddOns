@@ -245,15 +245,15 @@ local spell_list = {
 	
 	["WARRIOR"] = {
 		[71] = { --arms
-			[114030] = {cooldown = 120, type = "external"}, -- vigilance
+			--[114030] = {cooldown = 120, type = "external"}, -- vigilance
 			[97462] = {cooldown = 180, type = "raid"}, --rallying cry
 		},
 		[72] = { --fury
-			[114030] = {cooldown = 120, type = "external"}, -- vigilance
+			--[114030] = {cooldown = 120, type = "external"}, -- vigilance
 			[97462] = {cooldown = 180, type = "raid"}, --rallying cry
 		},
 		[73] = { --prot
-			[114030] = {cooldown = 120, type = "external"}, -- vigilance
+			--[114030] = {cooldown = 120, type = "external"}, -- vigilance
 		},
 	},
 }
@@ -1048,9 +1048,11 @@ function Cooldowns:CooldownReady (param)
 	for id, panel in pairs (Cooldowns.ScreenPanels) do
 		if (panel.Spells [spell.spellid]) then --> this panel is allowed to show this spell
 			local bar = panel:GetBar (Cooldowns.GetPlayerSpellId (player, spell))
-			bar.value = 100
-			Cooldowns.SetBarRightText (bar, spell.charges_amt)
-			bar:Show()
+			if (bar) then
+				bar.value = 100
+				Cooldowns.SetBarRightText (bar, spell.charges_amt)
+				bar:Show()
+			end
 		end
 	end
 end

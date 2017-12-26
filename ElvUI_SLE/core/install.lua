@@ -4,9 +4,10 @@ PI.SLE_Auth = ""
 PI.SLE_Word = ""
 local locale = GetLocale()
 
---GLOBALS: SkadaDB, Skada, xCTSavedDB, xCT_Plus
+--GLOBALS: SkadaDB, Skada, xCTSavedDB, xCT_Plus, UIParent
 local _G = _G
 local ENABLE, DISABLE, NONE = ENABLE, DISABLE, NONE
+local ADDONS = ADDONS
 local SetCVar = SetCVar
 local SetAutoDeclineGuildInvites = SetAutoDeclineGuildInvites
 local SetInsertItemsLeftToRight = SetInsertItemsLeftToRight
@@ -19,30 +20,7 @@ local function DarthHeal()
 	E.db["unitframe"]["units"]["raid"]["health"]["frequentUpdates"] = true
 	E.db["unitframe"]["units"]["raid"]["height"] = 22
 
-	E.db["unitframe"]["units"]["player"]["castbar"]["width"] = 200
-
-	E.db["nameplates"]["units"]["PLAYER"]["enable"] = false
-
-	E.db["movers"]["ElvUF_PlayerCastbarMover"] = nil
-	E.db["movers"]["ElvUF_FocusCastbarMover"] = "BOTTOM,ElvUIParent,BOTTOM,285,36"
-	E.db["movers"]["PetAB"] = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,522,124"
-	E.db["movers"]["ElvUF_RaidMover"] = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,743,166"
-	E.db["movers"]["ClassBarMover"] = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,527,251"
-	E.db["movers"]["ElvUF_PetCastbarMover"] = "BOTTOM,ElvUIParent,BOTTOM,-283,121"
-	E.db["movers"]["VehicleSeatMover"] = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,522,32"
-	E.db["movers"]["ElvUF_TargetTargetMover"] = "BOTTOM,ElvUIParent,BOTTOM,222,113"
-	E.db["movers"]["ElvUF_FocusMover"] = "BOTTOM,ElvUIParent,BOTTOM,250,56"
-	E.db["movers"]["TotemBarMover"] = "BOTTOM,ElvUIParent,BOTTOM,-303,264"
-	E.db["movers"]["ElvUF_PlayerMover"] = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,527,191"
-	E.db["movers"]["ElvUF_PetMover"] = "BOTTOM,ElvUIParent,BOTTOM,-283,140"
-	E.db["movers"]["BossButton"] = "BOTTOM,ElvUIParent,BOTTOM,-300,330"
-	E.db["movers"]["AlertFrameMover"] = "TOP,ElvUIParent,TOP,0,-186"
-	E.db["movers"]["ElvUF_TargetMover"] = "BOTTOMRIGHT,ElvUIParent,BOTTOMRIGHT,-523,187"
-	E.db["movers"]["PlayerNameplate"] = nil
-	if T.IsAddOnLoaded("ElvUI_AuraBarsMovers") then
-		E.db["movers"]["ElvUF_PlayerAuraMover"] = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,345,210"
-		E.db["movers"]["ElvUF_TargetAuraMover"] = "BOTTOMRIGHT,ElvUIParent,BOTTOMRIGHT,-341,207"
-	end
+	E.db["movers"]["ElvUF_RaidMover"] = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,309,429"
 end
 
 function PI:DarthSetup()
@@ -71,15 +49,23 @@ function PI:DarthSetup()
 
 	--General
 	do
-		E.db["general"]["totems"]["size"] = 30
 		E.db["general"]["totems"]["growthDirection"] = "HORIZONTAL"
+		E.db["general"]["totems"]["size"] = 30
 		E.db["general"]["threat"]["enable"] = false
 		E.db["general"]["stickyFrames"] = false
+		E.db["general"]["vendorGrays"] = true
+		E.db["general"]["bordercolor"]["r"] = 0
+		E.db["general"]["bordercolor"]["g"] = 0
+		E.db["general"]["bordercolor"]["b"] = 0
 		E.db["general"]["minimap"]["locationText"] = "HIDE"
 		E.db["general"]["bottomPanel"] = false
 		E.db["general"]["objectiveFrameHeight"] = 640
 		E.db["general"]["bonusObjectivePosition"] = "RIGHT"
 		E.db["general"]["hideErrorFrame"] = false
+		E.db["general"]["valuecolor"]["a"] = 1
+		E.db["general"]["valuecolor"]["r"] = 0
+		E.db["general"]["valuecolor"]["g"] = 0.66666666666667
+		E.db["general"]["valuecolor"]["b"] = 0
 	end
 	--Actionbars
 	do
@@ -125,10 +111,11 @@ function PI:DarthSetup()
 		E.db["actionbar"]["backdropSpacingConverted"] = true
 		E.db["actionbar"]["font"] = "PT Sans Narrow"
 		E.db["actionbar"]["fontOutline"] = "OUTLINE"
+		E.db["actionbar"]["stanceBar"]["point"] = "BOTTOMLEFT"
 		E.db["actionbar"]["stanceBar"]["buttonspacing"] = -1
 		E.db["actionbar"]["stanceBar"]["buttonsPerRow"] = 1
-		E.db["actionbar"]["stanceBar"]["style"] = "classic"
 		E.db["actionbar"]["stanceBar"]["buttonsize"] = 28
+		E.db["actionbar"]["stanceBar"]["style"] = "classic"
 		E.db["actionbar"]["keyDown"] = false
 	end
 	--Auras
@@ -217,15 +204,6 @@ function PI:DarthSetup()
 	end
 	--Nameplates
 	do
-		E.db["nameplates"]["clampToScreen"] = true
-		E.db["nameplates"]["lowHealthThreshold"] = 0
-		E.db["nameplates"]["font"] = "PT Sans Narrow"
-		E.db["nameplates"]["fontOutline"] = "OUTLINE"
-		E.db["nameplates"]["threat"]["beingTankedByTank"] = false
-		E.db["nameplates"]["castNoInterruptColor"]["b"] = 0.12549019607843
-		E.db["nameplates"]["castNoInterruptColor"]["g"] = 0.098039215686274
-		E.db["nameplates"]["castNoInterruptColor"]["r"] = 0.85882352941176
-		E.db["nameplates"]["statusbar"] = "ElvUI Gloss"
 		E.db["nameplates"]["fontSize"] = 12
 		E.db["nameplates"]["reactions"]["good"]["b"] = 0.10980392156863
 		E.db["nameplates"]["reactions"]["good"]["g"] = 0.74901960784314
@@ -239,31 +217,41 @@ function PI:DarthSetup()
 		E.db["nameplates"]["reactions"]["neutral"]["b"] = 0.062745098039216
 		E.db["nameplates"]["reactions"]["neutral"]["g"] = 0.81176470588235
 		E.db["nameplates"]["reactions"]["neutral"]["r"] = 0.92156862745098
+		E.db["nameplates"]["statusbar"] = "ElvUI Gloss"
 		E.db["nameplates"]["units"]["FRIENDLY_PLAYER"]["healthbar"]["enable"] = true
 		E.db["nameplates"]["units"]["FRIENDLY_PLAYER"]["powerbar"]["height"] = 4
-		E.db["nameplates"]["units"]["FRIENDLY_NPC"]["powerbar"]["height"] = 4
 		E.db["nameplates"]["units"]["FRIENDLY_NPC"]["powerbar"]["enable"] = true
-		E.db["nameplates"]["units"]["ENEMY_NPC"]["debuffs"]["numAuras"] = 6
+		E.db["nameplates"]["units"]["FRIENDLY_NPC"]["powerbar"]["height"] = 4
 		E.db["nameplates"]["units"]["ENEMY_NPC"]["healthbar"]["text"]["enable"] = true
 		E.db["nameplates"]["units"]["ENEMY_NPC"]["healthbar"]["text"]["format"] = "CURRENT_PERCENT"
-		E.db["nameplates"]["units"]["ENEMY_NPC"]["powerbar"]["height"] = 4
+		E.db["nameplates"]["units"]["ENEMY_NPC"]["debuffs"]["numAuras"] = 6
 		E.db["nameplates"]["units"]["ENEMY_NPC"]["powerbar"]["enable"] = true
+		E.db["nameplates"]["units"]["ENEMY_NPC"]["powerbar"]["height"] = 4
 		E.db["nameplates"]["units"]["ENEMY_NPC"]["buffs"]["enable"] = false
-		E.db["nameplates"]["units"]["ENEMY_NPC"]["eliteIcon"]["enable"] = true
 		E.db["nameplates"]["units"]["ENEMY_NPC"]["eliteIcon"]["xOffset"] = 20
+		E.db["nameplates"]["units"]["ENEMY_NPC"]["eliteIcon"]["enable"] = true
 		E.db["nameplates"]["units"]["ENEMY_NPC"]["eliteIcon"]["yOffset"] = 14
 		E.db["nameplates"]["units"]["ENEMY_PLAYER"]["debuffs"]["numAuras"] = 6
 		E.db["nameplates"]["units"]["ENEMY_PLAYER"]["healthbar"]["text"]["enable"] = true
 		E.db["nameplates"]["units"]["ENEMY_PLAYER"]["healthbar"]["text"]["format"] = "CURRENT_PERCENT"
-		E.db["nameplates"]["units"]["ENEMY_PLAYER"]["powerbar"]["height"] = 4
 		E.db["nameplates"]["units"]["ENEMY_PLAYER"]["powerbar"]["enable"] = true
-		E.db["nameplates"]["units"]["PLAYER"]["enable"] = true
-		E.db["nameplates"]["units"]["PLAYER"]["alwaysShow"] = true
-		E.db["nameplates"]["units"]["PLAYER"]["debuffs"]["enable"] = false
+		E.db["nameplates"]["units"]["ENEMY_PLAYER"]["powerbar"]["height"] = 4
+		E.db["nameplates"]["units"]["PLAYER"]["useStaticPosition"] = true
 		E.db["nameplates"]["units"]["PLAYER"]["healthbar"]["width"] = 120
 		E.db["nameplates"]["units"]["PLAYER"]["castbar"]["enable"] = false
-		E.db["nameplates"]["units"]["PLAYER"]["buffs"]["enable"] = false
+		E.db["nameplates"]["units"]["PLAYER"]["debuffs"]["enable"] = false
 		E.db["nameplates"]["units"]["PLAYER"]["clickthrough"] = true
+		E.db["nameplates"]["units"]["PLAYER"]["buffs"]["enable"] = false
+		E.db["nameplates"]["units"]["PLAYER"]["visibility"]["showWithTarget"] = true
+		E.db["nameplates"]["units"]["PLAYER"]["enable"] = true
+		E.db["nameplates"]["lowHealthThreshold"] = 0
+		E.db["nameplates"]["clampToScreen"] = true
+		E.db["nameplates"]["clickThrough"]["personal"] = true
+		E.db["nameplates"]["threat"]["beingTankedByTank"] = false
+		E.db["nameplates"]["castNoInterruptColor"]["b"] = 0.12549019607843
+		E.db["nameplates"]["castNoInterruptColor"]["g"] = 0.098039215686274
+		E.db["nameplates"]["castNoInterruptColor"]["r"] = 0.85882352941176
+		E.db["nameplates"]["classbar"]["enable"] = false
 	end
 	--Tooltips
 	do
@@ -326,8 +314,17 @@ function PI:DarthSetup()
 		E.db["unitframe"]["units"]["player"]["height"] = 40
 		E.db["unitframe"]["units"]["player"]["classbar"]["detachFromFrame"] = true
 		E.db["unitframe"]["units"]["player"]["classbar"]["detachedWidth"] = 225
-		E.db["unitframe"]["units"]["player"]["pvp"]["text_format"] = "[pvptimer]"
-
+		E.db["unitframe"]["units"]["player"]["pvp"]["text_format"] = ""
+		E.db["unitframe"]["units"]["player"]["pvpIcon"]["enable"] = true
+		E.db["unitframe"]["units"]["player"]["pvpIcon"]["xOffset"] = -30
+		E.db["unitframe"]["units"]["player"]["pvpIcon"]["anchorPoint"] = "LEFT"
+		E.db["unitframe"]["units"]["player"]["RestIcon"]["anchorPoint"] = "BOTTOMRIGHT"
+		E.db["unitframe"]["units"]["player"]["RestIcon"]["xOffset"] = 9
+		E.db["unitframe"]["units"]["player"]["RestIcon"]["yOffset"] = 0
+		E.db["unitframe"]["units"]["player"]["CombatIcon"]["anchorPoint"] = "TOPRIGHT"
+		E.db["unitframe"]["units"]["player"]["CombatIcon"]["size"] = 32
+		E.db["unitframe"]["units"]["player"]["CombatIcon"]["xOffset"] = 13
+		E.db["unitframe"]["units"]["player"]["CombatIcon"]["yOffset"] = -7
 		E.db["unitframe"]["units"]["target"]["portrait"]["enable"] = true
 		E.db["unitframe"]["units"]["target"]["portrait"]["camDistanceScale"] = 3
 		E.db["unitframe"]["units"]["target"]["portrait"]["overlay"] = true
@@ -359,6 +356,9 @@ function PI:DarthSetup()
 		E.db["unitframe"]["units"]["target"]["name"]["yOffset"] = 13
 		E.db["unitframe"]["units"]["target"]["name"]["text_format"] = " [difficultycolor][level] [namecolor][name:medium] [shortclassification]"
 		E.db["unitframe"]["units"]["target"]["name"]["position"] = "TOPLEFT"
+		E.db["unitframe"]["units"]["target"]["pvpIcon"]["enable"] = true
+		E.db["unitframe"]["units"]["target"]["pvpIcon"]["xOffset"] = 30
+		E.db["unitframe"]["units"]["target"]["pvpIcon"]["anchorPoint"] = "RIGHT"
 
 		E.db["unitframe"]["units"]["targettarget"]["debuffs"]["enable"] = false
 		E.db["unitframe"]["units"]["targettarget"]["width"] = 100
@@ -455,7 +455,7 @@ function PI:DarthSetup()
 		E.db["sle"]["dt"]["currency"]["Archaeology"] = false
 		E.db["sle"]["dt"]["currency"]["Unused"] = false
 		E.db["sle"]["dt"]["currency"]["gold"]["method"] = "amount"
-		E.db["sle"]["dt"]["currency"]["gold"]["direction"] = "reverced"
+		E.db["sle"]["dt"]["currency"]["gold"]["direction"] = "reversed"
 		E.db["sle"]["dt"]["guild"]["hide_guildname"] = true
 		E.db["sle"]["dt"]["guild"]["totals"] = true
 		E.db["sle"]["dt"]["guild"]["hide_gmotd"] = true
@@ -468,6 +468,7 @@ function PI:DarthSetup()
 		E.db["sle"]["loot"]["autoroll"]["autoconfirm"] = true
 		E.db["sle"]["loot"]["autoroll"]["autogreed"] = true
 		E.db["sle"]["orderhall"]["autoOrder"]["enable"] = true
+		E.db["sle"]["orderhall"]["autoOrder"]["autoEquip"] = true
 		E.db["sle"]["uibuttons"]["point"] = "TOPRIGHT"
 		E.db["sle"]["uibuttons"]["enable"] = true
 		E.db["sle"]["uibuttons"]["spacing"] = 1
@@ -479,9 +480,8 @@ function PI:DarthSetup()
 		E.db["sle"]["tooltip"]["showFaction"] = true
 		E.db["sle"]["raidmarkers"]["spacing"] = -1
 		E.db["sle"]["raidmarkers"]["buttonSize"] = 24
-		E.db["sle"]["nameplates"]["showthreat"] = true
-		E.db["sle"]["nameplates"]["targetcount"] = true
-		E.db["sle"]["chat"]["editboxhistory"] = 10
+		E.db["sle"]["nameplates"]["threat"]["enable"] = true
+		E.db["sle"]["nameplates"]["targetcount"]["enable"] = true
 		E.db["sle"]["chat"]["dpsSpam"] = true
 		E.db["sle"]["chat"]["tab"]["select"] = true
 		E.db["sle"]["datatexts"]["leftchat"]["width"] = 430
@@ -498,14 +498,9 @@ function PI:DarthSetup()
 		E.db["sle"]["unitframes"]["statusTextures"]["auraTexture"] = "Ohi Tribal4"
 		E.db["sle"]["unitframes"]["statusTextures"]["castTexture"] = "Ohi Tribal4"
 		E.db["sle"]["unitframes"]["statusTextures"]["classTexture"] = "ElvUI Gloss"
-		E.db["sle"]["unitframes"]["unit"]["player"]["combatico"]["xoffset"] = 112
-		E.db["sle"]["unitframes"]["unit"]["player"]["combatico"]["red"] = false
-		E.db["sle"]["unitframes"]["unit"]["player"]["combatico"]["size"] = 32
-		E.db["sle"]["unitframes"]["unit"]["player"]["combatico"]["yoffset"] = 5
 		E.db["sle"]["unitframes"]["unit"]["player"]["portraitAlpha"] = 1
-		E.db["sle"]["unitframes"]["unit"]["player"]["rested"]["xoffset"] = 208
-		E.db["sle"]["unitframes"]["unit"]["player"]["rested"]["yoffset"] = -35
 		E.db["sle"]["unitframes"]["unit"]["player"]["higherPortrait"] = true
+		E.db["sle"]["unitframes"]["unit"]["player"]["pvpIconText"]["enable"] = true
 		E.db["sle"]["unitframes"]["unit"]["target"]["higherPortrait"] = true
 		E.db["sle"]["unitframes"]["unit"]["target"]["portraitAlpha"] = 1
 		E.db["sle"]["minimap"]["locPanel"]["enable"] = true
@@ -532,6 +527,9 @@ function PI:DarthSetup()
 		E.db["sle"]["Armory"]["Character"]["Durability"]["FontSize"] = 10
 		E.db["sle"]["Armory"]["Character"]["Level"]["FontSize"] = 12
 		E.db["sle"]["Armory"]["Character"]["Backdrop"]["SelectedBG"] = "TheEmpire"
+		E.db["sle"]["Armory"]["Character"]["Backdrop"]["Overlay"] = false
+		E.db["sle"]["bags"]["artifactPower"]["enable"] = true
+		E.db["sle"]["bags"]["artifactPower"]["short"] = true
 	end
 	--Movers
 	do
@@ -566,7 +564,7 @@ function PI:DarthSetup()
 		E.db["movers"]["ElvUF_PlayerMover"] = "BOTTOM,ElvUIParent,BOTTOM,-220,186"
 		E.db["movers"]["ObjectiveFrameMover"] = "TOPLEFT,ElvUIParent,TOPLEFT,98,-4"
 		E.db["movers"]["BossHeaderMover"] = "TOPRIGHT,ElvUIParent,TOPRIGHT,-59,-299"
-		E.db["movers"]["ShiftAB"] = "TOPLEFT,ElvUIParent,BOTTOMLEFT,761,138"
+		E.db["movers"]["ShiftAB"] = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,761,29"
 		E.db["movers"]["HonorBarMover"] = "TOP,ElvUIParent,TOP,0,-29"
 		E.db["movers"]["ArenaHeaderMover"] = "TOPRIGHT,ElvUIParent,TOPRIGHT,-59,-299"
 		E.db["movers"]["PetAB"] = "BOTTOM,ElvUIParent,BOTTOM,-267,142"
@@ -593,20 +591,30 @@ function PI:DarthSetup()
 	end
 
 	if T.IsAddOnLoaded("AddOnSkins") then
-		local AS = unpack(AddOnSkins) or nil
-		AS.db["EmbedOoC"] = true
-		AS.db["EmbedOoCDelay"] = 5
+		local AS = T.unpack(_G["AddOnSkins"]) or nil
+		AS.db["EmbedOoCDelay"] = 3
 		AS.db["Blizzard_AbilityButton"] = true
-		AS.db["EmbedSystemDual"] = true
+		AS.db["Blizzard_Transmogrify"] = false
+		AS.db["ParchmentRemover"] = false
+		AS.db["Parchment"] = true
+		AS.db["EmbedIsHidden"] = true
 		AS.db["LoginMsg"] = false
-		AS.db["Blizzard_ExtraActionButton"] = true
+		AS.db["EmbedRight"] = "Skada"
+		AS.db["EmbedLeft"] = "Skada"
 		AS.db["DBMFont"] = "PT Sans Narrow"
+		AS.db["Blizzard_ExtraActionButton"] = true
+		AS.db["WeakAuraIconCooldown"] = true
+		AS.db["EmbedOoC"] = true
+		AS.db["EmbedSystemDual"] = true
+		AS.db["MasterPlan"] = true
 		AS.db["DBMSkinHalf"] = true
 	end
 
 	E.private["general"]["normTex"] = "Ohi MetalSheet"
 	E.private["general"]["glossTex"] = "Ohi MetalSheet"
 	E.private["general"]["minimap"]["hideClassHallReport"] = true
+	
+	E.private["skins"]["blizzard"]["questChoice"] = false
 
 	E.private["sle"]["module"]["screensaver"] = true
 	E.private["sle"]["uibuttons"]["style"] = "dropdown"
@@ -1141,30 +1149,30 @@ local function AffinitySetup()
 	local layout = E.db.layoutSet
 	local installMark = E.private["install_complete"]
 	local installMarkSLE = E.private["sle"]["install_complete"]
-	pixel = E.PixelMode  --Pull PixelMode
+	-- pixel = E.PixelMode  --Pull PixelMode
 
-	if IsAddOnLoaded("ElvUI_DTBars2") then
-		table.wipe(dtbarsList)
-		table.wipe(dtbarsTexts)
-		for name, data in pairs(E.global.dtbars) do
+	if T.IsAddOnLoaded("ElvUI_DTBars2") then
+		T.twipe(dtbarsList)
+		T.twipe(dtbarsTexts)
+		for name, data in T.pairs(E.global.dtbars) do
 			if E.db.dtbars and E.db.dtbars[name] then
 				dtbarsList[name] = E.db.dtbars[name]
 				dtbarsTexts[name] = E.db.datatexts.panels[name]
 			end
 		end
 	end
-	table.wipe(E.db)
+	T.twipe(E.db)
 	E:CopyTable(E.db, P)
 
-	table.wipe(E.private)
+	T.twipe(E.private)
 	E:CopyTable(E.private, V)
 
-	if E.db['movers'] then table.wipe(E.db['movers']) else E.db['movers'] = {} end
+	if E.db['movers'] then T.twipe(E.db['movers']) else E.db['movers'] = {} end
 	if not E.db["unitframe"]["units"]["party"]["customTexts"] then E.db["unitframe"]["units"]["party"]["customTexts"] = {} end
 	if not E.db["unitframe"]["units"]["raid40"]["customTexts"] then E.db["unitframe"]["units"]["raid40"]["customTexts"] = {} end
 
-	E.db["sle"]["nameplates"]["showthreat"] = true
-	E.db["sle"]["nameplates"]["targetcount"] = true
+	E.db["sle"]["nameplates"]["threat"]["enable"] = true
+	E.db["sle"]["nameplates"]["targetcount"]["enable"] = true
 	E.db["sle"]["datatexts"]["chathandle"] = true
 	E.db["sle"]["datatexts"]["panel3"]["enabled"] = true
 	E.db["sle"]["datatexts"]["panel3"]["transparent"] = true
@@ -1183,37 +1191,37 @@ local function AffinitySetup()
 	E.db["sle"]["minimap"]["mapicons"]["skinmail"] = false
 	E.db["sle"]["minimap"]["mapicons"]["iconmouseover"] = true
 
-	SLE:SetMoverPosition("SLE_DataPanel_8_Mover", "BOTTOM", ElvUIParent, "BOTTOM", 0, 3)
-	SLE:SetMoverPosition("ElvUF_PlayerCastbarMover", "BOTTOM", ElvUIParent, "BOTTOM", 0, 96)
+	SLE:SetMoverPosition("SLE_DataPanel_8_Mover", "BOTTOM", _G["ElvUIParent"], "BOTTOM", 0, 3)
+	SLE:SetMoverPosition("ElvUF_PlayerCastbarMover", "BOTTOM", _G["ElvUIParent"], "BOTTOM", 0, 96)
 	SLE:SetMoverPosition("LeftChatMover", "BOTTOMLEFT", UIParent, "BOTTOMLEFT", 0, 21)
-	SLE:SetMoverPosition("ElvUF_RaidMover", "BOTTOMLEFT", ElvUIParent, "BOTTOMLEFT", 449, 511)
-	SLE:SetMoverPosition("BossButton", "TOPLEFT", ElvUIParent, "TOPLEFT", 622, -352)
-	SLE:SetMoverPosition("ElvUF_FocusMover", "BOTTOM", ElvUIParent, "BOTTOM", -63, 436)
-	SLE:SetMoverPosition("ClassBarMover", "BOTTOM", ElvUIParent, "BOTTOM", -337, 500)
-	SLE:SetMoverPosition("SquareMinimapBar", "TOPRIGHT", ElvUIParent, "TOPRIGHT", -4, -211)
-	SLE:SetMoverPosition("ElvUF_TargetMover", "BOTTOM", ElvUIParent, "BOTTOM", 278, 200)
-	SLE:SetMoverPosition("ElvUF_Raid40Mover", "TOPLEFT", ElvUIParent, "TOPLEFT", 447, -468)
-	SLE:SetMoverPosition("ElvAB_1", "BOTTOM", ElvUIParent, "BOTTOM", 0, 59)
-	SLE:SetMoverPosition("ElvAB_2", "BOTTOM", ElvUIParent, "BOTTOM", 0, 25)
-	SLE:SetMoverPosition("ElvAB_4", "BOTTOMLEFT", ElvUIParent, "BOTTOMRIGHT", -413, 200)
-	SLE:SetMoverPosition("AltPowerBarMover", "BOTTOM", ElvUIParent, "BOTTOM", -300, 338)
-	SLE:SetMoverPosition("ElvAB_3", "BOTTOM", ElvUIParent, "BOTTOM", 254, 25)
-	SLE:SetMoverPosition("ElvAB_5", "BOTTOM", ElvUIParent, "BOTTOM", -254, 25)
-	SLE:SetMoverPosition("MMButtonsMover", "TOPRIGHT", ElvUIParent, "TOPRIGHT", -214, -160)
-	SLE:SetMoverPosition("ElvUF_PlayerMover", "BOTTOM", ElvUIParent, "BOTTOM", -278, 200)
-	SLE:SetMoverPosition("ElvUF_TargetTargetMover", "BOTTOM", ElvUIParent, "BOTTOM", 0, 190)
-	SLE:SetMoverPosition("ShiftAB", "BOTTOMLEFT", ElvUIParent, "BOTTOMLEFT", 414, 21)
+	SLE:SetMoverPosition("ElvUF_RaidMover", "BOTTOMLEFT", _G["ElvUIParent"], "BOTTOMLEFT", 449, 511)
+	SLE:SetMoverPosition("BossButton", "TOPLEFT", _G["ElvUIParent"], "TOPLEFT", 622, -352)
+	SLE:SetMoverPosition("ElvUF_FocusMover", "BOTTOM", _G["ElvUIParent"], "BOTTOM", -63, 436)
+	SLE:SetMoverPosition("ClassBarMover", "BOTTOM", _G["ElvUIParent"], "BOTTOM", -337, 500)
+	SLE:SetMoverPosition("SquareMinimapBar", "TOPRIGHT", _G["ElvUIParent"], "TOPRIGHT", -4, -211)
+	SLE:SetMoverPosition("ElvUF_TargetMover", "BOTTOM", _G["ElvUIParent"], "BOTTOM", 278, 200)
+	SLE:SetMoverPosition("ElvUF_Raid40Mover", "TOPLEFT", _G["ElvUIParent"], "TOPLEFT", 447, -468)
+	SLE:SetMoverPosition("ElvAB_1", "BOTTOM", _G["ElvUIParent"], "BOTTOM", 0, 59)
+	SLE:SetMoverPosition("ElvAB_2", "BOTTOM", _G["ElvUIParent"], "BOTTOM", 0, 25)
+	SLE:SetMoverPosition("ElvAB_4", "BOTTOMLEFT", _G["ElvUIParent"], "BOTTOMRIGHT", -413, 200)
+	SLE:SetMoverPosition("AltPowerBarMover", "BOTTOM", _G["ElvUIParent"], "BOTTOM", -300, 338)
+	SLE:SetMoverPosition("ElvAB_3", "BOTTOM", _G["ElvUIParent"], "BOTTOM", 254, 25)
+	SLE:SetMoverPosition("ElvAB_5", "BOTTOM", _G["ElvUIParent"], "BOTTOM", -254, 25)
+	SLE:SetMoverPosition("MMButtonsMover", "TOPRIGHT", _G["ElvUIParent"], "TOPRIGHT", -214, -160)
+	SLE:SetMoverPosition("ElvUF_PlayerMover", "BOTTOM", _G["ElvUIParent"], "BOTTOM", -278, 200)
+	SLE:SetMoverPosition("ElvUF_TargetTargetMover", "BOTTOM", _G["ElvUIParent"], "BOTTOM", 0, 190)
+	SLE:SetMoverPosition("ShiftAB", "BOTTOMLEFT", _G["ElvUIParent"], "BOTTOMLEFT", 414, 21)
 	SLE:SetMoverPosition("RightChatMover", "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", 0, 21)
-	SLE:SetMoverPosition("TotemBarMover", "BOTTOMLEFT", ElvUIParent, "BOTTOMLEFT", 414, 21)
-	SLE:SetMoverPosition("ArenaHeaderMover", "TOPRIGHT", ElvUIParent, "TOPRIGHT", -210, -410)
-	SLE:SetMoverPosition("SLE_DataPanel_6_Mover", "BOTTOMLEFT", ElvUIParent, "BOTTOMLEFT", 4, 327)
-	SLE:SetMoverPosition("SLE_DataPanel_3_Mover", "BOTTOM", ElvUIParent, "BOTTOM", -254, 3)
-	SLE:SetMoverPosition("BossHeaderMover", "BOTTOMRIGHT", ElvUIParent, "BOTTOMRIGHT", -210, 435)
-	SLE:SetMoverPosition("ElvUF_PetMover", "BOTTOM", ElvUIParent, "BOTTOM", 0, 230)
-	SLE:SetMoverPosition("ElvAB_6", "BOTTOM", ElvUIParent, "BOTTOM", 0, 102)
-	SLE:SetMoverPosition("ElvUF_PartyMover", "BOTTOMLEFT", ElvUIParent, "BOTTOMLEFT", 449, 511)
-	SLE:SetMoverPosition("SLE_DataPanel_7_Mover", "BOTTOM", ElvUIParent, "BOTTOM", 254, 3)
-	SLE:SetMoverPosition("PetAB", "TOPRIGHT", ElvUIParent, "TOPRIGHT", -4, -433)
+	SLE:SetMoverPosition("TotemBarMover", "BOTTOMLEFT", _G["ElvUIParent"], "BOTTOMLEFT", 414, 21)
+	SLE:SetMoverPosition("ArenaHeaderMover", "TOPRIGHT", _G["ElvUIParent"], "TOPRIGHT", -210, -410)
+	SLE:SetMoverPosition("SLE_DataPanel_6_Mover", "BOTTOMLEFT", _G["ElvUIParent"], "BOTTOMLEFT", 4, 327)
+	SLE:SetMoverPosition("SLE_DataPanel_3_Mover", "BOTTOM", _G["ElvUIParent"], "BOTTOM", -254, 3)
+	SLE:SetMoverPosition("BossHeaderMover", "BOTTOMRIGHT", _G["ElvUIParent"], "BOTTOMRIGHT", -210, 435)
+	SLE:SetMoverPosition("ElvUF_PetMover", "BOTTOM", _G["ElvUIParent"], "BOTTOM", 0, 230)
+	SLE:SetMoverPosition("ElvAB_6", "BOTTOM", _G["ElvUIParent"], "BOTTOM", 0, 102)
+	SLE:SetMoverPosition("ElvUF_PartyMover", "BOTTOMLEFT", _G["ElvUIParent"], "BOTTOMLEFT", 449, 511)
+	SLE:SetMoverPosition("SLE_DataPanel_7_Mover", "BOTTOM", _G["ElvUIParent"], "BOTTOM", 254, 3)
+	SLE:SetMoverPosition("PetAB", "TOPRIGHT", _G["ElvUIParent"], "TOPRIGHT", -4, -433)
 
 	E.db["gridSize"] = 110
 
@@ -1410,9 +1418,9 @@ local function AffinitySetup()
 	E.db["datatexts"]["fontOutline"] = "None"
 	E.db["datatexts"]["battleground"] = false
 
-	if IsAddOnLoaded("ElvUI_DTBars2") then
+	if T.IsAddOnLoaded("ElvUI_DTBars2") then
 		if not E.db.dtbars then E.db.dtbars = {} end
-		for name, data in pairs(E.global.dtbars) do
+		for name, data in T.pairs(E.global.dtbars) do
 			if dtbarsList[name] then
 				E.db.dtbars[name] = dtbarsList[name]
 				E.db.datatexts.panels[name] = dtbarsTexts[name]
@@ -1459,8 +1467,8 @@ local function AffinitySetup()
 
 	E.private["theme"] = "default"
 
-	if AddOnSkins then
-		local AS = unpack(AddOnSkins) or nil
+	if _G["AddOnSkins"] then
+		local AS = T.unpack(_G["AddOnSkins"]) or nil
 		AS.db["Blizzard_WorldStateCaptureBar"] = true
 		AS.db["EmbedSystem"] = false
 		AS.db["EmbedSystemDual"] = true

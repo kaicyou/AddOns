@@ -135,7 +135,7 @@
 				</Anchors>
 				<Scripts>
 					<PostClick>
-						PlaySound("igInventoryRotateCharacter");
+						PlaySound(SOUNDKIT.IG_INVENTORY_ROTATE_CHARACTER);
 					</PostClick>
 				</Scripts>
 			</Button>
@@ -338,7 +338,7 @@
  				</Animations>
  				<Scripts>
  					<OnClick>
-						PlaySound("igMainMenuOptionCheckBoxOn");
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 						SetLFGBonusFactionID(self.factionID);
 					</OnClick>
  					<OnEnter>

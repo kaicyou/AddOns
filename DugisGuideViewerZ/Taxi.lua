@@ -17,6 +17,13 @@ local QueueInvocation, strformat, RegisterReaction, RegisterFunctionReaction, Re
 		DGV.QueueInvocation, string.format, DGV.RegisterReaction, DGV.RegisterFunctionReaction, DGV.RegisterMemberFunctionReaction, DGV.RegisterStopwatchReaction, DGV.TryGetCacheReaction, DGV.ListContains, DGV.PackStrings
 local InitTable, BeginAutoroutine, InterruptAutoroutine, YieldAutoroutine, tPool, DoOutOfCombat, GetRunningAutoroutine = 
 	DGV.InitTable, DGV.BeginAutoroutine, DGV.InterruptAutoroutine, DGV.YieldAutoroutine, DGV.tPool, DGV.DoOutOfCombat, DGV.GetRunningAutoroutine
+	
+-- Standard calculations stack limit. If calculations take more than reducedLimitEnabledAfter_sec then stack limit is reduced to routeStackReducedLimit. 
+-- This way if alhorithm detects long calculations it decides to calculate route less "optimal" but calculate it faster.
+local routeStackDefaultLimit = 7
+local routeStackReducedLimit = 2
+local reducedLimitEnabledAfter_sec = 10
+local currentRouteStackLimit = routeStackDefaultLimit
 
 function Taxi:Initialize()
 	local pm, pf, px, py
@@ -117,7 +124,7 @@ function Taxi:Initialize()
 	end]]
 	
 	local function GetAngle(x1, y1, x2, y2, x3, y3)
-		if not x1 then return end
+		if not x1 or not y1 or not x2 or not y2 or not x3 or not y3 then return end
 		local ax = x1 - x2
 		local ay = y1 - y2
 		
@@ -193,7 +200,7 @@ function Taxi:Initialize()
 			elseif reqType=="nqid" then
 				if IsQuestFlaggedCompleted(tonumber(req)) then return end
 			elseif reqType=="fac" then
-				pass = pass and UnitFactionGroup("player")==req
+				pass = pass and UnitFactionGroup("player")==tostring(req)
 			elseif reqType=="rep" then
 				local standing,fac = strmatch(req, "^(%d+)%.(.*)$", 1)
 				pass = false
@@ -285,7 +292,7 @@ function Taxi:Initialize()
 	end
 	
 	local function sortFunc(a,b)
-		return a[5]<b[5]
+		return a[5] == nil or b[5] == nil or a[5]<b[5]
 	end
 	local function BacktrackCharacterPath(contData, m1, f1, x1, y1, mTrans, fTrans, m2, f2, x2, y2, ...)
 		if not contData or not x1 then return end
@@ -517,7 +524,9 @@ function Taxi:Initialize()
 	local pandaria = 6
 	local draenor = 7
 	local brokenIsles = 8
-	local groundedMaps = {499, 463, 462, 480, 476, 464, 471, 708, 709, 795, 928, 951}
+	local groundedMaps = {499, 463, 462, 480, 476, 464, 471, 708, 709, 795, 928, 951,
+    1135, 1170, 1171 --Argus
+    }
 	local spellFlightMastersLicense = 90267
 	local spellColdWeatherFlying = 54197
 	local spellWisdomOfTheFourWinds = 115913
@@ -614,6 +623,10 @@ function Taxi:Initialize()
 		if not dist or not dx or not dy then
 			return
 		end
+		
+		if not Taxi:CanWalkTo(m1, f1, m2, f2) then
+			return
+		end		
 		
 		local contData = (TaxiDataCollection.ZoneTransData or TaxiData.ZoneTransData)[c]
 		
@@ -722,7 +735,14 @@ function Taxi:Initialize()
 		if GetSpellBookItemInfo(GetSpellInfo(spellRideLikeTheWind)) then
 			flyingMult = flyingMult * multRideLikeTheWind
 		end
-		return flyingMult
+		
+		local argusMult = 1
+		
+		if GetCurrentMapContinent()	== WORLDMAP_ARGUS_ID then 
+			argusMult = 1000
+		end
+		
+		return flyingMult * argusMult
 	end
 
 	function RouteBuilders.FlightHop:Build(continent, npc1, npc2)
@@ -1138,6 +1158,22 @@ end
 		local mapName = DGV:GetMapNameFromID(route.tailMap)
 		local chDesc = format(L["Talk to %s and fly to %s"], 
 			DGV:GetFlightMasterName(route.headId), mapName)
+			
+		local continent = GetCurrentMapContinent()	
+		if continent == WORLDMAP_ARGUS_ID then 
+			local fullData = TaxiData:GetFullData()
+			
+			local point = fullData[continent][route.headId]
+			
+			if point and point.isBeacon then
+				chDesc = L["Use Beacon"]
+			end
+			
+			if point and point.isSpaceship then
+				chDesc = L["Navigation Console"]
+			end			
+		end
+			
 		--headRoute.builder:AddWaypoint(headRoute, chDesc)
 		local lastHopRoute = route[#(route)-1]
 		local headRouteWaypoint = headRoute.builder:AddWaypoint(headRoute, chDesc)
@@ -1522,7 +1558,11 @@ end
 	function RouteBuilders.FlightMasterWhistle.Iterate(best, parentRoute, m1, f1, x1, y1, m2, f2, x2, y2, lastRoute)
 		if lastRoute or parentRoute then return end
 		local c1, c2 = DGV:GetCZByMapId(m1), DGV:GetCZByMapId(m2)
-		if c1~=8 or c2~=8 --only valid within the broken isles
+		local validcont
+		if GetCurrentMapContinent() == 8 or (GetCurrentMapContinent() == 9 and IsQuestFlaggedCompleted(49006)) then --Argus need Krokul Flute
+			validcont = true
+		end 
+		if validcont ~= true --only valid within the broken isles / argus
 			or GetItemCount(141605)==0
 			or GetItemCooldown(141605)~=0
 			or IsIndoors()
@@ -1540,11 +1580,12 @@ end
 		route.builder = self
 		local fullData = TaxiData:GetFullData()
 		local t = DugisFlightmasterDataTable
-		if not t or not t[8] or IsInInstance() then return end
-		local headDistances,headNPCs = GetDistances(m1, f1, x1, y1, t[8], fullData[8])
+		local cont = GetCurrentMapContinent()
+		if not t or not t[cont] or IsInInstance() then return end
+		local headDistances,headNPCs = GetDistances(m1, f1, x1, y1, t[cont], fullData[cont])
 		local startDist = headDistances[1]
 		local startId = headNPCs[startDist]
-		local data = t[8][startId]
+		local data = t[cont][startId]
 		if not data then return end
 		tPool(headDistances)
 		tPool(headNPCs)
@@ -1571,10 +1612,14 @@ end
 	RouteBuilders.FlightMasterWhistle.Estimate = RouteBuilders.UnboundTeleport.Estimate
 	RouteBuilders.FlightMasterWhistle.AddWaypoint = RouteBuilders.UnboundTeleport.AddWaypoint
 
-	local routeStackLimit = 6
+	
 	local function CheckStackLoop(parentRoute, comparison, hop)
+		if DGV.startCalculationsTime and (GetTime() - DGV.startCalculationsTime) > reducedLimitEnabledAfter_sec then
+			currentRouteStackLimit = routeStackReducedLimit
+		end
+		
 		if not hop then hop=1 end
-		if hop>routeStackLimit then return true end
+		if hop>currentRouteStackLimit then return true end
 		if not parentRoute then return end
 		if parentRoute.mPort==comparison or parentRoute.data==comparison then
 			return true
@@ -2175,6 +2220,7 @@ end
 				
 --DGV:DebugFormat("GetBestRoute", "iter", iter, "invariant", invariant, "control", control)
 				while true do
+					LuaUtils:RestIfNeeded(not DGV.SetSmartWaypointNoThread)			
 					iteratorData:SetList(builder.Iterate(best, parentRoute, m1, f1, x1, y1, m2, f2, x2, y2, iteratorData:Unpack()))
 					local route = iteratorData[1]
 					if not route then break end
@@ -2186,7 +2232,7 @@ end
 					else
 						PoolRoute(route)
 					end
-					YieldAutoroutine()
+					--YieldAutoroutine()
 				end
 				tPool(iteratorData)
 			end
@@ -2255,6 +2301,9 @@ end
 	end
 
 	function DGV:SetSmartWaypoint(mapID, mapFloor, x, y, desc, originMap, originFloor, originX, originY)
+		DGV.startCalculationsTime = GetTime()
+		currentRouteStackLimit = routeStackDefaultLimit
+	
 		originX, originY = originX and originX/100, originY and originY/100
 		if not mapID then mapID = GetCurrentMapAreaID() end
 		if not mapFloor then
@@ -2302,6 +2351,33 @@ end
 		DGV:UnregisterEvent("CONFIRM_BINDER")
 		DGV:UnregisterEvent("UNIT_SPELLCAST_START")
 	end
+	
+	--Checks if it is possible to walk or fly from m1,f1 to m2,f2
+    function Taxi:CanWalkTo(m1, f1, m2, f2)
+    
+        local blockedWays = {
+            {m1 = 1171, m2 = 1171, f1 = 5, f2 = 0},
+            {m1 = 1171, m2 = 1171, f1 = 0, f2 = 5},
+            {m1 = 1171, m2 = 1171, f1 = 6, f2 = 0},
+            {m1 = 1171, m2 = 1171, f1 = 0, f2 = 6},			
+            {m1 = 1170, m2 = 1170, f1 = 3, f2 = 0},
+            {m1 = 1170, m2 = 1170, f1 = 0, f2 = 3},
+            {m1 = 1170, m2 = 1170, f1 = 4, f2 = 0},
+            {m1 = 1170, m2 = 1170, f1 = 0, f2 = 4},			
+            {m1 = 1135, m2 = 1135, f1 = 1, f2 = 0},
+            {m1 = 1135, m2 = 1135, f1 = 0, f2 = 1},
+			{m1 = 1135, m2 = 1135, f1 = 2, f2 = 0},
+			{m1 = 1135, m2 = 1135, f1 = 0, f2 = 2},
+        }
+
+        for _, val in pairs(blockedWays) do
+            if val.m1 == m1 and val.m2 == m2 and val.f1 == f1 and val.f2 == f2 then
+                return false
+            end
+        end
+
+        return true
+    end
 	
 	local function GetMapIDFromDungeonName(destName)
 		for key in pairs(TaxiData.InstancePortals) do

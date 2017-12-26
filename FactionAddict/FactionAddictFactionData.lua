@@ -187,6 +187,9 @@ faFactionDataRow[2099]  = 169;
 faFactionDataRow[2100]  = 170;
 faFactionDataRow[2101]  = 171;
 faFactionDataRow[2102]  = 172;
+faFactionDataRow[2135]  = 173;
+faFactionDataRow[2165]  = 174;
+faFactionDataRow[2170]  = 175;
 
 faFactionData = {
 	{1037, "Interface\\ICONS\\spell_misc_hellifrepvphonorholdfavor",
@@ -538,6 +541,14 @@ faFactionData = {
 	{2101, "Interface\\ICONS\\creatureportrait_darkshoreboat",
 			6,0,19},
 	{2102, "Interface\\ICONS\\ability_warlock_demonicempowerment",
+			6,0,19},
+	-- New 7.2.5 Factions
+	{2135, "Interface\\ICONS\\achievement_reputation_wyrmresttemple",
+			6,0,19},
+	-- New 7.3 Factions
+	{2165, "Interface\\ICONS\\inv_tabard_a_93armyofthelight",
+			6,0,19},
+	{2170, "Interface\\ICONS\\inv_tabard_a_94argussianreach",
 			6,0,19},
 };
 

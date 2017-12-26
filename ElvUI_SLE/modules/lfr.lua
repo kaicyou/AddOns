@@ -170,6 +170,61 @@ local function EightShift(id1, id2)
 	end
 end
 
+--For 9 boss raid
+local function NineKill(id1, id2, id3, id4)
+	local killNum = 0
+	local bosses = {} --cause fuck blizz ordering
+	--1st part
+	bosses = {1, 3, 5}
+	for i =1, #bosses do
+		_, _, isKilled = T.GetLFGDungeonEncounterInfo(id1, bosses[i]);
+		if (isKilled) then killNum = killNum + 1 end
+	end
+	T.twipe(bosses)
+	--2nd part
+	bosses = {2, 4, 6}
+	for i =1, #bosses do 
+		_, _, isKilled = T.GetLFGDungeonEncounterInfo(id2, bosses[i]);
+		if (isKilled) then killNum = killNum + 1 end
+	end
+	T.twipe(bosses)
+	--3nd part
+	for i =7,8 do 
+		_, _, isKilled = T.GetLFGDungeonEncounterInfo(id3, i);
+		if (isKilled) then killNum = killNum + 1 end
+	end
+	-- 4th part
+	_, _, isKilled = T.GetLFGDungeonEncounterInfo(id4, 9);
+	if (isKilled) then killNum = killNum + 1 end
+
+	LFR:BossCount(killNum, 9)
+end
+
+local function NineShift(id1, id2, id3, id4)
+	local bosses = {} --cause fuck blizz ordering
+	-- 1st part
+	bosses = {1, 3, 5}
+	for i =1, #bosses do 
+		bossName, _, isKilled, isIneligible = T.GetLFGDungeonEncounterInfo(id1, bosses[i]);
+		LFR:BossStatus(bossName, isKilled, isIneligible)
+	end
+	T.twipe(bosses)
+	--2nd part
+	bosses = {2, 4, 6}
+	for i =1, #bosses do  
+		bossName, _, isKilled, isIneligible = T.GetLFGDungeonEncounterInfo(id2, bosses[i]);
+		LFR:BossStatus(bossName, isKilled, isIneligible)
+	end
+	T.twipe(bosses)
+	for i =7,8 do --3nd part
+		bossName, _, isKilled, isIneligible = T.GetLFGDungeonEncounterInfo(id3, i);
+		LFR:BossStatus(bossName, isKilled, isIneligible)
+	end
+	-- 4rd part
+	bossName, _, isKilled, isIneligible = T.GetLFGDungeonEncounterInfo(id4, 9);
+	LFR:BossStatus(bossName, isKilled, isIneligible)
+end
+
 --For 10 boss raid
 local function TenKill(id1, id2, id3, id4)
 	local killNum = 0
@@ -228,6 +283,58 @@ local function TenShift(id1, id2, id3, id4)
 	--4th part
 	bossName, _, isKilled, isIneligible = T.GetLFGDungeonEncounterInfo(id4, 10);
 	LFR:BossStatus(bossName, isKilled, isIneligible)
+end
+
+--For 11 boss raid
+local function ElevenKill(id1, id2, id3, id4)
+	local killNum = 0
+	--1st part
+	for i =1, 3 do
+		_, _, isKilled = T.GetLFGDungeonEncounterInfo(id1, i);
+		if (isKilled) then killNum = killNum + 1 end
+	end
+	--2nd part
+	for i =4, 6 do 
+		_, _, isKilled = T.GetLFGDungeonEncounterInfo(id2, i);
+		if (isKilled) then killNum = killNum + 1 end
+	end
+	--3rd part
+	for i =7, 9 do
+		_, _, isKilled = T.GetLFGDungeonEncounterInfo(id3, i);
+		if (isKilled) then killNum = killNum + 1 end
+	end
+	-- 4th part
+	for i =10, 11 do
+		_, _, isKilled = T.GetLFGDungeonEncounterInfo(id4, i);
+		if (isKilled) then killNum = killNum + 1 end
+	end
+
+	LFR:BossCount(killNum, 10)
+end
+
+local function ElevenShift(id1, id2, id3, id4)
+	--1st part
+	for i =1, 3 do 
+		bossName, _, isKilled, isIneligible = T.GetLFGDungeonEncounterInfo(id1, i);
+		LFR:BossStatus(bossName, isKilled, isIneligible)
+	end
+	--2nd part
+	-- bosses = {3, 5, 8}
+	for i =4, 6 do  
+		bossName, _, isKilled, isIneligible = T.GetLFGDungeonEncounterInfo(id2, i);
+		LFR:BossStatus(bossName, isKilled, isIneligible)
+	end
+	--3rd part
+	-- bosses = {4, 6, 9}
+	for i =7, 9 do   
+		bossName, _, isKilled, isIneligible = T.GetLFGDungeonEncounterInfo(id3, i);
+		LFR:BossStatus(bossName, isKilled, isIneligible)
+	end
+	--4th part
+	for i =10, 11 do   
+		bossName, _, isKilled, isIneligible = T.GetLFGDungeonEncounterInfo(id4, i);
+		LFR:BossStatus(bossName, isKilled, isIneligible)
+	end
 end
 
 --For 12 boss raid
@@ -455,6 +562,22 @@ local function Trial()
 	end
 end
 
+local function TombOfSargeras()
+	if IsShiftKeyDown() then
+		NineShift(1494,1495,1496,1497);
+	else
+		NineKill(1494,1495,1496,1497);
+	end
+end
+
+local function Antorus()
+	if IsShiftKeyDown() then
+		ElevenShift(1610,1611,1612,1613);
+	else
+		ElevenKill(1610,1611,1612,1613);
+	end
+end
+
 LFR.Req = {
 	["Cata"] = {3, 85},
 	["MoP"] = {4, 90},
@@ -539,6 +662,18 @@ LFR.Legion = {
 		["ilevel"] = 835,
 		["map"] = 1088,
 		["func"] = Suramar,
+	},
+	[4] = {
+		["name"] = "tomb",
+		["ilevel"] = 860,
+		["map"] = 1147,
+		["func"] = TombOfSargeras,
+	},
+	[5] = {
+		["name"] = "antorus",
+		["ilevel"] = 890,
+		["map"] = 1188,
+		["func"] = Antorus,
 	},
 }
 

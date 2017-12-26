@@ -2646,7 +2646,34 @@ do
 		}	
 		mapData[1044] = { 
 			['name'] = "TheWanderingIsleL",
+		}	
+		mapData[1177] = { 
+			['name'] = "DragonblightChromieScenario",
+		}
+		mapData[1147] = { 
+			['name'] = "TombRaid",
+		}
+		mapData[1135] = { 
+			['name'] = "ArgusSurface",
+		}		
+		mapData[1137] = { 
+			['name'] = "TheDeadminesPetBattle",
+		}
+		mapData[1172] = { 
+			['name'] = "HallOfCommunion",
+		}	
+		mapData[1170] = { 
+			['name'] = "ArgusMacAree",
 		}			
+		mapData[1171] = { 
+			['name'] = "ArgusCore",
+		}	
+		mapData[1174] = { 
+			['name'] = "AzuremystScenario",
+		}				
+		mapData[1184] = { 
+			['name'] = "Argus",
+		}				
 	-- Dustwallow Transition patch for client that havent been patched
 	LuaUtils:DugiSetMapByID(141)
 	local dwMap = GetMapInfo()

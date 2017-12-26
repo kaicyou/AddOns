@@ -23,7 +23,7 @@ local UnitIsUnit = UnitIsUnit
 local UnitPlayerControlled = UnitPlayerControlled
 local UnitReaction = UnitReaction
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local CUSTOM_CLASS_COLORS = CUSTOM_CLASS_COLORS
+-- GLOBALS: CUSTOM_CLASS_COLORS
 
 function mod:UpdateElement_HealthColor(frame)
 	if(not frame.HealthBar:IsShown()) then return end
@@ -117,11 +117,13 @@ function mod:UpdateElement_HealthColor(frame)
 
 	if(not frame.isTarget or not self.db.useTargetScale) then
 		frame.ThreatScale = scale
-		self:SetFrameScale(frame, scale)
+		if not frame.ScaleChanged then
+			self:SetFrameScale(frame, scale)
+		end
 	end
 end
 
-local function UpdateFillBar(frame, previousTexture, bar, amount)
+function mod:UpdateFillBar(frame, previousTexture, bar, amount)
 	if ( amount == 0 ) then
 		bar:Hide();
 		return previousTexture;
@@ -189,9 +191,9 @@ function mod:UpdateElement_HealPrediction(frame)
 	frame.AbsorbBar:Show()
 
 	local previousTexture = frame.HealthBar:GetStatusBarTexture();
-	previousTexture = UpdateFillBar(frame.HealthBar, previousTexture, frame.PersonalHealPrediction , myIncomingHeal);
-	previousTexture = UpdateFillBar(frame.HealthBar, previousTexture, frame.HealPrediction, allIncomingHeal);
-	previousTexture = UpdateFillBar(frame.HealthBar, previousTexture, frame.AbsorbBar, totalAbsorb);
+	previousTexture = mod:UpdateFillBar(frame.HealthBar, previousTexture, frame.PersonalHealPrediction , myIncomingHeal);
+	previousTexture = mod:UpdateFillBar(frame.HealthBar, previousTexture, frame.HealPrediction, allIncomingHeal);
+	previousTexture = mod:UpdateFillBar(frame.HealthBar, previousTexture, frame.AbsorbBar, totalAbsorb);
 end
 
 
@@ -205,6 +207,7 @@ function mod:UpdateElement_Health(frame)
 	local _, maxHealth = frame.HealthBar:GetMinMaxValues()
 
 	frame.HealthBar:SetValue(health)
+	frame.FlashTexture:Point("TOPRIGHT", frame.HealthBar:GetStatusBarTexture(), "TOPRIGHT") --idk why this fixes this
 
 	if self.db.units[frame.UnitType].healthbar.text.enable then
 		frame.HealthBar.text:SetText(E:GetFormattedText(self.db.units[frame.UnitType].healthbar.text.format, health, maxHealth))
@@ -235,7 +238,7 @@ function mod:ConfigureElement_HealthBar(frame, configuring)
 	absorbBar:Hide()
 
 	healthBar.text:SetAllPoints(healthBar)
-	healthBar.text:SetFont(LSM:Fetch("font", self.db.font), self.db.fontSize, self.db.fontOutline)	
+	healthBar.text:SetFont(LSM:Fetch("font", self.db.healthFont), self.db.healthFontSize, self.db.healthFontOutline)
 end
 
 function mod:ConstructElement_HealthBar(parent)
@@ -253,6 +256,12 @@ function mod:ConstructElement_HealthBar(parent)
 	parent.PersonalHealPrediction = CreateFrame("StatusBar", "$parentPersonalHealPrediction", frame)
 	parent.PersonalHealPrediction:SetStatusBarTexture(LSM:Fetch("background", "ElvUI Blank"))
 	parent.PersonalHealPrediction:SetStatusBarColor(0, 1, 0.5, 0.25)
+
+	parent.FlashTexture = frame:CreateTexture(nil, "OVERLAY")
+	parent.FlashTexture:SetTexture(LSM:Fetch("background", "ElvUI Blank"))
+	parent.FlashTexture:Point("BOTTOMLEFT", frame:GetStatusBarTexture(), "BOTTOMLEFT")
+	parent.FlashTexture:Point("TOPRIGHT", frame:GetStatusBarTexture(), "TOPRIGHT")
+	parent.FlashTexture:Hide()
 
 	frame.text = frame:CreateFontString(nil, "OVERLAY")
 	frame.text:SetWordWrap(false)

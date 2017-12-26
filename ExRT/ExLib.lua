@@ -20,9 +20,11 @@ All functions:
 	:NewPoint(...)		-> ClearAllPoints() + SetPoint(...)
 	:Scale(...)		-> SetScale(...)
 	:OnClick(func)		-> SetScript("OnClick",func)
+	:OnShow(func,disableFirst)  -> SetScript("OnShow",func) && run func if not disabled
 	:Run(func,...)		-> func(self,...)
 
 -> ELib:Shadow(parent,size,edgeSize)
+-> ELib:Shadow2(parent,size,offsetX,offsetY,isBold)
 -> ELib:Slider(parent,text,isVertical,template)
 	:Range(min,max)		-> SetMinMaxValues(min,max)
 	:SetTo(value)		-> SetValue(value)
@@ -149,7 +151,7 @@ CheckButton	ExRTRadioButtonModernTemplate
 local GlobalAddonName, ExRT = ...
 local isExRT = GlobalAddonName == "ExRT"
 
-local libVersion = 28
+local libVersion = 30
 
 if type(ELib)=='table' and type(ELib.V)=='number' and ELib.V > libVersion then return end
 
@@ -404,7 +406,7 @@ do
 	end
 	local function OnClick(self)
 		ToggleDropDownMenu(nil, nil, self:GetParent())
-		PlaySound("igMainMenuOptionCheckBoxOn")
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	end
 	function Templates:ExRTUIChatDownButtonTemplate(parent)
 		local self = CreateFrame("Button",nil,parent)
@@ -1348,7 +1350,7 @@ do
 	end
 	local function OnClick(self)
 		ToggleDropDownMenu(nil, nil, self:GetParent())
-		PlaySound("igMainMenuOptionCheckBoxOn")
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	end
 	function Templates:ExRTUIChatDownButtonModernTemplate(parent)
 		local self = ExRTButtonModernTemplate(3,parent)
@@ -1488,6 +1490,142 @@ do
 		self:SetBackdropBorderColor(0,0,0,.45)
 	
 		return self
+	end
+	function ELib:Shadow2(self,size,offsetX,offsetY,isBold)
+		offsetX = offsetX or 0
+		offsetY = offsetY or 0
+		isBold = true
+	
+		self.ShadowTop = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowTop:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowTop:SetPoint("TOPLEFT",10,size+offsetY)
+		self.ShadowTop:SetPoint("BOTTOMRIGHT",self,"TOPRIGHT",-10,offsetY)
+		self.ShadowTop:SetVertexColor(0,0,0,.45)
+		self.ShadowTop:SetTexCoord((128+31)/256,(128+32)/256,0,22/32)
+		
+		self.ShadowTopLeftInside = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowTopLeftInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowTopLeftInside:SetPoint("TOPLEFT",-offsetX,size+offsetY)
+		self.ShadowTopLeftInside:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",-offsetX+10,offsetY)
+		self.ShadowTopLeftInside:SetVertexColor(0,0,0,.45)
+		self.ShadowTopLeftInside:SetTexCoord((128+22)/256,(128+32)/256,0,22/32)	
+		
+		self.ShadowTopLeft = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowTopLeft:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowTopLeft:SetPoint("TOPLEFT",-offsetX-size,size+offsetY)
+		self.ShadowTopLeft:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",-offsetX,offsetY)
+		self.ShadowTopLeft:SetVertexColor(0,0,0,.45)
+		self.ShadowTopLeft:SetTexCoord((128+0)/256,(128+22)/256,0,22/32)	
+	
+		self.ShadowTopRightInside = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowTopRightInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowTopRightInside:SetPoint("TOPLEFT",self,"TOPRIGHT",offsetX-10,size+offsetY)
+		self.ShadowTopRightInside:SetPoint("BOTTOMRIGHT",self,"TOPRIGHT",offsetX,offsetY)
+		self.ShadowTopRightInside:SetVertexColor(0,0,0,.45)
+		self.ShadowTopRightInside:SetTexCoord((128+32)/256,(128+22)/256,0,22/32)	
+	
+		self.ShadowTopRight = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowTopRight:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowTopRight:SetPoint("TOPLEFT",self,"TOPRIGHT",offsetX,size+offsetY)
+		self.ShadowTopRight:SetPoint("BOTTOMRIGHT",self,"TOPRIGHT",offsetX+size,offsetY)
+		self.ShadowTopRight:SetVertexColor(0,0,0,.45)
+		self.ShadowTopRight:SetTexCoord((128+22)/256,(128+0)/256,0,22/32)
+		
+		self.ShadowLeftTopInside = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowLeftTopInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowLeftTopInside:SetPoint("TOPLEFT",-offsetX-size,offsetY)
+		self.ShadowLeftTopInside:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",-offsetX,offsetY-10)
+		self.ShadowLeftTopInside:SetVertexColor(0,0,0,.45)
+		self.ShadowLeftTopInside:SetTexCoord((128+0)/256,(128+22)/256,22/32,32/32)
+		
+		self.ShadowLeft = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowLeft:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowLeft:SetPoint("TOPLEFT",-offsetX-size,offsetY-10)
+		self.ShadowLeft:SetPoint("BOTTOMRIGHT",self,"BOTTOMLEFT",-offsetX,-offsetY+10)
+		self.ShadowLeft:SetVertexColor(0,0,0,.45)
+		self.ShadowLeft:SetTexCoord((128+0)/256,(128+22)/256,31/32,32/32)		
+			
+		self.ShadowLeftBottomInside = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowLeftBottomInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowLeftBottomInside:SetPoint("TOPLEFT",self,"BOTTOMLEFT",-offsetX-size,-offsetY+10)
+		self.ShadowLeftBottomInside:SetPoint("BOTTOMRIGHT",self,"BOTTOMLEFT",-offsetX,-offsetY)
+		self.ShadowLeftBottomInside:SetVertexColor(0,0,0,.45)
+		self.ShadowLeftBottomInside:SetTexCoord((128+0)/256,(128+22)/256,32/32,22/32)
+		
+		self.ShadowLeftBottom = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowLeftBottom:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowLeftBottom:SetPoint("TOPLEFT",self,"BOTTOMLEFT",-offsetX-size,-offsetY)
+		self.ShadowLeftBottom:SetPoint("BOTTOMRIGHT",self,"BOTTOMLEFT",-offsetX,-offsetY-size)
+		self.ShadowLeftBottom:SetVertexColor(0,0,0,.45)
+		self.ShadowLeftBottom:SetTexCoord((128+0)/256,(128+22)/256,22/32,0)
+	
+		self.ShadowBottomLeftInside = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowBottomLeftInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowBottomLeftInside:SetPoint("TOPLEFT",self,"BOTTOMLEFT",-offsetX,-offsetY)
+		self.ShadowBottomLeftInside:SetPoint("BOTTOMRIGHT",self,"BOTTOMLEFT",-offsetX+10,-offsetY-size)
+		self.ShadowBottomLeftInside:SetVertexColor(0,0,0,.45)
+		self.ShadowBottomLeftInside:SetTexCoord((128+22)/256,(128+32)/256,22/32,0)
+	
+		self.ShadowBottom = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowBottom:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowBottom:SetPoint("TOPLEFT",self,"BOTTOMLEFT",-offsetX+10,-offsetY)
+		self.ShadowBottom:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",offsetX-10,-offsetY-size)
+		self.ShadowBottom:SetVertexColor(0,0,0,.45)
+		self.ShadowBottom:SetTexCoord((128+31)/256,(128+32)/256,22/32,0)	
+	
+		self.ShadowBottomRightInside = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowBottomRightInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowBottomRightInside:SetPoint("TOPLEFT",self,"BOTTOMRIGHT",offsetX-10,-offsetY)
+		self.ShadowBottomRightInside:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",offsetX,-offsetY-size)
+		self.ShadowBottomRightInside:SetVertexColor(0,0,0,.45)
+		self.ShadowBottomRightInside:SetTexCoord((128+32)/256,(128+22)/256,22/32,0)
+		
+		self.ShadowBottomRight = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowBottomRight:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowBottomRight:SetPoint("TOPLEFT",self,"BOTTOMRIGHT",offsetX,-offsetY)
+		self.ShadowBottomRight:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",offsetX+size,-offsetY-size)
+		self.ShadowBottomRight:SetVertexColor(0,0,0,.45)
+		self.ShadowBottomRight:SetTexCoord((128+22)/256,(128+0)/256,22/32,0)
+		
+		self.ShadowRightBottomInside = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowRightBottomInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowRightBottomInside:SetPoint("TOPLEFT",self,"BOTTOMRIGHT",offsetX,-offsetY+10)
+		self.ShadowRightBottomInside:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",offsetX+size,-offsetY)
+		self.ShadowRightBottomInside:SetVertexColor(0,0,0,.45)
+		self.ShadowRightBottomInside:SetTexCoord((128+22)/256,(128+0)/256,32/32,22/32)
+		
+		self.ShadowRight = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowRight:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowRight:SetPoint("TOPLEFT",self,"TOPRIGHT",offsetX,offsetY-10)
+		self.ShadowRight:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",offsetX+size,-offsetY+10)
+		self.ShadowRight:SetVertexColor(0,0,0,.45)
+		self.ShadowRight:SetTexCoord((128+22)/256,(128+0)/256,31/32,32/32)
+		
+		self.ShadowRightTopInside = self:CreateTexture(nil,"BACKGROUND")
+		self.ShadowRightTopInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
+		self.ShadowRightTopInside:SetPoint("TOPLEFT",self,"TOPRIGHT",offsetX,offsetY)
+		self.ShadowRightTopInside:SetPoint("BOTTOMRIGHT",self,"TOPRIGHT",offsetX+size,offsetY-10)
+		self.ShadowRightTopInside:SetVertexColor(0,0,0,.45)
+		self.ShadowRightTopInside:SetTexCoord((128+22)/256,(128+0)/256,22/32,32/32)
+		
+		if isBold then
+			self.ShadowTop:SetTexCoord((192+31)/256,(192+32)/256,1,10/32)
+			self.ShadowTopLeftInside:SetTexCoord((192+22)/256,(192+32)/256,1,10/32)	
+			self.ShadowTopLeft:SetTexCoord((192+0)/256,(192+22)/256,1,10/32)	
+			self.ShadowTopRightInside:SetTexCoord((192+32)/256,(192+22)/256,1,10/32)	
+			self.ShadowTopRight:SetTexCoord((192+22)/256,(192+0)/256,1,10/32)
+			self.ShadowLeftTopInside:SetTexCoord((192+0)/256,(192+22)/256,10/32,0)
+			self.ShadowLeft:SetTexCoord((192+0)/256,(192+22)/256,1/32,0)		
+			self.ShadowLeftBottomInside:SetTexCoord((192+0)/256,(192+22)/256,0,10/32)
+			self.ShadowLeftBottom:SetTexCoord((192+0)/256,(192+22)/256,10/32,1)
+			self.ShadowBottomLeftInside:SetTexCoord((192+22)/256,(192+32)/256,10/32,1)
+			self.ShadowBottom:SetTexCoord((192+31)/256,(192+32)/256,10/32,1)	
+			self.ShadowBottomRightInside:SetTexCoord((192+32)/256,(192+22)/256,10/32,1)
+			self.ShadowBottomRight:SetTexCoord((192+22)/256,(192+0)/256,10/32,1)
+			self.ShadowRightBottomInside:SetTexCoord((192+22)/256,(192+0)/256,0,10/32)
+			self.ShadowRight:SetTexCoord((192+22)/256,(192+0)/256,1/32,0)
+			self.ShadowRightTopInside:SetTexCoord((192+22)/256,(192+0)/256,10/32,0)
+		end
 	end
 	function ELib.CreateShadow(parent,size,edgeSize)
 		return ELib:Shadow(parent,size,edgeSize)
@@ -2766,6 +2904,14 @@ do
 		self:_Disable()
 		return self
 	end
+	local function Widget_GetTextObj(self)
+		for i=1,self:GetNumRegions() do
+			local obj = select(i,self:GetRegions())
+			if obj.GetText and obj:GetText() == self:GetText() then
+				return obj
+			end
+		end
+	end
 		
 	function ELib:Button(parent,text,template)
 		if template == 0 then
@@ -2782,6 +2928,7 @@ do
 			'Tooltip',Widget_Tooltip
 		)
 		self._Disable = self.Disable	self.Disable = Widget_Disable
+		self.GetTextObj = Widget_GetTextObj
 		
 		return self
 	end
@@ -3163,6 +3310,10 @@ do
 			end
 		end
 		
+		line.background = line:CreateTexture(nil, "BACKGROUND")
+		line.background:SetPoint("TOPLEFT")
+		line.background:SetPoint("BOTTOMRIGHT")
+		
 		line.HighlightTexture = line:CreateTexture()
 		line.HighlightTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogTitleHighlight")
 		line.HighlightTexture:SetBlendMode("ADD")
@@ -3246,6 +3397,13 @@ do
 				else
 					line.iconRight:SetTexture("")
 				end			
+			end
+			if self.colors then
+				if self.colors[i] then
+					line.background:SetColorTexture(unpack(self.colors[i]))
+				else
+					line.background:SetColorTexture(0,0,0,0)
+				end
 			end
 			line:Show()
 			line.index = i
@@ -3771,7 +3929,7 @@ function ELib.ScrollDropDown.ClickButton(self)
 		dropDown = self:GetParent()
 	end
 	ELib.ScrollDropDown.ToggleDropDownMenu(dropDown)
-	PlaySound("igMainMenuOptionCheckBoxOn")
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 end
 
 function ELib.ScrollDropDown:Reload(level)
@@ -4920,10 +5078,63 @@ do
 			local _,scrollMax = parent.ScrollBar:GetMinMaxValues()
 			parent.ScrollBar:SetValue(min(ceil( y + height - heightNow ),scrollMax))
 		end
+		
+		if parent.Cursor730fix then
+			parent:Cursor730fix(height,y)
+		end
 	end
 	local function Widget_GetText(self)
 		return self.EditBox:GetText()
 	end
+	
+	local function Widget_Apply730fix(self)
+		if type(ExRT)=='table' and type(ExRT.clientVersion)=='number' and ExRT.clientVersion > 70300 then
+			return		--Fixed in 7.3.2
+		end
+		self.MirrorEditBox = ELib:Edit(self.C,nil,nil,1):Point("TOPLEFT",self.C,0,0):Point("TOPRIGHT",self.C,0,0)
+
+		self.MirrorEditBox:SetMultiLine(true) 
+		self.MirrorEditBox:SetBackdropColor(0, 0, 0, 0)
+		self.MirrorEditBox:SetBackdropBorderColor(0, 0, 0, 0)
+		self.MirrorEditBox:SetTextInsets(5,5,2,2)
+		
+		self.MirrorEditBox:EnableKeyboard(false)
+		self.MirrorEditBox:SetScript("OnKeyDown", function() end)
+		self.MirrorEditBox:SetAlpha(0)
+
+		for i=1,self.EditBox:GetNumRegions() do
+			local region = select(i,self.EditBox:GetRegions())
+			if region and region.GetTexture and region:GetTexture() == "Color-ffffffff" then
+				self.EditBox.cursor = region
+				local cursorHeigthHardcode = 12
+				local prevPosY,prevY = 0
+				local function UpdateVerticalPos()
+					local arg1,arg2,arg3,arg4,arg5 = region:GetPoint()
+					if not arg1 then
+						return
+					end
+					region:SetPoint(arg1,arg2,arg3,arg4,prevPosY)
+				end
+				self.Cursor730fix = function(_,cursorHeight,y)
+					local p = self.EditBox:GetCursorPosition()
+					cursorHeigthHardcode = cursorHeight
+					if prevY ~= y then
+						prevY = y
+						local textA = self.EditBox:GetText():sub(1,p)
+						local textB = self.EditBox:GetText():sub(p+1,-1):gsub("[ \n].*","")
+						self.MirrorEditBox:SetText(textA..textB)
+					else
+						UpdateVerticalPos()
+					end
+				end
+				self.MirrorEditBox:SetScript("OnSizeChanged", function(_,_,height) 
+					prevPosY = -(height - cursorHeigthHardcode - 4)
+					UpdateVerticalPos()
+				end)
+				break			
+			end
+		end
+	end	
 	
 	function ELib:MultiEdit(parent)
 		local self = ELib:ScrollFrame(parent)
@@ -4950,6 +5161,7 @@ do
 		self.SetText = Widget_SetText
 		self.GetTextHighlight = Widget_GetTextHighlight
 		self.GetText = Widget_GetText
+		self.Add730fix = Widget_Apply730fix
 		
 		return self
 	end

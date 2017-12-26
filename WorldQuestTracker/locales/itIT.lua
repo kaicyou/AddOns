@@ -6,11 +6,83 @@ L["S_APOWER_DOWNVALUE"] = "Le Missioni con %s scadono dopo il completamento dell
 L["S_APOWER_NEXTLEVEL"] = "Prox Livello"
 L["S_ENABLED"] = "Abilitato"
 L["S_ERROR_NOTIMELEFT"] = "E' scaduto il tempo per questa missione."
---Translation missing 
--- L["S_ERROR_NOTLOADEDYET"] = ""
+L["S_ERROR_NOTLOADEDYET"] = "Questa quest non è ancora pronta, per favore aspetta qualche secondo. "
 L["S_FLYMAP_SHOWTRACKEDONLY"] = "Solo Tracciati"
 L["S_FLYMAP_SHOWTRACKEDONLY_DESC"] = "Mostra solo le missioni tracciate"
 L["S_FLYMAP_SHOWWORLDQUESTS"] = "Mostra Missioni Mondiali"
+--Translation missing 
+-- L["S_GROUPFINDER_ACTIONS_CANCEL_APPLICATIONS"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_ACTIONS_CANCELING"] = ""
+L["S_GROUPFINDER_ACTIONS_CREATE"] = "Non hai trovato nessun gruppo? Premi qui per crearne uno"
+L["S_GROUPFINDER_ACTIONS_CREATE_DIRECT"] = "Crea gruppo"
+L["S_GROUPFINDER_ACTIONS_LEAVEASK"] = "Vuoi abbandonare il gruppo?"
+--Translation missing 
+-- L["S_GROUPFINDER_ACTIONS_LEAVINGIN"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_ACTIONS_RETRYSEARCH"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_ACTIONS_SEARCH"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_ACTIONS_SEARCH_RARENPC"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_ACTIONS_SEARCH_TOOLTIP"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_ACTIONS_SEARCHING"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_ACTIONS_SEARCHMORE"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_ACTIONS_SEARCHOTHER"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_ACTIONS_UNAPPLY1"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_ACTIONS_UNLIST"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_ACTIONS_UNLISTING"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_ACTIONS_WAITING"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_AUTOOPEN_RARENPC_TARGETED"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_ENABLED"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_INVASION_ENABLED"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_LEAVEOPTIONS"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_LEAVEOPTIONS_AFTERX"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_LEAVEOPTIONS_ASKX"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_LEAVEOPTIONS_DONTLEAVE"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_LEAVEOPTIONS_IMMEDIATELY"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_NOPVP"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_OT_ENABLED"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_QUEUEBUSY"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_QUEUEBUSY2"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_RESULTS_APPLYING"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_RESULTS_APPLYING1"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_RESULTS_FOUND"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_RESULTS_FOUND1"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_RESULTS_UNAPPLY"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_RIGHTCLICKCLOSE"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_SECONDS"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_TITLE"] = ""
+--Translation missing 
+-- L["S_GROUPFINDER_TUTORIAL1"] = ""
 --Translation missing 
 -- L["S_MAPBAR_AUTOWORLDMAP"] = ""
 L["S_MAPBAR_AUTOWORLDMAP_DESC"] = [=[Quando ti trovi a Dalaran o nell'Enclave di Classe, premendo 'M' viene mostrata la mappa delle Isole Disperse.
@@ -73,12 +145,35 @@ L["S_QUESTTYPE_ARTIFACTPOWER"] = "Potere Artefatto"
 L["S_QUESTTYPE_DUNGEON"] = "Spedizione"
 L["S_QUESTTYPE_EQUIPMENT"] = "Equipaggiamento"
 L["S_QUESTTYPE_GOLD"] = "Oro"
---Translation missing 
--- L["S_QUESTTYPE_PETBATTLE"] = ""
+L["S_QUESTTYPE_PETBATTLE"] = "Battaglia tra mascotte"
 L["S_QUESTTYPE_PROFESSION"] = "Professione"
 L["S_QUESTTYPE_PVP"] = "PvP"
 L["S_QUESTTYPE_RESOURCE"] = "Risorse"
 L["S_QUESTTYPE_TRADESKILL"] = "Creazioni"
+--Translation missing 
+-- L["S_RAREFINDER_ADDFROMPREMADE"] = ""
+--Translation missing 
+-- L["S_RAREFINDER_NPC_NOTREGISTERED"] = ""
+--Translation missing 
+-- L["S_RAREFINDER_OPTIONS_ENGLISHSEARCH"] = ""
+--Translation missing 
+-- L["S_RAREFINDER_OPTIONS_SHOWICONS"] = ""
+--Translation missing 
+-- L["S_RAREFINDER_SOUND_ALWAYSPLAY"] = ""
+--Translation missing 
+-- L["S_RAREFINDER_SOUND_ENABLED"] = ""
+--Translation missing 
+-- L["S_RAREFINDER_SOUNDWARNING"] = ""
+--Translation missing 
+-- L["S_RAREFINDER_TITLE"] = ""
+--Translation missing 
+-- L["S_RAREFINDER_TOOLTIP_REMOVE"] = ""
+--Translation missing 
+-- L["S_RAREFINDER_TOOLTIP_SEACHREALM"] = ""
+--Translation missing 
+-- L["S_RAREFINDER_TOOLTIP_SPOTTEDBY"] = ""
+--Translation missing 
+-- L["S_RAREFINDER_TOOLTIP_TIMEAGO"] = ""
 L["S_SHAREPANEL_THANKS"] = [=[Grazie per aver Condiviso World Quest Tracker!
 Manda il nostro link ai tuoi amici su facebook, twitter o al colosseo.]=]
 --Translation missing 
@@ -106,5 +201,7 @@ L["S_TUTORIAL_REWARD"] = "indica la ricompensa (equipaggiamento, oro, potere art
 L["S_TUTORIAL_TIMELEFT"] = "indica il tempo rimasto (+4 ore, +90 minuti, + 30 minuti, meno di 30 minuti)"
 L["S_TUTORIAL_WORLDMAPBUTTON"] = "Questo pulsante mostra la mappa delle Isole Disperse."
 L["S_UNKNOWNQUEST"] = "Missione Sconosciuta"
+--Translation missing 
+-- L["S_WORLDMAP_TOOGLEQUESTS"] = ""
 L["S_WORLDQUESTS"] = "Missioni Mondiali"
 

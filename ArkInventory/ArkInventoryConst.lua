@@ -109,6 +109,7 @@ ArkInventory.Const = { -- constants
 		--TabInfo = 5,
 		--SkillUpdate = 6,
 		--ItemUpdate = 7,
+		--BagEmpty = 8,
 	},
 
 	Location = {
@@ -544,6 +545,12 @@ function ArkInventory.Output( ... )
 		
 	end
 	
+end
+
+function ArkInventory.OutputThread( ... )
+	if ArkInventory.db.option.thread.debug then
+		ArkInventory.Output( "|cffffff9aTHREAD> ", ... )
+	end
 end
 
 function ArkInventory.OutputDebug( ... )

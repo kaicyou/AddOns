@@ -9,7 +9,6 @@ local select, unpack = select, unpack
 local floor = math.floor
 --WoW API / Variables
 local CreateFrame = CreateFrame
-local C_TimerAfter = C_Timer.After
 local RegisterStateDriver = RegisterStateDriver
 local RegisterAttributeDriver = RegisterAttributeDriver
 local GetWeaponEnchantInfo = GetWeaponEnchantInfo
@@ -17,7 +16,6 @@ local UnitAura = UnitAura
 local GetItemQualityColor = GetItemQualityColor
 local GetInventoryItemQuality = GetInventoryItemQuality
 local GetInventoryItemTexture = GetInventoryItemTexture
-local IsAddOnLoaded = IsAddOnLoaded
 
 --Global variables that we don't cache, list them here for mikk's FindGlobals script
 -- GLOBALS: BuffFrame, TemporaryEnchantFrame, DebuffTypeColor, Minimap, MMHolder
@@ -144,7 +142,9 @@ function A:CreateIcon(button)
 	if auraType == "HELPFUL" then
 		if MasqueGroupBuffs and E.private.auras.masque.buffs then
 			MasqueGroupBuffs:AddButton(button, ButtonData)
-			button.__MSQ_BaseFrame:SetFrameLevel(2) --Lower the framelevel to fix issue with buttons created during combat
+			if button.__MSQ_BaseFrame then
+				button.__MSQ_BaseFrame:SetFrameLevel(2) --Lower the framelevel to fix issue with buttons created during combat
+			end
 			MasqueGroupBuffs:ReSkin()
 		else
 			button:SetTemplate('Default')
@@ -152,7 +152,9 @@ function A:CreateIcon(button)
 	elseif auraType == "HARMFUL" then
 		if MasqueGroupDebuffs and E.private.auras.masque.debuffs then
 			MasqueGroupDebuffs:AddButton(button, ButtonData)
-			button.__MSQ_BaseFrame:SetFrameLevel(2) --Lower the framelevel to fix issue with buttons created during combat
+			if button.__MSQ_BaseFrame then
+				button.__MSQ_BaseFrame:SetFrameLevel(2) --Lower the framelevel to fix issue with buttons created during combat
+			end
 			MasqueGroupDebuffs:ReSkin()
 		else
 			button:SetTemplate('Default')

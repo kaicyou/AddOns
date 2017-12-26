@@ -79,7 +79,7 @@ function LibDugi_UIDropDownMenu_InitializeHelper (frame)
 	frame:SetHeight(LibDugi_UIDROPDOWNMENU_BUTTON_HEIGHT * 2);
 end
 
-function LibDugi_UIDropDownMenu_Initialize(frame, initFunction, displayMode, level, menuList)
+function LibDugi_UIDropDownMenu_Initialize(frame, initFunction, displayMode, level, menuList, config)
 
 	frame.menuList = menuList;
 
@@ -96,6 +96,8 @@ function LibDugi_UIDropDownMenu_Initialize(frame, initFunction, displayMode, lev
 		level = 1;
 	end
 	_G["LibDugi_DropDownList"..level].dropdown = frame;
+    
+    _G["LibDugi_DropDownList"..level.."Config"] = config
 
 	-- Change appearance based on the displayMode
 	if ( displayMode == "MENU" ) then
@@ -256,6 +258,9 @@ function LibDugi_UIDropDownMenu_AddButton(info, level)
 	end
 	
 	local listFrame = _G["LibDugi_DropDownList"..level];
+    
+    local config = _G["LibDugi_DropDownList"..level.."Config"]
+    
 	local index = listFrame and (listFrame.numButtons + 1) or 1;
 	local width;
 
@@ -425,7 +430,7 @@ function LibDugi_UIDropDownMenu_AddButton(info, level)
 	
 	-- If not checkable move everything over to the left to fill in the gap where the check would be
 	local xPos = 5;
-	local yPos = -((button:GetID() - 1) * LibDugi_UIDROPDOWNMENU_BUTTON_HEIGHT) - LibDugi_UIDROPDOWNMENU_BORDER_HEIGHT;
+	local yPos = -((button:GetID() - 1) * LibDugi_UIDROPDOWNMENU_BUTTON_HEIGHT) - LibDugi_UIDROPDOWNMENU_BORDER_HEIGHT + (info.dY or 0);
 	local displayInfo = normalText;
 	if (info.iconOnly) then
 		displayInfo = icon;
@@ -541,8 +546,15 @@ function LibDugi_UIDropDownMenu_AddButton(info, level)
 		listFrame.maxWidth = width;
 	end
 
+    
+    local extraHeight = 0
+    
+    if config then
+        extraHeight = config.extraHeight or 0
+    end
+    
 	-- Set the height of the listframe
-	listFrame:SetHeight((index * LibDugi_UIDROPDOWNMENU_BUTTON_HEIGHT) + (LibDugi_UIDROPDOWNMENU_BORDER_HEIGHT * 2));
+	listFrame:SetHeight((index * LibDugi_UIDROPDOWNMENU_BUTTON_HEIGHT) + (LibDugi_UIDROPDOWNMENU_BORDER_HEIGHT * 2) + extraHeight);
 
 	button:Show();
 end
@@ -804,7 +816,7 @@ function LibDugi_UIDropDownMenuButton_OnClick(self)
 	end
 
 	if ( playSound ) then
-		PlaySound("UChatScrollButton");
+		LuaUtils:PlaySound("UChatScrollButton");
 	end
 end
 

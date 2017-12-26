@@ -320,3 +320,7 @@ L["Your Archaeology skill is at %d of %d.  Are you sure you would like to solve 
 L["Zone Font Options"] = "Options de la Police de la Zone"
 L["Zone Font Outline"] = "Bordure de la Police de Zone"
 L["Zone Font Size"] = "Taille de la Police de Zone"
+
+-- ProjectNames
+L["Mummified Monkey Paw"] = "Patte de singe momifiée"
+

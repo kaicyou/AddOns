@@ -24,6 +24,11 @@ local new=addon:Wrap("NewTable")
 local del=addon:Wrap("DelTable")
 local kpairs=addon:Wrap("Kpairs")
 local empty=addon:Wrap("Empty")
+
+local todefault=addon:Wrap("todefault")
+
+local tonumber=tonumber
+local type=type
 local OHF=OrderHallMissionFrame
 local OHFMissionTab=OrderHallMissionFrame.MissionTab --Container for mission list and single mission
 local OHFMissions=OrderHallMissionFrame.MissionTab.MissionList -- same as OrderHallMissionFrameMissions Call Update on this to refresh Mission Listing
@@ -33,6 +38,8 @@ local OHFFollowers=OrderHallMissionFrameFollowers -- Contains scroll list
 local OHFMissionPage=OrderHallMissionFrame.MissionTab.MissionPage -- Contains mission description and party setup 
 local OHFMapTab=OrderHallMissionFrame.MapTab -- Contains quest map
 local OHFCompleteDialog=OrderHallMissionFrameMissions.CompleteDialog
+local OHFMissionScroll=OrderHallMissionFrameMissionsListScrollFrame
+local OHFMissionScrollChild=OrderHallMissionFrameMissionsListScrollFrameScrollChild
 local followerType=LE_FOLLOWER_TYPE_GARRISON_7_0
 local garrisonType=LE_GARRISON_TYPE_7_0
 local FAKE_FOLLOWERID="0x0000000000000000"
@@ -59,9 +66,35 @@ local print=function() end
 --@end-non-debug@
 local LE_FOLLOWER_TYPE_GARRISON_7_0=LE_FOLLOWER_TYPE_GARRISON_7_0
 local LE_GARRISON_TYPE_7_0=LE_GARRISON_TYPE_7_0
+local GARRISON_FOLLOWER_COMBAT_ALLY=GARRISON_FOLLOWER_COMBAT_ALLY
+local GARRISON_FOLLOWER_ON_MISSION=GARRISON_FOLLOWER_ON_MISSION
+local GARRISON_FOLLOWER_INACTIVE=GARRISON_FOLLOWER_INACTIVE
+local GARRISON_FOLLOWER_IN_PARTY=GARRISON_FOLLOWER_IN_PARTY
+local GARRISON_FOLLOWER_AVAILABLE=AVAILABLE
+local ViragDevTool_AddData=_G.ViragDevTool_AddData
+if not ViragDevTool_AddData then ViragDevTool_AddData=function() end end
+local KEY_BUTTON1 = "\124TInterface\\TutorialFrame\\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:228:283\124t" -- left mouse button
+local KEY_BUTTON2 = "\124TInterface\\TutorialFrame\\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:330:385\124t" -- right mouse button
+local CTRL_KEY_TEXT,SHIFT_KEY_TEXT=CTRL_KEY_TEXT,SHIFT_KEY_TEXT
+local CTRL_KEY_TEXT,SHIFT_KEY_TEXT=CTRL_KEY_TEXT,SHIFT_KEY_TEXT
+local CTRL_SHIFT_KEY_TEXT=CTRL_KEY_TEXT .. '-' ..SHIFT_KEY_TEXT
+local format,pcall=format,pcall
+local function safeformat(mask,...)
+  local rc,result=pcall(format,mask,...)
+  if not rc then
+    for k,v in pairs(L) do
+      if v==mask then
+        mask=k
+        break
+      end
+    end
+ end
+  rc,result=pcall(format,mask,...)
+  return rc and result or mask 
+end
 
 -- End Template - DO NOT MODIFY ANYTHING BEFORE THIS LINE
---*BEGIN 
+--*BEGIN
 local CompleteButton=OHFMissions.CompleteDialog.BorderFrame.ViewButton
 local followerType=LE_FOLLOWER_TYPE_GARRISON_7_0
 local pairs=pairs
@@ -77,6 +110,7 @@ function module:OnInitialized()
 	bt:SetWidth(bt:GetTextWidth()+10)
 	bt:SetPoint("CENTER",0,-50)
 	addon:ActivateButton(bt,"MissionComplete",L["Complete all missions without confirmation"])
+	self:RegisterEvent("GARRISON_MISSION_NPC_CLOSED","AutoClose")
 end
 
 function module:GenerateMissionCompleteList(title,anchor)
@@ -89,8 +123,10 @@ function module:GenerateMissionCompleteList(title,anchor)
 	--report:SetPoint("TOPLEFT",GMFMissions.CompleteDialog.BorderFrame)
 	--report:SetPoint("BOTTOMRIGHT",GMFMissions.CompleteDialog.BorderFrame)
 	w:ClearAllPoints()
-	w:SetPoint("TOP",anchor)
-	w:SetPoint("BOTTOM",anchor)
+	w:SetPoint("TOP",anchor,0,25)
+	w:SetPoint("BOTTOM",anchor,0,-25)
+	w:SetPoint("LEFT",anchor,-2,0)
+  w:SetPoint("RIGHT",anchor,2,0)
 	w:SetWidth(700)
 	w:SetParent(anchor)
 	w.frame:SetFrameStrata("HIGH")
@@ -131,9 +167,6 @@ local function startTimer(delay,event,...)
 	event=event or "LOOP"
 	stopTimer()
 	timer=module:ScheduleRepeatingTimer("MissionAutoComplete",delay,event,...)
-	--[===[@debug@
-	print("Timer rearmed for",event,delay)
-	--@end-debug@]===]
 end
 function module:MissionsCleanup()
 	local f=OHF
@@ -164,12 +197,23 @@ function module:EventsOn()
 	self:RegisterEvent("GARRISON_MISSION_COMPLETE_RESPONSE","MissionAutoComplete")
 	self:RegisterEvent("GARRISON_FOLLOWER_XP_CHANGED","MissionAutoComplete")
 	self:RegisterEvent("GARRISON_FOLLOWER_REMOVED","MissionAutoComplete")
-	self:RegisterEvent("GARRISON_FOLLOWER_DURABILITY_CHANGED","MissionAutoComplete")		
+	self:RegisterEvent("GARRISON_FOLLOWER_DURABILITY_CHANGED","MissionAutoComplete")
+end
+function module:AutoClose()
+	if report then 
+	 local rc,message=pcall(report.Close,report)
+	 --[===[@debug@
+	 if not rc then
+	   pp("Failed closing report due to",message)
+	 end
+	 --@end-debug@ ]===]
+	 report=nil 
+  end
+	pcall(OHF.CloseMissionComplete,OHF)
 end
 function module:CloseReport()
 	addon:ResetParties()
-	if report then pcall(report.Close,report) report=nil end
-	pcall(OHF.CloseMissionComplete,OHF)
+	self:AutoClose()
 end
 local UnitLevel,UnitXP,UnitXPMax=UnitLevel,UnitXP,UnitXPMax
 local function fillMyStatus(tab)
@@ -180,7 +224,7 @@ local function printMyStatus(tab)
 end
 function module:MissionComplete(this,button,skiprescheck)
 	missions=G.GetCompleteMissions(followerType)
-	fillMyStatus(mebefore)	
+	fillMyStatus(mebefore)
 	if (missions and #missions > 0) then
 		this:SetEnabled(false)
 		OHFMissions.CompleteDialog.BorderFrame.ViewButton:SetEnabled(false) -- Disabling standard Blizzard Completion
@@ -191,6 +235,11 @@ function module:MissionComplete(this,button,skiprescheck)
 		end
 		local message=C("WARNING",'red')
 		local wasted={}
+		--[===[@debug@
+		if _G.ONEONE then
+		  missions={missions[1]}
+		end
+		--@end-debug@]===]
 		for i=1,#missions do
 			for _,v in pairs(missions[i].followers) do
 				rewards.followerQLevel[v]=addon:GetFollowerData(v,'qLevel',0)
@@ -203,12 +252,12 @@ function module:MissionComplete(this,button,skiprescheck)
 					wasted[v.currencyID]=(wasted[v.currencyID] or 0) + v.quantity
 				end
 			end
-	      for k,v in pairs(missions[i].overmaxRewards) do
-	        if v.itemID then GetItemInfo(v.itemID) end -- tickling server
-	        if v.currencyID and tContains(cappedCurrencies,v.currencyID) then
-	          wasted[v.currencyID]=(wasted[v.currencyID] or 0) + v.quantity
-	        end
-	      end
+				for k,v in pairs(missions[i].overmaxRewards) do
+					if v.itemID then GetItemInfo(v.itemID) end -- tickling server
+					if v.currencyID and tContains(cappedCurrencies,v.currencyID) then
+						wasted[v.currencyID]=(wasted[v.currencyID] or 0) + v.quantity
+					end
+				end
 			local m=missions[i]
 --totalTimeString, totalTimeSeconds, isMissionTimeImproved, successChance, partyBuffs, isEnvMechanicCountered, xpBonus, materialMultiplier, goldMultiplier = C_Garrison.GetPartyMissionInfo(MISSION_PAGE_FRAME.missionInfo.missionID);
 			_,_,m.isMissionTimeImproved,m.successChance,_,_,m.xpBonus,m.resourceMultiplier,m.goldMultiplier=G.GetPartyMissionInfo(m.missionID)
@@ -216,9 +265,6 @@ function module:MissionComplete(this,button,skiprescheck)
 		local stop
 		for id,qt in pairs(wasted) do
 			local name,current,_,_,_,cap=GetCurrencyInfo(id)
-			--[===[@debug@
-			print(name,current,qt,cap)
-			--@end-debug@]===]
 			current=current+qt
 			if current+qt > cap then
 				message=message.."\n"..format(L["Capped %1$s. Spend at least %2$d of them"],name,current+qt-cap)
@@ -285,13 +331,12 @@ function module:MissionAutoComplete(event,...)
 	local current=report:GetUserData('current')
 	local currentMission=report:GetUserData('missions')[current]
 	local missionID=currentMission and currentMission.missionID or 0
---[===[@debug@
-	print("evt",missionID,event,...)
---@end-debug@]===]
 	-- GARRISON_FOLLOWER_XP_CHANGED: followerType,followerID, xpGained, oldXp, oldLevel, oldQuality
 	if (event=="GARRISON_FOLLOWER_XP_CHANGED") then
+		print(event,...)
 		local followerType,followerID, xpGained, oldXp, oldLevel, oldQuality=...
-		xpGained=addon:tonumber(xpGained,0)
+		print("XP CHANGE ",G.GetFollowerName(followerID),xpGained)
+		xpGained=addon:todefault(xpGained,0)
 		if xpGained>0 then
 			rewards.followerXP[followerID]=rewards.followerXP[followerID]+xpGained
 		end
@@ -307,8 +352,8 @@ function module:MissionAutoComplete(event,...)
 		return
 	-- GARRISON_FOLLOWER_DURABILITY_CHANGED,followerType,followerID,number(Durability left?)
 	elseif event=="GARRISON_FOLLOWER_DURABILITY_CHANGED" then
-		local followerType,followerID,durabilityLeft=...	
-		durabilityLeft=addon:tonumber(durabilityLeft)
+		local followerType,followerID,durabilityLeft=...
+		durabilityLeft=addon:todefault(durabilityLeft,1)
 		if durabilityLeft<1 then
 			rewards.followerXP[followerID]=-1
 		end
@@ -375,13 +420,13 @@ end
 function module:GetMissionResults(finalStatus,currentMission)
 	stopTimer()
 --	PlaySound("UI_Garrison_CommandTable_MissionSuccess_Stinger");
---	PlaySound("UI_Garrison_Mission_Complete_MissionFail_Stinger");	
+--	PlaySound("UI_Garrison_Mission_Complete_MissionFail_Stinger");
 	if (finalStatus>=3) then
 		report:AddMissionResult(currentMission.missionID,finalStatus)
-		PlaySound("UI_Garrison_CommandTable_MissionSuccess_Stinger")
+		PlaySound(SOUNDKIT.UI_GARRISON_COMMAND_TABLE_MISSION_SUCCESS_STINGER)
 	else
 		report:AddMissionResult(currentMission.missionID,false)
-		PlaySound("UI_Garrison_Mission_Complete_MissionFail_Stinger")
+		PlaySound(SOUNDKIT.UI_GARRISON_MISSION_COMPLETE_MISSION_FAIL_STINGER)
 	end
 	local resourceMultiplier=currentMission.resourceMultiplier or {}
 	local goldMultiplier=currentMission.goldMultiplier or 1
@@ -420,14 +465,14 @@ function module:GetMissionResults(finalStatus,currentMission)
 				rewards.bonuses[format("%d:%s",currentMission.missionID,v.itemID)]=1
 			end
 		end
-	end		
+	end
 end
 function module:MissionsPrintResults(success)
 	stopTimer()
 	local reported
 	local followers
 	--[===[@debug@
-	_G["testrewards"]=rewards
+	_G["OHCtestrewards"]=rewards
 	--@end-debug@]===]
 	for k,v in pairs(rewards.currencies) do
 		reported=true
@@ -466,6 +511,8 @@ function module:MissionsPrintResults(success)
 		report:AddItem(itemid,qt,true)
 	end
 	del(items)
+	OHFFollowerList.dirtyList=true
+	OHFFollowerList:UpdateFollowers()							
 	for k,v in pairs(rewards.followerXP) do
 		reported=true
 		followers=true
@@ -500,7 +547,7 @@ function module:MissionsPrintResults(success)
 		if xpgain > 0 then
 			report:AddPlayerXP(xpgain)
 		end
-	end	
+	end
 	report:AddRow(DONE)
 	if addon.quick then
 		self:ScheduleTimer("CloseReport",0.1)

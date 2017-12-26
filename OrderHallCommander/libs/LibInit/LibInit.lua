@@ -1,7 +1,7 @@
 --- Main methods directly available in your addon
 -- @classmod lib
 -- @author Alar of Runetotem
--- @release 42
+-- @release 47
 -- @set sort=true
 -- @usage
 -- -- Create a new addon this way:
@@ -11,7 +11,7 @@
 
 local __FILE__=tostring(debugstack(1,2,0):match("(.*):12:")) -- Always check line number in regexp and file
 local MAJOR_VERSION = "LibInit"
-local MINOR_VERSION = 42
+local MINOR_VERSION = 47
 local LibStub=LibStub
 local dprint=function() end
 local function encapsulate()
@@ -47,9 +47,21 @@ local lib=obj --#Lib
 function lib:Info()
 	print(MAJOR_VERSION,MINOR_VERSION,' loaded from ',__FILE__)
 end
-local L
-local C=LibStub("LibInit-Colorize")()
-local F=LibStub("LibInit-Factory")
+-- A default dictionary, in case something went wrong with localization
+local L=setmetatable({},{
+  __index=function(t,k) return k end
+})
+local C
+local F
+function lib:_SetLocalization(localization)
+  L=localization
+end
+function lib:_SetColorize(colorize)
+  C=colorize
+end
+function lib:_SetFactory(factory)
+  F=factory
+end
 local CallbackHandler = LibStub:GetLibrary("CallbackHandler-1.0")
 -- Upvalues
 local _G=_G
@@ -176,18 +188,21 @@ do
 --@debug@
 		delcount = delcount + 1
 --@end-debug@
-		if getmetatable(t)=="RECYCLE" then
+		if getmetatable(t)==meta then
 			wipe(t)
 			pool[t] = true
 		end
 	end
-	function recursivedel(t)
+	function recursivedel(t,level)
+		level=level or 0
 --@debug@
 		delcount = delcount + 1
 --@end-debug@
 		for k,v in pairs(t) do
 			if type(v)=="table" and getmetatable(v) == "RECYCLE" then
-				recursivedel(v)
+				if level < 2 then
+					recursivedel(v,level+1)
+				end
 			end
 		end
 		if getmetatable(t)=="RECYCLE" then
@@ -1872,9 +1887,8 @@ end
 function lib:Kpairs(t,f)
 	return kpairs(t,f)
 end 
---- Returns kpairs implementatio
+--- Returns kpairs implementation
 -- Deprecated in favour of Wrap("Kpairs")
--- @deprecated
 -- 
 function lib:GetKpairs()
 	return kpairs
@@ -2060,6 +2074,7 @@ end
 -- @tparam string|function action To be executed, Can be a function or a method name
 -- @tparam[opt] bool combatSafe keep running in combat
 -- @tparam[opt] mixed more parameter are passed to function
+-- @treturn string coroutine handle
 function lib:coroutineExecute(interval,action,combatSafe,...)
 	local signature=strjoin(':',tostringall(self,action,...))
 	if type(action)=="string" then
@@ -2071,9 +2086,6 @@ function lib:coroutineExecute(interval,action,combatSafe,...)
 	c.interval=interval
 	c.combatSafe=combatSafe
 	if c.running then
-	--@debug@
-		print("")
-	--@end-debug@ 
 		return signature
 	end
 	if type(c.co)=="thread" and coroutine.status(c.co)=="suspended" then return signature end
@@ -2123,6 +2135,57 @@ function lib:coroutineRestart(signature)
 		end
 	end
 end
+function lib:coroutineGetList()
+  return coroutines
+end
+
+local C_Timer=C_Timer
+local NDTProto={}
+local NDTMeta={
+		__index=NDTProto,
+		__metatable=true,
+}
+function NDTProto:UpdateTimes(seconds)
+	seconds=seconds or self.delay
+	self.delay=seconds
+	self.expire=GetTime()+seconds-0.05
+end
+function NDTProto:Start(seconds)
+	self:UpdateTimes(seconds) 
+	return self:Callback() 
+end
+function NDTProto:Callback(reset)
+	if reset then self.running=false end
+	if self.expire <=GetTime() then
+		self.callback()
+		self=nil
+	else
+		if not self.running then
+			self:UpdateTimes()
+			C_Timer.After(self.delay,function() return self:Callback(true) end)
+			self.running=true
+		end
+		
+	end
+end
+function NDTProto:New(callback)
+	local timer=setmetatable({},NDTMeta)
+	timer.expire=GetTime()
+	timer.delay=0.001
+	timer.callback=callback
+	return timer
+end	
+
+--- Delayable timers
+-- Create a timer that can be delayed. Useful for example for throttling sliders' events
+-- This function just create the timer, to start (or delay) it use the :Start(seconds) method
+-- @tparam function callback Function to be called at expire time
+-- @treturn object
+-- 
+function lib:NewDelayableTimer(callback)
+	return NDTProto:New(callback)
+end
+
 
 --- Automatic events.
 --  You can have automatic events creating methods with the name EvtEVENTNAME
@@ -2147,6 +2210,8 @@ function lib:StartAutomaticEvents()
 	for k,v in pairs(self) do
 		if (type(v)=='function') then
 			if (k:sub(1,3)=='Evt') then
+				_G.print(self,"Registering",k)
+				self:Print("Registering",k)				
 				self:RegisterEvent(k:sub(4),k)
 			end
 		end
@@ -2205,119 +2270,4 @@ end
 for target,_ in pairs(lib.mixinTargets) do
 	lib:Embed(target)
 end
-local l=AceLocale
-if not l then
-	L=setmetatable({},{
-		__index=function(t,k) return k end
-	})
-	return
-end
--- To avoid clash between versions, localization is versioned on major and minor
--- Lua strings are immutable so having more copies of the same string does not waist a noticeable slice of memory
-local me=MAJOR_VERSION .. MINOR_VERSION
--- Actual translations for test purpose
 
-do
-	local L=l:NewLocale(me,"enUS",true,true)
-	L["Configuration"] = "Configuration"
-	L["Description"] = "Description"
-	L["Libraries"] = "Libraries"
-	L["Purge1"] = "Delete unused profiles"
-	L["Purge2"] = "Deletes all profiles that are not used by a character"
-	L["Purge_Desc"] = "You can delete all unused profiles with just one click"
-	L["Release Notes"] = "Release Notes"
-	L["Toggles"] = "Toggles"
-	L["UseDefault1"] = "Switch all characters to \"%s\" profile"
-	L["UseDefault2"] = "Uses the \"%s\" profiles for all your toons"
-	L["UseDefault_Desc"] = "You can force all your characters to use the \"%s\" profile in order to manage a single configuration"
-	L=l:NewLocale(me,"ptBR")
-	if (L) then
-	L["Configuration"] = "configura\195\167\195\163o"
-	L["Description"] = "Descri\195\167\195\163o"
-	L["Libraries"] = "bibliotecas"
-	L["Release Notes"] = "Notas de Lan\195\167amento"
-	L["Toggles"] = "Alterna"
-	end
-	L=l:NewLocale(me,"frFR")
-	if (L) then
-	L["Configuration"] = "configuration"
-	L["Description"] = "description"
-	L["Libraries"] = "biblioth\195\168ques"
-	L["Release Notes"] = "notes de version"
-	L["Toggles"] = "Bascule"
-	end
-	L=l:NewLocale(me,"deDE")
-	if (L) then
-	L["Configuration"] = "Konfiguration"
-	L["Description"] = "Beschreibung"
-	L["Libraries"] = "Bibliotheken"
-	L["Release Notes"] = "Release Notes"
-	L["Toggles"] = "Schaltet"
-	end
-	L=l:NewLocale(me,"koKR")
-	if (L) then
-	L["Configuration"] = "\234\181\172\236\132\177"
-	L["Description"] = "\236\132\164\235\170\133"
-	L["Libraries"] = "\235\157\188\236\157\180\235\184\140\235\159\172\235\166\172"
-	L["Release Notes"] = "\235\166\180\235\166\172\236\138\164 \235\133\184\237\138\184"
-	L["Toggles"] = "\236\160\132\237\153\152"
-	end
-	L=l:NewLocale(me,"esMX")
-	if (L) then
-	L["Configuration"] = "Configuraci\195\179n"
-	L["Description"] = "Descripci\195\179n"
-	L["Libraries"] = "Bibliotecas"
-	L["Release Notes"] = "Notas de la versi\195\179n"
-	L["Toggles"] = "Alterna"
-	end
-	L=l:NewLocale(me,"ruRU")
-	if (L) then
-	L["Configuration"] = "\208\154\208\190\208\189\209\132\208\184\208\179\209\131\209\128\208\176\209\134\208\184\209\143"
-	L["Description"] = "\208\158\208\191\208\184\209\129\208\176\208\189\208\184\208\181"
-	L["Libraries"] = "\208\145\208\184\208\177\208\187\208\184\208\190\209\130\208\181\208\186\208\184"
-	L["Release Notes"] = "\208\159\209\128\208\184\208\188\208\181\209\135\208\176\208\189\208\184\209\143 \208\186 \208\178\209\139\208\191\209\131\209\129\208\186\209\131"
-	L["Toggles"] = "\208\159\208\181\209\128\208\181\208\186\208\187\209\142\209\135\208\181\208\189\208\184\208\181"
-	end
-	L=l:NewLocale(me,"zhCN")
-	if (L) then
-	L["Configuration"] = "\233\133\141\231\189\174"
-	L["Description"] = "\232\175\180\230\152\142"
-	L["Libraries"] = "\229\155\190\228\185\166\233\166\134"
-	L["Release Notes"] = "\229\143\145\232\161\140\232\175\180\230\152\142"
-	L["Toggles"] = "\229\136\135\230\141\162"
-	end
-	L=l:NewLocale(me,"esES")
-	if (L) then
-	L["Configuration"] = "Configuraci\195\179n"
-	L["Description"] = "Descripci\195\179n"
-	L["Libraries"] = "Bibliotecas"
-	L["Release Notes"] = "Notas de la versi\195\179n"
-	L["Toggles"] = "Alterna"
-	end
-	L=l:NewLocale(me,"zhTW")
-	if (L) then
-	L["Configuration"] = "\233\133\141\231\189\174"
-	L["Description"] = "\232\175\180\230\152\142"
-	L["Libraries"] = "\229\155\190\228\185\166\233\166\134"
-	L["Release Notes"] = "\229\143\145\232\161\140\232\175\180\230\152\142"
-	L["Toggles"] = "\229\136\135\230\141\162"
-	end
-	L=l:NewLocale(me,"itIT")
-	if (L) then
-	L["Configuration"] = "Configurazione"
-	L["Description"] = "Descrizione"
-	L["Libraries"] = "Librerie"
-	L["Purge1"] = "Cancella i profili inutilizzati"
-	L["Purge2"] = "Cancella tutti i profili che non sono usati da un personaggio"
-	L["Purge_Desc"] = "Puoi cancellare tutti i profili inutilizzati con un singolo click"
-	L["Release Notes"] = "Note di rilascio"
-	L["Toggles"] = "Interruttori"
-	L["UseDefault1"] = "Imposta il profilo \"%s\" su tutti i personaggi"
-	L["UseDefault2"] = "Usa il profilo '%s\" per tutti i personaggi"
-	L["UseDefault_Desc"] = "Puoi far usare a tutti i tuoi personaggi il profilo \"%s\""
-	end
-end
-L=LibStub("AceLocale-3.0"):GetLocale(me,true)
---@do-not-package@
--- Packager stil not honoring this tag
---@end-do-not-package@

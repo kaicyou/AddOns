@@ -17,6 +17,87 @@ local trim = string.trim
 
 Hekili.Scripts = scripts
 
+
+-- Forgive the name, but this should properly replace ! characters with not, accounting for appropriate bracketing.
+-- Why so complex?  Because "! 0 > 1" converted to Lua is "not 0 > 1" which evaluates to "false > 1" -- not the goal.
+-- This should convert:
+-- example 1:  ! 0 > 1
+--             not ( 0 > 1 )
+--
+-- example 2:  ! ( 0 > 1 & ! ( false | true ) )
+--             not ( 0 > 1 & not ( false | true ) )
+--
+-- example 3:  ! cooldown.x.remains > 1 * ( gcd * ( 8 % 3 ) )
+--             not ( cooldown.x.remains > 1 * ( gcd * ( 8 % 3 ) ) )
+--
+-- Hopefully.
+
+local exprBreak = {
+   ["&"] = true,
+   ["|"] = true,
+}
+
+local function forgetMeNots( str )
+   -- First, handle already bracketed "!(X)" -> "not (X)".
+   local found = 1
+   
+   while found > 0 do
+      str, found = str:gsub( "%s*!%s*(%b())%s*", " not %1 " )
+   end
+   
+   -- The remaining conditions are not bracketed, but may include brackets.
+   -- Such as !5>2+(1*3).
+   -- So we'll start from the !, then go through the string until it's time to stop.
+   
+   local i = 1
+   local substring
+   
+   while( str:find("!") ) do   
+      local start = str:find("!")
+      
+      --while str:sub( start, start ):match("%s") do
+      --   start = start + 1
+      --      end
+      
+      local parens = 0
+      local finish = -1
+      
+      for j = start, str:len() do
+         local char = str:sub( j, j )
+         
+         if char == "(" then         
+            parens = parens + 1
+            
+         elseif char == ")" then         
+            if parens > 0 then parens = parens - 1
+            else finish = j - 1; break end
+            
+         elseif parens == 0 then
+            -- We are not within a bracketed part of the string.  We can end here.
+            if exprBreak[ char ] then
+               finish = j - 1
+               break
+            end
+         end
+      end
+      
+      if finish == -1 then finish = str:len() end
+      
+      substring = str:sub( start + 1, finish )
+      substring = substring:trim()
+
+      str = format( "%s not ( %s ) %s", str:sub( 1, start - 1 ) or "", substring, str:sub( finish + 1, str:len() ) or "" )
+
+      i = i + 1
+      if i >= 100 then self:Debug( "Was unable to convert '!' to 'not' in string [%s].", str ); break end
+   end
+   
+   str = str:gsub( "%s%s", " " )
+
+   return str
+end
+
+
 -- Convert SimC syntax to Lua conditionals.
 local SimToLua = function( str, modifier )
 
@@ -25,6 +106,9 @@ local SimToLua = function( str, modifier )
 
   -- Strip comments.
   str = str:gsub("^%-%-.-\n", "")
+
+  -- Replace '!' with ' not '.
+  str = forgetMeNots( str )
 
   -- Replace '%' for division with actual division operator '/'.
   str = str:gsub("%%", "/")
@@ -36,8 +120,8 @@ local SimToLua = function( str, modifier )
   str = str:gsub("||", " or "):gsub("|", " or ")
 
   if not modifier then
-    -- Replace assignment '=' with conditional '=='
-    str = str:gsub("=", "==")
+    -- Replace assignment '=' with comparison '=='
+    str = str:gsub("([^=])=([^=])", "%1==%2" )
 
     -- Fix any conditional '==' that got impacted by previous.
     str = str:gsub("==+", "==")
@@ -47,13 +131,8 @@ local SimToLua = function( str, modifier )
     str = str:gsub("~=+", "~=")
   end
 
-  -- Replace '!' with ' not '.
-  str = str:gsub("!(.-) ", " not (%1) " )
-  str = str:gsub("!(.-)$", " not (%1)" )
-  str = str:gsub("!([^=])", " not %1")
-
   -- Condense whitespace.
-  str = str:gsub("%s+", " ")
+  str = str:gsub("%s%s", " ")
 
   -- Condense parenthetical spaces.
   str = str:gsub("[(][%s+]", "("):gsub("[%s+][)]", ")")
@@ -65,19 +144,21 @@ local SimToLua = function( str, modifier )
   str = str:gsub("prev_gcd%.(%d+)", "prev_gcd[%1]")
   str = str:gsub("prev_off_gcd%.(%d+)", "prev_off_gcd[%1]")
 
-
   return str
 
 end
 
 
 local SpaceOutSim = function( str )
-    str = str:gsub( "([!<>=|&()])", " %1 " ):gsub("%s+", " ")
+    str = str:gsub( "([!<>=|&()*%-%+%%])", " %1 " ):gsub("%s+", " ")
 
     str = str:gsub( "([<>~!|]) ([|=])", "%1%2" )
 
+    str = str:trim()
+
     return str
 end
+ns.SpaceOutSim = SpaceOutSim
 
 
 local storeValues = function( tbl, node )
@@ -96,7 +177,8 @@ local storeValues = function( tbl, node )
     if success then tbl[k] = result
     elseif type( result ) == 'string' then
       tbl[k] = result:match( "lua:%d+: (.*)" ) or result
-    else tbl[k] = 'nil' end
+    end
+    if tbl[k] == nil then tbl[k] = 'nil' end
   end
 end
 ns.storeValues = storeValues
@@ -156,7 +238,7 @@ end
 local getScriptElements = function( script )
   local Elements, Check = {}, stripScript( script, true )
 
-  for i in Check:gmatch( "[^ ]+" ) do
+  for i in Check:gmatch( "[^ ,]+" ) do
     if not Elements[i] and not tonumber(i) then
       local eFunction = loadstring( 'return '.. (i or true) )
 
@@ -177,7 +259,10 @@ local specialModifiers = {
     MaximumTargets = true,
     CheckMovement = true,
     Movement = true,
-    ModName = true
+    ModName = false,
+    WaitSeconds = true,
+    PoolTime = true,
+    PoolForNext = true
 }
 
 
@@ -206,8 +291,8 @@ local convertScript = function( node, hasModifiers )
     Modifiers = {},
     SpecialMods = "",
 
-    Lua = Translated and trim( SpaceOutSim( Translated ) ) or nil,
-    SimC = node.Script and trim( SpaceOutSim( node.Script ) ) or nil
+    Lua = Translated and trim( Translated ) or nil,
+    SimC = node.Script and trim( node.Script ) or nil
   }
 
   if hasModifiers then -- and ( node.Args and node.Args ~= '' ) then
@@ -231,10 +316,16 @@ local convertScript = function( node, hasModifiers )
         end
     end
 
-    for m in pairs( specialModifiers ) do
+    for m, value in pairs( specialModifiers ) do
         if node[ m ] then
-            Output.SpecialMods = Output.SpecialMods .. " - " .. m .. " : " .. tostring( node[m] )
-            local sFunction, Error = loadstring( 'return ' .. tostring( node[ m ] ) )
+            local o = tostring( node[m] )
+            Output.SpecialMods = Output.SpecialMods .. " - " .. m .. " : " .. o
+            local sFunction, Error
+            if value then
+                sFunction, Error = loadstring( 'return ' .. o )
+            else
+                sFunction, Error = loadstring( 'return "' .. o .. '"' )
+            end
             if sFunction then
                 setfenv( sFunction, state )
                 Output.Modifiers[ m ] = sFunction
@@ -246,16 +337,17 @@ local convertScript = function( node, hasModifiers )
   end
 
   if node.ReadyTime and node.ReadyTime ~= '' then
-    local tReady = SimToLua( node.ReadyTime, true )
+    local tReady = SimToLua( node.ReadyTime )
     local rFunction, rError
 
     if tReady then
         if tReady:sub( 1, 8 ) == 'function' then
-            rFunction, rError = loadstring( 'return ' .. tReady )
+            rFunction, rError = loadstring( format( "return %s", tReady ) )
         else
-            rFunction, rError = loadstring( 'return function( wait, spend, resource )\n' ..
-            'return max( 0, wait, ' .. tReady .. ' )\n' ..
-            'end' )
+            rFunction, rError = loadstring( format(
+                "return function( wait, spend, resource )\n" ..
+                "    return max( 0, wait, %s )\n" ..
+                "end", tReady ) )
         end
     end
 
@@ -280,17 +372,21 @@ end
 
 ns.checkScript = function( cat, key, action, recheck )
 
+    local prev_action = state.this_action
     if action then state.this_action = action end
 
     local tblScript = scripts[ cat ][ key ]
 
     if not tblScript then
+        state.this_action = prev_action
         return false
 
     elseif tblScript.Error then
+        state.this_action = prev_action
         return false, tblScript.Error
 
     elseif tblScript.Conditions == nil then
+        state.this_action = prev_action
         return true
 
     else
@@ -298,6 +394,7 @@ ns.checkScript = function( cat, key, action, recheck )
 
         if success then
 
+            state.this_action = prev_action
             return value
 
             -- This is presently too CPU expensive to use.
@@ -327,10 +424,22 @@ ns.checkScript = function( cat, key, action, recheck )
 
     end
 
+    state.this_action = prev_action
     return false
 
 end
 local checkScript = ns.checkScript
+
+
+function ns.isTimeSensitive( cat, key, action )
+    local Script = scripts[ cat ][ key ]
+
+    if not Script then
+        return false
+    end
+
+    return Script.TimeSensitive
+end
 
 
 function ns.checkTimeScript( entry, wait, spend, spend_type )
@@ -341,7 +450,11 @@ function ns.checkTimeScript( entry, wait, spend, spend_type )
 
     local out = script.Ready( wait, spend, spend_type )
 
-    return out or 0
+    out = out or 0
+
+    out = out > 0 and roundUp( out, 2 ) or out
+
+    return out
 
 end
 
@@ -372,12 +485,13 @@ ns.importModifiers = function( list, entry )
     state.args[ k ] = nil
   end
 
+  local script = scripts.A[ key ]
 
-  if not scripts['A'][list..':'..entry].Modifiers then return end
+  if not script or not script.Modifiers then return end
 
-  for k,v in pairs( scripts['A'][list..':'..entry].Modifiers ) do
-    local success, value = pcall(v)
-    if success then state.args[k] = value end
+  for k,v in pairs( script.Modifiers ) do
+    local success, value = pcall( v )
+    if success then state.args[ k ] = value end
   end
 
 end
@@ -413,6 +527,15 @@ ns.loadScripts = function()
     for a, action in ipairs( list.Actions ) do
       local aKey = i..':'..a
       Actions[ aKey ] = convertScript( action, true )
+      if action.Ability == 'call_action_list' or action.Ability == 'run_action_list' then
+        -- check for time sensitive conditions.
+        local lua = Actions[ aKey ].Lua
+        if lua and ( lua:match( "time" ) or lua:match( "cooldown" ) or lua:match( "charge" ) or lua:match( "buff" ) or lua:match( "focus" ) or lua:match( "energy" ) ) then
+            Actions[ aKey ].TimeSensitive = true
+        else
+            Actions[ aKey ].TimeSensitive = false
+        end
+      end
     end
   end
 
@@ -458,11 +581,13 @@ end
 
 local key_cache = setmetatable( {}, {
     __index = function( t, k )
-        t.k = k:gsub( "(%S+)%[(%d+)]", "%1.%2" )
-        return t.k
+        t[k] = k:gsub( "(%S+)%[(%d+)]", "%1.%2" )
+        return t[k]
     end
 })
 
+
+local checked = {}
 
 function ns.getConditionsAndValues( sType, sID )
 
@@ -473,16 +598,22 @@ function ns.getConditionsAndValues( sType, sID )
         local output = script.SimC
 
         if script.Elements then
+            table.wipe( checked )
             for k, v in pairs( script.Elements ) do
-                local key = key_cache[ k ]
-                local value, emsg = pcall( v )
+                if not checked[ k ] then
+                    local key = key_cache[ k ]
+                    local success, value = pcall( v )
 
-                if emsg then value = emsg end
+                    -- if emsg then value = emsg end
 
-                if type(value) == 'number' then
-                    output = output:gsub( key, format( key .. "[%.2f]", value ) )
-                else
-                    output = output:gsub( key, format( key .. "[%s]", tostring( value ) ) )
+                    if type(value) == 'number' then
+                        output = output:gsub( "([^.]"..key..")", format( "%%1[%.2f]", value ) )
+                        output = output:gsub( "^("..key..")", format( "%%1[%.2f]", value ) )
+                    else
+                        output = output:gsub( "([^.]"..key..")", format( "%%1[%s]", tostring( value ) ) )
+                        output = output:gsub( "^("..key..")", format( "%%1[%s]", tostring( value ) ) )
+                    end
+                    checked[ k ] = true
                 end
             end
         end
@@ -493,3 +624,5 @@ function ns.getConditionsAndValues( sType, sID )
     return "NONE"
 
 end
+
+Hekili.dumpKeyCache = key_cache

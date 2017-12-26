@@ -2,8 +2,8 @@
 
 License: All Rights Reserved, (c) 2009-2016
 
-$Revision: 1795 $
-$Date: 2017-04-16 00:00:11 +1000 (Sun, 16 Apr 2017) $
+$Revision: 1862 $
+$Date: 2017-10-14 15:47:51 +1100 (Sat, 14 Oct 2017) $
 
 ]]--
 
@@ -184,7 +184,6 @@ function ArkInventoryRules.AppliesToItem( i )
 			local cr, res = loadstring( string.format( "return( %s )", ra.formula ) )
 			
 			if not cr then
-				
 				ArkInventory.OutputWarning( res )
 				ArkInventory.OutputWarning( string.format( ArkInventory.Localise["RULE_DAMAGED"], cat_code ) )
 				ArkInventory.db.option.category[cat_type].data[cat_code].damaged = true
@@ -202,7 +201,7 @@ function ArkInventoryRules.AppliesToItem( i )
 					
 				else
 					
-					ArkInventory.OutputWarning( res )
+					ArkInventory.OutputError( res )
 					ArkInventory.OutputWarning( string.format( ArkInventory.Localise["RULE_DAMAGED"], cat_code ) )
 					ArkInventory.db.option.category[cat_type].data[cat_code].damaged = true
 					
@@ -266,7 +265,7 @@ end
 
 function ArkInventoryRules.System.type( ... )
 	
-	if not ArkInventoryRules.Object.h or ( ArkInventoryRules.Object.class ~= "item" ) then
+	if not ArkInventoryRules.Object.h or ArkInventoryRules.Object.class ~= "item" then
 		return false
 	end
 	
@@ -593,7 +592,7 @@ function ArkInventoryRules.System.itemfamily( ... )
 			
 		elseif itemloc ~= "INVTYPE_BAG" then
 			
-			local it = GetItemFamily( ArkInventoryRules.Object.h )
+			local it = GetItemFamily( ArkInventoryRules.Object.h ) or 0
 			
 			if bit.band( it, arg ) > 0 then
 				return true
@@ -1082,7 +1081,7 @@ function ArkInventoryRules.System.characterlevelrange( ... )
 
 	-- ( levels below, levels above )
 	
-	if not ArkInventoryRules.Object.h or not ArkInventoryRules.Object.class == "item" then
+	if not ArkInventoryRules.Object.h or ArkInventoryRules.Object.class ~= "item" then
 		return false
 	end
 	
@@ -1319,7 +1318,7 @@ function ArkInventoryRules.System.pettype( ... )
 	end
 	
 	local e = ArkInventoryRules.Object.info.itemsubtypeid
-	e = string.lower( ArkInventory.PetJournal.PetTypeName( e ) )
+	e = string.lower( ArkInventory.Collection.Pet.PetTypeName( e ) )
 	
 	if e then
 		
@@ -1332,7 +1331,7 @@ function ArkInventoryRules.System.pettype( ... )
 			end
 			
 			if type( arg ) == "number" then
-				arg = ArkInventory.PetJournal.PetTypeName( arg )
+				arg = ArkInventory.Collection.Pet.PetTypeName( arg )
 				if not arg then
 					error( string.format( ArkInventory.Localise["RULE_FAILED_ARGUMENT_IS_INVALID"], fn, ax ), 0 )
 				end
@@ -1415,7 +1414,7 @@ end
 
 function ArkInventoryRules.System.bonus( ... )
 	
-	if not ArkInventoryRules.Object.h or ArkInventoryRules.Object.class ~= "item" then
+	if not ArkInventoryRules.Object.h or not ( ArkInventoryRules.Object.class == "item" or ArkInventoryRules.Object.class == "keystone" ) then
 		return false
 	end
 	
@@ -2062,9 +2061,9 @@ function ArkInventoryRules.Frame_Rules_Paint( )
 	end
 	
 	-- title
-	obj = _G[frame:GetName( ) .. "TitleWho"]
+	local obj = _G[frame:GetName( ) .. "TitleWho"]
 	if obj then
-		t = string.format( "%s: %s %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Const.Program.Name, ArkInventory.Global.Version )
+		local t = string.format( "%s: %s %s", ArkInventory.Localise["CONFIG_RULE_PLURAL"], ArkInventory.Const.Program.Name, ArkInventory.Global.Version )
 		obj:SetText( t )
 	end
 	

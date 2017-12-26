@@ -2,7 +2,6 @@ local E, L, V, P, G = unpack(select(2, ...)); --Inport: Engine, Locales, Private
 
 --Cache global variables
 --Lua functions
-local _G = _G
 local tonumber, type, pairs, select = tonumber, type, pairs, select
 local lower, split = string.lower, string.split
 --WoW API / Variables
@@ -255,8 +254,9 @@ function E:LoadCommands()
 	self:RegisterChatCommand('enableblizzard', 'EnableBlizzardAddOns')
 	self:RegisterChatCommand("estatus", "ShowStatusReport")
 	-- self:RegisterChatCommand('aprilfools', '') --Don't need this until next april fools
-	
-	if E.ActionBars then
-		self:RegisterChatCommand('kb', E.ActionBars.ActivateBindMode)
+
+	if E.private.actionbar.enable then
+		local AB = E:GetModule("ActionBars")
+		self:RegisterChatCommand('kb', AB.ActivateBindMode)
 	end
 end

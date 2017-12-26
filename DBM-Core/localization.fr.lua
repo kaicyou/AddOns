@@ -16,7 +16,6 @@ DBM_CORE_BAD_LOAD                   = "DBM a détecté une erreur de chargement 
 DBM_CORE_LOAD_MOD_VER_MISMATCH		= "%s n'a pas pu être chargé car votre DBM-Core ne remplit pas les conditions. Il vous faut une version plus récente."
 
 --DBM_CORE_WHATS_NEW					= "Nouveau dans cette version: Amélioration de l'accès aux événements DBM par d'autres mods"
---DBM_CORE_WHATS_NEW_LINK			= "Nouveau dans cette version: Les timers DBM supportent plusieurs couleurs en fonction du type de sort concerné. Pour en apprendre plus vous pouvez lire |HDBM:forumsnews|h|cff3588ffclicking here|r"
 
 DBM_CORE_DYNAMIC_DIFFICULTY_CLUMP   = "DBM a désactivé la vérification du nombre de joueurs à portée sur ce combat pour cause de manque d'information sur le nombre de joueurs requis regroupés pour votre taille de raid."
 DBM_CORE_DYNAMIC_ADD_COUNT          = "DBM a désactivé les alertes de décompte d'adds en vie sur ce combat pour cause de manque d'information du nombre d'adds apparaissant pour votre taille de raid."
@@ -76,7 +75,6 @@ DBM_CORE_MPROFILE_DELETE_SELF_ERROR	= "Impossible de supprimer les paramètres d
 DBM_CORE_MPROFILE_DELETE_S_ERROR	= "La source est corrompue. Les paramètres n'ont pas été supprimés ou supprimés partiellement. Echec de la suppression."
 
 DBM_CORE_NOTE_SHARE_SUCCESS			= "%s a partagé sa note pour %s"
-DBM_CORE_NOTE_SHARE_LINK			= "Cliquez ici pour ouvrir les notes"
 DBM_CORE_NOTE_SHARE_FAIL			= "%s a essayé de partager un texte de note pour %s. Malheureusement, le mod associé avec cette note n'est pas installé ou activé. Si vous avez besoin de celle-ci, Assurez vous d'avoir activé le mod pour lequel cette note est destinée."
 
 DBM_CORE_NOTEHEADER					= "Entrez votre texte de note ici pour %s. Entourer le nom d'un joueur avec >< affichera la couleur associée. Pour les alertes vaec des notes multiples, séparez les par '/'"
@@ -261,8 +259,8 @@ DBM_CORE_AUTO_ANNOUNCE_TEXTS.adds		= "%s restant: %%d"
 DBM_CORE_AUTO_ANNOUNCE_TEXTS.cast		= "Incantation %s: %.1f sec"
 DBM_CORE_AUTO_ANNOUNCE_TEXTS.soon		= "%s imminent"
 DBM_CORE_AUTO_ANNOUNCE_TEXTS.prewarna	= "%s de %s"
-DBM_CORE_AUTO_ANNOUNCE_TEXTS.phase		= "Phase %s"
-DBM_CORE_AUTO_ANNOUNCE_TEXTS.prephase	= "Phase %s imminente"
+DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage		= "Phase %s"
+DBM_CORE_AUTO_ANNOUNCE_TEXTS.prestage	= "Phase %s imminente"
 DBM_CORE_AUTO_ANNOUNCE_TEXTS.count		= "%s (%%s)"
 DBM_CORE_AUTO_ANNOUNCE_TEXTS.stack		= "%s sur >%%s< (%%d)"
 
@@ -277,9 +275,9 @@ DBM_CORE_AUTO_ANNOUNCE_OPTIONS.adds		= "Alerte indiquant le nombre restant de : 
 DBM_CORE_AUTO_ANNOUNCE_OPTIONS.cast		= "Alerte lorsque $spell:%s est incanté"
 DBM_CORE_AUTO_ANNOUNCE_OPTIONS.soon		= prewarnOption
 DBM_CORE_AUTO_ANNOUNCE_OPTIONS.prewarn		= prewarnOption
-DBM_CORE_AUTO_ANNOUNCE_OPTIONS.phase		= "Alerte indiquant l'arrivée de la phase %s"
-DBM_CORE_AUTO_ANNOUNCE_OPTIONS.phasechange	= "Annonce les changements de phase"
-DBM_CORE_AUTO_ANNOUNCE_OPTIONS.prephase	= "Alerte préventive indiquant l'arrivée de la phase %s"
+DBM_CORE_AUTO_ANNOUNCE_OPTIONS.stage		= "Alerte indiquant l'arrivée de la phase %s"
+DBM_CORE_AUTO_ANNOUNCE_OPTIONS.stagechange	= "Annonce les changements de phase"
+DBM_CORE_AUTO_ANNOUNCE_OPTIONS.prestage	= "Alerte préventive indiquant l'arrivée de la phase %s"
 DBM_CORE_AUTO_ANNOUNCE_OPTIONS.count		= "Alerte concernant $spell:%s"
 DBM_CORE_AUTO_ANNOUNCE_OPTIONS.stack		= "Alerte indiquant les cumuls de $spell:%s"
 
@@ -344,7 +342,7 @@ DBM_CORE_AUTO_TIMER_TEXTS.active		= "%s se termine" --Buff/Debuff/event on boss,
 DBM_CORE_AUTO_TIMER_TEXTS.fades		= "%s se dissipe" --Buff/Debuff on players,
 DBM_CORE_AUTO_TIMER_TEXTS.ai			= "%s AI"
 DBM_CORE_AUTO_TIMER_TEXTS.cd			= "Rech. %s"
-DBM_CORE_AUTO_TIMER_TEXTS.cdcount		= "Rech. %s (%%d)"
+DBM_CORE_AUTO_TIMER_TEXTS.cdcount		= "Rech. %s (%%s)"
 DBM_CORE_AUTO_TIMER_TEXTS.cdsource	= "Rech. %s: >%%s<"
 DBM_CORE_AUTO_TIMER_TEXTS.cdspecial	= "CD d'abilité spéciale"
 DBM_CORE_AUTO_TIMER_TEXTS.next		= "Proch. %s"
@@ -352,7 +350,7 @@ DBM_CORE_AUTO_TIMER_TEXTS.nextcount	= "Proch. %s (%%s)"
 DBM_CORE_AUTO_TIMER_TEXTS.nextsource	= "Proch. %s: >%%s<"
 DBM_CORE_AUTO_TIMER_TEXTS.nextspecial	= "Abilité spéciale suivante"
 DBM_CORE_AUTO_TIMER_TEXTS.achievement	= "%s"
-DBM_CORE_AUTO_TIMER_TEXTS.phase		= "Phase Suivante"
+DBM_CORE_AUTO_TIMER_TEXTS.stage		= "Phase Suivante"
 
 DBM_CORE_AUTO_TIMER_OPTIONS.target		= "Durée d'affaiblissement de $spell:%s"
 DBM_CORE_AUTO_TIMER_OPTIONS.cast		= "Durée d'incantation de $spell:%s"
@@ -368,7 +366,7 @@ DBM_CORE_AUTO_TIMER_OPTIONS.nextcount	= "Délai avant le prochain $spell:%s"
 DBM_CORE_AUTO_TIMER_OPTIONS.nextsource	= "Délai avant le prochain $spell:%s"
 DBM_CORE_AUTO_TIMER_OPTIONS.nextspecial	= "Afficher le timer de l'abilité spéciale suivante"
 DBM_CORE_AUTO_TIMER_OPTIONS.achievement	= "Délai pour réussir %s"
-DBM_CORE_AUTO_TIMER_OPTIONS.phase		= "Afficher le timer de la phase suivante"
+DBM_CORE_AUTO_TIMER_OPTIONS.stage		= "Afficher le timer de la phase suivante"
 DBM_CORE_AUTO_TIMER_OPTIONS.roleplay	= "Afficher le timer de la durée du roleplay"--This does need localizing though.
 
 DBM_CORE_AUTO_ICONS_OPTION_TEXT			= "Placer des icônes sur les cibles de $spell:%s"

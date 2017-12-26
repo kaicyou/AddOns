@@ -40,7 +40,7 @@ local function OnEvent(self, event, ...)
 	lastPanel = self
 
 	if event == "PLAYER_ENTERING_WORLD" then
-		playerID = UnitGUID('player')
+		playerID = E.myguid
 	elseif event == 'PLAYER_REGEN_DISABLED' or event == "PLAYER_LEAVE_COMBAT" then
 		local now = time()
 		if now - lastSegment > 20 then --time since the last segment
@@ -52,7 +52,7 @@ local function OnEvent(self, event, ...)
 
 		-- only use events from the player
 		local id = select(4, ...)
-		local overKill = 0
+		local overKill
 
 		if id == playerID or id == petID then
 			if timeStamp == 0 then timeStamp = select(1, ...) end
@@ -87,14 +87,4 @@ local function ValueColorUpdate(hex)
 end
 E['valueColorUpdateFuncs'][ValueColorUpdate] = true;
 
---[[
-	DT:RegisterDatatext(name, events, eventFunc, updateFunc, clickFunc, onEnterFunc)
-
-	name - name of the datatext (required)
-	events - must be a table with string values of event names to register
-	eventFunc - function that gets fired when an event gets triggered
-	updateFunc - onUpdate script target function
-	click - function to fire when clicking the datatext
-	onEnterFunc - function to fire OnEnter
-]]
-DT:RegisterDatatext('DPS', {'PLAYER_ENTERING_WORLD', 'COMBAT_LOG_EVENT_UNFILTERED', "PLAYER_LEAVE_COMBAT", 'PLAYER_REGEN_DISABLED', 'UNIT_PET'}, OnEvent, nil, OnClick)
+DT:RegisterDatatext('DPS', {'PLAYER_ENTERING_WORLD', 'COMBAT_LOG_EVENT_UNFILTERED', "PLAYER_LEAVE_COMBAT", 'PLAYER_REGEN_DISABLED', 'UNIT_PET'}, OnEvent, nil, OnClick, nil, nil, STAT_DPS_SHORT)

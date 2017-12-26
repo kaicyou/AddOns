@@ -28,7 +28,7 @@ do
 	end
 	
 	local function closeOnClick(this)
-		PlaySound("gsTitleOptionExit")
+		LuaUtils:PlaySound("gsTitleOptionExit")
 		this.obj:Hide()
 	end
 	

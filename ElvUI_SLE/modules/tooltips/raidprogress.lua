@@ -33,7 +33,7 @@ RP.bosses = {
 		{ --Mythic
 			11410, 11414, 11418,
 		},
-		{ -- Herioc
+		{ -- Heroic
 			11409, 11413, 11417,
 		},
 		{ -- Normal
@@ -48,7 +48,7 @@ RP.bosses = {
 		{ --Mythic
 			10943, 10947, 10951, 10955, 10960, 10964, 10968, 10972, 10976, 10980
 		},
-		{ -- Herioc
+		{ -- Heroic
 			10942, 10946, 10950, 10954, 10959, 10963, 10967, 10971, 10975, 10979
 		},
 		{ -- Normal
@@ -59,17 +59,51 @@ RP.bosses = {
 		},
 		"nighthold",
 	},
+	{ -- Tomb of Sargeras
+		{ -- Mythic
+			11880, 11884, 11888, 11892, 11896, 11900, 11904, 11908, 11912
+		},
+		{ -- Heroic
+			11879, 11883, 11887, 11891, 11895, 11899, 11903, 11907, 11911
+		},
+		{ -- Normal
+			11878, 11882, 11886, 11890, 11894, 11898, 11902, 11906, 11910
+		},
+		{ -- LFR
+			11877, 11881, 11885, 11889, 11893, 11897, 11901, 11905, 11909
+		},
+		"sargeras",
+	},
+	{ -- Antorus, the Burning Throne
+        { -- Mythic
+            11956, 11959, 11962, 11965, 11968, 11971, 11974, 11977, 11980, 11983, 11986
+        },
+        { -- Heroic
+            11955, 11958, 11961, 11964, 11967, 11970, 11973, 11976, 11979, 11982, 11985
+        },
+        { -- Normal
+            11954, 11957, 11960, 11963, 11966, 11969, 11972, 11975, 11978, 11981, 11984
+        },
+		{ -- LFR
+            12117, 12118, 12119, 12120, 12121, 12122, 12123, 12124, 12125, 12126, 12127
+        },
+		"antorus",
+	},
 }
 RP.Raids = {
 	["LONG"] = {
 		T.GetMapNameByID(1094),
 		T.GetMapNameByID(1114),
 		T.GetMapNameByID(1088),
+		T.GetMapNameByID(1147),
+		T.GetMapNameByID(1188),
 	},
 	["SHORT"] = {
 		L["RAID_EN"],
 		L["RAID_TOV"],
 		L["RAID_NH"],
+		L["RAID_TOS"],
+		L["RAID_ANTO"],
 	},
 }
 RP.modes = { 
@@ -128,13 +162,13 @@ function RP:UpdateProgression(guid)
 end
 
 function RP:SetProgressionInfo(guid, tt)
-	if RP.Cache[guid] then
+	if RP.Cache[guid] and RP.Cache[guid].header then
 		local updated = 0
 		for i=1, tt:NumLines() do
 			local leftTipText = _G["GameTooltipTextLeft"..i]
 			for raid = 1, #RP.Raids["LONG"] do
 				for level = 1, 4 do
-					if (leftTipText:GetText() and leftTipText:GetText():find(RP.Raids[E.db.sle.tooltip.RaidProg.NameStyle][raid]) and leftTipText:GetText():find(RP.modes[E.db.sle.tooltip.RaidProg.DifStyle][level])) then
+					if (leftTipText:GetText() and leftTipText:GetText():find(RP.Raids[E.db.sle.tooltip.RaidProg.NameStyle][raid]) and leftTipText:GetText():find(RP.modes[E.db.sle.tooltip.RaidProg.DifStyle][level]) and (RP.Cache[guid].header[raid][level] and RP.Cache[guid].info[raid][level])) then
 						-- update found tooltip text line
 						local rightTipText = _G["GameTooltipTextRight"..i]
 						leftTipText:SetText(RP.Cache[guid].header[raid][level])

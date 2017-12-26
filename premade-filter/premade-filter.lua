@@ -4,6 +4,10 @@ function T(str)
 	return L[str];
 end
 
+-- key binding interface constants
+BINDING_HEADER_PREMADEFILTER = "Premade Filter"
+BINDING_NAME_PREMADEFILTER_SEARCH = "Trigger background search"
+
 MAX_LFG_LIST_GROUP_DROPDOWN_ENTRIES = 1000;
 LFG_LIST_FRESH_FONT_COLOR = { r=0.3, g=0.9, b=0.3 };
 
@@ -29,63 +33,139 @@ local PremadeFilter_DefaultSettings = {
 }
 
 local PremadeFilter_ActivityInfo = {
-	["3-0-398"]		= { tier = 6, instance = 1, raid = true },
 	
-	["3-15-39"]		= { tier = 6, instance = 3, raid = true },
-	["3-15-40"]		= { tier = 6, instance = 3, raid = true },
 	
-	["3-14-37"]		= { tier = 6, instance = 2, raid = true },
-	["3-14-38"]		= { tier = 6, instance = 2, raid = true },
+	--Classic
+	["3-0-9"]		= { tier = 1, instance = 1, raid = true }, --Molten Core
+	["3-0-293"]		= { tier = 1, instance = 2, raid = true }, --Blackwing Lair
+	["3-0-294"]		= { tier = 1, instance = 3, raid = true }, --Ruins of Ahn'Qiraj
+	["3-0-295"]		= { tier = 1, instance = 4, raid = true }, --Temple of Ahn'Qiraj
 	
-	["3-0-397"]		= { tier = 5, instance = 1, raid = true },
 	
-	["3-80-335"]	= { tier = 5, instance = 2, raid = true, difficulty = 3 },
-	["3-80-336"]	= { tier = 5, instance = 2, raid = true, difficulty = 5 },
-	["3-80-337"]	= { tier = 5, instance = 2, raid = true, difficulty = 4 },
-	["3-80-338"]	= { tier = 5, instance = 2, raid = true, difficulty = 6 },
+	--BC
+	["3-0-45"]		= { tier = 2, instance = 1, raid = true }, --Karazhan
+	["3-0-296"]		= { tier = 2, instance = 2, raid = true }, --Gruul's Lair 
+	["3-0-297"]		= { tier = 2, instance = 3, raid = true }, --Magtheridon's Lair
+	["3-0-298"]		= { tier = 2, instance = 4, raid = true }, --Serpentshrine Cavern
+	["3-0-299"]		= { tier = 2, instance = 5, raid = true }, --Tempest Keep
+	["3-0-300"]		= { tier = 2, instance = 7, raid = true }, --Black Temple
+	["3-0-301"]		= { tier = 2, instance = 8, raid = true }, --Sunwell Plateau
 	
-	["3-81-339"]	= { tier = 5, instance = 3, raid = true, difficulty = 3 },
-	["3-81-340"]	= { tier = 5, instance = 3, raid = true, difficulty = 5 },
-	["3-81-341"]	= { tier = 5, instance = 3, raid = true, difficulty = 4 },
-	["3-81-342"]	= { tier = 5, instance = 3, raid = true, difficulty = 6 },
 	
-	["3-82-343"]	= { tier = 5, instance = 4, raid = true, difficulty = 3 },
-	["3-82-344"]	= { tier = 5, instance = 4, raid = true, difficulty = 5 },
-	["3-82-345"]	= { tier = 5, instance = 4, raid = true, difficulty = 4 },
-	["3-82-346"]	= { tier = 5, instance = 4, raid = true, difficulty = 6 },
+	--WotLK
+	["3-16-43"]		= { tier = 3, instance = 2, raid = true, difficulty = 3 }, --Naxxramas 10
+	["3-16-44"]		= { tier = 3, instance = 2, raid = true, difficulty = 4 }, --Naxxramas 25
 	
-	["3-83-347"]	= { tier = 5, instance = 5, raid = true, difficulty = 3 },
-	["3-83-348"]	= { tier = 5, instance = 5, raid = true, difficulty = 5 },
-	["3-83-349"]	= { tier = 5, instance = 5, raid = true, difficulty = 6 },
-	["3-83-350"]	= { tier = 5, instance = 5, raid = true, difficulty = 4 },
+	["3-72-302"]	= { tier = 3, instance = 5, raid = true, difficulty = 3 }, --Ulduar 10
+	["3-72-303"]	= { tier = 3, instance = 5, raid = true, difficulty = 4 }, --Ulduar 25
 	
-	["3-1-4"]		= { tier = 5, instance = 6, raid = true, difficulty = 14 },
-	["3-1-41"]		= { tier = 5, instance = 6, raid = true, difficulty = 15 },
-	["3-1-42"]		= { tier = 5, instance = 6, raid = true, difficulty = 16 },
+	["3-73-304"]	= { tier = 3, instance = 6, raid = true, difficulty = 3 }, --Trial of the Crusader Normal 10
+	["3-73-305"]	= { tier = 3, instance = 6, raid = true, difficulty = 5 }, --Trial of the Crusader Heroic 10
+	["3-73-306"]	= { tier = 3, instance = 6, raid = true, difficulty = 4 }, --Trial of the Crusader Normal 25
+	["3-73-307"]	= { tier = 3, instance = 6, raid = true, difficulty = 6 }, --Trial of the Crusader Heroic 25
 	
-	["3-76-319"]	= { tier = 4, instance = 2, raid = true, difficulty = 3 },
-	["3-76-322"]	= { tier = 4, instance = 2, raid = true, difficulty = 4 },
+	["3-17-46"]		= { tier = 3, instance = 8, raid = true, difficulty = 3 }, --Icecrown Citadel Normal 10
+	["3-17-47"]		= { tier = 3, instance = 8, raid = true, difficulty = 5 }, --Icecrown Citadel Heroic 10
+	["3-17-48"]		= { tier = 3, instance = 8, raid = true, difficulty = 4 }, --Icecrown Citadel Normal 25
+	["3-17-49"]		= { tier = 3, instance = 8, raid = true, difficulty = 6 }, --Icecrown Citadel Heroic 25
 	
-	["3-75-313"]	= { tier = 4, instance = 3, raid = true, difficulty = 3 },
-	["3-75-316"]	= { tier = 4, instance = 3, raid = true, difficulty = 4 },
+	["3-74-308"]	= { tier = 3, instance = 9, raid = true, difficulty = 3 }, --The Ruby Sanctum Normal 10
+	["3-74-309"]	= { tier = 3, instance = 9, raid = true, difficulty = 5 }, --The Ruby Sanctum Heroic 10
+	["3-74-310"]	= { tier = 3, instance = 9, raid = true, difficulty = 4 }, --The Ruby Sanctum Normal 25
+	["3-74-311"]	= { tier = 3, instance = 9, raid = true, difficulty = 6 }, --The Ruby Sanctum Heroic 25
 	
-	["3-77-323"]	= { tier = 4, instance = 4, raid = true, difficulty = 3 },
-	["3-77-326"]	= { tier = 4, instance = 4, raid = true, difficulty = 4 },
 	
-	["3-78-327"]	= { tier = 4, instance = 5, raid = true, difficulty = 3 },
-	["3-78-329"]	= { tier = 4, instance = 5, raid = true, difficulty = 4 },
+	--Cataclysm
+	["3-76-319"]	= { tier = 4, instance = 2, raid = true, difficulty = 3 }, --The Bastion of Twilight Normal 10
+	["3-76-322"]	= { tier = 4, instance = 2, raid = true, difficulty = 4 }, --The Bastion of Twilight Normal 25
+	["3-76-320"]	= { tier = 4, instance = 2, raid = true, difficulty = 5 }, --The Bastion of Twilight Heroic 10
+	["3-76-321"]	= { tier = 4, instance = 2, raid = true, difficulty = 6 }, --The Bastion of Twilight Heroic 25
 	
-	["3-79-331"]	= { tier = 4, instance = 6, raid = true, difficulty = 3 },
-	["3-79-334"]	= { tier = 4, instance = 6, raid = true, difficulty = 4 },
+	["3-75-313"]	= { tier = 4, instance = 3, raid = true, difficulty = 3 }, --Blackwing Descent Normal 10
+	["3-75-316"]	= { tier = 4, instance = 3, raid = true, difficulty = 4 }, --Blackwing Descent Normal 25
+	["3-75-317"]	= { tier = 4, instance = 3, raid = true, difficulty = 5 }, --Blackwing Descent Heroic 10
+	["3-75-318"]	= { tier = 4, instance = 3, raid = true, difficulty = 6 }, --Blackwing Descent Heroic 25
 	
-	["3-110-409"]	= { tier = 6, instance = 4, raid = true, difficulty = 14 },
-	["3-110-410"]	= { tier = 6, instance = 4, raid = true, difficulty = 15 },
-	["3-110-411"]	= { tier = 6, instance = 4, raid = true, difficulty = 16 },
+	["3-77-323"]	= { tier = 4, instance = 4, raid = true, difficulty = 3 }, --Throne of the Four Winds Normal 10
+	["3-77-326"]	= { tier = 4, instance = 4, raid = true, difficulty = 4 }, --Throne of the Four Winds Normal 25
+	["3-77-324"]	= { tier = 4, instance = 4, raid = true, difficulty = 5 }, --Throne of the Four Winds Heroic 10
+	["3-77-325"]	= { tier = 4, instance = 4, raid = true, difficulty = 6 }, --Throne of the Four Winds Heroic 25
+	
+	["3-78-327"]	= { tier = 4, instance = 5, raid = true, difficulty = 3 }, --Firelands Normal 10
+	["3-78-329"]	= { tier = 4, instance = 5, raid = true, difficulty = 4 }, --Firelands Normal 25
+	["3-78-328"]	= { tier = 4, instance = 5, raid = true, difficulty = 5 }, --Firelands Heroic 10
+	["3-78-330"]	= { tier = 4, instance = 5, raid = true, difficulty = 6 }, --Firelands Heroic 25
+	
+	["3-79-331"]	= { tier = 4, instance = 6, raid = true, difficulty = 3 }, --Dragon Soul Normal 10
+	["3-79-332"]	= { tier = 4, instance = 6, raid = true, difficulty = 5 }, --Dragon Soul Heroic 10
+	["3-79-333"]	= { tier = 4, instance = 6, raid = true, difficulty = 6 }, --Dragon Soul Heroic 25
+	["3-79-334"]	= { tier = 4, instance = 6, raid = true, difficulty = 4 }, --Dragon Soul Normal 25
+	
+	
+	--MoP
+	["3-0-397"]		= { tier = 5, instance = 1, raid = true }, --Outdoor MoP
+	
+	["3-80-335"]	= { tier = 5, instance = 2, raid = true, difficulty = 3 }, --Mogu'shan Vaults Normal 10
+	["3-80-336"]	= { tier = 5, instance = 2, raid = true, difficulty = 5 }, --Mogu'shan Vaults Heroic 10
+	["3-80-337"]	= { tier = 5, instance = 2, raid = true, difficulty = 4 }, --Mogu'shan Vaults Normal 25
+	["3-80-338"]	= { tier = 5, instance = 2, raid = true, difficulty = 6 }, --Mogu'shan Vaults Heroic 25
+	
+	["3-81-339"]	= { tier = 5, instance = 3, raid = true, difficulty = 3 }, --Heart of Fear Normal 10
+	["3-81-340"]	= { tier = 5, instance = 3, raid = true, difficulty = 5 }, --Heart of Fear Heroic 10
+	["3-81-341"]	= { tier = 5, instance = 3, raid = true, difficulty = 4 }, --Heart of Fear Normal 25
+	["3-81-342"]	= { tier = 5, instance = 3, raid = true, difficulty = 6 }, --Heart of Fear Heroic 25
+	
+	["3-82-343"]	= { tier = 5, instance = 4, raid = true, difficulty = 3 }, --Terrace of Endless Spring Normal 10
+	["3-82-344"]	= { tier = 5, instance = 4, raid = true, difficulty = 5 }, --Terrace of Endless Spring Heroic 10
+	["3-82-345"]	= { tier = 5, instance = 4, raid = true, difficulty = 4 }, --Terrace of Endless Spring Normal 25
+	["3-82-346"]	= { tier = 5, instance = 4, raid = true, difficulty = 6 }, --Terrace of Endless Spring Heroic 25
+	
+	["3-83-347"]	= { tier = 5, instance = 5, raid = true, difficulty = 3 }, --Throne of Thunder Normal 10
+	["3-83-348"]	= { tier = 5, instance = 5, raid = true, difficulty = 5 }, --Throne of Thunder Heroic 10
+	["3-83-349"]	= { tier = 5, instance = 5, raid = true, difficulty = 6 }, --Throne of Thunder Heroic 25
+	["3-83-350"]	= { tier = 5, instance = 5, raid = true, difficulty = 4 }, --Throne of Thunder Normal 25
+	
+	["3-1-4"]		= { tier = 5, instance = 6, raid = true, difficulty = 14 }, --Siege of Orgrimmar Normal
+	["3-1-41"]		= { tier = 5, instance = 6, raid = true, difficulty = 15 }, --Siege of Orgrimmar Heroic
+	["3-1-42"]		= { tier = 5, instance = 6, raid = true, difficulty = 16 }, --Siege of Orgrimmar Mythic
+	
+	
+	--WoD
+	["3-0-398"]		= { tier = 6, instance = 1, raid = true }, --Outdoor WoD
+	
+	["3-14-37"]		= { tier = 6, instance = 2, raid = true, difficulty = 14 }, --Highmaul Normal
+	["3-14-38"]		= { tier = 6, instance = 2, raid = true, difficulty = 15 }, --Highmaul Heroic
+	["3-14-399"]	= { tier = 6, instance = 2, raid = true, difficulty = 16 }, --Highmaul Mythic
+	
+	["3-15-39"]		= { tier = 6, instance = 3, raid = true, difficulty = 14 }, --Blackrock Foundry Normal
+	["3-15-40"]		= { tier = 6, instance = 3, raid = true, difficulty = 15 }, --Blackrock Foundry Heroic
+	["3-15-400"]	= { tier = 6, instance = 3, raid = true, difficulty = 16 }, --Blackrock Foundry Mythic
+	
+	["3-110-409"]	= { tier = 6, instance = 4, raid = true, difficulty = 14 },  --Hellfire Citadel Normal
+	["3-110-410"]	= { tier = 6, instance = 4, raid = true, difficulty = 15 },  --Hellfire Citadel Heroic
+	["3-110-412"]	= { tier = 6, instance = 4, raid = true, difficulty = 16 },  --Hellfire Citadel Mythic
+	
+	
+	--Legion
+	["3-0-458"]		= { tier = 7, instance = 1, raid = true }, -- Outdoor Legion
 	
 	["3-122-413"]	= { tier = 7, instance = 2, raid = true, difficulty = 14 }, -- Emerald Nightmare Normal
 	["3-122-414"]	= { tier = 7, instance = 2, raid = true, difficulty = 15 }, -- Emerald Nightmare Heroic
+	["3-122-468"]	= { tier = 7, instance = 2, raid = true, difficulty = 16 }, -- Emerald Nightmare Mythic
 	
+	["3-126-456"]	= { tier = 7, instance = 3, raid = true, difficulty = 14 }, -- TOV Normal
+	["3-126-457"]	= { tier = 7, instance = 3, raid = true, difficulty = 15 }, -- TOV Heroic
+	["3-126-480"]	= { tier = 7, instance = 3, raid = true, difficulty = 16 }, -- TOV Mythic
 	
+	["3-123-415"]	= { tier = 7, instance = 4, raid = true, difficulty = 14 }, -- Nighthold Normal
+	["3-123-416"]	= { tier = 7, instance = 4, raid = true, difficulty = 15 }, -- Nighthold Heroic
+	["3-123-481"]	= { tier = 7, instance = 4, raid = true, difficulty = 16 }, -- Nighthold Mythic
+	
+	["3-131-479"]	= { tier = 7, instance = 5, raid = true, difficulty = 14 }, -- ToS Normal
+	["3-131-478"]	= { tier = 7, instance = 5, raid = true, difficulty = 15 }, -- ToS Heroic
+	
+	["3-132-482"]	= { tier = 7, instance = 6, raid = true, difficulty = 14 }, -- AtBT Normal
+	["3-132-483"]	= { tier = 7, instance = 6, raid = true, difficulty = 15 }, -- AtBT Heroic
 }
 
 local PremadeFilter_RealmChapters = {
@@ -1160,8 +1240,8 @@ local PremadeFilter_Relams = {
 };
 
 StaticPopupDialogs["PREMADEFILTER_CONFIRM_CLOSE"] = {
-	text = T("Monitor new groups in background?"),
-	button1 = YES,
+	text = T("Automatic monitoring of new groups in background is broken since patch 7.2. It was forbidden by Blizzard and is no longer possible. See https://us.battle.net/forums/en/wow/topic/20754326419 for more details.\n\nYou can manually trigger background search by assigning key binding."),
+	button1 = OKAY,
 	button2 = NO,
 	OnShow = function(self)
 		PremadeFilter_Frame.closeConfirmation = true;
@@ -1629,7 +1709,7 @@ function PremadeFilter_OnShow(self)
 	
 	LeaveChannelByName("PremadeFilter");
 	
-	PlaySound("igMainMenuOpen");
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPEN);
 end
 
 function PremadeFilter_OnHide(self)
@@ -1876,7 +1956,7 @@ function PremadeFilter_RealmListCheckButton_OnClick(button, category, dungeonLis
 		PremadeFilter_RealmList_Update();
 	end
 	
-	PlaySound(isChecked and "igMainMenuOptionCheckBoxOn" or "igMainMenuOptionCheckBoxOff");
+	PlaySound(isChecked and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
 end
 
 function PremadeFilter_BossList_Update()
@@ -2123,9 +2203,9 @@ function LFGListSearchPanel_DoSearch(self)
 	local languages = C_LFGList.GetLanguageSearchFilter();
 	
 	if visible and category then
-		C_LFGList.Search(category, "", self.filters, self.preferredFilters, languages);
+		C_LFGList.Search(category, LFGListSearchPanel_ParseSearchTerms(""), self.filters, self.preferredFilters, languages);
 	else
-		C_LFGList.Search(self.categoryID, "", self.filters, self.preferredFilters, languages);
+		C_LFGList.Search(self.categoryID, LFGListSearchPanel_ParseSearchTerms(""), self.filters, self.preferredFilters, languages);
 		category = self.categoryID;
 	end
 	
@@ -2475,7 +2555,6 @@ function LFGListSearchPanel_UpdateResultList(self)
 		local minAge = nil;
 		
 		PremadeFilter_Frame.freshResults = {};
-		PremadeFilter_Frame.resultInfo = {};
 		
 		if not PremadeFilter_Frame.selectedCategory then
 			PremadeFilter_Frame.selectedCategory = LFGListFrame.CategorySelection.selectedCategory;
@@ -2492,8 +2571,6 @@ function LFGListSearchPanel_UpdateResultList(self)
 			end
 			
 			local infoName = PremadeFilter_GetInfoName(activityID, name);
-			PremadeFilter_Frame.resultInfo[infoName] = PremadeFilter_GetTooltipInfo(resultID);
-				
 			local matches = PremadeFilter_IsStringMatched(name:lower(), include, exclude, possible);
 			
 			-- check additional filters
@@ -2790,7 +2867,6 @@ function LFGListSearchEntry_Update(self)
 	
 	self.resultID = resultID;
 	self.infoName = infoName;
-	PremadeFilter_Frame.resultInfo[infoName] = PremadeFilter_GetTooltipInfo(resultID);
 	
 	self.Selected:SetShown(panel.selectedResult == resultID and not isApplication and not isDelisted);
 	self.Highlight:SetShown(panel.selectedResult ~= resultID and not isApplication and not isDelisted);
@@ -2912,19 +2988,7 @@ function PremadeFilter_GetTooltipInfo(resultID)
 end
 
 function PremadeFilter_SearchEntry_OnEnter(self)
-	local info = PremadeFilter_Frame.resultInfo[self.infoName];
-	
-	if not info then
-		return nil;
-	end
-	
-	-- update age
-	if self.resultID then
-		local id, activityID, name, comment, voiceChat, iLvl, honorLevel, age, numBNetFriends, numCharFriends, numGuildMates, isDelisted, leaderName, numMembers = C_LFGList.GetSearchResultInfo(self.resultID);
-		if name == info.name and activityID == info.activityID then
-			info.age = age;
-		end
-	end
+	local info = PremadeFilter_GetTooltipInfo(self.resultID);
 	
 	-- setup tooltip
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 25, 0);
@@ -3145,19 +3209,19 @@ end
 
 function PremadeFilter_CheckButtonSound(self)
 	if ( self:GetChecked() ) then
-		PlaySound("igMainMenuOptionCheckBoxOn");
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 	else
-		PlaySound("igMainMenuOptionCheckBoxOff");
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
 	end
 end
 
 function PremadeFilter_CheckButton_OnClick(self)
 	if ( self:GetChecked() ) then
-		PlaySound("igMainMenuOptionCheckBoxOn");
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 		self:GetParent().EditBox:Show();
 		self:GetParent().EditBox:SetFocus();
 	else
-		PlaySound("igMainMenuOptionCheckBoxOff");
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
 		self:GetParent().EditBox:Hide();
 		self:GetParent().EditBox:ClearFocus();
 		self:GetParent().EditBox:SetText("");
@@ -3167,7 +3231,7 @@ end
 function PremadeFilter_CheckButton_Boss_OnClick(self)
 	local bossIndex = self:GetParent().bossIndex;
 	if not self:GetChecked() then
-		PlaySound("igMainMenuOptionCheckBoxOff");
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
 		
 		if not self.CheckedNone then
 			self.CheckedNone = true;
@@ -3185,7 +3249,7 @@ function PremadeFilter_CheckButton_Boss_OnClick(self)
 			self:GetParent().bossName:SetTextColor(0.7, 0.7, 0.7);
 		end
 	else
-		PlaySound("igMainMenuOptionCheckBoxOn");
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 		self:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check");
 		self:SetChecked(true);
 		self.CheckedNone = false;
@@ -3198,7 +3262,7 @@ end
 
 function PremadeFilter_CheckButton_VoiceChat_OnClick(self)
 	if not self:GetChecked() then
-		PlaySound("igMainMenuOptionCheckBoxOff");
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
 		
 		if not self.CheckedNone then
 			self.CheckedNone = true;
@@ -3212,9 +3276,9 @@ function PremadeFilter_CheckButton_VoiceChat_OnClick(self)
 		self:GetParent().EditBox:ClearFocus();
 		self:GetParent().EditBox:SetText("");
 	else
-		PlaySound("igMainMenuOptionCheckBoxOn");
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 		self:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check");
-		self:SetChecked(true);
+			self:SetChecked(true);
 		self.CheckedNone = false;
 		
 		self:GetParent().EditBox:Show();
@@ -3275,7 +3339,7 @@ function PremadeFilter_MinimapButton_OnUpdate(self, elapsed)
 	
 	if (self.LastUpdate > PremadeFilter_GetSettings("UpdateInterval")) then
 		self.LastUpdate = 0;
-		LFGListSearchPanel_DoSearch(PremadeFilter_Frame:GetParent());
+--		LFGListSearchPanel_DoSearch(PremadeFilter_Frame:GetParent());
 	end
 end
 

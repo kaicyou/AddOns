@@ -24,6 +24,7 @@ end
 --@param labelText: Text to be displayed above dropdown
 --@param optionsIndex: Database index number
 --@param func: Function to call when dropdown used
+DGV.dropdownControls = {}
 function DGV:CreateDropdown(dropdownName, frame, labelText, optionsIndex, func, optionalListFunc)
 	assert(type(dropdownName) == "string", "dropdownName must be a string")
 	assert(frame:GetObjectType() == "Frame" , "No frame passed")
@@ -71,9 +72,14 @@ function DGV:CreateDropdown(dropdownName, frame, labelText, optionsIndex, func, 
 		dropdown_text:SetPoint("BOTTOMLEFT", dropdown, "TOPLEFT", "17", "5")
 	end
 	
+	if optionsIndex then
+		DGV.dropdownControls[optionsIndex] = dropdown
+	end
+	
 	return dropdown
 end
 
+DGV.sliderControls = {}
 function DugisGuideViewer:CreateSlider(sliderName, frame, labelText, optionsIndex, minimun, maximum, step, default, minLabel, maxLabel, onValueChanged, toolTip, orientation)
 	local slider = CreateFrame("Slider", sliderName, frame, "OptionsSliderTemplate")
 	slider:SetOrientation(orientation or "HORIZONTAL")
@@ -102,6 +108,11 @@ function DugisGuideViewer:CreateSlider(sliderName, frame, labelText, optionsInde
 	slider:SetScript("OnEnter", SettingsTooltip_OnEnter)
 	slider:SetScript("OnLeave", SettingsTooltip_OnLeave)
 	slider:Show()
+	
+	if optionsIndex then
+		DGV.sliderControls[optionsIndex] = slider
+	end
+	
 	return slider
 end
 

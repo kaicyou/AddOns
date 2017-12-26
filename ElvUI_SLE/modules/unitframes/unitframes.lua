@@ -86,25 +86,12 @@ end
 function SUF:ConfiguePortrait(frame, dontHide)
 	local db = E.db.sle.unitframes.unit
 	local portrait = frame.Portrait
-	if not portrait.SLEHooked then
-		hooksecurefunc(portrait, "PostUpdate", SUF.PortraitUpdate)
-		portrait.SLEHooked = true
-	end
-	if (db[frame.unitframeType] and db[frame.unitframeType].higherPortrait) and frame.USE_PORTRAIT_OVERLAY then
-		if not frame.Health.HigherPortrait then
-			frame.Health.HigherPortrait = CreateFrame("Frame", frame:GetName().."HigherPortrait", frame)
-			frame.Health.HigherPortrait:SetFrameLevel(frame.Health:GetFrameLevel() + 4)
-			frame.Health.HigherPortrait:SetPoint("TOPLEFT", frame.Health, "TOPLEFT")
-			frame.Health.HigherPortrait:SetPoint("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT", 0, 0.5)
-		end
-		portrait:ClearAllPoints()
-		if frame.db.portrait.style == '3D' then portrait:SetFrameLevel(frame.Health.HigherPortrait:GetFrameLevel()) end
-		portrait:SetAllPoints(frame.Health.HigherPortrait)
-		frame.Health.bg:SetParent(frame.Health)
-	end
+	if portrait.SLEHooked or not db[frame.unitframeType] then return end
+	hooksecurefunc(portrait, "PostUpdate", SUF.PortraitUpdate)
+	portrait.SLEHooked = true
 end
 
-function SUF:PortraitUpdate(unit)
+function SUF:PortraitUpdate(unit, ...)
 	local frame = self:GetParent()
 	local dbElv = frame.db
 	if not dbElv then return end
@@ -114,56 +101,58 @@ function SUF:PortraitUpdate(unit)
 		self:SetAlpha(0);
 		self:SetAlpha(db[frame.unitframeType].portraitAlpha);
 	end
+	if (db[frame.unitframeType] and db[frame.unitframeType].higherPortrait) and frame.USE_PORTRAIT_OVERLAY then
+		if not frame.Health.HigherPortrait then
+			frame.Health.HigherPortrait = CreateFrame("Frame", frame:GetName().."HigherPortrait", frame)
+			frame.Health.HigherPortrait:SetFrameLevel(frame.Health:GetFrameLevel() + 4)
+			frame.Health.HigherPortrait:SetPoint("TOPLEFT", frame.Health, "TOPLEFT")
+			frame.Health.HigherPortrait:SetPoint("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT", 0, 0.5)
+		end
+		self:ClearAllPoints()
+		if frame.db.portrait.style == '3D' then self:SetFrameLevel(frame.Health.HigherPortrait:GetFrameLevel()) end
+		self:SetAllPoints(frame.Health.HigherPortrait)
+		frame.Health.bg:SetParent(frame.Health)
+	end
 end
 
-local function UpdateFillBar(frame, previousTexture, bar, amount)
-	if ( amount == 0 ) then
-		bar:Hide();
-		return previousTexture;
-	end
-
-	local orientation = frame.Health:GetOrientation()
-	local first = false
-	bar:ClearAllPoints()
-	if previousTexture == frame.Health:GetStatusBarTexture() then first = true end
-	if orientation == 'HORIZONTAL' then
-		bar:Point("TOPLEFT", previousTexture, "TOPRIGHT");
-		bar:Point("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT",0,first and -1 or 0);
-	else
-		bar:Point("BOTTOMRIGHT", previousTexture, "TOPRIGHT");
-		bar:Point("BOTTOMLEFT", previousTexture, "TOPLEFT");
-	end
-
-	local totalWidth, totalHeight = frame.Health:GetSize();
-	if orientation == 'HORIZONTAL' then
-		bar:Width(totalWidth);
-	else
-		bar:Height(totalHeight);
-	end
-
-	return bar:GetStatusBarTexture();
-end
-
-function SUF:UpdateHealComm(unit, myIncomingHeal, allIncomingHeal, totalAbsorb)
+function SUF:UpdateHealComm(unit, myIncomingHeal, allIncomingHeal, totalAbsorb, healAbsorb)
 	local frame = self.parent
 	local previousTexture = frame.Health:GetStatusBarTexture();
 
-	previousTexture = UpdateFillBar(frame, previousTexture, self.myBar, myIncomingHeal);
-	previousTexture = UpdateFillBar(frame, previousTexture, self.otherBar, allIncomingHeal);
-	previousTexture = UpdateFillBar(frame, previousTexture, self.absorbBar, totalAbsorb);
+	UF:UpdateFillBar(frame, previousTexture, self.healAbsorbBar, healAbsorb, true);
+	previousTexture = UF:UpdateFillBar(frame, previousTexture, self.myBar, myIncomingHeal);
+	previousTexture = UF:UpdateFillBar(frame, previousTexture, self.otherBar, allIncomingHeal);
+	previousTexture = UF:UpdateFillBar(frame, previousTexture, self.absorbBar, totalAbsorb);
 end
 
 function SUF:HealthPredictUpdate(frame)
-	if frame.HealPrediction and (not frame.HealPrediction.SLEPredicHook and frame.HealPrediction.PostUpdate) then
-		frame.HealPrediction.PostUpdate = SUF.UpdateHealComm
-		frame.HealPrediction.SLEPredicHook = true
+	if frame.HealthPrediction and (not frame.HealthPrediction.SLEPredictHook and frame.HealthPrediction.PostUpdate) then
+		hooksecurefunc(frame.HealthPrediction, "PostUpdate", SUF.UpdateHealComm)
+		frame.HealthPrediction.SLEPredictHook = true
+	end
+end
+
+local function UpdateAuraTimer(self, elapsed)
+	local timervalue, formatid
+	local unitID = self:GetParent():GetParent().unitframeType
+	local auraType = self:GetParent().type
+	if unitID and E.db.sle.unitframes.unit[unitID] and E.db.sle.unitframes.unit[unitID].auras then
+		timervalue, formatid, self.nextupdate = E:GetTimeInfo(self.expirationSaved, E.db.sle.unitframes.unit[unitID].auras[auraType].threshold)
+	else
+		timervalue, formatid, self.nextupdate = E:GetTimeInfo(self.expirationSaved, 4)
+	end
+	if self.text:GetFont() then
+		self.text:SetFormattedText(("%s%s|r"):format(E.TimeColors[formatid], E.TimeFormats[formatid][2]), timervalue)
+	elseif self:GetParent():GetParent().db then
+		self.text:FontTemplate(LSM:Fetch("font", E.db['unitframe'].font), self:GetParent():GetParent().db[auraType].fontSize, E.db['unitframe'].fontOutline)
+		self.text:SetFormattedText(("%s%s|r"):format(E.TimeColors[formatid], E.TimeFormats[formatid][2]), timervalue)
 	end
 end
 
 function SUF:Initialize()
 	if not SLE.initialized or not E.private.unitframe.enable then return end
 	SUF:NewTags()
-	SUF:InitPlayer()
+	-- SUF:InitPlayer()
 
 	--Raid stuff
 	SUF.specNameToRole = {}
@@ -198,6 +187,8 @@ function SUF:Initialize()
 	SUF:UpgradePvPIcon()
 
 	SUF:InitStatus()
+	
+	hooksecurefunc(UF, "UpdateAuraTimer", UpdateAuraTimer)
 
 	function SUF:ForUpdateAll()
 		SUF:SetRoleIcons()

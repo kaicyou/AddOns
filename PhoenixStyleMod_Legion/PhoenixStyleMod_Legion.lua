@@ -37,14 +37,14 @@ psraidoptionstxtLegion1[3]={
 {"|tip2 "..psdidfriendlyf.." |sid193367|id","|tip2 "..psmainmdamagefrom.." |sid228051|id"},
 }
 psraidoptionstxtLegion1[4]={
-{""},
-{""},
-{""},
-{""},
-{"|tip2 "..psmainmdamagefrom.." |sid232722|id"},
-{"|tip2 "..psdidfriendlyf.." |sid239006|id"},
-{""},
-{""},
+{"|tip2 "..psmainmdamagefrom.." |sid233062|id","|tip2 "..psmainmdamagefrom.." |sid210074|id"},
+{},
+{"|tip2 "..psmainmdamagefrom.." |sid231768|id"},
+{"|tip2 "..psmainmdamagefrom.." |sid236516|id"},
+{"|tip2 "..psmainmdamagefrom.." |sid232732|id","|tip2 "..psmainmdamagefrom.." |sid232827|id"},
+{"|tip2 "..psdidfriendlyf.." |sid239006|id","|tip2 "..psmainmdamagefrom.." |sid236158|id","|tip2 "..psmainmdamagefrom.." |sid236241|id"},
+{"|tip2 "..psdidfriendlyf.." |sid240170|id","|tip2 "..psmainmdamagefrom.." |sid234896|id"},
+{"|tip2 "..psmainmdamagefrom.." |sid234062|id","|tip2 "..psmainmdamagefrom.." |sid240970|id"},
 {""},
 }
 
@@ -86,14 +86,14 @@ psraidoptionschatdefLegion1[3]={
 {1,1},
 }
 psraidoptionschatdefLegion1[4]={
-{},
-{},
-{},
+{1,1},
 {},
 {1},
 {1},
-{},
-{},
+{1,1},
+{1,1,1},
+{1,1},
+{1,1},
 {},
 }
 
@@ -128,14 +128,14 @@ psraidoptionsondefLegion1[3]={
 {1,1},
 }
 psraidoptionsondefLegion1[4]={
-{},
-{},
-{},
+{1,1},
 {},
 {1},
 {1},
-{},
-{},
+{1,1},
+{1,1,1},
+{1,1},
+{1,1},
 {},
 }
 

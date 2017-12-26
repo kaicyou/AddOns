@@ -33,6 +33,8 @@ local setArtifact = ns.setArtifact
 local setClass = ns.setClass
 local setPotion = ns.setPotion
 local setRole = ns.setRole
+local setRegenModel = ns.setRegenModel
+local setTalentLegendary = ns.setTalentLegendary
 
 local RegisterEvent = ns.RegisterEvent
 local RegisterUnitEvent = ns.RegisterUnitEvent
@@ -43,20 +45,190 @@ local PTR = ns.PTR or false
 
 
 -- This table gets loaded only if there's a supported class/specialization.
-if (select(2, UnitClass('player')) == 'SHAMAN') then
+if ( select(2, UnitClass('player')) == 'SHAMAN' ) then
 
     ns.initializeClassModule = function ()
 
         setClass( 'SHAMAN' )
-        Hekili.LowImpact = true
+        -- Hekili.LowImpact = true
 
-        -- addResource( SPELL_POWER_HEALTH )
-        addResource( 'mana', true )
-        addResource( 'maelstrom' )
+        addResource( 'mana', SPELL_POWER_MANA )
+        addResource( 'maelstrom', SPELL_POWER_MAELSTROM, true )
+
+        -- Hackish to just leave this here, but...
+        Hekili.DB.profile.clashes.windstrike = Hekili.DB.profile.clashes.windstrike or 0.25
+
+        setRegenModel( {
+            mainhand = {
+                resource = 'maelstrom',
+
+                spec = 'enhancement',
+                setting = 'forecast_swings',
+
+                last = function ()
+                    local swing = state.swings.mainhand
+                    local t = state.query_time
+
+                    return swing + ( floor( ( t - swing ) / state.swings.mainhand_speed ) * state.swings.mainhand_speed )
+                end,
+
+                interval = 'mainhand_speed',
+
+                value = function( x )
+                    if state.buff.doom_winds.expires > x then return 15 end
+                    return 5
+                end,
+            },
+
+            offhand = {
+                resource = 'maelstrom',
+
+                spec = 'enhancement',
+                setting = 'forecast_swings',
+
+                last = function ()
+                    local swing = state.swings.offhand
+                    local t = state.query_time
+
+                    return swing + ( floor( ( t - swing ) / state.swings.offhand_speed ) * state.swings.offhand_speed )
+                end,
+
+                interval = 'offhand_speed',
+
+                value = function( x )
+                    if state.buff.doom_winds.expires > x then return 15 end
+                    return 5
+                end,
+            },
+
+            fury_of_air = {
+                resource = 'maelstrom',
+                setting = 'forecast_fury',
+
+                spec = 'enhancement',
+                talent = 'fury_of_air',
+                aura = 'fury_of_air',
+
+                last = function ()
+                    local app = state.buff.fury_of_air.applied
+                    local t = state.query_time
+
+                    return app + floor( t - app )
+                end,
+
+                stop = function( x )
+                    return x < 3
+                end,
+
+                interval = 1,
+                value = -3,
+            },
+
+        } )
+
+
+        --[[  Need to cannibalize this into recheck system.
+        
+        function class.setupIterationSteps( times )            
+
+            if state.spec.elemental then
+                if state.buff.resonance_totem.up then
+                    local remains = state.buff.resonance_totem.remains
+
+                    if remains > 0         then tinsert( times, remains ) end           -- APL checks for Resonance Totem expiry.
+                    if remains - 2.01 > 0  then tinsert( times, remains - 2.01 ) end    -- APL checks for Resonance Totem < 2 sec.
+                    if remains - 10.01 > 0 then tinsert( times, remains - 10.01 ) end   -- APL checks for Resonance Totem < 10 sec.
+                end
+
+                if state.debuff.flame_shock.up then
+                    local remains = state.debuff.flame_shock.remains
+
+                    -- APL checks for Flame Shock debuff down.
+                    if remains > 0 then
+                        tinsert( times, remains )
+                    end 
+
+                    -- APL checks for Flame Shock debuff is refreshable.
+                    remains = remains - ( state.debuff.flame_shock.duration * 0.3 ) - 0.01
+                    if remains > 0 then
+                        tinsert( times, remains )
+                    end
+                end
+
+            elseif state.spec.enhancement then
+                if state.buff.alpha_wolf.up then
+                    local remains = state.buff.alpha_wolf.remains
+
+                    -- AW is down.
+                    if remains > 0 then tinsert( times, remains ) end
+
+                    -- AW < 2 sec.
+                    if remains - 2.01 > 0 then tinsert( times, remains - 2.01 ) end
+                end
+
+                if state.feral_spirit.up then
+                    local remains = state.feral_spirit.remains
+
+                    -- FS are up.
+                    if remains > 0 then tinsert( times, remains ) end
+
+                    -- FS < 5 sec.
+                    if remains - 5.01 > 0 then tinsert( times, remains - 5.01 ) end
+
+                    -- FS < 4 sec.
+                    if remains - 4.01 > 0 then tinsert( times, remains - 4.01 ) end
+                end
+
+                if state.buff.flametongue.up then
+                    local remains = state.buff.flametongue.remains
+
+                    -- FT is down.
+                    if remains > 0 then tinsert( times, remains ) end
+
+                    -- FT expires in GCD + 6 sec.
+                    if remains - ( 6.01 + state.gcd ) > 0 then tinsert( times, remains - ( 6.01 + state.gcd ) ) end
+
+                    -- FT reaches pandemic range.
+                    if remains - 4.81 > 0 then tinsert( times, remains - 4.81 ) end
+                end
+
+                if state.talent.hailstorm.enabled and state.buff.frostbrand.up then
+                    local remains = state.buff.frostbrand.remains
+
+                    -- FB is down.
+                    if remains > 0 then tinsert( times, remains ) end
+
+                    -- FB expires in GCD + 6 sec.
+                    if remains - ( 6.01 + state.gcd ) > 0 then tinsert( times, remains - ( 6.01 + state.gcd ) ) end
+
+                    -- FT reaches pandemic range.
+                    if remains - 4.81 > 0 then tinsert( times, remains - 4.81 ) end
+                end
+
+                if state.buff.doom_winds.up then
+                    local remains = state.buff.doom_winds.remains
+
+                    -- DW is down.
+                    if remains > 0 then tinsert( times, remains ) end
+
+                    -- DW expires in 2 GCDs.
+                    if remains - 0.01 - ( state.gcd * 2 ) > 0 then tinsert( times, remains - 0.01 - ( state.gcd * 2 ) ) end
+                end
+            end
+
+            tsort( times )
+
+            return times
+
+        end ]]
+
+
+        -- TODO:  Decide if modeling feral_spirit gain is worth it.
+
 
         addTalent( 'windsong', 201898 )
         addTalent( 'hot_hand', 201900 )
-        addTalent( 'boulderfist', 201897 )
+        addTalent( 'landslide', 197992 )
 
         addTalent( 'rainfall', 215864 )
         addTalent( 'feral_lunge', 196884 )
@@ -79,7 +251,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
         addTalent( 'sundering', 197214 )
 
         addTalent( 'ascendance', 114051 )
-        addTalent( 'landslide', 197992 )
+        addTalent( 'boulderfist', 246035 )
         addTalent( 'earthen_spike', 188089 )
 
 
@@ -162,17 +334,19 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
         addAura( 'astral_shift', 108271, 'duration', 8 )
         addAura( 'boulderfist', 218825, 'duration', 10 )
         addAura( 'crash_lightning', 187874, 'duration', 10 )
+        addAura( 'crashing_lightning', 242286, 'duration', 16, 'max_stack', 15 )
         addAura( 'doom_winds', 204945, 'duration', 6 )
         addAura( 'earthen_spike', 188089, 'duration', 10 )
         addAura( 'flametongue', 194084, 'duration', 16 )
         addAura( 'frostbrand', 196834, 'duration', 16 )
         addAura( 'fury_of_air', 197211 )
-        addAura( 'hot_hand', 215785, 'duraiton', 15 )
+        addAura( 'hot_hand', 215785, 'duration', 15 )
         addAura( 'landslide', 202004, 'duration', 10 )
         addAura( 'lashing_flames', 240842, 'duration', 10, 'max_stack', 99 )
+        addAura( 'lightning_crash', 242284, 'duration', 16 )
         addAura( 'lightning_shield', 192109, 'duration', 3600 )
         addAura( 'rainfall', 215864 )
-        addAura( 'stormbringer', 201846, 'max_stack', 2 )
+        addAura( 'stormbringer', 201846, 'max_stack', 1 )
         addAura( 'windsong', 201898 )
 
         addAura( 'ancestral_guidance', 108281 )
@@ -194,6 +368,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
         addAura( 'lightning_rod', 197209, 'duration', 10 )
         addAura( 'power_of_the_maelstrom', 191877, 'duration', 20, 'max_stack', 3 )
         addAura( 'resonance_totem', 202192 )
+        addAura( 'static_overload', 191634, 'duration', 15 )
         addAura( 'storm_tempests', 214265, 'duration', 15 )
         addAura( 'storm_totem', 210652 )
         addAura( 'stormkeeper', 205495, 'duration', 15, 'max_stack', 3 )
@@ -201,6 +376,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
         addAura( 'thunderstorm', 51490, 'duration', 5 )
 
 
+        class.auras[ 114050 ] = class.auras[ 114051 ]
         modifyAura( 'ascendance', 'id', function( x )
             if spec.elemental then return 114050 end
             return x
@@ -316,16 +492,22 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             end
         } )
 
-        addHook( 'reset_postcast', function( x )
-            state.feral_spirit.cast_time = nil 
-            -- if state.talent.ascendance.enabled then state.setCooldown( 'ascendance', max( 0, state.last_ascendance + 180 - state.now ) ) end
-            return x
-        end )
 
-        addHook( 'advance_end', function( time )
-            --[[ if state.equipped.spiritual_journey and state.cooldown.feral_spirit.remains > 0 and state.buff.ghost_wolf.up then
-                state.setCooldown( 'feral_spirit', max( 0, state.cooldown.feral_spirit.remains - time * 2 ) )
-            end ]]
+        addHook( 'reset_precast', function( x )
+            -- A decent start, but assumes our first ability is always aggressive. Not necessarily true...
+            if state.spec.enhancement then
+                state.feral_spirit.cast_time = nil 
+
+                --[[ state.nextMH = ( state.combat ~= 0 and state.swings.mh_projected > state.now ) and state.swings.mh_projected or state.now + 0.01
+                state.nextOH = ( state.combat ~= 0 and state.swings.oh_projected > state.now ) and state.swings.oh_projected or state.now + ( state.swings.oh_speed / 2 )
+
+
+                local next_foa_tick = ( state.buff.fury_of_air.applied % 1 ) - ( state.now % 1 )
+                if next_foa_tick < 0 then next_foa_tick = next_foa_tick + 1 end                
+
+                state.nextFoA = state.buff.fury_of_air.up and ( state.now + next_foa_tick ) or 0
+                while state.nextFoA > 0 and state.nextFoA < state.now do state.nextFoA = state.nextFoA + 1 end ]]
+            end
         end )
 
 
@@ -333,12 +515,18 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
         -- setGCD( 'global_cooldown' )
 
         -- Gear Sets
+        addGearSet( 'tier21', 152169, 152171, 152167, 152166, 152168, 152170 )
+            addAura( 'force_of_the_mountain', 254308, "duration", 10 )
+            addAura( 'earthen_strength', 252141, "duration", 15 )
+            addAura( 'exposed_elements', 252151, 'duration', 4.5 )
+
+        addGearSet( 'tier20', 147175, 147176, 147177, 147178, 147179, 147180 )
         addGearSet( 'tier19', 138341, 138343, 138345, 138346, 138348, 138372 )
         addGearSet( 'class', 139698, 139699, 139700, 139701, 139702, 139703, 139704, 139705 )
+        
         addGearSet( 'doomhammer', 128819 )
-        addGearSet( 'fist_of_raden', 128935 )
-
         setArtifact( 'doomhammer' )
+        addGearSet( 'fist_of_raden', 128935 )
         setArtifact( 'fist_of_raden' )
 
         addGearSet( 'akainus_absolute_justice', 137084 )
@@ -349,80 +537,16 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
         addGearSet( 'eye_of_the_twisting_nether', 137050 )
         addGearSet( 'pristine_protoscale_girdle', 137083 )
         addGearSet( 'prydaz_xavarics_magnum_opus', 132444 )
+        addGearSet( 'smoldering_heart', 151819 )
+        addGearSet( 'soul_of_the_farseer', 151647 )
         addGearSet( 'spiritual_journey', 138117 )
         addGearSet( 'storm_tempests', 137103 )
         addGearSet( 'uncertain_reminder', 143732 )
 
-        addHook( 'advance_resource_regen', function( override, resource, time )
-            
-            if resource ~= 'maelstrom' or not state.spec.enhancement then return false end
+        setTalentLegendary( 'soul_of_the_farseer', 'enhancement',   'tempest' )
+        setTalentLegendary( 'soul_of_the_farseer', 'elemental',     'echo_of_the_elements' )
+        setTalentLegendary( 'soul_of_the_farseer', 'restoration',   'echo_of_the_elements' )
 
-            if state.spec.enhancement and resource == 'maelstrom' then
-
-                local MH, OH, in_melee = UnitAttackSpeed( 'player' ), state.target.within5
-
-                local nextMH = ( in_melee and state.settings.forecast_swings and MH and state.nextMH > 0 ) and state.nextMH or 0
-                local nextOH = ( in_melee and state.settings.forecast_swings and OH and state.nextOH > 0 ) and state.nextOH or 0
-                local nextFoA = ( state.buff.fury_of_air.up and state.settings.forecast_fury and state.nextFoA and state.nextFoA > 0 ) and state.nextFoA or 0
-
-                local iter = 0
-
-                local offset = state.offset
-
-                -- print( 'checking maelstrom', state.query_time, nextMH, nextOH )
-
-                while( iter < 10 and ( ( nextMH > 0 and nextMH < state.query_time ) or
-                    ( nextOH > 0 and nextOH < state.query_time ) or
-                    ( nextFoA > 0 and nextFoA < state.query_time ) ) ) do
-
-                    if nextMH > 0 and nextMH < nextOH and ( nextMH < nextFoA or nextFoA == 0 ) then
-                        state.offset = nextMH - state.now
-                        local gain = state.buff.doom_winds.up and 15 or 5
-                        state.offset = offset
-
-                        resource.actual = min( resource.max, resource.actual + gain )
-                        state.nextMH = state.nextMH + MH
-                        nextMH = nextMH + MH
-
-                    elseif nextOH > 0 and nextOH < nextMH and ( nextOH < nextFoA or nextFoA == 0 ) then
-                        state.offset = nextOH - state.now
-                        local gain = state.buff.doom_winds.up and 15 or 5
-                        state.offset = offset
-
-                        resource.actual = min( resource.max, resource.actual + gain )
-                        state.nextOH = state.nextOH + OH
-                        nextOH = nextOH + OH
-
-                    elseif nextFoA > 0 and nextFoA < nextMH and nextFoA < nextOH then
-                        resource.actual = max( 0, resource.actual - 3 )
-
-                        if resource.actual == 0 then
-                            state.offset = nextOH - state.now
-                            state.removeBuff( 'fury_of_air' )
-                            state.offset = offset
-
-                            state.nextFoA = 0
-                            nextFoA = 0
-                        else
-                            state.nextFoA = state.nextFoA + 1
-                            nextFoA = nextFoA + 1
-                        end
-
-                    else
-                        break
-
-                    end
-
-                    iter = iter + 1
-                end
-
-                return true
-
-            end
-
-            return false
-
-        end )
 
         addHook( 'specializationChanged', function ()
             setPotion( 'prolonged_power' )
@@ -431,28 +555,21 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
         end )
 
         addHook( 'spend', function( amt, resource )
-            if resource == 'maelstrom' and state.spec.elemental and state.talent.aftershock.enabled then
-                local refund = amt * 0.3
-                refund = refund - ( refund % 1 )
-                state.gain( refund, 'maelstrom' )
+            if amt > 0 and resource == 'maelstrom' and state.spec.elemental and state.talent.aftershock.enabled then
+                state.gain( amt * 0.3, 'maelstrom' )
             end
         end )
 
 
-        ns.addToggle( 'doom_winds', true, 'Artifact Ability', 'Set a keybinding to toggle your artifact ability on/off in your priority lists.' )
+        ns.addMetaFunction( 'state', 'gambling', function ()
+            return spec.elemental and equipped.smoldering_heart
+        end )
 
-        ns.addSetting( 'doom_winds_cooldown', true, {
-            name = "Artifact Ability: Cooldown Override",
+        ns.addSetting( 'save_for_aoe', false, {
+            name = "Elemental: Save Stormkeeper, Liquid Magma Totem for AOE",
             type = "toggle",
-            desc = "If |cFF00FF00true|r, when your Cooldown toggle is |cFF00FF00ON|r then the toggle for artifact ability will be overriden and Doom Winds will be shown regardless of your Doom Winds toggle.",
-            width = "full"
-        } )
-
-        ns.addSetting( 'aggressive_stormkeeper', true, {
-            name = "Elemental: Aggressive Stormkeeper",
-            type = "toggle",
-            desc = "If |cFF00FF00true|r, the addon will recommend Stormkeeper roughly on cooldown, encouraging you to spend the Stormkeeper stacks quickly.\n\n" ..
-                "Used by the SEL Elemental Ascendance, SEL Elemental Icefury, and SEL Elemental LR (Lightning Rod) action lists.",
+            desc = "If |cFF00FF00true|r, the addon will not recommend Stormkeeper or Liquid Magma Totem unless there are 3 or more targets available.\n\n" ..
+                "This may be useful on some fights, but would be a DPS loss overall if left on all the time.",
             width = "full"
         } )
 
@@ -468,13 +585,16 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             return gcd + ( settings.safety_window or 0 )
         end )
 
-        ns.addSetting( 'st_fury', true, {
-            name = "Enhancement: Single-Target Fury",
+        ns.addSetting( 'allow_dw_desync', true, {
+            name = "Enhancement: Allow Doom Winds to Desynchronize from Ascendance",
             type = "toggle",
-            desc = "If |cFFFF0000false|r, the addon will not recommend Fury of Air when there is only one-enemy.  It will still budget and pool Maelstrom for Fury of Air (if talented accordingly), in case of AOE.\n\n" ..
-                "Simulations for 7.2 suggest that Fury of Air is DPS neutral in single-target, meaning there is no DPS gain or loss from using it in single-target.",
+            desc = "If |cFFFF0000false|r, the addon will not be able to recommend Doom Winds when cooldowns (|cFFFFD100toggle.cooldowns|r) are disabled and Ascendance is not on cooldown (if you've talented for Ascendance).\n\n" ..
+                "When |cFF00FF00true|r, the addon will be able to recommend Doom Winds even if Ascendance is not on cooldown, such as when fighting trash and saving Ascendance for a boss fight.",
             width = "full",
         } )
+
+        ns.addToggle( 'hold_t20_stacks', false, 'Save Crash Lightning Stacks', "(Enhancement)  If checked, the addon will |cFFFF0000STOP|r recommending Crash Lightning when you have the specified number of Crashing Lightning stacks (or more).  " ..
+            "This only applies when you have the tier 20 four-piece set bonus.  This may help to save stacks for a big burst of AOE instead of refreshing the tier 20 two-piece bonus." )
 
         ns.addSetting( 'forecast_fury', true, {
             name = 'Enhancement: Predict Fury of Air MP',
@@ -494,98 +614,16 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             width = "full"
         } )
 
-        ns.addSetting( 'safety_window', 0, {
-            name = "Enhancement: Buff Safety Window",
-            type = "range",
-            desc = "Set a safety period for refreshing buffs when they are about to fall off.  The default action lists will recommend refreshing buffs if they fall off wihin 1 global cooldown. " ..
-                "This setting allows you to extend this safety window by up to 1.5 seconds.  It may be beneficial to set this at or near your latency value, to prevent tiny fractions of time where " ..
-                "your buffs would fall off.  This value is checked as |cFFFFD100rebuff_window|r in the default APLs.",
+        ns.addSetting( 't20_stack_threshold', 12, {
+            name = 'Enhancement: Crashing Lightning Stack Threshold',
+            type = 'range',
+            desc = "If |cFFFFD100Save Crash Lightning Stacks|r is enabled, the addon will stop recommending Crash Lightning when you at least this number of Crashing Lightning Stacks.  " ..
+                "This only applies when you have the tier 20 four-piece set bonus.",
             width = "full",
             min = 0,
-            max = 1.5,
-            step = 0.01
-        } )
-
-        ns.addMetaFunction( 'state', 'rebuff_window', function ()
-            return state.gcd + ( settings.safety_window or 0 )
-        end )
-
-        --[[ ns.addSetting( 'foa_padding', 6, {
-            name = "Fury of Air: Maelstrom Padding",
-            type = "range",
-            desc = "Set a small amount of buffer Maelstrom to conserve when using your Maelstrom spenders, when using Fury of Air.  Keeping this at 6 or greater will help prevent your Maelstrom from hitting zero " ..
-                "and causing Fury of Air to drop off.  This value is checked as |cFFFFD100foa_padding|r in the default APLs.",
-            width = "full",
-            min = 0,
-            max = 12,
+            max = 15,
             step = 1
-        } ) ]]
-
-
-        ns.addMetaFunction( 'state', 'foa_padding', function ()
-            return settings.foa_padding or 6
-        end )
-
-        ns.addSetting( 'boulderfist_maelstrom', 100, {
-            name = "Maelstrom: Boulderfist",
-            type = "range",
-            desc = "Set a |cFFFF0000maximum|r amount of Maelstrom for the Boulderfist ability (if talented) in the default action lists.  This is useful if you are concerned with wasting Maelstrom by using Boulderfist when some/all of the Maelstrom it would generate would be wasted.\n\n" ..
-                "The addon default is 100, but is ignored if your Boulderfist/Landslide buffs will fall off within a global cooldown.  SimulationCraft and Wordup both recommend Boulderfist without regard for Maelstrom overcapping.\r\n" ..
-                "You can incorporate this into your custom APLs using the |cFFFFD100settings.boulderfist_maelstrom|r syntax.",
-            min = 0,
-            max = 150,
-            step = 1,
-            width = 'full'
         } )
-
-        addMetaFunction( 'state', 'boulderfist_maelstrom', function ()
-            return state.settings.boulderfist_maelstrom
-        end )
-
-        --[[ ns.addSetting( 'crash_lightning_maelstrom', 0, {
-            name = "Maelstrom: Crash Lightning",
-            type = "range",
-            desc = "Set a |cFFFF0000minimum|r amount of Maelstrom required to recommend Crash Lightning in the default action lists.  This is useful if you are concerned with maintaining a minimum Maelstrom pool to use on Stormbringer procs, etc.\n\n" ..
-                "You can incorporate this into your custom APLs using the |cFFFFD100settings.crash_lightning_maelstrom|r syntax.",
-            min = 0,
-            max = 150,
-            step = 1,
-            width = 'full'
-        } ) ]]
-
-        --[[ ns.addSetting( 'lava_lash_maelstrom', 120, {
-            name = "Maelstrom: Lava Lash",
-            type = "range",
-            desc = "Set a |cFFFF0000minimum|r amount of Maelstrom required to cast Lava Lash in the default action lists.  This is ignored if Lava Lash would currently be free.\n\n" ..
-                "The addon default and SimulationCraft all recommend using Lava Lash at/above 120 Maelstrom by default (without Tier 19 4pc).\n\n" .. 
-                "You can incorporate this into your custom APLs using the |cFFFFD100settings.lava_lash_maelstrom|r syntax.",
-            min = 0,
-            max = 150,
-            step = 1,
-            width = 'full'
-        } ) ]]
-
-
-
-        addMetaFunction( 'toggle', 'artifact_ability', function()
-            return state.toggle.doom_winds
-        end )
-
-        addMetaFunction( 'settings', 'artifact_cooldown', function()
-            return state.settings.doom_winds_cooldown
-        end )
-
-        -- Overriding the default active_enemies handler because Elemental needs to count targets based on what's been hit.
-        --[[ addMetaFunction( 'state', 'active_enemies', function ()
-            local enemies = state.spec.enhancement and ns.getNumberTargets() or -1
-          
-            state.active_enemies = max( 1, enemies > -1 and enemies or ns.numTargets() )
-
-            if state.min_targets > 0 then state.active_enemies = max( state.min_targets, state.active_enemies ) end
-            if state.max_targets > 0 then state.active_enemies = min( state.max_targets, state.active_enemies ) end
-
-            return state.active_enemies
-        end ) ]]
 
 
         addAbility( 'ancestral_guidance', {
@@ -594,7 +632,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             spend_type = 'mana',
             cast = 0,
             gcdType = 'off',
-            known = function () return talent.ancestral_guidance.enabled end,
+            talent = 'ancestral_guidance',
             passive = true,
             cooldown = 120
         } )
@@ -609,11 +647,14 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             spend = 0,
             spend_type = 'mana',
             cast = 0,
+            ready = function () return buff.ascendance.remains end,
             gcdType = 'off',
-            known = function () return talent.ascendance.enabled end,
+            talent = 'ascendance',
             cooldown = 180,
             passive = true,
-            toggle = 'cooldowns'
+            toggle = 'cooldowns',
+            recheck = function () return buff.ascendance.remains end,
+            usable = function () return buff.ascendance.down end,
         }, 114050 )
 
         modifyAbility( 'ascendance', 'id', function( x )
@@ -625,8 +666,8 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
 
         addHandler( 'ascendance', function ()
             applyBuff( 'ascendance', 15 )
-            setCooldown( 'stormstrike', 0 )
-            gainCharges( 'lava_burst', class.abilities.lava_burst.charges )
+            if spec.enhancement then setCooldown( 'stormstrike', 0 ); setCooldown( 'windstrike', 0 ) end
+            if spec.elemental then gainCharges( 'lava_burst', class.abilities.lava_burst.charges ) end
         end )
 
 
@@ -656,48 +697,15 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
         } )
 
 
-        addAbility( 'boulderfist', {
-            id = 201897,
-            spend = -25,
-            spend_type = 'maelstrom',
-            cast = 0,
-            gcdType = 'spell',
-            known = function () return talent.boulderfist.enabled end,
-            cooldown = 6,
-            charges = 2,
-            recharge = 6
-        } )
-
-        modifyAbility( 'boulderfist', 'spend', function( x )
-            return x - artifact.gathering_of_the_maelstrom.rank
-        end )
-
-        addHandler( 'boulderfist', function ()
-            applyBuff( 'boulderfist', 10 )
-            if talent.landslide.enabled then
-                applyBuff( 'landslide', 10 )
-            end
-            if equipped.eye_of_the_twisting_nether then
-                applyBuff( 'shock_of_the_twisting_nether', 8 )
-            end
-        end )
-
-        modifyAbility( 'boulderfist', 'cooldown', function( x )
-            return x * haste
-        end )
-
-        modifyAbility( 'boulderfist', 'recharge', function( x )
-            return x * haste
-        end )
-
-
         addAbility( 'chain_lightning', {
             id = 188443,
             spend = 0,
             spend_type = 'mana',
             cast = 2,
             gcdType = 'spell',
-            cooldown = 0
+            cooldown = 0,
+            aura = 'lightning_rod',
+            cycle = 'lightning_rod'
         } )
 
         modifyAbility( 'chain_lightning', 'cast', function( x )
@@ -713,7 +721,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
         end )
 
         addHandler( 'chain_lightning', function ()
-            local overload = floor( settings.optimistic_overload and stat.mastery_value > 0.50 and ( 0.75 * max( 5, active_enemies ) * 6 ) or 0 )
+            local overload = floor( ( buff.static_overload.up or ( settings.optimistic_overload and stat.mastery_value > 0.50 ) ) and ( 0.75 * max( 5, active_enemies ) * 6 ) or 0 )
             gain( 6 * max( 5, active_enemies ) + overload, 'maelstrom' )
             removeStack( 'stormkeeper', 1 )
             removeStack( 'elemental_focus' )
@@ -729,12 +737,22 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             spend_type = 'maelstrom',
             cast = 0,
             gcdType = 'spell',
-            cooldown = 6
+            cooldown = 6,
+            recheck = function () return buff.crash_lightning.remains end,
+            usable = function ()
+                if set_bonus.tier20_4pc == 1 and toggle.hold_t20_stacks and buff.crashing_lightning.stack >= settings.t20_stack_threshold and active_enemies == 1 then return false end
+                return true
+            end
         } )
 
         addHandler( 'crash_lightning', function ()
             if active_enemies >= 2 then
                 applyBuff( 'crash_lightning', 10 )
+            end
+
+            removeBuff( 'crashing_lightning' )
+            if set_bonus.tier20_2pc > 1 then
+                applyBuff( 'lightning_crash' )
             end
 
             if equipped.emalons_charged_core and active_enemies >= 3 then
@@ -745,8 +763,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
                 applyBuff( 'shock_of_the_twisting_nether', 8 )
             end
 
-            -- LegionFix:  Artifact Check
-            if feral_spirit.active then
+            if feral_spirit.active and artifact.alpha_wolf.enabled then
                 applyBuff( 'alpha_wolf', min( 8, buff.feral_spirit.remains ) )
             end
         end )
@@ -763,9 +780,10 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 0,
             gcdType = 'off',
             cooldown = 60,
-            known = function() return equipped.doomhammer and ( toggle.doom_winds or ( toggle.cooldowns and settings.doom_winds_cooldown ) ) end,
+            known = function() return equipped.doomhammer end,
             passive = true,
-            -- toggle = 'cooldowns'
+            recheck = function () return cooldown.stormstrike.remains, cooldown.ascendance.remains - 6 end,
+            toggle = 'artifact'
         } )
 
         addHandler( 'doom_winds', function ()
@@ -780,7 +798,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 0,
             gcdType = 'spell',
             cooldown = 20,
-            known = function() return talent.earthen_spike.enabled end
+            talent = 'earthen_spike'
         } )
 
         addHandler( 'earthen_spike', function ()
@@ -816,11 +834,13 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
         } )
 
         modifyAbility( 'earth_shock', 'spend', function( x )
-            return max( 10, maelstrom.current )
+            return max( 10, min( 100 + ( artifact.swelling_maelstrom.enabled and 25 or 0 ), maelstrom.current ) ) -- * ( talent.aftershock.enabled and 0.7 or 1 )
         end )
 
         addHandler( 'earth_shock', function ()
             removeStack( 'elemental_focus' )
+            removeBuff( "earthen_strength" )
+            -- spend( min( maelstrom.current, 90 + ( artifact.swelling_maelstrom.enabled and 25 or 0 ) ), "maelstrom" )
             if equipped.eye_of_the_twisting_nether then
                 applyBuff( 'shock_of_the_twisting_nether', 8 )
             end
@@ -837,12 +857,14 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
         } )
 
         modifyAbility( 'earthquake', 'spend', function( x )
-            return buff.echoes_of_the_great_sundering.up and 0 or x
+            if buff.echoes_of_the_great_sundering.up then return 0 end
+            return x -- * ( talent.aftershock.enabled and 0.7 or 1 )
         end )
 
         addHandler( 'earthquake', function ()
             removeStack( 'elemental_focus' )
             removeBuff( 'echoes_of_the_great_sundering' )
+            removeBuff( "earthen_strength" )
             if equipped.eye_of_the_twisting_nether then
                 applyBuff( 'shock_of_the_twisting_nether', 8 )
             end
@@ -856,7 +878,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 0,
             gcdType = 'off',
             cooldown = 120,
-            known = function () return talent.elemental_mastery.enabled end,
+            talent = 'elemental_mastery',
             toggle = 'cooldowns',
             passive = true,
         } )
@@ -874,7 +896,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 2,
             gcdType = 'spell',
             cooldown = 12,
-            known = function () return talent.elemental_blast.enabled end,
+            talent = 'elemental_blast'
         } )
 
         modifyAbility( 'elemental_blast', 'cast', function( x )
@@ -915,7 +937,8 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 0,
             gcdType = 'spell',
             cooldown = 300,
-            known = function () return spec.elemental and not talent.storm_elemental.enabled end,
+            known = function () return spec.elemental end,
+            notalent = 'fire_elemental',
             toggle = 'cooldowns',
             passive = true,
         } )
@@ -932,7 +955,8 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             spend_type = 'mana',
             cast = 0,
             gcdType = 'spell',
-            cooldown = 12
+            cooldown = 12,
+            recheck = function () return buff.flametongue.remains, buff.flametongue.remains - 4.8, buff.flametongue.remains - ( 6 + gcd ), cooldown.doom_winds.remains - gcd * 2 end,
         } )
 
         modifyAbility( 'flametongue', 'cooldown', function( x )
@@ -959,14 +983,15 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
 
         addHandler( 'flame_shock', function ()
             local cost = min( 20, maelstrom.current )
-            applyDebuff( 'target', 'flame_shock', 15 + ( 15 * ( cost / 20 ) ) )
 
+            applyDebuff( 'target', 'flame_shock', min( class.auras.flame_shock.duration * 0.3, debuff.flame_shock.remains ) + 15 + ( 15 * ( cost / 20 ) ) )
             removeStack( 'elemental_focus' )
 
             if equipped.eye_of_the_twisting_nether then
                 applyBuff( 'fire_of_the_twisting_nether', 8 )
             end
-            spend( cost, 'maelstrom' )
+
+            spend( cost, 'maelstrom' ) -- * ( talent.aftershock.enabled and 0.7 or 1 ), 'maelstrom' )
         end )
 
 
@@ -977,6 +1002,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 0,
             gcdType = 'spell',
             cooldown = 0,
+            recheck = function () return buff.frostbrand.remains, buff.frostbrand.remains - 4.8, buff.frostbrand.remains - ( 6 + gcd ), cooldown.doom_winds.remains - gcd * 2 end,
         } )
 
         addHandler( 'frostbrand', function ()
@@ -1001,10 +1027,13 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             applyDebuff( 'target', 'frost_shock', 5 + ( 5 * ( cost / 20 ) ) )
             removeStack( 'icefury' )
             removeStack( 'elemental_focus' )
+            if talent.icefury.enabled then
+                removeBuff( "earthen_strength" )
+            end
             if equipped.eye_of_the_twisting_nether then
                 applyBuff( 'chill_of_the_twisting_nether', 8 )
             end
-            spend( cost, 'maelstrom' )
+            spend( cost, 'maelstrom' ) -- * ( talent.aftershock.enabled and 0.7 or 1 ), 'maelstrom' )
         end )
 
 
@@ -1015,8 +1044,8 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 0,
             gcdType = 'spell',
             cooldown = 0,
-            known = function() return talent.fury_of_air.enabled end,
-            usable = function () return talent.fury_of_air.enabled and active_enemies > 1 or settings.st_fury end,
+            talent = 'fury_of_air',
+            -- usable = function () return active_enemies > 1 or settings.st_fury end,
             passive = true,
         } )
 
@@ -1041,19 +1070,30 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 2.0,
             gcdType = 'spell',
             cooldown = 0,
-            known = function() return mana.current / mana.max > 0.22 end,
+            usable = function() return mana.current / mana.max > 0.22 end,
             passive = true,
-        } )
+        }, 8004 )
+
+        modifyAbility( 'healing_surge', 'id', function( x )
+            if spec.elemental then return 8004 end
+            return x
+        end )
 
         modifyAbility( 'healing_surge', 'cast', function( x )
-            if maelstrom.current >= 20 then
+            if spec.enhancement and maelstrom.current >= 20 then
                 return 0
             end
             return x
         end )
 
         modifyAbility( 'healing_surge', 'spend', function( x )
+            if spec.elemental then return 0.22 end
             return maelstrom.current >= 20 and 20 or x
+        end )
+
+        modifyAbility( 'healing_surge', 'spend_type', function( x )
+            if spec.elemental then return "mana" end
+            return x
         end )
 
 
@@ -1103,7 +1143,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 2,
             gcdType = 'spell',
             cooldown = 0,
-            known = function () return spec.elemental and talent.ascendance.enabled and buff.ascendance.up end
+            usable = function () return spec.elemental and talent.ascendance.enabled and buff.ascendance.up end
         } )
 
         modifyAbility( 'lava_beam', 'cast', function( x )
@@ -1156,7 +1196,8 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
         end )
 
         addHandler( 'lava_burst', function ()
-            removeBuff( 'lava_surge' ) 
+            removeBuff( 'lava_surge' )
+            if set_bonus.tier21_2pc > 0 then applyBuff( "earthen_strength" ) end
             if talent.path_of_flame.enabled then active_dot.flame_shock = min( active_enemies, active_dot.flame_shock + 1 ) end
             if artifact.elementalist.enabled then
                 if talent.storm_elemental.enabled then
@@ -1209,7 +1250,9 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 0,
             gcdType = 'spell',
             cooldown = 0,
-            velocity = 1000
+            velocity = 1000,
+            aura = 'lightning_rod',
+            cycle = 'lightning_rod'
         } )
 
         modifyAbility( 'lightning_bolt', 'id', function( x )
@@ -1221,8 +1264,8 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
 
         modifyAbility( 'lightning_bolt', 'spend', function( x )
             if spec.elemental then
-                local overload = settings.optimistic_overload and stat.mastery_value > 50 and 6 or 0
-                return -1 * ( 8 + ( overload ) +  ( buff.power_of_the_maelstrom.up and 6 or 0 ) )
+                local overload = ( buff.static_overload.up or ( settings.optimistic_overload and stat.mastery_value > 50 ) ) and 6 or 0
+                return -1 * ( 8 + ( overload ) + ( buff.power_of_the_maelstrom.up and 6 or 0 ) )
             end
 
             if talent.overcharge.enabled then
@@ -1270,7 +1313,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 0,
             gcdType = 'spell',
             cooldown = 0,
-            known = function() return talent.lightning_shield.enabled end,
+            talent = 'lightning_shield',
             usable = function() return buff.lightning_shield.remains < 30 end,
             passive = true,
         } )
@@ -1287,7 +1330,8 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 0,
             gcdType = 'spell',
             cooldown = 60,
-            known = function () return talent.liquid_magma_totem.enabled end
+            talent = 'liquid_magma_totem',
+            usable = function () return not settings.save_for_aoe or active_enemies > 2 end
         } )
 
         addHandler( 'liquid_magma_totem', function ()
@@ -1302,7 +1346,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 0,
             gcdType = 'spell', 
             cooldown = 10,
-            known = function() return talent.rainfall.enabled end,
+            talent = 'rainfall',
             passive = true,
         } )
 
@@ -1314,16 +1358,28 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
         -- LegionFix: Adjust spend value based on artifact traits.
         addAbility( 'rockbiter', {
             id = 193786,
-            spend = -20,
+            spend = -25,
             spend_type = 'maelstrom',
             cast = 0,
             gcdType = 'spell',
-            cooldown = 0,
-            known = function() return not talent.boulderfist.enabled end
+            cooldown = 6,
+            charges = 2,
+            recharge = 6,
+            recheck = function () return ( 1.7 - charges_fractional ) * recharge, buff.landslide.remains end,
         } )
 
-        modifyAbility( 'rockbiter', 'spend', function( x  )
+        modifyAbility( 'rockbiter', 'spend', function( x )
             return x - ( artifact.gathering_of_the_maelstrom.rank )
+        end )
+
+        modifyAbility( 'rockbiter', 'cooldown', function( x )
+            if talent.boulderfist.enabled then x = x * 0.85 end
+            return x
+        end )
+
+        modifyAbility( 'rockbiter', 'recharge', function( x )
+            if talent.boulderfist.enabled then x = x * 0.85 end
+            return x
         end )
 
         addHandler( 'rockbiter', function ()
@@ -1333,6 +1389,8 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             if talent.landslide.enabled then
                 applyBuff( 'landslide', 10 )
             end
+            removeBuff( "force_of_the_mountain" )
+            if set_bonus.tier21_4pc > 0 then applyDebuff( "target", "exposed_elements", 4.5 ) end
         end )
 
 
@@ -1343,7 +1401,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 0,
             gcdType = 'spell',
             cooldown = 150,
-            known = function () return talent.storm_elemental.enabled end,
+            talent = 'storm_elemental',
             toggle = 'cooldowns',
             passive = true,
         } )
@@ -1361,8 +1419,10 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 1.5,
             gcdType = 'spell',
             cooldown = 60,
-            known = function() return equipped.fist_of_raden and ( toggle.artifact_ability or ( toggle.cooldowns and settings.artifact ) ) end,
+            known = function() return equipped.fist_of_raden end,
             passive = true,
+            toggle = 'artifact',
+            usable = function () return not settings.save_for_aoe or active_enemies > 2 end
         } )
 
         modifyAbility( 'stormkeeper', 'cast', function( x )
@@ -1371,6 +1431,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
 
         addHandler( 'stormkeeper', function ()
             applyBuff( 'stormkeeper', 15, 3 )
+            if artifact.static_overload.enabled then applyBuff( 'static_overload', 15 ) end
             if artifact.fury_of_the_storms.enabled then summonPet( 'fury_of_the_storms', 8 ) end
         end )
 
@@ -1382,25 +1443,36 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 0,
             gcdType = 'melee',
             cooldown = 15,
-            known = function() return not buff.ascendance.up end
+            usable = function() return not buff.ascendance.up end
         } )
 
+        class.abilities.strike = class.abilities.stormstrike -- For SimC compatibility.
+
         modifyAbility( 'stormstrike', 'spend', function( x )
-            return buff.stormbringer.up and x / 2 or x
+            if buff.stormbringer.up then x = x / 2 end
+            if buff.ascendance.up then x = x / 5 end
+            return x
         end )
 
         modifyAbility( 'stormstrike', 'cooldown', function( x )
-            return buff.stormbringer.up and 0 or x * haste
+            if buff.stormbringer.up then return 0 end
+            if buff.ascendance.up then x = x / 5 end
+            return x * haste
         end )
 
         addHandler( 'stormstrike', function ()
             if buff.rainfall.up then
                 buff.rainfall.expires = min( buff.rainfall.applied + 30, buff.rainfall.expires + 3 )
             end
-            removeStack( 'stormbringer' )
+            
+            removeBuff( 'stormbringer' )
 
             if equipped.storm_tempests then
                 applyDebuff( 'target', 'storm_tempests', 15 )
+            end
+
+            if set_bonus.tier20_4pc > 0 then
+                addStack( 'crashing_lightning', 16, 1 )
             end
 
             if equipped.eye_of_the_twisting_nether and buff.crash_lightning.up then
@@ -1416,7 +1488,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 0,
             gcdType = 'spell',
             cooldown = 40,
-            known = function() return talent.sundering.enabled end
+            talent = 'sundering'
         } )
 
         addHandler( 'sundering', function ()
@@ -1454,7 +1526,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             gcdType = 'spell',
             cooldown = 0,
             passive = true,
-            known = function () return talent.totem_mastery.enabled end,
+            talent = 'totem_mastery',
             usable = function () return buff.totem_mastery.remains < 15 end
         } )
 
@@ -1493,7 +1565,7 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
             cast = 0,
             gcdType = 'spell',
             cooldown = 45,
-            known = function() return talent.windsong.enabled end
+            talent = 'windsong'
         } )
 
         addHandler( 'windsong', function ()
@@ -1503,31 +1575,40 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
 
         addAbility( 'windstrike', {
             id = 115356,
-            spend = 40,
+            spend = 8,
             spend_type = 'maelstrom',
             cast = 0,
             gcdType = 'spell',
-            cooldown = 15,
-            known = function() return buff.ascendance.up end
+            cooldown = 3,
+            known = 17364,
+            usable = function () return buff.ascendance.up end
         } )
 
         modifyAbility( 'windstrike', 'spend', function( x )
-            return buff.stormbringer.up and x / 2 or x
+            if buff.stormbringer.up then x = x / 2 end
+            return x
         end )
 
         modifyAbility( 'windstrike', 'cooldown', function( x )
-            return buff.stormbringer.up and 0 or x * haste
+            if buff.stormbringer.up then return 0 end
+            return x * haste
         end )
 
         addHandler( 'windstrike', function ()
+            setCooldown( 'stormstrike', 3 * haste )
+
             if buff.rainfall.up then
                 buff.rainfall.expires = min( buff.rainfall.applied + 30, buff.rainfall.expires + 3 )
             end
-
-            removeStack( 'stormbringer' )
+            
+            removeBuff( 'stormbringer' )
 
             if equipped.storm_tempests then
                 applyDebuff( 'target', 'storm_tempests', 15 )
+            end
+
+            if set_bonus.tier20_4pc > 0 then
+                addStack( 'crashing_lightning', 16, 1 )
             end
 
             if equipped.eye_of_the_twisting_nether and buff.crash_lightning.up then
@@ -1538,42 +1619,43 @@ if (select(2, UnitClass('player')) == 'SHAMAN') then
     end
 
 
-    storeDefault( [[SimC Enhancement: default]], 'actionLists', 20170414.211237, [[diuuLaqiKQArKkvAtaXOKcNskAxOYWujhtkTmsPNbKmnGuxJsv2gsv8nGY4ivkNJuKwhsvQAEKI6EKkzFKkoisXcbQEisYejvQYfrkTrsrmsKQu5KOQmtkv1nfQDQQgksvkwksLNsmvufBfvPVIuLSxL)QsnysHdt1ILQhRktMIldTzH8zKy0QOtJYQjvQQxtjMnj3wWUL8BedNu1XjvQy5GEoGPl66QW2PK(oLkNNsz9ivP08rsTFuv9AhptOT8Ucnd8j6EyKFOYb(KVhWjclqf)AqBD61ddyL075xddg5hQCcDOcDaCFTxTGDb6lnLt7fOb7cSjYdY0NtMqZlzKcy8SF74zcTL3vOzGprEqM(CssOqrHCSkri8qFcmHMotXsBtSJvMBGt0HtO6eFwIjwXaw56tIjgED43d4KjFpGtOxSYWVgYj6Wj0Hk0bW91E1cw71e(kd75jboPifojMy(EaNSCFTJNj0wExHM1NipitFojjuOOqUhHOme7kaqAKoKcMCNORYto9VuZATh1uNSaQZfN9UUAoHMotXsBt6kcXOoaYjuDIplXeRyaRC9jXedVo87bCYKVhWj07qiHbeMqhQqha3x7vlyTxt4RmSNNe4KIu4KyI57bCYY9b14zcTL3vOzGprEqM(CssOqrHCpcrzi2vaG0G(omzr(l5CL(t)2oIkId6LfDUOM6gbhvajKe4EhqiwPo6s7fipcrzi2vCpOdCERyuoZIvu4GyWzfGM1fLNPzZj00zkwABsecD1nGEgKLtO6eFwIjwXaw56tIjgED43d4KjFpGt0ee6k(1q0ZGSCcDOcDaCFTxTG1EnHVYWEEsGtksHtIjMVhWjl3h0JNj0wExHMb(e5bz6Zjomzr(l5CL(t)2oIkId6LfDUarpeTEt5z4A5IqORUb0ZGSCcnDMIL2M8GoW5TIr5mlwrzcvN4ZsmXkgWkxFsmXWRd)EaNm57bCcvqh4KFnSpJYzwSIYe6qf6a4(AVAbR9AcFLH98KaNuKcNetmFpGtwUV9gptOT8Ucnd8jYdY0NtscfkkK7rikdXUcaKg9JOioh4HLXRhYDONAQBeHqxDdONbzjhedoRa0XEnPMAfAfvAU96Q5eA6mflTnPJqaeAHvuMq1j(SetSIbSY1Netm86WVhWjt(EaNaocbqOfwrzcDOcDaCFTxTG1EnHVYWEEsGtksHtIjMVhWjl3NEgptOT8Ucnd8jYdY0NtscfkkK7rikdXUcaKg9JOioh4HLXRhYDONAQBeHqxDdONbzjhedoRa0XEnPMAfAfvAU96Q5eA6mflTnPRieZD0b02eQoXNLyIvmGvU(KyIHxh(9aozY3d4eWveIHFn0KdOTj0Hk0bW91E1cw71e(kd75jboPifojMy(EaNSCFWgptOT8Ucnd8jYdY0NtscfkkKtpjzKcaKg9JOiUocbqOfwrH7qp1uNoKcMCjlG3j52WqnRl65Q5eA6mflTnrpjzKAcFLH98KaNuKcNetm86WVhWjt(EaNqVHKmsnHgifGjLhqDP7QhsuKIcAU1tSdH6UtOdvOdG7R9QfS2RjuDIplXeRyaRC9jXeZ3d4e9qIIuuqZTEIDiC5(624zcTL3vOzGprEqM(Cs)ikIRtougegXasoigCwbOzi2pIIUTJvgIDutDJGJkGescCVdieRuZ6YExG4VKzfVXcdmeqhDbQMtOPZuS02Ko5qzqyediNq1j(SetSIbSY1Netm86WVhWjt(EaNao5qzqyediNqhQqha3x7vlyTxt4RmSNNe4KIu4KyI57bCYY910XZeAlVRqZaFI8Gm95K(ruexNCOmimIbKCqm4ScqZqSFefDBhRme7OM6gVthsbbUJG(lzKYv60YbM9aj4OciHKa37acXk1SU6KdLbHrmG8o4OciHKai(lzwXBSWadb0SU02CcnDMIL2M0jhkdcJya5eQoXNLyIvmGvU(KyIHxh(9aozY3d4eWjhkdcJyaj)A0OT5e6qf6a4(AVAbR9AcFLH98KaNuKcNetmFpGtwUF714zcTL3vOzGprEqM(Cs6kSsoLxgafZGCy5DfAaPFefXP8YaOygKdIbNvaAgI9JOOB7yLHy3eA6mflTnbsEw6SeHtO6eFwIjwXaw56tIjgED43d4KjFpGtOJ8S0zjcNqhQqha3x7vlyTxt4RmSNNe4KIu4KyI57bCYY9BBhptOT8Ucnd8jYdY0NtOFYEwyffqcoQasijW9oGqSsD0QDcnDMIL2MeDaTDtIUDgCcvN4ZsmXkgWkxFsmXWRd)EaNm57bCIMCaTXVgKi(1GggCcDOcDaCFTxTG1EnHVYWEEsGtksHtIjMVhWjl3Vv74zcTL3vOzGprEqM(Cs6kSsUtNPascmWHL3vObK(ruexeKaKDOxgoigCwbOzi2pIIUTJvgIDG0Ob9txHvYfDaTDtIUDgKdlVRqttQPUr6kSsUOdOTBs0TZGCy5DfAaj4OciHKa37acXk1rR9A2CcnDMIL2Mebjazh6LzcvN4ZsmXkgWkxFsmXWRd)EaNm57bCIMajazh6LzcDOcDaCFTxTG1EnHVYWEEsGtksHtIjMVhWjl3VfuJNj0wExHMb(e5bz6Zj9JOiUiLhWKuuoqoigCwbOzi2pIIUTJvgIDutDJhHOme7kodHeUTJvgaoigCwbOz6bK(ruexKYdyskkhihedoRa0mOBoHMotXsBtIuEatsr5aNq1j(SetSIbSY1Netm86WVhWjt(EaNOjkpGjPOCGtOdvOdG7R9QfS2Rj8vg2ZtcCsrkCsmX89aoz5(TGE8mH2Y7k0mWNetm86WVhWjt(EaNO7rib(1GEXkdWe6qf6a4(AVAbR9AcnDMIL2MyiKWTDSYamHVYWEEsGtksHtO6eFwIjwXaw56tIjMVhWjl3V1EJNj0wExHMb(e5bz6ZjPRWk5Eqh4KvuUbscmWHL3vObe)LmR4nwyGHa6Olqbsd6NUcRK70zkGKadCy5DfAOM6(ruexeKaKDOxgoigCwbOdLNP5eA6mflTn5bDGZBfJYzwSIYeQoXNLyIvmGvU(KyIHxh(9aozY3d4eQGoWj)AyFgLZSyff(1OrBZj0Hk0bW91E1cw71e(kd75jboPifojMy(EaNSC)w6z8mH2Y7k0mWNetm86WVhWjt(EaNqRdZtS4xdrpZcoHouHoaUV2RwWAVMqtNPyPTjOdZtSUb0ZSGt4RmSNNe4KIu4eQoXNLyIvmGvU(KyI57bCYY9BbB8mH2Y7k0mWNipitFoPr6kSsoIve(oDifKdlVRqdibhvajKe4EhqiwPo6c0xGq)0vyLCrhqB3KOBNb5WY7k00KAQBKUcRKJyfHVthsb5WY7k0as6kSsUOdOTBs0TZGCy5DfAaj4OciHKa37acXk1b00tZj00zkwABIIr5mlwr5Utu5eQoXNLyIvmGvU(KyIHxh(9aozY3d4e7ZOCMfROWVgGtu5e6qf6a4(AVAbR9AcFLH98KaNuKcNetmFpGtwUFRUnEMqB5DfAg4tKhKPpN0pII4Eqh48wXOCMfROWbXGZkandX(ru0TDSYqSde)LmR4nwyGHa6OlTtOPZuS02Kh0boVvmkNzXkktO6eFwIjwXaw56tIjgED43d4KjFpGtOc6aN8RH9zuoZIvu4xJgABoHouHoaUV2RwWAVMWxzyppjWjfPWjXeZ3d4KL73QPJNj0wExHMb(KyIHxh(9aozY3d4e6fRmaKIYe6qf6a4(AVAbR9AcnDMIL2MyhRmaKIYe(kd75jboPifoHQt8zjMyfdyLRpjMy(EaNSCFTxJNj0wExHMb(e5bz6ZjjHcffY9ieLHyxbasJ(ruehqsGHoKvuqi3H(MtOPZuS02eh4HLXRhoHQt8zjMyfdyLRpjMy41HFpGtM89aoHgGhwgVE4e6qf6a4(AVAbR9AcFLH98KaNuKcNetmFpGtwUV22XZeAlVRqZaFI8Gm95K(ruehqsGHoKvuqi3HEqA0iDfwjx0b02nj62zqoS8UcnGeCubKqsG7DaHyL6OlT0ttQPUb9txHvYfDaTDtIUDgKdlVRqtZMtOPZuS02e7yLbiHml4eQoXNLyIvmGvU(KyIHxh(9aozY3d4e6fRmajKzbNqhQqha3x7vlyTxt4RmSNNe4KIu4KyI57bCYY91QD8mH2Y7k0mWNipitFoPFefXbKeyOdzffeYDOhKgnsxHvYfDaTDtIUDgKdlVRqdibhvajKe4EhqiwPo6sl90KAQBq)0vyLCrhqB3KOBNb5WY7k00S5eA6mflTnbijWaqczwWjuDIplXeRyaRC9jXedVo87bCYKVhWjssGbGeYSGtOdvOdG7R9QfS2Rj8vg2ZtcCsrkCsmX89aoz5(Ab14zcTL3vOzGprEqM(CcQ7CW0RhnCUfNvha3EhGOos8w3)aizpeK0vyLCNK8(0ldhwExHgq6hrrCNK8(0ld3HEqOF)ikIlcsaYo0ld3HEqA0G(PRWk5IoG2Ujr3odYHL3vOPj1u3iDfwjx0b02nj62zqoS8UcnGeCubKqsG7DaHyL6O1EnBoHMotXsBtIGeGSd9YmHQt8zjMyfdyLRpjMy41HFpGtM89aortGeGSd9YWVgnABoHouHoaUV2RwWAVMWxzyppjWjfPWjXeZ3d4KL7Rf0JNj0wExHMb(e5bz6ZjPRWk5oj59PxgoS8UcnG0pII4oj59PxgUd9tOPZuS02eLB1VvoW5eQoXNLyIvmGvU(KyIHxh(9aozY3d4e77wD(1W(oW5e6qf6a4(AVAbR9AcFLH98KaNuKcNetmFpGtwUVw7nEMqB5DfAg4tKhKPpNKUcRKJyfHVthsb5WY7k0aYJqugIDfNIr5mlwr5UtujhedoRa0mLNbKGJkGescCVdieRuhD7AcnDMIL2MyhRmajKzbNq1j(SetSIbSY1Netm86WVhWjt(EaNqVyLbiHmli)A0OT5e6qf6a4(AVAbR9AcFLH98KaNuKcNetmFpGtwUVw6z8mH2Y7k0mWNipitFojDfwjx0b02nj62zqoS8UcnGeCubKqsG7DaHyL6aA6bKgpcrzi2vCkgLZSyfL7orLCqm4Scqhkpd1ut)0vyLCeRi8D6qkihwExHMMtOPZuS02e7yLbiHml4eQoXNLyIvmGvU(KyIHxh(9aozY3d4e6fRmajKzb5xJgABoHouHoaUV2RwWAVMWxzyppjWjfPWjXeZ3d4KL7RfSXZeAlVRqZaFI8Gm95e6NUcRKJyfHVthsb5WY7k0ac9txHvYfDaTDtIUDgKdlVRqZeA6mflTnXowzasiZcoHQt8zjMyfdyLRpjMy41HFpGtM89aoHEXkdqczwq(1ObOAoHouHoaUV2RwWAVMWxzyppjWjfPWjXeZ3d4KL7Rv3gptOT8Ucnd8jYdY0Nt8xYSI3yHbgcOJUa1eA6mflTnb4OmiKvuMq1j(SetSIbSY1Netm86WVhWjt(EaNihLbHSIYe6qf6a4(AVAbR9AcFLH98KaNuKcNetmFpGtwUVwnD8mH2Y7k0mWNipitFoXFjZkEJfgyiGo6c0tOPZuS02Kh0boVvmkNzXkktO6eFwIjwXaw56tIjgED43d4KjFpGtOc6aN8RH9zuoZIvu4xJgGQ5e6qf6a4(AVAbR9AcFLH98KaNuKcNetmFpGtwUpOUgptOT8Ucnd8jYdY0NtsxHvYrSIW3PdPGCy5DfAa5rikdXUItXOCMfROC3jQKdIbNvaAMYZasWrfqcjbU3beIvQJUDnHMotXsBtascmaKqMfCcvN4ZsmXkgWkxFsmXWRd)EaNm57bCIKeyaiHmli)A0OT5e6qf6a4(AVAbR9AcFLH98KaNuKcNetmFpGtwUpOAhptOT8Ucnd8jYdY0NtsxHvYfDaTDtIUDgKdlVRqdibhvajKe4EhqiwPoGMEaPXJqugIDfNIr5mlwr5UtujhedoRa0HYZqn10pDfwjhXkcFNoKcYHL3vOP5eA6mflTnbijWaqczwWjuDIplXeRyaRC9jXedVo87bCYKVhWjssGbGeYSG8RrdTnNqhQqha3x7vlyTxt4RmSNNe4KIu4KyI57bCYY9bL2XZeAlVRqZaFI8Gm95e6NUcRKJyfHVthsb5WY7k0ac9txHvYfDaTDtIUDgKdlVRqZeA6mflTnbijWaqczwWjuDIplXeRyaRC9jXedVo87bCYKVhWjssGbGeYSG8Rrdq1CcDOcDaCFTxTG1EnHVYWEEsGtksHtIjMVhWjl3huGA8mH2Y7k0mWNipitFoPrd)LmR4nwyGHa60sn1PRWk5Eqh4KvuUbscmWHL3vOHAQtxHvY1jhkdcJyajhwExHMMGqFamV7K6aGlziSvtVbT(NoxnPM6ie6QBa9mil5GyWzfGo2BcnDMIL2M8GoW5TIr5mlwrzcvN4ZsmXkgWkxFsmXWRd)EaNm57bCcvqh4KFnSpJYzwSIc)A0a0nNqhQqha3x7vlyTxt4RmSNNe4KIu4KyI57bCYY9bfOhptOT8Ucnd8jYdY0Nt8xYSI3yHbgcOJUa1eA6mflTn5bDGZBfJYzwSIYeQoXNLyIvmGvU(KyIHxh(9aozY3d4eQGoWj)AyFgLZSyff(1OH9AoHouHoaUV2RwWAVMWxzyppjWjfPWjXeZ3d4KL7dk7nEMqB5DfAg4tKhKPpNKUcRK70zkGKadCy5DfAaPFefXfbjazh6LHdIbNvaAg0C6ginAq)0vyLCrhqB3KOBNb5WY7k00KAQBKUcRKl6aA7MeD7mihwExHgqcoQasijW9oGqSsD0AVMnNqtNPyPTjrqcq2HEzMq1j(SetSIbSY1Netm86WVhWjt(EaNOjqcq2HEz4xJgABoHouHoaUV2RwWAVMWxzyppjWjfPWjXeZ3d4KL7dk6z8mH2Y7k0mWNipitFob1Doy61Jgo3IZQdGBVdquhjER7FaKShcc97hrrCrqcq2HEz4o0dsJg0pDfwjx0b02nj62zqoS8UcnnPM6gPRWk5IoG2Ujr3odYHL3vObKGJkGescCVdieRuhT2RzZj00zkwABseKaKDOxMjuDIplXeRyaRC9jXedVo87bCYKVhWjAcKaKDOxg(1ObOAoHouHoaUV2RwWAVMWxzyppjWjfPWjXeZ3d4KL7dkWgptOT8Ucnd8jYdY0NtsxHvYfDaTDtIUDgKdlVRqdiPRWk5iwr470HuqoS8UcnG0aaZ7oPoa4sgcB10BqR)PZfibhvajKe4EhqiwPo6s3UAoHMotXsBtuUv)w5aNtO6eFwIjwXaw56tIjgED43d4KjFpGtSVB15xd77aN8RrJ2MtOdvOdG7R9QfS2Rj8vg2ZtcCsrkCsmX89aoz5(Gs3gptOT8Ucnd8jYdY0NtsxHvYfDaTDtIUDgKdlVRqdi0pDfwjhXkcFNoKcYHL3vObKgayE3j1baxYqyRMEdA9pDUaj4OciHKa37acXk1rx2dunNqtNPyPTjk3QFRCGZjuDIplXeRyaRC9jXedVo87bCYKVhWj23T68RH9DGt(1OH2MtOdvOdG7R9QfS2Rj8vg2ZtcCsrkCsmX89aoz5(GsthptOT8Ucnd8jYdY0NtAqFamV7K6aGlziSvtVbT(NoxGeCubKqsG7DaHyL6ORwTxnPM6g0pDfwjx0b02nj62zqoS8UcnGaG5DNuhaCjdHTA6nO1)05cKGJkGescCVdieRuhDb6RMtOPZuS02eLB1VvoW5eQoXNLyIvmGvU(KyIHxh(9aozY3d4e77wD(1W(oWj)A0aunNqhQqha3x7vlyTxt4RmSNNe4KIu4KyI57bCYY9b914zcTL3vOzGprEqM(Cs)ikIls5bmjfLdKdIbNvaAg0C62eA6mflTnjs5bmjfLdCcvN4ZsmXkgWkxFsmXWRd)EaNm57bCIMO8aMKIYbYVgnABoHouHoaUV2RwWAVMWxzyppjWjfPWjXeZ3d4KL7d62XZeAlVRqZaFsmXWRd)EaNm57bCcDKNLolri)A0OT5e6qf6a4(AVAbR9AcnDMIL2MajplDwIWj8vg2ZtcCsrkCcvN4ZsmXkgWkxFsmX89aoz5(Gw74zcTL3vOzGpjMy41HFpGtM89aortuEatsr5a5xJgABoHouHoaUV2RwWAVMqtNPyPTjrkpGjPOCGt4RmSNNe4KIu4eQoXNLyIvmGvU(KyI57bCYY9bnOgptOT8Ucnd8jXedVo87bCYKVhWjGtougegXas(1OH2MtOdvOdG7R9QfS2Rj00zkwABsNCOmimIbKt4RmSNNe4KIu4eQoXNLyIvmGvU(KyI57bCYYLte94J5kg9wpzKAFT0dOwUba]] )
+    storeDefault( [[SimC Enhancement: default]], 'actionLists', 20171128.173505, [[dm0gyaqijQwKaPnjGgfHCkcAwcuTlsmmqCmqAzIQEgIKMMOcxtaABis8nfPXjq5CkIyDcG5jq09iG9Hi1bffluIYdrPMOabxuk6KIkntfrDtuYojPFQisdvrOwQu4PunvjYvfi0wreFvri2l0FvudwOdtzXi8yfMmOUSQnlOplLA0s40KA1kcjVwkz2O62sA3a)MOHJOoUOIwospxQMUsxhfBNq9DfbNxuA9kcPMpbA)ImcflHEq4HgdFXYq3j)H246jAB1saQMNuiv0BC(T(r18qGofsWYhmfObdcPcjhO7dQM8Io6zgRwc6yjufkwc9MaJGFySm0ZqO56nl6tqdGN7f3OONlawpSvsrhibhDwsysmQQvp6ORA1J(erdGtrV4gf9gNFRFunpeOtHcb9gVlzOJ3Xs4Io7IpAXsk(1dwKaDwsyvRE0XfvZJLqVjWi4hgldDFq1Kx0fLIIsX14hSkfMM3xjTQCGrWpCkgykwEksWegQesL9LGAayfgYPOWuuqbtXYtX14hSkfMM3xjTQCGrWpCkke9meAUEZIUyJQnc(rNDXhTyjf)6blsGoljmjgv1Qh9ctZ7RKwzx8rl0vT6r3xj9PijgN5ONH2UJoWQxGctZ7RKwzx8rRGl24mxarIwJFWQuyAEFL0QYbgb)WbwobtyOsiv2xcQbGvyiluqblFn(bRsHP59vsRkhye8dle9gNFRFunpeOtHcb9gVlzOJ3Xs4IEUay9WwjfDGeC0zjHvT6rhxuLuXsO3eye8dJLHUpOAYl6IsXYtX14hSkHm0SZYWzttvoWi4hoffuWuuukUg)GvjKHMDwgoBAQYbgb)WPyGPy1oVVuzvzWqPhSPiPtXGbjffMIcrpdHMR3SOl2OAJGF0zx8rlwsXVEWIeOZsctIrvT6rpKHMLDXhTcge0vT6r3xj9PijgN5POiOcrpdTDhDGvVaHm0SSl(OvWGeCXgN5ciQ814hSkHm0SZYWzttvoWi4hwqbfTg)GvjKHMDwgoBAQYbgb)WbwTZ7lvwjDWGiui6no)w)OAEiqNcfc6nExYqhVJLWf9CbW6HTsk6aj4OZscRA1JoUOAoWsO3eye8dJLHUpOAYl6IsXYtX14hSkHm0SZYWzttvoWi4hoffuWuuukUg)GvjKHMDwgoBAQYbgb)WPyGPy1oVVuzvzWqPhSPiPtXPqsrHPOq0ZqO56nl6InQ2i4hD2fF0ILu8RhSib6SKWKyuvRE0dzOzzx8rRPqqx1QhDFL0NIKyCMNIIYle9m02D0bw9ceYqZYU4JwtHeCXgN5ciQ814hSkHm0SZYWzttvoWi4hwqbfTg)GvjKHMDwgoBAQYbgb)WbwTZ7lvwj9uicfIEJZV1pQMhc0PqHGEJ3Lm0X7yjCrpxaSEyRKIoqco6SKWQw9OJlQgqSe6nbgb)WyzO7dQM8IUOuS8uCn(bRsidn7SmC20uLdmc(HtrbfmffLIRXpyvczOzNLHZMMQCGrWpCkgykwTZ7lvwvgmu6bBks6umhbmffMIcrpdHMR3SOl2OAJGF0zx8rlwsXVEWIeOZsctIrvT6rpKHMLDXhTYrarx1QhDFL0NIKyCMNIIivHONH2UJoWQxGqgAw2fF0khbm4InoZfqu5RXpyvczOzNLHZMMQCGrWpSGckAn(bRsidn7SmC20uLdmc(HdSAN3xQSs6CeqHcrVX536hvZdb6uOqqVX7sg64DSeUONlawpSvsrhibhDwsyvRE0XfvjfSe6nbgb)WyzO7dQM8IUOuS8uCn(bRsidn7SmC20uLdmc(HtrbfmffLIRXpyvczOzNLHZMMQCGrWpCkgykwTZ7lvwvgmu6bBks6umFatrHPOq0ZqO56nl6InQ2i4hD2fF0ILu8RhSib6SKWKyuvRE0dzOzzx8rR8beDvRE09vsFksIXzEkkkhcrpdTDhDGvVaHm0SSl(Ov(agCXgN5ciQ814hSkHm0SZYWzttvoWi4hwqbfTg)GvjKHMDwgoBAQYbgb)WbwTZ7lvwjD(akui6no)w)OAEiqNcfc6nExYqhVJLWf9CbW6HTsk6aj4OZscRA1JoUO6uSe6nbgb)WyzO7dQM8IUOuS8uCn(bRIu8PJcJ2(khye8dNIckykkkfxJFWQifF6OWOTVYbgb)WPyGPy1oVVuzvzWqPhSPiPtXPqsrHPOq0ZqO56nl6InQ2i4hD2fF0ILu8RhSib6SKWKyuvRE0Nu2tSuYNcbDvRE09vsFksIXzEkkkGcrpdTDhDGvVatk7jwk5tHeCXgN5ciQ814hSksXNokmA7RCGrWpSGckAn(bRIu8PJcJ2(khye8dhy1oVVuzL0tHiui6no)w)OAEiqNcfc6nExYqhVJLWf9CbW6HTsk6aj4OZscRA1JoUOAWWsO3eye8dJLHUpOAYl6IsXYtX14hSksXNokmA7RCGrWpCkkOGPOOuCn(bRIu8PJcJ2(khye8dNIbMIv78(sLvLbdLEWMIKofjfiPOWuui6zi0C9MfDXgvBe8Jo7IpAXsk(1dwKaDwsysmQQvp6tk7jwk5Kce0vT6r3xj9PijgN5POisri6zOT7OdS6fyszpXsjNuGeCXgN5ciQ814hSksXNokmA7RCGrWpSGckAn(bRIu8PJcJ2(khye8dhy1oVVuzL0KceHcrVX536hvZdb6uOqqVX7sg64DSeUONlawpSvsrhibhDwsyvRE0XfvNeSe6nbgb)WyzO7dQM8IUOu85KrtM8Hv6vjh(unO9CXn6MIcrpdHMR3SOl2OAJGF0zx8rlwsXVEWIeOZsctIrvT6rV4gDBMtgnzYhgDvRE09vsFksIXzEkkAQq0ZqB3rhy1lqXn62mNmAYKpCWfBCMlGONtgnzYhwbAaHgmOtIq0BC(T(r18qGofke0B8UKHoEhlHl65cG1dBLu0bsWrNLew1QhDCrvOqWsO3eye8dJLHUpOAYl6IsXNtgnzYhwXAzAatF2i6soZ(5jkM(QhpffIEgcnxVzrxSr1gb)OZU4JwSKIF9GfjqNLeMeJQA1JU1Y0aMM5KrtM8Hrx1QhDFL0NIKyCMNIIcMq0ZqB3rhy1lG1Y0aMM5KrtM8HdUyJZCbe9CYOjt(Wkqj1PqcwoeIEJZV1pQMhc0PqHGEJ3Lm0X7yjCrpxaSEyRKIoqco6SKWQw9OJlQcfkwc9MaJGFySm09bvtErxukk2OAJGFfRLPbmnZjJMm5dNIbMIemHHkfYDUWaWkmKtXatXYtrcMWqLqQSVeudaRWqoffIEgcnxVzrxSr1gb)OZU4JwSKIF9GfjqNLeMeJQA1JU1Y0aMmo6Qw9O7RK(uKeJZ8uu0Kie9m02D0bw9cyTmnGjJhCXgN5cisSr1gb)kwltdyAMtgnzYhoqcMWqLc5oxyayf6TXgy5emHHkHuzFjOgawHHSq0BC(T(r18qGofke0B8UKHoEhlHl65cG1dBLu0bsWrNLew1QhDCrvO5XsO3eye8dJLHUpOAYl6IsXYtrcMWqfUUDXc0G2ZdQ1luyiNIbMI9VZesatxz1NMhYCEYJuK0PiKuui6zi0C9MfDXgvBe8Jo7IpAXsk(1dwKaDwsysmQQvp6tw3UybAqB2uRxOk3Giz0vT6r3xj9PijgN5POiOqeIEgA7o6aREbMSUDXc0G2SPwVqvUbrYbxSXzUaIkNGjmuHRBxSanO98GA9cfgYb2)otibmDLvFAEiZ5jpeIEJZV1pQMhc0PqHGEJ3Lm0X7yjCrpxaSEyRKIoqco6SKWQw9OJlQcLuXsO3eye8dJLHUpOAYl6IsrrPibtyOIXjxyZtqYdvOVAAqpfdYumFkgyksWegQyCYf28eK8qf6RMg0tXGmfZNIbMIemHHkgNCHnpbjpuH(QPb9umitX8POWumWum8uJp3jRP6vH(QPb9uK0PyosrHONHqZ1Bw0fBuTrWp6Sl(OflP4xpyrc0zjHjXOQw9OBCYf2erYdzx8rl0vT6r3xj9PijgN5POiOqfIEgA7o6aREbmo5cBIi5HSl(OvWfBCMlGirK)QesL9DEcsEOcbtyOIXjxyZtqYdvOVAAqpiZhi5VkH6tZopbjpuHGjmuX4KlS5ji5Hk0xnnOhK5dK8xfUUDXc0G2ZtqYdviycdvmo5cBEcsEOc9vtd6bzEHbgEQXN7K1u9QqF10GoPZHq0BC(T(r18qGofke0B8UKHoEhlHl65cG1dBLu0bsWrNLew1QhDCrvO5alHEtGrWpmwg6zi0C9MfDM(N17RD0ZfaRh2kPOdKGJoljmjgv1QhD0vT6rpi2FkM7(Ah9gNFRFunpeOtHcb9gVlzOJ3Xs4Io7IpAXsk(1dwKaDwsyvRE0XfvHgqSe6nbgb)WyzONHqZ1Bw0hgNpBJvlbZCDFrpxaSEyRKIoqco6SKWKyuvRE0rx1QhD2gNNIzgRwcsXjR7l6zOT7OdS6fiOUUYofBckmW41d2aKIsYhCAqrVX536hvZdb6uOqqVX7sg64DSeUOZU4JwSKIF9GfjqNLew1QhDxxzNInbfgy86bBasrj5dofxufkPGLqVjWi4hgldDFq1Kx0jycdvS(4aydmUcdz0ZqO56nl6dJZNTXQLGzUUVOZU4JwSKIF9GfjqNLeMeJQA1Jo6Qw9OZ248umZy1sqkozDFtrrqfIEgA7o6aREbcQRRStXMGcdmE9GnaPO1hbf9gNFRFunpeOtHcb9gVlzOJ3Xs4IEUay9WwjfDGeC0zjHvT6r31v2PytqHbgVEWgGu06dCrvOtXsO3eye8dJLHEgcnxVzrFyC(SnwTemZ19f9CbW6HTsk6aj4OZsctIrvT6rhDvRE0zBCEkMzSAjifNSUVPOO8crpdTDhDGvVab11v2PytqHbgVEWgGuKGjmShu0BC(T(r18qGofke0B8UKHoEhlHl6Sl(OflP4xpyrc0zjHvT6r31v2PytqHbgVEWgGuKGjmSJlQcnyyj0Bcmc(HXYqpdHMR3SOpmoF2gRwcM56(IEUay9WwjfDGeC0zjHjXOQw9OJUQvp6SnopfZmwTeKItw33uuePke9m02D0bw9ceuxxzNInbfgy86bBasr2bHEqrVX536hvZdb6uOqqVX7sg64DSeUOZU4JwSKIF9GfjqNLew1QhDxxzNInbfgy86bBasr2bHoUOk0jblHEtGrWpmwg6zi0C9Mf9HX5Z2y1sWmx3x0ZfaRh2kPOdKGJoljmjgv1QhD0vT6rNTX5PyMXQLGuCY6(MIIYHq0ZqB3rhy1lqqDDLDk2euyGXRhSbifhs6dk6no)w)OAEiqNcfc6nExYqhVJLWfD2fF0ILu8RhSib6SKWQw9O76k7uSjOWaJxpydqkoK0JlQMhcwc9MaJGFySm0ZqO56nl6dJZNTXQLGzUUVONlawpSvsrhibhDwsysmQQvp6ORA1JoBJZtXmJvlbP4K19nfffqHONH2UJoWQxGG66k7uSjOWaJxpydqkgQ58tdk6no)w)OAEiqNcfc6nExYqhVJLWfD2fF0ILu8RhSib6SKWQw9O76k7uSjOWaJxpydqkgQ58tXfx0vT6r31v2PytqHbgVEWgGue(HgdFXfra]] )
 
-    storeDefault( [[SimC Enhancement: precombat]], 'actionLists', 20170414.211237, [[dqt3baGEurTluLEnQQMjvQMnLUPcDBrTtr2lz3sTFf0WqPFlzOqunybz4q6GuKJrvDoublKcTub1IPILROhcrEk4XqzDquMiQqtLkzYcnDvUif1LrUoQihwPTsb2muL2oQKNlWYGW0Os57uqNhvQfHQYOPkFgfNevX3GkNwv3dQI)QaBdQkpdQQw(YLaZ96yPOmkGJeExozpzuqAZKa4ZinmK52BBmkt9HSHHqNewLD2tqyYsBaPecwFCSUXYbErW6gowCcaS5JEceyc7(QdKlL8LlbM71XsrzuaGnF0tWvmmwIx06(QdeyY5T)XTa06(QfWthFS9QPGUAsWyfnyNPntceK2mja519vlW0KjqqVzcp8HolB1muCaAzin5tqyYsBaPecwFC(ScqYJW4FS4IYuFYrWyftBMeGolB1muCaAzin1Pec5sG5EDSuugfmwrd2zAZKabPntcC)z8U(BMHHaVNSrbHjlTbKsiy9X5ZkWKZB)JBb2NX76Vzge49KnkGNo(y7vtbD1KaK8im(hlUOm1NCemwX0Mjb60jaqjSFTpN37Rwje4d)6Ka]] )
+    storeDefault( [[SimC Enhancement: precombat]], 'actionLists', 20171128.173505, [[deZQbaGEKO2LOQ2MOkZeHy2cDtb9nQWoP0Ej7wP9tvmmu53GgkcPbtvA4OOdsLCmu1cPsTueSykSCu6HIkpv1JLYZr0ercMQatwQMUKlsf9mKkxNQQTIu1MrOA7ifltuMgsOXrv5YqVgP0OPOBlYjrsoSItdCEKuFgf(lcL1HezXRaDkGeF8hl5w)mXgyIakpfaUYMLhD6eWioKOSzC8o48L5lFEFC0Xrr93ybmlDDxTcaxsfilVc0DUJre7YTUldqeuuRZewa4Qt12bTPGS6lCr9qyN(H1ojux3ojuNOWcaxDcyehsu2moEh8C6eqsOF2gsQav65mXgTHqAWeULm0dHD7KqDvYMPaDN7yeXUCR7Yaebf16radZAbldIrAcWyxNQTdAtbz1x4I6HWo9dRDsOUUDsOorammRfSm849Mam21jGrCirzZ44DWZPtajH(zBiPcuPNZeB0gcPbt4wYqpe2Ttc1vPs3oju)GuopEDUMZ2WeUfL84Ljl2GjJPujba]] )
 
-    storeDefault( [[SEL Elemental Ascendance]], 'actionLists', 20170409.204707, [[d4ZSoaGEePsBcrSlqTnQu7ts0mru1Jjz2OA(scDtjvCyHVjPCBj2js2RYUvz)KsJssvdJQACiQ05jfNgyWKQgUQYbLKoLQGJHuNtsqlKcTuvrlgHLtPhIiLNsSmvvpxuterQyQujtgKPl1fPOEfIu1LHUUi2OKk9zkyZuX2ru(lv57QszAscmpejpJu5qiQy0I04vfQCsvjVMICnvHY9uLQvQku1Vr54Qc5rpxtmFbbhHMXjurbNiMjVw9M5ybVo4A1xnRWdkofor(qfi4as3ObSBu)U)N8e5yKXr97txZVc8)HP)15xb6Mikl4RNmPQQbSlpxJIEUMy(ccocnJteLf81tAMbdCewXyCi2BxMeiwd7WJc6LtzktWwSeGlxjrIJdCKv4bfNcHHsSrdyhjkgJdXE7G5bzHhrIn3WwSeGlxPpjKdrIJdCUz2Ije)qlCY3KQeaoO1mjYk8GItHtEDqav0m7KJD4KNihJmoQFFA301G91nHkk4KQzfEqXPW1J6FUMy(ccocnJtQt84aLKIRWAa78eDteLf81tiNgOmbodtQsa4GwZehEuqVCktzAYRdcOIMzNCSdNqffCsD5rb1Qxszkttinnko6kSgWopIjprogzCu)(0UPRb7RBIKYERomiGdaT5rSEu6MRjMVGGJqZ4erzbF9KsG8CBzfyvI1Ixx57)(KyXsaUmPENiXXboYk8GItHWqj2ObSJefJXHyVDWrwHhuCke2ILaCzsprIJdCKv4bfNcHHsSrdyhPEhkXgnGDtQsa4GwZehEuqVCktzAYRdcOIMzNCSdNqffCsD5rb1QxszktA1xp9dtEICmY4O(9PDtxd2x36rvbZ1eZxqWrOzCIOSGVEcrIJdmQszy2J541PONblgTxo5Gql4maN8rc5qK44ahzfEqXPq4KpskbYZTLvGvjwlEDLVtUU1(4N8e5yKXr97t7MUgSVUjVoiGkAMDYXoCsvcah0AMGHTtFusycNqffCI5W2PpkjmHRh1JnxtmFbbhHMXjIYc(6jLa552YkWQeRfVUY3RWFsihIehh4iRWdkofcN8n5jYXiJJ63N2nDnyFDtEDqav0m7KJD4KQeaoO1mbdBN6LtzkttOIcoXCy7uT6LuMY06r5EUMy(ccocnJteLf81tAMbdCeoSnWjuTxqa4GwZKQeaoO1mj3mBXeIFODYtKJrgh1VpTB6AW(6MiPS3Qddc4aqBEetOIcorAMTycXp0o51bburZSto2HRhvT5AI5li4i0moruwWxpzYtKJrgh1VpTB6AW(6M86GaQOz2jh7WjvjaCqRzcYXcEDW9i4rUNqffCIzowWRdUw9g5rUxpkYDUMy(ccocnJteLf81tcvdid9Wdlamx576MuLaWbTMjCWJsaqELWqj8AwJLjVoiGkAMDYXoCYtKJrgh1VpTB6AW(6MqffCc5bpkbaPvFDcdLqRExSglRhvfoxtmFbbhHMXjIYc(6jejooWFS3qRhZXRtrVsG8CBzf4KpsisCCGZnZwmH4hAHt(ijunGm0dpSaWmP0n5jYXiJJ63N2nDnyFDtEDqav0m7KJD4KQeaoO1mHdmK2h4m4rW49eQOGtipWqAFGZGw9gz8E9OO9NRjMVGGJqZ4erzbF9eiwd7WJc6LtzktWwSeGlxPkYTxdkij1Rymoe7TZZIHQRyfjsCCGJScpO4uiCY3dtEICmY4O(9PDtxd2x3KxheqfnZo5yhoPkbGdAnt4bzHhrIn3tOIcoH8bzHw9gtS5E9OOPNRjMVGGJqZ4erzbF9KsG8CBzfyvI1Ixx57)(KqK44aJCSGxhCphMkjdN8rIfDSyoni44KQeaoO1mXHhf0lNYuMM86GaQOz2jh7WjprogzCu)(0UPRb7RBcvuWj1LhfuREjLPmPvF9)pSEu0)Z1eZxqWrOzCIOSGVEsjqEUTScSkXAXRR89FFsisCCGrowWRdUNdtLKHt(ijunGm0dI1Wo8OGE5uMYePQpunGm0dpSaWmPExhjHQbKHE4HfaMRyf19WKNihJmoQFFA301G91n51bburZStuAuCCcvuWj1LhfuREjLPmPvpPPrXXjvjaCqRzIdpkOxoLPmTEu06MRjMVGGJqZ4erzbF9KsG8CBzfyvI1Ixx57KR7jprogzCu)(0UPRb7RBYRdcOIMzNCSdNuLaWbTMjyy7uVCktzAcvuWjMdBNQvVKYuM0QVE6hwpk6kyUMy(ccocnJteLf81tisCCGBwJfVsKB0Qb2ILaCzsr7xXkwprIJdCZAS4vICJwnWwSeGltkIehh4iRWdkofcdLyJgWosVIX4qS3o4iRWdkofcBXsaUmjkgJdXE7GJScpO4uiSflb4YKI(XEyYtKJrgh1VpTB6AW(6M86GaQOz2jh7WjurbN4I1yrR(6e5gTAMuLaWbTMjnRXIxjYnA1SEu0p2CnX8feCeAgNikl4RNqK44aJQugM9yoEDk6zWIr7Ltoi0codWjFtQsa4GwZemSD6Jsct4KxheqfnZo5yho5jYXiJJ63N2nDnyFDtOIcoXCy70hLeMqT6RN(H1JI29CnX8feCeAgNikl4RNeQgqg6HhwayUs6jprogzCu)(0UPRb7RBYRdcOIMzNCSdNuLaWbTMj8GSWJaJYeQOGtiFqwOvVrmkRhfDT5AI5li4i0moruwWxpHiXXb(J9gA9yoEDk6vcKNBlRaN8rsOAazOhEybGzsPBYtKJrgh1VpTB6AW(6M86GaQOz2jh7WjvjaCqRzchyiTpWzWJGX7jurbNqEGH0(aNbT6nY4Tw91t)W6rrtUZ1eZxqWrOzCIOSGVEsOAazOhEybG5kPN8e5yKXr97t7MUgSVUjVoiGkAMDYXoCsvcah0AMOsdW5Xbgs7dCgMqffCcPLgGtREYdmK2h4mSEu0v4CnX8feCeAgNikl4RNm5jYXiJJ63N2nDnyFDtEDqav0m7KJD4eQOGtipWqAFGZGw9gz8wR(6)Fysvcah0AMWbgs7dCg8iy8E9O(9NRjMVGGJqZ4erzbF9KcJmWzGel6yXCAqWXjprogzCu)(0UPRb7RBYRdcOIMzNCSdNqffCsD5rb1QxszktA1xVUhMuLaWbTMjo8OGE5uMY06r9tpxtmFbbhHMXjVoiGkAMDIsJIJteLf81tcvdid9WdlamxjnjHQbKHEqSg2Hhf0lNYuMivOAazOhEybG5jKMgfhDfwdyNhXKQeaoO1mXHhf0lNYuMMiPS3Qddc4aqBEgNqffCsD5rb1QxszktA1xpPPrXrT6)FyYtKJrgh1VpTB6AW(6wpQ))5AI5li4i0moHkk4eZHTt1QxszktA1x))dtEICmY4O(9PDtxd2x3KxheqfnZo5yhoPkbGdAntWW2PE5uMY0erzbF9KcJmWzy96jKoOtKW7zC9ga]] )
+    storeDefault( [[SimC Enhancement: core]], 'actionLists', 20171128.173505, [[d4ttmaGEKeQnjPYUqQ2gva7djLzIK0YOIMTunFQq3usomLBROVHuStLAVIDdSFLmkjLggi(njNxfCAedwHHtQCqIWPKu1XKIJJKOwisPLsKwmOwoHhsQ6POEmv9CjMOKczQeLjRstxvxuf6QijONre11LsBejHSvIkBMkz7QO1jPq9vQa9zq67ijYHKuW4OcA0KYRrItsu10iICnjfDpKuDzO)sL6CijWPjYcxJqxwB)dTH32edZKP(14iqZaECIGVgVgELadlf7OvWSDcPHgio0PdP34qisgIKcZ6qpX6eQy7jkq2oDajhwc)tuGsKLDtKf(iWG74n0gM9cIUp8PjigChP7QvCqVg6P4SMHLaM0j)HWOjEne4UOJqbdlp4s82ReHbkagUsDLZeBBIHdVTjg(OjEneSgSocfmSuSJwbZ2jKgAAGewkwuTcpwIS8H1RHEkvQtCIGpWHRu3TnXW5Z2zKf(iWG74n0gM9cIUpCnSgWTUCr3lSIM7obQ2diaO0B1Tg1TgM)jNOBeGtcwwdQr91WzyjGjDYFiSxyfn3DcuThqaqdlp4s82ReHbkagUsDLZeBBIHdVTjgwVWkARbvjq1EabanSuSJwbZ2jKgAAGewkwuTcpwIS8H1RHEkvQtCIGpWHRu3TnXW5ZwYrw4JadUJ3qByjGjDYFimvIaUffaAy5bxI3ELimqbWWvQRCMyBtmC4TnXWoibClka0WsXoAfmBNqAOPbsyPyr1k8yjYYhwVg6PuPoXjc(ahUsD32edNpBjfzHpcm4oEdTHzVGO7dB(NCIUraojyznOg1xdhUgo64Au7Ay(NCIUraojyznOg1xdhynQBnERJGNUxyfncaQ7YRet6iWG74DnQpSeWKo5pe2lSIM7obQ2diaOHLhCjE7vIWafadxPUYzITnXWH32edRxyfT1GQeOApGaGUg12uFyPyhTcMTtin00ajSuSOAfESez5dRxd9uQuN4ebFGdxPUBBIHZNDnJSWhbgChVH2Wsat6K)qyQebClVGqbdlp4s82ReHbkagUsDLZeBBIHdVTjg2bjGB5fekyyPyhTcMTtin00ajSuSOAfESez5dRxd9uQuN4ebFGdxPUBBIHZNTdezHpcm4oEdTHzVGO7dd36Yf9YRetybbaff0B1Tg1TgNMGyWDKURwXb9AONIZAgwcysN8hcxELywEbHcgwEWL4TxjcduamCL6kNj22edhEBtmm)kXS8ccfmSuSJwbZ2jKgAAGewkwuTcpwIS8H1RHEkvQtCIGpWHRu3TnXW5ZMMil8rGb3XBOnm7feDFyZ)Kt0ncWjblRb1O(AiP1WrhxJAxdZ)Kt0ncWjblRb1O(A4CnQBnERJGNUxyfncaQ7YRet6iWG74DnQpSeWKo5pe2lSIM7obQ2diaOHLhCjE7vIWafadxPUYzITnXWH32edRxyfT1GQeOApGaGUg16S(WsXoAfmBNqAOPbsyPyr1k8yjYYhwVg6PuPoXjc(ahUsD32edNpBhgzHpcm4oEdTHzVGO7dd36YfDxkHhDRC5(1q3tvl4ncGERUWsat6K)qyHYtbM8OiS8GlXBVsegOay4k1votSTjgo82MyyPkpfyYJIWsXoAfmBNqAOPbsyPyr1k8yjYYhwVg6PuPoXjc(ahUsD32edNpBQGil8rGb3XBOnm7feDF436i4PRorHxZeqr6iWG74DnQBnonbXG7iDxTId61qpfjvZ1OU1yAyV8c1KUVviqWVguJ6RHKGewcysN8hc3jq1Eaba1nSQ)HLhCjE7vIWafadxPUYzITnXWH32edtvcuThqaqxdAv9pSuSJwbZ2jKgAAGewkwuTcpwIS8H1RHEkvQtCIGpWHRu3TnXW5ZUbsKf(iWG74n0gM9cIUpCTRrnSgV1rWtxDIcVMjGI0rGb3X7Au3ACAcIb3r6UAfh0RHEksQMRr9RHJoUg1UgV1rWtxDIcVMjGI0rGb3X7Au3ACAcIb3r6UAfh0RHEkoeYAuFyjGjDYFiC5vIz5fekyy5bxI3ELimqbWWvQRCMyBtmC4TnXW8ReZYliuW1O2M6dlf7OvWSDcPHMgiHLIfvRWJLilFy9AONsL6eNi4dC4k1DBtmC(SBAISWhbgChVH2WSxq09HpnbXG7iDJIraTsWHLaM0j)HWUeQYdlmWnS8GlXBVsegOay4k1votSTjgo82MyyQiHQ8WcdCdlf7OvWSDcPHMgiHLIfvRWJLilFy9AONsL6eNi4dC4k1DBtmC(SBCgzHpcm4oEdTHzVGO7dd36YfDn17wZax6T6wJ6wJAxJAxJttqm4os3Oyeq7rQClrNo8Ug1TgWTUCr3LqvEyHbU0B1Tg1Vgo64AudRXPjigChPBumcO9ivULOthExJ6dlbmPt(dH72P5UBfTWYdUeV9kryGcGHRux5mX2My4WBBIHPQDARbvTIwyPyhTcMTtin00ajSuSOAfESez5dRxd9uQuN4ebFGdxPUBBIHZNDJKJSWhbgChVH2WSxq09Hn)tor3iaNeSSguJ6RHKdlbmPt(dHlTGlkiaOHLhCjE7vIWafadxPUYzITnXWH32edZTGlkiaOHLID0ky2oH0qtdKWsXIQv4XsKLpSEn0tPsDIte8boCL6UTjgoF2nskYcFeyWD8gAdZEbr3h28p5eDJaCsWYAqnQVgsEnC0X140eedUJ0PkbQ2diaO6fwrBREQqDRHJoUgNMGyWDKU11PzoOQ7sVg6PewcysN8hc7fwrZDNav7bea0WYdUeV9kryGcGHRux5mX2My4WBBIH1lSI2AqvcuThqaqxJALC9HLID0ky2oH0qtdKWsXIQv4XsKLpSEn0tPsDIte8boCL6UTjgoF(WSxq09HZNaa]] )
 
-    storeDefault( [[SEL Elemental Icefury]], 'actionLists', 20170409.204707, [[daKEoaqiiPuBII0Oqv5uOQAvqsjVcskAxeAyuvhdvwMk6ze00GKQRjueBJI6Bc04ujLZPscZJIO7Ps0(ujCqHQfsHEOkPAIQKOUifSrkcNufSsHI6LQKiZuOWnHKStuSuvONImvbSxP)kObtGdR0IrPhtPjtLUmyZuLpJQmAQ40Q61qy2K62kA3q9BsgUk1Xfkz5e9CfMUORlKTdj(UkjnEiPW5HO1luKMVqP2pK6Y1aLmGxwn4wJLiR8VZsLUYG3gPZAS0rqd7akZPpxqFu3)uK7uOpQlSeDd2F1FmDZxHlZP5ZsXT5RWJgOmCnqjd4LvdU1yjYk)7SeQD(wepMxP4SV(tKL807echoklIshWUVDtLSewHHshbnSdOmN(CM5ck6lSeZoHsMqVtaTaYrzrGwaF(83SmNnqjd4LvdU1yjYk)7SeBKNNiyDuWiu5fMoqipjSz4ic7cYhZtm6205c6rkvtrBKuc48IlVM5shbnSdOmN(CM5ck6lS0bS7B3ujlHvyOeZoHsgwz6eROfbuko7R)ezjyLPtSIweqZYiSbkzaVSAWTglrw5FNLyJ88eFl4fjrkgDB6Cb9iLQPOnskbCEXLxZCP4SV(tKL8KQrgoCuweLoGDF7MkzjScdLocAyhqzo95mZfu0xyjMDcLmHuns0cihLfrZYG6nqjd4LvdU1yjYk)7S0Cb9iLQPOnskbCEXLxXj6yU0rqd7akZPpNzUGI(clDa7(2nvYsyfgkXStOKHvMoOfqoklIsXzF9NilbRmDchoklIMLjM0aLmGxwn4wJLy2juIsLCIaGBqwko7R)ezPrQKteaCdYshWUVDtLSewHHsKv(3zPuXJNgexz(ERndx2x)jst5BT5Jcecyy(W4cUyh7bK5J5nexE8KWy8OaHJujNia4gK8x6iOHDaL50NZmxqrFHnlJ5gOKb8YQb3ASezL)DwQ0rqd7akZPpNzUGI(clDa7(2nvYsyfgkXStOKbnmbCUA0cmQ3rwko7R)ezjqdtaNRoKvVJSzzc2aLmGxwn4wJLiR8VZsZf0JuQMI2iPeWPjVmO5sXzF9Nil9wWlsIS0bS7B3ujlHvyO0rqd7akZPpNzUGI(clXStO0bl4fjr2SmxRbkzaVSAWTglrw5FNLwB(OaHagMpmU4sHLIZ(6prws)Xk6DdNlV5gMQeMLoGDF7MkzjScdLy2jukgFSIEx0cq1YBUOfeqLWS0rqd7akZPpNzUGI(cBwMRObkzaVSAWTglrw5FNLyJ88eVvxfKHkVW0bcNlOhPunfJUnLnYZtCKk5eba3Gum6201MpkqiGH5ddtkSuC2x)jYs6NNtIFmVqwLolDa7(2nvYsyfgkDe0WoGYC6ZzMlOOVWsm7ekfJNNtIFmp0cmQ0jAb8rxj(Bwgo)gOKb8YQb3ASezL)DwYvLIE6DcHdhLfHOeM7Jhxy3rgM)eqhZLocAyhqzo95mZfu0xyPdy33UPswcRWqjMDcLIXIYIwGXi5ilfN91FISKErzdzJKJSzz44AGsgWlRgCRXsKv(3zj2ippX3cErsKIr3MY3Cb9iLQPOnskbCEXLN(Xo2SrEEIVf8IKifLWCF8WK8XZ6IAXg55j(wWlsIuCKRfbQjh)8xko7R)ezjpPAKHdhLfrPdy33UPswcRWqPJGg2buMtFoZCbf9fwIzNqjtivJeTaYrzrGwaFC83SmCNnqjd4LvdU1yjuTOg)mAgyL8GCusyjYk)7S0Cb9iLQPOnskbCEXLN(MYg55jcAyc4C1HEkB0qm62uj4jHHZYQb0XCP4SV(tKL807echoklIshWUVDtLSewHHsm7ekzc9ob0cihLfrPRJ0QHaRKhKJYw6iOHDaL50NZmxqrFHLih1vrLY99EqokBZYWjSbkzaVSAWTglrw5FNLMlOhPunfTrsjGZlU803u2ipprqdtaNRo0tzJgIr3MYhFRnFuGqadZhgxEA6AZhfi0vLIE6DcHdhLfHjp5p2XMV1MpkqiGH5dJlUuOPRnFuGqxvk6P3jeoCuweMui)8xko7R)ezjp9oHWHJYIO0bS7B3ujlzrA1qjMDcLmHENaAbKJYIaTa(44V0rqd7akZPpNzUGI(cBwgouVbkzaVSAWTglrw5FNLyJ88eFl4fjrkgDxko7R)ezjpPAKHdhLfrPdy33UPswcRWqjuPq5X8kdxjMDcLmHuns0cihLfbAb8DYFPJGg2buMtFoZCbf9fwICuxfvk337b5OglDDhWIavkuGjGZASzz4Ijnqjd4LvdU1yjYk)7S0Cb9iLQPOnskbCEXLxZCP4SV(tKLGvMoHdhLfrPdy33UPswcRWqjMDcLmSY0bTaYrzrGwaFC8x6iOHDaL50NZmxqrFHnldN5gOKb8YQb3ASezL)DwInYZtucdfEXwimvjmfLWCF8WKC(LocAyhqzo95mZfu0xyPdy33UPswcRWqP4SV(tKLsvcZW5osqISeZoHsbujmrlav7ibjYMLHlyduYaEz1GBnwISY)olXg55jcwhfmcvEHPdeYtcBgoIWUG8X8eJUlDe0WoGYC6ZzMlOOVWshWUVDtLSewHHsXzF9NilbRmDIv0IakXStOKHvMoXkAraOfWhh)nld31AGsgWlRgCRXsm7ekfJNNtIFmp0cmQ0zPJGg2buMtFoZCbf9fw6a29TBQKLWkmuISY)olXg55jERUkidvEHPdeoxqpsPAkgDB6AZhfieWW8HHjfwko7R)ezj9ZZjXpMxiRsNnld3v0aLmGxwn4wJLiR8VZsRnFuGqadZhgxWv6iOHDaL50NZmxqrFHLoGDF7MkzjScdLIZ(6prwY6Spou)8Cs8J5vIzNqPR7SpgTGy88Cs8J51SmN(nqjd4LvdU1yjYk)7SuP4SV(tKL0ppNe)yEHSkDw6a29TBQKLWkmuIzNqPy88Cs8J5HwGrLorlGpo(lfxYBuQ0rqd7akZPpNzUGI(clroQRIkL779GCu2sx3bSiqLcfyc4SSnlZjxduYaEz1GBnwISY)olnvO8yEMkbpjmCwwnu6iOHDaL50NZmxqrFHLoGDF7MkzjScdLy2juYe6DcOfqoklc0c47K)sXzF9Nil5P3jeoCuwenlZ5zduYaEz1GBnwISY)olnvO8yEMU28rbcDvPONENq4WrzryY1MpkqiGH5dJshbnSdOmN(CM5ck6lS0bS7B3ujlzrA1qP4SV(tKL807echoklIsm7ekzc9ob0cihLfbAb8DYpAbxhPvdnlZPWgOKb8YQb3ASezL)DwAQq5X8kDe0WoGYC6ZzMlOOVWshWUVDtLSewHHsXzF9NilbRmDchoklIsm7ekzyLPdAbKJYIaTa(o5VzZsm7ekrgIbAbg0WeW5Qrl4Gf8IKiB2c]] )
+    storeDefault( [[SimC Enhancement: opener]], 'actionLists', 20171128.173505, [[b4vmErLxtruzMfwDSrNxc51uofwBL51utLwBd5hyf5gAH52yL1wzUrNo(b2BWvMBLjNxtjvzSvwyZvMxojdmXCdm4idoUedoWmdm041utbxzJLwySLMEHrxAV5MxojJnZ41ubngDP9MBZ5fvE5umErLxtvKBHjgBLrMxc51utnMCPbhDEnvBHvgBZrNCV1MlJvNCYvMB05hy84hyXuJFGzIFGrxATvMFGXJFGD2yK51ubjwASLgD551uY92yRjwA0vMCEnvsUrwAJfgDVjNxt52BUvMxt10BKzvyY5uyTvMxt51uofwBL51us92yRjwA0vMCEnLuLXwzHnxzE5KmWeZnXaJxtjvzZ9wDYnwzZ5fvErNxtneALn2An9MDL1wzUrNxI51un9gzofwBL51uErNx051utnMCPbhDEnLx05Lx]] )
 
-    storeDefault( [[SEL Elemental LR]], 'actionLists', 20170409.204707, [[d0dsoaGEqI0MaP2ffTnrY(ePAMQenBeZhvLCtvc(MO42Q4WsTtuzVk7gy)QQgfjXWeXVj1ZiPopQYGbvdhuoOOQtrs6yi54IuAHuWsfvwmkwov9quv1tjwMQYZvLjQsOmvQOjJutx4IuOtl5YqxheBeKWHujuTzvQTlknnuv03fP4ZuP5bs6Xu6VO0OjX4bjItQsACOQuxdKOUhQQSsuv4CQeYRPcpQ5CIrqZqq6zyYfdVBiKygMW1hCIy8YF4gj4bbrt(HFzUj5qc2pCCFjuzs4ZKptQp1j8P6jcm0wnPGs7O0GX9L6BsEBuAWBohh1CoXiOzii9mmrS(cwm5IhL1rbCNKNPivWBYnPpi7trBDm5kGUSDO9taAaojhsW(HJ7lHkfvgZe1t46dobki9b)HlkARJF4QKO6IX9nNtmcAgcspdteRVGftyGCFBIwfn(y13SHcY66XoyFqa0OVaUMqGb9PrYl86JPfI3JGiD(X3PMKdjy)WX9LqLIkJzI6jxb0LTdTFcqdWjC9bNyS9HsAH0oWj5zksf8MGTpuslK2bUyCQNZjgbndbPNHjI1xWIjNgjVWRpMwiEpcI053f99ZhtYHeSF44(sOsrLXmr9KRa6Y2H2pbOb4eU(Gtm2(q5hUOOToMKNPivWBc2(qH9POTowmo(CoNye0meKEgMW1hCIeA)XbIWq)K8mfPcEtEH2FCGim0p5kGUSDO9taAaorS(cwmj0UUe0S9rD32GTzksf8GwL2gvwKfb4PWx6u8fF9WikG7ZSDD947vzr2xO9hhicd9QojhsW(HJ7lHkfvgZe1lghuEoNye0meKEgMiwFblMmjhsW(HJ7lHkfvgZe1tUcOlBhA)eGgGt46doXibpiiAYpCdK(ftYZuKk4nbj4bbrtyzi9lwmUuZ5eJGMHG0ZWeX6lyXK2gvwKfb4PWx68t9K8mfPcEtivAHu0SN290SHoWZKRa6Y2H2pbOb4eU(GtUSslKI(h(fA3t)d3PoWZKCib7hoUVeQuuzmtuVyCzMZjgbndbPNHjI1xWIj06W8M0hK9POTom94PlWlDB)c2Oo4pFmjhsW(HJ7lHkfvgZe1tUcOlBhA)eGgGt46do5YoB)d3ae)lMKNPivWBcPZ2Smq8VyX4475CIrqZqq6zyYfAOK6a54S9Uy8MOEIy9fSyYPrYl86JPfI3JGiD(9LandK7BtKGheenH9wBH8mHadApE7XNsZqWF(ysEMIubVj3K(GSpfT1XKRa6Y2H2pbOb4eU(GtGcsFWF4II26yc)5zjOZ27IXBmtYHeSF44(sOsrLXmr9errNMlOPR7c9VXSyCx0CoXiOzii9mmrS(cwm50i5fE9X0cX7rqKo)(sGMbY9TjsWdcIMWERTqEMqGbTkQ02OYISiapf(43h0TnQSilTomVj9bzFkARdO(PkFXxQ02OYISiapf(sNFQHUTrLfzP1H5nPpi7trBDav1QQ6K8mfPcEtUj9bzFkARJjxb0LTdTFILNLGt46dobki9b)HlkARJF4QqP6KCib7hoUVeQuuzmtuVyCujZ5eJGMHG0ZWeX6lyXKtJKx41htleVhbr68JVtnjptrQG3eS9Hc7trBDm5kGUSDO9taAaoHRp4eJTpu(HlkARJF4QqP6KCib7hoUVeQuuzmtuVyCuuZ5eJGMHG0ZWeX6lyXegi33ME8PbnWISHoWJPhpDbEqLkzsoKG9dh3xcvkQmMjQNCfqx2o0(janaNKNPivWBsOd8WE6xGEEt46doXPoWZp8l0Va98wmoQV5CIrqZqq6zyIy9fSycdK7Bt0QOXhR(Mnuqwxp2b7dcGg9fW1ecSj5qc2pCCFjuPOYyMOEYvaDz7q7Na0aCsEMIubVjy7dL0cPDGt46doXy7dL0cPDG)WvHs1fJJs9CoXiOzii9mmHRp4KllxLaua3F4g0KysoKG9dh3xcvkQmMjQNCfqx2o0(janaNiwFblMWa5(2eMonONvFZgki7PrYl86Jjeyq32OYISiapf(GQAOPrgi33MKYvjafWL1RPnP1PbmjptrQG3es5QeGc4YYOjXIXrXNZ5eJGMHG0ZWeX6lyXegi33MW0Pb9S6B2qbzpnsEHxFmHad62gvwKfb4PWhuvdDBJklYsRdZBsFq2NI26aQFtYHeSF44(sOsrLXmr9KRa6Y2H2pXYZsWjC9bNCz5QeGc4(d3GMe)WvH)8Seu1j5zksf8MqkxLauaxwgnjwmokO8CoXiOzii9mmrS(cwmPTrLfzraEk8Lof00idK7Bts5QeGc4Y610M060a(5Jj5qc2pCCFjuPOYyMOEYvaDz7q7Na0aCsEMIubVjwLUaSKYvjafWDcxFWj8xPlWp8llxLaua3fJJk1CoXiOzii9mmrS(cwmPTrLfzraEk8Lof0mqUVnjLRsakGlRxtBcbg0TnQSilTomjLRsakGlRxtd12gvwKfb4PW3K8mfPcEtSkDbyjLRsakG7KRa6Y2H2pXYZsWj5qc2pCCFjuPOYyMOEcxFWj8xPlWp8llxLaua3F4QWFEwcQ6IXrLzoNye0meKEgMiwFblMqJmqUVnjLRsakGlRxtBsRtdysEMIubVjKYvjafWLLrtIjxb0LTdTFcqdWjC9bNCz5QeGc4(d3GMe)WvHs1j59UVjtYHeSF44(sOsrLXmr9errNMlOPR7c9VXmH)kO1Xf0zXdcIXSyCu89CoXiOzii9mmrS(cwmPTrLfzraEk8Lof0TnQSilTomjLRsakGlRxtd12gvwKfb4PW3KCib7hoUVeQuuzmtup5kGUSDO9tS8SeCsEMIubVjKYvjafWLLrtIjC9bNCz5QeGc4(d3GMe)WvHs1F48NNLGlgh1fnNtmcAgcspdteRVGftMKdjy)WX9LqLIkJzI6jxb0LTdTFcqdWj5zksf8MqkxLauaxwgnjMW1hCYLLRsakG7pCdAs8dxLpvxmUVK5CIrqZqq6zyIy9fSyYrNTaUq7XBp(uAgcojhsW(HJ7lHkfvgZe1tUcOlBhA)eGgGt46dobki9b)HlkARJF4Q8P6K8mfPcEtUj9bzFkARJfJ7JAoNye0meKEgMiwFblMC0zlGl0TnQSilTomVj9bzFkARdO22OYISiapf(MKdjy)WX9LqLIkJzI6jxb0LTdTFILNLGtYZuKk4n5M0hK9POToMW1hCcuq6d(dxu0wh)Wv5t1F48NNLGlg333CoXiOzii9mmrS(cwm5OZwa3j5qc2pCCFjuPOYyMOEYvaDz7q7Na0aCsEMIubVjy7df2NI26ycxFWjgBFO8dxu0wh)Wv5t1flMiwFblMSyda]] )
+    storeDefault( [[SimC Enhancement: CDs]], 'actionLists', 20171128.173505, [[d4tIgaGEefAtiQyxe12qcTpvLSmjXVHmBPmFe5MkLld(MQIZJq2PQSxXUvz)umksjggPACik40egQQsPbtPHRuDivLkNIushtjDoefTqeQLsKwmsTCsEOQQEkQhtvRtsLmrjvmvIyYuz6qDrKOpJe8meLCDLyJik1wjf2msA7iW8qu1xLuPMgIk9DsPgPQsv3wQgTK0HvCssrVws5AsQ6EQkf)vvLNlXbrqN1ijCDaQZsdhIdZELyhhoSuObtbYRI(6hDYuFvELmqUFQqMH5DWlMMGmoyb6YRcfjRWe6Xc0vIK8wJKWuEdDdCHom7vIDCy8OOaGLRctdxvE3JnwYBSvQ3yjrYyXIoySFzS6Y1RRhMqArtGjkCvqHeLEynpNWpyKk8Hoi8gYPXOEthch(nDi83dkKO0dlfAWuG8QOV(zvpSuOGwuEOejbh(FvWxBdra0Hdh6WBi3B6q4GZRsKeMYBOBGlehM9kXoom9cvQYtXdNBopiVSBSKizSAXy9iuZH0(KDiu)N2IZvKx2nwTASKizSnGaOzSK3yx11dtiTOjWefMgufqvtCuiSMNt4hmsf(qheEd50yuVPdHd)MoeMyqvavnXrHWsHgmfiVk6RFw1dlfkOfLhkrsWH)xf812qeaD4WHo8gY9Moeo48iRijmL3q3axiom7vIDCy6fQuLNIho3CEqEz3yjrYy1IXsfut7xzxOeyzf0hXvm2Vm26nwTASKizSnGaOzSK3yx11dtiTOjWefMUHqUFuxuefwZZj8dgPcFOdcVHCAmQ30HWHFthctCdHCglzVOikSuObtbYRI(6Nv9WsHcAr5HsKeC4)vbFTnebqhoCOdVHCVPdHdopYnsct5n0nWfIdZELyhhMEHkv5P4HZnNhKx2nwsKm2VZyXtdoS8u8W5MZdYWn0nWzSKJXsfut7xzxOeyzf0hXvm2Vm26nwsKmw8OOaGLXIo8dJ(5eGXs(VXyPOEycPfnbMOW7iSaDH18Cc)GrQWh6GWBiNgJ6nDiC430HWFlclqxyPqdMcKxf91pR6HLcf0IYdLij4W)Rc(ABicGoC4qhEd5EthchCE1hjHP8g6g4cXHjKw0eyIctfut7xzxOe4WAEoHFWiv4dDq4nKtJr9Moeo8B6qyYgutZy5DHsGdlfAWuG8QOV(zvpSuOGwuEOejbh(FvWxBdra0Hdh6WBi3B6q4GZJIrsykVHUbUqCy2Re74WEeQ5qAFYtXdNBopiRG(iUIX(LXsrJLejJfpn4WY0OLMduuffSmCdDdCgljsgRdOxOsvggfUkC)k7IAG8YEycPfnbMOWoeQ)tBX5kH18Cc)GrQWh6GWBiNgJ6nDiC430HW1bH6gBDloxjSuObtbYRI(6Nv9WsHcAr5HsKeC4)vbFTnebqhoCOdVHCVPdHdoVprsykVHUbUqCy2Re74WAXy9iuZH0(KlyKQxWkrnqwb9rCfJ9lJv3y1QXsogl9cvQYtXdNBopi7qAFHjKw0eyIcpfpCU58qynpNWpyKk8Hoi8gYPXOEthch(nDimHfpCU58qyPqdMcKxf91pR6HLcf0IYdLij4W)Rc(ABicGoC4qhEd5EthchCWHFthcZI(FJLYR6CEOdhUUm2)1PeCc]] )
 
-    storeDefault( [[SEL Elemental Default]], 'actionLists', 20170415.105057, [[d0t0haGEcvQnrQuTlc2Mk0(urLzkaZwP5tOCtb03iLUnkoSIDQQ2R0UPSFvPFsOkdJK(nQEUknuvuvdgIgoeoir5ueQKJrIZrujlKuSuuQftKLtLxtufpf5Xu16ivYejQOPsQAYcnDrxuqNgQldUoKSrIQ0NjKnlqBNuP8DsfFLqfnnvuAEev4VOKdPIIrtuvJJqvDsvWZurUgrL68QIvQIQSmi1OiuHRs1xk0gPfIvtP)WaLOWaErgUady5SViLti4GAZsYjeCqTz1uInSWCH(rRQOv9SQYLaA1ZQvvBjY7WiYsLK5tm3UvF)kvFPqBKwiwnLiVdJilLCrIwqaBj4COqK3sYKWloFkPd2ISUYhgxPdwe7NK7kzCdk9hgOK4eBXxKK8HXvInSWCH(rRQOvrTz)OR(sH2iTqSAk9hgO05Ztm3krEhgrwk5IeTGacEI52v3fhNj5IeTGGNZ3ixh7kMyEoFJCDmHGyhWcwGbSCwbhWmy7Eo0IVQ4QeByH5c9Jwv5OIwb1tLoyrSFsURKXnOKmj8IZNsi4jMBLcKh)dducHJVCteezHGRd4A2)PQVuOnsleRMsK3HrKLKqfmOqYtGHfZCtW9i4aMbBx5aDjzs4fNpLsEcmSyMBcUNshSi2pj3vY4guInSWCH(rRQCurRG6Ps)HbkPNNaZlYaNBcUNM9F2QVuOnsleRMsK3HrKLsUirli458nY1XULydlmxOF0Qkhv0kOEQ0blI9tYDLmUbLKjHxC(uki2bSGfyalNT0FyGsYl2bVidxGbSC2M9l3vFPqBKwiwnLiVdJilLCrIwqWZ5BKRJDlXgwyUq)OvvoQOvq9uPdwe7NK7kzCdkjtcV48P0n5ogwWcmGLZw6pmqjk5oMxKHlWawoBZ(pw9LcTrAHy1uI8omISuYfjAbbpNVrUo2TKmj8IZNsWcmGLZYIzUj4EkDWIy)KCxjJBqP)WaLcxGbSC2xKbo3eCpLydlmxOF0Qkhv0kOEQz)AR(sH2iTqSAkrEhgrw6m5SGLcZ1dwCmpia2iTqumXKqfmOWC9GfhZdcOqiMyEoFJCDmH56bloMheCaZGT75KB1sSHfMl0pAvLJkAfupv6GfX(j5Usg3GsYKWloFkjTCEKvquUNs)HbkPz584ls5fL7Pz)IF1xk0gPfIvtjY7WiYsNjNfSuyUEWIJ5bbWgPfIIjMeQGbfMRhS4yEqafIsSHfMl0pAvLJkAfupv6GfX(j5Usg3GsYKWloFkjbUl4KhSjQ0FyGsAa3fCYd2e1SF5Q6lfAJ0cXQPe5DyezPXNyDdybgWGH75qx6pmqj2OmD9IuM4fwsMeEX5tjhkJ14tm3yT4Bw6GfX(j5Usg3GsSHfMl0pAvLJkAfupvkqE8pmqjkmGxKHlWawo7lszIxyZ(vuR(sH2iTqSAk9hgOeBuMUErk76bloMhkrEhgrwkNfSuyUEWIJ5bbWgPfIIj2c6gSYHIIAj2WcZf6hTQYrfTcQNkDWIy)KCxjJBqjzs4fNpLCOmwJpXCJ1IVzPa5X)WaLOWaErgUady5SViLD9GfhZdn7xrP6lfAJ0cXQP0FyGsSrz66f5bpeeL7Pe5DyezPCwWsbShcIY9ia2iTq898kXgwyUq)OvvoQOvq9uPdwe7NK7kzCdkjtcV48PKdLXA8jMBSw8nlfip(hgOefgWlYWfyalN9f5bpeeL7Pz)kOR(sH2iTqSAk9hgOeBuMUErgawK8tdBIErYMhlrEhgrwkNfSuyXIKFAytelhpka2iTqSeByH5c9Jwv5OIwb1tLoyrSFsURKXnOKmj8IZNsougRXNyUXAX3SuG84FyGsuyaVidxGbSC2xKbWUzZsecWJNflUNeZT(rFeDZw]] )
+    storeDefault( [[SimC Enhancement: filler]], 'actionLists', 20171128.173505, [[d4d9iaGEfGAteIDPO2gru7tPOzQGyzKkZwI5du6MkYHP62u6BkL2PQAVIDdA)s6NeOmmkACkfopq1qvqAWsz4aXbjcNcO4yk05iqvlKqAPe0IvLLJ4HKspf1JvYZLQjsGktLqnzatxLlsaNMKldDDkSrfqBLi1MjQ2or5zajnnfuFMu18asSofa9AsXOvQ(nsNKi5VkqxJiY9iqoKcqoUcaJci1zmIdl4q5Ur5IOH)UfdZkR2Ata4UdxOfH3aS2KRkfKewiwqVJ5RZCCR5g62yECdtq1C4Wmi4s5f1a2pffMVojdQHLyDkkShX5pgXHfa6VccerdZlIcKlS1Xs)iu78YGqq4vBGsTnQZmSepvrDGhMqxAEQdjHLccOw(rjHHuigEIciTt(Ufdh(7wmSq6sZtDijSqSGEhZxN542rZWcXo1GSWEeNlS2DCPzIkdTi8Yl8ef47wmCU81fXHfa6VccerdZlIcKl8ZqU8z5f3IhfQ3aNjO1vWETbk12WZBewINQOoWdlV4w8Oq9gyyPGaQLFusyifIHNOas7KVBXWH)UfdpWIBXJc1BGHfIf07y(6mh3oAgwi2PgKf2J4CH1UJlntuzOfHxEHNOaF3IHZLpOgXHfa6VccerdZlIcKlmORTZli8MxeVVRG6hSFuIDgH(RGa1gybBT5RtjdheHOvH9ABtbvB6QnWuBIuBa4ZqU8z0j3ochSdIsdoBasTjsTzDS0pc1oVmieeE12McQ2g2S2eP2K5eL)k4SGPDOuArYMHL4PkQd8WlI33hSO0VFqfuFyPGaQLFusyifIHNOas7KVBXWH)UfdRL499ABik97hub1hwiwqVJ5RZCC7OzyHyNAqwypIZfw7oU0mrLHweE5fEIc8Dlgox(dhXHfa6VccerdZlIcKl85feEZ7UQ0pkXoJq)vqGAtKA7zix(SCcTFpIdbMjO1vWETbk12WZBuBIuBwhl9JqTZldcbHxTTzTnSzyjEQI6apSCcTFpIdbclfeqT8JscdPqm8efqAN8Dlgo83Ty4bsO97rCiqyHyb9oMVoZXTJMHfIDQbzH9ioxyT74sZevgAr4Lx4jkW3Ty4C5lPioSaq)vqGiAyEruGCHL5eL)k4SRXvqdbgagkqabbQnrQTbuT9mKlFwoH2VhXHaZgGuBIuBwhl9JqTZldcbHxTTPGQTTskSepvrDGhwoH2VhXHaHLccOw(rjHHuigEIciTt(Ufdh(7wm8aj0(9ioeO2a9iyclelO3X81zoUD0mSqStnilShX5cRDhxAMOYqlcV8cprb(UfdNlFjhXHfa6VccerdlXtvuh4H7gqaKOG6dlfeqT8JscdPqm8efqAN8Dlgo83Tyy2acGefuFyHyb9oMVoZXTJMHfIDQbzH9ioxyT74sZevgAr4Lx4jkW3Ty4C5VnIdla0FfeiIgMxefixyRJL(rO25LbHGWR22uq1MKmRnrQnzor5VcolyAhkLw2AwBIuBYCIYFfCwUbbCT74sZgMHL4PkQd8WfxMpyX77HLccOw(rjHHuigEIciTt(Ufdh(7wm8qCzETneVVhwiwqVJ5RZCC7OzyHyNAqwypIZfw7oU0mrLHweE5fEIc8Dlgox(BeXHfa6VccerdlXtvuh4Hj0LMN6qsyPGaQLFusyifIHNOas7KVBXWH)UfdlKU08uhsQnqpcMWcXc6DmFDMJBhndle7udYc7rCUWA3XLMjQm0IWlVWtuGVBXW5YxWhXHfa6VccerdZlIcKlmORnRJL(rO25LbHGWR22uq1MKLuTbwWwBNxq4nViEFxb1py)Oe7mc9xbbQnWc2AZxNsgoicrRc712McQ20vBGP2eP2K5eL)k4SGPDOuArYM1Mi1MmNO8xbNLBqax7oU0mSKclXtvuh4HxeVVpyrPF)GkO(Wsbbul)OKWqkedprbK2jF3IHd)DlgwlX7712qu63pOcQV2a9iyclelO3X81zoUD0mSqStnilShX5cRDhxAMOYqlcV8cprb(UfdNl)rZioSaq)vqGiAyjEQI6apS8IBXJc1BGHLccOw(rjHHuigEIciTt(Ufdh(7wm8alUfpkuVbwBGEemHfIf07y(6mh3oAgwi2PgKf2J4CH1UJlntuzOfHxEHNOaF3IHZLlmVikqUW5sa]] )
 
-    storeDefault( [[SEL Elemental AOE]], 'actionLists', 20170409.204707, [[dSZ(iaGEskPnPOYUKKTjPAFKuQzkvvZgv3ekUnfpMs7uv2Ry3QSFsv)KKsmmjACsvPomvFtQYGjfdxkCqsYPiPIJrKZbLsTquQLQOSyOA5QQhkf9uKLruEokMiukzQsOjRW0v6IevNxcUm46KsBekfNgYMLu2Uu61OKVtsvtJKI5bLQNrQ8zPYOjXFvKtcLCifv5Asvj3trv9BchxQkgfjv6iLIHKFoohgHDONBGqK8(1RrohmWToxVgvQf5Hi7h1ydfAgWbNbYtwPuVs1ukRssMUs1Ole1aSiNJuR(IexEYQllKk7IehtkMNukgs(54Cye2HEUbcrR4Bybqd4hAgWbNbYtwPuDPEvL6cPchXrBHqmR4Bybqd4hcRBGS(k(HoXbHAQawwyeTGbUn4HWigp3aHYMNSumK8ZX5WiSdr2pQXgAfDDCOYke8Hq9htONBGqQySWn8ZcHMbCWzG8KvkvxQxvPUqQWrC0wiKZyHB4NfcH1nqwFf)qN4GqnvallmIwWa3g8qyeJNBGqzZtxkgs(54Cye2HEUbc1pQpArd9AW4DgxVMIIfmHMbCWzG8KvkvxQxvPUqQWrC0wieh1hTOXKX7m(0kwWecRBGS(k(HoXbHAQawwyeTGbUn4HWigp3aHYMNAsXqYphNdJWoez)OgBiJdCM9lmvwT)pCRApFzLZnV15WTvCuNYEORB6lgvW54Cym3hQ9bgfhNdHuHJ4OTqOAC3atmkclRqnvallmIwWa3g8qp3aHWgUBa9AifHLvOzahCgipzLs1L6vvQlePiupgXavdbFMGhcRBGS(k(HoXbHWigp3aHYMxFLIHKFoohgHDiY(rn2qUDrTWeCGbbmyxnZ52f1ctdXwvJ7gyIrryzHD3UOwycoWGaMqQWrC0wiunUBGjgfHLviSUbY6R4hYwWYHqZao4mqEYkLQl1RQuxONBGqyd3nGEnKIWYsVMMfSCiBE1tXqYphNdJWo0Znqi5(Fv6JwNfeAgWbNbYtwPuDPEvL6cPchXrBHqG)xL(O1zbHW6giRVIFOtCqOMkGLfgrlyGBdEimIXZnqOS51lfdj)CComc7qK9JASHgITQg3nWeJIWYQ6dghDmQT1z2PfzG5W1wRwf3B9jgT)oOsBJ5M36C42koQtzp01n9fJk4CComMZTlQfMGdmiGb7Qj0ZnqO(9wxVg2A)mBOzahCgipzLs1L6vvQlKkCehTfcX9wFcx7NzdH1nqwFf)qN4GqnvallmIwWa3g8qyeJNBGqzZRVtXqYphNdJWoez)OgBO5TohUTIJ6u2dDDtFXOcohNdJ5C7IAHj4adcyWEFf65giKCoyGBDUEnS5oZgAgWbNbYtwPuDPEvL6cPchXrBHqahmWToFcN7mBiSUbY6R4h6eheQPcyzHr0cg42GhcJy8CdekBEy7umK8ZX5WiSd9CdeQFV11RHn4MqZao4mqEYkLQl1RQuxiv4ioAleI7T(eo4MqyDdK1xXp0joiutfWYcJOfmWTbpegX45giu28KktXqYphNdJWo0ZnqOMko60RPFuNYEORlez)OgBObGRTwTkoQtzp01n9fJQHq9xOzahCgipzLs1L6vvQlKkCehTfczvC0nXrDk7HUUqyDdK1xXp0joiutfWYcJOfmWTbpegX45giu28KKsXqYphNdJWoez)OgBi3UOwyAi2koQtzp01n9fdS72f1ctWbgeWeAgWbNbYtwPuDPEvL6cH1nqwFf)q2cwoesfoIJ2cHSko6M4OoL9qxxONBGqnvC0Pxt)OoL9qxNEnnly5q28KKLIHKFoohgHDiY(rn2q4ARvRI7T(eJ2FhuPTriv4ioAleI7T(eU2pZgcRBGS(k(HoXbHWiArxxiPqp3aH63BD9AyR9ZS61OUsQtiv)oMqgrl66MVuOzahCgipzLs1L6vvQlePiupgXavdbFMWoutfWYcJOfmWTHDimIXZnqOS5jPlfdj)CComc7qK9JASH(qTpWO44CiKkCehTfcvJ7gyIrryzfcRBGS(k(HoXbHWiArxxiPqp3aHWgUBa9AifHLLEnQRK6es1VJjKr0IUU5lfAgWbNbYtwPuDPEvL6c1ubSSWiAbdCByhcJy8CdekB2qylOMRLVHD2ea]] )
+    storeDefault( [[SimC Enhancement: buffs]], 'actionLists', 20171128.173505, [[dWJNgaGEijAtev2ffTncI9bjvZKuvz2u5MkPLbP(ge63G2PQAVs7gy)cgfbKHbrJJa0Pj5VeudMQgoPYbHeNIa4ykvNJuv1cjKwkHAXQYYH6HkfRIuv8yfwhKeMiPQ0ujIjtPPRYfjeVcskpJaQRtHnQe1wjvzZKY2HGptKoSOPbjP5rG62cDzKrtuoebPtsu13vICncKZRu61kHNRONI6UxjL1xslnCxfTmpWkDx5YIjhLtQF0i3rePaIw)nrJeTakibvM1rdv6uOY8uqq)OfIaxgLXPGGzL0)ELuweq(CKTIwMhyLUR8LocCMUeyNoLLmjq(CKn4Ll4fAW)m00mDjWoDklzAORmkpLtDBlJHJfp1r4YYdSQrEqCzaeqLxHw9s8pJu5Y)msLfdhlEQJWLftokNu)OrUJ4oYYIPj0apOzL0R8gz0yXkebksGRVYRq7pJu5E9JUsklciFoYwrlZdSs3vwOb)PgluaPbVCbFmj38WWO5WaJjWf8OEWJgDzuEkN62wwZaVvyOMWPcxwEGvnYdIldGaQ8k0QxI)zKkx(NrQ8Yg4Tbpul4rrHllMCuoP(rJChXDKLfttObEqZkPx5nYOXIvicuKaxFLxH2FgPY96xGRKYIaYNJSv0Y8aR0DLt8P0YXzMoDYsHxc60mXjyrWJ6bpYGxUGxhMqqyPdR5UPgHtNWtDkS6kJYt5u32YdCoLjStjv2buaPLLhyvJ8G4YaiGkVcT6L4FgPYL)zKkVbNtzbV(PKk7akG0YIjhLtQF0i3rChzzX0eAGh0Ss6vEJmASyfIafjW1x5vO9NrQCV(r1kPSiG85iBfTmpWkDxzHg8pdnntnxgPdcKAqMg6kJYt5u32YAUmshei1GklpWQg5bXLbqavEfA1lX)msLl)ZivEzxgPdcKAqLftokNu)OrUJ4oYYIPj0apOzL0R8gz0yXkebksGRVYRq7pJu5E9lOkPSiG85iBfTmpWkDx5lDe4mLLk38G4OjbYNJSbVCbVqd(NHMMPggoVhobwtdDbVCbpcjwLphzQzG3UrgnwGQcQmkpLtDBlRHHZ7HtGTS8aRAKhexgabu5vOvVe)ZivU8pJu5LXW59WjWwwm5OCs9Jg5oI7illMMqd8GMvsVYBKrJfRqeOibU(kVcT)msL71VqQKYIaYNJSv0Y8aR0DLFgAAMAUmshei1GmXumvGzWl4GxibpQf8sh2GxUGFaHolCjGPfcJcVKcyNMykMkWm4fCWlDydE9j4rxgLNYPUTL1CzKoiqQbvwEGvnYdIldGaQ8k0QxI)zKkx(NrQ8YUmshei1GcEbAxaklMCuoP(rJChXDKLfttObEqZkPx5nYOXIvicuKaxFLxH2FgPY96hXkPSiG85iBfTmpWkDx5lDe4mLLk38G4OjbYNJSbVCb)ZqtZuddN3dNaRjMIPcmdEbh8cj4rTGx6Wg8Yf8di0zHlbmTqyu4Lua70etXubMbVGdEPdBWRpbp6YO8uo1TTSggoVhob2YYdSQrEqCzaeqLxHw9s8pJu5Y)msLxgdN3dNaBWlq7cqzXKJYj1pAK7iUJSSyAcnWdAwj9kVrgnwScrGIe46R8k0(ZivUxVY)msLzvCtWlcqwcguKahQi4FgAAZETa]] )
 
-    storeDefault( [[SEL Elemental Precombat]], 'actionLists', 20170409.204707, [[datncaGErO2fs12ePMPiWSP0nfv3Mk7uI9s2nI9djnmk8Bvnurudgs1WvHdIsDmuzHOWsfflgjlxslsu6PGLrrphvnrKsMku1KvPPlCrOYLvUUiKnlcA7ifhwQPjI8nrYJH48QOrdP8mO0jHeFgLCAQ6EiL6VqHhcf9Au0It4fGJ0u2Dfdb0AjStKnedbL2nbaUeGk64SZns0wurp56qEhvhcYm7A(PIPbxkJKmmPZzI1ijScGJH4BRpXD4FIkMPnfWgj8pHx4vHt4fGJ0u2Dfdbas1FecINfl7OF8H)j8cyt5T(4uWXh(NiafY1J0XxfqEYeuA3eK8h(NiGDLfVas7gTZExFTNyWQ2ilRGmZUMFQyAWLMlfDdScWeTHWm)PzUrcrji)VL2nbzVRV2tmyvBKLvHkMcVaCKMYURyiO0Uja)hZHk65nFS6PGmZUMFQyAWLMlfDdScyt5T(4uq8XCy4A(y1tbOqUEKo(QaYtMamrBimZFAMBKqucY)BPDtGcvWk8cWrAk7UIHGs7Mai(QJ52XQcYm7A(PIPbxAUu0nWkGnL36Jtb8XxDm3owvakKRhPJVkG8Kjat0gcZ8NM5gjeLG8)wA3eOqHaaP6pcbkKaa]] )
+    storeDefault( [[SimC Enhancement: asc]], 'actionLists', 20171128.173505, [[datxcaGEkPAxisVwcZgHBsPUTGDsv7LSBO2VOyyOY4GunyrLHJIoOOQJHQwOq1sHOflKLlYdfLEQQhlPNtXefkMQenzQmDfxKsCzW1rP2kkyZqO2oKYYGKVkuAAus67OqFdcoSuJgLSokjojIQNHOCAKopI4Vqi)wPTrjLfVk1JbqCZMyuCDFha9tdzZKZcMvJRqaWJvYKRnvDKab0gqEuC8iWHok0jLhDoY4SQ(RjkZrxpFDOl2Os55vPUfChraofxpFeLGoKOdDAybyezyslaDYXoATNnPJxmOBVog6KVdGUUVdGULonSaCMCNjTa0rceqBa5rXXJapNosWSStvWOsn6zzb1c7fnia4rr62RZ3bqxJ8OuPUfChraofx)1eL5Ox3LWTmIj1mBkyMeTaiLnt98ruc6qIUB3aIyKIDgDYXoATNnPJxmOBVog6KVdGUUVdGEm7gYKlwk2z0rceqBa5rXXJapNosWSStvWOsn6zzb1c7fnia4rr62RZ3bqxJ8KPsDl4oIaCkUE(ikbDirNrk2zMeTa0jh7O1E2KoEXGU96yOt(oa66(oa6XsXoZKOfGosGaAdipkoEe450rcMLDQcgvQrpllOwyVObbapks3ED(oa6A0OFMqL2euR3dDXYJYAKPrca]] )
 
-    storeDefault( [[SimC Elemental: default]], 'actionLists', 20170415.105057, [[dauVkaqiiqwevkBIOsJcsYPGqTlanmrCmrAzeYZGKQPrOsxdcQTrOIVbqJdcuNdcsRJkvZdcP7ruX(iu1bjsleI8qsXeHaYfrsBecIrcbWjjuMjeIBIe7eP(jKumuiGAPIspf1uHO(keG2R0FjkdMuDyLwmbpMQMSIUSQndP8zr1OffNgXRHeZg0Tjz3u(nudNiwUcphOPlCDsPTdGVtu15PswpKuA(qQ2pvCtlYLPARa8ZIuzeOJ2QfgfPYSK7jlKGA3GGTslsCevo7HFbFPfLKcyI4MGqbkkrCbmbWYSFqKeLll1heSbwKlDArUmvBfGFwHY0R6Lra(atavLz)Gijkh48C4b6Xy4elVbkxuf7i)bWmFHrgGs8bIkcHrh9GOU4taIWjjiUSMm3JcfmaxDlQq5Sh(f8LwuskGPjLfZMe)g4rzdBVSubcKeUklaX4julyuMcEsVQxUrPfvKlt1wb4NfPYSFqKeLdCEo8aLGdc2aLlQ8ymCIL3aIgzCzhE1TyHahxTedu8IqWjOJESJ8hadI6YcSSj5iQCeNeexwQabscxLLGdc2klMnj(nWJYg2Ez6v9YiW4GGTYsh5GLTvD54MKbgIT8pLjbl)hUvo7HFbFPfLKcyAsznzUhfkyaU6wuHYuWt6v9Ysgyi2Y)uMeS8F0O0OErUmvBfGFwKktVQxgbKythDoZ3rz2pisIYbophEGel(yOvsawwtM7rHcgGRUfvOC2d)c(slkjfW0KYIztIFd8OSHTxwQabscxLLNytzGz(oktbpPx1l3O0IBrUmvBfGFwKktVQxgzCCLJoLfm(Wvz2pisIYcArdnGJdIT18xwGJRaoUAjgiIkQSMm3JcfmaxDlQq5Sh(f8LwuskGPjLfZMe)g4rzdBVSubcKeUkh44kzQfm(Wvzk4j9QE5gLgHlYLPARa8ZIuz6v9YieY4o6uHxDlwyz2pisIYbophEGEmgoXYBGL1K5EuOGb4QBrfkN9WVGV0IssbmnPSy2K43apkBy7LLkqGKWvz0iJl7WRUflSmf8KEvVCJslof5YuTva(zrQm9QEzoWdLJov4v3IfwM9dIKOCGZZHhOhJHtS8gyznzUhfkyaU6wuHYzp8l4lTOKuattklMnj(nWJYg2EzPceijCvgmWdLSdV6wSWYuWt6v9YnknGf5YuTva(zrQm9QEzQWRUfl0rNYcgF4Qm7hejr5aNNdpqpgdNy5nWYAYCpkuWaC1TOcLZE4xWxArjPaMMuwmBs8BGhLnS9Ysfiqs4Q8HxDlwOm1cgF4Qmf8KEvVCJsJGlYLPARa8ZIuz6v9YibX4PJocr7Wvz2pisIYbophEGEmgoXYBGYfviOyH3cGlO)2Cn)bEBfGFIo6cArdnGlO)2Cn)bQvc6O7Xy4elVbCb93MR5pWXvlXafpcNG4YAYCpkuWaC1TOcLZE4xWxArjPaMMuwmBs8BGhLnS9Ysfiqs4QSaeJNYqt7Wvzk4j9QE5gLgHwKlt1wb4NfPY0R6Lr6dWpqHy5Lz)Gijkh48C4b6Xy4elVbkxuHGIfElaUG(BZ18h4Tva(j6OlOfn0aUG(BZ18hOwjiUSMm3JcfmaxDlQq5Sh(f8LwuskGPjLfZMe)g4rzdBVSubcKeUkl8b4hOqS8YuWt6v9YnkDAsrUmvBfGFwKkZ(brsuE9bbGl72vKdkErYfvRpiaCz3UICqXlcD0xFqa4YUDf5GIxeIllvGajHRYdTMS1heSjdsaJYIztIFd8OSHTxMEvVCwTMJUuFqWMJoIqaJYsh5GLTvD54gtuAC0PcV6wSq3D0LIAO6w5Sh(f8LwuskGPjL1K5EuOGb4QBrfktbpPx1lZeLghDQWRUfl0DhDPOgQnkDAArUmvBfGFwKkZ(brsuow4Ta4c6VnxZFG3wb4NOJo8aCiIMMMuwQabscxLhAnzRpiytgKagLfZMe)g4rzdBVm9QE5SAnhDP(GGnhDeHago6OkfXLLoYblBR6YXnMO04OtfE1TyHU7OdsSC4D0xqVBLZE4xWxArjPaMMuwtM7rHcgGRUfvOmf8KEvVmtuAC0PcV6wSq3D0bjwo8o6lOVrPtfvKlt1wb4NfPYSFqKeLJfElas8hnTdxaVTcWpllvGajHRYdTMS1heSjdsaJYIztIFd8OSHTxMEvVCwTMJUuFqWMJoIqadhDujcXLLoYblBR6YXnMO04OtfE1TyHU7OdsSC4D0jO5w5Sh(f8LwuskGPjL1K5EuOGb4QBrfktbpPx1lZeLghDQWRUfl0DhDqILdVJobTgLof1lYLPARa8ZIuz2pisIYXcVfaHK8mHrSCzd8e4Tva(zzPceijCvEO1KT(GGnzqcyuwmBs8BGhLnS9Y0R6LZQ1C0L6dc2C0recy4OJkuhXLLoYblBR6YXnMO04OtfE1TyHU7OdsSC4D0Hd3kN9WVGV0IssbmnPSMm3JcfmaxDlQqzk4j9QEzMO04OtfE1TyHU7OdsSC4D0HJgnktVQxMjkno6uHxDlwO7o6ZJ2QfgnAb]] )
+    storeDefault( [[SimC Elemental: default]], 'actionLists', 20171129.171639, [[dmutmaqiPOArqsTjiHAuqsCkirTlO0WaLJjLwgP4zsrzAqc5AsrSnsf13GcJduv15Ge06avzEKkY9KI0(Ge5GKsles5HKQMiOQIlsqBKubgjOQKtcvzLGQsntijDtjANG8tibgkOQslfIEkYuHkxfuvyReOVcQkAVI)kbdgOdt1Ij0JL0KLQlRAZqv9zqLrlfonQEnKQzt0Tjz3k(nkdhkA5u8CknDLUoe2ob8Dsf68sO1tQGMpPs7hWPn4cb)C8DeYnOfcYvpeXv6bafkV6Z6s4ba2p(oc5gc5L3TpqAG1IrBRMMGvtBZAMguyiQA4yUHcPTUC2ydUa1gCHeoUO89igIQgoMBO1nW9fBJ7YTbwmRlaOobaQPjaG6Qla4YvhaeLaaHHTjWGfsRixY3IHACdJBvHWB68QVmtOHnpujRlOBGC1dfcYvpe81nmUvfc5L3TpqAG1IrlSqiVLHWuVn4YgsFJxrVKjWvF2igQK1HC1dLnqAcUqchxu(EqlevnCm3qvgt2z64GfFU5fU8QpRlXAUY5JfaeLaa1a)HbaQRUaGRBG7l2LREHLvOZpaOo1uaqDgwiTICjFlgct2Yzti8MoV6lZeAyZdvY6c6gix9qHGC1db)YwoBcH8Y72hinWAXOfwiK3YqyQ3gCzdPVXROxYe4QpBedvY6qU6HYgOMfCHeoUO89GwiTICjFlgsh5tVGTXDti8MoV6lZeAyZdvY6c6gix9qHGC1dbFYNoai14UjeYlVBFG0aRfJwyHqEldHPEBWLnK(gVIEjtGR(SrmujRd5QhkBGqrbxiHJlkFpOfIQgoMBire4JpwZTSXN6lSS9kSMRC(yba1jaqnH0kYL8TyOLTxvq529MIHWB68QVmtOHnpujRlOBGC1dfcYvpeo2EfayPB3Bkgc5L3TpqAG1IrlSqiVLHWuVn4YgsFJxrVKjWvF2igQK1HC1dLnqnj4cjCCr57bTqAf5s(wme(CZlC5vFwxgcVPZR(YmHg28qLSUGUbYvpuiix9q6aU5aGcLx9zDziKxE3(aPbwlgTWcH8wgct92GlBi9nEf9sMax9zJyOswhYvpu2aPZbxiHJlkFpOfsRixY3IHSlZOkC5vFwxgcVPZR(YmHg28qLSUGUbYvpuiix9q0YmkaqHYR(SUmeYlVBFG0aRfJwyHqEldHPEBWLnK(gVIEjtGR(SrmujRd5QhkBGWi4cjCCr57bTqAf5s(wm0Lx9zDzbLB3BkgcVPZR(YmHg28qLSUGUbYvpuiix9qcLx9zDjayPB3Bkgc5L3TpqAG1IrlSqiVLHWuVn4YgsFJxrVKjWvF2igQK1HC1dLnqW)GlKWXfLVh0cPvKl5BXqiSVaFVYgcVPZR(YmHg28qLSUGUbYvpuiix9qWh2daI3ELneYlVBFG0aRfJwyHqEldHPEBWLnK(gVIEjtGR(SrmujRd5QhkBGqHbxiHJlkFpOfIQgoMBOMdaUU8ZI1T1pDFQh7hxu(oaOU6cakIaF8X626NUp1JfbMaG6QlayLXKDMooyDB9t3N6XAUY5JfaeLaaBcSqAf5s(wmKOKX6fWhHPyi8MoV6lZeAyZdvY6c6gix9qHGC1dHMKX6aG6aeMIHqE5D7dKgyTy0cleYBzim1BdUSH034v0lzcC1NnIHkzDix9qzdulSGlKWXfLVh0crvdhZnuZbaxx(zX626NUp1J9JlkFhauxDbafrGp(yDB9t3N6XIaZqAf5s(wmK4n2BqNpWfcVPZR(YmHg28qLSUGUbYvpuiix9qODJ9g05dCHqE5D7dKgyTy0cleYBzim1BdUSH034v0lzcC1NnIHkzDix9qzduBBWfs44IY3dAHOQHJ5gYRlxGx4Zv8BbarjaqnH0kYL8TyidIPGxxoBki52nK(gVIEjtGR(SrmujRlOBGC1dfcYvpesedaO26YzdaiQYTBiTg4SHgx9MIAIR0dakuE1N1LWdaulkqiQdH8Y72hinWAXOfwiK3YqyQ3gCzdH305vFzMqdBEOswhYvpeXv6bafkV6Z6s4baQffimBGA1eCHeoUO89GwiQA4yUHwx(zX626NUp1J9JlkFhauxDbabGVrfaWMdaUU8ZI1T1pDFQh7hxu(oaikgaS5aGRl)SyLC4ASdFGRGH1X(XfLVdaIIbaBoa46YplwE94JWue7hxu(oaikhsRixY3IHmiMcED5SPGKB3q6B8k6LmbU6ZgXqLSUGUbYvpuiix9qirmaGARlNnaGOk3UaGOslkhsRboBOXvVPOM4k9aGcLx9zDj8aaT8bo5baDBf1HqE5D7dKgyTy0cleYBzim1BdUSHWB68QVmtOHnpujRd5QhI4k9aGcLx9zDj8aaT8bo5baDBnBGABwWfs44IY3dAHOQHJ5gAD5NflVE8rykI9JlkFpKwrUKVfdzqmf86Yztbj3UH034v0lzcC1NnIHkzDbDdKREOqqU6HqIyaa1wxoBaarvUDbarfnOCiTg4SHgx9MIAIR0dakuE1N1LWda0Yh4KhaKJpQdH8Y72hinWAXOfwiK3YqyQ3gCzdH305vFzMqdBEOswhYvpeXv6bafkV6Z6s4baA5dCYdaYXpBGArrbxiHJlkFpOfIQgoMBO1LFwSsoCn2HpWvWW6y)4IY3dPvKl5BXqgetbVUC2uqYTBi9nEf9sMax9zJyOswxq3a5QhkeKREiKigaqT1LZgaquLBxaquPzOCiTg4SHgx9MIAIR0dakuE1N1LWda0Yh4KhauAqDiKxE3(aPbwlgTWcH8wgct92GlBi8MoV6lZeAyZdvY6qU6HiUspaOq5vFwxcpaqlFGtEaqPjB2qeMVYDjxh6lNnbsJoRjBca]] )
 
-    storeDefault( [[SimC Elemental: precombat]], 'actionLists', 20170409.204707, [[d8cjcaGEkv1UeH2gLcZMk3uuDBuTtPSxYUvz)svnmk53cdLsrdgIA4q6GqvhdfNJsLwOiAPIslgHLtvpuK6PGLjvwhLsnvOYKHY0LCrKQlR8CuA7qKhJOdRQPrPkFxeCEKYIefJwQYNrItcbFtKCAkUhLs(le61iPNrPIfJWjG(9eUHPKcApFcadpDFKP7gFx9oB3hzu)idoXxcYo3E2PwNftkl7zz3ezeaOJ08oJ9)YeNAD2OtaEYYehRWPgJWjG(9eUHPKcasVbTeubfkULiAuM4yfGNW4mfnbOrzItachMH8RWl4IBcApFcSzuM4eG3tHvW98zRmO(WfhLHHiAKW8zeKDU9StTolMumwcs3BKuZdKgFxjcb5bw75tqguF4IJYWqensy(mQuRt4eq)Ec3WusbTNpb4IA8(iN)S180eKDU9StTolMumwcWtyCMIMGkQXrK)S180eGWHzi)k8cU4MG09gj18aPX3vIqqEG1E(eOsn7iCcOFpHBykPG2ZNaOcpN6g68cYo3E2PwNftkglb4jmotrtaBfEo1n05fGWHzi)k8cU4MG09gj18aPX3vIqqEG1E(eOsLaG0BqlbQKa]] )
+    storeDefault( [[SimC Elemental: precombat]], 'actionLists', 20171125.213329, [[d4socaGEQIAxIQ61qvZwQUjrDBc7KI9I2nj7xvLHjs)wLHskPbdjgou5GuLoMuohvHwivLLQQSyISCQ8qrLNcEmeRJQGjskLPsQMmuMUWffrxw56uvTviLntkvBhs1ZvLdlz0QQAzIYjHKEMOkNMsNNu8nr4VKsSnQImBuNG2M2l)9G(iykXiawrUFOKSpXur19WpuW5gYjKQGW36REJMS0wIwR5X8BTwAEzeaeNfxqGGxKWEQh1PPrDcjvLuFy0hbVs2Un0qa3f2travfMfPIZrqDQrq(WqRCMsmcemLye06f2tr4B9vVrtwAlrlLW3ENFhYEuNbHC)hcE5d9jMkOeb5dZuIrGbnzuNqsvj1hg9rWRKTBdneIlMqlI6fZPHaQkmlsfNJG6uJG8HHw5mLyeiykXiOFXe)qrUEXCAi8T(Q3OjlTLOLs4BVZVdzpQZGqU)dbV8H(etfuIG8HzkXiWGM8OoHKQsQpm6JGxjB3gAi8IZjWVHBocOQWSivCocQtncYhgALZuIrGGPeJaeNtGFd3Ce(wF1B0KL2s0sj8T353HSh1zqi3)HGx(qFIPckrq(WmLyeyWGaGBi2QB9Cf2trtMNYyqc]] )
 
-    storeDefault( [[SimC Elemental: single lr]], 'actionLists', 20170409.204707, [[d0tYoaGEePQ2Kiv7cu2gIu2NOuZKqQzt08jP0nbQVjQCBk(mLSti2R0UvA)ukJsuvddiJJqIhtQ7rs1GPkgUiCqrXPev5yq6CesAHKWsrelgHLtLhkIEkQLrPADisLonutLQ0Kbz6cxuK8kePkptKIRtO2OOeEoGnJO2ojAEKumlePIPjkrFhrYHePu)LQA0eCyfNKqCCrjDnrk58KKlR61GQFJ0fTElNAhc5HQIYiJ5LzSjPnpPK38ngjPRnpa41sEBEKUYKC5hGxe7GqZbklbjQWqlZjUgpsmP)ey6we7KM9Yz0bMUa1BrqR3YP2HqEOQOmYyE5SqoMBZdlq1WlZAhoruoTdSgoETuRAHObmYYXCFabQgom3ndEbuJ6wAOYjfUgoyQYB(gLOmjx(b4fXoi0COGklYcH1tqDLx6(YziWsCOQmz5yUpGavdVmykeYyE5gfXE9wo1oeYdvfLrgZlNACHqwfpWFzw7WjIYeIjtg21c0d4tj7hc33Y9j8beVq3HxlyItKUzUeiCudmTyN7BKT6IcPvoPW1WbtvEZ3OeLj5YpaVi2bHMdfuzrwiSEcQR8s3xodbwIdvL)4cHSkEG)YGPqiJ5LBuK0uVLtTdH8qvrzKX8YPgxiyZdlq1WlZAhoru2mxceoQbMwSZ9nYwDu0CQvTP94cm5rhWai1Ls8A5BMlbch1a77qipu6M5sGWrnW0IDUVr2QlQ2lNu4A4GPkV5BuIYKC5hGxe7GqZHcQSilewpb1vEP7lNHalXHQYFCHGpGavdVmykeYyE5gfjlR3YP2HqEOQOmYyEzoOod8)e3vM1oCIO8OdSY7)9g8butAkNu4A4GPkV5BuIYKC5hGxe7GqZHcQSilewpb1vEP7lNHalXHQYab1zG)N4UYGPqiJ5LBuK0QElNAhc5HQIYiJ5LtjV5BmsBEuihGOmjx(b4fXoi0COGkNHalXHQYxEZ3yK(eYbiklYcH1tqDLx6(YjfUgoyQYB(gLOmykeYyE5gfH0Q3YP2HqEOQOmYyEzrJZQymKnpGhlZyZJxACtzw7WjIYJoWkV)3BWhqnPPCsHRHdMQ8MVrjktYLFaErSdcnhkOYISqy9eux5LUVCgcSehQklXzvmgY3mwMXpOXnLbtHqgZl3Oi5Q3YP2HqEOQOmYyEzrpkhBEui2beLzTdNikdrdyKLJ5(acunCyUBg8cKTEac)aBE6Akvcrj167(OJYjfUgoyQYB(gLOmjx(b4fXoi0COGklYcH1tqDLx6(YziWsCOQSCuo(eIDarzWuiKX8YnkIOuVLtTdH8qvrzw7WjIYM5sGWrnW0IDUVr2QBhu6eIjtg2L38ngPpzQwmamXjs3DYUdimeYxodbwIdvLjlhZ9beOA4LfzHW6jOUYlDFzKX8YzHCm3MhwGQHBZt(O5voJZcOSwLwE)yCwpauhTmjx(b4fXoi0COGkNuLwEVJZ6bqvuoPW1WbtvEZ3OeLbtHqgZl3OiIA9wo1oeYdvfLrgZlNACHGnpSavd3MN8rZRmRD4erzZCjq4OgyAXo33iB1rrrvRAt7XfyYJoGbqQlL41Y3mxceoQb23HqEO0nZLaHJAGPf7CFJSvxuiTYjfUgoyQYB(gLOmjx(b4fXoi0COGklYcH1tqDLx6(YziWsCOQ8hxi4diq1WldMcHmMxUrrqbvVLtTdH8qvrzKX8YEPXn28aEaI7uvM1oCIOmHyYKH5oaDNvF)Gg3aZDZGxa1GcsTQnFcXKjdZDa6oR((bnUbM7MbVaQjFcXKjdBa0FHMvFyqIDtGPlPNMsLqusTWga9xOz1hM7MbVa5LUMsLqusTWga9xOz1hM7MbVaQbnTYRCsHRHdMQ8MVrjktYLFaErSdcnhkOYISqy9eux5LUVCgcSehQkh04gFZae3PQmykeYyE5gfbfTElNAhc5HQIYiJ5LtnUqiRIh43MN8rZRmRD4erzcXKjd7Ab6b8PK9dH7B5(e(aIxO7WRfmXjkNu4A4GPkV5BuIYKC5hGxe7GqZHcQSilewpb1vEP7lNHalXHQYFCHqwfpWFzWuiKX8YnkcQ96TCQDiKhQkkZAhoruMqmzYWsqj1D(uY(HW9nZLaHJAGjor6JoWkV)3BWhqnPjDOtiMmzysSLqS41Y3rHGbrj1wodbwIdvLLylHyXRLpbvgLfzHW6jOUYlDFzKX8YIgBjelETS5rbvgLZ4SakRvPL3pgN1da1rltYLFaErSdcnhkOYjvPL374SEaufLtkCnCWuL38nkrzWuiKX8YnkcAAQ3YP2HqEOQOmYyEzrJTeIfVw28OGkdBEYhnVYS2HteLjetMmSeusDNpLSFiCFZCjq4OgyItK(OdSY7)9g8butAkNu4A4GPkV5BuIYKC5hGxe7GqZHcQSilewpb1vEP7lNHalXHQYsSLqS41YNGkJYGPqiJ5LBue0SSElNAhc5HQIYS2HteLhDGvE)V3Gpq2OPp6aR8(FVbFGSrth6eIjtgMeBjelET8DuiyqusTLZqGL4qvzTWGxFj2siw8AvwKfcRNG6kV09LrgZlNuyWRnpIgBjelETkNXzbuwRslVFmoRhaQJwMKl)a8IyheAouqLtQslV3Xz9aOkkNu4A4GPkV5BuIYGPqiJ5LBue00QElNAhc5HQIYiJ5Ltkm41MhrJTeIfVw28KpAELzTdNikp6aR8(FVbFGSrtF0bw59)Ed(azJwoPW1WbtvEZ3OeLj5YpaVi2bHMdfuzrwiSEcQR8s3xodbwIdvL1cdE9LylHyXRvzWuiKX8YnkckPvVLtTdH8qvrzw7WjIYqNqmzYWKylHyXRLVJcbdIsQTCgcSehQklXwcXIxlFcQmklYcH1tqDLx6(YiJ5Lfn2siw8AzZJcQmS5jF75voJZcOSwLwE)yCwpauhTmjx(b4fXoi0COGkNuLwEVJZ6bqvuoPW1WbtvEZ3OeLbtHqgZl3OiO5Q3YP2HqEOQOmYyEzrJTeIfVw28OGkdBEYpn5vMKl)a8IyheAouqLZqGL4qvzj2siw8A5tqLrzrwiSEcQR8s3xoPW1WbtvEZ3OeLbtHqgZl3OiOIs9wo1oeYdvfLzTdNik7oz3begc5lNHalXHQYKLJ5(acun8YISqy9eux5LUVmyQs8Ave0YiJ5LZc5yUnpSavd3MN8TNx5molGYgQs8APokPJwLwE)yCwpauhTmjx(b4fXoi0COGkNuLwEVJZ6bqvuoPW1WbtvEZ3OkkdMcHmMxUrrqf16TCQDiKhQkkNHalXHQYFCHGpGavdVSilewpb1vEP7ldMQeVwfbTmYyE5uJleS5HfOA428KV98kNXzbu2qvIxl1rltYLFaErSdcnhkOYjfUgoyQYB(gvrzWuiKX8YnAuM1oCIOCJwa]] )
+    storeDefault( [[SimC Elemental: single lr]], 'actionLists', 20171125.213329, [[deeksaqikPQnrPQrrj6uuswfLukVIskvZIskXTOKISlvYWqIJrkltr5zQOyAQOextfLABuQOVbLACusHZrPcRJskP5bfL7PIQ9ru4GqHfQO6HiPMiLuuxekzJusLtsuAMuQ0nfv7eQwkr1trnvKQTsjSxP)QidwOdR0IjYJPQjRWLbBwL6ZIYOjvNMWRrkZMk3MIDJ43qgUkYXHIQLtYZfz6Q66QW2Pu(ouKZJKSEvusZNOO9l4Qv6LXxduMfgQdrSCGbi)6SwdXKGK5Gq0PkZEL40xUmFc8I1joR7lqKIpZoNvwo4GnbfFgfnS100SJlnnnkNzwz5WoOIUWaLhO)62TgykPJ80UuGzfKK1KLdq64((62TgykPJ80UghQ9fiI1gLRZyvzm8VarsLEX1k9Yyrwjhm68YSxjo9LT(q8fEAcswiktzgId0FD7wdmL0rEAxkWScskeXSZdXm)OmgscN4PQ8TBnWush5PvwwYq43hPktqeOCoAyXQWxduUm(AGYwNBnqiY6ipTYYbhSjO4ZOOHTgLYYHe6q5HuP3Vm16GNwoYgyaYxPY5Ob(AGY9l(SsVmwKvYbJoVm7vItFzPJ77lWRJG0e6E61HPmfS)u6GmaLGKDDCkeTpeT(qu64((AtEGmwIhUoovgdjHt8uvgw1RJ5hlnOSSKHWVpsvMGiq5C0WIvHVgOCz81aLXAvVoMFS0GYYbhSjO4ZOOHTgLYYHe6q5HuP3Vm16GNwoYgyaYxPY5Ob(AGY9l(zk9Yyrwjhm68YyijCINQYGdma5x3KKBtFzzjdHFFKQmbrGY5OHfRcFnq5Y4RbkJLdma5xxio3TPVSCWbBck(mkAyRrPSCiHouEiv69ltTo4PLJSbgG8vQCoAGVgOC)IFwk9Yyrwjhm68YSxjo9Lnl4sVczU8hkfq(qugNhIAAyhIYuMHO1hIR6f3R)VsycCobjBYSGl9kK5ciRKdgHO9HOzbx6viZL)qPaYhIY48q0oMvgdjHt8uvgw1RpL0rEALLLme(9rQYeebkNJgwSk81aLlJVgOmwR61drwh5Pvwo4GnbfFgfnS1OuwoKqhkpKk9(LPwh80Yr2adq(kvohnWxduUFXp7sVmwKvYbJoVmgscN4PQC6rkdnaobQYYsgc)(ivzcIaLZrdlwf(AGYLXxduMFKYqdGtGQSCWbBck(mkAyRrPSCiHouEiv69ltTo4PLJSbgG8vQCoAGVgOC)IBNLEzSiRKdgDEzmKeoXtvzNaZpeJjZMz2Ph9GPSSKHWVpsvMGiq5C0WIvHVgOCz81aLTRaZpeJqmFZmBish9GPSCWbBck(mkAyRrPSCiHouEiv69ltTo4PLJSbgG8vQCoAGVgOC)IJDPxglYk5GrNxM9kXPV8a9x3U1atjDKN2LcmRGKcrzeI(n9tVWaHO9HOhHCdeMitky9FzmKeoXtvz3ABNKouPVSSKHWVpsvMGiq5C0WIvHVgOCz81aLT7ABdX5hQ0xwo4GnbfFgfnS1OuwoKqhkpKk9(LPwh80Yr2adq(kvohnWxduUFXTgLEzSiRKdgDEz2ReN(YwgIMfCPxHmx(dLciFikJZdXzucr7drPJ77lWbgG8RB6g5psxhNcrRcr7drldrfCRGK(k5Gq0QYyijCINQY3U1atjDKNwzQ1bpTCKnWaKVsLZrdlwf(AGYLXxdu26CRbcrwh5PfIwQzvzmuzPY)QYGFsCFUcUvqsFLCqz5Gd2eu8zu0WwJsz5qcDO8qQ07xwwYq43hPktqeOCoAGVgOC)IBhLEzSiRKdgDEz2ReN(YMfCPxHmx(dLciFikJZdrnnTquMYmeT(qCvV4E9)vctGZjiztMfCPxHmxazLCWieTpenl4sVczU8hkfq(qugNhIwd7meLPmdraZpeNobJRKb5gGsqYM0Hv9HO9HiG5hItNGX1RdtdWdcBGknj5qOX0P1)HO9HOzbx6viZL)qPaYhIYieXMsiAFi(Rdi)1E)GkPJ80UaYk5GrzmKeoXtvzyvV(ush5PvwwYq43hPktqeOCoAyXQWxduUm(AGYyTQxpezDKNwiAPMvLLdoytqXNrrdBnkLLdj0HYdPsVFzQ1bpTCKnWaKVsLZrd81aL7xCnkLEzSiRKdgDEz2ReN(Ysh33xkiHilXdtp6bZLcmRGKcrmle1OeIYuMHOLHO0X99LcsiYs8W0JEWCPaZkiPqeZcrldrPJ77Rn5bYyjE4ACO2xGiHO1Ei6ri3aHjY1M8azSepCPaZkiPq0Qq0(q0JqUbctKRn5bYyjE4sbMvqsHiMfIANDiAvzmKeoXtv5h9GzYSPhuuvwwYq43hPktqeOCoAyXQWxduUm(AGY0rpycX8n9GIQYYbhSjO4ZOOHTgLYYHe6q5HuP3Vm16GNwoYgyaYxPY5Ob(AGY9lUMwPxglYk5GrNxM9kXPVSLHO0X991jeMa1e6E61HjZcU0RqMRJtHO9H46FHnyciGraPqeZcXZeIwfI2hIwgIdq64((YjY0FIGKnPqJRbctKq0QYyijCINQYorM(teKSjjK7ltTo4PLJSbgG8vQCoAyXQWxduUm(AGY2vKP)ebjleNJCFzmuzPY)QYGFsCF(aKoUVVCIm9Niiztk04AGWePSCWbBck(mkAyRrPSCiHouEiv69lllzi87JuLjicuohnWxduUFX1Mv6LXISsoy05LzVsC6llDCFFDcHjqnHUNEDyYSGl9kK564uiAFiU(xydMacyeqkeXSq8mLXqs4epvLDIm9Niiztsi3xwwYq43hPktqeOCoAyXQWxduUm(AGY2vKP)ebjleNJCFiAPMvLLdoytqXNrrdBnkLLdj0HYdPsVFzQ1bpTCKnWaKVsLZrd81aL7xCTZu6LXISsoy05LzVsC6lBziU(xydMacyeqkeLriQfI2hIR)f2GjGagbKcrzeIAHOvHO9HOLH4aKoUVVCIm9Niiztk04AGWejeTQmgscN4PQSxFfKjNit)jcswzQ1bpTCKnWaKVsLZrdlwf(AGYLXxduMA9vqcr7kY0FIGKvgdvwQ8VQm4Ne3NpaPJ77lNit)jcs2KcnUgimrklhCWMGIpJIg2AuklhsOdLhsLE)YYsgc)(ivzcIaLZrd81aL7xCTZsPxglYk5GrNxM9kXPV86FHnyciGraPqugHOwiAFiU(xydMacyeqkeLriQvgdjHt8uv2RVcYKtKP)ebjRSSKHWVpsvMGiq5C0WIvHVgOCz81aLPwFfKq0UIm9NiizHOLAwvwo4GnbfFgfnS1OuwoKqhkpKk9(LPwh80Yr2adq(kvohnWxduUFX1o7sVmwKvYbJoVm7vItF5biDCFF5ez6prqYMuOX1aHjszmKeoXtvzNit)jcs2KeY9LPwh80Yr2adq(kvohnSyv4RbkxgFnqz7kY0FIGKfIZrUpeTCMvLXqLLk)Rkd(jX95dq64((YjY0FIGKnPqJRbctKYYbhSjO4ZOOHTgLYYHe6q5HuP3VSSKHWVpsvMGiq5C0aFnq5(fxZol9Yyrwjhm68YyijCINQYorM(teKSjjK7lllzi87JuLjicuohnSyv4RbkxgFnqz7kY0FIGKfIZrUpeT8mwvwo4GnbfFgfnS1OuwoKqhkpKk9(LPwh80Yr2adq(kvohnWxduUFX1WU0lJfzLCWOZlZEL40xwb3kiPVsoOmgscN4PQ8TBnWush5PvMADWtlhzdma578Y5iBcswX1kNJgwSk81aLlJVgOS15wdeISoYtleTCMvLXqLLkBq2eKSZ1Sw(vLb)K4(CfCRGK(k5GYYbhSjO4ZOOHTgLYYHe6q5HuP3VSSKHWVpsvMGiq5C0aFnq5(fxZAu6LXISsoy05LXqs4epvLHv96tjDKNwzQ1bpTCKnWaKVZlNJSjizfxRCoAyXQWxduUm(AGYyTQxpezDKNwiA5mRkJHklv2GSjizNRvwo4GnbfFgfnS1OuwoKqhkpKk9(LLLme(9rQYeebkNJg4Rbk3V4A2rPxglYk5GrNxgdjHt8uv(2TgykPJ80ktTo4PLJSbgG8DE5CKnbjR4ALZrdlwf(AGYLXxdu26CRbcrwh5PfIwEgRkJHklv2GSjizNRvwo4GnbfFgfnS1OuwoKqhkpKk9(LLLme(9rQYeebkNJg4Rbk3VFzRz4EpCFN3Vfa]] )
 
-    storeDefault( [[SimC Elemental: single if]], 'actionLists', 20170409.204707, [[d4tqpaGEukL2eGyxG02qPK9bOAMsLQVrv1SPy(uPYnb4Xu62K6Wk2jq7vSBi7Nkzuasdtkghkv6EuPCAunyQOHtihKQYPauogOohkvSqQWsbrlgflNKhkvSkukvlJOSoukutJkvzQuLMmbtxYfPkEfkLINjvkxxjTrPsCzvBwj2oH6qOuWSqPq(mk57Ou0ZvQ)kvnAImpuQ6KGWXLkPRrLQ68evpf53q9AP0boEd5bnmMlehHah9drCDhxo9yU(OAmSXUCU5iwM7YjFjeK38z)akRb2FJ71WoqHdrIULpgoB7uCmkGYylzH8zlogTJ3achVH8GggZfIJqGJ(H6Iz03LtscBBdrwfxufInuCBlhXYDUtaxqxmJ(9BjSTfQ66HJ2S3nwwHqDKUTfaw81hvHjeK38z)akRb2pCtiiqcC7uyvieg9q(y4gEjp0Iz0VFlHTTHaGfah9dLkGYI3qEqdJ5cXriWr)qEgvj111P9HiRIlQcXSUSa9wj8394L(s69SuFQ(9ks4koIf0vrarp3Slfwd1UQuhva3n2LTc1r62wayXxFufMqqEZN9dOSgy)WnHGajWTtHvHqy0d5JHB4L8qFuLuxxN2hcawaC0puQa2T4nKh0WyUqCecC0puxu4D5YjjHTTHiRIlQcXSUSaLB)YQso0vrarp3Slfwd1UQuhva3nyy4qDKUTfaw81hvHjeK38z)akRb2pCtiiqcC7uyvieg9q(y4gEjp0IcVR(Te22gcawaC0puQa6EXBipOHXCH4ie4OFipJQKC5KKW22qKvXfvH0Zn7sH1qTRk1rfWDdg2V7ChByufFzSf0nBEJHJy1RNB2LcRHE0WyUaq0Zn7sH1qTRk1rfWDJDKfQJ0TTaWIV(OkmHG8Mp7hqznW(HBcbbsGBNcRcHWOhYhd3Wl5H(OkP(Te22gcawaC0puQa6(XBipOHXCH4ie4OFiQWkD7VORcrwfxufASfx87p6A(3SVBH6iDBlaS4RpQctiiV5Z(buwdSF4MqqGe42PWQqim6H8XWn8sEODHv62FrxfcawaC0puQaYwXBipOHXCH4ie4OFipMRpQgJlNomZUcb5nF2pGYAG9d3eYhd3Wl5HU56JQX0ZyMDfccKa3ofwfcHrpuhPBBbGfF9rvycbalao6hkva9hVH8GggZfIJqGJ(HGW(LvL8qKvXfvH0Zn7sH1qTRk1rf7DdUbouhPBBbGfF9rvycb5nF2pGYAG9d3eccKa3ofwfcHrpKpgUHxYdXTFzvjpeaSa4OFOubKDJ3qEqdJ5cXriWr)qDN31vUGlNagw6XLtV466qKvXfvHgBXf)(JUM)n77wOos32cal(6JQWecYB(SFaL1a7hUjeeibUDkSkecJEiFmCdVKhYW76kxOxpS0tFHRRdbalao6hkvazN4nKh0WyUqCecC0pu35SKkehXYLthytfISkUOkeZ6Ycury28QE8sFj9E9CZUuyn0vraHzDzb6UWkD7VORGUkciJT4IF)rxZ)M9DluhPBBbGfF9rvycb5nF2pGYAG9d3eccKa3ofwfcHrpKpgUHxYdz4SKkehXQNbBQqaWcGJ(Hsfq4M4nKh0WyUqCecC0pu3hXJlNowv7kezvCrvibCbDXm63VLW2wOQRhoAdC7SR(IRpqSySraZMOE1hBfQJ0TTaWIV(OkmHG8Mp7hqznW(HBcbbsGBNcRcHWOhYhd3Wl5HmJ4PNzvTRqaWcGJ(Hsfqy44nKh0WyUqCecC0puxu4D5YjjHTTUCcuyGfISkUOkeZ6YcuU9lRk5qxfbeGQNB2LcRHAxvQJkG7MSg35oM1LfOC7xwvYHQUE4On7bkmu3NTVfDJPxA21z7mRllq52VSQKdDxJTLTbgyaluhPBBbGfF9rvycb5nF2pGYAG9d3eccKa3ofwfcHrpKpgUHxYdTOW7QFlHTTHaGfah9dLkGWYI3qEqdJ5cXriYQ4IQq65MDPWAO2vL6Oc4UjRbimRllqV56JQX0VGTRBORIaI6lQVLggZd5JHB4L8qlMr)(Te22gccKa3ofwfcHrpe4OFOUyg9D5KKW2wxobkmWc5tXAhYk3AEFnkwV2UbhcYB(SFaL1a7hUjuh5wZ9okwV2XrOos32cal(6JQWecawaC0puQac3T4nKh0WyUqCeISkUOkeZ6YcuU9lRk5qxffYhd3Wl5Hwu4D1VLW22qqGe42PWQqim6HaGfZrSciCiWr)qDrH3LlNKe226YjqLbSq(uS2H0yXCel3Gdb5nF2pGYAG9d3eQJ0TTaWIV(Okocbalao6hkvaHDV4nKh0WyUqCecC0pKNrvsUCssyBRlNafgyHiRIlQcPNB2LcRHAxvQJkG7gmmS7ChByufFzSf0nBEJHJy1RNB2LcRHE0WyUaq0Zn7sH1qTRk1rfWDJDzRqDKUTfaw81hvHjeK38z)akRb2pCtiiqcC7uyvieg9q(y4gEjp0hvj1VLW22qaWcGJ(Hsfqy3pEd5bnmMlehHah9d5fxx7YjGzxxjpezvCrviM1LfOQVXObzFFHRRHQUE4On7HBc1r62wayXxFufMqqEZN9dOSgy)WnHGajWTtHvHqy0d5JHB4L8qfUUUxp76k5HaGfah9dLkGWSv8gYdAymxiocbo6hYZOkPUUoT3LtGcdSqKvXfvHywxwGERe(7E8sFj9EwQpv)EfjCfhXc6QOqDKUTfaw81hvHjeK38z)akRb2pCtiiqcC7uyvieg9q(y4gEjp0hvj111P9HaGfah9dLkGW(J3qEqdJ5cXriWr)qDNZsQqCelxoDGnLlNafgyHiRIlQcXSUSaveMnVQhV0xsVxp3SlfwdDveqgBXf)(JUM)n77wOos32cal(6JQWecYB(SFaL1a7hUjeeibUDkSkecJEiFmCdVKhYWzjvioIvpd2uHaGfah9dLkGWSB8gYdAymxiocbo6hQJ0WrUC2DolPcXrScrwfxufASfx87p6A(3ahgiJT4IF)rxZ)g4WH6iDBlaS4RpQctiiV5Z(buwdSF4MqqGe42PWQqim6H8XWn8sEiR0Wr9golPcXrScbalao6hkvaHzN4nKh0WyUqCecC0pu35SKkehXYLthyt5YjqLbSqqEZN9dOSgy)WnH8XWn8sEidNLuH4iw9mytfccKa3ofwfcHrpuhPBBbGfF9rvycbalao6hkvaL1eVH8GggZfIJqKvXfvHuFr9T0WyEiFmCdVKhAXm63VLW22qqGe42PWQqim6HaGfZrSciCiWr)qDXm67YjjHTTUCcuzalKpfRDinwmhXYny2iRCR591Oy9A7gCiiV5Z(buwdSF4MqDKBn37Oy9AhhH6iDBlaS4RpQIJqaWcGJ(HsfqzWXBipOHXCH4iKpgUHxYd9rvs9BjSTneeibUDkSkecJEiayXCeRachcC0pKNrvsUCssyBRlNavgWc5tXAhsJfZrSCdoeK38z)akRb2pCtOos32cal(6JQ4ieaSa4OFOuPcrwfxufkvca]] )
+    storeDefault( [[SimC Elemental: single if]], 'actionLists', 20171125.213329, [[de00uaqivHSjsIrjs5uIOwLQq1RerQmlvHc3svOODPiddbhJelteEMQGMMQqPRHqfBterFdQ04qOsNtejRteP08Gk09ePAFiuoiczHkkperzIIifxuv0gHk4KiQMjcvDtfANQQLsu9uutfr2kjP9k9xvPbtLdR0IjYJfmzOCzWMvWNjkJMcNMQEnu1Sf1Tj1Uj8BidNK64IiSCKEUqtxLRtrBxK8DvboVIQ1lIu18HkA)u6QusL)RgkZEnzw3ZmObXT5KwRl6fYYG15hkZbQx9vUmRgc(n7t63ZJe9NijtuwoKHnc9NGGcUkkkj1KIIcHhMOSCyXMtYRHYyOBAiVA4nAGc4NOGE9I4JzAyGK5WW0qE1WB0afWpHzs3ZJepoHPhMCzIcNhjILu)kLu5NIvkdyDwzoq9QVYpY6oFaVxiZ6WjoTom0nnKxn8gnqb8tuqVEr06WX0TozbSYej5Z(BE5H8QH3ObkGVm5cmFypeTSajGYJimvx6F1q5Y)vdLXH8QbRJnqb8LLdzyJq)jiOGRcHYYHiYKgGyj1Rmzgqa)ikfObXvPYJiS)QHY96prjv(PyLYawNvMduV6RSK5WWeemqq8fn8EgWRmkS3B0uGbuVq2KPARtfR7rwNK5WW0gdGaBfbyYuDzIK8z)nVmS0Zijmx8qzYfy(WEiAzbsaLhryQU0)QHYL)Rgk)CPNrsyU4HYYHmSrO)eeuWvHqz5qezsdqSK6vMmdiGFeLc0G4Qu5re2F1q5E9)WsQ8tXkLbSoRmrs(S)MxgYGge3MFLYB8ktUaZh2drllqcO8ict1L(xnuU8F1q5NzqdIBZw3S8gVYYHmSrO)eeuWvHqz5qezsdqSK6vMmdiGFeLc0G4Qu5re2F1q5E9)ylPYpfRugW6SYCG6vFLtZ60lKJhfPNcMukioRJyPBDkkkwhoXP19iRBPNFyd3u8bqo7fYE1lKJhfPNaXkLbmRtfRtVqoEuKEkysPG4SoILU1LujSUKTovSojZHHjyPNbiEJhfeYoJjt1LjsYN938YWspJ3ObkGVm5cmFypeTSajGYJimvx6F1q5Y)vdLFU0ZW6yduaFz5qg2i0Fcck4QqOSCiImPbiws9ktMbeWpIsbAqCvQ8ic7VAOCV(joLu5NIvkdyDwzoq9QVYsMddt(amysNpzQ26uX60lKJhfPNcMukioRJyPBDjiyDQyDpY6KmhgM2yaeyRiatMQTovSojZHHjyPNbiEJhfeYoJjt1LjsYN938Yduu8EJgOa(YKlW8H9q0YcKakpIWuDP)vdLl)xnughOO4zDSbkGVSCidBe6pbbfCviuwoerM0aelPELjZac4hrPaniUkvEeH9xnuUx)jzjv(PyLYawNvMduV6RSEHC8Oi9uWKsbXzDelDRtrbxRdN406EK1T0ZpSHBk(aiN9czV6fYXJI0tGyLYaM1PI1PxihpkspfmPuqCwhXs36sQeLjsYN938YWspJ3ObkGVm5cmFypeTSajGYJimvx6F1q5Y)vdLFU0ZW6yduaV1LMsYLLdzyJq)jiOGRcHYYHiYKgGyj1Rmzgqa)ikfObXvPYJiS)QHY96h3sQ8tXkLbSoRmrs(S)MxoEiQgpaQbAzYfy(WEiAzbsaLhryQU0)QHYL)RgkZhIQXdGAGwwoKHnc9NGGcUkeklhIitAaILuVYKzab8JOuGgexLkpIW(Rgk3RFIBjv(PyLYawNvMduV6RCAwNEHC8Oi9uWKsbXzD4y6wNcbfRtfRBPNFyd3u8bqo7fYE1lKJhfPNaXkLbmRdN406EK1T0ZpSHBk(aiN9czV6fYXJI0tGyLYaM1PI1PxihpkspfmPuqCwhoMU1HBsADjBDQyDpY6KmhgM2yaeyRiatMQltKKp7V5L9byWKoVm5cmFypeTSajGYJimvx6F1q5Y)vdLjpadM05LLdzyJq)jiOGRcHYYHiYKgGyj1Rmzgqa)ikfObXvPYJiS)QHY96pPkPYpfRugW6SYej5Z(BE5Spjm9yV6vMEFp0b6YKlW8H9q0YcKakpIWuDP)vdLl)xnuM49jHPhZ6gxz616iHoqxwoKHnc9NGGcUkeklhIitAaILuVYKzab8JOuGgexLkpIW(Rgk3RFfcLu5NIvkdyDwzoq9QVYsMddtQrpaOVOH3ZaE1lKJhfPNmvBDQyDsMddtXdr14bqnqNmvBDQyDB48PGxqaApeToC06EyzIK8z)nVC2lZ4eEHSxju(ktUaZh2drllqcO8ict1L(xnuU8F1qzI3lZ4eEHmRBgkFLLdzyJq)jiOGRcHYYHiYKgGyj1Rmzgqa)ikfObXvPYJiS)QHY96xrPKk)uSszaRZkZbQx9vgdDtd5vdVrdua)ef0RxeToIzDHnEVNxdwNkwxaHYyOhiEPWgUYej5Z(BE58MAFLmPXRm5cmFypeTSajGYJimvx6F1q5Y)vdLj(n1ADZmPXRSCidBe6pbbfCviuwoerM0aelPELjZac4hrPaniUkvEeH9xnuUx)kjkPYpfRugW6SYCG6vFLLmhgM8byWKoFYuT1PI1LM1LM1PxihpkspfmPuqCwhXs36sqW6s26WjoTojZHHjFagmPZNOGE9IO1HJwxAwNYeXX6ECRlQgY5xJnEG194wNK5WWKpadM05tXBd4TUKoRtX6s26sUmrs(S)MxEGII3B0afWxMCbMpShIwwGeq5reMQl9VAOC5)QHY4affpRJnqb8wxAkjxwoKHnc9NGGcUkeklhIitAaILuVYKzab8JOuGgexLkpIW(Rgk3RFLhwsLFkwPmG1zL5a1R(kNM1PxihpkspfmPuqCwhXs36sqW6uX6KmhgMGmObXT53buWmozQ26s26uX6sZ6OWafIgRugSUKltKKp7V5LhYRgEJgOa(YKzab8JOuGgexLkpIWuDP)vdLl)xnughYRgSo2afWBDPPKCzIOYILVLkdUx)q6uyGcrJvkdLLdzyJq)jiOGRcHYYHiYKgGyj1Rm5cmFypeTSajGYJiS)QHY96x5XwsLFkwPmG1zL5a1R(klzomm5dWGjD(KP6Yej5Z(BE5bkkEVrduaFzYmGa(rukqdIRZkpIs5fY6xP8ict1L(xnuU8F1qzCGIIN1XgOaERlTejxMiQSyznkLxilDLYYHmSrO)eeuWvHqz5qezsdqSK6vMCbMpShIwwGeq5re2F1q5E9RqCkPYpfRugW6SYCG6vFL1lKJhfPNcMukioRJyPBDkkkwhoXP19iRBPNFyd3u8bqo7fYE1lKJhfPNaXkLbmRtfRtVqoEuKEkysPG4SoILU1rCtsRdN406GKW0RwnGnf1Omgq9czVgWspRtfRdsctVA1a20zaVyqa8PaA8vkJqyVQ3WzDQyD6fYXJI0tbtkfeN1rmRdxcwNkw3TzqCt7Wb0ObkGFceRugWSovSojZHHjyPNbiEJhfeYoJjt1LjsYN938YWspJ3ObkGVm5cmFypeTSajGYJimvx6F1q5Y)vdLFU0ZW6yduaV1LwIKllhYWgH(tqqbxfcLLdrKjnaXsQxzYmGa(rukqdIRsLhry)vdL71VsswsLFkwPmG1zL5a1R(klzommrHisSIa8EOd0tuqVEr06WrRtHqzIK8z)nV8Hoq)Q34b05LjxG5d7HOLfibuEeHP6s)Rgkx(VAOmj0bARBCJhqNxwoKHnc9NGGcUkeklhIitAaILuVYKzab8JOuGgexLkpIW(Rgk3RFfClPYpfRugW6SYCG6vFLLmhgMuJEaqFrdVNb8QxihpkspzQ26uX62W5tbVGa0EiAD4O19WYej5Z(BE5SxMXj8czVsO8vMCbMpShIwwGeq5reMQl9VAOC5)QHYeVxMXj8czw3mu(SU0usUSCidBe6pbbfCviuwoerM0aelPELjZac4hrPaniUkvEeH9xnuUx)ke3sQ8tXkLbSoRmhOE1x5nC(uWliaThIwhXSofRtfRBdNpf8ccq7HO1rmRtPmrs(S)MxoySEXB2lZ4eEHSYKlW8H9q0YcKakpIWuDP)vdLl)xnuMmJ1lSoI3lZ4eEHSYYHmSrO)eeuWvHqz5qezsdqSK6vMmdiGFeLc0G4Qu5re2F1q5E9RKuLu5NIvkdyDwzIK8z)nVC2lZ4eEHSxju(ktUaZh2drllqcO8ict1L(xnuU8F1qzI3lZ4eEHmRBgkFwxAjsUSCidBe6pbbfCviuwoerM0aelPELjZac4hrPaniUkvEeH9xnuUx)jiusLFkwPmG1zL5a1R(ktHbkenwPmuMijF2FZlpKxn8gnqb8LjZac4hrPaniUoR8ikLxiRFLYJimvx6F1q5Y)vdLXH8QbRJnqb8wxAjsUmruzXYAukVqw6kpg3sLb3RFiDkmqHOXkLHYYHmSrO)eeuWvHqz5qezsdqSK6vMCbMpShIwwGeq5re2F1q5E9NqPKk)uSszaRZktKKp7V5LHLEgVrduaFzYmGa(rukqdIRZkpIs5fY6xP8ict1L(xnuU8F1q5Nl9mSo2afWBDP9WKltevwSSgLYlKLUsz5qg2i0Fcck4QqOSCiImPbiws9ktUaZh2drllqcO8ic7VAOCV(tKOKk)uSszaRZktKKp7V5LhYRgEJgOa(YKzab8JOuGgexNvEeLYlK1Vs5reMQl9VAOC5)QHY4qE1G1XgOaERlThMCzIOYIL1OuEHS0vklhYWgH(tqqbxfcLLdrKjnaXsQxzYfy(WEiAzbsaLhry)vdL71RCsdmSM5RZ61c]] )
 
-    storeDefault( [[SimC Elemental: AOE]], 'actionLists', 20170409.204707, [[d0JmiaGEIuQnjjAxIITrKk7JivntqKzJQ5tIOBQGNJWTj13KK2PI2l1ULA)Iu)eevnmr14isrpwIZlsgSO0WreheL6uGOCmuCCsuTqe1svOwmOwoqpKO8uOLreRJiLCAKMkjmzatxPlsu9AuYLvDDfYgjr4VG0Mjs2UK6WcZIifMgIK5jj4zGOYNfXOjPVtIuNeeoejkUgjsUhIuNJeL(nHrjj0MXkmkVdy(bmzJZqFJivllDw58RFVbxALolBiVCJJp)bX9usot1CsLRSzymIK8cn4uPDSur7PePtIr2LLkAcRWtgRWO8oG5hWKnod9nIRauZ6NKdAC85piUNsYzQYKBKnmLt3ugjwbOM1pjh0ienaTeRa0yl6BuM6lSge1x)EnSXbbWm03OxpLyfgL3bm)aMSXzOVr2eL3arxUrSasjznUIKe(ZuecoGqPBcJYuFH1GO(63RHno(8he3tj5mvzYncrdqlXkan2I(gzdt50nLXGO8gi6YnoiaMH(g96jKZkmkVdy(bmzJZqFJqIQ8ruG0zhIeDKoRcXETXXN)G4EkjNPktUr2WuoDtzKtv(ikauDKOdORyV2ienaTeRa0yl6BuM6lSge1x)EnSXbbWm03OxpjLvyuEhW8dyYgNH(gvcEOF6SOQOWYiwaPKSgbVuGNqnG5VYOS06d9910tubsvPooNybf6mLrGGVxPN0sYnkt9fwdI6RFVg244ZFqCpLKZuLj3ienaTeRa0yl6BKnmLt3ugLIh6dLqvuyzCqamd9n61tLYkmkVdy(bmzJZqFJYdWvv5Jcw344ZFqCpLKZuLj3iBykNUPm(aCvv(OG1ncrdqlXkan2I(gLP(cRbr91VxdBCqamd9n61tPZkmkVdy(bmzJZqFJqkQJ0zjpcKynIfqkjRraXMrkEOpucvrHvgWRdAti9LGyHUu9ReEKusLHh1buIrGjpZisQuz2G)EZWPjQBt7eOGcGmVdy(bQmklT(qFFn9evGugLP(cRbr91VxdBC85piUNsYzQYKBeIgGwIvaASf9nYgMYPBkJ8OoGcpcKynoiaMH(g96zvRWO8oG5hWKnod9nkNF97n4PZsMheRrSasjznQmBWFVz40e1TPDcuqbqM3bm)avgLLwFOVVMEIkOukPsUb)9MHttu3M2jqbfazEhW8duzuwA9H((A6jQaPmkt9fwdI6RFVg244ZFqCpLKZuLj3ienaTeRa0yl6BKnmLt3ugp)63BWHcZdI14Gayg6B0RNstRWO8oG5hWKnod9ncPOosNL8dTXXN)G4EkjNPktUr2WuoDtzKh1bu4hAJq0a0sScqJTOVrzQVWAquF971WgheaZqFJE9uzTcJY7aMFat2iwaPKSgbo8iPKkdNMOUnTtGckaYaiu62iBykNUPmwudAdLttu3M2jgHObOLyfGgBrFJZqFJYudANolKOjQBt7eJSbtimwsv4h6gGjFjinJXXN)G4EkjNPktUrzPk8Riat(syYgLP(cRbr91VxdBCqamd9n61tMCRWO8oG5hWKnod9nktnOD6SqIMOUnTtsNTImqMXXN)G4EkjNPktUr2WuoDtzSOg0gkNMOUnTtmcrdqlXkan2I(gLP(cRbr91VxdBCqamd9n61tggRWO8oG5hWKnYgMYPBkJ8OoGcpcKyncrdqlXkan2I(ghe10oXtgJZqFJqkQJ0zjpcKytNTImqMr2Gjeg1IAANqAgJJp)bX9usotvMCJYuFH1GO(63RjBCqamd9n61tgjwHr5DaZpGjBelGuswJGxkWtOgW8BKnmLt3ugLIh6dLqvuyzeIgGwIvaASf9noiQPDINmgNH(gvcEOF6SOQOWkD2kYazgzdMqyulQPDcPzKgLuf(HUbyYxcsZyC85piUNsYzQYKBuwQc)kcWKVeMSrzQVWAquF971KnoiaMH(g961iwaPKSg9Ad]] )
+    storeDefault( [[SimC Elemental: AOE]], 'actionLists', 20171125.213329, [[deKhkaqijL0MGGgfukNIi0QKuqZssH6wskKDrIgMs5ye1YOu9miqttsvUMKsSnjLY3GqJtsr5CsQuRtsrmpjv19Gs1(KurhKszHKupur1eLuKUOIYgLuHtsentIGBsj7uHFkPOAPqXtrMkeTvsWEf)fsnyu5WuTyO6XkzYs5YQ2mj5ZkYOLKtt41ePzlXTj1Ub9Bugoj0XHawofpxQMoW1vQ2oK8DjLQZdLSEjfy(sQK9JQoYbzOHRFisONZZnRC9HaVut45SvZNfIwgHIGqHQPxLVxarDimVCV)mSVjJOSSCDRuwwEdbThcZ9gwif6hQXakvvC9r3RylPknx7cyVgHT2X3vPsPQIRp6EfBjvzB34abdwd3uIGsmKTfqWG9Gmd5Gm0mOJxElQdzdxueaSc1bmJw6VI3essytSCaZecYGpKfRPGBgU(HcnC9draMrl9xXBcH5L79NH9nzeL3cH5D2Uz9EqgqO5vFj1IH66dbbpKfRnC9dfqg2dYqZGoE5TOoKnCrraWkK3xh2C46HKe2elhWmHGm4dzXAk4MHRFOqdx)q26RdBoC9qyE5E)zyFtgr5TqyENTBwVhKbeAE1xsTyOU(qqWdzXAdx)qbKbcgKHMbD8YBrDiB4IIaGvOIab2fn0AFs7ObmW1HKe2elhWmHGm4dzXAk4MHRFOqdx)qsqGa7IgpNLpPDEoKmW1HW8Y9(ZW(MmIYBHW8oB3SEpidi08QVKAXqD9HGGhYI1gU(HciJ6fKHMbD8YBrDiAzekccHnEoFbeOo6dVw8opx955Qhphc550(lDGHPvU2nMdb8C1j255SVXZjrEoeYZHnEoZvzEVYXlNNtIHSHlkcawHuvC9r3RylPHMx9LulgQRpee8qwSMcUz46hk0W1puDuC955Ok2sAiBMPEiGBMoaTqf2nxL59khV8qyE5E)zyFtgr5TqyENTBwVhKbessytSCaZecYGpKfRnC9dfqg1sqgAg0XlVf1HSHlkcawHUBaviWUl9HKe2elhWmHGm4dzXAk4MHRFOqdx)qZCdOcb2DPpeMxU3Fg23KruEleM3z7M17bzaHMx9LulgQRpee8qwS2W1puazuBbzOzqhV8wuhIwgHIGqngqPQIRp6EfBjvP5Axa78C1jp3Y7a0aH(8CiKNdFxLkLfhLJUVBMUYDf55qipxTYZb8YHaLfXufakGtOnSMYdD8YB8CiKNZxabQJ(WRfVZZvFEU6fYgUOiayfQ4OC047MoiKKWMy5aMjeKbFilwtb3mC9dfA46hscokNNt9UPdcH5L79NH9nzeL3cH5D2Uz9EqgqO5vFj1IH66dbbpKfRnC9dfqgigKHMbD8YBrDiAzekccvR8CaVCiqzrmvbGc4eAdRP8qhV8gphc558fqG6Op8AX78C1NNRw45QR6INd4LdbklIPkauaNqBynLh64L345qipNVacuh9HxlENNR(8C1lKnCrraWk0lxFiWlOXlEhessytSCaZecYGpKfRPGBgU(HcnC9dnRC9HaVWZPU4DqimVCV)mSVjJO8wimVZ2nR3dYacnV6lPwmuxFii4HSyTHRFOaYOMfKHMbD8YBrDiB4IIaGvOIJYrJFxhssytSCaZecYGpKfRPGBgU(HcnC9djbhLZZP(UoeMxU3Fg23KruEleM3z7M17bzaHMx9LulgQRpee8qwS2W1puazu3bzOzqhV8wuhIwgHIGqTJVRsLYIyQcafWj0gwtzJv7Wq2WffbaRqRkxarxetvaOaofAE1xsTyOU(qqWdzXAk4MHRFOqdx)qZRCbKNtcIPkauaNczZm1dbCZ0bOfQWE747QuPSiMQaqbCcTH1u2y1omeMxU3Fg23KruEleM3z7M17bzaHKe2elhWmHGm4dzXAdx)qbKH8wqgAg0XlVf1HSHlkcawHwvUaIUiMQaqbCkKKWMy5aMjeKbFilwtb3mC9dfA46hAELlG8CsqmvbGc4eph2KLyimVCV)mSVjJO8wimVZ2nR3dYacnV6lPwmuxFii4HSyTHRFOaYqwoidnd64L3I6q2WffbaRqfhLJgF30bHMx9LulgQRpee1HSyOeWPmKdzXAk4MHRFOqdx)qsWr58CQ3nDaph2KLyiBMPEindLaoHD5qyE5E)zyFtgr5TqyENTBwVhKbessytSCaZecYGpKfRnC9dfqgY2dYqZGoE5TOoeTmcfbHmxL59khV8q2WffbaRqQkU(O7vSL0qZR(sQfd11hcI6qwmuc4ugYHSynfCZW1puOHRFO6O46ZZrvSLuEoSjlXq2mt9qAgkbCc7Y1yGBMoaTqf2nxL59khV8qyE5E)zyFtgr5TqyENTBwVhKbessytSCaZecYGpKfRnC9dfqaHif)s4frnWbcgmd71M9asaa]] )
 
-    storeDefault( [[SimC Elemental: single asc]], 'actionLists', 20170409.204707, [[d0ZUpaGEiOQnrOSlQ02GGSpQiZKQknBkMpe4Mq0Tj5BQu(mIANiSxLDl1(PknkvedtLmocv1Jj6EurnyQkdNuCqvuNIQQogbhxfPwivyPqOfdPLtPhQs1trTmsP1PIeDAKMQO0KvvtxYfPkELks4zuvX1vHnsOspxKnRk2oH8DeHzbbvMMksAEiIETQ0HfgnP6qeQ4KisxgCniOCErXFfvNJqv(nupHLDSNoqnWFogtekymtv396ZJbuqxH5u61xI2KnGxFrsogrWarcgH2lHBxN6L45kmM1asAyOi8rrX9i0IqAhFwwuCNw2riSSJ90bQb(ZXyIqbJpNKq)JwcJzPLQPgxyYKnGReJnFmj6KyN8XL7JjuqEshlFDTGkODYj0JNh3ijH(hTeC)h2OO4wStkQcCYze6cbia945Xf1GXFZrQCp04Vysm28XKODnHOih9WMkxlOcANC6smXb945XnvyR6fanG19qJ)JVRdYxKyrGc6AOJremqKGrO9s4MW1ys7pvgf2oUXnm(mk1qRmJJKe6F0syms8NiuW4vJq7Yo2thOg4phJjcfmwCnHc86J1XY3XS0s1uJfNIkFPnzeGGpUCFmHcYt6y5RRfubTtK0zYY)476G8fjweOGUg6yebdejyeAVeUjCnM0(tLrHTJBCdJpJsn0kZ4htOG8Kow(ogj(teky8Qr4NLDSNoqnWFogtekyS4Acf41hRJLVE9DIG)JzPLQPgRcWKklw5kpSwOlNCw7Lywqf0orsNrpEECJKe6F0sW9FyJIIBXKyS5Jjr7gjj0)OLGRfubTtNc0JNh3ijH(hTeC)h2OO4MKo)pSrrX9476G8fjweOGUg6yebdejyeAVeUjCnM0(tLrHTJBCdJpJsn0kZ4htOG8Kow(ogj(teky8QrCQl7ypDGAG)CmMiuWypHT0p9r8cJzPLQPgJE884csDmKYXp5LoKt2crLNo6pyPnz3dnIjoOhppUrsc9pAj4EOrmvaMuzXkx5H1cD5KZIpcn(UoiFrIfbkORHogrWarcgH2lHBcxJjT)uzuy74g3W4ZOudTYmgcBPF6J4fgJe)jcfmE1iqyl7ypDGAG)CmMiuWypHT096J1XY3XS0s1uJvbysLfRCLhwl0LtoliCdbiqCcBrFcz5Mibym0MCUkatQSyLl0bQb(IPcWKklw5kpSwOlNCw80o(UoiFrIfbkORHogrWarcgH2lHBcxJjT)uzuy74g3W4ZOudTYmgcBPNN0XY3XiXFIqbJxnceAzh7Pdud8NJXeHcgZf2QEbqdyhZslvtnoKfveKdnOOqIK(z8DDq(IelcuqxdDmIGbIemcTxc3eUgtA)PYOW2XnUHXNrPgALzCQWw1laAa7yK4prOGXRgXTLDSNoqnWFogtekyShdOGUcJxFomrQgJiyGibJq7LWnHRXNrPgALzmyaf0vyYrnrQgtA)PYOW2XnUHX31b5lsSiqbDn0XiXFIqbJxncXFzh7Pdud8NJXeHcg7x6PpOFV(qgKvHxFzXfOgZslvtnoKfveKdnOOqIK(z8DDq(IelcuqxdDmIGbIemcTxc3eUgtA)PYOW2XnUHXNrPgALzSHE6d6pxfKvrEHlqngj(teky8QriEl7ypDGAG)CmMiuWy)sjRxnTj71NdSPgZslvtng945XvdMeGnh)Kx6qUkatQSyL7HgXqpEECtf2QEbqdyDp0iwilQiihAqrHej9Z476G8fjweOGUg6yebdejyeAVeUjCnM0(tLrHTJBCdJpJsn0kZydLSE10MCok2uJrI)eHcgVAecxl7ypDGAG)CmMiuWy)gIcV(CCyt1ywAPAQXFC5(ycfKN0XYxxlOcANCsgPkVOkqStKyS5JjrNBHqwiabOhppUrsc9pAj4EOX)X31b5lsSiqbDn0XicgisWi0EjCt4AmP9NkJcBh34ggFgLAOvMXMquKJEyt1yK4prOGXRgHGWYo2thOg4phJzPLQPgBHhlK0dudiMkatQSyLR8WAHUCYzTxIHE884cgqbDfM8hS8i5EOz8zuQHwzg)ycfKN0XY3XK2FQmkSDCJBymrOGXIRjuGxFSow(613jA9F8zl50yzgPbYRWsgQKZcJremqKGrO9s4MW147zKgiByjdvAogFxhKViXIaf01qhJe)jcfmE1ie0USJ90bQb(ZXyIqbJ9e2s3RpwhlF967eb)hZslvtnwfGjvwSYvEyTqxo5SGGacqG4e2I(eYYnrcWyOn5CvaMuzXkxOdud8ftfGjvwSYvEyTqxo5S4JqJVRdYxKyrGc6AOJremqKGrO9s4MW1ys7pvgf2oUXnm(mk1qRmJHWw65jDS8Dms8NiuW4vJqWpl7ypDGAG)CmMiuW4S4cuE9HmsfyZmMLwQMAm6XZJRfs4oAjKx4cuUwqf0orsHleGGtqpEECTqc3rlH8cxGY1cQG2jsEc6XZJBKKq)JwcU)dBuuCFkKyS5Jjr7gjj0)OLGRfubTt(lMeJnFmjA3ijH(hTeCTGkODIKcim)hFxhKViXIaf01qhJiyGibJq7LWnHRXK2FQmkSDCJBy8zuQHwzgx4cu5QivGnZyK4prOGXRgHWPUSJ90bQb(ZXyIqbJ9e2s)0hXl413jc(pMLwQMAm6XZJli1Xqkh)Kx6qozlevE6O)GL2KDp0m(UoiFrIfbkORHogrWarcgH2lHBcxJjT)uzuy74g3W4ZOudTYmgcBPF6J4fgJe)jcfmE1ieqyl7ypDGAG)CmMiuWy)gIcV(CaHAmlTun14qwurqo0GIcjNeelKfveKdnOOqYjHX31b5lsSiqbDn0XicgisWi0EjCt4AmP9NkJcBh34ggFgLAOvMXMquKJcHAms8NiuW4vJqaHw2XE6a1a)5ymrOGX(LswVAAt2Rphyt513jc(pMLwQMAm6XZJRgmjaBo(jV0HCvaMuzXk3dnIfYIkcYHguuirs)m(UoiFrIfbkORHogrWarcgH2lHBcxJjT)uzuy74g3W4ZOudTYm2qjRxnTjNJIn1yK4prOGXRgHWTLDSNoqnWFogteky8D9G2E95xkz9QPn5XS0s1uJdzrfb5qdkkKCsqSqwurqo0GIcjNegFxhKViXIaf01qhJiyGibJq7LWnHRXK2FQmkSDCJBy8zuQHwzgl1dANBOK1RM2KhJe)jcfmE1iee)LDSNoqnWFogtekySFPK1RM2K96Zb2uE9DIw)hJiyGibJq7LWnHRXNrPgALzSHswVAAtohfBQXK2FQmkSDCJBy8DDq(IelcuqxdDms8NiuW4vJqq8w2XE6a1a)5ymlTun1yl8yHKEGAGXNrPgALz8JjuqEshlFhtA)PYOW2XnUHXiXIOn5rimMiuWyX1ekWRpwhlF967e)4)4ZwYPXkSiAt2zbeozgPbYRWsgQKZcJremqKGrO9s4MW147zKgiByjdvAogFxhKViXIaf01Cmgj(teky8QrO9Azh7Pdud8NJXNrPgALzme2sppPJLVJjT)uzuy74g3WyKyr0M8iegtekySNWw6E9X6y5RxFNO1)XNTKtJvyr0MSZcJremqKGrO9s4MW1476G8fjweOGUMJXiXFIqbJxTAmlTun14vBa]] )
+    storeDefault( [[SimC Elemental: single asc]], 'actionLists', 20171125.213329, [[dauetaqiKKAteQgfiQtbf8kOqXSesrDlOqPDjLggu1XiLLjfEgssMgscUguOABcj6BqPghscDoHuADcPG5jKQ7jf1(KICqOKfccpKGmrHuOlcfTrHeojHYmHc5Ms0ob1sjKNIAQeyReu7v5VqLbtLdlAXi1JP0KLQlRAZG0NjvgTeonfVgjMTKUnj7gXVHmCH44ijA5e9Cbth46c12jv9DHKopsQ1lKImFqK9tvpTjymCQ(y2OeY7WSE1jGSgn4Dbdrx9ExgSJzR0ebmEC04HMXvWGySOxFg(GBGxdBnnTOTvttdpv1ySONDQfyuFS8Q0qcyS0XqH2Mb7j9KyFBpwMadImgllWGiHjyWAtWymjjD99bXy2knraJ7iql0AQoUqbYsPvEvAibVRjVJogk02mypPNe7B7XYeyqeVtCVdYEhWOU31uZExuI37GeK8o6yOqBPRiuVghaTXr8om4DI7DweQ2rrL0wt9jo6yza0kVknKG31K3H37e37OAVJogk02aajvu(JCzBCKXyrBQga1JZG9KEsSFSyKUXMaKCmbr(4sux4ucNQpEmCQ(ySc2t6jX(XIE9z4dUbEnS1Wpw0dOyP9HjyGXcvClLsK(Robm6XLOoCQ(4bgCJjymMKKU((GymBLMiGXuT3bmwkgIoVdsqY76iql0AQoUqbYsPvEvAibVl6n7D6S9XyrBQga1JHwt1XfkqwkJfJ0n2eGKJjiYhxI6cNs4u9XJHt1hhf1uDVJlqwkJf96ZWhCd8AyRHFSOhqXs7dtWaJfQ4wkLi9xDcy0JlrD4u9XdmyQAcgJjjPRVpigZwPjcySkFnaKivRnwkpb4Dn1S31aV3jU3jVknKG3f9M9o6yOqBZG9KEsSVThltGbr8oX9olcv7OOsAZG9KEsSVvEvAibVdJX7OJHcTnd2t6jX(2ESmbgeX7IEZExpwMadImglAt1aOEm0AQoUqbYszSyKUXMaKCmbr(4sux4ucNQpEmCQ(4OOMQ7DCbYsX7GSgggl61NHp4g41Wwd)yrpGIL2hMGbgluXTukr6V6eWOhxI6WP6JhyWuHjymMKKU((GymBLMiGX0XqH2EBb6bCiO4afhNo5taUqmPFPHORnoI3jU3r1EhDmuOTzWEspj23ghzmw0MQbq94NsqbvgNu(yXiDJnbi5ycI8XLOUWPeovF8y4u9XyMsqbvgNu(yrV(m8b3aVg2A4hl6buS0(WemWyHkULsjs)vNag94suhovF8adgJpbJXKK013heJXI2unaQh)6vNaYko6AgaJfJ0n2eGKJjiYhxI6cNs4u9XJHt1hJz9Qtaz17GOMbWyrV(m8b3aVg2A4hl6buS0(WemWyHkULsjs)vNag94suhovF8adokNGXyss667dIXSvAIagRYxdajs1AJLYtaExtn7DAAy7DqcsEhv7DPeyGMwqBiQVwneD4u5RbGePApjPRV7DI7DQ81aqIuT2yP8eG31uZEx02ymw0MQbq94NsqbUqbYszSyKUXMaKCmbr(4sux4ucNQpEmCQ(ymtjOW74cKLYyrV(m8b3aVg2A4hl6buS0(WemWyHkULsjs)vNag94suhovF8adg7jymMKKU((Gymw0MQbq94aajvu(JC5yXiDJnbi5ycI8XLOUWPeovF8y4u9Xmajvu(JC5yrV(m8b3aVg2A4hl6buS0(WemWyHkULsjs)vNag94suhovF8adMkobJXKK013heJXI2unaQhxnuzSPJtL6ujoacC1yXiDJnbi5ycI8XLOUWPeovF8y4u9XyKHkJnDVRm1PsVtacC1yrV(m8b3aVg2A4hl6buS0(WemWyHkULsjs)vNag94suhovF8adoANGXyss667dIXSvAIagthdfABeuuVehckoqXXPYxdajs1ghX7e37OJHcTnaqsfL)ix2ghX7e37slWO)4o5kZdEx09oQAmw0MQbq94QrxbGyi6WrJQGXIr6gBcqYXee5JlrDHtjCQ(4XWP6JXiJUcaXq05DqGQGXIE9z4dUbEnS1Wpw0dOyP9HjyGXcvClLsK(Robm6XLOoCQ(4bgSg(jymMKKU((GymBLMiGXDeOfAnvhxOazP0kVknKG31K3zZaahWOU3jU3bzVZIq1okQeCYNwG3bji5D0XqH2Mb7j9KyFBCeVddJXI2unaQhxt9jo6yzamwms3ytasoMGiFCjQlCkHt1hpgovFmgL6tVdIyzamw0RpdFWnWRHTg(XIEaflTpmbdmwOIBPuI0F1jGrpUe1Ht1hpWG10MGXyss667dIXSvAIagdzVtLVgasKQ1glLNa8UMA27AG37e37OJHcT91RobKvCqr24qBCeVddEN4EhK9o5HkFOiPR37WWySOnvdG6XqRP64cfilLXcvClLsK(Robm6XLOUWPeovF8y4u9Xrrnv374cKLI3b5gyymwsDHXGuQ7aCgOnlpu5dfjD9Jf96ZWhCd8AyRHFSOhqXs7dtWaJfJ0n2eGKJjiYhxI6WP6JhyWAnMGXyss667dIXSvAIagRYxdajs1AJLYtaExtn7DAAAEhKGK3r1ExkbgOPf0gI6Rvdrhov(AairQ2ts667EN4ENkFnaKivRnwkpb4Dn1S3rfJsVdsqY7ovgBIe592Gcv7xAi6Wv8uc8oX9UtLXMirEVfuCC9BVr)LbC0veQJlsAbEN4ENkFnaKivRnwkpb4Dn5DyJ37e37az9eqBcfCzOazP0EssxFFmw0MQbq94NsqbUqbYszSyKUXMaKCmbr(4sux4ucNQpEmCQ(ymtjOW74cKLI3bznmmw0RpdFWnWRHTg(XIEaflTpmbdmwOIBPuI0F1jGrpUe1Ht1hpWG1OQjymMKKU((GymBLMiGX0XqH2kFarsI94aiWvTYRsdj4Dr370W7DqcsEhK9o6yOqBLpGijXECae4Qw5vPHe8UO7Dq27OJHcTnd2t6jX(2ESmbgeX7Wy8olcv7OOsAZG9KEsSVvEvAibVddEN4ENfHQDuujTzWEspj23kVknKG3fDVtdJ7Dyymw0MQbq9yacCfovgaxs9yXiDJnbi5ycI8XLOUWPeovF8y4u9XcqGR8UYmaUK6XIE9z4dUbEnS1Wpw0dOyP9HjyGXcvClLsK(Robm6XLOoCQ(4bgSgvycgJjjPRVpigZwPjcyCAbg9h3jxzEW7AY708oX9U0cm6pUtUY8G31K3PnglAt1aOECn1N4OFQglgPBSjajhtqKpUe1foLWP6JhdNQpgJs9P3bXt1yrV(m8b3aVg2A4hl6buS0(WemWyHkULsjs)vNag94suhovF8adwdJpbJXKK013heJzR0ebmMogk02iOOEjoeuCGIJtLVgasKQnoI3jU3LwGr)XDYvMh8UO7Du1ySOnvdG6XvJUcaXq0HJgvbJfJ0n2eGKJjiYhxI6cNs4u9XJHt1hJrgDfaIHOZ7GavbEhK1WWyrV(m8b3aVg2A4hl6buS0(WemWyHkULsjs)vNag94suhovF8adwlkNGXyss667dIXSvAIagNwGr)XDYvMh8UM8onVtCVlTaJ(J7KRmp4Dn5DAJXI2unaQhBlsdbx1ORaqmeDJfJ0n2eGKJjiYhxI6cNs4u9XJHt1hlurAiEhgz0vaigIUXIE9z4dUbEnS1Wpw0dOyP9HjyGXcvClLsK(Robm6XLOoCQ(4bgSg2tWymjjD99bXySOnvdG6XvJUcaXq0HJgvbJfJ0n2eGKJjiYhxI6cNs4u9XJHt1hJrgDfaIHOZ7GavbEhKBGHXIE9z4dUbEnS1Wpw0dOyP9HjyGXcvClLsK(Robm6XLOoCQ(4bgSgvCcgJjjPRVpigZwPjcyS8qLpuK01pglAt1aOEm0AQoUqbYszSqf3sPeP)QtadIXLi9gIUbRnUe1foLWP6JhdNQpokQP6EhxGSu8oitvyymwsDHXkKEdrxZArZGuQ7aCgOnlpu5dfjD9Jf96ZWhCd8AyRHFSOhqXs7dtWaJfJ0n2eGKJjiYhxI6WP6JhyWAr7emgtssxFFqmglAt1aOE8tjOaxOazPmwOIBPuI0F1jGbX4sKEdr3G1gxI6cNs4u9XJHt1hJzkbfEhxGSu8oi3adJXsQlmwH0Bi6AwBSOxFg(GBGxdBn8Jf9akwAFycgySyKUXMaKCmbr(4suhovF8adUb(jymMKKU((Gymw0MQbq9yO1uDCHcKLYyHkULsjs)vNageJlr6neDdwBCjQlCkHt1hpgovFCuut19oUazP4DqMkGHXyj1fgRq6neDnRnw0RpdFWnWRHTg(XIEaflTpmbdmwms3ytasoMGiFCjQdNQpEGbgZrU1Kvt0ucmiYGBeLngyda]] )
 
 
-    storeDefault( [[Enhancement Primary]], 'displays', 20170409.204707, [[d8tQiaWyiwpK0lPqSlvvHxRQs)gPzkeMgfQzRkNxOUjQkDAcFdvfogfTtrTxPDd1(vu)esnmsmoss6Yknuk1GvKHJshuHoQQQOdt15qvrTqfSuIOflOLtQhsuEkyzevpxKjQQknvenzI00v5IcCvkKEgr46OyJcPTsscBMs2of8rvvSniHpJQ8DvLrssQ1PQQgnQmEuvDssQBbj6Acr3JKeDBewlQkYXjjUMLSaIZEckokfFWf)2cOnkzeQZbfqC2tqXrP4deOUnBkVG2X8wzClYVDOq4tGkQ)8OFnSqmAlR0EYC2tqXPMvkWpAlR0EYC2tqXPMvkOcZYSsvJqXGa1TzJvkqiWJbnlrbvywMvQmN9euCQdfIrBzL2J0182l1SsH)Kzz2ujB2SKfcWE4BL2HcJiNGINNIqKUcGGq28uaMZXilXIV)NNy1lcLi0VczNylacczZtbyohJSel((FEIvViuIq)ki5(wpTnlxXefMkksuaq0c2RWjiwvPsVMLxYcbyp8Ts7qHrKtqXZtrisxbqqiBEkaZ5yKLyX3)ZtsxlN5DfYoXwaeeYMNcWCogzjw89)8K01YzExbj336PTz5kMOWurrIE9kK4OFWN4q4gd6qb(rBzL2J0182l1SsbcNFGSzZcNR5T3igHJQlmGMKenFLu9pQMSa)OTSs7zKHuZMfSO4RWOw4V5PSR10Vcjo6hPR5TxQdf(nCeJWr1firBlP6FunzbbwQaXpQEeJWr1fKu9pQMSaIZEckEeJWr1fgqtsIMVfKrzJNNiPfcWCogzjw8npbcmV3IssxZBVcjo6hq2HcQWSm7Ff6f5euCbjv)JQjlGziuJqXPMnUqmAlR0EQXsfi(r1PMvkK4OFYC2tqXPouGF0wwP9gz0EZkfKUwoZ7gTJOaiiKnpfG5CmYsS47)5jPRLZ8UccekMprPenBgzbcN)rMJ2SsHWNavu)5r)gFVgwWFSCoWr)Sne0Szb)XY5YOeH(zBiOzZcec8iZrBwPWVHrP4dU43waTrjJqDoOG)(84KTb7ouWGijcfpXftgZUfclG4SNGIhFcE4cYcYKbswqQiX(8yYy2TGxWFSC(47ZJt2gcA2SG2X8wYy2TGhkEIlUGZOD(kWBhkK4OFJmAxn2I2Hc)ggLIpqG62SP8cQWiq(fU43wWl4pwoN0182Z2GDZMfCgTpIr4O6cdOjjrZ3icIswqVVcYcYKbswiXUVx0NN4Ayb)XY5KUM3E2gcA2SqIJ(bFIdHBK5ODOGkmlZkvnwQaXpQo1HcoJ2vJTOKXSBHqglRcXnkkvvf(SCJvqHPjFiHIC58HsTqPXrw4CnV9IsXhCXVTaAJsgH6Cqb(68liyiMNifeBZsOuigTLvApJmKAgLYlaiAb7vOG)y58X3NhNSny3SzbekrOF2gcAybwTGW1XrP4deOUnBkVaRErOeH(nAhrbqqiBEkaZ5yKLyX3)ZtS6fHse6xbGDre(tGQFckUz5OqIceo)JbnRuG0Fl(MN(rtzyBwPW5AE7zBiOHfsS77f95joz0hvxYcEZMfcB2SaVMnlOB2SxHeh9Z2GDhkeJ2YkT3iJ2BwPWFxlN5DDOq2j2cbyohJSel(MNS1ccxhxWz0oWUVN6)2SCftv14ilCUM3ErP4RGn58e4408u21A6xHeh9tnwQaXpQo1Hc)ggLIVc2KZtGJtZtzxRPFf83NhNSne0Hcjo6NTHGouiXr)gd6qbekrOF2gSBybNr7KXSBHqglRc2AbHRJNNK5SNGINNgz0Eb4OAIqTaZB1fsC0VrMJ2Hcecmq2SsHZ182lkfFGa1Tzt5fuHrG8RQqKGl(Tf8cio7jO4Ou8vWMCEcCCAEk7An9RG)y5CzuIq)Sny3SzHaSh(wPDOqsqW(2r0bnlrb(rBzL2tnwQaXpQo1Ssbj336PTz5kM8HIXkY)dt5sOySefsC0pJSXHcSubMxQdfS1ccxhppjZzpbfxiP9tqlCUM3E2gSBybbcfdSoIaZR5ilOcZYSJpbpmXIVcify1ccxhRgHIbbQBZgRuWFSCoWr)Sny3SzbvywMvAuk(abQBZMYlWFZOef)HPIerAgjkKh5IsfLilOcZYSsnYqQdfsC0p4tCiCJOd6qbNr7gflUcSppE19Ab]] )
+    storeDefault( [[Enhancement Primary]], 'displays', 20170622.212605, [[d8tQiaWyiwpK0lfkzxcLYRvr53intkutdsy2Q05fYnrvPtt4Bui9Cr2PO2R0UHA)kQFcPggLACevPlR0qPObRqdhLoOICuHs1XiX5iQIwOcwkr0If0Yj1djspfSmkyDqIMiQkmvenzIY0v1ff4Qev1Zqv11rXgfQ2kQkYMPKTts9rvehMQpJQ8DvyKui2MksJgvgpr4KKKBPIQRjuCpuvu3gH1sufoorLRsjlG4SVGIJtXp8r3TaA5tASQCqbeN9fuCCk(bbQBZkgkODmVvk3ICwhkeEfOI6jx6rdleH2YkTVuN9fuCQz7csG2YkTVuN9fuCQz7cYXSmRmviumiqDBgf2fsC0JjgTRcBr7qb5ywMvMuN9fuCQdfKJrGCg8r3TGxi2zwMnvYMvkzHaShExzDOWeYlO45rJfPVaiiKopgG5CmYsS4hLZJS6fHse6FHStSfabH05XamNJrwIf)OCEKvViuIq)li5ExpTnBWw5ufBB(laiAb7x4felF2UFZgkzHaShExzDOWeYlO45rJfPVaiiKopgG5CmYsS4hLZJYwlN5(fYoXwaeesNhdWCogzjw8JY5rzRLZC)csU31tBZgSvovX2M)(9lK4OhWH4r4Mc6qbjqBzL2N0182p1SDbbcfdSoIaZR5yk4mAxf2IsgXUfczSSke14NlV2YtdOW(uffJYVTbdg1UwNJIykyrXFHjTWVZJzxRPhfsC0dsxZB)uhkCw4egHJQlqI2usvNyeYccSmbI)u9egHJQliPQtmczbeN9fu8egHJQlmGMKenFliLYgnpssleG5CmYsS4FEeeyE39CsxZB)cjo6bq2HcYXSmlFi0lYlO4csQ6eJqwaZqOcHItnJIcrOTSs7RcltG4pvNA2UqIJEi1zFbfN6qbjqBzL2FIr7nBxq2A5m3FY04cGGq68yaMZXilXIFuopkBTCM7xWVSC(09WJsMQdAwPaHlXeZtB2Uq4vGkQNCPht3Bdl4xwoh4OhMQdAwPGFz5CPuIq)nvh0SsbcbEI5PnBxWz0(egHJQlmGMKenFnoiozb)E4rjt1MDOGArsekUIpImIDlewaXzFbfpDf8WfKgKjdKSGmrI96rKrSBbVGCmlZktfwMaXFQo1HcAhZBjJy3cEO4k(OcoJ25RaVDOGenF(PXMIn)XOeZPgIzp32oMcNfgNIFqG62SIHcVR5T)egHJQlmGMKenFLu1jgHSGFz5CsxZBFt1MnRuqGqXYdkLOzLykO3BbPbzYajlKy37n(1tCnSGFz5CsxZBFt1bnRuGWLaiBwPWzHXP4h(O7waT8jnwvoOaRwq46iviumiqDBgf2fKJzz2PRGhMyXFbKcVR5TFCk(Hp6UfqlFsJvLdkWxxcbbdX8iPGyBMF7cVR5TVPAZgwaq0c2Vqb)YY5t3dpkzQ2SzLcMAbHRJMhL6SVGIlK0(lOfy1ccxhfNIFqG62SIHcS6fHse6)KPXfabH05XamNJrwIf)OCEKvViuIq)lK4OhXAJcfyzcmVuhkq4smf0SDbs)U4FE8enLHTz7cVR5TVP6GgwqY9UEAB2GTIrTpvH)yZGc)kkgTqIJEyQ2SdfKaTLvAFvyzce)P6uZ2f4J1YzUFhkKDITqaMZXilXI)5rtTGW1rf8llNlLse6VPAZMvk8UM3(XP4VGj58i4408y21A6rHeh9qfwMaXFQo1HcYXiqoJpjsWhD3cEb)E4rjt1bDOqIJEmf0Hcjo6HP6GouaHse6VPAZgwWz0oze7wiKXYQqIJEmX80ouWuliCD08OuN9fu884eJ2lapvteQfyERUaHadKnBx4DnV9JtXpiqDBwXqHZcJtXFbtY5rWXP5XSR10Jcio7lO44u8xWKCEeCCAEm7An9OGZODGDVxv8rZgSvKxuetHaShExzDOqsqWE3j0bnZFHi0wwP9Ny0EZ2fsS79g)6joP0lvxYcEZkfcBwPaVMvkOBwPFbGDre(vGQ)ckUzdNYFHi0wwP9J1qQ5ZnuaHse6VP6GgwGqGNcAM)crOTSs7t6AE7NA2UqIJEahIhHBI5PDOGFz5CGJEyQ2SzLcYXSmRS4u8dcu3Mvmuqc0wwP9J1qQzLcYXSmRSynK6qHeh9aoepc3e6GouWz0U8XIVa71JwD)wa]] )
 
-    storeDefault( [[Enhancement AOE]], 'displays', 20170409.204707, [[d8ZBiaqyQwpa9ssO2LQk8Avv53intsPEgaMTIoVu1nrvLtt4BsOYZL0oLYEf7g0(vOFcOHrjJdvvLTrkPHsPgScgoIoOeDuuvvDmvX5iHyHQklLeSyIA5u8qI4PqpgO1PQstuvfnvuAYePPRYfjPRskXLv66OyJsfBvcvTzs12jrFuQKpJQmnPs9DvPrkHYYKGrJkJhvLtskUfjKUMQQ6EOQkUncRfvvPJlHCEcBqqN8euyhk8WRFUbbQfwT10udEUH3E2kTJCqJd5Ts4wW)Yxq5Paqa7AsFJCWEG6619K4KNGcRPzfKpG6619K4KNGcRPzfSiMLzLQbKcrbGBADBfKqalvtdGGfXSmRujo5jOWA(c2duxVUhRB4TxnnRG8FMLzRHnTNWguf6YZvA(cwcEckCCqBr9cIccjJdQqohcUel8(DCG0SGucz)c2CInikiKmoOc5Ci4sSW73XbsZcsjK9lOc7C96MwbRN)T06pku4jicAeKxWtqS8hRCPviSbvHU8CLMVGLGNGchh0wuVGOGqY4GkKZHGlXcVFhhKU6oZ8c2CInikiKmoOc5Ci4sSW73XbPRUZmVGkSZ1RBAfSE(3sR)OqHNC5cw5OV4R4a5kvJCWkh9TK5OroOaKcrshua5L2)bp3WBVsiih1e8dillq(PGMUkgBq(aQRx3tXF10ScQtHxWsJWNJdn3yOVbRC0xw3WBVA(c(NCjeKJAcYc0wbnDvm2GcOubOFutjeKJAcQGMUkgBqqN8euyjeKJAc(bKLfi)cIKlOWNca9tqHPvqRaeSYrFr28fSiMLz)PWSGNGcdQGMUkgBqidHgqkSMw3bRK7C2z6voj0j1e2GEApbLt7jiV0EcAs7jxWkh9vItEckSMVG8buxVUxjJXtZkO0v3zMxPT2brbHKXbviNdbxIfE)ooiD1DM5fKW5RK5OPzfuEkaeWUM03Y5mYb9jjNJC0xBLQP9e0NKCUekHSF2kvt7j4pxDNzE5lOpF9(QTs78fuPOkKftX1Z2tUbLdc6KNGclNcEWGsuBSQkeuQOso9E2EYniyqcbSK5OPbqqJd5TS9KBqxwmfxFqNX48ta38fSiMLzlNcEqIfEbbd(NChk8qbGBApfc6mgxduNY2tUbLz01d6tsoN1n82ZwPDApbRC03sgJRbQtJCqZodkrTXQQqWk5oNDMELlYb9jjNZ6gE7zRunTNG8buxVUhRB4TxnnRGfXSmRunqPcq)OMA(c6mgVecYrnb)aYYcKFAR2HnyF6OOA9Flf5XsraO4aaaRU5FayfDfT7)dEUH3EDOWdV(5geOwy1wttni)C(eemeJdScInnaScYxAwbrqJG8cwfqEZnOpj58Y5R3xTvAN2tqqkHSF2kvJCqsJGWn9DOWdfaUP9uiiPzbPeY(vARDquqizCqfY5qWLyH3VJdKMfKsi7xqjuY(XbwAqviNdbxIfEJdLavds48vQMMvqwFUWBCOldLHmnRGNB4TNTs1ih02iiCt)4GeN8euyWQXpbnOc7C96MwbRNIZQBRc)4PaawDdqWEG66190aLka9JAQPzfShOUEDVsgJNMvq(aQRx3tduQa0pQPMMvWIyeG)v8IkE9ZnOCqNX4S9KBqzgD9Gvo6RgOubOFutnFbDgJJK7CQ5NPzf0NVEF1wPA(cw5OV2kvZxWkh9TunYbbPeY(zR0oYbTncc30poiXjpbfoouYy8G4rneYgbK3AcEUH3EDOWlOn74a6W64qZng6BWEG6619u8xnnRGeciYMgabp3WBVou4Hca30Eke8p5ou4Hx)CdculSARPPge0jpbf2HcVG2SJdOdRJdn3yOVb9jjNlHsi7NTs70EcQcD55knFbRccY5wcunnac(NChk8cAZooGoSoo0CJH(gS5eBqviNdbxIfEJdLavds48HSPzfSYrFTvANVGvo6RI3EzbuQaYRMVGGo5jOWou4Hca30EkeK0iiCtVgqkefaUP1TvqFsY5LZxVVARunTNG(KKZro6RTs70EcweZYSs7qHhkaCt7PqWkh9fFfhixjZrZxWIywMvQI)Q5lOaKc5VukrAp)h0zmUwGIli507xtUe]] )
+    storeDefault( [[Enhancement AOE]], 'displays', 20170622.212605, [[d8ZBiaqyQwVQsVKuIDPiLxRQOFJ0mjLADajZwvoVcUjjWPjCBeUSs7us7vSBq7xQ6Na1WKsJJeeBdvWqPKbRqdhrhukokjiDmPY5ib1cvvTusOftulNIhsKEk0YOu9CjMOIunvuAYeX0v5IK0vjL0ZaIRJInQi2kqQSzs12jfFurYNrLMgQqFxrnskL8yaJgvnEurNKeDlkLY1uv4EukvFdiL1cKQooLItxydc4KNGcNqHhEdVniyTYQTYQAWZnC3ZsJvKdACi3vk)c8z(dAdZYSnpbxiXcVGabhaRRx2tQtEckSKABqobRRx2tQtEckSKABqBywMvIsakefF3u5yBWcpDUHX4kH60ih0gMLzLi1jpbfwYFWbW66L9yDd39kP2guHYSmBjSP2f2GQqx(TsYFWgGtqH9JAlkxquqiTFufY7qGLyHhO6hjnlaLq2VGvNydIccP9JQqEhcSel8av)iPzbOeY(fuX9TEzt1EB3hTCyA2T3febmcYl4jiwBVnxQ2dBqvOl)wj5pydWjOW(rTfLlikiK2pQc5DiWsSWdu9JswDN5DbRoXgefes7hvH8oeyjw4bQ(rjRUZ8UGkUV1lBQ2B7(OLdtZU9UC5cw4PZ4S4a4BuJCqobRRx2J1nC3RKABWcpDgNfhaFdZrZFqNX4kH6u2bYnOmJUEqobRRx2tl)LuBdYzQTbl80zw3WDVs(d(PCdeGNAcYc2srLtzl2GcOebGFutdeGNAcQOYPSfBqaN8euydeGNAc(dMLfSccIKlGWFIV(jOWuTZbqcw4PZiB(dAdZYStxywGtqHbvu5u2IniKHqjafwsLJblK77n55fEP0h1e2GEQDbLtTli3u7cAsTlxWcpDwQtEckSK)GCcwxVSxdJXtTnOKv3zExJL2brbH0(rviVdbwIfEGQFuYQ7mVliHZzdZrtTnO8t897up6CZ7f5G(JK3rE6SLg1u7c6psExkLq2plnQP2fKqaByoAQGe0FZ(qXsJv(dQrueYIN4gyhi3GYbbCYtqHnpbxyqPQvwvfdkruiF(a7a5gei40xDN5D5pOXHCx2bYnOllEIBiOZyCfiGB(d6psEV5n7dflnQP2f8t5ju4HIVBQD2d6mgVbcWtnb)bZYcwbARoHnO)i5Dw3WDplnwP2fCitSno8rRc31QWGaAGaslhviG0gDBJJFe0SVGsvRSQkgSqUV3KNx4JCq)rY7SUH7EwAutTl45gU71ab4PMG)GzzbRafvoLTydAdZYSsucLia8JAk5pOaGcb9ukrQDFeSWtNByoAKdEUH7EtOWdVH3geSwz1wzvnOcCofeme9JScInvqAdsAeeUzqjafIIVBQCSnicyeKxWIaY9Tb9hjV38M9HILgRu7cc4KNGcNqHhk(UP2zpiPrq4MHju4HIVBQD2dsAwakHSFnwAhefes7hvH8oeyjw4bQ(rsZcqjK9lyHNoRLDqwaLiGCl5piHZzJAQTbz93cV(XPmugYuBdEUH7EwAuJCWcpD2sJv(dAzeeUzOFuQtEckmyX4NGgKW5eztTny1j2GQqEhcSel86hBaRg8t5ju4f0ITFeDyPFS6gdDoOnmcGpbDIcEdVnOCqNX4SdKBqzgD9GfE6SsOebGFutj)b9hjVlLsi7NLgRu7c6VzFOyPrn)bl805g1ihSWtNT0OM)Gaucz)S0yf5GFkpHcp8gEBqWALvBLv1GNB4U3ek8cAX2pIoS0pwDJHohCaSUEzpT8xsTniHaISPcsWZnC3BcfEO47MAN9GwgbHBg6hL6KNGc7hBymEq8OgczJaYDnbbCYtqHtOWlOfB)i6Ws)y1ng6CqNX4i5(EkNEQTbvHU8BLe5Gfbb5BBaRMkib5eSUEzpLqjca)OMsQTbhaRRx2RHX4P2gCaSUEzpLqjca)OMsQTbvCFRx2uT32bATCOdKPzVdKUoqlOuk5q)ilnOkK3HalXcV(XgWQbLFIVFN6rNJCqcbSrnvqckaOqK0beqUP(rq)rY7ipD2sJvQDbTHzzwjtOWdfF3u7ShuNcVGngH)6hRUXqNdAdZYSs0YFj)bbOeY(zPrnYbDgJRvO4cs(8H1Klba]] )
 
-    storeDefault( [[Elemental Primary]], 'displays', 20170409.204707, [[d8JyiaqyQwVQQEPeODHsP8AiIFd1mvv5zsiZMKZlvDtisNgvFtvP65sANszVIDty)kQFcHHrQgNeGEmsgkrgSQy4q6Gk0rvvOoMcohkLQfQilfLQflrlNspuQ0tblJOSojGMikftfHjtunDvUikUQeKlR01r0gLk2kkL0MPOTtk9rvf9zuY0uvY3vLgPeuBtvbJMcJhI6KKIBPQuUMQc5EOuIBJuRvcGJlH6meIauo6XXIoyXbxVAdGOqe)00ycCUL1EsALszaRlyTDnwkKKPaftUK7OIZsqVIlavGEeMM1966OhhlQPPhazeMM1966OhhlQPPhOyYLCLRHcla()nTV0dqZfJmPvuGIjxYvExh94yrntb6ryAw3JWTS2RMMEGpMCj3AisBiebyeEPALNPaJuhhlMF(XRxaG538dJAPxX5Q5hj7sHPl9lqZP3aaZV5hg1sVIZvZps2Lctx6xa2x161nnz6dFyqxVOaaLLJEboo9Yw0ZLMSqeGr4LQvEMcmsDCSy(5hVEbaMFZpmQLEfNRMFyZA6KQlqZP3aaZV5hg1sVIZvZpSznDs1fG9vTEDttM(Whg01lkaqz5OxGC5cunWVWl)OmgzYuaKryAw3JWTS2RMMEGQb(fE5hLXi5HZuaN06AeMyIE0nqjPPzaKryAw3RGt10gcyIfxGrl3vZpn3AXVbQg4xc3YAVAMcGKYrbLb2gGaHe7A(SWeb4c5Ck)W2rbLb2gGDnFwyIauo6XXIrbLb2gycbbbcKgaqxkUR4)9JJfPj7dYcunWVarMcum5sUSHBxQJJfbyxZNfMiGGKwdfwut7Rav0vP6O8QrxScBdrapTHaLPneGvAdbSPnKlq1a)21rpowuZuaKryAw3BK06PPhq(A6KQBu6xaGt3D(HrT0R4Cvbo)iFnDs1fG2rEK8WPPhOuX)))tf(DuPszaxHA4Gb(vsltAdbCfQH3ftx6NKwM0gcWM10jvxMcqZfJKhon9aU617RsALYuaT8kVKR4xprp6gOmaLJECSyuXzjc0LPrWWEa58kQY7j6r3aEaofwuaWy60kspG1fSwIE0nGxYv8RpGtADKYfBMcGCA6bqszhS4a()nTbzbQg43rsRRryItzaxHA4eUL1EsALsBiq1a)osE4mfWUQaDzAemShOIUkvhLxnszaxHA4eUL1EsAzsBiGtA9rbLb2gycbbbcK(JPdrGIjxYvUgHCoLFyBntbo3YAVrbLb2gycbbbcKYUMplmrG(05BfqD2USV0)WWW3lsxMSVRhZV91hf4ClR96GfhC9QnaIcr8ttJjasDK50K0ZpeC6nTI0d0JW0SUxbNQP9THaaLLJEbc4kudFu969vjTsPneGctx6NKwMuga1YPDBFhS4a()nTbzbqTlfMU0VrPFbaoD35hg1sVIZvf48dQDPW0L(fOlgTF(HahGrT0R4C18ZicMa0oYJmPPhGWvR4MF(0IjrttpW5ww7jPLjLb6ryAw3tJqoNYpSTMMEGQb(vsRuMc0JW0SU3iP1ttpaYimnR7PriNt5h2wttpask7GfxajI5hWf15NMBT43aoP1j6r3aLKMMbCsRdORsPHnPPhOAGF1iKZP8dBRzkaTJmqK2qax969vjTmzkGKLt72(5NUo6XXI5NrsRhiq1a)kPLjtbOW0L(jPvkLbo3YAVoyXfqIy(bCrD(P5wl(naNclauNIlyL2hfajLDWIdUE1garHi(PPXeGMlaI00dCUL1EDWId4)30gKfOAGFhzYuakh94yrhS4cirm)aUOo)0CRf)gWvOgExmDPFsALsBiaJWlvR8mfOYPrv7icM0KfOysofsyR8kC9QnGhO50Bag1sVIZvZpswoTB7diz50UTF(PRJECSiW5ww7vdunWVfC7l5c5CbRAMcq5Ohhl6GfhW)VPnila7RA96MMm9HVR)LUm22GSI0)QOaLk())FQWVPmaQLt72EnuybW)VP9LEaxHA4Gb(vsRuAdbkMCjx5DWId4)30gKfWvOg(O617RsAzsBiqXKl5kVGt1mfOAGFHx(rzmIGjtbCsRxib)cGQ8(1Mlba]] )
+    storeDefault( [[Elemental Primary]], 'displays', 20171125.224306, [[d8JyiaWyKA9QQ8sIsTluOYRvvQFd1mvv10uv0Sj58k0nHOCAu9nvf6WuTtPSxXUjSFf5NqyyuyCqKYZLQHsKbRkgochubhffkDmj5CeLyHkQLsuSyjA5u6HsONcwMKQ1rustefYur0KjQMUkxeLUQeWLv66qAJskBffQAZu02jfFuvjpdI4ZOOVRknsjqBtvbJMunEuWjjLUfejxdIQ7brQUnswlkuCCjOtvidq7ehhlQHfhCJQnaIcq(xBJnaTtCCSOgwCa)3Mwv9awxWClQV0FN5aLk(VFFPWVPmWictZ(EfDIJJf90mcWactZ(EfDIJJf90mcqy5uUDulnwa8FBAFAeGIlgytdjbkeDrx5fDIJJf9mhyeHPzFps3YCVEAgbySOl62dzAvHmaRWlvR8mhyG(4yX0ZFE)caS)NEyvl1koxn9izxAmvPFbAo1gay)p9WQwQvCUA6rYU0yQs)ciZQwVVPv3O6dvggijaqB5exGJtTiDJCPvpKbyfEPALN5ad0hhlME(Z7xaG9)0dRAPwX5QPhgTMoQ6c0CQnaW(F6HvTuR4C10dJwthvDbKzvR330QBu9HkddKeaOTCIlqUCb664x4LF06dSzoadimn77r6wM71tZiqxh)cV8JwFa9WzoGJADTctm5iXgOe10madimn77j75EAvbgryA23t2Z90qQQaDD8lPBzUxpZb(UCqqRJTbirijJ2VkizaUqoN2pSDqqRJTbKr7xfKmaTtCCSyqqRJTbMrqsIazbaILM7k(p)4yrA1)q9aDD8lqM5afIUOlJ42L(4yraz0(vbjdiqP0sJf90(mqNyvQAkVRxeRW2qgWtRkGnTQamtRkqzAv5c01XVfDIJJf9mhGbeMM99gqTEAgbKVMoQ6gK(ha4ufNEyvl1koxjRtpYxthvDbOCggqpCAgbkv8F)(sHFhuQugWve6oOJFL0WMwvaxrO7fXuL(jPHnTQauCXa6HtZiaJwthvDzoGRE9XUKgPmhqdVZl5k(nsosSb8a0oXXXIbfNPiqr2gjRmbKZ7ekFKCKyd4bCfHUpOE9XUKg20QcyDbZLCKyd4LCf)gd4OwhzCXM5aoQ1he06yBGzeKKiq2F2AKb(USgwCa)3Mwv9amKMraxrO7KUL5EsAKsRkWyQHuindzP(NgFOQ6JiXOE9pAetK6tKhWUQafzBKSYeOtSkvnL31tzaxrO7KUL5EsAytRkGRi0Dqh)kPrkTQafIUORCTc5CA)W2EMdui6IUY1sJfa)3M2NgbkeDr3bfNPGAfxa6aNBzUxnS4GBuTbquaY)ABSbqMZaNcLA6HKtTPHeJaNBzUNKgPugaOTCIlqaxrO7dQxFSlPrkTQaDD8RS3XsUqoxWSN5aewoLBhRHfhW)TPvvpaHDPXuL(ni9paWPko9WQwQvCUswNEiSlnMQ0VaswoLBhNEk6ehhlcCUL5E9auoddSPzeG0vR4ME(YIrjsZiW5wM7jPHnLb664xjnszoGmRA9(MwDJQpAilgiNXvvHCK)5NbAo1gGvTuR4C10JKLt52XafIYP)MXZ7WnQ2aEGVlRHfxajYPhWf9PNMBT43aoQ1jhj2aLOMMbCfHUxetv6NKgP0Qc01XVAfY50(HT9mhGYzaitRkGRE9XUKg2mhORJFL0WM5aDD87aBMdqJPk9tsJukdCUL5E1WIlGe50d4I(0tZTw8BaonwaeonxWmnKh47YAyXb3OAdGOaK)12ydqXfazAgbo3YCVAyXb8FBAv1diz5uUDC6POtCCSy6za16bcq7ehhlQHfxajYPhWf9PNMBT43aoQ1bIvP0YO0mcWk8s1kpZb6Ckc1oGGnT6byaHPzFpTc5CA)W2EAgbgryA23Ba16PzeyeHPzFpTc5CA)W2EAgbkIjgNEiXbyvl1koxn9mGGnanMQ0pjnSPmqxh)oGADTctCkd01XVdOhoZbo3YCVbbTo2gygbjjcKjJ2VkizaonwWyWyQ0qIrGcrx0vEnS4a(VnTQ6bmXIlWGL7QPNMBT43afIUORCzp3ZCGUo(fE5hT(ac2mhWrTEbe8laHYhxBUea]] )
 
-    storeDefault( [[Elemental AOE]], 'displays', 20170409.204707, [[d8dmiaqyPwVQQEjPuTlIs8Afu)gQzcrTmsy2uCEf6MiLCAu(grPCzL2jvTxXUjSFvXpHWWqvJJOKEUKgkLmyvPHJWbLOJIuQ6ykY5iLOfQQSuIIftKLtLhQapf8yeToIs1ejL0uH0KjQMUkxKKUkPuEge56izJsWwrkfBMsTDs0hvq(ms10uvX3vuJucLTPQsJMunEKItskUfPeUMeQUhsPYTrL1IukDCjKZuqdq2ehdlkGfhCJMnacTHISgVAGRD03ZsPvKc4Ab9DG(soC(cue1sTLggDb3kUaKbgryBx3BqtCmSOgpFaAqyBx3BqtCmSOgpFGIOwQvUgsSay)34)HpahtuQgVIafrTuR8bnXXWIA(cmIW2UUhA7OVxnE(a0EQLARbn(PGgqv0sMvE(cusEmS45fzw9Ixwd4BUnaOI8ZRQz5wX1MNxl3sI5K6lGmRz76gVc(PFN45rkaq6yexGJXT0o(CXRiObufTKzLNVaLKhdlEErMvV4)nGV52aGkYpVQMLBfxBEE16A3uMlGmRz76gVc(PFN45rswMcaKogXfixUavD8mmZos9s1ifGge2219qBh99QXZhGrIfartYe0JV4bAkxRryJrhj2asu22bgtbT43IZRLt8AjsYgsiX)JSIeFS1IFkEaBS4cu6yT5513ohEoqvhpJ2o67vZxGHLkfK6yxauewYOzOIHgGjKZi7d7kfK6yxaz0muXqdq2ehdlkfK6yxGpeOOiOvaGyjzTH9VpgweVIFveOQJNb08fOiQLA1kZTKhdlciJMHkgAabfNgsSOg)pbQeRXuW0v9byd2f0aD8tbCXpfGE8tbKIFkxGQoEEqtCmSOMVa0GW2UUxjLRJNpG81UPmxPfYbag3GNxvZYTIRnY(ZR81UPmxaUMMsQdhpFajd7))Hm45sJjsbAdHEd64zlLQXpfOne69amNuFwkvJFkGwx7MYC5lqBM7XQLsR8fqjRYKyg2nIosSbKcq2ehdlknm6Iadu9OQYeqoRsy6r0rInazaoMOK6WXRiGRf0x0rInqlXmSBmqt5AAXeB(cizy))pKbphPadlvaloG9FJFsrG2qO3LM5ESAPun(PaTHqVrBh99SuAf)uGQoEUKY1Ae24ifWTMadu9OQYeOsSgtbtx1JuG2qO3OTJ(EwkvJFkqvhpxsD4ifOiQLALRriNr2h2vZxagjwqBXyU4rIpW1o67vki1XUaFiqrrqlz0muXqdCTJ(EfWIdUrZgaH2qrwJxnaTAAyCuCpVOmUnEK4dqdcB76EA)RgpFaG0XiUavMGUzd0gc9U0m3JvlLwXpfGM45dq4yCTBSawCa7)g)KIaeULeZj1xPfYbag3GNxvZYTIRnY(ZlHBjXCs9fGeZj1NLs1ifGRPPunE(aOTzf3Z7qomfr88bU2rFplLQrkWamX4ZlkoGQz5wX1MN3seQbQ64zlLw5lWicB76EAeYzK9HD145dmIW2UUxjLRJNpaniSTR7PriNr2h2vJNpqrumYHPnSkCJMnGuGMY1OJeBajkB7avD8SgHCgzFyxnFbAkxdeRXOrRXZhOnZ9y1sPA(cu1XZwkvZxGQoEUunsbiXCs9zP0ksbSCmU2n(8oOjogw88ws56afmn3(8c6yYHdCTJ(EfWIlGf6Zl0I6ZRVDo8CGHLkGfhCJMnacTHISgVAaoMaqJxrGRD03RawCa7)g)KIavD8mmZos9sQdNVaKnXXWIcyXfWc95fAr9513ohEoqBi07byoP(SuAf)uavrlzw55lqLXry2seQXRiWWsfWIlGf6Zl0I6ZRVDo8CaFZTbunl3kU288wIqnaxtdGgpFazwZ21nEf8tYg)p8kKLjfiX)dsbQ64zTVJsmHCMGEnFbiBIJHffWIdy)34NueWYX4A34Z7GM4yyraxFmCachJRDJAiXcG9FJ)h(anLRlfK6yxGpeOOiOfYQfqdue1sTYlGfhW(VXpPiWicB76EA)RgpFGIOwQvU2)Q5lqBi0BqhpBP0k(PanLR1MGDbim946YLa]] )
+    storeDefault( [[Elemental AOE]], 'displays', 20171125.224306, [[d8dmiaWyKSEvLEjLq7cPu9AfKFd1mHOMMQcZMIZRq3ePKtJY3iI45sANuzVIDty)kQFcHHrIXreLlR0qjLbRkgochuIoksP4ykY5GiSqvvlLiSyu1YPQhkHEkyzkW6iI0ePezQqAYevtxLlssxLsupJsY1r0gLGTcruBMsTDI0hvqDyP(ms13vLgjLGTbrA0KQXJuCsIYTiIQRPQO7HukDBuzTqe54usDMcAaQM4yyrbS4GB0SbqyzuKL5udq1ehdlkGfhW(UXnniGVf03I6l1q5pG1Kl5wAy0fCR4cqfyeHTDDVInXXWIACkbObHTDDVInXXWIACkbi8mU2pkJcla23nUpucWXeLQXniG1Kl5kVytCmSOM)aJiSTR7H2E67vJtjaTHCj3AqJBkObufnVzLN)aLuhdlMFqMvV4KSaUMBdaQip)OAwUvCTz(rZVuyo((ciXA2UUXnqzcPtkkwfaO8mIlWX4wARsU4ge0aQIM3SYZFGsQJHfZpiZQxCinGR52aGkYZpQMLBfxBMFS0A3KMlGeRz76g3aLjKoPOyfTpfaO8mIlqUCbQ64x4LDu6LQHpaniSTR7H2E67vJtjaJclaIMIjOh3NbU2tFVsbLo2h4hbkkcAjHSHTaAGXuqYr6NkiXKcsyLKyLvkFizwPeBj)JpdyJfxGspRnZpU27XVbQ64x02tFVA(dmeFPGsh7dGIqtczdBb0amHCgvFyFPGsh7diHSHTaAaQM4yyrPGsh7d8JaffbTcaelfRnSV9XWI4gG0bbQ64xan)bSMCjxlX8l1XWIasiBylGgqqYjJclQX9rGkXAmfmDvVi2G9bnqh3ua(4McqpUPa(4MYfOQJFl2ehdlQ5paniSTR7vs674uciFTBsZvQHCaGXvC(r1SCR4AJKo)iFTBsZfGRPPK8WXPeOne6DP5ThRAsvJBkqBi0Bqh)QjvnUPaTHqVlI547ttQACtb4yIsYdh3GaT5ThRAs1YFaPSkJNzy3i6iXgGpavtCmSO0WOlcuu1HQkra5SkHPhrhj2aub4nSVFh2GFlnMWhW3c6l6iXgO5zg2ngOj9nTyIn)bS0A3KMl)bgIVawCa77g30GaJiSTR7zX)ACkbAdHEJ2E67PjvlUPa0eNsa)Acuu1HQkrGkXAmfmDvp8bAdHEJ2E67PjvnUPanPVLjSXOJeBaEsB7awtUKRCzc5mQ(W(A(d0K(UuqPJ9b(rGIIGwiRwanG1Kl5kxgfwaSVBCFOe4Ap99kGfhCJMnaclJISmNAaA10W4i5MFqzCBCwPe4Ap990KQf(aaLNrCbQmbDZgOne6DP5ThRAs1IBkqvh)AXDKNjKZe0R5paHNX1(XcyXbSVBCtdcq4xkmhFFLAihayCfNFunl3kU2iPZpe(LcZX3xajwZ21nUbktsIcsO8jTpn95NF8raUMMs14ucG2MvCZpd7XKeXPe4Ap990KQg(avD8RMuT8hqZZ4A)48tXM4yyraFFmCaUMganoLaUMBdOAwUvCTz(PeHAGH4lGfxan05hOf15hx7943awtYOgcjZQWnA2a8bAsFJosSb4jTTdu1XVYeYzu9H918hOne6DrmhFFAs1IBkqBE7XQMu18hOQJFlvdFGQo(vtQA(dqH547ttQw4du1XVWl7O0ljpC(dCTN(EfWIlGg68d0I68JR9E8BGH4lGfhCJMnaclJISmNAaoMaqJBqGR903RawCa77g30GaAEgx7hNFk2ehdlMFkj9DGcMMBNFaDm1qbOAIJHffWIlGg68d0I68JR9E8BGM03aXAmYSuCkbufnVzLN)avghHzlrOg3Ga0GW2UUNmHCgvFyFnoLaJiSTR7vs674ucmIW2UUNmHCgvFyFnoLafXeJZpO4aQMLBfxBMFkrOgGcZX3NMu1WhG3W((Dyd(n8bQ643ssFltyJdFGQo(TK8WHpaJclqsymxCwPeWAYLCLxaloG9DJBAqaAqyBx3ZI)14ucyn5sUYT4Fn)bAdHEd64xnPAXnfOj9TLfSlaHPhxFUea]] )
+
+
 
 end
-

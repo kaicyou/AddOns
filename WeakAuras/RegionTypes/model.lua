@@ -5,7 +5,7 @@ local L = WeakAuras.L;
 local default = {
   model_path = "Creature/Arthaslichking/arthaslichking.m2",
   modelIsUnit = false,
-  api = true, -- false ==> SetPosition + SetFacing; true ==> SetTransform
+  api = false, -- false ==> SetPosition + SetFacing; true ==> SetTransform
   model_x = 0,
   model_y = 0,
   model_z = 0,
@@ -60,6 +60,13 @@ local properties = {
   },
 }
 
+WeakAuras.regionPrototype.AddProperties(properties);
+
+local function GetProperties(data)
+  return properties;
+end
+
+
 -- Called when first creating a new region/display
 local function create(parent)
   -- Main region
@@ -75,7 +82,11 @@ local function create(parent)
   -- Model display
   local model = CreateFrame("PlayerModel", nil, region);
   model:SetAllPoints(region);
+  model:SetCamera(1);
+
   region.model = model;
+
+  WeakAuras.regionPrototype.create(region);
 
   -- Return complete region
   return region;
@@ -83,12 +94,11 @@ end
 
 -- Modify a given region/display
 local function modify(parent, region, data)
+  WeakAuras.regionPrototype.modify(parent, region, data);
   -- Localize
   local model, border = region.model, region.border;
 
   -- Reset position and size
-  region:ClearAllPoints();
-  WeakAuras.AnchorFrame(data, region, parent);
   region:SetWidth(data.width);
   region:SetHeight(data.height);
   region.width = data.width;
@@ -223,8 +233,9 @@ local function modify(parent, region, data)
     return region.rotation;
   end
 
-  -- Ensure using correct model
   function region:PreShow()
+    model:ClearTransform();
+
     if tonumber(data.model_path) then
       model:SetDisplayInfo(tonumber(data.model_path))
     else
@@ -236,6 +247,8 @@ local function modify(parent, region, data)
     end
     model:SetPortraitZoom(data.portraitZoom and 1 or 0);
     if (data.api) then
+      model:ClearTransform();
+      model:SetPosition(0, 0, 0);
       model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
         rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
         data.model_st_us / 1000);
@@ -247,11 +260,16 @@ local function modify(parent, region, data)
 end
 
 -- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("model", create, modify, default, properties);
+WeakAuras.RegisterRegionType("model", create, modify, default, GetProperties);
 
 -- Work around for movies and world map hiding all models
 do
-  local function preShowModels()
+  local function preShowModels(self, event)
+    if (event == "PLAYER_LOGIN") then
+      C_Timer.After(2, preShowModels);
+      return;
+    end
+
     for id, isLoaded in pairs(WeakAuras.loaded) do
       if (isLoaded) then
         local data = WeakAuras.regions[id];
@@ -265,6 +283,8 @@ do
   local movieWatchFrame;
   movieWatchFrame = CreateFrame("frame");
   movieWatchFrame:RegisterEvent("PLAY_MOVIE");
+  movieWatchFrame:RegisterEvent("CINEMATIC_STOP");
+  movieWatchFrame:RegisterEvent("PLAYER_LOGIN");
 
   movieWatchFrame:SetScript("OnEvent", preShowModels);
   WeakAuras.frames["Movie Watch Frame"] = movieWatchFrame;

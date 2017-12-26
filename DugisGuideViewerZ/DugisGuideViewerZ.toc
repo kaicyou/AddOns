@@ -1,15 +1,20 @@
-## Interface: 70200
-## Title: Dugi Questing Essential |cffffffff4.206|r
+## Interface: 70300
+## Title: Dugi Questing Essential |cffffffff4.407|r
 ## Notes: Questing Addon Copyright 2010-2017 UltimateWoWGuide.com
-## Version: 4.206
+## Version: 4.407
 ## X-Website: http://www.ultimatewowguide.com/
 ## X-Email: support@ultimatewowguide.com
 ## X-Category: Quest
-## SavedVariablesPerCharacter: CurrentTitle, CurrentZone, DugisGuideUser, DugisGuideViewerDB, DugisArrowDb, DugisFlightmasterDataTable, DugisNPCFrameDB
-## SavedVariables: MapOverlays, DugisFlightmasterLookupTable, TaxiDataCollection, DugisGuideViewerProfiles, CollectedWorldMapTrackingPoints
+## SavedVariablesPerCharacter: CurrentTitle, CurrentZone, DugisGuideUser, DugisGuideViewerDB, DugisArrowDb, DugisFlightmasterDataTable, DugisNPCFrameDB, DataExport, DugisCharacterCache
+## SavedVariables: MapOverlays, DugisFlightmasterLookupTable, TaxiDataCollection, DugisGuideViewerProfiles, CollectedWorldMapTrackingPoints_v2, FollowersCache, TutorialFrameDugisState, TutorialFrameDugisHidden
 ## X-CompatibleLocales: enUS, enGB, deDE, frFR, esES, esMX, koKR, ruRU
 
+
 LuaUtils.lua
+Libs\LibStub\LibStub.lua
+Libs\HereBeDragons-1.0\CallbackHandler-1.0\CallbackHandler-1.0.lua
+Libs\HereBeDragons-1.0\HereBeDragons-1.0.lua
+Libs\HereBeDragons-1.0\HereBeDragons-Pins-1.0.lua	
 # Library Files
 Libs\Astrolabe\Load.xml
 Libs\Load.xml
@@ -23,7 +28,8 @@ Localization\Localization.itIT.lua
 Localization\Localization.koKR.lua
 Localization\Localization.ptBR.lua
 Localization\Localization.ruRU.lua
-Localization\Localization.zhTW.lua
+Localization\Localization.ruRU.lua
+Localization\Localization.zhCN.lua
 Localization\LibBabble-SubZone-3.0\Lib.xml
 Localization\LibBabble-Class-3.0\Lib.xml
 Localization\LibBabble-Race-3.0\Lib.xml
@@ -56,6 +62,9 @@ DugisGuideViewer.xml
 WatchFrame.lua
 ItemButton.lua
 NPCJournalFrame\GUIUtils.lua
+
+GPSArrow.xml
+
 arrow.lua
 Ants.lua
 Corpse.lua

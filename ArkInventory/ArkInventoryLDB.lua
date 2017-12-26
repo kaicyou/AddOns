@@ -262,7 +262,7 @@ function ArkInventory.LDB.Pets:Update( )
 	
 	ArkInventory.LDB.Pets.Cleanup( )
 	
-	local total = ArkInventory.PetJournal.GetCount( )
+	local total = ArkInventory.Collection.Pet.GetCount( )
 	
 	if total < 1 then
 		self.icon = ArkInventory.Global.Location[ArkInventory.Const.Location.Pet].Texture
@@ -288,7 +288,7 @@ function ArkInventory.LDB.Pets:Update( )
 	-- just one
 	for k, v in pairs( selected ) do
 		if v then
-			local pd = ArkInventory.PetJournal.GetPet( k )
+			local pd = ArkInventory.Collection.Pet.GetPet( k )
 			self.icon = pd.sd.icon
 			return
 		end
@@ -298,14 +298,14 @@ end
 
 function ArkInventory.LDB.Pets:OnTooltipShow( )
 	
-	if not ArkInventory.PetJournal.JournalIsReady( ) then
+	if not ArkInventory.Collection.Pet.IsReady( ) then
 		self:AddLine( "journal not ready", 1, 0, 0 )
 		return
 	end
 	
 	self:AddDoubleLine( MODE, ArkInventory.Localise["LDB_MOUNTS_TOOLTIP_SELECTION"] )
 	
-	local total = ArkInventory.PetJournal.GetCount( )
+	local total = ArkInventory.Collection.Pet.GetCount( )
 	
 	if total < 1 then
 		self:AddDoubleLine( ArkInventory.Localise["PET"], ArkInventory.Localise["LDB_COMPANION_NONE"], 1, 1, 1, 1, 1, 1 )
@@ -332,7 +332,7 @@ function ArkInventory.LDB.Pets:OnTooltipShow( )
 		-- just the one selected, there may be ignored but they dont matter
 		for k, v in pairs( selected ) do
 			if v == true then
-				local pd = ArkInventory.PetJournal.GetPet( k )
+				local pd = ArkInventory.Collection.Pet.GetPet( k )
 				local name = pd.sd.name
 				if pd.cn and pd.cn ~= "" then
 					name = string.format( "%s (%s)", name, pd.cn )
@@ -359,13 +359,13 @@ end
 
 function ArkInventory.LDB.Pets:OnClick( button )
 	
-	if not ArkInventory.PetJournal.JournalIsReady( ) then
+	if not ArkInventory.Collection.Pet.IsReady( ) then
 		return
 	end
 	
 	if IsModifiedClick( "CHATLINK" ) then
 		-- dismiss current pet
-		ArkInventory.PetJournal.Dismiss( )
+		ArkInventory.Collection.Pet.Dismiss( )
 		return
 	end
 	
@@ -389,9 +389,9 @@ function ArkInventory.LDB.Pets:OnClick( button )
 		if #companionTable == 0 then
 			ArkInventory.Output( string.format( ArkInventory.Localise["NONE_USABLE"], "pets" ) )
 		elseif #companionTable == 1 then
-			ArkInventory.PetJournal.Summon( companionTable[1] )
+			ArkInventory.Collection.Pet.Summon( companionTable[1] )
 		else
-			ArkInventory.PetJournal.Summon( companionTable[random( 1, #companionTable )] )
+			ArkInventory.Collection.Pet.Summon( companionTable[random( 1, #companionTable )] )
 		end
 		
 	end
@@ -400,13 +400,13 @@ end
 
 function ArkInventory.LDB.Pets.Cleanup( )
 	
-	if ArkInventory.PetJournal.JournalIsReady( ) then
+	if ArkInventory.Collection.Pet.IsReady( ) then
 		
 		-- check for and remove any selected companions we no longer have (theyve either been caged or released)
 		local me = ArkInventory.GetPlayerCodex( )
 		local selected = me.player.data.ldb.pets.selected
 		for k, v in pairs( selected ) do
-			if v ~= nil and not ArkInventory.PetJournal.GetPet( k ) then
+			if v ~= nil and not ArkInventory.Collection.Pet.GetPet( k ) then
 				selected[k] = nil
 				--ArkInventory.Output( "removing selected pet we dont have any more - ", k )
 			end
@@ -414,7 +414,7 @@ function ArkInventory.LDB.Pets.Cleanup( )
 		
 		-- if all companions are selected then deselect them all
 		local selected = me.player.data.ldb.pets.selected
-		local n1 = ArkInventory.PetJournal.GetCount( )
+		local n1 = ArkInventory.Collection.Pet.GetCount( )
 		local n2 = ArkInventory.Table.Elements( selected )
 		
 		--ArkInventory.Output( "pet / ", n1, " / ", n2, " / ", selected )
@@ -559,7 +559,7 @@ function ArkInventory.LDB.Mounts:OnClick( button )
 		
 	else
 		
-		if UnitInVehicle( "player" ) or IsIndoors( ) or not IsOutdoors( ) or not ArkInventory.Collection.Mount.IsReady( ) then
+		if InCombatLockdown( ) or UnitInVehicle( "player" ) or IsIndoors( ) or not IsOutdoors( ) or not ArkInventory.Collection.Mount.IsReady( ) then
 			-- not even going to try
 			return
 		end
@@ -860,11 +860,11 @@ function ArkInventory.LDB.Pets.BuildList( ignoreActive )
 	
 	table.wipe( companionTable )
 	
-	if not ArkInventory.PetJournal.JournalIsReady( ) then
+	if not ArkInventory.Collection.Pet.IsReady( ) then
 		return
 	end
 	
-	local n = ArkInventory.PetJournal.GetCount( )
+	local n = ArkInventory.Collection.Pet.GetCount( )
 	--ArkInventory.Output( "pet count = ", n )
 	if n == 0 then return end
 	
@@ -884,11 +884,11 @@ function ArkInventory.LDB.Pets.BuildList( ignoreActive )
 	--ArkInventory.Output( "count = ", selectedCount, ", selected = ", selected )
 	
 	local count = 0
-	local _, _, activePet = ArkInventory.PetJournal.GetCurrent( )
+	local _, _, activePet = ArkInventory.Collection.Pet.GetCurrent( )
 	local activeSpecies = activePet and activePet.sd.speciesID
 	
-	for index, pd in ArkInventory.PetJournal.Iterate( ) do
-		if ( not activePet or ignoreActive ) and ( pd.sd.speciesID ~= activeSpecies ) and ( selectedCount == 0 or selected[index] == true ) and ArkInventory.PetJournal.CanSummon( pd.guid ) then
+	for index, pd in ArkInventory.Collection.Pet.Iterate( ) do
+		if ( not activePet or ignoreActive ) and ( pd.sd.speciesID ~= activeSpecies ) and ( selectedCount == 0 or selected[index] == true ) and ArkInventory.Collection.Pet.CanSummon( pd.guid ) then
 			-- cannot be same current species as active pet, if one was active
 			-- must be summonable
 			if selected[index] == false then

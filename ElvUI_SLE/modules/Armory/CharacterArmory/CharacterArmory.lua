@@ -3,7 +3,7 @@ if select(2, GetAddOnInfo('ElvUI_KnightFrame')) and IsAddOnLoaded('ElvUI_KnightF
 local _G = _G
 local SLE, T, E, L, V, P, G = unpack(select(2, ...))
 local KF, Info, Timer = unpack(ElvUI_KnightFrame)
-local ElvUI_BagModule = E:GetModule('Bags')
+local ElvUI_BagModule, ElvUI_DataBars = SLE:GetElvModules("Bags", "DataBars")
 local Lib_Search = LibStub('LibItemSearch-1.2-ElvUI')
 --GLOBALS: CreateFrame, UIParent, SLE_ArmoryDB, hooksecurefunc, GetInventoryItemGems
 
@@ -34,6 +34,7 @@ local C_TransmogCollection_GetIllusionSourceInfo = C_TransmogCollection.GetIllus
 local AnimatedNumericFontStringMixin = AnimatedNumericFontStringMixin
 
 local format = format
+local AP_NAME = format("%s|r", ARTIFACT_POWER)
 
 --------------------------------------------------------------------------------
 --<< KnightFrame : Upgrade Character Frame's Item Info like Wow-Armory		>>--
@@ -306,7 +307,7 @@ function CA:Setup_CharacterArmory()
 	--<< Average Item Level >>--
 	-- KF:TextSetting(self, nil, { Tag = 'AverageItemLevel', FontSize = 12 }, 'BOTTOM', CharacterModelFrame, 'TOP', 0, 14)
 	-- local function ValueColorUpdate()
-	-- 	self.AverageItemLevel:SetText(KF:Color_Value(STAT_AVERAGE_ITEM_LEVEL)..' : '..format('%.2f', select(2, GetAverageItemLevel())))
+		-- self.AverageItemLevel:SetText(KF:Color_Value(STAT_AVERAGE_ITEM_LEVEL)..' : '..format('%.2f', select(2, GetAverageItemLevel())))
 	-- end
 	-- E.valueColorUpdateFuncs[ValueColorUpdate] = true
 	
@@ -350,7 +351,6 @@ function CA:Setup_CharacterArmory()
 			if E.db.sle.Armory.Character.Level.Display == 'Hide' then
 				Slot.ItemLevel:Hide()
 			end
-			
 			-- Enchantment Name
 			KF:TextSetting(Slot, nil, { Tag = 'ItemEnchant',
 				Font = E.db.sle.Armory.Character.Enchant.Font,
@@ -769,7 +769,7 @@ function CA:Update_Gear()
 	if Prof2 and Info.Armory_Constants.ProfessionList[Prof2] then self.PlayerProfession[(Info.Armory_Constants.ProfessionList[Prof2].Key)] = Prof2_Level end
 	]]
 	local ErrorDetected, NeedUpdate, NeedUpdateList, R, G, B
-	local Slot, ItemLink, ItemData, BasicItemLevel, TrueItemLevel, ItemUpgradeID, CurrentUpgrade, MaxUpgrade, ItemType, UsableEffect, CurrentLineText, GemID, GemLink, GemTexture, GemCount_Default, GemCount_Now, GemCount, IsTransmogrified
+	local Slot, ItemLink, ItemData, BasicItemLevel, TrueItemLevel, ItemUpgradeID, CurrentUpgrade, MaxUpgrade, ItemType, UsableEffect, CurrentLineText, GemID, GemLink, GemTexture, GemCount_Default, GemCount_Now, GemCount, ItemTexture, IsTransmogrified
 
 	Artifact_ItemID, _, _, _, Artifact_Power, Artifact_Rank = C_ArtifactUI.GetEquippedArtifactInfo()
 	if self.ArtifactMonitor and not self.ArtifactMonitor.Socket1 then CA:ConstructArtSockets() end
@@ -1052,6 +1052,11 @@ function CA:Update_Gear()
 							or
 							TrueItemLevel
 						)
+						if E.db.sle.Armory.Character.Level.ItemColor then
+							Slot.ItemLevel:SetTextColor(R, G, B)
+						else
+							Slot.ItemLevel:SetTextColor(1, 1, 1)
+						end
 					end
 					
 					if E.db.sle.Armory.Character.NoticeMissing ~= false then
@@ -1139,23 +1144,6 @@ end
 
 do --<< Artifact Monitor >>
 	local EnchantError, EnchantError_MainHand, EnchantError_SecondaryHand
-	local apItemCache = {}
-	local apStringValueMillion = {
-		["enUS"] = "(%d*[%p%s]?%d+) million",
-		["enGB"] = "(%d*[%p%s]?%d+) million",
-		["ptBR"] = "(%d*[%p%s]?%d+) [[milhão][milhões]]?",
-		["esMX"] = "(%d*[%p%s]?%d+) [[millón][millones]]?",
-		["deDE"] = "(%d*[%p%s]?%d+) [[Million][Millionen]]?",
-		["esES"] = "(%d*[%p%s]?%d+) [[millón][millones]]?",
-		["frFR"] = "(%d*[%p%s]?%d+) [[million][millions]]?",
-		["itIT"] = "(%d*[%p%s]?%d+) [[milione][milioni]]?",
-		["ruRU"] = "(%d*[%p%s]?%d+) млн",
-		["koKR"] = "(%d*[%p%s]?%d+)만",
-		["zhTW"] = "(%d*[%p%s]?%d+)萬",
-		["zhCN"] = "(%d*[%p%s]?%d+)万",
-	}
-	local apStringValueMillionLocal = apStringValueMillion[GetLocale()]
-	local empoweringSpellName = GetSpellInfo(227907)
 
 	function CA:LegionArtifactMonitor_UpdateLayout()
 		if Legion_ArtifactData.ItemID then
@@ -1253,6 +1241,7 @@ do --<< Artifact Monitor >>
 	
 	
 	function CA:LegionArtifactMonitor_UpdateData()
+		if not self.ArtifactMonitor then return end
 		Artifact_ItemID, _, _, _, Artifact_Power, Artifact_Rank,_, _, _, _, _, _, Artifact_Tier = C_ArtifactUI.GetEquippedArtifactInfo()
 		if Artifact_ItemID then
 			Legion_ArtifactData.ItemID = Artifact_ItemID
@@ -1308,100 +1297,33 @@ do --<< Artifact Monitor >>
 		end
 		return str
 	end
-	local PowerItemLink, SearchingText, SearchingPhase, CurrentItemPower, TotalPower, LowestPower, LowestPower_BagID, LowestPower_SlotID, LowestPower_Link
+	local PowerItemLink, SearchingText, SearchingPhase, CurrentItemPower, TotalPower
 	function CA:LegionArtifactMonitor_SearchPowerItem()
 		if not self.ArtifactMonitor.UpdateData then
 			CA:LegionArtifactMonitor_UpdateData()
 		end
+		if not self.ArtifactMonitor.BarExpected.InitialLoadCheck then
+			CA:LegionArtifactMonitor_UpdateData()
+			self.ArtifactMonitor.BarExpected.InitialLoadCheck = true
+		end
 		
-		LowestPower = nil
-		TotalPower = 0
+		-- LowestPower = nil
 		
 		if Legion_ArtifactData.ItemID then
-			for BagID = 0, NUM_BAG_SLOTS do
-				for SlotID = 1, GetContainerNumSlots(BagID) do
-					_, _, _, _, _, _, PowerItemLink = GetContainerItemInfo(BagID, SlotID)
-					
-					if PowerItemLink then
-						if GetItemInfo(PowerItemLink) then
-							-- print(GetItemInfo(PowerItemLink))
-							-- print(PowerItemLink)
-							CurrentItemPower = 0
-							if apItemCache[PowerItemLink] then
-								if apItemCache[PowerItemLink] ~= false then
-									CurrentItemPower = apItemCache[PowerItemLink]
-									if not LowestPower or LowestPower > CurrentItemPower then
-										LowestPower = CurrentItemPower
-										LowestPower_BagID = BagID
-										LowestPower_SlotID = SlotID
-										LowestPower_Link = PowerItemLink
-									end
-								end
-							else
-								local itemSpell = GetItemSpell(PowerItemLink)
-								if itemSpell and itemSpell == empoweringSpellName then
-									self:ClearTooltip(self.ArtifactMonitor.ScanTT)
-									local success = pcall(self.ArtifactMonitor.ScanTT.SetHyperlink, self.ArtifactMonitor.ScanTT, PowerItemLink)
-									if success then
-										local apFound
-										for i = 5, 1, -1 do
-											local tooltipText = _G["Knight_CharacterArmory_ArtifactScanTTTextLeft"..i]:GetText()
-											if tooltipText then
-												local digit1, digit2, digit3, ap
-												local value = T.match(tooltipText, apStringValueMillionLocal)
-												if value then
-													digit1, digit2 = T.match(value, "(%d+)[%p%s](%d+)")
-													if digit1 and digit2 then
-														ap = T.tonumber(T.format("%s.%s", digit1, digit2)) * 1e6 --Multiply by one million
-													else
-														ap = T.tonumber(value) * 1e6 --Multiply by one million
-													end
-												else
-													digit1, digit2, digit3 = T.match(tooltipText,"(%d+)[%p%s]?(%d+)[%p%s]?(%d+)")
-													ap = T.tonumber(T.format("%s%s%s", digit1 or "", digit2 or "", (digit2 and digit3) and digit3 or ""))
-												end
-												
-												if ap then
-													CurrentItemPower = ap
-													CurrentItemPower = T.tonumber(CurrentItemPower)
-													apItemCache[PowerItemLink] = CurrentItemPower
-													apFound = true
-													if not LowestPower or LowestPower > CurrentItemPower then
-														LowestPower = CurrentItemPower
-														LowestPower_BagID = BagID
-														LowestPower_SlotID = SlotID
-														LowestPower_Link = PowerItemLink
-													end
-													break
-												end
-											end
-										end
-										
-										if (not apFound) then
-											apItemCache[PowerItemLink] = false --Cache item as not granting AP
-										end
-									end
-								else
-									apItemCache[PowerItemLink] = false --Cache item as not granting AP
-								end
-							end
-							TotalPower = TotalPower + CurrentItemPower
-						end
-					end
-				end
-			end
+			TotalPower = ElvUI_DataBars:GetArtifactPowerInBags()
 
-			if LowestPower then
-				self.ArtifactMonitor.AddPower.Texture:Show()
-				self.ArtifactMonitor.AddPower.Button.Link = LowestPower_Link
-				
-				if LowestPower > 0 then
+			if TotalPower then
+
+				if TotalPower > 0 then
+					self.ArtifactMonitor.AddPower.Texture:Show()
 					if E.db.sle.Armory.Character.Artifact.ShortValues then
 						self.ArtifactMonitor.BarExpected.AvailablePower:SetText(KF:Color_Value('+'..E:ShortValue(TotalPower)))
 					else
 						self.ArtifactMonitor.BarExpected.AvailablePower:SetText(KF:Color_Value('+'..BreakUpLargeNumbers(TotalPower)))
 					end
 				else
+					self.ArtifactMonitor.AddPower.Texture:Hide()
+					self.ArtifactMonitor.AddPower.Texture:Hide()
 					self.ArtifactMonitor.BarExpected.AvailablePower:SetText()
 				end
 			else
@@ -1411,7 +1333,7 @@ do --<< Artifact Monitor >>
 				self.ArtifactMonitor.BarExpected.AvailablePower:SetText()
 				self:LegionArtifactMonitor_ClearPowerItemSearching()
 			end
-			
+
 			if Legion_ArtifactData.XP then
 				if TotalPower + Legion_ArtifactData.XP > Legion_ArtifactData.XPForNextPoint then
 					TotalPower = Legion_ArtifactData.XPForNextPoint
@@ -1419,7 +1341,7 @@ do --<< Artifact Monitor >>
 					TotalPower = TotalPower + Legion_ArtifactData.XP
 				end
 			end
-			
+
 			self.ArtifactMonitor.BarExpected:SetValue(TotalPower)
 		end
 		
@@ -1646,6 +1568,7 @@ KF.Modules.CharacterArmory = function()
 		_G["CharacterModelFrame"].BackgroundTopRight:Hide()
 		_G["CharacterModelFrame"].BackgroundBotLeft:Hide()
 		_G["CharacterModelFrame"].BackgroundBotRight:Hide()
+		_G["CharacterModelFrame"].backdrop:Hide()
 		
 		if _G["PaperDollFrame"]:IsShown() then
 			_G["CharacterFrame"]:SetWidth(_G["CharacterFrame"].Expanded and 650 or 444)
@@ -1676,6 +1599,8 @@ KF.Modules.CharacterArmory = function()
 		]]
 		_G["CharacterModelFrameBackgroundOverlay"]:SetPoint('TOPLEFT', CharacterArmory, -8, 0)
 		_G["CharacterModelFrameBackgroundOverlay"]:SetPoint('BOTTOMRIGHT', CharacterArmory, 8, 0)
+		
+		CA:LegionArtifactMonitor_UpdateData()
 	elseif Info.CharacterArmory_Activate then
 		Info.CharacterArmory_Activate = nil
 		
@@ -1699,6 +1624,7 @@ KF.Modules.CharacterArmory = function()
 		_G["CharacterModelFrame"].BackgroundTopRight:Show()
 		_G["CharacterModelFrame"].BackgroundBotLeft:Show()
 		_G["CharacterModelFrame"].BackgroundBotRight:Show()
+		_G["CharacterModelFrame"].backdrop:Show()
 		
 		-- Turn off ArmoryFrame
 		CA:Hide()
@@ -1714,6 +1640,12 @@ KF.Modules.CharacterArmory = function()
 		_G["CharacterModelFrameBackgroundOverlay"]:SetPoint('TOPLEFT', CharacterModelFrame, 0, 0)
 		_G["CharacterModelFrameBackgroundOverlay"]:SetPoint('BOTTOMRIGHT', CharacterModelFrame, 0, 0)
 	end
+	
+	hooksecurefunc(E, "UpdateMedia", function(self)
+		if (not E.db.sle.Armory.Character.Enable) and (not CA.ArtifactMonitor) then return end
+		CA.ArtifactMonitor.BarExpected:SetStatusBarColor(unpack(E.media.rgbvaluecolor))
+		CA:LegionArtifactMonitor_UpdateData()
+	end)
 
 	CA:ElvOverlayToggle()
 	if SLE._Compatibility["DejaCharacterStats"] then

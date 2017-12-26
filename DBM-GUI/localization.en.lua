@@ -6,7 +6,7 @@ L.MainFrame = "Deadly Boss Mods"
 
 L.TranslationByPrefix		= "Translated by "
 L.TranslationBy 			= nil -- your name here, localizers!
-L.Website					= "Visit discussion/support forums at |cFF73C2FBwww.deadlybossmods.com|r. Follow on twitter @deadlybossmods or @MysticalOS"
+L.Website					= "Visit us on discord at |cFF73C2FBhttps://discord.gg/DF5mffk|r. Follow on twitter @deadlybossmods or @MysticalOS"
 L.WebsiteButton				= "Forums"
 
 L.OTabBosses	= "Bosses"
@@ -94,7 +94,7 @@ L.Warn_FontType				= "Select font"
 L.Warn_FontStyle			= "Font flags"
 L.Warn_FontShadow			= "Shadow"
 L.Warn_FontSize				= "Font size: %d"
-L.Warn_Duration				= "Warning duration: %d sec"
+L.Warn_Duration				= "Warning duration: %0.1f sec"
 L.None						= "None"
 L.Outline					= "Outline"
 L.ThickOutline				= "Thick outline"
@@ -110,12 +110,14 @@ L.ShowAllVersions	 		= "Show boss mod versions for all group members in chat fra
 L.CombatMessages			= "Combat Message Options"
 L.ShowEngageMessage 		= "Show engage messages in chat frame"
 L.ShowDefeatMessage 		= "Show kill/wipe messages in chat frame"
-L.ShowGuildMessages 		= "Show guild engage/kill/wipe messages in chat frame"
+L.ShowGuildMessages 		= "Show engage/kill/wipe messages for guild raids in chat frame"
+L.ShowGuildMessagesPlus		= "Also show Mythic+ engage/kill/wipe messages for guild groups (requires raid option)"
 L.WhisperMessages			= "Whisper Message Options"
 L.AutoRespond 				= "Auto-respond to whispers while fighting"
 L.EnableStatus 				= "Reply to 'status' whispers"
 L.WhisperStats 				= "Include kill/wipe stats in whisper responses"
-L.DisableStatusWhisper 		= "Disable status whispers for the entire group (requires Group Leader). Applies only to normal/heroic/mythic raids and challenge mode/mythic dungeons"
+L.DisableStatusWhisper 		= "Disable status whispers for the entire group (requires Group Leader). Applies only to normal/heroic/mythic raids and mythic+ dungeons"
+L.DisableGuildStatus 		= "Disable progression messages from being sent to guild for entire group (requires Group Leader)."
 
 -- Tab: Barsetup
 L.BarSetup					= "Bar Setup"
@@ -143,8 +145,8 @@ L.BarStartColorInterrupt	= "Start color (Interrupt)"
 L.BarEndColorInterrupt		= "End color (Interrupt)"
 L.BarStartColorRole			= "Start color (Role)"
 L.BarEndColorRole			= "End color (Role)"
-L.BarStartColorPhase		= "Start color (Phase)"
-L.BarEndColorPhase			= "End color (Phase)"
+L.BarStartColorPhase		= "Start color (Stage)"
+L.BarEndColorPhase			= "End color (Stage)"
 L.BarStartColorUI			= "Start color (User)"
 L.BarEndColorUI				= "End color (User)"
 --Type 7 options
@@ -218,7 +220,7 @@ L.HUDAlphaSlider			= "Alpha: %0.1f"
 
 -- Tab: Spoken Alerts Frame
 L.Panel_SpokenAlerts		= "Spoken Alerts"
-L.Area_VoiceSelection		= "Voice Selections"
+L.Area_VoiceSelection		= "Voice Selections (scroll selection menus with mouse wheel)"
 L.CountdownVoice			= "Set primary voice for count sounds"
 L.CountdownVoice2			= "Set secondary voice for count sounds"
 L.CountdownVoice3			= "Set tertiary voice for count sounds"
@@ -266,7 +268,6 @@ L.SpamBlockNoRangeRestore	= "Do not restore range frame to previous state when m
 L.Area_SpamFilter			= "Spam Filter Options"
 L.DontShowFarWarnings		= "Do not show announces/timers for events that are far away"
 L.StripServerName			= "Strip realm name in warnings and timers"
-L.SpamBlockBossWhispers		= "Filter &lt;DBM&gt; warning whispers while fighting"
 L.BlockVersionUpdateNotice	= "Show more frequent 'out of date' notifications in chat frame instead of a popup."
 
 L.Area_SpecFilter			= "Role Filter Options"
@@ -293,7 +294,6 @@ L.HideGuildChallengeUpdates	= "Hide guild challenge toasts during boss fights"
 L.HideQuestTooltips			= "Hide quest objectives from tooltips during boss fights"
 L.HideTooltips				= "Completely hide tooltips during boss fights"
 L.DisableSFX				= "Disable sound effects channel during boss fights"
-L.SpamBlockSayYell			= "Hide chat bubbles announces from the chat frame"
 L.DisableCinematics			= "Hide in-game cinematics"
 L.AfterFirst				= "After each movie has played once"
 L.Always					= ALWAYS
@@ -316,7 +316,6 @@ L.AutoReplySound			= "Play alert sound and flash application icon when receiving
 --
 L.TimerGeneral 				= "Timer Options"
 L.SKT_Enabled				= "Show record victory timer for current fight if available"
-L.CRT_Enabled				= "Show timer for next combat ressurection charge"
 L.ShowRespawn				= "Show boss respawn timer after a wipe"
 L.ShowQueuePop				= "Show time remaining to accept a queue pop (LFG,BG,etc)"
 --

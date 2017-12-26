@@ -269,6 +269,195 @@ local function scanTalents()
 	Amr.db.char.Talents[specPos] = str
 end
 
+local function scanCrucible()
+	if not Amr.db or not Amr.db.char or not Amr.db.char.Artifacts or not C_ArtifactRelicForgeUI or not C_ArtifactRelicForgeUI.GetSocketedRelicTalents then return end
+
+	local equipped = {}
+	local preview = nil
+	
+	for i = 1,4 do
+		local talents = nil
+		if i == 4 then
+			talents = C_ArtifactRelicForgeUI.GetPreviewRelicTalents()
+			--talents = nil
+		else
+			talents = C_ArtifactRelicForgeUI.GetSocketedRelicTalents(i)
+			
+			--[[
+			-- test data
+			if i == 1 then
+				talents = {}
+				table.insert(talents, {
+					powerID = 1739,
+					isChosen = true				
+				})
+				table.insert(talents, {
+					powerID = 1781,
+					isChosen = true				
+				})
+				table.insert(talents, {
+					powerID = 1770,
+					isChosen = false				
+				})
+				table.insert(talents, {
+					powerID = 791,
+					isChosen = false
+				})
+				table.insert(talents, {
+					powerID = 786,
+					isChosen = false				
+				})
+				table.insert(talents, {
+					powerID = 1537,
+					isChosen = false				
+				})
+			end
+			]]
+		end
+		
+		if talents then
+			local obj = {
+				Powers = {},
+				Active = {}
+			}
+			
+			if i == 4 then
+				obj.ItemLink = C_ArtifactRelicForgeUI.GetPreviewRelicItemLink()
+				if not obj.ItemLink then
+					talents = nil
+				else
+					preview = obj
+				end
+			else
+				table.insert(equipped, obj)
+			end
+			
+			if talents then
+				for k,v in ipairs(talents) do
+					table.insert(obj.Powers, v.powerID)
+					table.insert(obj.Active, v.isChosen)
+				end
+			end
+			
+		elseif i ~= 4 then
+			table.insert(equipped, {})
+		end
+	end
+		
+	
+	local itemID = C_ArtifactUI.GetArtifactInfo()	
+	local spec = Amr.ArtifactIdToSpecNumber[itemID]
+	
+	if spec then
+	
+		-- sometimes this event can fire when no crucible data is available, don't overwrite non-blank crucible data with blank crucible data
+		local badEquipped = false
+		if Amr.db.char.Artifacts[spec] then
+			local oldCrucible = Amr.db.char.Artifacts[spec].Crucible
+			if oldCrucible then
+				if #oldCrucible.Equipped > 0 and oldCrucible.Equipped[1] and not equipped[1] then
+					badEquipped = true
+				end
+			end
+		end
+		
+		local dataz = Amr.db.char.Artifacts[spec]
+		if not dataz then
+			dataz = {}
+			Amr.db.char.Artifacts[spec] = dataz
+		end
+		
+		if not dataz.Crucible then
+			dataz.Crucible = {
+				Equipped = {},
+				Previewed = {}
+			}
+		end		
+		
+		local crucible = dataz.Crucible		
+		
+		if not badEquipped then
+			crucible.Equipped = equipped
+		end
+		
+		if preview then
+			local previewKey = {}
+			table.insert(previewKey, preview.ItemLink)
+			for i,v in ipairs(preview.Powers) do
+				table.insert(previewKey, v .. "=" .. tostring(preview.Active[i]))
+			end			
+			previewKey = table.concat(previewKey, "_")
+			
+			if not crucible.Previewed then
+				crucible.Previewed = {}
+			end
+			crucible.Previewed[previewKey] = preview
+		end
+	end
+end
+
+local function pruneCrucible()
+	if not Amr.db or not Amr.db.char or not Amr.db.char.Artifacts then return end
+	
+	local spec = GetSpecialization()
+	local dataz = Amr.db.char.Artifacts[spec]
+	if not dataz or not dataz.Crucible then return end
+	
+	local crucible = dataz.Crucible
+	
+	-- this was old format, transform to new format
+	if crucible.Inventory then
+		if not crucible.Previewed then
+			crucible.Previewed = {}
+		end
+		
+		for link,preview in pairs(crucible.Inventory) do
+			local previewKey = {}
+			table.insert(previewKey, preview.ItemLink)
+			for i,v in ipairs(preview.Powers) do
+				table.insert(previewKey, v .. "=" .. tostring(preview.Active[i]))
+			end			
+			previewKey = table.concat(previewKey, "_")
+			
+			crucible.Previewed[previewKey] = preview
+		end
+		
+		crucible.Inventory = nil
+	end
+	
+	-- get a hash of every owned, but not-equipped item
+	local ownedItems = {}
+	if Amr.db.char.BagItems then
+		for i,link in ipairs(Amr.db.char.BagItems) do
+			ownedItems[link] = true
+		end
+	end
+	if Amr.db.char.BankItems then
+		for i,link in ipairs(Amr.db.char.BankItems) do
+			ownedItems[link] = true
+		end
+	end
+	if Amr.db.char.VoidItems then
+		for i,link in ipairs(Amr.db.char.VoidItems) do
+			ownedItems[link] = true
+		end
+	end
+	
+	-- prune out any previewed relics that the player no longer owns
+	if crucible.Previewed then
+		local toRemove = {}
+		for k,v in pairs(crucible.Previewed) do
+			if not ownedItems[v.ItemLink] then
+				table.insert(toRemove, k)
+			end
+		end
+		for i,v in ipairs(toRemove) do
+			crucible.Previewed[v] = nil
+		end
+	end
+	
+end
+
 local function scanArtifact()
 	if not Amr.db or not Amr.db.char or not Amr.db.char.Artifacts then return end
 	
@@ -299,11 +488,38 @@ local function scanArtifact()
 	--local spec = GetSpecialization()
 	
 	if spec then
-		Amr.db.char.Artifacts[spec] = {
-			Powers = powerRanks,
-			Relics = relicInfo
-		}
+	
+		-- sometimes this event can fire when no relic data is available, don't overwrite non-blank relic data with blank relic data
+		if Amr.db.char.Artifacts[spec] then
+			local oldRelics = Amr.db.char.Artifacts[spec].Relics
+			if oldRelics then
+				for i = 1,3 do
+					if oldRelics[i] and oldRelics[i] ~= "" and (not relicInfo[i] or relicInfo[i] == "") then
+						relicInfo[i] = oldRelics[i]
+					end
+				end
+			end
+		end
+		
+		local dataz = Amr.db.char.Artifacts[spec]
+		if not dataz then
+			dataz = {}
+			Amr.db.char.Artifacts[spec] = dataz
+		end
+
+		if not dataz.Crucible then
+			dataz.Crucible = {
+				Equipped = {},
+				Inventory = {}
+			}
+		end
+		
+		dataz.Powers = powerRanks
+		dataz.Relics = relicInfo	
+		
 	end
+	
+	--scanCrucible()
 end
 
 -- Returns a data object containing all information about the current player needed for an export:
@@ -315,6 +531,9 @@ function Amr:ExportCharacter()
 	
 	-- scan current spec's talents just before exporting
 	scanTalents()
+	
+	-- prune crucible info just before each time we export
+	pruneCrucible()
 	
 	data.Talents = Amr.db.char.Talents
 	data.Artifacts = Amr.db.char.Artifacts
@@ -344,3 +563,5 @@ Amr:AddEventHandler("VOID_STORAGE_UPDATE", scanVoid)
 
 Amr:AddEventHandler("PLAYER_TALENT_UPDATE", scanTalents)
 Amr:AddEventHandler("ARTIFACT_UPDATE", scanArtifact)
+Amr:AddEventHandler("ARTIFACT_RELIC_FORGE_UPDATE", scanCrucible)
+Amr:AddEventHandler("ARTIFACT_RELIC_FORGE_PREVIEW_RELIC_CHANGED", scanCrucible)

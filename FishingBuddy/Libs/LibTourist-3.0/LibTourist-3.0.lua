@@ -1,15 +1,15 @@
 --[[
 Name: LibTourist-3.0
-Revision: $Rev: 193 $
+Revision: $Rev: 191 $
 Author(s): Odica (maintainer), originally created by ckknight and Arrowmaster
-Documentation: https://www.wowace.com/projects/libtourist-3-0/pages/api-reference
+Documentation: http://www.wowace.com/addons/libtourist-3-0/
 SVN: svn://svn.wowace.com/wow/libtourist-3-0/mainline/trunk
 Description: A library to provide information about zones and instances.
 License: MIT
 ]]
 
 local MAJOR_VERSION = "LibTourist-3.0"
-local MINOR_VERSION = 90000 + tonumber(("$Revision: 193 $"):match("(%d+)"))
+local MINOR_VERSION = 90000 + tonumber(("$Revision: 191 $"):match("(%d+)"))
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub") end
 
@@ -114,10 +114,6 @@ local entrancePortals_x = {}
 local entrancePortals_y = {}
 
 local zoneIDtoContinentID = {}
-local continentZoneToMapID = {}
-
-local zoneMapIDs = {}
-local zoneMapIDs_rev = {}
 
 -- HELPER AND LOOKUP FUNCTIONS -------------------------------------------------------------
 
@@ -140,7 +136,7 @@ local function UpdateCachedLegionZoneLevels()
 end
 
 local function PLAYER_LEVEL_UP(self, level)
-	playerLevel = level or UnitLevel("player")
+	playerLevel = (level and level ~= true) and level or UnitLevel("player")
 	for k in pairs(recZones) do
 		recZones[k] = nil
 	end
@@ -240,12 +236,8 @@ local function GetMapZonesAltLocal(continentID)
 			-- If the index is out of bounds, the continent map is returned -> exit the loop
 			break 
 		end 
-		-- Add area IDs to lookup tables
+		-- Add area IDs to lookup table
 		zoneIDtoContinentID[zoneAreaID] = continentID
-		if not continentZoneToMapID[continentID] then
-			continentZoneToMapID[continentID] = {}
-		end
-		continentZoneToMapID[continentID][i] = zoneAreaID
 		-- Get the localized zone name and store it
 		zones[i] = GetMapNameByID(zoneAreaID)
 	end
@@ -1435,52 +1427,6 @@ end
 
 function Tourist:GetTexture(zone)
 	return textures[zone]
-end
-
-function Tourist:GetZoneMapID(zone)
-	return zoneMapIDs[zone]
-end
-
--- Returns the MapAreaID for a given continent ID and zone Index (the index of the zone within the continent)
-function Tourist:GetMapAreaIDByContinentZone(continentID, zoneIndex)
-	if continentID and continentZoneToMapID[continentID] then
-		return continentZoneToMapID[continentID][zoneIndex]
-	else
-		return nil
-	end
-end
-
--- Returns the MapAreaID of a zone based on the texture name
-function Tourist:GetZoneMapIDFromTexture(texture)
-	if not texture then
-		return -1
-	end
-	local zone = textures_rev[texture]
-	if zone then
-		return zoneMapIDs[zone]
-	else
-		-- Might be phased terrain, look for "_terrain<number>" postfix
-		local pos1 = string.find(texture, "_terrain")
-		if pos1 then
-			-- Remove the postfix from the texture name and try again
-			texture = string.sub(texture, 0, pos1 - 1)
-			zone = textures_rev[texture]
-			if zone then
-				return zoneMapIDs[zone]
-			end
-		end
-		-- Might be tiered terrain (garrison), look for "_tier<number>" postfix
-		local pos2 = string.find(texture, "_tier")
-		if pos2 then
-			-- Remove the postfix from the texture name and try again
-			texture = string.sub(texture, 0, pos2 - 1)
-			zone = textures_rev[texture]
-			if zone then
-				return zoneMapIDs[zone]
-			end
-		end
-	end
-	return nil
 end
 
 function Tourist:GetZoneFromTexture(texture)
@@ -7794,8 +7740,6 @@ do
 		if zones[continentName] then
 			-- Get map texture name
 			zones[continentName].texture = GetMapInfo()
-			-- Get MapID
-			zones[continentName].zoneMapID = GetCurrentMapAreaID()
 			
 			local _, cLeft, cTop, cRight, cBottom = GetCurrentMapZone()
 			-- Calculate size in yards
@@ -7914,8 +7858,6 @@ do
 								
 					-- Get zone texture filename
 					zones[zoneName].texture = GetMapInfo()
-					-- Get zone mapID
-					zones[zoneName].zoneMapID = GetCurrentMapAreaID()
 				else
 					trace("|r|cffff4422! -- Tourist:|r TODO: Add zone "..tostring(zoneName))
 				end
@@ -7959,10 +7901,6 @@ do
 		zoneComplexes[k] = v.complexes
 		if v.texture then
 			textures_rev[v.texture] = k
-		end
-		zoneMapIDs[k] = v.zoneMapID
-		if v.zoneMapID then
-			zoneMapIDs_rev[v.zoneMapID] = k
 		end
 		if v.entrancePortal then
 			entrancePortals_zone[k] = v.entrancePortal[1]

@@ -1,18 +1,24 @@
 ------------------------------------------------------------------------
-r188 | Tuhljin | 2017-04-06 02:43:32 -0500 (Thu, 06 Apr 2017) | 4 lines
+r202 | Tuhljin | 2017-11-08 17:41:25 -0600 (Wed, 08 Nov 2017) | 1 line
 Changed paths:
-   M /trunk/Calendar.lua
    M /trunk/Options.lua
    M /trunk/Overachiever.lua
    M /trunk/Overachiever.toc
-   M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
-   M /trunk/Overachiever_Trade/Overachiever_Trade.toc
    M /trunk/localization.lua
    M /trunk/readme.txt
 
-- Holiday/Event Toasts:
--- Added option to control the appearance of PvP Brawl toasts. Disabled by default.
--- Fix certain timewalking events being treated as holidays instead of dungeon events.
--- Fix failure to load texture for micro-holidays that take up two days in the calendar.
+- Added option "Startup: Throttle achievement lookup" to replace the special variable THROTTLE_ACHLOOKUP. (For details on its purpose, see notes for v0.99.9.)
+------------------------------------------------------------------------
+r201 | Tuhljin | 2017-11-05 17:43:59 -0600 (Sun, 05 Nov 2017) | 1 line
+Changed paths:
+   M /trunk/AchieveID.lua
+   M /trunk/GameTip.lua
+   M /trunk/Overachiever.toc
+   M /trunk/Overachiever_Tabs/Overachiever_Tabs.toc
+   M /trunk/Overachiever_Tabs/Suggestions.lua
+   M /trunk/Overachiever_Trade/Overachiever_Trade.toc
+   M /trunk/readme.txt
+
+- Change the way consumed item tracking works in an attempt to improve performance when bag contents change.
 ------------------------------------------------------------------------
 

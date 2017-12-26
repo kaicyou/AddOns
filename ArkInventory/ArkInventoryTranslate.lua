@@ -205,11 +205,11 @@ end
 
 
 local tooltipTable = {
---	{ "WOW_SKILL_HERBALISM", 85663 },
+--	{ "WOW_TOOLTIP_ARTIFACT_POWER_AMOUNT", 85663 },
 --	{ "WOW_SKILL_MINING", 2901 },
 }
 
-local function GetWowTooltipTextHelper( id, key )
+local function GetWowTooltipTextHelper( id )
 	
 	ArkInventory.TooltipSetHyperlink( ArkInventory.Global.Tooltip.Scan, string.format( "item:%s", id ) )
 	
@@ -224,12 +224,12 @@ local function GetWowTooltipTextHelper( id, key )
 	
 end
 
-local function GetWowTooltipText( id, key )
+local function GetWowTooltipText( id )
 	if type( id ) ~= "table" then
-		return GetWowTooltipTextHelper( id, key )
+		return GetWowTooltipTextHelper( id )
 	else
 		for _, v in ipairs( id ) do
-			local x = GetWowTooltipTextHelper( v, key )
+			local x = GetWowTooltipTextHelper( v )
 			if x then return x end
 		end
 	end

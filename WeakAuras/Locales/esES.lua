@@ -15,11 +15,15 @@ L["!="] = "!="
 --Translation missing 
 -- L["%s - Color Animation"] = ""
 --Translation missing 
+-- L["%s - Condition Custom Chat"] = ""
+--Translation missing 
 -- L["%s - Custom Text"] = ""
 --Translation missing 
 -- L["%s - Finish"] = ""
 --Translation missing 
 -- L["%s - Finish Action"] = ""
+--Translation missing 
+-- L["%s - Finish Custom Text"] = ""
 --Translation missing 
 -- L["%s - Init Action"] = ""
 --Translation missing 
@@ -33,6 +37,8 @@ L["!="] = "!="
 --Translation missing 
 -- L["%s - Start Action"] = ""
 --Translation missing 
+-- L["%s - Start Custom Text"] = ""
+--Translation missing 
 -- L["%s - Translate Animation"] = ""
 --Translation missing 
 -- L["%s - Trigger Logic"] = ""
@@ -42,6 +48,8 @@ L["!="] = "!="
 -- L["%s Icon Function"] = ""
 --Translation missing 
 -- L["%s Name Function"] = ""
+--Translation missing 
+-- L["%s Overlay Color"] = ""
 --Translation missing 
 -- L["%s Stacks Function"] = ""
 --Translation missing 
@@ -72,15 +80,20 @@ L["25 Man Raid"] = "Banda de 25 Jugadores"
 L["40 Man Raid"] = "Banda de 40 Jugadores"
 L["5 Man Dungeon"] = "Mazmorra de 5 Jugadores"
 L["Absorb"] = "Absorción"
+--Translation missing 
+-- L["Absorb Display"] = ""
 L["Absorbed"] = "Absorbido"
 L["Action Usable"] = "Acción Utilizable"
 --Translation missing 
 -- L["Active"] = ""
 --Translation missing 
+-- L["Active For"] = ""
+--Translation missing 
 -- L["Additional Trigger Replacements"] = ""
 L["Affected"] = "Afectado"
+L["Aggro"] = "Amenaza"
 --Translation missing 
--- L["Aggro"] = ""
+-- L["Alert Type"] = ""
 L["Alive"] = "Vivo"
 L["All Triggers"] = "Todos los Disparadores"
 L["Alliance"] = "Alianza"
@@ -96,11 +109,17 @@ L["Amount"] = "Cantidad"
 -- L["And Talent selected"] = ""
 --Translation missing 
 -- L["Anticlockwise"] = ""
+--Translation missing 
+-- L["Any"] = ""
 L["Any Triggers"] = "Cualquier Disparador"
 L["Arena"] = "Arena"
 L["Ascending"] = "Ascendente"
 L["Assist"] = "Asistencia"
 L["At Least One Enemy"] = "Como Mínimo un Enemigo"
+--Translation missing 
+-- L["Attach to End"] = ""
+--Translation missing 
+-- L["Attach to Start"] = ""
 L["Attackable"] = "Atacable"
 L["Aura"] = "Aura"
 L["Aura Applied"] = "Aura Aplicada"
@@ -128,7 +147,7 @@ L["Back and Forth"] = "De Atrás a Adelante"
 -- L["Bar Color"] = ""
 L["Battle.net Whisper"] = "Battle.net Mensaje"
 L["Battleground"] = "Campo de Batalla"
-L["BG>Raid>Party>Say"] = "CdB>Raid>Grupo>Decir"
+L["BG>Raid>Party>Say"] = "CdB>Banda>Grupo>Decir"
 L["BG-System Alliance"] = "Campo de Batalla - Alianza"
 L["BG-System Horde"] = "Campo de Batalla - Horda"
 L["BG-System Neutral"] = "Campo de Batalla - Neutral"
@@ -151,6 +170,8 @@ L["Bottom to Top"] = "De Abajo a Arriba"
 L["Bounce"] = "Rebotar"
 L["Bounce with Decay"] = "Rebotar con Amortiguación"
 L["Buff"] = "Beneficio"
+--Translation missing 
+-- L["Buffed/Debuffed"] = ""
 L["Cast"] = "Lanzar Hechizo"
 L["Cast Failed"] = "Hechizo - Fallido"
 L["Cast Start"] = "Hechizo - Empezar"
@@ -180,6 +201,8 @@ L["Chat Message"] = "Mensaje de Chat"
 L["Children:"] = "Hijos:"
 L["Circle"] = "Círculo"
 L["Circular"] = "Circular"
+--Translation missing 
+-- L["Clamp"] = ""
 L["Class"] = "Clase"
 L["Click to close configuration"] = "Clic para cerrar la configuración"
 L["Click to open configuration"] = "Clic para abrir la configuración"
@@ -206,8 +229,12 @@ L["Cooldown Ready (Spell)"] = "Recarga Lista (Hechizo)"
 -- L["Counter Clockwise"] = ""
 L["Create"] = "Crear"
 L["Critical"] = "Crítico"
+--Translation missing 
+-- L["Cross"] = ""
 L["Crowd Controlled"] = "Bajo Control"
 L["Crushing"] = "Golpe Aplastador"
+--Translation missing 
+-- L["Current Zone ID:"] = ""
 L["Curse"] = "Maldición"
 L["Custom"] = "Personalizado"
 L["Custom Function"] = "Función Personalizada"
@@ -229,9 +256,15 @@ L["Deflect"] = "Desviar"
 --Translation missing 
 -- L["Desaturate Foreground"] = ""
 L["Descending"] = "Descendente"
+--Translation missing 
+-- L["Dest Raid Mark"] = ""
+--Translation missing 
+-- L["Destination In Group"] = ""
 L["Destination Name"] = "Nombre del Destino"
 L["Destination Unit"] = "Unidad de Destino"
 L["Dialog"] = "Diálogo"
+--Translation missing 
+-- L["Diamond"] = ""
 L["Disease"] = "Enfermedad"
 L["Dispel"] = "Disipar"
 L["Dispel Failed"] = "Disipar Fallido"
@@ -243,6 +276,8 @@ L["Drowning"] = "Ahogar"
 L["Dungeon Difficulty"] = "Dificultad de la Mazmorra"
 L["Durability Damage"] = "Daño a la Durabilidad"
 L["Durability Damage All"] = "Daño a la Durabilidad Total"
+--Translation missing 
+-- L["Elide"] = ""
 L["Emote"] = "Emocion"
 --Translation missing 
 -- L["Empty"] = ""
@@ -258,7 +293,11 @@ L["Environmental"] = "Ambiental"
 --Translation missing 
 -- L["Equipment Set"] = ""
 --Translation missing 
+-- L["Equipment Set Equipped"] = ""
+--Translation missing 
 -- L["Equipment Slot"] = ""
+--Translation missing 
+-- L["Equipped"] = ""
 L["Evade"] = "Evadir"
 L["Event"] = "Evento"
 L["Event(s)"] = "Evento(s)"
@@ -285,6 +324,8 @@ L["Fire"] = "Fuego"
 -- L["First Text Size"] = ""
 --Translation missing 
 -- L["Fishing Lure / Weapon Enchant (Old)"] = ""
+--Translation missing 
+-- L["Fixed"] = ""
 L["Flash"] = "Destello"
 L["Flex Raid"] = "Banda Flexible"
 L["Flip"] = "Voltear"
@@ -301,8 +342,7 @@ L["From"] = "Desde"
 -- L["Full"] = ""
 --Translation missing 
 -- L["Full/Empty"] = ""
---Translation missing 
--- L["Gained"] = ""
+L["Gained"] = "Obtenido"
 L["Glancing"] = "de refilón"
 L["Global Cooldown"] = "Recarga Global"
 L["Glow"] = "Brillante"
@@ -342,18 +382,28 @@ L["Icon"] = "Icono"
 -- L["Id"] = ""
 L["Ignore Rune CD"] = "Ignorar Recarga de Runas"
 L["Immune"] = "Inmune"
+--Translation missing 
+-- L["Import"] = ""
+--Translation missing 
+-- L["Import disabled"] = ""
 L["In Combat"] = "En Combate"
 --Translation missing 
 -- L["In Group"] = ""
 L["In Pet Battle"] = "En duelo de mascotas"
+--Translation missing 
+-- L["In Raid"] = ""
 L["In Vehicle"] = "Conduciendo"
 L["Include Bank"] = "Incluye el Banco"
 L["Include Charges"] = "Incluye las Cargas"
+--Translation missing 
+-- L["Incoming Heal"] = ""
 L["Inherited"] = "Heredado"
 L["Inside"] = "Dentro"
 L["Instakill"] = "Muerte Instantanea"
 --Translation missing 
 -- L["Instance"] = ""
+--Translation missing 
+-- L["Instance Difficulty"] = ""
 L["Instance Type"] = "Tipo de Instancia"
 L["Interrupt"] = "Interrupcion"
 L["Interruptible"] = "Interrumpible"
@@ -371,6 +421,8 @@ L["Item Equipped"] = "Objeto Equipado"
 -- L["Item Set"] = ""
 --Translation missing 
 -- L["Item Set Equipped"] = ""
+--Translation missing 
+-- L["Item Set Id"] = ""
 L["Lava"] = "Lava"
 --Translation missing 
 -- L["Leaving"] = ""
@@ -382,11 +434,15 @@ L["Level"] = "Nivel"
 --Translation missing 
 -- L["Looking for Raid"] = ""
 --Translation missing 
+-- L["Loop"] = ""
+--Translation missing 
 -- L["Lost"] = ""
 L["Low Damage"] = "Bajo Daño"
 L["Lower Than Tank"] = "Menor Que el Tanque"
 L["Magic"] = "Magia"
 L["Main Hand"] = "Mano Principal"
+--Translation missing 
+-- L["Make sure you can trust the person who sent it!"] = ""
 --Translation missing 
 -- L["Manual Rotation"] = ""
 --Translation missing 
@@ -395,9 +451,15 @@ L["Main Hand"] = "Mano Principal"
 -- L["Marked Last"] = ""
 L["Master"] = "Maestro"
 L["Matches (Pattern)"] = "Corresponde (Patrón)"
+--Translation missing 
+-- L["Maximum"] = ""
 L["Message"] = "Mensaje"
 L["Message Type"] = "Tipo de Mensaje"
 L["Message type:"] = "Tipo de Mensaje:"
+--Translation missing 
+-- L["Minimum"] = ""
+--Translation missing 
+-- L["Mirror"] = ""
 L["Miss"] = "Fallo"
 L["Miss Type"] = "Tipo de Fallo"
 L["Missed"] = "Fallado"
@@ -414,6 +476,8 @@ L["Monochrome Thick Outline"] = "Borde gordo monocromo"
 --Translation missing 
 -- L["Monster Whisper"] = ""
 L["Monster Yell"] = "Grito de Monstruo"
+--Translation missing 
+-- L["Moon"] = ""
 L["Mounted"] = "Montado"
 --Translation missing 
 -- L["Mouse Cursor"] = ""
@@ -435,26 +499,36 @@ L["None"] = "Nada"
 L["Non-player Character"] = "Personaje No Jugador"
 L["Normal"] = "Normal"
 --Translation missing 
--- L["Not on cooldown"] = ""
+-- L["Not in Group"] = ""
 --Translation missing 
 -- L["Not on Cooldown"] = ""
+--Translation missing 
+-- L["Not on cooldown"] = ""
 L["Not On Threat Table"] = "No Está En La Tabla De Amenaza"
 L["Number"] = "Número"
 L["Number Affected"] = "Dependiente de números"
 L["Off Hand"] = "Mano Secundaria"
 L["Officer"] = "Oficial"
 --Translation missing 
--- L["On Cooldown"] = ""
+-- L["Older set IDs can be found on websites such as wowhead.com/item-sets"] = ""
 --Translation missing 
 -- L["On cooldown"] = ""
+--Translation missing 
+-- L["On Cooldown"] = ""
 --Translation missing 
 -- L["Only if Primary"] = ""
 L["Opaque"] = "Opaco"
 L["Orbit"] = "Orbitar"
+--Translation missing 
+-- L["Orientation"] = ""
 L["Outline"] = "Linea exterior"
 L["Outside"] = "Fuera"
 L["Overhealing"] = "Sobre Curación"
 L["Overkill"] = "Muerte de Más"
+--Translation missing 
+-- L["Overlay %s"] = ""
+--Translation missing 
+-- L["Overlay Cost of Casts"] = ""
 L["Parry"] = "Parar"
 L["Party"] = "Grupo"
 L["Party Kill"] = "Muerte de Grupo"
@@ -467,8 +541,9 @@ L["Periodic Spell"] = "Hechizo Periódico"
 -- L["Personal Ressource Display"] = ""
 L["Pet"] = "Mascota"
 L["Pet Behavior"] = "Comportamiento de mascota"
+L["Pet Spell"] = "Habilidad de mascota"
 --Translation missing 
--- L["Pet Spell"] = ""
+-- L["Play"] = ""
 L["Player"] = "Jugador"
 L["Player Character"] = "Personaje Jugador"
 L["Player Class"] = "Clase del Jugador"
@@ -484,8 +559,7 @@ L["Power"] = "Poder"
 L["Power (%)"] = "Poder  (%)"
 L["Power Type"] = "Tipo de Poder"
 L["Preset"] = "Predefinido"
---Translation missing 
--- L["Press Ctrl+C to copy"] = ""
+L["Press Ctrl+C to copy"] = "Pulsa Ctrl+C para copiar"
 L["Progress"] = "Progreso"
 --Translation missing 
 -- L["Progress Total"] = ""
@@ -510,6 +584,8 @@ L["Relative"] = "Relativo"
 --Translation missing 
 -- L["Remaining Duration"] = ""
 L["Remaining Time"] = "Tiempo Restante"
+--Translation missing 
+-- L["Repeat"] = ""
 L["Requested display does not exist"] = "El aura requerida no existe"
 L["Requested display not authorized"] = "El aura requerida no está autorizada"
 L["Require Valid Target"] = "Requiere Objetivo Válido"
@@ -525,6 +601,8 @@ L["Right"] = "Derecha"
 L["Right to Left"] = "De Derecha a Izquierda"
 L["Rotate Left"] = "Rotar a la Izquierda"
 L["Rotate Right"] = "Rotar a la Derecha"
+--Translation missing 
+-- L["Run Custom Code"] = ""
 L["Rune"] = "Runa"
 --Translation missing 
 -- L["Rune #1"] = ""
@@ -552,6 +630,10 @@ L["Say"] = "Decir"
 L["Seconds"] = "Segundos"
 --Translation missing 
 -- L["Select Frame"] = ""
+--Translation missing 
+-- L["Set Maximum Progress"] = ""
+--Translation missing 
+-- L["Set Minimum Progress"] = ""
 L["Shake"] = "Sacudida"
 L["Shift-Click to pause"] = "Mayúsculas-Clic para pausar"
 L["Shift-Click to resume"] = "Mayúsculas-Clic para continuar"
@@ -559,10 +641,16 @@ L["Shift-Click to resume"] = "Mayúsculas-Clic para continuar"
 -- L["Shoulder"] = ""
 L["Show"] = "Mostrar"
 --Translation missing 
+-- L["Show Absorb"] = ""
+--Translation missing 
 -- L["Show Code"] = ""
 --Translation missing 
 -- L["Show Global Cooldown"] = ""
+--Translation missing 
+-- L["Show Incoming Heal"] = ""
 L["Shrink"] = "Encoger"
+--Translation missing 
+-- L["Skull"] = ""
 L["Slide from Bottom"] = "Arrastrar Desde Abajo"
 L["Slide from Left"] = "Arrastrar Desde la Izquierda"
 L["Slide from Right"] = "Arrastrar Desde la Derecha"
@@ -573,9 +661,15 @@ L["Slide to Right"] = "Arrastrar Hacia la Derecha"
 L["Slide to Top"] = "Arrastrar Hacia Arriba"
 L["Slime"] = "Baba"
 --Translation missing 
+-- L["Sound"] = ""
+--Translation missing 
 -- L["Sound by Kit ID"] = ""
 L["Sound Effects"] = "Efectos de Sonido"
+--Translation missing 
+-- L["Source In Group"] = ""
 L["Source Name"] = "Nombre de Origen"
+--Translation missing 
+-- L["Source Raid Mark"] = ""
 L["Source Unit"] = "Unidad Origen"
 L["Spacing"] = "Espaciado"
 --Translation missing 
@@ -590,6 +684,8 @@ L["Spell (Building)"] = "Hechizo (en curso)"
 --Translation missing 
 -- L["Spell Activation Overlay Glow"] = ""
 --Translation missing 
+-- L["Spell Cost"] = ""
+--Translation missing 
 -- L["Spell ID"] = ""
 --Translation missing 
 -- L["Spell Id"] = ""
@@ -601,12 +697,18 @@ L["Spell Name"] = "Nombre del Hechizo"
 L["Spin"] = "Girar"
 L["Spiral"] = "Espiral"
 L["Spiral In And Out"] = "Espiral de Dentro a Fuera"
+--Translation missing 
+-- L["Square"] = ""
 L["Stacks"] = "Acumulaciones"
 --Translation missing 
 -- L["Stagger"] = ""
 L["Stance/Form/Aura"] = "Impostura/Forma/Aura"
+--Translation missing 
+-- L["Star"] = ""
 L["Status"] = "Estado"
 L["Stolen"] = "Robado"
+--Translation missing 
+-- L["Stop"] = ""
 L["Summon"] = "Invocar"
 L["Swing"] = "Golpe"
 L["Swing Timer"] = "Temporizador de Golpes"
@@ -621,6 +723,8 @@ L["Tanking And Highest"] = "Tanqueando y el más alto"
 L["Tanking But Not Highest"] = "Tanqueando pero no el mas alto"
 L["Target"] = "Objetivo"
 L["Thick Outline"] = "Linea exterior gruesa"
+--Translation missing 
+-- L["This aura contains custom Lua code."] = ""
 L["Threat Situation"] = "Situación de la Amenaza"
 L["Tier "] = "Tier"
 L["Timed"] = "Temporizado"
@@ -631,35 +735,37 @@ L["Top Left"] = "Superior Izquierda"
 L["Top Right"] = "Superior Derecha"
 L["Top to Bottom"] = "De Arriba a Abajo"
 L["Total"] = "Total"
---Translation missing 
--- L["Total Duration"] = ""
+L["Total Duration"] = "Duración total"
 L["Totem"] = "Tótem"
---Translation missing 
--- L["Totem #%i"] = ""
+L["Totem #%i"] = "Tótem #%i"
 L["Totem Name"] = "Nombre del Tótem"
---Translation missing 
--- L["Totem Number"] = ""
+L["Totem Number"] = "Número de tótem"
 L["Transmission error"] = "Error de transmisión"
 --Translation missing 
--- L["Trigger State Updater"] = ""
-L["Trigger Update"] = "Actualizaci'on del Disparador"
-L["Trigger:"] = "Disparador:"
+-- L["Triangle"] = ""
 --Translation missing 
--- L["Trinket 1"] = ""
---Translation missing 
--- L["Trinket 2"] = ""
---Translation missing 
--- L["True"] = ""
---Translation missing 
--- L["Type"] = ""
+-- L["Trigger 1"] = ""
+L["Trigger State Updater"] = "Actualizador del estado del desencadenador"
+L["Trigger Update"] = "Actualización del desencadenador"
+L["Trigger:"] = "Desencadenador:"
+L["Trinket 1"] = "Abalorio 1"
+L["Trinket 2"] = "Abalorio 2"
+L["True"] = "Verdadero"
+L["Type"] = "Tipo"
 L["Undefined"] = "No Definido"
 L["Unit"] = "Unidad"
 L["Unit Characteristics"] = "Características de la unidad"
 L["Unit Destroyed"] = "Unidad Destruida"
 L["Unit Died"] = "Unit Muerta"
 L["Up"] = "Arriba"
+--Translation missing 
+-- L["Values/Remaining Time above this value are displayed as full progress."] = ""
+--Translation missing 
+-- L["Values/Remaining Time below this value are displayed as no progress."] = ""
 L["Version error received higher"] = "Éste aura es incompatible con tu versión de WeakAuras - se creó con la versión %s pero tu tienes la versión %s. Bájate la última versión de WeakAuras"
 L["Version error received lower"] = "Éste aura es incompatible con tu versión de WeakAuras - se creó con la versión %s y tu tienes la versión %s. Pídele que se baje la última versión de WeakAuras"
+--Translation missing 
+-- L["Version: "] = ""
 L["Waist"] = "Cintura"
 L["Weapon"] = "Arma"
 --Translation missing 
@@ -668,6 +774,8 @@ L["Whisper"] = "Susurro"
 --Translation missing 
 -- L["Width"] = ""
 L["Wobble"] = "Temblar"
+--Translation missing 
+-- L["Wrap"] = ""
 L["Wrist"] = "Muñequeras"
 L["Yell"] = "Grito"
 L["Zone"] = "Zona"

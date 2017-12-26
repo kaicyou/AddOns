@@ -294,14 +294,14 @@ local function LoadArmoryConfigTable()
 							order = 2,
 							type = "toggle",
 							name = L["Item Level Coloring"],
-							desc = L["Color code item levels values. Equipped will be gradient, avarage - selected color."],
+							desc = L["Color code item levels values. Equipped will be gradient, average - selected color."],
 							disabled = function() return SLE._Compatibility["DejaCharacterStats"] or not E.db.sle.Armory.Character.Stats.IlvlFull end,
 						},
 						AverageColor = {
 							type = 'color',
 							order = 3,
 							name = L["Color of Average"],
-							desc = L["Sets the color of avarage item level."],
+							desc = L["Sets the color of average item level."],
 							hasAlpha = false,
 							disabled = function() return SLE._Compatibility["DejaCharacterStats"] or not E.db.sle.Armory.Character.Stats.IlvlFull end,
 							get = function(info)
@@ -490,6 +490,13 @@ local function LoadArmoryConfigTable()
 							name = L["Font Outline"],
 							order = 6,
 							values = FontStyleList,
+							disabled = function() return E.db.sle.Armory.Character.Enable == false end
+						},
+						ItemColor = {
+							type = 'toggle',
+							name = L["Item Level Coloring"],
+							order = 7,
+							set = function(_, value) E.db.sle.Armory.Character.Level.ItemColor = value; _G["CharacterArmory"]:Update_Gear() end,
 							disabled = function() return E.db.sle.Armory.Character.Enable == false end
 						}
 					}
@@ -725,10 +732,18 @@ local function LoadArmoryConfigTable()
 					end,
 					disabled = function() return not E.db.sle.Armory.Inspect.Enable or not E.db.sle.Armory.Inspect.NoticeMissing end,
 				},
+				InspectMessage = {
+					type = 'toggle',
+					name = L["Show Inspection message in chat"],
+					order = 3,
+					disabled = function() return not E.db.sle.Armory.Inspect.Enable end,
+					get = function() return E.db.sle.Armory.Inspect.InspectMessage end,
+					set = function(_, value) E.db.sle.Armory.Inspect.InspectMessage = value end,
+				},
 				Backdrop = {
 					type = 'group',
 					name = L["Backdrop"],
-					order = 3,
+					order = 4,
 					args = {
 						SelectedBG = {
 							type = 'select',

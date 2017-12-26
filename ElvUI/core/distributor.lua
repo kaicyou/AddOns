@@ -4,7 +4,7 @@ local LibCompress = LibStub:GetLibrary("LibCompress")
 local LibBase64 = LibStub("LibBase64-1.0-ElvUI")
 
 --Cache global variables
-local tonumber, type, pcall, loadstring = tonumber, type, pcall, loadstring
+local tonumber, type, gsub, pcall, loadstring = tonumber, type, gsub, pcall, loadstring
 local len, format, split, find = string.len, string.format, string.split, string.find
 --WoW API / Variables
 local CreateFrame = CreateFrame
@@ -271,16 +271,8 @@ local function GetProfileData(profileType)
 		profileData = E:CopyTable(profileData, ElvDB.global)
 		profileData = E:RemoveTableDuplicates(profileData, G)
 
-	elseif profileType == "filtersNP" then
-		profileKey = "filtersNP"
-
-		profileData["nameplate"] = {}
-		profileData["nameplate"]["filter"] = {}
-		profileData["nameplate"]["filter"] = E:CopyTable(profileData["nameplate"]["filter"], ElvDB.global.nameplate.filter)
-		profileData = E:RemoveTableDuplicates(profileData, G)
-
-	elseif profileType == "filtersUF" then
-		profileKey = "filtersUF"
+	elseif profileType == "filters" then
+		profileKey = "filters"
 
 		profileData["unitframe"] = {}
 		profileData["unitframe"]["aurafilters"] = {}
@@ -288,18 +280,12 @@ local function GetProfileData(profileType)
 		profileData["unitframe"]["buffwatch"] = {}
 		profileData["unitframe"]["buffwatch"] = E:CopyTable(profileData["unitframe"]["buffwatch"], ElvDB.global.unitframe.buffwatch)
 		profileData = E:RemoveTableDuplicates(profileData, G)
-
-	elseif profileType == "filtersAll" then
-		profileKey = "filtersAll"
+	elseif profileType == "styleFilters" then
+		profileKey = "styleFilters"
 
 		profileData["nameplate"] = {}
-		profileData["nameplate"]["filter"] = {}
-		profileData["nameplate"]["filter"] = E:CopyTable(profileData["nameplate"]["filter"], ElvDB.global.nameplate.filter)
-		profileData["unitframe"] = {}
-		profileData["unitframe"]["aurafilters"] = {}
-		profileData["unitframe"]["aurafilters"] = E:CopyTable(profileData["unitframe"]["aurafilters"], ElvDB.global.unitframe.aurafilters)
-		profileData["unitframe"]["buffwatch"] = {}
-		profileData["unitframe"]["buffwatch"] = E:CopyTable(profileData["unitframe"]["buffwatch"], ElvDB.global.unitframe.buffwatch)
+		profileData["nameplate"]["filters"] = {}
+		profileData["nameplate"]["filters"] = E:CopyTable(profileData["nameplate"]["filters"], ElvDB.global.nameplate.filters)
 		profileData = E:RemoveTableDuplicates(profileData, G)
 	end
 
@@ -401,6 +387,7 @@ function D:Decode(dataString)
 		end
 
 		profileDataAsString = format("%s%s", profileDataAsString, "}") --Add back the missing "}"
+		profileDataAsString = gsub(profileDataAsString, "\124\124", "\124") --Remove escape pipe characters
 		profileType, profileKey = E:SplitString(profileInfo, "::")
 
 		local profileToTable = loadstring(format("%s %s", "return", profileDataAsString))
@@ -450,15 +437,10 @@ local function SetImportedProfile(profileType, profileKey, profileData, force)
 		E:CopyTable(ElvDB.global, profileData)
 		E:StaticPopup_Show('IMPORT_RL')
 
-	elseif profileType == "filtersNP" then
-		E:CopyTable(ElvDB.global.nameplate, profileData.nameplate)
-
-	elseif profileType == "filtersUF" then
+	elseif profileType == "filters" then
 		E:CopyTable(ElvDB.global.unitframe, profileData.unitframe)
-
-	elseif profileType == "filtersAll" then
+	elseif profileType == "styleFilters" then
 		E:CopyTable(ElvDB.global.nameplate, profileData.nameplate)
-		E:CopyTable(ElvDB.global.unitframe, profileData.unitframe)
 	end
 
 	--Update all ElvUI modules
@@ -553,7 +535,7 @@ E.PopupDialogs["IMPORT_RL"] = {
 	text = L["You have imported settings which may require a UI reload to take effect. Reload now?"],
 	button1 = ACCEPT,
 	button2 = CANCEL,
-	OnAccept = function() ReloadUI() end,
+	OnAccept = ReloadUI,
 	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = false,

@@ -232,6 +232,8 @@ function MV:Initialize()
 			MV.Frame = DugisGuideViewer_ModelViewer
 		else
 			MV.Frame = CreateFrame("FRAME","DugisGuideViewer_ModelViewer", UIParent)
+            
+            MV.Frame:SetFrameStrata("BACKGROUND")
 
 			MV.Frame:SetClampedToScreen(true);
 			MV.Frame:SetSize(165, 220)
@@ -258,11 +260,11 @@ function MV:Initialize()
 			MV.Frame.model:SetScript("OnMouseWheel", On_Model_OnMouseWheel);
 			DugisGuideViewer_ModelViewer_ModelControlFrameZoomInButton:SetScript("OnClick", function()
 				On_Model_OnMouseWheel(MV.Frame.model, 1);
-				PlaySound("igInventoryRotateCharacter");
+				LuaUtils:PlaySound("igInventoryRotateCharacter");
 			end)
 			DugisGuideViewer_ModelViewer_ModelControlFrameZoomOutButton:SetScript("OnClick", function()
 				On_Model_OnMouseWheel(MV.Frame.model, -1);
-				PlaySound("igInventoryRotateCharacter");
+				LuaUtils:PlaySound("igInventoryRotateCharacter");
 			end)
 			
 			MV.Frame.model.title = MV.Frame.model:CreateFontString(MV.Frame.model:GetName().."_Title","OVERLAY","GameFontNormalSmall")

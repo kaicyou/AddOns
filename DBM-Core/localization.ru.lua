@@ -17,7 +17,6 @@ DBM_CORE_BAD_LOAD					= "DBM не удалось полностью загруз
 DBM_CORE_LOAD_MOD_VER_MISMATCH		= "%s не может быть загружен потому что ваш DBM-Core не соответствует требованиям. Требуется обновленная версия."
 
 --DBM_CORE_WHATS_NEW				= "Новое в этой версии: настройки для встроенных в таймеры иконок и пользовательские настройки цвета индикатора."
---DBM_CORE_WHATS_NEW_LINK			= "Новое в этой версии: настройки для встроенных в таймеры иконок и пользовательские настройки цвета индикатора. Вы можете узнать больше о новых возможностях |HDBM:forumsnews|h|cff3588ffнажав здесь|r"
 
 --Pre Patch 7.1 Notice
 DBM_CORE_NO_RANGE_SOON				= "Внимание: радар будет недоступен в подземельях в патче 7.1"
@@ -86,7 +85,6 @@ DBM_CORE_MPROFILE_DELETE_SELF_ERROR	= "Невозможно удалить на�
 DBM_CORE_MPROFILE_DELETE_S_ERROR	= "Источник поврежден. Настройки не удалены или удалены частично. Удалить не удалось."
 
 DBM_CORE_NOTE_SHARE_SUCCESS			= "%s поделился своей заметкой для %s"
-DBM_CORE_NOTE_SHARE_LINK			= "Нажмите здесь чтобы открыть заметку"
 DBM_CORE_NOTE_SHARE_FAIL			= "%s попытался поделиться с вами заметкой для %s. Однако модуль, связанный с этой способностью не установлен или не загружен. Если вам нужна эта заметка, убедитесь что модуль, для которого они делятся заметкой загружен и попросите поделиться снова"
 
 DBM_CORE_NOTEHEADER					= "Вставьте текст вашей заметки здесь. Поместив имя игрока между >< окрасит его в цвет класса. Для предупреждений с несколькими заметками, разделите заметки с помощью '/'"
@@ -245,7 +243,7 @@ DBM_CORE_RIGHT						= "Направо"
 DBM_CORE_BACK						= "Назад"
 DBM_CORE_MIDDLE						= "Середина"
 DBM_CORE_FRONT						= "Вперед"
-DBM_CORE_INTERMISSION				= "Переходная фаза"--No blizz global for this, and will probably be used in most end tier fights with intermission phases
+DBM_CORE_INTERMISSION				= "Переходная фаза"--No blizz global for this, and will probably be used in most end tier fights with intermission stages
 DBM_CORE_ORB						= "Orb"--FIXME
 DBM_CHEST							= "сундука"--As in Treasure 'Chest'. Not Chest as in body part.
 
@@ -279,8 +277,8 @@ DBM_CORE_AUTO_ANNOUNCE_TEXTS.adds			= "Осталось %s: %%d"
 DBM_CORE_AUTO_ANNOUNCE_TEXTS.cast 			= "Применение заклинания %s: %.1f сек"
 DBM_CORE_AUTO_ANNOUNCE_TEXTS.soon 			= "Скоро %s"
 DBM_CORE_AUTO_ANNOUNCE_TEXTS.prewarn 		= "%s через %s"
-DBM_CORE_AUTO_ANNOUNCE_TEXTS.phase 			= "Фаза %s"
-DBM_CORE_AUTO_ANNOUNCE_TEXTS.prephase 		= "Скоро фаза %s"
+DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage 			= "Фаза %s"
+DBM_CORE_AUTO_ANNOUNCE_TEXTS.prestage 		= "Скоро фаза %s"
 DBM_CORE_AUTO_ANNOUNCE_TEXTS.count 			= "%s (%%s)"
 DBM_CORE_AUTO_ANNOUNCE_TEXTS.stack 			= "%s на |3-5(>%%s<) (%%d)"
 
@@ -296,9 +294,9 @@ DBM_CORE_AUTO_ANNOUNCE_OPTIONS.adds			= "Объявлять сколько ос�
 DBM_CORE_AUTO_ANNOUNCE_OPTIONS.cast 		= "Предупреждать о применении заклинания $spell:%s"
 DBM_CORE_AUTO_ANNOUNCE_OPTIONS.soon 		= prewarnOption
 DBM_CORE_AUTO_ANNOUNCE_OPTIONS.prewarn 		= prewarnOption
-DBM_CORE_AUTO_ANNOUNCE_OPTIONS.phase 		= "Объявлять фазу %s"
-DBM_CORE_AUTO_ANNOUNCE_OPTIONS.phasechange	= "Объявлять смены фаз"
-DBM_CORE_AUTO_ANNOUNCE_OPTIONS.prephase 	= "Предупреждать заранее о фазе %s"
+DBM_CORE_AUTO_ANNOUNCE_OPTIONS.stage 		= "Объявлять фазу %s"
+DBM_CORE_AUTO_ANNOUNCE_OPTIONS.stagechange	= "Объявлять смены фаз"
+DBM_CORE_AUTO_ANNOUNCE_OPTIONS.prestage 	= "Предупреждать заранее о фазе %s"
 DBM_CORE_AUTO_ANNOUNCE_OPTIONS.count 		= "Предупреждение для $spell:%s (со счетчиком)"
 DBM_CORE_AUTO_ANNOUNCE_OPTIONS.stack 		= "Объявлять количество стаков $spell:%s"
 
@@ -371,7 +369,7 @@ DBM_CORE_AUTO_TIMER_TEXTS.active		= "%s заканчивается" --Buff/Debuf
 DBM_CORE_AUTO_TIMER_TEXTS.fades			= "%s спадает" --Buff/Debuff on players
 DBM_CORE_AUTO_TIMER_TEXTS.ai			= "%s ИИ"
 DBM_CORE_AUTO_TIMER_TEXTS.cd 			= "Восст. %s"
-DBM_CORE_AUTO_TIMER_TEXTS.cdcount		= "Восст. %s (%%d)"
+DBM_CORE_AUTO_TIMER_TEXTS.cdcount		= "Восст. %s (%%s)"
 DBM_CORE_AUTO_TIMER_TEXTS.cdsource		= "Восст. %s: >%%s<"
 DBM_CORE_AUTO_TIMER_TEXTS.cdspecial		= "Восст. спец-способности"
 DBM_CORE_AUTO_TIMER_TEXTS.next 			= "След. %s"
@@ -379,7 +377,7 @@ DBM_CORE_AUTO_TIMER_TEXTS.nextcount		= "След. %s (%%s)"
 DBM_CORE_AUTO_TIMER_TEXTS.nextsource	= "След. %s: >%%s<"
 DBM_CORE_AUTO_TIMER_TEXTS.nextspecial	= "След. спец-способность"
 DBM_CORE_AUTO_TIMER_TEXTS.achievement	= "%s"
-DBM_CORE_AUTO_TIMER_TEXTS.phase			= "След. фаза"
+DBM_CORE_AUTO_TIMER_TEXTS.stage			= "След. фаза"
 
 DBM_CORE_AUTO_TIMER_OPTIONS.target 		= "Отсчет времени действия дебаффа $spell:%s"
 DBM_CORE_AUTO_TIMER_OPTIONS.cast 		= "Отсчет времени применения заклинания $spell:%s"
@@ -395,7 +393,7 @@ DBM_CORE_AUTO_TIMER_OPTIONS.nextcount 	= "Отсчет времени до сл�
 DBM_CORE_AUTO_TIMER_OPTIONS.nextsource	= "Отсчет времени до следующего $spell:%s (с источником)"
 DBM_CORE_AUTO_TIMER_OPTIONS.nextspecial	= "Отсчет времени до следующей спец-способности"
 DBM_CORE_AUTO_TIMER_OPTIONS.achievement = "Отсчет времени для %s"
-DBM_CORE_AUTO_TIMER_OPTIONS.phase		= "Отсчет времени до следующей фазы"
+DBM_CORE_AUTO_TIMER_OPTIONS.stage		= "Отсчет времени до следующей фазы"
 DBM_CORE_AUTO_TIMER_OPTIONS.roleplay	= "Отсчет времени для ролевой игры"
 
 DBM_CORE_AUTO_ICONS_OPTION_TEXT			= "Устанавливать метки на цели заклинания $spell:%s"

@@ -1515,10 +1515,14 @@ function MapOverlays:Initialize()
 					["ZARKHENAR"] = 500370720,
 				},
 				["BrokenShore"] = {
-					["BROKENSHORESOUTH"] = 295514250722,
-					["THEBLACKCITY"] = 102275293662,
-					["THELOSTTEMPLE"] = 135934543185,
-					["TOMBOFSARGERAS"] = 391407006,
+					["BROKENVALLEY"] = 90460981586,
+					["DEADWOODLANDING"] = 279403812022,
+					["DELIVERANCEPOINT"] = 324597508483,
+					["FELRAGESTRAND"] = 107999416652,
+					["SOULRUIN"] = 193681701202,
+					["THELOSTTEMPLE"] = 182125318452,
+					["THEWEEPINGTERRACE"] = 14325863700,
+					["TOMBOFSARGERAS"] = 524596536,
 				},		
 				["Highmountain"] = {
 					["BLOODHUNTHIGHLANDS"] = 80852805929,
@@ -1590,7 +1594,27 @@ function MapOverlays:Initialize()
 					["SMOLDERHIDE"] = 515736006997,
 					["TEMPLEOFELUNE"] = 258179558616,
 					["THASTALAH"] = 447035384026,
-				},				
+				},		
+				["ArgusCore"] = {
+					["DEFILEDPATH"] = 307627634,
+					["FELFIREARMORY"] = 684692,
+					["TERMINUS"] = 256111983059,
+				},
+				["ArgusMacAree"] = {
+					["CONSERVATORY"] = 119707895097,
+					["RUINSOFORONAAR"] = 305234499849,
+					["SEATOFTRIUMVIRATE"] = 58260463055,
+					["SHADOWGUARD"] = 472562,
+					["TRIUMVIRATES"] = 403083370780,
+					["UPPERTERRACE"] = 331453,
+				},
+				["ArgusSurface"] = {
+					["ANNIHILANPITS"] = 191515410728,
+					["KROKULHOVEL"] = 391291126067,
+					["NATHRAXAS"] = 175545155,
+					["PETRIFIEDFOREST"] = 310895832509,
+					["SHATTEREDFIELDS"] = 148215712242,
+				},						
 				['*'] = {},
 			},
 		}
@@ -1607,21 +1631,40 @@ function MapOverlays:Initialize()
 
 	local db
 	local overlayTextures  = {}
-	local function OverrideMapOverlays()
+	overlayTexturesGPS  = {}
+	function OverrideMapOverlays()
+		if db == nil then
+			return
+		end
+	 
 		local discoveredOverlayData = {}
+		
+		local removeFogForGPSArrow
+		
+		if DugisGuideViewer.Modules.GPSArrowModule then
+			removeFogForGPSArrow = DugisGuideViewer.Modules.GPSArrowModule.Options.removeFog
+		end
 
 		if (not DugisGuideViewer:UserSetting(DGV_REMOVEMAPFOG) or DugisGuideViewer.mapsterloaded or not MOD.GuideOn) and #overlayTextures==0 then
 			return
 		end
 
 		for i = 1, #overlayTextures  do
-			overlayTextures [i]:Hide()
+			overlayTextures[i]:Hide()
 		end
+		
+		for i = 1, #overlayTexturesGPS  do
+			if type(overlayTexturesGPS[i]) == "table" then
+				overlayTexturesGPS[i]:Hide()
+			end
+		end
+		
 		wipe(overlayTextures)
-
+		wipe(overlayTexturesGPS)
 
 		for i = 1, NUM_WORLDMAP_OVERLAYS do
 			tinsert(overlayTextures, _G[format("WorldMapOverlay%d", i)])
+			tinsert(overlayTexturesGPS, _G[format("WorldMapOverlay%d", i)]:GetTexture())
 		end
 		
 		local mapName, _, _, _, microDungeonMapName = GetMapInfo();
@@ -1667,6 +1710,11 @@ function MapOverlays:Initialize()
 				for j = numOverlayTextures  + 1, neededTextures do
 					local texture = WorldMapDetailFrame:CreateTexture(format("DugiWorldMapOverlay%d", j), "ARTWORK")
 					tinsert(overlayTextures , texture)
+					
+					if GPSArrow then
+						local textureGPS = GPSArrow:CreateTexture(format("DugiWorldMapOverlayGPS%d", j), "ARTWORK")
+						tinsert(overlayTexturesGPS , textureGPS)
+					end
 				end
 				numOverlayTextures  = neededTextures
 			end
@@ -1688,6 +1736,7 @@ function MapOverlays:Initialize()
 				for k = 1, numTexturesWide do
 					textureCount = textureCount + 1
 					local texture = overlayTextures [textureCount]
+					local textureGPS = overlayTexturesGPS[textureCount]
 					if k < numTexturesWide then
 						texturePixelWidth = 256
 						textureFileWidth = 256
@@ -1707,17 +1756,65 @@ function MapOverlays:Initialize()
 					texture:ClearAllPoints()
 					texture:SetPoint("TOPLEFT", (offsetX + (256 * (k-1))), -(offsetY + (256 * (j - 1))))
 					texture:SetTexture(format(texturePath.."%d", ((j - 1) * numTexturesWide) + k))
+					
+					if DugisGuideViewer.Modules.GPSArrowModule then
+						if type(textureGPS) ~= "table" then
+							overlayTexturesGPS[textureCount] = GPSArrow:CreateTexture(format("DugiWorldMapOverlayGPS%d", textureCount), "ARTWORK")
+							overlayTexturesGPS[textureCount]:SetTexture(textureGPS)
+							textureGPS = overlayTexturesGPS[textureCount]
+						end
+						
+						if type(textureGPS) == "table" then
+							local factor = DugisGuideViewer.Modules.GPSArrowModule.GetMapOverlaysFactor()
+							textureGPS:SetWidth(texturePixelWidth * factor)
+							textureGPS:SetHeight(texturePixelHeight * factor)
+							textureGPS:SetTexCoord(0, texturePixelWidth / textureFileWidth, 0, texturePixelHeight / textureFileHeight)
+							textureGPS:ClearAllPoints()
+							local x = (offsetX + (256  * (k-1)))
+							local y = -(offsetY + (256 * (j - 1))) 
+							textureGPS:SetPoint("TOPLEFT", _G["GPSArrow"..1]:GetParent(), x * factor, y * factor)
+							textureGPS:SetTexture(format(texturePath.."%d", ((j - 1) * numTexturesWide) + k))
+							
+							textureGPS.orgX = x
+							textureGPS.orgY = y
+							textureGPS.orgW = texturePixelWidth
+							textureGPS.orgH = texturePixelHeight
+						end
+					end
 
 					if discoveredOverlayData[texName] then
 						texture:SetVertexColor(1, 1, 1)
 						texture:SetDrawLayer("ARTWORK")
 						texture:Show()
+						
+						if type(textureGPS) == "table" then
+							textureGPS:SetVertexColor(1, 1, 1)
+							textureGPS:SetDrawLayer("ARTWORK")
+							if removeFogForGPSArrow then
+								textureGPS:Show()
+							else
+								textureGPS:Hide()
+							end
+						end
 					elseif DugisGuideViewer:UserSetting(DGV_REMOVEMAPFOG) or not DugisGuideViewer.mapsterloaded and MOD.GuideOn then
 						texture:SetVertexColor(.5, .5, .5)
 						texture:SetDrawLayer("BORDER")
 						texture:Show()
+						
+						if type(textureGPS) == "table" then
+							textureGPS:SetVertexColor(.5, .5, .5)
+							textureGPS:SetDrawLayer("BORDER")
+							if removeFogForGPSArrow then
+									textureGPS:Show()
+							else
+								textureGPS:Hide()
+							end
+						end
 					else
 						texture:Hide()
+						if type(textureGPS) == "table" then
+							textureGPS:Hide()
+						end
 					end
 
 
@@ -1726,12 +1823,19 @@ function MapOverlays:Initialize()
 		end
 		for i = textureCount+1, numOverlayTextures  do
 			overlayTextures [i]:Hide()
+		end	
+		
+		for i = textureCount+1, numOverlayTextures  do
+			if type(overlayTexturesGPS[i]) == "table" then
+				overlayTexturesGPS[i]:Hide()
+			end
 		end
 
 		wipe(discoveredOverlayData)
 
 		if not DugisGuideViewer:UserSetting(DGV_REMOVEMAPFOG) or not MOD.GuideOn or DugisGuideViewer.mapsterloaded then
 			wipe(overlayTextures)
+			wipe(overlayTexturesGPS)
 		end
 	end
 

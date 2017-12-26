@@ -7,7 +7,7 @@ local L = DBM_GUI_Translations
 
 L.TranslationByPrefix		= "번역: "
 L.TranslationBy 			= "Elnarfim"
-L.Website					= "|cFF73C2FBwww.deadlybossmods.com|r에서 토론장/사용자 지원 포럼을 방문해 보세요. 트위터 팔로우 @deadlybossmods 또는 @MysticalOS"
+L.Website					= "디스코드 채널 |cFF73C2FBhttps://discord.gg/DF5mffk|r를 방문해 보세요. 트위터 팔로우 @deadlybossmods 또는 @MysticalOS"
 L.WebsiteButton				= "포럼"
 
 L.OTabBosses	= "보스"
@@ -87,7 +87,7 @@ L.Warn_FontType				= "글꼴"
 L.Warn_FontStyle			= "글꼴 속성"
 L.Warn_FontShadow			= "그림자"
 L.Warn_FontSize				= "글꼴 크기: %d"
-L.Warn_Duration				= "경보 지속시간: %d초"
+L.Warn_Duration				= "경보 지속시간: %0.1f초"
 L.None						= "없음"
 L.Outline					= "외곽선"
 L.ThickOutline				= "두꺼운 외곽선"
@@ -103,12 +103,14 @@ L.ShowAllVersions	 		= "버전 검사시 대화창에 모든 파티/공격대원
 L.CombatMessages			= "전투 메시지 설정"
 L.ShowEngageMessage 		= "대화창에 전투 시작 메시지 표시"
 L.ShowDefeatMessage 		= "대화창에 처치/전멸 메시지 표시"
-L.ShowGuildMessages 		= "대화창에 길드의 전투 시작/처치/전멸 메시지 표시"
+L.ShowGuildMessages 		= "대화창에 길드 레이드 전투 시작/보스 처치/전멸 메시지 표시"
+L.ShowGuildMessagesPlus		= "길드팟 신화+ 전투 시작/보스 처치/전멸 메시지도 표시 (길드 레이드 옵션 체크 필요)"
 L.WhisperMessages			= "귓속말 메시지 설정"
 L.AutoRespond 				= "전투중 귓속말 자동 응답"
 L.EnableStatus 				= "'status' 라는 귓속말을 받으면 자동 응답"
 L.WhisperStats 				= "귓속말 응답에 처치/전멸 통계 포함"
-L.DisableStatusWhisper 		= "전체 파티/공격대의 귓속말 응답을 끕니다. (파티/공대장 권한 필요) 일반/영웅/신화 공격대 및 도전/신화 5인 던전에만 적용됩니다."
+L.DisableStatusWhisper 		= "전체 파티/공격대의 귓속말 응답을 끕니다. (파티/공대장 권한 필요) 일반/영웅/신화 레이드 및 신화+ 던전에만 적용됩니다"
+L.DisableGuildStatus 		= "길드에 진행 상황 알림 메시지를 전송하지 않습니다. (파티/공대장 권한 필요)"
 
 -- Tab: Barsetup
 L.BarSetup  				= "타이머 바 설정"
@@ -211,7 +213,7 @@ L.HUDAlphaSlider			= "투명도: %0.1f"
 
 -- Tab: Spoken Alerts Frame
 L.Panel_SpokenAlerts		= "음성 경보"
-L.Area_VoiceSelection		= "음성 선택"
+L.Area_VoiceSelection		= "음성 선택 (마우스 휠로 메뉴 스크롤)"
 L.CountdownVoice			= "1순위 초읽기 음성 설정"
 L.CountdownVoice2			= "2순위 초읽기 음성 설정"
 L.CountdownVoice3			= "3순위 초읽기 음성 설정"
@@ -259,7 +261,6 @@ L.SpamBlockNoRangeRestore	= "모드가 '숨김' 명령을 내렸을 때 이전 �
 L.Area_SpamFilter			= "스팸 필터 설정"
 L.DontShowFarWarnings		= "멀리 떨어진 곳의 이벤트에 대한 알림 및 바 표시 안함"
 L.StripServerName			= "경고와 타이머에서 서버명 지우기"
-L.SpamBlockBossWhispers		= "전투중 &lt;DBM&gt; 귓속말 안봄"
 L.BlockVersionUpdateNotice	= "팝업창 대신 대화창에 '업데이트 필요' 알림 더 자주 표시"
 
 L.Area_SpecFilter			= "역할 필터 설정"
@@ -286,7 +287,6 @@ L.HideGuildChallengeUpdates	= "보스 전투중 길드 도전 과제 알림 숨�
 L.HideQuestTooltips			= "보스 전투중 툴팁에서 퀘스트 정보 숨기기"
 L.HideTooltips				= "보스 전투중 모든 툴팁 숨기기"
 L.DisableSFX				= "보스 전투중 소리 채널 (효과음) 끄기"
-L.SpamBlockSayYell			= "말풍선 알림 숨기기"
 L.DisableCinematics			= "게임 내 영상 끄기"
 L.AfterFirst				= "1회 이상 본 영상만"
 L.Always					= "항상 끄기"
@@ -309,7 +309,6 @@ L.AutoReplySound			= "DBM 자동 응답 귓속말을 받을 때 경고음 재생
 --
 L.TimerGeneral 				= "타이머 설정"
 L.SKT_Enabled				= "가능할 경우 현재 전투의 최고 승리 기록 타이머 표시"
-L.CRT_Enabled				= "다음 전투 부활 충전 타이머 표시"
 L.ShowRespawn				= "전멸 후 보스 재생성 타이머 표시"
 L.ShowQueuePop				= "입장 수락 남은 시간 타이머 표시 (공격대 찾기,전장 등)"
 --

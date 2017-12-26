@@ -1,9 +1,10 @@
 local E, L, V, P, G = unpack(ElvUI);
 local EP = LibStub("LibElvUIPlugin-1.0")
 local AddOnName, Engine = ...;
-
 local _G = _G
 local tonumber = tonumber
+
+--GLOBALS: hooksecurefunc, LibStub, GetAddOnMetadata, CreateFrame, GetAddOnEnableState, BINDING_HEADER_SLE
 
 local SLE = LibStub("AceAddon-3.0"):NewAddon(AddOnName, "AceConsole-3.0", "AceEvent-3.0", 'AceTimer-3.0', 'AceHook-3.0');
 SLE.callbacks = SLE.callbacks or LibStub("CallbackHandler-1.0"):New(SLE)
@@ -102,7 +103,7 @@ local _CompList = {
 	"ElvUI_Enhanced",
 	"DejaCharacterStats",
 	"ElvUI_ExtraActionBars",
-	"ElvUI_KitUI",
+	"ElvUI_NenaUI",
 	"TradeSkillMaster",
 	"WorldQuestTracker",
 }
@@ -134,7 +135,7 @@ function SLE:Initialize()
 	SLE:BuildGameMenu()
 	SLE:CyrillicsInit()
 
-	if E.private.sle.install_complete == nil or tonumber(E.private.sle.install_complete) < 3 then
+	if not E.private.sle.install_complete or (E.private.sle.install_complete ~= "BETA" and tonumber(E.private.sle.install_complete) < 3) then
 		E:GetModule("PluginInstaller"):Queue(SLE.installTable)
 	end
 	if not E.private.sle.characterGoldsSorting[E.myrealm] then E.private.sle.characterGoldsSorting[E.myrealm] = {} end

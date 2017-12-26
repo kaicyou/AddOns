@@ -1,28 +1,16 @@
-tag 02fc4a604664643684b8df5cb35a2b1ffbfebb25 7.2.0.1
+tag 64ae0c70ded1fd152d952a847bf09e1b3940fbb6 7.3.0.2
 Author:	James D. Callahan III <jcallahan@curse.com>
-Date:	Tue May 2 11:05:10 2017 -0500
+Date:	Fri Oct 27 03:47:34 2017 -0500
 
-commit c1638dbd75cfbad16171316a74f6dba4ffcd377e
+commit 5baa7674419d836d3210278fbfac5b54237cc026
 Author: James D. Callahan III <jcallahan@curse.com>
-Date:   Tue May 2 11:02:14 2017 -0500
+Date:   Fri Oct 27 03:47:01 2017 -0500
 
-    GetMapLandmarkInfo => C_WorldMap.GetMapLandmarkInfo
+    Remove sound string from solve confirmation dialog - fixes https://www.wowace.com/projects/archy/issues/674
 
-commit 58faa9eb1186bd70d0a8f2b6753b1ad61f3458b9
-Author: MMOSimca <mmosimca@gmail.com>
-Date:   Sat Feb 4 21:00:28 2017 -0500
+commit c8a061f4569e6b7fc2cdb60156797062616f84c6
+Author: James D. Callahan III <jcallahan@curse.com>
+Date:   Thu Sep 21 11:01:21 2017 -0500
 
-    Updated digsite races of Demon sites in Val'sharah; we previously assumed all Val'sharah digsites were Highborne Night Elf, which is not true.
-
-commit 92d068f7b6f77034caed3dae0a93c7c6f3a84af1
-Author: MMOSimca <mmosimca@gmail.com>
-Date:   Sat Feb 4 19:50:13 2017 -0500
-
-    Updated the coordinates for The Wildwood digsite in Val'sharah, which were apparently changed in Patch 7.1.5.
-
-commit 9caf1518e9ea37db817bae6549767db50c522018
-Author: Caleb Atherton <catherton@curse.com>
-Date:   Tue Jan 31 01:11:43 2017 -0500
-
-    Updated coordinates for Nor'daniel Wellspring digsite, which were apparently changed in Patch 7.1.5.
+    Corrected lookup key for Digsite: Nor'Danil Wellspring.
 

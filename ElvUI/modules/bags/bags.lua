@@ -5,10 +5,10 @@ local Search = LibStub('LibItemSearch-1.2-ElvUI')
 --Cache global variables
 --Lua functions
 local _G = _G
-local type, ipairs, pairs, unpack, select, assert, pcall, tonumber = type, ipairs, pairs, unpack, select, assert, pcall, tonumber
+local type, ipairs, pairs, unpack, select, assert, pcall = type, ipairs, pairs, unpack, select, assert, pcall
 local tinsert = table.insert
 local floor, ceil = math.floor, math.ceil
-local len, sub, find, gsub, match = string.len, string.sub, string.find, string.gsub, string.match
+local format, len, sub, find = string.format, string.len, string.sub, string.find
 --WoW API / Variables
 local BankFrameItemButton_Update = BankFrameItemButton_Update
 local BankFrameItemButton_UpdateLocked = BankFrameItemButton_UpdateLocked
@@ -21,7 +21,6 @@ local DeleteCursorItem = DeleteCursorItem
 local DepositReagentBank = DepositReagentBank
 local GetBackpackCurrencyInfo = GetBackpackCurrencyInfo
 local GetContainerItemCooldown = GetContainerItemCooldown
-local GetContainerItemInfo = GetContainerItemInfo
 local GetContainerItemInfo = GetContainerItemInfo
 local GetContainerItemLink = GetContainerItemLink
 local GetContainerItemQuestInfo = GetContainerItemQuestInfo
@@ -37,7 +36,6 @@ local GetItemQualityColor = GetItemQualityColor
 local GetMoney = GetMoney
 local GetNumBankSlots = GetNumBankSlots
 local GetScreenWidth, GetScreenHeight = GetScreenWidth, GetScreenHeight
-local HandleModifiedItemClick = HandleModifiedItemClick
 local IsBagOpen, IsOptionFrameOpen = IsBagOpen, IsOptionFrameOpen
 local IsModifiedClick = IsModifiedClick
 local IsReagentBankUnlocked = IsReagentBankUnlocked
@@ -74,7 +72,8 @@ local TEXTURE_ITEM_QUEST_BANG = TEXTURE_ITEM_QUEST_BANG
 -- GLOBALS: ContainerFrame1, RightChatToggleButton, GuildItemSearchBox, StackSplitFrame
 -- GLOBALS: LeftChatToggleButton, MAX_GUILDBANK_SLOTS_PER_TAB, UISpecialFrames
 -- GLOBALS: ElvUIReagentBankFrame, MerchantFrame, BagItemAutoSortButton, SetInsertItemsLeftToRight
--- GLOBALS: ElvUIBankMover, ElvUIBagMover, RightChatPanel, LeftChatPanel
+-- GLOBALS: ElvUIBankMover, ElvUIBagMover, RightChatPanel, LeftChatPanel, IsContainerItemAnUpgrade
+-- GLOBALS: HandleModifiedItemClick
 
 local SEARCH_STRING = ""
 
@@ -194,7 +193,7 @@ function B:SetSearch(query)
 	local method = Search.Matches
 	local allowPartialMatch
 	if Search.Filters.tipPhrases.keywords[query] then
-		if itemsearchquery == "rel" or itemsearchquery == "reli" or itemsearchquery == "relic" then
+		if query == "rel" or query == "reli" or query == "relic" then
 			allowPartialMatch = true
 		end
 		method = Search.TooltipPhrase
@@ -239,7 +238,7 @@ function B:SetGuildBankSearch(query)
 	local method = Search.Matches
 	local allowPartialMatch
 	if Search.Filters.tipPhrases.keywords[query] then
-		if itemsearchquery == "rel" or itemsearchquery == "reli" or itemsearchquery == "relic" then
+		if query == "rel" or query == "reli" or query == "relic" then
 			allowPartialMatch = true
 		end
 		method = Search.TooltipPhrase
@@ -344,7 +343,7 @@ local function IsItemEligibleForItemLevelDisplay(classID, subClassID, equipLoc, 
 	if ((classID == 3 and subClassID == 11) --Artifact Relics
 		or (equipLoc ~= nil and equipLoc ~= "" and equipLoc ~= "INVTYPE_BAG" and equipLoc ~= "INVTYPE_QUIVER" and equipLoc ~= "INVTYPE_TABARD"))
 		and (rarity and rarity > 1) then
-		
+
 		return true
 	end
 
@@ -355,7 +354,7 @@ local UpdateItemUpgradeIcon, UpgradeCheck_OnUpdate
 local ITEM_UPGRADE_CHECK_TIME = 0.5;
 function UpgradeCheck_OnUpdate(self, elapsed)
 	self.timeSinceUpgradeCheck = self.timeSinceUpgradeCheck + elapsed;
-	
+
 	if (self.timeSinceUpgradeCheck >= ITEM_UPGRADE_CHECK_TIME) then
 		UpdateItemUpgradeIcon(self);
 	end
@@ -368,7 +367,7 @@ function UpdateItemUpgradeIcon(slot)
 	end
 
 	slot.timeSinceUpgradeCheck = 0;
-	
+
 	local itemIsUpgrade = IsContainerItemAnUpgrade(slot:GetParent():GetID(), slot:GetID());
 	if (itemIsUpgrade == nil) then -- nil means not all the data was available to determine if this is an upgrade.
 		slot.UpgradeIcon:SetShown(false);
@@ -608,7 +607,7 @@ function B:Layout(isBank)
 				f.ContainerHolder[i]:SetNormalTexture("")
 				f.ContainerHolder[i]:SetCheckedTexture(nil)
 				f.ContainerHolder[i]:SetPushedTexture("")
-				
+
 				f.ContainerHolder[i].id = isBank and bagID or bagID + 1
 				f.ContainerHolder[i]:HookScript("OnEnter", function(self) B.SetSlotAlphaForBag(self, f) end)
 				f.ContainerHolder[i]:HookScript("OnLeave", function(self) B.ResetSlotAlphaForBags(self, f) end)
@@ -865,7 +864,9 @@ function B:UpdateReagentSlot(slotID)
 		-- color slot according to item quality
 		if questId and not isActiveQuest then
 			slot:SetBackdropBorderColor(1.0, 0.3, 0.3);
-			slot.questIcon:Show();
+			if (slot.questIcon) then
+				slot.questIcon:Show();
+			end
 		elseif questId or isQuestItem then
 			slot:SetBackdropBorderColor(1.0, 0.3, 0.3);
 		elseif slot.rarity and slot.rarity > 1 then
@@ -1023,8 +1024,8 @@ function B:GetGraysValue()
 	return c
 end
 
-function B:VendorGrays(delete, nomsg, getValue)
-	if (not MerchantFrame or not MerchantFrame:IsShown()) and not delete and not getValue then
+function B:VendorGrays(delete)
+	if (not MerchantFrame or not MerchantFrame:IsShown()) and not delete then
 		E:Print(L["You must be at a vendor."])
 		return
 	end
@@ -1039,19 +1040,15 @@ function B:VendorGrays(delete, nomsg, getValue)
 
 				if delete then
 					if find(l,"ff9d9d9d") then
-						if not getValue then
-							PickupContainerItem(b, s)
-							DeleteCursorItem()
-						end
+						PickupContainerItem(b, s)
+						DeleteCursorItem()
 						c = c+p
 						count = count + 1
 					end
 				else
 					if select(3, GetItemInfo(l))==0 and p>0 then
-						if not getValue then
-							UseContainerItem(b, s)
-							PickupMerchantItem()
-						end
+						UseContainerItem(b, s)
+						PickupMerchantItem()
 						c = c+p
 					end
 				end
@@ -1059,13 +1056,9 @@ function B:VendorGrays(delete, nomsg, getValue)
 		end
 	end
 
-	if getValue then
-		return c
-	end
-
 	if c>0 and not delete then
 		local g, s, c = floor(c/10000) or 0, floor((c%10000)/100) or 0, c%100
-		E:Print(L["Vendored gray items for:"].." |cffffffff"..g..L.goldabbrev.." |cffffffff"..s..L.silverabbrev.." |cffffffff"..c..L.copperabbrev..".")
+		E:Print(format("%s |cffffffff%d%s |cffffffff%d%s |cffffffff%d%s.",L["Vendored gray items for:"],g,L["goldabbrev"],s,L["silverabbrev"],c,L["copperabbrev"]))
 	end
 end
 
@@ -1100,7 +1093,7 @@ function B:ContructContainerFrame(name, isBank)
 	f:RegisterEvent("QUEST_REMOVED");
 	f:SetScript('OnEvent', B.OnEvent);
 	f:Hide();
-	
+
 	f.isBank = isBank
 
 	f.bottomOffset = isBank and 8 or 28;
@@ -1170,7 +1163,7 @@ function B:ContructContainerFrame(name, isBank)
 		f.reagentFrame.cover.purchaseButton.text:SetJustifyH('CENTER')
 		f.reagentFrame.cover.purchaseButton.text:SetText(L["Purchase"])
 		f.reagentFrame.cover.purchaseButton:SetScript("OnClick", function()
-			PlaySound("igMainMenuOption");
+			PlaySound(852) --IG_MAINMENU_OPTION
 			StaticPopup_Show("CONFIRM_BUY_REAGENTBANK_TAB");
 		end)
 
@@ -1201,7 +1194,7 @@ function B:ContructContainerFrame(name, isBank)
 		f.reagentToggle:SetScript("OnEnter", self.Tooltip_Show)
 		f.reagentToggle:SetScript("OnLeave", self.Tooltip_Hide)
 		f.reagentToggle:SetScript("OnClick", function()
-			PlaySound("igCharacterInfoTab");
+			PlaySound(841) --IG_CHARACTER_INFO_TAB
 			if f.holderFrame:IsShown() then
 				BankFrame.selectedTab = 2
 				f.holderFrame:Hide()
@@ -1266,7 +1259,7 @@ function B:ContructContainerFrame(name, isBank)
 		f.depositButton:SetScript("OnEnter", self.Tooltip_Show)
 		f.depositButton:SetScript("OnLeave", self.Tooltip_Hide)
 		f.depositButton:SetScript('OnClick', function()
-			PlaySound("igMainMenuOption");
+			PlaySound(852) --IG_MAINMENU_OPTION
 			DepositReagentBank()
 		end)
 
@@ -1288,7 +1281,7 @@ function B:ContructContainerFrame(name, isBank)
 		f.bagsButton:SetScript("OnLeave", self.Tooltip_Hide)
 		f.bagsButton:SetScript('OnClick', function()
 			local numSlots = GetNumBankSlots()
-			PlaySound("igMainMenuOption");
+			PlaySound(852) --IG_MAINMENU_OPTION
 			if numSlots >= 1 then
 				ToggleFrame(f.ContainerHolder)
 			else
@@ -1623,7 +1616,7 @@ function B:UpdateContainerFrameAnchors()
 		leftMostPoint = screenWidth - xOffset;
 		column = 1;
 		local frameHeight;
-		for index, frameName in ipairs(ContainerFrame1.bags) do
+		for _, frameName in ipairs(ContainerFrame1.bags) do
 			frameHeight = _G[frameName]:GetHeight();
 			if ( freeScreenHeight < frameHeight ) then
 				-- Start a new column
@@ -1716,7 +1709,7 @@ function B:Initialize()
 	BagFrameHolder:Width(200)
 	BagFrameHolder:Height(22)
 	BagFrameHolder:SetFrameLevel(BagFrameHolder:GetFrameLevel() + 400)
-	
+
 	if not E.private.bags.enable then
 		--Set a different default anchor
 		BagFrameHolder:Point("BOTTOMRIGHT", RightChatPanel, "BOTTOMRIGHT", -(E.Border*2), 22 + E.Border*4 - E.Spacing*2)

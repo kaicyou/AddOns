@@ -18,7 +18,7 @@ local UNKNOWN, GARRISON_LOCATION_TOOLTIP, ITEMS, SPELLS, CLOSE, BACK = UNKNOWN, 
 local DUNGEON_FLOOR_DALARAN1 = DUNGEON_FLOOR_DALARAN1
 local CHALLENGE_MODE = CHALLENGE_MODE
 local PlayerHasToy = PlayerHasToy
-local IsToyUsable = C_ToyBox.IsToyUsable
+local C_ToyBox = C_ToyBox
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
 local collectgarbage = collectgarbage
@@ -78,6 +78,7 @@ LP.PortItems = {
 	{140324, nil, true}, --Mobile Telemancy Beacon
 	{129276}, --Beginner's Guide to Dimensional Rifting
 	{140493}, --Adept's Guide to Dimensional Rifting
+	{112059, nil, true}, --Wormhole Generator: Argus
 }
 LP.Spells = {
 	["DEATHKNIGHT"] = {
@@ -365,13 +366,14 @@ function LP:Toggle()
 		loc_panel:Hide()
 		E:DisableMover(loc_panel.mover:GetName())
 	end
+	LP:UNIT_AURA(nil, "player")
 end
 
 function LP:PopulateItems()
 	local noItem = false
 
 	for index, data in T.pairs(LP.PortItems) do
-		if T.select(2, T.GetItemInfo(data[1])) == nil then noItem = true end
+		if T.select(2, T.GetItemInfo(data[1])) == nil and (data[1] ~= 152964 and E.wowbuild < 24896) then noItem = true end
 	end
 
 	if noItem then
@@ -388,14 +390,15 @@ function LP:ItemList(check)
 	for i = 1, #LP.PortItems do
 		local tmp = {}
 		local data = LP.PortItems[i]
-		if SLE:BagSearch(data.secure.ID) or (PlayerHasToy(data.secure.ID) and IsToyUsable(data.secure.ID)) then
+		local ID, isToy = data.secure.ID, data.secure.isToy
+		if (not isToy and SLE:BagSearch(ID)) or (isToy and PlayerHasToy(ID) and C_ToyBox.IsToyUsable(ID)) then
 			if check then 
 				if LP.db.portals.HSplace then T.tinsert(LP.MainMenu, {text = L["Hearthstone Location"]..": "..GetBindLocation(), title = true, nohighlight = true}) end
 				T.tinsert(LP.MainMenu, {text = ITEMS..":", title = true, nohighlight = true})
 				return true 
 			else
 				if data.text then
-					local cd = DD:GetCooldown("Item", data.secure.ID)
+					local cd = DD:GetCooldown("Item", ID)
 					E:CopyTable(tmp, data)
 					if cd or (T.tonumber(cd) and T.tonumber(cd) > 1.5) then
 						tmp.text = "|cff636363"..tmp.text.."|r"..T.format(LP.CDformats[LP.db.portals.cdFormat], cd)
@@ -497,6 +500,15 @@ end
 function LP:PLAYER_ENTERING_WORLD()
 	local x, y = T.GetPlayerMapPosition("player")
 	if x then LP.RestrictedArea = false else LP.RestrictedArea = true end
+	LP:UNIT_AURA(nil, "player")
+end
+
+function LP:UNIT_AURA(event, unit)
+	if unit ~= "player" then return end
+	if LP.db.enable and LP.db.orderhallhide then
+		local inOrderHall = C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0);
+		loc_panel:SetShown(not inOrderHall);
+	end
 end
 
 function LP:Initialize()
@@ -521,6 +533,7 @@ function LP:Initialize()
 	LP:RegisterEvent("PLAYER_REGEN_DISABLED")
  	LP:RegisterEvent("PLAYER_REGEN_ENABLED")
  	LP:RegisterEvent("PLAYER_ENTERING_WORLD")
+	LP:RegisterEvent("UNIT_AURA")
 end
 
 SLE:RegisterModule(LP:GetName())

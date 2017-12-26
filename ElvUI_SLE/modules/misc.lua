@@ -17,7 +17,7 @@ function M:UpdateThreatPosition()
 	Tr.bar:SetInside(M.db.threat.position)
 	Tr.bar:SetParent(M.db.threat.position)
 
-	Tr.bar.text:FontTemplate(nil, E.db.general.threat.textSize)
+	Tr.bar.text:FontTemplate(nil, E.db.general.threat.textSize, E.db.general.threat.textOutline)
 	Tr.bar:SetFrameStrata('MEDIUM')
 	Tr.bar:SetAlpha(1)
 end
@@ -43,7 +43,7 @@ function M:UpdateThreatConfig()
 					['RIGHTCHAT'] = L["Right Chat"],
 				},
 				get = function(info) return E.db.general.threat.position end,
-				set = function(info, value) E.db.general.threat[ info[#info] ] = value; T:UpdatePosition() end,
+				set = function(info, value) E.db.general.threat.position = value; Tr:UpdatePosition() end,
 			}
 		end
 	end

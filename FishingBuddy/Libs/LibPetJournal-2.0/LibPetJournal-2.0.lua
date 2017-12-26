@@ -34,6 +34,8 @@ local assert, GetTime, hooksecurefunc, ipairs, IsLoggedIn, pairs, tinsert, wipe
     = assert, GetTime, hooksecurefunc, ipairs, IsLoggedIn, pairs, tinsert, wipe
 local C_PetJournal = _G.C_PetJournal
 
+local is_lt_70 = select(4, GetBuildInfo()) < 70000
+
 local PJLU_TIMEOUT = 1
 
 --
@@ -53,8 +55,9 @@ end)
 
 do
     local PJ_FLAG_FILTERS = {
-        [LE_PET_JOURNAL_FILTER_COLLECTED] = true,
-        [LE_PET_JOURNAL_FILTER_NOT_COLLECTED] = true,
+        -- WoW<7.0 -- LE_PET_JOURNAL_FLAG_COLLECTED/LE_PET_JOURNAL_FLAG_NOT_COLLECTED
+        [LE_PET_JOURNAL_FLAG_COLLECTED or LE_PET_JOURNAL_FILTER_COLLECTED] = true,
+        [LE_PET_JOURNAL_FLAG_NOT_COLLECTED or LE_PET_JOURNAL_FILTER_NOT_COLLECTED] = true,
     }
    
    
@@ -103,11 +106,24 @@ do
         if _G.PetJournal then
             _G.PetJournal:UnregisterEvent("PET_JOURNAL_LIST_UPDATE")
         end
+        if is_lt_70 then
+            lib.event_frame:UnregisterEvent("PET_JOURNAL_LIST_UPDATE")
+        end
 
         for flag, value in pairs(PJ_FLAG_FILTERS) do
-            flag_filters[flag] = C_PetJournal.IsFilterChecked(flag)
+            if C_PetJournal.IsFlagFiltered then
+                -- WoW<7.0
+                flag_filters[flag] = not C_PetJournal.IsFlagFiltered(flag)
+            else
+                flag_filters[flag] = C_PetJournal.IsFilterChecked(flag)
+            end
             if flag_filters[flag] ~= value then
-                C_PetJournal.SetFilterChecked(flag, value)
+                if C_PetJournal.SetFlagFilter then
+                    -- WoW<7.0
+                    C_PetJournal.SetFlagFilter(flag, value)
+                else
+                    C_PetJournal.SetFilterChecked(flag, value)
+                end
                 has_changes = true
             end
         end
@@ -115,26 +131,46 @@ do
         local need_add_all = false
         local ntypes = C_PetJournal.GetNumPetTypes()
         for i=1,ntypes do
-            type_filters[i] = C_PetJournal.IsPetTypeChecked(i)
+            if C_PetJournal.IsPetTypeFiltered then
+                -- WoW<7.0
+                type_filters[i] = not C_PetJournal.IsPetTypeFiltered(i)
+            else
+                type_filters[i] = C_PetJournal.IsPetTypeChecked(i)
+            end
             if not type_filters[i] then
                 need_add_all = true
             end
         end
         if need_add_all then
-            C_PetJournal.SetAllPetTypesChecked(true)
+            if C_PetJournal.AddAllPetTypesFilter then
+                -- WoW<7.0
+                C_PetJournal.AddAllPetTypesFilter()
+            else
+                C_PetJournal.SetAllPetTypesChecked(true)
+            end
             has_changes = true
         end
         
         need_add_all = false
         local nsources = C_PetJournal.GetNumPetSources()
         for i=1,nsources do
-            source_filters[i] = C_PetJournal.IsPetSourceChecked(i)
+            if C_PetJournal.IsPetSourceFiltered then
+                -- WoW<7.0
+                source_filters[i] = not C_PetJournal.IsPetSourceFiltered(i)
+            else
+                source_filters[i] = C_PetJournal.IsPetSourceChecked(i)
+            end
             if not source_filters[i] then
                 need_add_all = true
             end
         end
         if need_add_all then
-            C_PetJournal.SetAllPetSourcesChecked(true)
+            if C_PetJournal.AddAllPetSourcesFilter then
+                -- WoW<7.0
+                C_PetJournal.AddAllPetSourcesFilter()
+            else
+                C_PetJournal.SetAllPetSourcesChecked(true)
+            end
             has_changes = true
         end
 
@@ -169,7 +205,12 @@ do
         
         for flag, value in pairs(flag_filters) do
             if value ~= PJ_FLAG_FILTERS[flag] then
-                C_PetJournal.SetFilterChecked(flag, value)
+                if C_PetJournal.SetFlagFilter then
+                    -- WoW<7.0
+                    C_PetJournal.SetFlagFilter(flag, value)
+                else
+                    C_PetJournal.SetFilterChecked(flag, value)
+                end
             end
         end
         
@@ -181,12 +222,20 @@ do
         
         for flag,value in pairs(source_filters) do
             if value ~= true then
-                C_PetJournal.SetPetSourceChecked(flag, value)
-             end
+                if C_PetJournal.SetPetSourceFilter then
+                    -- WoW<7.0
+                    C_PetJournal.SetPetSourceFilter(flag, value)
+                else
+                    C_PetJournal.SetPetSourceChecked(flag, value)
+                end
+            end
         end
     
         if _G.PetJournal then
             _G.PetJournal:RegisterEvent("PET_JOURNAL_LIST_UPDATE")
+        end
+        if is_lt_70 then
+            lib.event_frame:RegisterEvent("PET_JOURNAL_LIST_UPDATE")
         end
     end
 end
@@ -258,7 +307,7 @@ function lib:LoadPets()
     lib._running = true
     local filters_changed = self:ClearFilters()
     
-    if not filters_changed then
+    if not filters_changed or is_lt_70 then
         if self:_LoadPets() then
             self:_LoadPetsFinish()
         end

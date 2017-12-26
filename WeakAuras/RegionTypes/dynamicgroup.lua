@@ -24,12 +24,16 @@ local default = {
 
 local function create(parent)
   local region = CreateFrame("FRAME", nil, parent);
+  region:SetHeight(16);
+  region:SetWidth(16);
   region:SetMovable(true);
 
   local background = CreateFrame("frame", nil, region);
   region.background = background;
 
   region.trays = {};
+
+  WeakAuras.regionPrototype.create(region);
 
   return region;
 end
@@ -44,26 +48,6 @@ function WeakAuras.GetPolarCoordinates(x, y, originX, originY)
 end
 
 local function modify(parent, region, data)
-  local background = region.background;
-
-  local bgFile = data.background ~= "None" and SharedMedia:Fetch("background", data.background or "") or "";
-  local edgeFile = data.border ~= "None" and SharedMedia:Fetch("border", data.border or "") or "";
-  background:SetBackdrop({
-    bgFile = bgFile,
-    edgeFile = edgeFile,
-    tile = false,
-    tileSize = 0,
-    edgeSize = 16,
-    insets = {
-      left = data.backgroundInset,
-      right = data.backgroundInset,
-      top = data.backgroundInset,
-      bottom = data.backgroundInset
-    }
-  });
-  background:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset);
-  background:SetPoint("topright", region, "topright", data.borderOffset, data.borderOffset);
-
   local selfPoint;
   if(data.grow == "RIGHT") then
     selfPoint = "LEFT";
@@ -112,9 +96,29 @@ local function modify(parent, region, data)
   end
   data.selfPoint = selfPoint;
 
-  region:ClearAllPoints();
+  WeakAuras.regionPrototype.modify(parent, region, data);
 
-  WeakAuras.AnchorFrame(data, region, parent);
+  local background = region.background;
+
+  local bgFile = data.background ~= "None" and SharedMedia:Fetch("background", data.background or "") or "";
+  local edgeFile = data.border ~= "None" and SharedMedia:Fetch("border", data.border or "") or "";
+  background:SetBackdrop({
+    bgFile = bgFile,
+    edgeFile = edgeFile,
+    tile = false,
+    tileSize = 0,
+    edgeSize = 16,
+    insets = {
+      left = data.backgroundInset,
+      right = data.backgroundInset,
+      top = data.backgroundInset,
+      bottom = data.backgroundInset
+    }
+  });
+  background:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset);
+  background:SetPoint("topright", region, "topright", data.borderOffset, data.borderOffset);
+
+
 
   region.controlledRegions = {};
 
@@ -248,13 +252,20 @@ local function modify(parent, region, data)
       end);
     elseif(anyIndexInfo) then
       table.sort(region.controlledRegions, function(a, b)
-        return (
-          (
-          a.dataIndex == b.dataIndex
-          and (a.region.state and a.region.state.index or 0) < (b.region.state and b.region.state.index or 0)
-          )
-          or (a.dataIndex or 0) < (b.dataIndex or 0)
-          )
+        if (a.dataIndex ~= b.dataIndex) then
+          return (a.dataIndex or 0) < (b.dataIndex or 0)
+        end
+
+        local aIndex = a.region.state and a.region.state.index;
+        local bIndex = b.region.state and b.region.state.index;
+        if (aIndex == nil) then
+          return false;
+        end
+        if (bIndex == nil) then
+          return true;
+        end
+
+        return aIndex < bIndex;
       end)
     end
   end
@@ -270,11 +281,8 @@ local function modify(parent, region, data)
         tray:SetWidth(regionData.data.width);
         tray:SetHeight(regionData.data.height);
 
-        local point, relativeTo, relativePoint, xOfs, yOfs = regionData.region:GetPoint();
-        if (relativeTo ~= tray or relativePoint ~= selfPoint or point ~= selfPoint or xOfs ~= 0 or yOfs ~= 0) then
-          regionData.region:ClearAllPoints();
-          regionData.region:SetPoint(selfPoint, tray, selfPoint);
-        end
+        regionData.region:SetAnchor(selfPoint, tray, selfPoint);
+        regionData.region:SetOffset(0, 0);
       end
     end
   end
@@ -578,7 +586,7 @@ local function modify(parent, region, data)
               );
             if(math.abs(radius1 - radius2) > 0.1) then
               local translateFunc = [[
-                                return function(progress, _, _, previousAngle, dAngle)
+                                function(progress, _, _, previousAngle, dAngle)
                                     local previousRadius, dRadius = %f, %f;
                                     local radius = previousRadius + (1 - progress) * dRadius;
                                     local angle = previousAngle + (1 - progress) * dAngle;
@@ -596,7 +604,7 @@ local function modify(parent, region, data)
               };
             else
               local translateFunc = [[
-                                return function(progress, _, _, previousAngle, dAngle)
+                                function(progress, _, _, previousAngle, dAngle)
                                     local radius = %f;
                                     local angle = previousAngle + (1 - progress) * dAngle;
                                     return cos(angle) * radius, sin(angle) * radius;

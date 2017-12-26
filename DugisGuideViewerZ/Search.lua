@@ -26,13 +26,17 @@ function Search:Initialize()
 		else
 			SearchMode = true
 		end
-		if DGV.CurrentTitle ~= nil then
-			DGV:PopulateObjectives(DGV.CurrentTitle, SearchMode)
-			DGV:SetQuestsState()
-			_G["DGVRow"..DugisGuideUser.CurrentQuestIndex]:SetNormalTexture("Interface\\AddOns\\DugisGuideViewerZ\\Artwork\\highlight.tga")
-		end
-		--DGV:ClearStickyFrame()
-        DGV:UpdateStickyFrame()
+        
+        LuaUtils:RunInThreadIfNeeded("inOnTextChanged", function(isInThread)
+            if DGV.CurrentTitle ~= nil then
+                DGV:PopulateObjectives(DGV.CurrentTitle, SearchMode, isInThread)
+                DGV:SetQuestsState(isInThread)
+                _G["DGVRow"..DugisGuideUser.CurrentQuestIndex]:SetNormalTexture("Interface\\AddOns\\DugisGuideViewerZ\\Artwork\\highlight.tga")
+            end
+            DGV:UpdateStickyFrame(isInThread)
+        
+        end)
+
 	end
 
 	function Search:InSearchResults(questIndexOrHeading, guideTitle)
@@ -136,7 +140,12 @@ function Search:Initialize()
         animation:SetOrder(1)
         animationGroup:Play() 
         
-		searchBox:SetScript("OnTextChanged", function(self, event)
+		searchBox:SetScript("OnTextChanged", function(self, event) 
+            if Search.wasCleared then
+                Search.wasCleared = false
+                return
+            end
+        
             if DugisMainCurrentGuideTab:GetButtonState() == "DISABLED" then
                 OnTextChanged(self, event, true)
                 return
@@ -210,6 +219,7 @@ function Search:Initialize()
 	end
 		
 	function Search:ClearText()
+        Search.wasCleared = true
 		DGV_SearchBox:SetText("")
 	end
 	

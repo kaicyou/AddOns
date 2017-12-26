@@ -10,6 +10,14 @@ local C_PetJournal = _G.C_PetJournal
 local C_Heirloom = _G.C_Heirloom
 
 
+ArkInventory.Collection.Heirloom = {
+	ready = false,
+	total = 0,
+	owned = 0,
+	cache = { },
+}
+
+
 local filter = {
 	searchBox = nil,
 	collected = true,
@@ -17,13 +25,6 @@ local filter = {
 	source = { },
 	class = 0,
 	spec = 0,
-}
-
-local data = {
-	ready = false,
-	total = 0,
-	owned = 0,
-	cache = { },
 }
 
 
@@ -133,7 +134,28 @@ local function FilterActionRestore( )
 	
 end
 
-local function Scan( )
+function ArkInventory.Collection.Heirloom.Scan( )
+	
+	local thread_id = string.format( ArkInventory.Global.Thread.Format.Collection, "heirloom" )
+	
+	if not ArkInventory.Global.Thread.Use then
+		local tz = debugprofilestop( )
+		ArkInventory.OutputThread( thread_id, " start" )
+		ArkInventory.Collection.Heirloom.Scan_Threaded( )
+		tz = debugprofilestop( ) - tz
+		ArkInventory.OutputThread( string.format( "%s took %0.0fms", thread_id, tz ) )
+		return
+	end
+	
+	local tf = function ( )
+		ArkInventory.Collection.Heirloom.Scan_Threaded( thread_id )
+	end
+	
+	ArkInventory.ThreadStart( thread_id, tf )
+	
+end
+
+function ArkInventory.Collection.Heirloom.Scan_Threaded( thread_id )
 	
 	local update = false
 	
@@ -147,21 +169,21 @@ local function Scan( )
 	local owned = C_Heirloom.GetNumKnownHeirlooms( )
 	--ArkInventory.Output( "total heirlooms = ", total )
 	
-	if data.total ~= total or not data.ready then
-		data.total = total
+	if ArkInventory.Collection.Heirloom.total ~= total or not ArkInventory.Collection.Heirloom.ready then
+		ArkInventory.Collection.Heirloom.total = total
 		update = true
 	end
 	
-	if data.owned ~= owned or not data.ready then
-		data.owned = owned
+	if ArkInventory.Collection.Heirloom.owned ~= owned or not ArkInventory.Collection.Heirloom.ready then
+		ArkInventory.Collection.Heirloom.owned = owned
 		update = true
 	end
 	
-	data.ready = true
+	ArkInventory.Collection.Heirloom.ready = true
 	
 	if owned == 0 then return end
 	
-	local c = data.cache
+	local c = ArkInventory.Collection.Heirloom.cache
 	
 	for x = 1, total do
 		
@@ -194,6 +216,8 @@ local function Scan( )
 			--ArkInventory.Output( "hidden = ", spell, " / ", name )
 		end
 		
+		ArkInventory.ThreadYield_Scan( thread_id )
+		
 	end
 	
 	return update
@@ -201,24 +225,21 @@ local function Scan( )
 end
 
 
-
-ArkInventory.Collection.Heirloom = { }
-
 function ArkInventory.Collection.Heirloom.OnHide( )
 	filter.ignore = false
 	ArkInventory:SendMessage( "EVENT_ARKINV_COLLECTION_HEIRLOOM_UPDATE_BUCKET", "RESCAN" )
 end
 
 function ArkInventory.Collection.Heirloom.IsReady( )
-	return data.ready
+	return ArkInventory.Collection.Heirloom.ready
 end
 
 function ArkInventory.Collection.Heirloom.GetCount( )
-	return data.owned, data.total
+	return ArkInventory.Collection.Heirloom.owned, ArkInventory.Collection.Heirloom.total
 end
 
 function ArkInventory.Collection.Heirloom.Iterate( )
-	local t = data.cache
+	local t = ArkInventory.Collection.Heirloom.cache
 	return ArkInventory.spairs( t, function( a, b ) return ( t[a].index or 0 ) < ( t[b].index or 0 ) end )
 end
 
@@ -256,7 +277,7 @@ function ArkInventory:EVENT_ARKINV_COLLECTION_HEIRLOOM_UPDATE_BUCKET( events )
 	
 	FilterActionBackup( )
 	FilterActionClear( )
-	local update = Scan( )
+	local update = ArkInventory.Collection.Heirloom.Scan( )
 	FilterActionRestore( )
 	
 	if update then

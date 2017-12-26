@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1751, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 16232 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 16780 $"):sub(12, -3))
 mod:SetCreatureID(104881)
 mod:SetEncounterID(1871)
 mod:SetZone()
@@ -25,9 +25,6 @@ mod:RegisterEventsInCombat(
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
---TODO, possibly dump UNIT_AURA unless that proves to actualy be better way to manage range frame
---TODO, add fixate on mythic. No debuff. Player sees eyes but no debuff. Might have to do nameplate/accro target scanning to warn who has it
---TODO, probably fix more timers. Especially mythic fire and arcane.
 --[[
 (ability.id = 213853 or ability.id = 213567 or ability.id = 213564 or ability.id = 213852 or ability.id = 212735 or ability.id = 213275 or ability.id = 213390 or ability.id = 213083 or ability.id = 212492 or ability.id = 230951 or ability.id = 230504) and type = "begincast" or
 ability.id = 230403 and type = "cast" or
@@ -157,7 +154,7 @@ local rangeShowAll = false
 local chargeTable = {}
 local annihilateTimers = {8.0, 45.0, 40.0, 44.0, 38.0, 37.0, 33.0, 47.0, 41.0, 44.0, 38.0, 37.0, 33.0}--Need longer pulls/more data. However this pattern did prove to always be same
 local mythicAnnihilateTimers = {8, 46, 30, 37, 35, 43, 27, 37, 41, 37, 35, 43, 27}
-local felLashTimers = {21, 10.9, 6, 12, 6}
+local felLashTimers = {21, 10.9, 6, 11, 6}
 local searingDetonateIcons = {}
 
 local debuffFilter

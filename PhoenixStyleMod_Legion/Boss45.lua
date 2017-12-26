@@ -11,12 +11,12 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion45 and pswasonbossLeg
 		pssetcrossbeforereport1=GetTime()
 
 		if psraidoptionson[4][4][5][1]==1 then
-			strochkavezcrash=psiccdmgfrom.." |s4id232722|id ("..psmainmtotal.."): "
+			strochkavezcrash=psiccdmgfrom.." |s4id232732|id ("..psmainmtotal.."): "
 			reportafterboitwotab(psraidchats3[psraidoptionschat[4][4][5][1]], true, vezaxname, vezaxcrash, 1)
 		end
 		if psraidoptionson[4][4][5][2]==1 then
-			--strochkavezcrash=psiccdmgfrom.." |s4id179897|id ("..psmainmtotal.."): "
-			--reportafterboitwotab(psraidchats3[psraidoptionschat[4][4][5][2]], true, vezaxname2, vezaxcrash2, 1)
+			strochkavezcrash=psiccdmgfrom.." |s4id232827|id ("..psmainmtotal.."): "
+			reportafterboitwotab(psraidchats3[psraidoptionschat[4][4][5][2]], true, vezaxname2, vezaxcrash2, 1)
 		end
 
 
@@ -25,10 +25,10 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion45 and pswasonbossLeg
 
 		psiccsavinginf(psbossnames[4][4][5], try, pswasonbossLegion45)
 
-		strochkavezcrash=psiccdmgfrom.." |s4id232722|id ("..psmainmtotal.."): "
+		strochkavezcrash=psiccdmgfrom.." |s4id232732|id ("..psmainmtotal.."): "
 		reportafterboitwotab("raid", true, vezaxname, vezaxcrash, nil, nil,0,1)
-		--strochkavezcrash=psiccdmgfrom.." |s4id179897|id ("..psmainmtotal.."): "
-		--reportafterboitwotab("raid", true, vezaxname2, vezaxcrash2, nil, nil,0,1)
+		strochkavezcrash=psiccdmgfrom.." |s4id232827|id ("..psmainmtotal.."): "
+		reportafterboitwotab("raid", true, vezaxname2, vezaxcrash2, nil, nil,0,1)
 
 		psiccrefsvin()
 
@@ -66,7 +66,7 @@ function pscombatlogbossLegion45(arg1, arg2, hideCaster, guid1, name1, flag1, ne
 
 
 
-if arg2=="SPELL_DAMAGE" and spellid==232722 and name2 then
+if arg2=="SPELL_PERIODIC_DAMAGE" and spellid==232732 and name2 then
   if pswasonbossLegion45==nil then
     pswasonbossLegion45=1
   end
@@ -87,7 +87,7 @@ if arg2=="SPELL_DAMAGE" and spellid==232722 and name2 then
   end
 end
 
-if arg2=="SPELL_DAMAGE" and spellid==99999999999999999 then
+if arg2=="SPELL_DAMAGE" and spellid==232827 then
   if pswasonbossLegion45==nil then
     pswasonbossLegion45=1
   end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1713, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 16046 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 16866 $"):sub(12, -3))
 mod:SetCreatureID(101002)
 mod:SetEncounterID(1842)
 mod:SetZone()
@@ -17,17 +17,15 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED_DOSE 206677",
 	"SPELL_AURA_REMOVED 205344",
 	"UNIT_DIED",
-	"CHAT_MSG_ADDON",
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
 --(ability.id = 205368 or ability.id = 205370 or ability.id = 205420 or ability.id = 205361) and type = "begincast"
---TODO, improve info frame to show active mob count on top of burning pitch on player true/false? instead of just being burning pitch list for entire raid?
 local warnExpelOrbDestro			= mod:NewTargetCountAnnounce(205344, 4)
 local warnSlamSoon					= mod:NewAnnounce("warnSlamSoon", 4, 205862, nil, nil, true)
 local warnSlam						= mod:NewCountAnnounce(205862, 2)--Regular slams don't need special warn, only bridge smashing ones
 
-local specWarnSearingBrand			= mod:NewSpecialWarningStack(206677, nil, 4, nil, 2, 1, 2)--Lets go with 4 for now
+local specWarnSearingBrand			= mod:NewSpecialWarningStack(206677, nil, 4, nil, 2, 1, 6)--Lets go with 4 for now
 local specWarnSearingBrandOther		= mod:NewSpecialWarningTaunt(206677, nil, nil, nil, 1, 2)
 local specWarnFelBeam				= mod:NewSpecialWarningDodge(205368, nil, nil, nil, 2, 2)
 local specWarnOrbDestro				= mod:NewSpecialWarningMoveAway(205344, nil, nil, nil, 3, 2)
@@ -107,11 +105,7 @@ function mod:OnCombatStart(delay)
 	self.vb.orbCount = 0
 	self.vb.pitchCount = 0
 	self.vb.firstBeam = 0
-	warnSlamSoon:Schedule(85, 5)
-	warnSlamSoon:Schedule(86, 4)
-	warnSlamSoon:Schedule(87, 3)
-	warnSlamSoon:Schedule(88, 2)
-	warnSlamSoon:Schedule(89, 1)
+	warnSlamSoon:Countdown(90)
 	timerSlamCD:Start(-delay, 1)
 	countdownBigSlam:Start(-delay)
 	berserkTimer:Start(-delay)
@@ -218,11 +212,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnSlam:Show()
 			voiceSlam:Play("justrun")
 			countdownBigSlam:Start()
-			warnSlamSoon:Schedule(85, 5)
-			warnSlamSoon:Schedule(86, 4)
-			warnSlamSoon:Schedule(87, 3)
-			warnSlamSoon:Schedule(88, 2)
-			warnSlamSoon:Schedule(89, 1)
+			warnSlamSoon:Countdown(90)
 		else
 			warnSlam:Show(self.vb.slamCount)
 			if self:IsTank() then
@@ -309,24 +299,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, spellGUID)
 end
 
 --Listen for Krosus Assist on Bigwigs Comms to make compat with mod much easier for elvador
-function mod:CHAT_MSG_ADDON(prefix, msg, channel, targetName)
-	if prefix ~= "BigWigs" then return end
-	local bwPrefix, bwMsg, extra = strsplit("^", msg)
-	if bwPrefix == "B" then
-		if bwMsg == "firstBeamWasLeft" then
-			self.vb.firstBeam = 1
-			DBM:Debug("Recieved Left Beam Sync")
-		elseif bwMsg == "firstBeamWasRight" then
-			self.vb.firstBeam = 2
-			DBM:Debug("Recieved Right Beam Sync")
-		end
-	end
-end
-
---[[
---Not funcitonal yet. Might not even be worth effort to hack a handler together for something used so rarely
 function mod:OnBWSync(msg)
-	if not self:IsInCombat() then return end
 	if msg == "firstBeamWasLeft" then
 		self.vb.firstBeam = 1
 		DBM:Debug("Recieved Left Beam Sync")
@@ -335,5 +308,4 @@ function mod:OnBWSync(msg)
 		DBM:Debug("Recieved Right Beam Sync")
 	end
 end
---]]
 	

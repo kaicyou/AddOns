@@ -112,6 +112,47 @@ for i=1,8 do
 	L['raidtargeticon'..i] = "{"..(_G['RAID_TARGET_'..i]:lower()).."}"
 end
 
+--- Raid Target Icon [DE]
+L.raidtargeticon1_de = "{stern}"
+L.raidtargeticon2_de = "{kreis}"
+L.raidtargeticon3_de = "{diamant}"
+L.raidtargeticon4_de = "{dreieck}"
+L.raidtargeticon5_de = "{mond}"
+L.raidtargeticon6_de = "{quadrat}"
+L.raidtargeticon7_de = "{kreuz}"
+L.raidtargeticon8_de = "{totenschädel}"
+
+--- Raid Target Icon [FR]
+L.raidtargeticon1_fr = "{étoile}"
+L.raidtargeticon2_fr = "{cercle}"
+L.raidtargeticon3_fr = "{losange}"
+L.raidtargeticon4_fr = "{triangle}"
+L.raidtargeticon5_fr = "{lune}"
+L.raidtargeticon6_fr = "{carré}"
+L.raidtargeticon7_fr = "{croix}"
+L.raidtargeticon8_fr = "{crâne}"
+
+--- Raid Target Icon [IT]
+L.raidtargeticon1_it = "{stella}"
+L.raidtargeticon2_it = "{cerchio}"
+L.raidtargeticon3_it = "{rombo}"
+L.raidtargeticon4_it = "{triangolo}"
+L.raidtargeticon5_it = "{luna}"
+L.raidtargeticon6_it = "{quadrato}"
+L.raidtargeticon7_it = "{croce}"
+L.raidtargeticon8_it = "{teschio}"
+
+--- Raid Target Icon [RU]
+L.raidtargeticon1_ru = "{звезда}"
+L.raidtargeticon2_ru = "{круг}"
+L.raidtargeticon3_ru = "{ромб}"
+L.raidtargeticon4_ru = "{треугольник}"
+L.raidtargeticon5_ru = "{полумесяц}"
+L.raidtargeticon6_ru = "{квадрат}"
+L.raidtargeticon7_ru = "{крест}"
+L.raidtargeticon8_ru = "{череп}"
+
+
 --- Random strings
 L.YesText = YES
 L.NoText = NO
@@ -194,12 +235,25 @@ local zoneEJids = {
 	S_ZoneT19ToV = 861,
 	S_ZoneT19Suramar = 786,
 	S_ZoneT20ToS = 875,
+	S_ZoneT21A = 946,
 }
 for prefix,eID in pairs(zoneEJids) do
 	L[prefix] = EJ_GetInstanceInfo(eID)
 end
 
 local encounterIDtoEJidData = {
+	[2076] = 1992,	--Garothi Worldbreaker
+	[2074] = 1987,	--Hounds of Sargeras
+	[2064] = 1985,	--Portal Keeper Hasabel
+	[2070] = 1997,	--War Council
+	[2075] = 2025,	--Eonar, the Lifebinder
+	[2082] = 2009,	--Imonar the Soulhunter
+	[2069] = 1983,	--Varimathras
+	[2088] = 2004,	--Kin'garoth
+	[2073] = 1986,	--The Coven of Shivarra
+	[2063] = 1984,	--Aggramar
+	[2092] = 2031,	--Argus the Unmaker
+
 	[2032] = 1862,	--Горот
 	[2048] = 1867,	--Демоны-инквизиторы
 	[2036] = 1856,	--Харджатан

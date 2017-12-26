@@ -1,43 +1,12 @@
 ------------------------------------------------------------------------
-r637 | arkayenro | 2017-05-08 04:50:58 -0500 (Mon, 08 May 2017) | 6 lines
-Changed paths:
-   M /trunk/ArkInventory.toc
-   M /trunk/VersionHistory.txt
-
-*3.07.27 (08-MAY-2017)*
- * changed - cooldown event handling should use less cpu
- * changed - code that stores the item name (the search frame had too many items with no name)
- * fixed - item counts for some auction house items was not working (due to invalid item links in the tooltip)
- * changed - unuseable item tint changed to allow for cooldown issue
-
-------------------------------------------------------------------------
-r636 | arkayenro | 2017-04-27 07:43:02 -0500 (Thu, 27 Apr 2017) | 6 lines
-Changed paths:
-   M /trunk/ArkInventory.lua
-   M /trunk/ArkInventory.xml
-   M /trunk/VersionHistory.txt
-
-*3.07.27 ALPHA 2 (xx-xxx-2017)*
- * changed - cooldown event handling should use less cpu
- * changed - code that stores the item name (the search frame had too many items with no name)
- * fixed - item counts for some auction house items was not working (due to invalid item links in the tooltip)
- * changed - unuseable item tint changed to allow for cooldown issue
-
-------------------------------------------------------------------------
-r635 | arkayenro | 2017-04-23 08:15:56 -0500 (Sun, 23 Apr 2017) | 5 lines
+r680 | arkayenro | 2017-11-29 01:41:43 -0600 (Wed, 29 Nov 2017) | 3 lines
 Changed paths:
    M /trunk/ArkInventory.lua
    M /trunk/ArkInventory.toc
-   M /trunk/ArkInventoryConst.lua
-   M /trunk/ArkInventoryStorage.lua
-   M /trunk/ArkInventoryTooltip.lua
-   M /trunk/Modules/ArkInventorySearch/ArkInventorySearch.lua
    M /trunk/VersionHistory.txt
 
-*3.07.27 ALPHA (xx-xxx-2017)*
- * changed - cooldown event handling should use less cpu
- * changed - code that stores the item name (the search frame had too many items with no name)
- * fixed - item counts for some auction house items was not working (due to invalid item links in the tooltip)
+*3.07.37 (29-NOV-2017)*
+ * fixed - issue with ilvl sorting
 
 ------------------------------------------------------------------------
 

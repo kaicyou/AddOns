@@ -11,12 +11,12 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion41 and pswasonbossLeg
 		pssetcrossbeforereport1=GetTime()
 
 		if psraidoptionson[4][4][1][1]==1 then
-			--strochkavezcrash=psiccdmgfrom.." |s4id203097|id ("..psmainmtotal.."): "
-			--reportafterboitwotab(psraidchats3[psraidoptionschat[4][4][1][1]], true, vezaxname, vezaxcrash, 1)
+			strochkavezcrash=psiccdmgfrom.." |s4id233062|id ("..psmainmtotal.."): "
+			reportafterboitwotab(psraidchats3[psraidoptionschat[4][4][1][1]], true, vezaxname, vezaxcrash, 1)
 		end
 		if psraidoptionson[4][4][1][2]==1 then
-			--strochkavezcrash=psiccdmgfrom.." |s4id179897|id ("..psmainmtotal.."): "
-			--reportafterboitwotab(psraidchats3[psraidoptionschat[4][4][1][2]], true, vezaxname2, vezaxcrash2, 1)
+			strochkavezcrash=psiccdmgfrom.." |s4id233021|id ("..psmainmtotal.."): "
+			reportafterboitwotab(psraidchats3[psraidoptionschat[4][4][1][2]], true, vezaxname2, vezaxcrash2, 1)
 		end
 
 
@@ -25,10 +25,10 @@ if checkforwipe==nil or (checkforwipe and pswasonbossLegion41 and pswasonbossLeg
 
 		psiccsavinginf(psbossnames[4][4][1], try, pswasonbossLegion41)
 
-		--strochkavezcrash=psiccdmgfrom.." |s4id221028|id ("..psmainmtotal.."): "
-		--reportafterboitwotab("raid", true, vezaxname, vezaxcrash, nil, nil,0,1)
-		--strochkavezcrash=psiccdmgfrom.." |s4id179897|id ("..psmainmtotal.."): "
-		--reportafterboitwotab("raid", true, vezaxname2, vezaxcrash2, nil, nil,0,1)
+		strochkavezcrash=psiccdmgfrom.." |s4id233062|id ("..psmainmtotal.."): "
+		reportafterboitwotab("raid", true, vezaxname, vezaxcrash, nil, nil,0,1)
+		strochkavezcrash=psiccdmgfrom.." |s4id233021|id ("..psmainmtotal.."): "
+		reportafterboitwotab("raid", true, vezaxname2, vezaxcrash2, nil, nil,0,1)
 
 		psiccrefsvin()
 
@@ -66,7 +66,7 @@ function pscombatlogbossLegion41(arg1, arg2, hideCaster, guid1, name1, flag1, ne
 
 
 
-if arg2=="SPELL_DAMAGE" and spellid==99999999999999999 and name2 then
+if arg2=="SPELL_DAMAGE" and spellid==233062 and name2 then
   if pswasonbossLegion41==nil then
     pswasonbossLegion41=1
   end
@@ -87,7 +87,7 @@ if arg2=="SPELL_DAMAGE" and spellid==99999999999999999 and name2 then
   end
 end
 
-if arg2=="SPELL_DAMAGE" and spellid==99999999999999999 then
+if arg2=="SPELL_DAMAGE" and spellid==233021 then
   if pswasonbossLegion41==nil then
     pswasonbossLegion41=1
   end

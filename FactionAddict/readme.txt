@@ -4,7 +4,7 @@
 -- Desc: Addon for World of Warcraft
 --
 -- Author: gmz323(Greg)
--- current version: v1.44
+-- current version: v1.47
 -- (c) 2011-2017
 --
 =============================================================================
@@ -68,6 +68,19 @@ My Other Addons:
 
 Changelog:
 ==========
+
+v1.47 (2017-08-30)
+------------------
+* fix for PlaySound() 7.3 changes
+
+v1.46 (2017-08-29)
+------------------
+* toc update for patch 7.3
+* added factions - Army of the Light and Argussian Reach
+
+v1.45 (2017-08-03)
+------------------
+* Update to the Italian (itIT) client localization. Thanks Angelo!
 
 v1.44 (2017-04-30)
 ------------------

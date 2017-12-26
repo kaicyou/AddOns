@@ -236,12 +236,63 @@ local function createOptions(id, data)
       desc = L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."],
       order = 55
     },
+    smoothProgress = {
+      type = "toggle",
+      name = L["Smooth Progress"],
+      desc = L["Animates progress changes"],
+      order = 55.1
+    },
+    textureWrapMode = {
+      type = "select",
+      name = L["Texture Wrap"],
+      order = 55.2,
+      values = WeakAuras.texture_wrap_types
+    },
     spacer = {
       type = "header",
       name = "",
-      order = 60
+      order = 56
+    },
+    spacer2 = {
+      type = "header",
+      name = "",
+      order = 59
     }
   };
+  options = WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, 57);
+
+  local overlayInfo = WeakAuras.GetOverlayInfo(data);
+  if (overlayInfo and next(overlayInfo)) then
+    options["overlayheader"] = {
+      type = "header",
+      name = L["Overlays"],
+      order = 58
+    }
+    local index = 58.01
+    for id, display in ipairs(overlayInfo) do
+      options["overlaycolor" .. id] = {
+        type = "color",
+        name = string.format(L["%s Color"], display),
+        hasAlpha = true,
+        order = index,
+        get = function()
+          if (data.overlays and data.overlays[id]) then
+            return unpack(data.overlays[id]);
+          end
+          return 1, 1, 1, 1;
+        end,
+        set = function(info, r, g, b, a)
+          if (not data.overlays) then
+            data.overlays = {};
+          end
+          data.overlays[id] = { r, g, b, a};
+          WeakAuras.Add(data);
+        end
+      }
+      index = index + 0.01
+    end
+  end
+
   options = WeakAuras.AddPositionOptions(options, id, data);
 
   return options;
@@ -332,8 +383,8 @@ local function createThumbnail(parent)
   local foreground = region:CreateTexture(nil, "ART");
   borderframe.foreground = foreground;
 
-  borderframe.backgroundSpinner = WeakAuras.createSpinner(region, "BACKGROUND");
-  borderframe.foregroundSpinner = WeakAuras.createSpinner(region, "ARTWORK");
+  borderframe.backgroundSpinner = WeakAuras.createSpinner(region, "BACKGROUND", 1);
+  borderframe.foregroundSpinner = WeakAuras.createSpinner(region, "ARTWORK", 1);
 
   return borderframe;
 end
@@ -354,6 +405,8 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     foregroundSpinner:SetHeight(size);
     backgroundSpinner:SetWidth(scale * data.width)
     backgroundSpinner:SetHeight(size);
+    region.width = scale * data.width;
+    region.height = size;
   else
     scale = size/data.width;
     region:SetWidth(size);
@@ -364,6 +417,8 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     foregroundSpinner:SetHeight(scale * data.height);
     backgroundSpinner:SetWidth(size)
     backgroundSpinner:SetHeight(scale * data.height);
+    region.width = size;
+    region.height = scale * data.height;
   end
 
   region:ClearAllPoints();

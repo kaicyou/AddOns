@@ -54,7 +54,7 @@
 						self:SetAlpha(0.3);
 					</OnLoad>
 					<PostClick>
-						PlaySound("igInventoryRotateCharacter");
+						PlaySound(SOUNDKIT.IG_INVENTORY_ROTATE_CHARACTER);
 					</PostClick>
 				</Scripts>
 			</Button>

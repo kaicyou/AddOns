@@ -7,97 +7,202 @@ EM.ErrorShown = false
 --GLOBALS: CreateFrame, CharacterFrame, SLASH_FISH1, SlashCmdList
 local C_EquipmentSet = C_EquipmentSet
 local _G = _G
+local gsub = gsub
 
-local SpecTable = {
-	[1] = "firstSpec",
-	[2] = "secondSpec",
-	[3] = "thirdSpec",
-	[4] = "forthSpec",
+EM.SetData = {}
+
+local Difficulties = {
+	[1] = 'normal', --5ppl normal
+	[2] = 'heroic', --5ppl heroic
+	[3] = 'normal', --10ppl raid
+	[4] = 'normal', --25ppl raid
+	[5] = 'heroic', --10ppl heroic raid
+	[6] = 'heroic', --25ppl heroic raid
+	[7] = 'lfr', --25ppl LFR
+	[8] = 'challenge', --5ppl challenge
+	[9] = 'normal', --40ppl raid
+	[11] = 'heroic', --Heroic scenario
+	[12] = 'normal', --Normal scenario
+	[14] = 'normal', --10-30ppl normal
+	[15] = 'heroic', --13-30ppl heroic
+	[16] = 'mythic', --20ppl mythic
+	[17] = 'lfr', --10-30 LFR
+	[23] = 'mythic', --5ppl mythic
+	[24] = 'timewalking', --Timewalking
 }
 
-function EM:GetData()
-	local spec = T.GetSpecialization()
-	local equipSet
-	local equipmentSetIDs = C_EquipmentSet.GetEquipmentSetIDs()
-	for index = 1, C_EquipmentSet.GetNumEquipmentSets() do
-		local name, _, _, isEquipped = C_EquipmentSet.GetEquipmentSetInfo(equipmentSetIDs[index]);
-		if isEquipped then
-			equipSet = name
-			break
-		end
-	end
-	return spec, equipSet
-end
-
-function EM:IsPvP(inInstance, instanceType)
-	if inInstance and (instanceType == "pvp" or instanceType == "arena") then return true end
-	for i = 1, T.GetNumWorldPVPAreas() do
-		local _, localizedName, isActive, canQueue = T.GetWorldPVPAreaInfo(i)
-		if (T.GetRealZoneText() == localizedName and isActive) or (GetRealZoneText() == localizedName and canQueue) then return true end
-	end
-	return false
-end
-
-local TIMEWALKING_DIFFICULTYID = 24;
-
-function EM:IsTimewalkingDungeon(inInstance, instanceType)
-	if inInstance and (instanceType ==  "scenario" or instanceType == "party" or instanceType == "raid") and T.select(3, T.GetInstanceInfo()) == TIMEWALKING_DIFFICULTYID then
-		return true
-	end
-	return false
-end
-
-function EM:IsDungeon(inInstance, instanceType)
-	if inInstance and (instanceType ==  "scenario" or instanceType == "party" or instanceType == "raid") then return true end
-	return false
-end
-
-function EM:IsUsingFishingSet()
-	return self.fishingSetEquipped;
-end
-
-function EM:WrongSet(equipSet, group, inCombat)
-	local inInstance, instanceType = T.IsInInstance()
-	if EM:IsUsingFishingSet() and E.private.sle.equip.FishingSet.enable then
-		return E.private.sle.equip.FishingSet.set ~= equipSet, E.private.sle.equip.FishingSet.set
-	end
-	if inInstance and ((EM.db.timewalkingSet and EM.db[group].timewalking ~= "NONE") or (EM.db.instanceSet and EM.db[group].instance ~= "NONE") or (EM.db.pvpSet and EM.db[group].pvp ~= "NONE")) then
-		if EM:IsTimewalkingDungeon(inInstance, instanceType) and EM.db.timewalkingSet then
-			if equipSet ~= EM.db[group].timewalking and EM.db[group].timewalking ~= "NONE" then
-				if inCombat then
-					if not EM.ErrorShown then SLE:ErrorPrint(L["Impossible to switch to appropriate equipment set in combat. Will switch after combat ends."]); EM.ErrorShown = true end
-					return false
-				end
-				return true, EM.db[group].timewalking
+EM.TagsTable = {
+	["solo"] = function() if T.IsInGroup() then return false; else return true; end end,
+	["party"] = function(size)
+		size = T.tonumber(size)
+		if T.IsInGroup() then
+			if size then
+				if size == T.GetNumGroupMembers() then return true; else return false; end
+			else
+				return true
 			end
-		end
-		if EM:IsDungeon(inInstance, instanceType) and EM.db.instanceSet then
-			if equipSet ~= EM.db[group].instance and EM.db[group].instance ~= "NONE" then
-				if inCombat then
-					if not EM.ErrorShown then SLE:ErrorPrint(L["Impossible to switch to appropriate equipment set in combat. Will switch after combat ends."]); EM.ErrorShown = true end
-					return false
-				end
-				return true, EM.db[group].instance
-			end
-		end
-		if EM:IsPvP(inInstance, instanceType) and EM.db.pvpSet then
-			if equipSet ~= EM.db[group].pvp and EM.db[group].pvp ~= "NONE" then
-				if inCombat then
-					if not EM.ErrorShown then SLE:ErrorPrint(L["Impossible to switch to appropriate equipment set in combat. Will switch after combat ends."]); EM.ErrorShown = true end
-					return false
-				end
-				return true, EM.db[group].pvp
-			end
-		end
-	end
-	if equipSet ~= EM.db[group].general and EM.db[group].general ~= "NONE" then
-		if inCombat then
-			if not EM.ErrorShown then SLE:ErrorPrint(L["Impossible to switch to appropriate equipment set in combat. Will switch after combat ends."]); EM.ErrorShown = true end
+		else
 			return false
 		end
-		return true, EM.db[group].general
+	end,
+	["raid"] = function(size)
+		size = T.tonumber(size)
+		if T.IsInRaid() then
+			if size then
+				if size == T.GetNumGroupMembers() then return true; else return false; end
+			else
+				return true
+			end
+		else
+			return false
+		end
+	end,
+	["spec"] = function(index)
+		local index = T.tonumber(index)
+		if not index then return false end
+		if index == T.GetSpecialization() then return true; else return false; end
+	end,
+	["talent"] = function(tier, column)
+		local tier, column = T.tonumber(tier), T.tonumber(column)
+		if not (tier or column) then return false end
+		if tier < 0 or tier > 7 then SLE:ErrorPrint(T.format(L["SLE_EM_TAG_INVALID_TALENT_TIER"], tier)) return false end
+		if column < 0 or column > 3 then SLE:ErrorPrint(T.format(L["SLE_EM_TAG_INVALID_TALENT_COLUMN"], column)) return false end
+		local _, _, _, selected = T.GetTalentInfo(tier, column, 1)
+		if selected then
+			return true
+		else
+			return false
+		end
+	end,
+	["instance"] = function(dungeonType)
+		local inInstance, InstanceType = T.IsInInstance()
+		if inInstance then
+			if dungeonType then
+				if InstanceType == dungeonType then return true; else return false; end
+			else
+				if InstanceType == "pvp" or InstanceType == "arena" then return false; else return true; end
+			end
+		else
+			return false
+		end
+	end,
+	["pvp"] = function(pvpType)
+		local inInstance, InstanceType = T.IsInInstance()
+		if inInstance then
+			if pvpType and (InstanceType == "pvp" or InstanceType == "arena") then
+				if InstanceType == pvpType then return true; else return false; end
+			else
+				if InstanceType == "pvp" or InstanceType == "arena" then return true; else return false; end
+			end
+		else
+			for i = 1, T.GetNumWorldPVPAreas() do
+				local _, localizedName, isActive, canQueue = T.GetWorldPVPAreaInfo(i)
+				if (T.GetRealZoneText() == localizedName and isActive) or (T.GetRealZoneText() == localizedName and canQueue) then return true end
+			end
+			return false
+		end
+	end,
+	["difficulty"] = function(difficulty)
+		if not T.IsInInstance() then return false end
+		if not difficulty then return false end
+		local difID = T.select(3, T.GetInstanceInfo())
+		if difficulty == Difficulties[difID] then
+			return true;
+		else
+			return false;
+		end
+	end,
+}
+
+function EM:ConditionTable(option)
+	if not option then return end
+	local pattern = "%[(.-)%]([^;]+)"
+	local Conditions = {
+		["options"] = {},
+		["set"] = "",
+	}
+	local condition
+	while option:match(pattern) do
+		condition, option = option:match(pattern)
+		if not(condition and option) then return end
+		T.tinsert(Conditions.options, condition)
 	end
-	return false
+	Conditions.set = option:gsub("^%s*", "")
+	T.tinsert(EM.SetData, Conditions)
+end
+
+function EM:TagsProcess(msg)
+	T.twipe(EM.SetData)
+	local split_msg = { (";"):split(msg) }
+
+	for i, v in T.ipairs(split_msg) do
+		local split = split_msg[i]
+		EM:ConditionTable(split)
+	end
+	for i = 1, #EM.SetData do
+		local Conditions = EM.SetData[i]
+		for index = 1, #Conditions.options do
+			local condition = Conditions.options[index]
+			local cnd_table = { (","):split(condition) }
+			local parsed_cmds = {};
+			for j = 1, #cnd_table do
+				local cnd = cnd_table[j];
+				if cnd then
+					local command, argument = (":"):split(cnd)
+					local argTable = {}
+					if argument and T.find(argument, "%.") then
+						SLE:ErrorPrint(L["SLE_EM_TAG_DOT_WARNING"])
+					else
+						if argument and ("/"):split(argument) then
+							local put
+							while argument and ("/"):split(argument) do
+								put, argument = ("/"):split(argument)
+								T.tinsert(argTable, put)
+							end
+						else
+							T.tinsert(argTable, argument)
+						end
+						
+						local tag = command:match("^%s*(.+)%s*$")
+						if EM.TagsTable[tag] then
+							T.tinsert(parsed_cmds, { cmd = command:match("^%s*(.+)%s*$"), arg = argTable })
+						else
+							SLE:ErrorPrint(T.format(L["SLE_EM_TAG_INVALID"], tag))
+							T.twipe(EM.SetData)
+							return
+						end
+					end
+				end
+			end
+			Conditions.options[index] = {cmds = parsed_cmds}
+		end
+	end
+end
+
+function EM:TagsConditionsCheck(data)
+	for index,tagInfo in T.ipairs(data) do 
+		local ok = true
+		for _, option in T.ipairs(tagInfo.options) do
+			if not option.cmds then return end
+			local matches = 0
+			for conditionIndex,conditionInfo in T.ipairs(option.cmds) do
+				local func = conditionInfo["cmd"]
+				if not EM.TagsTable[func] then
+					SLE:ErrorPrint(T.format(L["SLE_EM_TAG_INVALID"], func))
+					return nil
+				end
+				local arg = conditionInfo["arg"]
+				local result = EM.TagsTable[func](T.unpack(arg))
+				if result then 
+					matches = matches + 1
+				else
+					matches = 0
+					break 
+				end
+				if matches == #option.cmds then return tagInfo.set end
+			end
+		end
+	end
 end
 
 local function Equip(event)
@@ -115,13 +220,25 @@ local function Equip(event)
 		EM.ErrorShown = false
 	end
 
-	local spec, equipSet = EM:GetData()
-
-	if spec ~= nil then --In case you don't have spec
-		local isWrong, trueSet = EM:WrongSet(equipSet, SpecTable[spec], inCombat)
-		if isWrong and not T.UnitInVehicle("player") then
-			local SetID = C_EquipmentSet.GetEquipmentSetID(trueSet);
-			C_EquipmentSet.UseEquipmentSet(SetID)
+	local equippedSet
+	local equipmentSetIDs = C_EquipmentSet.GetEquipmentSetIDs()
+	for index = 1, C_EquipmentSet.GetNumEquipmentSets() do
+		local name, _, _, isEquipped = C_EquipmentSet.GetEquipmentSetInfo(equipmentSetIDs[index]);
+		if isEquipped then
+			equippedSet = name
+			break
+		end
+	end
+	local trueSet = EM:TagsConditionsCheck(EM.SetData)
+	-- print("trueSet:", trueSet)
+	if trueSet then
+		local SetID = C_EquipmentSet.GetEquipmentSetID(trueSet)
+		if SetID then
+			if not equippedSet or (equippedSet and trueSet ~= equippedSet) then
+				C_EquipmentSet.UseEquipmentSet(SetID)
+			end
+		else
+			SLE:ErrorPrint(T.format(L["SLE_EM_SET_NOT_EXIST"], trueSet))
 		end
 	end
 end
@@ -159,12 +276,9 @@ function EM:CreateLock()
 	end)
 end
 
-function EM:AddFishingCommand()
-	SLASH_FISH1 = "/fish"
-	function SlashCmdList.FISH(msg, editbox)
-		self.fishingSetEquipped = not self.fishingSetEquipped;
-		Equip()
-	end
+function EM:UpdateTags()
+	EM:TagsProcess(EM.db.conditions)
+	Equip()
 end
 
 function EM:Initialize()
@@ -176,8 +290,9 @@ function EM:Initialize()
 	self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", Equip)
 	self:RegisterEvent("ZONE_CHANGED", Equip)
 
+	EM:TagsProcess(EM.db.conditions)
+
 	self:CreateLock()
-	self:AddFishingCommand()
 end
 
 SLE:RegisterModule(EM:GetName())

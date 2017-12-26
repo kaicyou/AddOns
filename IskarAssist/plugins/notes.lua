@@ -441,22 +441,34 @@ function Notepad.CreateNewNotepad (self, button, name)
 end
 
 -- ~boss
-local list_colors = {{1, .8, .2}, {1, 1, .4}, {.8, 1, .2}}
+local list_colors = {{.96, .96, .96}, {1, .8, .2}, {1, 1, .4}, {.8, 1, .2}, {.6, .6, 1}}
 function Notepad:BuildBossList()
 	local t = {}
 	
 	--get the list of raids
 	local raids = RA:GetRegisteredRaids()
-	local index = 1
+	local raidPool = {}
+	
+	--put them inside a numeric table
 	for EJ_ID, bossList in pairs (raids) do
+		tinsert (raidPool, {EJ_ID, bossList})
+	end
+	
+	--sort from the first to last release raid
+	table.sort (raidPool, function(t1, t2) return t1[1] > t2[1] end)
+	
+	--fill the dropdown
+	for index, table in ipairs (raidPool) do
+		local EJ_ID = table[1]
+		local bossList = table[2]
+		
 		EJ_SelectInstance (EJ_ID)
+		
 		local color = list_colors [index]
 		for i = 1, #bossList do
 			t [#t+1] = {label = EJ_GetEncounterInfoByIndex (i, EJ_ID), value = EJ_ID .. "_" .. i, onclick = Notepad.OnBossSelection, color = color}
 		end
-		index = index + 1
 	end
-	
 	return t
 end
 

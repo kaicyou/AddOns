@@ -77,7 +77,7 @@ function M:RaidMarkButton_OnLeave()
 end
 
 function M:RaidMarkButton_OnClick(arg1)
-	PlaySound("UChatScrollButton");
+	PlaySound(1115) --U_CHAT_SCROLL_BUTTON
 	SetRaidTarget("target", (arg1~="RightButton") and self:GetID() or 0);
 	self:GetParent():Hide();
 end
